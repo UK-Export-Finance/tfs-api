@@ -1,0 +1,45 @@
+{
+  "extends": "@tsconfig/node18/tsconfig.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "es2017",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "incremental": true,
+    "skipLibCheck": true,
+    "strictNullChecks": false,
+    "noImplicitAny": false,
+    "strictBindCallApply": false,
+    "forceConsistentCasingInFileNames": false,
+    "noFallthroughCasesInSwitch": false,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "lib": ["ES2015"],
+    "paths": {
+      "@ukef/*": ["src/*"],
+      "@ukef/config/*": ["src/config/index"],
+      "@ukef/database/*": ["src/database/index"],
+      "@ukef/helpers/*": ["src/helpers/*"],
+      "@ukef/module/*": ["src/modules/*"],
+      "@ukef/swagger/*": ["src/swagger/*"]
+    }
+  },
+  "include": [
+    "src",
+    "test",
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "*coverage",
+    "logs",
+    "scripts",
+  ]
+}
