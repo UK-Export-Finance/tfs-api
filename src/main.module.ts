@@ -2,8 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ThrottlerModule } from '@nestjs/throttler';
 import config from '@ukef/config';
-import { MsSqlDatabaseModule } from '@ukef/database';
-import { MdmModule } from '@ukef/module/mdm.module';
+import { TfsModule } from '@ukef/modules/tfs.module';
 import { LoggerModule } from 'nestjs-pino';
 
 @Module({
@@ -29,8 +28,7 @@ import { LoggerModule } from 'nestjs-pino';
         },
       },
     }),
-    MsSqlDatabaseModule,
-    MdmModule,
+    TfsModule,
   ],
   controllers: [],
   providers: [],

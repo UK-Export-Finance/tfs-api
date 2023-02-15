@@ -14,11 +14,10 @@ const main = async () => {
   const env: string = configService.get<string>('app.env');
   process.env.NODE_ENV = env;
 
-  const port = configService.get<number>('PORT');
+  const port = configService.get<number>('PORT') || 3003;
   const globalPrefix: string = configService.get<string>('app.globalPrefix');
   const version: string = configService.get<string>('app.versioning.version');
   const versioningPrefix: string = configService.get<string>('app.versioning.prefix');
-
   app.enableVersioning({
     type: VersioningType.URI,
     defaultVersion: version,
