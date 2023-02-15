@@ -6,6 +6,7 @@
   "license": "MIT",
   "author": "UKEF",
   "scripts": {
+    "api-test": "jest --selectProjects API",
     "prebuild": "rimraf dist",
     "build": "nest build && npm run copyfiles",
     "build:prod": "rimraf dist/ && npm run build",
@@ -19,7 +20,6 @@
     "start:debug": "nest start --debug --watch",
     "start:dev": "nest start --tsc --watch",
     "start:prod": "node dist/src/main",
-    "api-test": "jest --selectProjects API",
     "unit-test": "jest --selectProjects Unit"
   },
   "dependencies": {
