@@ -1,11 +1,12 @@
 {
-  "name": "nestjs-app",
-  "version": "1.1.0",
+  "name": "tfs-api",
+  "version": "1.0.0",
   "private": true,
-  "description": "NestJS base template",
+  "description": "Trade Finance Services API",
   "license": "MIT",
   "author": "UKEF",
   "scripts": {
+    "api-test": "jest --selectProjects API",
     "prebuild": "rimraf dist",
     "build": "nest build && npm run copyfiles",
     "build:prod": "rimraf dist/ && npm run build",
@@ -19,9 +20,10 @@
     "start:debug": "nest start --debug --watch",
     "start:dev": "nest start --tsc --watch",
     "start:prod": "node dist/src/main",
-    "test": "jest"
+    "unit-test": "jest --selectProjects Unit"
   },
   "dependencies": {
+    "@nestjs/axios": "^2.0.0",
     "@nestjs/common": "^9.3.8",
     "@nestjs/config": "^2.3.1",
     "@nestjs/core": "^9.3.8",
@@ -29,6 +31,7 @@
     "@nestjs/swagger": "^6.2.1",
     "@nestjs/throttler": "^4.0.0",
     "@nestjs/typeorm": "^9.0.1",
+    "axios": "^1.3.3",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "compression": "^1.7.4",

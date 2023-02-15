@@ -1,34 +1,3 @@
-# Description
-
-[NestJS](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Features
-
-- [x] MSSQL TypeORM setup
-- [x] Dockerised application using NodeJS v19
-- [x] Conventional commits using Husky
-- [x] Code formatting (using Prettier)
-- [x] Code linting (using ESLint and Lint-staged)
-- [x] Code spell checking (using `cspell`)
-- [x] Renovate (update NPM packages automatically)
-- [x] Standardized Editor config
-- [x] Swagger based documentation
-- [x] Config based on ENV variables
-- [x] Automated API versioning `(/v1)`
-- [x] Configuration for `Jest` tests
-- [x] Automated releases based on conventional commits
-- [x] Automated version bumps based on commit messages
-- [x] Add logging using `Pino.js`
-- [x] Alias paths
-- [ ] CodeCov to analyse the test coverage
-- [ ] Add rate-limiting
-- [ ] Add Auth guards
-- [ ] Configure Compodoc
-- [ ] Add health checks
-- [ ] Add hot reloading for local Docker development
-- [ ] Add security headers
-- [ ] Deployment pipelines
-
 ## Installation
 
 ```bash
@@ -36,11 +5,6 @@ npm install
 ```
 
 ### Running the service (dev)
-
-```bash
-# start the local SQL database
-$ docker compose -f docker-compose.db.yml up --build
-```
 
 ```bash
 # using docker-compose
