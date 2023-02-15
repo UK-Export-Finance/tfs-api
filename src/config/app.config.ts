@@ -1,13 +1,11 @@
 import { registerAs } from '@nestjs/config';
-import { version } from 'package.json';
 
 export default registerAs(
   'app',
   (): Record<string, any> => ({
-    name: process.env.APP_NAME || 'mdm',
+    name: process.env.APP_NAME || 'tfs',
     env: process.env.APP_ENV || 'development',
 
-    repoVersion: version,
     versioning: {
       enable: process.env.HTTP_VERSIONING_ENABLE === 'true' || false,
       prefix: 'v',

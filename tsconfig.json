@@ -25,7 +25,6 @@
     "paths": {
       "@ukef/*": ["src/*"],
       "@ukef/config/*": ["src/config/index"],
-      "@ukef/database/*": ["src/database/index"],
       "@ukef/helpers/*": ["src/helpers/*"],
       "@ukef/module/*": ["src/modules/*"],
       "@ukef/swagger/*": ["src/swagger/*"]
@@ -34,6 +33,7 @@
   "include": [
     "src",
     "test",
+    "jest.config.ts"
   ],
   "exclude": [
     "node_modules",

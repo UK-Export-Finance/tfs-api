@@ -5,8 +5,8 @@ dotenv.config();
 export default registerAs(
   'doc',
   (): Record<string, any> => ({
-    name: process.env.DOC_NAME || 'MDM API Specification',
-    description: 'MDM API documentation',
+    name: process.env.DOC_NAME || 'TFS API Specification',
+    description: 'TFS API documentation',
     version: process.env.DOC_VERSION || '1.0',
     prefix: '/docs',
   }),
