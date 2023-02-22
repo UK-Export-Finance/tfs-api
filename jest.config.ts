@@ -18,7 +18,7 @@ const config: JestConfigWithTsJest = {
   projects: [
     {
       displayName: 'Unit',
-      testMatch: ['**/*.unit-test.ts'],
+      testMatch: ['**/*.test.ts'],
       transform: { '^.+\\.(ts|tsx)?$': ['ts-jest', { useESM: true }] },
       ...defaultSettings,
     },

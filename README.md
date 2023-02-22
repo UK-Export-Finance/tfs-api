@@ -18,9 +18,15 @@ $ npm run start:dev
 
 ### Test
 
+We are running several test suites as part of our CI/CD pipeline.
+
+* Unit test :   These tests are written using Jest and ends with `*.test.ts` extension.
+* API test  :   These tests are written using Jest and ends with `*.api-test.ts` extension.
+* E2E test  :   These tests are written using Cypress and ends with `*.spec.ts` extension. Currently there are *no* E2E tests and none are executed during CI/CD.
+
 ```bash
 # unit tests
-$ npm run test
+$ npm run unit-test
 
 # api tests
 $ npm run api-test
