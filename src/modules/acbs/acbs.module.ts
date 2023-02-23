@@ -2,6 +2,7 @@ import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
+import { TestController } from './acbs.controller';
 import { AcbsAuthenticationService } from './acbs-authentication.service';
 
 @Module({
@@ -15,6 +16,7 @@ import { AcbsAuthenticationService } from './acbs-authentication.service';
       }),
     }),
   ],
+  controllers: [TestController],
   providers: [AcbsAuthenticationService],
 })
 export class AcbsModule {}
