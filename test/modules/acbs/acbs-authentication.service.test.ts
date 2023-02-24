@@ -1,21 +1,23 @@
 import { HttpService } from '@nestjs/axios';
 import { AcbsAuthenticationService } from '@ukef/modules/acbs/acbs-authentication.service';
 import { AcbsAuthenticationFailedException } from '@ukef/modules/acbs/acbs-authentication-failed.exception';
+import { RandomValueGenerator } from '@ukef-test/support/random-value-generator';
 import { AxiosError, AxiosHeaders } from 'axios';
 import { when } from 'jest-when';
 import { PinoLogger } from 'nestjs-pino';
 import { of, throwError } from 'rxjs';
 
 describe('AcbsAuthenticationService', () => {
-  const baseUrl = 'the base url';
-  const loginName = 'the login name';
-  const password = 'the password';
-  const apiKey = 'the api key';
-  const apiKeyHeaderName = 'the-api-key-header-name';
-  const sessionId = '1234';
+  const valueGenerator = new RandomValueGenerator();
+  const baseUrl = valueGenerator.string();
+  const loginName = valueGenerator.string();
+  const password = valueGenerator.string();
+  const apiKey = valueGenerator.string();
+  const apiKeyHeaderName = valueGenerator.string();
+  const sessionId = valueGenerator.string();
   const sessionIdWithCookieName = `JSESSIONID=${sessionId}`;
-  const clientId = 'the client id';
-  const idToken = 'the id token';
+  const clientId = valueGenerator.string();
+  const idToken = valueGenerator.string();
 
   const expectedPostSessionsArguments: [string, object, object] = [
     '/sessions',
@@ -32,8 +34,8 @@ describe('AcbsAuthenticationService', () => {
     },
   ];
 
-  const cookie1 = 'Cookie1=Cookie1Value; Expires=Thu, 01-Jan-99 12:00:00 GMT; Path=Cookie1Path; Domain=Cookie1Domain; HttpOnly';
-  const cookie2 = 'Cookie2=Cookie2Value; Expires=Fri, 02-Jan-99 12:00:00 GMT; Path=Cookie2Path; Domain=Cookie2Domain; HttpOnly';
+  const cookie1 = `Cookie1=${valueGenerator.string()}; Expires=Thu, 01-Jan-99 12:00:00 GMT; Path=Cookie1Path; Domain=Cookie1Domain; HttpOnly`;
+  const cookie2 = `Cookie2=${valueGenerator.string()}; Expires=Fri, 02-Jan-99 12:00:00 GMT; Path=Cookie2Path; Domain=Cookie2Domain; HttpOnly`;
   const sessionIdCookie = `${sessionIdWithCookieName}; Path=/some/path; Domain=some.domain.com; HttpOnly`;
 
   const expectedGetTokenArguments: [string, object] = [

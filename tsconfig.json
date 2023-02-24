@@ -28,7 +28,8 @@
       "@ukef/config/*": ["src/config/index"],
       "@ukef/helpers/*": ["src/helpers/*"],
       "@ukef/module/*": ["src/modules/*"],
-      "@ukef/swagger/*": ["src/swagger/*"]
+      "@ukef/swagger/*": ["src/swagger/*"],
+      "@ukef-test/*": ["test/*"],
     }
   },
   "include": [
