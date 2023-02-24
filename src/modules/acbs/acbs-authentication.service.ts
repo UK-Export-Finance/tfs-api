@@ -1,11 +1,11 @@
 import { HttpService } from '@nestjs/axios';
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
+import AcbsConfig from '@ukef/config/acbs.config';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 import { catchError, lastValueFrom } from 'rxjs';
 
-import AcbsConfig from '../../config/acbs.config';
 import { AcbsAuthenticationFailedException } from './acbs-authentication-failed.exception';
 import { IdpConnectResponse } from './dto/idp-connect-response.dto';
 

@@ -25,7 +25,7 @@
     "paths": {
       "@ukef/*": ["src/*"],
       "@ukef/constants/*": ["src/constants/index"],
-      "@ukef/config/*": ["src/config/index"],
+      "@ukef/config/*": ["src/config/*"],
       "@ukef/helpers/*": ["src/helpers/*"],
       "@ukef/module/*": ["src/modules/*"],
       "@ukef/swagger/*": ["src/swagger/*"],
