@@ -12,7 +12,7 @@ import { IdpConnectResponse } from './dto/idp-connect-response.dto';
 export class AcbsAuthenticationService {
   private static readonly sessionsPath = '/sessions';
   private static readonly connectPath = '/idptoken/openid-connect';
-  private static readonly sessionIdCookieName = 'JSESSION';
+  private static readonly sessionIdCookieName = 'JSESSIONID';
   private static readonly sessionIdCookieSeparator = ';';
 
   constructor(
