@@ -36,7 +36,7 @@ describe('AcbsAuthenticationService', () => {
 
   const cookie1 = `Cookie1=${valueGenerator.string()}; Expires=Thu, 01-Jan-99 12:00:00 GMT; Path=Cookie1Path; Domain=Cookie1Domain; HttpOnly`;
   const cookie2 = `Cookie2=${valueGenerator.string()}; Expires=Fri, 02-Jan-99 12:00:00 GMT; Path=Cookie2Path; Domain=Cookie2Domain; HttpOnly`;
-  const sessionIdCookie = `${sessionIdWithCookieName}; Path=/some/path; Domain=some.domain.com; HttpOnly`;
+  const sessionIdCookie = `${sessionIdWithCookieName}; Path=/some/path; Domain=some.domain.com; Secure; HttpOnly`;
 
   const expectedGetTokenArguments: [string, object] = [
     '/idptoken/openid-connect',
