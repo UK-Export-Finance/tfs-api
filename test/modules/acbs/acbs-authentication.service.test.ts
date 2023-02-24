@@ -248,11 +248,9 @@ describe('AcbsAuthenticationService', () => {
     });
   });
 
-  function mockSuccessfulCreateSessionRequest(): void {
-    mockSuccessfulCreateSessionRequestReturningCookies([cookie1, sessionIdCookie, cookie2]);
-  }
+  const mockSuccessfulCreateSessionRequest = (): void => mockSuccessfulCreateSessionRequestReturningCookies([cookie1, sessionIdCookie, cookie2]);
 
-  function mockSuccessfulCreateSessionRequestReturningCookies(cookies: string[]): void {
+  const mockSuccessfulCreateSessionRequestReturningCookies = (cookies: string[]): void => {
     const headers = new AxiosHeaders();
     headers['set-cookie'] = cookies;
 
@@ -268,13 +266,11 @@ describe('AcbsAuthenticationService', () => {
           headers: headers,
         }),
       );
-  }
+  };
 
-  function mockSuccessfulGetTokenForSessionRequest(): void {
-    mockSuccessfulGetTokenForSessionRequestReturning({ id_token: idToken });
-  }
+  const mockSuccessfulGetTokenForSessionRequest = (): void => mockSuccessfulGetTokenForSessionRequestReturning({ id_token: idToken });
 
-  function mockSuccessfulGetTokenForSessionRequestReturning(data: any): void {
+  const mockSuccessfulGetTokenForSessionRequestReturning = (data: any): void => {
     // eslint-disable-next-line jest/unbound-method
     when(httpService.get)
       .calledWith(...expectedGetTokenArguments)
@@ -287,5 +283,5 @@ describe('AcbsAuthenticationService', () => {
           headers: undefined,
         }),
       );
-  }
+  };
 });
