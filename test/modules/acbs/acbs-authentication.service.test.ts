@@ -176,6 +176,39 @@ describe('AcbsAuthenticationService', () => {
       await expect(getTokenPromise).rejects.toThrow('ID token was not returned by the IdP.');
       await expect(getTokenPromise).rejects.toHaveProperty('innerError', undefined);
     });
+
+    it('throws an AcbsAuthenticationFailedException if the IdP returns a non-string id_token', async () => {
+      mockSuccessfulCreateSessionRequest();
+      mockSuccessfulGetTokenForSessionRequestReturning({ id_token: {} });
+
+      const getTokenPromise = service.getIdToken();
+
+      await expect(getTokenPromise).rejects.toBeInstanceOf(AcbsAuthenticationFailedException);
+      await expect(getTokenPromise).rejects.toThrow('ID token was not returned by the IdP.');
+      await expect(getTokenPromise).rejects.toHaveProperty('innerError', undefined);
+    });
+
+    it('throws an AcbsAuthenticationFailedException if the IdP returns undefined data', async () => {
+      mockSuccessfulCreateSessionRequest();
+      mockSuccessfulGetTokenForSessionRequestReturning(undefined);
+
+      const getTokenPromise = service.getIdToken();
+
+      await expect(getTokenPromise).rejects.toBeInstanceOf(AcbsAuthenticationFailedException);
+      await expect(getTokenPromise).rejects.toThrow('ID token was not returned by the IdP.');
+      await expect(getTokenPromise).rejects.toHaveProperty('innerError', undefined);
+    });
+
+    it('throws an AcbsAuthenticationFailedException if the IdP returns null data', async () => {
+      mockSuccessfulCreateSessionRequest();
+      mockSuccessfulGetTokenForSessionRequestReturning(null);
+
+      const getTokenPromise = service.getIdToken();
+
+      await expect(getTokenPromise).rejects.toBeInstanceOf(AcbsAuthenticationFailedException);
+      await expect(getTokenPromise).rejects.toThrow('ID token was not returned by the IdP.');
+      await expect(getTokenPromise).rejects.toHaveProperty('innerError', undefined);
+    });
   });
 
   function mockSuccessfulCreateSessionRequest(): void {
