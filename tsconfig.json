@@ -24,6 +24,7 @@
     "lib": ["ES2015"],
     "paths": {
       "@ukef/*": ["src/*"],
+      "@ukef/constants/*": ["src/constants/index"],
       "@ukef/config/*": ["src/config/index"],
       "@ukef/helpers/*": ["src/helpers/*"],
       "@ukef/module/*": ["src/modules/*"],
