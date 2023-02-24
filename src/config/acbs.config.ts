@@ -30,7 +30,7 @@ export default registerAs(
       password: process.env.ACBS_AUTHENTICATION_PASSWORD,
     },
 
-    maxRedirects: parseInt(process.env.ACBS_MAX_REDIRECTS) || 21,
+    maxRedirects: parseInt(process.env.ACBS_MAX_REDIRECTS) || 5,
     timeout: parseInt(process.env.ACBS_TIMEOUT) || 30000,
   }),
 );
