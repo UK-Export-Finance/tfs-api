@@ -84,7 +84,7 @@ export class AcbsAuthenticationService {
   }
 
   private extractIdTokenFromConnectResponse(response: AxiosResponse<IdpConnectResponse>): string {
-    const idToken = response.data?.id_token;
+    const { id_token: idToken } = response.data || {};
 
     if (!idToken) {
       throw new AcbsAuthenticationFailedException('ID token was not returned by the IdP.');
