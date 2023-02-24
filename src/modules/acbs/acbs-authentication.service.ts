@@ -2,6 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import { AxiosResponse } from 'axios';
+import { PinoLogger } from 'nestjs-pino';
 import { catchError, lastValueFrom } from 'rxjs';
 
 import AcbsConfig from '../../config/acbs.config';
@@ -19,6 +20,7 @@ export class AcbsAuthenticationService {
     @Inject(AcbsConfig.KEY)
     private readonly config: Pick<ConfigType<typeof AcbsConfig>, 'apiKey' | 'apiKeyHeaderName' | 'authentication'>,
     private readonly httpService: HttpService,
+    private readonly logger: PinoLogger,
   ) {}
 
   async getIdToken(): Promise<string> {
@@ -42,6 +44,7 @@ export class AcbsAuthenticationService {
         )
         .pipe(
           catchError((error: Error) => {
+            this.logger.error(error);
             throw new AcbsAuthenticationFailedException('Failed to create a session with the IdP.', error);
           }),
         ),
@@ -75,6 +78,7 @@ export class AcbsAuthenticationService {
         })
         .pipe(
           catchError((error: Error) => {
+            this.logger.error(error);
             throw new AcbsAuthenticationFailedException('Failed to get a token from the IdP.', error);
           }),
         ),

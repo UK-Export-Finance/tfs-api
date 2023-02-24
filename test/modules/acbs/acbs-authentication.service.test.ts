@@ -3,6 +3,7 @@ import { AcbsAuthenticationService } from '@ukef/modules/acbs/acbs-authenticatio
 import { AcbsAuthenticationFailedException } from '@ukef/modules/acbs/acbs-authentication-failed.exception';
 import { AxiosError, AxiosHeaders } from 'axios';
 import { when } from 'jest-when';
+import { PinoLogger } from 'nestjs-pino';
 import { of, throwError } from 'rxjs';
 
 describe('AcbsAuthenticationService', () => {
@@ -49,11 +50,14 @@ describe('AcbsAuthenticationService', () => {
   ];
 
   let httpService: HttpService;
+  let logger: PinoLogger;
   let service: AcbsAuthenticationService;
 
   beforeEach(() => {
     httpService = new HttpService();
-    service = new AcbsAuthenticationService({ apiKey, apiKeyHeaderName, authentication: { baseUrl, loginName, password, clientId } }, httpService);
+    logger = new PinoLogger({});
+    logger.error = jest.fn();
+    service = new AcbsAuthenticationService({ apiKey, apiKeyHeaderName, authentication: { baseUrl, loginName, password, clientId } }, httpService, logger);
   });
 
   describe('successful authentication', () => {
@@ -107,6 +111,21 @@ describe('AcbsAuthenticationService', () => {
       await expect(getTokenPromise).rejects.toHaveProperty('innerError', sessionCreationError);
     });
 
+    it('logs the http service error if there is an error when creating a session with the IdP', async () => {
+      const sessionCreationError = new AxiosError();
+      // eslint-disable-next-line jest/unbound-method
+      when(httpService.post)
+        .calledWith(...expectedPostSessionsArguments)
+        .mockReturnValueOnce(throwError(() => sessionCreationError));
+
+      await service
+        .getIdToken()
+        .catch(() => {})
+        .finally(() => {
+          expect(logger.error).toHaveBeenCalledWith(sessionCreationError);
+        });
+    });
+
     it('throws an AcbsAuthenticationFailedException if the IdP does not return a session id cookie', async () => {
       const cookiesWithoutSessionIdCookie = [cookie1, cookie2];
       mockSuccessfulCreateSessionRequestReturningCookies(cookiesWithoutSessionIdCookie);
@@ -131,6 +150,22 @@ describe('AcbsAuthenticationService', () => {
       await expect(getTokenPromise).rejects.toBeInstanceOf(AcbsAuthenticationFailedException);
       await expect(getTokenPromise).rejects.toThrow('Failed to get a token from the IdP.');
       await expect(getTokenPromise).rejects.toHaveProperty('innerError', getTokenError);
+    });
+
+    it('logs the http service error if there is an error when getting a token from the IdP', async () => {
+      mockSuccessfulCreateSessionRequest();
+      const getTokenError = new AxiosError();
+      // eslint-disable-next-line jest/unbound-method
+      when(httpService.get)
+        .calledWith(...expectedGetTokenArguments)
+        .mockReturnValueOnce(throwError(() => getTokenError));
+
+      await service
+        .getIdToken()
+        .catch(() => {})
+        .finally(() => {
+          expect(logger.error).toHaveBeenCalledWith(getTokenError);
+        });
     });
 
     it('throws an AcbsAuthenticationFailedException if the IdP does not return an id_token', async () => {
