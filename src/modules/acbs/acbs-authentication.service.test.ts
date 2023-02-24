@@ -1,11 +1,12 @@
 import { HttpService } from '@nestjs/axios';
-import { AcbsAuthenticationService } from '@ukef/modules/acbs/acbs-authentication.service';
-import { AcbsAuthenticationFailedException } from '@ukef/modules/acbs/acbs-authentication-failed.exception';
 import { RandomValueGenerator } from '@ukef-test/support/random-value-generator';
 import { AxiosError, AxiosHeaders } from 'axios';
 import { when } from 'jest-when';
 import { PinoLogger } from 'nestjs-pino';
 import { of, throwError } from 'rxjs';
+
+import { AcbsAuthenticationService } from './acbs-authentication.service';
+import { AcbsAuthenticationFailedException } from './acbs-authentication-failed.exception';
 
 describe('AcbsAuthenticationService', () => {
   const valueGenerator = new RandomValueGenerator();
