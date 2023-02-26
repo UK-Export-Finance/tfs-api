@@ -29,7 +29,8 @@
     "ecgd",
     "ESRA",
     "pino",
-    "Dockerised"
+    "Dockerised",
+    "JSESSIONID"
   ],
   "dictionaries": [
     "en-gb",

@@ -42,6 +42,9 @@
       ]
     },
     "import/resolver": {
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      },
       "typescript": {
         "alwaysTryTypes": true
       }
@@ -121,7 +124,8 @@
   "overrides": [
     {
       "files": [
-        "**/*.spec.ts"
+        "**/*.test.ts",
+        "**/*.api-test.ts"
       ],
       "extends": [
         "plugin:jest/recommended",

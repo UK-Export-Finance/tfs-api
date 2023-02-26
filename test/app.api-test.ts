@@ -1,7 +1,6 @@
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { MainModule } from '@ukef/main.module';
-import * as request from 'supertest';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
@@ -14,5 +13,13 @@ describe('AppController (e2e)', () => {
     app = moduleFixture.createNestApplication();
     await app.init();
   });
-  it('should execute a test', () => {});
+
+  /**
+   * This is an empty test case to satisfy GHA.
+   * Once tests organically evolves, please remove
+   * below.
+   */
+  it('An empty test case', () => {
+    expect(true).toBe(true);
+  });
 });

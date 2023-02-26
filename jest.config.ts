@@ -7,10 +7,12 @@ const defaultSettings = {
   testEnvironment: 'node',
   moduleFileExtensions: ['ts', 'js', 'json', 'node'],
   moduleNameMapper: {
+    '@ukef/constants/(.*)': '<rootDir>/../src/constants/$1',
     '@ukef/config/(.*)': '<rootDir>/../src/config/$1',
     '@ukef/helpers/(.*)': '<rootDir>/../src/helpers/$1',
     '@ukef/module/(.*)': '<rootDir>/../src/modules/$1',
     '@ukef/(.*)': '<rootDir>/../src/$1',
+    '@ukef-test/(.*)': '<rootDir>../test/$1',
   },
 };
 
@@ -18,9 +20,11 @@ const config: JestConfigWithTsJest = {
   projects: [
     {
       displayName: 'Unit',
-      testMatch: ['**/*.spec.ts'],
+      setupFilesAfterEnv: ['../test/setup/mock-nestjs-axios.ts'],
+      testMatch: ['**/*.test.ts'],
       transform: { '^.+\\.(ts|tsx)?$': ['ts-jest', { useESM: true }] },
       ...defaultSettings,
+      rootDir: 'src', // Since unit tests are created inside `src`
     },
     {
       displayName: 'API',
