@@ -34,7 +34,9 @@
     "Typeorm",
     "typescript",
     "ukef",
-    "venv"
+    "venv",
+    "probabilityof",
+    "APIM"
   ],
   "dictionaries": [
     "en-gb",
