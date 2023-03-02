@@ -6,8 +6,8 @@ import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 import { catchError, lastValueFrom } from 'rxjs';
 
-import { AcbsAuthenticationFailedException } from './acbs-authentication-failed.exception';
 import { IdpConnectResponse } from './dto/idp-connect-response.dto';
+import { AcbsAuthenticationFailedException } from './exception/acbs-authentication-failed.exception';
 
 @Injectable()
 export class AcbsAuthenticationService {

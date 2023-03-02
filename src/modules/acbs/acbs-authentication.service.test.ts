@@ -6,7 +6,7 @@ import { PinoLogger } from 'nestjs-pino';
 import { of, throwError } from 'rxjs';
 
 import { AcbsAuthenticationService } from './acbs-authentication.service';
-import { AcbsAuthenticationFailedException } from './acbs-authentication-failed.exception';
+import { AcbsAuthenticationFailedException } from './exception/acbs-authentication-failed.exception';
 
 describe('AcbsAuthenticationService', () => {
   const valueGenerator = new RandomValueGenerator();

@@ -11,4 +11,20 @@ export class RandomValueGenerator {
   public string(): string {
     return this.chance.string();
   }
+
+  public stringOfNumericCharacters(): string {
+    return this.chance.string({ pool: '0123456789' });
+  }
+
+  public probabilityFloat(): number {
+    return this.chance.floating({ min: 0, max: 1 });
+  }
+
+  public nonnegativeFloat(): number {
+    return this.chance.floating({ min: 0 });
+  }
+
+  public date(): Date {
+    return this.chance.date();
+  }
 }
