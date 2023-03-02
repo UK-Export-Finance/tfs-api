@@ -1,4 +1,7 @@
-export interface AcbsGetPartiesBySearchTextResponseElement {
+export type AcbsGetPartiesBySearchTextResponse = AcbsGetPartiesBySearchTextResponseItem[];
+
+export interface AcbsGetPartiesBySearchTextResponseItem {
+  PartyIdentifier: string;
   PartyAlternateIdentifier: string;
   IndustryClassification: { IndustryClassificationCode: string };
   PartyName1: string;
