@@ -1,6 +1,7 @@
 import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
-import { RandomValueGenerator } from '@ukef-test/support/random-value-generator';
+import { PartyExternalRatingGenerator } from '@ukef-test/support/generator/party-external-rating-generator';
+import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import nock from 'nock';
 
 describe('GET /party/{partyIdentifier}/external-rating', () => {
@@ -8,110 +9,10 @@ describe('GET /party/{partyIdentifier}/external-rating', () => {
 
   const partyIdentifier = '001';
   const idToken = valueGenerator.string();
-
-  const ratingEntityCodeA = valueGenerator.stringOfNumericCharacters();
-  const assignedRatingCodeA = valueGenerator.stringOfNumericCharacters();
-  const ratedDateA = valueGenerator.date();
-  const probabilityofDefaultA = valueGenerator.probabilityFloat();
-  const lossGivenDefaultA = valueGenerator.nonnegativeFloat();
-  const riskWeightingA = valueGenerator.nonnegativeFloat();
-  const externalRatingNote1A = valueGenerator.string();
-  const externalRatingNote2A = valueGenerator.string();
-  const externalRatingUserCode1A = valueGenerator.string();
-  const externalRatingUserCode2A = valueGenerator.string();
-
-  const ratingEntityCodeB = valueGenerator.stringOfNumericCharacters();
-  const assignedRatingCodeB = valueGenerator.stringOfNumericCharacters();
-  const ratedDateB = valueGenerator.date();
-  const probabilityofDefaultB = valueGenerator.probabilityFloat();
-  const lossGivenDefaultB = valueGenerator.nonnegativeFloat();
-  const riskWeightingB = valueGenerator.nonnegativeFloat();
-  const externalRatingNote1B = valueGenerator.string();
-  const externalRatingNote2B = valueGenerator.string();
-  const externalRatingUserCode1B = valueGenerator.string();
-  const externalRatingUserCode2B = valueGenerator.string();
-
-  const externalRatingsInAcbs = [
-    {
-      PartyIdentifier: partyIdentifier,
-      RatingEntity: {
-        RatingEntityCode: ratingEntityCodeA,
-      },
-      AssignedRating: {
-        AssignedRatingCode: assignedRatingCodeA,
-      },
-      RatedDate: ratedDateA,
-      ProbabilityofDefault: probabilityofDefaultA,
-      LossGivenDefault: lossGivenDefaultA,
-      RiskWeighting: riskWeightingA,
-      ExternalRatingNote1: externalRatingNote1A,
-      ExternalRatingNote2: externalRatingNote2A,
-      ExternalRatingUserCode1: {
-        UserCode1: externalRatingUserCode1A,
-      },
-      ExternalRatingUserCode2: {
-        UserCode2: externalRatingUserCode2A,
-      },
-    },
-    {
-      PartyIdentifier: partyIdentifier,
-      RatingEntity: {
-        RatingEntityCode: ratingEntityCodeB,
-      },
-      AssignedRating: {
-        AssignedRatingCode: assignedRatingCodeB,
-      },
-      RatedDate: ratedDateB,
-      ProbabilityofDefault: probabilityofDefaultB,
-      LossGivenDefault: lossGivenDefaultB,
-      RiskWeighting: riskWeightingB,
-      ExternalRatingNote1: externalRatingNote1B,
-      ExternalRatingNote2: externalRatingNote2B,
-      ExternalRatingUserCode1: {
-        UserCode1: externalRatingUserCode1B,
-      },
-      ExternalRatingUserCode2: {
-        UserCode2: externalRatingUserCode2B,
-      },
-    },
-  ];
-
-  const expectedExternalRatings = [
-    {
-      partyIdentifier: partyIdentifier,
-      ratingEntity: {
-        ratingEntityCode: ratingEntityCodeA,
-      },
-      assignedRating: {
-        assignedRatingCode: assignedRatingCodeA,
-      },
-      ratedDate: ratedDateA,
-      probabilityofDefault: probabilityofDefaultA,
-      lossGivenDefault: lossGivenDefaultA,
-      riskWeighting: riskWeightingA,
-      externalRatingNote1: externalRatingNote1A,
-      externalRatingNote2: externalRatingNote2A,
-      externalRatingUserCode1: externalRatingUserCode1A,
-      externalRatingUserCode2: externalRatingUserCode2A,
-    },
-    {
-      partyIdentifier: partyIdentifier,
-      ratingEntity: {
-        ratingEntityCode: ratingEntityCodeB,
-      },
-      assignedRating: {
-        assignedRatingCode: assignedRatingCodeB,
-      },
-      ratedDate: ratedDateB,
-      probabilityofDefault: probabilityofDefaultB,
-      lossGivenDefault: lossGivenDefaultB,
-      riskWeighting: riskWeightingB,
-      externalRatingNote1: externalRatingNote1B,
-      externalRatingNote2: externalRatingNote2B,
-      externalRatingUserCode1: externalRatingUserCode1B,
-      externalRatingUserCode2: externalRatingUserCode2B,
-    },
-  ];
+  const { externalRatingsInAcbs, externalRatingsFromApi: expectedExternalRatings } = new PartyExternalRatingGenerator(valueGenerator).generate({
+    partyIdentifier,
+    numberToGenerate: 2,
+  });
 
   let api: Api;
 

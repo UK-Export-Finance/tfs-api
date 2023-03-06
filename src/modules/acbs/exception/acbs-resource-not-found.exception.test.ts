@@ -1,4 +1,4 @@
-import { RandomValueGenerator } from '@ukef-test/support/random-value-generator';
+import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 
 import { AcbsException } from './acbs.exception';
 import { AcbsResourceNotFoundException } from './acbs-resource-not-found.exception';

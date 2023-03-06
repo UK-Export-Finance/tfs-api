@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import { RandomValueGenerator } from '@ukef-test/support/random-value-generator';
+import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { AxiosError, AxiosHeaders } from 'axios';
 import { when } from 'jest-when';
 import { PinoLogger } from 'nestjs-pino';

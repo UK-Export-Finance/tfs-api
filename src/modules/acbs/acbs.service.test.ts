@@ -1,5 +1,6 @@
 import { HttpService } from '@nestjs/axios';
-import { RandomValueGenerator } from '@ukef-test/support/random-value-generator';
+import { PartyExternalRatingGenerator } from '@ukef-test/support/generator/party-external-rating-generator';
+import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { AxiosError } from 'axios';
 import { when } from 'jest-when';
 import { of, throwError } from 'rxjs';
@@ -139,72 +140,7 @@ describe('AcbsService', () => {
     });
 
     it('returns the external ratings for the party if ACBS responds with the external ratings', async () => {
-      const ratingEntityCodeA = valueGenerator.stringOfNumericCharacters();
-      const assignedRatingCodeA = valueGenerator.stringOfNumericCharacters();
-      const ratedDateA = valueGenerator.date();
-      const probabilityofDefaultA = valueGenerator.probabilityFloat();
-      const lossGivenDefaultA = valueGenerator.nonnegativeFloat();
-      const riskWeightingA = valueGenerator.nonnegativeFloat();
-      const externalRatingNote1A = valueGenerator.string();
-      const externalRatingNote2A = valueGenerator.string();
-      const externalRatingUserCode1A = valueGenerator.string();
-      const externalRatingUserCode2A = valueGenerator.string();
-
-      const ratingEntityCodeB = valueGenerator.stringOfNumericCharacters();
-      const assignedRatingCodeB = valueGenerator.stringOfNumericCharacters();
-      const ratedDateB = valueGenerator.date();
-      const probabilityofDefaultB = valueGenerator.probabilityFloat();
-      const lossGivenDefaultB = valueGenerator.nonnegativeFloat();
-      const riskWeightingB = valueGenerator.nonnegativeFloat();
-      const externalRatingNote1B = valueGenerator.string();
-      const externalRatingNote2B = valueGenerator.string();
-      const externalRatingUserCode1B = valueGenerator.string();
-      const externalRatingUserCode2B = valueGenerator.string();
-
-      const externalRatingsInAcbs = [
-        {
-          PartyIdentifier: partyIdentifier,
-          RatingEntity: {
-            RatingEntityCode: ratingEntityCodeA,
-          },
-          AssignedRating: {
-            AssignedRatingCode: assignedRatingCodeA,
-          },
-          RatedDate: ratedDateA,
-          ProbabilityofDefault: probabilityofDefaultA,
-          LossGivenDefault: lossGivenDefaultA,
-          RiskWeighting: riskWeightingA,
-          ExternalRatingNote1: externalRatingNote1A,
-          ExternalRatingNote2: externalRatingNote2A,
-          ExternalRatingUserCode1: {
-            UserCode1: externalRatingUserCode1A,
-          },
-          ExternalRatingUserCode2: {
-            UserCode2: externalRatingUserCode2A,
-          },
-        },
-        {
-          PartyIdentifier: partyIdentifier,
-          RatingEntity: {
-            RatingEntityCode: ratingEntityCodeB,
-          },
-          AssignedRating: {
-            AssignedRatingCode: assignedRatingCodeB,
-          },
-          RatedDate: ratedDateB,
-          ProbabilityofDefault: probabilityofDefaultB,
-          LossGivenDefault: lossGivenDefaultB,
-          RiskWeighting: riskWeightingB,
-          ExternalRatingNote1: externalRatingNote1B,
-          ExternalRatingNote2: externalRatingNote2B,
-          ExternalRatingUserCode1: {
-            UserCode1: externalRatingUserCode1B,
-          },
-          ExternalRatingUserCode2: {
-            UserCode2: externalRatingUserCode2B,
-          },
-        },
-      ];
+      const { externalRatingsInAcbs } = new PartyExternalRatingGenerator(valueGenerator).generate({ partyIdentifier, numberToGenerate: 2 });
 
       // eslint-disable-next-line jest/unbound-method
       when(httpService.get)
