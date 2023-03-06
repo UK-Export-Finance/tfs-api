@@ -8,23 +8,31 @@ export class RandomValueGenerator {
     this.chance = new Chance(RandomValueGenerator.seed);
   }
 
-  public string(): string {
+  string(): string {
     return this.chance.string();
   }
 
-  public stringOfNumericCharacters(): string {
+  word(): string {
+    return this.chance.word();
+  }
+
+  httpsUrl(): string {
+    return this.chance.url({ protocol: 'https' });
+  }
+
+  stringOfNumericCharacters(): string {
     return this.chance.string({ pool: '0123456789' });
   }
 
-  public probabilityFloat(): number {
+  probabilityFloat(): number {
     return this.chance.floating({ min: 0, max: 1 });
   }
 
-  public nonnegativeFloat(): number {
+  nonnegativeFloat(): number {
     return this.chance.floating({ min: 0 });
   }
 
-  public date(): Date {
+  date(): Date {
     return this.chance.date();
   }
 }

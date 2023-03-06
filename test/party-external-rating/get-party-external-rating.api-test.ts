@@ -1,4 +1,5 @@
 import { Api } from '@ukef-test/support/api';
+import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import { RandomValueGenerator } from '@ukef-test/support/random-value-generator';
 import nock from 'nock';
 
@@ -229,7 +230,9 @@ describe('GET /party/{partyIdentifier}/external-rating', () => {
   });
 
   it('returns a 500 response if creating a session with the IdP times out', async () => {
-    requestToCreateASessionWithTheIdp().delay(1500).reply(201, '', { 'set-cookie': 'JSESSIONID=1' });
+    requestToCreateASessionWithTheIdp()
+      .delay(ENVIRONMENT_VARIABLES.ACBS_TIMEOUT + 500)
+      .reply(201, '', { 'set-cookie': 'JSESSIONID=1' });
     givenGettingAnIdTokenFromTheIdpSucceeds();
     requestToGetExternalRatingsForParty().reply(200, externalRatingsInAcbs);
 
@@ -244,7 +247,9 @@ describe('GET /party/{partyIdentifier}/external-rating', () => {
 
   it('returns a 500 response if getting an id token from the IdP times out', async () => {
     givenCreatingASessionWithTheIdpSucceeds();
-    requestToGetAnIdTokenFromTheIdp().delay(1500).reply(200, { id_token: idToken });
+    requestToGetAnIdTokenFromTheIdp()
+      .delay(ENVIRONMENT_VARIABLES.ACBS_TIMEOUT + 500)
+      .reply(200, { id_token: idToken });
     requestToGetExternalRatingsForParty().reply(200, externalRatingsInAcbs);
 
     const { status, body } = await api.get(`/api/v1/party/${partyIdentifier}/external-rating`);
@@ -258,7 +263,9 @@ describe('GET /party/{partyIdentifier}/external-rating', () => {
 
   it('returns a 500 response if getting the external ratings from ACBS times out', async () => {
     givenAuthenticationWithTheIdpSucceeds();
-    requestToGetExternalRatingsForParty().delay(1500).reply(200, externalRatingsInAcbs);
+    requestToGetExternalRatingsForParty()
+      .delay(ENVIRONMENT_VARIABLES.ACBS_TIMEOUT + 500)
+      .reply(200, externalRatingsInAcbs);
 
     const { status, body } = await api.get(`/api/v1/party/${partyIdentifier}/external-rating`);
 
@@ -270,20 +277,23 @@ describe('GET /party/{partyIdentifier}/external-rating', () => {
   });
 
   const requestToCreateASessionWithTheIdp = (): nock.Interceptor =>
-    nock('https://test-acbs-authentication-url.com/base-url')
-      .post('/sessions', { loginName: 'test acbs authentication login name', password: 'test acbs authentication password' })
+    nock(ENVIRONMENT_VARIABLES.ACBS_AUTHENTICATION_BASE_URL)
+      .post('/sessions', {
+        loginName: ENVIRONMENT_VARIABLES.ACBS_AUTHENTICATION_LOGIN_NAME,
+        password: ENVIRONMENT_VARIABLES.ACBS_AUTHENTICATION_PASSWORD,
+      })
       .matchHeader('content-type', 'application/json')
-      .matchHeader('test-acbs-api-key-header-name', 'test acbs api key');
+      .matchHeader(ENVIRONMENT_VARIABLES.ACBS_API_KEY_HEADER_NAME, ENVIRONMENT_VARIABLES.ACBS_API_KEY);
 
   const givenCreatingASessionWithTheIdpSucceeds = (): void => {
     requestToCreateASessionWithTheIdp().reply(201, '', { 'set-cookie': 'JSESSIONID=1' });
   };
 
   const requestToGetAnIdTokenFromTheIdp = (): nock.Interceptor =>
-    nock('https://test-acbs-authentication-url.com/base-url')
-      .get('/idptoken/openid-connect?client_id=test+acbs+authentication+client+id')
+    nock(ENVIRONMENT_VARIABLES.ACBS_AUTHENTICATION_BASE_URL)
+      .get(`/idptoken/openid-connect?client_id=${ENVIRONMENT_VARIABLES.ACBS_AUTHENTICATION_CLIENT_ID}`)
       .matchHeader('content-type', 'application/x-www-form-urlencoded')
-      .matchHeader('test-acbs-api-key-header-name', 'test acbs api key')
+      .matchHeader(ENVIRONMENT_VARIABLES.ACBS_API_KEY_HEADER_NAME, ENVIRONMENT_VARIABLES.ACBS_API_KEY)
       .matchHeader('cookie', 'JSESSIONID=1');
 
   const givenGettingAnIdTokenFromTheIdpSucceeds = (): void => {
@@ -296,5 +306,5 @@ describe('GET /party/{partyIdentifier}/external-rating', () => {
   };
 
   const requestToGetExternalRatingsForParty = (): nock.Interceptor =>
-    nock('https://test-acbs-url.com/base-url').get(`/Party/${partyIdentifier}/PartyExternalRating`).matchHeader('authorization', `Bearer ${idToken}`);
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL).get(`/Party/${partyIdentifier}/PartyExternalRating`).matchHeader('authorization', `Bearer ${idToken}`);
 });
