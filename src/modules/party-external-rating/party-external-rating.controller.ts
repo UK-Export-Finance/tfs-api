@@ -11,6 +11,13 @@ export class PartyExternalRatingController {
 
   @Get('/party/:partyIdentifier/external-rating')
   @ApiOperation({ summary: 'Get all external ratings for a party.' })
+  @ApiParam({
+    name: 'partyIdentifier',
+    required: true,
+    type: 'string',
+    description: 'The identifier of the party in ACBS.',
+    example: '00000001',
+  })
   @ApiOkResponse({
     description: 'The external ratings for the party have been successfully retrieved.',
     type: GetPartyExternalRatingResponse,
