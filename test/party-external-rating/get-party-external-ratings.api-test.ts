@@ -4,7 +4,7 @@ import { PartyExternalRatingGenerator } from '@ukef-test/support/generator/party
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import nock from 'nock';
 
-describe('GET /party/{partyIdentifier}/external-rating', () => {
+describe('GET /parties/{partyIdentifier}/external-ratings', () => {
   const valueGenerator = new RandomValueGenerator();
 
   const partyIdentifier = '001';
@@ -13,6 +13,8 @@ describe('GET /party/{partyIdentifier}/external-rating', () => {
     partyIdentifier,
     numberToGenerate: 2,
   });
+
+  const getPartyExternalRatingsUrl = `/api/v1/parties/${partyIdentifier}/external-ratings`;
 
   let api: Api;
 
@@ -33,7 +35,7 @@ describe('GET /party/{partyIdentifier}/external-rating', () => {
     givenAuthenticationWithTheIdpSucceeds();
     requestToGetExternalRatingsForParty().reply(200, externalRatingsInAcbs);
 
-    const { status, body } = await api.get(`/api/v1/party/${partyIdentifier}/external-rating`);
+    const { status, body } = await api.get(getPartyExternalRatingsUrl);
 
     expect(status).toBe(200);
     expect(body).toStrictEqual(JSON.parse(JSON.stringify(expectedExternalRatings)));
@@ -43,7 +45,7 @@ describe('GET /party/{partyIdentifier}/external-rating', () => {
     givenAuthenticationWithTheIdpSucceeds();
     requestToGetExternalRatingsForParty().reply(200, []);
 
-    const { status, body } = await api.get(`/api/v1/party/${partyIdentifier}/external-rating`);
+    const { status, body } = await api.get(getPartyExternalRatingsUrl);
 
     expect(status).toBe(200);
     expect(body).toStrictEqual([]);
@@ -69,7 +71,7 @@ describe('GET /party/{partyIdentifier}/external-rating', () => {
       },
     );
 
-    const { status, body } = await api.get(`/api/v1/party/${partyIdentifier}/external-rating`);
+    const { status, body } = await api.get(getPartyExternalRatingsUrl);
 
     expect(status).toBe(500);
     expect(body).toStrictEqual({
@@ -82,7 +84,7 @@ describe('GET /party/{partyIdentifier}/external-rating', () => {
     givenCreatingASessionWithTheIdpSucceeds();
     requestToGetAnIdTokenFromTheIdp().reply(403, '<!doctype html><html><body><div>Access to the requested resource has been forbidden.</div></body></html>');
 
-    const { status, body } = await api.get(`/api/v1/party/${partyIdentifier}/external-rating`);
+    const { status, body } = await api.get(getPartyExternalRatingsUrl);
 
     expect(status).toBe(500);
     expect(body).toStrictEqual({
@@ -95,7 +97,7 @@ describe('GET /party/{partyIdentifier}/external-rating', () => {
     givenAuthenticationWithTheIdpSucceeds();
     requestToGetExternalRatingsForParty().reply(400, 'Party not found');
 
-    const { status, body } = await api.get(`/api/v1/party/${partyIdentifier}/external-rating`);
+    const { status, body } = await api.get(getPartyExternalRatingsUrl);
 
     expect(status).toBe(404);
     expect(body).toStrictEqual({
@@ -108,7 +110,7 @@ describe('GET /party/{partyIdentifier}/external-rating', () => {
     givenAuthenticationWithTheIdpSucceeds();
     requestToGetExternalRatingsForParty().reply(400, 'An error message from ACBS.');
 
-    const { status, body } = await api.get(`/api/v1/party/${partyIdentifier}/external-rating`);
+    const { status, body } = await api.get(getPartyExternalRatingsUrl);
 
     expect(status).toBe(500);
     expect(body).toStrictEqual({
@@ -121,7 +123,7 @@ describe('GET /party/{partyIdentifier}/external-rating', () => {
     givenAuthenticationWithTheIdpSucceeds();
     requestToGetExternalRatingsForParty().reply(401);
 
-    const { status, body } = await api.get(`/api/v1/party/${partyIdentifier}/external-rating`);
+    const { status, body } = await api.get(getPartyExternalRatingsUrl);
 
     expect(status).toBe(500);
     expect(body).toStrictEqual({
@@ -137,7 +139,7 @@ describe('GET /party/{partyIdentifier}/external-rating', () => {
     givenGettingAnIdTokenFromTheIdpSucceeds();
     requestToGetExternalRatingsForParty().reply(200, externalRatingsInAcbs);
 
-    const { status, body } = await api.get(`/api/v1/party/${partyIdentifier}/external-rating`);
+    const { status, body } = await api.get(getPartyExternalRatingsUrl);
 
     expect(status).toBe(500);
     expect(body).toStrictEqual({
@@ -153,7 +155,7 @@ describe('GET /party/{partyIdentifier}/external-rating', () => {
       .reply(200, { id_token: idToken });
     requestToGetExternalRatingsForParty().reply(200, externalRatingsInAcbs);
 
-    const { status, body } = await api.get(`/api/v1/party/${partyIdentifier}/external-rating`);
+    const { status, body } = await api.get(getPartyExternalRatingsUrl);
 
     expect(status).toBe(500);
     expect(body).toStrictEqual({
@@ -168,7 +170,7 @@ describe('GET /party/{partyIdentifier}/external-rating', () => {
       .delay(ENVIRONMENT_VARIABLES.ACBS_TIMEOUT + 500)
       .reply(200, externalRatingsInAcbs);
 
-    const { status, body } = await api.get(`/api/v1/party/${partyIdentifier}/external-rating`);
+    const { status, body } = await api.get(getPartyExternalRatingsUrl);
 
     expect(status).toBe(500);
     expect(body).toStrictEqual({

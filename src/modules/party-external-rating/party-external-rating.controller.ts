@@ -9,7 +9,7 @@ import { PartyExternalRatingService } from './party-external-rating.service';
 export class PartyExternalRatingController {
   constructor(private readonly partyExternalRatingService: PartyExternalRatingService) {}
 
-  @Get('/party/:partyIdentifier/external-rating')
+  @Get('/parties/:partyIdentifier/external-ratings')
   @ApiOperation({ summary: 'Get all external ratings for a party.' })
   @ApiParam({
     name: 'partyIdentifier',
