@@ -1,6 +1,6 @@
 import { ApiResponseProperty } from '@nestjs/swagger';
 
-export type GetPartyExternalRatingsResponse = GetPartyExternalRatingResponse[];
+export type GetPartyExternalRatingsResponse = GetPartyExternalRatingsResponseElement[];
 
 class GetPartyExternalRatingResponseRatingEntity {
   @ApiResponseProperty()
@@ -12,7 +12,7 @@ class GetPartyExternalRatingResponseAssignedRating {
   assignedRatingCode: string;
 }
 
-export class GetPartyExternalRatingResponse {
+export class GetPartyExternalRatingsResponseElement {
   @ApiResponseProperty()
   partyIdentifier: string;
 

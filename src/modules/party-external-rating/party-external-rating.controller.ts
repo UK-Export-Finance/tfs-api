@@ -1,7 +1,7 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { ApiInternalServerErrorResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiParam } from '@nestjs/swagger';
 
-import { GetPartyExternalRatingResponse, GetPartyExternalRatingsResponse } from './dto/get-party-external-ratings-response.dto';
+import { GetPartyExternalRatingsResponse, GetPartyExternalRatingsResponseElement } from './dto/get-party-external-ratings-response.dto';
 import { PartyExternalRating } from './party-external-rating.interface';
 import { PartyExternalRatingService } from './party-external-rating.service';
 
@@ -20,7 +20,7 @@ export class PartyExternalRatingController {
   })
   @ApiOkResponse({
     description: 'The external ratings for the party have been successfully retrieved.',
-    type: GetPartyExternalRatingResponse,
+    type: GetPartyExternalRatingsResponseElement,
     isArray: true,
   })
   @ApiNotFoundResponse({
