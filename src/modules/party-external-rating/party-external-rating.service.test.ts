@@ -4,23 +4,23 @@ import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-
 import { when } from 'jest-when';
 
 import { AcbsAuthenticationService } from '../acbs/acbs-authentication.service';
-import { AcbsPartyExternalRatingsProvider } from './acbs-party-external-ratings.provider';
+import { PartyExternalRatingService } from './party-external-rating.service';
 
 jest.mock('@ukef/modules/acbs/acbs.service');
 jest.mock('@ukef/modules/acbs/acbs-authentication.service');
 
-describe('AcbsPartyExternalRatingsProvider', () => {
+describe('AcbsPartyExternalRatingService', () => {
   const valueGenerator = new RandomValueGenerator();
   const authToken = valueGenerator.string();
 
   let acbsAuthenticationService: AcbsAuthenticationService;
   let acbsService: AcbsService;
-  let provider: AcbsPartyExternalRatingsProvider;
+  let service: PartyExternalRatingService;
 
   beforeEach(() => {
     acbsAuthenticationService = new AcbsAuthenticationService(null, null, null);
     acbsService = new AcbsService(null, null);
-    provider = new AcbsPartyExternalRatingsProvider(acbsAuthenticationService, acbsService);
+    service = new PartyExternalRatingService(acbsAuthenticationService, acbsService);
 
     // eslint-disable-next-line jest/unbound-method
     when(acbsAuthenticationService.getIdToken).calledWith().mockResolvedValueOnce(authToken);
@@ -37,7 +37,7 @@ describe('AcbsPartyExternalRatingsProvider', () => {
       // eslint-disable-next-line jest/unbound-method
       when(acbsService.getExternalRatingsForParty).calledWith(partyIdentifier, authToken).mockResolvedValueOnce(externalRatingsInAcbs);
 
-      const externalRatings = await provider.getExternalRatingsForParty(partyIdentifier);
+      const externalRatings = await service.getExternalRatingsForParty(partyIdentifier);
 
       expect(externalRatings).toStrictEqual(expectedExternalRatings);
     });
@@ -46,7 +46,7 @@ describe('AcbsPartyExternalRatingsProvider', () => {
       // eslint-disable-next-line jest/unbound-method
       when(acbsService.getExternalRatingsForParty).calledWith(partyIdentifier, authToken).mockResolvedValueOnce([]);
 
-      const externalRatings = await provider.getExternalRatingsForParty(partyIdentifier);
+      const externalRatings = await service.getExternalRatingsForParty(partyIdentifier);
 
       expect(externalRatings).toStrictEqual([]);
     });

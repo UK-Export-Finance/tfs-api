@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { AcbsModule } from '@ukef/modules/acbs/acbs.module';
 
-import { AcbsPartyExternalRatingsProvider } from './acbs-party-external-ratings.provider';
+import { AcbsExceptionTransformInterceptor } from './acbs-exception-transform.interceptor';
 
 @Module({
   imports: [AcbsModule],
-  providers: [AcbsPartyExternalRatingsProvider],
-  exports: [AcbsPartyExternalRatingsProvider],
+  providers: [AcbsExceptionTransformInterceptor],
+  exports: [AcbsExceptionTransformInterceptor],
 })
 export class AcbsAdapterModule {}

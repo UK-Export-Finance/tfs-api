@@ -44,7 +44,6 @@ export class App {
 
     app.useGlobalInterceptors(new TransformInterceptor());
     app.useGlobalInterceptors(new LoggerErrorInterceptor());
-    app.useGlobalInterceptors(new AcbsExceptionTransformInterceptor());
     app.useLogger(app.get(Logger));
 
     app.use(

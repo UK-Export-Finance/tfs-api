@@ -1,13 +1,13 @@
-import { Controller, Get, Inject, Param } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { ApiInternalServerErrorResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiParam } from '@nestjs/swagger';
 
 import { GetPartyExternalRatingResponse, GetPartyExternalRatingsResponse } from './dto/get-party-external-ratings-response.dto';
-import { PARTY_EXTERNAL_RATINGS_PROVIDER_SYMBOL } from './party-external-rating.module-definition';
-import { PartyExternalRatingsProvider } from './party-external-ratings.provider';
+import { PartyExternalRating } from './party-external-rating.interface';
+import { PartyExternalRatingService } from './party-external-rating.service';
 
 @Controller()
 export class PartyExternalRatingController {
-  constructor(@Inject(PARTY_EXTERNAL_RATINGS_PROVIDER_SYMBOL) private readonly partyExternalRatingsProvider: PartyExternalRatingsProvider) {}
+  constructor(private readonly partyExternalRatingService: PartyExternalRatingService) {}
 
   @Get('/party/:partyIdentifier/external-rating')
   @ApiOperation({ summary: 'Get all external ratings for a party.' })
@@ -33,8 +33,8 @@ export class PartyExternalRatingController {
     @Param('partyIdentifier')
     partyIdentifier: string,
   ): Promise<GetPartyExternalRatingsResponse> {
-    const externalRatings = await this.partyExternalRatingsProvider.getExternalRatingsForParty(partyIdentifier);
-    return externalRatings.map((externalRating) => ({
+    const externalRatings = await this.partyExternalRatingService.getExternalRatingsForParty(partyIdentifier);
+    return externalRatings.map((externalRating: PartyExternalRating) => ({
       partyIdentifier: externalRating.partyIdentifier,
       ratingEntity: {
         ratingEntityCode: externalRating.ratingEntity.ratingEntityCode,

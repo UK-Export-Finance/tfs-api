@@ -1,21 +1,12 @@
-import { DynamicModule, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
+import { AcbsModule } from '@ukef/modules/acbs/acbs.module';
 
 import { PartyExternalRatingController } from './party-external-rating.controller';
-import { PARTY_EXTERNAL_RATINGS_PROVIDER_SYMBOL, PartyExternalRatingModuleOptions } from './party-external-rating.module-definition';
+import { PartyExternalRatingService } from './party-external-rating.service';
 
-@Module({})
-export class PartyExternalRatingModule {
-  static register({ imports, partyExternalRatingsProviderClass }: PartyExternalRatingModuleOptions): DynamicModule {
-    return {
-      module: PartyExternalRatingModule,
-      imports,
-      controllers: [PartyExternalRatingController],
-      providers: [
-        {
-          provide: PARTY_EXTERNAL_RATINGS_PROVIDER_SYMBOL,
-          useClass: partyExternalRatingsProviderClass,
-        },
-      ],
-    };
-  }
-}
+@Module({
+  imports: [AcbsModule],
+  controllers: [PartyExternalRatingController],
+  providers: [PartyExternalRatingService],
+})
+export class PartyExternalRatingModule {}

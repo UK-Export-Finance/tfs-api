@@ -3,7 +3,9 @@ import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-
 import { when } from 'jest-when';
 
 import { PartyExternalRatingController } from './party-external-rating.controller';
-import { PartyExternalRatingsProvider } from './party-external-ratings.provider';
+import { PartyExternalRatingService } from './party-external-rating.service';
+
+jest.mock('./party-external-rating.service');
 
 describe('PartyExternalRatingController', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -16,19 +18,17 @@ describe('PartyExternalRatingController', () => {
       numberToGenerate: 2,
     });
 
-    let partyExternalRatingsProvider: PartyExternalRatingsProvider;
+    let partyExternalRatingService: PartyExternalRatingService;
     let controller: PartyExternalRatingController;
 
     beforeEach(() => {
-      partyExternalRatingsProvider = {
-        getExternalRatingsForParty: jest.fn(),
-      };
-      controller = new PartyExternalRatingController(partyExternalRatingsProvider);
+      partyExternalRatingService = new PartyExternalRatingService(null, null);
+      controller = new PartyExternalRatingController(partyExternalRatingService);
     });
 
-    it('returns the external ratings for the party from the provider', async () => {
+    it('returns the external ratings for the party from the service', async () => {
       // eslint-disable-next-line jest/unbound-method
-      when(partyExternalRatingsProvider.getExternalRatingsForParty).calledWith(partyIdentifier).mockResolvedValueOnce(externalRatings);
+      when(partyExternalRatingService.getExternalRatingsForParty).calledWith(partyIdentifier).mockResolvedValueOnce(externalRatings);
 
       const ratings = await controller.getExternalRatingsForParty(partyIdentifier);
 
@@ -41,7 +41,7 @@ describe('PartyExternalRatingController', () => {
         unexpectedKey: valueGenerator.string(),
       };
       // eslint-disable-next-line jest/unbound-method
-      when(partyExternalRatingsProvider.getExternalRatingsForParty).calledWith(partyIdentifier).mockResolvedValueOnce([externalRatingWithUnexpectedKey]);
+      when(partyExternalRatingService.getExternalRatingsForParty).calledWith(partyIdentifier).mockResolvedValueOnce([externalRatingWithUnexpectedKey]);
 
       const ratings = await controller.getExternalRatingsForParty(partyIdentifier);
 

@@ -2,10 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { AcbsService } from '@ukef/modules/acbs/acbs.service';
 import { AcbsAuthenticationService } from '@ukef/modules/acbs/acbs-authentication.service';
 import { PartyExternalRating } from '@ukef/modules/party-external-rating/party-external-rating.interface';
-import { PartyExternalRatingsProvider } from '@ukef/modules/party-external-rating/party-external-ratings.provider';
 
 @Injectable()
-export class AcbsPartyExternalRatingsProvider implements PartyExternalRatingsProvider {
+export class PartyExternalRatingService {
   constructor(private readonly acbsAuthenticationService: AcbsAuthenticationService, private readonly acbsService: AcbsService) {}
 
   async getExternalRatingsForParty(partyIdentifier: string): Promise<PartyExternalRating[]> {

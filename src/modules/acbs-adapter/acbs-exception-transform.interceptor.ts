@@ -1,7 +1,8 @@
-import { CallHandler, ExecutionContext, NestInterceptor, NotFoundException } from '@nestjs/common';
+import { CallHandler, ExecutionContext, Injectable, NestInterceptor, NotFoundException } from '@nestjs/common';
 import { AcbsResourceNotFoundException } from '@ukef/modules/acbs/exception/acbs-resource-not-found.exception';
 import { catchError, Observable, throwError } from 'rxjs';
 
+@Injectable()
 export class AcbsExceptionTransformInterceptor implements NestInterceptor {
   intercept(_context: ExecutionContext, next: CallHandler): Observable<any> {
     return next
