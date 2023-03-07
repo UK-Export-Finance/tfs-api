@@ -5,21 +5,21 @@ import { AxiosError } from 'axios';
 import { when } from 'jest-when';
 import { of, throwError } from 'rxjs';
 
-import { AcbsService } from './acbs.service';
+import { AcbsPartyExternalRatingService } from './acbs-party-external-rating.service';
 import { AcbsException } from './exception/acbs.exception';
 import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
 
-describe('AcbsService', () => {
+describe('AcbsPartyExternalRatingService', () => {
   const valueGenerator = new RandomValueGenerator();
   const authToken = valueGenerator.string();
   const baseUrl = valueGenerator.string();
 
   let httpService: HttpService;
-  let service: AcbsService;
+  let service: AcbsPartyExternalRatingService;
 
   beforeEach(() => {
     httpService = new HttpService();
-    service = new AcbsService({ baseUrl }, httpService);
+    service = new AcbsPartyExternalRatingService({ baseUrl }, httpService);
   });
 
   describe('getExternalRatingsForParty', () => {

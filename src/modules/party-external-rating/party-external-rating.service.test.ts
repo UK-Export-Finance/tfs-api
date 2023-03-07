@@ -1,4 +1,4 @@
-import { AcbsService } from '@ukef/modules/acbs/acbs.service';
+import { AcbsPartyExternalRatingService } from '@ukef/modules/acbs/acbs-party-external-rating.service';
 import { PartyExternalRatingGenerator } from '@ukef-test/support/generator/party-external-rating-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
@@ -6,20 +6,20 @@ import { when } from 'jest-when';
 import { AcbsAuthenticationService } from '../acbs/acbs-authentication.service';
 import { PartyExternalRatingService } from './party-external-rating.service';
 
-jest.mock('@ukef/modules/acbs/acbs.service');
+jest.mock('@ukef/modules/acbs/acbs-party-external-rating.service');
 jest.mock('@ukef/modules/acbs/acbs-authentication.service');
 
-describe('AcbsPartyExternalRatingService', () => {
+describe('PartyExternalRatingService', () => {
   const valueGenerator = new RandomValueGenerator();
   const authToken = valueGenerator.string();
 
   let acbsAuthenticationService: AcbsAuthenticationService;
-  let acbsService: AcbsService;
+  let acbsService: AcbsPartyExternalRatingService;
   let service: PartyExternalRatingService;
 
   beforeEach(() => {
     acbsAuthenticationService = new AcbsAuthenticationService(null, null, null);
-    acbsService = new AcbsService(null, null);
+    acbsService = new AcbsPartyExternalRatingService(null, null);
     service = new PartyExternalRatingService(acbsAuthenticationService, acbsService);
 
     // eslint-disable-next-line jest/unbound-method

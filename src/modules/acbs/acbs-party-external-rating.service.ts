@@ -10,7 +10,7 @@ import { AcbsException } from './exception/acbs.exception';
 import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
 
 @Injectable()
-export class AcbsService {
+export class AcbsPartyExternalRatingService {
   constructor(
     @Inject(AcbsConfig.KEY)
     private readonly config: Pick<ConfigType<typeof AcbsConfig>, 'baseUrl'>,
