@@ -16,7 +16,7 @@ describe('AcbsExceptionTransformInterceptor', () => {
     await expect(interceptPromise).rejects.toHaveProperty('cause', acbsResourceNotFoundException);
   });
 
-  it('does not convert thrown exceptions that are not AcbsResourceNotFoundException', async () => {
+  it('does NOT convert thrown exceptions that are NOT AcbsResourceNotFoundException', async () => {
     const notAcbsResourceNotFoundException = new Error('Test exception');
     const interceptor = new AcbsExceptionTransformInterceptor();
 

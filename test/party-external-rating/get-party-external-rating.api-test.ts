@@ -117,7 +117,7 @@ describe('GET /party/{partyIdentifier}/external-rating', () => {
     });
   });
 
-  it('returns a 500 response if ACBS if ACBS returns a status code that is not 200 or 400', async () => {
+  it('returns a 500 response if ACBS if ACBS returns a status code that is NOT 200 or 400', async () => {
     givenAuthenticationWithTheIdpSucceeds();
     requestToGetExternalRatingsForParty().reply(401);
 

@@ -88,7 +88,7 @@ describe('AcbsAuthenticationService', () => {
       expect(token).toBe(idToken);
     });
 
-    it('returns a token from the IdP if the session cookie does not include a semi-colon', async () => {
+    it('returns a token from the IdP if the session cookie does NOT include a semi-colon', async () => {
       const cookiesWithSessionCookieWithoutSemiColon = [cookie1, sessionIdWithCookieName, cookie2];
       mockSuccessfulCreateSessionRequestReturningCookies(cookiesWithSessionCookieWithoutSemiColon);
       mockSuccessfulGetTokenForSessionRequest();
@@ -171,7 +171,7 @@ describe('AcbsAuthenticationService', () => {
         });
     });
 
-    it('throws an AcbsAuthenticationFailedException if the IdP does not return an id_token', async () => {
+    it('throws an AcbsAuthenticationFailedException if the IdP does NOT return an id_token', async () => {
       mockSuccessfulCreateSessionRequest();
       mockSuccessfulGetTokenForSessionRequestReturning('');
 

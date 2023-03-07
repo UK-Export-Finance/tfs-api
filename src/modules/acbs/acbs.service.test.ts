@@ -89,7 +89,7 @@ describe('AcbsService', () => {
       await expect(getExternalRatingsPromise).rejects.toHaveProperty('innerError', axiosError);
     });
 
-    it('throws an AcbsException if ACBS responds with a 400 response that is a string that does not contain "Party not found"', async () => {
+    it('throws an AcbsException if ACBS responds with a 400 response that is a string that does NOT contain "Party not found"', async () => {
       const axiosError = new AxiosError();
       axiosError.response = {
         data: 'some error string',
@@ -114,7 +114,7 @@ describe('AcbsService', () => {
       await expect(getExternalRatingsPromise).rejects.toHaveProperty('innerError', axiosError);
     });
 
-    it('throws an AcbsException if ACBS responds with a 400 response that is not a string', async () => {
+    it('throws an AcbsException if ACBS responds with a 400 response that is NOT a string', async () => {
       const axiosError = new AxiosError();
       axiosError.response = {
         data: { errorMessage: valueGenerator.string() },
