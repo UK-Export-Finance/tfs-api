@@ -5,8 +5,6 @@ import { SwaggerDocs } from '@ukef/swagger';
 import compression from 'compression';
 import { Logger, LoggerErrorInterceptor } from 'nestjs-pino';
 
-import { AcbsExceptionTransformInterceptor } from './modules/acbs-adapter/acbs-exception-transform.interceptor';
-
 export class App {
   private readonly configService: ConfigService;
   public readonly port: number;

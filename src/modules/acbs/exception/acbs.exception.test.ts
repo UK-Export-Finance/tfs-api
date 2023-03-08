@@ -1,7 +1,6 @@
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 
 import { AcbsException } from './acbs.exception';
-import { AcbsAuthenticationFailedException } from './acbs-authentication-failed.exception';
 
 describe('AcbsException', () => {
   const valueGenerator = new RandomValueGenerator();

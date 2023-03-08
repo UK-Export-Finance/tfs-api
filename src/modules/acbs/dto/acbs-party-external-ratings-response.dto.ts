@@ -1,3 +1,5 @@
+import { DateString } from '@ukef/helpers/date-string.type';
+
 export type AcbsPartyExternalRatingsResponseDto = AcbsPartyExternalRatingDto[];
 
 interface AcbsPartyExternalRatingDto {

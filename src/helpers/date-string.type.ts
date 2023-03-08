@@ -1,1 +1,1 @@
-type DateString = string;
+export type DateString = string;

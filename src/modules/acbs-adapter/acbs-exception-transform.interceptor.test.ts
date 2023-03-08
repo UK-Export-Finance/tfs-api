@@ -1,5 +1,5 @@
 import { NotFoundException } from '@nestjs/common';
-import { lastValueFrom, of, throwError } from 'rxjs';
+import { lastValueFrom, throwError } from 'rxjs';
 
 import { AcbsResourceNotFoundException } from '../acbs/exception/acbs-resource-not-found.exception';
 import { AcbsExceptionTransformInterceptor } from './acbs-exception-transform.interceptor';
