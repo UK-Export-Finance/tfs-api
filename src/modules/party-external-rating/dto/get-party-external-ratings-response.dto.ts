@@ -22,8 +22,10 @@ export class GetPartyExternalRatingsResponseElement {
   @ApiResponseProperty()
   assignedRating: GetPartyExternalRatingResponseAssignedRating;
 
-  @ApiResponseProperty()
-  ratedDate: Date;
+  @ApiResponseProperty({
+    type: Date,
+  })
+  ratedDate: DateString;
 
   @ApiResponseProperty()
   probabilityofDefault: number;

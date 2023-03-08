@@ -6,7 +6,7 @@ export interface PartyExternalRating {
   assignedRating: {
     assignedRatingCode: string;
   };
-  ratedDate: Date;
+  ratedDate: DateString;
   probabilityofDefault: number;
   lossGivenDefault: number;
   riskWeighting: number;

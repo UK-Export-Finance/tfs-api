@@ -65,7 +65,7 @@ export class PartyExternalRatingGenerator {
     return {
       ratingEntityCode: this.valueGenerator.stringOfNumericCharacters(),
       assignedRatingCode: this.valueGenerator.stringOfNumericCharacters(),
-      ratedDate: this.valueGenerator.date(),
+      ratedDate: this.valueGenerator.date().toISOString(),
       probabilityofDefault: this.valueGenerator.probabilityFloat(),
       lossGivenDefault: this.valueGenerator.nonnegativeFloat(),
       riskWeighting: this.valueGenerator.nonnegativeFloat(),
@@ -80,7 +80,7 @@ export class PartyExternalRatingGenerator {
 interface PartyExternalRatingValues {
   ratingEntityCode: string;
   assignedRatingCode: string;
-  ratedDate: Date;
+  ratedDate: DateString;
   probabilityofDefault: number;
   lossGivenDefault: number;
   riskWeighting: number;

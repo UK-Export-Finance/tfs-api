@@ -8,7 +8,7 @@ interface AcbsPartyExternalRatingDto {
   AssignedRating: {
     AssignedRatingCode: string;
   };
-  RatedDate: Date; // TODO APIM-76: axios will actually return a string here, should we transform this with an axios interceptor?
+  RatedDate: DateString;
   ProbabilityofDefault: number;
   LossGivenDefault: number;
   RiskWeighting: number;
