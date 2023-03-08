@@ -1,10 +1,11 @@
+import './load-dotenv';
+
 import { registerAs } from '@nestjs/config';
-import * as dotenv from 'dotenv';
-dotenv.config();
 
 export interface AcbsConfig {
   apiKey: string;
   apiKeyHeaderName: string;
+  baseUrl: string;
 
   authentication: {
     baseUrl: string;
@@ -22,6 +23,7 @@ export default registerAs(
   (): AcbsConfig => ({
     apiKey: process.env.ACBS_API_KEY,
     apiKeyHeaderName: process.env.ACBS_API_KEY_HEADER_NAME,
+    baseUrl: process.env.ACBS_BASE_URL,
 
     authentication: {
       baseUrl: process.env.ACBS_AUTHENTICATION_BASE_URL,

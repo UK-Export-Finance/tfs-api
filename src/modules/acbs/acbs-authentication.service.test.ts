@@ -1,12 +1,12 @@
 import { HttpService } from '@nestjs/axios';
-import { RandomValueGenerator } from '@ukef-test/support/random-value-generator';
+import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { AxiosError, AxiosHeaders } from 'axios';
 import { when } from 'jest-when';
 import { PinoLogger } from 'nestjs-pino';
 import { of, throwError } from 'rxjs';
 
 import { AcbsAuthenticationService } from './acbs-authentication.service';
-import { AcbsAuthenticationFailedException } from './acbs-authentication-failed.exception';
+import { AcbsAuthenticationFailedException } from './exception/acbs-authentication-failed.exception';
 
 describe('AcbsAuthenticationService', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -88,7 +88,7 @@ describe('AcbsAuthenticationService', () => {
       expect(token).toBe(idToken);
     });
 
-    it('returns a token from the IdP if the session cookie does not include a semi-colon', async () => {
+    it('returns a token from the IdP if the session cookie does NOT include a semi-colon', async () => {
       const cookiesWithSessionCookieWithoutSemiColon = [cookie1, sessionIdWithCookieName, cookie2];
       mockSuccessfulCreateSessionRequestReturningCookies(cookiesWithSessionCookieWithoutSemiColon);
       mockSuccessfulGetTokenForSessionRequest();
@@ -171,7 +171,7 @@ describe('AcbsAuthenticationService', () => {
         });
     });
 
-    it('throws an AcbsAuthenticationFailedException if the IdP does not return an id_token', async () => {
+    it('throws an AcbsAuthenticationFailedException if the IdP does NOT return an id_token', async () => {
       mockSuccessfulCreateSessionRequest();
       mockSuccessfulGetTokenForSessionRequestReturning('');
 
