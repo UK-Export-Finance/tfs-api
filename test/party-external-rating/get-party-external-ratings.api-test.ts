@@ -1,6 +1,6 @@
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
 import { Api } from '@ukef-test/support/api';
-import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
+import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
 import { PartyExternalRatingGenerator } from '@ukef-test/support/generator/party-external-rating-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import nock from 'nock';
@@ -97,9 +97,7 @@ describe('GET /parties/{partyIdentifier}/external-ratings', () => {
 
   it('returns a 500 response if getting the external ratings from ACBS times out', async () => {
     givenAuthenticationWithTheIdpSucceeds();
-    requestToGetExternalRatingsForParty()
-      .delay(ENVIRONMENT_VARIABLES.ACBS_TIMEOUT + 500)
-      .reply(200, externalRatingsInAcbs);
+    requestToGetExternalRatingsForParty().delay(TIME_EXCEEDING_ACBS_TIMEOUT).reply(200, externalRatingsInAcbs);
 
     const { status, body } = await api.get(getPartyExternalRatingsUrl);
 

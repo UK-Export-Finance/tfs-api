@@ -1,4 +1,4 @@
-import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
+import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import nock from 'nock';
 import request from 'supertest';
@@ -68,9 +68,7 @@ export const withAcbsAuthenticationApiTests = ({
 
   it('returns a 500 response if getting an id token from the IdP times out', async () => {
     givenCreatingASessionWithTheIdpSucceeds();
-    requestToGetAnIdTokenFromTheIdp()
-      .delay(ENVIRONMENT_VARIABLES.ACBS_TIMEOUT + 500)
-      .reply(200, { id_token: idToken });
+    requestToGetAnIdTokenFromTheIdp().delay(TIME_EXCEEDING_ACBS_TIMEOUT).reply(200, { id_token: idToken });
     givenRequestWouldOtherwiseSucceed();
 
     const { status, body } = await makeRequest();
@@ -83,9 +81,7 @@ export const withAcbsAuthenticationApiTests = ({
   });
 
   it('returns a 500 response if creating a session with the IdP times out', async () => {
-    requestToCreateASessionWithTheIdp()
-      .delay(ENVIRONMENT_VARIABLES.ACBS_TIMEOUT + 500)
-      .reply(201, '', { 'set-cookie': 'JSESSIONID=1' });
+    requestToCreateASessionWithTheIdp().delay(TIME_EXCEEDING_ACBS_TIMEOUT).reply(201, '', { 'set-cookie': 'JSESSIONID=1' });
     givenGettingAnIdTokenFromTheIdpSucceeds();
     givenRequestWouldOtherwiseSucceed();
 
