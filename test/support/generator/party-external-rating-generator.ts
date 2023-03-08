@@ -3,16 +3,25 @@ import { AcbsPartyExternalRatingsResponseDto } from '@ukef/modules/acbs/dto/acbs
 import { GetPartyExternalRatingsResponse } from '@ukef/modules/party-external-rating/dto/get-party-external-ratings-response.dto';
 import { PartyExternalRating } from '@ukef/modules/party-external-rating/party-external-rating.interface';
 
-import { RandomValueGenerator } from './random-value-generator';
+import { AbstractGenerator } from './abstract-generator';
 
-export class PartyExternalRatingGenerator {
-  constructor(private readonly valueGenerator: RandomValueGenerator) {}
+export class PartyExternalRatingGenerator extends AbstractGenerator<PartyExternalRatingValues, GenerateResult, GenerateOptions> {
+  protected generateValues(): PartyExternalRatingValues {
+    return {
+      ratingEntityCode: this.valueGenerator.stringOfNumericCharacters(),
+      assignedRatingCode: this.valueGenerator.stringOfNumericCharacters(),
+      ratedDate: this.valueGenerator.date().toISOString(),
+      probabilityofDefault: this.valueGenerator.probabilityFloat(),
+      lossGivenDefault: this.valueGenerator.nonnegativeFloat(),
+      riskWeighting: this.valueGenerator.nonnegativeFloat(),
+      externalRatingNote1: this.valueGenerator.string(),
+      externalRatingNote2: this.valueGenerator.string(),
+      externalRatingUserCode1: this.valueGenerator.string(),
+      externalRatingUserCode2: this.valueGenerator.string(),
+    };
+  }
 
-  generate({ partyIdentifier, numberToGenerate }: GenerateOptions): GenerateResult {
-    const values = Array(numberToGenerate)
-      .fill(0)
-      .map(() => this.generateValues());
-
+  protected transformRawValuesToGeneratedValues(values: PartyExternalRatingValues[], { partyIdentifier }: GenerateOptions): GenerateResult {
     const externalRatingsInAcbs: AcbsPartyExternalRatingsResponseDto = values.map((v) => ({
       PartyIdentifier: partyIdentifier,
       RatingEntity: {
@@ -61,21 +70,6 @@ export class PartyExternalRatingGenerator {
       externalRatingsFromApi,
     };
   }
-
-  private generateValues(): PartyExternalRatingValues {
-    return {
-      ratingEntityCode: this.valueGenerator.stringOfNumericCharacters(),
-      assignedRatingCode: this.valueGenerator.stringOfNumericCharacters(),
-      ratedDate: this.valueGenerator.date().toISOString(),
-      probabilityofDefault: this.valueGenerator.probabilityFloat(),
-      lossGivenDefault: this.valueGenerator.nonnegativeFloat(),
-      riskWeighting: this.valueGenerator.nonnegativeFloat(),
-      externalRatingNote1: this.valueGenerator.string(),
-      externalRatingNote2: this.valueGenerator.string(),
-      externalRatingUserCode1: this.valueGenerator.string(),
-      externalRatingUserCode2: this.valueGenerator.string(),
-    };
-  }
 }
 
 interface PartyExternalRatingValues {
@@ -93,7 +87,6 @@ interface PartyExternalRatingValues {
 
 interface GenerateOptions {
   partyIdentifier: string;
-  numberToGenerate: number;
 }
 
 interface GenerateResult {
