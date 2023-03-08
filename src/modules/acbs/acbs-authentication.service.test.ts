@@ -1,4 +1,5 @@
 import { HttpService } from '@nestjs/axios';
+import { ACBS } from '@ukef/constants';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { AxiosError, AxiosHeaders } from 'axios';
 import { when } from 'jest-when';
@@ -16,7 +17,7 @@ describe('AcbsAuthenticationService', () => {
   const apiKey = valueGenerator.string();
   const apiKeyHeaderName = valueGenerator.string();
   const sessionId = valueGenerator.string();
-  const sessionIdWithCookieName = `JSESSIONID=${sessionId}`;
+  const sessionIdWithCookieName = `${ACBS.AUTHENTICATION.SESSION_ID_COOKIE_NAME}=${sessionId}`;
   const clientId = valueGenerator.string();
   const idToken = valueGenerator.string();
 
@@ -77,7 +78,7 @@ describe('AcbsAuthenticationService', () => {
       const cookiesWithTwoSessionCookies = [
         cookie1,
         sessionIdCookie,
-        `JSESSIONID=${sessionId + 100}; Path=/some/path; Domain=some.domain.com; HttpOnly`,
+        `${ACBS.AUTHENTICATION.SESSION_ID_COOKIE_NAME}=${sessionId + 100}; Path=/some/path; Domain=some.domain.com; HttpOnly`,
         cookie2,
       ];
       mockSuccessfulCreateSessionRequestReturningCookies(cookiesWithTwoSessionCookies);
