@@ -2,11 +2,14 @@ import { HttpService } from '@nestjs/axios';
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import AcbsConfig from '@ukef/config/acbs.config';
+import { AcbsAuthenticationService } from '@ukef/modules/acbs/acbs-authentication.service';
+import { AcbsPartyService } from '@ukef/modules/acbs/acbs-party.service';
 import { lastValueFrom } from 'rxjs';
 
 import { AcbsGetPartiesBySearchTextResponseElement } from './dto/acbs-get-parties-by-search-text-response-element.dto';
 import { GetPartiesBySearchTextResponseElement } from './dto/get-parties-by-search-text-response-element.dto';
 import { GetPartiesBySearchTextException } from './exception/get-parties-by-search-text.exception';
+import { Party } from './party.interface';
 
 @Injectable()
 export class PartyService {
@@ -16,6 +19,8 @@ export class PartyService {
     @Inject(AcbsConfig.KEY)
     private readonly config: Pick<ConfigType<typeof AcbsConfig>, 'baseUrl'>,
     private readonly httpService: HttpService,
+    private readonly acbsAuthenticationService: AcbsAuthenticationService,
+    private readonly acbsPartyService: AcbsPartyService,
   ) {}
 
   async getPartiesBySearchText(token: string, searchText: string): Promise<GetPartiesBySearchTextResponseElement[]> {
@@ -59,5 +64,21 @@ export class PartyService {
       });
 
     return response;
+  }
+
+  async getPartyByIdentifier(partyIdentifier: string): Promise<Party> {
+    const idToken = await this.acbsAuthenticationService.getIdToken();
+    const partyInAcbs = await this.acbsPartyService.getPartyByIdentifier(partyIdentifier, idToken);
+    return {
+      alternateIdentifier: partyInAcbs.PartyAlternateIdentifier,
+      industryClassification: partyInAcbs.IndustryClassification.IndustryClassificationCode,
+      name1: partyInAcbs.PartyName1,
+      name2: partyInAcbs.PartyName2,
+      name3: partyInAcbs.PartyName3,
+      smeType: partyInAcbs.MinorityClass.MinorityClassCode,
+      citizenshipClass: partyInAcbs.CitizenshipClass.CitizenshipClassCode,
+      officerRiskDate: partyInAcbs.OfficerRiskDate && partyInAcbs.OfficerRiskDate.split('T')[0],
+      countryCode: partyInAcbs.PrimaryAddress.Country.CountryCode,
+    };
   }
 }

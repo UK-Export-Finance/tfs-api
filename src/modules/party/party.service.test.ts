@@ -65,7 +65,7 @@ describe('PartyService', () => {
 
   beforeEach(() => {
     httpService = new HttpService();
-    partyService = new PartyService(config, httpService);
+    partyService = new PartyService(config, httpService, null, null);
   });
 
   describe('successful request', () => {
