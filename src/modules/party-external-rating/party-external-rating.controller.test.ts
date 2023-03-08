@@ -35,7 +35,7 @@ describe('PartyExternalRatingController', () => {
       expect(ratings).toStrictEqual(expectedExternalRatings);
     });
 
-    it('does NOT return unexpected keys from the response', async () => {
+    it('does NOT return unexpected keys from the external ratings from the service', async () => {
       const externalRatingWithUnexpectedKey = {
         ...externalRatings[0],
         unexpectedKey: valueGenerator.string(),

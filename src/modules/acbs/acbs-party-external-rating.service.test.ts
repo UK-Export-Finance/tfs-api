@@ -23,7 +23,7 @@ describe('AcbsPartyExternalRatingService', () => {
   });
 
   describe('getExternalRatingsForParty', () => {
-    const partyIdentifier = '001';
+    const partyIdentifier = valueGenerator.stringOfNumericCharacters();
 
     it('throws an AcbsException if the request to ACBS fails', async () => {
       const getExternalRatingsForPartyError = new AxiosError();

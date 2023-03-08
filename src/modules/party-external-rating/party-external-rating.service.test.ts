@@ -27,7 +27,7 @@ describe('PartyExternalRatingService', () => {
   });
 
   describe('getExternalRatingsForParty', () => {
-    const partyIdentifier = '001';
+    const partyIdentifier = valueGenerator.stringOfNumericCharacters();
 
     it('returns a transformation of the external ratings from ACBS', async () => {
       const { externalRatingsInAcbs, externalRatings: expectedExternalRatings } = new PartyExternalRatingGenerator(valueGenerator).generate({
