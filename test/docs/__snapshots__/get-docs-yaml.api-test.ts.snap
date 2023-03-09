@@ -1,0 +1,244 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GET /docs-yaml matches the snapshot 1`] = `
+"openapi: 3.0.0
+paths:
+  /api/v1/test:
+    get:
+      operationId: TestController_getToken
+      parameters: []
+      responses:
+        '200':
+          description: ''
+  /api/v1/parties:
+    get:
+      operationId: PartyController_getPartyBySearchText
+      summary: Get all parties matching the specified search text.
+      parameters:
+        - name: searchText
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The matching parties have been successfully retrieved.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GetPartyBySearchTextResponseElement'
+        '500':
+          description: An internal server error has occurred.
+  /api/v1/parties/{partyIdentifier}:
+    get:
+      operationId: PartyController_getPartyByIdentifier
+      summary: Get the party matching the specified party identifier.
+      parameters:
+        - name: partyIdentifier
+          required: true
+          in: path
+          description: The identifier of the party in ACBS.
+          example: '00000001'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The party has been successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPartyByIdentifierResponse'
+        '404':
+          description: The specified party was not found.
+        '500':
+          description: An internal server error has occurred.
+  /api/v1/parties/{partyIdentifier}/external-ratings:
+    get:
+      operationId: PartyExternalRatingController_getExternalRatingsForParty
+      summary: Get all external ratings for a party.
+      parameters:
+        - name: partyIdentifier
+          required: true
+          in: path
+          description: The identifier of the party in ACBS.
+          example: '00000001'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The external ratings for the party have been successfully retrieved.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GetPartyExternalRatingsResponseElement'
+        '404':
+          description: >-
+            The specified party, or the external ratings for that party, were
+            not found.
+        '500':
+          description: An internal server error has occurred.
+info:
+  title: TFS API Specification
+  description: TFS API documentation
+  version: '1.0'
+  contact: {}
+tags: []
+servers: []
+components:
+  schemas:
+    GetPartyBySearchTextResponseElement:
+      type: object
+      properties:
+        alternateIdentifier:
+          type: string
+          readOnly: true
+        industryClassification:
+          type: string
+          readOnly: true
+        name1:
+          type: string
+          readOnly: true
+        name2:
+          type: string
+          readOnly: true
+        name3:
+          type: string
+          readOnly: true
+        smeType:
+          type: string
+          readOnly: true
+        citizenshipClass:
+          type: string
+          readOnly: true
+        officerRiskDate:
+          type: string
+          readOnly: true
+        countryCode:
+          type: string
+          readOnly: true
+      required:
+        - alternateIdentifier
+        - industryClassification
+        - name1
+        - name2
+        - name3
+        - smeType
+        - citizenshipClass
+        - officerRiskDate
+        - countryCode
+    GetPartyByIdentifierResponse:
+      type: object
+      properties:
+        alternateIdentifier:
+          type: string
+          readOnly: true
+        industryClassification:
+          type: string
+          readOnly: true
+        name1:
+          type: string
+          readOnly: true
+        name2:
+          type: string
+          readOnly: true
+        name3:
+          type: string
+          readOnly: true
+        smeType:
+          type: string
+          readOnly: true
+        citizenshipClass:
+          type: string
+          readOnly: true
+        officerRiskDate:
+          format: date-time
+          type: string
+          readOnly: true
+          nullable: true
+        countryCode:
+          type: string
+          readOnly: true
+      required:
+        - alternateIdentifier
+        - industryClassification
+        - name1
+        - name2
+        - name3
+        - smeType
+        - citizenshipClass
+        - officerRiskDate
+        - countryCode
+    GetPartyExternalRatingResponseRatingEntity:
+      type: object
+      properties:
+        ratingEntityCode:
+          type: string
+          readOnly: true
+      required:
+        - ratingEntityCode
+    GetPartyExternalRatingResponseAssignedRating:
+      type: object
+      properties:
+        assignedRatingCode:
+          type: string
+          readOnly: true
+      required:
+        - assignedRatingCode
+    GetPartyExternalRatingsResponseElement:
+      type: object
+      properties:
+        partyIdentifier:
+          type: string
+          readOnly: true
+        ratingEntity:
+          readOnly: true
+          allOf:
+            - $ref: '#/components/schemas/GetPartyExternalRatingResponseRatingEntity'
+        assignedRating:
+          readOnly: true
+          allOf:
+            - $ref: >-
+                #/components/schemas/GetPartyExternalRatingResponseAssignedRating
+        ratedDate:
+          format: date-time
+          type: string
+          readOnly: true
+        probabilityofDefault:
+          type: number
+          readOnly: true
+        lossGivenDefault:
+          type: number
+          readOnly: true
+        riskWeighting:
+          type: number
+          readOnly: true
+        externalRatingNote1:
+          type: string
+          readOnly: true
+        externalRatingNote2:
+          type: string
+          readOnly: true
+        externalRatingUserCode1:
+          type: string
+          readOnly: true
+        externalRatingUserCode2:
+          type: string
+          readOnly: true
+      required:
+        - partyIdentifier
+        - ratingEntity
+        - assignedRating
+        - ratedDate
+        - probabilityofDefault
+        - lossGivenDefault
+        - riskWeighting
+        - externalRatingNote1
+        - externalRatingNote2
+        - externalRatingUserCode1
+        - externalRatingUserCode2
+"
+`;
