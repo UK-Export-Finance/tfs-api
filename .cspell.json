@@ -28,6 +28,7 @@
     "nestjs",
     "pino",
     "probabilityof",
+    "szenius",
     "tfs",
     "typeorm",
     "Typeorm",
