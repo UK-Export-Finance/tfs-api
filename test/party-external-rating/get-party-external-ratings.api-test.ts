@@ -1,5 +1,6 @@
+import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
 import { Api } from '@ukef-test/support/api';
-import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
+import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
 import { PartyExternalRatingGenerator } from '@ukef-test/support/generator/party-external-rating-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import nock from 'nock';
@@ -8,7 +9,6 @@ describe('GET /parties/{partyIdentifier}/external-ratings', () => {
   const valueGenerator = new RandomValueGenerator();
 
   const partyIdentifier = '001';
-  const idToken = valueGenerator.string();
   const { externalRatingsInAcbs, externalRatingsFromApi: expectedExternalRatings } = new PartyExternalRatingGenerator(valueGenerator).generate({
     partyIdentifier,
     numberToGenerate: 2,
@@ -31,6 +31,11 @@ describe('GET /parties/{partyIdentifier}/external-ratings', () => {
     nock.cleanAll();
   });
 
+  const { idToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
+    givenRequestWouldOtherwiseSucceed: () => requestToGetExternalRatingsForParty().reply(200, externalRatingsInAcbs),
+    makeRequest: () => api.get(getPartyExternalRatingsUrl),
+  });
+
   it('returns a 200 response with the external ratings of the party if they are returned by ACBS', async () => {
     givenAuthenticationWithTheIdpSucceeds();
     requestToGetExternalRatingsForParty().reply(200, externalRatingsInAcbs);
@@ -49,48 +54,6 @@ describe('GET /parties/{partyIdentifier}/external-ratings', () => {
 
     expect(status).toBe(200);
     expect(body).toStrictEqual([]);
-  });
-
-  it('returns a 500 response if creating a session with the IdP fails', async () => {
-    const errorCode = valueGenerator.string();
-    requestToCreateASessionWithTheIdp().reply(
-      400,
-      {
-        errorCode: errorCode,
-        errorStack: null,
-        messages: [
-          {
-            code: errorCode,
-            message: `${errorCode}: Invalid Credentials. (msg_id=${valueGenerator.string()})`,
-            property: null,
-          },
-        ],
-      },
-      {
-        'set-cookie': 'JSESSIONID=prelogin-1',
-      },
-    );
-
-    const { status, body } = await api.get(getPartyExternalRatingsUrl);
-
-    expect(status).toBe(500);
-    expect(body).toStrictEqual({
-      statusCode: 500,
-      message: 'Internal server error',
-    });
-  });
-
-  it('returns a 500 response if getting an id token from the IdP fails', async () => {
-    givenCreatingASessionWithTheIdpSucceeds();
-    requestToGetAnIdTokenFromTheIdp().reply(403, '<!doctype html><html><body><div>Access to the requested resource has been forbidden.</div></body></html>');
-
-    const { status, body } = await api.get(getPartyExternalRatingsUrl);
-
-    expect(status).toBe(500);
-    expect(body).toStrictEqual({
-      statusCode: 500,
-      message: 'Internal server error',
-    });
   });
 
   it('returns a 404 response if ACBS returns a 400 response with the string "Party not found"', async () => {
@@ -132,43 +95,9 @@ describe('GET /parties/{partyIdentifier}/external-ratings', () => {
     });
   });
 
-  it('returns a 500 response if creating a session with the IdP times out', async () => {
-    requestToCreateASessionWithTheIdp()
-      .delay(ENVIRONMENT_VARIABLES.ACBS_TIMEOUT + 500)
-      .reply(201, '', { 'set-cookie': 'JSESSIONID=1' });
-    givenGettingAnIdTokenFromTheIdpSucceeds();
-    requestToGetExternalRatingsForParty().reply(200, externalRatingsInAcbs);
-
-    const { status, body } = await api.get(getPartyExternalRatingsUrl);
-
-    expect(status).toBe(500);
-    expect(body).toStrictEqual({
-      statusCode: 500,
-      message: 'Internal server error',
-    });
-  });
-
-  it('returns a 500 response if getting an id token from the IdP times out', async () => {
-    givenCreatingASessionWithTheIdpSucceeds();
-    requestToGetAnIdTokenFromTheIdp()
-      .delay(ENVIRONMENT_VARIABLES.ACBS_TIMEOUT + 500)
-      .reply(200, { id_token: idToken });
-    requestToGetExternalRatingsForParty().reply(200, externalRatingsInAcbs);
-
-    const { status, body } = await api.get(getPartyExternalRatingsUrl);
-
-    expect(status).toBe(500);
-    expect(body).toStrictEqual({
-      statusCode: 500,
-      message: 'Internal server error',
-    });
-  });
-
   it('returns a 500 response if getting the external ratings from ACBS times out', async () => {
     givenAuthenticationWithTheIdpSucceeds();
-    requestToGetExternalRatingsForParty()
-      .delay(ENVIRONMENT_VARIABLES.ACBS_TIMEOUT + 500)
-      .reply(200, externalRatingsInAcbs);
+    requestToGetExternalRatingsForParty().delay(TIME_EXCEEDING_ACBS_TIMEOUT).reply(200, externalRatingsInAcbs);
 
     const { status, body } = await api.get(getPartyExternalRatingsUrl);
 
@@ -178,35 +107,6 @@ describe('GET /parties/{partyIdentifier}/external-ratings', () => {
       message: 'Internal server error',
     });
   });
-
-  const requestToCreateASessionWithTheIdp = (): nock.Interceptor =>
-    nock(ENVIRONMENT_VARIABLES.ACBS_AUTHENTICATION_BASE_URL)
-      .post('/sessions', {
-        loginName: ENVIRONMENT_VARIABLES.ACBS_AUTHENTICATION_LOGIN_NAME,
-        password: ENVIRONMENT_VARIABLES.ACBS_AUTHENTICATION_PASSWORD,
-      })
-      .matchHeader('content-type', 'application/json')
-      .matchHeader(ENVIRONMENT_VARIABLES.ACBS_API_KEY_HEADER_NAME, ENVIRONMENT_VARIABLES.ACBS_API_KEY);
-
-  const givenCreatingASessionWithTheIdpSucceeds = (): void => {
-    requestToCreateASessionWithTheIdp().reply(201, '', { 'set-cookie': 'JSESSIONID=1' });
-  };
-
-  const requestToGetAnIdTokenFromTheIdp = (): nock.Interceptor =>
-    nock(ENVIRONMENT_VARIABLES.ACBS_AUTHENTICATION_BASE_URL)
-      .get(`/idptoken/openid-connect?client_id=${ENVIRONMENT_VARIABLES.ACBS_AUTHENTICATION_CLIENT_ID}`)
-      .matchHeader('content-type', 'application/x-www-form-urlencoded')
-      .matchHeader(ENVIRONMENT_VARIABLES.ACBS_API_KEY_HEADER_NAME, ENVIRONMENT_VARIABLES.ACBS_API_KEY)
-      .matchHeader('cookie', 'JSESSIONID=1');
-
-  const givenGettingAnIdTokenFromTheIdpSucceeds = (): void => {
-    requestToGetAnIdTokenFromTheIdp().reply(200, { id_token: idToken });
-  };
-
-  const givenAuthenticationWithTheIdpSucceeds = (): void => {
-    givenCreatingASessionWithTheIdpSucceeds();
-    givenGettingAnIdTokenFromTheIdpSucceeds();
-  };
 
   const requestToGetExternalRatingsForParty = (): nock.Interceptor =>
     nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL).get(`/Party/${partyIdentifier}/PartyExternalRating`).matchHeader('authorization', `Bearer ${idToken}`);
