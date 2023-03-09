@@ -57,7 +57,7 @@ jobs:
     needs: setup
     environment:
       name: ${{ needs.setup.outputs.environment }}
-    runs-on: [ self-hosted, APIM ]
+    runs-on: ubuntu-latest
 
     steps:
     - name: Repository
