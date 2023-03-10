@@ -49,7 +49,18 @@ export class PartyController {
   @ApiInternalServerErrorResponse({
     description: 'An internal server error has occurred.',
   })
-  getPartyByIdentifier(@Param('partyIdentifier') partyIdentifier: string): Promise<GetPartyByIdentifierResponse> {
-    return this.partyService.getPartyByIdentifier(partyIdentifier);
+  async getPartyByIdentifier(@Param('partyIdentifier') partyIdentifier: string): Promise<GetPartyByIdentifierResponse> {
+    const party = await this.partyService.getPartyByIdentifier(partyIdentifier);
+    return {
+      alternateIdentifier: party.alternateIdentifier,
+      industryClassification: party.industryClassification,
+      name1: party.name1,
+      name2: party.name2,
+      name3: party.name3,
+      smeType: party.smeType,
+      citizenshipClass: party.citizenshipClass,
+      officerRiskDate: party.officerRiskDate,
+      countryCode: party.countryCode,
+    };
   }
 }

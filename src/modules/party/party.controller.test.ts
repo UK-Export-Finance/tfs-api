@@ -33,8 +33,7 @@ describe('PartyController', () => {
       expect(party).toStrictEqual(expectedParty);
     });
 
-    it.skip('does NOT return unexpected keys for the party from the service', async () => {
-      // TODO APIM-78: do we want to do this, or should this be middleware?
+    it('does NOT return unexpected keys for the party from the service', async () => {
       const partyWithUnexpectedKey = {
         ...partyFromService,
         unexpectedKey: valueGenerator.string(),
