@@ -10,6 +10,30 @@ paths:
       responses:
         '200':
           description: ''
+  /api/v1/deals:
+    post:
+      operationId: DealController_createDeal
+      summary: Creates a new deal.
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/CreateDealRequestItem'
+      responses:
+        '201':
+          description: The deal has been successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateDealResponse'
+        '400':
+          description: Bad request.
+        '500':
+          description: An internal server error has occurred.
   /api/v1/deals/{dealIdentifier}/guarantees:
     post:
       operationId: DealGuaranteeController_createGuaranteeForDeal
@@ -221,6 +245,68 @@ components:
       in: header
       name: x-api-key
   schemas:
+    CreateDealRequestItem:
+      type: object
+      properties:
+        dealIdentifier:
+          type: string
+          description: The identifier of the deal to create.
+          example: '0020900035'
+          minLength: 10
+          maxLength: 10
+        currency:
+          type: string
+          description: >-
+            The currency code of the primary currency of the deal, from the
+            Currency Definition Table.
+          example: GBP
+          minLength: 3
+          maxLength: 3
+        dealValue:
+          type: number
+          description: The value of the deal.
+          minimum: 0
+        guaranteeCommencementDate:
+          format: date
+          type: string
+          description: >-
+            Deal effective date is not in workflow. Currently operations assume
+            a date earlier than the Facility effective date. Use the earliest
+            Effective Date on facilities in Workflow under this Deal, i.e.
+            Guarantee Commencement Date.
+        obligorPartyIdentifier:
+          type: string
+          description: The obligor party identifier.
+          example: '00000001'
+          minLength: 8
+          maxLength: 8
+        obligorName:
+          type: string
+          description: The obligor party name, which is party name1 attribute.
+          minLength: 0
+          maxLength: 35
+        obligorIndustryClassification:
+          type: string
+          description: The obligor party industry classification.
+          example: '1405'
+          minLength: 0
+          maxLength: 10
+      required:
+        - dealIdentifier
+        - currency
+        - dealValue
+        - guaranteeCommencementDate
+        - obligorPartyIdentifier
+        - obligorName
+        - obligorIndustryClassification
+    CreateDealResponse:
+      type: object
+      properties:
+        dealIdentifier:
+          type: string
+          example: '0020900035'
+      required:
+        - dealIdentifier
     CreateDealGuaranteeRequestItem:
       type: object
       properties:
