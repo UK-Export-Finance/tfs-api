@@ -14,6 +14,10 @@ export class Api {
     return request(this.app.getHttpServer()).get(url);
   }
 
+  post(url: string): request.Test {
+    return request(this.app.getHttpServer()).post(url);
+  }
+
   destroy(): Promise<void> {
     return this.app.destroy();
   }

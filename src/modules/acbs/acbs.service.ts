@@ -38,4 +38,14 @@ export class AcbsService {
 
     return externalRatingsInAcbs;
   }
+
+  async createDeal(portfolioIdentifier: string, requestBody: any, authToken: string): Promise<any> {
+    return await this.httpService.post(`/Portfolio/${portfolioIdentifier}/Deal`, requestBody, {
+      baseURL: this.config.baseUrl,
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+        'Content-Type': 'application/json',
+      },
+    });
+  }
 }
