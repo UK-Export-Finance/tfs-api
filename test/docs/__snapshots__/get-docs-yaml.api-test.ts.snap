@@ -10,29 +10,6 @@ paths:
       responses:
         '200':
           description: ''
-  /api/v1/parties/{partyIdentifier}:
-    get:
-      operationId: PartyController_getPartyByIdentifier
-      summary: Get the party matching the specified party identifier.
-      parameters:
-        - name: partyIdentifier
-          required: true
-          in: path
-          description: The identifier of the party in ACBS.
-          example: '00000001'
-          schema:
-            type: string
-      responses:
-        '200':
-          description: The party has been successfully retrieved.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GetPartyByIdentifierResponse'
-        '404':
-          description: The specified party was not found.
-        '500':
-          description: An internal server error has occurred.
   /api/v1/parties/{partyIdentifier}/external-ratings:
     get:
       operationId: PartyExternalRatingController_getExternalRatingsForParty
@@ -60,6 +37,52 @@ paths:
             not found.
         '500':
           description: An internal server error has occurred.
+  /api/v1/parties:
+    get:
+      operationId: PartyController_getPartiesBySearchText
+      summary: Get all parties matching the specified search text.
+      parameters:
+        - name: searchText
+          required: true
+          in: query
+          description: 'Minimum length: 3'
+          schema:
+            minLength: 3
+            type: string
+      responses:
+        '200':
+          description: The matching parties have been successfully retrieved.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GetPartiesBySearchTextResponseElement'
+        '500':
+          description: An internal server error has occurred.
+  /api/v1/parties/{partyIdentifier}:
+    get:
+      operationId: PartyController_getPartyByIdentifier
+      summary: Get the party matching the specified party identifier.
+      parameters:
+        - name: partyIdentifier
+          required: true
+          in: path
+          description: The identifier of the party in ACBS.
+          example: '00000001'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The party has been successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPartyByIdentifierResponse'
+        '404':
+          description: The specified party was not found.
+        '500':
+          description: An internal server error has occurred.
 info:
   title: TFS API Specification
   description: TFS API documentation
@@ -69,48 +92,6 @@ tags: []
 servers: []
 components:
   schemas:
-    GetPartyByIdentifierResponse:
-      type: object
-      properties:
-        alternateIdentifier:
-          type: string
-          readOnly: true
-        industryClassification:
-          type: string
-          readOnly: true
-        name1:
-          type: string
-          readOnly: true
-        name2:
-          type: string
-          readOnly: true
-        name3:
-          type: string
-          readOnly: true
-        smeType:
-          type: string
-          readOnly: true
-        citizenshipClass:
-          type: string
-          readOnly: true
-        officerRiskDate:
-          format: date-time
-          type: string
-          readOnly: true
-          nullable: true
-        countryCode:
-          type: string
-          readOnly: true
-      required:
-        - alternateIdentifier
-        - industryClassification
-        - name1
-        - name2
-        - name3
-        - smeType
-        - citizenshipClass
-        - officerRiskDate
-        - countryCode
     GetPartyExternalRatingResponseRatingEntity:
       type: object
       properties:
@@ -179,5 +160,87 @@ components:
         - externalRatingNote2
         - externalRatingUserCode1
         - externalRatingUserCode2
+    GetPartiesBySearchTextResponseElement:
+      type: object
+      properties:
+        alternateIdentifier:
+          type: string
+          readOnly: true
+        industryClassification:
+          type: string
+          readOnly: true
+        name1:
+          type: string
+          readOnly: true
+        name2:
+          type: string
+          readOnly: true
+        name3:
+          type: string
+          readOnly: true
+        smeType:
+          type: string
+          readOnly: true
+        citizenshipClass:
+          type: string
+          readOnly: true
+        officerRiskDate:
+          type: string
+          readOnly: true
+        countryCode:
+          type: string
+          readOnly: true
+      required:
+        - alternateIdentifier
+        - industryClassification
+        - name1
+        - name2
+        - name3
+        - smeType
+        - citizenshipClass
+        - officerRiskDate
+        - countryCode
+    GetPartyByIdentifierResponse:
+      type: object
+      properties:
+        alternateIdentifier:
+          type: string
+          readOnly: true
+        industryClassification:
+          type: string
+          readOnly: true
+        name1:
+          type: string
+          readOnly: true
+        name2:
+          type: string
+          readOnly: true
+        name3:
+          type: string
+          readOnly: true
+        smeType:
+          type: string
+          readOnly: true
+        citizenshipClass:
+          type: string
+          readOnly: true
+        officerRiskDate:
+          format: date-time
+          type: string
+          readOnly: true
+          nullable: true
+        countryCode:
+          type: string
+          readOnly: true
+      required:
+        - alternateIdentifier
+        - industryClassification
+        - name1
+        - name2
+        - name3
+        - smeType
+        - citizenshipClass
+        - officerRiskDate
+        - countryCode
 "
 `;
