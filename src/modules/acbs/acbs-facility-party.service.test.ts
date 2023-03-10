@@ -26,8 +26,8 @@ describe('AcbsFacilityPartyService', () => {
   const lenderTypeCode = valueGenerator.stringOfNumericCharacters();
   const currencyCode = TEST_CURRENCIES.A_TEST_CURRENCY;
   const limitAmount = valueGenerator.nonnegativeFloat();
-  const customerAdvisedIndicator = valueGenerator.bool();
-  const limitRevolvingIndicator = valueGenerator.bool();
+  const customerAdvisedIndicator = valueGenerator.boolean();
+  const limitRevolvingIndicator = valueGenerator.boolean();
 
   const newFacilityParty = {
     FacilityStatus: {

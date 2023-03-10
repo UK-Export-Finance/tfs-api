@@ -4,6 +4,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { TestController } from './acbs.controller';
 import { AcbsAuthenticationService } from './acbs-authentication.service';
+import { AcbsDealService } from './acbs-deal.service';
 import { AcbsDealGuaranteeService } from './acbs-deal-guarantee.service';
 import { AcbsDealPartyService } from './acbs-deal-party.service';
 import { AcbsFacilityPartyService } from './acbs-facility-party.service';
@@ -26,6 +27,7 @@ import { AcbsPartyExternalRatingService } from './acbs-party-external-rating.ser
     AcbsAuthenticationService,
     AcbsPartyService,
     AcbsPartyExternalRatingService,
+    AcbsDealService,
     AcbsDealGuaranteeService,
     AcbsDealPartyService,
     AcbsFacilityPartyService,
@@ -34,6 +36,7 @@ import { AcbsPartyExternalRatingService } from './acbs-party-external-rating.ser
     AcbsAuthenticationService,
     AcbsPartyService,
     AcbsPartyExternalRatingService,
+    AcbsDealService,
     AcbsDealGuaranteeService,
     AcbsDealPartyService,
     AcbsFacilityPartyService,
