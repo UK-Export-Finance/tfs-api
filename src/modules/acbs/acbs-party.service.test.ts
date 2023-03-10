@@ -17,8 +17,14 @@ describe('AcbsPartyService', () => {
   let httpService: HttpService;
   let service: AcbsPartyService;
 
+  let httpServiceGet: jest.Mock;
+
   beforeEach(() => {
     httpService = new HttpService();
+
+    httpServiceGet = jest.fn();
+    httpService.get = httpServiceGet;
+
     service = new AcbsPartyService({ baseUrl }, httpService);
   });
 
@@ -29,8 +35,7 @@ describe('AcbsPartyService', () => {
       const { partiesInAcbs } = new PartyGenerator(valueGenerator).generate({ numberToGenerate: 1 });
       const partyInAcbs = partiesInAcbs[0];
 
-      // eslint-disable-next-line jest/unbound-method
-      when(httpService.get)
+      when(httpServiceGet)
         .calledWith(`/Party/${partyIdentifier}`, {
           baseURL: baseUrl,
           headers: { Authorization: `Bearer ${idToken}` },
@@ -52,8 +57,7 @@ describe('AcbsPartyService', () => {
 
     it('throws an AcbsException if the request to ACBS fails', async () => {
       const getPartyByIdentifierError = new AxiosError();
-      // eslint-disable-next-line jest/unbound-method
-      when(httpService.get)
+      when(httpServiceGet)
         .calledWith(`/Party/${partyIdentifier}`, {
           baseURL: baseUrl,
           headers: { Authorization: `Bearer ${idToken}` },
@@ -77,8 +81,7 @@ describe('AcbsPartyService', () => {
         config: undefined,
       };
 
-      // eslint-disable-next-line jest/unbound-method
-      when(httpService.get)
+      when(httpServiceGet)
         .calledWith(`/Party/${partyIdentifier}`, {
           baseURL: baseUrl,
           headers: { Authorization: `Bearer ${idToken}` },
@@ -102,8 +105,7 @@ describe('AcbsPartyService', () => {
         config: undefined,
       };
 
-      // eslint-disable-next-line jest/unbound-method
-      when(httpService.get)
+      when(httpServiceGet)
         .calledWith(`/Party/${partyIdentifier}`, {
           baseURL: baseUrl,
           headers: { Authorization: `Bearer ${idToken}` },
@@ -127,8 +129,7 @@ describe('AcbsPartyService', () => {
         config: undefined,
       };
 
-      // eslint-disable-next-line jest/unbound-method
-      when(httpService.get)
+      when(httpServiceGet)
         .calledWith(`/Party/${partyIdentifier}`, {
           baseURL: baseUrl,
           headers: { Authorization: `Bearer ${idToken}` },

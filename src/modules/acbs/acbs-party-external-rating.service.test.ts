@@ -17,8 +17,14 @@ describe('AcbsPartyExternalRatingService', () => {
   let httpService: HttpService;
   let service: AcbsPartyExternalRatingService;
 
+  let httpServiceGet: jest.Mock;
+
   beforeEach(() => {
     httpService = new HttpService();
+
+    httpServiceGet = jest.fn();
+    httpService.get = httpServiceGet;
+
     service = new AcbsPartyExternalRatingService({ baseUrl }, httpService);
   });
 
@@ -27,8 +33,7 @@ describe('AcbsPartyExternalRatingService', () => {
 
     it('throws an AcbsException if the request to ACBS fails', async () => {
       const getExternalRatingsForPartyError = new AxiosError();
-      // eslint-disable-next-line jest/unbound-method
-      when(httpService.get)
+      when(httpServiceGet)
         .calledWith(`/Party/${partyIdentifier}/PartyExternalRating`, {
           baseURL: baseUrl,
           headers: { Authorization: `Bearer ${authToken}` },
@@ -43,8 +48,7 @@ describe('AcbsPartyExternalRatingService', () => {
     });
 
     it('returns an empty array of external ratings for the party if ACBS responds with an empty array of external ratings', async () => {
-      // eslint-disable-next-line jest/unbound-method
-      when(httpService.get)
+      when(httpServiceGet)
         .calledWith(`/Party/${partyIdentifier}/PartyExternalRating`, {
           baseURL: baseUrl,
           headers: { Authorization: `Bearer ${authToken}` },
@@ -74,8 +78,7 @@ describe('AcbsPartyExternalRatingService', () => {
         config: undefined,
       };
 
-      // eslint-disable-next-line jest/unbound-method
-      when(httpService.get)
+      when(httpServiceGet)
         .calledWith(`/Party/${partyIdentifier}/PartyExternalRating`, {
           baseURL: baseUrl,
           headers: { Authorization: `Bearer ${authToken}` },
@@ -99,8 +102,7 @@ describe('AcbsPartyExternalRatingService', () => {
         config: undefined,
       };
 
-      // eslint-disable-next-line jest/unbound-method
-      when(httpService.get)
+      when(httpServiceGet)
         .calledWith(`/Party/${partyIdentifier}/PartyExternalRating`, {
           baseURL: baseUrl,
           headers: { Authorization: `Bearer ${authToken}` },
@@ -124,8 +126,7 @@ describe('AcbsPartyExternalRatingService', () => {
         config: undefined,
       };
 
-      // eslint-disable-next-line jest/unbound-method
-      when(httpService.get)
+      when(httpServiceGet)
         .calledWith(`/Party/${partyIdentifier}/PartyExternalRating`, {
           baseURL: baseUrl,
           headers: { Authorization: `Bearer ${authToken}` },
@@ -142,8 +143,7 @@ describe('AcbsPartyExternalRatingService', () => {
     it('returns the external ratings for the party if ACBS responds with the external ratings', async () => {
       const { externalRatingsInAcbs } = new PartyExternalRatingGenerator(valueGenerator).generate({ partyIdentifier, numberToGenerate: 2 });
 
-      // eslint-disable-next-line jest/unbound-method
-      when(httpService.get)
+      when(httpServiceGet)
         .calledWith(`/Party/${partyIdentifier}/PartyExternalRating`, {
           baseURL: baseUrl,
           headers: { Authorization: `Bearer ${authToken}` },

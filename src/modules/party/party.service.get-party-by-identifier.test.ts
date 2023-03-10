@@ -20,13 +20,21 @@ describe('PartyService', () => {
   let acbsPartyService: AcbsPartyService;
   let service: PartyService;
 
+  let acbsPartyServiceGetPartyByIdentifier: jest.Mock;
+
   beforeEach(() => {
-    acbsAuthenticationService = new AcbsAuthenticationService(null, null, null);
     acbsPartyService = new AcbsPartyService(null, null);
+
+    acbsPartyServiceGetPartyByIdentifier = jest.fn();
+    acbsPartyService.getPartyByIdentifier = acbsPartyServiceGetPartyByIdentifier;
+
+    acbsAuthenticationService = new AcbsAuthenticationService(null, null, null);
+    const acbsAuthenticationServiceGetIdToken = jest.fn();
+    acbsAuthenticationService.getIdToken = acbsAuthenticationServiceGetIdToken;
+
     service = new PartyService({ baseUrl }, null, acbsAuthenticationService, acbsPartyService);
 
-    // eslint-disable-next-line jest/unbound-method
-    when(acbsAuthenticationService.getIdToken).calledWith().mockResolvedValueOnce(idToken);
+    when(acbsAuthenticationServiceGetIdToken).calledWith().mockResolvedValueOnce(idToken);
   });
 
   describe('getPartyByIdentifier', () => {
@@ -44,8 +52,7 @@ describe('PartyService', () => {
         ...parties[0],
         officerRiskDate: expectedOfficerRiskDate,
       };
-      // eslint-disable-next-line jest/unbound-method
-      when(acbsPartyService.getPartyByIdentifier).calledWith(partyIdentifier, idToken).mockResolvedValueOnce(partyInAcbs);
+      when(acbsPartyServiceGetPartyByIdentifier).calledWith(partyIdentifier, idToken).mockResolvedValueOnce(partyInAcbs);
 
       const party = await service.getPartyByIdentifier(partyIdentifier);
 
@@ -62,8 +69,7 @@ describe('PartyService', () => {
         ...parties[0],
         officerRiskDate: null,
       };
-      // eslint-disable-next-line jest/unbound-method
-      when(acbsPartyService.getPartyByIdentifier).calledWith(partyIdentifier, idToken).mockResolvedValueOnce(partyInAcbs);
+      when(acbsPartyServiceGetPartyByIdentifier).calledWith(partyIdentifier, idToken).mockResolvedValueOnce(partyInAcbs);
 
       const party = await service.getPartyByIdentifier(partyIdentifier);
 

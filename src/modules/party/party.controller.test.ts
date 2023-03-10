@@ -14,8 +14,14 @@ describe('PartyController', () => {
   let partyService: PartyService;
   let controller: PartyController;
 
+  let partyServiceGetPartyByIdentifier: jest.Mock;
+
   beforeEach(() => {
     partyService = new PartyService({ baseUrl: valueGenerator.httpsUrl() }, null, null, null);
+
+    partyServiceGetPartyByIdentifier = jest.fn();
+    partyService.getPartyByIdentifier = partyServiceGetPartyByIdentifier;
+
     controller = new PartyController(null, partyService);
   });
 
@@ -25,8 +31,7 @@ describe('PartyController', () => {
     const expectedParty = partiesFromApi[0];
 
     it('returns the party from the service', async () => {
-      // eslint-disable-next-line jest/unbound-method
-      when(partyService.getPartyByIdentifier).calledWith(partyIdentifier).mockResolvedValueOnce(partyFromService);
+      when(partyServiceGetPartyByIdentifier).calledWith(partyIdentifier).mockResolvedValueOnce(partyFromService);
 
       const party = await controller.getPartyByIdentifier(partyIdentifier);
 
@@ -38,8 +43,7 @@ describe('PartyController', () => {
         ...partyFromService,
         unexpectedKey: valueGenerator.string(),
       };
-      // eslint-disable-next-line jest/unbound-method
-      when(partyService.getPartyByIdentifier).calledWith(partyIdentifier).mockResolvedValueOnce(partyWithUnexpectedKey);
+      when(partyServiceGetPartyByIdentifier).calledWith(partyIdentifier).mockResolvedValueOnce(partyWithUnexpectedKey);
 
       const party = await controller.getPartyByIdentifier(partyIdentifier);
 

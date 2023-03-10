@@ -14,6 +14,8 @@ describe('PartyService', () => {
   let httpService: HttpService;
   let partyService: PartyService;
 
+  let httpServiceGet: jest.Mock;
+
   const getExpectedGetPartiesBySearchTextArguments = (searchText: string): [string, object] => [
     '/Party/Search/' + searchText,
     {
@@ -65,6 +67,10 @@ describe('PartyService', () => {
 
   beforeEach(() => {
     httpService = new HttpService();
+
+    httpServiceGet = jest.fn();
+    httpService.get = httpServiceGet;
+
     partyService = new PartyService(config, httpService, null, null);
   });
 
@@ -160,8 +166,7 @@ describe('PartyService', () => {
     it('returns an empty array if the request is successful and there are no matching parties', async () => {
       const searchText = 'searchText';
 
-      // eslint-disable-next-line jest/unbound-method
-      when(httpService.get)
+      when(httpServiceGet)
         .calledWith(...getExpectedGetPartiesBySearchTextArguments(searchText))
         .mockReturnValueOnce(
           of({
@@ -184,8 +189,7 @@ describe('PartyService', () => {
       const searchText = 'searchText';
       const getPartiesError = new AxiosError();
 
-      // eslint-disable-next-line jest/unbound-method
-      when(httpService.get)
+      when(httpServiceGet)
         .calledWith(...getExpectedGetPartiesBySearchTextArguments(searchText))
         .mockReturnValueOnce(throwError(() => getPartiesError));
 
@@ -222,8 +226,7 @@ describe('PartyService', () => {
   });
 
   function mockSuccessfulAcbsGetPartiesBySearchTextRequest(searchText: string, response: AcbsGetPartiesBySearchTextResponseElement[]): void {
-    // eslint-disable-next-line jest/unbound-method
-    when(httpService.get)
+    when(httpServiceGet)
       .calledWith(...getExpectedGetPartiesBySearchTextArguments(searchText))
       .mockReturnValueOnce(
         of({
