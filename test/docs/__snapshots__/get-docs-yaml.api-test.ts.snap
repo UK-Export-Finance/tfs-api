@@ -10,27 +10,6 @@ paths:
       responses:
         '200':
           description: ''
-  /api/v1/parties:
-    get:
-      operationId: PartyController_getPartyBySearchText
-      summary: Get all parties matching the specified search text.
-      parameters:
-        - name: searchText
-          required: true
-          in: query
-          schema:
-            type: string
-      responses:
-        '200':
-          description: The matching parties have been successfully retrieved.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/GetPartyBySearchTextResponseElement'
-        '500':
-          description: An internal server error has occurred.
   /api/v1/parties/{partyIdentifier}:
     get:
       operationId: PartyController_getPartyByIdentifier
@@ -90,46 +69,6 @@ tags: []
 servers: []
 components:
   schemas:
-    GetPartyBySearchTextResponseElement:
-      type: object
-      properties:
-        alternateIdentifier:
-          type: string
-          readOnly: true
-        industryClassification:
-          type: string
-          readOnly: true
-        name1:
-          type: string
-          readOnly: true
-        name2:
-          type: string
-          readOnly: true
-        name3:
-          type: string
-          readOnly: true
-        smeType:
-          type: string
-          readOnly: true
-        citizenshipClass:
-          type: string
-          readOnly: true
-        officerRiskDate:
-          type: string
-          readOnly: true
-        countryCode:
-          type: string
-          readOnly: true
-      required:
-        - alternateIdentifier
-        - industryClassification
-        - name1
-        - name2
-        - name3
-        - smeType
-        - citizenshipClass
-        - officerRiskDate
-        - countryCode
     GetPartyByIdentifierResponse:
       type: object
       properties:
