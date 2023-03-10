@@ -57,8 +57,18 @@ describe('AcbsAuthenticationService', () => {
   let logger: PinoLogger;
   let service: AcbsAuthenticationService;
 
+  let httpServiceGet: jest.Mock;
+  let httpServicePost: jest.Mock;
+
   beforeEach(() => {
     httpService = new HttpService();
+
+    httpServiceGet = jest.fn();
+    httpService.get = httpServiceGet;
+
+    httpServicePost = jest.fn();
+    httpService.post = httpServicePost;
+
     logger = new PinoLogger({});
     logger.error = jest.fn();
     service = new AcbsAuthenticationService({ apiKey, apiKeyHeaderName, authentication: { baseUrl, loginName, password, clientId } }, httpService, logger);
@@ -103,8 +113,7 @@ describe('AcbsAuthenticationService', () => {
   describe('failed authentication', () => {
     it('throws an AcbsAuthenticationFailedException if there is an error when creating a session with the IdP', async () => {
       const sessionCreationError = new AxiosError();
-      // eslint-disable-next-line jest/unbound-method
-      when(httpService.post)
+      when(httpServicePost)
         .calledWith(...expectedPostSessionsArguments)
         .mockReturnValueOnce(throwError(() => sessionCreationError));
 
@@ -117,8 +126,7 @@ describe('AcbsAuthenticationService', () => {
 
     it('logs the http service error if there is an error when creating a session with the IdP', async () => {
       const sessionCreationError = new AxiosError();
-      // eslint-disable-next-line jest/unbound-method
-      when(httpService.post)
+      when(httpServicePost)
         .calledWith(...expectedPostSessionsArguments)
         .mockReturnValueOnce(throwError(() => sessionCreationError));
 
@@ -144,8 +152,7 @@ describe('AcbsAuthenticationService', () => {
     it('throws an AcbsAuthenticationFailedException if there is an error when getting a token from the IdP', async () => {
       mockSuccessfulCreateSessionRequest();
       const getTokenError = new AxiosError();
-      // eslint-disable-next-line jest/unbound-method
-      when(httpService.get)
+      when(httpServiceGet)
         .calledWith(...expectedGetTokenArguments)
         .mockReturnValueOnce(throwError(() => getTokenError));
 
@@ -159,8 +166,7 @@ describe('AcbsAuthenticationService', () => {
     it('logs the http service error if there is an error when getting a token from the IdP', async () => {
       mockSuccessfulCreateSessionRequest();
       const getTokenError = new AxiosError();
-      // eslint-disable-next-line jest/unbound-method
-      when(httpService.get)
+      when(httpServiceGet)
         .calledWith(...expectedGetTokenArguments)
         .mockReturnValueOnce(throwError(() => getTokenError));
 
@@ -256,8 +262,7 @@ describe('AcbsAuthenticationService', () => {
     const headers = new AxiosHeaders();
     headers['set-cookie'] = cookies;
 
-    // eslint-disable-next-line jest/unbound-method
-    when(httpService.post)
+    when(httpServicePost)
       .calledWith(...expectedPostSessionsArguments)
       .mockReturnValueOnce(
         of({
@@ -273,8 +278,7 @@ describe('AcbsAuthenticationService', () => {
   const mockSuccessfulGetTokenForSessionRequest = (): void => mockSuccessfulGetTokenForSessionRequestReturning({ id_token: idToken });
 
   const mockSuccessfulGetTokenForSessionRequestReturning = (data: any): void => {
-    // eslint-disable-next-line jest/unbound-method
-    when(httpService.get)
+    when(httpServiceGet)
       .calledWith(...expectedGetTokenArguments)
       .mockReturnValueOnce(
         of({

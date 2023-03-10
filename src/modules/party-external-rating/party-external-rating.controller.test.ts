@@ -21,27 +21,31 @@ describe('PartyExternalRatingController', () => {
     let partyExternalRatingService: PartyExternalRatingService;
     let controller: PartyExternalRatingController;
 
+    let partyExternalRatingServiceGetExternalRatingsForParty: jest.Mock;
+
     beforeEach(() => {
       partyExternalRatingService = new PartyExternalRatingService(null, null);
+
+      partyExternalRatingServiceGetExternalRatingsForParty = jest.fn();
+      partyExternalRatingService.getExternalRatingsForParty = partyExternalRatingServiceGetExternalRatingsForParty;
+
       controller = new PartyExternalRatingController(partyExternalRatingService);
     });
 
     it('returns the external ratings for the party from the service', async () => {
-      // eslint-disable-next-line jest/unbound-method
-      when(partyExternalRatingService.getExternalRatingsForParty).calledWith(partyIdentifier).mockResolvedValueOnce(externalRatings);
+      when(partyExternalRatingServiceGetExternalRatingsForParty).calledWith(partyIdentifier).mockResolvedValueOnce(externalRatings);
 
       const ratings = await controller.getExternalRatingsForParty(partyIdentifier);
 
       expect(ratings).toStrictEqual(expectedExternalRatings);
     });
 
-    it('does NOT return unexpected keys from the response', async () => {
+    it('does NOT return unexpected keys from the external ratings from the service', async () => {
       const externalRatingWithUnexpectedKey = {
         ...externalRatings[0],
         unexpectedKey: valueGenerator.string(),
       };
-      // eslint-disable-next-line jest/unbound-method
-      when(partyExternalRatingService.getExternalRatingsForParty).calledWith(partyIdentifier).mockResolvedValueOnce([externalRatingWithUnexpectedKey]);
+      when(partyExternalRatingServiceGetExternalRatingsForParty).calledWith(partyIdentifier).mockResolvedValueOnce([externalRatingWithUnexpectedKey]);
 
       const ratings = await controller.getExternalRatingsForParty(partyIdentifier);
 
