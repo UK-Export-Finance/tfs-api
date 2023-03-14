@@ -18,7 +18,11 @@ export class Api {
       .set({ [strategy]: apiKey });
   }
 
-  getWithBasicAuth(url: string, { username, password }: { username: string; password: string }): request.Test {
+  getWithoutAuth(url: string): request.Test {
+    return request(this.app.getHttpServer()).get(url);
+  }
+
+  getDocsWithBasicAuth(url: string, { username, password }: { username: string; password: string }): request.Test {
     return request(this.app.getHttpServer()).get(url).auth(username, password);
   }
 

@@ -115,6 +115,16 @@ describe('GET /parties?searchText={searchText}', () => {
     expect(body).toStrictEqual([]);
   });
 
+  it('returns a 401 response when the API Key is missing', async () => {
+    givenAuthenticationWithTheIdpSucceeds();
+    requestToGetPartiesBySearchText().reply(200, partiesInAcbs);
+
+    const { status, body } = await api.getWithoutAuth(`/api/v1/parties?searchText=${searchText}`);
+
+    expect(status).toBe(401);
+    expect(body).toStrictEqual({ message: 'Unauthorized', statusCode: 401 });
+  });
+
   it('returns a 500 response if creating a session with the IdP fails', async () => {
     const errorCode = valueGenerator.string();
     requestToCreateASessionWithTheIdp().reply(

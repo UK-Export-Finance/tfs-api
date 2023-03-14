@@ -56,6 +56,16 @@ describe('GET /parties/{partyIdentifier}/external-ratings', () => {
     expect(body).toStrictEqual([]);
   });
 
+  it('returns a 401 response when the API Key is missing', async () => {
+    givenAuthenticationWithTheIdpSucceeds();
+    requestToGetExternalRatingsForParty().reply(200, []);
+
+    const { status, body } = await api.getWithoutAuth(getPartyExternalRatingsUrl);
+
+    expect(status).toBe(401);
+    expect(body).toStrictEqual({ message: 'Unauthorized', statusCode: 401 });
+  });
+
   it('returns a 404 response if ACBS returns a 400 response with the string "Party not found"', async () => {
     givenAuthenticationWithTheIdpSucceeds();
     requestToGetExternalRatingsForParty().reply(400, 'Party not found');

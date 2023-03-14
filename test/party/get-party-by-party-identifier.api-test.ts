@@ -44,6 +44,16 @@ describe('GET /parties/{partyIdentifier}', () => {
     expect(body).toStrictEqual(JSON.parse(JSON.stringify(expectedParty)));
   });
 
+  it('returns a 401 response when the API Key is missing', async () => {
+    givenAuthenticationWithTheIdpSucceeds();
+    requestToGetParty().reply(200, partyInAcbs);
+
+    const { status, body } = await api.getWithoutAuth(getPartyUrl);
+
+    expect(status).toBe(401);
+    expect(body).toStrictEqual({ message: 'Unauthorized', statusCode: 401 });
+  });
+
   it('returns a 404 response if ACBS returns a 400 response with the string "Party not found"', async () => {
     givenAuthenticationWithTheIdpSucceeds();
     requestToGetParty().reply(400, 'Party not found');
