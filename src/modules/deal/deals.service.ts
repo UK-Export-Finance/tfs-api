@@ -177,7 +177,7 @@ export class DealsService {
     };
     return this.acbsService.createDeal(createDealDto.portfolioIdentifier, requestBody, idToken);
   }
-  
+
   private setToMidnight(date: Date): Date {
     date.setHours(0, 0, 0, 0);
     return date;
@@ -198,5 +198,4 @@ export class DealsService {
   private roundToTwoDecimalFigures(currencyValue: number): number {
     return parseFloat(currencyValue.toFixed(2));
   }
-
 }
