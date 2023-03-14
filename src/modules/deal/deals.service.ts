@@ -12,14 +12,13 @@ export class DealsService {
   async createDeal(createDealDto: CreateDealDto): Promise<any> {
     const idToken = await this.acbsAuthenticationService.getIdToken();
 
-    const todayDate = new Date();
-    todayDate.setHours(0, 0, 0, 0); // Set to midnight
-    const todayDateAsIso = todayDate.toISOString();
+    const midnightToday = new Date();
+    const midnightTodayAsIsoString = this.setToMidnight(midnightToday).toISOString();
 
     const guaranteeCommencementDate = new Date(createDealDto.guaranteeCommencementDate);
-    guaranteeCommencementDate.setHours(0, 0, 0, 0);
+    const guaranteeCommencementDateMidnight = this.setToMidnight(guaranteeCommencementDate);
 
-    const effectiveDate = guaranteeCommencementDate < todayDate ? guaranteeCommencementDate : todayDate;
+    const effectiveDate = this.getEffectiveDate(guaranteeCommencementDateMidnight, midnightToday);
     const effectiveDateAsIso = effectiveDate.toISOString();
 
     const requestBody = {
@@ -47,7 +46,7 @@ export class DealsService {
       },
       dealExternalReferences: [],
       portfolioIdentifier: DEFAULTS.DEAL.portfolioIdentifier,
-      description: 'D: ' + createDealDto.obligorName.substring(0, 19) + ' ' + createDealDto.currency + ' ' + effectiveDate.toLocaleDateString(),
+      description: this.createDealDescription(createDealDto.obligorName, createDealDto.currency, effectiveDate),
       currency: {
         currencyCode: createDealDto.currency,
         isActiveIndicator: true,
@@ -58,7 +57,7 @@ export class DealsService {
       isFinalAvailableDateMaximum: DEFAULTS.DEAL.isFinalAvailableDateMaximum,
       expirationDate: DEFAULTS.DEAL.expirationDate,
       isExpirationDateMaximum: DEFAULTS.DEAL.isExpirationDateMaximum,
-      limitAmount: parseFloat(createDealDto.dealValue.toFixed(2)),
+      limitAmount: this.roundToTwoDecimalFigures(createDealDto.dealValue),
       withheldAmount: DEFAULTS.DEAL.withheldAmount,
       memoLimitAmount: DEFAULTS.DEAL.memoLimitAmount,
       bookingClass: {
@@ -138,7 +137,7 @@ export class DealsService {
       officerRiskRatingType: {
         officerRiskRatingTypeCode: DEFAULTS.DEAL.officerRiskRatingTypeCode,
       },
-      officerRiskDate: todayDateAsIso,
+      officerRiskDate: midnightTodayAsIsoString,
       isOfficerRiskDateZero: DEFAULTS.DEAL.isOfficerRiskDateZero,
       isCreditReviewRiskDateZero: DEFAULTS.DEAL.isCreditReviewRiskDateZero,
       regulatorRiskDate: DEFAULTS.DEAL.regulatorRiskDate,
@@ -178,4 +177,26 @@ export class DealsService {
     };
     return this.acbsService.createDeal(createDealDto.portfolioIdentifier, requestBody, idToken);
   }
+  
+  private setToMidnight(date: Date): Date {
+    date.setHours(0, 0, 0, 0);
+    return date;
+  }
+
+  private getEffectiveDate(guaranteeCommencementDate: Date, today: Date): Date {
+    if (guaranteeCommencementDate < today) {
+      return guaranteeCommencementDate;
+    } else {
+      return today;
+    }
+  }
+
+  private createDealDescription(obligorName: string, currency: string, effectiveDate: Date): string {
+    return 'D: ' + obligorName.substring(0, 19) + ' ' + currency + ' ' + effectiveDate.toLocaleDateString();
+  }
+
+  private roundToTwoDecimalFigures(currencyValue: number): number {
+    return parseFloat(currencyValue.toFixed(2));
+  }
+
 }
