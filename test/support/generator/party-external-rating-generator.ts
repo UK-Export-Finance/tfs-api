@@ -1,7 +1,7 @@
 import { DateString } from '@ukef/helpers/date-string.type';
-import { AcbsPartyExternalRatingsResponseDto } from '@ukef/modules/acbs/dto/acbs-party-external-ratings-response.dto';
-import { GetPartyExternalRatingsResponse } from '@ukef/modules/party-external-rating/dto/get-party-external-ratings-response.dto';
-import { PartyExternalRating } from '@ukef/modules/party-external-rating/party-external-rating.interface';
+import { AcbsPartyExternalRatingsResponseDto } from '@ukef/module/acbs/dto/acbs-party-external-ratings-response.dto';
+import { GetPartyExternalRatingsResponse } from '@ukef/module/party-external-rating/dto/get-party-external-ratings-response.dto';
+import { PartyExternalRating } from '@ukef/module/party-external-rating/party-external-rating.interface';
 
 import { AbstractGenerator } from './abstract-generator';
 

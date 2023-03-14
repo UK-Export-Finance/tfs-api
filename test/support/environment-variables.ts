@@ -1,3 +1,5 @@
+import '@ukef/config/load-dotenv';
+
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 
 const valueGenerator = new RandomValueGenerator();
@@ -17,6 +19,8 @@ export const ENVIRONMENT_VARIABLES = Object.freeze({
   ACBS_AUTHENTICATION_PASSWORD: valueGenerator.string(),
   ACBS_MAX_REDIRECTS: 0,
   ACBS_TIMEOUT: 1000,
+  API_KEY: process.env.API_KEY,
+  API_KEY_STRATEGY: process.env.API_KEY_STRATEGY,
 });
 
 export const getEnvironmentVariablesForProcessEnv = (): NodeJS.ProcessEnv => ({

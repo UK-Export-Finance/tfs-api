@@ -8,8 +8,8 @@ import { AcbsGetPartyResponseDto } from '../acbs/dto/acbs-get-party-response.dto
 import { Party } from './party.interface';
 import { PartyService } from './party.service';
 
-jest.mock('@ukef/modules/acbs/acbs-party.service');
-jest.mock('@ukef/modules/acbs/acbs-authentication.service');
+jest.mock('@ukef/module/acbs/acbs-party.service');
+jest.mock('@ukef/module/acbs/acbs-authentication.service');
 
 describe('PartyService', () => {
   const valueGenerator = new RandomValueGenerator();

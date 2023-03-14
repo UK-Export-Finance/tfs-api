@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { AcbsModule } from '@ukef/modules/acbs/acbs.module';
+import { AcbsModule } from '@ukef/module/acbs/acbs.module';
 
 import { AcbsExceptionTransformInterceptor } from './acbs-exception-transform.interceptor';
 
