@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDateString, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsDateString, IsNotEmpty, IsNumber, IsOptional, IsString, Length, MaxLength } from 'class-validator';
 
 export class CreateDealDto {
   @ApiProperty({
@@ -16,8 +16,8 @@ export class CreateDealDto {
   })
   @IsString()
   @IsOptional()
-  @MaxLength(2)
-  portfolioIdentifier = 'E1';
+  @Length(2)
+  portfolioIdentifier: string;
 
   @ApiProperty({
     description: 'Deal currency code is USD, CAD',
