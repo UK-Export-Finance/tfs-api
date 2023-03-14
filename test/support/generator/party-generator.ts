@@ -1,6 +1,6 @@
-import { AcbsGetPartyResponseDto } from '@ukef/module/acbs/dto/acbs-get-party-response.dto';
-import { GetPartyByIdentifierResponse } from '@ukef/module/party/dto/get-party-by-response.dto';
-import { Party } from '@ukef/module/party/party.interface';
+import { AcbsGetPartyResponseDto } from '@ukef/modules/acbs/dto/acbs-get-party-response.dto';
+import { GetPartyByIdentifierResponse } from '@ukef/modules/party/dto/get-party-by-response.dto';
+import { Party } from '@ukef/modules/party/party.interface';
 
 import { AbstractGenerator } from './abstract-generator';
 

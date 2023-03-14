@@ -52,8 +52,8 @@ this.logger.log({ id: 'your message here' }, 'context-name');
 ```
 
 ### Authentication
-The Master Data Management API requires an API Key in order to access its resources.
-This can be achieved by providing a randomised API Key as an environment variable (`API_KEY`) and a strategy (`API_KEY_STRATEGY`) which defines the name of the header passed to the API
+The Trade Finance Services API requires an API Key in order to access its resources.
+This can be achieved by providing a randomised API Key as an environment variable (`API_KEY`) and a strategy (`API_KEY_STRATEGY`) which defines the name of the header passed to the API.
 
 ### Writing Conventional Commits
 

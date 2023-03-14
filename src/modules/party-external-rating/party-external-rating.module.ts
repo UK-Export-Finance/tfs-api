@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { AcbsModule } from '@ukef/module/acbs/acbs.module';
+import { AcbsModule } from '@ukef/modules/acbs/acbs.module';
 
 import { PartyExternalRatingController } from './party-external-rating.controller';
 import { PartyExternalRatingService } from './party-external-rating.service';

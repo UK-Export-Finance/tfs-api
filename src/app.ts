@@ -1,7 +1,7 @@
 import { INestApplication, ValidationPipe, VersioningType } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TransformInterceptor } from '@ukef/helpers';
-import { ApiKeyAuthGuard } from '@ukef/module/auth/guard/api-key.guard';
+import { ApiKeyAuthGuard } from '@ukef/modules/auth/guard/api-key.guard';
 import { SwaggerDocs } from '@ukef/swagger';
 import compression from 'compression';
 import { Logger, LoggerErrorInterceptor } from 'nestjs-pino';
@@ -41,10 +41,10 @@ export class App {
     // Swagger docs
     SwaggerDocs(app);
 
-    app.useLogger(app.get(Logger));
-    app.useGlobalInterceptors(new LoggerErrorInterceptor());
     app.useGlobalGuards(new ApiKeyAuthGuard());
     app.useGlobalInterceptors(new TransformInterceptor());
+    app.useLogger(app.get(Logger));
+    app.useGlobalInterceptors(new LoggerErrorInterceptor());
     app.use(
       compression({
         filter: (req, res) => {

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import config from '@ukef/config';
-import { TfsModule } from '@ukef/module/tfs.module';
+import { TfsModule } from '@ukef/modules/tfs.module';
 import { LoggerModule } from 'nestjs-pino';
 
 @Module({
