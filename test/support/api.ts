@@ -11,7 +11,11 @@ export class Api {
   constructor(private readonly app: App) {}
 
   get(url: string): request.Test {
-    return request(this.app.getHttpServer()).get(url);
+    const apiKey = process.env.API_KEY;
+    const strategy = process.env.API_KEY_STRATEGY;
+    return request(this.app.getHttpServer())
+      .get(url)
+      .set({ [strategy]: apiKey });
   }
 
   getWithBasicAuth(url: string, { username, password }: { username: string; password: string }): request.Test {

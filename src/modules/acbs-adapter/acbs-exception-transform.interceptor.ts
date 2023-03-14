@@ -1,5 +1,5 @@
 import { CallHandler, ExecutionContext, Injectable, NestInterceptor, NotFoundException } from '@nestjs/common';
-import { AcbsResourceNotFoundException } from '@ukef/modules/acbs/exception/acbs-resource-not-found.exception';
+import { AcbsResourceNotFoundException } from '@ukef/module/acbs/exception/acbs-resource-not-found.exception';
 import { catchError, Observable, throwError } from 'rxjs';
 
 @Injectable()

@@ -1,6 +1,6 @@
 import { HttpService } from '@nestjs/axios';
-import { GetPartiesBySearchTextException } from '@ukef/modules/party/exception/get-parties-by-search-text.exception';
-import { PartyService } from '@ukef/modules/party/party.service';
+import { GetPartiesBySearchTextException } from '@ukef/module/party/exception/get-parties-by-search-text.exception';
+import { PartyService } from '@ukef/module/party/party.service';
 import { AxiosError } from 'axios';
 import { when } from 'jest-when';
 import { of, throwError } from 'rxjs';
