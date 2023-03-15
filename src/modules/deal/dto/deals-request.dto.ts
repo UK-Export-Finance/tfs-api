@@ -1,13 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDateString, IsNotEmpty, IsNumber, IsOptional, IsString, Length, MaxLength } from 'class-validator';
+import { IsDateString, IsNotEmpty, IsNumber, IsOptional, IsString, Length, MinLength, MaxLength } from 'class-validator';
 
 export class CreateDealDto {
   @ApiProperty({
-    example: '0020900035', // Comment on PR if we need a description when it's self evident
+    example: '0020900035',
   })
   @IsString()
   @IsNotEmpty()
-  @MaxLength(10)
+  @Length(10)
   dealIdentifier: string;
 
   @ApiProperty({
@@ -25,7 +25,7 @@ export class CreateDealDto {
   })
   @IsString()
   @IsNotEmpty()
-  @MaxLength(3)
+  @Length(3)
   currency: string;
 
   @ApiProperty()
@@ -50,7 +50,7 @@ export class CreateDealDto {
   })
   @IsString()
   @IsNotEmpty()
-  @MaxLength(10)
+  @Length(10)
   obligorPartyIdentifier: string;
 
   @ApiProperty({
@@ -59,6 +59,7 @@ export class CreateDealDto {
   })
   @IsString()
   @IsNotEmpty()
+  @MinLength(0)
   @MaxLength(35)
   obligorName: string;
 
@@ -68,6 +69,7 @@ export class CreateDealDto {
   })
   @IsString()
   @IsNotEmpty()
+  @MinLength(0)
   @MaxLength(10)
   obligorIndustryClassification: string;
 }
