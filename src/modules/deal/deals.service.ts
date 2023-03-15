@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { DEFAULTS } from '@ukef/constants/properties';
-import { AcbsService } from '@ukef/modules/acbs/acbs.service';
 import { AcbsAuthenticationService } from '@ukef/modules/acbs/acbs-authentication.service';
+import { AcbsDealService } from '@ukef/modules/acbs/acbs-deal.service';
 
 import { CreateDealDto } from './dto/deals-request.dto';
 
 @Injectable()
 export class DealsService {
-  constructor(private readonly acbsAuthenticationService: AcbsAuthenticationService, private readonly acbsService: AcbsService) {}
+  constructor(private readonly acbsAuthenticationService: AcbsAuthenticationService, private readonly acbsDealService: AcbsDealService) {}
 
   async createDeal(createDealDto: CreateDealDto): Promise<any> {
     const idToken = await this.acbsAuthenticationService.getIdToken();
@@ -175,7 +175,7 @@ export class DealsService {
         riskMitigationCode: DEFAULTS.DEAL.riskMitigationCode,
       },
     };
-    return this.acbsService.createDeal(createDealDto.portfolioIdentifier, requestBody, idToken);
+    return this.acbsDealService.createDeal(createDealDto.portfolioIdentifier, requestBody, idToken);
   }
 
   private setToMidnight(date: Date): Date {

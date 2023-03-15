@@ -17,7 +17,7 @@ export class Api {
   post(url: string): request.Test {
     return request(this.app.getHttpServer()).post(url);
   }
-  
+
   getWithBasicAuth(url: string, { username, password }: { username: string; password: string }): request.Test {
     return request(this.app.getHttpServer()).get(url).auth(username, password);
   }
