@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { ThrottlerModule } from '@nestjs/throttler';
 import config from '@ukef/config';
 import { TfsModule } from '@ukef/modules/tfs.module';
 import { LoggerModule } from 'nestjs-pino';
@@ -11,13 +10,9 @@ import { LoggerModule } from 'nestjs-pino';
       isGlobal: true,
       load: [...config],
     }),
-    ThrottlerModule.forRoot({
-      limit: 10, // requests
-      ttl: 30, // per second
-    }),
     LoggerModule.forRoot({
       pinoHttp: {
-        customProps: (req, res) => ({
+        customProps: () => ({
           context: 'HTTP',
         }),
         transport: {

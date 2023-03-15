@@ -20,8 +20,13 @@ export class RandomValueGenerator {
     return this.chance.url({ protocol: 'https' });
   }
 
-  stringOfNumericCharacters(): string {
-    return this.chance.string({ pool: '0123456789' });
+  stringOfNumericCharacters(minLength?: number): string {
+    const stringOptions: Partial<Chance.StringOptions> = { pool: '0123456789' };
+    if (minLength) {
+      const length = this.chance.integer({ min: minLength, max: Math.max(20, minLength * 2) });
+      stringOptions.length = length;
+    }
+    return this.chance.string(stringOptions);
   }
 
   probabilityFloat(): number {

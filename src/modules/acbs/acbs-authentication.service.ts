@@ -2,6 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import AcbsConfig from '@ukef/config/acbs.config';
+import { ACBS } from '@ukef/constants';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 import { catchError, lastValueFrom } from 'rxjs';
@@ -13,7 +14,6 @@ import { AcbsAuthenticationFailedException } from './exception/acbs-authenticati
 export class AcbsAuthenticationService {
   private static readonly sessionsPath = '/sessions';
   private static readonly connectPath = '/idptoken/openid-connect';
-  private static readonly sessionIdCookieName = 'JSESSIONID';
   private static readonly sessionIdCookieSeparator = ';';
 
   constructor(
@@ -53,7 +53,7 @@ export class AcbsAuthenticationService {
   }
 
   private extractSessionIdFromCreateSessionResponse(response: AxiosResponse): string {
-    const sessionIdCookie = response.headers['set-cookie'].find((cookie) => cookie.startsWith(AcbsAuthenticationService.sessionIdCookieName));
+    const sessionIdCookie = response.headers['set-cookie'].find((cookie) => cookie.startsWith(ACBS.AUTHENTICATION.SESSION_ID_COOKIE_NAME));
 
     if (!sessionIdCookie) {
       throw new AcbsAuthenticationFailedException('Session cookie was not returned by the IdP.');

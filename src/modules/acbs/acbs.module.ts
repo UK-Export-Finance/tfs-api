@@ -3,8 +3,9 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { TestController } from './acbs.controller';
-import { AcbsService } from './acbs.service';
 import { AcbsAuthenticationService } from './acbs-authentication.service';
+import { AcbsPartyService } from './acbs-party.service';
+import { AcbsPartyExternalRatingService } from './acbs-party-external-rating.service';
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { AcbsAuthenticationService } from './acbs-authentication.service';
     }),
   ],
   controllers: [TestController],
-  providers: [AcbsAuthenticationService, AcbsService],
-  exports: [AcbsAuthenticationService, AcbsService],
+  providers: [AcbsAuthenticationService, AcbsPartyService, AcbsPartyExternalRatingService],
+  exports: [AcbsAuthenticationService, AcbsPartyService, AcbsPartyExternalRatingService],
 })
 export class AcbsModule {}
