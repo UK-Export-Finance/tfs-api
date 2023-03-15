@@ -1,19 +1,16 @@
 import { ConfigService } from '@nestjs/config';
-import { PassportModule } from '@nestjs/passport';
 import { Test, TestingModule } from '@nestjs/testing';
-import Chance from 'chance';
+import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 
 import { AuthService } from './auth.service';
-import { ApiKeyStrategy } from './strategy/api-key.strategy';
 
 describe('AuthService', () => {
   let authService: AuthService;
-  const chance = new Chance();
+  const valueGenerator = new RandomValueGenerator();
 
   beforeAll(async () => {
     const app: TestingModule = await Test.createTestingModule({
-      imports: [PassportModule],
-      providers: [AuthService, ApiKeyStrategy, ConfigService],
+      providers: [AuthService, ConfigService],
     }).compile();
 
     authService = app.get<AuthService>(AuthService);
@@ -24,7 +21,7 @@ describe('AuthService', () => {
   });
 
   it('should return `false` when API Key is invalid', () => {
-    const key = chance.word();
+    const key = valueGenerator.string();
     const result = authService.validateApiKey(key);
 
     expect(result).toBe(false);

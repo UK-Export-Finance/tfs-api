@@ -1,3 +1,4 @@
+import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import request from 'supertest';
 
 import { App } from './app';
@@ -11,8 +12,8 @@ export class Api {
   constructor(private readonly app: App) {}
 
   get(url: string): request.Test {
-    const apiKey = process.env.API_KEY;
-    const strategy = process.env.API_KEY_STRATEGY;
+    const apiKey = ENVIRONMENT_VARIABLES.API_KEY;
+    const strategy = ENVIRONMENT_VARIABLES.API_KEY_STRATEGY;
     return request(this.app.getHttpServer())
       .get(url)
       .set({ [strategy]: apiKey });
