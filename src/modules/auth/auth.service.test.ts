@@ -1,5 +1,3 @@
-import { ConfigService } from '@nestjs/config';
-import { Test, TestingModule } from '@nestjs/testing';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 
 import { AuthService } from './auth.service';
@@ -7,13 +5,10 @@ import { AuthService } from './auth.service';
 describe('AuthService', () => {
   let authService: AuthService;
   const valueGenerator = new RandomValueGenerator();
+  const config = { apiKey: 'api-key' };
 
-  beforeAll(async () => {
-    const app: TestingModule = await Test.createTestingModule({
-      providers: [AuthService, ConfigService],
-    }).compile();
-
-    authService = app.get<AuthService>(AuthService);
+  beforeAll(() => {
+    authService = new AuthService(config);
   });
 
   it('should be defined', () => {
@@ -33,9 +28,20 @@ describe('AuthService', () => {
     expect(result).toBe(false);
   });
 
+  it('should return `false` when API Key is `null`', () => {
+    const result = authService.validateApiKey(null);
+
+    expect(result).toBe(false);
+  });
+
+  it('should return `false` when API Key is `undefined`', () => {
+    const result = authService.validateApiKey(undefined);
+
+    expect(result).toBe(false);
+  });
+
   it('should return `true` when API Key is valid', () => {
-    const { API_KEY } = process.env;
-    const result = authService.validateApiKey(API_KEY);
+    const result = authService.validateApiKey(config.apiKey);
 
     expect(result).toBe(true);
   });

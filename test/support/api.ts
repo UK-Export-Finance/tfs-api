@@ -19,12 +19,16 @@ export class Api {
       .set({ [strategy]: apiKey });
   }
 
-  getWithoutAuth(url: string): request.Test {
-    return request(this.app.getHttpServer()).get(url);
-  }
-
   getDocsWithBasicAuth(url: string, { username, password }: { username: string; password: string }): request.Test {
     return request(this.app.getHttpServer()).get(url).auth(username, password);
+  }
+
+  getWithoutAuth(url: string, strategy?: string, key?: string): request.Test {
+    const query = request(this.app.getHttpServer()).get(url);
+    if (strategy) {
+      return query.set({ [strategy]: key });
+    }
+    return query;
   }
 
   destroy(): Promise<void> {

@@ -125,6 +125,41 @@ describe('GET /parties?searchText={searchText}', () => {
     expect(body).toStrictEqual({ message: 'Unauthorized', statusCode: 401 });
   });
 
+  it('returns a 401 response when the Strategy is randomised', async () => {
+    givenAuthenticationWithTheIdpSucceeds();
+    requestToGetPartiesBySearchText().reply(200, partiesInAcbs);
+    const apiKey = ENVIRONMENT_VARIABLES.API_KEY;
+    const randomisedApiStrategy = valueGenerator.string();
+
+    const { status, body } = await api.getWithoutAuth(`/api/v1/parties?searchText=${searchText}`, randomisedApiStrategy, apiKey);
+
+    expect(status).toBe(401);
+    expect(body).toStrictEqual({ message: 'Unauthorized', statusCode: 401 });
+  });
+
+  it('returns a 401 response when the API Key is incorrect', async () => {
+    givenAuthenticationWithTheIdpSucceeds();
+    requestToGetPartiesBySearchText().reply(200, partiesInAcbs);
+    const strategy = ENVIRONMENT_VARIABLES.API_KEY_STRATEGY;
+    const randomisedApiKey = valueGenerator.string();
+
+    const { status, body } = await api.getWithoutAuth(`/api/v1/parties?searchText=${searchText}`, strategy, randomisedApiKey);
+
+    expect(status).toBe(401);
+    expect(body).toStrictEqual({ message: 'Unauthorized', statusCode: 401 });
+  });
+
+  it('returns a 401 response when the API Key is empty', async () => {
+    givenAuthenticationWithTheIdpSucceeds();
+    requestToGetPartiesBySearchText().reply(200, partiesInAcbs);
+    const strategy = ENVIRONMENT_VARIABLES.API_KEY_STRATEGY;
+
+    const { status, body } = await api.getWithoutAuth(`/api/v1/parties?searchText=${searchText}`, strategy, '');
+
+    expect(status).toBe(401);
+    expect(body).toStrictEqual({ message: 'Unauthorized', statusCode: 401 });
+  });
+
   it('returns a 500 response if creating a session with the IdP fails', async () => {
     const errorCode = valueGenerator.string();
     requestToCreateASessionWithTheIdp().reply(

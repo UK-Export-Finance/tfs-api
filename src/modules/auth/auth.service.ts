@@ -1,12 +1,16 @@
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { Inject, Injectable } from '@nestjs/common';
+import { ConfigType } from '@nestjs/config';
+import AppConfig from '@ukef/config/app.config';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(
+    @Inject(AppConfig.KEY)
+    private readonly config: Pick<ConfigType<typeof AppConfig>, 'apiKey'>,
+  ) {}
 
   validateApiKey(key: string): boolean {
-    const apiKey: string = this.configService.get<string>('app.apiKey');
+    const apiKey: string = this.config.apiKey;
     return apiKey === key;
   }
 }

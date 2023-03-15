@@ -66,6 +66,40 @@ describe('GET /parties/{partyIdentifier}/external-ratings', () => {
     expect(body).toStrictEqual({ message: 'Unauthorized', statusCode: 401 });
   });
 
+  it('returns a 401 response when the Strategy is randomised', async () => {
+    givenAuthenticationWithTheIdpSucceeds();
+    requestToGetExternalRatingsForParty().reply(200, []);
+    const apiKey = ENVIRONMENT_VARIABLES.API_KEY;
+    const randomisedApiStrategy = valueGenerator.string();
+
+    const { status, body } = await api.getWithoutAuth(getPartyExternalRatingsUrl, randomisedApiStrategy, apiKey);
+
+    expect(status).toBe(401);
+    expect(body).toStrictEqual({ message: 'Unauthorized', statusCode: 401 });
+  });
+
+  it('returns a 401 response when the API Key is incorrect', async () => {
+    givenAuthenticationWithTheIdpSucceeds();
+    requestToGetExternalRatingsForParty().reply(200, []);
+    const strategy = ENVIRONMENT_VARIABLES.API_KEY_STRATEGY;
+    const randomisedApiKey = valueGenerator.string();
+    const { status, body } = await api.getWithoutAuth(getPartyExternalRatingsUrl, strategy, randomisedApiKey);
+
+    expect(status).toBe(401);
+    expect(body).toStrictEqual({ message: 'Unauthorized', statusCode: 401 });
+  });
+
+  it('returns a 401 response when the API Key is empty', async () => {
+    givenAuthenticationWithTheIdpSucceeds();
+    requestToGetExternalRatingsForParty().reply(200, []);
+    const strategy = ENVIRONMENT_VARIABLES.API_KEY_STRATEGY;
+
+    const { status, body } = await api.getWithoutAuth(getPartyExternalRatingsUrl, strategy, '');
+
+    expect(status).toBe(401);
+    expect(body).toStrictEqual({ message: 'Unauthorized', statusCode: 401 });
+  });
+
   it('returns a 404 response if ACBS returns a 400 response with the string "Party not found"', async () => {
     givenAuthenticationWithTheIdpSucceeds();
     requestToGetExternalRatingsForParty().reply(400, 'Party not found');
