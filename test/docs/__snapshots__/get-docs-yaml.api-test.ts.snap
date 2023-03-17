@@ -10,6 +10,39 @@ paths:
       responses:
         '200':
           description: ''
+  /api/v1/deals/{dealIdentifier}/guarantees:
+    post:
+      operationId: DealGuaranteeController_createGuaranteeForDeal
+      summary: Create a new guarantee for a deal.
+      parameters:
+        - name: dealIdentifier
+          required: true
+          in: path
+          description: The identifier of the deal in ACBS.
+          example: '00000001'
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/CreateDealGuaranteeRequestItem'
+      responses:
+        '201':
+          description: The guarantee has been successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateDealGuaranteeResponse'
+        '400':
+          description: Bad request.
+        '404':
+          description: The deal was not found.
+        '500':
+          description: An internal server error has occurred.
   /api/v1/parties/{partyIdentifier}/external-ratings:
     get:
       operationId: PartyExternalRatingController_getExternalRatingsForParty
@@ -97,6 +130,61 @@ components:
       in: header
       name: x-api-key
   schemas:
+    CreateDealGuaranteeRequestItem:
+      type: object
+      properties:
+        dealIdentifier:
+          type: string
+          description: The identifier of the deal to create the guarantee for.
+          example: '00000001'
+          minLength: 1
+          maxLength: 10
+        effectiveDate:
+          format: date
+          type: string
+          description: >-
+            The date that this guarantee will take effect. This will be replaced
+            by today's date if a date in the past is provided.
+        limitKey:
+          type: string
+          description: An ACBS party identifier.
+          minLength: 1
+          maxLength: 10
+          example: '00000002'
+        guaranteeExpiryDate:
+          format: date
+          type: string
+          description: The date that this guarantee will expire on.
+        maximumLiability:
+          type: number
+          description: The maximum amount the guarantor will guarantee.
+          minimum: 0
+        guarantorParty:
+          type: string
+          description: UK GOODS (00000141)
+          minLength: 1
+          maxLength: 10
+          default: '00000141'
+        guaranteeTypeCode:
+          type: string
+          description: GOODS (450)
+          default: '450'
+          minLength: 1
+      required:
+        - dealIdentifier
+        - effectiveDate
+        - limitKey
+        - guaranteeExpiryDate
+        - maximumLiability
+    CreateDealGuaranteeResponse:
+      type: object
+      properties:
+        dealIdentifier:
+          type: string
+          readOnly: true
+          example: '00000001'
+      required:
+        - dealIdentifier
     GetPartyExternalRatingResponseRatingEntity:
       type: object
       properties:

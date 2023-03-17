@@ -9,7 +9,7 @@ describe('GET /parties?searchText={searchText}', () => {
   const valueGenerator = new RandomValueGenerator();
   const idToken = valueGenerator.string();
   const sessionId = valueGenerator.string();
-  const searchText = valueGenerator.stringOfNumericCharacters(3);
+  const searchText = valueGenerator.stringOfNumericCharacters({ minLength: 3 });
 
   const partyAlternateIdentifierA = searchText + '0';
   const industryClassificationCodeA = valueGenerator.stringOfNumericCharacters();

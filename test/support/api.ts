@@ -13,19 +13,27 @@ export class Api {
   constructor(private readonly app: App) {}
 
   get(url: string): request.Test {
-    const apiKey = ENVIRONMENT_VARIABLES.API_KEY;
-    const strategy = AUTH.STRATEGY;
-    return request(this.app.getHttpServer())
-      .get(url)
-      .set({ [strategy]: apiKey });
-  }
-
-  getDocsWithBasicAuth(url: string, { username, password }: { username: string; password: string }): request.Test {
-    return request(this.app.getHttpServer()).get(url).auth(username, password);
+    return this.request().get(url).set(this.getValidAuthHeader());
   }
 
   getWithoutAuth(url: string, strategy?: string, key?: string): request.Test {
-    const query = request(this.app.getHttpServer()).get(url);
+    const query = this.request().get(url);
+    if (strategy) {
+      return query.set({ [strategy]: key });
+    }
+    return query;
+  }
+
+  getDocsWithBasicAuth(url: string, { username, password }: { username: string; password: string }): request.Test {
+    return this.request().get(url).auth(username, password);
+  }
+
+  post(url: string, body: string | object): request.Test {
+    return this.request().post(url).send(body).set(this.getValidAuthHeader());
+  }
+
+  postWithoutAuth(url: string, body: string | object, strategy?: string, key?: string): request.Test {
+    const query = this.request().post(url).send(body);
     if (strategy) {
       return query.set({ [strategy]: key });
     }
@@ -34,5 +42,15 @@ export class Api {
 
   destroy(): Promise<void> {
     return this.app.destroy();
+  }
+
+  private request(): request.SuperTest<request.Test> {
+    return request(this.app.getHttpServer());
+  }
+
+  private getValidAuthHeader(): Record<string, string> {
+    const apiKey = ENVIRONMENT_VARIABLES.API_KEY;
+    const strategy = AUTH.STRATEGY;
+    return { [strategy]: apiKey };
   }
 }
