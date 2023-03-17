@@ -1,3 +1,4 @@
+import { AUTH } from '@ukef/constants';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import request from 'supertest';
 
@@ -13,7 +14,7 @@ export class Api {
 
   get(url: string): request.Test {
     const apiKey = ENVIRONMENT_VARIABLES.API_KEY;
-    const strategy = ENVIRONMENT_VARIABLES.API_KEY_STRATEGY;
+    const strategy = AUTH.STRATEGY;
     return request(this.app.getHttpServer())
       .get(url)
       .set({ [strategy]: apiKey });

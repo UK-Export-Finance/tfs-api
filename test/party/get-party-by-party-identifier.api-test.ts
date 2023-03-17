@@ -1,4 +1,5 @@
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
+import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
 import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import { PartyGenerator } from '@ukef-test/support/generator/party-generator';
@@ -34,6 +35,14 @@ describe('GET /parties/{partyIdentifier}', () => {
     makeRequest: () => api.get(getPartyUrl),
   });
 
+  withClientAuthenticationTests({
+    givenTheRequestWouldOtherwiseSucceed: () => {
+      givenAuthenticationWithTheIdpSucceeds();
+      requestToGetParty().reply(200, partyInAcbs);
+    },
+    makeRequestWithoutAuth: (incorrectAuth?: IncorrectAuthArg) => api.getWithoutAuth(getPartyUrl, incorrectAuth?.headerName, incorrectAuth?.headerValue),
+  });
+
   it('returns a 200 response with the party if it is returned by ACBS', async () => {
     givenAuthenticationWithTheIdpSucceeds();
     requestToGetParty().reply(200, partyInAcbs);
@@ -42,16 +51,6 @@ describe('GET /parties/{partyIdentifier}', () => {
 
     expect(status).toBe(200);
     expect(body).toStrictEqual(JSON.parse(JSON.stringify(expectedParty)));
-  });
-
-  it('returns a 401 response when the API Key is missing', async () => {
-    givenAuthenticationWithTheIdpSucceeds();
-    requestToGetParty().reply(200, partyInAcbs);
-
-    const { status, body } = await api.getWithoutAuth(getPartyUrl);
-
-    expect(status).toBe(401);
-    expect(body).toStrictEqual({ message: 'Unauthorized', statusCode: 401 });
   });
 
   it('returns a 404 response if ACBS returns a 400 response with the string "Party not found"', async () => {

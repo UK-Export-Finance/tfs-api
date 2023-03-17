@@ -1,4 +1,5 @@
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
+import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
 import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
 import { PartyExternalRatingGenerator } from '@ukef-test/support/generator/party-external-rating-generator';
@@ -36,6 +37,15 @@ describe('GET /parties/{partyIdentifier}/external-ratings', () => {
     makeRequest: () => api.get(getPartyExternalRatingsUrl),
   });
 
+  withClientAuthenticationTests({
+    givenTheRequestWouldOtherwiseSucceed: () => {
+      givenAuthenticationWithTheIdpSucceeds();
+      requestToGetExternalRatingsForParty().reply(200, externalRatingsInAcbs);
+    },
+    makeRequestWithoutAuth: (incorrectAuth?: IncorrectAuthArg) =>
+      api.getWithoutAuth(getPartyExternalRatingsUrl, incorrectAuth?.headerName, incorrectAuth?.headerValue),
+  });
+
   it('returns a 200 response with the external ratings of the party if they are returned by ACBS', async () => {
     givenAuthenticationWithTheIdpSucceeds();
     requestToGetExternalRatingsForParty().reply(200, externalRatingsInAcbs);
@@ -54,50 +64,6 @@ describe('GET /parties/{partyIdentifier}/external-ratings', () => {
 
     expect(status).toBe(200);
     expect(body).toStrictEqual([]);
-  });
-
-  it('returns a 401 response when the API Key is missing', async () => {
-    givenAuthenticationWithTheIdpSucceeds();
-    requestToGetExternalRatingsForParty().reply(200, []);
-
-    const { status, body } = await api.getWithoutAuth(getPartyExternalRatingsUrl);
-
-    expect(status).toBe(401);
-    expect(body).toStrictEqual({ message: 'Unauthorized', statusCode: 401 });
-  });
-
-  it('returns a 401 response when the Strategy is randomised', async () => {
-    givenAuthenticationWithTheIdpSucceeds();
-    requestToGetExternalRatingsForParty().reply(200, []);
-    const apiKey = ENVIRONMENT_VARIABLES.API_KEY;
-    const randomisedApiStrategy = valueGenerator.string();
-
-    const { status, body } = await api.getWithoutAuth(getPartyExternalRatingsUrl, randomisedApiStrategy, apiKey);
-
-    expect(status).toBe(401);
-    expect(body).toStrictEqual({ message: 'Unauthorized', statusCode: 401 });
-  });
-
-  it('returns a 401 response when the API Key is incorrect', async () => {
-    givenAuthenticationWithTheIdpSucceeds();
-    requestToGetExternalRatingsForParty().reply(200, []);
-    const strategy = ENVIRONMENT_VARIABLES.API_KEY_STRATEGY;
-    const randomisedApiKey = valueGenerator.string();
-    const { status, body } = await api.getWithoutAuth(getPartyExternalRatingsUrl, strategy, randomisedApiKey);
-
-    expect(status).toBe(401);
-    expect(body).toStrictEqual({ message: 'Unauthorized', statusCode: 401 });
-  });
-
-  it('returns a 401 response when the API Key is empty', async () => {
-    givenAuthenticationWithTheIdpSucceeds();
-    requestToGetExternalRatingsForParty().reply(200, []);
-    const strategy = ENVIRONMENT_VARIABLES.API_KEY_STRATEGY;
-
-    const { status, body } = await api.getWithoutAuth(getPartyExternalRatingsUrl, strategy, '');
-
-    expect(status).toBe(401);
-    expect(body).toStrictEqual({ message: 'Unauthorized', statusCode: 401 });
   });
 
   it('returns a 404 response if ACBS returns a 400 response with the string "Party not found"', async () => {
