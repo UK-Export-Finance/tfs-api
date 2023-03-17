@@ -1,5 +1,6 @@
-import { AUTH, PROPERTIES } from '@ukef/constants';
+import { PROPERTIES } from '@ukef/constants';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
+import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
 import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
@@ -75,6 +76,15 @@ describe('POST /deals/{dealIdentifier}/guarantees', () => {
   const { idToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
     givenRequestWouldOtherwiseSucceed: () => givenRequestToCreateDealGuaranteeInAcbsSucceeds(),
     makeRequest: () => api.post(createDealGuaranteeUrl, requestBodyToCreateDealGuarantee),
+  });
+
+  withClientAuthenticationTests({
+    givenTheRequestWouldOtherwiseSucceed: () => {
+      givenAuthenticationWithTheIdpSucceeds();
+      givenRequestToCreateDealGuaranteeInAcbsSucceeds();
+    },
+    makeRequestWithoutAuth: (incorrectAuth?: IncorrectAuthArg) =>
+      api.postWithoutAuth(createDealGuaranteeUrl, requestBodyToCreateDealGuarantee, incorrectAuth?.headerName, incorrectAuth?.headerValue),
   });
 
   it('returns a 201 response with the deal guarantee location if it has been successfully created in ACBS', async () => {
@@ -537,50 +547,6 @@ describe('POST /deals/{dealIdentifier}/guarantees', () => {
         statusCode: 400,
       });
     });
-  });
-
-  it('returns a 401 response when the API Key is missing', async () => {
-    givenAuthenticationWithTheIdpSucceeds();
-    givenAnyRequestBodyToCreateDealGuaranteeInAcbsSucceeds();
-
-    const { status, body } = await api.postWithoutAuth(createDealGuaranteeUrl, requestBodyToCreateDealGuarantee);
-
-    expect(status).toBe(401);
-    expect(body).toStrictEqual({ message: 'Unauthorized', statusCode: 401 });
-  });
-
-  it('returns a 401 response when the Strategy is randomised', async () => {
-    givenAuthenticationWithTheIdpSucceeds();
-    givenAnyRequestBodyToCreateDealGuaranteeInAcbsSucceeds();
-    const apiKey = ENVIRONMENT_VARIABLES.API_KEY;
-    const randomisedApiStrategy = valueGenerator.word();
-
-    const { status, body } = await api.postWithoutAuth(createDealGuaranteeUrl, requestBodyToCreateDealGuarantee, randomisedApiStrategy, apiKey);
-
-    expect(status).toBe(401);
-    expect(body).toStrictEqual({ message: 'Unauthorized', statusCode: 401 });
-  });
-
-  it('returns a 401 response when the API Key is incorrect', async () => {
-    givenAuthenticationWithTheIdpSucceeds();
-    givenAnyRequestBodyToCreateDealGuaranteeInAcbsSucceeds();
-    const strategy = AUTH.STRATEGY;
-    const randomisedApiKey = valueGenerator.string();
-    const { status, body } = await api.postWithoutAuth(createDealGuaranteeUrl, requestBodyToCreateDealGuarantee, strategy, randomisedApiKey);
-
-    expect(status).toBe(401);
-    expect(body).toStrictEqual({ message: 'Unauthorized', statusCode: 401 });
-  });
-
-  it('returns a 401 response when the API Key is empty', async () => {
-    givenAuthenticationWithTheIdpSucceeds();
-    givenAnyRequestBodyToCreateDealGuaranteeInAcbsSucceeds();
-    const strategy = AUTH.STRATEGY;
-
-    const { status, body } = await api.postWithoutAuth(createDealGuaranteeUrl, requestBodyToCreateDealGuarantee, strategy, '');
-
-    expect(status).toBe(401);
-    expect(body).toStrictEqual({ message: 'Unauthorized', statusCode: 401 });
   });
 
   it('returns a 404 response if ACBS responds with a 400 response that is a string containing "The deal not found"', async () => {
