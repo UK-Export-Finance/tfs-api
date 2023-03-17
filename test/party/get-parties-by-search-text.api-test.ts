@@ -1,4 +1,5 @@
 import { ACBS } from '@ukef/constants';
+import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
 import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
@@ -93,6 +94,15 @@ describe('GET /parties?searchText={searchText}', () => {
   afterEach(() => {
     nock.abortPendingRequests();
     nock.cleanAll();
+  });
+
+  withClientAuthenticationTests({
+    givenTheRequestWouldOtherwiseSucceed: () => {
+      givenAuthenticationWithTheIdpSucceeds();
+      requestToGetPartiesBySearchText().reply(200, partiesInAcbs);
+    },
+    makeRequestWithoutAuth: (incorrectAuth?: IncorrectAuthArg) =>
+      api.getWithoutAuth(`/api/v1/parties?searchText=${searchText}`, incorrectAuth?.headerName, incorrectAuth?.headerValue),
   });
 
   it('returns a 200 response with the matching parties if they are returned by ACBS', async () => {

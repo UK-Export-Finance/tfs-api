@@ -31,6 +31,9 @@
   },
   "settings": {
     "node": {
+      "allowModules": [
+        "express"
+      ],
       "tryExtensions": [
         ".js",
         ".json",

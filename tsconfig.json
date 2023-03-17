@@ -24,11 +24,12 @@
     "lib": ["ES2015"],
     "paths": {
       "@ukef/*": ["src/*"],
-      "@ukef/constants/*": ["src/constants/index"],
+      "@ukef/constants*": ["src/constants/index"],
       "@ukef/config/*": ["src/config/*"],
       "@ukef/helpers/*": ["src/helpers/*"],
-      "@ukef/module/*": ["src/modules/*"],
-      "@ukef/swagger/*": ["src/swagger/*"],
+      "@ukef/modules/*": ["src/modules/*"],
+      "@ukef/auth/*": ["src/modules/auth/*"],
+      "@ukef/swagger/*": ["src/swagger"],
       "@ukef-test/*": ["test/*"],
     }
   },

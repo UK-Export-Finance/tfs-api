@@ -17,6 +17,7 @@ export const ENVIRONMENT_VARIABLES = Object.freeze({
   ACBS_AUTHENTICATION_PASSWORD: valueGenerator.string(),
   ACBS_MAX_REDIRECTS: 0,
   ACBS_TIMEOUT: 1000,
+  API_KEY: valueGenerator.string(),
 });
 
 export const getEnvironmentVariablesForProcessEnv = (): NodeJS.ProcessEnv => ({
