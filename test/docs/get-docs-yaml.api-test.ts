@@ -13,7 +13,7 @@ describe('GET /docs-yaml', () => {
   });
 
   it('returns a 200 OK response', async () => {
-    const { status } = await api.getWithBasicAuth('/docs-yaml', {
+    const { status } = await api.getDocsWithBasicAuth('/docs-yaml', {
       username: ENVIRONMENT_VARIABLES.SWAGGER_USER,
       password: ENVIRONMENT_VARIABLES.SWAGGER_PASSWORD,
     });
@@ -21,7 +21,7 @@ describe('GET /docs-yaml', () => {
   });
 
   it('matches the snapshot', async () => {
-    const { text } = await api.getWithBasicAuth('/docs-yaml', {
+    const { text } = await api.getDocsWithBasicAuth('/docs-yaml', {
       username: ENVIRONMENT_VARIABLES.SWAGGER_USER,
       password: ENVIRONMENT_VARIABLES.SWAGGER_PASSWORD,
     });
