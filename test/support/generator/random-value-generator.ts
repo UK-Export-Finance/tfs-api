@@ -37,6 +37,10 @@ export class RandomValueGenerator {
     return this.chance.string({ length, pool: '0123456789' });
   }
 
+  character(): string {
+    return this.chance.character();
+  }
+
   probabilityFloat(): number {
     return this.chance.floating({ min: 0, max: 1 });
   }
@@ -63,5 +67,9 @@ export class RandomValueGenerator {
 
   dateOnlyString(): DateOnlyString {
     return this.dateStringTransformations.removeTime(this.dateTimeString());
+  }
+
+  bool(): boolean {
+    return this.chance.bool();
   }
 }

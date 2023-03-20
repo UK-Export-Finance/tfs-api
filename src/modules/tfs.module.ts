@@ -8,9 +8,10 @@ import { PartyModule } from '@ukef/modules/party/party.module';
 import { PartyExternalRatingModule } from '@ukef/modules/party-external-rating/party-external-rating.module';
 
 import { AcbsExceptionTransformInterceptor } from './acbs-adapter/acbs-exception-transform.interceptor';
+import { FacilityInvestorModule } from './facility-investor/facility-investor.module';
 
 @Module({
-  imports: [AuthModule, AcbsModule, DealGuaranteeModule, DealInvestorModule, PartyExternalRatingModule, PartyModule],
+  imports: [AuthModule, AcbsModule, DealGuaranteeModule, DealInvestorModule, FacilityInvestorModule, PartyExternalRatingModule, PartyModule],
   providers: [
     {
       provide: APP_INTERCEPTOR,

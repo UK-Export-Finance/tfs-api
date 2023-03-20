@@ -53,5 +53,13 @@ export function withRequiredNonNegativeNumberFieldValidationApiTests<RequestBody
 
       expect(status).toBe(201);
     });
+
+    it(`returns a 201 response if ${fieldName} is greater than 0`, async () => {
+      const requestWithZeroField = [{ ...validRequestBody[0], [fieldNameSymbol]: 100 }];
+
+      const { status } = await makeRequest(requestWithZeroField);
+
+      expect(status).toBe(201);
+    });
   });
 }

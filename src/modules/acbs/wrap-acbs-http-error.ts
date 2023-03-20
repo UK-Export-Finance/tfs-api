@@ -34,8 +34,14 @@ export function wrapAcbsHttpPostError<T, O extends ObservableInput<any>>({
       throw new AcbsUnexpectedException(messageForUnknownException, error);
     }
 
-    if (typeof error.response.data === 'string' && error.response.data.includes('The deal not found')) {
-      throw new AcbsResourceNotFoundException(`Deal with identifier ${resourceIdentifier} was not found by ACBS.`, error);
+    if (typeof error.response.data === 'string') {
+      if (error.response.data.includes('The deal not found')) {
+        throw new AcbsResourceNotFoundException(`Deal with identifier ${resourceIdentifier} was not found by ACBS.`, error);
+      }
+
+      if (error.response.data.includes('The facility not found')) {
+        throw new AcbsResourceNotFoundException(`Facility with identifier ${resourceIdentifier} was not found by ACBS.`, error);
+      }
     }
 
     throw new AcbsBadRequestException(
