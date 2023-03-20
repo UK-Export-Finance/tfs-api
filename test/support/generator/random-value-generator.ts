@@ -1,11 +1,18 @@
+import { DateString, DateStringTransformations, UkefId } from '@ukef/helpers';
 import { Chance } from 'chance';
 
 export class RandomValueGenerator {
   private static readonly seed = 0;
   private readonly chance: Chance.Chance;
+  private readonly dateStringTransformations: DateStringTransformations;
 
   constructor() {
     this.chance = new Chance(RandomValueGenerator.seed);
+    this.dateStringTransformations = new DateStringTransformations();
+  }
+
+  boolean(): boolean {
+    return this.chance.bool();
   }
 
   string(): string {
@@ -33,11 +40,22 @@ export class RandomValueGenerator {
     return this.chance.floating({ min: 0, max: 1 });
   }
 
-  nonnegativeFloat(): number {
-    return this.chance.floating({ min: 0 });
+  nonnegativeFloat(fixed = 2): number {
+    return this.chance.floating({ min: 0, fixed });
   }
 
   date(): Date {
     return this.chance.date();
+  }
+
+  // UKEF id example 0030000321. It should be used for Deal and Facility IDs.
+  // TODO: stringOfNumericCharacters should generate 6 digits, but doesn't support Max value at the moment.
+  ukefId(): UkefId {
+    return ('0030' + this.stringOfNumericCharacters(6)) as UkefId;
+  }
+
+  // Date string example 2023-03-16
+  dateString(): DateString {
+    return this.dateStringTransformations.removeTime(this.date().toISOString());
   }
 }
