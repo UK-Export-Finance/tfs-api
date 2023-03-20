@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { AcbsModule } from '@ukef/module/acbs/acbs.module';
+import { AcbsModule } from '@ukef/modules/acbs/acbs.module';
 
 import { DealInvestorController } from './deal-investor.controller';
 import { DealInvestorService } from './deal-investor.service';

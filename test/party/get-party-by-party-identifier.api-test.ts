@@ -1,4 +1,5 @@
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
+import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
 import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import { PartyGenerator } from '@ukef-test/support/generator/party-generator';
@@ -32,6 +33,14 @@ describe('GET /parties/{partyIdentifier}', () => {
   const { idToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
     givenRequestWouldOtherwiseSucceed: () => requestToGetParty().reply(200, partyInAcbs),
     makeRequest: () => api.get(getPartyUrl),
+  });
+
+  withClientAuthenticationTests({
+    givenTheRequestWouldOtherwiseSucceed: () => {
+      givenAuthenticationWithTheIdpSucceeds();
+      requestToGetParty().reply(200, partyInAcbs);
+    },
+    makeRequestWithoutAuth: (incorrectAuth?: IncorrectAuthArg) => api.getWithoutAuth(getPartyUrl, incorrectAuth?.headerName, incorrectAuth?.headerValue),
   });
 
   it('returns a 200 response with the party if it is returned by ACBS', async () => {

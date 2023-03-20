@@ -1,4 +1,5 @@
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
+import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
 import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
 import { PartyExternalRatingGenerator } from '@ukef-test/support/generator/party-external-rating-generator';
@@ -34,6 +35,15 @@ describe('GET /parties/{partyIdentifier}/external-ratings', () => {
   const { idToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
     givenRequestWouldOtherwiseSucceed: () => requestToGetExternalRatingsForParty().reply(200, externalRatingsInAcbs),
     makeRequest: () => api.get(getPartyExternalRatingsUrl),
+  });
+
+  withClientAuthenticationTests({
+    givenTheRequestWouldOtherwiseSucceed: () => {
+      givenAuthenticationWithTheIdpSucceeds();
+      requestToGetExternalRatingsForParty().reply(200, externalRatingsInAcbs);
+    },
+    makeRequestWithoutAuth: (incorrectAuth?: IncorrectAuthArg) =>
+      api.getWithoutAuth(getPartyExternalRatingsUrl, incorrectAuth?.headerName, incorrectAuth?.headerValue),
   });
 
   it('returns a 200 response with the external ratings of the party if they are returned by ACBS', async () => {
