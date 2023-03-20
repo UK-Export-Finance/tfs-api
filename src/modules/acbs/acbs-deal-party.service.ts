@@ -2,10 +2,13 @@ import { HttpService } from '@nestjs/axios';
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import AcbsConfig from '@ukef/config/acbs.config';
+import { PROPERTIES } from '@ukef/constants';
 
 import { AcbsHttpService } from './acbs-http.service';
+import { AcbsCreateDealInvestorRequest } from './dto/acbs-create-deal-investor-request.dto';
 import { AcbsGetDealPartyResponseDto } from './dto/acbs-get-deal-party-response.dto';
-import { createWrapAcbsHttpErrorCallback } from './wrap-acbs-http-error-callback';
+import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
+import { createWrapAcbsHttpErrorCallback, createWrapAcbsHttpPostErrorCallback } from './wrap-acbs-http-error-callback';
 
 @Injectable()
 export class AcbsDealPartyService {
@@ -30,5 +33,25 @@ export class AcbsDealPartyService {
     });
 
     return dealPartiesInAcbs;
+  }
+
+  async createInvestorForDeal(dealIdentifier: string, newDealInvestor: AcbsCreateDealInvestorRequest, idToken: string): Promise<void> {
+    const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+    await this.acbsHttpService.post<AcbsCreateDealInvestorRequest>({
+      path: `/Portfolio/${portfolioIdentifier}/Deal/${dealIdentifier}/DealParty`,
+      requestBody: newDealInvestor,
+      idToken,
+      onError: createWrapAcbsHttpPostErrorCallback({
+        messageForUnknownError: `Failed to create an investor for deal ${dealIdentifier} in ACBS.`,
+        knownErrors: [
+          {
+            substringToFind: 'The deal not found',
+            throwError: (error) => {
+              throw new AcbsResourceNotFoundException(`Deal with identifier ${dealIdentifier} was not found by ACBS.`, error);
+            },
+          },
+        ],
+      }),
+    });
   }
 }

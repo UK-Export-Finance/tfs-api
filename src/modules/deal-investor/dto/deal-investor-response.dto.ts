@@ -3,12 +3,12 @@ import { ENUMS, EXAMPLES, PROPERTIES } from '@ukef/constants';
 import { DateOnlyString } from '@ukef/helpers/date-only-string.type';
 import { IsEnum } from 'class-validator';
 
-class DealInvestorDtoLenderType {
+class GetDealInvestorDtoLenderType {
   @ApiProperty({ description: 'Lender type: 100 for Exporter or 500 for UKEF record.', example: ENUMS.LENDER_TYPE_CODES.ECGD })
   @IsEnum(ENUMS.LENDER_TYPE_CODES)
   LenderTypeCode: string;
 }
-export class DealInvestorResponseDto {
+export class GetDealInvestorResponseDto {
   @ApiResponseProperty({ example: EXAMPLES.DEAL_ID })
   dealIdentifier: string;
 
@@ -17,7 +17,7 @@ export class DealInvestorResponseDto {
   portfolioIdentifier: string;
 
   @ApiResponseProperty()
-  lenderType: DealInvestorDtoLenderType;
+  lenderType: GetDealInvestorDtoLenderType;
 
   @ApiProperty({ type: Date, nullable: false })
   effectiveDate: DateOnlyString;

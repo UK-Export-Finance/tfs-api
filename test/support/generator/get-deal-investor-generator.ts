@@ -3,7 +3,7 @@ import { DealInvestor } from '@ukef/modules/deal-investor/deal-investor.interfac
 
 import { AbstractGenerator } from './abstract-generator';
 
-export class DealInvestorGenerator extends AbstractGenerator<DealInvestor, GenerateResult, GenerateOptions> {
+export class GetDealInvestorGenerator extends AbstractGenerator<DealInvestor, GenerateResult, GenerateOptions> {
   protected generateValues(): DealInvestor {
     return {
       dealIdentifier: this.valueGenerator.ukefId(),

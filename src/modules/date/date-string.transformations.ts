@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { DATE_FORMATS } from '@ukef/constants';
-import { DateOnlyString } from '@ukef/helpers/date-only-string.type';
+import { DateOnlyString } from '@ukef/helpers';
 import { DateString } from '@ukef/helpers/date-string.type';
 import { matches } from 'class-validator';
 

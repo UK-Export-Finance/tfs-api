@@ -5,8 +5,10 @@ interface StringFieldValidationApiTestOptions<RequestBodyItem, RequestBodyItemKe
   length?: number;
   minLength?: number;
   maxLength?: number;
-  required: boolean;
+  required?: boolean;
+  pattern?: string;
   generateFieldValueOfLength: (length: number) => RequestBodyItem[RequestBodyItemKey];
+  generateFieldValueThatDoesNotMatchRegex?: () => RequestBodyItem[RequestBodyItemKey];
   validRequestBody: RequestBodyItem[];
   makeRequest: (body: unknown[]) => request.Test;
   givenAnyRequestBodyWouldSucceed: () => void;
@@ -18,13 +20,16 @@ export function withStringFieldValidationApiTests<RequestBodyItem, RequestBodyIt
   minLength: minLengthOption,
   maxLength: maxLengthOption,
   required,
+  pattern,
   generateFieldValueOfLength,
+  generateFieldValueThatDoesNotMatchRegex,
   validRequestBody,
   makeRequest,
   givenAnyRequestBodyWouldSucceed,
 }: StringFieldValidationApiTestOptions<RequestBodyItem, RequestBodyItemKey>): void {
   const fieldName = fieldNameSymbol.toString();
   const { minLength, maxLength } = getMinAndMaxLengthFromOptions({ fieldName, minLengthOption, maxLengthOption, lengthOption });
+  required = required ?? true;
 
   describe(`${fieldName} validation`, () => {
     beforeEach(() => {
@@ -33,14 +38,14 @@ export function withStringFieldValidationApiTests<RequestBodyItem, RequestBodyIt
 
     if (required) {
       it(`returns a 400 response if ${fieldName} is not present`, async () => {
-        const { [fieldNameSymbol]: _removed, ...requestWithField } = validRequestBody[0];
+        const { [fieldNameSymbol]: _removed, ...requestWithoutTheField } = validRequestBody[0];
 
-        const { status, body } = await makeRequest([requestWithField]);
+        const { status, body } = await makeRequest([requestWithoutTheField]);
 
         expect(status).toBe(400);
-        expect(body).toStrictEqual({
+        expect(body).toMatchObject({
           error: 'Bad Request',
-          message: [`${fieldName} must be longer than or equal to ${minLength} characters`],
+          message: expect.arrayContaining([`${fieldName} must be longer than or equal to ${minLength} characters`]),
           statusCode: 400,
         });
       });
@@ -61,25 +66,27 @@ export function withStringFieldValidationApiTests<RequestBodyItem, RequestBodyIt
         const { status, body } = await makeRequest(requestWithEmptyField);
 
         expect(status).toBe(400);
-        expect(body).toStrictEqual({
+        expect(body).toMatchObject({
           error: 'Bad Request',
-          message: [`${fieldName} must be longer than or equal to ${minLength} characters`],
+          message: expect.arrayContaining([`${fieldName} must be longer than or equal to ${minLength} characters`]),
           statusCode: 400,
         });
       });
 
-      it(`returns a 400 response if ${fieldName} has fewer than ${minLength} characters`, async () => {
-        const requestWithTooShortField = [{ ...validRequestBody[0], [fieldNameSymbol]: generateFieldValueOfLength(minLength - 1) }];
+      if (minLength > 1) {
+        it(`returns a 400 response if ${fieldName} has fewer than ${minLength} characters`, async () => {
+          const requestWithTooShortField = [{ ...validRequestBody[0], [fieldNameSymbol]: generateFieldValueOfLength(minLength - 1) }];
 
-        const { status, body } = await makeRequest(requestWithTooShortField);
+          const { status, body } = await makeRequest(requestWithTooShortField);
 
-        expect(status).toBe(400);
-        expect(body).toStrictEqual({
-          error: 'Bad Request',
-          message: [`${fieldName} must be longer than or equal to ${minLength} characters`],
-          statusCode: 400,
+          expect(status).toBe(400);
+          expect(body).toMatchObject({
+            error: 'Bad Request',
+            message: expect.arrayContaining([`${fieldName} must be longer than or equal to ${minLength} characters`]),
+            statusCode: 400,
+          });
         });
-      });
+      }
     } else {
       it(`returns a 201 response if ${fieldName} is an empty string`, async () => {
         const requestWithEmptyField = [{ ...validRequestBody[0], [fieldNameSymbol]: '' }];
@@ -114,12 +121,27 @@ export function withStringFieldValidationApiTests<RequestBodyItem, RequestBodyIt
       const { status, body } = await makeRequest(requestWithTooLongField);
 
       expect(status).toBe(400);
-      expect(body).toStrictEqual({
+      expect(body).toMatchObject({
         error: 'Bad Request',
-        message: [`${fieldName} must be shorter than or equal to ${maxLength} characters`],
+        message: expect.arrayContaining([`${fieldName} must be shorter than or equal to ${maxLength} characters`]),
         statusCode: 400,
       });
     });
+
+    if (pattern && generateFieldValueThatDoesNotMatchRegex) {
+      it(`returns a 400 response if ${fieldName} does not match the regular expression ${pattern}`, async () => {
+        const requestWithInvalidField = [{ ...validRequestBody[0], [fieldNameSymbol]: generateFieldValueThatDoesNotMatchRegex() }];
+
+        const { status, body } = await makeRequest(requestWithInvalidField);
+
+        expect(status).toBe(400);
+        expect(body).toMatchObject({
+          error: 'Bad Request',
+          message: expect.arrayContaining([`${fieldName} must match ${pattern} regular expression`]),
+          statusCode: 400,
+        });
+      });
+    }
   });
 }
 
