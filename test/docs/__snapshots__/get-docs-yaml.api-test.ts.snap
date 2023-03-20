@@ -103,7 +103,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/DealInvestorDto'
+                  $ref: '#/components/schemas/DealInvestorResponseDto'
         '404':
           description: The specified deal, or the investors for that deal, were not found.
         '500':
@@ -276,7 +276,7 @@ components:
           example: '500'
       required:
         - LenderTypeCode
-    DealInvestorDto:
+    DealInvestorResponseDto:
       type: object
       properties:
         dealIdentifier:
