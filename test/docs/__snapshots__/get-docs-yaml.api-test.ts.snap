@@ -10,6 +10,31 @@ paths:
       responses:
         '200':
           description: ''
+  /api/v1/deals/{dealIdentifier}/investors:
+    get:
+      operationId: DealInvestorController_getDealInvestors
+      summary: Get all investors of specific deal.
+      parameters:
+        - name: dealIdentifier
+          required: true
+          in: path
+          description: UKEF id for deal
+          example: '0030000321'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The deal investors have been successfully retrieved.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DealInvestorResponseDto'
+        '404':
+          description: The specified deal, or the investors for that deal, were not found.
+        '500':
+          description: An internal server error has occurred.
   /api/v1/parties/{partyIdentifier}/external-ratings:
     get:
       operationId: PartyExternalRatingController_getExternalRatingsForParty
@@ -83,31 +108,6 @@ paths:
           description: The specified party was not found.
         '500':
           description: An internal server error has occurred.
-  /api/v1/deals/{dealIdentifier}/investors:
-    get:
-      operationId: DealInvestorController_getDealInvestors
-      summary: Get all investors of specific deal.
-      parameters:
-        - name: dealIdentifier
-          required: true
-          in: path
-          description: UKEF id for deal
-          example: '0030000321'
-          schema:
-            type: string
-      responses:
-        '200':
-          description: The deal investors have been successfully retrieved.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/DealInvestorResponseDto'
-        '404':
-          description: The specified deal, or the investors for that deal, were not found.
-        '500':
-          description: An internal server error has occurred.
 info:
   title: TFS API Specification
   description: TFS API documentation
@@ -117,6 +117,54 @@ tags: []
 servers: []
 components:
   schemas:
+    DealInvestorDtoLenderType:
+      type: object
+      properties:
+        LenderTypeCode:
+          type: string
+          description: 'Lender type: 100 for Exporter or 500 for UKEF record.'
+          example: '500'
+      required:
+        - LenderTypeCode
+    DealInvestorResponseDto:
+      type: object
+      properties:
+        dealIdentifier:
+          type: string
+          readOnly: true
+          example: '0030000321'
+        portfolioIdentifier:
+          type: string
+          readOnly: true
+          example: E1
+        lenderType:
+          readOnly: true
+          allOf:
+            - $ref: '#/components/schemas/DealInvestorDtoLenderType'
+        effectiveDate:
+          format: date-time
+          type: string
+          nullable: false
+        expiryDate:
+          format: date-time
+          type: string
+          nullable: true
+        isExpiryDateMaximum:
+          type: boolean
+          readOnly: true
+          example: false
+        maximumLiability:
+          type: number
+          readOnly: true
+          example: 500012.25
+      required:
+        - dealIdentifier
+        - portfolioIdentifier
+        - lenderType
+        - effectiveDate
+        - expiryDate
+        - isExpiryDateMaximum
+        - maximumLiability
     GetPartyExternalRatingResponseRatingEntity:
       type: object
       properties:
@@ -267,53 +315,5 @@ components:
         - citizenshipClass
         - officerRiskDate
         - countryCode
-    DealInvestorDtoLenderType:
-      type: object
-      properties:
-        LenderTypeCode:
-          type: string
-          description: 'Lender type: 100 for Exporter or 500 for UKEF record.'
-          example: '500'
-      required:
-        - LenderTypeCode
-    DealInvestorResponseDto:
-      type: object
-      properties:
-        dealIdentifier:
-          type: string
-          readOnly: true
-          example: '0030000321'
-        portfolioIdentifier:
-          type: string
-          readOnly: true
-          example: E1
-        lenderType:
-          readOnly: true
-          allOf:
-            - $ref: '#/components/schemas/DealInvestorDtoLenderType'
-        effectiveDate:
-          format: date-time
-          type: string
-          nullable: false
-        expiryDate:
-          format: date-time
-          type: string
-          nullable: true
-        isExpiryDateMaximum:
-          type: boolean
-          readOnly: true
-          example: false
-        maximumLiability:
-          type: number
-          readOnly: true
-          example: 500012.25
-      required:
-        - dealIdentifier
-        - portfolioIdentifier
-        - lenderType
-        - effectiveDate
-        - expiryDate
-        - isExpiryDateMaximum
-        - maximumLiability
 "
 `;
