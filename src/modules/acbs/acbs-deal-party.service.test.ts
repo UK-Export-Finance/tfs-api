@@ -1,4 +1,5 @@
 import { HttpService } from '@nestjs/axios';
+import { DealInvestorGenerator } from '@ukef-test/support/generator/deal-investor-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { AxiosError } from 'axios';
 import { when } from 'jest-when';
@@ -6,7 +7,6 @@ import { of, throwError } from 'rxjs';
 
 import { AcbsDealPartyService } from './acbs-deal-party.service';
 import { AcbsException } from './exception/acbs.exception';
-import { DealInvestorGenerator } from '../../../test/support/generator/deal-investor-generator';
 
 describe('AcbsDealPartyService', () => {
   const valueGenerator = new RandomValueGenerator();
