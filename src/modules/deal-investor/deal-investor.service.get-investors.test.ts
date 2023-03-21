@@ -52,7 +52,7 @@ describe('DealInvestorService', () => {
       expect(dealInvestorsFromService).toStrictEqual(expectedDealInvestors);
     });
 
-    it('does NOT return unexpected keys from the external ratings from the service', async () => {
+    it('does NOT return unexpected keys from the deal investor from the service', async () => {
       const { dealInvestorsInAcbs, dealInvestors } = new DealInvestorGenerator(valueGenerator).generate({
         numberToGenerate: 2,
         dealIdentifier,

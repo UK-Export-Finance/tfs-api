@@ -90,7 +90,7 @@ describe('AcbsDealPartyService', () => {
       expect(dealInvestors).toBe('null');
     });
 
-    it('returns the external ratings for the party if ACBS responds with the external ratings', async () => {
+    it('returns the deal investors for the deal if ACBS responds with same data', async () => {
       const { dealInvestorsInAcbs } = new DealInvestorGenerator(valueGenerator).generate({ portfolioIdentifier, dealIdentifier, numberToGenerate: 2 });
 
       when(httpServiceGet)
@@ -108,9 +108,9 @@ describe('AcbsDealPartyService', () => {
           }),
         );
 
-      const externalRatings = await service.getDealPartyForDeal(portfolioIdentifier, dealIdentifier, authToken);
+      const dealInvestors = await service.getDealPartyForDeal(portfolioIdentifier, dealIdentifier, authToken);
 
-      expect(externalRatings).toStrictEqual(dealInvestorsInAcbs);
+      expect(dealInvestors).toStrictEqual(dealInvestorsInAcbs);
     });
   });
 });
