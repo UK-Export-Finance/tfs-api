@@ -116,6 +116,11 @@ info:
 tags: []
 servers: []
 components:
+  securitySchemes:
+    ApiKeyHeader:
+      type: apiKey
+      in: header
+      name: x-api-key
   schemas:
     DealInvestorDtoLenderType:
       type: object
@@ -315,5 +320,7 @@ components:
         - citizenshipClass
         - officerRiskDate
         - countryCode
+security:
+  - ApiKeyHeader: []
 "
 `;
