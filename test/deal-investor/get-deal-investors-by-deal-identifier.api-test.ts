@@ -63,7 +63,7 @@ describe('GET /deals/{dealIdentifier}/deal-investors', () => {
     });
   });
 
-  it('returns a 500 response if ACBS returns a 200 response without the string "null"', async () => {
+  it('returns a 500 response if ACBS returns a 200 response with string other than "null"', async () => {
     givenAuthenticationWithTheIdpSucceeds();
     requestToGetDealInvestors().reply(200, 'An error message from ACBS.');
 
@@ -74,6 +74,41 @@ describe('GET /deals/{dealIdentifier}/deal-investors', () => {
       statusCode: 500,
       message: 'Internal server error',
     });
+  });
+
+  it('returns a 500 response if ACBS returns a 200 response but without required field', async () => {
+    givenAuthenticationWithTheIdpSucceeds();
+    const brokenDealInvestorsInAcbs = [
+      {
+        EffectiveDate: valueGenerator.dateString(),
+        ExpirationDate: valueGenerator.dateString(),
+        IsExpirationDateMaximum: valueGenerator.boolean(),
+        LimitAmount: valueGenerator.nonnegativeFloat(2),
+      },
+    ];
+
+    requestToGetDealInvestors().reply(200, brokenDealInvestorsInAcbs);
+
+    const { status, body } = await api.get(getDealInvestorsUrl);
+    expect(status).toBe(500);
+    expect(body).toStrictEqual({
+      statusCode: 500,
+      message: 'Internal server error',
+    });
+  });
+
+  it('returns a 200 response even if most fields are missing', async () => {
+    givenAuthenticationWithTheIdpSucceeds();
+    const brokenDealInvestorsInAcbs = [
+      {
+        LenderType: { LenderTypeCode: valueGenerator.nonnegativeFloat(2) },
+      },
+    ];
+
+    requestToGetDealInvestors().reply(200, brokenDealInvestorsInAcbs);
+
+    const { status } = await api.get(getDealInvestorsUrl);
+    expect(status).toBe(200);
   });
 
   it('returns a 500 response if ACBS returns a status code that is NOT 200', async () => {
