@@ -1,6 +1,6 @@
+import { AcbsGetDealPartyResponseDto } from '@ukef/modules/acbs/dto/acbs-get-deal-party-response.dto';
 import { DealInvestor } from '@ukef/modules/deal-investor/deal-investor.interface';
 
-import { AcbsGetDealPartyResponseDto } from '../../../src/modules/acbs/dto/acbs-get-deal-party-response.dto';
 import { AbstractGenerator } from './abstract-generator';
 
 export class DealInvestorGenerator extends AbstractGenerator<DealInvestor, GenerateResult, GenerateOptions> {
