@@ -91,6 +91,11 @@ info:
 tags: []
 servers: []
 components:
+  securitySchemes:
+    ApiKeyHeader:
+      type: apiKey
+      in: header
+      name: x-api-key
   schemas:
     GetPartyExternalRatingResponseRatingEntity:
       type: object
@@ -242,5 +247,7 @@ components:
         - citizenshipClass
         - officerRiskDate
         - countryCode
+security:
+  - ApiKeyHeader: []
 "
 `;
