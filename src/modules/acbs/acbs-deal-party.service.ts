@@ -18,7 +18,7 @@ export class AcbsDealPartyService {
   async getDealPartyForDeal(portfolio: string, dealIdentifier: string, authToken: string): Promise<AcbsGetDealPartyResponseDto[]> {
     const { data: dealPartiesInAcbs } = await lastValueFrom(
       this.httpService
-        .get<AcbsGetDealPartyResponseDto>(`Portfolio/${portfolio}/Deal/${dealIdentifier}/DealParty`, {
+        .get<AcbsGetDealPartyResponseDto>(`/Portfolio/${portfolio}/Deal/${dealIdentifier}/DealParty`, {
           baseURL: this.config.baseUrl,
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -27,7 +27,7 @@ export class AcbsDealPartyService {
         .pipe(
           wrapAcbsHttpError({
             resourceIdentifier: dealIdentifier,
-            messageForUnknownException: `Failed to get the external ratings for the deal with id ${dealIdentifier}.`,
+            messageForUnknownException: `Failed to get the deal investors for the deal with id ${dealIdentifier}.`,
           }),
         ),
     );
