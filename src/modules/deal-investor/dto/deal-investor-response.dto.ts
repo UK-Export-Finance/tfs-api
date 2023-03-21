@@ -19,7 +19,6 @@ export class DealInvestorResponseDto {
   effectiveDate: DateString;
 
   @ApiProperty({ type: Date, nullable: true })
-  //@ApiResponseProperty()
   expiryDate: DateString;
 
   @ApiResponseProperty({ example: false })
