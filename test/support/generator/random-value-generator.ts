@@ -13,18 +13,18 @@ export class RandomValueGenerator {
     return this.chance.string();
   }
 
-  word(): string {
-    return this.chance.word();
+  word(options?: { length?: number }): string {
+    return this.chance.word({ length: options?.length });
   }
 
   httpsUrl(): string {
     return this.chance.url({ protocol: 'https' });
   }
 
-  stringOfNumericCharacters(options?: { minLength?: number; maxLength?: number }): string {
+  stringOfNumericCharacters(options?: { length?: number; minLength?: number; maxLength?: number }): string {
     const minLength = options && options.minLength ? options.minLength : 0;
     const maxLength = options && options.maxLength ? options.maxLength : Math.max(20, minLength * 2);
-    const length = this.chance.integer({ min: minLength, max: maxLength });
+    const length = options && options.length ? options.length : this.chance.integer({ min: minLength, max: maxLength });
 
     return this.chance.string({ length, pool: '0123456789' });
   }
