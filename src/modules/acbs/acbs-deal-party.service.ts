@@ -15,7 +15,7 @@ export class AcbsDealPartyService {
     private readonly httpService: HttpService,
   ) {}
 
-  async getDealPartyForDeal(portfolio: string, dealIdentifier: string, authToken: string): Promise<AcbsGetDealPartyResponseDto[]> {
+  async getDealPartiesForDeal(portfolio: string, dealIdentifier: string, authToken: string): Promise<AcbsGetDealPartyResponseDto[]> {
     const { data: dealPartiesInAcbs } = await lastValueFrom(
       this.httpService
         .get<AcbsGetDealPartyResponseDto>(`/Portfolio/${portfolio}/Deal/${dealIdentifier}/DealParty`, {

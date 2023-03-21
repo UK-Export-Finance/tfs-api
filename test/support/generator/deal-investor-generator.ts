@@ -25,7 +25,7 @@ export class DealInvestorGenerator extends AbstractGenerator<DealInvestor, Gener
       LimitAmount: v.maximumLiability,
     }));
 
-    const dealInvestors = values.map((v) => ({
+    const dealInvestorsFromService = values.map((v) => ({
       dealIdentifier: dealIdentifier,
       portfolioIdentifier: portfolioIdentifier,
       lenderType: { LenderTypeCode: v.lenderType.LenderTypeCode },
@@ -35,12 +35,9 @@ export class DealInvestorGenerator extends AbstractGenerator<DealInvestor, Gener
       maximumLiability: v.maximumLiability,
     }));
 
-    const dealInvestorsFromApi = dealInvestors;
-
     return {
       dealInvestorsInAcbs,
-      dealInvestors,
-      dealInvestorsFromApi,
+      dealInvestorsFromService,
     };
   }
 }
@@ -51,6 +48,5 @@ interface GenerateOptions {
 
 interface GenerateResult {
   dealInvestorsInAcbs: AcbsGetDealPartyResponseDto[];
-  dealInvestors: DealInvestor[];
-  dealInvestorsFromApi: DealInvestor[];
+  dealInvestorsFromService: DealInvestor[];
 }

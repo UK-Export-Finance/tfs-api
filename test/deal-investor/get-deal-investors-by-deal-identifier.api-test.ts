@@ -16,12 +16,11 @@ describe('GET /deals/{dealIdentifier}/deal-investors', () => {
 
   let api: Api;
 
-  const { dealInvestorsInAcbs, dealInvestorsFromApi } = new DealInvestorGenerator(valueGenerator).generate({
+  const { dealInvestorsInAcbs, dealInvestorsFromService } = new DealInvestorGenerator(valueGenerator).generate({
     numberToGenerate: 2,
     dealIdentifier,
     portfolioIdentifier,
   });
-  const expectedDealInvestors = dealInvestorsFromApi;
 
   beforeAll(async () => {
     api = await Api.create();
@@ -48,7 +47,7 @@ describe('GET /deals/{dealIdentifier}/deal-investors', () => {
     const { status, body } = await api.get(getDealInvestorsUrl);
 
     expect(status).toBe(200);
-    expect(body).toStrictEqual(JSON.parse(JSON.stringify(expectedDealInvestors)));
+    expect(body).toStrictEqual(JSON.parse(JSON.stringify(dealInvestorsFromService)));
   });
 
   it('returns a 404 response if ACBS returns a 200 response with the string "null"', async () => {

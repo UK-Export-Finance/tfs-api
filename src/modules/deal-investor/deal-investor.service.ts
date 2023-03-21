@@ -17,7 +17,7 @@ export class DealInvestorService {
     const idToken = await this.acbsAuthenticationService.getIdToken();
     // TODO: move E1 to ACBS default values when they are available.
     const portfolio = 'E1';
-    const investorsInAcbs = await this.acbsDealPartyService.getDealPartyForDeal(portfolio, dealIdentifier, idToken);
+    const investorsInAcbs = await this.acbsDealPartyService.getDealPartiesForDeal(portfolio, dealIdentifier, idToken);
     if (!investorsInAcbs) {
       throw new AcbsResourceNotFoundException(`Deal Investors for Deal ${dealIdentifier} were not found by ACBS.`);
     }

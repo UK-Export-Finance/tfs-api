@@ -25,7 +25,7 @@ describe('DealInvestorService', () => {
     acbsDealPartyService = new AcbsDealPartyService(null, null);
 
     acbsDealPartyServiceGetDealPartyForDeal = jest.fn();
-    acbsDealPartyService.getDealPartyForDeal = acbsDealPartyServiceGetDealPartyForDeal;
+    acbsDealPartyService.getDealPartiesForDeal = acbsDealPartyServiceGetDealPartyForDeal;
 
     acbsAuthenticationService = new AcbsAuthenticationService(null, null, null);
     const acbsAuthenticationServiceGetIdToken = jest.fn();
@@ -39,36 +39,30 @@ describe('DealInvestorService', () => {
   describe('getDealInvestors', () => {
     const dealIdentifier = valueGenerator.ukefId();
 
-    it('returns a transformation of the deal investors', async () => {
-      const { dealInvestorsInAcbs, dealInvestors } = new DealInvestorGenerator(valueGenerator).generate({
-        numberToGenerate: 2,
-        dealIdentifier,
-        portfolioIdentifier,
-      });
-      const expectedDealInvestors = dealInvestors;
-      when(acbsDealPartyServiceGetDealPartyForDeal).calledWith(portfolioIdentifier, dealIdentifier, idToken).mockResolvedValueOnce(dealInvestorsInAcbs);
-      const dealInvestorsFromService = await service.getDealInvestors(dealIdentifier);
+    const { dealInvestorsInAcbs, dealInvestorsFromService } = new DealInvestorGenerator(valueGenerator).generate({
+      numberToGenerate: 2,
+      dealIdentifier,
+      portfolioIdentifier,
+    });
 
-      expect(dealInvestorsFromService).toStrictEqual(expectedDealInvestors);
+    it('returns a transformation of the deal investors', async () => {
+      when(acbsDealPartyServiceGetDealPartyForDeal).calledWith(portfolioIdentifier, dealIdentifier, idToken).mockResolvedValueOnce(dealInvestorsInAcbs);
+      const dealInvestorsServiceResponse = await service.getDealInvestors(dealIdentifier);
+
+      expect(dealInvestorsServiceResponse).toStrictEqual(dealInvestorsFromService);
     });
 
     it('does NOT return unexpected keys from the deal investor from the service', async () => {
-      const { dealInvestorsInAcbs, dealInvestors } = new DealInvestorGenerator(valueGenerator).generate({
-        numberToGenerate: 2,
-        dealIdentifier,
-        portfolioIdentifier,
-      });
       const dealInvestorsFromApiWithUnexpectedKey = dealInvestorsInAcbs.map((item) => ({
         ...item,
         unexpectedKey: valueGenerator.string(),
       }));
-      const expectedDealInvestors = dealInvestors;
       when(acbsDealPartyServiceGetDealPartyForDeal)
         .calledWith(portfolioIdentifier, dealIdentifier, idToken)
         .mockResolvedValueOnce(dealInvestorsFromApiWithUnexpectedKey);
-      const dealInvestorsFromService = await service.getDealInvestors(dealIdentifier);
+      const dealInvestorsServiceResponse = await service.getDealInvestors(dealIdentifier);
 
-      expect(dealInvestorsFromService).toStrictEqual(expectedDealInvestors);
+      expect(dealInvestorsServiceResponse).toStrictEqual(dealInvestorsFromService);
     });
   });
 });

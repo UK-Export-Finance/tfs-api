@@ -41,7 +41,7 @@ describe('AcbsDealPartyService', () => {
         })
         .mockReturnValueOnce(throwError(() => getDealPartyForDealError));
 
-      const getDealPartyPromise = service.getDealPartyForDeal(portfolioIdentifier, dealIdentifier, authToken);
+      const getDealPartyPromise = service.getDealPartiesForDeal(portfolioIdentifier, dealIdentifier, authToken);
 
       await expect(getDealPartyPromise).rejects.toBeInstanceOf(AcbsException);
       await expect(getDealPartyPromise).rejects.toThrow(`Failed to get the deal investors for the deal with id ${dealIdentifier}.`);
@@ -64,7 +64,7 @@ describe('AcbsDealPartyService', () => {
           }),
         );
 
-      const dealInvestors = await service.getDealPartyForDeal(portfolioIdentifier, dealIdentifier, authToken);
+      const dealInvestors = await service.getDealPartiesForDeal(portfolioIdentifier, dealIdentifier, authToken);
 
       expect(dealInvestors).toStrictEqual([]);
     });
@@ -85,7 +85,7 @@ describe('AcbsDealPartyService', () => {
           }),
         );
 
-      const dealInvestors = await service.getDealPartyForDeal(portfolioIdentifier, dealIdentifier, authToken);
+      const dealInvestors = await service.getDealPartiesForDeal(portfolioIdentifier, dealIdentifier, authToken);
 
       expect(dealInvestors).toBe('null');
     });
@@ -108,7 +108,7 @@ describe('AcbsDealPartyService', () => {
           }),
         );
 
-      const dealInvestors = await service.getDealPartyForDeal(portfolioIdentifier, dealIdentifier, authToken);
+      const dealInvestors = await service.getDealPartiesForDeal(portfolioIdentifier, dealIdentifier, authToken);
 
       expect(dealInvestors).toStrictEqual(dealInvestorsInAcbs);
     });

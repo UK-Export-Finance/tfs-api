@@ -28,13 +28,12 @@ describe('DealInvestorController', () => {
     const dealIdentifier = valueGenerator.ukefId();
     const portfolioIdentifier = valueGenerator.string();
 
-    const { dealInvestors, dealInvestorsFromApi } = new DealInvestorGenerator(valueGenerator).generate({
+    const { dealInvestorsFromService } = new DealInvestorGenerator(valueGenerator).generate({
       numberToGenerate: 2,
       dealIdentifier,
       portfolioIdentifier,
     });
-    const dealInvestorsFromService = dealInvestors;
-    const expectedDealInvestors = dealInvestorsFromApi;
+    const expectedDealInvestors = dealInvestorsFromService;
 
     it('returns the deal investors from the service', async () => {
       when(dealInvestorServiceGetDealInvestors).calledWith(dealIdentifier).mockResolvedValueOnce(dealInvestorsFromService);
