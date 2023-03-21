@@ -204,7 +204,7 @@ describe('POST /deals/{dealIdentifier}/guarantees', () => {
     });
 
     it('returns a 201 response if the limitKey is at most 10 characters', async () => {
-      const requestWithTenCharacterLimitKey = [{ ...requestBodyToCreateDealGuarantee[0], dealIdentifier: '1234567890' }];
+      const requestWithTenCharacterLimitKey = [{ ...requestBodyToCreateDealGuarantee[0], limitKey: '1234567890' }];
       givenAuthenticationWithTheIdpSucceeds();
       givenAnyRequestBodyToCreateDealGuaranteeInAcbsSucceeds();
 
