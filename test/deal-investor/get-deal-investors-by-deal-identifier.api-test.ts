@@ -7,7 +7,7 @@ import nock from 'nock';
 
 import { DealInvestorGenerator } from '../support/generator/deal-investor-generator';
 
-describe('GET /deals/{dealIdentifier}/deal-investors', () => {
+describe('GET /deals/{dealIdentifier}/investors', () => {
   const valueGenerator = new RandomValueGenerator();
   // TODO: Get portfolio default value from default constants;
   const dealIdentifier: UkefId = valueGenerator.ukefId();
