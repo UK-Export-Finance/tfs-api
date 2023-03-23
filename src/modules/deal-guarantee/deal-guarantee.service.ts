@@ -38,7 +38,7 @@ export class DealGuaranteeService {
       },
       EffectiveDate: effectiveDateOnlyString + 'T00:00:00Z',
       ExpirationDate: newGuarantee.guaranteeExpiryDate + 'T00:00:00Z',
-      GuaranteedLimit: Math.round(newGuarantee.maximumLiability * 100) / 100, // TODO APIM-73: Discuss rounding precision errors with team
+      GuaranteedLimit: Math.round(newGuarantee.maximumLiability * 100) / 100,
       GuaranteedPercentage: PROPERTIES.DEAL_GUARANTEE.DEFAULT.guaranteedPercentage,
     };
 

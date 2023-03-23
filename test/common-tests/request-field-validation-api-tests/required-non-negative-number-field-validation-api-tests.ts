@@ -28,7 +28,7 @@ export function withRequiredNonNegativeNumberFieldValidationApiTests<RequestBody
       expect(status).toBe(400);
       expect(body).toStrictEqual({
         error: 'Bad Request',
-        message: [`${fieldName} must not be less than 0`, `${fieldName} should not be empty`],
+        message: [`${fieldName} should not be empty`, `${fieldName} must not be less than 0`],
         statusCode: 400,
       });
     });

@@ -13,7 +13,6 @@ export class CreateDealGuaranteeRequestItem {
     minLength: 8,
     maxLength: 8,
   })
-  // TODO APIM-73: Should we remove dealIdentifier from the request body?
   readonly dealIdentifier: string;
 
   @ValidatedDateOnlyApiProperty({
@@ -37,7 +36,6 @@ export class CreateDealGuaranteeRequestItem {
   @ValidatedNumberApiProperty({
     description: 'The maximum amount the guarantor will guarantee.',
     minimum: 0,
-    maximum: 1e17, // TODO APIM-73: Is it okay that we lose precision at this magnitude?
   })
   readonly maximumLiability: number;
 

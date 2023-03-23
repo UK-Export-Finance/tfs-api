@@ -243,7 +243,6 @@ describe('POST /deals/{dealIdentifier}/guarantees', () => {
 
   withRequiredNonNegativeNumberFieldValidationApiTests({
     fieldName: 'maximumLiability',
-    max: 1e17,
     validRequestBody: requestBodyToCreateDealGuarantee,
     makeRequest: (body) => api.post(createDealGuaranteeUrl, body),
     givenAnyRequestBodyWouldSucceed: () => {

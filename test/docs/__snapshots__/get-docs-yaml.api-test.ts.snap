@@ -159,7 +159,6 @@ components:
           type: number
           description: The maximum amount the guarantor will guarantee.
           minimum: 0
-          maximum: 100000000000000000
         guarantorParty:
           type: string
           description: >-
