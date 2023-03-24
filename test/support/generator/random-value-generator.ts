@@ -1,6 +1,6 @@
+import { UKEFID } from '@ukef/constants';
 import { DateString, DateStringTransformations, UkefId } from '@ukef/helpers';
 import { Chance } from 'chance';
-import { UKEFID } from '@ukef/constants';
 
 export class RandomValueGenerator {
   private static readonly seed = 0;
