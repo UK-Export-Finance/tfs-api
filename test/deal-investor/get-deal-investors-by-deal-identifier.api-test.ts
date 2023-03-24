@@ -1,3 +1,4 @@
+import { PROPERTIES } from '@ukef/constants';
 import { UkefId } from '@ukef/helpers';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
 import { Api } from '@ukef-test/support/api';
@@ -8,9 +9,8 @@ import nock from 'nock';
 
 describe('GET /deals/{dealIdentifier}/investors', () => {
   const valueGenerator = new RandomValueGenerator();
-  // TODO: Get portfolio default value from default constants;
   const dealIdentifier: UkefId = valueGenerator.ukefId();
-  const portfolioIdentifier = 'E1';
+  const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
   const getDealInvestorsUrl = `/api/v1/deals/${dealIdentifier}/investors`;
 
   let api: Api;

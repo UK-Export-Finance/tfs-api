@@ -1,3 +1,4 @@
+import { PROPERTIES } from '@ukef/constants';
 import { AcbsAuthenticationService } from '@ukef/modules/acbs/acbs-authentication.service';
 import { AcbsDealPartyService } from '@ukef/modules/acbs/acbs-deal-party.service';
 import { DealInvestorGenerator } from '@ukef-test/support/generator/deal-investor-generator';
@@ -12,8 +13,7 @@ jest.mock('@ukef/modules/acbs/acbs-authentication.service');
 describe('DealInvestorService', () => {
   const valueGenerator = new RandomValueGenerator();
   const idToken = valueGenerator.string();
-  // TODO: replace with value from default configuration, or remove field portfolioIdentifier completely.
-  const portfolioIdentifier = 'E1';
+  const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
 
   let acbsAuthenticationService: AcbsAuthenticationService;
   let acbsDealPartyService: AcbsDealPartyService;

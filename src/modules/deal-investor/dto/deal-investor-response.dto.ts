@@ -1,6 +1,6 @@
 import { ApiProperty, ApiResponseProperty } from '@nestjs/swagger';
-import { ENUMS } from '@ukef/constants';
-import { DateString } from '@ukef/helpers/date-string.type';
+import { ENUMS, EXAMPLES, PROPERTIES } from '@ukef/constants';
+import { DateOnlyString } from '@ukef/helpers/date-only-string.type';
 import { IsEnum } from 'class-validator';
 
 class DealInvestorDtoLenderType {
@@ -9,10 +9,10 @@ class DealInvestorDtoLenderType {
   LenderTypeCode: string;
 }
 export class DealInvestorResponseDto {
-  @ApiResponseProperty({ example: '0030000321' })
+  @ApiResponseProperty({ example: EXAMPLES.DEAL_ID })
   dealIdentifier: string;
 
-  @ApiResponseProperty({ example: 'E1' })
+  @ApiResponseProperty({ example: PROPERTIES.GLOBAL.portfolioIdentifier })
   @IsEnum(ENUMS.PORTFOLIO)
   portfolioIdentifier: string;
 
@@ -20,10 +20,10 @@ export class DealInvestorResponseDto {
   lenderType: DealInvestorDtoLenderType;
 
   @ApiProperty({ type: Date, nullable: false })
-  effectiveDate: DateString;
+  effectiveDate: DateOnlyString;
 
   @ApiProperty({ type: Date, nullable: true })
-  expiryDate: DateString;
+  expiryDate: DateOnlyString;
 
   @ApiResponseProperty({ example: false })
   isExpiryDateMaximum: boolean;

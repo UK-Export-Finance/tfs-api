@@ -40,7 +40,7 @@ export class RandomValueGenerator {
     return this.chance.floating({ min: 0, max: 1 });
   }
 
-  nonnegativeFloat(options?: { max?: number; fixed: number }): number {
+  nonnegativeFloat(options?: { max?: number; fixed?: number }): number {
     const min = 0;
     // Fixed is for number of decimal places.
     const fixed = options && options.fixed ? options.fixed : 2;

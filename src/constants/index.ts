@@ -8,11 +8,13 @@
  * 4. UKEFID
  * 5. ENUMS
  * 6. PROPERTIES
+ * 7. EXAMPLES
  */
 
 export * from './acbs.constant';
 export * from './application.constant';
 export * from './auth.constant';
 export * from './enum.constant';
+export * from './examples.constant';
 export * from './properties.constant';
 export * from './ukef-id.constant';
