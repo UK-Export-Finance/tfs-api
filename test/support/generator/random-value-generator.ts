@@ -1,5 +1,6 @@
 import { DateString, DateStringTransformations, UkefId } from '@ukef/helpers';
 import { Chance } from 'chance';
+import { UKEFID } from '@ukef/constants';
 
 export class RandomValueGenerator {
   private static readonly seed = 0;
@@ -51,7 +52,7 @@ export class RandomValueGenerator {
   // UKEF id example 0030000321. It should be used for Deal and Facility IDs.
   // TODO: stringOfNumericCharacters should generate 6 digits, but doesn't support Max value at the moment.
   ukefId(): UkefId {
-    return ('0030' + this.stringOfNumericCharacters(6)) as UkefId;
+    return (UKEFID.MAIN_ID_PREFIX.DEV + this.stringOfNumericCharacters(6)) as UkefId;
   }
 
   // Date string example 2023-03-16

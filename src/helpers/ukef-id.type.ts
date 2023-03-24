@@ -1,3 +1,4 @@
+// Defining multiple String Literal Types, this doesn't support constants.
 // Start of id differs depending on environment
 type DealFacilityPartyUkefIdStart = '0020' | '0030' | '0040';
 type CovenantUkefIdStart = '0000';

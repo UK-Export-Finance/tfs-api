@@ -2,10 +2,9 @@ import { UkefId } from '@ukef/helpers';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
 import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
+import { DealInvestorGenerator } from '@ukef-test/support/generator/deal-investor-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import nock from 'nock';
-
-import { DealInvestorGenerator } from '../support/generator/deal-investor-generator';
 
 describe('GET /deals/{dealIdentifier}/investors', () => {
   const valueGenerator = new RandomValueGenerator();
