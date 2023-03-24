@@ -5,6 +5,7 @@ import { when } from 'jest-when';
 import { AcbsAuthenticationService } from '../acbs/acbs-authentication.service';
 import { AcbsPartyService } from '../acbs/acbs-party.service';
 import { AcbsGetPartyResponseDto } from '../acbs/dto/acbs-get-party-response.dto';
+import { DateStringTransformations } from '../date/date-string.transformations';
 import { Party } from './party.interface';
 import { PartyService } from './party.service';
 
@@ -32,7 +33,7 @@ describe('PartyService', () => {
     const acbsAuthenticationServiceGetIdToken = jest.fn();
     acbsAuthenticationService.getIdToken = acbsAuthenticationServiceGetIdToken;
 
-    service = new PartyService({ baseUrl }, null, acbsAuthenticationService, acbsPartyService);
+    service = new PartyService({ baseUrl }, null, acbsAuthenticationService, acbsPartyService, new DateStringTransformations());
 
     when(acbsAuthenticationServiceGetIdToken).calledWith().mockResolvedValueOnce(idToken);
   });
