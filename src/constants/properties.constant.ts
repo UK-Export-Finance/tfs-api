@@ -1,4 +1,4 @@
-const PROPERTIES = {
+export const PROPERTIES = {
   GLOBAL: {
     portfolioIdentifier: 'E1',
   },
@@ -17,5 +17,3 @@ const PROPERTIES = {
     },
   },
 };
-
-export { PROPERTIES };
