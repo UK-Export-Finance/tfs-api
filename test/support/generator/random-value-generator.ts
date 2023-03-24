@@ -1,5 +1,6 @@
 import { UKEFID } from '@ukef/constants';
-import { DateString, DateStringTransformations, UkefId } from '@ukef/helpers';
+import { DateOnlyString, DateString, UkefId } from '@ukef/helpers';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { Chance } from 'chance';
 
 export class RandomValueGenerator {
@@ -60,7 +61,7 @@ export class RandomValueGenerator {
     return this.date().toISOString();
   }
 
-  dateOnlyString(): DateString {
+  dateOnlyString(): DateOnlyString {
     return this.dateStringTransformations.removeTime(this.dateTimeString());
   }
 }

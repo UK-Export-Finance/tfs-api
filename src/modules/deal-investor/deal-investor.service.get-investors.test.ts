@@ -1,6 +1,7 @@
 import { PROPERTIES } from '@ukef/constants';
 import { AcbsAuthenticationService } from '@ukef/modules/acbs/acbs-authentication.service';
 import { AcbsDealPartyService } from '@ukef/modules/acbs/acbs-deal-party.service';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { DealInvestorGenerator } from '@ukef-test/support/generator/deal-investor-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
@@ -31,7 +32,9 @@ describe('DealInvestorService', () => {
     const acbsAuthenticationServiceGetIdToken = jest.fn();
     acbsAuthenticationService.getIdToken = acbsAuthenticationServiceGetIdToken;
 
-    service = new DealInvestorService(acbsAuthenticationService, acbsDealPartyService);
+    const dateStringTransformations = new DateStringTransformations();
+
+    service = new DealInvestorService(acbsAuthenticationService, acbsDealPartyService, dateStringTransformations);
 
     when(acbsAuthenticationServiceGetIdToken).calledWith().mockResolvedValueOnce(idToken);
   });

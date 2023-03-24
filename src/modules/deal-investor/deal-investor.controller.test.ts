@@ -16,7 +16,7 @@ describe('DealInvestorController', () => {
   let dealInvestorServiceGetDealInvestors: jest.Mock;
 
   beforeEach(() => {
-    dealInvestorService = new DealInvestorService(null, null);
+    dealInvestorService = new DealInvestorService(null, null, null);
 
     dealInvestorServiceGetDealInvestors = jest.fn();
     dealInvestorService.getDealInvestors = dealInvestorServiceGetDealInvestors;

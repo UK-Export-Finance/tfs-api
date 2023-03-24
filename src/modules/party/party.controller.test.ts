@@ -17,7 +17,7 @@ describe('PartyController', () => {
   let partyServiceGetPartyByIdentifier: jest.Mock;
 
   beforeEach(() => {
-    partyService = new PartyService({ baseUrl: valueGenerator.httpsUrl() }, null, null, null);
+    partyService = new PartyService({ baseUrl: valueGenerator.httpsUrl() }, null, null, null, null);
 
     partyServiceGetPartyByIdentifier = jest.fn();
     partyService.getPartyByIdentifier = partyServiceGetPartyByIdentifier;
