@@ -1,10 +1,13 @@
 import { AcbsGetPartyResponseDto } from '@ukef/modules/acbs/dto/acbs-get-party-response.dto';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { GetPartyByIdentifierResponse } from '@ukef/modules/party/dto/get-party-by-response.dto';
 import { Party } from '@ukef/modules/party/party.interface';
 
 import { AbstractGenerator } from './abstract-generator';
 
 export class PartyGenerator extends AbstractGenerator<PartyValues, GenerateResult, GenerateOptions> {
+  private readonly transformations: DateStringTransformations = new DateStringTransformations();
+
   protected generateValues(): PartyValues {
     return {
       alternateIdentifier: this.valueGenerator.stringOfNumericCharacters(),
@@ -40,7 +43,7 @@ export class PartyGenerator extends AbstractGenerator<PartyValues, GenerateResul
       name3: v.name3,
       smeType: v.smeType,
       citizenshipClass: v.citizenshipClass,
-      officerRiskDate: v.officerRiskDate.toISOString().split('T')[0],
+      officerRiskDate: this.transformations.removeTime(v.officerRiskDate.toISOString()),
       countryCode: v.countryCode,
     }));
 

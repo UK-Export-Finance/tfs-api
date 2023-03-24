@@ -6,6 +6,7 @@ import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
 
+import { DateStringTransformations } from '../date/date-string.transformations';
 import { DealGuaranteeService } from './deal-guarantee.service';
 import { DealGuaranteeToCreate } from './deal-guarantee-to-create.interface';
 
@@ -15,6 +16,7 @@ jest.mock('@ukef/modules/acbs/acbs-authentication.service');
 
 describe('DealGuaranteeService', () => {
   const valueGenerator = new RandomValueGenerator();
+  const transformations = new DateStringTransformations();
   const idToken = valueGenerator.string();
 
   let acbsAuthenticationService: AcbsAuthenticationService;
@@ -38,7 +40,7 @@ describe('DealGuaranteeService', () => {
     currentDateProviderGetLatestDateFromTodayAnd = jest.fn();
     currentDateProvider.getLatestDateFromTodayAnd = currentDateProviderGetLatestDateFromTodayAnd;
 
-    service = new DealGuaranteeService(acbsAuthenticationService, acbsDealGuaranteeService, currentDateProvider);
+    service = new DealGuaranteeService(acbsAuthenticationService, acbsDealGuaranteeService, currentDateProvider, transformations);
 
     when(acbsAuthenticationServiceGetIdToken).calledWith().mockResolvedValueOnce(idToken);
   });
@@ -49,9 +51,9 @@ describe('DealGuaranteeService', () => {
     const guarantorParty = valueGenerator.stringOfNumericCharacters({ maxLength: 8 });
     const guaranteeTypeCode = valueGenerator.stringOfNumericCharacters({ maxLength: 3 });
     const effectiveDate = valueGenerator.dateOnlyString();
-    const effectiveDateAsDate = new Date(effectiveDate + 'T00:00:00Z');
+    const effectiveDateAsDate = new Date(transformations.dateOnlyStringToDateString(effectiveDate));
     const today = valueGenerator.date();
-    const todayAsDateOnlyString = today.toISOString().split('T')[0];
+    const todayAsDateOnlyString = transformations.removeTime(today.toISOString());
     const expirationDate = valueGenerator.dateOnlyString();
     const maximumLiabilityWithOneDecimalPlace = Number(valueGenerator.nonnegativeFloat().toFixed(1));
 
@@ -81,8 +83,8 @@ describe('DealGuaranteeService', () => {
         GuaranteeType: {
           GuaranteeTypeCode: guaranteeTypeCode,
         },
-        EffectiveDate: effectiveDate + 'T00:00:00Z',
-        ExpirationDate: expirationDate + 'T00:00:00Z',
+        EffectiveDate: transformations.dateOnlyStringToDateString(effectiveDate),
+        ExpirationDate: transformations.dateOnlyStringToDateString(expirationDate),
         GuaranteedLimit: maximumLiabilityWithOneDecimalPlace,
         GuaranteedPercentage: PROPERTIES.DEAL_GUARANTEE.DEFAULT.guaranteedPercentage,
       };
@@ -122,7 +124,7 @@ describe('DealGuaranteeService', () => {
 
       const guaranteeCreatedInAcbs: AcbsCreateDealGuaranteeDto = acbsDealGuaranteeServiceCreateGuaranteeForDeal.mock.calls[0][1];
 
-      expect(guaranteeCreatedInAcbs.EffectiveDate).toBe(todayAsDateOnlyString + 'T00:00:00Z');
+      expect(guaranteeCreatedInAcbs.EffectiveDate).toBe(transformations.dateOnlyStringToDateString(todayAsDateOnlyString));
     });
 
     it(`does NOT replace effectiveDate with today's date if effectiveDate is NOT before today`, async () => {
@@ -132,7 +134,7 @@ describe('DealGuaranteeService', () => {
 
       const guaranteeCreatedInAcbs: AcbsCreateDealGuaranteeDto = acbsDealGuaranteeServiceCreateGuaranteeForDeal.mock.calls[0][1];
 
-      expect(guaranteeCreatedInAcbs.EffectiveDate).toBe(effectiveDate + 'T00:00:00Z');
+      expect(guaranteeCreatedInAcbs.EffectiveDate).toBe(transformations.dateOnlyStringToDateString(effectiveDate));
     });
 
     it('rounds the maximumLiability to 2 decimal places', async () => {

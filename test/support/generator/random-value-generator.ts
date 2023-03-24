@@ -1,12 +1,15 @@
 import { DateString } from '@ukef/helpers/date-string.type';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { Chance } from 'chance';
 
 export class RandomValueGenerator {
   private static readonly seed = 0;
   private readonly chance: Chance.Chance;
+  private readonly transformations: DateStringTransformations;
 
   constructor() {
     this.chance = new Chance(RandomValueGenerator.seed);
+    this.transformations = new DateStringTransformations();
   }
 
   string(): string {
@@ -47,6 +50,6 @@ export class RandomValueGenerator {
   }
 
   dateOnlyString(): DateString {
-    return this.dateTimeString().split('T')[0];
+    return this.transformations.removeTime(this.dateTimeString());
   }
 }
