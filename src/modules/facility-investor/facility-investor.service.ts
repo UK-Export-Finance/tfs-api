@@ -3,11 +3,16 @@ import { PROPERTIES } from '@ukef/constants';
 
 import { AcbsAuthenticationService } from '../acbs/acbs-authentication.service';
 import { AcbsFacilityPartyService } from '../acbs/acbs-facility-party.service';
+import { DateStringTransformations } from '../date/date-string.transformations';
 import { FacilityInvestorToCreate } from './facility-investor-to-create.interface';
 
 @Injectable()
 export class FacilityInvestorService {
-  constructor(private readonly acbsAuthenticationService: AcbsAuthenticationService, private readonly acbsFacilityPartyService: AcbsFacilityPartyService) {}
+  constructor(
+    private readonly acbsAuthenticationService: AcbsAuthenticationService,
+    private readonly acbsFacilityPartyService: AcbsFacilityPartyService,
+    private readonly dateStringTransformations: DateStringTransformations,
+  ) {}
 
   async createInvestorForFacility(facilityIdentifier: string, newFacilityInvestor: FacilityInvestorToCreate): Promise<void> {
     const idToken = await this.acbsAuthenticationService.getIdToken();
@@ -18,8 +23,8 @@ export class FacilityInvestorService {
       InvolvedParty: {
         PartyIdentifier: PROPERTIES.FACILITY_INVESTOR.DEFAULT.involvedParty.partyIdentifier,
       },
-      EffectiveDate: newFacilityInvestor.effectiveDate + 'T00:00:00Z',
-      ExpirationDate: newFacilityInvestor.guaranteeExpiryDate + 'T00:00:00Z',
+      EffectiveDate: this.dateStringTransformations.addTimeToDateOnlyString(newFacilityInvestor.effectiveDate),
+      ExpirationDate: this.dateStringTransformations.addTimeToDateOnlyString(newFacilityInvestor.guaranteeExpiryDate),
       LenderType: {
         LenderTypeCode: newFacilityInvestor.lenderType ?? PROPERTIES.FACILITY_INVESTOR.DEFAULT.lenderType.lenderTypeCode,
       },

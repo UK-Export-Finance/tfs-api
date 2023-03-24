@@ -5,10 +5,12 @@ import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-
 import { when } from 'jest-when';
 
 import { AcbsCreateFacilityPartyDto } from '../acbs/dto/acbs-create-facility-party.dto';
+import { DateStringTransformations } from '../date/date-string.transformations';
 import { FacilityInvestorService } from './facility-investor.service';
 
 describe('FacilityInvestorService', () => {
   const valueGenerator = new RandomValueGenerator();
+  const dateStringTransformations = new DateStringTransformations();
   const idToken = valueGenerator.string();
 
   let service: FacilityInvestorService;
@@ -24,7 +26,7 @@ describe('FacilityInvestorService', () => {
     const acbsAuthenticationServiceGetIdToken = jest.fn();
     acbsAuthenticationService.getIdToken = acbsAuthenticationServiceGetIdToken;
 
-    service = new FacilityInvestorService(acbsAuthenticationService, acbsFacilityPartyService);
+    service = new FacilityInvestorService(acbsAuthenticationService, acbsFacilityPartyService, dateStringTransformations);
 
     when(acbsAuthenticationServiceGetIdToken).calledWith().mockResolvedValueOnce(idToken);
   });
@@ -56,8 +58,8 @@ describe('FacilityInvestorService', () => {
       InvolvedParty: {
         PartyIdentifier: involvedPartyIdentifier,
       },
-      EffectiveDate: effectiveDate + 'T00:00:00Z',
-      ExpirationDate: guaranteeExpiryDate + 'T00:00:00Z',
+      EffectiveDate: dateStringTransformations.addTimeToDateOnlyString(effectiveDate),
+      ExpirationDate: dateStringTransformations.addTimeToDateOnlyString(guaranteeExpiryDate),
       LenderType: {
         LenderTypeCode: lenderType,
       },

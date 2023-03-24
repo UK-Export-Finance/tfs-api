@@ -1,4 +1,5 @@
 import { PROPERTIES } from '@ukef/constants';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
 import { withRequiredDateOnlyFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/required-date-only-field-validation-api-tests';
@@ -11,6 +12,7 @@ import nock from 'nock';
 
 describe('POST /facilities/{facilityIdentifier}/investors', () => {
   const valueGenerator = new RandomValueGenerator();
+  const dateStringTransformations = new DateStringTransformations();
   const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
   const facilityIdentifier = valueGenerator.stringOfNumericCharacters({ length: 10 });
   const createFacilityInvestorUrl = `/api/v1/facilities/${facilityIdentifier}/investors`;
@@ -44,8 +46,8 @@ describe('POST /facilities/{facilityIdentifier}/investors', () => {
     InvolvedParty: {
       PartyIdentifier: involvedPartyIdentifier,
     },
-    EffectiveDate: effectiveDateInFuture + 'T00:00:00Z',
-    ExpirationDate: guaranteeExpiryDateInFuture + 'T00:00:00Z',
+    EffectiveDate: dateStringTransformations.addTimeToDateOnlyString(effectiveDateInFuture),
+    ExpirationDate: dateStringTransformations.addTimeToDateOnlyString(guaranteeExpiryDateInFuture),
     LenderType: {
       LenderTypeCode: lenderType,
     },
