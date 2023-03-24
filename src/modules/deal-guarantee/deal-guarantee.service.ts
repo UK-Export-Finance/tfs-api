@@ -4,11 +4,17 @@ import { AcbsAuthenticationService } from '@ukef/modules/acbs/acbs-authenticatio
 import { AcbsDealGuaranteeService } from '@ukef/modules/acbs/acbs-deal-guarantee.service';
 import { AcbsCreateDealGuaranteeDto } from '@ukef/modules/acbs/dto/acbs-create-deal-guarantee.dto';
 import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
+import { DateStringTransformations } from '@ukef/helpers';
 
+import { AcbsResourceNotFoundException } from '../acbs/exception/acbs-resource-not-found.exception';
 import { DealGuaranteeToCreate } from './deal-guarantee-to-create.interface';
+import { GetDealGuaranteeResponse } from './dto/get-deal-guarantee-response.dto';
 
 @Injectable()
 export class DealGuaranteeService {
+  // TODO: make DateStringTransformations injectable, maybe it needs to be part of module for this to work.
+  private readonly dateStringTransformations: DateStringTransformations = new DateStringTransformations();
+
   constructor(
     private readonly acbsAuthenticationService: AcbsAuthenticationService,
     private readonly acbsDealGuaranteeService: AcbsDealGuaranteeService,
@@ -43,5 +49,23 @@ export class DealGuaranteeService {
     };
 
     await this.acbsDealGuaranteeService.createGuaranteeForDeal(dealIdentifier, guaranteeToCreateInAcbs, idToken);
+  }
+
+  async getGuaranteeForDeal(dealIdentifier: string): Promise<GetDealGuaranteeResponse> {
+    const idToken = await this.acbsAuthenticationService.getIdToken();
+    const guaranteesInAcbs = await this.acbsDealGuaranteeService.getGuaranteeForDeal(dealIdentifier, idToken);
+    if (!guaranteesInAcbs) {
+      throw new AcbsResourceNotFoundException(`Deal Guarantees for Deal ${dealIdentifier} were not found by ACBS.`);
+    }
+    return guaranteesInAcbs.map((guaranteeInAcbs) => ({
+      dealIdentifier: dealIdentifier,
+      portfolioIdentifier: 'E1',
+      effectiveDate: this.dateStringTransformations.removeTimeIfExists(guaranteeInAcbs.EffectiveDate),
+      guarantorParty: guaranteeInAcbs.GuarantorParty.PartyIdentifier,
+      limitKey: guaranteeInAcbs.LimitKey,
+      guaranteeExpiryDate: this.dateStringTransformations.removeTimeIfExists(guaranteeInAcbs.ExpirationDate),
+      maximumLiability: guaranteeInAcbs.GuaranteedLimit,
+      guaranteeTypeCode: guaranteeInAcbs.GuaranteeType.GuaranteeTypeCode,
+    }));
   }
 }

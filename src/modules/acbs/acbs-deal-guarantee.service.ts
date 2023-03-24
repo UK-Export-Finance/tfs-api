@@ -33,4 +33,21 @@ export class AcbsDealGuaranteeService {
         ),
     );
   }
+
+  async getGuaranteeForDeal(dealIdentifier: string, idToken: string): Promise<any> {
+    const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+    await lastValueFrom(
+      this.httpService
+        .get<never>(`/Portfolio/${portfolioIdentifier}/Deal/${dealIdentifier}/DealGuarantee`, {
+          baseURL: this.config.baseUrl,
+          headers: { Authorization: `Bearer ${idToken}`, 'Content-Type': 'application/json' },
+        })
+        .pipe(
+          wrapAcbsHttpPostError<AxiosResponse<never, any>, any>({
+            resourceIdentifier: dealIdentifier,
+            messageForUnknownException: `Failed to get a guarantee for deal ${dealIdentifier} in ACBS.`,
+          }),
+        ),
+    );
+  }
 }
