@@ -9,10 +9,10 @@ export class DealInvestorGenerator extends AbstractGenerator<DealInvestor, Gener
       dealIdentifier: this.valueGenerator.ukefId(),
       portfolioIdentifier: this.valueGenerator.string(),
       lenderType: { LenderTypeCode: this.valueGenerator.string() },
-      effectiveDate: this.valueGenerator.dateString(),
-      expiryDate: this.valueGenerator.dateString(),
+      effectiveDate: this.valueGenerator.dateOnlyString(),
+      expiryDate: this.valueGenerator.dateOnlyString(),
       isExpiryDateMaximum: this.valueGenerator.boolean(),
-      maximumLiability: this.valueGenerator.nonnegativeFloat(2),
+      maximumLiability: this.valueGenerator.nonnegativeFloat({ fixed: 2 }),
     };
   }
 

@@ -20,29 +20,31 @@ export class RandomValueGenerator {
     return this.chance.string();
   }
 
-  word(): string {
-    return this.chance.word();
+  word(options?: { length?: number }): string {
+    return this.chance.word({ length: options?.length });
   }
 
   httpsUrl(): string {
     return this.chance.url({ protocol: 'https' });
   }
 
-  stringOfNumericCharacters(minLength?: number): string {
-    const stringOptions: Partial<Chance.StringOptions> = { pool: '0123456789' };
-    if (minLength) {
-      const length = this.chance.integer({ min: minLength, max: Math.max(20, minLength * 2) });
-      stringOptions.length = length;
-    }
-    return this.chance.string(stringOptions);
+  stringOfNumericCharacters(options?: { length?: number; minLength?: number; maxLength?: number }): string {
+    const minLength = options && options.minLength ? options.minLength : 0;
+    const maxLength = options && options.maxLength ? options.maxLength : Math.max(20, minLength * 2);
+    const length = options && options.length ? options.length : this.chance.integer({ min: minLength, max: maxLength });
+
+    return this.chance.string({ length, pool: '0123456789' });
   }
 
   probabilityFloat(): number {
     return this.chance.floating({ min: 0, max: 1 });
   }
 
-  nonnegativeFloat(fixed = 2): number {
-    return this.chance.floating({ min: 0, fixed });
+  nonnegativeFloat(options?: { max?: number; fixed: number }): number {
+    const min = 0;
+    // Fixed is for number of decimal places.
+    const fixed = options && options.fixed ? options.fixed : 2;
+    return options && options.max ? this.chance.floating({ min, fixed: fixed, max: options.max }) : this.chance.floating({ min, fixed: fixed });
   }
 
   date(): Date {
@@ -50,13 +52,15 @@ export class RandomValueGenerator {
   }
 
   // UKEF id example 0030000321. It should be used for Deal and Facility IDs.
-  // TODO: stringOfNumericCharacters should generate 6 digits, but doesn't support Max value at the moment.
   ukefId(): UkefId {
-    return (UKEFID.MAIN_ID_PREFIX.DEV + this.stringOfNumericCharacters(6)) as UkefId;
+    return (UKEFID.MAIN_ID_PREFIX.DEV + this.stringOfNumericCharacters({ length: 6 })) as UkefId;
   }
 
-  // Date string example 2023-03-16
-  dateString(): DateString {
-    return this.dateStringTransformations.removeTime(this.date().toISOString());
+  dateTimeString(): DateString {
+    return this.date().toISOString();
+  }
+
+  dateOnlyString(): DateString {
+    return this.dateStringTransformations.removeTime(this.dateTimeString());
   }
 }

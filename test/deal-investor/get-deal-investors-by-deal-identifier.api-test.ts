@@ -79,10 +79,10 @@ describe('GET /deals/{dealIdentifier}/investors', () => {
     givenAuthenticationWithTheIdpSucceeds();
     const brokenDealInvestorsInAcbs = [
       {
-        EffectiveDate: valueGenerator.dateString(),
-        ExpirationDate: valueGenerator.dateString(),
+        EffectiveDate: valueGenerator.dateOnlyString(),
+        ExpirationDate: valueGenerator.dateOnlyString(),
         IsExpirationDateMaximum: valueGenerator.boolean(),
-        LimitAmount: valueGenerator.nonnegativeFloat(2),
+        LimitAmount: valueGenerator.nonnegativeFloat({ fixed: 2 }),
       },
     ];
 
@@ -100,7 +100,7 @@ describe('GET /deals/{dealIdentifier}/investors', () => {
     givenAuthenticationWithTheIdpSucceeds();
     const brokenDealInvestorsInAcbs = [
       {
-        LenderType: { LenderTypeCode: valueGenerator.nonnegativeFloat(2) },
+        LenderType: { LenderTypeCode: valueGenerator.nonnegativeFloat({ fixed: 2 }) },
       },
     ];
 
