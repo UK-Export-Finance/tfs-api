@@ -9,21 +9,21 @@ export class DateStringTransformations {
   /**
    * Remove time part from DateTime string.
    */
-  removeTime(dateTime: string): DateString {
+  removeTime(dateTime: DateString): DateOnlyString {
     if (!dateTime) {
       throw new TypeError(`Cannot remove the time from ${dateTime}.`);
     }
-    return dateTime.split('T')[0] as DateString;
+    return dateTime.split('T')[0];
   }
 
   /**
    * Check if dateTime input is not null or empty before removing time.
    */
-  removeTimeIfExists(dateTime: string): DateString {
-    return (dateTime ? this.removeTime(dateTime) : dateTime) as DateString;
+  removeTimeIfExists(dateTime: DateString): DateOnlyString {
+    return dateTime ? this.removeTime(dateTime) : dateTime;
   }
 
-  dateOnlyStringToDateString(dateOnlyString: DateOnlyString): DateString {
+  addTimeToDateOnlyString(dateOnlyString: DateOnlyString): DateString {
     if (!matches(dateOnlyString, DATE_FORMATS.DATE_ONLY_STRING.regex)) {
       throw new TypeError(`${dateOnlyString} is not a valid DateOnlyString as it is not in ${DATE_FORMATS.DATE_ONLY_STRING.description} format.`);
     }

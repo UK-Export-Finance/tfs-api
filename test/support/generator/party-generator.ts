@@ -6,7 +6,7 @@ import { Party } from '@ukef/modules/party/party.interface';
 import { AbstractGenerator } from './abstract-generator';
 
 export class PartyGenerator extends AbstractGenerator<PartyValues, GenerateResult, GenerateOptions> {
-  private readonly transformations: DateStringTransformations = new DateStringTransformations();
+  private readonly dateStringTransformations: DateStringTransformations = new DateStringTransformations();
 
   protected generateValues(): PartyValues {
     return {
@@ -43,7 +43,7 @@ export class PartyGenerator extends AbstractGenerator<PartyValues, GenerateResul
       name3: v.name3,
       smeType: v.smeType,
       citizenshipClass: v.citizenshipClass,
-      officerRiskDate: this.transformations.removeTime(v.officerRiskDate.toISOString()),
+      officerRiskDate: this.dateStringTransformations.removeTime(v.officerRiskDate.toISOString()),
       countryCode: v.countryCode,
     }));
 

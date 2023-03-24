@@ -12,7 +12,7 @@ import nock from 'nock';
 
 describe('POST /deals/{dealIdentifier}/guarantees', () => {
   const valueGenerator = new RandomValueGenerator();
-  const transformations = new DateStringTransformations();
+  const dateStringTransformations = new DateStringTransformations();
 
   const dealIdentifier = valueGenerator.stringOfNumericCharacters({ length: 8 });
   const createDealGuaranteeUrl = `/api/v1/deals/${dealIdentifier}/guarantees`;
@@ -45,8 +45,8 @@ describe('POST /deals/{dealIdentifier}/guarantees', () => {
     GuaranteeType: {
       GuaranteeTypeCode: guaranteeTypeCode,
     },
-    EffectiveDate: transformations.dateOnlyStringToDateString(effectiveDateInFuture),
-    ExpirationDate: transformations.dateOnlyStringToDateString(guaranteeExpiryDateInFuture),
+    EffectiveDate: dateStringTransformations.addTimeToDateOnlyString(effectiveDateInFuture),
+    ExpirationDate: dateStringTransformations.addTimeToDateOnlyString(guaranteeExpiryDateInFuture),
     GuaranteedLimit: 12345.6,
     GuaranteedPercentage: guaranteedPercentage,
   };

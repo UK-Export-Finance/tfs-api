@@ -5,11 +5,11 @@ import { Chance } from 'chance';
 export class RandomValueGenerator {
   private static readonly seed = 0;
   private readonly chance: Chance.Chance;
-  private readonly transformations: DateStringTransformations;
+  private readonly dateStringTransformations: DateStringTransformations;
 
   constructor() {
     this.chance = new Chance(RandomValueGenerator.seed);
-    this.transformations = new DateStringTransformations();
+    this.dateStringTransformations = new DateStringTransformations();
   }
 
   string(): string {
@@ -50,6 +50,6 @@ export class RandomValueGenerator {
   }
 
   dateOnlyString(): DateString {
-    return this.transformations.removeTime(this.dateTimeString());
+    return this.dateStringTransformations.removeTime(this.dateTimeString());
   }
 }

@@ -21,7 +21,7 @@ export class DealGuaranteeService {
     const idToken = await this.acbsAuthenticationService.getIdToken();
 
     const effectiveDateTime = this.currentDateProvider.getLatestDateFromTodayAnd(
-      new Date(this.dateStringTransformations.dateOnlyStringToDateString(newGuarantee.effectiveDate)),
+      new Date(this.dateStringTransformations.addTimeToDateOnlyString(newGuarantee.effectiveDate)),
     );
     const effectiveDateOnlyString = this.dateStringTransformations.removeTime(effectiveDateTime.toISOString());
 
@@ -40,8 +40,8 @@ export class DealGuaranteeService {
       GuaranteeType: {
         GuaranteeTypeCode: newGuarantee.guaranteeTypeCode ?? PROPERTIES.DEAL_GUARANTEE.DEFAULT.guaranteeTypeCode,
       },
-      EffectiveDate: this.dateStringTransformations.dateOnlyStringToDateString(effectiveDateOnlyString),
-      ExpirationDate: this.dateStringTransformations.dateOnlyStringToDateString(newGuarantee.guaranteeExpiryDate),
+      EffectiveDate: this.dateStringTransformations.addTimeToDateOnlyString(effectiveDateOnlyString),
+      ExpirationDate: this.dateStringTransformations.addTimeToDateOnlyString(newGuarantee.guaranteeExpiryDate),
       GuaranteedLimit: Math.round(newGuarantee.maximumLiability * 100) / 100,
       GuaranteedPercentage: PROPERTIES.DEAL_GUARANTEE.DEFAULT.guaranteedPercentage,
     };
