@@ -1,6 +1,8 @@
 import { PROPERTIES } from '@ukef/constants';
 import { AcbsAuthenticationService } from '@ukef/modules/acbs/acbs-authentication.service';
 import { AcbsFacilityPartyService } from '@ukef/modules/acbs/acbs-facility-party.service';
+import { TEST_CURRENCIES } from '@ukef-test/support/constants/test-currency.constant';
+import { TEST_DATES } from '@ukef-test/support/constants/test-date.constant';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
 
@@ -36,10 +38,10 @@ describe('FacilityInvestorService', () => {
     const sectionIdentifier = PROPERTIES.FACILITY_INVESTOR.DEFAULT.sectionIdentifier;
     const facilityStatusCode = PROPERTIES.FACILITY_INVESTOR.DEFAULT.facilityStatus.facilityStatusCode;
     const involvedPartyIdentifier = PROPERTIES.FACILITY_INVESTOR.DEFAULT.involvedParty.partyIdentifier;
-    const effectiveDate = '9999-01-02';
-    const guaranteeExpiryDate = '9999-12-31';
+    const effectiveDate = TEST_DATES.A_FUTURE_EFFECTIVE_DATE_ONLY;
+    const guaranteeExpiryDate = TEST_DATES.A_FUTURE_EXPIRY_DATE_ONLY;
     const lenderType = valueGenerator.stringOfNumericCharacters();
-    const currency = 'GBP';
+    const currency = TEST_CURRENCIES.A_TEST_CURRENCY;
     const maximumLiability = 12345.6;
 
     const newFacilityInvestorWithAllFields = {

@@ -6,6 +6,8 @@ import { withRequiredDateOnlyFieldValidationApiTests } from '@ukef-test/common-t
 import { withRequiredNonNegativeNumberFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/required-non-negative-number-field-validation-api-tests';
 import { withStringFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/string-field-validation-api-tests';
 import { Api } from '@ukef-test/support/api';
+import { TEST_CURRENCIES } from '@ukef-test/support/constants/test-currency.constant';
+import { TEST_DATES } from '@ukef-test/support/constants/test-date.constant';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import nock from 'nock';
@@ -20,10 +22,10 @@ describe('POST /facilities/{facilityIdentifier}/investors', () => {
   const sectionIdentifier = PROPERTIES.FACILITY_INVESTOR.DEFAULT.sectionIdentifier;
   const facilityStatusCode = PROPERTIES.FACILITY_INVESTOR.DEFAULT.facilityStatus.facilityStatusCode;
   const involvedPartyIdentifier = PROPERTIES.FACILITY_INVESTOR.DEFAULT.involvedParty.partyIdentifier;
-  const effectiveDateInFuture = '9999-01-02';
-  const guaranteeExpiryDateInFuture = '9999-12-31';
+  const effectiveDateInFuture = TEST_DATES.A_FUTURE_EFFECTIVE_DATE_ONLY;
+  const guaranteeExpiryDateInFuture = TEST_DATES.A_FUTURE_EXPIRY_DATE_ONLY;
   const lenderType = valueGenerator.stringOfNumericCharacters({ length: 3 });
-  const currency = 'GBP';
+  const currency = TEST_CURRENCIES.A_TEST_CURRENCY;
   const maximumLiability = 12345.6;
   const limitTypeCode = valueGenerator.stringOfNumericCharacters({ minLength: 1, maxLength: 2 });
   const limitKey = valueGenerator.stringOfNumericCharacters({ maxLength: 10 });

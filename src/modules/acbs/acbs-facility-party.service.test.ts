@@ -1,5 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { PROPERTIES } from '@ukef/constants';
+import { TEST_CURRENCIES } from '@ukef-test/support/constants/test-currency.constant';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { AxiosError } from 'axios';
 import { when } from 'jest-when';
@@ -23,7 +24,7 @@ describe('AcbsFacilityPartyService', () => {
   const effectiveDate = valueGenerator.dateTimeString();
   const expirationDate = valueGenerator.dateTimeString();
   const lenderTypeCode = valueGenerator.stringOfNumericCharacters();
-  const currencyCode = 'GBP';
+  const currencyCode = TEST_CURRENCIES.A_TEST_CURRENCY;
   const limitAmount = valueGenerator.nonnegativeFloat();
   const customerAdvisedIndicator = valueGenerator.bool();
   const limitRevolvingIndicator = valueGenerator.bool();

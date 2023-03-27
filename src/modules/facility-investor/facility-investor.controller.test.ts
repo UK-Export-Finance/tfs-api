@@ -1,3 +1,5 @@
+import { TEST_CURRENCIES } from '@ukef-test/support/constants/test-currency.constant';
+import { TEST_DATES } from '@ukef-test/support/constants/test-date.constant';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 
 import { CreateFacilityInvestorRequestItem } from './dto/create-facility-investor-request.dto';
@@ -24,10 +26,10 @@ describe('FacilityInvestorController', () => {
   describe('createInvestorForFacility', () => {
     const facilityIdentifier = valueGenerator.stringOfNumericCharacters();
 
-    const effectiveDate = '9999-01-02';
-    const guaranteeExpiryDate = '9999-12-31';
+    const effectiveDate = TEST_DATES.A_FUTURE_EFFECTIVE_DATE_ONLY;
+    const guaranteeExpiryDate = TEST_DATES.A_FUTURE_EXPIRY_DATE_ONLY;
     const lenderType = valueGenerator.stringOfNumericCharacters();
-    const currency = 'GBP';
+    const currency = TEST_CURRENCIES.A_TEST_CURRENCY;
     const maximumLiability = 12345.6;
 
     const newFacilityInvestor = new CreateFacilityInvestorRequestItem(
