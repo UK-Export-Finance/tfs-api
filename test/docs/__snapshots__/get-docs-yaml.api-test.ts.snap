@@ -68,6 +68,39 @@ paths:
           description: The specified deal, or the investors for that deal, were not found.
         '500':
           description: An internal server error has occurred.
+  /api/v1/facilities/{facilityIdentifier}/investors:
+    post:
+      operationId: FacilityInvestorController_createInvestorForFacility
+      summary: Create a new investor for a facility.
+      parameters:
+        - name: facilityIdentifier
+          required: true
+          in: path
+          description: The identifier of the facility in ACBS.
+          example: '0000000001'
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/CreateFacilityInvestorRequestItem'
+      responses:
+        '201':
+          description: The investor has been successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateFacilityInvestorResponse'
+        '400':
+          description: Bad request.
+        '404':
+          description: The facility was not found.
+        '500':
+          description: An internal server error has occurred.
   /api/v1/parties/{partyIdentifier}/external-ratings:
     get:
       operationId: PartyExternalRatingController_getExternalRatingsForParty
@@ -261,6 +294,61 @@ components:
         - expiryDate
         - isExpiryDateMaximum
         - maximumLiability
+    CreateFacilityInvestorRequestItem:
+      type: object
+      properties:
+        facilityIdentifier:
+          type: string
+          description: The identifier of the facility to create the investor for.
+          example: '0000000001'
+          minLength: 10
+          maxLength: 10
+        effectiveDate:
+          format: date
+          type: string
+          description: The date from which this limit is effective.
+        guaranteeExpiryDate:
+          format: date
+          type: string
+          description: The date on which this limit will expire.
+        currency:
+          type: string
+          description: >-
+            The code of the currency for this investor, Currency in the Currency
+            Definition Table.
+          example: USD
+          minLength: 3
+          maxLength: 3
+        maximumLiability:
+          type: number
+          description: The investor's share of the current limit amount.
+          minimum: 0
+        lenderType:
+          type: string
+          description: >-
+            The lender type for this investor, Key Value 1 from the T1300 -
+            Lender Type Code Table.
+          minLength: 3
+          maxLength: 3
+          default: '500'
+      required:
+        - facilityIdentifier
+        - effectiveDate
+        - guaranteeExpiryDate
+        - currency
+        - maximumLiability
+    CreateFacilityInvestorResponse:
+      type: object
+      properties:
+        facilityIdentifier:
+          type: string
+          readOnly: true
+          minLength: 10
+          maxLength: 10
+          description: The identifier of the facility that the investor was created for.
+          example: '0000000001'
+      required:
+        - facilityIdentifier
     GetPartyExternalRatingResponseRatingEntity:
       type: object
       properties:

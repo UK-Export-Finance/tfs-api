@@ -12,7 +12,7 @@ import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-fou
 describe('AcbsPartyService', () => {
   const valueGenerator = new RandomValueGenerator();
   const idToken = valueGenerator.string();
-  const baseUrl = valueGenerator.string();
+  const baseUrl = valueGenerator.httpsUrl();
 
   let httpService: HttpService;
   let service: AcbsPartyService;

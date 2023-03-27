@@ -19,24 +19,21 @@ describe('DealGuaranteeService', () => {
   const dateStringTransformations = new DateStringTransformations();
   const idToken = valueGenerator.string();
 
-  let acbsAuthenticationService: AcbsAuthenticationService;
-  let acbsDealGuaranteeService: AcbsDealGuaranteeService;
-  let currentDateProvider: CurrentDateProvider;
   let service: DealGuaranteeService;
 
   let acbsDealGuaranteeServiceCreateGuaranteeForDeal: jest.Mock;
   let currentDateProviderGetLatestDateFromTodayAnd: jest.Mock;
 
   beforeEach(() => {
-    acbsDealGuaranteeService = new AcbsDealGuaranteeService(null, null);
+    const acbsDealGuaranteeService = new AcbsDealGuaranteeService(null, null);
     acbsDealGuaranteeServiceCreateGuaranteeForDeal = jest.fn();
     acbsDealGuaranteeService.createGuaranteeForDeal = acbsDealGuaranteeServiceCreateGuaranteeForDeal;
 
-    acbsAuthenticationService = new AcbsAuthenticationService(null, null, null);
+    const acbsAuthenticationService = new AcbsAuthenticationService(null, null, null);
     const acbsAuthenticationServiceGetIdToken = jest.fn();
     acbsAuthenticationService.getIdToken = acbsAuthenticationServiceGetIdToken;
 
-    currentDateProvider = new CurrentDateProvider();
+    const currentDateProvider = new CurrentDateProvider();
     currentDateProviderGetLatestDateFromTodayAnd = jest.fn();
     currentDateProvider.getLatestDateFromTodayAnd = currentDateProviderGetLatestDateFromTodayAnd;
 

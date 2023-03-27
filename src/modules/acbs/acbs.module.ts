@@ -6,6 +6,7 @@ import { TestController } from './acbs.controller';
 import { AcbsAuthenticationService } from './acbs-authentication.service';
 import { AcbsDealGuaranteeService } from './acbs-deal-guarantee.service';
 import { AcbsDealPartyService } from './acbs-deal-party.service';
+import { AcbsFacilityPartyService } from './acbs-facility-party.service';
 import { AcbsPartyService } from './acbs-party.service';
 import { AcbsPartyExternalRatingService } from './acbs-party-external-rating.service';
 
@@ -21,7 +22,21 @@ import { AcbsPartyExternalRatingService } from './acbs-party-external-rating.ser
     }),
   ],
   controllers: [TestController],
-  providers: [AcbsAuthenticationService, AcbsPartyService, AcbsPartyExternalRatingService, AcbsDealGuaranteeService, AcbsDealPartyService],
-  exports: [AcbsAuthenticationService, AcbsPartyService, AcbsPartyExternalRatingService, AcbsDealGuaranteeService, AcbsDealPartyService],
+  providers: [
+    AcbsAuthenticationService,
+    AcbsPartyService,
+    AcbsPartyExternalRatingService,
+    AcbsDealGuaranteeService,
+    AcbsDealPartyService,
+    AcbsFacilityPartyService,
+  ],
+  exports: [
+    AcbsAuthenticationService,
+    AcbsPartyService,
+    AcbsPartyExternalRatingService,
+    AcbsDealGuaranteeService,
+    AcbsDealPartyService,
+    AcbsFacilityPartyService,
+  ],
 })
 export class AcbsModule {}

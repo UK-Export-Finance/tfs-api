@@ -13,7 +13,7 @@ import { AcbsUnexpectedException } from './exception/acbs-unexpected.exception';
 describe('AcbsDealGuaranteeService', () => {
   const valueGenerator = new RandomValueGenerator();
   const authToken = valueGenerator.string();
-  const baseUrl = valueGenerator.string();
+  const baseUrl = valueGenerator.httpsUrl();
   const dealIdentifier = valueGenerator.stringOfNumericCharacters();
   const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
 
