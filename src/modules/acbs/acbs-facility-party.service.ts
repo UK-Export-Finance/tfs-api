@@ -6,6 +6,7 @@ import { PROPERTIES } from '@ukef/constants';
 
 import { AcbsHttpService } from './acbs-http.service';
 import { AcbsCreateFacilityPartyDto } from './dto/acbs-create-facility-party.dto';
+import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
 import { createWrapAcbsHttpPostErrorCallback } from './wrap-acbs-http-error-callback';
 
 @Injectable()
@@ -23,8 +24,15 @@ export class AcbsFacilityPartyService {
       requestBody: newFacilityParty,
       idToken,
       onError: createWrapAcbsHttpPostErrorCallback({
-        resourceIdentifier: facilityIdentifier,
-        messageForUnknownException: `Failed to create a party for facility ${facilityIdentifier} in ACBS.`,
+        messageForUnknownError: `Failed to create a party for facility ${facilityIdentifier} in ACBS.`,
+        knownErrors: [
+          {
+            substringToFind: 'The facility not found',
+            throwError: (error) => {
+              throw new AcbsResourceNotFoundException(`Facility with identifier ${facilityIdentifier} was not found by ACBS.`, error);
+            },
+          },
+        ],
       }),
     });
   }

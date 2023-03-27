@@ -6,6 +6,7 @@ import { PROPERTIES } from '@ukef/constants';
 
 import { AcbsHttpService } from './acbs-http.service';
 import { AcbsCreateDealGuaranteeDto } from './dto/acbs-create-deal-guarantee.dto';
+import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
 import { createWrapAcbsHttpPostErrorCallback } from './wrap-acbs-http-error-callback';
 
 @Injectable()
@@ -27,8 +28,15 @@ export class AcbsDealGuaranteeService {
       requestBody: newDealGuarantee,
       idToken,
       onError: createWrapAcbsHttpPostErrorCallback({
-        resourceIdentifier: dealIdentifier,
-        messageForUnknownException: `Failed to create a guarantee for deal ${dealIdentifier} in ACBS.`,
+        messageForUnknownError: `Failed to create a guarantee for deal ${dealIdentifier} in ACBS.`,
+        knownErrors: [
+          {
+            substringToFind: 'The deal not found',
+            throwError: (error) => {
+              throw new AcbsResourceNotFoundException(`Deal with identifier ${dealIdentifier} was not found by ACBS.`, error);
+            },
+          },
+        ],
       }),
     });
   }

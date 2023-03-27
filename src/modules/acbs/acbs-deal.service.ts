@@ -25,8 +25,8 @@ export class AcbsDealService {
       requestBody: newDeal,
       idToken,
       onError: createWrapAcbsHttpPostErrorCallback({
-        resourceIdentifier: undefined,
-        messageForUnknownException: `Failed to create a deal with identifier ${newDeal.DealIdentifier} in ACBS.`,
+        messageForUnknownError: `Failed to create a deal with identifier ${newDeal.DealIdentifier} in ACBS.`,
+        knownErrors: [],
       }),
     });
   }
