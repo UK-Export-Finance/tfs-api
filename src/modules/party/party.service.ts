@@ -6,6 +6,7 @@ import { AcbsAuthenticationService } from '@ukef/modules/acbs/acbs-authenticatio
 import { AcbsPartyService } from '@ukef/modules/acbs/acbs-party.service';
 import { lastValueFrom } from 'rxjs';
 
+import { DateStringTransformations } from '../date/date-string.transformations';
 import { AcbsGetPartiesBySearchTextResponseElement } from './dto/acbs-get-parties-by-search-text-response-element.dto';
 import { GetPartiesBySearchTextResponseElement } from './dto/get-parties-by-search-text-response-element.dto';
 import { GetPartiesBySearchTextException } from './exception/get-parties-by-search-text.exception';
@@ -21,6 +22,7 @@ export class PartyService {
     private readonly httpService: HttpService,
     private readonly acbsAuthenticationService: AcbsAuthenticationService,
     private readonly acbsPartyService: AcbsPartyService,
+    private readonly dateStringTransformations: DateStringTransformations,
   ) {}
 
   async getPartiesBySearchText(token: string, searchText: string): Promise<GetPartiesBySearchTextResponseElement[]> {
@@ -55,7 +57,7 @@ export class PartyService {
           name3: element.PartyName3,
           smeType: element.MinorityClass.MinorityClassCode,
           citizenshipClass: element.CitizenshipClass.CitizenshipClassCode,
-          officerRiskDate: element.OfficerRiskDate ? element.OfficerRiskDate.slice(0, 10) : null,
+          officerRiskDate: this.dateStringTransformations.removeTimeIfExists(element.OfficerRiskDate),
           countryCode: element.PrimaryAddress.Country.CountryCode,
         })),
       )
@@ -77,7 +79,7 @@ export class PartyService {
       name3: partyInAcbs.PartyName3,
       smeType: partyInAcbs.MinorityClass.MinorityClassCode,
       citizenshipClass: partyInAcbs.CitizenshipClass.CitizenshipClassCode,
-      officerRiskDate: partyInAcbs.OfficerRiskDate && partyInAcbs.OfficerRiskDate.split('T')[0],
+      officerRiskDate: this.dateStringTransformations.removeTimeIfExists(partyInAcbs.OfficerRiskDate),
       countryCode: partyInAcbs.PrimaryAddress.Country.CountryCode,
     };
   }

@@ -4,7 +4,7 @@ import { AcbsAuthenticationService } from '@ukef/modules/acbs/acbs-authenticatio
 import { AcbsDealGuaranteeService } from '@ukef/modules/acbs/acbs-deal-guarantee.service';
 import { AcbsCreateDealGuaranteeDto } from '@ukef/modules/acbs/dto/acbs-create-deal-guarantee.dto';
 import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
-import { DateStringTransformations } from '@ukef/helpers';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 
 import { AcbsResourceNotFoundException } from '../acbs/exception/acbs-resource-not-found.exception';
 import { DealGuaranteeToCreate } from './deal-guarantee-to-create.interface';
@@ -12,20 +12,20 @@ import { GetDealGuaranteeResponse } from './dto/get-deal-guarantee-response.dto'
 
 @Injectable()
 export class DealGuaranteeService {
-  // TODO: make DateStringTransformations injectable, maybe it needs to be part of module for this to work.
-  private readonly dateStringTransformations: DateStringTransformations = new DateStringTransformations();
-
   constructor(
     private readonly acbsAuthenticationService: AcbsAuthenticationService,
     private readonly acbsDealGuaranteeService: AcbsDealGuaranteeService,
     private readonly currentDateProvider: CurrentDateProvider,
+    private readonly dateStringTransformations: DateStringTransformations,
   ) {}
 
   async createGuaranteeForDeal(dealIdentifier: string, newGuarantee: DealGuaranteeToCreate): Promise<void> {
     const idToken = await this.acbsAuthenticationService.getIdToken();
 
-    const effectiveDateTime = this.currentDateProvider.getLatestDateFromTodayAnd(new Date(newGuarantee.effectiveDate + 'T00:00:00Z'));
-    const effectiveDateOnlyString = effectiveDateTime.toISOString().split('T')[0];
+    const effectiveDateTime = this.currentDateProvider.getLatestDateFromTodayAnd(
+      new Date(this.dateStringTransformations.addTimeToDateOnlyString(newGuarantee.effectiveDate)),
+    );
+    const effectiveDateOnlyString = this.dateStringTransformations.removeTime(effectiveDateTime.toISOString());
 
     const guaranteeToCreateInAcbs: AcbsCreateDealGuaranteeDto = {
       LenderType: {
@@ -42,8 +42,8 @@ export class DealGuaranteeService {
       GuaranteeType: {
         GuaranteeTypeCode: newGuarantee.guaranteeTypeCode ?? PROPERTIES.DEAL_GUARANTEE.DEFAULT.guaranteeTypeCode,
       },
-      EffectiveDate: effectiveDateOnlyString + 'T00:00:00Z',
-      ExpirationDate: newGuarantee.guaranteeExpiryDate + 'T00:00:00Z',
+      EffectiveDate: this.dateStringTransformations.addTimeToDateOnlyString(effectiveDateOnlyString),
+      ExpirationDate: this.dateStringTransformations.addTimeToDateOnlyString(newGuarantee.guaranteeExpiryDate),
       GuaranteedLimit: Math.round(newGuarantee.maximumLiability * 100) / 100,
       GuaranteedPercentage: PROPERTIES.DEAL_GUARANTEE.DEFAULT.guaranteedPercentage,
     };

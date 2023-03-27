@@ -5,6 +5,7 @@ import { AxiosError } from 'axios';
 import { when } from 'jest-when';
 import { of, throwError } from 'rxjs';
 
+import { DateStringTransformations } from '../date/date-string.transformations';
 import { AcbsGetPartiesBySearchTextResponseElement } from './dto/acbs-get-parties-by-search-text-response-element.dto';
 
 describe('PartyService', () => {
@@ -71,7 +72,7 @@ describe('PartyService', () => {
     httpServiceGet = jest.fn();
     httpService.get = httpServiceGet;
 
-    partyService = new PartyService(config, httpService, null, null);
+    partyService = new PartyService(config, httpService, null, null, new DateStringTransformations());
   });
 
   describe('successful request', () => {
