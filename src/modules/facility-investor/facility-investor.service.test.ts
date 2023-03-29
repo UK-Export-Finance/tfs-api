@@ -1,6 +1,6 @@
 import { PROPERTIES } from '@ukef/constants';
-import { AcbsAuthenticationService } from '@ukef/modules/acbs/acbs-authentication.service';
 import { AcbsFacilityPartyService } from '@ukef/modules/acbs/acbs-facility-party.service';
+import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 import { TEST_CURRENCIES } from '@ukef-test/support/constants/test-currency.constant';
 import { TEST_DATES } from '@ukef-test/support/constants/test-date.constant';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';

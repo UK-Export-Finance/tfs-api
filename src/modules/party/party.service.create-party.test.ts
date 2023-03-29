@@ -1,17 +1,17 @@
 import { HttpService } from '@nestjs/axios';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { CreatePartyGenerator } from '@ukef-test/support/generator/create-party-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { AxiosError } from 'axios';
 import { when } from 'jest-when';
 import { of, throwError } from 'rxjs';
 
-import { DateStringTransformations } from '../date/date-string.transformations';
 import { AcbsCreatePartyRequest } from './dto/acbs-create-party-request.dto';
 import { CreatePartyInAcbsFailedException } from './exception/create-party-in-acbs-failed.exception';
 import { PartyService } from './party.service';
 
 jest.mock('@ukef/modules/acbs/acbs-party.service');
-jest.mock('@ukef/modules/acbs/acbs-authentication.service');
+jest.mock('@ukef/modules/acbs-authentication/acbs-authentication.service');
 
 describe('PartyService', () => {
   const valueGenerator = new RandomValueGenerator();
