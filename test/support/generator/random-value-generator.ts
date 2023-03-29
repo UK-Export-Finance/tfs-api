@@ -17,8 +17,12 @@ export class RandomValueGenerator {
     return this.chance.bool();
   }
 
-  string(): string {
-    return this.chance.string();
+  string(options?: { length?: number; minLength?: number; maxLength?: number }): string {
+    const minLength = options && options.minLength ? options.minLength : 0;
+    const maxLength = options && options.maxLength ? options.maxLength : Math.max(20, minLength * 2);
+    const length = options && options.length ? options.length : this.chance.integer({ min: minLength, max: maxLength });
+
+    return this.chance.string({ length });
   }
 
   word(options?: { length?: number }): string {
@@ -54,6 +58,10 @@ export class RandomValueGenerator {
 
   date(): Date {
     return this.chance.date();
+  }
+
+  integer({ min, max }: { min?: number; max?: number } = {}): number {
+    return this.chance.integer({ min, max });
   }
 
   // UKEF id example 0030000321. It should be used for Deal and Facility IDs.

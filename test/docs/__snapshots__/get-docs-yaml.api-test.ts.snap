@@ -121,7 +121,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/GetPartyExternalRatingsResponseElement'
+                  $ref: '#/components/schemas/GetPartyExternalRatingsResponseItem'
         '404':
           description: >-
             The specified party, or the external ratings for that party, were
@@ -136,7 +136,7 @@ paths:
         - name: searchText
           required: true
           in: query
-          description: 'Minimum length: 3'
+          description: 'Minimum length: 3. Cannot contain only whitespaces.'
           schema:
             minLength: 3
             type: string
@@ -148,7 +148,40 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/GetPartiesBySearchTextResponseElement'
+                  $ref: '#/components/schemas/GetPartiesBySearchTextResponseItem'
+        '500':
+          description: An internal server error has occurred.
+    post:
+      operationId: PartyController_createParty
+      summary: >-
+        Create a new party if there are no parties matching this alternate
+        identifier.
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/CreatePartyRequestItem'
+      responses:
+        '200':
+          description: >-
+            One or more parties matching this alternate identifier already
+            exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatePartyResponse'
+        '201':
+          description: The party has been successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatePartyResponse'
+        '400':
+          description: Bad request.
         '500':
           description: An internal server error has occurred.
   /api/v1/parties/{partyIdentifier}:
@@ -365,7 +398,7 @@ components:
           readOnly: true
       required:
         - assignedRatingCode
-    GetPartyExternalRatingsResponseElement:
+    GetPartyExternalRatingsResponseItem:
       type: object
       properties:
         partyIdentifier:
@@ -417,7 +450,7 @@ components:
         - externalRatingNote2
         - externalRatingUserCode1
         - externalRatingUserCode2
-    GetPartiesBySearchTextResponseElement:
+    GetPartiesBySearchTextResponseItem:
       type: object
       properties:
         alternateIdentifier:
@@ -457,6 +490,76 @@ components:
         - citizenshipClass
         - officerRiskDate
         - countryCode
+    CreatePartyRequestItem:
+      type: object
+      properties:
+        alternateIdentifier:
+          type: string
+          description: The UKEF ID for the party. Should contain just digits.
+          minLength: 8
+          maxLength: 8
+          example: '00291013'
+          pattern: /^d{8}$/
+        industryClassification:
+          type: string
+          description: The primary industry classification code for this customer.
+          minLength: 1
+          maxLength: 10
+          example: '0001'
+        name1:
+          type: string
+          description: The primary customer name.
+          minLength: 1
+          maxLength: 35
+          example: ACTUAL IMPORT EXPORT
+        name2:
+          type: string
+          description: The secondary customer name.
+          minLength: 1
+          maxLength: 35
+          example: ACTUAL IMPORT EXPORT
+        name3:
+          type: string
+          description: The tertiary customer name.
+          minLength: 1
+          maxLength: 35
+          example: ACTUAL IMPORT EXPORT
+        smeType:
+          type: string
+          description: A code that indicates what minority class this customer represents.
+          minLength: 1
+          maxLength: 2
+          example: '70'
+        citizenshipClass:
+          type: string
+          description: >-
+            A code that identifies the citizenship category of this customer.
+            Should be '1' if the domicile country is the UK, otherwise '2'.
+          example: '2'
+        officerRiskDate:
+          format: date
+          type: string
+          description: The date of creation in YYYY-MM-DD (ISO 8601) format.
+          example: '2023-03-15'
+        countryCode:
+          type: string
+          description: The country code for the party's primary address.
+          maxLength: 3
+          default: GBR
+          example: DZA
+      required:
+        - alternateIdentifier
+        - industryClassification
+        - name1
+        - smeType
+        - citizenshipClass
+        - officerRiskDate
+    CreatePartyResponse:
+      type: object
+      properties:
+        partyIdentifier:
+          type: string
+          readOnly: true
     GetPartyByIdentifierResponse:
       type: object
       properties:

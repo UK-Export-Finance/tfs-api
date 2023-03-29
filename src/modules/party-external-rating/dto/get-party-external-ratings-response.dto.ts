@@ -1,7 +1,7 @@
 import { ApiResponseProperty } from '@nestjs/swagger';
 import { DateString } from '@ukef/helpers/date-string.type';
 
-export type GetPartyExternalRatingsResponse = GetPartyExternalRatingsResponseElement[];
+export type GetPartyExternalRatingsResponse = GetPartyExternalRatingsResponseItem[];
 
 class GetPartyExternalRatingResponseRatingEntity {
   @ApiResponseProperty()
@@ -13,7 +13,7 @@ class GetPartyExternalRatingResponseAssignedRating {
   assignedRatingCode: string;
 }
 
-export class GetPartyExternalRatingsResponseElement {
+export class GetPartyExternalRatingsResponseItem {
   @ApiResponseProperty()
   partyIdentifier: string;
 
