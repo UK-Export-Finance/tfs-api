@@ -1,8 +1,8 @@
 import { ApiResponseProperty } from '@nestjs/swagger';
 
-export type GetPartiesBySearchTextResponse = GetPartiesBySearchTextResponseElement[];
+export type GetPartiesBySearchTextResponse = GetPartiesBySearchTextResponseItem[];
 
-export class GetPartiesBySearchTextResponseElement {
+export class GetPartiesBySearchTextResponseItem {
   @ApiResponseProperty()
   alternateIdentifier: string;
 

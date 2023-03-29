@@ -1,10 +1,22 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
-import { ApiInternalServerErrorResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiParam } from '@nestjs/swagger';
+import { Body, Controller, Get, HttpStatus, Param, ParseArrayPipe, Post, Query, Res } from '@nestjs/common';
+import {
+  ApiBadRequestResponse,
+  ApiBody,
+  ApiCreatedResponse,
+  ApiInternalServerErrorResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiParam,
+} from '@nestjs/swagger';
+import { Response } from 'express';
 
 import { AcbsAuthenticationService } from '../acbs/acbs-authentication.service';
-import { GetPartiesBySearchTextResponse, GetPartiesBySearchTextResponseElement } from './dto/get-parties-by-search-text-response-element.dto';
-import { GetPartyByIdentifierResponse } from './dto/get-party-by-response.dto';
-import { PartiesQueryDto } from './dto/parties-query.dto';
+import { CreatePartyRequest, CreatePartyRequestItem } from './dto/create-party-request.dto';
+import { CreatePartyResponse } from './dto/create-party-response.dto';
+import { GetPartiesBySearchTextQuery } from './dto/get-parties-by-search-text-query.dto';
+import { GetPartiesBySearchTextResponse, GetPartiesBySearchTextResponseItem } from './dto/get-parties-by-search-text-response.dto';
+import { GetPartyByIdentifierResponse } from './dto/get-party-by-identifier-response.dto';
 import { PartyService } from './party.service';
 
 @Controller('parties')
@@ -17,17 +29,56 @@ export class PartyController {
   })
   @ApiOkResponse({
     description: 'The matching parties have been successfully retrieved.',
-    type: GetPartiesBySearchTextResponseElement,
+    type: GetPartiesBySearchTextResponseItem,
     isArray: true,
   })
   @ApiInternalServerErrorResponse({
     description: 'An internal server error has occurred.',
   })
-  async getPartiesBySearchText(@Query() query: PartiesQueryDto): Promise<GetPartiesBySearchTextResponse> {
+  async getPartiesBySearchText(@Query() query: GetPartiesBySearchTextQuery): Promise<GetPartiesBySearchTextResponse> {
     const token = await this.acbsAuthenticationService.getIdToken();
     const response = await this.partyService.getPartiesBySearchText(token, query.searchText);
 
     return response;
+  }
+
+  @Post()
+  @ApiOperation({
+    summary: 'Create a new party if there are no parties matching this alternate identifier.',
+  })
+  @ApiBody({
+    type: CreatePartyRequestItem,
+    isArray: true,
+  })
+  @ApiOkResponse({
+    description: 'One or more parties matching this alternate identifier already exist.',
+    type: CreatePartyResponse,
+  })
+  @ApiCreatedResponse({
+    description: 'The party has been successfully created.',
+    type: CreatePartyResponse,
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad request.',
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'An internal server error has occurred.',
+  })
+  async createParty(
+    @Body(new ParseArrayPipe({ items: CreatePartyRequestItem }))
+    requestBody: CreatePartyRequest,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<CreatePartyResponse> {
+    const party = requestBody[0];
+    const token = await this.acbsAuthenticationService.getIdToken();
+    const partyIdentifierOfMatchingParty = await this.partyService.getPartyIdentifierBySearchText(token, party.alternateIdentifier);
+
+    if (partyIdentifierOfMatchingParty) {
+      res.status(HttpStatus.OK);
+      return partyIdentifierOfMatchingParty;
+    }
+
+    return await this.partyService.createParty(token, party);
   }
 
   @Get(':partyIdentifier')

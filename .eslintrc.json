@@ -38,7 +38,8 @@
         ".js",
         ".json",
         ".ts"
-      ]
+      ],
+      "allowModules": ["express"]
     },
     "import/parsers": {
       "@typescript-eslint/parser": [

@@ -1,4 +1,4 @@
-import { PartyGenerator } from '@ukef-test/support/generator/party-generator';
+import { GetPartyGenerator } from '@ukef-test/support/generator/get-party-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
 
@@ -14,6 +14,7 @@ jest.mock('@ukef/modules/acbs/acbs-authentication.service');
 
 describe('PartyService', () => {
   const valueGenerator = new RandomValueGenerator();
+  const dateStringTransformations = new DateStringTransformations();
   const idToken = valueGenerator.string();
   const baseUrl = valueGenerator.httpsUrl();
 
@@ -33,7 +34,7 @@ describe('PartyService', () => {
     const acbsAuthenticationServiceGetIdToken = jest.fn();
     acbsAuthenticationService.getIdToken = acbsAuthenticationServiceGetIdToken;
 
-    service = new PartyService({ baseUrl }, null, acbsAuthenticationService, acbsPartyService, new DateStringTransformations());
+    service = new PartyService({ baseUrl }, null, acbsAuthenticationService, acbsPartyService, dateStringTransformations);
 
     when(acbsAuthenticationServiceGetIdToken).calledWith().mockResolvedValueOnce(idToken);
   });
@@ -44,7 +45,7 @@ describe('PartyService', () => {
     it('returns a transformation of the external ratings from ACBS when OfficerRiskDate IS NOT null', async () => {
       const officerRiskDateInAcbs = '2023-02-01T00:00:00Z';
       const expectedOfficerRiskDate = '2023-02-01';
-      const { partiesInAcbs, parties } = new PartyGenerator(valueGenerator).generate({ numberToGenerate: 1 });
+      const { partiesInAcbs, parties } = new GetPartyGenerator(valueGenerator, dateStringTransformations).generate({ numberToGenerate: 1 });
       const partyInAcbs: AcbsGetPartyResponseDto = {
         ...partiesInAcbs[0],
         OfficerRiskDate: officerRiskDateInAcbs,
@@ -61,7 +62,7 @@ describe('PartyService', () => {
     });
 
     it('returns a transformation of the external ratings from ACBS when OfficerRiskDate IS null', async () => {
-      const { partiesInAcbs, parties } = new PartyGenerator(valueGenerator).generate({ numberToGenerate: 1 });
+      const { partiesInAcbs, parties } = new GetPartyGenerator(valueGenerator, dateStringTransformations).generate({ numberToGenerate: 1 });
       const partyInAcbs: AcbsGetPartyResponseDto = {
         ...partiesInAcbs[0],
         OfficerRiskDate: null,
