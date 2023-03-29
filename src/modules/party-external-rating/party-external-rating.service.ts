@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { AcbsAuthenticationService } from '@ukef/modules/acbs/acbs-authentication.service';
 import { AcbsPartyExternalRatingService } from '@ukef/modules/acbs/acbs-party-external-rating.service';
+import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 import { PartyExternalRating } from '@ukef/modules/party-external-rating/party-external-rating.interface';
 
 @Injectable()

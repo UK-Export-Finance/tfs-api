@@ -3,8 +3,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import AcbsConfig from '@ukef/config/acbs.config';
 import { PROPERTIES } from '@ukef/constants';
-import { AcbsAuthenticationService } from '@ukef/modules/acbs/acbs-authentication.service';
 import { AcbsPartyService } from '@ukef/modules/acbs/acbs-party.service';
+import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 import { lastValueFrom } from 'rxjs';
 
 import { DateStringTransformations } from '../date/date-string.transformations';

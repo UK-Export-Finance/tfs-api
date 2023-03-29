@@ -9,9 +9,9 @@ import {
   ApiOperation,
   ApiParam,
 } from '@nestjs/swagger';
+import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 import { Response } from 'express';
 
-import { AcbsAuthenticationService } from '../acbs/acbs-authentication.service';
 import { CreatePartyRequest, CreatePartyRequestItem } from './dto/create-party-request.dto';
 import { CreatePartyResponse } from './dto/create-party-response.dto';
 import { GetPartiesBySearchTextQuery } from './dto/get-parties-by-search-text-query.dto';
