@@ -1,7 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { PROPERTIES } from '@ukef/constants';
-import { TEST_CURRENCIES } from '@ukef-test/support/constants/test-currency.constant';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
+import { generateAcbsCreateFacilityPartyDtoUsing } from '@ukef-test/support/requests/acbs-create-facility-party-dto';
 import { AxiosError } from 'axios';
 import { when } from 'jest-when';
 import { of, throwError } from 'rxjs';
@@ -18,37 +18,7 @@ describe('AcbsFacilityPartyService', () => {
   const facilityIdentifier = valueGenerator.stringOfNumericCharacters();
   const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
 
-  const sectionIdentifier = valueGenerator.stringOfNumericCharacters({ minLength: 1, maxLength: 2 });
-  const facilityStatusCode = valueGenerator.character();
-  const involvedPartyIdentifier = valueGenerator.stringOfNumericCharacters();
-  const effectiveDate = valueGenerator.dateTimeString();
-  const expirationDate = valueGenerator.dateTimeString();
-  const lenderTypeCode = valueGenerator.stringOfNumericCharacters();
-  const currencyCode = TEST_CURRENCIES.A_TEST_CURRENCY;
-  const limitAmount = valueGenerator.nonnegativeFloat();
-  const customerAdvisedIndicator = valueGenerator.bool();
-  const limitRevolvingIndicator = valueGenerator.bool();
-
-  const newFacilityParty = {
-    FacilityStatus: {
-      FacilityStatusCode: facilityStatusCode,
-    },
-    InvolvedParty: {
-      PartyIdentifier: involvedPartyIdentifier,
-    },
-    EffectiveDate: effectiveDate,
-    ExpirationDate: expirationDate,
-    LenderType: {
-      LenderTypeCode: lenderTypeCode,
-    },
-    SectionIdentifier: sectionIdentifier,
-    Currency: {
-      CurrencyCode: currencyCode,
-    },
-    LimitAmount: limitAmount,
-    CustomerAdvisedIndicator: customerAdvisedIndicator,
-    LimitRevolvingIndicator: limitRevolvingIndicator,
-  };
+  const newFacilityParty = generateAcbsCreateFacilityPartyDtoUsing(valueGenerator);
 
   let httpService: HttpService;
   let service: AcbsFacilityPartyService;

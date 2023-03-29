@@ -18,11 +18,20 @@ export class RandomValueGenerator {
   }
 
   string(options?: { length?: number; minLength?: number; maxLength?: number }): string {
-    const minLength = options && options.minLength ? options.minLength : 0;
-    const maxLength = options && options.maxLength ? options.maxLength : Math.max(20, minLength * 2);
-    const length = options && options.length ? options.length : this.chance.integer({ min: minLength, max: maxLength });
-
+    const length = this.getStringLengthFromOptions(options);
     return this.chance.string({ length });
+  }
+
+  stringOfNumericCharacters(options?: { length?: number; minLength?: number; maxLength?: number }): string {
+    const length = this.getStringLengthFromOptions(options);
+    return this.chance.string({ length, pool: '0123456789' });
+  }
+
+  private getStringLengthFromOptions(options?: { length?: number; minLength?: number; maxLength?: number }): number {
+    const minLength = options && (options.minLength || options.minLength === 0) ? options.minLength : 0;
+    const maxLength = options && (options.maxLength || options.maxLength === 0) ? options.maxLength : Math.max(20, minLength * 2);
+    const length = options && (options.length || options.length === 0) ? options.length : this.chance.integer({ min: minLength, max: maxLength });
+    return length;
   }
 
   word(options?: { length?: number }): string {
@@ -31,14 +40,6 @@ export class RandomValueGenerator {
 
   httpsUrl(): string {
     return this.chance.url({ protocol: 'https' });
-  }
-
-  stringOfNumericCharacters(options?: { length?: number; minLength?: number; maxLength?: number }): string {
-    const minLength = options && options.minLength ? options.minLength : 0;
-    const maxLength = options && options.maxLength ? options.maxLength : Math.max(20, minLength * 2);
-    const length = options && options.length ? options.length : this.chance.integer({ min: minLength, max: maxLength });
-
-    return this.chance.string({ length, pool: '0123456789' });
   }
 
   character(): string {
@@ -75,9 +76,5 @@ export class RandomValueGenerator {
 
   dateOnlyString(): DateOnlyString {
     return this.dateStringTransformations.removeTime(this.dateTimeString());
-  }
-
-  bool(): boolean {
-    return this.chance.bool();
   }
 }

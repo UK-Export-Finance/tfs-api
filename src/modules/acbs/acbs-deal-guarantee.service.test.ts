@@ -1,6 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { PROPERTIES } from '@ukef/constants';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
+import { generateAcbsCreateDealGuaranteeDtoUsing } from '@ukef-test/support/requests/acbs-create-deal-guarantee-dto';
 import { AxiosError } from 'axios';
 import { when } from 'jest-when';
 import { of, throwError } from 'rxjs';
@@ -32,37 +33,7 @@ describe('AcbsDealGuaranteeService', () => {
   });
 
   describe('createGuaranteeForDeal', () => {
-    const lenderTypeCode = valueGenerator.stringOfNumericCharacters({ maxLength: 3 });
-    const sectionIdentifier = valueGenerator.stringOfNumericCharacters({ maxLength: 2 });
-    const limitTypeCode = valueGenerator.stringOfNumericCharacters({ maxLength: 2 });
-    const limitKey = valueGenerator.stringOfNumericCharacters({ maxLength: 8 });
-    const guarantorPartyIdentifier = valueGenerator.stringOfNumericCharacters({ maxLength: 8 });
-    const guaranteeTypeCode = valueGenerator.stringOfNumericCharacters({ maxLength: 3 });
-    const effectiveDate = valueGenerator.dateTimeString();
-    const expirationDate = valueGenerator.dateTimeString();
-    const guaranteedLimit = valueGenerator.nonnegativeFloat();
-    const guaranteedPercentage = valueGenerator.nonnegativeFloat({ max: 100 });
-
-    const newDealGuarantee = {
-      LenderType: {
-        LenderTypeCode: lenderTypeCode,
-      },
-      SectionIdentifier: sectionIdentifier,
-      LimitType: {
-        LimitTypeCode: limitTypeCode,
-      },
-      LimitKey: limitKey,
-      GuarantorParty: {
-        PartyIdentifier: guarantorPartyIdentifier,
-      },
-      GuaranteeType: {
-        GuaranteeTypeCode: guaranteeTypeCode,
-      },
-      EffectiveDate: effectiveDate,
-      ExpirationDate: expirationDate,
-      GuaranteedLimit: guaranteedLimit,
-      GuaranteedPercentage: guaranteedPercentage,
-    };
+    const newDealGuarantee = generateAcbsCreateDealGuaranteeDtoUsing(valueGenerator);
 
     it('sends a POST to ACBS with the specified parameters', async () => {
       when(httpServicePost)

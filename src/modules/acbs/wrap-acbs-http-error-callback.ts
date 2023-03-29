@@ -18,24 +18,28 @@ export const createWrapAcbsHttpErrorCallback =
   };
 
 export const createWrapAcbsHttpPostErrorCallback =
-  ({ resourceIdentifier, messageForUnknownException }: { resourceIdentifier: string; messageForUnknownException: string }): AcbsHttpErrorCallback =>
+  ({
+    messageForUnknownError,
+    knownErrors,
+  }: {
+    messageForUnknownError: string;
+    knownErrors: { substringToFind: string; throwError: (error: AxiosError) => never }[];
+  }): AcbsHttpErrorCallback =>
   (error: Error) => {
     if (!(error instanceof AxiosError) || !error.response || error.response.status !== 400) {
-      throw new AcbsUnexpectedException(messageForUnknownException, error);
+      throw new AcbsUnexpectedException(messageForUnknownError, error);
     }
 
     if (typeof error.response.data === 'string') {
-      if (error.response.data.includes('The deal not found')) {
-        throw new AcbsResourceNotFoundException(`Deal with identifier ${resourceIdentifier} was not found by ACBS.`, error);
-      }
-
-      if (error.response.data.includes('The facility not found')) {
-        throw new AcbsResourceNotFoundException(`Facility with identifier ${resourceIdentifier} was not found by ACBS.`, error);
-      }
+      knownErrors.forEach(({ substringToFind, throwError }) => {
+        if (error.response.data.includes(substringToFind)) {
+          throwError(error);
+        }
+      });
     }
 
     throw new AcbsBadRequestException(
-      messageForUnknownException,
+      messageForUnknownError,
       error,
       typeof error.response.data === 'string' ? error.response.data : JSON.stringify(error.response.data),
     );
