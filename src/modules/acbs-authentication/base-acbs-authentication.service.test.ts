@@ -6,10 +6,10 @@ import { when } from 'jest-when';
 import { PinoLogger } from 'nestjs-pino';
 import { of, throwError } from 'rxjs';
 
-import { AcbsAuthenticationService } from './acbs-authentication.service';
+import { BaseAcbsAuthenticationService } from './base-acbs-authentication.service';
 import { AcbsAuthenticationFailedException } from './exception/acbs-authentication-failed.exception';
 
-describe('AcbsAuthenticationService', () => {
+describe('BaseAcbsAuthenticationService', () => {
   const valueGenerator = new RandomValueGenerator();
   const baseUrl = valueGenerator.httpsUrl();
   const loginName = valueGenerator.string();
@@ -55,7 +55,7 @@ describe('AcbsAuthenticationService', () => {
 
   let httpService: HttpService;
   let logger: PinoLogger;
-  let service: AcbsAuthenticationService;
+  let service: BaseAcbsAuthenticationService;
 
   let httpServiceGet: jest.Mock;
   let httpServicePost: jest.Mock;
@@ -71,7 +71,15 @@ describe('AcbsAuthenticationService', () => {
 
     logger = new PinoLogger({});
     logger.error = jest.fn();
-    service = new AcbsAuthenticationService({ apiKey, apiKeyHeaderName, authentication: { baseUrl, loginName, password, clientId } }, httpService, logger);
+    service = new BaseAcbsAuthenticationService(
+      {
+        apiKey,
+        apiKeyHeaderName,
+        authentication: { baseUrl, loginName, password, clientId, idTokenCacheTtlInMilliseconds: 0 },
+      },
+      httpService,
+      logger,
+    );
   });
 
   describe('successful authentication', () => {

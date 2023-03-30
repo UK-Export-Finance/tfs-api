@@ -12,6 +12,7 @@ import { LoggerModule } from 'nestjs-pino';
     }),
     LoggerModule.forRoot({
       pinoHttp: {
+        // TODO APIM-97: it would be good to have a way to configure the log-level
         customProps: () => ({
           context: 'HTTP',
         }),

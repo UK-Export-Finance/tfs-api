@@ -12,6 +12,7 @@ export interface AcbsConfig {
     clientId: string;
     loginName: string;
     password: string;
+    idTokenCacheTtlInMilliseconds: number;
   };
 
   maxRedirects: number;
@@ -30,6 +31,7 @@ export default registerAs(
       clientId: process.env.ACBS_AUTHENTICATION_CLIENT_ID,
       loginName: process.env.ACBS_AUTHENTICATION_LOGIN_NAME,
       password: process.env.ACBS_AUTHENTICATION_PASSWORD,
+      idTokenCacheTtlInMilliseconds: parseInt(process.env.ACBS_AUTHENTICATION_ID_TOKEN_CACHE_TTL_IN_MILLISECONDS) || 60_000,
     },
 
     maxRedirects: parseInt(process.env.ACBS_MAX_REDIRECTS) || 5,
