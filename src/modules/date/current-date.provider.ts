@@ -19,6 +19,6 @@ export class CurrentDateProvider {
       return otherDate;
     }
 
-    return now; // TODO APIM-74: Do we use the "date" in UTC or in British local time?
+    return now;
   }
 }
