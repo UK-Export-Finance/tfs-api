@@ -3,9 +3,9 @@ import { CreateDealGenerator } from '@ukef-test/support/generator/create-deal-ge
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
 
-import { AcbsAuthenticationService } from '../acbs/acbs-authentication.service';
 import { AcbsDealService } from '../acbs/acbs-deal.service';
 import { AcbsCreateDealDto } from '../acbs/dto/acbs-create-deal.dto';
+import { AcbsAuthenticationService } from '../acbs-authentication/acbs-authentication.service';
 import { CurrentDateProvider } from '../date/current-date.provider';
 import { DateStringTransformations } from '../date/date-string.transformations';
 import { DealService } from './deal.service';

@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { PROPERTIES } from '@ukef/constants/properties.constant';
 import { DateString } from '@ukef/helpers';
 import { roundTo2DecimalPlaces } from '@ukef/helpers/round-to-2-decimal-places.helper';
-import { AcbsAuthenticationService } from '@ukef/modules/acbs/acbs-authentication.service';
 import { AcbsDealService } from '@ukef/modules/acbs/acbs-deal.service';
 import { AcbsCreateDealDto } from '@ukef/modules/acbs/dto/acbs-create-deal.dto';
+import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 
