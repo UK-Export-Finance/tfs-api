@@ -1,5 +1,5 @@
 import { PROPERTIES } from '@ukef/constants';
-import { TEST_CURRENCIES } from '@ukef-test/support/constants/test-currency.constant';
+import { CreateDealGenerator } from '@ukef-test/support/generator/create-deal-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
 
@@ -38,177 +38,17 @@ describe('DealService', () => {
 
   describe('createDeal', () => {
     const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
-    const dealIdentifier = valueGenerator.stringOfNumericCharacters({ length: 10 });
-    const currency = TEST_CURRENCIES.A_TEST_CURRENCY;
-    const dealValue = 123.45;
-    const guaranteeCommencementDateAsDate = new Date('2019-01-02T00:00:00Z');
-    const guaranteeCommencementDateInPast = dateStringTransformations.getDateOnlyStringFromDate(guaranteeCommencementDateAsDate);
-    const guaranteeCommencementDateString = dateStringTransformations.getDateStringFromDate(guaranteeCommencementDateAsDate);
-    const guaranteeCommencementDateForDescription = '02/01/2019';
     const now = new Date();
     const midnightToday = dateStringTransformations.getDateStringFromDate(now);
     const todayFormattedForDescription = dateStringTransformations.getDateOnlyStringFromDate(now).split('-').reverse().join('/');
-    const obligorPartyIdentifier = valueGenerator.stringOfNumericCharacters({ length: 8 });
-    const obligorName = valueGenerator.string({ maxLength: 19 });
-    const obligorIndustryClassification = valueGenerator.string({ maxLength: 10 });
 
-    const dealToCreate = {
-      dealIdentifier,
-      currency,
-      dealValue,
-      guaranteeCommencementDate: guaranteeCommencementDateInPast,
-      obligorPartyIdentifier: obligorPartyIdentifier,
-      obligorName: obligorName,
-      obligorIndustryClassification: obligorIndustryClassification,
-    };
-
-    const getExpectedDescription = ({ obligorName, currency, formattedDate }: { obligorName: string; currency: string; formattedDate: string }): string =>
-      `D: ${obligorName} ${currency} ${formattedDate}`;
-
-    const defaultValues = PROPERTIES.DEAL.DEFAULTS;
-    const expectedDealToCreateInAcbs = {
-      DealIdentifier: dealIdentifier,
-      DealOrigination: {
-        DealOriginationCode: defaultValues.dealOriginationCode,
-      },
-      IsDealSyndicationIndicator: defaultValues.isDealSyndicationIndicator,
-      DealInitialStatus: {
-        DealInitialStatusCode: defaultValues.dealInitialStatusCode,
-      },
-      DealOverallStatus: {
-        DealStatusCode: defaultValues.dealOverallStatusCode,
-      },
-      DealType: {
-        DealTypeCode: defaultValues.dealTypeCode,
-      },
-      DealReviewFrequencyType: {
-        DealReviewFrequencyTypeCode: defaultValues.dealReviewFrequencyTypeCode,
-      },
-      PreviousDealPortfolioIdentifier: defaultValues.previousDealPortfolioIdentifier,
-      DealLegallyBindingIndicator: defaultValues.dealLegallyBindingIndicator,
-      DealUserDefinedList5: {
-        DealUserDefinedList5Code: defaultValues.dealUserDefinedList5Code,
-      },
-      DealDefaultPaymentInstruction: null,
-      DealExternalReferences: [],
-      PortfolioIdentifier: portfolioIdentifier,
-      Description: getExpectedDescription({ obligorName, currency, formattedDate: guaranteeCommencementDateForDescription }),
-      Currency: {
-        CurrencyCode: currency,
-        IsActiveIndicator: true,
-      },
-      OriginalEffectiveDate: guaranteeCommencementDateString,
-      BookingDate: defaultValues.bookingDate,
-      FinalAvailableDate: defaultValues.finalAvailableDate,
-      IsFinalAvailableDateMaximum: defaultValues.isFinalAvailableDateMaximum,
-      ExpirationDate: defaultValues.expirationDate,
-      IsExpirationDateMaximum: defaultValues.isExpirationDateMaximum,
-      LimitAmount: dealValue,
-      WithheldAmount: defaultValues.withheldAmount,
-      MemoLimitAmount: defaultValues.memoLimitAmount,
-      BookingClass: {
-        BookingClassCode: defaultValues.bookingClassCode,
-      },
-      TargetClosingDate: guaranteeCommencementDateString,
-      MemoUsedAmount: defaultValues.memoUsedAmount,
-      MemoAvailableAmount: defaultValues.memoAvailableAmount,
-      MemoWithheldAmount: defaultValues.memoWithheldAmount,
-      OriginalApprovalDate: guaranteeCommencementDateString,
-      CurrentOfficer: {
-        LineOfficerIdentifier: defaultValues.lineOfficerIdentifier,
-      },
-      SecondaryOfficer: {
-        LineOfficerIdentifier: defaultValues.lineOfficerIdentifier,
-      },
-      GeneralLedgerUnit: {
-        GeneralLedgerUnitIdentifier: defaultValues.generalLedgerUnitIdentifier,
-      },
-      ServicingUnit: {
-        ServicingUnitIdentifier: defaultValues.servicingUnitIdentifier,
-      },
-      ServicingUnitSection: {
-        ServicingUnitSectionIdentifier: defaultValues.servicingUnitSectionIdentifier,
-      },
-      AgentBankPartyIdentifier: defaultValues.agentBankPartyIdentifier,
-      IndustryClassification: {
-        IndustryClassificationCode: obligorIndustryClassification,
-      },
-      RiskCountry: {
-        CountryCode: defaultValues.riskCountryCode,
-      },
-      PurposeType: {
-        PurposeTypeCode: defaultValues.purposeTypeCode,
-      },
-      CapitalClass: {
-        CapitalClassCode: defaultValues.capitalClassCode,
-      },
-      CapitalConversionFactor: {
-        CapitalConversionFactorCode: defaultValues.capitalConversionFactorCode,
-      },
-      FinancialFXRate: defaultValues.financialFXRate,
-      FinancialFXRateOperand: defaultValues.financialFXRateOperand,
-      FinancialRateFXRateGroup: defaultValues.financialRateFXRateGroup,
-      FinancialFrequencyCode: defaultValues.financialFrequencyCode,
-      FinancialBusinessDayAdjustment: defaultValues.financialBusinessDayAdjustment,
-      FinancialDueMonthEndIndicator: defaultValues.financialDueMonthEndIndicator,
-      FinancialCalendar: {
-        CalendarIdentifier: defaultValues.financialcalendarIdentifier,
-      },
-      FinancialLockMTMRateIndicator: defaultValues.financialLockMTMRateIndicator,
-      FinancialNextValuationDate: defaultValues.financialNextValuationDate,
-      CustomerFXRateGroup: defaultValues.customerFXRateGroup,
-      CustomerFrequencyCode: defaultValues.customerFrequencyCode,
-      CustomerBusinessDayAdjustment: defaultValues.customerBusinessDayAdjustment,
-      CustomerDueMonthEndIndicator: defaultValues.customerDueMonthEndIndicator,
-      CustomerCalendar: {
-        CalendarIdentifier: defaultValues.customerCalendarIdentifier,
-      },
-      CustomerLockMTMRateIndicator: defaultValues.customerLockMTMRateIndicator,
-      CustomerNextValuationDate: defaultValues.customerNextValuationDate,
-      LimitRevolvingIndicator: defaultValues.limitRevolvingIndicator,
-      ServicingUser: {
-        UserAcbsIdentifier: defaultValues.servicingUser.userAcbsIdentifier,
-        UserName: defaultValues.servicingUser.userName,
-      },
-      AdministrativeUser: {
-        UserAcbsIdentifier: defaultValues.administrativeUser.userAcbsIdentifier,
-        UserName: defaultValues.administrativeUser.userName,
-      },
-      CreditReviewRiskType: {
-        CreditReviewRiskTypeCode: defaultValues.creditReviewRiskTypeCode,
-      },
-      NextReviewDate: defaultValues.nextReviewDate,
-      IsNextReviewDateZero: defaultValues.isNextReviewDateZero,
-      OfficerRiskRatingType: {
-        OfficerRiskRatingTypeCode: defaultValues.officerRiskRatingTypeCode,
-      },
-      OfficerRiskDate: midnightToday,
-      IsOfficerRiskDateZero: defaultValues.isOfficerRiskDateZero,
-      IsCreditReviewRiskDateZero: defaultValues.isCreditReviewRiskDateZero,
-      RegulatorRiskDate: defaultValues.regulatorRiskDate,
-      IsRegulatorRiskDateZero: defaultValues.isRegulatorRiskDateZero,
-      MultiCurrencyArrangementIndicator: defaultValues.multiCurrencyArrangementIndicator,
-      IsUserDefinedDate1Zero: defaultValues.isUserDefinedDate1Zero,
-      IsUserDefinedDate2Zero: defaultValues.isUserDefinedDate2Zero,
-      IsUserDefinedDate3Zero: defaultValues.isUserDefinedDate3Zero,
-      IsUserDefinedDate4Zero: defaultValues.isUserDefinedDate4Zero,
-      SharedNationalCredit: defaultValues.sharedNationalCredit,
-      DefaultReason: {
-        DefaultReasonCode: defaultValues.defaultReasonCode,
-      },
-      AccountStructure: {
-        AccountStructureCode: defaultValues.accountStructureCode,
-      },
-      LenderType: {
-        LenderTypeCode: defaultValues.lenderTypeCode,
-      },
-      BorrowerParty: {
-        PartyIdentifier: obligorPartyIdentifier,
-      },
-      RiskMitigation: {
-        RiskMitigationCode: defaultValues.riskMitigationCode,
-      },
-    };
+    const {
+      createDealRequestItem: dealToCreate,
+      acbsCreateDealRequest: expectedDealToCreateInAcbs,
+      guaranteeCommencementDateAsDate,
+      guaranteeCommencementDateString,
+      guaranteeCommencementDateForDescription,
+    } = new CreateDealGenerator(valueGenerator, dateStringTransformations).generate({ numberToGenerate: 1 });
 
     beforeEach(() => {
       when(currentDateProviderGetEarliestDateFromTodayAnd).calledWith(guaranteeCommencementDateAsDate).mockReturnValueOnce(guaranteeCommencementDateAsDate);
@@ -224,9 +64,9 @@ describe('DealService', () => {
       const tooLongObligorName = '123456789_123456789_123456789';
       const obligorNameTruncatedTo19Characters = '123456789_123456789';
       const dealWithTooLongObligorName = { ...dealToCreate, obligorName: tooLongObligorName };
-      const descriptionWithTruncatedObligorName = getExpectedDescription({
+      const descriptionWithTruncatedObligorName = CreateDealGenerator.getExpectedDescription({
         obligorName: obligorNameTruncatedTo19Characters,
-        currency,
+        currency: dealToCreate.currency,
         formattedDate: guaranteeCommencementDateForDescription,
       });
 
@@ -274,7 +114,11 @@ describe('DealService', () => {
       });
 
       it('in the Description field in ACBS', () => {
-        const expectedDescriptionWithToday = getExpectedDescription({ obligorName, currency, formattedDate: todayFormattedForDescription });
+        const expectedDescriptionWithToday = CreateDealGenerator.getExpectedDescription({
+          obligorName: dealToCreate.obligorName,
+          currency: dealToCreate.currency,
+          formattedDate: todayFormattedForDescription,
+        });
 
         expect(dealCreatedInAcbs.Description).toBe(expectedDescriptionWithToday);
       });
@@ -305,9 +149,9 @@ describe('DealService', () => {
       });
 
       it('in the Description field in ACBS', () => {
-        const expectedDescriptionWithGuaranteeCommencementDate = getExpectedDescription({
-          obligorName,
-          currency,
+        const expectedDescriptionWithGuaranteeCommencementDate = CreateDealGenerator.getExpectedDescription({
+          obligorName: dealToCreate.obligorName,
+          currency: dealToCreate.currency,
           formattedDate: guaranteeCommencementDateForDescription,
         });
 

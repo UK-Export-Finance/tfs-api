@@ -6,8 +6,8 @@ import { withRequiredDateOnlyFieldValidationApiTests } from '@ukef-test/common-t
 import { withRequiredNonNegativeNumberFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/required-non-negative-number-field-validation-api-tests';
 import { withStringFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/string-field-validation-api-tests';
 import { Api } from '@ukef-test/support/api';
-import { TEST_CURRENCIES } from '@ukef-test/support/constants/test-currency.constant';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
+import { CreateDealGenerator } from '@ukef-test/support/generator/create-deal-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import nock from 'nock';
 
@@ -18,178 +18,19 @@ describe('POST /deals', () => {
   const createDealUrl = `/api/v1/deals`;
 
   const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
-  const dealIdentifier = valueGenerator.stringOfNumericCharacters({ length: 10 });
-  const currency = TEST_CURRENCIES.A_TEST_CURRENCY;
-  const dealValue = 123.45;
-  const guaranteeCommencementDateInPast = '2019-01-02';
-  const guaranteeCommencementDateForDescription = '02/01/2019';
-  const guaranteeCommencementDateInAcbs = '2019-01-02T00:00:00Z';
+
+  const {
+    createDealRequestItem: dealToCreate,
+    acbsCreateDealRequest: acbsRequestBodyToCreateDeal,
+    guaranteeCommencementDateForDescription,
+  } = new CreateDealGenerator(valueGenerator, dateStringTransformations).generate({ numberToGenerate: 1 });
+  const dealIdentifier = dealToCreate.dealIdentifier;
+
   const now = new Date();
   const midnightToday = dateStringTransformations.getDateStringFromDate(now);
   const todayFormattedForDescription = dateStringTransformations.getDateOnlyStringFromDate(now).split('-').reverse().join('/');
-  const obligorPartyIdentifier = valueGenerator.stringOfNumericCharacters({ length: 8 });
-  const obligorName = valueGenerator.string({ maxLength: 19 });
-  const obligorIndustryClassification = valueGenerator.string({ maxLength: 10 });
 
-  const getExpectedDescription = ({ obligorName, currency, formattedDate }: { obligorName: string; currency: string; formattedDate: string }): string =>
-    `D: ${obligorName} ${currency} ${formattedDate}`;
-
-  const requestBodyToCreateDeal = [
-    {
-      dealIdentifier,
-      currency,
-      dealValue,
-      guaranteeCommencementDate: guaranteeCommencementDateInPast,
-      obligorPartyIdentifier: obligorPartyIdentifier,
-      obligorName: obligorName,
-      obligorIndustryClassification: obligorIndustryClassification,
-    },
-  ];
-
-  const defaultValues = PROPERTIES.DEAL.DEFAULTS;
-  const acbsRequestBodyToCreateDeal = {
-    DealIdentifier: dealIdentifier,
-    DealOrigination: {
-      DealOriginationCode: defaultValues.dealOriginationCode,
-    },
-    IsDealSyndicationIndicator: defaultValues.isDealSyndicationIndicator,
-    DealInitialStatus: {
-      DealInitialStatusCode: defaultValues.dealInitialStatusCode,
-    },
-    DealOverallStatus: {
-      DealStatusCode: defaultValues.dealOverallStatusCode,
-    },
-    DealType: {
-      DealTypeCode: defaultValues.dealTypeCode,
-    },
-    DealReviewFrequencyType: {
-      DealReviewFrequencyTypeCode: defaultValues.dealReviewFrequencyTypeCode,
-    },
-    PreviousDealPortfolioIdentifier: defaultValues.previousDealPortfolioIdentifier,
-    DealLegallyBindingIndicator: defaultValues.dealLegallyBindingIndicator,
-    DealUserDefinedList5: {
-      DealUserDefinedList5Code: defaultValues.dealUserDefinedList5Code,
-    },
-    DealDefaultPaymentInstruction: null,
-    DealExternalReferences: [],
-    PortfolioIdentifier: portfolioIdentifier,
-    Description: getExpectedDescription({ obligorName, currency, formattedDate: guaranteeCommencementDateForDescription }),
-    Currency: {
-      CurrencyCode: currency,
-      IsActiveIndicator: true,
-    },
-    OriginalEffectiveDate: guaranteeCommencementDateInAcbs,
-    BookingDate: defaultValues.bookingDate,
-    FinalAvailableDate: defaultValues.finalAvailableDate,
-    IsFinalAvailableDateMaximum: defaultValues.isFinalAvailableDateMaximum,
-    ExpirationDate: defaultValues.expirationDate,
-    IsExpirationDateMaximum: defaultValues.isExpirationDateMaximum,
-    LimitAmount: dealValue,
-    WithheldAmount: defaultValues.withheldAmount,
-    MemoLimitAmount: defaultValues.memoLimitAmount,
-    BookingClass: {
-      BookingClassCode: defaultValues.bookingClassCode,
-    },
-    TargetClosingDate: guaranteeCommencementDateInAcbs,
-    MemoUsedAmount: defaultValues.memoUsedAmount,
-    MemoAvailableAmount: defaultValues.memoAvailableAmount,
-    MemoWithheldAmount: defaultValues.memoWithheldAmount,
-    OriginalApprovalDate: guaranteeCommencementDateInAcbs,
-    CurrentOfficer: {
-      LineOfficerIdentifier: defaultValues.lineOfficerIdentifier,
-    },
-    SecondaryOfficer: {
-      LineOfficerIdentifier: defaultValues.lineOfficerIdentifier,
-    },
-    GeneralLedgerUnit: {
-      GeneralLedgerUnitIdentifier: defaultValues.generalLedgerUnitIdentifier,
-    },
-    ServicingUnit: {
-      ServicingUnitIdentifier: defaultValues.servicingUnitIdentifier,
-    },
-    ServicingUnitSection: {
-      ServicingUnitSectionIdentifier: defaultValues.servicingUnitSectionIdentifier,
-    },
-    AgentBankPartyIdentifier: defaultValues.agentBankPartyIdentifier,
-    IndustryClassification: {
-      IndustryClassificationCode: obligorIndustryClassification,
-    },
-    RiskCountry: {
-      CountryCode: defaultValues.riskCountryCode,
-    },
-    PurposeType: {
-      PurposeTypeCode: defaultValues.purposeTypeCode,
-    },
-    CapitalClass: {
-      CapitalClassCode: defaultValues.capitalClassCode,
-    },
-    CapitalConversionFactor: {
-      CapitalConversionFactorCode: defaultValues.capitalConversionFactorCode,
-    },
-    FinancialFXRate: defaultValues.financialFXRate,
-    FinancialFXRateOperand: defaultValues.financialFXRateOperand,
-    FinancialRateFXRateGroup: defaultValues.financialRateFXRateGroup,
-    FinancialFrequencyCode: defaultValues.financialFrequencyCode,
-    FinancialBusinessDayAdjustment: defaultValues.financialBusinessDayAdjustment,
-    FinancialDueMonthEndIndicator: defaultValues.financialDueMonthEndIndicator,
-    FinancialCalendar: {
-      CalendarIdentifier: defaultValues.financialcalendarIdentifier,
-    },
-    FinancialLockMTMRateIndicator: defaultValues.financialLockMTMRateIndicator,
-    FinancialNextValuationDate: defaultValues.financialNextValuationDate,
-    CustomerFXRateGroup: defaultValues.customerFXRateGroup,
-    CustomerFrequencyCode: defaultValues.customerFrequencyCode,
-    CustomerBusinessDayAdjustment: defaultValues.customerBusinessDayAdjustment,
-    CustomerDueMonthEndIndicator: defaultValues.customerDueMonthEndIndicator,
-    CustomerCalendar: {
-      CalendarIdentifier: defaultValues.customerCalendarIdentifier,
-    },
-    CustomerLockMTMRateIndicator: defaultValues.customerLockMTMRateIndicator,
-    CustomerNextValuationDate: defaultValues.customerNextValuationDate,
-    LimitRevolvingIndicator: defaultValues.limitRevolvingIndicator,
-    ServicingUser: {
-      UserAcbsIdentifier: defaultValues.servicingUser.userAcbsIdentifier,
-      UserName: defaultValues.servicingUser.userName,
-    },
-    AdministrativeUser: {
-      UserAcbsIdentifier: defaultValues.administrativeUser.userAcbsIdentifier,
-      UserName: defaultValues.administrativeUser.userName,
-    },
-    CreditReviewRiskType: {
-      CreditReviewRiskTypeCode: defaultValues.creditReviewRiskTypeCode,
-    },
-    NextReviewDate: defaultValues.nextReviewDate,
-    IsNextReviewDateZero: defaultValues.isNextReviewDateZero,
-    OfficerRiskRatingType: {
-      OfficerRiskRatingTypeCode: defaultValues.officerRiskRatingTypeCode,
-    },
-    OfficerRiskDate: midnightToday,
-    IsOfficerRiskDateZero: defaultValues.isOfficerRiskDateZero,
-    IsCreditReviewRiskDateZero: defaultValues.isCreditReviewRiskDateZero,
-    RegulatorRiskDate: defaultValues.regulatorRiskDate,
-    IsRegulatorRiskDateZero: defaultValues.isRegulatorRiskDateZero,
-    MultiCurrencyArrangementIndicator: defaultValues.multiCurrencyArrangementIndicator,
-    IsUserDefinedDate1Zero: defaultValues.isUserDefinedDate1Zero,
-    IsUserDefinedDate2Zero: defaultValues.isUserDefinedDate2Zero,
-    IsUserDefinedDate3Zero: defaultValues.isUserDefinedDate3Zero,
-    IsUserDefinedDate4Zero: defaultValues.isUserDefinedDate4Zero,
-    SharedNationalCredit: defaultValues.sharedNationalCredit,
-    DefaultReason: {
-      DefaultReasonCode: defaultValues.defaultReasonCode,
-    },
-    AccountStructure: {
-      AccountStructureCode: defaultValues.accountStructureCode,
-    },
-    LenderType: {
-      LenderTypeCode: defaultValues.lenderTypeCode,
-    },
-    BorrowerParty: {
-      PartyIdentifier: obligorPartyIdentifier,
-    },
-    RiskMitigation: {
-      RiskMitigationCode: defaultValues.riskMitigationCode,
-    },
-  };
+  const requestBodyToCreateDeal = [dealToCreate];
 
   const expectedDealIdentifierResponse = { dealIdentifier };
 
@@ -254,7 +95,11 @@ describe('POST /deals', () => {
     const requestBodyWithObligorNameToTruncate = [{ ...requestBodyToCreateDeal[0], obligorName: '123456789-123456789-123456789' }];
     const acbsRequestBodyWithTruncatedObligorName = {
       ...acbsRequestBodyToCreateDeal,
-      Description: getExpectedDescription({ obligorName: '123456789-123456789', currency, formattedDate: guaranteeCommencementDateForDescription }),
+      Description: CreateDealGenerator.getExpectedDescription({
+        obligorName: '123456789-123456789',
+        currency: dealToCreate.currency,
+        formattedDate: guaranteeCommencementDateForDescription,
+      }),
     };
     const acbsRequest = requestToCreateDealInAcbsWithBody(acbsRequestBodyWithTruncatedObligorName).reply(201, undefined, {
       location: `/Deal/${dealIdentifier}`,
@@ -274,7 +119,11 @@ describe('POST /deals', () => {
       OriginalEffectiveDate: midnightToday,
       TargetClosingDate: midnightToday,
       OriginalApprovalDate: midnightToday,
-      Description: getExpectedDescription({ obligorName, currency, formattedDate: todayFormattedForDescription }),
+      Description: CreateDealGenerator.getExpectedDescription({
+        obligorName: dealToCreate.obligorName,
+        currency: dealToCreate.currency,
+        formattedDate: todayFormattedForDescription,
+      }),
     };
     givenAuthenticationWithTheIdpSucceeds();
     const acbsRequestWithTodayEffectiveDate = requestToCreateDealInAcbsWithBody(acbsRequestBodyWithTodayEffectiveDate).reply(201, undefined, {
@@ -413,7 +262,7 @@ describe('POST /deals', () => {
     requestToCreateDealInAcbs().reply(201, undefined, { location: `/Deal/${dealIdentifier}` });
   };
 
-  const requestToCreateDealInAcbs = (): nock.Interceptor => requestToCreateDealInAcbsWithBody(acbsRequestBodyToCreateDeal);
+  const requestToCreateDealInAcbs = (): nock.Interceptor => requestToCreateDealInAcbsWithBody(JSON.stringify(acbsRequestBodyToCreateDeal));
 
   const requestToCreateDealInAcbsWithBody = (requestBody: nock.RequestBodyMatcher): nock.Interceptor =>
     nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL).post(`/Portfolio/${portfolioIdentifier}/Deal`, requestBody).matchHeader('authorization', `Bearer ${idToken}`);
