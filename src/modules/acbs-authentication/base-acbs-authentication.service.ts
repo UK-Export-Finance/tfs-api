@@ -1,7 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
-import AcbsConfig from '@ukef/config/acbs.config';
+import AcbsAuthenticationConfig from '@ukef/config/acbs-authentication.config';
 import { ACBS } from '@ukef/constants';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
@@ -11,6 +11,8 @@ import { AcbsAuthenticationService } from './acbs-authentication.service';
 import { IdpConnectResponse } from './dto/idp-connect-response.dto';
 import { AcbsAuthenticationFailedException } from './exception/acbs-authentication-failed.exception';
 
+type RequiredConfigKeys = 'apiKey' | 'apiKeyHeaderName' | 'baseUrl' | 'clientId' | 'loginName' | 'password';
+
 @Injectable()
 export class BaseAcbsAuthenticationService extends AcbsAuthenticationService {
   private static readonly sessionsPath = '/sessions';
@@ -18,8 +20,8 @@ export class BaseAcbsAuthenticationService extends AcbsAuthenticationService {
   private static readonly sessionIdCookieSeparator = ';';
 
   constructor(
-    @Inject(AcbsConfig.KEY)
-    private readonly config: Pick<ConfigType<typeof AcbsConfig>, 'apiKey' | 'apiKeyHeaderName' | 'authentication'>,
+    @Inject(AcbsAuthenticationConfig.KEY)
+    private readonly config: Pick<ConfigType<typeof AcbsAuthenticationConfig>, RequiredConfigKeys>,
     private readonly httpService: HttpService,
     private readonly logger: PinoLogger,
   ) {
@@ -36,9 +38,9 @@ export class BaseAcbsAuthenticationService extends AcbsAuthenticationService {
       this.httpService
         .post<never>(
           BaseAcbsAuthenticationService.sessionsPath,
-          { loginName: this.config.authentication.loginName, password: this.config.authentication.password },
+          { loginName: this.config.loginName, password: this.config.password },
           {
-            baseURL: this.config.authentication.baseUrl,
+            baseURL: this.config.baseUrl,
             headers: {
               'Content-Type': 'application/json',
               [this.config.apiKeyHeaderName]: this.config.apiKey,
@@ -71,8 +73,8 @@ export class BaseAcbsAuthenticationService extends AcbsAuthenticationService {
     const connectResponse = await lastValueFrom(
       this.httpService
         .get<IdpConnectResponse>(BaseAcbsAuthenticationService.connectPath, {
-          baseURL: this.config.authentication.baseUrl,
-          params: { client_id: this.config.authentication.clientId },
+          baseURL: this.config.baseUrl,
+          params: { client_id: this.config.clientId },
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
             [this.config.apiKeyHeaderName]: this.config.apiKey,

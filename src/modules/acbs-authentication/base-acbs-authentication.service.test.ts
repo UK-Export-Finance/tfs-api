@@ -75,7 +75,10 @@ describe('BaseAcbsAuthenticationService', () => {
       {
         apiKey,
         apiKeyHeaderName,
-        authentication: { baseUrl, loginName, password, clientId, idTokenCacheTtlInMilliseconds: 0 },
+        baseUrl,
+        loginName,
+        password,
+        clientId,
       },
       httpService,
       logger,

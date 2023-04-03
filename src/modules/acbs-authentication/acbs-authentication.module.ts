@@ -18,8 +18,8 @@ const acbsAuthenticationServiceProvider = {
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        maxRedirects: configService.get<number>('acbs.maxRedirects'),
-        timeout: configService.get<number>('acbs.timeout'), // TODO APIM-164: Add separate timeout for ACBS Authentication
+        maxRedirects: configService.get<number>('acbsAuthentication.maxRedirects'),
+        timeout: configService.get<number>('acbsAuthentication.timeout'),
       }),
     }),
   ],

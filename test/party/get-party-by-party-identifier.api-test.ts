@@ -2,7 +2,7 @@ import { DateStringTransformations } from '@ukef/modules/date/date-string.transf
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
 import { Api } from '@ukef-test/support/api';
-import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
+import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
 import { GetPartyGenerator } from '@ukef-test/support/generator/get-party-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import nock from 'nock';
@@ -96,9 +96,7 @@ describe('GET /parties/{partyIdentifier}', () => {
 
   it('returns a 500 response if getting the party from ACBS times out', async () => {
     givenAuthenticationWithTheIdpSucceeds();
-    requestToGetParty()
-      .delay(ENVIRONMENT_VARIABLES.ACBS_TIMEOUT + 500)
-      .reply(200, partyInAcbs);
+    requestToGetParty().delay(TIME_EXCEEDING_ACBS_TIMEOUT).reply(200, partyInAcbs);
 
     const { status, body } = await api.get(getPartyUrl);
 

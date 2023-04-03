@@ -1,6 +1,6 @@
 import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
-import AcbsConfig from '@ukef/config/acbs.config';
+import AcbsAuthenticationConfig from '@ukef/config/acbs-authentication.config';
 import { Cache } from 'cache-manager';
 import { PinoLogger } from 'nestjs-pino';
 
@@ -8,11 +8,13 @@ import { AcbsAuthenticationService } from './acbs-authentication.service';
 import { ACBS_ID_TOKEN_CACHE_KEY } from './acbs-id-token.cache-key';
 import { BaseAcbsAuthenticationService } from './base-acbs-authentication.service';
 
+type RequiredConfigKeys = 'idTokenCacheTtlInMilliseconds';
+
 @Injectable()
 export class CachingAcbsAuthenticationService extends AcbsAuthenticationService {
   constructor(
-    @Inject(AcbsConfig.KEY)
-    private readonly config: { authentication: Pick<ConfigType<typeof AcbsConfig>['authentication'], 'idTokenCacheTtlInMilliseconds'> },
+    @Inject(AcbsAuthenticationConfig.KEY)
+    private readonly config: Pick<ConfigType<typeof AcbsAuthenticationConfig>, RequiredConfigKeys>,
     private readonly baseAcbsAuthenticationService: BaseAcbsAuthenticationService,
     @Inject(CACHE_MANAGER)
     private readonly cacheManager: Cache,
@@ -45,6 +47,6 @@ export class CachingAcbsAuthenticationService extends AcbsAuthenticationService 
   }
 
   private storeIdTokenInCache(idToken: string): void {
-    this.cacheManager.set(ACBS_ID_TOKEN_CACHE_KEY, idToken, this.config.authentication.idTokenCacheTtlInMilliseconds);
+    this.cacheManager.set(ACBS_ID_TOKEN_CACHE_KEY, idToken, this.config.idTokenCacheTtlInMilliseconds);
   }
 }

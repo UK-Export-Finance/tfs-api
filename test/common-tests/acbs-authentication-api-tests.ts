@@ -1,5 +1,5 @@
 import { ACBS } from '@ukef/constants';
-import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
+import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_AUTHENTICATION_TIMEOUT } from '@ukef-test/support/environment-variables';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { waitForAcbsAuthenticationIdTokenCacheToExpire } from '@ukef-test/support/wait-for';
 import nock from 'nock';
@@ -64,7 +64,7 @@ export const withAcbsAuthenticationApiTests = ({
 
     it('returns a 500 response if getting an id token from the IdP times out', async () => {
       givenCreatingASessionWithTheIdpSucceeds();
-      requestToGetAnIdTokenFromTheIdp().delay(TIME_EXCEEDING_ACBS_TIMEOUT).reply(200, { id_token: idToken });
+      requestToGetAnIdTokenFromTheIdp().delay(TIME_EXCEEDING_ACBS_AUTHENTICATION_TIMEOUT).reply(200, { id_token: idToken });
       givenRequestWouldOtherwiseSucceed();
 
       const { status, body } = await makeRequest();
@@ -78,7 +78,7 @@ export const withAcbsAuthenticationApiTests = ({
 
     it('returns a 500 response if creating a session with the IdP times out', async () => {
       requestToCreateASessionWithTheIdp()
-        .delay(TIME_EXCEEDING_ACBS_TIMEOUT)
+        .delay(TIME_EXCEEDING_ACBS_AUTHENTICATION_TIMEOUT)
         .reply(201, '', { 'set-cookie': `${ACBS.AUTHENTICATION.SESSION_ID_COOKIE_NAME}=${sessionId}` });
       givenGettingAnIdTokenFromTheIdpSucceeds();
       givenRequestWouldOtherwiseSucceed();
@@ -138,7 +138,7 @@ const requestToCreateASessionWithTheIdp = (): nock.Interceptor =>
       password: ENVIRONMENT_VARIABLES.ACBS_AUTHENTICATION_PASSWORD,
     })
     .matchHeader('content-type', 'application/json')
-    .matchHeader(ENVIRONMENT_VARIABLES.ACBS_API_KEY_HEADER_NAME, ENVIRONMENT_VARIABLES.ACBS_API_KEY);
+    .matchHeader(ENVIRONMENT_VARIABLES.ACBS_AUTHENTICATION_API_KEY_HEADER_NAME, ENVIRONMENT_VARIABLES.ACBS_AUTHENTICATION_API_KEY);
 
 const givenCreatingASessionWithTheIdpSucceedsWith = ({ sessionId }: { sessionId: string }): void => {
   requestToCreateASessionWithTheIdp().reply(201, '', { 'set-cookie': `${ACBS.AUTHENTICATION.SESSION_ID_COOKIE_NAME}=${sessionId}` });
@@ -148,7 +148,7 @@ const requestToGetAnIdTokenFromTheIdpFor = ({ sessionId }: { sessionId: string }
   nock(ENVIRONMENT_VARIABLES.ACBS_AUTHENTICATION_BASE_URL)
     .get(`/idptoken/openid-connect?client_id=${ENVIRONMENT_VARIABLES.ACBS_AUTHENTICATION_CLIENT_ID}`)
     .matchHeader('content-type', 'application/x-www-form-urlencoded')
-    .matchHeader(ENVIRONMENT_VARIABLES.ACBS_API_KEY_HEADER_NAME, ENVIRONMENT_VARIABLES.ACBS_API_KEY)
+    .matchHeader(ENVIRONMENT_VARIABLES.ACBS_AUTHENTICATION_API_KEY_HEADER_NAME, ENVIRONMENT_VARIABLES.ACBS_AUTHENTICATION_API_KEY)
     .matchHeader('cookie', `${ACBS.AUTHENTICATION.SESSION_ID_COOKIE_NAME}=${sessionId}`);
 
 const givenGettingAnIdTokenFromTheIdpSucceedsWith = ({ idToken, forSessionId }: { idToken: string; forSessionId: string }): void => {

@@ -43,12 +43,7 @@ describe('CachingAcbsAuthenticationService', () => {
     loggerDebug = jest.fn();
     logger.debug = loggerDebug;
 
-    service = new CachingAcbsAuthenticationService(
-      { authentication: { idTokenCacheTtlInMilliseconds: ttlInMilliseconds } },
-      acbsAuthenticationService,
-      cacheManager,
-      logger,
-    );
+    service = new CachingAcbsAuthenticationService({ idTokenCacheTtlInMilliseconds: ttlInMilliseconds }, acbsAuthenticationService, cacheManager, logger);
   });
 
   describe('getIdToken', () => {
