@@ -36,7 +36,11 @@
     "Typeorm",
     "typescript",
     "ukef",
-    "venv"
+    "venv",
+    "probabilityof",
+    "APIM",
+    "DCIS",
+    "UKRATEGRP"
   ],
   "dictionaries": [
     "en-gb",

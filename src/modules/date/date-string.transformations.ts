@@ -29,4 +29,18 @@ export class DateStringTransformations {
     }
     return dateOnlyString + 'T00:00:00Z';
   }
+
+  getDateStringFromDate(date: Date): DateString {
+    const dateOnlyString = this.getDateOnlyStringFromDate(date);
+    return this.addTimeToDateOnlyString(dateOnlyString);
+  }
+
+  getDateOnlyStringFromDate(date: Date): DateOnlyString {
+    const dateAsIsoString = date.toISOString();
+    return this.removeTime(dateAsIsoString);
+  }
+
+  getDisplayDateFromDate(date: Date): string {
+    return new Intl.DateTimeFormat('en-GB').format(date);
+  }
 }

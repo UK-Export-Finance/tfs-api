@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PROPERTIES } from '@ukef/constants';
+import { roundTo2DecimalPlaces } from '@ukef/helpers/round-to-2-decimal-places.helper';
 import { AcbsDealGuaranteeService } from '@ukef/modules/acbs/acbs-deal-guarantee.service';
 import { AcbsCreateDealGuaranteeDto } from '@ukef/modules/acbs/dto/acbs-create-deal-guarantee.dto';
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
@@ -42,7 +43,7 @@ export class DealGuaranteeService {
       },
       EffectiveDate: this.dateStringTransformations.addTimeToDateOnlyString(effectiveDateOnlyString),
       ExpirationDate: this.dateStringTransformations.addTimeToDateOnlyString(newGuarantee.guaranteeExpiryDate),
-      GuaranteedLimit: Math.round(newGuarantee.maximumLiability * 100) / 100,
+      GuaranteedLimit: roundTo2DecimalPlaces(newGuarantee.maximumLiability),
       GuaranteedPercentage: PROPERTIES.DEAL_GUARANTEE.DEFAULT.guaranteedPercentage,
     };
 
