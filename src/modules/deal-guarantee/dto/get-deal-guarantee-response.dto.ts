@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { PROPERTIES } from '@ukef/constants';
-import { UkefId, AcbsPartyId } from '@ukef/helpers';
+import { AcbsPartyId } from '@ukef/helpers';
 import { DateOnlyString } from '@ukef/helpers/date-only-string.type';
 import { IsISO8601, IsNotEmpty, IsOptional, Length, Matches, Min, MinLength } from 'class-validator';
 
