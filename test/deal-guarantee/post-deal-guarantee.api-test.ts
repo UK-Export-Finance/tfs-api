@@ -82,6 +82,7 @@ describe('POST /deals/{dealIdentifier}/guarantees', () => {
   const { idToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
     givenRequestWouldOtherwiseSucceed: () => givenRequestToCreateDealGuaranteeInAcbsSucceeds(),
     makeRequest: () => api.post(createDealGuaranteeUrl, requestBodyToCreateDealGuarantee),
+    successStatusCode: 201,
   });
 
   withClientAuthenticationTests({

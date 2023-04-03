@@ -62,6 +62,7 @@ describe('POST /parties', () => {
       requestToCreateParties(acbsCreatePartyRequest).reply(201, undefined, { Location: `/Party/${partyIdentifier}` });
     },
     makeRequest: () => api.post(`/api/v1/parties`, createPartyRequest),
+    successStatusCode: 201,
   });
 
   withClientAuthenticationTests({
