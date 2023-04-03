@@ -1,12 +1,15 @@
 import { AcbsGetPartyResponseDto } from '@ukef/modules/acbs/dto/acbs-get-party-response.dto';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
-import { GetPartyByIdentifierResponse } from '@ukef/modules/party/dto/get-party-by-response.dto';
+import { GetPartyByIdentifierResponse } from '@ukef/modules/party/dto/get-party-by-identifier-response.dto';
 import { Party } from '@ukef/modules/party/party.interface';
 
 import { AbstractGenerator } from './abstract-generator';
+import { RandomValueGenerator } from './random-value-generator';
 
-export class PartyGenerator extends AbstractGenerator<PartyValues, GenerateResult, GenerateOptions> {
-  private readonly dateStringTransformations: DateStringTransformations = new DateStringTransformations();
+export class GetPartyGenerator extends AbstractGenerator<PartyValues, GenerateResult, GenerateOptions> {
+  constructor(protected readonly valueGenerator: RandomValueGenerator, protected readonly dateStringTransformations: DateStringTransformations) {
+    super(valueGenerator);
+  }
 
   protected generateValues(): PartyValues {
     return {
@@ -17,7 +20,7 @@ export class PartyGenerator extends AbstractGenerator<PartyValues, GenerateResul
       name3: this.valueGenerator.string(),
       smeType: this.valueGenerator.stringOfNumericCharacters(),
       citizenshipClass: this.valueGenerator.stringOfNumericCharacters(),
-      officerRiskDate: this.valueGenerator.date(),
+      officerRiskDate: this.valueGenerator.date().toISOString().split('T')[0],
       countryCode: this.valueGenerator.string(),
     };
   }
@@ -31,7 +34,7 @@ export class PartyGenerator extends AbstractGenerator<PartyValues, GenerateResul
       PartyName3: v.name3,
       MinorityClass: { MinorityClassCode: v.smeType },
       CitizenshipClass: { CitizenshipClassCode: v.citizenshipClass },
-      OfficerRiskDate: v.officerRiskDate.toISOString(),
+      OfficerRiskDate: this.dateStringTransformations.addTimeToDateOnlyString(v.officerRiskDate),
       PrimaryAddress: { Country: { CountryCode: v.countryCode } },
     }));
 
@@ -43,7 +46,7 @@ export class PartyGenerator extends AbstractGenerator<PartyValues, GenerateResul
       name3: v.name3,
       smeType: v.smeType,
       citizenshipClass: v.citizenshipClass,
-      officerRiskDate: this.dateStringTransformations.removeTime(v.officerRiskDate.toISOString()),
+      officerRiskDate: v.officerRiskDate,
       countryCode: v.countryCode,
     }));
 
@@ -73,7 +76,7 @@ interface PartyValues {
   name3: string;
   smeType: string;
   citizenshipClass: string;
-  officerRiskDate: Date;
+  officerRiskDate: string;
   countryCode: string;
 }
 

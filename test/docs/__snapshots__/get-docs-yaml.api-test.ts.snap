@@ -10,6 +10,30 @@ paths:
       responses:
         '200':
           description: ''
+  /api/v1/deals:
+    post:
+      operationId: DealController_createDeal
+      summary: Creates a new deal.
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/CreateDealRequestItem'
+      responses:
+        '201':
+          description: The deal has been successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateDealResponse'
+        '400':
+          description: Bad request.
+        '500':
+          description: An internal server error has occurred.
   /api/v1/deals/{dealIdentifier}/guarantees:
     post:
       operationId: DealGuaranteeController_createGuaranteeForDeal
@@ -68,6 +92,39 @@ paths:
           description: The specified deal, or the investors for that deal, were not found.
         '500':
           description: An internal server error has occurred.
+  /api/v1/facilities/{facilityIdentifier}/investors:
+    post:
+      operationId: FacilityInvestorController_createInvestorForFacility
+      summary: Create a new investor for a facility.
+      parameters:
+        - name: facilityIdentifier
+          required: true
+          in: path
+          description: The identifier of the facility in ACBS.
+          example: '0000000001'
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/CreateFacilityInvestorRequestItem'
+      responses:
+        '201':
+          description: The investor has been successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateFacilityInvestorResponse'
+        '400':
+          description: Bad request.
+        '404':
+          description: The facility was not found.
+        '500':
+          description: An internal server error has occurred.
   /api/v1/parties/{partyIdentifier}/external-ratings:
     get:
       operationId: PartyExternalRatingController_getExternalRatingsForParty
@@ -88,7 +145,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/GetPartyExternalRatingsResponseElement'
+                  $ref: '#/components/schemas/GetPartyExternalRatingsResponseItem'
         '404':
           description: >-
             The specified party, or the external ratings for that party, were
@@ -103,7 +160,7 @@ paths:
         - name: searchText
           required: true
           in: query
-          description: 'Minimum length: 3'
+          description: 'Minimum length: 3. Cannot contain only whitespaces.'
           schema:
             minLength: 3
             type: string
@@ -115,7 +172,40 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/GetPartiesBySearchTextResponseElement'
+                  $ref: '#/components/schemas/GetPartiesBySearchTextResponseItem'
+        '500':
+          description: An internal server error has occurred.
+    post:
+      operationId: PartyController_createParty
+      summary: >-
+        Create a new party if there are no parties matching this alternate
+        identifier.
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/CreatePartyRequestItem'
+      responses:
+        '200':
+          description: >-
+            One or more parties matching this alternate identifier already
+            exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatePartyResponse'
+        '201':
+          description: The party has been successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatePartyResponse'
+        '400':
+          description: Bad request.
         '500':
           description: An internal server error has occurred.
   /api/v1/parties/{partyIdentifier}:
@@ -155,6 +245,68 @@ components:
       in: header
       name: x-api-key
   schemas:
+    CreateDealRequestItem:
+      type: object
+      properties:
+        dealIdentifier:
+          type: string
+          description: The identifier of the deal to create.
+          example: '0020900035'
+          minLength: 10
+          maxLength: 10
+        currency:
+          type: string
+          description: >-
+            The currency code of the primary currency of the deal, from the
+            Currency Definition Table.
+          example: GBP
+          minLength: 3
+          maxLength: 3
+        dealValue:
+          type: number
+          description: The value of the deal.
+          minimum: 0
+        guaranteeCommencementDate:
+          format: date
+          type: string
+          description: >-
+            Deal effective date is not in workflow. Currently operations assume
+            a date earlier than the Facility effective date. Use the earliest
+            Effective Date on facilities in Workflow under this Deal, i.e.
+            Guarantee Commencement Date.
+        obligorPartyIdentifier:
+          type: string
+          description: The obligor party identifier.
+          example: '00000001'
+          minLength: 8
+          maxLength: 8
+        obligorName:
+          type: string
+          description: The obligor party name, which is party name1 attribute.
+          minLength: 0
+          maxLength: 35
+        obligorIndustryClassification:
+          type: string
+          description: The obligor party industry classification.
+          example: '1405'
+          minLength: 0
+          maxLength: 10
+      required:
+        - dealIdentifier
+        - currency
+        - dealValue
+        - guaranteeCommencementDate
+        - obligorPartyIdentifier
+        - obligorName
+        - obligorIndustryClassification
+    CreateDealResponse:
+      type: object
+      properties:
+        dealIdentifier:
+          type: string
+          example: '0020900035'
+      required:
+        - dealIdentifier
     CreateDealGuaranteeRequestItem:
       type: object
       properties:
@@ -261,6 +413,61 @@ components:
         - expiryDate
         - isExpiryDateMaximum
         - maximumLiability
+    CreateFacilityInvestorRequestItem:
+      type: object
+      properties:
+        facilityIdentifier:
+          type: string
+          description: The identifier of the facility to create the investor for.
+          example: '0000000001'
+          minLength: 10
+          maxLength: 10
+        effectiveDate:
+          format: date
+          type: string
+          description: The date from which this limit is effective.
+        guaranteeExpiryDate:
+          format: date
+          type: string
+          description: The date on which this limit will expire.
+        currency:
+          type: string
+          description: >-
+            The code of the currency for this investor, Currency in the Currency
+            Definition Table.
+          example: USD
+          minLength: 3
+          maxLength: 3
+        maximumLiability:
+          type: number
+          description: The investor's share of the current limit amount.
+          minimum: 0
+        lenderType:
+          type: string
+          description: >-
+            The lender type for this investor, Key Value 1 from the T1300 -
+            Lender Type Code Table.
+          minLength: 3
+          maxLength: 3
+          default: '500'
+      required:
+        - facilityIdentifier
+        - effectiveDate
+        - guaranteeExpiryDate
+        - currency
+        - maximumLiability
+    CreateFacilityInvestorResponse:
+      type: object
+      properties:
+        facilityIdentifier:
+          type: string
+          readOnly: true
+          minLength: 10
+          maxLength: 10
+          description: The identifier of the facility that the investor was created for.
+          example: '0000000001'
+      required:
+        - facilityIdentifier
     GetPartyExternalRatingResponseRatingEntity:
       type: object
       properties:
@@ -277,7 +484,7 @@ components:
           readOnly: true
       required:
         - assignedRatingCode
-    GetPartyExternalRatingsResponseElement:
+    GetPartyExternalRatingsResponseItem:
       type: object
       properties:
         partyIdentifier:
@@ -329,7 +536,7 @@ components:
         - externalRatingNote2
         - externalRatingUserCode1
         - externalRatingUserCode2
-    GetPartiesBySearchTextResponseElement:
+    GetPartiesBySearchTextResponseItem:
       type: object
       properties:
         alternateIdentifier:
@@ -369,6 +576,76 @@ components:
         - citizenshipClass
         - officerRiskDate
         - countryCode
+    CreatePartyRequestItem:
+      type: object
+      properties:
+        alternateIdentifier:
+          type: string
+          description: The UKEF ID for the party. Should contain just digits.
+          minLength: 8
+          maxLength: 8
+          example: '00291013'
+          pattern: /^d{8}$/
+        industryClassification:
+          type: string
+          description: The primary industry classification code for this customer.
+          minLength: 1
+          maxLength: 10
+          example: '0001'
+        name1:
+          type: string
+          description: The primary customer name.
+          minLength: 1
+          maxLength: 35
+          example: ACTUAL IMPORT EXPORT
+        name2:
+          type: string
+          description: The secondary customer name.
+          minLength: 1
+          maxLength: 35
+          example: ACTUAL IMPORT EXPORT
+        name3:
+          type: string
+          description: The tertiary customer name.
+          minLength: 1
+          maxLength: 35
+          example: ACTUAL IMPORT EXPORT
+        smeType:
+          type: string
+          description: A code that indicates what minority class this customer represents.
+          minLength: 1
+          maxLength: 2
+          example: '70'
+        citizenshipClass:
+          type: string
+          description: >-
+            A code that identifies the citizenship category of this customer.
+            Should be '1' if the domicile country is the UK, otherwise '2'.
+          example: '2'
+        officerRiskDate:
+          format: date
+          type: string
+          description: The date of creation in YYYY-MM-DD (ISO 8601) format.
+          example: '2023-03-15'
+        countryCode:
+          type: string
+          description: The country code for the party's primary address.
+          maxLength: 3
+          default: GBR
+          example: DZA
+      required:
+        - alternateIdentifier
+        - industryClassification
+        - name1
+        - smeType
+        - citizenshipClass
+        - officerRiskDate
+    CreatePartyResponse:
+      type: object
+      properties:
+        partyIdentifier:
+          type: string
+          readOnly: true
     GetPartyByIdentifierResponse:
       type: object
       properties:

@@ -1,7 +1,7 @@
 import { PROPERTIES } from '@ukef/constants';
-import { AcbsAuthenticationService } from '@ukef/modules/acbs/acbs-authentication.service';
 import { AcbsDealGuaranteeService } from '@ukef/modules/acbs/acbs-deal-guarantee.service';
 import { AcbsCreateDealGuaranteeDto } from '@ukef/modules/acbs/dto/acbs-create-deal-guarantee.dto';
+import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
@@ -12,31 +12,28 @@ import { DealGuaranteeToCreate } from './deal-guarantee-to-create.interface';
 
 jest.mock('@ukef/modules/date/current-date.provider');
 jest.mock('@ukef/modules/acbs/acbs-deal-guarantee.service');
-jest.mock('@ukef/modules/acbs/acbs-authentication.service');
+jest.mock('@ukef/modules/acbs-authentication/acbs-authentication.service');
 
 describe('DealGuaranteeService', () => {
   const valueGenerator = new RandomValueGenerator();
   const dateStringTransformations = new DateStringTransformations();
   const idToken = valueGenerator.string();
 
-  let acbsAuthenticationService: AcbsAuthenticationService;
-  let acbsDealGuaranteeService: AcbsDealGuaranteeService;
-  let currentDateProvider: CurrentDateProvider;
   let service: DealGuaranteeService;
 
   let acbsDealGuaranteeServiceCreateGuaranteeForDeal: jest.Mock;
   let currentDateProviderGetLatestDateFromTodayAnd: jest.Mock;
 
   beforeEach(() => {
-    acbsDealGuaranteeService = new AcbsDealGuaranteeService(null, null);
+    const acbsDealGuaranteeService = new AcbsDealGuaranteeService(null, null);
     acbsDealGuaranteeServiceCreateGuaranteeForDeal = jest.fn();
     acbsDealGuaranteeService.createGuaranteeForDeal = acbsDealGuaranteeServiceCreateGuaranteeForDeal;
 
-    acbsAuthenticationService = new AcbsAuthenticationService(null, null, null);
+    const acbsAuthenticationService = new AcbsAuthenticationService(null, null, null);
     const acbsAuthenticationServiceGetIdToken = jest.fn();
     acbsAuthenticationService.getIdToken = acbsAuthenticationServiceGetIdToken;
 
-    currentDateProvider = new CurrentDateProvider();
+    const currentDateProvider = new CurrentDateProvider();
     currentDateProviderGetLatestDateFromTodayAnd = jest.fn();
     currentDateProvider.getLatestDateFromTodayAnd = currentDateProviderGetLatestDateFromTodayAnd;
 

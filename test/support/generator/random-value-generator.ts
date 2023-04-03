@@ -19,8 +19,21 @@ export class RandomValueGenerator {
     return this.chance.bool();
   }
 
-  string(): string {
-    return this.chance.string();
+  string(options?: { length?: number; minLength?: number; maxLength?: number }): string {
+    const length = this.getStringLengthFromOptions(options);
+    return this.chance.string({ length });
+  }
+
+  stringOfNumericCharacters(options?: { length?: number; minLength?: number; maxLength?: number }): string {
+    const length = this.getStringLengthFromOptions(options);
+    return this.chance.string({ length, pool: '0123456789' });
+  }
+
+  private getStringLengthFromOptions(options?: { length?: number; minLength?: number; maxLength?: number }): number {
+    const minLength = options && (options.minLength || options.minLength === 0) ? options.minLength : 0;
+    const maxLength = options && (options.maxLength || options.maxLength === 0) ? options.maxLength : Math.max(20, minLength * 2);
+    const length = options && (options.length || options.length === 0) ? options.length : this.chance.integer({ min: minLength, max: maxLength });
+    return length;
   }
 
   word(options?: { length?: number }): string {
@@ -31,12 +44,8 @@ export class RandomValueGenerator {
     return this.chance.url({ protocol: 'https' });
   }
 
-  stringOfNumericCharacters(options?: { length?: number; minLength?: number; maxLength?: number }): string {
-    const minLength = options && options.minLength ? options.minLength : 0;
-    const maxLength = options && options.maxLength ? options.maxLength : Math.max(20, minLength * 2);
-    const length = options && options.length ? options.length : this.chance.integer({ min: minLength, max: maxLength });
-
-    return this.chance.string({ length, pool: '0123456789' });
+  character(): string {
+    return this.chance.character();
   }
 
   probabilityFloat(): number {
@@ -52,6 +61,10 @@ export class RandomValueGenerator {
 
   date(): Date {
     return this.chance.date();
+  }
+
+  integer({ min, max }: { min?: number; max?: number } = {}): number {
+    return this.chance.integer({ min, max });
   }
 
   // UKEF id example 0030000321. It should be used for Deal and Facility IDs.

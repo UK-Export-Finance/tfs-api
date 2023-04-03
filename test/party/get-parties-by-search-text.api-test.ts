@@ -1,85 +1,20 @@
 import { ACBS } from '@ukef/constants';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
 import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
+import { GetPartyGenerator } from '@ukef-test/support/generator/get-party-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import nock from 'nock';
 
 describe('GET /parties?searchText={searchText}', () => {
   const valueGenerator = new RandomValueGenerator();
+  const dateStringTransformations = new DateStringTransformations();
   const idToken = valueGenerator.string();
   const sessionId = valueGenerator.string();
   const searchText = valueGenerator.stringOfNumericCharacters({ minLength: 3 });
 
-  const partyAlternateIdentifierA = searchText + '0';
-  const industryClassificationCodeA = valueGenerator.stringOfNumericCharacters();
-  const partyName1A = valueGenerator.string();
-  const partyName2A = valueGenerator.string();
-  const partyName3A = valueGenerator.string();
-  const minorityClassCodeA = valueGenerator.stringOfNumericCharacters();
-  const citizenshipClassCodeA = valueGenerator.stringOfNumericCharacters();
-  const officerRiskDateA = valueGenerator.date().toISOString();
-  const countryCodeA = valueGenerator.string();
-
-  const partyAlternateIdentifierB = searchText + '1';
-  const industryClassificationCodeB = valueGenerator.stringOfNumericCharacters();
-  const partyName1B = valueGenerator.string();
-  const partyName2B = valueGenerator.string();
-  const partyName3B = valueGenerator.string();
-  const minorityClassCodeB = valueGenerator.stringOfNumericCharacters();
-  const citizenshipClassCodeB = valueGenerator.stringOfNumericCharacters();
-  const officerRiskDateB = valueGenerator.date().toISOString();
-  const countryCodeB = valueGenerator.string();
-
-  const partiesInAcbs = [
-    {
-      PartyAlternateIdentifier: partyAlternateIdentifierA,
-      IndustryClassification: { IndustryClassificationCode: industryClassificationCodeA },
-      PartyName1: partyName1A,
-      PartyName2: partyName2A,
-      PartyName3: partyName3A,
-      MinorityClass: { MinorityClassCode: minorityClassCodeA },
-      CitizenshipClass: { CitizenshipClassCode: citizenshipClassCodeA },
-      OfficerRiskDate: officerRiskDateA,
-      PrimaryAddress: { Country: { CountryCode: countryCodeA } },
-    },
-    {
-      PartyAlternateIdentifier: partyAlternateIdentifierB,
-      IndustryClassification: { IndustryClassificationCode: industryClassificationCodeB },
-      PartyName1: partyName1B,
-      PartyName2: partyName2B,
-      PartyName3: partyName3B,
-      MinorityClass: { MinorityClassCode: minorityClassCodeB },
-      CitizenshipClass: { CitizenshipClassCode: citizenshipClassCodeB },
-      OfficerRiskDate: officerRiskDateB,
-      PrimaryAddress: { Country: { CountryCode: countryCodeB } },
-    },
-  ];
-
-  const expectedParties = [
-    {
-      alternateIdentifier: partyAlternateIdentifierA,
-      industryClassification: industryClassificationCodeA,
-      name1: partyName1A,
-      name2: partyName2A,
-      name3: partyName3A,
-      smeType: minorityClassCodeA,
-      citizenshipClass: citizenshipClassCodeA,
-      officerRiskDate: officerRiskDateA.slice(0, 10),
-      countryCode: countryCodeA,
-    },
-    {
-      alternateIdentifier: partyAlternateIdentifierB,
-      industryClassification: industryClassificationCodeB,
-      name1: partyName1B,
-      name2: partyName2B,
-      name3: partyName3B,
-      smeType: minorityClassCodeB,
-      citizenshipClass: citizenshipClassCodeB,
-      officerRiskDate: officerRiskDateB.slice(0, 10),
-      countryCode: countryCodeB,
-    },
-  ];
+  const { partiesInAcbs, parties } = new GetPartyGenerator(valueGenerator, dateStringTransformations).generate({ numberToGenerate: 2 });
 
   let api: Api;
 
@@ -112,7 +47,7 @@ describe('GET /parties?searchText={searchText}', () => {
     const { status, body } = await api.get(`/api/v1/parties?searchText=${searchText}`);
 
     expect(status).toBe(200);
-    expect(body).toStrictEqual(JSON.parse(JSON.stringify(expectedParties)));
+    expect(body).toStrictEqual(JSON.parse(JSON.stringify(parties)));
   });
 
   it('returns a 200 response with an empty array of parties if ACBS returns a 200 response with an empty array of parties', async () => {
@@ -256,6 +191,17 @@ describe('GET /parties?searchText={searchText}', () => {
 
   it('returns a 400 response if searchText is less than 3 characters', async () => {
     const { status, body } = await api.get(`/api/v1/parties?searchText=00`);
+
+    expect(status).toBe(400);
+    expect(body).toStrictEqual({
+      statusCode: 400,
+      error: 'Bad Request',
+      message: ['searchText must be longer than or equal to 3 characters'],
+    });
+  });
+
+  it('returns a 400 response if searchText is 3 whitespaces', async () => {
+    const { status, body } = await api.get(`/api/v1/parties?searchText=   `);
 
     expect(status).toBe(400);
     expect(body).toStrictEqual({

@@ -1,7 +1,8 @@
-import { PartyGenerator } from '@ukef-test/support/generator/party-generator';
+import { GetPartyGenerator } from '@ukef-test/support/generator/get-party-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
 
+import { DateStringTransformations } from '../date/date-string.transformations';
 import { PartyController } from './party.controller';
 import { PartyService } from './party.service';
 
@@ -9,6 +10,7 @@ jest.mock('./party.service');
 
 describe('PartyController', () => {
   const valueGenerator = new RandomValueGenerator();
+  const dateStringTransformations = new DateStringTransformations();
   const partyIdentifier = valueGenerator.stringOfNumericCharacters();
 
   let partyService: PartyService;
@@ -26,7 +28,7 @@ describe('PartyController', () => {
   });
 
   describe('getPartyByIdentifier', () => {
-    const { parties, partiesFromApi } = new PartyGenerator(valueGenerator).generate({ numberToGenerate: 1 });
+    const { parties, partiesFromApi } = new GetPartyGenerator(valueGenerator, dateStringTransformations).generate({ numberToGenerate: 1 });
     const partyFromService = parties[0];
     const expectedParty = partiesFromApi[0];
 

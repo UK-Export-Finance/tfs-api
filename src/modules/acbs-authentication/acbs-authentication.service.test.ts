@@ -11,7 +11,7 @@ import { AcbsAuthenticationFailedException } from './exception/acbs-authenticati
 
 describe('AcbsAuthenticationService', () => {
   const valueGenerator = new RandomValueGenerator();
-  const baseUrl = valueGenerator.string();
+  const baseUrl = valueGenerator.httpsUrl();
   const loginName = valueGenerator.string();
   const password = valueGenerator.string();
   const apiKey = valueGenerator.string();

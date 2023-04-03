@@ -1,6 +1,5 @@
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 
-import { AcbsException } from './acbs.exception';
 import { AcbsAuthenticationFailedException } from './acbs-authentication-failed.exception';
 
 describe('AcbsAuthenticationFailedException', () => {
@@ -25,9 +24,5 @@ describe('AcbsAuthenticationFailedException', () => {
     const exception = new AcbsAuthenticationFailedException(message, innerError);
 
     expect(exception.innerError).toBe(innerError);
-  });
-
-  it('is instance of AcbsException', () => {
-    expect(new AcbsAuthenticationFailedException(message)).toBeInstanceOf(AcbsException);
   });
 });

@@ -3,53 +3,55 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import AcbsConfig from '@ukef/config/acbs.config';
 import { PROPERTIES } from '@ukef/constants';
-import { AxiosResponse } from 'axios';
-import { lastValueFrom } from 'rxjs';
 
+import { AcbsHttpService } from './acbs-http.service';
 import { AcbsCreateDealGuaranteeDto } from './dto/acbs-create-deal-guarantee.dto';
 import { AcbsGetDealGuaranteeResponseDto } from './dto/acbs-get-deal-guarantee-response.dto';
-import { wrapAcbsHttpError, wrapAcbsHttpPostError } from './wrap-acbs-http-error';
+import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
+import { createWrapAcbsHttpErrorCallback, createWrapAcbsHttpPostErrorCallback } from './wrap-acbs-http-error-callback';
 
 @Injectable()
 export class AcbsDealGuaranteeService {
+  private readonly acbsHttpService: AcbsHttpService;
+
   constructor(
     @Inject(AcbsConfig.KEY)
-    private readonly config: Pick<ConfigType<typeof AcbsConfig>, 'baseUrl'>,
-    private readonly httpService: HttpService,
-  ) {}
+    config: Pick<ConfigType<typeof AcbsConfig>, 'baseUrl'>,
+    httpService: HttpService,
+  ) {
+    this.acbsHttpService = new AcbsHttpService(config, httpService);
+  }
 
   async createGuaranteeForDeal(dealIdentifier: string, newDealGuarantee: AcbsCreateDealGuaranteeDto, idToken: string): Promise<void> {
     const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
-    await lastValueFrom(
-      this.httpService
-        .post<never>(`/Portfolio/${portfolioIdentifier}/Deal/${dealIdentifier}/DealGuarantee`, newDealGuarantee, {
-          baseURL: this.config.baseUrl,
-          headers: { Authorization: `Bearer ${idToken}`, 'Content-Type': 'application/json' },
-        })
-        .pipe(
-          wrapAcbsHttpPostError<AxiosResponse<never, any>, any>({
-            resourceIdentifier: dealIdentifier,
-            messageForUnknownException: `Failed to create a guarantee for deal ${dealIdentifier} in ACBS.`,
-          }),
-        ),
-    );
+    await this.acbsHttpService.post<AcbsCreateDealGuaranteeDto>({
+      path: `/Portfolio/${portfolioIdentifier}/Deal/${dealIdentifier}/DealGuarantee`,
+      requestBody: newDealGuarantee,
+      idToken,
+      onError: createWrapAcbsHttpPostErrorCallback({
+        messageForUnknownError: `Failed to create a guarantee for deal ${dealIdentifier} in ACBS.`,
+        knownErrors: [
+          {
+            substringToFind: 'The deal not found',
+            throwError: (error) => {
+              throw new AcbsResourceNotFoundException(`Deal with identifier ${dealIdentifier} was not found by ACBS.`, error);
+            },
+          },
+        ],
+      }),
+    });
   }
 
-  async getGuaranteesForDeal(dealIdentifier: string, idToken: string): Promise<AcbsGetDealGuaranteeResponseDto[]> {
-    const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
-    const { data: DealGuaranteesInAcbs } = await lastValueFrom(
-      this.httpService
-        .get<AcbsGetDealGuaranteeResponseDto[]>(`/Portfolio/${portfolioIdentifier}/Deal/${dealIdentifier}/DealGuarantee`, {
-          baseURL: this.config.baseUrl,
-          headers: { Authorization: `Bearer ${idToken}`, 'Content-Type': 'application/json' },
-        })
-        .pipe(
-          wrapAcbsHttpError({
-            resourceIdentifier: dealIdentifier,
-            messageForUnknownException: `Failed to get the deal investors for the deal with id ${dealIdentifier}.`,
-          }),
-        ),
-    );
-    return DealGuaranteesInAcbs;
+  async getGuaranteesForDeal(portfolio: string, dealIdentifier: string, idToken: string): Promise<AcbsGetDealGuaranteeResponseDto[]> {
+    const { data: dealPartiesInAcbs } = await this.acbsHttpService.get<AcbsGetDealGuaranteeResponseDto[]>({
+      path: `/Portfolio/${portfolio}/Deal/${dealIdentifier}/DealGuarantee`,
+      idToken,
+      onError: createWrapAcbsHttpErrorCallback({
+        resourceIdentifier: dealIdentifier,
+        messageForUnknownException: `Failed to get the deal investors for the deal with id ${dealIdentifier}.`,
+      }),
+    });
+
+    return dealPartiesInAcbs;
   }
 }

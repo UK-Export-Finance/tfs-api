@@ -1,11 +1,13 @@
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { AcbsAuthenticationModule } from '@ukef/modules/acbs-authentication/acbs-authentication.module';
 
 import { TestController } from './acbs.controller';
-import { AcbsAuthenticationService } from './acbs-authentication.service';
+import { AcbsDealService } from './acbs-deal.service';
 import { AcbsDealGuaranteeService } from './acbs-deal-guarantee.service';
 import { AcbsDealPartyService } from './acbs-deal-party.service';
+import { AcbsFacilityPartyService } from './acbs-facility-party.service';
 import { AcbsPartyService } from './acbs-party.service';
 import { AcbsPartyExternalRatingService } from './acbs-party-external-rating.service';
 
@@ -19,9 +21,18 @@ import { AcbsPartyExternalRatingService } from './acbs-party-external-rating.ser
         timeout: configService.get<number>('acbs.timeout'),
       }),
     }),
+    AcbsAuthenticationModule,
   ],
   controllers: [TestController],
-  providers: [AcbsAuthenticationService, AcbsPartyService, AcbsPartyExternalRatingService, AcbsDealGuaranteeService, AcbsDealPartyService],
-  exports: [AcbsAuthenticationService, AcbsPartyService, AcbsPartyExternalRatingService, AcbsDealGuaranteeService, AcbsDealPartyService],
+  providers: [AcbsPartyService, AcbsPartyExternalRatingService, AcbsDealService, AcbsDealGuaranteeService, AcbsDealPartyService, AcbsFacilityPartyService],
+  exports: [
+    AcbsAuthenticationModule,
+    AcbsPartyService,
+    AcbsPartyExternalRatingService,
+    AcbsDealService,
+    AcbsDealGuaranteeService,
+    AcbsDealPartyService,
+    AcbsFacilityPartyService,
+  ],
 })
 export class AcbsModule {}

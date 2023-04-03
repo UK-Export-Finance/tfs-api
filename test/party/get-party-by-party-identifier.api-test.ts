@@ -1,19 +1,21 @@
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
 import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
-import { PartyGenerator } from '@ukef-test/support/generator/party-generator';
+import { GetPartyGenerator } from '@ukef-test/support/generator/get-party-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import nock from 'nock';
 
 describe('GET /parties/{partyIdentifier}', () => {
   const valueGenerator = new RandomValueGenerator();
+  const dateStringTransformations = new DateStringTransformations();
   const partyIdentifier = '001';
   const getPartyUrl = `/api/v1/parties/${partyIdentifier}`;
 
   let api: Api;
 
-  const { partiesInAcbs, partiesFromApi } = new PartyGenerator(valueGenerator).generate({ numberToGenerate: 1 });
+  const { partiesInAcbs, partiesFromApi } = new GetPartyGenerator(valueGenerator, dateStringTransformations).generate({ numberToGenerate: 1 });
   const partyInAcbs = partiesInAcbs[0];
   const expectedParty = partiesFromApi[0];
 

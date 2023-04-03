@@ -1,6 +1,6 @@
 import { PROPERTIES } from '@ukef/constants';
-import { AcbsAuthenticationService } from '@ukef/modules/acbs/acbs-authentication.service';
 import { AcbsDealPartyService } from '@ukef/modules/acbs/acbs-deal-party.service';
+import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { DealInvestorGenerator } from '@ukef-test/support/generator/deal-investor-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
@@ -9,7 +9,7 @@ import { when } from 'jest-when';
 import { DealInvestorService } from './deal-investor.service';
 
 jest.mock('@ukef/modules/acbs/acbs-deal-party.service');
-jest.mock('@ukef/modules/acbs/acbs-authentication.service');
+jest.mock('@ukef/modules/acbs-authentication/acbs-authentication.service');
 
 describe('DealInvestorService', () => {
   const valueGenerator = new RandomValueGenerator();

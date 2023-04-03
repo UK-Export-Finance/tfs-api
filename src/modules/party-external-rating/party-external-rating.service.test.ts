@@ -1,13 +1,13 @@
 import { AcbsPartyExternalRatingService } from '@ukef/modules/acbs/acbs-party-external-rating.service';
+import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 import { PartyExternalRatingGenerator } from '@ukef-test/support/generator/party-external-rating-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
 
-import { AcbsAuthenticationService } from '../acbs/acbs-authentication.service';
 import { PartyExternalRatingService } from './party-external-rating.service';
 
 jest.mock('@ukef/modules/acbs/acbs-party-external-rating.service');
-jest.mock('@ukef/modules/acbs/acbs-authentication.service');
+jest.mock('@ukef/modules/acbs-authentication/acbs-authentication.service');
 
 describe('PartyExternalRatingService', () => {
   const valueGenerator = new RandomValueGenerator();

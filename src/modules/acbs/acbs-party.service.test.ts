@@ -1,18 +1,20 @@
 import { HttpService } from '@nestjs/axios';
-import { PartyGenerator } from '@ukef-test/support/generator/party-generator';
+import { GetPartyGenerator } from '@ukef-test/support/generator/get-party-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { AxiosError } from 'axios';
 import { when } from 'jest-when';
 import { of, throwError } from 'rxjs';
 
+import { DateStringTransformations } from '../date/date-string.transformations';
 import { AcbsPartyService } from './acbs-party.service';
 import { AcbsException } from './exception/acbs.exception';
 import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
 
 describe('AcbsPartyService', () => {
   const valueGenerator = new RandomValueGenerator();
+  const dateStringTransformations = new DateStringTransformations();
   const idToken = valueGenerator.string();
-  const baseUrl = valueGenerator.string();
+  const baseUrl = valueGenerator.httpsUrl();
 
   let httpService: HttpService;
   let service: AcbsPartyService;
@@ -32,7 +34,7 @@ describe('AcbsPartyService', () => {
     const partyIdentifier = valueGenerator.stringOfNumericCharacters();
 
     it('returns the party if ACBS responds with the party', async () => {
-      const { partiesInAcbs } = new PartyGenerator(valueGenerator).generate({ numberToGenerate: 1 });
+      const { partiesInAcbs } = new GetPartyGenerator(valueGenerator, dateStringTransformations).generate({ numberToGenerate: 1 });
       const partyInAcbs = partiesInAcbs[0];
 
       when(httpServiceGet)

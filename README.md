@@ -30,6 +30,9 @@ $ npm run unit-test
 
 # api tests
 $ npm run api-test
+
+# api tests with nock debugging (very useful if tests are failing)
+$ DEBUG=nock.* npm run api-test
 ```
 
 ### Generating new resources

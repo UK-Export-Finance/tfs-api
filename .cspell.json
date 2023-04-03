@@ -16,8 +16,10 @@
   "words": [
     "acbs",
     "APIM",
+    "chara",
     "codacy",
     "codeql",
+    "DCIS",
     "Dockerised",
     "dtos",
     "ecgd",
@@ -36,7 +38,9 @@
     "ukef",
     "venv",
     "probabilityof",
-    "APIM"
+    "APIM",
+    "DCIS",
+    "UKRATEGRP"
   ],
   "dictionaries": [
     "en-gb",
