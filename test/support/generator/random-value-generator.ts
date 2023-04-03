@@ -2,6 +2,7 @@ import { UKEFID } from '@ukef/constants';
 import { DateOnlyString, DateString, UkefId } from '@ukef/helpers';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { Chance } from 'chance';
+import { AcbsPartyId } from '../../../dist/src/helpers/acbs-id.type';
 
 export class RandomValueGenerator {
   private static readonly seed = 0;
@@ -55,6 +56,11 @@ export class RandomValueGenerator {
   // UKEF id example 0030000321. It should be used for Deal and Facility IDs.
   ukefId(): UkefId {
     return (UKEFID.MAIN_ID_PREFIX.DEV + this.stringOfNumericCharacters({ length: 6 })) as UkefId;
+  }
+
+  // ACBS internal id format example 00000321.
+  acbsPartyId(): AcbsPartyId {
+    return this.stringOfNumericCharacters({ length: 8 }) as AcbsPartyId;
   }
 
   dateTimeString(): DateString {

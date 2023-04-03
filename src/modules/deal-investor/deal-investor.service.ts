@@ -20,7 +20,7 @@ export class DealInvestorService {
     const idToken = await this.acbsAuthenticationService.getIdToken();
     const portfolio = PROPERTIES.GLOBAL.portfolioIdentifier;
     const investorsInAcbs = await this.acbsDealPartyService.getDealPartiesForDeal(portfolio, dealIdentifier, idToken);
-    if (!investorsInAcbs) {
+    if (!investorsInAcbs || investorsInAcbs.length === 0) {
       throw new AcbsResourceNotFoundException(`Deal Investors for Deal ${dealIdentifier} were not found by ACBS.`);
     }
     return investorsInAcbs.map((investorInAcbs) => ({

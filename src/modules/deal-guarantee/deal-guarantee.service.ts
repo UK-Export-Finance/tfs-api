@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PROPERTIES } from '@ukef/constants';
+import { UkefId } from '@ukef/helpers';
 import { AcbsAuthenticationService } from '@ukef/modules/acbs/acbs-authentication.service';
 import { AcbsDealGuaranteeService } from '@ukef/modules/acbs/acbs-deal-guarantee.service';
 import { AcbsCreateDealGuaranteeDto } from '@ukef/modules/acbs/dto/acbs-create-deal-guarantee.dto';
@@ -8,7 +9,7 @@ import { DateStringTransformations } from '@ukef/modules/date/date-string.transf
 
 import { AcbsResourceNotFoundException } from '../acbs/exception/acbs-resource-not-found.exception';
 import { DealGuaranteeToCreate } from './deal-guarantee-to-create.interface';
-import { GetDealGuaranteeResponse } from './dto/get-deal-guarantee-response.dto';
+import { GetDealGuaranteeResponse, GetDealGuaranteeResponseItem } from './dto/get-deal-guarantee-response.dto';
 
 @Injectable()
 export class DealGuaranteeService {
@@ -51,21 +52,22 @@ export class DealGuaranteeService {
     await this.acbsDealGuaranteeService.createGuaranteeForDeal(dealIdentifier, guaranteeToCreateInAcbs, idToken);
   }
 
-  async getGuaranteeForDeal(dealIdentifier: string): Promise<GetDealGuaranteeResponse> {
+  async getGuaranteesForDeal(dealIdentifier: UkefId): Promise<GetDealGuaranteeResponse> {
     const idToken = await this.acbsAuthenticationService.getIdToken();
-    const guaranteesInAcbs = await this.acbsDealGuaranteeService.getGuaranteeForDeal(dealIdentifier, idToken);
-    if (!guaranteesInAcbs) {
+    const guaranteesInAcbs = await this.acbsDealGuaranteeService.getGuaranteesForDeal(dealIdentifier, idToken);
+    if (!guaranteesInAcbs || guaranteesInAcbs.length === 0) {
       throw new AcbsResourceNotFoundException(`Deal Guarantees for Deal ${dealIdentifier} were not found by ACBS.`);
     }
-    return guaranteesInAcbs.map((guaranteeInAcbs) => ({
-      dealIdentifier: dealIdentifier,
-      portfolioIdentifier: 'E1',
-      effectiveDate: this.dateStringTransformations.removeTimeIfExists(guaranteeInAcbs.EffectiveDate),
-      guarantorParty: guaranteeInAcbs.GuarantorParty.PartyIdentifier,
-      limitKey: guaranteeInAcbs.LimitKey,
-      guaranteeExpiryDate: this.dateStringTransformations.removeTimeIfExists(guaranteeInAcbs.ExpirationDate),
-      maximumLiability: guaranteeInAcbs.GuaranteedLimit,
-      guaranteeTypeCode: guaranteeInAcbs.GuaranteeType.GuaranteeTypeCode,
-    }));
+    return guaranteesInAcbs.map(
+      (guaranteeInAcbs) =>
+        <GetDealGuaranteeResponseItem>{
+          effectiveDate: this.dateStringTransformations.removeTimeIfExists(guaranteeInAcbs.EffectiveDate),
+          guarantorParty: guaranteeInAcbs.GuarantorParty.PartyIdentifier,
+          limitKey: guaranteeInAcbs.LimitKey,
+          guaranteeExpiryDate: this.dateStringTransformations.removeTimeIfExists(guaranteeInAcbs.ExpirationDate),
+          maximumLiability: guaranteeInAcbs.GuaranteedLimit,
+          guaranteeTypeCode: guaranteeInAcbs.GuaranteeType.GuaranteeTypeCode,
+        },
+    );
   }
 }

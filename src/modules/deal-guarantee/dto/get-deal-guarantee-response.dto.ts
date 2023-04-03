@@ -1,20 +1,21 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { PROPERTIES } from '@ukef/constants';
+import { UkefId, AcbsPartyId } from '@ukef/helpers';
 import { DateOnlyString } from '@ukef/helpers/date-only-string.type';
 import { IsISO8601, IsNotEmpty, IsOptional, Length, Matches, Min, MinLength } from 'class-validator';
 
 export type GetDealGuaranteeResponse = GetDealGuaranteeResponseItem[];
 
 export class GetDealGuaranteeResponseItem {
-  @ApiProperty({
-    description: 'The identifier of the deal to create the guarantee for.',
-    example: '00000001',
-    minLength: 1,
-    maxLength: 10,
-  })
-  @Length(1, 10)
+  // @ApiProperty({
+  //   description: 'The identifier of the deal to create the guarantee for.',
+  //   example: '00000001',
+  //   minLength: 1,
+  //   maxLength: 10,
+  // })
+  // @Length(1, 10)
   // TODO APIM-73: Should we remove dealIdentifier from the request body?
-  readonly dealIdentifier: string;
+  // readonly dealIdentifier: UkefId;
 
   // TODO APIM-73: Is it okay that I have removed portfolioIdentifier from the request body?
 
@@ -29,13 +30,12 @@ export class GetDealGuaranteeResponseItem {
 
   @ApiProperty({
     description: 'An ACBS party identifier.',
-    minLength: 1,
-    maxLength: 10,
+    minLength: 8,
+    maxLength: 8,
     example: '00000002',
   })
-  @Length(1, 10)
-  // TODO APIM-73: ACBS says it can be at most 8 - which is correct?
-  readonly limitKey: string;
+  @Length(8)
+  readonly limitKey: AcbsPartyId;
 
   @ApiProperty({
     description: 'The date that this guarantee will expire on.',
@@ -52,7 +52,6 @@ export class GetDealGuaranteeResponseItem {
   })
   @IsNotEmpty()
   @Min(0)
-  // TODO APIM-73: ACBS says the maximum is 1E+17 - should we validate this?
   readonly maximumLiability: number;
 
   @ApiProperty({
@@ -63,9 +62,9 @@ export class GetDealGuaranteeResponseItem {
     required: false,
   })
   @IsOptional()
-  @Length(1, 10)
+  @Length(8)
   // TODO APIM-73: ACBS says max length is actually 8 - which is correct?
-  readonly guarantorParty?: string;
+  readonly guarantorParty?: AcbsPartyId;
 
   @ApiProperty({
     description: `GOODS (${PROPERTIES.DEAL_GUARANTEE.DEFAULT.guaranteeTypeCode})`, // TODO APIM-73: Can we improve this at all?
@@ -77,22 +76,4 @@ export class GetDealGuaranteeResponseItem {
   @MinLength(1)
   // TODO APIM-73: ACBS says max length is actually 3 - should we add this?
   readonly guaranteeTypeCode?: string;
-
-  // constructor(
-  //   dealIdentifier: string,
-  //   effectiveDate: DateOnlyString,
-  //   limitKey: string,
-  //   guaranteeExpiryDate: DateOnlyString,
-  //   maximumLiability: number,
-  //   guarantorParty?: string,
-  //   guaranteeTypeCode?: string,
-  // ) {
-  //   this.dealIdentifier = dealIdentifier;
-  //   this.effectiveDate = effectiveDate;
-  //   this.limitKey = limitKey;
-  //   this.guaranteeExpiryDate = guaranteeExpiryDate;
-  //   this.maximumLiability = maximumLiability;
-  //   this.guarantorParty = guarantorParty;
-  //   this.guaranteeTypeCode = guaranteeTypeCode;
-  // }
 }

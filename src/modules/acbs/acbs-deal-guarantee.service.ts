@@ -7,7 +7,8 @@ import { AxiosResponse } from 'axios';
 import { lastValueFrom } from 'rxjs';
 
 import { AcbsCreateDealGuaranteeDto } from './dto/acbs-create-deal-guarantee.dto';
-import { wrapAcbsHttpPostError } from './wrap-acbs-http-error';
+import { AcbsGetDealGuaranteeResponseDto } from './dto/acbs-get-deal-guarantee-response.dto';
+import { wrapAcbsHttpError, wrapAcbsHttpPostError } from './wrap-acbs-http-error';
 
 @Injectable()
 export class AcbsDealGuaranteeService {
@@ -34,20 +35,21 @@ export class AcbsDealGuaranteeService {
     );
   }
 
-  async getGuaranteeForDeal(dealIdentifier: string, idToken: string): Promise<any> {
+  async getGuaranteesForDeal(dealIdentifier: string, idToken: string): Promise<AcbsGetDealGuaranteeResponseDto[]> {
     const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
-    await lastValueFrom(
+    const { data: DealGuaranteesInAcbs } = await lastValueFrom(
       this.httpService
-        .get<never>(`/Portfolio/${portfolioIdentifier}/Deal/${dealIdentifier}/DealGuarantee`, {
+        .get<AcbsGetDealGuaranteeResponseDto[]>(`/Portfolio/${portfolioIdentifier}/Deal/${dealIdentifier}/DealGuarantee`, {
           baseURL: this.config.baseUrl,
           headers: { Authorization: `Bearer ${idToken}`, 'Content-Type': 'application/json' },
         })
         .pipe(
-          wrapAcbsHttpPostError<AxiosResponse<never, any>, any>({
+          wrapAcbsHttpError({
             resourceIdentifier: dealIdentifier,
-            messageForUnknownException: `Failed to get a guarantee for deal ${dealIdentifier} in ACBS.`,
+            messageForUnknownException: `Failed to get the deal investors for the deal with id ${dealIdentifier}.`,
           }),
         ),
     );
+    return DealGuaranteesInAcbs;
   }
 }

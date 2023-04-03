@@ -9,12 +9,15 @@ import {
   ApiOperation,
   ApiParam,
 } from '@nestjs/swagger';
+import { EXAMPLES } from '@ukef/constants';
+import { UkefId } from '@ukef/helpers';
 
 import { DealGuaranteeService } from './deal-guarantee.service';
 import { DealGuaranteeToCreate } from './deal-guarantee-to-create.interface';
 import { CreateDealGuaranteeRequest, CreateDealGuaranteeRequestItem } from './dto/create-deal-guarantee-request.dto';
 import { CreateDealGuaranteeResponse } from './dto/create-deal-guarantee-response.dto';
-import { GetDealGuaranteeResponseItem } from './dto/get-deal-guarantee-response.dto';
+import { GetDealsGuaranteesParamsDto } from './dto/get-deal-guarantee-params.dto';
+import { GetDealGuaranteeResponse, GetDealGuaranteeResponseItem } from './dto/get-deal-guarantee-response.dto';
 
 @Controller()
 export class DealGuaranteeController {
@@ -29,7 +32,7 @@ export class DealGuaranteeController {
     required: true,
     type: 'string',
     description: 'The identifier of the deal in ACBS.',
-    example: '00000001',
+    example: EXAMPLES.DEAL_ID,
   })
   @ApiBody({
     type: CreateDealGuaranteeRequestItem,
@@ -50,7 +53,7 @@ export class DealGuaranteeController {
   })
   @UsePipes(new ValidationPipe({ skipMissingProperties: true }))
   async createGuaranteeForDeal(
-    @Param('dealIdentifier') dealIdentifier: string,
+    @Param('dealIdentifier') dealIdentifier: UkefId,
     @Body(new ParseArrayPipe({ items: CreateDealGuaranteeRequestItem, whitelist: true })) newGuaranteeRequest: CreateDealGuaranteeRequest,
   ): Promise<CreateDealGuaranteeResponse> {
     const newGuarantee = newGuaranteeRequest[0];
@@ -76,15 +79,15 @@ export class DealGuaranteeController {
     required: true,
     type: 'string',
     description: 'The identifier of the deal in ACBS.',
-    example: '00000001',
+    example: EXAMPLES.DEAL_ID,
   })
   @ApiOkResponse({
-    description: 'The guarantee has been successfully created.',
+    description: 'The deal guarantees have been successfully retrieved.',
     type: GetDealGuaranteeResponseItem,
     isArray: true,
   })
   @ApiNotFoundResponse({
-    description: 'The deal was not found.',
+    description: 'The deal guarantees were not found.',
   })
   @ApiBadRequestResponse({
     description: 'Bad request.',
@@ -92,9 +95,7 @@ export class DealGuaranteeController {
   @ApiInternalServerErrorResponse({
     description: 'An internal server error has occurred.',
   })
-  @UsePipes(new ValidationPipe({ skipMissingProperties: true }))
-  async getGuaranteeForDeal(@Param('dealIdentifier') dealIdentifier: string): Promise<CreateDealGuaranteeResponse> {
-    await this.dealGuaranteeService.getGuaranteeForDeal(dealIdentifier);
-    return new CreateDealGuaranteeResponse(dealIdentifier);
+  async getGuaranteeForDeal(@Param() params: GetDealsGuaranteesParamsDto): Promise<GetDealGuaranteeResponse> {
+    return await this.dealGuaranteeService.getGuaranteesForDeal(params.dealIdentifier);
   }
 }
