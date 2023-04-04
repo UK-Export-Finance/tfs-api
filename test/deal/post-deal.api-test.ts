@@ -52,6 +52,7 @@ describe('POST /deals', () => {
   const { idToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
     givenRequestWouldOtherwiseSucceed: () => givenRequestToCreateDealInAcbsSucceeds(),
     makeRequest: () => api.post(createDealUrl, requestBodyToCreateDeal),
+    successStatusCode: 201,
   });
 
   withClientAuthenticationTests({
