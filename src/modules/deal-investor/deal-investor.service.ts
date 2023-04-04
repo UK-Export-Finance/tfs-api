@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { PROPERTIES } from '@ukef/constants';
 import { UkefId } from '@ukef/helpers';
 import { AcbsDealPartyService } from '@ukef/modules/acbs/acbs-deal-party.service';
-import { AcbsResourceNotFoundException } from '@ukef/modules/acbs/exception/acbs-resource-not-found.exception';
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 
@@ -24,9 +23,7 @@ export class DealInvestorService {
     const idToken = await this.acbsAuthenticationService.getIdToken();
     const portfolio = PROPERTIES.GLOBAL.portfolioIdentifier;
     const investorsInAcbs = await this.acbsDealPartyService.getDealPartiesForDeal(portfolio, dealIdentifier, idToken);
-    if (!investorsInAcbs) {
-      throw new AcbsResourceNotFoundException(`Deal Investors for Deal ${dealIdentifier} were not found by ACBS.`);
-    }
+
     return investorsInAcbs.map((investorInAcbs) => ({
       dealIdentifier,
       portfolioIdentifier: portfolio,

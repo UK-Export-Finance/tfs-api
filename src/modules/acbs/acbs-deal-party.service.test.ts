@@ -80,7 +80,7 @@ describe('AcbsDealPartyService', () => {
       expect(dealInvestors).toStrictEqual([]);
     });
 
-    it(`returns an "null" if ACBS responds with an "null" when Deal doesn't exist`, async () => {
+    it(`throws an AcbsResourceNotFoundException if ACBS responds with a 200 response where the response body is 'null'`, async () => {
       when(httpServiceGet)
         .calledWith(acbsDealPartyURL, {
           baseURL: baseUrl,
@@ -88,7 +88,7 @@ describe('AcbsDealPartyService', () => {
         })
         .mockReturnValueOnce(
           of({
-            data: 'null',
+            data: null,
             status: 200,
             statusText: 'OK',
             config: undefined,
@@ -96,9 +96,10 @@ describe('AcbsDealPartyService', () => {
           }),
         );
 
-      const dealInvestors = await service.getDealPartiesForDeal(portfolioIdentifier, dealIdentifier, authToken);
+      const getDealPartiesPromise = service.getDealPartiesForDeal(portfolioIdentifier, dealIdentifier, authToken);
 
-      expect(dealInvestors).toBe('null');
+      await expect(getDealPartiesPromise).rejects.toBeInstanceOf(AcbsResourceNotFoundException);
+      await expect(getDealPartiesPromise).rejects.toThrow(`Deal Investors for Deal ${dealIdentifier} were not found by ACBS.`);
     });
 
     it('returns the deal investors for the deal if ACBS responds with same data', async () => {
