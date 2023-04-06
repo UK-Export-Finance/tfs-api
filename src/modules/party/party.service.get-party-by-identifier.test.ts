@@ -2,6 +2,7 @@ import { AcbsPartyService } from '@ukef/modules/acbs/acbs-party.service';
 import { AcbsGetPartyResponseDto } from '@ukef/modules/acbs/dto/acbs-get-party-response.dto';
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
+import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
 import { GetPartyGenerator } from '@ukef-test/support/generator/get-party-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
@@ -30,13 +31,12 @@ describe('PartyService', () => {
     acbsPartyServiceGetPartyByIdentifier = jest.fn();
     acbsPartyService.getPartyByIdentifier = acbsPartyServiceGetPartyByIdentifier;
 
-    acbsAuthenticationService = new AcbsAuthenticationService(null, null, null);
-    const acbsAuthenticationServiceGetIdToken = jest.fn();
-    acbsAuthenticationService.getIdToken = acbsAuthenticationServiceGetIdToken;
+    const mockAcbsAuthenticationService = getMockAcbsAuthenticationService();
+    acbsAuthenticationService = mockAcbsAuthenticationService.service;
+    const acbsAuthenticationServiceGetIdToken = mockAcbsAuthenticationService.getIdToken;
+    when(acbsAuthenticationServiceGetIdToken).calledWith().mockResolvedValueOnce(idToken);
 
     service = new PartyService({ baseUrl }, null, acbsAuthenticationService, acbsPartyService, dateStringTransformations);
-
-    when(acbsAuthenticationServiceGetIdToken).calledWith().mockResolvedValueOnce(idToken);
   });
 
   describe('getPartyByIdentifier', () => {
