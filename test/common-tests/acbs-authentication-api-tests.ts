@@ -8,6 +8,7 @@ import request from 'supertest';
 interface AcbsAuthenticationErrorCasesTestOptions {
   givenRequestWouldOtherwiseSucceed: () => void;
   makeRequest: () => request.Test;
+  successStatusCode?: number;
 }
 
 interface AcbsAuthenticationTestHooks {
@@ -20,11 +21,17 @@ interface AcbsAuthenticationTestHooks {
 export const withAcbsAuthenticationApiTests = ({
   givenRequestWouldOtherwiseSucceed,
   makeRequest,
+  successStatusCode: successStatusCodeOrUndefined,
 }: AcbsAuthenticationErrorCasesTestOptions): AcbsAuthenticationTestHooks => {
+  const successStatusCode = successStatusCodeOrUndefined ?? 200;
+
   const valueGenerator = new RandomValueGenerator();
   const idToken = valueGenerator.string();
   const creatingASessionErrorCode = valueGenerator.string();
   const sessionId = valueGenerator.string();
+
+  const numberOfAttemptsBeforeAuthenticationFailure = ENVIRONMENT_VARIABLES.ACBS_AUTHENTICATION_MAX_NUMBER_OF_RETRIES;
+  const numberOfAttemptsForAuthenticationFailure = numberOfAttemptsBeforeAuthenticationFailure + 1;
 
   describe('during ACBS authentication', () => {
     beforeEach(async () => {
@@ -36,7 +43,7 @@ export const withAcbsAuthenticationApiTests = ({
     });
 
     it('returns a 500 response if creating a session with the IdP fails', async () => {
-      givenCreatingASessionWithTheIdpFails();
+      givenCreatingASessionWithTheIdpFails({ times: numberOfAttemptsForAuthenticationFailure });
       givenRequestWouldOtherwiseSucceed();
 
       const { status, body } = await makeRequest();
@@ -49,8 +56,8 @@ export const withAcbsAuthenticationApiTests = ({
     });
 
     it('returns a 500 response if getting an id token from the IdP fails', async () => {
-      givenCreatingASessionWithTheIdpSucceeds();
-      givenGettingAnIdTokenFromTheIdpFails();
+      givenCreatingASessionWithTheIdpSucceeds({ times: numberOfAttemptsForAuthenticationFailure });
+      givenGettingAnIdTokenFromTheIdpFails({ times: numberOfAttemptsForAuthenticationFailure });
       givenRequestWouldOtherwiseSucceed();
 
       const { status, body } = await makeRequest();
@@ -63,8 +70,11 @@ export const withAcbsAuthenticationApiTests = ({
     });
 
     it('returns a 500 response if getting an id token from the IdP times out', async () => {
-      givenCreatingASessionWithTheIdpSucceeds();
-      requestToGetAnIdTokenFromTheIdp().delay(TIME_EXCEEDING_ACBS_AUTHENTICATION_TIMEOUT).reply(200, { id_token: idToken });
+      givenCreatingASessionWithTheIdpSucceeds({ times: numberOfAttemptsForAuthenticationFailure });
+      requestToGetAnIdTokenFromTheIdp()
+        .times(numberOfAttemptsForAuthenticationFailure)
+        .delay(TIME_EXCEEDING_ACBS_AUTHENTICATION_TIMEOUT)
+        .reply(200, { id_token: idToken });
       givenRequestWouldOtherwiseSucceed();
 
       const { status, body } = await makeRequest();
@@ -78,6 +88,7 @@ export const withAcbsAuthenticationApiTests = ({
 
     it('returns a 500 response if creating a session with the IdP times out', async () => {
       requestToCreateASessionWithTheIdp()
+        .times(numberOfAttemptsForAuthenticationFailure)
         .delay(TIME_EXCEEDING_ACBS_AUTHENTICATION_TIMEOUT)
         .reply(201, '', { 'set-cookie': `${ACBS.AUTHENTICATION.SESSION_ID_COOKIE_NAME}=${sessionId}` });
       givenGettingAnIdTokenFromTheIdpSucceeds();
@@ -91,36 +102,52 @@ export const withAcbsAuthenticationApiTests = ({
         message: 'Internal server error',
       });
     });
+
+    it(`returns a success status code if creating a session and getting an id token both succeed on the final attempt (retrying ${ENVIRONMENT_VARIABLES.ACBS_AUTHENTICATION_MAX_NUMBER_OF_RETRIES} time(s))`, async () => {
+      givenCreatingASessionWithTheIdpFails({ times: numberOfAttemptsBeforeAuthenticationFailure });
+      givenCreatingASessionWithTheIdpSucceeds();
+      givenGettingAnIdTokenFromTheIdpSucceeds();
+      givenRequestWouldOtherwiseSucceed();
+
+      const { status } = await makeRequest();
+
+      expect(status).toBe(successStatusCode);
+    });
   });
 
-  const givenCreatingASessionWithTheIdpSucceeds = (): void => givenCreatingASessionWithTheIdpSucceedsWith({ sessionId });
+  const givenCreatingASessionWithTheIdpSucceeds = ({ times }: { times: number } = { times: 1 }): void =>
+    givenCreatingASessionWithTheIdpSucceedsWith({ sessionId, times });
 
-  const givenCreatingASessionWithTheIdpFails = (): void => {
-    requestToCreateASessionWithTheIdp().reply(
-      400,
-      {
-        errorCode: creatingASessionErrorCode,
-        errorStack: null,
-        messages: [
-          {
-            code: creatingASessionErrorCode,
-            message: `${creatingASessionErrorCode}: Invalid Credentials. (msg_id=${valueGenerator.string()})`,
-            property: null,
-          },
-        ],
-      },
-      {
-        'set-cookie': `${ACBS.AUTHENTICATION.SESSION_ID_COOKIE_NAME}=prelogin-1`,
-      },
-    );
+  const givenCreatingASessionWithTheIdpFails = ({ times }: { times: number }): void => {
+    requestToCreateASessionWithTheIdp()
+      .times(times)
+      .reply(
+        400,
+        {
+          errorCode: creatingASessionErrorCode,
+          errorStack: null,
+          messages: [
+            {
+              code: creatingASessionErrorCode,
+              message: `${creatingASessionErrorCode}: Invalid Credentials. (msg_id=${valueGenerator.string()})`,
+              property: null,
+            },
+          ],
+        },
+        {
+          'set-cookie': `${ACBS.AUTHENTICATION.SESSION_ID_COOKIE_NAME}=prelogin-1`,
+        },
+      );
   };
 
   const requestToGetAnIdTokenFromTheIdp = (): nock.Interceptor => requestToGetAnIdTokenFromTheIdpFor({ sessionId });
 
   const givenGettingAnIdTokenFromTheIdpSucceeds = (): void => givenGettingAnIdTokenFromTheIdpSucceedsWith({ idToken, forSessionId: sessionId });
 
-  const givenGettingAnIdTokenFromTheIdpFails = (): void => {
-    requestToGetAnIdTokenFromTheIdp().reply(403, '<!doctype html><html><body><div>Access to the requested resource has been forbidden.</div></body></html>');
+  const givenGettingAnIdTokenFromTheIdpFails = ({ times }: { times: number }): void => {
+    requestToGetAnIdTokenFromTheIdp()
+      .times(times)
+      .reply(403, '<!doctype html><html><body><div>Access to the requested resource has been forbidden.</div></body></html>');
   };
 
   const givenAuthenticationWithTheIdpSucceeds = (): void => givenAuthenticationWithTheIdpSucceedsWith({ sessionId, idToken });
@@ -140,8 +167,10 @@ const requestToCreateASessionWithTheIdp = (): nock.Interceptor =>
     .matchHeader('content-type', 'application/json')
     .matchHeader(ENVIRONMENT_VARIABLES.ACBS_AUTHENTICATION_API_KEY_HEADER_NAME, ENVIRONMENT_VARIABLES.ACBS_AUTHENTICATION_API_KEY);
 
-const givenCreatingASessionWithTheIdpSucceedsWith = ({ sessionId }: { sessionId: string }): void => {
-  requestToCreateASessionWithTheIdp().reply(201, '', { 'set-cookie': `${ACBS.AUTHENTICATION.SESSION_ID_COOKIE_NAME}=${sessionId}` });
+const givenCreatingASessionWithTheIdpSucceedsWith = ({ sessionId, times }: { sessionId: string; times: number }): void => {
+  requestToCreateASessionWithTheIdp()
+    .times(times)
+    .reply(201, '', { 'set-cookie': `${ACBS.AUTHENTICATION.SESSION_ID_COOKIE_NAME}=${sessionId}` });
 };
 
 const requestToGetAnIdTokenFromTheIdpFor = ({ sessionId }: { sessionId: string }): nock.Interceptor =>
@@ -156,6 +185,6 @@ const givenGettingAnIdTokenFromTheIdpSucceedsWith = ({ idToken, forSessionId }: 
 };
 
 export const givenAuthenticationWithTheIdpSucceedsWith = ({ sessionId, idToken }: { sessionId: string; idToken: string }): void => {
-  givenCreatingASessionWithTheIdpSucceedsWith({ sessionId });
+  givenCreatingASessionWithTheIdpSucceedsWith({ sessionId, times: 1 });
   givenGettingAnIdTokenFromTheIdpSucceedsWith({ idToken, forSessionId: sessionId });
 };

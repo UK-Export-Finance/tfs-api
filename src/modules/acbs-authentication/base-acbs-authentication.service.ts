@@ -101,3 +101,5 @@ export class BaseAcbsAuthenticationService extends AcbsAuthenticationService {
     return idToken;
   }
 }
+
+export const BaseAcbsAuthenticationServiceInjectionKey = Symbol(BaseAcbsAuthenticationService.name);

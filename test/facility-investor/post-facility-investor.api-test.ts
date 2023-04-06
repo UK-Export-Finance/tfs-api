@@ -80,6 +80,7 @@ describe('POST /facilities/{facilityIdentifier}/investors', () => {
   const { idToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
     givenRequestWouldOtherwiseSucceed: () => givenRequestToCreateFacilityPartyInAcbsSucceeds(),
     makeRequest: () => api.post(createFacilityInvestorUrl, requestBodyToCreateFacilityInvestor),
+    successStatusCode: 201,
   });
 
   withClientAuthenticationTests({

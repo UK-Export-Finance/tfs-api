@@ -6,7 +6,7 @@ import { PinoLogger } from 'nestjs-pino';
 
 import { AcbsAuthenticationService } from './acbs-authentication.service';
 import { ACBS_ID_TOKEN_CACHE_KEY } from './acbs-id-token.cache-key';
-import { BaseAcbsAuthenticationService } from './base-acbs-authentication.service';
+import { RetryingAcbsAuthenticationServiceInjectionKey } from './retrying-acbs-authentication.service';
 
 type RequiredConfigKeys = 'idTokenCacheTtlInMilliseconds';
 
@@ -15,7 +15,8 @@ export class CachingAcbsAuthenticationService extends AcbsAuthenticationService 
   constructor(
     @Inject(AcbsAuthenticationConfig.KEY)
     private readonly config: Pick<ConfigType<typeof AcbsAuthenticationConfig>, RequiredConfigKeys>,
-    private readonly baseAcbsAuthenticationService: BaseAcbsAuthenticationService,
+    @Inject(RetryingAcbsAuthenticationServiceInjectionKey)
+    private readonly acbsAuthenticationService: AcbsAuthenticationService,
     @Inject(CACHE_MANAGER)
     private readonly cacheManager: Cache,
     private readonly logger: PinoLogger,
@@ -57,7 +58,7 @@ export class CachingAcbsAuthenticationService extends AcbsAuthenticationService 
 
   private getNewIdToken(): Promise<string> {
     this.logger.debug('Requesting a new ACBS authentication id token.');
-    return this.baseAcbsAuthenticationService.getIdToken();
+    return this.acbsAuthenticationService.getIdToken();
   }
 
   private async tryStoreIdTokenInCache(idToken: string): Promise<void> {

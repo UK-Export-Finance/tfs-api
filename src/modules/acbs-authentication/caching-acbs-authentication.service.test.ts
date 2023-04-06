@@ -1,10 +1,10 @@
+import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { Cache } from 'cache-manager';
 import { when } from 'jest-when';
 import { PinoLogger } from 'nestjs-pino';
 
 import { ACBS_ID_TOKEN_CACHE_KEY } from './acbs-id-token.cache-key';
-import { BaseAcbsAuthenticationService } from './base-acbs-authentication.service';
 import { CachingAcbsAuthenticationService } from './caching-acbs-authentication.service';
 
 describe('CachingAcbsAuthenticationService', () => {
@@ -27,9 +27,9 @@ describe('CachingAcbsAuthenticationService', () => {
   let service: CachingAcbsAuthenticationService;
 
   beforeEach(() => {
-    acbsAuthenticationServiceGetIdToken = jest.fn();
-    const acbsAuthenticationService = new BaseAcbsAuthenticationService(null, null, null);
-    acbsAuthenticationService.getIdToken = acbsAuthenticationServiceGetIdToken;
+    const mockAcbsAuthenticationService = getMockAcbsAuthenticationService();
+    const acbsAuthenticationService = mockAcbsAuthenticationService.service;
+    acbsAuthenticationServiceGetIdToken = mockAcbsAuthenticationService.getIdToken;
     when(acbsAuthenticationServiceGetIdToken).calledWith().mockResolvedValueOnce(newIdToken);
 
     cacheManagerGet = jest.fn();
