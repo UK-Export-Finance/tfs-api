@@ -2,7 +2,7 @@ import { PROPERTIES } from '@ukef/constants';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
-import { withRequiredDateOnlyFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/required-date-only-field-validation-api-tests';
+import { withDateOnlyFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/date-only-field-validation-api-tests';
 import { withRequiredNonNegativeNumberFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/required-non-negative-number-field-validation-api-tests';
 import { withStringFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/string-field-validation-api-tests';
 import { Api } from '@ukef-test/support/api';
@@ -176,7 +176,7 @@ describe('POST /deals', () => {
     },
   });
 
-  withRequiredDateOnlyFieldValidationApiTests({
+  withDateOnlyFieldValidationApiTests({
     fieldName: 'guaranteeCommencementDate',
     validRequestBody: requestBodyToCreateDeal,
     makeRequest: (body) => api.post(createDealUrl, body),

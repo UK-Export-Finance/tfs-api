@@ -1,12 +1,20 @@
 import { HttpService } from '@nestjs/axios';
-import { DealInvestorGenerator } from '@ukef-test/support/generator/deal-investor-generator';
+import { PROPERTIES } from '@ukef/constants';
+import { UkefId } from '@ukef/helpers';
+import { CreateDealInvestorGenerator } from '@ukef-test/support/generator/create-deal-investor-generator';
+import { GetDealInvestorGenerator } from '@ukef-test/support/generator/get-deal-investor-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { AxiosError } from 'axios';
 import { when } from 'jest-when';
 import { of, throwError } from 'rxjs';
 
+import { CurrentDateProvider } from '../date/current-date.provider';
+import { DateStringTransformations } from '../date/date-string.transformations';
 import { AcbsDealPartyService } from './acbs-deal-party.service';
 import { AcbsException } from './exception/acbs.exception';
+import { AcbsBadRequestException } from './exception/acbs-bad-request.exception';
+import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
+import { AcbsUnexpectedException } from './exception/acbs-unexpected.exception';
 
 describe('AcbsDealPartyService', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -17,12 +25,15 @@ describe('AcbsDealPartyService', () => {
   let service: AcbsDealPartyService;
 
   let httpServiceGet: jest.Mock;
+  let httpServicePost: jest.Mock;
 
   beforeEach(() => {
     httpService = new HttpService();
 
     httpServiceGet = jest.fn();
     httpService.get = httpServiceGet;
+    httpServicePost = jest.fn();
+    httpService.post = httpServicePost;
 
     service = new AcbsDealPartyService({ baseUrl }, httpService);
   });
@@ -91,7 +102,7 @@ describe('AcbsDealPartyService', () => {
     });
 
     it('returns the deal investors for the deal if ACBS responds with same data', async () => {
-      const { dealInvestorsInAcbs } = new DealInvestorGenerator(valueGenerator).generate({ portfolioIdentifier, dealIdentifier, numberToGenerate: 2 });
+      const { dealInvestorsInAcbs } = new GetDealInvestorGenerator(valueGenerator).generate({ portfolioIdentifier, dealIdentifier, numberToGenerate: 2 });
 
       when(httpServiceGet)
         .calledWith(acbsDealPartyURL, {
@@ -111,6 +122,146 @@ describe('AcbsDealPartyService', () => {
       const dealInvestors = await service.getDealPartiesForDeal(portfolioIdentifier, dealIdentifier, authToken);
 
       expect(dealInvestors).toStrictEqual(dealInvestorsInAcbs);
+    });
+  });
+
+  describe('createInvestorForDeal', () => {
+    const currentDateProvider = new CurrentDateProvider();
+    const dateStringTransformations = new DateStringTransformations();
+
+    const dealIdentifier: UkefId = valueGenerator.ukefId();
+    const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+
+    const { acbsRequestBodyToCreateDealInvestor } = new CreateDealInvestorGenerator(valueGenerator, currentDateProvider, dateStringTransformations).generate({
+      numberToGenerate: 1,
+      dealIdentifier: dealIdentifier,
+    });
+
+    it('sends a POST to ACBS with the specified parameters', async () => {
+      when(httpServicePost)
+        .calledWith(`/Portfolio/${portfolioIdentifier}/Deal/${dealIdentifier}/DealParty`, acbsRequestBodyToCreateDealInvestor, {
+          baseURL: baseUrl,
+          headers: { Authorization: `Bearer ${authToken}`, 'Content-Type': 'application/json' },
+        })
+        .mockReturnValueOnce(
+          of({
+            data: '',
+            status: 201,
+            statusText: 'Created',
+            config: undefined,
+            headers: undefined,
+          }),
+        );
+
+      await service.createInvestorForDeal(dealIdentifier, acbsRequestBodyToCreateDealInvestor, authToken);
+
+      expect(httpServicePost).toHaveBeenCalledTimes(1);
+      expect(httpServicePost).toHaveBeenCalledWith(`/Portfolio/${portfolioIdentifier}/Deal/${dealIdentifier}/DealParty`, acbsRequestBodyToCreateDealInvestor, {
+        baseURL: baseUrl,
+        headers: { Authorization: `Bearer ${authToken}`, 'Content-Type': 'application/json' },
+      });
+    });
+
+    it('throws an AcbsResourceNotFoundException if ACBS responds with a 400 that is a string containing "The deal not found"', async () => {
+      const axiosError = new AxiosError();
+      const errorString = 'The deal not found or the user does not have access to it.';
+      axiosError.response = {
+        data: errorString,
+        status: 400,
+        statusText: 'Bad Request',
+        headers: undefined,
+        config: undefined,
+      };
+
+      when(httpServicePost)
+        .calledWith(`/Portfolio/${portfolioIdentifier}/Deal/${dealIdentifier}/DealParty`, acbsRequestBodyToCreateDealInvestor, {
+          baseURL: baseUrl,
+          headers: { Authorization: `Bearer ${authToken}`, 'Content-Type': 'application/json' },
+        })
+        .mockReturnValueOnce(throwError(() => axiosError));
+
+      const createInvestorForDealPromise = service.createInvestorForDeal(dealIdentifier, acbsRequestBodyToCreateDealInvestor, authToken);
+
+      await expect(createInvestorForDealPromise).rejects.toBeInstanceOf(AcbsResourceNotFoundException);
+      await expect(createInvestorForDealPromise).rejects.toThrow(`Deal with identifier ${dealIdentifier} was not found by ACBS.`);
+      await expect(createInvestorForDealPromise).rejects.toHaveProperty('innerError', axiosError);
+    });
+
+    it('throws an AcbsBadRequestException if ACBS responds with a 400 that is a string that does not contain "The deal not found"', async () => {
+      const axiosError = new AxiosError();
+      const errorString = valueGenerator.string();
+      axiosError.response = {
+        data: errorString,
+        status: 400,
+        statusText: 'Bad Request',
+        headers: undefined,
+        config: undefined,
+      };
+
+      when(httpServicePost)
+        .calledWith(`/Portfolio/${portfolioIdentifier}/Deal/${dealIdentifier}/DealParty`, acbsRequestBodyToCreateDealInvestor, {
+          baseURL: baseUrl,
+          headers: { Authorization: `Bearer ${authToken}`, 'Content-Type': 'application/json' },
+        })
+        .mockReturnValueOnce(throwError(() => axiosError));
+
+      const createInvestorForDealPromise = service.createInvestorForDeal(dealIdentifier, acbsRequestBodyToCreateDealInvestor, authToken);
+
+      await expect(createInvestorForDealPromise).rejects.toBeInstanceOf(AcbsBadRequestException);
+      await expect(createInvestorForDealPromise).rejects.toThrow(`Failed to create an investor for deal ${dealIdentifier} in ACBS.`);
+      await expect(createInvestorForDealPromise).rejects.toHaveProperty('innerError', axiosError);
+      await expect(createInvestorForDealPromise).rejects.toHaveProperty('errorBody', errorString);
+    });
+
+    it('throws an AcbsBadRequestException if ACBS responds with a 400 that is not a string', async () => {
+      const axiosError = new AxiosError();
+      const errorBody = { errorMessage: valueGenerator.string() };
+      axiosError.response = {
+        data: errorBody,
+        status: 400,
+        statusText: 'Bad Request',
+        headers: undefined,
+        config: undefined,
+      };
+
+      when(httpServicePost)
+        .calledWith(`/Portfolio/${portfolioIdentifier}/Deal/${dealIdentifier}/DealParty`, acbsRequestBodyToCreateDealInvestor, {
+          baseURL: baseUrl,
+          headers: { Authorization: `Bearer ${authToken}`, 'Content-Type': 'application/json' },
+        })
+        .mockReturnValueOnce(throwError(() => axiosError));
+
+      const createInvestorForDealPromise = service.createInvestorForDeal(dealIdentifier, acbsRequestBodyToCreateDealInvestor, authToken);
+
+      await expect(createInvestorForDealPromise).rejects.toBeInstanceOf(AcbsBadRequestException);
+      await expect(createInvestorForDealPromise).rejects.toThrow(`Failed to create an investor for deal ${dealIdentifier} in ACBS.`);
+      await expect(createInvestorForDealPromise).rejects.toHaveProperty('innerError', axiosError);
+      await expect(createInvestorForDealPromise).rejects.toHaveProperty('errorBody', JSON.stringify(errorBody));
+    });
+
+    it('throws an AcbsUnexpectedException if ACBS responds with an error code that is not 400', async () => {
+      const axiosError = new AxiosError();
+      const errorBody = { errorMessage: valueGenerator.string() };
+      axiosError.response = {
+        data: errorBody,
+        status: 401,
+        statusText: 'Unauthorized',
+        headers: undefined,
+        config: undefined,
+      };
+
+      when(httpServicePost)
+        .calledWith(`/Portfolio/${portfolioIdentifier}/Deal/${dealIdentifier}/DealParty`, acbsRequestBodyToCreateDealInvestor, {
+          baseURL: baseUrl,
+          headers: { Authorization: `Bearer ${authToken}`, 'Content-Type': 'application/json' },
+        })
+        .mockReturnValueOnce(throwError(() => axiosError));
+
+      const createInvestorForDealPromise = service.createInvestorForDeal(dealIdentifier, acbsRequestBodyToCreateDealInvestor, authToken);
+
+      await expect(createInvestorForDealPromise).rejects.toBeInstanceOf(AcbsUnexpectedException);
+      await expect(createInvestorForDealPromise).rejects.toThrow(`Failed to create an investor for deal ${dealIdentifier} in ACBS.`);
+      await expect(createInvestorForDealPromise).rejects.toHaveProperty('innerError', axiosError);
     });
   });
 });

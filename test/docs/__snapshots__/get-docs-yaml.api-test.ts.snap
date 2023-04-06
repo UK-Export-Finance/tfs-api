@@ -87,9 +87,37 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/DealInvestorResponseDto'
+                  $ref: '#/components/schemas/GetDealInvestorResponseDto'
         '404':
           description: The specified deal, or the investors for that deal, were not found.
+        '500':
+          description: An internal server error has occurred.
+    post:
+      operationId: DealInvestorController_createInvestorForDeal
+      summary: Create a new investor for a deal.
+      parameters:
+        - name: dealIdentifier
+          required: true
+          in: path
+          description: The identifier of the deal in ACBS.
+          example: '0020900111'
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/CreateDealInvestorRequestItem'
+      responses:
+        '201':
+          description: The investor has been successfully created.
+        '400':
+          description: Bad request.
+        '404':
+          description: The deal was not found.
         '500':
           description: An internal server error has occurred.
   /api/v1/facilities/{facilityIdentifier}/investors:
@@ -251,17 +279,17 @@ components:
         dealIdentifier:
           type: string
           description: The identifier of the deal to create.
-          example: '0020900035'
           minLength: 10
           maxLength: 10
+          example: '0020900035'
         currency:
           type: string
           description: >-
             The currency code of the primary currency of the deal, from the
             Currency Definition Table.
-          example: GBP
           minLength: 3
           maxLength: 3
+          example: GBP
         dealValue:
           type: number
           description: The value of the deal.
@@ -277,9 +305,9 @@ components:
         obligorPartyIdentifier:
           type: string
           description: The obligor party identifier.
-          example: '00000001'
           minLength: 8
           maxLength: 8
+          example: '00000001'
         obligorName:
           type: string
           description: The obligor party name, which is party name1 attribute.
@@ -288,9 +316,9 @@ components:
         obligorIndustryClassification:
           type: string
           description: The obligor party industry classification.
-          example: '1405'
           minLength: 0
           maxLength: 10
+          example: '1405'
       required:
         - dealIdentifier
         - currency
@@ -313,9 +341,9 @@ components:
         dealIdentifier:
           type: string
           description: The identifier of the deal to create the guarantee for.
-          example: '00000001'
           minLength: 8
           maxLength: 8
+          example: '00000001'
         effectiveDate:
           format: date
           type: string
@@ -325,9 +353,9 @@ components:
         limitKey:
           type: string
           description: An ACBS party identifier.
-          example: '00000002'
           minLength: 8
           maxLength: 8
+          example: '00000002'
         guaranteeExpiryDate:
           format: date
           type: string
@@ -365,7 +393,7 @@ components:
           example: '00000001'
       required:
         - dealIdentifier
-    DealInvestorDtoLenderType:
+    GetDealInvestorDtoLenderType:
       type: object
       properties:
         LenderTypeCode:
@@ -374,7 +402,7 @@ components:
           example: '500'
       required:
         - LenderTypeCode
-    DealInvestorResponseDto:
+    GetDealInvestorResponseDto:
       type: object
       properties:
         dealIdentifier:
@@ -388,7 +416,7 @@ components:
         lenderType:
           readOnly: true
           allOf:
-            - $ref: '#/components/schemas/DealInvestorDtoLenderType'
+            - $ref: '#/components/schemas/GetDealInvestorDtoLenderType'
         effectiveDate:
           format: date-time
           type: string
@@ -413,15 +441,69 @@ components:
         - expiryDate
         - isExpiryDateMaximum
         - maximumLiability
+    CreateDealInvestorRequestItem:
+      type: object
+      properties:
+        dealIdentifier:
+          type: string
+          description: >-
+            'The identifier of the deal to create the investor for. It will be a
+            10-digit code beginning with either '0020', '0030', or '0040'.
+          minLength: 10
+          maxLength: 10
+          pattern: /00\\d{8}/
+          example: '0020900111'
+        lenderType:
+          type: string
+          description: The lender type code for the investor party of the deal.
+          minLength: 0
+          maxLength: 3
+          example: '500'
+          default: '500'
+        effectiveDate:
+          format: date
+          type: string
+          description: >-
+            The effective date on the deal investor record. If the date provided
+            is in the future, it will be replaced by today's date.
+          example: '2023-03-24'
+        expiryDate:
+          format: date
+          type: string
+          description: >-
+            The expiry date on the deal investor record. If the value is not
+            provided or is null then the maximum expiry date will be set.
+          example: '2023-03-24'
+          default: null
+        dealStatus:
+          type: string
+          description: >-
+            A code for the status of the deal on which the sub-limit is created,
+            e.g., 'A' for 'ACTIVE/PENDING', 'B' for 'ACTIVE' etc.
+          minLength: 0
+          maxLength: 1
+          example: A
+          default: A
+        currency:
+          type: string
+          description: The deal currency code.
+          minLength: 3
+          maxLength: 3
+          example: USD
+      required:
+        - dealIdentifier
+        - effectiveDate
+        - expiryDate
+        - currency
     CreateFacilityInvestorRequestItem:
       type: object
       properties:
         facilityIdentifier:
           type: string
           description: The identifier of the facility to create the investor for.
-          example: '0000000001'
           minLength: 10
           maxLength: 10
+          example: '0000000001'
         effectiveDate:
           format: date
           type: string
@@ -435,9 +517,9 @@ components:
           description: >-
             The code of the currency for this investor, Currency in the Currency
             Definition Table.
-          example: USD
           minLength: 3
           maxLength: 3
+          example: USD
         maximumLiability:
           type: number
           description: The investor's share of the current limit amount.

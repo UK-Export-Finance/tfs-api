@@ -70,8 +70,8 @@ export class RandomValueGenerator {
   }
 
   // UKEF id example 0030000321. It should be used for Deal and Facility IDs.
-  ukefId(): UkefId {
-    return (UKEFID.MAIN_ID_PREFIX.DEV + this.stringOfNumericCharacters({ length: 6 })) as UkefId;
+  ukefId(lengthExcludingPrefix?: number): UkefId {
+    return (UKEFID.MAIN_ID_PREFIX.DEV + this.stringOfNumericCharacters({ length: lengthExcludingPrefix ?? 6 })) as UkefId;
   }
 
   dateTimeString(): DateString {

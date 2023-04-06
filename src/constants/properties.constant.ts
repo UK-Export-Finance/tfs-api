@@ -134,4 +134,23 @@ export const PROPERTIES = {
       limitRevolvingIndicator: true,
     },
   },
+  DEAL_INVESTOR: {
+    DEFAULT: {
+      sectionIdentifier: '00',
+      lenderType: {
+        lenderTypeCode: '500',
+      },
+      involvedParty: {
+        partyIdentifier: '00000000',
+      },
+      dealStatus: {
+        dealStatusCode: 'A',
+      },
+      customerAdvisedIndicator: true,
+      userDefinedCode1: 'N',
+      limitRevolvingIndicator: true,
+      expirationDate: null,
+      contractPercentage: 100,
+    },
+  },
 };
