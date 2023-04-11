@@ -8,6 +8,7 @@ import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acb
 import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 
+import { Deal } from './deal.interface';
 import { DealToCreate } from './deal-to-create.interface';
 
 @Injectable()
@@ -19,13 +20,33 @@ export class DealService {
     private readonly currentDateProvider: CurrentDateProvider,
   ) {}
 
+  async getDealByIdentifier(dealIdentifier: string): Promise<Deal> {
+    const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+    const idToken = await this.getIdToken();
+    const dealInAcbs = await this.acbsDealService.getDealByIdentifier(portfolioIdentifier, dealIdentifier, idToken);
+
+    return {
+      dealIdentifier: dealInAcbs.DealIdentifier,
+      portfolioIdentifier: dealInAcbs.PortfolioIdentifier,
+      currency: dealInAcbs.Currency.CurrencyCode,
+      dealValue: dealInAcbs.MemoLimitAmount,
+      guaranteeCommencementDate: this.dateStringTransformations.removeTimeIfExists(dealInAcbs.OriginalEffectiveDate),
+      obligorPartyIdentifier: dealInAcbs.BorrowerParty.PartyIdentifier,
+      obligorName: dealInAcbs.BorrowerParty.PartyName1 ?? '',
+      obligorIndustryClassification: dealInAcbs.IndustryClassification.IndustryClassificationCode ?? '',
+    };
+  }
+
   async createDeal(dealToCreate: DealToCreate): Promise<void> {
     const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
-
-    const idToken = await this.acbsAuthenticationService.getIdToken();
+    const idToken = await this.getIdToken();
 
     const requestBody: AcbsCreateDealDto = this.buildAcbsRequestBodyToCreateDeal(dealToCreate, portfolioIdentifier);
     await this.acbsDealService.createDeal(portfolioIdentifier, requestBody, idToken);
+  }
+
+  private getIdToken(): Promise<string> {
+    return this.acbsAuthenticationService.getIdToken();
   }
 
   private buildAcbsRequestBodyToCreateDeal(dealToCreate: DealToCreate, portfolioIdentifier: string): AcbsCreateDealDto {
