@@ -119,7 +119,6 @@ describe('GET /deals/{dealIdentifier}', () => {
   });
 
   it(`returns a 200 response with null as the guaranteeCommencementDate if it is null in ACBS`, async () => {
-    // TODO APIM-80: is this date ever null in ACBS?
     givenAuthenticationWithTheIdpSucceeds();
     const dealInAcbsWithNullCommencementDate: AcbsGetDealResponseDto = {
       ...dealInAcbs,
