@@ -62,8 +62,6 @@ export class CachingAcbsAuthenticationService extends AcbsAuthenticationService 
   }
 
   private async tryStoreIdTokenInCache(idToken: string): Promise<void> {
-    // TODO APIM-97: a ttl of 0 caches the value permanently - should we disable this?
-    // TODO APIM-97: should we allow caching to be turned off?
     try {
       await this.cacheManager.set(ACBS_ID_TOKEN_CACHE_KEY, idToken, this.config.idTokenCacheTtlInMilliseconds);
     } catch (error) {
