@@ -10,6 +10,29 @@ paths:
       responses:
         '200':
           description: ''
+  /api/v1/deals/{dealIdentifier}:
+    get:
+      operationId: DealController_getDealByIdentifier
+      summary: Get the deal matching the specified deal identifier.
+      parameters:
+        - name: dealIdentifier
+          required: true
+          in: path
+          description: The identifier of the deal in ACBS.
+          example: '0030000321'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The deal has been successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetDealByIdentifierResponse'
+        '404':
+          description: The specified deal was not found.
+        '500':
+          description: An internal server error has occurred.
   /api/v1/deals:
     post:
       operationId: DealController_createDeal
@@ -273,6 +296,47 @@ components:
       in: header
       name: x-api-key
   schemas:
+    GetDealByIdentifierResponse:
+      type: object
+      properties:
+        dealIdentifier:
+          type: string
+          readOnly: true
+          example: '0030000321'
+        portfolioIdentifier:
+          type: string
+          readOnly: true
+          example: E1
+        currency:
+          type: string
+          readOnly: true
+          example: USD
+        dealValue:
+          type: number
+          readOnly: true
+        guaranteeCommencementDate:
+          format: date
+          type: string
+          readOnly: true
+        obligorPartyIdentifier:
+          type: string
+          readOnly: true
+          example: '00000001'
+        obligorName:
+          type: string
+          readOnly: true
+        obligorIndustryClassification:
+          type: string
+          readOnly: true
+      required:
+        - dealIdentifier
+        - portfolioIdentifier
+        - currency
+        - dealValue
+        - guaranteeCommencementDate
+        - obligorPartyIdentifier
+        - obligorName
+        - obligorIndustryClassification
     CreateDealRequestItem:
       type: object
       properties:

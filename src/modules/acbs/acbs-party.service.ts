@@ -5,7 +5,8 @@ import AcbsConfig from '@ukef/config/acbs.config';
 
 import { AcbsHttpService } from './acbs-http.service';
 import { AcbsGetPartyResponseDto } from './dto/acbs-get-party-response.dto';
-import { createWrapAcbsHttpErrorCallback } from './wrap-acbs-http-error-callback';
+import { getPartyNotFoundKnownAcbsError } from './known-errors';
+import { createWrapAcbsHttpGetErrorCallback } from './wrap-acbs-http-error-callback';
 
 @Injectable()
 export class AcbsPartyService {
@@ -23,9 +24,9 @@ export class AcbsPartyService {
     const { data: party } = await this.acbsHttpService.get<AcbsGetPartyResponseDto>({
       path: `/Party/${partyIdentifier}`,
       idToken,
-      onError: createWrapAcbsHttpErrorCallback({
-        resourceIdentifier: partyIdentifier,
-        messageForUnknownException: `Failed to get the party with identifier ${partyIdentifier}.`,
+      onError: createWrapAcbsHttpGetErrorCallback({
+        messageForUnknownError: `Failed to get the party with identifier ${partyIdentifier}.`,
+        knownErrors: [getPartyNotFoundKnownAcbsError(partyIdentifier)],
       }),
     });
     return party;

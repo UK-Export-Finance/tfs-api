@@ -1,3 +1,5 @@
 export const EXAMPLES = {
   DEAL_ID: '0030000321',
+  PARTY_ID: '00000001',
+  CURRENCY: 'USD',
 };

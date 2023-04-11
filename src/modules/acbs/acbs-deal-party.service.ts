@@ -8,7 +8,7 @@ import { AcbsHttpService } from './acbs-http.service';
 import { AcbsCreateDealInvestorRequest } from './dto/acbs-create-deal-investor-request.dto';
 import { AcbsGetDealPartyResponseDto } from './dto/acbs-get-deal-party-response.dto';
 import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
-import { createWrapAcbsHttpErrorCallback, createWrapAcbsHttpPostErrorCallback } from './wrap-acbs-http-error-callback';
+import { createWrapAcbsHttpGetErrorCallback, createWrapAcbsHttpPostErrorCallback } from './wrap-acbs-http-error-callback';
 
 @Injectable()
 export class AcbsDealPartyService {
@@ -26,11 +26,15 @@ export class AcbsDealPartyService {
     const { data: dealPartiesInAcbs } = await this.acbsHttpService.get<AcbsGetDealPartyResponseDto[]>({
       path: `/Portfolio/${portfolio}/Deal/${dealIdentifier}/DealParty`,
       idToken,
-      onError: createWrapAcbsHttpErrorCallback({
-        resourceIdentifier: dealIdentifier,
-        messageForUnknownException: `Failed to get the deal investors for the deal with id ${dealIdentifier}.`,
+      onError: createWrapAcbsHttpGetErrorCallback({
+        messageForUnknownError: `Failed to get the deal investors for the deal with id ${dealIdentifier}.`,
+        knownErrors: [],
       }),
     });
+
+    if (dealPartiesInAcbs === null) {
+      throw new AcbsResourceNotFoundException(`Deal Investors for Deal ${dealIdentifier} were not found by ACBS.`);
+    }
 
     return dealPartiesInAcbs;
   }
