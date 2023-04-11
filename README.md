@@ -58,6 +58,15 @@ this.logger.log({ id: 'your message here' }, 'context-name');
 The Trade Finance Services API requires an API Key in order to access its resources.
 This can be achieved by providing a randomised API Key as an environment variable (`API_KEY`) and a strategy (`API_KEY_STRATEGY`) which defines the name of the header passed to the API.
 
+### Caching
+Currently, only the ID token that is used for authenticating our requests to ACBS is cached.
+The lifetime of this cache is controlled by the `ACBS_AUTHENTICATION_ID_TOKEN_CACHE_TTL_IN_MILLISECONDS` environment variable.
+This token has a lifetime of 30 minutes, so it is safe to set this variable to any value between 1 and 180000000.
+
+Do NOT set the variable to 0, as this will cache the ID token permanently.
+
+We do not have a setting to disable this cache, but setting the TTL to 1ms will _essentially_ disable it.
+
 ### Writing Conventional Commits
 
 The most important prefixes you should have in mind are:
