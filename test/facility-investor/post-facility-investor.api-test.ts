@@ -16,7 +16,7 @@ describe('POST /facilities/{facilityIdentifier}/investors', () => {
   const valueGenerator = new RandomValueGenerator();
   const dateStringTransformations = new DateStringTransformations();
   const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
-  const facilityIdentifier = valueGenerator.stringOfNumericCharacters({ length: 10 });
+  const facilityIdentifier = valueGenerator.ukefId();
   const createFacilityInvestorUrl = `/api/v1/facilities/${facilityIdentifier}/investors`;
 
   const sectionIdentifier = PROPERTIES.FACILITY_INVESTOR.DEFAULT.sectionIdentifier;
@@ -215,7 +215,7 @@ describe('POST /facilities/{facilityIdentifier}/investors', () => {
     fieldName: 'facilityIdentifier',
     length: 10,
     required: true,
-    generateFieldValueOfLength: (length: number) => valueGenerator.stringOfNumericCharacters({ length }),
+    generateFieldValueOfLength: (length: number) => valueGenerator.ukefId(length - 4),
     validRequestBody: requestBodyToCreateFacilityInvestor,
     makeRequest: (body) => api.post(createFacilityInvestorUrl, body),
     givenAnyRequestBodyWouldSucceed: () => {
