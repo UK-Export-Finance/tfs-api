@@ -1,8 +1,8 @@
 import { HttpService } from '@nestjs/axios';
 import { Inject, Injectable } from '@nestjs/common';
-import { ConfigType } from '@nestjs/config';
 import AcbsConfig from '@ukef/config/acbs.config';
 
+import { AcbsConfigBaseUrl } from './acbs-config-base-url.type';
 import { AcbsHttpService } from './acbs-http.service';
 import { AcbsGetPartyResponseDto } from './dto/acbs-get-party-response.dto';
 import { getPartyNotFoundKnownAcbsError } from './known-errors';
@@ -14,7 +14,7 @@ export class AcbsPartyService {
 
   constructor(
     @Inject(AcbsConfig.KEY)
-    config: Pick<ConfigType<typeof AcbsConfig>, 'baseUrl'>,
+    config: AcbsConfigBaseUrl,
     httpService: HttpService,
   ) {
     this.acbsHttpService = new AcbsHttpService(config, httpService);
