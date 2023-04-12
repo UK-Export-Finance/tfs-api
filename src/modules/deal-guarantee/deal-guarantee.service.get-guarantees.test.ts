@@ -1,7 +1,7 @@
 import { PROPERTIES } from '@ukef/constants';
 import { AcbsDealGuaranteeService } from '@ukef/modules/acbs/acbs-deal-guarantee.service';
-import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
+import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
 import { GetDealGuaranteeGenerator } from '@ukef-test/support/generator/get-deal-guarantee-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
@@ -17,7 +17,6 @@ describe('DealGuaranteeService', () => {
   const idToken = valueGenerator.string();
   const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
 
-  let acbsAuthenticationService: AcbsAuthenticationService;
   let acbsDealGuaranteeService: AcbsDealGuaranteeService;
   let currentDateProvider: CurrentDateProvider;
   let service: DealGuaranteeService;
@@ -30,17 +29,16 @@ describe('DealGuaranteeService', () => {
     acbsDealGuaranteeServiceGetGuaranteesForDeal = jest.fn();
     acbsDealGuaranteeService.getGuaranteesForDeal = acbsDealGuaranteeServiceGetGuaranteesForDeal;
 
-    acbsAuthenticationService = new AcbsAuthenticationService(null, null, null);
-    const acbsAuthenticationServiceGetIdToken = jest.fn();
-    acbsAuthenticationService.getIdToken = acbsAuthenticationServiceGetIdToken;
+    const mockAcbsAuthenticationService = getMockAcbsAuthenticationService();
+    const acbsAuthenticationService = mockAcbsAuthenticationService.service;
+    const acbsAuthenticationServiceGetIdToken = mockAcbsAuthenticationService.getIdToken;
+    when(acbsAuthenticationServiceGetIdToken).calledWith().mockResolvedValueOnce(idToken);
 
     currentDateProvider = new CurrentDateProvider();
 
     const dateStringTransformations = new DateStringTransformations();
 
     service = new DealGuaranteeService(acbsAuthenticationService, acbsDealGuaranteeService, currentDateProvider, dateStringTransformations);
-
-    when(acbsAuthenticationServiceGetIdToken).calledWith().mockResolvedValueOnce(idToken);
   });
 
   describe('getGuaranteesForDeal', () => {
