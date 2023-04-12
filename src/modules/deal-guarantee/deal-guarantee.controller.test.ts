@@ -78,7 +78,7 @@ describe('DealGuaranteeController', () => {
     });
     const expectedDealGuarantees = dealGuaranteesFromService;
 
-    it('returns the deal investors from the service', async () => {
+    it('returns the deal guarantees from the service', async () => {
       when(dealGuaranteeServiceGetGuaranteesForDeal).calledWith(dealIdentifier).mockResolvedValueOnce(dealGuaranteesFromService);
 
       const dealGuarantees = await controller.getGuaranteesForDeal({ dealIdentifier: dealIdentifier });
