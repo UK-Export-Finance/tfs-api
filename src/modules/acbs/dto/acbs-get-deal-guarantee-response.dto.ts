@@ -1,25 +1,18 @@
-import { AcbsPartyId, DateString } from '@ukef/helpers';
+import { AcbsPartyId, DateOnlyString } from '@ukef/helpers';
 
 /**
  * This is not full ACBS response
  */
 export interface AcbsGetDealGuaranteeResponseDto {
-  LenderType: {
-    LenderTypeCode: string;
-  };
-  SectionIdentifier: string;
-  LimitType: {
-    LimitTypeCode: string;
-  };
-  LimitKey: string;
+  LimitKey: AcbsPartyId;
   GuarantorParty: {
     PartyIdentifier: AcbsPartyId;
   };
   GuaranteeType: {
-    GuaranteeTypeCode: AcbsPartyId;
+    GuaranteeTypeCode: string;
   };
-  EffectiveDate: DateString;
-  ExpirationDate: DateString;
+  EffectiveDate: DateOnlyString;
+  ExpirationDate: DateOnlyString;
   GuaranteedLimit: number;
-  GuaranteedPercentage: number;
+  // GuaranteedPercentage: number;
 }

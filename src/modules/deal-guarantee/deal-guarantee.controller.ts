@@ -95,7 +95,7 @@ export class DealGuaranteeController {
   @ApiInternalServerErrorResponse({
     description: 'An internal server error has occurred.',
   })
-  async getGuaranteeForDeal(@Param() params: GetDealsGuaranteesParamsDto): Promise<GetDealGuaranteeResponse> {
+  async getGuaranteesForDeal(@Param() params: GetDealsGuaranteesParamsDto): Promise<GetDealGuaranteeResponse> {
     return await this.dealGuaranteeService.getGuaranteesForDeal(params.dealIdentifier);
   }
 }

@@ -1,8 +1,8 @@
 import { PROPERTIES } from '@ukef/constants';
-import { AcbsAuthenticationService } from '@ukef/modules/acbs/acbs-authentication.service';
 import { AcbsDealGuaranteeService } from '@ukef/modules/acbs/acbs-deal-guarantee.service';
+import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
-import { DealGuaranteeGenerator } from '@ukef-test/support/generator/deal-guarantee-generator';
+import { GetDealGuaranteeGenerator } from '@ukef-test/support/generator/get-deal-guarantee-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
 
@@ -10,7 +10,7 @@ import { CurrentDateProvider } from '../date/current-date.provider';
 import { DealGuaranteeService } from './deal-guarantee.service';
 
 jest.mock('@ukef/modules/acbs/acbs-deal-party.service');
-jest.mock('@ukef/modules/acbs/acbs-authentication.service');
+jest.mock('@ukef/modules/acbs-authentication/acbs-authentication.service');
 
 describe('DealGuaranteeService', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -46,7 +46,7 @@ describe('DealGuaranteeService', () => {
   describe('getGuaranteesForDeal', () => {
     const dealIdentifier = valueGenerator.ukefId();
 
-    const { dealGuaranteesInAcbs, dealGuaranteesFromService } = new DealGuaranteeGenerator(valueGenerator).generate({
+    const { dealGuaranteesInAcbs, dealGuaranteesFromService } = new GetDealGuaranteeGenerator(valueGenerator).generate({
       numberToGenerate: 2,
       dealIdentifier,
       portfolioIdentifier,

@@ -4,6 +4,7 @@ import { UkefId } from '@ukef/helpers';
 import { roundTo2DecimalPlaces } from '@ukef/helpers/round-to-2-decimal-places.helper';
 import { AcbsDealGuaranteeService } from '@ukef/modules/acbs/acbs-deal-guarantee.service';
 import { AcbsCreateDealGuaranteeDto } from '@ukef/modules/acbs/dto/acbs-create-deal-guarantee.dto';
+import { AcbsNoContentException } from '@ukef/modules/acbs/exception/acbs-no-content.exception';
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
@@ -55,13 +56,21 @@ export class DealGuaranteeService {
 
   async getGuaranteesForDeal(dealIdentifier: UkefId): Promise<GetDealGuaranteeResponse> {
     const idToken = await this.acbsAuthenticationService.getIdToken();
-    const guaranteesInAcbs = await this.acbsDealGuaranteeService.getGuaranteesForDeal(dealIdentifier, idToken);
-    if (!guaranteesInAcbs || guaranteesInAcbs.length === 0) {
-      throw new AcbsResourceNotFoundException(`Deal Guarantees for Deal ${dealIdentifier} were not found by ACBS.`);
+    const portfolio = PROPERTIES.GLOBAL.portfolioIdentifier;
+    const guaranteesInAcbs = await this.acbsDealGuaranteeService.getGuaranteesForDeal(portfolio, dealIdentifier, idToken);
+
+    if (!guaranteesInAcbs) {
+      throw new AcbsResourceNotFoundException(`Deal ${dealIdentifier} were not found by ACBS while fetching Deal Guarantees.`);
+    }
+    if (guaranteesInAcbs.length === 0) {
+      // TODO: Add message for logging precise issue "No Guarantees found for Deal ${dealIdentifier}".
+      throw new AcbsNoContentException();
     }
     return guaranteesInAcbs.map(
       (guaranteeInAcbs) =>
         <GetDealGuaranteeResponseItem>{
+          portfolioIdentifier: portfolio,
+          dealIdentifier: dealIdentifier,
           effectiveDate: this.dateStringTransformations.removeTimeIfExists(guaranteeInAcbs.EffectiveDate),
           guarantorParty: guaranteeInAcbs.GuarantorParty.PartyIdentifier,
           limitKey: guaranteeInAcbs.LimitKey,

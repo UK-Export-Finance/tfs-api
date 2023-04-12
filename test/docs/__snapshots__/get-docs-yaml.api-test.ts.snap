@@ -43,7 +43,7 @@ paths:
           required: true
           in: path
           description: The identifier of the deal in ACBS.
-          example: '00000001'
+          example: '0030000321'
           schema:
             type: string
       requestBody:
@@ -65,6 +65,32 @@ paths:
           description: Bad request.
         '404':
           description: The deal was not found.
+        '500':
+          description: An internal server error has occurred.
+    get:
+      operationId: DealGuaranteeController_getGuaranteesForDeal
+      summary: Get all guarantees for a specific deal.
+      parameters:
+        - name: dealIdentifier
+          required: true
+          in: path
+          description: The identifier of the deal in ACBS.
+          example: '0030000321'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The deal guarantees have been successfully retrieved.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GetDealGuaranteeResponseItem'
+        '400':
+          description: Bad request.
+        '404':
+          description: The deal guarantees were not found.
         '500':
           description: An internal server error has occurred.
   /api/v1/deals/{dealIdentifier}/investors:
@@ -365,6 +391,45 @@ components:
           example: '00000001'
       required:
         - dealIdentifier
+    GetDealGuaranteeResponseItem:
+      type: object
+      properties:
+        effectiveDate:
+          format: date
+          type: string
+          description: >-
+            The date that this guarantee will take effect. This will be replaced
+            by today's date if a date in the past is provided.
+        limitKey:
+          type: string
+          description: An ACBS party identifier.
+          minLength: 8
+          maxLength: 8
+          example: '00000002'
+        guaranteeExpiryDate:
+          format: date
+          type: string
+          description: The date that this guarantee will expire on.
+        maximumLiability:
+          type: number
+          description: The maximum amount the guarantor will guarantee.
+          minimum: 0
+        guarantorParty:
+          type: string
+          description: UK GOODS (00000141)
+          minLength: 1
+          maxLength: 10
+          default: '00000141'
+        guaranteeTypeCode:
+          type: string
+          description: GOODS (450)
+          default: '450'
+          minLength: 1
+      required:
+        - effectiveDate
+        - limitKey
+        - guaranteeExpiryDate
+        - maximumLiability
     DealInvestorDtoLenderType:
       type: object
       properties:

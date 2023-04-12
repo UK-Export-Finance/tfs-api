@@ -2,23 +2,11 @@ import { ApiProperty } from '@nestjs/swagger';
 import { PROPERTIES } from '@ukef/constants';
 import { AcbsPartyId } from '@ukef/helpers';
 import { DateOnlyString } from '@ukef/helpers/date-only-string.type';
-import { IsISO8601, IsNotEmpty, IsOptional, Length, Matches, Min, MinLength } from 'class-validator';
+import { IsISO8601, IsNotEmpty, IsOptional, Length, Matches, MaxLength, Min, MinLength } from 'class-validator';
 
 export type GetDealGuaranteeResponse = GetDealGuaranteeResponseItem[];
 
 export class GetDealGuaranteeResponseItem {
-  // @ApiProperty({
-  //   description: 'The identifier of the deal to create the guarantee for.',
-  //   example: '00000001',
-  //   minLength: 1,
-  //   maxLength: 10,
-  // })
-  // @Length(1, 10)
-  // TODO APIM-73: Should we remove dealIdentifier from the request body?
-  // readonly dealIdentifier: UkefId;
-
-  // TODO APIM-73: Is it okay that I have removed portfolioIdentifier from the request body?
-
   @ApiProperty({
     description: `The date that this guarantee will take effect. This will be replaced by today's date if a date in the past is provided.`,
     type: Date,
@@ -63,7 +51,6 @@ export class GetDealGuaranteeResponseItem {
   })
   @IsOptional()
   @Length(8)
-  // TODO APIM-73: ACBS says max length is actually 8 - which is correct?
   readonly guarantorParty?: AcbsPartyId;
 
   @ApiProperty({
@@ -74,6 +61,6 @@ export class GetDealGuaranteeResponseItem {
   })
   @IsOptional()
   @MinLength(1)
-  // TODO APIM-73: ACBS says max length is actually 3 - should we add this?
+  @MaxLength(3)
   readonly guaranteeTypeCode?: string;
 }

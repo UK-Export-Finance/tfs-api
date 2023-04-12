@@ -3,7 +3,7 @@ import { GetDealGuaranteeResponseItem } from '@ukef/modules/deal-guarantee/dto/g
 
 import { AbstractGenerator } from './abstract-generator';
 
-export class DealGuaranteeGenerator extends AbstractGenerator<GetDealGuaranteeResponseItem, GenerateResult, GenerateOptions> {
+export class GetDealGuaranteeGenerator extends AbstractGenerator<GetDealGuaranteeResponseItem, GenerateResult, GenerateOptions> {
   protected generateValues(): GetDealGuaranteeResponseItem {
     return {
       effectiveDate: this.valueGenerator.dateOnlyString(),
@@ -15,23 +15,28 @@ export class DealGuaranteeGenerator extends AbstractGenerator<GetDealGuaranteeRe
     };
   }
 
-  protected transformRawValuesToGeneratedValues(values: DealGuarantee[], { dealIdentifier, portfolioIdentifier }: GenerateOptions): GenerateResult {
+  protected transformRawValuesToGeneratedValues(
+    values: GetDealGuaranteeResponseItem[],
+    { dealIdentifier, portfolioIdentifier }: GenerateOptions,
+  ): GenerateResult {
     const dealGuaranteesInAcbs: AcbsGetDealGuaranteeResponseDto[] = values.map((v) => ({
       EffectiveDate: v.effectiveDate,
-      ExpirationDate: v.expiryDate,
-      IsExpirationDateMaximum: v.isExpiryDateMaximum,
-      LenderType: { LenderTypeCode: v.lenderType.LenderTypeCode },
-      LimitAmount: v.maximumLiability,
+      GuarantorParty: { PartyIdentifier: v.guarantorParty },
+      LimitKey: v.limitKey,
+      ExpirationDate: v.guaranteeExpiryDate,
+      GuaranteedLimit: v.maximumLiability,
+      GuaranteeType: { GuaranteeTypeCode: v.guaranteeTypeCode },
     }));
 
     const dealGuaranteesFromService = values.map((v) => ({
       dealIdentifier: dealIdentifier,
       portfolioIdentifier: portfolioIdentifier,
-      lenderType: { LenderTypeCode: v.lenderType.LenderTypeCode },
       effectiveDate: v.effectiveDate,
-      expiryDate: v.expiryDate,
-      isExpiryDateMaximum: v.isExpiryDateMaximum,
+      guarantorParty: v.guarantorParty,
+      limitKey: v.limitKey,
+      guaranteeExpiryDate: v.guaranteeExpiryDate,
       maximumLiability: v.maximumLiability,
+      guaranteeTypeCode: v.guaranteeTypeCode,
     }));
 
     return {
@@ -40,6 +45,7 @@ export class DealGuaranteeGenerator extends AbstractGenerator<GetDealGuaranteeRe
     };
   }
 }
+
 interface GenerateOptions {
   dealIdentifier: string;
   portfolioIdentifier: string;
