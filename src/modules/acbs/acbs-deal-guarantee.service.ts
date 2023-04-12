@@ -50,7 +50,7 @@ export class AcbsDealGuaranteeService {
     if (dealGuarantees === null) {
       throw new AcbsResourceNotFoundException(`Deal ${dealIdentifier} were not found by ACBS while fetching Deal Guarantees.`);
     }
-    if (dealGuarantees.length === 0) {
+    if (!dealGuarantees.length) {
       // TODO: Add message for logging precise issue "No Guarantees found for Deal ${dealIdentifier}".
       throw new AcbsNoContentException();
     }
