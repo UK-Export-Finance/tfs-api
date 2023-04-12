@@ -4,6 +4,7 @@ import {
   ApiBody,
   ApiCreatedResponse,
   ApiInternalServerErrorResponse,
+  ApiNoContentResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
@@ -87,7 +88,10 @@ export class DealGuaranteeController {
     isArray: true,
   })
   @ApiNotFoundResponse({
-    description: 'The deal guarantees were not found.',
+    description: 'The deal was not found.',
+  })
+  @ApiNoContentResponse({
+    description: 'The deal has no guarantees.',
   })
   @ApiBadRequestResponse({
     description: 'Bad request.',

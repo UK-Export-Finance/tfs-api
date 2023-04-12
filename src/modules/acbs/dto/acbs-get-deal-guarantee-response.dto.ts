@@ -14,5 +14,4 @@ export interface AcbsGetDealGuaranteeResponseDto {
   EffectiveDate: DateOnlyString;
   ExpirationDate: DateOnlyString;
   GuaranteedLimit: number;
-  // GuaranteedPercentage: number;
 }

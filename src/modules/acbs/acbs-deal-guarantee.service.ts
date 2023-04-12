@@ -40,7 +40,7 @@ export class AcbsDealGuaranteeService {
       path: `/Portfolio/${portfolio}/Deal/${dealIdentifier}/DealGuarantee`,
       idToken,
       onError: createWrapAcbsHttpGetErrorCallback({
-        messageForUnknownError: `Failed to get the deal investors for the deal with id ${dealIdentifier}.`,
+        messageForUnknownError: `Failed to get the deal guarantees for the deal with id ${dealIdentifier}.`,
         knownErrors: [getDealNotFoundKnownAcbsError(dealIdentifier)],
       }),
     });
