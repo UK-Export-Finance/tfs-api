@@ -9,6 +9,8 @@ import { AcbsCreateDealGuaranteeDto } from './dto/acbs-create-deal-guarantee.dto
 import { AcbsGetDealGuaranteeResponseDto } from './dto/acbs-get-deal-guarantee-response.dto';
 import { getDealNotFoundKnownAcbsError } from './known-errors';
 import { createWrapAcbsHttpGetErrorCallback, createWrapAcbsHttpPostErrorCallback } from './wrap-acbs-http-error-callback';
+import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
+import { AcbsNoContentException } from './exception/acbs-no-content.exception';
 
 @Injectable()
 export class AcbsDealGuaranteeService {
@@ -36,7 +38,7 @@ export class AcbsDealGuaranteeService {
   }
 
   async getGuaranteesForDeal(portfolio: string, dealIdentifier: string, idToken: string): Promise<AcbsGetDealGuaranteeResponseDto[]> {
-    const { data: dealPartiesInAcbs } = await this.acbsHttpService.get<AcbsGetDealGuaranteeResponseDto[]>({
+    const { data: dealGuarantees } = await this.acbsHttpService.get<AcbsGetDealGuaranteeResponseDto[]>({
       path: `/Portfolio/${portfolio}/Deal/${dealIdentifier}/DealGuarantee`,
       idToken,
       onError: createWrapAcbsHttpGetErrorCallback({
@@ -45,6 +47,14 @@ export class AcbsDealGuaranteeService {
       }),
     });
 
-    return dealPartiesInAcbs;
+    if (dealGuarantees === null) {
+      throw new AcbsResourceNotFoundException(`Deal ${dealIdentifier} were not found by ACBS while fetching Deal Guarantees.`);
+    }
+    if (dealGuarantees.length === 0) {
+      // TODO: Add message for logging precise issue "No Guarantees found for Deal ${dealIdentifier}".
+      throw new AcbsNoContentException();
+    }
+
+    return dealGuarantees;
   }
 }

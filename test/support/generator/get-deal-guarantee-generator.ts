@@ -1,3 +1,4 @@
+import { PROPERTIES } from '@ukef/constants';
 import { AcbsGetDealGuaranteeResponseDto } from '@ukef/modules/acbs/dto/acbs-get-deal-guarantee-response.dto';
 import { GetDealGuaranteeResponseItem } from '@ukef/modules/deal-guarantee/dto/get-deal-guarantee-response.dto';
 
@@ -6,6 +7,8 @@ import { AbstractGenerator } from './abstract-generator';
 export class GetDealGuaranteeGenerator extends AbstractGenerator<GetDealGuaranteeResponseItem, GenerateResult, GenerateOptions> {
   protected generateValues(): GetDealGuaranteeResponseItem {
     return {
+      dealIdentifier: this.valueGenerator.ukefId(),
+      portfolioIdentifier: PROPERTIES.GLOBAL.portfolioIdentifier,
       effectiveDate: this.valueGenerator.dateOnlyString(),
       guarantorParty: this.valueGenerator.acbsPartyId(),
       limitKey: this.valueGenerator.acbsPartyId(),

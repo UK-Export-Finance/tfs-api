@@ -4,8 +4,6 @@ import { UkefId } from '@ukef/helpers';
 import { roundTo2DecimalPlaces } from '@ukef/helpers/round-to-2-decimal-places.helper';
 import { AcbsDealGuaranteeService } from '@ukef/modules/acbs/acbs-deal-guarantee.service';
 import { AcbsCreateDealGuaranteeDto } from '@ukef/modules/acbs/dto/acbs-create-deal-guarantee.dto';
-import { AcbsNoContentException } from '@ukef/modules/acbs/exception/acbs-no-content.exception';
-import { AcbsResourceNotFoundException } from '@ukef/modules/acbs/exception/acbs-resource-not-found.exception';
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
@@ -59,13 +57,6 @@ export class DealGuaranteeService {
     const portfolio = PROPERTIES.GLOBAL.portfolioIdentifier;
     const guaranteesInAcbs = await this.acbsDealGuaranteeService.getGuaranteesForDeal(portfolio, dealIdentifier, idToken);
 
-    if (!guaranteesInAcbs) {
-      throw new AcbsResourceNotFoundException(`Deal ${dealIdentifier} were not found by ACBS while fetching Deal Guarantees.`);
-    }
-    if (guaranteesInAcbs.length === 0) {
-      // TODO: Add message for logging precise issue "No Guarantees found for Deal ${dealIdentifier}".
-      throw new AcbsNoContentException();
-    }
     return guaranteesInAcbs.map(
       (guaranteeInAcbs) =>
         <GetDealGuaranteeResponseItem>{

@@ -110,10 +110,12 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/GetDealGuaranteeResponseItem'
+        '204':
+          description: The deal has no guarantees.
         '400':
           description: Bad request.
         '404':
-          description: The deal guarantees were not found.
+          description: The deal was not found.
         '500':
           description: An internal server error has occurred.
   /api/v1/deals/{dealIdentifier}/investors:
@@ -486,12 +488,22 @@ components:
     GetDealGuaranteeResponseItem:
       type: object
       properties:
+        portfolioIdentifier:
+          type: string
+          example: E1
+        dealIdentifier:
+          type: string
+          example: '0030000321'
         effectiveDate:
           format: date
           type: string
-          description: >-
-            The date that this guarantee will take effect. This will be replaced
-            by today's date if a date in the past is provided.
+          description: The date that this guarantee will take effect.
+        guarantorParty:
+          type: string
+          description: UK GOODS (00000141)
+          minLength: 8
+          maxLength: 8
+          default: '00000141'
         limitKey:
           type: string
           description: An ACBS party identifier.
@@ -506,18 +518,14 @@ components:
           type: number
           description: The maximum amount the guarantor will guarantee.
           minimum: 0
-        guarantorParty:
-          type: string
-          description: UK GOODS (00000141)
-          minLength: 1
-          maxLength: 10
-          default: '00000141'
         guaranteeTypeCode:
           type: string
           description: GOODS (450)
           default: '450'
           minLength: 1
       required:
+        - portfolioIdentifier
+        - dealIdentifier
         - effectiveDate
         - limitKey
         - guaranteeExpiryDate
