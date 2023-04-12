@@ -1,8 +1,8 @@
 import { PROPERTIES } from '@ukef/constants';
 import { AcbsDealGuaranteeService } from '@ukef/modules/acbs/acbs-deal-guarantee.service';
 import { AcbsCreateDealGuaranteeDto } from '@ukef/modules/acbs/dto/acbs-create-deal-guarantee.dto';
-import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
+import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
 
@@ -29,17 +29,16 @@ describe('DealGuaranteeService', () => {
     acbsDealGuaranteeServiceCreateGuaranteeForDeal = jest.fn();
     acbsDealGuaranteeService.createGuaranteeForDeal = acbsDealGuaranteeServiceCreateGuaranteeForDeal;
 
-    const acbsAuthenticationService = new AcbsAuthenticationService(null, null, null);
-    const acbsAuthenticationServiceGetIdToken = jest.fn();
-    acbsAuthenticationService.getIdToken = acbsAuthenticationServiceGetIdToken;
+    const mockAcbsAuthenticationService = getMockAcbsAuthenticationService();
+    const acbsAuthenticationService = mockAcbsAuthenticationService.service;
+    const acbsAuthenticationServiceGetIdToken = mockAcbsAuthenticationService.getIdToken;
+    when(acbsAuthenticationServiceGetIdToken).calledWith().mockResolvedValueOnce(idToken);
 
     const currentDateProvider = new CurrentDateProvider();
     currentDateProviderGetLatestDateFromTodayAnd = jest.fn();
     currentDateProvider.getLatestDateFromTodayAnd = currentDateProviderGetLatestDateFromTodayAnd;
 
     service = new DealGuaranteeService(acbsAuthenticationService, acbsDealGuaranteeService, currentDateProvider, dateStringTransformations);
-
-    when(acbsAuthenticationServiceGetIdToken).calledWith().mockResolvedValueOnce(idToken);
   });
 
   describe('createGuaranteeForDeal', () => {

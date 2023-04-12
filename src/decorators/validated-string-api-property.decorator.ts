@@ -1,25 +1,30 @@
 import { applyDecorators } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, Length } from 'class-validator';
+import { IsOptional, Length, Matches } from 'class-validator';
 
 interface Options {
   description: string;
-  minLength: number;
-  maxLength: number;
-  example?: string;
+  length?: number;
+  minLength?: number;
+  maxLength?: number;
   required?: boolean;
+  pattern?: RegExp;
+  example?: string;
   default?: string;
 }
 
-export const ValidatedStringApiProperty = ({ description, minLength, maxLength, example, required, default: theDefault }: Options) => {
+export const ValidatedStringApiProperty = ({ description, length, minLength, maxLength, required, pattern, example, default: theDefault }: Options) => {
+  minLength = length ?? minLength;
+  maxLength = length ?? maxLength;
   const decoratorsToApply = [
     ApiProperty({
       type: 'string',
       description,
-      example,
       minLength,
       maxLength,
       required,
+      pattern: pattern && pattern.toString(),
+      example,
       default: theDefault,
     }),
     Length(minLength, maxLength),
@@ -28,6 +33,9 @@ export const ValidatedStringApiProperty = ({ description, minLength, maxLength, 
   const isRequiredProperty = required ?? true;
   if (!isRequiredProperty) {
     decoratorsToApply.push(IsOptional());
+  }
+  if (pattern) {
+    decoratorsToApply.push(Matches(pattern));
   }
   return applyDecorators(...decoratorsToApply);
 };

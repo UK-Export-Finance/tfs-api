@@ -57,8 +57,12 @@ describe('POST /parties', () => {
   });
 
   const { idToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
-    givenRequestWouldOtherwiseSucceed: () => requestToCreateParties(acbsCreatePartyRequest).reply(201, undefined, { Location: `/Party/${partyIdentifier}` }),
+    givenRequestWouldOtherwiseSucceed: () => {
+      requestToGetPartiesBySearchText(alternateIdentifier).reply(200, []);
+      requestToCreateParties(acbsCreatePartyRequest).reply(201, undefined, { Location: `/Party/${partyIdentifier}` });
+    },
     makeRequest: () => api.post(`/api/v1/parties`, createPartyRequest),
+    successStatusCode: 201,
   });
 
   withClientAuthenticationTests({

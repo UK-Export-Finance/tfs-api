@@ -7,8 +7,8 @@ import { PROPERTIES } from '@ukef/constants';
 import { AcbsHttpService } from './acbs-http.service';
 import { AcbsCreateDealGuaranteeDto } from './dto/acbs-create-deal-guarantee.dto';
 import { AcbsGetDealGuaranteeResponseDto } from './dto/acbs-get-deal-guarantee-response.dto';
-import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
-import { createWrapAcbsHttpErrorCallback, createWrapAcbsHttpPostErrorCallback } from './wrap-acbs-http-error-callback';
+import { getDealNotFoundKnownAcbsError } from './known-errors';
+import { createWrapAcbsHttpGetErrorCallback, createWrapAcbsHttpPostErrorCallback } from './wrap-acbs-http-error-callback';
 
 @Injectable()
 export class AcbsDealGuaranteeService {
@@ -30,14 +30,7 @@ export class AcbsDealGuaranteeService {
       idToken,
       onError: createWrapAcbsHttpPostErrorCallback({
         messageForUnknownError: `Failed to create a guarantee for deal ${dealIdentifier} in ACBS.`,
-        knownErrors: [
-          {
-            substringToFind: 'The deal not found',
-            throwError: (error) => {
-              throw new AcbsResourceNotFoundException(`Deal with identifier ${dealIdentifier} was not found by ACBS.`, error);
-            },
-          },
-        ],
+        knownErrors: [getDealNotFoundKnownAcbsError(dealIdentifier)],
       }),
     });
   }
@@ -46,9 +39,9 @@ export class AcbsDealGuaranteeService {
     const { data: dealPartiesInAcbs } = await this.acbsHttpService.get<AcbsGetDealGuaranteeResponseDto[]>({
       path: `/Portfolio/${portfolio}/Deal/${dealIdentifier}/DealGuarantee`,
       idToken,
-      onError: createWrapAcbsHttpErrorCallback({
-        resourceIdentifier: dealIdentifier,
-        messageForUnknownException: `Failed to get the deal investors for the deal with id ${dealIdentifier}.`,
+      onError: createWrapAcbsHttpGetErrorCallback({
+        messageForUnknownError: `Failed to get the deal investors for the deal with id ${dealIdentifier}.`,
+        knownErrors: [getDealNotFoundKnownAcbsError(dealIdentifier)],
       }),
     });
 

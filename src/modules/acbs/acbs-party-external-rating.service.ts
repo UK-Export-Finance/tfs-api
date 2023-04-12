@@ -5,7 +5,8 @@ import AcbsConfig from '@ukef/config/acbs.config';
 
 import { AcbsHttpService } from './acbs-http.service';
 import { AcbsPartyExternalRatingsResponseDto } from './dto/acbs-party-external-ratings-response.dto';
-import { createWrapAcbsHttpErrorCallback } from './wrap-acbs-http-error-callback';
+import { getPartyNotFoundKnownAcbsError } from './known-errors';
+import { createWrapAcbsHttpGetErrorCallback } from './wrap-acbs-http-error-callback';
 
 @Injectable()
 export class AcbsPartyExternalRatingService {
@@ -23,9 +24,9 @@ export class AcbsPartyExternalRatingService {
     const { data: externalRatingsInAcbs } = await this.acbsHttpService.get<AcbsPartyExternalRatingsResponseDto>({
       path: `/Party/${partyIdentifier}/PartyExternalRating`,
       idToken,
-      onError: createWrapAcbsHttpErrorCallback({
-        resourceIdentifier: partyIdentifier,
-        messageForUnknownException: `Failed to get the external ratings for the party with id ${partyIdentifier}.`,
+      onError: createWrapAcbsHttpGetErrorCallback({
+        messageForUnknownError: `Failed to get the external ratings for the party with id ${partyIdentifier}.`,
+        knownErrors: [getPartyNotFoundKnownAcbsError(partyIdentifier)],
       }),
     });
 
