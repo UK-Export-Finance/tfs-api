@@ -24,6 +24,9 @@ export class AcbsFacilityGuaranteeService {
     });
 
     if (guarantees === null) {
+      // The ACBS endpoint has surprising behaviour where a `200 OK` response with response body `null` is returned if the
+      // facility does not exist, but it can also be returned in cases where the facility does exist. That means we do not
+      // know if the facility exists or not at this point.
       throw new AcbsResourceNotFoundException(`Guarantees for facility with identifier ${facilityIdentifier} were not found by ACBS.`);
     }
 
