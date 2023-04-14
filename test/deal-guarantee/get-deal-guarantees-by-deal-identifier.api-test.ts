@@ -2,7 +2,7 @@ import { PROPERTIES } from '@ukef/constants';
 import { UkefId } from '@ukef/helpers';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
 import { Api } from '@ukef-test/support/api';
-import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
+import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
 import { GetDealGuaranteeGenerator } from '@ukef-test/support/generator/get-deal-guarantee-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import nock from 'nock';
@@ -99,7 +99,7 @@ describe('GET /deals/{dealIdentifier}/guarantees', () => {
 
   it('returns a 500 response if getting the party from ACBS times out', async () => {
     givenAuthenticationWithTheIdpSucceeds();
-    requestToGetDealGuarantees().delay(ENVIRONMENT_VARIABLES.TIME_EXCEEDING_ACBS_TIMEOUT).reply(200, dealGuaranteesInAcbs);
+    requestToGetDealGuarantees().delay(TIME_EXCEEDING_ACBS_TIMEOUT).reply(200, dealGuaranteesInAcbs);
 
     const { status, body } = await api.get(getDealGuaranteesUrl);
 
