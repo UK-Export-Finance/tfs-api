@@ -14,7 +14,7 @@ describe('AcbsFacilityGuaranteeService', () => {
   const idToken = valueGenerator.string();
   const baseUrl = valueGenerator.httpsUrl();
   const portfolioIdentifier = valueGenerator.string({ length: 2 });
-  const facilityIdentifier = valueGenerator.stringOfNumericCharacters({ length: 10 });
+  const facilityIdentifier = valueGenerator.ukefId();
 
   let httpService: HttpService;
   let service: AcbsFacilityGuaranteeService;
