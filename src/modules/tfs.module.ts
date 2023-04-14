@@ -5,6 +5,7 @@ import { AuthModule } from '@ukef/modules/auth/auth.module';
 import { DealModule } from '@ukef/modules/deal/deal.module';
 import { DealGuaranteeModule } from '@ukef/modules/deal-guarantee/deal-guarantee.module';
 import { DealInvestorModule } from '@ukef/modules/deal-investor/deal-investor.module';
+import { FacilityModule } from '@ukef/modules/facility/facility.module';
 import { FacilityInvestorModule } from '@ukef/modules/facility-investor/facility-investor.module';
 import { PartyModule } from '@ukef/modules/party/party.module';
 import { PartyExternalRatingModule } from '@ukef/modules/party-external-rating/party-external-rating.module';
@@ -12,7 +13,17 @@ import { PartyExternalRatingModule } from '@ukef/modules/party-external-rating/p
 import { AcbsExceptionTransformInterceptor } from './acbs-adapter/acbs-exception-transform.interceptor';
 
 @Module({
-  imports: [AuthModule, AcbsModule, DealModule, DealGuaranteeModule, DealInvestorModule, FacilityInvestorModule, PartyExternalRatingModule, PartyModule],
+  imports: [
+    AuthModule,
+    AcbsModule,
+    DealModule,
+    DealGuaranteeModule,
+    DealInvestorModule,
+    FacilityModule,
+    FacilityInvestorModule,
+    PartyExternalRatingModule,
+    PartyModule,
+  ],
   providers: [
     {
       provide: APP_INTERCEPTOR,

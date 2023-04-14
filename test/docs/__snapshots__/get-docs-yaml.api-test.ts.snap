@@ -171,6 +171,32 @@ paths:
           description: The deal was not found.
         '500':
           description: An internal server error has occurred.
+  /api/v1/facilities/{facilityIdentifier}:
+    get:
+      operationId: FacilityController_getFacilityByIdentifier
+      summary: Get the facility matching the specified facility identifier.
+      parameters:
+        - name: facilityIdentifier
+          required: true
+          in: path
+          description: The identifier of the facility in ACBS.
+          example: '0000000001'
+          schema:
+            minLength: 10
+            maxLength: 10
+            pattern: ^\\d{10}$
+            type: string
+      responses:
+        '200':
+          description: The facility has been successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetFacilityByIdentifierResponseDto'
+        '404':
+          description: The specified facility was not found.
+        '500':
+          description: An internal server error has occurred.
   /api/v1/facilities/{facilityIdentifier}/investors:
     post:
       operationId: FacilityInvestorController_createInvestorForFacility
@@ -588,7 +614,7 @@ components:
             10-digit code beginning with either '0020', '0030', or '0040'.
           minLength: 10
           maxLength: 10
-          pattern: /00\\d{8}/
+          pattern: 00\\d{8}
           example: '0020900111'
         lenderType:
           type: string
@@ -632,6 +658,144 @@ components:
         - effectiveDate
         - expiryDate
         - currency
+    GetFacilityByIdentifierResponseDto:
+      type: object
+      properties:
+        dealIdentifier:
+          type: string
+          readOnly: true
+        facilityIdentifier:
+          type: string
+          readOnly: true
+        portfolioIdentifier:
+          type: string
+          readOnly: true
+        dealBorrowerIdentifier:
+          type: string
+          readOnly: true
+        maximumLiability:
+          type: number
+          readOnly: true
+        productTypeId:
+          type: string
+          readOnly: true
+        capitalConversionFactorCode:
+          type: string
+          readOnly: true
+        currency:
+          type: string
+          readOnly: true
+        guaranteeCommencementDate:
+          format: date
+          type: string
+          readOnly: true
+          nullable: false
+        guaranteeExpiryDate:
+          format: date
+          type: string
+          readOnly: true
+          nullable: false
+        nextQuarterEndDate:
+          format: date
+          type: string
+          readOnly: true
+          nullable: false
+        facilityInitialStatus:
+          type: string
+          readOnly: true
+        facilityOverallStatus:
+          type: string
+          readOnly: true
+        delegationType:
+          type: string
+          readOnly: true
+        interestOrFeeRate:
+          type: number
+          readOnly: true
+        facilityStageCode:
+          type: string
+          readOnly: true
+        exposurePeriod:
+          type: string
+          readOnly: true
+        creditRatingCode:
+          type: string
+          readOnly: true
+        guaranteePercentage:
+          type: number
+          readOnly: true
+        premiumFrequencyCode:
+          type: string
+          readOnly: true
+        riskCountryCode:
+          type: string
+          readOnly: true
+        riskStatusCode:
+          type: string
+          readOnly: true
+        effectiveDate:
+          format: date
+          type: string
+          readOnly: true
+          nullable: false
+        foreCastPercentage:
+          type: number
+          readOnly: true
+        issueDate:
+          format: date
+          type: string
+          readOnly: true
+          nullable: true
+        description:
+          type: string
+          readOnly: true
+        agentBankIdentifier:
+          type: string
+          readOnly: true
+        obligorPartyIdentifier:
+          type: string
+          readOnly: true
+        obligorName:
+          type: string
+          readOnly: true
+        obligorIndustryClassification:
+          type: string
+          readOnly: true
+        probabilityOfDefault:
+          type: number
+          readOnly: true
+      required:
+        - dealIdentifier
+        - facilityIdentifier
+        - portfolioIdentifier
+        - dealBorrowerIdentifier
+        - maximumLiability
+        - productTypeId
+        - capitalConversionFactorCode
+        - currency
+        - guaranteeCommencementDate
+        - guaranteeExpiryDate
+        - nextQuarterEndDate
+        - facilityInitialStatus
+        - facilityOverallStatus
+        - delegationType
+        - interestOrFeeRate
+        - facilityStageCode
+        - exposurePeriod
+        - creditRatingCode
+        - guaranteePercentage
+        - premiumFrequencyCode
+        - riskCountryCode
+        - riskStatusCode
+        - effectiveDate
+        - foreCastPercentage
+        - issueDate
+        - description
+        - agentBankIdentifier
+        - obligorPartyIdentifier
+        - obligorName
+        - obligorIndustryClassification
+        - probabilityOfDefault
     CreateFacilityInvestorRequestItem:
       type: object
       properties:
