@@ -24,7 +24,7 @@ export class GetPartyByIdentifierResponse {
   citizenshipClass: string;
 
   @ApiProperty({ readOnly: true, type: Date, nullable: true })
-  officerRiskDate: DateString;
+  officerRiskDate: DateString | null;
 
   @ApiResponseProperty()
   countryCode: string;
