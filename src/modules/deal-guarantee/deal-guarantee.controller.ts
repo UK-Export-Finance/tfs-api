@@ -4,7 +4,6 @@ import {
   ApiBody,
   ApiCreatedResponse,
   ApiInternalServerErrorResponse,
-  ApiNoContentResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
@@ -75,13 +74,6 @@ export class DealGuaranteeController {
   @ApiOperation({
     summary: 'Get all guarantees for a specific deal.',
   })
-  @ApiParam({
-    name: 'dealIdentifier',
-    required: true,
-    type: 'string',
-    description: 'The identifier of the deal in ACBS.',
-    example: EXAMPLES.DEAL_ID,
-  })
   @ApiOkResponse({
     description: 'The deal guarantees have been successfully retrieved.',
     type: GetDealGuaranteeResponseItem,
@@ -89,9 +81,6 @@ export class DealGuaranteeController {
   })
   @ApiNotFoundResponse({
     description: 'The deal was not found.',
-  })
-  @ApiNoContentResponse({
-    description: 'The deal has no guarantees.',
   })
   @ApiBadRequestResponse({
     description: 'Bad request.',

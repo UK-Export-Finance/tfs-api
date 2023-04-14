@@ -1,8 +1,5 @@
-import { AcbsPartyId, DateOnlyString } from '@ukef/helpers';
+import { AcbsPartyId, DateString } from '@ukef/helpers';
 
-/**
- * This is not full ACBS response
- */
 export interface AcbsGetDealGuaranteeResponseDto {
   LimitKey: AcbsPartyId;
   GuarantorParty: {
@@ -11,7 +8,7 @@ export interface AcbsGetDealGuaranteeResponseDto {
   GuaranteeType: {
     GuaranteeTypeCode: string;
   };
-  EffectiveDate: DateOnlyString;
-  ExpirationDate: DateOnlyString;
+  EffectiveDate: DateString;
+  ExpirationDate: DateString;
   GuaranteedLimit: number;
 }

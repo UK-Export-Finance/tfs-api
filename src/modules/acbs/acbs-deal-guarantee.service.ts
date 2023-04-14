@@ -7,7 +7,6 @@ import { AcbsConfigBaseUrl } from './acbs-config-base-url.type';
 import { AcbsHttpService } from './acbs-http.service';
 import { AcbsCreateDealGuaranteeDto } from './dto/acbs-create-deal-guarantee.dto';
 import { AcbsGetDealGuaranteeResponseDto } from './dto/acbs-get-deal-guarantee-response.dto';
-import { AcbsNoContentException } from './exception/acbs-no-content.exception';
 import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
 import { getDealNotFoundKnownAcbsError } from './known-errors';
 import { createWrapAcbsHttpGetErrorCallback, createWrapAcbsHttpPostErrorCallback } from './wrap-acbs-http-error-callback';
@@ -49,10 +48,6 @@ export class AcbsDealGuaranteeService {
 
     if (dealGuarantees === null) {
       throw new AcbsResourceNotFoundException(`Deal ${dealIdentifier} were not found by ACBS while fetching Deal Guarantees.`);
-    }
-    if (!dealGuarantees.length) {
-      // TODO: Add message for logging precise issue "No Guarantees found for Deal ${dealIdentifier}".
-      throw new AcbsNoContentException();
     }
 
     return dealGuarantees;

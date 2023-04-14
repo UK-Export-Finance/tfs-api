@@ -74,7 +74,6 @@ export class RandomValueGenerator {
     return (UKEFID.MAIN_ID_PREFIX.DEV + this.stringOfNumericCharacters({ length: lengthExcludingPrefix ?? 6 })) as UkefId;
   }
 
-  // ACBS internal id format example 00000321.
   acbsPartyId(): AcbsPartyId {
     return this.stringOfNumericCharacters({ length: 8 }) as AcbsPartyId;
   }

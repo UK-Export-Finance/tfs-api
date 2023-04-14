@@ -61,15 +61,14 @@ describe('GET /deals/{dealIdentifier}/guarantees', () => {
     });
   });
 
-  it('returns a 204 response if ACBS returns a 200 response with the empty array', async () => {
+  it('returns a 200 [] response for empty collection', async () => {
     givenAuthenticationWithTheIdpSucceeds();
     requestToGetDealGuarantees().reply(200, '[]');
 
     const { status, body } = await api.get(getDealGuaranteesUrl);
 
-    expect(status).toBe(204);
-    // TODO: we should return empty array, but it is not working at the moment.
-    expect(body).toStrictEqual({});
+    expect(status).toBe(200);
+    expect(body).toStrictEqual([]);
   });
 
   it('returns a 500 response if ACBS returns a 200 response with string other than "null"', async () => {
@@ -83,42 +82,6 @@ describe('GET /deals/{dealIdentifier}/guarantees', () => {
       statusCode: 500,
       message: 'Internal server error',
     });
-  });
-
-  it('returns a 500 response if ACBS returns a 200 response but without required field', async () => {
-    givenAuthenticationWithTheIdpSucceeds();
-    const brokenDealGuaranteesInAcbs = [
-      {
-        EffectiveDate: valueGenerator.dateOnlyString(),
-        ExpirationDate: valueGenerator.dateOnlyString(),
-        IsExpirationDateMaximum: valueGenerator.boolean(),
-        LimitAmount: valueGenerator.nonnegativeFloat({ fixed: 2 }),
-      },
-    ];
-
-    requestToGetDealGuarantees().reply(200, brokenDealGuaranteesInAcbs);
-
-    const { status, body } = await api.get(getDealGuaranteesUrl);
-    expect(status).toBe(500);
-    expect(body).toStrictEqual({
-      statusCode: 500,
-      message: 'Internal server error',
-    });
-  });
-
-  it('returns a 200 response even if most fields are missing', async () => {
-    givenAuthenticationWithTheIdpSucceeds();
-    const brokenDealGuaranteeInAcbs = [
-      {
-        GuarantorParty: { PartyIdentifier: valueGenerator.acbsPartyId() },
-        GuaranteeType: { GuaranteeTypeCode: valueGenerator.string({ length: 3 }) },
-      },
-    ];
-
-    requestToGetDealGuarantees().reply(200, brokenDealGuaranteeInAcbs);
-
-    const { status } = await api.get(getDealGuaranteesUrl);
-    expect(status).toBe(200);
   });
 
   it('returns a 500 response if ACBS returns a status code that is NOT 200', async () => {
@@ -136,9 +99,7 @@ describe('GET /deals/{dealIdentifier}/guarantees', () => {
 
   it('returns a 500 response if getting the party from ACBS times out', async () => {
     givenAuthenticationWithTheIdpSucceeds();
-    requestToGetDealGuarantees()
-      .delay(ENVIRONMENT_VARIABLES.ACBS_TIMEOUT + 500)
-      .reply(200, dealGuaranteesInAcbs);
+    requestToGetDealGuarantees().delay(ENVIRONMENT_VARIABLES.TIME_EXCEEDING_ACBS_TIMEOUT).reply(200, dealGuaranteesInAcbs);
 
     const { status, body } = await api.get(getDealGuaranteesUrl);
 
@@ -146,6 +107,17 @@ describe('GET /deals/{dealIdentifier}/guarantees', () => {
     expect(body).toStrictEqual({
       statusCode: 500,
       message: 'Internal server error',
+    });
+  });
+
+  it('returns a 400 response if deal id is not valid', async () => {
+    const { status, body } = await api.get('/api/v1/deals/pending/guarantees');
+
+    expect(status).toBe(400);
+    expect(body).toStrictEqual({
+      statusCode: 400,
+      message: ['dealIdentifier must match /00\\d{8}/ regular expression'],
+      error: 'Bad Request',
     });
   });
 

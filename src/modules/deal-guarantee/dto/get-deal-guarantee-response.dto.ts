@@ -1,14 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ENUMS, EXAMPLES, PROPERTIES } from '@ukef/constants';
+import { EXAMPLES, PROPERTIES } from '@ukef/constants';
 import { AcbsPartyId } from '@ukef/helpers';
 import { DateOnlyString } from '@ukef/helpers/date-only-string.type';
-import { IsEnum, IsISO8601, IsNotEmpty, Length, Matches, MaxLength, Min, MinLength } from 'class-validator';
 
 export type GetDealGuaranteeResponse = GetDealGuaranteeResponseItem[];
 
 export class GetDealGuaranteeResponseItem {
   @ApiProperty({ example: PROPERTIES.GLOBAL.portfolioIdentifier })
-  @IsEnum(ENUMS.PORTFOLIO)
   portfolioIdentifier: string;
 
   @ApiProperty({ example: EXAMPLES.DEAL_ID })
@@ -19,27 +17,22 @@ export class GetDealGuaranteeResponseItem {
     type: Date,
     format: 'date',
   })
-  @Matches(/^\d{4}-\d{2}-\d{2}$/)
-  @IsISO8601({ strict: true })
   readonly effectiveDate: DateOnlyString;
 
   @ApiProperty({
-    description: `UK GOODS (${PROPERTIES.DEAL_GUARANTEE.DEFAULT.guarantorParty})`,
+    description: 'The customer identifier of the Guarantor; the Customer who is making the guarantee/obligation. This field cannot be updated',
     minLength: 8,
     maxLength: 8,
-    default: PROPERTIES.DEAL_GUARANTEE.DEFAULT.guarantorParty,
-    required: false,
+    example: EXAMPLES.PARTY_ID,
   })
-  @Length(8)
   readonly guarantorParty?: AcbsPartyId;
 
   @ApiProperty({
     description: 'An ACBS party identifier.',
     minLength: 8,
     maxLength: 8,
-    example: '00000002',
+    example: EXAMPLES.PARTY_ID,
   })
-  @Length(8)
   readonly limitKey: AcbsPartyId;
 
   @ApiProperty({
@@ -47,25 +40,19 @@ export class GetDealGuaranteeResponseItem {
     type: Date,
     format: 'date',
   })
-  @Matches(/^\d{4}-\d{2}-\d{2}$/)
-  @IsISO8601({ strict: true })
   readonly guaranteeExpiryDate: DateOnlyString;
 
   @ApiProperty({
     description: 'The maximum amount the guarantor will guarantee.',
     minimum: 0,
+    example: '50672.25',
   })
-  @IsNotEmpty()
-  @Min(0)
   readonly maximumLiability: number;
 
   @ApiProperty({
-    description: `GOODS (${PROPERTIES.DEAL_GUARANTEE.DEFAULT.guaranteeTypeCode})`,
-    default: PROPERTIES.DEAL_GUARANTEE.DEFAULT.guaranteeTypeCode,
-    required: false,
+    description: 'Identifies the type of guarantee provided. The value passed for this parameter is validated against the key values in T1080.',
     minLength: 1,
+    example: '450',
   })
-  @MinLength(1)
-  @MaxLength(3)
   readonly guaranteeTypeCode?: string;
 }

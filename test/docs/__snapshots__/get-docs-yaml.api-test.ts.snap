@@ -97,7 +97,7 @@ paths:
         - name: dealIdentifier
           required: true
           in: path
-          description: The identifier of the deal in ACBS.
+          description: The identifier of the deal in ACBS
           example: '0030000321'
           schema:
             type: string
@@ -110,8 +110,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/GetDealGuaranteeResponseItem'
-        '204':
-          description: The deal has no guarantees.
         '400':
           description: Bad request.
         '404':
@@ -500,16 +498,18 @@ components:
           description: The date that this guarantee will take effect.
         guarantorParty:
           type: string
-          description: UK GOODS (00000141)
+          description: >-
+            The customer identifier of the Guarantor; the Customer who is making
+            the guarantee/obligation. This field cannot be updated
           minLength: 8
           maxLength: 8
-          default: '00000141'
+          example: '00000001'
         limitKey:
           type: string
           description: An ACBS party identifier.
           minLength: 8
           maxLength: 8
-          example: '00000002'
+          example: '00000001'
         guaranteeExpiryDate:
           format: date
           type: string
@@ -518,18 +518,23 @@ components:
           type: number
           description: The maximum amount the guarantor will guarantee.
           minimum: 0
+          example: '50672.25'
         guaranteeTypeCode:
           type: string
-          description: GOODS (450)
-          default: '450'
+          description: >-
+            Identifies the type of guarantee provided. The value passed for this
+            parameter is validated against the key values in T1080.
           minLength: 1
+          example: '450'
       required:
         - portfolioIdentifier
         - dealIdentifier
         - effectiveDate
+        - guarantorParty
         - limitKey
         - guaranteeExpiryDate
         - maximumLiability
+        - guaranteeTypeCode
     GetDealInvestorDtoLenderType:
       type: object
       properties:

@@ -57,18 +57,17 @@ export class DealGuaranteeService {
     const portfolio = PROPERTIES.GLOBAL.portfolioIdentifier;
     const guaranteesInAcbs = await this.acbsDealGuaranteeService.getGuaranteesForDeal(portfolio, dealIdentifier, idToken);
 
-    return guaranteesInAcbs.map(
-      (guaranteeInAcbs) =>
-        <GetDealGuaranteeResponseItem>{
-          portfolioIdentifier: portfolio,
-          dealIdentifier: dealIdentifier,
-          effectiveDate: this.dateStringTransformations.removeTimeIfExists(guaranteeInAcbs.EffectiveDate),
-          guarantorParty: guaranteeInAcbs.GuarantorParty.PartyIdentifier,
-          limitKey: guaranteeInAcbs.LimitKey,
-          guaranteeExpiryDate: this.dateStringTransformations.removeTimeIfExists(guaranteeInAcbs.ExpirationDate),
-          maximumLiability: guaranteeInAcbs.GuaranteedLimit,
-          guaranteeTypeCode: guaranteeInAcbs.GuaranteeType.GuaranteeTypeCode,
-        },
-    );
+    return guaranteesInAcbs.map((guaranteeInAcbs): GetDealGuaranteeResponseItem => {
+      return {
+        portfolioIdentifier: portfolio,
+        dealIdentifier: dealIdentifier,
+        effectiveDate: this.dateStringTransformations.removeTimeIfExists(guaranteeInAcbs.EffectiveDate),
+        guarantorParty: guaranteeInAcbs.GuarantorParty.PartyIdentifier,
+        limitKey: guaranteeInAcbs.LimitKey,
+        guaranteeExpiryDate: this.dateStringTransformations.removeTimeIfExists(guaranteeInAcbs.ExpirationDate),
+        maximumLiability: guaranteeInAcbs.GuaranteedLimit,
+        guaranteeTypeCode: guaranteeInAcbs.GuaranteeType.GuaranteeTypeCode,
+      };
+    });
   }
 }
