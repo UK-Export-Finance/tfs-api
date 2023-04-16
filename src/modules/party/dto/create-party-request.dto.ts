@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { EXAMPLES, PROPERTIES } from '@ukef/constants';
 import { IsIn, IsISO8601, IsOptional, IsString, Length, Matches } from 'class-validator';
 
 export type CreatePartyRequest = CreatePartyRequestItem[];
@@ -48,7 +49,13 @@ export class CreatePartyRequestItem {
   @Length(0, 10)
   officerRiskDate: string;
 
-  @ApiProperty({ description: "The country code for the party's primary address.", required: false, maxLength: 3, default: 'GBR', example: 'DZA' })
+  @ApiProperty({
+    description: "The country code for the party's primary address.",
+    required: false,
+    maxLength: 3,
+    default: PROPERTIES.PARTY.DEFAULT.address.countryCode,
+    example: EXAMPLES.COUNTRY_CODE,
+  })
   @IsOptional()
   @Length(0, 3)
   countryCode: string;
