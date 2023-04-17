@@ -6,7 +6,7 @@ export default registerAs(
   'app',
   (): Record<string, any> => ({
     name: process.env.APP_NAME || 'tfs',
-    env: process.env.APP_ENV || 'development',
+    env: process.env.NODE_ENV || 'development',
 
     versioning: {
       enable: process.env.HTTP_VERSIONING_ENABLE === 'true' || false,
