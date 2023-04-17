@@ -178,7 +178,7 @@ paths:
           required: true
           in: path
           description: The identifier of the facility in ACBS.
-          example: '0000000001'
+          example: '0030000322'
           schema:
             minLength: 10
             maxLength: 10
@@ -204,7 +204,7 @@ paths:
           required: true
           in: path
           description: The identifier of the facility in ACBS.
-          example: '0000000001'
+          example: '0030000322'
           schema:
             minLength: 10
             maxLength: 10
@@ -271,6 +271,9 @@ paths:
           description: The identifier of the facility in ACBS.
           example: '0030000322'
           schema:
+            minLength: 10
+            maxLength: 10
+            pattern: ^00\\d{8}$
             type: string
       responses:
         '200':
@@ -592,13 +595,13 @@ components:
             the guarantee/obligation. This field cannot be updated
           minLength: 8
           maxLength: 8
-          example: '00000001'
+          example: '00001234'
         limitKey:
           type: string
           description: An ACBS party identifier.
           minLength: 8
           maxLength: 8
-          example: '00000001'
+          example: '00001234'
         guaranteeExpiryDate:
           format: date
           type: string
@@ -682,7 +685,7 @@ components:
             10-digit code beginning with either '0020', '0030', or '0040'.
           minLength: 10
           maxLength: 10
-          pattern: 00\\d{8}
+          pattern: ^00\\d{8}$
           example: '0020900111'
         lenderType:
           type: string
@@ -870,7 +873,7 @@ components:
         facilityIdentifier:
           type: string
           description: The identifier of the facility.
-          example: '0000000001'
+          example: '0030000322'
         portfolioIdentifier:
           type: string
           description: The identifier of the portfolio.
@@ -890,11 +893,11 @@ components:
           description: >-
             The ACBS party identifier of the guarantor, the customer who is
             making the guarantee/obligation.
-          example: '00000001'
+          example: '00001234'
         limitKey:
           type: string
           description: An ACBS party identifier.
-          example: '00000001'
+          example: '00001234'
         guaranteeExpiryDate:
           format: date
           type: string

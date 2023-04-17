@@ -116,7 +116,7 @@ describe('GET /deals/{dealIdentifier}/guarantees', () => {
     expect(status).toBe(400);
     expect(body).toStrictEqual({
       statusCode: 400,
-      message: ['dealIdentifier must match /00\\d{8}/ regular expression'],
+      message: ['dealIdentifier must match /^00\\d{8}$/ regular expression'],
       error: 'Bad Request',
     });
   });
