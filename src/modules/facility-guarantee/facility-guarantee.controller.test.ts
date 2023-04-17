@@ -17,20 +17,20 @@ describe('FacilityGuaranteeController', () => {
     portfolioIdentifier,
   });
 
-  let facilityGuaranteeServiceGetGuaranteesForFacility: jest.Mock;
+  let getFacilityGuaranteesService: jest.Mock;
   let controller: FacilityGuaranteeController;
 
   beforeEach(() => {
     const facilityGuaranteeService = new FacilityGuaranteeService(null, null, null);
-    facilityGuaranteeServiceGetGuaranteesForFacility = jest.fn();
-    facilityGuaranteeService.getGuaranteesForFacility = facilityGuaranteeServiceGetGuaranteesForFacility;
+    getFacilityGuaranteesService = jest.fn();
+    facilityGuaranteeService.getGuaranteesForFacility = getFacilityGuaranteesService;
 
     controller = new FacilityGuaranteeController(facilityGuaranteeService);
   });
 
   describe('getGuaranteesForFacility', () => {
     it('returns the guarantees from the service', async () => {
-      when(facilityGuaranteeServiceGetGuaranteesForFacility).calledWith(facilityIdentifier).mockResolvedValueOnce(guaranteesFromService);
+      when(getFacilityGuaranteesService).calledWith(facilityIdentifier).mockResolvedValueOnce(guaranteesFromService);
 
       const guarantees = await controller.getGuaranteesForFacility({ facilityIdentifier });
 
@@ -42,7 +42,7 @@ describe('FacilityGuaranteeController', () => {
         ...guarantee,
         unexpectedKey: valueGenerator.string(),
       }));
-      when(facilityGuaranteeServiceGetGuaranteesForFacility).calledWith(facilityIdentifier).mockResolvedValueOnce(guaranteesWithAnUnexpectedKey);
+      when(getFacilityGuaranteesService).calledWith(facilityIdentifier).mockResolvedValueOnce(guaranteesWithAnUnexpectedKey);
 
       const guarantees = await controller.getGuaranteesForFacility({ facilityIdentifier });
 

@@ -23,7 +23,7 @@ describe('FacilityGuaranteeService', () => {
   let acbsAuthenticationService: AcbsAuthenticationService;
   let service: FacilityGuaranteeService;
 
-  let acbsFacilityGuaranteeServiceGetGuaranteesForFacility: jest.Mock;
+  let getFacilityGuaranteesAcbsService: jest.Mock;
 
   beforeEach(() => {
     const mockAcbsAuthenticationService = getMockAcbsAuthenticationService();
@@ -32,17 +32,15 @@ describe('FacilityGuaranteeService', () => {
     when(acbsAuthenticationServiceGetIdToken).calledWith().mockResolvedValueOnce(idToken);
 
     const acbsService = new AcbsFacilityGuaranteeService(null, null);
-    acbsFacilityGuaranteeServiceGetGuaranteesForFacility = jest.fn();
-    acbsService.getGuaranteesForFacility = acbsFacilityGuaranteeServiceGetGuaranteesForFacility;
+    getFacilityGuaranteesAcbsService = jest.fn();
+    acbsService.getGuaranteesForFacility = getFacilityGuaranteesAcbsService;
 
     service = new FacilityGuaranteeService(acbsAuthenticationService, acbsService, new DateStringTransformations());
   });
 
   describe('getGuaranteesForFacility', () => {
     it('returns a transformation of the guarantees from ACBS', async () => {
-      when(acbsFacilityGuaranteeServiceGetGuaranteesForFacility)
-        .calledWith(portfolioIdentifier, facilityIdentifier, idToken)
-        .mockResolvedValueOnce(facilityGuaranteesInAcbs);
+      when(getFacilityGuaranteesAcbsService).calledWith(portfolioIdentifier, facilityIdentifier, idToken).mockResolvedValueOnce(facilityGuaranteesInAcbs);
 
       const guarantees = await service.getGuaranteesForFacility(facilityIdentifier);
 
@@ -50,7 +48,7 @@ describe('FacilityGuaranteeService', () => {
     });
 
     it('returns an empty array if ACBS returns an empty array', async () => {
-      when(acbsFacilityGuaranteeServiceGetGuaranteesForFacility).calledWith(portfolioIdentifier, facilityIdentifier, idToken).mockResolvedValueOnce([]);
+      when(getFacilityGuaranteesAcbsService).calledWith(portfolioIdentifier, facilityIdentifier, idToken).mockResolvedValueOnce([]);
 
       const guarantees = await service.getGuaranteesForFacility(facilityIdentifier);
 
