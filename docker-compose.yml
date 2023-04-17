@@ -4,7 +4,7 @@ services:
     build:
       context: .
     image: api
-    container_name: tfs/api
+    container_name: tfs-api
     restart: always
     command: npm run start:prod
     ports:
