@@ -66,7 +66,7 @@ paths:
           required: true
           in: path
           description: The identifier of the deal in ACBS.
-          example: '00000001'
+          example: '0030000321'
           schema:
             type: string
       requestBody:
@@ -84,6 +84,32 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreateDealGuaranteeResponse'
+        '400':
+          description: Bad request.
+        '404':
+          description: The deal was not found.
+        '500':
+          description: An internal server error has occurred.
+    get:
+      operationId: DealGuaranteeController_getGuaranteesForDeal
+      summary: Get all guarantees for a specific deal.
+      parameters:
+        - name: dealIdentifier
+          required: true
+          in: path
+          description: The identifier of the deal in ACBS
+          example: '0030000321'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The deal guarantees have been successfully retrieved.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GetDealGuaranteeResponseItem'
         '400':
           description: Bad request.
         '404':
@@ -516,6 +542,58 @@ components:
           example: '00000001'
       required:
         - dealIdentifier
+    GetDealGuaranteeResponseItem:
+      type: object
+      properties:
+        portfolioIdentifier:
+          type: string
+          example: E1
+        dealIdentifier:
+          type: string
+          example: '0030000321'
+        effectiveDate:
+          format: date
+          type: string
+          description: The date that this guarantee will take effect.
+        guarantorParty:
+          type: string
+          description: >-
+            The customer identifier of the Guarantor; the Customer who is making
+            the guarantee/obligation. This field cannot be updated
+          minLength: 8
+          maxLength: 8
+          example: '00000001'
+        limitKey:
+          type: string
+          description: An ACBS party identifier.
+          minLength: 8
+          maxLength: 8
+          example: '00000001'
+        guaranteeExpiryDate:
+          format: date
+          type: string
+          description: The date that this guarantee will expire on.
+        maximumLiability:
+          type: number
+          description: The maximum amount the guarantor will guarantee.
+          minimum: 0
+          example: '50672.25'
+        guaranteeTypeCode:
+          type: string
+          description: >-
+            Identifies the type of guarantee provided. The value passed for this
+            parameter is validated against the key values in T1080.
+          minLength: 1
+          example: '450'
+      required:
+        - portfolioIdentifier
+        - dealIdentifier
+        - effectiveDate
+        - guarantorParty
+        - limitKey
+        - guaranteeExpiryDate
+        - maximumLiability
+        - guaranteeTypeCode
     GetDealInvestorDtoLenderType:
       type: object
       properties:
