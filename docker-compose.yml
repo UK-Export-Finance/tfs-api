@@ -10,7 +10,7 @@ services:
     ports:
       - ${PORT}:${PORT}
     volumes:
-      - ./:/app/src:rw
+      - ./:/app/src:ro
     environment:
       PORT:
       NODE_ENV:
