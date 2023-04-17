@@ -1,3 +1,4 @@
+import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import request from 'supertest';
 
 const expectedFacilityIdentifierMustMatchPatternErrorMessage = `facilityIdentifier must match /^00\\d{8}$/ regular expression`;
@@ -5,10 +6,24 @@ const expectedFacilityIdentifierMustMatchPatternErrorMessage = `facilityIdentifi
 export const withFacilityIdentifierUrlParamValidationApiTests = ({
   makeRequestWithFacilityId,
   givenRequestWouldOtherwiseSucceedForFacilityId,
+  successStatusCode,
 }: {
   makeRequestWithFacilityId: (facilityId: string) => request.Test;
   givenRequestWouldOtherwiseSucceedForFacilityId: (facilityId: string) => void;
+  successStatusCode?: number;
 }): void => {
+  const valueGenerator = new RandomValueGenerator();
+  const expectedSuccessStatusCode = successStatusCode ?? 200;
+
+  it(`returns a ${expectedSuccessStatusCode} response if the facilityId in the URL is valid`, async () => {
+    const validFacilityId = valueGenerator.facilityId();
+    givenRequestWouldOtherwiseSucceedForFacilityId(validFacilityId);
+
+    const { status } = await makeRequestWithFacilityId(validFacilityId);
+
+    expect(status).toBe(expectedSuccessStatusCode);
+  });
+
   it('returns a 400 response if the facilityId in the URL has fewer than 10 digits', async () => {
     const fewerThan10Digits = '001234567';
     givenRequestWouldOtherwiseSucceedForFacilityId(fewerThan10Digits);
