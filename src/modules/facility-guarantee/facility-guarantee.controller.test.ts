@@ -32,7 +32,7 @@ describe('FacilityGuaranteeController', () => {
     it('returns the guarantees from the service', async () => {
       when(facilityGuaranteeServiceGetGuaranteesForFacility).calledWith(facilityIdentifier).mockResolvedValueOnce(guaranteesFromService);
 
-      const guarantees = await controller.getGuaranteesForFacility(facilityIdentifier);
+      const guarantees = await controller.getGuaranteesForFacility({ facilityIdentifier });
 
       expect(guarantees).toStrictEqual(guaranteesFromService);
     });
@@ -44,7 +44,7 @@ describe('FacilityGuaranteeController', () => {
       }));
       when(facilityGuaranteeServiceGetGuaranteesForFacility).calledWith(facilityIdentifier).mockResolvedValueOnce(guaranteesWithAnUnexpectedKey);
 
-      const guarantees = await controller.getGuaranteesForFacility(facilityIdentifier);
+      const guarantees = await controller.getGuaranteesForFacility({ facilityIdentifier });
 
       expect(guarantees).toStrictEqual(guaranteesFromService);
     });
