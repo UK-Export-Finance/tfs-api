@@ -12,7 +12,7 @@ export class App {
 
   constructor(protected readonly app: INestApplication) {
     this.configService = app.get<ConfigService>(ConfigService);
-    this.port = this.getConfig<number>('PORT') || 3003;
+    this.port = this.getConfig<number>('PORT') || 3001;
 
     const env: string = this.getConfig<string>('app.env');
     process.env.NODE_ENV = env;
