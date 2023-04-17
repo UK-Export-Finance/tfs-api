@@ -1,4 +1,6 @@
 import { HttpService } from '@nestjs/axios';
+import { Inject } from '@nestjs/common';
+import AcbsConfig from '@ukef/config/acbs.config';
 
 import { AcbsConfigBaseUrl } from './acbs-config-base-url.type';
 import { AcbsHttpService } from './acbs-http.service';
@@ -9,7 +11,7 @@ import { createWrapAcbsHttpGetErrorCallback } from './wrap-acbs-http-error-callb
 export class AcbsFacilityGuaranteeService {
   private readonly acbsHttpService: AcbsHttpService;
 
-  constructor(config: AcbsConfigBaseUrl, httpService: HttpService) {
+  constructor(@Inject(AcbsConfig.KEY) config: AcbsConfigBaseUrl, httpService: HttpService) {
     this.acbsHttpService = new AcbsHttpService(config, httpService);
   }
 

@@ -195,6 +195,39 @@ paths:
           description: The specified facility was not found.
         '500':
           description: An internal server error has occurred.
+  /api/v1/facilities/{facilityIdentifier}/guarantees:
+    get:
+      operationId: FacilityGuaranteeController_getGuaranteesForFacility
+      summary: Get all guarantees for a facility.
+      parameters:
+        - name: facilityIdentifier
+          required: true
+          in: path
+          description: The identifier of the facility in ACBS.
+          example: '0000000001'
+          schema:
+            minLength: 10
+            maxLength: 10
+            pattern: ^00\\d{8}$
+            type: string
+      responses:
+        '200':
+          description: The guarantees for the facility have been successfully retrieved.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GetFacilityGuaranteesResponseItem'
+        '400':
+          description: The specified facilityIdentifier is not valid.
+        '404':
+          description: >-
+            The specified facility, or the guarantees for that facility, were
+            not found. (Due to limitations of ACBS, a 404 response does not
+            guarantee that the facility does not exist.)
+        '500':
+          description: An internal server error has occurred.
   /api/v1/facilities/{facilityIdentifier}/investors:
     post:
       operationId: FacilityInvestorController_createInvestorForFacility
@@ -801,6 +834,58 @@ components:
         - obligorName
         - obligorIndustryClassification
         - probabilityOfDefault
+    GetFacilityGuaranteesResponseItem:
+      type: object
+      properties:
+        facilityIdentifier:
+          type: string
+          description: The identifier of the facility.
+          example: '0000000001'
+        portfolioIdentifier:
+          type: string
+          description: The identifier of the portfolio.
+          example: E1
+        guaranteeCommencementDate:
+          format: date
+          type: string
+          description: The date that this guarantee will take effect.
+        effectiveDate:
+          format: date
+          type: string
+          description: >-
+            The date that this guarantee will take effect. This is always equal
+            to the guaranteeCommencementDate.
+        guarantorParty:
+          type: string
+          description: >-
+            The ACBS party identifier of the guarantor, the customer who is
+            making the guarantee/obligation.
+          example: '00000001'
+        limitKey:
+          type: string
+          description: An ACBS party identifier.
+          example: '00000001'
+        guaranteeExpiryDate:
+          format: date
+          type: string
+          description: The date the guarantee for this customer will expire.
+        maximumLiability:
+          type: number
+          description: The maximum amount the guarantor will guarantee.
+        guaranteeTypeCode:
+          type: string
+          description: The identifier for the type of the guarantee.
+          example: '315'
+      required:
+        - facilityIdentifier
+        - portfolioIdentifier
+        - guaranteeCommencementDate
+        - effectiveDate
+        - guarantorParty
+        - limitKey
+        - guaranteeExpiryDate
+        - maximumLiability
+        - guaranteeTypeCode
     CreateFacilityInvestorRequestItem:
       type: object
       properties:
