@@ -1,13 +1,13 @@
 import { PROPERTIES } from '@ukef/constants';
 import { AcbsFacilityPartyService } from '@ukef/modules/acbs/acbs-facility-party.service';
+import { AcbsCreateFacilityPartyDto } from '@ukef/modules/acbs/dto/acbs-create-facility-party.dto';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
 import { TEST_CURRENCIES } from '@ukef-test/support/constants/test-currency.constant';
 import { TEST_DATES } from '@ukef-test/support/constants/test-date.constant';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
 
-import { AcbsCreateFacilityPartyDto } from '../acbs/dto/acbs-create-facility-party.dto';
-import { DateStringTransformations } from '../date/date-string.transformations';
 import { FacilityInvestorService } from './facility-investor.service';
 
 describe('FacilityInvestorService', () => {
@@ -33,7 +33,7 @@ describe('FacilityInvestorService', () => {
   });
 
   describe('createInvestorForFacility', () => {
-    const facilityIdentifier = valueGenerator.stringOfNumericCharacters();
+    const facilityIdentifier = valueGenerator.facilityId();
     const sectionIdentifier = PROPERTIES.FACILITY_INVESTOR.DEFAULT.sectionIdentifier;
     const facilityStatusCode = PROPERTIES.FACILITY_INVESTOR.DEFAULT.facilityStatus.facilityStatusCode;
     const involvedPartyIdentifier = PROPERTIES.FACILITY_INVESTOR.DEFAULT.involvedParty.partyIdentifier;
