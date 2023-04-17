@@ -152,7 +152,7 @@ paths:
           required: true
           in: path
           description: The identifier of the facility in ACBS.
-          example: '0000000001'
+          example: '0030000322'
           schema:
             type: string
       requestBody:
@@ -170,6 +170,36 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreateFacilityInvestorResponse'
+        '400':
+          description: Bad request.
+        '404':
+          description: The facility was not found.
+        '500':
+          description: An internal server error has occurred.
+    get:
+      operationId: FacilityInvestorController_getInvestorsForFacility
+      summary: Get all investors of the facility.
+      parameters:
+        - name: facilityIdentifier
+          required: true
+          in: path
+          description: The identifier of the facility in ACBS.
+          example: '0030000322'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The facility investors have been successfully retrieved.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GetFacilityInvestorResponseItem'
+        '204':
+          description: >-
+            The facility has no investors. Most facilities should have atleast 1
+            investor by default.
         '400':
           description: Bad request.
         '404':
@@ -321,7 +351,7 @@ components:
         obligorPartyIdentifier:
           type: string
           readOnly: true
-          example: '00000001'
+          example: '00001234'
         obligorName:
           type: string
           readOnly: true
@@ -614,6 +644,66 @@ components:
           example: '0000000001'
       required:
         - facilityIdentifier
+    GetFacilityInvestorResponseItem:
+      type: object
+      properties:
+        portfolioIdentifier:
+          type: string
+          readOnly: true
+          example: E1
+        facilityIdentifier:
+          type: string
+          description: The identifier of the facility the investor belongs to.
+          example: '0030000322'
+          minLength: 10
+          maxLength: 10
+        effectiveDate:
+          type: string
+          description: The date from which this limit is effective.
+          example: '2023-04-12'
+        guaranteeCommencementDate:
+          type: string
+          description: The date on which this limit will start.
+          example: '2023-04-12'
+        guaranteeExpiryDate:
+          type: string
+          description: The date on which this limit will expire.
+          example: '2024-04-12'
+        currency:
+          type: string
+          description: >-
+            The code of the currency for this investor, Currency in the Currency
+            Definition Table.
+          example: USD
+          minLength: 3
+          maxLength: 3
+        maximumLiability:
+          type: number
+          description: The investor's share of the current limit amount.
+          minimum: 0
+          example: 501927.25
+        lenderTypeCode:
+          type: string
+          description: Investor record type.
+          minLength: 3
+          maxLength: 3
+          example: '500'
+        involvedParty:
+          type: string
+          description: ACBS id of involved party.
+          minLength: 10
+          maxLength: 10
+          example: '00001234'
+      required:
+        - portfolioIdentifier
+        - facilityIdentifier
+        - effectiveDate
+        - guaranteeCommencementDate
+        - guaranteeExpiryDate
+        - currency
+        - maximumLiability
+        - lenderTypeCode
+        - involvedParty
     GetPartyExternalRatingResponseRatingEntity:
       type: object
       properties:
