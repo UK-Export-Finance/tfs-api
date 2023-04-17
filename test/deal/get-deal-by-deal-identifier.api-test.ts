@@ -145,7 +145,7 @@ describe('GET /deals/{dealIdentifier}', () => {
     });
   });
 
-  it('returns a 500 response if getting the party from ACBS returns a status code that is NOT 200', async () => {
+  it('returns a 500 response if getting the deal from ACBS returns a status code that is NOT 200', async () => {
     givenAuthenticationWithTheIdpSucceeds();
     requestToGetDeal().reply(401);
 
