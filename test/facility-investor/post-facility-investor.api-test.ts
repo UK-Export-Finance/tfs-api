@@ -1,5 +1,6 @@
 import { PROPERTIES } from '@ukef/constants';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
+import { CreateFacilityInvestorRequest } from '@ukef/modules/facility-investor/dto/create-facility-investor-request.dto';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
 import { withDateOnlyFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/date-only-field-validation-api-tests';
@@ -16,7 +17,7 @@ describe('POST /facilities/{facilityIdentifier}/investors', () => {
   const valueGenerator = new RandomValueGenerator();
   const dateStringTransformations = new DateStringTransformations();
   const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
-  const facilityIdentifier = valueGenerator.stringOfNumericCharacters({ length: 10 });
+  const facilityIdentifier = valueGenerator.facilityId();
   const createFacilityInvestorUrl = `/api/v1/facilities/${facilityIdentifier}/investors`;
 
   const sectionIdentifier = PROPERTIES.FACILITY_INVESTOR.DEFAULT.sectionIdentifier;
@@ -30,7 +31,7 @@ describe('POST /facilities/{facilityIdentifier}/investors', () => {
   const limitTypeCode = valueGenerator.stringOfNumericCharacters({ minLength: 1, maxLength: 2 });
   const limitKey = valueGenerator.stringOfNumericCharacters({ maxLength: 10 });
 
-  const requestBodyToCreateFacilityInvestor = [
+  const requestBodyToCreateFacilityInvestor: CreateFacilityInvestorRequest = [
     {
       facilityIdentifier,
       effectiveDate: effectiveDateInFuture,
@@ -215,7 +216,7 @@ describe('POST /facilities/{facilityIdentifier}/investors', () => {
     fieldName: 'facilityIdentifier',
     length: 10,
     required: true,
-    generateFieldValueOfLength: (length: number) => valueGenerator.stringOfNumericCharacters({ length }),
+    generateFieldValueOfLength: (length: number) => valueGenerator.ukefId(length - 4),
     validRequestBody: requestBodyToCreateFacilityInvestor,
     makeRequest: (body) => api.post(createFacilityInvestorUrl, body),
     givenAnyRequestBodyWouldSucceed: () => {

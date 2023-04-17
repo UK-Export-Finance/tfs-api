@@ -66,7 +66,7 @@ paths:
           required: true
           in: path
           description: The identifier of the deal in ACBS.
-          example: '00000001'
+          example: '0030000321'
           schema:
             type: string
       requestBody:
@@ -84,6 +84,32 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreateDealGuaranteeResponse'
+        '400':
+          description: Bad request.
+        '404':
+          description: The deal was not found.
+        '500':
+          description: An internal server error has occurred.
+    get:
+      operationId: DealGuaranteeController_getGuaranteesForDeal
+      summary: Get all guarantees for a specific deal.
+      parameters:
+        - name: dealIdentifier
+          required: true
+          in: path
+          description: The identifier of the deal in ACBS
+          example: '0030000321'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The deal guarantees have been successfully retrieved.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GetDealGuaranteeResponseItem'
         '400':
           description: Bad request.
         '404':
@@ -141,6 +167,65 @@ paths:
           description: Bad request.
         '404':
           description: The deal was not found.
+        '500':
+          description: An internal server error has occurred.
+  /api/v1/facilities/{facilityIdentifier}:
+    get:
+      operationId: FacilityController_getFacilityByIdentifier
+      summary: Get the facility matching the specified facility identifier.
+      parameters:
+        - name: facilityIdentifier
+          required: true
+          in: path
+          description: The identifier of the facility in ACBS.
+          example: '0000000001'
+          schema:
+            minLength: 10
+            maxLength: 10
+            pattern: ^\\d{10}$
+            type: string
+      responses:
+        '200':
+          description: The facility has been successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetFacilityByIdentifierResponseDto'
+        '404':
+          description: The specified facility was not found.
+        '500':
+          description: An internal server error has occurred.
+  /api/v1/facilities/{facilityIdentifier}/guarantees:
+    get:
+      operationId: FacilityGuaranteeController_getGuaranteesForFacility
+      summary: Get all guarantees for a facility.
+      parameters:
+        - name: facilityIdentifier
+          required: true
+          in: path
+          description: The identifier of the facility in ACBS.
+          example: '0000000001'
+          schema:
+            minLength: 10
+            maxLength: 10
+            pattern: ^00\\d{8}$
+            type: string
+      responses:
+        '200':
+          description: The guarantees for the facility have been successfully retrieved.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GetFacilityGuaranteesResponseItem'
+        '400':
+          description: The specified facilityIdentifier is not valid.
+        '404':
+          description: >-
+            The specified facility, or the guarantees for that facility, were
+            not found. (Due to limitations of ACBS, a 404 response does not
+            guarantee that the facility does not exist.)
         '500':
           description: An internal server error has occurred.
   /api/v1/facilities/{facilityIdentifier}/investors:
@@ -487,6 +572,58 @@ components:
           example: '00000001'
       required:
         - dealIdentifier
+    GetDealGuaranteeResponseItem:
+      type: object
+      properties:
+        portfolioIdentifier:
+          type: string
+          example: E1
+        dealIdentifier:
+          type: string
+          example: '0030000321'
+        effectiveDate:
+          format: date
+          type: string
+          description: The date that this guarantee will take effect.
+        guarantorParty:
+          type: string
+          description: >-
+            The customer identifier of the Guarantor; the Customer who is making
+            the guarantee/obligation. This field cannot be updated
+          minLength: 8
+          maxLength: 8
+          example: '00000001'
+        limitKey:
+          type: string
+          description: An ACBS party identifier.
+          minLength: 8
+          maxLength: 8
+          example: '00000001'
+        guaranteeExpiryDate:
+          format: date
+          type: string
+          description: The date that this guarantee will expire on.
+        maximumLiability:
+          type: number
+          description: The maximum amount the guarantor will guarantee.
+          minimum: 0
+          example: '50672.25'
+        guaranteeTypeCode:
+          type: string
+          description: >-
+            Identifies the type of guarantee provided. The value passed for this
+            parameter is validated against the key values in T1080.
+          minLength: 1
+          example: '450'
+      required:
+        - portfolioIdentifier
+        - dealIdentifier
+        - effectiveDate
+        - guarantorParty
+        - limitKey
+        - guaranteeExpiryDate
+        - maximumLiability
+        - guaranteeTypeCode
     GetDealInvestorDtoLenderType:
       type: object
       properties:
@@ -545,7 +682,7 @@ components:
             10-digit code beginning with either '0020', '0030', or '0040'.
           minLength: 10
           maxLength: 10
-          pattern: /00\\d{8}/
+          pattern: 00\\d{8}
           example: '0020900111'
         lenderType:
           type: string
@@ -589,6 +726,196 @@ components:
         - effectiveDate
         - expiryDate
         - currency
+    GetFacilityByIdentifierResponseDto:
+      type: object
+      properties:
+        dealIdentifier:
+          type: string
+          readOnly: true
+        facilityIdentifier:
+          type: string
+          readOnly: true
+        portfolioIdentifier:
+          type: string
+          readOnly: true
+        dealBorrowerIdentifier:
+          type: string
+          readOnly: true
+        maximumLiability:
+          type: number
+          readOnly: true
+        productTypeId:
+          type: string
+          readOnly: true
+        capitalConversionFactorCode:
+          type: string
+          readOnly: true
+        currency:
+          type: string
+          readOnly: true
+        guaranteeCommencementDate:
+          format: date
+          type: string
+          readOnly: true
+          nullable: false
+        guaranteeExpiryDate:
+          format: date
+          type: string
+          readOnly: true
+          nullable: false
+        nextQuarterEndDate:
+          format: date
+          type: string
+          readOnly: true
+          nullable: false
+        facilityInitialStatus:
+          type: string
+          readOnly: true
+        facilityOverallStatus:
+          type: string
+          readOnly: true
+        delegationType:
+          type: string
+          readOnly: true
+        interestOrFeeRate:
+          type: number
+          readOnly: true
+        facilityStageCode:
+          type: string
+          readOnly: true
+        exposurePeriod:
+          type: string
+          readOnly: true
+        creditRatingCode:
+          type: string
+          readOnly: true
+        guaranteePercentage:
+          type: number
+          readOnly: true
+        premiumFrequencyCode:
+          type: string
+          readOnly: true
+        riskCountryCode:
+          type: string
+          readOnly: true
+        riskStatusCode:
+          type: string
+          readOnly: true
+        effectiveDate:
+          format: date
+          type: string
+          readOnly: true
+          nullable: false
+        foreCastPercentage:
+          type: number
+          readOnly: true
+        issueDate:
+          format: date
+          type: string
+          readOnly: true
+          nullable: true
+        description:
+          type: string
+          readOnly: true
+        agentBankIdentifier:
+          type: string
+          readOnly: true
+        obligorPartyIdentifier:
+          type: string
+          readOnly: true
+        obligorName:
+          type: string
+          readOnly: true
+        obligorIndustryClassification:
+          type: string
+          readOnly: true
+        probabilityOfDefault:
+          type: number
+          readOnly: true
+      required:
+        - dealIdentifier
+        - facilityIdentifier
+        - portfolioIdentifier
+        - dealBorrowerIdentifier
+        - maximumLiability
+        - productTypeId
+        - capitalConversionFactorCode
+        - currency
+        - guaranteeCommencementDate
+        - guaranteeExpiryDate
+        - nextQuarterEndDate
+        - facilityInitialStatus
+        - facilityOverallStatus
+        - delegationType
+        - interestOrFeeRate
+        - facilityStageCode
+        - exposurePeriod
+        - creditRatingCode
+        - guaranteePercentage
+        - premiumFrequencyCode
+        - riskCountryCode
+        - riskStatusCode
+        - effectiveDate
+        - foreCastPercentage
+        - issueDate
+        - description
+        - agentBankIdentifier
+        - obligorPartyIdentifier
+        - obligorName
+        - obligorIndustryClassification
+        - probabilityOfDefault
+    GetFacilityGuaranteesResponseItem:
+      type: object
+      properties:
+        facilityIdentifier:
+          type: string
+          description: The identifier of the facility.
+          example: '0000000001'
+        portfolioIdentifier:
+          type: string
+          description: The identifier of the portfolio.
+          example: E1
+        guaranteeCommencementDate:
+          format: date
+          type: string
+          description: The date that this guarantee will take effect.
+        effectiveDate:
+          format: date
+          type: string
+          description: >-
+            The date that this guarantee will take effect. This is always equal
+            to the guaranteeCommencementDate.
+        guarantorParty:
+          type: string
+          description: >-
+            The ACBS party identifier of the guarantor, the customer who is
+            making the guarantee/obligation.
+          example: '00000001'
+        limitKey:
+          type: string
+          description: An ACBS party identifier.
+          example: '00000001'
+        guaranteeExpiryDate:
+          format: date
+          type: string
+          description: The date the guarantee for this customer will expire.
+        maximumLiability:
+          type: number
+          description: The maximum amount the guarantor will guarantee.
+        guaranteeTypeCode:
+          type: string
+          description: The identifier for the type of the guarantee.
+          example: '315'
+      required:
+        - facilityIdentifier
+        - portfolioIdentifier
+        - guaranteeCommencementDate
+        - effectiveDate
+        - guarantorParty
+        - limitKey
+        - guaranteeExpiryDate
+        - maximumLiability
+        - guaranteeTypeCode
     CreateFacilityInvestorRequestItem:
       type: object
       properties:

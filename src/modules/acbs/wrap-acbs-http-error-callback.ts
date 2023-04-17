@@ -10,7 +10,7 @@ type AcbsHttpErrorCallback = (error: Error) => never;
 export const createWrapAcbsHttpGetErrorCallback =
   ({ messageForUnknownError, knownErrors }: { messageForUnknownError: string; knownErrors: KnownErrors }): AcbsHttpErrorCallback =>
   (error: Error) => {
-    if (error instanceof AxiosError && error.response && typeof error.response.data === 'string' && error.response.data.includes('Party not found')) {
+    if (error instanceof AxiosError && error.response && typeof error.response.data === 'string') {
       knownErrors.forEach(({ substringToFind, throwError }) => {
         if (error.response.data.includes(substringToFind)) {
           throwError(error);

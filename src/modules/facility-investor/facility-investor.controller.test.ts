@@ -24,7 +24,7 @@ describe('FacilityInvestorController', () => {
   });
 
   describe('createInvestorForFacility', () => {
-    const facilityIdentifier = valueGenerator.stringOfNumericCharacters();
+    const facilityIdentifier = valueGenerator.facilityId();
 
     const effectiveDate = TEST_DATES.A_FUTURE_EFFECTIVE_DATE_ONLY;
     const guaranteeExpiryDate = TEST_DATES.A_FUTURE_EXPIRY_DATE_ONLY;

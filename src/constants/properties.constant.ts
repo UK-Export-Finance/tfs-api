@@ -153,4 +153,12 @@ export const PROPERTIES = {
       contractPercentage: 100,
     },
   },
+  FACILITY: {
+    DEFAULT: {
+      GET: {
+        compBalPctReserve: 0,
+        compBalPctAmount: 0,
+      },
+    },
+  },
 };
