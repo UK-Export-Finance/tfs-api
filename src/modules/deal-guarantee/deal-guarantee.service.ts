@@ -1,13 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { PROPERTIES } from '@ukef/constants';
+import { UkefId } from '@ukef/helpers';
 import { roundTo2DecimalPlaces } from '@ukef/helpers/round-to-2-decimal-places.helper';
 import { AcbsDealGuaranteeService } from '@ukef/modules/acbs/acbs-deal-guarantee.service';
 import { AcbsCreateDealGuaranteeDto } from '@ukef/modules/acbs/dto/acbs-create-deal-guarantee.dto';
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 
-import { DateStringTransformations } from '../date/date-string.transformations';
 import { DealGuaranteeToCreate } from './deal-guarantee-to-create.interface';
+import { GetDealGuaranteeResponse, GetDealGuaranteeResponseItem } from './dto/get-deal-guarantee-response.dto';
 
 @Injectable()
 export class DealGuaranteeService {
@@ -48,5 +50,24 @@ export class DealGuaranteeService {
     };
 
     await this.acbsDealGuaranteeService.createGuaranteeForDeal(dealIdentifier, guaranteeToCreateInAcbs, idToken);
+  }
+
+  async getGuaranteesForDeal(dealIdentifier: UkefId): Promise<GetDealGuaranteeResponse> {
+    const idToken = await this.acbsAuthenticationService.getIdToken();
+    const portfolio = PROPERTIES.GLOBAL.portfolioIdentifier;
+    const guaranteesInAcbs = await this.acbsDealGuaranteeService.getGuaranteesForDeal(portfolio, dealIdentifier, idToken);
+
+    return guaranteesInAcbs.map((guaranteeInAcbs): GetDealGuaranteeResponseItem => {
+      return {
+        portfolioIdentifier: portfolio,
+        dealIdentifier: dealIdentifier,
+        effectiveDate: this.dateStringTransformations.removeTimeIfExists(guaranteeInAcbs.EffectiveDate),
+        guarantorParty: guaranteeInAcbs.GuarantorParty.PartyIdentifier,
+        limitKey: guaranteeInAcbs.LimitKey,
+        guaranteeExpiryDate: this.dateStringTransformations.removeTimeIfExists(guaranteeInAcbs.ExpirationDate),
+        maximumLiability: guaranteeInAcbs.GuaranteedLimit,
+        guaranteeTypeCode: guaranteeInAcbs.GuaranteeType.GuaranteeTypeCode,
+      };
+    });
   }
 }
