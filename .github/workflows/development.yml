@@ -25,6 +25,8 @@ on:
   push:
     branches:
       - dev
+      # TODO: Remove PR branch pre merge
+      - APIM-211-tfs-deployment
 
     paths:
       - "src/**"
