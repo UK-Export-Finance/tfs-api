@@ -1,5 +1,19 @@
 # This GHA is responsible for `APIM` (TFS) supporting infrastructure
 # creation and configuration using `az cli` bash scripting.
+# 
+# The workflow consists of two jobs:
+# * `setup`
+# * `base`
+# 
+# The setup job sets up environment variables by defining the product, environment, timezone, and target variables.
+# It then sets the output variables environment and timezone, which are used by the base job.
+# 
+# The base job creates the base infrastructure required for an APIM deployment.
+# It sets up Azure CLI extensions and uses the Azure CLI to create the following resources:
+# 
+# 
+# The workflow also sets various environment tags and prints out the state of the VNET peering connection.
+# Finally, note that some variables, such as `REGION`, `VERSION`, and various Azure credentials are defined as env variables or secrets respectively.
 #
 # Standard Azure naming convention has been followed:
 # https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming
@@ -47,7 +61,7 @@ on:
 env:
   product: apim
   environment: infrastructure
-  timezone: 'Europe/London'
+  timezone: "Europe/London"
   # Deployment environment target i.e., `dev`, `staging`, `prod`
   target: ${{ vars.environment }}
 
