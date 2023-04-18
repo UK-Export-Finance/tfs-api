@@ -8,7 +8,6 @@ import { of, throwError } from 'rxjs';
 import { DateStringTransformations } from '../date/date-string.transformations';
 import { AcbsFacilityCovenantService } from './acbs-facility-covenant.service';
 import { AcbsException } from './exception/acbs.exception';
-import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
 
 describe('AcbsFacilityCovenantService', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -65,7 +64,7 @@ describe('AcbsFacilityCovenantService', () => {
       expect(covenants).toBe(facilityCovenantsInAcbs);
     });
 
-    it('throws an AcbsResourceNotFoundException if ACBS responds with a 200 response where the response body is an empty array', async () => {
+    it('returns an empty array if ACBS responds with an empty array', async () => {
       when(httpServiceGet)
         .calledWith(...expectedHttpServiceGetArgs)
         .mockReturnValueOnce(
@@ -78,12 +77,9 @@ describe('AcbsFacilityCovenantService', () => {
           }),
         );
 
-      const getCovenantsForFacilityPromise = service.getCovenantsForFacility(portfolioIdentifier, facilityIdentifier, idToken);
+      const guarantees = await service.getCovenantsForFacility(portfolioIdentifier, facilityIdentifier, idToken);
 
-      await expect(getCovenantsForFacilityPromise).rejects.toBeInstanceOf(AcbsResourceNotFoundException);
-      await expect(getCovenantsForFacilityPromise).rejects.toThrow(
-        `Covenants for facility with identifier ${facilityIdentifier} were not found by ACBS or the facility was not found by ACBS.`,
-      );
+      expect(guarantees).toStrictEqual([]);
     });
 
     it('throws an AcbsException if the request to ACBS fails', async () => {

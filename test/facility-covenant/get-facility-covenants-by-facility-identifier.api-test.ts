@@ -60,7 +60,7 @@ describe('GET /facilities/{facilityIdentifier}/covenant', () => {
     expect(body).toStrictEqual(JSON.parse(JSON.stringify(facilityCovenantsFromApi)));
   });
 
-  it('returns a 404 response with an empty array if ACBS returns a 200 response with an empty array', async () => {
+  it('returns a 200 response with an empty array if ACBS returns a 200 response with an empty array', async () => {
     givenAuthenticationWithTheIdpSucceeds();
     requestToGetFacilityCovenants().reply(200, []);
 
