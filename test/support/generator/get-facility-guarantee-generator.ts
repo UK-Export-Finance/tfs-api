@@ -1,4 +1,4 @@
-import { DateString } from '@ukef/helpers'; // TO-DO: rename this file for consistency
+import { DateString } from '@ukef/helpers';
 import { AcbsGetFacilityGuaranteesResponseDto } from '@ukef/modules/acbs/dto/acbs-get-facility-guarantees-response.dto';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { GetFacilityGuaranteesResponse } from '@ukef/modules/facility-guarantee/dto/get-facility-guarantees-response.dto';
