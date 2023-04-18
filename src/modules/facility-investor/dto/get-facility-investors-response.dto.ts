@@ -19,19 +19,22 @@ export class GetFacilityInvestorResponseItem {
 
   @ApiProperty({
     description: `The date from which this limit is effective.`,
-    example: EXAMPLES.START_DATE,
+    type: Date,
+    format: 'date',
   })
   readonly effectiveDate: DateOnlyString;
 
   @ApiProperty({
     description: `The date on which this limit will start.`,
-    example: EXAMPLES.START_DATE,
+    type: Date,
+    format: 'date',
   })
   readonly guaranteeCommencementDate: DateOnlyString;
 
   @ApiProperty({
     description: `The date on which this limit will expire.`,
-    example: EXAMPLES.END_DATE,
+    type: Date,
+    format: 'date',
   })
   readonly guaranteeExpiryDate: DateOnlyString;
 

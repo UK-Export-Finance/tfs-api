@@ -34,7 +34,6 @@ export class AcbsFacilityPartyService {
   }
 
   async getFacilityPartiesForFacility(portfolioIdentifier: string, facilityIdentifier: UkefId, idToken: string): Promise<AcbsGetFacilityPartyResponseDto[]> {
-    //const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
     const { data: facilityPartiesInAcbs } = await this.acbsHttpService.get<AcbsGetFacilityPartyResponseDto[]>({
       path: `/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/FacilityParty`,
       idToken,

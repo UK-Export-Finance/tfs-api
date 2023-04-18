@@ -284,10 +284,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/GetFacilityInvestorResponseItem'
-        '204':
-          description: >-
-            The facility has no investors. Most facilities should have atleast 1
-            investor by default.
         '400':
           description: Bad request.
         '404':
@@ -610,7 +606,7 @@ components:
           type: number
           description: The maximum amount the guarantor will guarantee.
           minimum: 0
-          example: '50672.25'
+          example: 501927.25
         guaranteeTypeCode:
           type: string
           description: >-
@@ -988,17 +984,17 @@ components:
           minLength: 10
           maxLength: 10
         effectiveDate:
+          format: date
           type: string
           description: The date from which this limit is effective.
-          example: '2023-04-12'
         guaranteeCommencementDate:
+          format: date
           type: string
           description: The date on which this limit will start.
-          example: '2023-04-12'
         guaranteeExpiryDate:
+          format: date
           type: string
           description: The date on which this limit will expire.
-          example: '2024-04-12'
         currency:
           type: string
           description: >-

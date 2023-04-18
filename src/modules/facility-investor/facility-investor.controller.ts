@@ -4,7 +4,6 @@ import {
   ApiBody,
   ApiCreatedResponse,
   ApiInternalServerErrorResponse,
-  ApiNoContentResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
@@ -86,9 +85,6 @@ export class FacilityInvestorController {
   })
   @ApiNotFoundResponse({
     description: 'The facility was not found.',
-  })
-  @ApiNoContentResponse({
-    description: 'The facility has no investors. Most facilities should have atleast 1 investor by default.',
   })
   @ApiBadRequestResponse({
     description: 'Bad request.',

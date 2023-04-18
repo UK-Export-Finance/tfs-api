@@ -6,11 +6,10 @@ import { when } from 'jest-when';
 import { of, throwError } from 'rxjs';
 
 import { AcbsFacilityPartyService } from './acbs-facility-party.service';
-// import { AcbsGetFacilityPartyResponseDto } from './dto/acbs-get-facility-party-response.dto';
 import { AcbsException } from './exception/acbs.exception';
 import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
 
-describe('AcbsFacilityService', () => {
+describe('AcbsFacilityPartyService', () => {
   const valueGenerator = new RandomValueGenerator();
   const idToken = valueGenerator.string();
   const baseUrl = valueGenerator.httpsUrl();
