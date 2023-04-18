@@ -8,12 +8,12 @@ import { GetFacilityCovenantGenerator } from '@ukef-test/support/generator/get-f
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import nock from 'nock';
 
-describe('GET /facilities/{facilityIdentifier}/covenant', () => {
+describe('GET /facilities/{facilityIdentifier}/covenants', () => {
   const valueGenerator = new RandomValueGenerator();
   const dateStringTransformations = new DateStringTransformations();
   const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
   const facilityIdentifier = valueGenerator.ukefId();
-  const getFacilityCovenantsUrl = `/api/v1/facilities/${facilityIdentifier}/covenant`;
+  const getFacilityCovenantsUrl = `/api/v1/facilities/${facilityIdentifier}/covenants`;
 
   const { facilityCovenantsInAcbs, facilityCovenantsFromApi } = new GetFacilityCovenantGenerator(valueGenerator, dateStringTransformations).generate({
     numberToGenerate: 2,
