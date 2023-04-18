@@ -15,7 +15,7 @@ export class GetFacilityCovenantGenerator extends AbstractGenerator<AcbsGetFacil
       FacilityIdentifier: this.valueGenerator.ukefId(),
       PortfolioIdentifier: this.valueGenerator.string(),
       CovenantIdentifier: this.valueGenerator.stringOfNumericCharacters(),
-      EffectiveDate: this.valueGenerator.dateTimeString(), // TO-DO: correct mistake in previous PR
+      EffectiveDate: this.valueGenerator.dateTimeString(),
       ExpirationDate: this.valueGenerator.dateTimeString(),
       TargetAmount: this.valueGenerator.nonnegativeFloat(),
       PledgeType: {

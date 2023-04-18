@@ -1,4 +1,4 @@
-import { DateString } from '@ukef/helpers'; // TO-DO: rename this file for consistency
+import { DateString } from '@ukef/helpers';
 import { AcbsGetFacilityGuaranteesResponseDto } from '@ukef/modules/acbs/dto/acbs-get-facility-guarantees-response.dto';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { GetFacilityGuaranteesResponse } from '@ukef/modules/facility-guarantee/dto/get-facility-guarantees-response.dto';
@@ -7,7 +7,7 @@ import { FacilityGuarantee } from '@ukef/modules/facility-guarantee/facility-gua
 import { AbstractGenerator } from './abstract-generator';
 import { RandomValueGenerator } from './random-value-generator';
 
-export class GetFacilityGuaranteesGenerator extends AbstractGenerator<FacilityGuaranteeValues, GenerateResult, GenerateOptions> {
+export class GetFacilityGuaranteeGenerator extends AbstractGenerator<FacilityGuaranteeValues, GenerateResult, GenerateOptions> {
   constructor(protected readonly valueGenerator: RandomValueGenerator, protected readonly dateStringTransformations: DateStringTransformations) {
     super(valueGenerator);
   }
