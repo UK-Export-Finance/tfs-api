@@ -27,9 +27,11 @@ export class AcbsFacilityCovenantService {
 
     if (covenants.length === 0) {
       // The ACBS endpoint has surprising behaviour where a `200 OK` response with response body equal to the empty array
-      // is returned if the facility does not exist, but also if the facility does exist but has no covenants. That means 
+      // is returned if the facility does not exist, but also if the facility does exist but has no covenants. That means
       // we do not know if the facility exists or not at this point.
-      throw new AcbsResourceNotFoundException(`Covenants for facility with identifier ${facilityIdentifier} were not found by ACBS or the facility was not found by ACBS.`);
+      throw new AcbsResourceNotFoundException(
+        `Covenants for facility with identifier ${facilityIdentifier} were not found by ACBS or the facility was not found by ACBS.`,
+      );
     }
 
     return covenants;

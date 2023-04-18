@@ -1,14 +1,14 @@
 import { HttpService } from '@nestjs/axios';
+import { GetFacilityCovenantGenerator } from '@ukef-test/support/generator/get-facility-covenant-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { AxiosError } from 'axios';
 import { when } from 'jest-when';
 import { of, throwError } from 'rxjs';
 
+import { DateStringTransformations } from '../date/date-string.transformations';
 import { AcbsFacilityCovenantService } from './acbs-facility-covenant.service';
 import { AcbsException } from './exception/acbs.exception';
 import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
-import { GetFacilityCovenantGenerator } from '@ukef-test/support/generator/get-facility-covenant-generator';
-import { DateStringTransformations } from '../date/date-string.transformations';
 
 describe('AcbsFacilityCovenantService', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -66,23 +66,25 @@ describe('AcbsFacilityCovenantService', () => {
     });
 
     it('throws an AcbsResourceNotFoundException if ACBS responds with a 200 response where the response body is an empty array', async () => {
-        when(httpServiceGet)
-          .calledWith(...expectedHttpServiceGetArgs)
-          .mockReturnValueOnce(
-            of({
-              data: [],
-              status: 200,
-              statusText: 'Ok',
-              config: undefined,
-              headers: undefined,
-            }),
-          );
-  
-        const getCovenantsForFacilityPromise = service.getCovenantsForFacility(portfolioIdentifier, facilityIdentifier, idToken);
-  
-        await expect(getCovenantsForFacilityPromise).rejects.toBeInstanceOf(AcbsResourceNotFoundException);
-        await expect(getCovenantsForFacilityPromise).rejects.toThrow(`Covenants for facility with identifier ${facilityIdentifier} were not found by ACBS or the facility was not found by ACBS.`);
-      });
+      when(httpServiceGet)
+        .calledWith(...expectedHttpServiceGetArgs)
+        .mockReturnValueOnce(
+          of({
+            data: [],
+            status: 200,
+            statusText: 'Ok',
+            config: undefined,
+            headers: undefined,
+          }),
+        );
+
+      const getCovenantsForFacilityPromise = service.getCovenantsForFacility(portfolioIdentifier, facilityIdentifier, idToken);
+
+      await expect(getCovenantsForFacilityPromise).rejects.toBeInstanceOf(AcbsResourceNotFoundException);
+      await expect(getCovenantsForFacilityPromise).rejects.toThrow(
+        `Covenants for facility with identifier ${facilityIdentifier} were not found by ACBS or the facility was not found by ACBS.`,
+      );
+    });
 
     it('throws an AcbsException if the request to ACBS fails', async () => {
       const getCovenantsForFacilityError = new AxiosError();
