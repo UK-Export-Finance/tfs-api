@@ -49,7 +49,7 @@ export class FacilityInvestorService {
     return investorsInAcbs.map(
       (investorInAcbs): GetFacilityInvestorResponseItem => ({
         facilityIdentifier,
-        portfolioIdentifier: portfolioIdentifier,
+        portfolioIdentifier,
         guaranteeCommencementDate: this.dateStringTransformations.removeTime(investorInAcbs.EffectiveDate),
         effectiveDate: this.dateStringTransformations.removeTime(investorInAcbs.EffectiveDate),
         currency: investorInAcbs.Currency.CurrencyCode,

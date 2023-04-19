@@ -24,6 +24,7 @@ export class GetFacilityInvestorResponseItem {
   })
   readonly effectiveDate: DateOnlyString;
 
+  // TODO: this is copy of effective date, we could remove it.
   @ApiProperty({
     description: `The date on which this limit will start.`,
     type: Date,
