@@ -3,13 +3,6 @@
 exports[`GET /docs-yaml matches the snapshot 1`] = `
 "openapi: 3.0.0
 paths:
-  /api/v1/test:
-    get:
-      operationId: TestController_getToken
-      parameters: []
-      responses:
-        '200':
-          description: ''
   /api/v1/deals/{dealIdentifier}:
     get:
       operationId: DealController_getDealByIdentifier
