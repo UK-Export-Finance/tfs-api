@@ -21,7 +21,7 @@ describe('FacilityGuaranteeController', () => {
   let controller: FacilityGuaranteeController;
 
   beforeEach(() => {
-    const facilityGuaranteeService = new FacilityGuaranteeService(null, null, null);
+    const facilityGuaranteeService = new FacilityGuaranteeService(null, null, null, null);
     getFacilityGuaranteesService = jest.fn();
     facilityGuaranteeService.getGuaranteesForFacility = getFacilityGuaranteesService;
 

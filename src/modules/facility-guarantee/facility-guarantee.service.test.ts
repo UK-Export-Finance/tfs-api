@@ -1,6 +1,7 @@
 import { PROPERTIES } from '@ukef/constants';
 import { AcbsFacilityGuaranteeService } from '@ukef/modules/acbs/acbs-facility-guarantee.service';
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
+import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
 import { GetFacilityGuaranteesGenerator } from '@ukef-test/support/generator/get-facility-guarantees.generator';
@@ -22,6 +23,7 @@ describe('FacilityGuaranteeService', () => {
 
   let acbsAuthenticationService: AcbsAuthenticationService;
   let service: FacilityGuaranteeService;
+  let currentDateProviderGetLatestDateFromTodayAnd: jest.Mock;
 
   let getFacilityGuaranteesAcbsService: jest.Mock;
 
@@ -35,7 +37,11 @@ describe('FacilityGuaranteeService', () => {
     getFacilityGuaranteesAcbsService = jest.fn();
     acbsService.getGuaranteesForFacility = getFacilityGuaranteesAcbsService;
 
-    service = new FacilityGuaranteeService(acbsAuthenticationService, acbsService, new DateStringTransformations());
+    const currentDateProvider = new CurrentDateProvider();
+    currentDateProviderGetLatestDateFromTodayAnd = jest.fn();
+    currentDateProvider.getLatestDateFromTodayAnd = currentDateProviderGetLatestDateFromTodayAnd;
+
+    service = new FacilityGuaranteeService(acbsAuthenticationService, acbsService, currentDateProvider, new DateStringTransformations());
   });
 
   describe('getGuaranteesForFacility', () => {

@@ -4,17 +4,17 @@ import { ValidatedNumberApiProperty } from '@ukef/decorators/validated-number-ap
 import { ValidatedStringApiProperty } from '@ukef/decorators/validated-string-api-property.decorator';
 import { DateOnlyString } from '@ukef/helpers/date-only-string.type';
 
-export type CreateDealGuaranteeRequest = CreateDealGuaranteeRequestItem[];
+export type CreateFacilityGuaranteeRequest = CreateFacilityGuaranteeRequestItem[];
 
-export class CreateDealGuaranteeRequestItem {
+export class CreateFacilityGuaranteeRequestItem {
   @ValidatedStringApiProperty({
-    description: 'The identifier of the deal to create the guarantee for.',
-    example: EXAMPLES.DEAL_ID,
+    description: 'The identifier of the facility to create the guarantee for.',
+    example: EXAMPLES.FACILITY_ID,
     minLength: 10,
     maxLength: 10,
     pattern: /^00\d{8}$/,
   })
-  readonly dealIdentifier: string;
+  readonly facilityIdentifier: string;
 
   @ValidatedDateOnlyApiProperty({
     description: `The date that this guarantee will take effect. This will be replaced by today's date if a date in the past is provided.`,
@@ -59,7 +59,7 @@ export class CreateDealGuaranteeRequestItem {
   readonly guaranteeTypeCode?: string;
 
   constructor(
-    dealIdentifier: string,
+    facilityIdentifier: string,
     effectiveDate: DateOnlyString,
     limitKey: string,
     guaranteeExpiryDate: DateOnlyString,
@@ -67,7 +67,7 @@ export class CreateDealGuaranteeRequestItem {
     guarantorParty?: string,
     guaranteeTypeCode?: string,
   ) {
-    this.dealIdentifier = dealIdentifier;
+    this.facilityIdentifier = facilityIdentifier;
     this.effectiveDate = effectiveDate;
     this.limitKey = limitKey;
     this.guaranteeExpiryDate = guaranteeExpiryDate;
