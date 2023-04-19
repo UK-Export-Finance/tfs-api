@@ -39,7 +39,7 @@ export class AcbsFacilityPartyService {
       idToken,
       onError: createWrapAcbsHttpPostErrorCallback({
         messageForUnknownError: `Failed to get a party for facility ${facilityIdentifier} in ACBS.`,
-        knownErrors: [getFacilityNotFoundKnownAcbsError(facilityIdentifier)],
+        knownErrors: [],
       }),
     });
 

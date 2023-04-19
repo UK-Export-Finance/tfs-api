@@ -92,7 +92,7 @@ export class FacilityInvestorController {
   @ApiInternalServerErrorResponse({
     description: 'An internal server error has occurred.',
   })
-  async getInvestorsForFacility(@Param() params: GetFacilityInvestorsParamsDto): Promise<GetFacilityInvestorsResponse> {
-    return await this.facilityInvestorService.getInvestorsForFacility(params.facilityIdentifier);
+  getInvestorsForFacility(@Param() params: GetFacilityInvestorsParamsDto): Promise<GetFacilityInvestorsResponse> {
+    return this.facilityInvestorService.getInvestorsForFacility(params.facilityIdentifier);
   }
 }

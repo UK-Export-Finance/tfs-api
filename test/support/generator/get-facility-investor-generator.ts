@@ -60,6 +60,7 @@ export class GetFacilityInvestorGenerator extends AbstractGenerator<GetFacilityI
     };
   }
 }
+
 interface GenerateOptions {
   facilityIdentifier: UkefId;
   portfolioIdentifier: string;

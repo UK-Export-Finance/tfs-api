@@ -43,13 +43,13 @@ export class FacilityInvestorService {
 
   async getInvestorsForFacility(facilityIdentifier: UkefId): Promise<GetFacilityInvestorsResponse> {
     const idToken = await this.acbsAuthenticationService.getIdToken();
-    const portfolio = PROPERTIES.GLOBAL.portfolioIdentifier;
-    const investorsInAcbs = await this.acbsFacilityPartyService.getFacilityPartiesForFacility(portfolio, facilityIdentifier, idToken);
+    const { portfolioIdentifier } = PROPERTIES.GLOBAL;
+    const investorsInAcbs = await this.acbsFacilityPartyService.getFacilityPartiesForFacility(portfolioIdentifier, facilityIdentifier, idToken);
 
     return investorsInAcbs.map(
       (investorInAcbs): GetFacilityInvestorResponseItem => ({
         facilityIdentifier,
-        portfolioIdentifier: portfolio,
+        portfolioIdentifier: portfolioIdentifier,
         guaranteeCommencementDate: this.dateStringTransformations.removeTime(investorInAcbs.EffectiveDate),
         effectiveDate: this.dateStringTransformations.removeTime(investorInAcbs.EffectiveDate),
         currency: investorInAcbs.Currency.CurrencyCode,

@@ -975,8 +975,8 @@ components:
       properties:
         portfolioIdentifier:
           type: string
-          readOnly: true
           example: E1
+          description: The identifier of the portfolio.
         facilityIdentifier:
           type: string
           description: The identifier of the facility the investor belongs to.

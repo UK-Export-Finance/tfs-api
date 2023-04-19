@@ -1,4 +1,4 @@
-import { ApiProperty, ApiResponseProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { EXAMPLES, PROPERTIES } from '@ukef/constants';
 import { UkefId } from '@ukef/helpers';
 import { DateOnlyString } from '@ukef/helpers/date-only-string.type';
@@ -6,8 +6,8 @@ import { DateOnlyString } from '@ukef/helpers/date-only-string.type';
 export type GetFacilityInvestorsResponse = GetFacilityInvestorResponseItem[];
 
 export class GetFacilityInvestorResponseItem {
-  @ApiResponseProperty({ example: PROPERTIES.GLOBAL.portfolioIdentifier })
-  portfolioIdentifier: string;
+  @ApiProperty({ example: PROPERTIES.GLOBAL.portfolioIdentifier, description: 'The identifier of the portfolio.' })
+  readonly portfolioIdentifier: string;
 
   @ApiProperty({
     description: 'The identifier of the facility the investor belongs to.',

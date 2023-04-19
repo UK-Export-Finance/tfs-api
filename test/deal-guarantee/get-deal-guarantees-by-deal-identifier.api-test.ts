@@ -10,7 +10,7 @@ import nock from 'nock';
 describe('GET /deals/{dealIdentifier}/guarantees', () => {
   const valueGenerator = new RandomValueGenerator();
   const dealIdentifier: UkefId = valueGenerator.ukefId();
-  const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+  const { portfolioIdentifier } = PROPERTIES.GLOBAL;
   const getDealGuaranteesUrl = `/api/v1/deals/${dealIdentifier}/guarantees`;
 
   let api: Api;

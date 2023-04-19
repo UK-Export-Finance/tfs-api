@@ -16,7 +16,7 @@ describe('AcbsFacilityPartyService', () => {
   const idToken = valueGenerator.string();
   const baseUrl = valueGenerator.httpsUrl();
   const facilityIdentifier = valueGenerator.facilityId();
-  const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+  const { portfolioIdentifier } = PROPERTIES.GLOBAL;
 
   const newFacilityParty = generateAcbsCreateFacilityPartyDtoUsing(valueGenerator);
 
