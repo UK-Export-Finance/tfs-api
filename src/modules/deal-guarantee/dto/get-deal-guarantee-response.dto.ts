@@ -45,7 +45,7 @@ export class GetDealGuaranteeResponseItem {
   @ApiProperty({
     description: 'The maximum amount the guarantor will guarantee.',
     minimum: 0,
-    example: '50672.25',
+    example: EXAMPLES.DEAL_OR_FACILITY_VALUE,
   })
   readonly maximumLiability: number;
 

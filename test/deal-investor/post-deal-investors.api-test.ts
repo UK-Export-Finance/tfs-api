@@ -157,7 +157,7 @@ describe('POST /deals/{dealIdentifier}/investors', () => {
   withStringFieldValidationApiTests({
     fieldName: 'dealIdentifier',
     length: 10,
-    pattern: '/00\\d{8}/',
+    pattern: '/^00\\d{8}$/',
     generateFieldValueOfLength: (length: number) => valueGenerator.ukefId(length - 4),
     generateFieldValueThatDoesNotMatchRegex: () => '1000000000' as UkefId,
     validRequestBody: requestBodyToCreateDealInvestor,
