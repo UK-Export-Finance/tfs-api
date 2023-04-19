@@ -171,7 +171,7 @@ paths:
           required: true
           in: path
           description: The identifier of the facility in ACBS.
-          example: '0000000001'
+          example: '0030000322'
           schema:
             minLength: 10
             maxLength: 10
@@ -197,7 +197,7 @@ paths:
           required: true
           in: path
           description: The identifier of the facility in ACBS.
-          example: '0000000001'
+          example: '0030000322'
           schema:
             minLength: 10
             maxLength: 10
@@ -230,7 +230,7 @@ paths:
           required: true
           in: path
           description: The identifier of the facility in ACBS.
-          example: '0000000001'
+          example: '0030000322'
           schema:
             type: string
       requestBody:
@@ -248,6 +248,35 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreateFacilityInvestorResponse'
+        '400':
+          description: Bad request.
+        '404':
+          description: The facility was not found.
+        '500':
+          description: An internal server error has occurred.
+    get:
+      operationId: FacilityInvestorController_getInvestorsForFacility
+      summary: Get all investors of the facility.
+      parameters:
+        - name: facilityIdentifier
+          required: true
+          in: path
+          description: The identifier of the facility in ACBS.
+          example: '0030000322'
+          schema:
+            minLength: 10
+            maxLength: 10
+            pattern: ^00\\d{8}$
+            type: string
+      responses:
+        '200':
+          description: The facility investors have been successfully retrieved.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GetFacilityInvestorResponseItem'
         '400':
           description: Bad request.
         '404':
@@ -399,7 +428,7 @@ components:
         obligorPartyIdentifier:
           type: string
           readOnly: true
-          example: '00000001'
+          example: '00001234'
         obligorName:
           type: string
           readOnly: true
@@ -555,13 +584,13 @@ components:
             the guarantee/obligation. This field cannot be updated
           minLength: 8
           maxLength: 8
-          example: '00000001'
+          example: '00001234'
         limitKey:
           type: string
           description: An ACBS party identifier.
           minLength: 8
           maxLength: 8
-          example: '00000001'
+          example: '00001234'
         guaranteeExpiryDate:
           format: date
           type: string
@@ -570,7 +599,7 @@ components:
           type: number
           description: The maximum amount the guarantor will guarantee.
           minimum: 0
-          example: '50672.25'
+          example: 501927.25
         guaranteeTypeCode:
           type: string
           description: >-
@@ -645,7 +674,7 @@ components:
             10-digit code beginning with either '0020', '0030', or '0040'.
           minLength: 10
           maxLength: 10
-          pattern: 00\\d{8}
+          pattern: ^00\\d{8}$
           example: '0020900111'
         lenderType:
           type: string
@@ -833,7 +862,7 @@ components:
         facilityIdentifier:
           type: string
           description: The identifier of the facility.
-          example: '0000000001'
+          example: '0030000322'
         portfolioIdentifier:
           type: string
           description: The identifier of the portfolio.
@@ -853,11 +882,11 @@ components:
           description: >-
             The ACBS party identifier of the guarantor, the customer who is
             making the guarantee/obligation.
-          example: '00000001'
+          example: '00001234'
         limitKey:
           type: string
           description: An ACBS party identifier.
-          example: '00000001'
+          example: '00001234'
         guaranteeExpiryDate:
           format: date
           type: string
@@ -934,6 +963,66 @@ components:
           example: '0000000001'
       required:
         - facilityIdentifier
+    GetFacilityInvestorResponseItem:
+      type: object
+      properties:
+        portfolioIdentifier:
+          type: string
+          example: E1
+          description: The identifier of the portfolio.
+        facilityIdentifier:
+          type: string
+          description: The identifier of the facility the investor belongs to.
+          example: '0030000322'
+          minLength: 10
+          maxLength: 10
+        effectiveDate:
+          format: date
+          type: string
+          description: The date from which this limit is effective.
+        guaranteeCommencementDate:
+          format: date
+          type: string
+          description: The date on which this limit will start.
+        guaranteeExpiryDate:
+          format: date
+          type: string
+          description: The date on which this limit will expire.
+        currency:
+          type: string
+          description: >-
+            The code of the currency for this investor, Currency in the Currency
+            Definition Table.
+          example: USD
+          minLength: 3
+          maxLength: 3
+        maximumLiability:
+          type: number
+          description: The investor's share of the current limit amount.
+          minimum: 0
+          example: 501927.25
+        lenderTypeCode:
+          type: string
+          description: Investor record type.
+          minLength: 3
+          maxLength: 3
+          example: '500'
+        involvedParty:
+          type: string
+          description: ACBS id of involved party.
+          minLength: 10
+          maxLength: 10
+          example: '00001234'
+      required:
+        - portfolioIdentifier
+        - facilityIdentifier
+        - effectiveDate
+        - guaranteeCommencementDate
+        - guaranteeExpiryDate
+        - currency
+        - maximumLiability
+        - lenderTypeCode
+        - involvedParty
     GetPartyExternalRatingResponseRatingEntity:
       type: object
       properties:

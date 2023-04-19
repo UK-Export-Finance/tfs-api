@@ -17,7 +17,7 @@ describe('POST /deals', () => {
 
   const createDealUrl = `/api/v1/deals`;
 
-  const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+  const { portfolioIdentifier } = PROPERTIES.GLOBAL;
 
   const {
     createDealRequestItem: dealToCreate,

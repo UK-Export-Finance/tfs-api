@@ -13,7 +13,7 @@ describe('GET /deals/{dealIdentifier}', () => {
   const valueGenerator = new RandomValueGenerator();
 
   const dealIdentifier = valueGenerator.stringOfNumericCharacters({ length: 10 });
-  const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+  const { portfolioIdentifier } = PROPERTIES.GLOBAL;
   const currency = TEST_CURRENCIES.A_TEST_CURRENCY;
   const dealValue = valueGenerator.nonnegativeFloat();
   const guaranteeCommencementDateInAcbs = '2023-02-01T00:00:00Z';
