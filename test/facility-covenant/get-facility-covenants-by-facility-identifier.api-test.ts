@@ -70,35 +70,6 @@ describe('GET /facilities/{facilityIdentifier}/covenants', () => {
     expect(body).toStrictEqual([]);
   });
 
-  it('returns a 200 response with the facility covenants if they are returned by ACBS and an EffectiveDate field is null', async () => {
-    const facilityCovenantsInAcbsWithANullEffectiveDate = [{ ...facilityCovenantsInAcbs[0], EffectiveDate: null }, facilityCovenantsInAcbs[1]];
-    const facilityCovenantsFromApiWithANullEffectiveDate = [
-      { ...facilityCovenantsFromApi[0], guaranteeCommencementDate: null, effectiveDate: null },
-      facilityCovenantsFromApi[1],
-    ];
-
-    givenAuthenticationWithTheIdpSucceeds();
-    requestToGetFacilityCovenants().reply(200, facilityCovenantsInAcbsWithANullEffectiveDate);
-
-    const { status, body } = await api.get(getFacilityCovenantsUrl);
-
-    expect(status).toBe(200);
-    expect(body).toStrictEqual(JSON.parse(JSON.stringify(facilityCovenantsFromApiWithANullEffectiveDate)));
-  });
-
-  it('returns a 200 response with the facility covenants if they are returned by ACBS and an ExpirationDate field is null', async () => {
-    const facilityCovenantsInAcbsWithANullExpirationDate = [{ ...facilityCovenantsInAcbs[0], ExpirationDate: null }, facilityCovenantsInAcbs[1]];
-    const facilityCovenantsFromApiWithANullExpirationDate = [{ ...facilityCovenantsFromApi[0], guaranteeExpiryDate: null }, facilityCovenantsFromApi[1]];
-
-    givenAuthenticationWithTheIdpSucceeds();
-    requestToGetFacilityCovenants().reply(200, facilityCovenantsInAcbsWithANullExpirationDate);
-
-    const { status, body } = await api.get(getFacilityCovenantsUrl);
-
-    expect(status).toBe(200);
-    expect(body).toStrictEqual(JSON.parse(JSON.stringify(facilityCovenantsFromApiWithANullExpirationDate)));
-  });
-
   it('returns a 500 response if getting the facility covenants from ACBS returns a status code that is NOT 200', async () => {
     givenAuthenticationWithTheIdpSucceeds();
     requestToGetFacilityCovenants().reply(401);

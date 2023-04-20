@@ -4,8 +4,8 @@ export interface AcbsGetFacilityCovenantsResponseDto {
   FacilityIdentifier: string;
   PortfolioIdentifier: string;
   CovenantIdentifier: string;
-  EffectiveDate: DateString | null;
-  ExpirationDate: DateString | null;
+  EffectiveDate: DateString;
+  ExpirationDate: DateString;
   TargetAmount: number;
   PledgeType: {
     PledgeTypeCode: string;

@@ -19,13 +19,13 @@ export class FacilityCovenantService {
     const idToken = await this.acbsAuthenticationService.getIdToken();
     const covenantsInAcbs = await this.acbsFacilityCovenantService.getCovenantsForFacility(portfolioIdentifier, facilityIdentifier, idToken);
     return covenantsInAcbs.map((covenant) => {
-      const effectiveDateOnly = this.dateStringTransformations.removeTimeIfExists(covenant.EffectiveDate);
-      const expirationDateOnly = this.dateStringTransformations.removeTimeIfExists(covenant.ExpirationDate);
+      const effectiveDateOnly = this.dateStringTransformations.removeTime(covenant.EffectiveDate);
+      const expirationDateOnly = this.dateStringTransformations.removeTime(covenant.ExpirationDate);
       return {
         covenantIdentifier: covenant.CovenantIdentifier,
         covenantType: covenant.CovenantType.CovenantTypeCode,
-        facilityIdentifier: facilityIdentifier,
-        portfolioIdentifier: portfolioIdentifier,
+        facilityIdentifier,
+        portfolioIdentifier,
         maximumLiability: covenant.TargetAmount,
         currency: covenant.PledgeType.PledgeTypeCode,
         guaranteeCommencementDate: effectiveDateOnly,

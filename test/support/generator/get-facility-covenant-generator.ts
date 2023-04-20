@@ -49,13 +49,13 @@ export class GetFacilityCovenantGenerator extends AbstractGenerator<AcbsGetFacil
     const facilityCovenantsFromApi: GetFacilityCovenantsResponseDto[] = values.map((v) => ({
       covenantIdentifier: v.CovenantIdentifier,
       covenantType: v.CovenantType.CovenantTypeCode,
-      facilityIdentifier: facilityIdentifier,
-      portfolioIdentifier: portfolioIdentifier,
+      facilityIdentifier,
+      portfolioIdentifier,
       maximumLiability: v.TargetAmount,
       currency: v.PledgeType.PledgeTypeCode,
-      guaranteeCommencementDate: this.dateStringTransformations.removeTimeIfExists(v.EffectiveDate),
-      effectiveDate: this.dateStringTransformations.removeTimeIfExists(v.EffectiveDate),
-      guaranteeExpiryDate: this.dateStringTransformations.removeTimeIfExists(v.ExpirationDate),
+      guaranteeCommencementDate: this.dateStringTransformations.removeTime(v.EffectiveDate),
+      effectiveDate: this.dateStringTransformations.removeTime(v.EffectiveDate),
+      guaranteeExpiryDate: this.dateStringTransformations.removeTime(v.ExpirationDate),
     }));
 
     return {
@@ -64,6 +64,7 @@ export class GetFacilityCovenantGenerator extends AbstractGenerator<AcbsGetFacil
     };
   }
 }
+
 interface GenerateOptions {
   facilityIdentifier: string;
   portfolioIdentifier: string;
