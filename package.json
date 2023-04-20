@@ -6,8 +6,8 @@
   "license": "MIT",
   "author": "UKEF",
   "scripts": {
-    "build": "nest build -p tsconfig.build.json",
     "api-test": "jest --coverage --selectProjects=API",
+    "build": "nest build -p tsconfig.build.json",
     "postinstall": "husky install",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",

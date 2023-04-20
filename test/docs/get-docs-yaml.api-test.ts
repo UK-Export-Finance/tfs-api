@@ -1,7 +1,6 @@
 import { Api } from '@ukef-test/support/api';
-import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 
-describe('GET /docs-yaml', () => {
+describe('GET /openapi/yaml', () => {
   let api: Api;
 
   beforeAll(async () => {
@@ -13,18 +12,12 @@ describe('GET /docs-yaml', () => {
   });
 
   it('returns a 200 OK response', async () => {
-    const { status } = await api.getDocsWithBasicAuth('/docs-yaml', {
-      username: ENVIRONMENT_VARIABLES.SWAGGER_USER,
-      password: ENVIRONMENT_VARIABLES.SWAGGER_PASSWORD,
-    });
+    const { status } = await api.get('/openapi/yaml');
     expect(status).toBe(200);
   });
 
   it('matches the snapshot', async () => {
-    const { text } = await api.getDocsWithBasicAuth('/docs-yaml', {
-      username: ENVIRONMENT_VARIABLES.SWAGGER_USER,
-      password: ENVIRONMENT_VARIABLES.SWAGGER_PASSWORD,
-    });
+    const { text } = await api.get('/openapi/yaml');
     expect(text).toMatchSnapshot();
   });
 });
