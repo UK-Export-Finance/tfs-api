@@ -3,8 +3,6 @@ import { Api } from '@ukef-test/support/api';
 describe('GET /openapi/yaml', () => {
   let api: Api;
 
-  console.log(`*DEBUG*: ${EXAMPLES.FACILITY_ID}`);
-
   beforeAll(async () => {
     api = await Api.create();
   });
