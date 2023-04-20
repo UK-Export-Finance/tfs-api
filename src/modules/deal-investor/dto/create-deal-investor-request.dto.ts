@@ -9,7 +9,7 @@ export class CreateDealInvestorRequestItem {
     description: "'The identifier of the deal to create the investor for. It will be a 10-digit code beginning with either '0020', '0030', or '0040'.",
     example: '0020900111',
     length: 10,
-    pattern: /00\d{8}/,
+    pattern: /^00\d{8}$/,
   })
   readonly dealIdentifier: UkefId;
 

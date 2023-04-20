@@ -1,9 +1,12 @@
 import { AcbsGetDealPartyResponseDto } from '@ukef/modules/acbs/dto/acbs-get-deal-party-response.dto';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { DealInvestor } from '@ukef/modules/deal-investor/deal-investor.interface';
 
 import { AbstractGenerator } from './abstract-generator';
 
 export class GetDealInvestorGenerator extends AbstractGenerator<DealInvestor, GenerateResult, GenerateOptions> {
+  dateStringTransformations = new DateStringTransformations();
+
   protected generateValues(): DealInvestor {
     return {
       dealIdentifier: this.valueGenerator.ukefId(),
@@ -18,8 +21,8 @@ export class GetDealInvestorGenerator extends AbstractGenerator<DealInvestor, Ge
 
   protected transformRawValuesToGeneratedValues(values: DealInvestor[], { dealIdentifier, portfolioIdentifier }: GenerateOptions): GenerateResult {
     const dealInvestorsInAcbs: AcbsGetDealPartyResponseDto[] = values.map((v) => ({
-      EffectiveDate: v.effectiveDate,
-      ExpirationDate: v.expiryDate,
+      EffectiveDate: this.dateStringTransformations.addTimeToDateOnlyString(v.effectiveDate),
+      ExpirationDate: this.dateStringTransformations.addTimeToDateOnlyString(v.expiryDate),
       IsExpirationDateMaximum: v.isExpiryDateMaximum,
       LenderType: { LenderTypeCode: v.lenderType.LenderTypeCode },
       LimitAmount: v.maximumLiability,

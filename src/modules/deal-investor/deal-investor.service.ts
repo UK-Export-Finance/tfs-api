@@ -21,12 +21,12 @@ export class DealInvestorService {
 
   async getDealInvestors(dealIdentifier: UkefId): Promise<DealInvestor[]> {
     const idToken = await this.acbsAuthenticationService.getIdToken();
-    const portfolio = PROPERTIES.GLOBAL.portfolioIdentifier;
-    const investorsInAcbs = await this.acbsDealPartyService.getDealPartiesForDeal(portfolio, dealIdentifier, idToken);
+    const { portfolioIdentifier } = PROPERTIES.GLOBAL;
+    const investorsInAcbs = await this.acbsDealPartyService.getDealPartiesForDeal(portfolioIdentifier, dealIdentifier, idToken);
 
     return investorsInAcbs.map((investorInAcbs) => ({
       dealIdentifier,
-      portfolioIdentifier: portfolio,
+      portfolioIdentifier,
       lenderType: { LenderTypeCode: investorInAcbs.LenderType.LenderTypeCode },
       effectiveDate: this.dateStringTransformations.removeTimeIfExists(investorInAcbs.EffectiveDate),
       expiryDate: this.dateStringTransformations.removeTimeIfExists(investorInAcbs.ExpirationDate),
