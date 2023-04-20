@@ -1,5 +1,5 @@
 import { Controller, Get, Param } from '@nestjs/common';
-import { ApiBadRequestResponse, ApiInternalServerErrorResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiInternalServerErrorResponse, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 
 import { GetFacilityCovenantsParamsDto } from './dto/get-facility-covenants-params.dto';
 import { GetFacilityCovenantsResponseDto } from './dto/get-facility-covenants-response.dto';
@@ -20,9 +20,6 @@ export class FacilityCovenantController {
   })
   @ApiBadRequestResponse({
     description: 'The specified facilityIdentifier is not valid.',
-  })
-  @ApiNotFoundResponse({
-    description: 'The specified facility, or the covenants for that facility, were not found. ',
   })
   @ApiInternalServerErrorResponse({
     description: 'An internal server error has occurred.',

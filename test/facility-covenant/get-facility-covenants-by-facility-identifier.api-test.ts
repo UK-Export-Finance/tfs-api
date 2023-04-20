@@ -96,7 +96,7 @@ describe('GET /facilities/{facilityIdentifier}/covenants', () => {
     });
   });
 
-  // TO-DO: add tests that check we respond with 400 if the facilityId is of the wrong length/format once injectable tests for this
+  // TODO: add tests that check we respond with 400 if the facilityId is of the wrong length/format once injectable tests for this
   // have been written.
 
   const requestToGetFacilityCovenants = () =>

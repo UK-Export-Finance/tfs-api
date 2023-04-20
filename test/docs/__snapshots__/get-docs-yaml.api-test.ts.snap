@@ -218,10 +218,6 @@ paths:
                   $ref: '#/components/schemas/GetFacilityCovenantsResponseDto'
         '400':
           description: The specified facilityIdentifier is not valid.
-        '404':
-          description: >-
-            The specified facility, or the covenants for that facility, were not
-            found. 
         '500':
           description: An internal server error has occurred.
   /api/v1/facilities/{facilityIdentifier}/guarantees:

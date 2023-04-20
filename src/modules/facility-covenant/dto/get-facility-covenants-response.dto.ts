@@ -1,7 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ENUMS } from '@ukef/constants';
 import { DateOnlyString } from '@ukef/helpers/date-only-string.type';
-import { IsEnum } from 'class-validator';
 
 export class GetFacilityCovenantsResponseDto {
   @ApiProperty({
@@ -14,7 +12,6 @@ export class GetFacilityCovenantsResponseDto {
     description:
       'The covenant type code: 43 for a UK Contract Value covenant, 46 for a Chargable Amount covenant, and 47 for a chargable Amount covenant not in GBP.',
   })
-  @IsEnum(ENUMS.COVENANT_TYPE_CODES)
   readonly covenantType: string;
 
   @ApiProperty({ description: 'The identifier of the facility in ACBS. This will be a 10-digit code.' })
