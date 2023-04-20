@@ -4,7 +4,7 @@ import { ValidatedNumberApiProperty } from '@ukef/decorators/validated-number-ap
 import { ValidatedStringApiProperty } from '@ukef/decorators/validated-string-api-property.decorator';
 import { DateOnlyString } from '@ukef/helpers';
 
-export type CreateFacilityCovenantRequest = CreateFacilityCovenantRequestItem[];
+export type CreateFacilityCovenantRequestDto = CreateFacilityCovenantRequestItem[];
 
 export class CreateFacilityCovenantRequestItem {
   @ValidatedStringApiProperty({

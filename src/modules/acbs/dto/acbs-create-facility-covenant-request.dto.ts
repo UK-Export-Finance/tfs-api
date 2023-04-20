@@ -1,6 +1,6 @@
 import { DateString } from '@ukef/helpers';
 
-export interface AcbsCreateFacilityCovenantRequest {
+export interface AcbsCreateFacilityCovenantRequestDto {
   AccountOwnerIdentifier: string;
   ComplianceEvaluationMode: {
     CovenantEvaluationModeCode: string;

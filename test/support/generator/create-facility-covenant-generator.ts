@@ -1,19 +1,14 @@
 import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { UkefId } from '@ukef/helpers';
-import { AcbsCreateFacilityCovenantRequest } from '@ukef/modules/acbs/dto/acbs-create-facility-covenant-request.dto';
-import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
+import { AcbsCreateFacilityCovenantRequestDto } from '@ukef/modules/acbs/dto/acbs-create-facility-covenant-request.dto';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
-import { CreateFacilityCovenantRequest, CreateFacilityCovenantRequestItem } from '@ukef/modules/facility-covenant/dto/create-facility-covenant-request.dto';
+import { CreateFacilityCovenantRequestDto, CreateFacilityCovenantRequestItem } from '@ukef/modules/facility-covenant/dto/create-facility-covenant-request.dto';
 
 import { AbstractGenerator } from './abstract-generator';
 import { RandomValueGenerator } from './random-value-generator';
 
 export class CreateFacilityCovenantGenerator extends AbstractGenerator<CreateFacilityCovenantRequestItem, GenerateResult, GenerateOptions> {
-  constructor(
-    protected readonly valueGenerator: RandomValueGenerator,
-    protected readonly currentDateProvider: CurrentDateProvider,
-    protected readonly dateStringTransformations: DateStringTransformations,
-  ) {
+  constructor(protected readonly valueGenerator: RandomValueGenerator, protected readonly dateStringTransformations: DateStringTransformations) {
     super(valueGenerator);
   }
 
@@ -30,7 +25,7 @@ export class CreateFacilityCovenantGenerator extends AbstractGenerator<CreateFac
   }
 
   protected transformRawValuesToGeneratedValues(
-    values: CreateFacilityCovenantRequest,
+    values: CreateFacilityCovenantRequestDto,
     { covenantIdentifier, facilityIdentifier, facilityTypeCode, limitKeyValue }: GenerateOptions,
   ): GenerateResult {
     const firstFacilityCovenant = values[0];
@@ -56,7 +51,7 @@ export class CreateFacilityCovenantGenerator extends AbstractGenerator<CreateFac
     const effectiveDateString = this.dateStringTransformations.addTimeToDateOnlyString(firstFacilityCovenant.effectiveDate);
     const guaranteeExpiryDateString = this.dateStringTransformations.addTimeToDateOnlyString(firstFacilityCovenant.guaranteeExpiryDate);
 
-    const acbsRequestBodyToCreateFacilityCovenant: AcbsCreateFacilityCovenantRequest = {
+    const acbsRequestBodyToCreateFacilityCovenant: AcbsCreateFacilityCovenantRequestDto = {
       AccountOwnerIdentifier: PROPERTIES.COVENANT.DEFAULTS.accountOwnerIdentifier,
       ComplianceEvaluationMode: {
         CovenantEvaluationModeCode: PROPERTIES.COVENANT.DEFAULTS.complianceEvaluationMode.covenantEvaluationModeCode,
@@ -116,6 +111,6 @@ interface GenerateOptions {
 }
 
 interface GenerateResult {
-  acbsRequestBodyToCreateFacilityCovenant: AcbsCreateFacilityCovenantRequest;
-  requestBodyToCreateFacilityCovenant: CreateFacilityCovenantRequest;
+  acbsRequestBodyToCreateFacilityCovenant: AcbsCreateFacilityCovenantRequestDto;
+  requestBodyToCreateFacilityCovenant: CreateFacilityCovenantRequestDto;
 }
