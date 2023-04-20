@@ -15,9 +15,9 @@ export class CreateFacilityCovenantGenerator extends AbstractGenerator<CreateFac
   protected generateValues(): CreateFacilityCovenantRequestItem {
     return {
       facilityIdentifier: this.valueGenerator.ukefId(),
-      covenantIdentifier: this.valueGenerator.ukefId(), // TO-DO: is this right to use ukefId()?
+      covenantIdentifier: this.valueGenerator.ukefId(), // TODO APIM-106: is this right to use ukefId()?
       covenantType: ['43', '46', '47'][this.valueGenerator.integer({ min: 0, max: 2 })],
-      maximumLiability: this.valueGenerator.nonnegativeFloat({ fixed: 2 }), // TO-DO: is this right to use fixed: 2?
+      maximumLiability: this.valueGenerator.nonnegativeFloat({ fixed: 2 }), // TODO APIM-106: is this right to use fixed: 2?
       currency: this.valueGenerator.string({ minLength: 0, maxLength: 3 }),
       guaranteeExpiryDate: this.valueGenerator.dateOnlyString(),
       effectiveDate: this.valueGenerator.dateOnlyString(),
@@ -26,7 +26,7 @@ export class CreateFacilityCovenantGenerator extends AbstractGenerator<CreateFac
 
   protected transformRawValuesToGeneratedValues(
     values: CreateFacilityCovenantRequestDto,
-    { covenantIdentifier, facilityIdentifier, facilityTypeCode, limitKeyValue }: GenerateOptions,
+    { facilityIdentifier, facilityTypeCode, limitKeyValue }: GenerateOptions,
   ): GenerateResult {
     const firstFacilityCovenant = values[0];
 
@@ -87,9 +87,9 @@ export class CreateFacilityCovenantGenerator extends AbstractGenerator<CreateFac
       NextReviewDate: effectiveDateString,
     };
 
-    const requestBodyToCreateFacilityCovenant = values.map((v, index) => ({
+    const requestBodyToCreateFacilityCovenant = values.map((v) => ({
       facilityIdentifier,
-      covenantIdentifier: index === 0 ? covenantIdentifier : v.covenantIdentifier,
+      covenantIdentifier: v.covenantIdentifier,
       covenantType: v.covenantType,
       maximumLiability: v.maximumLiability,
       currency: v.currency,
@@ -104,7 +104,6 @@ export class CreateFacilityCovenantGenerator extends AbstractGenerator<CreateFac
   }
 }
 interface GenerateOptions {
-  covenantIdentifier: UkefId;
   facilityIdentifier: UkefId;
   facilityTypeCode: string;
   limitKeyValue: string;

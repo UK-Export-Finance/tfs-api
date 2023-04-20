@@ -17,7 +17,6 @@ describe('AcbsFacilityCovenantService', () => {
   const dateStringTransformations = new DateStringTransformations();
   const authToken = valueGenerator.string();
   const baseUrl = valueGenerator.httpsUrl();
-  const covenantIdentifier = valueGenerator.ukefId();
   const facilityIdentifier = valueGenerator.ukefId();
   const facilityTypeCode = valueGenerator.stringOfNumericCharacters();
   const limitKeyValue = valueGenerator.string();
@@ -43,7 +42,6 @@ describe('AcbsFacilityCovenantService', () => {
       dateStringTransformations,
     ).generate({
       numberToGenerate: 1,
-      covenantIdentifier,
       facilityIdentifier,
       facilityTypeCode,
       limitKeyValue,
