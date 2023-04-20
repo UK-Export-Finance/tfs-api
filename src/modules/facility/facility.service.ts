@@ -249,7 +249,6 @@ export class FacilityService {
         }
       : {
           compBalPctReserve: defaultValues.compBalPctReserveIssued,
-          // TODO APIM-69: Mulesoft doesn't have a null check for issueDate
           userDefinedDate1: issueDate ? this.dateStringTransformations.addTimeToDateOnlyString(issueDate) : null,
           isUserDefinedDate1Zero: false,
         };
