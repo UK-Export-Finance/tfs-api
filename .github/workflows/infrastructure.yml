@@ -53,8 +53,6 @@ on:
   push:
     branches:
       - infrastructure
-      # TODO: Remove PR branch pre merge
-      - APIM-211-tfs-deployment
 
     paths: [.github/workflows/infrastructure.yml]
 
