@@ -1145,15 +1145,15 @@ components:
       properties:
         facilityIdentifier:
           type: string
-          description: >-
-            The identifier of the covenant in ACBS. When creating a covenant an
-            identifier from the number generator should be used.
+          description: The identifier of the facility to create the covenant for in ACBS.
           minLength: 10
           maxLength: 10
           example: '0000000001'
         covenantIdentifier:
           type: string
-          description: The identifier of the facility to create the covenant for in ACBS.
+          description: >-
+            The identifier of the covenant in ACBS. When creating a covenant an
+            identifier from the number generator should be used.
           minLength: 10
           maxLength: 10
           example: '0000000001'
@@ -1163,6 +1163,8 @@ components:
             The covenant type code: 43 for a UK Contract Value covenant, 46 for
             a Chargeable Amount covenant, and 47 for a Chargeable Amount
             covenant not in GBP.
+          minLength: 2
+          maxLength: 2
           example: '43'
         maximumLiability:
           type: number
