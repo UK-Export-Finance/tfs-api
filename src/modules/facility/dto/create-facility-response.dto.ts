@@ -4,7 +4,8 @@ import { EXAMPLES } from '@ukef/constants';
 export class CreateFacilityResponse {
   @ApiProperty({
     description: 'The identifier of the created facility.',
+    readOnly: true,
     example: EXAMPLES.FACILITY_ID,
   })
-  facilityIdentifier: string;
+  readonly facilityIdentifier: string;
 }

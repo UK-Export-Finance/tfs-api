@@ -39,7 +39,7 @@ export class CreateFacilityGenerator extends AbstractGenerator<FacilityValues, G
   }
 
   protected transformRawValuesToGeneratedValues(values: FacilityValues[], options: GenerateOptions): GenerateResult {
-    const facilityIdentifier = options.facilityIdentifier;
+    const { facilityIdentifier } = options;
     const { portfolioIdentifier } = PROPERTIES.GLOBAL;
 
     const facilityToCreate = values[0];
