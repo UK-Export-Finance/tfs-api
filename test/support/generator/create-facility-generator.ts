@@ -29,7 +29,7 @@ export class CreateFacilityGenerator extends AbstractGenerator<FacilityValues, G
       riskStatusCode: this.valueGenerator.string({ maxLength: 2 }),
       creditRatingCode: this.valueGenerator.string({ maxLength: 2 }),
       delegationType: this.valueGenerator.string({ maxLength: 4 }),
-      intrestOrFeeRate: this.valueGenerator.nonnegativeFloat(),
+      interestOrFeeRate: this.valueGenerator.nonnegativeFloat(),
       probabilityOfDefault: this.valueGenerator.nonnegativeFloat(),
       obligorPartyIdentifier: this.valueGenerator.acbsPartyId(),
       forecastPercentage: this.valueGenerator.nonnegativeFloat(),
@@ -174,7 +174,7 @@ export class CreateFacilityGenerator extends AbstractGenerator<FacilityValues, G
       IsUserDefinedDate2Zero: false,
       IsUserDefinedDate3Zero: defaultValues.isUserDefinedDate3Zero,
       IsUserDefinedDate4Zero: defaultValues.isUserDefinedDate4Zero,
-      UserDefinedAmount3: facilityToCreate.intrestOrFeeRate,
+      UserDefinedAmount3: facilityToCreate.interestOrFeeRate,
       ProbabilityofDefault: facilityToCreate.probabilityOfDefault,
       DefaultReason: {
         DefaultReasonCode: defaultValues.defaultReasonCode,
@@ -226,7 +226,7 @@ export class CreateFacilityGenerator extends AbstractGenerator<FacilityValues, G
       facilityStageCode,
       delegationType: facilityToCreate.delegationType,
       issueDate: facilityToCreate.issueDate,
-      interestOrFeeRate: facilityToCreate.intrestOrFeeRate,
+      interestOrFeeRate: facilityToCreate.interestOrFeeRate,
       probabilityOfDefault: facilityToCreate.probabilityOfDefault,
       obligorPartyIdentifier: facilityToCreate.obligorPartyIdentifier,
       forecastPercentage: facilityToCreate.forecastPercentage,
@@ -256,7 +256,7 @@ interface FacilityValues {
   riskStatusCode: string;
   creditRatingCode: string;
   delegationType: string;
-  intrestOrFeeRate: number;
+  interestOrFeeRate: number;
   probabilityOfDefault: number;
   obligorPartyIdentifier: string;
   forecastPercentage: number;
