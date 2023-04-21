@@ -15,8 +15,8 @@ export class FacilityGuaranteeService {
   constructor(
     private readonly acbsAuthenticationService: AcbsAuthenticationService,
     private readonly acbsFacilityGuaranteeService: AcbsFacilityGuaranteeService,
-    private readonly currentDateProvider: CurrentDateProvider,
     private readonly dateStringTransformations: DateStringTransformations,
+    private readonly currentDateProvider: CurrentDateProvider,
   ) {}
 
   async getGuaranteesForFacility(facilityIdentifier: string): Promise<FacilityGuarantee[]> {
@@ -45,7 +45,7 @@ export class FacilityGuaranteeService {
 
     // TODO: Mulesoft Deal and Facility guarantees logic has small difference, we don't check that Facility date is in future.
 
-    const effectiveDateTime = this.currentDateProvider.getLatestDateFromTodayAnd(
+    const effectiveDateTime = this.currentDateProvider.getEarliestDateFromTodayAnd(
       new Date(this.dateStringTransformations.addTimeToDateOnlyString(newGuarantee.effectiveDate)),
     );
     const effectiveDateOnlyString = this.dateStringTransformations.removeTime(effectiveDateTime.toISOString());

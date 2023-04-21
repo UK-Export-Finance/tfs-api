@@ -3,6 +3,8 @@ import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-
 import { when } from 'jest-when';
 
 import { DateStringTransformations } from '../date/date-string.transformations';
+import { CreateFacilityGuaranteeRequestItem } from './dto/create-facility-guarantee-request.dto';
+import { CreateFacilityGuaranteeResponse } from './dto/create-facility-guarantee-response.dto';
 import { FacilityGuaranteeController } from './facility-guarantee.controller';
 import { FacilityGuaranteeService } from './facility-guarantee.service';
 
@@ -18,12 +20,16 @@ describe('FacilityGuaranteeController', () => {
   });
 
   let getFacilityGuaranteesService: jest.Mock;
+  let facilityGuaranteeServiceCreateGuaranteeForFacility: jest.Mock;
   let controller: FacilityGuaranteeController;
 
   beforeEach(() => {
     const facilityGuaranteeService = new FacilityGuaranteeService(null, null, null, null);
     getFacilityGuaranteesService = jest.fn();
     facilityGuaranteeService.getGuaranteesForFacility = getFacilityGuaranteesService;
+
+    facilityGuaranteeServiceCreateGuaranteeForFacility = jest.fn();
+    facilityGuaranteeService.createGuaranteeForFacility = facilityGuaranteeServiceCreateGuaranteeForFacility;
 
     controller = new FacilityGuaranteeController(facilityGuaranteeService);
   });
@@ -47,6 +53,46 @@ describe('FacilityGuaranteeController', () => {
       const guarantees = await controller.getGuaranteesForFacility({ facilityIdentifier });
 
       expect(guarantees).toStrictEqual(guaranteesFromService);
+    });
+  });
+
+  describe('createGuaranteeForFacility', () => {
+    const facilityIdentifier = valueGenerator.facilityId();
+    const limitKey = valueGenerator.stringOfNumericCharacters({ maxLength: 8 });
+    const guarantorParty = valueGenerator.stringOfNumericCharacters({ maxLength: 8 });
+    const guaranteeTypeCode = valueGenerator.stringOfNumericCharacters({ maxLength: 3 });
+    const effectiveDate = valueGenerator.dateOnlyString();
+    const guaranteeExpiryDate = valueGenerator.dateOnlyString();
+    const maximumLiability = valueGenerator.nonnegativeFloat();
+
+    const newGuarantee = new CreateFacilityGuaranteeRequestItem(
+      facilityIdentifier,
+      effectiveDate,
+      limitKey,
+      guaranteeExpiryDate,
+      maximumLiability,
+      guarantorParty,
+      guaranteeTypeCode,
+    );
+
+    it('creates a guarantee for the facility with the service from the request body', async () => {
+      await controller.createGuaranteeForFacility({ facilityIdentifier }, [newGuarantee]);
+
+      expect(facilityGuaranteeServiceCreateGuaranteeForFacility).toHaveBeenCalledWith(facilityIdentifier, newGuarantee);
+    });
+
+    it('returns the facility identifier if creating the guarantee succeeds', async () => {
+      const response = await controller.createGuaranteeForFacility({ facilityIdentifier }, [newGuarantee]);
+
+      expect(response).toStrictEqual(new CreateFacilityGuaranteeResponse(facilityIdentifier));
+    });
+
+    it('does NOT include unexpected keys from the request body', async () => {
+      const newGuaranteePlusUnexpectedKeys = { ...newGuarantee, unexpectedKey: 'unexpected value' };
+
+      await controller.createGuaranteeForFacility({ facilityIdentifier }, [newGuaranteePlusUnexpectedKeys]);
+
+      expect(facilityGuaranteeServiceCreateGuaranteeForFacility).toHaveBeenCalledWith(facilityIdentifier, newGuarantee);
     });
   });
 });

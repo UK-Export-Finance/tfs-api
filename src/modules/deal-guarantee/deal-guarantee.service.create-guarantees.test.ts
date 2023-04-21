@@ -3,6 +3,7 @@ import { AcbsDealGuaranteeService } from '@ukef/modules/acbs/acbs-deal-guarantee
 import { AcbsCreateDealGuaranteeDto } from '@ukef/modules/acbs/dto/acbs-create-deal-guarantee.dto';
 import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
 import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
+import { TEST_DATES } from '@ukef-test/support/constants/test-date.constant';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
 
@@ -10,19 +11,18 @@ import { DateStringTransformations } from '../date/date-string.transformations';
 import { DealGuaranteeService } from './deal-guarantee.service';
 import { DealGuaranteeToCreate } from './deal-guarantee-to-create.interface';
 
-jest.mock('@ukef/modules/date/current-date.provider');
 jest.mock('@ukef/modules/acbs/acbs-deal-guarantee.service');
 jest.mock('@ukef/modules/acbs-authentication/acbs-authentication.service');
 
 describe('DealGuaranteeService', () => {
   const valueGenerator = new RandomValueGenerator();
   const dateStringTransformations = new DateStringTransformations();
+  const currentDateProvider = new CurrentDateProvider();
   const idToken = valueGenerator.string();
 
   let service: DealGuaranteeService;
 
   let acbsDealGuaranteeServiceCreateGuaranteeForDeal: jest.Mock;
-  let currentDateProviderGetLatestDateFromTodayAnd: jest.Mock;
 
   beforeEach(() => {
     const acbsDealGuaranteeService = new AcbsDealGuaranteeService(null, null);
@@ -34,11 +34,7 @@ describe('DealGuaranteeService', () => {
     const acbsAuthenticationServiceGetIdToken = mockAcbsAuthenticationService.getIdToken;
     when(acbsAuthenticationServiceGetIdToken).calledWith().mockResolvedValueOnce(idToken);
 
-    const currentDateProvider = new CurrentDateProvider();
-    currentDateProviderGetLatestDateFromTodayAnd = jest.fn();
-    currentDateProvider.getLatestDateFromTodayAnd = currentDateProviderGetLatestDateFromTodayAnd;
-
-    service = new DealGuaranteeService(acbsAuthenticationService, acbsDealGuaranteeService, currentDateProvider, dateStringTransformations);
+    service = new DealGuaranteeService(acbsAuthenticationService, acbsDealGuaranteeService, dateStringTransformations, currentDateProvider);
   });
 
   describe('createGuaranteeForDeal', () => {
@@ -46,10 +42,9 @@ describe('DealGuaranteeService', () => {
     const limitKey = valueGenerator.stringOfNumericCharacters({ maxLength: 8 });
     const guarantorParty = valueGenerator.stringOfNumericCharacters({ maxLength: 8 });
     const guaranteeTypeCode = valueGenerator.stringOfNumericCharacters({ maxLength: 3 });
-    const effectiveDate = valueGenerator.dateOnlyString();
-    const effectiveDateAsDate = new Date(dateStringTransformations.addTimeToDateOnlyString(effectiveDate));
-    const today = valueGenerator.date();
-    const todayAsDateOnlyString = dateStringTransformations.removeTime(today.toISOString());
+    const effectiveDate = TEST_DATES.A_PAST_EFFECTIVE_DATE_ONLY;
+    const now = new Date();
+    const todayAsDateOnlyString = dateStringTransformations.removeTime(now.toISOString());
     const expirationDate = valueGenerator.dateOnlyString();
     const maximumLiabilityWithOneDecimalPlace = Number(valueGenerator.nonnegativeFloat().toFixed(1));
 
@@ -84,7 +79,6 @@ describe('DealGuaranteeService', () => {
         GuaranteedLimit: maximumLiabilityWithOneDecimalPlace,
         GuaranteedPercentage: PROPERTIES.DEAL_GUARANTEE.DEFAULT.guaranteedPercentage,
       };
-      when(currentDateProviderGetLatestDateFromTodayAnd).calledWith(effectiveDateAsDate).mockReturnValueOnce(effectiveDateAsDate);
 
       await service.createGuaranteeForDeal(dealIdentifier, newGuaranteeWithAllFields);
 
@@ -93,7 +87,6 @@ describe('DealGuaranteeService', () => {
 
     it('adds a default value for guarantorParty before creating the new guarantee if it is not specified', async () => {
       const { guarantorParty: _removed, ...newGuaranteeWithoutGuarantorParty } = newGuaranteeWithAllFields;
-      when(currentDateProviderGetLatestDateFromTodayAnd).calledWith(effectiveDateAsDate).mockReturnValueOnce(effectiveDateAsDate);
 
       await service.createGuaranteeForDeal(dealIdentifier, newGuaranteeWithoutGuarantorParty);
 
@@ -104,7 +97,6 @@ describe('DealGuaranteeService', () => {
 
     it('adds a default value for guaranteeTypeCode before creating the new guarantee if it is not specified', async () => {
       const { guaranteeTypeCode: _removed, ...newGuaranteeWithoutGuaranteeTypeCode } = newGuaranteeWithAllFields;
-      when(currentDateProviderGetLatestDateFromTodayAnd).calledWith(effectiveDateAsDate).mockReturnValueOnce(effectiveDateAsDate);
 
       await service.createGuaranteeForDeal(dealIdentifier, newGuaranteeWithoutGuaranteeTypeCode);
 
@@ -113,19 +105,20 @@ describe('DealGuaranteeService', () => {
       expect(guaranteeCreatedInAcbs.GuaranteeType.GuaranteeTypeCode).toBe(PROPERTIES.DEAL_GUARANTEE.DEFAULT.guaranteeTypeCode);
     });
 
-    it(`replaces effectiveDate with today's date if effectiveDate is before today`, async () => {
-      when(currentDateProviderGetLatestDateFromTodayAnd).calledWith(effectiveDateAsDate).mockReturnValueOnce(today);
+    it(`replaces effectiveDate with today's date if effectiveDate is after today`, async () => {
+      const newGuaranteeWithFutureEffectiveDate = {
+        ...newGuaranteeWithAllFields,
+        effectiveDate: TEST_DATES.A_FUTURE_EFFECTIVE_DATE_ONLY,
+      };
 
-      await service.createGuaranteeForDeal(dealIdentifier, newGuaranteeWithAllFields);
+      await service.createGuaranteeForDeal(dealIdentifier, newGuaranteeWithFutureEffectiveDate);
 
       const guaranteeCreatedInAcbs: AcbsCreateDealGuaranteeDto = acbsDealGuaranteeServiceCreateGuaranteeForDeal.mock.calls[0][1];
 
       expect(guaranteeCreatedInAcbs.EffectiveDate).toBe(dateStringTransformations.addTimeToDateOnlyString(todayAsDateOnlyString));
     });
 
-    it(`does NOT replace effectiveDate with today's date if effectiveDate is NOT before today`, async () => {
-      when(currentDateProviderGetLatestDateFromTodayAnd).calledWith(effectiveDateAsDate).mockReturnValueOnce(effectiveDateAsDate);
-
+    it(`does NOT replace effectiveDate with today's date if effectiveDate is NOT after today`, async () => {
       await service.createGuaranteeForDeal(dealIdentifier, newGuaranteeWithAllFields);
 
       const guaranteeCreatedInAcbs: AcbsCreateDealGuaranteeDto = acbsDealGuaranteeServiceCreateGuaranteeForDeal.mock.calls[0][1];
@@ -137,7 +130,6 @@ describe('DealGuaranteeService', () => {
       const maximumLiabilityWithMoreThanTwoDecimalPlaces = 1.12345;
       const maximumLiabilityRoundedToTwoDecimalPlaces = 1.12;
       const newGuaranteeWithMaximumLiabilityToRound = { ...newGuaranteeWithAllFields, maximumLiability: maximumLiabilityWithMoreThanTwoDecimalPlaces };
-      when(currentDateProviderGetLatestDateFromTodayAnd).calledWith(effectiveDateAsDate).mockReturnValueOnce(effectiveDateAsDate);
 
       await service.createGuaranteeForDeal(dealIdentifier, newGuaranteeWithMaximumLiabilityToRound);
 

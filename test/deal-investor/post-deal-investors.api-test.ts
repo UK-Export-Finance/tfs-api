@@ -137,7 +137,7 @@ describe('POST /deals/{dealIdentifier}/investors', () => {
   });
 
   it(`replaces the effectiveDate with today's date if the specified effectiveDate is after today`, async () => {
-    const requestBodyWithFutureEffectiveDate = [{ ...requestBodyToCreateDealInvestor[0], effectiveDate: '9999-01-01' }];
+    const requestBodyWithFutureEffectiveDate = [{ ...requestBodyToCreateDealInvestor[0], effectiveDate: '3000-01-01' }];
     const acbsRequestBodyWithTodayEffectiveDate = {
       ...acbsRequestBodyToCreateDealInvestor,
       EffectiveDate: dateStringTransformations.getDateStringFromDate(new Date()),

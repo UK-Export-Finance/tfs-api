@@ -15,7 +15,7 @@ describe('POST /deals/{dealIdentifier}/guarantees', () => {
   const valueGenerator = new RandomValueGenerator();
   const dateStringTransformations = new DateStringTransformations();
 
-  const dealIdentifier = valueGenerator.stringOfNumericCharacters({ length: 8 });
+  const dealIdentifier = valueGenerator.ukefId();
   const createDealGuaranteeUrl = `/api/v1/deals/${dealIdentifier}/guarantees`;
 
   const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
@@ -26,7 +26,7 @@ describe('POST /deals/{dealIdentifier}/guarantees', () => {
 
   const guarantorParty = valueGenerator.stringOfNumericCharacters({ length: 8 });
   const limitKey = valueGenerator.stringOfNumericCharacters({ length: 8 });
-  const effectiveDateInFuture = TEST_DATES.A_FUTURE_EFFECTIVE_DATE_ONLY;
+  const effectiveDateInPast = TEST_DATES.A_PAST_EFFECTIVE_DATE_ONLY;
   const guaranteeExpiryDateInFuture = TEST_DATES.A_FUTURE_EXPIRY_DATE_ONLY;
   const guaranteeTypeCode = valueGenerator.stringOfNumericCharacters({ length: 3 });
   const maximumLiability = 12345.6;
@@ -46,7 +46,7 @@ describe('POST /deals/{dealIdentifier}/guarantees', () => {
     GuaranteeType: {
       GuaranteeTypeCode: guaranteeTypeCode,
     },
-    EffectiveDate: dateStringTransformations.addTimeToDateOnlyString(effectiveDateInFuture),
+    EffectiveDate: dateStringTransformations.addTimeToDateOnlyString(effectiveDateInPast),
     ExpirationDate: dateStringTransformations.addTimeToDateOnlyString(guaranteeExpiryDateInFuture),
     GuaranteedLimit: 12345.6,
     GuaranteedPercentage: guaranteedPercentage,
@@ -57,7 +57,7 @@ describe('POST /deals/{dealIdentifier}/guarantees', () => {
       dealIdentifier,
       guarantorParty,
       limitKey,
-      effectiveDate: effectiveDateInFuture,
+      effectiveDate: effectiveDateInPast,
       guaranteeExpiryDate: guaranteeExpiryDateInFuture,
       maximumLiability,
       guaranteeTypeCode,
@@ -179,8 +179,8 @@ describe('POST /deals/{dealIdentifier}/guarantees', () => {
     expect(acbsRequestWithRoundedMaximumLiability.isDone()).toBe(true);
   });
 
-  it(`replaces the effectiveDate with today's date if the specified effectiveDate is before today`, async () => {
-    const requestBodyWithPastEffectiveDate = [{ ...requestBodyToCreateDealGuarantee[0], effectiveDate: '2000-01-01' }];
+  it(`replaces the effectiveDate with today's date if the specified effectiveDate is after today`, async () => {
+    const requestBodyWithFutureEffectiveDate = [{ ...requestBodyToCreateDealGuarantee[0], effectiveDate: '3000-01-01' }];
     const acbsRequestBodyWithTodayEffectiveDate = {
       ...acbsRequestBodyToCreateDealGuarantee,
       EffectiveDate: new Date().toISOString().split('T')[0] + 'T00:00:00Z',
@@ -190,7 +190,7 @@ describe('POST /deals/{dealIdentifier}/guarantees', () => {
       location: `/Portfolio/${portfolioIdentifier}/Deal/${dealIdentifier}/DealGuarantee?accountOwnerIdentifier=00000000&lenderTypeCode=${lenderTypeCode}&sectionIdentifier=${sectionIdentifier}&limitTypeCode=${limitTypeCode}&limitKey=${limitKey}&guarantorPartyIdentifier=${guarantorParty}`,
     });
 
-    const { status, body } = await api.post(createDealGuaranteeUrl, requestBodyWithPastEffectiveDate);
+    const { status, body } = await api.post(createDealGuaranteeUrl, requestBodyWithFutureEffectiveDate);
 
     expect(status).toBe(201);
     expect(body).toStrictEqual({
@@ -201,9 +201,9 @@ describe('POST /deals/{dealIdentifier}/guarantees', () => {
 
   withStringFieldValidationApiTests({
     fieldName: 'dealIdentifier',
-    length: 8,
+    length: 10,
     required: true,
-    generateFieldValueOfLength: (length: number) => valueGenerator.stringOfNumericCharacters({ length }),
+    generateFieldValueOfLength: (length: number) => valueGenerator.ukefId(length - 4),
     validRequestBody: requestBodyToCreateDealGuarantee,
     makeRequest: (body) => api.post(createDealGuaranteeUrl, body),
     givenAnyRequestBodyWouldSucceed: () => {

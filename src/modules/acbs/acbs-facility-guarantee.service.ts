@@ -39,7 +39,7 @@ export class AcbsFacilityGuaranteeService {
   }
 
   async createGuaranteeForFacility(facilityIdentifier: string, newFacilityGuarantee: AcbsCreateFacilityGuaranteeDto, idToken: string): Promise<void> {
-    const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+    const { portfolioIdentifier } = PROPERTIES.GLOBAL;
     await this.acbsHttpService.post<AcbsCreateFacilityGuaranteeDto>({
       path: `/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/FacilityGuarantee`,
       requestBody: newFacilityGuarantee,

@@ -1,4 +1,5 @@
 import { HttpService } from '@nestjs/axios';
+import { PROPERTIES } from '@ukef/constants';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { generateAcbsCreateFacilityGuaranteeDtoUsing } from '@ukef-test/support/requests/acbs-create-facility-guarantee-dto';
 import { AxiosError } from 'axios';
@@ -14,11 +15,13 @@ import { AcbsUnexpectedException } from './exception/acbs-unexpected.exception';
 
 describe('AcbsFacilityGuaranteeService', () => {
   const valueGenerator = new RandomValueGenerator();
-  const authToken = valueGenerator.string();
+  //const authToken = valueGenerator.string();
   const idToken = valueGenerator.string();
   const baseUrl = valueGenerator.httpsUrl();
-  const portfolioIdentifier = valueGenerator.string({ length: 2 });
+  const randomPortfolioIdentifier = valueGenerator.string({ length: 2 });
+  const { portfolioIdentifier } = PROPERTIES.GLOBAL;
   const facilityIdentifier = valueGenerator.facilityId();
+  const newFacilityGuarantee = generateAcbsCreateFacilityGuaranteeDtoUsing(valueGenerator);
 
   let httpService: HttpService;
   let service: AcbsFacilityGuaranteeService;
@@ -27,10 +30,19 @@ describe('AcbsFacilityGuaranteeService', () => {
   let httpServicePost: jest.Mock;
 
   const expectedHttpServiceGetArgs = [
-    `/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/FacilityGuarantee`,
+    `/Portfolio/${randomPortfolioIdentifier}/Facility/${facilityIdentifier}/FacilityGuarantee`,
     {
       baseURL: baseUrl,
       headers: { Authorization: `Bearer ${idToken}` },
+    },
+  ];
+
+  const expectedHttpServicePostArgs = [
+    `/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/FacilityGuarantee`,
+    newFacilityGuarantee,
+    {
+      baseURL: baseUrl,
+      headers: { Authorization: `Bearer ${idToken}`, 'Content-Type': 'application/json' },
     },
   ];
 
@@ -75,7 +87,7 @@ describe('AcbsFacilityGuaranteeService', () => {
           }),
         );
 
-      const guarantees = await service.getGuaranteesForFacility(portfolioIdentifier, facilityIdentifier, idToken);
+      const guarantees = await service.getGuaranteesForFacility(randomPortfolioIdentifier, facilityIdentifier, idToken);
 
       expect(guarantees).toBe(facilityGuaranteesInAcbs);
     });
@@ -93,7 +105,7 @@ describe('AcbsFacilityGuaranteeService', () => {
           }),
         );
 
-      const guarantees = await service.getGuaranteesForFacility(portfolioIdentifier, facilityIdentifier, idToken);
+      const guarantees = await service.getGuaranteesForFacility(randomPortfolioIdentifier, facilityIdentifier, idToken);
 
       expect(guarantees).toStrictEqual([]);
     });
@@ -104,7 +116,7 @@ describe('AcbsFacilityGuaranteeService', () => {
         .calledWith(...expectedHttpServiceGetArgs)
         .mockReturnValueOnce(throwError(() => getGuaranteesForFacilityError));
 
-      const getGuaranteesForFacilityPromise = service.getGuaranteesForFacility(portfolioIdentifier, facilityIdentifier, idToken);
+      const getGuaranteesForFacilityPromise = service.getGuaranteesForFacility(randomPortfolioIdentifier, facilityIdentifier, idToken);
 
       await expect(getGuaranteesForFacilityPromise).rejects.toBeInstanceOf(AcbsException);
       await expect(getGuaranteesForFacilityPromise).rejects.toThrow(`Failed to get the guarantees for the facility with identifier ${facilityIdentifier}.`);
@@ -124,7 +136,7 @@ describe('AcbsFacilityGuaranteeService', () => {
           }),
         );
 
-      const getGuaranteesForFacilityPromise = service.getGuaranteesForFacility(portfolioIdentifier, facilityIdentifier, idToken);
+      const getGuaranteesForFacilityPromise = service.getGuaranteesForFacility(randomPortfolioIdentifier, facilityIdentifier, idToken);
 
       await expect(getGuaranteesForFacilityPromise).rejects.toBeInstanceOf(AcbsResourceNotFoundException);
       await expect(getGuaranteesForFacilityPromise).rejects.toThrow(`Guarantees for facility with identifier ${facilityIdentifier} were not found by ACBS.`);
@@ -132,14 +144,9 @@ describe('AcbsFacilityGuaranteeService', () => {
   });
 
   describe('createGuaranteeForFacility', () => {
-    const newFacilityGuarantee = generateAcbsCreateFacilityGuaranteeDtoUsing(valueGenerator);
-
     it('sends a POST to ACBS with the specified parameters', async () => {
       when(httpServicePost)
-        .calledWith(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/FacilityGuarantee`, newFacilityGuarantee, {
-          baseURL: baseUrl,
-          headers: { Authorization: `Bearer ${authToken}`, 'Content-Type': 'application/json' },
-        })
+        .calledWith(...expectedHttpServicePostArgs)
         .mockReturnValueOnce(
           of({
             data: '',
@@ -150,12 +157,12 @@ describe('AcbsFacilityGuaranteeService', () => {
           }),
         );
 
-      await service.createGuaranteeForFacility(facilityIdentifier, newFacilityGuarantee, authToken);
+      await service.createGuaranteeForFacility(facilityIdentifier, newFacilityGuarantee, idToken);
 
       expect(httpServicePost).toHaveBeenCalledTimes(1);
       expect(httpServicePost).toHaveBeenCalledWith(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/FacilityGuarantee`, newFacilityGuarantee, {
         baseURL: baseUrl,
-        headers: { Authorization: `Bearer ${authToken}`, 'Content-Type': 'application/json' },
+        headers: { Authorization: `Bearer ${idToken}`, 'Content-Type': 'application/json' },
       });
     });
 
@@ -171,13 +178,10 @@ describe('AcbsFacilityGuaranteeService', () => {
       };
 
       when(httpServicePost)
-        .calledWith(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/FacilityGuarantee`, newFacilityGuarantee, {
-          baseURL: baseUrl,
-          headers: { Authorization: `Bearer ${authToken}`, 'Content-Type': 'application/json' },
-        })
+        .calledWith(...expectedHttpServicePostArgs)
         .mockReturnValueOnce(throwError(() => axiosError));
 
-      const createGuaranteeForFacilityPromise = service.createGuaranteeForFacility(facilityIdentifier, newFacilityGuarantee, authToken);
+      const createGuaranteeForFacilityPromise = service.createGuaranteeForFacility(facilityIdentifier, newFacilityGuarantee, idToken);
 
       await expect(createGuaranteeForFacilityPromise).rejects.toBeInstanceOf(AcbsResourceNotFoundException);
       await expect(createGuaranteeForFacilityPromise).rejects.toThrow(`Facility with identifier ${facilityIdentifier} was not found by ACBS.`);
@@ -196,13 +200,10 @@ describe('AcbsFacilityGuaranteeService', () => {
       };
 
       when(httpServicePost)
-        .calledWith(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/FacilityGuarantee`, newFacilityGuarantee, {
-          baseURL: baseUrl,
-          headers: { Authorization: `Bearer ${authToken}`, 'Content-Type': 'application/json' },
-        })
+        .calledWith(...expectedHttpServicePostArgs)
         .mockReturnValueOnce(throwError(() => axiosError));
 
-      const createGuaranteeForFacilityPromise = service.createGuaranteeForFacility(facilityIdentifier, newFacilityGuarantee, authToken);
+      const createGuaranteeForFacilityPromise = service.createGuaranteeForFacility(facilityIdentifier, newFacilityGuarantee, idToken);
 
       await expect(createGuaranteeForFacilityPromise).rejects.toBeInstanceOf(AcbsBadRequestException);
       await expect(createGuaranteeForFacilityPromise).rejects.toThrow(`Failed to create a guarantee for facility ${facilityIdentifier} in ACBS.`);
@@ -222,13 +223,10 @@ describe('AcbsFacilityGuaranteeService', () => {
       };
 
       when(httpServicePost)
-        .calledWith(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/FacilityGuarantee`, newFacilityGuarantee, {
-          baseURL: baseUrl,
-          headers: { Authorization: `Bearer ${authToken}`, 'Content-Type': 'application/json' },
-        })
+        .calledWith(...expectedHttpServicePostArgs)
         .mockReturnValueOnce(throwError(() => axiosError));
 
-      const createGuaranteeForFacilityPromise = service.createGuaranteeForFacility(facilityIdentifier, newFacilityGuarantee, authToken);
+      const createGuaranteeForFacilityPromise = service.createGuaranteeForFacility(facilityIdentifier, newFacilityGuarantee, idToken);
 
       await expect(createGuaranteeForFacilityPromise).rejects.toBeInstanceOf(AcbsBadRequestException);
       await expect(createGuaranteeForFacilityPromise).rejects.toThrow(`Failed to create a guarantee for facility ${facilityIdentifier} in ACBS.`);
@@ -248,13 +246,15 @@ describe('AcbsFacilityGuaranteeService', () => {
       };
 
       when(httpServicePost)
-        .calledWith(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/FacilityGuarantee`, newFacilityGuarantee, {
-          baseURL: baseUrl,
-          headers: { Authorization: `Bearer ${authToken}`, 'Content-Type': 'application/json' },
-        })
+        .calledWith(...expectedHttpServicePostArgs)
         .mockReturnValueOnce(throwError(() => axiosError));
 
-      const createGuaranteeForFacilityPromise = service.createGuaranteeForFacility(facilityIdentifier, newFacilityGuarantee, authToken);
+      const createGuaranteeForFacilityPromise = service.createGuaranteeForFacility(facilityIdentifier, newFacilityGuarantee, idToken);
+
+      // const res = await createGuaranteeForFacilityPromise;
+
+      // console.log('newFacilityGuarantee', newFacilityGuarantee);
+      // console.log('res', res);
 
       await expect(createGuaranteeForFacilityPromise).rejects.toBeInstanceOf(AcbsUnexpectedException);
       await expect(createGuaranteeForFacilityPromise).rejects.toThrow(`Failed to create a guarantee for facility ${facilityIdentifier} in ACBS.`);

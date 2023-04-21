@@ -10,11 +10,10 @@ import {
   ApiParam,
 } from '@nestjs/swagger';
 import { EXAMPLES } from '@ukef/constants';
-import { UkefId } from '@ukef/helpers';
 
 import { CreateFacilityGuaranteeRequest, CreateFacilityGuaranteeRequestItem } from './dto/create-facility-guarantee-request.dto';
 import { CreateFacilityGuaranteeResponse } from './dto/create-facility-guarantee-response.dto';
-import { GetFacilityGuaranteesParamsDto } from './dto/get-facility-guarantees-params.dto';
+import { FacilityGuaranteesParamsDto } from './dto/facility-guarantees-params.dto';
 import { GetFacilityGuaranteesResponse, GetFacilityGuaranteesResponseItem } from './dto/get-facility-guarantees-response.dto';
 import { FacilityGuaranteeService } from './facility-guarantee.service';
 import { FacilityGuaranteeToCreate } from './facility-guarantee-to-create.interface';
@@ -41,7 +40,7 @@ export class FacilityGuaranteeController {
   @ApiInternalServerErrorResponse({
     description: 'An internal server error has occurred.',
   })
-  async getGuaranteesForFacility(@Param() params: GetFacilityGuaranteesParamsDto): Promise<GetFacilityGuaranteesResponse> {
+  async getGuaranteesForFacility(@Param() params: FacilityGuaranteesParamsDto): Promise<GetFacilityGuaranteesResponse> {
     const guaranteesForFacility = await this.facilityGuaranteeService.getGuaranteesForFacility(params.facilityIdentifier);
     return guaranteesForFacility.map((guarantee) => ({
       facilityIdentifier: guarantee.facilityIdentifier,
@@ -86,7 +85,7 @@ export class FacilityGuaranteeController {
   })
   @UsePipes(new ValidationPipe({ skipMissingProperties: true }))
   async createGuaranteeForFacility(
-    @Param('facilityIdentifier') facilityIdentifier: UkefId,
+    @Param() params: FacilityGuaranteesParamsDto,
     @Body(new ParseArrayPipe({ items: CreateFacilityGuaranteeRequestItem, whitelist: true })) newGuaranteeRequest: CreateFacilityGuaranteeRequest,
   ): Promise<CreateFacilityGuaranteeResponse> {
     const newGuarantee = newGuaranteeRequest[0];
@@ -99,7 +98,7 @@ export class FacilityGuaranteeController {
       guarantorParty: newGuarantee.guarantorParty,
       guaranteeTypeCode: newGuarantee.guaranteeTypeCode,
     };
-    await this.facilityGuaranteeService.createGuaranteeForFacility(facilityIdentifier, guaranteeToCreate);
-    return new CreateFacilityGuaranteeResponse(facilityIdentifier);
+    await this.facilityGuaranteeService.createGuaranteeForFacility(params.facilityIdentifier, guaranteeToCreate);
+    return new CreateFacilityGuaranteeResponse(params.facilityIdentifier);
   }
 }

@@ -69,8 +69,11 @@ export class RandomValueGenerator {
     return this.integer({ min: 0, max });
   }
 
-  facilityId(): UkefId {
-    return this.ukefId();
+  /**
+   * Length control is required for tests, usually prefix length is 4.
+   */
+  facilityId(lengthExcludingPrefix?: number): UkefId {
+    return this.ukefId(lengthExcludingPrefix ?? 6);
   }
 
   // UKEF id example 0030000321. It should be used for Deal and Facility IDs.
