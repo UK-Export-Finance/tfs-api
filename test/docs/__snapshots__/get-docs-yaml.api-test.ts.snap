@@ -1119,8 +1119,8 @@ components:
           type: string
           description: >-
             The covenant type code: 43 for a UK Contract Value covenant, 46 for
-            a Chargable Amount covenant, and 47 for a chargable Amount covenant
-            not in GBP.
+            a Chargeable Amount covenant, and 47 for a Chargeable Amount
+            covenant not in GBP.
         facilityIdentifier:
           type: string
           description: >-

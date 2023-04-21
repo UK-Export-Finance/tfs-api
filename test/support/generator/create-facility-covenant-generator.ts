@@ -33,10 +33,10 @@ export class CreateFacilityCovenantGenerator extends AbstractGenerator<CreateFac
     let covenantName;
 
     if (
-      firstFacilityCovenant.covenantType === ENUMS.COVENANT_TYPE_CODES.CHARGABLE_AMOUNT ||
-      firstFacilityCovenant.covenantType === ENUMS.COVENANT_TYPE_CODES.CHARGABLE_AMOUNT_NOT_GBP
+      firstFacilityCovenant.covenantType === ENUMS.COVENANT_TYPE_CODES.CHARGEABLE_AMOUNT ||
+      firstFacilityCovenant.covenantType === ENUMS.COVENANT_TYPE_CODES.CHARGEABLE_AMOUNT_NOT_GBP
     ) {
-      covenantName = 'CHARGABLE AMOUNT';
+      covenantName = 'CHARGEABLE AMOUNT';
     } else if (facilityTypeCode === '250') {
       covenantName = 'AMOUNT OF SUPPORTED BOND';
     } else if (
