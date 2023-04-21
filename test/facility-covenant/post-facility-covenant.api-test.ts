@@ -451,7 +451,6 @@ describe('POST /facilities/{facilityIdentifier}/covenants', () => {
     return requestToGetFacility().reply(200, acbsFacility);
   };
 
-  // TODO APIM-106: remove duplication.
   const requestToGetFacility = () =>
     nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
       .get(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}`)
