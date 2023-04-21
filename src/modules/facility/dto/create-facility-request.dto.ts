@@ -109,7 +109,7 @@ export class CreateFacilityRequestItem {
   readonly riskStatusCode: string;
 
   @ValidatedStringApiProperty({
-    description: 'Credit Review Risk Code', // TODO APIM-69: I think this is wrong, this field is actually used for OfficerRiskRatingTypeCode
+    description: 'Credit Review Risk Code',
     example: '13',
     maxLength: 2,
   })
