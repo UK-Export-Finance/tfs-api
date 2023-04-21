@@ -18,11 +18,11 @@ export class GetFacilityGenerator extends AbstractGenerator<AcbsGetFacilityRespo
       Currency: {
         CurrencyCode: this.valueGenerator.string(),
       },
-      OriginalEffectiveDate: this.valueGenerator.dateOnlyString(),
+      OriginalEffectiveDate: this.valueGenerator.dateTimeString(),
       DealIdentifier: this.valueGenerator.string(),
       DealPortfolioIdentifier: this.valueGenerator.string(),
       DealBorrowerPartyIdentifier: this.valueGenerator.string(),
-      ExpirationDate: this.valueGenerator.dateOnlyString(),
+      ExpirationDate: this.valueGenerator.dateTimeString(),
       LimitAmount: this.valueGenerator.nonnegativeFloat(),
       ExternalReferenceIdentifier: this.valueGenerator.string(),
       FacilityType: {
@@ -56,8 +56,8 @@ export class GetFacilityGenerator extends AbstractGenerator<AcbsGetFacilityRespo
       FacilityUserDefinedList6: {
         FacilityUserDefinedList6Code: this.valueGenerator.string(),
       },
-      UserDefinedDate1: this.valueGenerator.dateOnlyString(),
-      UserDefinedDate2: this.valueGenerator.dateOnlyString(),
+      UserDefinedDate1: this.valueGenerator.dateTimeString(),
+      UserDefinedDate2: this.valueGenerator.dateTimeString(),
       UserDefinedAmount3: this.valueGenerator.nonnegativeFloat(),
       ProbabilityofDefault: this.valueGenerator.nonnegativeFloat(),
       FacilityOverallStatus: {

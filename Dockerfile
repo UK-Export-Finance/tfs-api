@@ -1,66 +1,49 @@
 ###################
-# BUILD FOR LOCAL DEVELOPMENT
+# 1. BUILD
 ###################
 
-FROM node:19-alpine As development
+FROM node:20.0-alpine3.16 AS build
 
-# Create app directory
-WORKDIR /usr/src/app
+# Alpine Linux install packages
+RUN apk add bash curl
+RUN rm -rf /var/cache/apk/*
 
-# Copy application dependency manifests to the container image.
-# A wildcard is used to ensure copying both package.json AND package-lock.json (when available).
-# Copying this first prevents re-running npm install on every code change.
-COPY --chown=node:node package*.json ./
+WORKDIR /app
 
-# Install app dependencies using the `npm ci` command instead of `npm install`
+# NPM
+COPY --chown=node:node package.json .
+COPY --chown=node:node package-lock.json .
 RUN npm ci --legacy-peer-deps
-
-# Bundle app source
-COPY --chown=node:node . .
-
-# Use the node user from the image (instead of the root user)
-USER node
-
-###################
-# BUILD FOR PRODUCTION
-###################
-
-FROM node:19-alpine As build
-
-WORKDIR /usr/src/app
-
-COPY --chown=node:node package*.json ./
-
-# In order to run `npm run build` we need access to the Nest CLI.
-# The Nest CLI is a dev dependency,
-# In the previous development stage we ran `npm ci` which installed all dependencies.
-# So we can copy over the node_modules directory from the development image into this build image.
-COPY --chown=node:node --from=development /usr/src/app/node_modules ./node_modules
+RUN npm cache clean --force
 
 COPY --chown=node:node . .
 
-# Run the build command which creates the production bundle
+# Build with all dependencies
 RUN npm run build
 
-# Set NODE_ENV environment variable
-ENV NODE_ENV production
+# Lean NPM - Only install `dependencies`
+# `devDependencies` will still be resolved inside `package-lock.json`,
+# however they will not be installed inside `node_modules` directory.
+RUN npm ci --legacy-peer-deps --omit=dev --ignore-scripts
 
-# Running `npm ci` removes the existing node_modules directory.
-# Passing in --only=production ensures that only the production dependencies are installed.
-# This ensures that the node_modules directory is as optimized as possible.
-RUN npm ci --legacy-peer-deps --only=production && npm cache clean --force
-
+# Non-root user
 USER node
 
 ###################
-# PRODUCTION
+# 2. PRODUCTION
 ###################
 
-FROM node:19-alpine As production
+FROM node:20-alpine3.16 AS production
 
-# Copy the bundled code from the build stage to the production image
-COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
-COPY --chown=node:node --from=build /usr/src/app/dist ./dist
+WORKDIR /app
 
-# Start the server using the production build
-CMD [ "node", "dist/main.js" ]
+# Copy from `build` to `prod`
+COPY --chown=node:node --from=build /app/package.json .
+COPY --chown=node:node --from=build /app/package-lock.json .
+COPY --chown=node:node --from=build /app/node_modules ./node_modules
+COPY --chown=node:node --from=build /app/dist ./dist
+
+# Non-root user
+USER node
+
+CMD ["npm", "run", "start:prod"]

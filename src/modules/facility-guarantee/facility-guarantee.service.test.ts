@@ -6,7 +6,7 @@ import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
 import { TEST_DATES } from '@ukef-test/support/constants/test-date.constant';
-import { GetFacilityGuaranteesGenerator } from '@ukef-test/support/generator/get-facility-guarantees.generator';
+import { GetFacilityGuaranteeGenerator } from '@ukef-test/support/generator/get-facility-guarantee-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
 
@@ -20,7 +20,7 @@ describe('FacilityGuaranteeService', () => {
   const idToken = valueGenerator.string();
   const facilityIdentifier = valueGenerator.facilityId();
 
-  const { facilityGuarantees: expectedFacilityGuarantees, facilityGuaranteesInAcbs } = new GetFacilityGuaranteesGenerator(
+  const { facilityGuarantees: expectedFacilityGuarantees, facilityGuaranteesInAcbs } = new GetFacilityGuaranteeGenerator(
     valueGenerator,
     new DateStringTransformations(),
   ).generate({ numberToGenerate: 2, facilityIdentifier, portfolioIdentifier });

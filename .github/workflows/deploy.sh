@@ -26,19 +26,23 @@ if [ -n "$selection" ]; then
     elif [ "$selection" = "1" ]
     then
     destination=dev
-    branch=main-application
-    ############### PRODUCTION ###############
+    branch=main
+    ############### STAGING ###############
     elif [ "$selection" = "2" ]
+    then
+    destination=staging
+    branch=main
+    ############### PRODUCTION ###############
+    elif [ "$selection" = "3" ]
     then
     destination=prod
     branch=main
     ############### ACR PURGE ###############
-    elif [ "$selection" = "3" ]
+    elif [ "$selection" = "4" ]
     then
     destination=""
     branch=""
-    az acr run --cmd "acr purge --filter 'get-a-quote:.*' --ago 15d" --registry mdm-development /dev/null
-    az acr run --cmd "acr purge --filter 'get-a-quote:.*' --ago 15d" --registry mdm-production /dev/null
+    az acr run --cmd "acr purge --filter 'get-a-quote:.*' --ago 15d" --registry "${env.APIM_TFS_ACR}" /dev/null
     ############### ACR PURGE ###############
     fi
 

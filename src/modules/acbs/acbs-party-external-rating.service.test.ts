@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import { PartyExternalRatingGenerator } from '@ukef-test/support/generator/party-external-rating-generator';
+import { GetPartyExternalRatingGenerator } from '@ukef-test/support/generator/get-party-external-rating-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { AxiosError } from 'axios';
 import { when } from 'jest-when';
@@ -141,7 +141,7 @@ describe('AcbsPartyExternalRatingService', () => {
     });
 
     it('returns the external ratings for the party if ACBS responds with the external ratings', async () => {
-      const { externalRatingsInAcbs } = new PartyExternalRatingGenerator(valueGenerator).generate({ partyIdentifier, numberToGenerate: 2 });
+      const { externalRatingsInAcbs } = new GetPartyExternalRatingGenerator(valueGenerator).generate({ partyIdentifier, numberToGenerate: 2 });
 
       when(httpServiceGet)
         .calledWith(`/Party/${partyIdentifier}/PartyExternalRating`, {

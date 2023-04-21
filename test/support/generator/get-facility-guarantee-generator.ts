@@ -7,7 +7,7 @@ import { FacilityGuarantee } from '@ukef/modules/facility-guarantee/facility-gua
 import { AbstractGenerator } from './abstract-generator';
 import { RandomValueGenerator } from './random-value-generator';
 
-export class GetFacilityGuaranteesGenerator extends AbstractGenerator<FacilityGuaranteeValues, GenerateResult, GenerateOptions> {
+export class GetFacilityGuaranteeGenerator extends AbstractGenerator<FacilityGuaranteeValues, GenerateResult, GenerateOptions> {
   constructor(protected readonly valueGenerator: RandomValueGenerator, protected readonly dateStringTransformations: DateStringTransformations) {
     super(valueGenerator);
   }

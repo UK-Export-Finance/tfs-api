@@ -5,7 +5,7 @@ import { PartyExternalRating } from '@ukef/modules/party-external-rating/party-e
 
 import { AbstractGenerator } from './abstract-generator';
 
-export class PartyExternalRatingGenerator extends AbstractGenerator<PartyExternalRatingValues, GenerateResult, GenerateOptions> {
+export class GetPartyExternalRatingGenerator extends AbstractGenerator<PartyExternalRatingValues, GenerateResult, GenerateOptions> {
   protected generateValues(): PartyExternalRatingValues {
     return {
       ratingEntityCode: this.valueGenerator.stringOfNumericCharacters(),

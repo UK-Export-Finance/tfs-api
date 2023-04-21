@@ -12,6 +12,7 @@ import { PartyModule } from '@ukef/modules/party/party.module';
 import { PartyExternalRatingModule } from '@ukef/modules/party-external-rating/party-external-rating.module';
 
 import { AcbsExceptionTransformInterceptor } from './acbs-adapter/acbs-exception-transform.interceptor';
+import { FacilityCovenantModule } from './facility-covenant/facility-covenant.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { AcbsExceptionTransformInterceptor } from './acbs-adapter/acbs-exception
     DealGuaranteeModule,
     DealInvestorModule,
     FacilityModule,
+    FacilityCovenantModule,
     FacilityGuaranteeModule,
     FacilityInvestorModule,
     PartyExternalRatingModule,
