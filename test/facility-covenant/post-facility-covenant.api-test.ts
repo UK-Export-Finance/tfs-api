@@ -163,7 +163,7 @@ describe('POST /facilities/{facilityIdentifier}/covenants', () => {
     });
 
     it('returns a 400 response if ACBS responds with a 400 response that is not a string when creating the facility covenant', async () => {
-      const acbsErrorMessage = { Message: 'error message' };
+      const acbsErrorMessage = JSON.stringify({ Message: 'error message' });
       requestToCreateFacilityCovenant().reply(400, acbsErrorMessage);
 
       const { status, body } = await api.post(createFacilityCovenantUrl, requestBodyToCreateFacilityCovenant);
