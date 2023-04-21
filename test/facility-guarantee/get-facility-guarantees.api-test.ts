@@ -5,7 +5,7 @@ import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/comm
 import { withFacilityIdentifierUrlParamValidationApiTests } from '@ukef-test/common-tests/request-url-param-validation-api-tests/facility-identifier-url-param-validation-api-tests';
 import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
-import { GetFacilityGuaranteesGenerator } from '@ukef-test/support/generator/get-facility-guarantees.generator';
+import { GetFacilityGuaranteeGenerator } from '@ukef-test/support/generator/get-facility-guarantee-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import nock from 'nock';
 
@@ -18,7 +18,7 @@ describe('GET /facilities/{facilityIdentifier}/guarantees', () => {
 
   const getFacilityGuaranteesUrl = getGetFacilityGuaranteesUrlForFacilityId(facilityIdentifier);
 
-  const { facilityGuarantees: expectedFacilityGuarantees, facilityGuaranteesInAcbs } = new GetFacilityGuaranteesGenerator(
+  const { facilityGuarantees: expectedFacilityGuarantees, facilityGuaranteesInAcbs } = new GetFacilityGuaranteeGenerator(
     valueGenerator,
     new DateStringTransformations(),
   ).generate({ numberToGenerate: 2, facilityIdentifier, portfolioIdentifier });

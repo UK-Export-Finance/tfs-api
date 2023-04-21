@@ -1,4 +1,4 @@
-import { GetFacilityGuaranteesGenerator } from '@ukef-test/support/generator/get-facility-guarantees.generator';
+import { GetFacilityGuaranteeGenerator } from '@ukef-test/support/generator/get-facility-guarantee-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
 
@@ -11,7 +11,7 @@ describe('FacilityGuaranteeController', () => {
   const portfolioIdentifier = valueGenerator.string();
   const facilityIdentifier = valueGenerator.facilityId();
 
-  const { facilityGuarantees: guaranteesFromService } = new GetFacilityGuaranteesGenerator(valueGenerator, new DateStringTransformations()).generate({
+  const { facilityGuarantees: guaranteesFromService } = new GetFacilityGuaranteeGenerator(valueGenerator, new DateStringTransformations()).generate({
     numberToGenerate: 2,
     facilityIdentifier,
     portfolioIdentifier,
