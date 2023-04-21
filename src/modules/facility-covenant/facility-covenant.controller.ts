@@ -25,7 +25,6 @@ export class FacilityCovenantController {
     description: 'An internal server error has occurred.',
   })
   async getCovenantsForFacility(@Param() params: GetFacilityCovenantsParamsDto): Promise<GetFacilityCovenantsResponseDto[]> {
-    const covenantsForFacility = await this.facilityCovenantService.getCovenantsForFacility(params.facilityIdentifier);
-    return covenantsForFacility;
+    return await this.facilityCovenantService.getCovenantsForFacility(params.facilityIdentifier);
   }
 }

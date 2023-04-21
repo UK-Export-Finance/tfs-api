@@ -15,7 +15,7 @@ export class FacilityCovenantService {
   ) {}
 
   async getCovenantsForFacility(facilityIdentifier: string): Promise<GetFacilityCovenantsResponseDto[]> {
-    const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+    const { portfolioIdentifier } = PROPERTIES.GLOBAL;
     const idToken = await this.acbsAuthenticationService.getIdToken();
     const covenantsInAcbs = await this.acbsFacilityCovenantService.getCovenantsForFacility(portfolioIdentifier, facilityIdentifier, idToken);
     return covenantsInAcbs.map((covenant) => {
