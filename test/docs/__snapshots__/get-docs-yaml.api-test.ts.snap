@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`GET /docs-yaml matches the snapshot 1`] = `
+exports[`GET /openapi/yaml matches the snapshot 1`] = `
 "openapi: 3.0.0
 paths:
   /api/v1/deals/{dealIdentifier}:

@@ -3,7 +3,7 @@ import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-
 const valueGenerator = new RandomValueGenerator();
 
 export const ENVIRONMENT_VARIABLES = Object.freeze({
-  APP_ENV: 'test',
+  NODE_ENV: 'test',
 
   SWAGGER_USER: valueGenerator.string(),
   SWAGGER_PASSWORD: valueGenerator.string(),
