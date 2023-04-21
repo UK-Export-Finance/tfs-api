@@ -8,14 +8,14 @@ export type CreateFacilityCovenantRequestDto = CreateFacilityCovenantRequestItem
 
 export class CreateFacilityCovenantRequestItem {
   @ValidatedStringApiProperty({
-    description: 'The identifier of the covenant in ACBS. When creating a covenant an identifier from the number generator should be used.',
+    description: 'The identifier of the facility to create the covenant for in ACBS.',
     example: '0000000001',
     length: 10,
   })
   readonly facilityIdentifier: string;
 
   @ValidatedStringApiProperty({
-    description: 'The identifier of the facility to create the covenant for in ACBS.',
+    description: 'The identifier of the covenant in ACBS. When creating a covenant an identifier from the number generator should be used.',
     example: '0000000001',
     length: 10,
   })
@@ -23,9 +23,11 @@ export class CreateFacilityCovenantRequestItem {
   // case it gets transformed to null and ACBS will generate an ID for the covenant without checking if this ID has already
   // been used. Presumably this is behaviour we want to avoid?
 
+  // TODO APIM-43: should we validate it is part of the enum?
   @ValidatedStringApiProperty({
     description:
       'The covenant type code: 43 for a UK Contract Value covenant, 46 for a Chargeable Amount covenant, and 47 for a Chargeable Amount covenant not in GBP.',
+    length: 2,
     example: '43',
     enum: ENUMS.COVENANT_TYPE_CODES,
   })

@@ -4,6 +4,12 @@ import { AcbsGetFacilityResponseDto } from '@ukef/modules/acbs/dto/acbs-get-faci
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
+import { withCovenantIdentifierFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/covenant-identifier-field-validation-api-tests';
+import { withCurrencyFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/currency-field-validation-api-tests';
+import { withDateOnlyFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/date-only-field-validation-api-tests';
+import { withFacilityIdentifierFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/facility-identifier-field-validation-api-tests';
+import { withRequiredNonNegativeNumberFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/required-non-negative-number-field-validation-api-tests';
+import { withStringFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/string-field-validation-api-tests';
 import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
 import { CreateFacilityCovenantGenerator } from '@ukef-test/support/generator/create-facility-covenant-generator';
@@ -204,6 +210,64 @@ describe('POST /facilities/{facilityIdentifier}/covenants', () => {
     });
   });
 
+  const makeRequest = (body: unknown[]) => api.post(createFacilityCovenantUrl, body);
+  const givenAnyRequestBodyWouldSucceed = () => {
+    givenAuthenticationWithTheIdpSucceeds();
+    givenRequestToGetFacilityFromAcbsSucceeds();
+    givenAnyRequestBodyToCreateFacilityCovenantInAcbsSucceeds();
+  };
+
+  withFacilityIdentifierFieldValidationApiTests({
+    valueGenerator,
+    validRequestBody: requestBodyToCreateFacilityCovenant,
+    makeRequest,
+    givenAnyRequestBodyWouldSucceed,
+  });
+
+  withCovenantIdentifierFieldValidationApiTests({
+    valueGenerator,
+    validRequestBody: requestBodyToCreateFacilityCovenant,
+    makeRequest,
+    givenAnyRequestBodyWouldSucceed,
+  });
+
+  withStringFieldValidationApiTests({
+    fieldName: 'covenantType',
+    length: 2,
+    generateFieldValueOfLength: (length: number) => valueGenerator.string({ length }),
+    validRequestBody: requestBodyToCreateFacilityCovenant,
+    makeRequest,
+    givenAnyRequestBodyWouldSucceed,
+  });
+
+  withRequiredNonNegativeNumberFieldValidationApiTests({
+    fieldName: 'maximumLiability',
+    validRequestBody: requestBodyToCreateFacilityCovenant,
+    makeRequest,
+    givenAnyRequestBodyWouldSucceed,
+  });
+
+  withCurrencyFieldValidationApiTests({
+    valueGenerator,
+    validRequestBody: requestBodyToCreateFacilityCovenant,
+    makeRequest,
+    givenAnyRequestBodyWouldSucceed,
+  });
+
+  withDateOnlyFieldValidationApiTests({
+    fieldName: 'guaranteeExpiryDate',
+    validRequestBody: requestBodyToCreateFacilityCovenant,
+    makeRequest,
+    givenAnyRequestBodyWouldSucceed,
+  });
+
+  withDateOnlyFieldValidationApiTests({
+    fieldName: 'effectiveDate',
+    validRequestBody: requestBodyToCreateFacilityCovenant,
+    makeRequest,
+    givenAnyRequestBodyWouldSucceed,
+  });
+
   const givenRequestToGetFacilityFromAcbsSucceeds = (): nock.Scope => {
     return requestToGetFacility().reply(200, facilityInAcbs);
   };
@@ -225,4 +289,13 @@ describe('POST /facilities/{facilityIdentifier}/covenants', () => {
       .post(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/Covenant`, JSON.stringify(requestBody))
       .matchHeader('authorization', `Bearer ${idToken}`)
       .matchHeader('Content-Type', 'application/json');
+
+  const givenAnyRequestBodyToCreateFacilityCovenantInAcbsSucceeds = (): void => {
+    const requestBodyPlaceholder = '*';
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .filteringRequestBody(() => requestBodyPlaceholder)
+      .post(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/Covenant`, requestBodyPlaceholder)
+      .matchHeader('authorization', `Bearer ${idToken}`)
+      .reply(201);
+  };
 });
