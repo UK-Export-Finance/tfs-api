@@ -1,7 +1,7 @@
 import { AcbsPartyExternalRatingService } from '@ukef/modules/acbs/acbs-party-external-rating.service';
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
-import { PartyExternalRatingGenerator } from '@ukef-test/support/generator/party-external-rating-generator';
+import { GetPartyExternalRatingGenerator } from '@ukef-test/support/generator/get-party-external-rating-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
 
@@ -37,7 +37,7 @@ describe('PartyExternalRatingService', () => {
     const partyIdentifier = valueGenerator.stringOfNumericCharacters();
 
     it('returns a transformation of the external ratings from ACBS', async () => {
-      const { externalRatingsInAcbs, externalRatings: expectedExternalRatings } = new PartyExternalRatingGenerator(valueGenerator).generate({
+      const { externalRatingsInAcbs, externalRatings: expectedExternalRatings } = new GetPartyExternalRatingGenerator(valueGenerator).generate({
         partyIdentifier,
         numberToGenerate: 2,
       });
