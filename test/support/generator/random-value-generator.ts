@@ -70,7 +70,7 @@ export class RandomValueGenerator {
   }
 
   /**
-   * Length control is required for tests, usually prefix length is 4.
+   * Usually prefix length is 4.
    */
   facilityId(lengthExcludingPrefix?: number): UkefId {
     return this.ukefId(lengthExcludingPrefix ?? 6);

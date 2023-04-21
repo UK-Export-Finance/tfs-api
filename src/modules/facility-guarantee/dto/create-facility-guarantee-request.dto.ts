@@ -1,4 +1,4 @@
-import { EXAMPLES, PROPERTIES } from '@ukef/constants';
+import { EXAMPLES } from '@ukef/constants';
 import { ValidatedDateOnlyApiProperty } from '@ukef/decorators/validated-date-only-api-property.decorator';
 import { ValidatedNumberApiProperty } from '@ukef/decorators/validated-number-api-property.decorator';
 import { ValidatedStringApiProperty } from '@ukef/decorators/validated-string-api-property.decorator';

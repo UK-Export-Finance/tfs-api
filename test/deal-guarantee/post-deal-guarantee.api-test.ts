@@ -180,7 +180,7 @@ describe('POST /deals/{dealIdentifier}/guarantees', () => {
   });
 
   it(`replaces the effectiveDate with today's date if the specified effectiveDate is after today`, async () => {
-    const requestBodyWithFutureEffectiveDate = [{ ...requestBodyToCreateDealGuarantee[0], effectiveDate: '3000-01-01' }];
+    const requestBodyWithFutureEffectiveDate = [{ ...requestBodyToCreateDealGuarantee[0], effectiveDate: TEST_DATES.A_FUTURE_EFFECTIVE_DATE_ONLY }];
     const acbsRequestBodyWithTodayEffectiveDate = {
       ...acbsRequestBodyToCreateDealGuarantee,
       EffectiveDate: new Date().toISOString().split('T')[0] + 'T00:00:00Z',

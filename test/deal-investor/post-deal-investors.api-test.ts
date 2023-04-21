@@ -7,6 +7,7 @@ import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/comm
 import { withDateOnlyFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/date-only-field-validation-api-tests';
 import { withStringFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/string-field-validation-api-tests';
 import { Api } from '@ukef-test/support/api';
+import { TEST_DATES } from '@ukef-test/support/constants/test-date.constant';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import { CreateDealInvestorGenerator } from '@ukef-test/support/generator/create-deal-investor-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
@@ -137,7 +138,7 @@ describe('POST /deals/{dealIdentifier}/investors', () => {
   });
 
   it(`replaces the effectiveDate with today's date if the specified effectiveDate is after today`, async () => {
-    const requestBodyWithFutureEffectiveDate = [{ ...requestBodyToCreateDealInvestor[0], effectiveDate: '3000-01-01' }];
+    const requestBodyWithFutureEffectiveDate = [{ ...requestBodyToCreateDealInvestor[0], effectiveDate: TEST_DATES.A_FUTURE_EFFECTIVE_DATE_ONLY }];
     const acbsRequestBodyWithTodayEffectiveDate = {
       ...acbsRequestBodyToCreateDealInvestor,
       EffectiveDate: dateStringTransformations.getDateStringFromDate(new Date()),

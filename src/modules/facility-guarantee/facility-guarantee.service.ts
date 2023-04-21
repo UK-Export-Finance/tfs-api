@@ -43,8 +43,6 @@ export class FacilityGuaranteeService {
   async createGuaranteeForFacility(facilityIdentifier: string, newGuarantee: FacilityGuaranteeToCreate): Promise<void> {
     const idToken = await this.acbsAuthenticationService.getIdToken();
 
-    // TODO: Mulesoft Deal and Facility guarantees logic has small difference, we don't check that Facility date is in future.
-
     const effectiveDateTime = this.currentDateProvider.getEarliestDateFromTodayAnd(
       new Date(this.dateStringTransformations.addTimeToDateOnlyString(newGuarantee.effectiveDate)),
     );
