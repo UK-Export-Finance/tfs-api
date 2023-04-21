@@ -1,5 +1,4 @@
 import { Api } from '@ukef-test/support/api';
-import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 
 describe('GET /openapi/yaml', () => {
   let api: Api;
