@@ -7,8 +7,10 @@ export interface StringFieldValidationApiTestOptions<RequestBodyItem, RequestBod
   maxLength?: number;
   required?: boolean;
   pattern?: string;
+  enum?: any;
   generateFieldValueOfLength: (length: number) => RequestBodyItem[RequestBodyItemKey];
   generateFieldValueThatDoesNotMatchRegex?: () => RequestBodyItem[RequestBodyItemKey];
+  generateFieldValueThatDoesNotMatchEnum?: () => RequestBodyItem[RequestBodyItemKey];
   validRequestBody: RequestBodyItem[];
   makeRequest: (body: unknown[]) => request.Test;
   givenAnyRequestBodyWouldSucceed: () => void;
@@ -21,6 +23,8 @@ export function withStringFieldValidationApiTests<RequestBodyItem, RequestBodyIt
   maxLength: maxLengthOption,
   required,
   pattern,
+  enum: theEnum,
+  generateFieldValueThatDoesNotMatchEnum,
   generateFieldValueOfLength,
   generateFieldValueThatDoesNotMatchRegex,
   validRequestBody,
@@ -138,6 +142,21 @@ export function withStringFieldValidationApiTests<RequestBodyItem, RequestBodyIt
         expect(body).toMatchObject({
           error: 'Bad Request',
           message: expect.arrayContaining([`${fieldName} must match ${pattern} regular expression`]),
+          statusCode: 400,
+        });
+      });
+    }
+
+    if (theEnum && generateFieldValueThatDoesNotMatchEnum) {
+      it(`returns a 400 response if ${fieldName} does not match the enum`, async () => {
+        const requestWithInvalidField = [{ ...validRequestBody[0], [fieldNameSymbol]: generateFieldValueThatDoesNotMatchEnum() }];
+
+        const { status, body } = await makeRequest(requestWithInvalidField);
+
+        expect(status).toBe(400);
+        expect(body).toMatchObject({
+          error: 'Bad Request',
+          message: expect.arrayContaining([`${fieldName} must be one of the following values: ${Object.values(theEnum).join(', ')}`]),
           statusCode: 400,
         });
       });

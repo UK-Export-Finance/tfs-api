@@ -1148,6 +1148,7 @@ components:
           description: The identifier of the facility to create the covenant for in ACBS.
           minLength: 10
           maxLength: 10
+          pattern: ^00\\d{8}$
           example: '0000000001'
         covenantIdentifier:
           type: string
@@ -1176,9 +1177,9 @@ components:
           type: string
           description: >-
             The covenant currency type code. The maximum number of characters
-            allowed is 3. It is called pledge type code in ACBS.
+            allowed is 1. It is called pledge type code in ACBS.
           minLength: 0
-          maxLength: 3
+          maxLength: 1
           example: 'N'
         guaranteeExpiryDate:
           format: date

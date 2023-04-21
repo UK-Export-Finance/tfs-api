@@ -1,4 +1,4 @@
-import { PROPERTIES } from '@ukef/constants';
+import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { AcbsCreateFacilityCovenantRequestDto } from '@ukef/modules/acbs/dto/acbs-create-facility-covenant-request.dto';
 import { AcbsGetFacilityResponseDto } from '@ukef/modules/acbs/dto/acbs-get-facility-response.dto';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
@@ -6,7 +6,6 @@ import { CreateFacilityCovenantRequestDto } from '@ukef/modules/facility-covenan
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
 import { withCovenantIdentifierFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/covenant-identifier-field-validation-api-tests';
-import { withCurrencyFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/currency-field-validation-api-tests';
 import { withDateOnlyFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/date-only-field-validation-api-tests';
 import { withFacilityIdentifierFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/facility-identifier-field-validation-api-tests';
 import { withRequiredNonNegativeNumberFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/required-non-negative-number-field-validation-api-tests';
@@ -113,6 +112,7 @@ describe('POST /facilities/{facilityIdentifier}/covenants', () => {
       const acbsRequestBodyWithExpectedCovenantName = {
         ...acbsRequestBodyToCreateFacilityCovenant,
         CovenantName: 'CHARGEABLE AMOUNT',
+        CovenantType: { CovenantTypeCode: '46' },
       };
       const acbsRequestWithExpectedCovenantName = requestToCreateFacilityCovenantInAcbsWithBody(acbsRequestBodyWithExpectedCovenantName).reply(201);
 
@@ -136,6 +136,7 @@ describe('POST /facilities/{facilityIdentifier}/covenants', () => {
       const acbsRequestBodyWithExpectedCovenantName = {
         ...acbsRequestBodyToCreateFacilityCovenant,
         CovenantName: 'CHARGEABLE AMOUNT',
+        CovenantType: { CovenantTypeCode: '47' },
       };
       const acbsRequestWithExpectedCovenantName = requestToCreateFacilityCovenantInAcbsWithBody(acbsRequestBodyWithExpectedCovenantName).reply(201);
 
@@ -163,6 +164,7 @@ describe('POST /facilities/{facilityIdentifier}/covenants', () => {
       const acbsRequestBodyWithExpectedCovenantName = {
         ...acbsRequestBodyToCreateFacilityCovenant,
         CovenantName: 'AMOUNT OF SUPPORTED BOND',
+        CovenantType: { CovenantTypeCode: '43' },
       };
       const acbsRequestWithExpectedCovenantName = requestToCreateFacilityCovenantInAcbsWithBody(acbsRequestBodyWithExpectedCovenantName).reply(201);
 
@@ -176,11 +178,11 @@ describe('POST /facilities/{facilityIdentifier}/covenants', () => {
     });
 
     it('sets CovenantName to AMOUNT OF SUPPORTED FACILITY if covenantType is 43 and if facilityTypeCode is 260', async () => {
-      const facilityWithTypeCode250: AcbsGetFacilityResponseDto = {
+      const facilityWithTypeCode260: AcbsGetFacilityResponseDto = {
         ...facilityInAcbs,
-        FacilityType: { FacilityTypeCode: '250' },
+        FacilityType: { FacilityTypeCode: '260' },
       };
-      givenRequestToGetFacilityFromAcbsSucceedsReturning(facilityWithTypeCode250);
+      givenRequestToGetFacilityFromAcbsSucceedsReturning(facilityWithTypeCode260);
       const facilityCovenantWithType43: CreateFacilityCovenantRequestDto = [
         {
           ...requestBodyToCreateFacilityCovenant[0],
@@ -190,6 +192,7 @@ describe('POST /facilities/{facilityIdentifier}/covenants', () => {
       const acbsRequestBodyWithExpectedCovenantName = {
         ...acbsRequestBodyToCreateFacilityCovenant,
         CovenantName: 'AMOUNT OF SUPPORTED FACILITY',
+        CovenantType: { CovenantTypeCode: '43' },
       };
       const acbsRequestWithExpectedCovenantName = requestToCreateFacilityCovenantInAcbsWithBody(acbsRequestBodyWithExpectedCovenantName).reply(201);
 
@@ -203,11 +206,11 @@ describe('POST /facilities/{facilityIdentifier}/covenants', () => {
     });
 
     it('sets CovenantName to AMOUNT OF SUPPORTED FACILITY if covenantType is 43 and facilityTypeCode is 280', async () => {
-      const facilityWithTypeCode250: AcbsGetFacilityResponseDto = {
+      const facilityWithTypeCode280: AcbsGetFacilityResponseDto = {
         ...facilityInAcbs,
-        FacilityType: { FacilityTypeCode: '250' },
+        FacilityType: { FacilityTypeCode: '280' },
       };
-      givenRequestToGetFacilityFromAcbsSucceedsReturning(facilityWithTypeCode250);
+      givenRequestToGetFacilityFromAcbsSucceedsReturning(facilityWithTypeCode280);
       const facilityCovenantWithType43: CreateFacilityCovenantRequestDto = [
         {
           ...requestBodyToCreateFacilityCovenant[0],
@@ -217,6 +220,7 @@ describe('POST /facilities/{facilityIdentifier}/covenants', () => {
       const acbsRequestBodyWithExpectedCovenantName = {
         ...acbsRequestBodyToCreateFacilityCovenant,
         CovenantName: 'AMOUNT OF SUPPORTED FACILITY',
+        CovenantType: { CovenantTypeCode: '43' },
       };
       const acbsRequestWithExpectedCovenantName = requestToCreateFacilityCovenantInAcbsWithBody(acbsRequestBodyWithExpectedCovenantName).reply(201);
 
@@ -230,12 +234,11 @@ describe('POST /facilities/{facilityIdentifier}/covenants', () => {
     });
 
     it('sets CovenantName to facilityTypeCode if covenantType is 43 and facilityTypeCode is not 250, 260, or 280', async () => {
-      const facilityTypeCode = valueGenerator.string({ length: 3 });
-      const facilityWithTypeCode250: AcbsGetFacilityResponseDto = {
+      const facilityWithTypeCode270: AcbsGetFacilityResponseDto = {
         ...facilityInAcbs,
-        FacilityType: { FacilityTypeCode: facilityTypeCode },
+        FacilityType: { FacilityTypeCode: '270' },
       };
-      givenRequestToGetFacilityFromAcbsSucceedsReturning(facilityWithTypeCode250);
+      givenRequestToGetFacilityFromAcbsSucceedsReturning(facilityWithTypeCode270);
       const facilityCovenantWithType43: CreateFacilityCovenantRequestDto = [
         {
           ...requestBodyToCreateFacilityCovenant[0],
@@ -244,7 +247,8 @@ describe('POST /facilities/{facilityIdentifier}/covenants', () => {
       ];
       const acbsRequestBodyWithExpectedCovenantName = {
         ...acbsRequestBodyToCreateFacilityCovenant,
-        CovenantName: facilityTypeCode,
+        CovenantName: '270',
+        CovenantType: { CovenantTypeCode: '43' },
       };
       const acbsRequestWithExpectedCovenantName = requestToCreateFacilityCovenantInAcbsWithBody(acbsRequestBodyWithExpectedCovenantName).reply(201);
 
@@ -397,7 +401,10 @@ describe('POST /facilities/{facilityIdentifier}/covenants', () => {
     withStringFieldValidationApiTests({
       fieldName: 'covenantType',
       length: 2,
-      generateFieldValueOfLength: (length: number) => valueGenerator.string({ length }),
+      enum: ENUMS.COVENANT_TYPE_CODES,
+      generateFieldValueOfLength: (length: number) =>
+        length === 2 ? ['43', '46', '47'][valueGenerator.integer({ min: 0, max: 2 })] : valueGenerator.string({ length }),
+      generateFieldValueThatDoesNotMatchEnum: () => '44',
       validRequestBody: requestBodyToCreateFacilityCovenant,
       makeRequest,
       givenAnyRequestBodyWouldSucceed,
@@ -410,8 +417,11 @@ describe('POST /facilities/{facilityIdentifier}/covenants', () => {
       givenAnyRequestBodyWouldSucceed,
     });
 
-    withCurrencyFieldValidationApiTests({
-      valueGenerator,
+    withStringFieldValidationApiTests({
+      fieldName: 'currency',
+      minLength: 0,
+      maxLength: 1,
+      generateFieldValueOfLength: (length: number) => valueGenerator.string({ length }),
       validRequestBody: requestBodyToCreateFacilityCovenant,
       makeRequest,
       givenAnyRequestBodyWouldSucceed,

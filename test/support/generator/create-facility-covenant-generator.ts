@@ -13,12 +13,14 @@ export class CreateFacilityCovenantGenerator extends AbstractGenerator<CreateFac
   }
 
   protected generateValues(): CreateFacilityCovenantRequestItem {
+    const possibleCovenantTypeCodes = Object.values(ENUMS.COVENANT_TYPE_CODES);
+
     return {
       facilityIdentifier: this.valueGenerator.ukefId(),
       covenantIdentifier: this.valueGenerator.ukefId(), // TODO APIM-106: is this right to use ukefId()?
-      covenantType: ['43', '46', '47'][this.valueGenerator.integer({ min: 0, max: 2 })],
+      covenantType: possibleCovenantTypeCodes[this.valueGenerator.integer({ min: 0, max: possibleCovenantTypeCodes.length - 1 })],
       maximumLiability: this.valueGenerator.nonnegativeFloat({ fixed: 2 }), // TODO APIM-106: is this right to use fixed: 2?
-      currency: this.valueGenerator.string({ minLength: 0, maxLength: 3 }),
+      currency: this.valueGenerator.string({ minLength: 0, maxLength: 1 }),
       guaranteeExpiryDate: this.valueGenerator.dateOnlyString(),
       effectiveDate: this.valueGenerator.dateOnlyString(),
     };

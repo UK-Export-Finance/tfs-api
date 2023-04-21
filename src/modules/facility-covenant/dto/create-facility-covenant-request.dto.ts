@@ -1,4 +1,4 @@
-import { ENUMS } from '@ukef/constants';
+import { ENUMS, EXAMPLES } from '@ukef/constants';
 import { ValidatedDateOnlyApiProperty } from '@ukef/decorators/validated-date-only-api-property.decorator';
 import { ValidatedNumberApiProperty } from '@ukef/decorators/validated-number-api-property.decorator';
 import { ValidatedStringApiProperty } from '@ukef/decorators/validated-string-api-property.decorator';
@@ -9,8 +9,9 @@ export type CreateFacilityCovenantRequestDto = CreateFacilityCovenantRequestItem
 export class CreateFacilityCovenantRequestItem {
   @ValidatedStringApiProperty({
     description: 'The identifier of the facility to create the covenant for in ACBS.',
-    example: '0000000001',
+    example: EXAMPLES.FACILITY_ID,
     length: 10,
+    pattern: /^00\d{8}$/,
   })
   readonly facilityIdentifier: string;
 
@@ -39,10 +40,10 @@ export class CreateFacilityCovenantRequestItem {
   readonly maximumLiability: number;
 
   @ValidatedStringApiProperty({
-    description: 'The covenant currency type code. The maximum number of characters allowed is 3. It is called pledge type code in ACBS.',
+    description: 'The covenant currency type code. The maximum number of characters allowed is 1. It is called pledge type code in ACBS.',
     example: 'N',
     minLength: 0,
-    maxLength: 3,
+    maxLength: 1,
   })
   readonly currency: string;
 
