@@ -119,7 +119,6 @@ jobs:
               "SWAGGER_USER=${{ secrets.SWAGGER_USER }}" \
               "SWAGGER_PASSWORD=${{ secrets.SWAGGER_PASSWORD }}" \
               "API_KEY=${{ secrets.API_KEY }}" \
-              "API_KEY_STRATEGY=${{ secrets.API_KEY_STRATEGY }}" \
               "ACBS_BASE_URL=${{ secrets.ACBS_BASE_URL }}" \
               "ACBS_MAX_REDIRECTS=${{ secrets.ACBS_MAX_REDIRECTS }}" \
               "ACBS_TIMEOUT=${{ secrets.ACBS_TIMEOUT }}" \

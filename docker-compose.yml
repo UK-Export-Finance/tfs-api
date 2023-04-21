@@ -18,7 +18,6 @@ services:
       SWAGGER_USER:
       SWAGGER_PASSWORD:
       API_KEY:
-      API_KEY_STRATEGY:
       ACBS_BASE_URL:
       ACBS_MAX_REDIRECTS:
       ACBS_TIMEOUT:

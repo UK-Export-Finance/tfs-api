@@ -2,7 +2,7 @@
 # 1. BUILD
 ###################
 
-FROM node:20-alpine3.16 AS build
+FROM node:20.0-alpine3.16 AS build
 
 # Alpine Linux install packages
 RUN apk add bash curl
