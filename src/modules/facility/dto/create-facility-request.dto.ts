@@ -81,9 +81,10 @@ export class CreateFacilityRequestItem {
   })
   readonly maximumLiability: number;
 
-  @ValidatedPartyIdentifierApiProperty({
-    // TODO APIM-69: is this definitely a party id?
+  @ValidatedStringApiProperty({
     description: 'The party identifier of the Agent Bank for this facility.',
+    example: '00000000',
+    maxLength: 10,
   })
   readonly agentBankIdentifier: string;
 

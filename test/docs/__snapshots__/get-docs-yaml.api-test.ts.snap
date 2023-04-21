@@ -990,9 +990,9 @@ components:
         agentBankIdentifier:
           type: string
           description: The party identifier of the Agent Bank for this facility.
-          minLength: 8
-          maxLength: 8
-          example: '00001234'
+          minLength: 0
+          maxLength: 10
+          example: '00000000'
         riskCountryCode:
           type: string
           description: >-
@@ -1101,6 +1101,7 @@ components:
         facilityIdentifier:
           type: string
           description: The identifier of the created facility.
+          readOnly: true
           example: '0030000322'
       required:
         - facilityIdentifier

@@ -212,9 +212,11 @@ describe('POST /facilities', () => {
     givenAnyRequestBodyWouldSucceed,
   });
 
-  withPartyIdentifierFieldValidationApiTests({
+  withStringFieldValidationApiTests({
     fieldName: 'agentBankIdentifier',
-    valueGenerator,
+    minLength: 0,
+    maxLength: 10,
+    generateFieldValueOfLength: (length) => valueGenerator.stringOfNumericCharacters({ length }),
     validRequestBody: requestBodyToCreateFacility,
     makeRequest,
     givenAnyRequestBodyWouldSucceed,
