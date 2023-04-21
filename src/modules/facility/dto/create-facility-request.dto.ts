@@ -145,7 +145,7 @@ export class CreateFacilityRequestItem {
     description: 'Forecast % Derive from FACILITY:Stage, i.e. Commitment or Issued',
     minimum: 0,
   })
-  readonly foreCastPercentage: number;
+  readonly forecastPercentage: number;
 
   @ValidatedNumberApiProperty({
     description: 'A percentage indicating how likely it is that a default on the credit will occur. This should be specified for GEF.',

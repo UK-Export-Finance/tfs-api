@@ -854,7 +854,7 @@ components:
           type: string
           readOnly: true
           nullable: false
-        foreCastPercentage:
+        forecastPercentage:
           type: number
           readOnly: true
         issueDate:
@@ -904,7 +904,7 @@ components:
         - riskCountryCode
         - riskStatusCode
         - effectiveDate
-        - foreCastPercentage
+        - forecastPercentage
         - issueDate
         - description
         - agentBankIdentifier
@@ -1043,7 +1043,7 @@ components:
           minLength: 8
           maxLength: 8
           example: '00001234'
-        foreCastPercentage:
+        forecastPercentage:
           type: number
           description: Forecast % Derive from FACILITY:Stage, i.e. Commitment or Issued
           minimum: 0
@@ -1094,7 +1094,7 @@ components:
         - delegationType
         - interestOrFeeRate
         - obligorPartyIdentifier
-        - foreCastPercentage
+        - forecastPercentage
     CreateFacilityResponse:
       type: object
       properties:

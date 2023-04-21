@@ -46,7 +46,7 @@ export class FacilityService {
       riskCountryCode: facilityInAcbs.RiskCountry.CountryCode,
       riskStatusCode: facilityInAcbs.CreditReviewRiskType.CreditReviewRiskTypeCode,
       effectiveDate: this.dateStringTransformations.removeTimeIfExists(facilityInAcbs.OriginalEffectiveDate),
-      foreCastPercentage: facilityInAcbs.CompBalPctAmount ?? PROPERTIES.FACILITY.DEFAULT.GET.compBalPctAmount,
+      forecastPercentage: facilityInAcbs.CompBalPctAmount ?? PROPERTIES.FACILITY.DEFAULT.GET.compBalPctAmount,
       issueDate: this.dateStringTransformations.removeTimeIfExists(facilityInAcbs.UserDefinedDate1),
       description: facilityInAcbs.Description,
       agentBankIdentifier: facilityInAcbs.AgentBankPartyIdentifier,
@@ -226,7 +226,7 @@ export class FacilityService {
         UserName: defaultValues.servicingUser.userName,
       },
       CompBalPctReserve: compBalPctReserve,
-      CompBalPctAmount: facilityToCreate.foreCastPercentage,
+      CompBalPctAmount: facilityToCreate.forecastPercentage,
       RiskMitigation: {
         RiskMitigationCode: defaultValues.riskMitigationCode,
       },

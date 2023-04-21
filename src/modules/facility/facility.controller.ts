@@ -66,7 +66,7 @@ export class FacilityController {
       riskCountryCode: facility.riskCountryCode,
       riskStatusCode: facility.riskStatusCode,
       effectiveDate: facility.effectiveDate,
-      foreCastPercentage: facility.foreCastPercentage,
+      forecastPercentage: facility.forecastPercentage,
       issueDate: facility.issueDate,
       description: facility.description,
       agentBankIdentifier: facility.agentBankIdentifier,

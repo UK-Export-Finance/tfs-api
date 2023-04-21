@@ -298,7 +298,7 @@ describe('POST /facilities', () => {
   });
 
   withNonNegativeNumberFieldValidationApiTests({
-    fieldName: 'foreCastPercentage',
+    fieldName: 'forecastPercentage',
     validRequestBody: requestBodyToCreateFacility,
     makeRequest,
     givenAnyRequestBodyWouldSucceed,

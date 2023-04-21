@@ -32,7 +32,7 @@ export class CreateFacilityGenerator extends AbstractGenerator<FacilityValues, G
       intrestOrFeeRate: this.valueGenerator.nonnegativeFloat(),
       probabilityOfDefault: this.valueGenerator.nonnegativeFloat(),
       obligorPartyIdentifier: this.valueGenerator.acbsPartyId(),
-      foreCastPercentage: this.valueGenerator.nonnegativeFloat(),
+      forecastPercentage: this.valueGenerator.nonnegativeFloat(),
       issueDate: this.valueGenerator.dateOnlyString(),
       capitalConversionFactorCode: this.valueGenerator.string({ maxLength: 2 }),
     };
@@ -201,7 +201,7 @@ export class CreateFacilityGenerator extends AbstractGenerator<FacilityValues, G
         UserName: defaultValues.servicingUser.userName,
       },
       CompBalPctReserve: 100,
-      CompBalPctAmount: facilityToCreate.foreCastPercentage,
+      CompBalPctAmount: facilityToCreate.forecastPercentage,
       RiskMitigation: {
         RiskMitigationCode: defaultValues.riskMitigationCode,
       },
@@ -229,7 +229,7 @@ export class CreateFacilityGenerator extends AbstractGenerator<FacilityValues, G
       interestOrFeeRate: facilityToCreate.intrestOrFeeRate,
       probabilityOfDefault: facilityToCreate.probabilityOfDefault,
       obligorPartyIdentifier: facilityToCreate.obligorPartyIdentifier,
-      foreCastPercentage: facilityToCreate.foreCastPercentage,
+      forecastPercentage: facilityToCreate.forecastPercentage,
       effectiveDate,
       nextQuarterEndDate,
       guaranteeExpiryDate: facilityToCreate.guaranteeExpiryDate,
@@ -259,7 +259,7 @@ interface FacilityValues {
   intrestOrFeeRate: number;
   probabilityOfDefault: number;
   obligorPartyIdentifier: string;
-  foreCastPercentage: number;
+  forecastPercentage: number;
   issueDate: DateOnlyString;
   capitalConversionFactorCode: string;
 }

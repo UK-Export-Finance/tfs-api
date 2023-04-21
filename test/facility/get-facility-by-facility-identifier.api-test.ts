@@ -133,7 +133,7 @@ describe('GET /facilities/{facilityIdentifier}', () => {
 
   it('returns a 200 response with the facility if it is returned by ACBS and CompBalPctAmount is null', async () => {
     const facilityInAcbsWithNullCompBalPctAmount = { ...facilityInAcbs, CompBalPctAmount: null };
-    const expectedFacilityWithDefaultForeCastPercentage = { ...expectedFacility, foreCastPercentage: PROPERTIES.FACILITY.DEFAULT.GET.compBalPctAmount };
+    const expectedFacilityWithDefaultForeCastPercentage = { ...expectedFacility, forecastPercentage: PROPERTIES.FACILITY.DEFAULT.GET.compBalPctAmount };
 
     givenAuthenticationWithTheIdpSucceeds();
     requestToGetFacility().reply(200, facilityInAcbsWithNullCompBalPctAmount);
