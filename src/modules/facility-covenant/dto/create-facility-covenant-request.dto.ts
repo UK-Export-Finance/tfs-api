@@ -23,7 +23,6 @@ export class CreateFacilityCovenantRequestItem {
   // case it gets transformed to null and ACBS will generate an ID for the covenant without checking if this ID has already
   // been used. Presumably this is behaviour we want to avoid?
 
-  // TODO APIM-43: should we validate it is part of the enum?
   @ValidatedStringApiProperty({
     description:
       'The covenant type code: 43 for a UK Contract Value covenant, 46 for a Chargeable Amount covenant, and 47 for a Chargeable Amount covenant not in GBP.',

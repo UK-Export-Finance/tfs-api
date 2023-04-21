@@ -2,6 +2,7 @@ import { PROPERTIES } from '@ukef/constants';
 import { AcbsCreateFacilityCovenantRequestDto } from '@ukef/modules/acbs/dto/acbs-create-facility-covenant-request.dto';
 import { AcbsGetFacilityResponseDto } from '@ukef/modules/acbs/dto/acbs-get-facility-response.dto';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
+import { CreateFacilityCovenantRequestDto } from '@ukef/modules/facility-covenant/dto/create-facility-covenant-request.dto';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
 import { withCovenantIdentifierFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/covenant-identifier-field-validation-api-tests';
@@ -94,6 +95,167 @@ describe('POST /facilities/{facilityIdentifier}/covenants', () => {
       facilityIdentifier, // TODO APIM-106: is this the correct response?
     });
     expect(acbsRequest.isDone()).toBe(true);
+  });
+
+  describe('CovenantName mapping', () => {
+    beforeEach(() => {
+      givenAuthenticationWithTheIdpSucceeds();
+    });
+
+    it('sets CovenantName to CHARGEABLE AMOUNT if covenantType is 46', async () => {
+      givenRequestToGetFacilityFromAcbsSucceeds();
+      const facilityCovenantWithType46: CreateFacilityCovenantRequestDto = [
+        {
+          ...requestBodyToCreateFacilityCovenant[0],
+          covenantType: '46',
+        },
+      ];
+      const acbsRequestBodyWithExpectedCovenantName = {
+        ...acbsRequestBodyToCreateFacilityCovenant,
+        CovenantName: 'CHARGEABLE AMOUNT',
+      };
+      const acbsRequestWithExpectedCovenantName = requestToCreateFacilityCovenantInAcbsWithBody(acbsRequestBodyWithExpectedCovenantName).reply(201);
+
+      const { status, body } = await api.post(createFacilityCovenantUrl, facilityCovenantWithType46);
+
+      expect(status).toBe(201);
+      expect(body).toStrictEqual({
+        facilityIdentifier,
+      });
+      expect(acbsRequestWithExpectedCovenantName.isDone()).toBe(true);
+    });
+
+    it('sets CovenantName to CHARGEABLE AMOUNT if covenantType is 47', async () => {
+      givenRequestToGetFacilityFromAcbsSucceeds();
+      const facilityCovenantWithType47: CreateFacilityCovenantRequestDto = [
+        {
+          ...requestBodyToCreateFacilityCovenant[0],
+          covenantType: '47',
+        },
+      ];
+      const acbsRequestBodyWithExpectedCovenantName = {
+        ...acbsRequestBodyToCreateFacilityCovenant,
+        CovenantName: 'CHARGEABLE AMOUNT',
+      };
+      const acbsRequestWithExpectedCovenantName = requestToCreateFacilityCovenantInAcbsWithBody(acbsRequestBodyWithExpectedCovenantName).reply(201);
+
+      const { status, body } = await api.post(createFacilityCovenantUrl, facilityCovenantWithType47);
+
+      expect(status).toBe(201);
+      expect(body).toStrictEqual({
+        facilityIdentifier,
+      });
+      expect(acbsRequestWithExpectedCovenantName.isDone()).toBe(true);
+    });
+
+    it('sets CovenantName to AMOUNT OF SUPPORTED BOND if covenantType is 43 and facilityTypeCode is 250', async () => {
+      const facilityWithTypeCode250: AcbsGetFacilityResponseDto = {
+        ...facilityInAcbs,
+        FacilityType: { FacilityTypeCode: '250' },
+      };
+      givenRequestToGetFacilityFromAcbsSucceedsReturning(facilityWithTypeCode250);
+      const facilityCovenantWithType43: CreateFacilityCovenantRequestDto = [
+        {
+          ...requestBodyToCreateFacilityCovenant[0],
+          covenantType: '43',
+        },
+      ];
+      const acbsRequestBodyWithExpectedCovenantName = {
+        ...acbsRequestBodyToCreateFacilityCovenant,
+        CovenantName: 'AMOUNT OF SUPPORTED BOND',
+      };
+      const acbsRequestWithExpectedCovenantName = requestToCreateFacilityCovenantInAcbsWithBody(acbsRequestBodyWithExpectedCovenantName).reply(201);
+
+      const { status, body } = await api.post(createFacilityCovenantUrl, facilityCovenantWithType43);
+
+      expect(status).toBe(201);
+      expect(body).toStrictEqual({
+        facilityIdentifier,
+      });
+      expect(acbsRequestWithExpectedCovenantName.isDone()).toBe(true);
+    });
+
+    it('sets CovenantName to AMOUNT OF SUPPORTED FACILITY if covenantType is 43 and if facilityTypeCode is 260', async () => {
+      const facilityWithTypeCode250: AcbsGetFacilityResponseDto = {
+        ...facilityInAcbs,
+        FacilityType: { FacilityTypeCode: '250' },
+      };
+      givenRequestToGetFacilityFromAcbsSucceedsReturning(facilityWithTypeCode250);
+      const facilityCovenantWithType43: CreateFacilityCovenantRequestDto = [
+        {
+          ...requestBodyToCreateFacilityCovenant[0],
+          covenantType: '43',
+        },
+      ];
+      const acbsRequestBodyWithExpectedCovenantName = {
+        ...acbsRequestBodyToCreateFacilityCovenant,
+        CovenantName: 'AMOUNT OF SUPPORTED FACILITY',
+      };
+      const acbsRequestWithExpectedCovenantName = requestToCreateFacilityCovenantInAcbsWithBody(acbsRequestBodyWithExpectedCovenantName).reply(201);
+
+      const { status, body } = await api.post(createFacilityCovenantUrl, facilityCovenantWithType43);
+
+      expect(status).toBe(201);
+      expect(body).toStrictEqual({
+        facilityIdentifier,
+      });
+      expect(acbsRequestWithExpectedCovenantName.isDone()).toBe(true);
+    });
+
+    it('sets CovenantName to AMOUNT OF SUPPORTED FACILITY if covenantType is 43 and facilityTypeCode is 280', async () => {
+      const facilityWithTypeCode250: AcbsGetFacilityResponseDto = {
+        ...facilityInAcbs,
+        FacilityType: { FacilityTypeCode: '250' },
+      };
+      givenRequestToGetFacilityFromAcbsSucceedsReturning(facilityWithTypeCode250);
+      const facilityCovenantWithType43: CreateFacilityCovenantRequestDto = [
+        {
+          ...requestBodyToCreateFacilityCovenant[0],
+          covenantType: '43',
+        },
+      ];
+      const acbsRequestBodyWithExpectedCovenantName = {
+        ...acbsRequestBodyToCreateFacilityCovenant,
+        CovenantName: 'AMOUNT OF SUPPORTED FACILITY',
+      };
+      const acbsRequestWithExpectedCovenantName = requestToCreateFacilityCovenantInAcbsWithBody(acbsRequestBodyWithExpectedCovenantName).reply(201);
+
+      const { status, body } = await api.post(createFacilityCovenantUrl, facilityCovenantWithType43);
+
+      expect(status).toBe(201);
+      expect(body).toStrictEqual({
+        facilityIdentifier,
+      });
+      expect(acbsRequestWithExpectedCovenantName.isDone()).toBe(true);
+    });
+
+    it('sets CovenantName to facilityTypeCode if covenantType is 43 and facilityTypeCode is not 250, 260, or 280', async () => {
+      const facilityTypeCode = valueGenerator.string({ length: 3 });
+      const facilityWithTypeCode250: AcbsGetFacilityResponseDto = {
+        ...facilityInAcbs,
+        FacilityType: { FacilityTypeCode: facilityTypeCode },
+      };
+      givenRequestToGetFacilityFromAcbsSucceedsReturning(facilityWithTypeCode250);
+      const facilityCovenantWithType43: CreateFacilityCovenantRequestDto = [
+        {
+          ...requestBodyToCreateFacilityCovenant[0],
+          covenantType: '43',
+        },
+      ];
+      const acbsRequestBodyWithExpectedCovenantName = {
+        ...acbsRequestBodyToCreateFacilityCovenant,
+        CovenantName: facilityTypeCode,
+      };
+      const acbsRequestWithExpectedCovenantName = requestToCreateFacilityCovenantInAcbsWithBody(acbsRequestBodyWithExpectedCovenantName).reply(201);
+
+      const { status, body } = await api.post(createFacilityCovenantUrl, facilityCovenantWithType43);
+
+      expect(status).toBe(201);
+      expect(body).toStrictEqual({
+        facilityIdentifier,
+      });
+      expect(acbsRequestWithExpectedCovenantName.isDone()).toBe(true);
+    });
   });
 
   describe('error cases when getting the facility', () => {
@@ -210,66 +372,70 @@ describe('POST /facilities/{facilityIdentifier}/covenants', () => {
     });
   });
 
-  const makeRequest = (body: unknown[]) => api.post(createFacilityCovenantUrl, body);
-  const givenAnyRequestBodyWouldSucceed = () => {
-    givenAuthenticationWithTheIdpSucceeds();
-    givenRequestToGetFacilityFromAcbsSucceeds();
-    givenAnyRequestBodyToCreateFacilityCovenantInAcbsSucceeds();
-  };
+  describe('field validation', () => {
+    const makeRequest = (body: unknown[]) => api.post(createFacilityCovenantUrl, body);
+    const givenAnyRequestBodyWouldSucceed = () => {
+      givenAuthenticationWithTheIdpSucceeds();
+      givenRequestToGetFacilityFromAcbsSucceeds();
+      givenAnyRequestBodyToCreateFacilityCovenantInAcbsSucceeds();
+    };
 
-  withFacilityIdentifierFieldValidationApiTests({
-    valueGenerator,
-    validRequestBody: requestBodyToCreateFacilityCovenant,
-    makeRequest,
-    givenAnyRequestBodyWouldSucceed,
+    withFacilityIdentifierFieldValidationApiTests({
+      valueGenerator,
+      validRequestBody: requestBodyToCreateFacilityCovenant,
+      makeRequest,
+      givenAnyRequestBodyWouldSucceed,
+    });
+
+    withCovenantIdentifierFieldValidationApiTests({
+      valueGenerator,
+      validRequestBody: requestBodyToCreateFacilityCovenant,
+      makeRequest,
+      givenAnyRequestBodyWouldSucceed,
+    });
+
+    withStringFieldValidationApiTests({
+      fieldName: 'covenantType',
+      length: 2,
+      generateFieldValueOfLength: (length: number) => valueGenerator.string({ length }),
+      validRequestBody: requestBodyToCreateFacilityCovenant,
+      makeRequest,
+      givenAnyRequestBodyWouldSucceed,
+    });
+
+    withRequiredNonNegativeNumberFieldValidationApiTests({
+      fieldName: 'maximumLiability',
+      validRequestBody: requestBodyToCreateFacilityCovenant,
+      makeRequest,
+      givenAnyRequestBodyWouldSucceed,
+    });
+
+    withCurrencyFieldValidationApiTests({
+      valueGenerator,
+      validRequestBody: requestBodyToCreateFacilityCovenant,
+      makeRequest,
+      givenAnyRequestBodyWouldSucceed,
+    });
+
+    withDateOnlyFieldValidationApiTests({
+      fieldName: 'guaranteeExpiryDate',
+      validRequestBody: requestBodyToCreateFacilityCovenant,
+      makeRequest,
+      givenAnyRequestBodyWouldSucceed,
+    });
+
+    withDateOnlyFieldValidationApiTests({
+      fieldName: 'effectiveDate',
+      validRequestBody: requestBodyToCreateFacilityCovenant,
+      makeRequest,
+      givenAnyRequestBodyWouldSucceed,
+    });
   });
 
-  withCovenantIdentifierFieldValidationApiTests({
-    valueGenerator,
-    validRequestBody: requestBodyToCreateFacilityCovenant,
-    makeRequest,
-    givenAnyRequestBodyWouldSucceed,
-  });
+  const givenRequestToGetFacilityFromAcbsSucceeds = (): nock.Scope => givenRequestToGetFacilityFromAcbsSucceedsReturning(facilityInAcbs);
 
-  withStringFieldValidationApiTests({
-    fieldName: 'covenantType',
-    length: 2,
-    generateFieldValueOfLength: (length: number) => valueGenerator.string({ length }),
-    validRequestBody: requestBodyToCreateFacilityCovenant,
-    makeRequest,
-    givenAnyRequestBodyWouldSucceed,
-  });
-
-  withRequiredNonNegativeNumberFieldValidationApiTests({
-    fieldName: 'maximumLiability',
-    validRequestBody: requestBodyToCreateFacilityCovenant,
-    makeRequest,
-    givenAnyRequestBodyWouldSucceed,
-  });
-
-  withCurrencyFieldValidationApiTests({
-    valueGenerator,
-    validRequestBody: requestBodyToCreateFacilityCovenant,
-    makeRequest,
-    givenAnyRequestBodyWouldSucceed,
-  });
-
-  withDateOnlyFieldValidationApiTests({
-    fieldName: 'guaranteeExpiryDate',
-    validRequestBody: requestBodyToCreateFacilityCovenant,
-    makeRequest,
-    givenAnyRequestBodyWouldSucceed,
-  });
-
-  withDateOnlyFieldValidationApiTests({
-    fieldName: 'effectiveDate',
-    validRequestBody: requestBodyToCreateFacilityCovenant,
-    makeRequest,
-    givenAnyRequestBodyWouldSucceed,
-  });
-
-  const givenRequestToGetFacilityFromAcbsSucceeds = (): nock.Scope => {
-    return requestToGetFacility().reply(200, facilityInAcbs);
+  const givenRequestToGetFacilityFromAcbsSucceedsReturning = (acbsFacility: AcbsGetFacilityResponseDto): nock.Scope => {
+    return requestToGetFacility().reply(200, acbsFacility);
   };
 
   // TODO APIM-106: remove duplication
