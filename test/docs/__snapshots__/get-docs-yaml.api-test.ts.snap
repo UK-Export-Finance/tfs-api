@@ -197,7 +197,7 @@ paths:
           required: true
           in: path
           description: The identifier of the facility in ACBS.
-          example: '0000000001'
+          example: '0030000322'
           schema:
             minLength: 10
             maxLength: 10
