@@ -1,3 +1,4 @@
+import { ValidatedCurrencyApiProperty } from '@ukef/decorators/validated-currency-api-property-decorator';
 import { ValidatedDateOnlyApiProperty } from '@ukef/decorators/validated-date-only-api-property.decorator';
 import { ValidatedStringApiProperty } from '@ukef/decorators/validated-string-api-property.decorator';
 import { DateString, UkefId } from '@ukef/helpers';
@@ -33,6 +34,7 @@ export class CreateDealInvestorRequestItem {
     description: 'The expiry date on the deal investor record. If the value is not provided or is null then the maximum expiry date will be set.',
     example: '2023-03-24',
     required: false,
+    nullable: true,
     default: null,
   })
   readonly expiryDate?: DateString | null;
@@ -47,10 +49,8 @@ export class CreateDealInvestorRequestItem {
   })
   readonly dealStatus?: string;
 
-  @ValidatedStringApiProperty({
+  @ValidatedCurrencyApiProperty({
     description: 'The deal currency code.',
-    example: 'USD',
-    length: 3,
   })
   readonly currency: string;
 }

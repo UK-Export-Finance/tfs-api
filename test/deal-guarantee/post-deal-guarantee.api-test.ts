@@ -3,7 +3,7 @@ import { DateStringTransformations } from '@ukef/modules/date/date-string.transf
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
 import { withDateOnlyFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/date-only-field-validation-api-tests';
-import { withRequiredNonNegativeNumberFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/required-non-negative-number-field-validation-api-tests';
+import { withNonNegativeNumberFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/non-negative-number-field-validation-api-tests';
 import { withStringFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/string-field-validation-api-tests';
 import { Api } from '@ukef-test/support/api';
 import { TEST_DATES } from '@ukef-test/support/constants/test-date.constant';
@@ -245,7 +245,7 @@ describe('POST /deals/{dealIdentifier}/guarantees', () => {
     },
   });
 
-  withRequiredNonNegativeNumberFieldValidationApiTests({
+  withNonNegativeNumberFieldValidationApiTests({
     fieldName: 'maximumLiability',
     validRequestBody: requestBodyToCreateDealGuarantee,
     makeRequest: (body) => api.post(createDealGuaranteeUrl, body),
