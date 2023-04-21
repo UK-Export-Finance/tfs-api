@@ -1,4 +1,4 @@
-import { GetPartyExternalRatingGenerator } from '@ukef-test/support/generator/get-party-external-rating-generator';
+import { PartyExternalRatingGenerator } from '@ukef-test/support/generator/party-external-rating-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
 
@@ -13,7 +13,7 @@ describe('PartyExternalRatingController', () => {
   describe('getExternalRatingsForParty', () => {
     const partyIdentifier = '010';
 
-    const { externalRatings, externalRatingsFromApi: expectedExternalRatings } = new GetPartyExternalRatingGenerator(valueGenerator).generate({
+    const { externalRatings, externalRatingsFromApi: expectedExternalRatings } = new PartyExternalRatingGenerator(valueGenerator).generate({
       partyIdentifier,
       numberToGenerate: 2,
     });

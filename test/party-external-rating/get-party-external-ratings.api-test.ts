@@ -2,7 +2,7 @@ import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-aut
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
 import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
-import { GetPartyExternalRatingGenerator } from '@ukef-test/support/generator/get-party-external-rating-generator';
+import { PartyExternalRatingGenerator } from '@ukef-test/support/generator/party-external-rating-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import nock from 'nock';
 
@@ -10,7 +10,7 @@ describe('GET /parties/{partyIdentifier}/external-ratings', () => {
   const valueGenerator = new RandomValueGenerator();
 
   const partyIdentifier = '001';
-  const { externalRatingsInAcbs, externalRatingsFromApi: expectedExternalRatings } = new GetPartyExternalRatingGenerator(valueGenerator).generate({
+  const { externalRatingsInAcbs, externalRatingsFromApi: expectedExternalRatings } = new PartyExternalRatingGenerator(valueGenerator).generate({
     partyIdentifier,
     numberToGenerate: 2,
   });
