@@ -15,7 +15,6 @@ import { AcbsUnexpectedException } from './exception/acbs-unexpected.exception';
 
 describe('AcbsFacilityGuaranteeService', () => {
   const valueGenerator = new RandomValueGenerator();
-  //const authToken = valueGenerator.string();
   const idToken = valueGenerator.string();
   const baseUrl = valueGenerator.httpsUrl();
   const randomPortfolioIdentifier = valueGenerator.string({ length: 2 });
