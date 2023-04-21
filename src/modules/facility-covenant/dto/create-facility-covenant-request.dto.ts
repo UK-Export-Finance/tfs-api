@@ -20,9 +20,7 @@ export class CreateFacilityCovenantRequestItem {
     example: '0000000001',
     length: 10,
   })
-  readonly covenantIdentifier: string; // TODO APIM-106: in Mulesoft it looks like this can be undefined/null/empty string, in which
-  // case it gets transformed to null and ACBS will generate an ID for the covenant without checking if this ID has already
-  // been used. Presumably this is behaviour we want to avoid?
+  readonly covenantIdentifier: string;
 
   @ValidatedStringApiProperty({
     description:

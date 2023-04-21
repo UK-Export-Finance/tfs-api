@@ -442,13 +442,16 @@ describe('POST /facilities/{facilityIdentifier}/covenants', () => {
     });
   });
 
+  // TODO APIM-106: add tests that check we respond with 400 if the facilityId is of the wrong length/format once injectable tests for this
+  // have been written.
+
   const givenRequestToGetFacilityFromAcbsSucceeds = (): nock.Scope => givenRequestToGetFacilityFromAcbsSucceedsReturning(facilityInAcbs);
 
   const givenRequestToGetFacilityFromAcbsSucceedsReturning = (acbsFacility: AcbsGetFacilityResponseDto): nock.Scope => {
     return requestToGetFacility().reply(200, acbsFacility);
   };
 
-  // TODO APIM-106: remove duplication
+  // TODO APIM-106: remove duplication.
   const requestToGetFacility = () =>
     nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
       .get(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}`)
