@@ -16,7 +16,6 @@ import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-
 import nock from 'nock';
 import supertest from 'supertest';
 
-// TODO APIM-69: what about logic tests?
 describe('POST /facilities', () => {
   const valueGenerator = new RandomValueGenerator();
   const dateStringTransformations = new DateStringTransformations();
@@ -125,17 +124,6 @@ describe('POST /facilities', () => {
 
   withFacilityIdentifierFieldValidationApiTests({
     valueGenerator,
-    validRequestBody: requestBodyToCreateFacility,
-    makeRequest,
-    givenAnyRequestBodyWouldSucceed,
-  });
-
-  withStringFieldValidationApiTests({
-    fieldName: 'portfolioIdentifier',
-    minLength: 0,
-    maxLength: 2,
-    required: false,
-    generateFieldValueOfLength: (length) => valueGenerator.string({ length }),
     validRequestBody: requestBodyToCreateFacility,
     makeRequest,
     givenAnyRequestBodyWouldSucceed,

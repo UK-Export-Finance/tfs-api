@@ -89,7 +89,7 @@ export class FacilityService {
       },
       OriginalEffectiveDate: effectiveDateString,
       DealIdentifier: facilityToCreate.dealIdentifier,
-      DealPortfolioIdentifier: facilityToCreate.portfolioIdentifier ?? PROPERTIES.GLOBAL.portfolioIdentifier,
+      DealPortfolioIdentifier: PROPERTIES.GLOBAL.portfolioIdentifier,
       DealBorrowerPartyIdentifier: facilityToCreate.dealBorrowerIdentifier,
       BookingDate: midnightToday, // TODO APIM-69: should actually be now(), but docs say it is ignored anyway
       FinalAvailableDate: acbsGuaranteeExpiryDate,

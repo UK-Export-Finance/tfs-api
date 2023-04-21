@@ -18,12 +18,6 @@ export const withCreateFacilitySimpleDefaultValuesTests = ({
       validRequestValue: unknown;
     }[] = [
       {
-        keyInRequest: 'portfolioIdentifier',
-        keyAffectedInAcbs: 'DealPortfolioIdentifier',
-        defaultValueForAcbs: PROPERTIES.GLOBAL.portfolioIdentifier,
-        validRequestValue: valueGenerator.string(),
-      },
-      {
         keyInRequest: 'probabilityOfDefault',
         keyAffectedInAcbs: 'ProbabilityofDefault',
         defaultValueForAcbs: PROPERTIES.FACILITY.DEFAULT.POST.probabilityofDefault,

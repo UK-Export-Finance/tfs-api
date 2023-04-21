@@ -10,7 +10,6 @@ import { DateOnlyString } from '@ukef/helpers';
 
 export type CreateFacilityRequest = CreateFacilityRequestItem[];
 
-// TODO APIM-69: description improvements if possible
 export class CreateFacilityRequestItem {
   @ValidatedDealIdentifierApiProperty({
     description: 'The identifier of the deal for the facility.',
@@ -21,15 +20,6 @@ export class CreateFacilityRequestItem {
     description: 'The identifier of the facility to create.',
   })
   facilityIdentifier: string;
-
-  @ValidatedStringApiProperty({
-    description: 'The identifier of the portfolio that owns the facility.',
-    example: PROPERTIES.GLOBAL.portfolioIdentifier,
-    required: false,
-    default: PROPERTIES.GLOBAL.portfolioIdentifier,
-    maxLength: 2,
-  })
-  portfolioIdentifier?: string; // TODO APIM-69: is it right to allow the user to specify a different portfolio id?
 
   @ValidatedPartyIdentifierApiProperty({
     description:
@@ -143,7 +133,7 @@ export class CreateFacilityRequestItem {
     description: 'Bank Rate, this can be for Bond facility corresponding fee rate or for Loan/EWCS interest rate.',
     minimum: 0,
   })
-  interestOrFeeRate: number; // TODO APIM-69: document corrected typo
+  interestOrFeeRate: number;
 
   @ValidatedPartyIdentifierApiProperty({
     description: 'The party identifier of the obligor.',
@@ -180,11 +170,4 @@ export class CreateFacilityRequestItem {
     default: null,
   })
   issueDate?: DateOnlyString | null;
-
-  // TODO APIM-69: removed obligorName field because it's not used;
-  // TODO APIM-69: removed guaranteeCommencementDate because it's not used;
-  // TODO APIM-69: removed facilityInitialStatus because it's not used;
-  // TODO APIM-69: removed facilityOverallStatus because it's not used;
-  // TODO APIM-69: removed guaranteePercentage because it's not used;
-  // TODO APIM-69: removed description because it's not used;
 }

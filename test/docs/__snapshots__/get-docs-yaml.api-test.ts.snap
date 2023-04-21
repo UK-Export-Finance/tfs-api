@@ -929,13 +929,6 @@ components:
           maxLength: 10
           pattern: ^00\\d{8}$
           example: '0030000322'
-        portfolioIdentifier:
-          type: string
-          description: The identifier of the portfolio that owns the facility.
-          minLength: 0
-          maxLength: 2
-          example: E1
-          default: E1
         dealBorrowerIdentifier:
           type: string
           description: >-

@@ -24,7 +24,6 @@ export class CreateFacilityGenerator extends AbstractGenerator<FacilityValues, G
       agentBankIdentifier: this.valueGenerator.acbsPartyId(),
       maximumLiability: this.valueGenerator.nonnegativeFloat(),
       exposurePeriod: this.valueGenerator.string({ maxLength: 12 }),
-      portfolioIdentifier: this.valueGenerator.string({ length: 2 }),
       dealBorrowerIdentifier: this.valueGenerator.acbsPartyId(),
       guaranteeExpiryDate: this.valueGenerator.dateOnlyString(),
       riskStatusCode: this.valueGenerator.string({ maxLength: 2 }),
@@ -41,6 +40,7 @@ export class CreateFacilityGenerator extends AbstractGenerator<FacilityValues, G
 
   protected transformRawValuesToGeneratedValues(values: FacilityValues[], options: GenerateOptions): GenerateResult {
     const facilityIdentifier = options.facilityIdentifier;
+    const { portfolioIdentifier } = PROPERTIES.GLOBAL;
 
     const facilityToCreate = values[0];
     const facilityStageCode = '07';
@@ -64,7 +64,7 @@ export class CreateFacilityGenerator extends AbstractGenerator<FacilityValues, G
       },
       OriginalEffectiveDate: acbsEffectiveDate,
       DealIdentifier: facilityToCreate.dealIdentifier,
-      DealPortfolioIdentifier: facilityToCreate.portfolioIdentifier,
+      DealPortfolioIdentifier: portfolioIdentifier,
       DealBorrowerPartyIdentifier: facilityToCreate.dealBorrowerIdentifier,
       BookingDate: midnightToday,
       FinalAvailableDate: acbsGuaranteeExpiryDate,
@@ -209,7 +209,6 @@ export class CreateFacilityGenerator extends AbstractGenerator<FacilityValues, G
 
     const createFacilityRequestItem: CreateFacilityRequestItem = {
       facilityIdentifier,
-      portfolioIdentifier: facilityToCreate.portfolioIdentifier,
       productTypeName,
       exposurePeriod: facilityToCreate.exposurePeriod,
       currency: facilityToCreate.currency,
@@ -252,7 +251,6 @@ interface FacilityValues {
   agentBankIdentifier: string;
   maximumLiability: number;
   exposurePeriod: string;
-  portfolioIdentifier: string;
   dealBorrowerIdentifier: string;
   guaranteeExpiryDate: DateOnlyString;
   riskStatusCode: string;
