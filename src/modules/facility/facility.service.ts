@@ -91,7 +91,7 @@ export class FacilityService {
       DealIdentifier: facilityToCreate.dealIdentifier,
       DealPortfolioIdentifier: PROPERTIES.GLOBAL.portfolioIdentifier,
       DealBorrowerPartyIdentifier: facilityToCreate.dealBorrowerIdentifier,
-      BookingDate: midnightToday, // TODO APIM-69: should actually be now(), but docs say it is ignored anyway
+      BookingDate: midnightToday,
       FinalAvailableDate: acbsGuaranteeExpiryDate,
       IsFinalAvailableDateMaximum: defaultValues.isFinalAvailableDateMaximum,
       ExpirationDate: acbsGuaranteeExpiryDate,
