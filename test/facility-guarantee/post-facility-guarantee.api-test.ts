@@ -107,58 +107,6 @@ describe('POST /facilities/{facilityIdentifier}/guarantees', () => {
     expect(acbsRequest.isDone()).toBe(true);
   });
 
-  it('sets the default guarantorParty if it is not specified in the request', async () => {
-    const { guarantorParty: _removed, ...newFacilityGuaranteeWithoutGuarantorParty } = requestBodyToCreateFacilityGuarantee[0];
-    const requestBodyWithoutGuarantorParty = [newFacilityGuaranteeWithoutGuarantorParty];
-    const acbsRequestBodyWithDefaultGuarantorParty = {
-      ...acbsRequestBodyToCreateFacilityGuarantee,
-      GuarantorParty: { PartyIdentifier: PROPERTIES.FACILITY_GUARANTEE.DEFAULT.guarantorParty },
-    };
-    givenAuthenticationWithTheIdpSucceeds();
-    const acbsRequestWithDefaultGuarantorParty = requestToCreateFacilityGuaranteeInAcbsWithBody(acbsRequestBodyWithDefaultGuarantorParty).reply(
-      201,
-      undefined,
-      {
-        location: `/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/FacilityGuarantee?accountOwnerIdentifier=00000000&lenderTypeCode=${lenderTypeCode}&sectionIdentifier=${sectionIdentifier}&limitTypeCode=${limitTypeCode}&limitKey=${limitKey}&guarantorPartyIdentifier=${guarantorParty}`,
-      },
-    );
-
-    const { status, body } = await api.post(createFacilityGuaranteeUrl, requestBodyWithoutGuarantorParty);
-
-    expect(status).toBe(201);
-    expect(body).toStrictEqual({
-      facilityIdentifier,
-    });
-    expect(acbsRequestWithDefaultGuarantorParty.isDone()).toBe(true);
-  });
-
-  it('sets the default guaranteeTypeCode if it is not specified in the request', async () => {
-    const { guaranteeTypeCode: _removed, ...newFacilityGuaranteeWithoutGuaranteeTypeCode } = requestBodyToCreateFacilityGuarantee[0];
-    const requestBodyWithoutGuaranteeTypeCode = [newFacilityGuaranteeWithoutGuaranteeTypeCode];
-    const acbsRequestBodyWithDefaultGuaranteeTypeCode = {
-      ...acbsRequestBodyToCreateFacilityGuarantee,
-      GuaranteeType: {
-        GuaranteeTypeCode: PROPERTIES.FACILITY_GUARANTEE.DEFAULT.guaranteeTypeCode,
-      },
-    };
-    givenAuthenticationWithTheIdpSucceeds();
-    const acbsRequestWithDefaultGuaranteeTypeCode = requestToCreateFacilityGuaranteeInAcbsWithBody(acbsRequestBodyWithDefaultGuaranteeTypeCode).reply(
-      201,
-      undefined,
-      {
-        location: `/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/FacilityGuarantee?accountOwnerIdentifier=00000000&lenderTypeCode=${lenderTypeCode}&sectionIdentifier=${sectionIdentifier}&limitTypeCode=${limitTypeCode}&limitKey=${limitKey}&guarantorPartyIdentifier=${guarantorParty}`,
-      },
-    );
-
-    const { status, body } = await api.post(createFacilityGuaranteeUrl, requestBodyWithoutGuaranteeTypeCode);
-
-    expect(status).toBe(201);
-    expect(body).toStrictEqual({
-      facilityIdentifier,
-    });
-    expect(acbsRequestWithDefaultGuaranteeTypeCode.isDone()).toBe(true);
-  });
-
   it('rounds the maximumLiability to 2dp', async () => {
     const requestBodyWithMaximumLiabilityToRound = [{ ...requestBodyToCreateFacilityGuarantee[0], maximumLiability: 1.234 }];
     const acbsRequestBodyWithRoundedMaximumLiability = {
@@ -262,7 +210,7 @@ describe('POST /facilities/{facilityIdentifier}/guarantees', () => {
   withStringFieldValidationApiTests({
     fieldName: 'guarantorParty',
     length: 8,
-    required: false,
+    required: true,
     generateFieldValueOfLength: (length: number) => valueGenerator.stringOfNumericCharacters({ length }),
     validRequestBody: requestBodyToCreateFacilityGuarantee,
     makeRequest: (body) => api.post(createFacilityGuaranteeUrl, body),
@@ -275,7 +223,7 @@ describe('POST /facilities/{facilityIdentifier}/guarantees', () => {
   withStringFieldValidationApiTests({
     fieldName: 'guaranteeTypeCode',
     length: 3,
-    required: false,
+    required: true,
     generateFieldValueOfLength: (length: number) => valueGenerator.stringOfNumericCharacters({ length }),
     validRequestBody: requestBodyToCreateFacilityGuarantee,
     makeRequest: (body) => api.post(createFacilityGuaranteeUrl, body),

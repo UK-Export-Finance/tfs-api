@@ -112,26 +112,6 @@ describe('FacilityGuaranteeService', () => {
       expect(createFacilityGuaranteesAcbsService).toHaveBeenCalledWith(facilityIdentifier, expectedNewGuaranteeToCreate, idToken);
     });
 
-    it('adds a default value for guarantorParty before creating the new guarantee if it is not specified', async () => {
-      const { guarantorParty: _removed, ...newGuaranteeWithoutGuarantorParty } = newGuaranteeWithAllFields;
-
-      await service.createGuaranteeForFacility(facilityIdentifier, newGuaranteeWithoutGuarantorParty);
-
-      const guaranteeCreatedInAcbs: AcbsCreateFacilityGuaranteeDto = createFacilityGuaranteesAcbsService.mock.calls[0][1];
-
-      expect(guaranteeCreatedInAcbs.GuarantorParty.PartyIdentifier).toBe(PROPERTIES.FACILITY_GUARANTEE.DEFAULT.guarantorParty);
-    });
-
-    it('adds a default value for guaranteeTypeCode before creating the new guarantee if it is not specified', async () => {
-      const { guaranteeTypeCode: _removed, ...newGuaranteeWithoutGuaranteeTypeCode } = newGuaranteeWithAllFields;
-
-      await service.createGuaranteeForFacility(facilityIdentifier, newGuaranteeWithoutGuaranteeTypeCode);
-
-      const guaranteeCreatedInAcbs: AcbsCreateFacilityGuaranteeDto = createFacilityGuaranteesAcbsService.mock.calls[0][1];
-
-      expect(guaranteeCreatedInAcbs.GuaranteeType.GuaranteeTypeCode).toBe(PROPERTIES.FACILITY_GUARANTEE.DEFAULT.guaranteeTypeCode);
-    });
-
     it(`replaces effectiveDate with today's date if effectiveDate is after today`, async () => {
       const newGuaranteeWithFutureEffectiveDate = {
         ...newGuaranteeWithAllFields,

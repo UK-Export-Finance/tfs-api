@@ -52,23 +52,23 @@ export class FacilityGuaranteeService {
 
     const guaranteeToCreateInAcbs: AcbsCreateFacilityGuaranteeDto = {
       LenderType: {
-        LenderTypeCode: PROPERTIES.DEAL_GUARANTEE.DEFAULT.lenderType.lenderTypeCode,
+        LenderTypeCode: PROPERTIES.FACILITY_GUARANTEE.DEFAULT.lenderType.lenderTypeCode,
       },
-      SectionIdentifier: PROPERTIES.DEAL_GUARANTEE.DEFAULT.sectionIdentifier,
+      SectionIdentifier: PROPERTIES.FACILITY_GUARANTEE.DEFAULT.sectionIdentifier,
       LimitType: {
-        LimitTypeCode: PROPERTIES.DEAL_GUARANTEE.DEFAULT.limitType.limitTypeCode,
+        LimitTypeCode: PROPERTIES.FACILITY_GUARANTEE.DEFAULT.limitType.limitTypeCode,
       },
       LimitKey: newGuarantee.limitKey,
       GuarantorParty: {
-        PartyIdentifier: newGuarantee.guarantorParty ?? PROPERTIES.DEAL_GUARANTEE.DEFAULT.guarantorParty,
+        PartyIdentifier: newGuarantee.guarantorParty,
       },
       GuaranteeType: {
-        GuaranteeTypeCode: newGuarantee.guaranteeTypeCode ?? PROPERTIES.DEAL_GUARANTEE.DEFAULT.guaranteeTypeCode,
+        GuaranteeTypeCode: newGuarantee.guaranteeTypeCode,
       },
       EffectiveDate: this.dateStringTransformations.addTimeToDateOnlyString(effectiveDateOnlyString),
       ExpirationDate: this.dateStringTransformations.addTimeToDateOnlyString(newGuarantee.guaranteeExpiryDate),
       GuaranteedLimit: roundTo2DecimalPlaces(newGuarantee.maximumLiability),
-      GuaranteedPercentage: PROPERTIES.DEAL_GUARANTEE.DEFAULT.guaranteedPercentage,
+      GuaranteedPercentage: PROPERTIES.FACILITY_GUARANTEE.DEFAULT.guaranteedPercentage,
     };
 
     await this.acbsFacilityGuaranteeService.createGuaranteeForFacility(facilityIdentifier, guaranteeToCreateInAcbs, idToken);

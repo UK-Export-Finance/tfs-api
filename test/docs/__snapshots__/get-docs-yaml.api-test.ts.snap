@@ -977,23 +977,26 @@ components:
         guarantorParty:
           type: string
           description: >-
-            The party identifier of the guarantor, the customer who is making
-            the guarantee/obligation.
+            ACBS Party Identifier based on the type for investor, Bond Issuer,
+            Bond Beneficiary, EWCS Facility Provider, EWCSBuyer Exporter, review
+            functional spec for details.
           minLength: 8
           maxLength: 8
-          default: '00000141'
         guaranteeTypeCode:
           type: string
-          description: The identifier for the type of the guarantee.
+          description: >-
+            Possible values: bond giver(315), bond beneficiary (310), facility
+            provider (500), buyer for (exporter EWCS) - 321
           minLength: 3
           maxLength: 3
-          default: '450'
       required:
         - facilityIdentifier
         - effectiveDate
         - limitKey
         - guaranteeExpiryDate
         - maximumLiability
+        - guarantorParty
+        - guaranteeTypeCode
     CreateFacilityGuaranteeResponse:
       type: object
       properties:

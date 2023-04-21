@@ -58,8 +58,8 @@ describe('FacilityGuaranteeController', () => {
 
   describe('createGuaranteeForFacility', () => {
     const facilityIdentifier = valueGenerator.facilityId();
-    const limitKey = valueGenerator.stringOfNumericCharacters({ maxLength: 8 });
-    const guarantorParty = valueGenerator.stringOfNumericCharacters({ maxLength: 8 });
+    const limitKey = valueGenerator.acbsPartyId();
+    const guarantorParty = valueGenerator.acbsPartyId();
     const guaranteeTypeCode = valueGenerator.stringOfNumericCharacters({ maxLength: 3 });
     const effectiveDate = valueGenerator.dateOnlyString();
     const guaranteeExpiryDate = valueGenerator.dateOnlyString();
