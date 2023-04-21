@@ -1,9 +1,11 @@
 import { ApiProperty, ApiResponseProperty } from '@nestjs/swagger';
 import { ENUMS, EXAMPLES, PROPERTIES } from '@ukef/constants';
 import { DateOnlyString } from '@ukef/helpers/date-only-string.type';
+import { IsEnum } from 'class-validator';
 
 class GetDealInvestorDtoLenderType {
   @ApiProperty({ description: 'Lender type: 100 for Exporter or 500 for UKEF record.', example: ENUMS.LENDER_TYPE_CODES.ECGD })
+  @IsEnum(ENUMS.LENDER_TYPE_CODES)
   LenderTypeCode: string;
 }
 export class GetDealInvestorResponseDto {
@@ -11,6 +13,7 @@ export class GetDealInvestorResponseDto {
   dealIdentifier: string;
 
   @ApiResponseProperty({ example: PROPERTIES.GLOBAL.portfolioIdentifier })
+  @IsEnum(ENUMS.PORTFOLIO)
   portfolioIdentifier: string;
 
   @ApiResponseProperty()

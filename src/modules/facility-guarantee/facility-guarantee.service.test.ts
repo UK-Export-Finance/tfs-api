@@ -3,7 +3,7 @@ import { AcbsFacilityGuaranteeService } from '@ukef/modules/acbs/acbs-facility-g
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
-import { GetFacilityGuaranteeGenerator } from '@ukef-test/support/generator/get-facility-guarantee-generator';
+import { GetFacilityGuaranteesGenerator } from '@ukef-test/support/generator/get-facility-guarantees.generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
 
@@ -15,7 +15,7 @@ describe('FacilityGuaranteeService', () => {
   const idToken = valueGenerator.string();
   const facilityIdentifier = valueGenerator.facilityId();
 
-  const { facilityGuarantees: expectedFacilityGuarantees, facilityGuaranteesInAcbs } = new GetFacilityGuaranteeGenerator(
+  const { facilityGuarantees: expectedFacilityGuarantees, facilityGuaranteesInAcbs } = new GetFacilityGuaranteesGenerator(
     valueGenerator,
     new DateStringTransformations(),
   ).generate({ numberToGenerate: 2, facilityIdentifier, portfolioIdentifier });
