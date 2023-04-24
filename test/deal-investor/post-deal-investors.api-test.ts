@@ -1,4 +1,4 @@
-import { PROPERTIES } from '@ukef/constants';
+import { PROPERTIES, UKEFID } from '@ukef/constants';
 import { UkefId } from '@ukef/helpers';
 import { AcbsCreateDealInvestorRequest } from '@ukef/modules/acbs/dto/acbs-create-deal-investor-request.dto';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
@@ -158,7 +158,7 @@ describe('POST /deals/{dealIdentifier}/investors', () => {
   withStringFieldValidationApiTests({
     fieldName: 'dealIdentifier',
     length: 10,
-    pattern: '/^00\\d{8}$/',
+    pattern: UKEFID.MAIN_ID.TEN_DIGIT_REGEX_STRING,
     generateFieldValueOfLength: (length: number) => valueGenerator.ukefId(length - 4),
     generateFieldValueThatDoesNotMatchRegex: () => '1000000000' as UkefId,
     validRequestBody: requestBodyToCreateDealInvestor,

@@ -17,7 +17,7 @@ export class CreateFacilityCovenantGenerator extends AbstractGenerator<CreateFac
 
     return {
       facilityIdentifier: this.valueGenerator.ukefId(),
-      covenantIdentifier: this.valueGenerator.string({ minLength: 0, maxLength: 10 }),
+      covenantIdentifier: this.valueGenerator.ukefCovenantId(),
       covenantType: possibleCovenantTypeCodes[this.valueGenerator.integer({ min: 0, max: possibleCovenantTypeCodes.length - 1 })],
       maximumLiability: this.valueGenerator.nonnegativeFloat({ fixed: 2 }),
       currency: this.valueGenerator.string({ minLength: 0, maxLength: 1 }),

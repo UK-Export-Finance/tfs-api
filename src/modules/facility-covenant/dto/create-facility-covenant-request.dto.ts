@@ -1,4 +1,4 @@
-import { ENUMS, EXAMPLES } from '@ukef/constants';
+import { ENUMS, EXAMPLES, UKEFID } from '@ukef/constants';
 import { ValidatedDateOnlyApiProperty } from '@ukef/decorators/validated-date-only-api-property.decorator';
 import { ValidatedNumberApiProperty } from '@ukef/decorators/validated-number-api-property.decorator';
 import { ValidatedStringApiProperty } from '@ukef/decorators/validated-string-api-property.decorator';
@@ -11,15 +11,15 @@ export class CreateFacilityCovenantRequestItem {
     description: 'The identifier of the facility to create the covenant for in ACBS.',
     example: EXAMPLES.FACILITY_ID,
     length: 10,
-    pattern: /^00\d{8}$/,
+    pattern: UKEFID.MAIN_ID.TEN_DIGIT_REGEX,
   })
   readonly facilityIdentifier: string;
 
   @ValidatedStringApiProperty({
     description: 'The identifier of the covenant in ACBS. When creating a covenant an identifier from the number generator should be used.',
     example: '0000000001',
-    minLength: 0,
-    maxLength: 10,
+    length: 10,
+    pattern: UKEFID.COVENANT_ID.REGEX,
   })
   readonly covenantIdentifier: string;
 

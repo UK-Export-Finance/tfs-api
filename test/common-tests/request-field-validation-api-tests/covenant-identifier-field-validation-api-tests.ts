@@ -1,3 +1,4 @@
+import { UKEFID } from '@ukef/constants';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 
 import { StringFieldValidationApiTestOptions, withStringFieldValidationApiTests } from './string-field-validation-api-tests';
@@ -20,9 +21,10 @@ export const withCovenantIdentifierFieldValidationApiTests = <RequestBodyItem ex
 }: CovenantIdentifierFieldValidationApiTestOptions<RequestBodyItem>): void =>
   withStringFieldValidationApiTests<RequestBodyItem, CovenantIdentifierFieldName>({
     fieldName: 'covenantIdentifier',
-    minLength: 0,
-    maxLength: 10,
-    generateFieldValueOfLength: (length: number) => valueGenerator.stringOfNumericCharacters({ length }),
+    length: 10,
+    pattern: UKEFID.COVENANT_ID.REGEX_STRING,
+    generateFieldValueOfLength: (length: number) => valueGenerator.ukefCovenantId(length - 4),
+    generateFieldValueThatDoesNotMatchRegex: () => '1000000000',
     validRequestBody,
     makeRequest,
     givenAnyRequestBodyWouldSucceed,

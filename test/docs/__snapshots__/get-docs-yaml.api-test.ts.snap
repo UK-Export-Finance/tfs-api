@@ -1155,8 +1155,9 @@ components:
           description: >-
             The identifier of the covenant in ACBS. When creating a covenant an
             identifier from the number generator should be used.
-          minLength: 0
+          minLength: 10
           maxLength: 10
+          pattern: ^0{4}\\d{6}$
           example: '0000000001'
         covenantType:
           type: string
