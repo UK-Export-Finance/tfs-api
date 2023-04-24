@@ -10,6 +10,7 @@
     // Unit, API and E2E tests
     "test",
     "**/*.test.ts",
+    "**/*.test-parts",
     "**/*.spec.ts",
     // Build
     "dist",
