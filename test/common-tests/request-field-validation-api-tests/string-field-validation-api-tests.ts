@@ -1,6 +1,6 @@
 import request from 'supertest';
 
-interface StringFieldValidationApiTestOptions<RequestBodyItem, RequestBodyItemKey extends keyof RequestBodyItem> {
+export interface StringFieldValidationApiTestOptions<RequestBodyItem, RequestBodyItemKey extends keyof RequestBodyItem> {
   fieldName: RequestBodyItemKey;
   length?: number;
   minLength?: number;

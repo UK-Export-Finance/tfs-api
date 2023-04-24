@@ -8,6 +8,7 @@ import { GetFacilityGenerator } from '@ukef-test/support/generator/get-facility-
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
 
+import { CurrentDateProvider } from '../date/current-date.provider';
 import { GetFacilityByIdentifierResponseDto } from './dto/get-facility-by-identifier-response.dto';
 import { FacilityService } from './facility.service';
 
@@ -36,7 +37,7 @@ describe('FacilityService', () => {
     const acbsAuthenticationServiceGetIdToken = mockAcbsAuthenticationService.getIdToken;
     when(acbsAuthenticationServiceGetIdToken).calledWith().mockResolvedValueOnce(idToken);
 
-    service = new FacilityService(acbsAuthenticationService, acbsFacilityService, dateStringTransformations);
+    service = new FacilityService(acbsAuthenticationService, acbsFacilityService, dateStringTransformations, new CurrentDateProvider());
   });
 
   describe('getFacilityByIdentifier', () => {

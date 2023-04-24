@@ -1,7 +1,18 @@
-import { Controller, Get, Param } from '@nestjs/common';
-import { ApiInternalServerErrorResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiParam } from '@nestjs/swagger';
+import { Body, Controller, Get, Param, ParseArrayPipe, Post } from '@nestjs/common';
+import {
+  ApiBadRequestResponse,
+  ApiBody,
+  ApiCreatedResponse,
+  ApiInternalServerErrorResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiParam,
+} from '@nestjs/swagger';
 import { EXAMPLES } from '@ukef/constants';
 
+import { CreateFacilityRequest, CreateFacilityRequestItem } from './dto/create-facility-request.dto';
+import { CreateFacilityResponse } from './dto/create-facility-response.dto';
 import { GetFacilityByIdentifierParamsDto } from './dto/get-facility-by-identifier-params.dto';
 import { GetFacilityByIdentifierResponseDto } from './dto/get-facility-by-identifier-response.dto';
 import { FacilityService } from './facility.service';
@@ -55,7 +66,7 @@ export class FacilityController {
       riskCountryCode: facility.riskCountryCode,
       riskStatusCode: facility.riskStatusCode,
       effectiveDate: facility.effectiveDate,
-      foreCastPercentage: facility.foreCastPercentage,
+      forecastPercentage: facility.forecastPercentage,
       issueDate: facility.issueDate,
       description: facility.description,
       agentBankIdentifier: facility.agentBankIdentifier,
@@ -64,5 +75,29 @@ export class FacilityController {
       obligorIndustryClassification: facility.obligorIndustryClassification,
       probabilityOfDefault: facility.probabilityOfDefault,
     };
+  }
+
+  @Post()
+  @ApiOperation({ summary: 'Create a new facility.' })
+  @ApiBody({
+    type: CreateFacilityRequestItem,
+    isArray: true,
+  })
+  @ApiCreatedResponse({
+    description: 'The facility has been successfully created.',
+    type: CreateFacilityResponse,
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad request.',
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'An internal server error has occurred.',
+  })
+  async createFacility(
+    @Body(new ParseArrayPipe({ items: CreateFacilityRequestItem })) createFacilityDto: CreateFacilityRequest,
+  ): Promise<CreateFacilityResponse> {
+    const facilityToCreate = createFacilityDto[0];
+    await this.facilityService.createFacility(facilityToCreate);
+    return { facilityIdentifier: facilityToCreate.facilityIdentifier };
   }
 }

@@ -69,6 +69,10 @@ export class RandomValueGenerator {
     return this.integer({ min: 0, max });
   }
 
+  dealId(): UkefId {
+    return this.ukefId();
+  }
+
   /**
    * Usually prefix length is 4.
    */

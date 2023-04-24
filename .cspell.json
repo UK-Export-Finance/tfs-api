@@ -50,7 +50,14 @@
     "UKRATEGRP",
     "EWCS",
     "vnet",
-    "VNET"
+    "VNET",
+    "probabilityof",
+    "APIM",
+    "DCIS",
+    "UKRATEGRP",
+    "MSZI",
+    "MRUI",
+    "EWCS"
   ],
   "dictionaries": [
     "en-gb",

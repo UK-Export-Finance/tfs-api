@@ -4,6 +4,7 @@ import { AcbsCreateDealInvestorRequest } from '@ukef/modules/acbs/dto/acbs-creat
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
+import { withCurrencyFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/currency-field-validation-api-tests';
 import { withDateOnlyFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/date-only-field-validation-api-tests';
 import { withStringFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/string-field-validation-api-tests';
 import { Api } from '@ukef-test/support/api';
@@ -219,10 +220,8 @@ describe('POST /deals/{dealIdentifier}/investors', () => {
     },
   });
 
-  withStringFieldValidationApiTests({
-    fieldName: 'currency',
-    length: 3,
-    generateFieldValueOfLength: (length: number) => valueGenerator.string({ length }),
+  withCurrencyFieldValidationApiTests({
+    valueGenerator,
     validRequestBody: requestBodyToCreateDealInvestor,
     makeRequest: (body) => api.post(createDealInvestorUrl, body),
     givenAnyRequestBodyWouldSucceed: () => {

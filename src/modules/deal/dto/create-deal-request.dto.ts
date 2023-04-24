@@ -1,3 +1,4 @@
+import { ValidatedCurrencyApiProperty } from '@ukef/decorators/validated-currency-api-property-decorator';
 import { ValidatedDateOnlyApiProperty } from '@ukef/decorators/validated-date-only-api-property.decorator';
 import { ValidatedNumberApiProperty } from '@ukef/decorators/validated-number-api-property.decorator';
 import { ValidatedStringApiProperty } from '@ukef/decorators/validated-string-api-property.decorator';
@@ -14,11 +15,8 @@ export class CreateDealRequestItem {
   })
   dealIdentifier: string;
 
-  @ValidatedStringApiProperty({
+  @ValidatedCurrencyApiProperty({
     description: 'The currency code of the primary currency of the deal, from the Currency Definition Table.',
-    example: 'GBP',
-    minLength: 3,
-    maxLength: 3,
   })
   currency: string;
 

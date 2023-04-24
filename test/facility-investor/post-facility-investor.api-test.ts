@@ -3,8 +3,9 @@ import { DateStringTransformations } from '@ukef/modules/date/date-string.transf
 import { CreateFacilityInvestorRequest } from '@ukef/modules/facility-investor/dto/create-facility-investor-request.dto';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
+import { withCurrencyFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/currency-field-validation-api-tests';
 import { withDateOnlyFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/date-only-field-validation-api-tests';
-import { withRequiredNonNegativeNumberFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/required-non-negative-number-field-validation-api-tests';
+import { withNonNegativeNumberFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/non-negative-number-field-validation-api-tests';
 import { withStringFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/string-field-validation-api-tests';
 import { Api } from '@ukef-test/support/api';
 import { TEST_CURRENCIES } from '@ukef-test/support/constants/test-currency.constant';
@@ -189,7 +190,7 @@ describe('POST /facilities/{facilityIdentifier}/investors', () => {
     },
   });
 
-  withRequiredNonNegativeNumberFieldValidationApiTests({
+  withNonNegativeNumberFieldValidationApiTests({
     fieldName: 'maximumLiability',
     validRequestBody: requestBodyToCreateFacilityInvestor,
     makeRequest: (body) => api.post(createFacilityInvestorUrl, body),
@@ -199,11 +200,8 @@ describe('POST /facilities/{facilityIdentifier}/investors', () => {
     },
   });
 
-  withStringFieldValidationApiTests({
-    fieldName: 'currency',
-    length: 3,
-    required: true,
-    generateFieldValueOfLength: (length: number) => valueGenerator.word({ length }),
+  withCurrencyFieldValidationApiTests({
+    valueGenerator,
     validRequestBody: requestBodyToCreateFacilityInvestor,
     makeRequest: (body) => api.post(createFacilityInvestorUrl, body),
     givenAnyRequestBodyWouldSucceed: () => {

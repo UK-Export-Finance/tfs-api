@@ -72,7 +72,7 @@ export class GetFacilityByIdentifierResponseDto {
   effectiveDate: DateOnlyString;
 
   @ApiResponseProperty()
-  foreCastPercentage: number;
+  forecastPercentage: number;
 
   @ApiProperty({ readOnly: true, type: Date, nullable: true, format: 'date' })
   issueDate: DateOnlyString | null;
