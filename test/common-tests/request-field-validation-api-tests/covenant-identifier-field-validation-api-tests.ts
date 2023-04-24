@@ -20,7 +20,8 @@ export const withCovenantIdentifierFieldValidationApiTests = <RequestBodyItem ex
 }: CovenantIdentifierFieldValidationApiTestOptions<RequestBodyItem>): void =>
   withStringFieldValidationApiTests<RequestBodyItem, CovenantIdentifierFieldName>({
     fieldName: 'covenantIdentifier',
-    length: 10,
+    minLength: 0,
+    maxLength: 10,
     generateFieldValueOfLength: (length: number) => valueGenerator.stringOfNumericCharacters({ length }),
     validRequestBody,
     makeRequest,

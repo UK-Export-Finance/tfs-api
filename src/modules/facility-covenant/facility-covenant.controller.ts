@@ -14,7 +14,7 @@ import { EXAMPLES } from '@ukef/constants';
 import { FacilityService } from '../facility/facility.service';
 import { CreateFacilityCovenantRequestDto, CreateFacilityCovenantRequestItem } from './dto/create-facility-covenant-request.dto';
 import { CreateFacilityCovenantResponseDto } from './dto/create-facility-covenant-response.dto';
-import { GetFacilityCovenantsParamsDto } from './dto/get-facility-covenants-params.dto';
+import { FacilityCovenantsParamsDto } from './dto/get-facility-covenants-params.dto';
 import { GetFacilityCovenantsResponseDto } from './dto/get-facility-covenants-response.dto';
 import { FacilityCovenantService } from './facility-covenant.service';
 
@@ -51,7 +51,7 @@ export class FacilityCovenantController {
     description: 'An internal server error has occurred.',
   })
   async createCovenantForFacility(
-    @Param() params: GetFacilityCovenantsParamsDto,
+    @Param() params: FacilityCovenantsParamsDto,
     @Body(new ParseArrayPipe({ items: CreateFacilityCovenantRequestItem, whitelist: true })) newCovenantRequest: CreateFacilityCovenantRequestDto,
   ): Promise<CreateFacilityCovenantResponseDto> {
     const facilityIdentifier = params.facilityIdentifier;
@@ -85,7 +85,7 @@ export class FacilityCovenantController {
   @ApiInternalServerErrorResponse({
     description: 'An internal server error has occurred.',
   })
-  async getCovenantsForFacility(@Param() params: GetFacilityCovenantsParamsDto): Promise<GetFacilityCovenantsResponseDto[]> {
+  async getCovenantsForFacility(@Param() params: FacilityCovenantsParamsDto): Promise<GetFacilityCovenantsResponseDto[]> {
     return await this.facilityCovenantService.getCovenantsForFacility(params.facilityIdentifier);
   }
 }

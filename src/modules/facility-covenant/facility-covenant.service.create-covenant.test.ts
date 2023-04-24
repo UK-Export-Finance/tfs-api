@@ -77,16 +77,20 @@ describe('FacilityCovenantService', () => {
       expect(covenantCreatedInAcbs.CovenantName).toBe('CHARGEABLE AMOUNT');
     });
 
-    it(`sets the covenantName to 'AMOUNT OF SUPPORTED BOND' if the facilityTypeCode is '250'`, async () => {
-      await service.createCovenantForFacility(facilityIdentifier, '250', limitKeyValue, newCovenantWithAllFields);
+    it(`sets the covenantName to 'AMOUNT OF SUPPORTED BOND' if the covenantType is '43' and the facilityTypeCode is '250'`, async () => {
+      const newCovenantWithCovenantType43 = { ...newCovenantWithAllFields, covenantType: ENUMS.COVENANT_TYPE_CODES.UK_CONTRACT_VALUE };
+
+      await service.createCovenantForFacility(facilityIdentifier, '250', limitKeyValue, newCovenantWithCovenantType43);
 
       const covenantCreatedInAcbs: AcbsCreateFacilityCovenantRequestDto = acbsFacilityCovenantServiceCreateCovenantForFacility.mock.calls[0][1];
 
       expect(covenantCreatedInAcbs.CovenantName).toBe('AMOUNT OF SUPPORTED BOND');
     });
 
-    it(`sets the covenantName to 'AMOUNT OF SUPPORTED FACILITY' if the  facilityTypeCode is '260'`, async () => {
-      await service.createCovenantForFacility(facilityIdentifier, '260', limitKeyValue, newCovenantWithAllFields);
+    it(`sets the covenantName to 'AMOUNT OF SUPPORTED FACILITY' if the covenantType is '43' and the facilityTypeCode is '260'`, async () => {
+      const newCovenantWithCovenantType43 = { ...newCovenantWithAllFields, covenantType: ENUMS.COVENANT_TYPE_CODES.UK_CONTRACT_VALUE };
+
+      await service.createCovenantForFacility(facilityIdentifier, '260', limitKeyValue, newCovenantWithCovenantType43);
 
       const covenantCreatedInAcbs: AcbsCreateFacilityCovenantRequestDto = acbsFacilityCovenantServiceCreateCovenantForFacility.mock.calls[0][1];
 

@@ -18,7 +18,8 @@ export class CreateFacilityCovenantRequestItem {
   @ValidatedStringApiProperty({
     description: 'The identifier of the covenant in ACBS. When creating a covenant an identifier from the number generator should be used.',
     example: '0000000001',
-    length: 10,
+    minLength: 0,
+    maxLength: 10,
   })
   readonly covenantIdentifier: string;
 
