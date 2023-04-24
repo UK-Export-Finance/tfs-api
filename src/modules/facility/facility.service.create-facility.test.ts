@@ -10,12 +10,12 @@ import { CurrentDateProvider } from '../date/current-date.provider';
 import { DateStringTransformations } from '../date/date-string.transformations';
 import { CreateFacilityRequestItem } from './dto/create-facility-request.dto';
 import { FacilityService } from './facility.service';
-import { withCreateFacilityCapitalConversionFactorCodeTests } from './facility.service.create-facility.test-parts.ts/create-facility-capital-conversion-factor-code-tests';
-import { withCreateFacilityDescriptionTests } from './facility.service.create-facility.test-parts.ts/create-facility-description-tests';
-import { withCreateFacilityEffectiveDateTests } from './facility.service.create-facility.test-parts.ts/create-facility-effective-date-tests';
-import { withCreateFacilityFacilityStageCodeDerivedValuesTests } from './facility.service.create-facility.test-parts.ts/create-facility-facility-stage-code-derived-values-tests';
-import { withCreateFacilitySimpleDefaultValuesTests } from './facility.service.create-facility.test-parts.ts/create-facility-simple-default-values-tests';
-import { CreateFacilityTestPartsArgs } from './facility.service.create-facility.test-parts.ts/create-facility-test-parts-args.interface';
+import { withCreateFacilityCapitalConversionFactorCodeTests } from './facility.service.create-facility.test-parts/create-facility-capital-conversion-factor-code-tests';
+import { withCreateFacilityDescriptionTests } from './facility.service.create-facility.test-parts/create-facility-description-tests';
+import { withCreateFacilityEffectiveDateTests } from './facility.service.create-facility.test-parts/create-facility-effective-date-tests';
+import { withCreateFacilityFacilityStageCodeDerivedValuesTests } from './facility.service.create-facility.test-parts/create-facility-facility-stage-code-derived-values-tests';
+import { withCreateFacilitySimpleDefaultValuesTests } from './facility.service.create-facility.test-parts/create-facility-simple-default-values-tests';
+import { CreateFacilityTestPartsArgs } from './facility.service.create-facility.test-parts/create-facility-test-parts-args.interface';
 
 describe('FacilityService', () => {
   const valueGenerator = new RandomValueGenerator();
