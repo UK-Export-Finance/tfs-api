@@ -188,6 +188,30 @@ paths:
           description: The specified facility was not found.
         '500':
           description: An internal server error has occurred.
+  /api/v1/facilities:
+    post:
+      operationId: FacilityController_createFacility
+      summary: Create a new facility.
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/CreateFacilityRequestItem'
+      responses:
+        '201':
+          description: The facility has been successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateFacilityResponse'
+        '400':
+          description: Bad request.
+        '500':
+          description: An internal server error has occurred.
   /api/v1/facilities/{facilityIdentifier}/covenants:
     get:
       operationId: FacilityCovenantController_getCovenantsForFacility
@@ -527,7 +551,7 @@ components:
             Currency Definition Table.
           minLength: 3
           maxLength: 3
-          example: GBP
+          example: USD
         dealValue:
           type: number
           description: The value of the deal.
@@ -766,6 +790,7 @@ components:
             provided or is null then the maximum expiry date will be set.
           example: '2023-03-24'
           default: null
+          nullable: true
         dealStatus:
           type: string
           description: >-
@@ -784,7 +809,6 @@ components:
       required:
         - dealIdentifier
         - effectiveDate
-        - expiryDate
         - currency
     GetFacilityByIdentifierResponseDto:
       type: object
@@ -866,7 +890,7 @@ components:
           type: string
           readOnly: true
           nullable: false
-        foreCastPercentage:
+        forecastPercentage:
           type: number
           readOnly: true
         issueDate:
@@ -916,7 +940,7 @@ components:
         - riskCountryCode
         - riskStatusCode
         - effectiveDate
-        - foreCastPercentage
+        - forecastPercentage
         - issueDate
         - description
         - agentBankIdentifier
@@ -924,6 +948,199 @@ components:
         - obligorName
         - obligorIndustryClassification
         - probabilityOfDefault
+    CreateFacilityRequestItem:
+      type: object
+      properties:
+        dealIdentifier:
+          type: string
+          description: The identifier of the deal for the facility.
+          minLength: 10
+          maxLength: 10
+          pattern: ^00\\d{8}$
+          example: '0030000321'
+        facilityIdentifier:
+          type: string
+          description: The identifier of the facility to create.
+          minLength: 10
+          maxLength: 10
+          pattern: ^00\\d{8}$
+          example: '0030000322'
+        dealBorrowerIdentifier:
+          type: string
+          description: >-
+            Look up the Obligors ACBS Customer record using Party URN on the
+            Deal = Alternate Customer Id (J$MSZI). Use ACBS Customer Id (J$MRUI)
+            Note there may be multiple customers in ACBS with the same Party
+            URN. Use the first record found.
+          minLength: 8
+          maxLength: 8
+          example: '00001234'
+        productTypeId:
+          type: string
+          description: The facility type, e.g. '250' for BOND.
+          minLength: 0
+          maxLength: 3
+          example: '250'
+        productTypeName:
+          type: string
+          description: The name or description of the facility type.
+          minLength: 0
+          maxLength: 13
+          example: BOND
+        exposurePeriod:
+          type: string
+          description: Credit Period
+          minLength: 0
+          maxLength: 12
+          example: '1'
+        currency:
+          type: string
+          description: Facility Currency Code e.g. CAD, USD.
+          minLength: 3
+          maxLength: 3
+          example: USD
+        obligorIndustryClassification:
+          type: string
+          description: The industry classification code of the obligor.
+          minLength: 0
+          maxLength: 10
+          example: '0116'
+        effectiveDate:
+          format: date
+          type: string
+          description: >-
+            The date from which the borrower can draw funds from the facility.
+            If this is a future date then it will be replaced with today's date.
+        guaranteeExpiryDate:
+          format: date
+          type: string
+          description: The expiration date of the facility.
+        nextQuarterEndDate:
+          format: date
+          type: string
+          description: The end date of the next quarter.
+        maximumLiability:
+          type: number
+          description: The overall limit for the facility.
+          minimum: 0
+        agentBankIdentifier:
+          type: string
+          description: The party identifier of the Agent Bank for this facility.
+          minLength: 0
+          maxLength: 10
+          example: '00000000'
+        riskCountryCode:
+          type: string
+          description: >-
+            The code of the primary country of risk designated for this credit
+            arrangement.
+          minLength: 0
+          maxLength: 3
+          example: GBR
+        premiumFrequencyCode:
+          type: string
+          description: Pre-Issue Est. Payment Frequency QUARTERLY(2)
+          minLength: 0
+          maxLength: 1
+          example: '2'
+        riskStatusCode:
+          type: string
+          description: CORPORATE(03)
+          minLength: 0
+          maxLength: 2
+          example: '03'
+        creditRatingCode:
+          type: string
+          description: Credit Review Risk Code
+          minLength: 0
+          maxLength: 2
+          example: '13'
+        facilityStageCode:
+          type: string
+          description: Case Stage this can be 06 Commitment and 07 Issued
+          minLength: 0
+          maxLength: 2
+          example: '07'
+        delegationType:
+          type: string
+          description: Derive values A, M or N
+          minLength: 0
+          maxLength: 4
+          example: A
+        interestOrFeeRate:
+          type: number
+          description: >-
+            Bank Rate, this can be for Bond facility corresponding fee rate or
+            for Loan/EWCS interest rate.
+          minimum: 0
+        obligorPartyIdentifier:
+          type: string
+          description: The party identifier of the obligor.
+          minLength: 8
+          maxLength: 8
+          example: '00001234'
+        forecastPercentage:
+          type: number
+          description: Forecast % Derive from FACILITY:Stage, i.e. Commitment or Issued
+          minimum: 0
+        probabilityOfDefault:
+          type: number
+          description: >-
+            A percentage indicating how likely it is that a default on the
+            credit will occur. This should be specified for GEF.
+          minimum: 0
+          default: 0
+        capitalConversionFactorCode:
+          type: string
+          description: >-
+            The code of the Capital Conversion Factor for the facility (e.g.
+            100% Conversion, 80% Conversion, No Conversion) from the T1125 table
+            in ACBS. This field should be specified for GEF. When this field is
+            not specified, a default will be chosen based on the productTypeId.
+          minLength: 0
+          maxLength: 2
+          example: '1'
+        issueDate:
+          format: date
+          type: string
+          description: >-
+            At Commitment stage its not required, Issued when issued it would be
+            Issue Date for Bond OR Disbursement Date for Loan/EWCS.
+          default: null
+          nullable: true
+      required:
+        - dealIdentifier
+        - facilityIdentifier
+        - dealBorrowerIdentifier
+        - productTypeId
+        - productTypeName
+        - exposurePeriod
+        - currency
+        - obligorIndustryClassification
+        - effectiveDate
+        - guaranteeExpiryDate
+        - nextQuarterEndDate
+        - maximumLiability
+        - agentBankIdentifier
+        - riskCountryCode
+        - premiumFrequencyCode
+        - riskStatusCode
+        - creditRatingCode
+        - facilityStageCode
+        - delegationType
+        - interestOrFeeRate
+        - obligorPartyIdentifier
+        - forecastPercentage
+    CreateFacilityResponse:
+      type: object
+      properties:
+        facilityIdentifier:
+          type: string
+          description: The identifier of the created facility.
+          readOnly: true
+          example: '0030000322'
+      required:
+        - facilityIdentifier
     GetFacilityCovenantsResponseDto:
       type: object
       properties:
@@ -1383,7 +1600,7 @@ components:
           description: The country code for the party's primary address.
           maxLength: 3
           default: GBR
-          example: DZA
+          example: GBR
       required:
         - alternateIdentifier
         - industryClassification

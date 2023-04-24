@@ -14,7 +14,7 @@ interface Options {
 }
 
 export const ValidatedStringApiProperty = ({ description, length, minLength, maxLength, required, pattern, example, default: theDefault }: Options) => {
-  minLength = length ?? minLength;
+  minLength = length ?? minLength ?? 0;
   maxLength = length ?? maxLength;
   const decoratorsToApply = [
     ApiProperty({
