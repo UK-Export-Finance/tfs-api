@@ -250,11 +250,6 @@ describe('AcbsFacilityGuaranteeService', () => {
 
       const createGuaranteeForFacilityPromise = service.createGuaranteeForFacility(facilityIdentifier, newFacilityGuarantee, idToken);
 
-      // const res = await createGuaranteeForFacilityPromise;
-
-      // console.log('newFacilityGuarantee', newFacilityGuarantee);
-      // console.log('res', res);
-
       await expect(createGuaranteeForFacilityPromise).rejects.toBeInstanceOf(AcbsUnexpectedException);
       await expect(createGuaranteeForFacilityPromise).rejects.toThrow(`Failed to create a guarantee for facility ${facilityIdentifier} in ACBS.`);
       await expect(createGuaranteeForFacilityPromise).rejects.toHaveProperty('innerError', axiosError);
