@@ -279,6 +279,34 @@ paths:
           description: The specified facilityIdentifier is not valid.
         '500':
           description: An internal server error has occurred.
+  /api/v1/facilities/{facilityIdentifier}/fixed-fees:
+    get:
+      operationId: FacilityFixedFeeController_getFixedFeesForFacility
+      summary: Get all fixed fees for a facility.
+      parameters:
+        - name: facilityIdentifier
+          required: true
+          in: path
+          description: The identifier of the facility in ACBS.
+          example: '0030000322'
+          schema:
+            minLength: 10
+            maxLength: 10
+            pattern: ^00\\d{8}$
+            type: string
+      responses:
+        '200':
+          description: The fixed fees for the facility have been successfully retrieved.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GetFacilityFixedFeeResponseItem'
+        '400':
+          description: The specified facilityIdentifier is not valid.
+        '500':
+          description: An internal server error has occurred.
   /api/v1/facilities/{facilityIdentifier}/guarantees:
     get:
       operationId: FacilityGuaranteeController_getGuaranteesForFacility
@@ -1345,6 +1373,106 @@ components:
         - guaranteeCommencementDate
         - effectiveDate
         - guaranteeExpiryDate
+    GetFacilityFixedFeeResponseItem:
+      type: object
+      properties:
+        facilityIdentifier:
+          type: string
+          description: The identifier of the facility.
+          example: '0030000322'
+          minLength: 10
+          maxLength: 10
+        portfolioIdentifier:
+          type: string
+          description: The identifier of the portfolio.
+          example: E1
+        amount:
+          type: number
+          description: >-
+            The fixed amount to be billed to the client. If a flat amount is
+            charged, this field is required.
+          example: 501927.25
+          minimum: 0
+          maximum: 100000000000000000
+        effectiveDate:
+          format: date
+          type: string
+          description: The effective date of this accruing/Fixed fee schedule.
+          example: '2023-03-24'
+        expirationDate:
+          format: date
+          type: string
+          description: The expiration date of this accruing/Fixed fee schedule.
+          example: '2023-03-24'
+        nextDueDate:
+          format: date
+          type: string
+          description: Date the next fee bill is due for this fee schedule.
+          example: '2023-03-24'
+        nextAccrueToDate:
+          format: date
+          type: string
+          description: >-
+            End date for the current accrual period. This date can be different
+            than the Next Due Date.
+          example: '2023-03-24'
+        period:
+          type: string
+          description: >-
+            Segment identifier from income exposure table. 2 alphanumeric
+            characters.
+          maxLength: 2
+          minLength: 2
+        description:
+          type: string
+          description: Description of accruing/Fixed fee which is be entered by user.
+          minLength: 0
+          maxLength: 35
+        currency:
+          type: string
+          description: >-
+            The currency of Facility Fee, defined in the Currency Definition
+            Table under Systems Administration of Servicing. For example, USD
+            for United States Dollar.
+          example: USD
+          minLength: 0
+          maxLength: 3
+        lenderTypeCode:
+          type: string
+          description: >-
+            Defines the code for the role of the party in the Facility for which
+            the fee is created.
+          example: '500'
+          minLength: 0
+          maxLength: 3
+        incomeClassCode:
+          type: string
+          description: >-
+            Defines the code for the fee type of this schedule for reporting and
+            GL purposes.
+          example: BPM
+          minLength: 0
+          maxLength: 3
+        spreadToInvestorsIndicator:
+          type: boolean
+          description: >-
+            Action indicator to be supplied together with the Fee to control
+            propagation of the fee effects to other investors. Not applicable to
+            output data.
+      required:
+        - facilityIdentifier
+        - portfolioIdentifier
+        - amount
+        - effectiveDate
+        - expirationDate
+        - nextDueDate
+        - nextAccrueToDate
+        - period
+        - description
+        - currency
+        - lenderTypeCode
+        - incomeClassCode
+        - spreadToInvestorsIndicator
     GetFacilityGuaranteesResponseItem:
       type: object
       properties:
