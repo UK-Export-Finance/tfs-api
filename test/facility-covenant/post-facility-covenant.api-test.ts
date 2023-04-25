@@ -8,7 +8,7 @@ import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/comm
 import { withCovenantIdentifierFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/covenant-identifier-field-validation-api-tests';
 import { withDateOnlyFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/date-only-field-validation-api-tests';
 import { withFacilityIdentifierFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/facility-identifier-field-validation-api-tests';
-import { withRequiredNonNegativeNumberFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/required-non-negative-number-field-validation-api-tests';
+import { withNonNegativeNumberFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/non-negative-number-field-validation-api-tests';
 import { withStringFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/string-field-validation-api-tests';
 import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
@@ -410,7 +410,7 @@ describe('POST /facilities/{facilityIdentifier}/covenants', () => {
       givenAnyRequestBodyWouldSucceed,
     });
 
-    withRequiredNonNegativeNumberFieldValidationApiTests({
+    withNonNegativeNumberFieldValidationApiTests({
       fieldName: 'maximumLiability',
       validRequestBody: requestBodyToCreateFacilityCovenant,
       makeRequest,

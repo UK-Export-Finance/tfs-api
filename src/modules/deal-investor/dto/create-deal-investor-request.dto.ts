@@ -1,5 +1,5 @@
-import { ValidatedCurrencyApiProperty } from '@ukef/decorators/validated-currency-api-property-decorator';
 import { UKEFID } from '@ukef/constants';
+import { ValidatedCurrencyApiProperty } from '@ukef/decorators/validated-currency-api-property-decorator';
 import { ValidatedDateOnlyApiProperty } from '@ukef/decorators/validated-date-only-api-property.decorator';
 import { ValidatedStringApiProperty } from '@ukef/decorators/validated-string-api-property.decorator';
 import { DateString, UkefId } from '@ukef/helpers';

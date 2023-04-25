@@ -24,7 +24,7 @@ describe('FacilityCovenantController', () => {
 
   beforeEach(() => {
     facilityCovenantService = new FacilityCovenantService(null, null, null);
-    facilityService = new FacilityService(null, null, null);
+    facilityService = new FacilityService(null, null, null, null);
 
     facilityCovenantServiceCreateCovenantForFacility = jest.fn();
     facilityCovenantServiceGetCovenantsForFacility = jest.fn();
