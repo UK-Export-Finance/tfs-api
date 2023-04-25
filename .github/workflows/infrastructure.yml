@@ -45,6 +45,14 @@
 #
 # Azure CLI will merely ignore the new resource creation if already exist with same name.
 #
+# NOTE
+# ****
+# 
+# 1. APIM Policy
+# --------------
+# AZ CLI currently do not support APIM policy import natively, recommended solution is via
+# `az rest` https://github.com/Azure/azure-cli/issues/14695
+#
 
 name: Infrastructure 🔨
 run-name: APIM base infrastructure build from ${{ github.repository }}
@@ -259,47 +267,47 @@ jobs:
             --sku-name ${{ vars.APIM_PLAN }} \
             --tags ${{ env.tags }}
 
-# 3. Network configuration
-metwork:
-  name: Network 🛂
-  needs: base
-  environment: ${{ needs.base.outputs.environment }}
-  runs-on: [self-hosted, APIM, infrastructure]
-  steps:
-    - name: Pre-production 💫
-      if: contains('["dev", "staging"]', env.target)
-      run: echo "type=Preproduction" >> $GITHUB_ENV
+  # 3. Network configuration
+  network:
+    name: Network 🛂
+    needs: base
+    environment: ${{ needs.base.outputs.environment }}
+    runs-on: [self-hosted, APIM, infrastructure]
+    steps:
+      - name: Pre-production 💫
+        if: contains('["dev", "staging"]', env.target)
+        run: echo "type=Preproduction" >> $GITHUB_ENV
 
-    - name: Production 💫
-      if: ${{ 'prod' == env.target }}
-      run: echo "type=Production" >> $GITHUB_ENV
+      - name: Production 💫
+        if: ${{ 'prod' == env.target }}
+        run: echo "type=Production" >> $GITHUB_ENV
 
-    - name: Tags 🏷️
-      run: echo tags='Environment=${{ env.type }}' \
-        'Product=${{ env.product }}' \
-        'Team=development' >> $GITHUB_ENV
+      - name: Tags 🏷️
+        run: echo tags='Environment=${{ env.type }}' \
+          'Product=${{ env.product }}' \
+          'Team=development' >> $GITHUB_ENV
 
-    - name: Login 🔐
-      uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Login 🔐
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-    - name: Azure defaults ✨
-      uses: Azure/cli@v1.0.7
-      with:
-        inlineScript: |
-          # Basic
-          az configure --defaults location=${{ vars.REGION }}
-          az configure --defaults group=rg-${{ env.product }}-${{ env.target }}-${{ vars.VERSION }}
+      - name: Azure defaults ✨
+        uses: Azure/cli@v1.0.7
+        with:
+          inlineScript: |
+            # Basic
+            az configure --defaults location=${{ vars.REGION }}
+            az configure --defaults group=rg-${{ env.product }}-${{ env.target }}-${{ vars.VERSION }}
 
-    - name: Subnet routing table 🌐
-      uses: Azure/cli@v1.0.7
-      with:
-        inlineScript: |
-          # Associate UKS route table to default subnet
-          az network vnet subnet update \
-          --name snet-${{ env.product }}-${{ vars.VERSION }} \
-          --route-table route-${{ env.product }}-uks
+      - name: Subnet routing table 🌐
+        uses: Azure/cli@v1.0.7
+        with:
+          inlineScript: |
+            # Associate UKS route table to default subnet
+            az network vnet subnet update \
+            --name snet-${{ env.product }}-${{ vars.VERSION }} \
+            --route-table route-${{ env.product }}-uks
 
   # 4. Container app configuration
   ca:
@@ -447,3 +455,12 @@ metwork:
             --service-name apim-${{ env.environment }}-${{ env.target }}-${{ vars.VERSION }} \
             --api-id $(az apim api list --service-name apim-${{ env.environment }}-${{ env.target }}-${{ vars.VERSION }} --filter-display-name 'tfs' --top 1 --query [0].name -o tsv) \
             --product-id $(az apim product list --service-name apim-${{ env.environment }}-${{ env.target }}-${{ vars.VERSION }} --query '[?contains(displayName, `apim-${{ env.product }}-tfs`)].name' -o tsv)
+
+      - name: TFS - Policy 🚧
+        uses: Azure/cli@v1.0.7
+        with:
+          inlineScript: |
+            az rest \
+            --method PUT \
+            --uri "https://management.azure.com/subscriptions/$(az account show --query id -o tsv)/resourceGroups/rg-${{ env.product }}-${{ env.target }}-${{ vars.VERSION }}/providers/Microsoft.ApiManagement/service/apim-${{ env.environment }}-${{ env.target }}-${{ vars.VERSION }}/apis/$(az apim api list --service-name apim-${{ env.environment }}-${{ env.target }}-${{ vars.VERSION }} --filter-display-name 'tfs' --top 1 --query [0].name -o tsv)/policies/policy?api-version=2022-09-01-preview" \
+            --body ${{ secrets.APIM_POLICY }}
