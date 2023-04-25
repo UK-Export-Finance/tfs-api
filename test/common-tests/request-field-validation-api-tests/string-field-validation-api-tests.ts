@@ -6,7 +6,7 @@ export interface StringFieldValidationApiTestOptions<RequestBodyItem, RequestBod
   minLength?: number;
   maxLength?: number;
   required?: boolean;
-  pattern?: string;
+  pattern?: RegExp;
   enum?: any;
   generateFieldValueOfLength: (length: number) => RequestBodyItem[RequestBodyItemKey];
   generateFieldValueThatDoesNotMatchRegex?: () => RequestBodyItem[RequestBodyItemKey];

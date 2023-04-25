@@ -22,7 +22,7 @@ export const withCovenantIdentifierFieldValidationApiTests = <RequestBodyItem ex
   withStringFieldValidationApiTests<RequestBodyItem, CovenantIdentifierFieldName>({
     fieldName: 'covenantIdentifier',
     length: 10,
-    pattern: UKEFID.COVENANT_ID.REGEX_STRING,
+    pattern: UKEFID.COVENANT_ID.REGEX,
     generateFieldValueOfLength: (length: number) => valueGenerator.ukefCovenantId(length - 4),
     generateFieldValueThatDoesNotMatchRegex: () => '1000000000',
     validRequestBody,
