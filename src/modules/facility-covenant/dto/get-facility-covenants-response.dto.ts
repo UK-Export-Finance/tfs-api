@@ -10,7 +10,7 @@ export class GetFacilityCovenantsResponseDto {
 
   @ApiProperty({
     description:
-      'The covenant type code: 43 for a UK Contract Value covenant, 46 for a Chargable Amount covenant, and 47 for a chargable Amount covenant not in GBP.',
+      'The covenant type code: 43 for a UK Contract Value covenant, 46 for a Chargeable Amount covenant, and 47 for a Chargeable Amount covenant not in GBP.',
   })
   readonly covenantType: string;
 
