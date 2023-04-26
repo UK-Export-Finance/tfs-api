@@ -1,6 +1,6 @@
 import { applyDecorators } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, Length, Matches } from 'class-validator';
+import { IsEnum, IsOptional, Length, Matches } from 'class-validator';
 
 interface Options {
   description: string;
@@ -9,11 +9,22 @@ interface Options {
   maxLength?: number;
   required?: boolean;
   pattern?: RegExp;
+  enum?: any;
   example?: string;
   default?: string;
 }
 
-export const ValidatedStringApiProperty = ({ description, length, minLength, maxLength, required, pattern, example, default: theDefault }: Options) => {
+export const ValidatedStringApiProperty = ({
+  description,
+  length,
+  minLength,
+  maxLength,
+  required,
+  pattern,
+  enum: theEnum,
+  example,
+  default: theDefault,
+}: Options) => {
   minLength = length ?? minLength ?? 0;
   maxLength = length ?? maxLength;
   const decoratorsToApply = [
@@ -36,6 +47,9 @@ export const ValidatedStringApiProperty = ({ description, length, minLength, max
   }
   if (pattern) {
     decoratorsToApply.push(Matches(pattern));
+  }
+  if (theEnum) {
+    decoratorsToApply.push(IsEnum(theEnum));
   }
   return applyDecorators(...decoratorsToApply);
 };
