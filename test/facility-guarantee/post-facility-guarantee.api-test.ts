@@ -135,6 +135,7 @@ describe('POST /facilities/{facilityIdentifier}/guarantees', () => {
   });
 
   it(`replaces the effectiveDate with today's date if the specified effectiveDate is in future`, async () => {
+    // TODO: APIM-248 Test date constant names could be made shorter.
     const requestBodyWithFutureEffectiveDate = [{ ...requestBodyToCreateFacilityGuarantee[0], effectiveDate: TEST_DATES.A_FUTURE_EXPIRY_DATE_ONLY }];
     const acbsRequestBodyWithTodayEffectiveDate = {
       ...acbsRequestBodyToCreateFacilityGuarantee,
