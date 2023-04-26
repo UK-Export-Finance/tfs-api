@@ -10,6 +10,6 @@ export const ValidatedDealIdentifierApiProperty = ({ description }: Options) =>
   ValidatedStringApiProperty({
     description,
     length: 10,
-    pattern: UKEFID.TEN_DIGIT_REGEX,
+    pattern: UKEFID.MAIN_ID.TEN_DIGIT_REGEX,
     example: EXAMPLES.DEAL_ID,
   });

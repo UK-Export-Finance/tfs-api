@@ -12,7 +12,7 @@ export class CreateDealGuaranteeRequestItem {
     example: EXAMPLES.DEAL_ID,
     minLength: 10,
     maxLength: 10,
-    pattern: UKEFID.TEN_DIGIT_REGEX,
+    pattern: UKEFID.MAIN_ID.TEN_DIGIT_REGEX,
   })
   readonly dealIdentifier: string;
 
