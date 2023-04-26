@@ -91,7 +91,7 @@ export class RandomValueGenerator {
   }
 
   acbsPartyId(lengthExcludingPrefix?: number): AcbsPartyId {
-    return (ACBSID.PARTY_ID_PREFIX + this.stringOfNumericCharacters({ length: lengthExcludingPrefix ?? 6 })) as AcbsPartyId;
+    return (ACBSID.PARTY_ID.PREFIX + this.stringOfNumericCharacters({ length: lengthExcludingPrefix ?? 6 })) as AcbsPartyId;
   }
 
   dateTimeString(): DateString {

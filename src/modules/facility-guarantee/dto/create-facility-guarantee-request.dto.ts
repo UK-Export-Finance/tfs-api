@@ -25,7 +25,7 @@ export class CreateFacilityGuaranteeRequestItem {
     description: 'An ACBS party identifier.',
     length: 8,
     example: EXAMPLES.PARTY_ID,
-    pattern: ACBSID.PARTY_ID_REGEX,
+    pattern: ACBSID.PARTY_ID.REGEX,
   })
   readonly limitKey: AcbsPartyId;
 
@@ -44,7 +44,7 @@ export class CreateFacilityGuaranteeRequestItem {
     description: `ACBS Party Identifier based on the type for Investor, Bond Issuer, Bond Beneficiary, EWCS Facility Provider, EWCS Buyer Exporter. Review functional spec for details.`,
     length: 8,
     example: EXAMPLES.PARTY_ID,
-    pattern: ACBSID.PARTY_ID_REGEX,
+    pattern: ACBSID.PARTY_ID.REGEX,
   })
   readonly guarantorParty: AcbsPartyId;
 
