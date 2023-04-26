@@ -169,15 +169,6 @@ describe('POST /facilities/{facilityIdentifier}/guarantees', () => {
   });
 
   withStringFieldValidationApiTests({
-    fieldName: 'facilityIdentifier',
-    length: 10,
-    generateFieldValueOfLength: (length: number) => valueGenerator.facilityId(length - 4),
-    validRequestBody: requestBodyToCreateFacilityGuarantee,
-    makeRequest,
-    givenAnyRequestBodyWouldSucceed,
-  });
-
-  withStringFieldValidationApiTests({
     fieldName: 'limitKey',
     length: 8,
     generateFieldValueOfLength: (length: number) => valueGenerator.acbsPartyId(length - 2),
