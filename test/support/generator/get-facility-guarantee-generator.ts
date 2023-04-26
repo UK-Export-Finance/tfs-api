@@ -1,4 +1,4 @@
-import { DateString } from '@ukef/helpers';
+import { AcbsPartyId, DateString } from '@ukef/helpers';
 import { AcbsGetFacilityGuaranteesResponseDto } from '@ukef/modules/acbs/dto/acbs-get-facility-guarantees-response.dto';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { GetFacilityGuaranteesResponse } from '@ukef/modules/facility-guarantee/dto/get-facility-guarantees-response.dto';
@@ -15,8 +15,8 @@ export class GetFacilityGuaranteeGenerator extends AbstractGenerator<FacilityGua
   protected generateValues(): FacilityGuaranteeValues {
     return {
       effectiveDateInAcbs: this.valueGenerator.dateTimeString(),
-      guarantorPartyIdentifier: this.valueGenerator.stringOfNumericCharacters({ length: 8 }),
-      limitKey: this.valueGenerator.string(),
+      guarantorPartyIdentifier: this.valueGenerator.acbsPartyId(),
+      limitKey: this.valueGenerator.acbsPartyId(),
       expirationDateInAcbs: this.valueGenerator.dateTimeString(),
       guaranteedLimit: this.valueGenerator.nonnegativeFloat(),
       guaranteeTypeCode: this.valueGenerator.string(),
@@ -64,8 +64,8 @@ export class GetFacilityGuaranteeGenerator extends AbstractGenerator<FacilityGua
 
 interface FacilityGuaranteeValues {
   effectiveDateInAcbs: DateString;
-  guarantorPartyIdentifier: string;
-  limitKey: string;
+  guarantorPartyIdentifier: AcbsPartyId;
+  limitKey: AcbsPartyId;
   expirationDateInAcbs: DateString;
   guaranteedLimit: number;
   guaranteeTypeCode: string;

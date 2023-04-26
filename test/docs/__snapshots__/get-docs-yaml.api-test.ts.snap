@@ -312,6 +312,41 @@ paths:
             guarantee that the facility does not exist.)
         '500':
           description: An internal server error has occurred.
+    post:
+      operationId: FacilityGuaranteeController_createGuaranteeForFacility
+      summary: Create a new guarantee for a facility.
+      parameters:
+        - name: facilityIdentifier
+          required: true
+          in: path
+          description: The identifier of the facility in ACBS.
+          example: '0030000322'
+          schema:
+            minLength: 10
+            maxLength: 10
+            pattern: ^00\\d{8}$
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/CreateFacilityGuaranteeRequestItem'
+      responses:
+        '201':
+          description: The guarantee has been successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateFacilityGuaranteeResponse'
+        '400':
+          description: Bad request.
+        '404':
+          description: The facility was not found.
+        '500':
+          description: An internal server error has occurred.
   /api/v1/facilities/{facilityIdentifier}/investors:
     post:
       operationId: FacilityInvestorController_createInvestorForFacility
@@ -603,21 +638,22 @@ components:
         dealIdentifier:
           type: string
           description: The identifier of the deal to create the guarantee for.
-          minLength: 8
-          maxLength: 8
-          example: '00000001'
+          minLength: 10
+          maxLength: 10
+          pattern: ^00\\d{8}$
+          example: '0030000321'
         effectiveDate:
           format: date
           type: string
           description: >-
             The date that this guarantee will take effect. This will be replaced
-            by today's date if a date in the past is provided.
+            by today's date if a date in the future is provided.
         limitKey:
           type: string
           description: An ACBS party identifier.
           minLength: 8
           maxLength: 8
-          example: '00000002'
+          example: '00001234'
         guaranteeExpiryDate:
           format: date
           type: string
@@ -1331,6 +1367,72 @@ components:
         - guaranteeExpiryDate
         - maximumLiability
         - guaranteeTypeCode
+    CreateFacilityGuaranteeRequestItem:
+      type: object
+      properties:
+        facilityIdentifier:
+          type: string
+          description: The identifier of the facility to create the guarantee for.
+          minLength: 10
+          maxLength: 10
+          pattern: ^00\\d{8}$
+          example: '0030000322'
+        effectiveDate:
+          format: date
+          type: string
+          description: >-
+            The date that this guarantee will take effect. This will be replaced
+            by today's date if a date in the future is provided.
+        limitKey:
+          type: string
+          description: An ACBS party identifier.
+          minLength: 8
+          maxLength: 8
+          pattern: ^00\\d{6}$
+          example: '00001234'
+        guaranteeExpiryDate:
+          format: date
+          type: string
+          description: The date that this guarantee will expire on.
+        maximumLiability:
+          type: number
+          description: The maximum amount the guarantor will guarantee.
+          minimum: 0
+        guarantorParty:
+          type: string
+          description: >-
+            ACBS Party Identifier based on the type for Investor, Bond Issuer,
+            Bond Beneficiary, EWCS Facility Provider, EWCS Buyer Exporter.
+            Review functional spec for details.
+          minLength: 8
+          maxLength: 8
+          pattern: ^00\\d{6}$
+          example: '00001234'
+        guaranteeTypeCode:
+          type: string
+          description: >-
+            Possible values: bond giver - 315, bond beneficiary - 310, facility
+            provider - 500, buyer for (exporter EWCS) - 321.
+          minLength: 3
+          maxLength: 3
+          example: '310'
+      required:
+        - facilityIdentifier
+        - effectiveDate
+        - limitKey
+        - guaranteeExpiryDate
+        - maximumLiability
+        - guarantorParty
+        - guaranteeTypeCode
+    CreateFacilityGuaranteeResponse:
+      type: object
+      properties:
+        facilityIdentifier:
+          type: string
+          readOnly: true
+          example: '0030000322'
+      required:
+        - facilityIdentifier
     CreateFacilityInvestorRequestItem:
       type: object
       properties:

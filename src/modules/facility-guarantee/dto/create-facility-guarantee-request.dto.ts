@@ -1,20 +1,20 @@
-import { EXAMPLES, PROPERTIES, UKEFID } from '@ukef/constants';
+import { ACBSID, ENUMS, EXAMPLES, UKEFID } from '@ukef/constants';
 import { ValidatedDateOnlyApiProperty } from '@ukef/decorators/validated-date-only-api-property.decorator';
 import { ValidatedNumberApiProperty } from '@ukef/decorators/validated-number-api-property.decorator';
 import { ValidatedStringApiProperty } from '@ukef/decorators/validated-string-api-property.decorator';
+import { AcbsPartyId, UkefId } from '@ukef/helpers';
 import { DateOnlyString } from '@ukef/helpers/date-only-string.type';
 
-export type CreateDealGuaranteeRequest = CreateDealGuaranteeRequestItem[];
+export type CreateFacilityGuaranteeRequest = CreateFacilityGuaranteeRequestItem[];
 
-export class CreateDealGuaranteeRequestItem {
+export class CreateFacilityGuaranteeRequestItem {
   @ValidatedStringApiProperty({
-    description: 'The identifier of the deal to create the guarantee for.',
-    example: EXAMPLES.DEAL_ID,
-    minLength: 10,
-    maxLength: 10,
+    description: 'The identifier of the facility to create the guarantee for.',
+    example: EXAMPLES.FACILITY_ID,
+    length: 10,
     pattern: UKEFID.MAIN_ID.TEN_DIGIT_REGEX,
   })
-  readonly dealIdentifier: string;
+  readonly facilityIdentifier: UkefId;
 
   @ValidatedDateOnlyApiProperty({
     description: `The date that this guarantee will take effect. This will be replaced by today's date if a date in the future is provided.`,
@@ -23,11 +23,11 @@ export class CreateDealGuaranteeRequestItem {
 
   @ValidatedStringApiProperty({
     description: 'An ACBS party identifier.',
-    minLength: 8,
-    maxLength: 8,
+    length: 8,
     example: EXAMPLES.PARTY_ID,
+    pattern: ACBSID.PARTY_ID.REGEX,
   })
-  readonly limitKey: string;
+  readonly limitKey: AcbsPartyId;
 
   @ValidatedDateOnlyApiProperty({
     description: 'The date that this guarantee will expire on.',
@@ -41,33 +41,31 @@ export class CreateDealGuaranteeRequestItem {
   readonly maximumLiability: number;
 
   @ValidatedStringApiProperty({
-    description: `The party identifier of the guarantor, the customer who is making the guarantee/obligation.`,
-    minLength: 8,
-    maxLength: 8,
-    default: PROPERTIES.DEAL_GUARANTEE.DEFAULT.guarantorParty,
-    required: false,
+    description: `ACBS Party Identifier based on the type for Investor, Bond Issuer, Bond Beneficiary, EWCS Facility Provider, EWCS Buyer Exporter. Review functional spec for details.`,
+    length: 8,
+    example: EXAMPLES.PARTY_ID,
+    pattern: ACBSID.PARTY_ID.REGEX,
   })
-  readonly guarantorParty?: string;
+  readonly guarantorParty: AcbsPartyId;
 
   @ValidatedStringApiProperty({
-    description: `The identifier for the type of the guarantee.`,
-    default: PROPERTIES.DEAL_GUARANTEE.DEFAULT.guaranteeTypeCode,
-    required: false,
-    minLength: 3,
-    maxLength: 3,
+    description: `Possible values: bond giver - 315, bond beneficiary - 310, facility provider - 500, buyer for (exporter EWCS) - 321.`,
+    length: 3,
+    example: ENUMS.GUARANTEE_TYPE_CODES.BOND_BENEFICIARY,
+    enum: ENUMS.GUARANTEE_TYPE_CODES,
   })
-  readonly guaranteeTypeCode?: string;
+  readonly guaranteeTypeCode: string;
 
   constructor(
-    dealIdentifier: string,
+    facilityIdentifier: UkefId,
     effectiveDate: DateOnlyString,
-    limitKey: string,
+    limitKey: AcbsPartyId,
     guaranteeExpiryDate: DateOnlyString,
     maximumLiability: number,
-    guarantorParty?: string,
-    guaranteeTypeCode?: string,
+    guarantorParty: AcbsPartyId,
+    guaranteeTypeCode: string,
   ) {
-    this.dealIdentifier = dealIdentifier;
+    this.facilityIdentifier = facilityIdentifier;
     this.effectiveDate = effectiveDate;
     this.limitKey = limitKey;
     this.guaranteeExpiryDate = guaranteeExpiryDate;

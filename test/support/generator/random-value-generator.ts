@@ -1,4 +1,4 @@
-import { UKEFID } from '@ukef/constants';
+import { ACBSID, UKEFID } from '@ukef/constants';
 import { AcbsPartyId, DateOnlyString, DateString, UkefCovenantId, UkefId } from '@ukef/helpers';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { Chance } from 'chance';
@@ -73,8 +73,11 @@ export class RandomValueGenerator {
     return this.ukefId();
   }
 
-  facilityId(): UkefId {
-    return this.ukefId();
+  /**
+   * Usually prefix length is 4.
+   */
+  facilityId(lengthExcludingPrefix?: number): UkefId {
+    return this.ukefId(lengthExcludingPrefix ?? 6);
   }
 
   // UKEF id example 0030000321. It should be used for Deal and Facility IDs.
@@ -87,8 +90,8 @@ export class RandomValueGenerator {
     return (UKEFID.COVENANT_ID.PREFIX + this.stringOfNumericCharacters({ length: lengthExcludingPrefix ?? 6 })) as UkefCovenantId;
   }
 
-  acbsPartyId(): AcbsPartyId {
-    return this.stringOfNumericCharacters({ length: 8 }) as AcbsPartyId;
+  acbsPartyId(lengthExcludingPrefix?: number): AcbsPartyId {
+    return (ACBSID.PARTY_ID.PREFIX + this.stringOfNumericCharacters({ length: lengthExcludingPrefix ?? 6 })) as AcbsPartyId;
   }
 
   dateTimeString(): DateString {
