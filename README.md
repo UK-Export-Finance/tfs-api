@@ -8,11 +8,7 @@ npm install
 ```
 
 ## Environment Variables
-A member of the team should send an encrypted copy of the `.env` file and password. To decrypt the file run the following command and enter the password when prompted.
-
-```bash
-$ winpty openssl enc -aes-256-cbc -pbkdf2 -d -in <path to encrypted file> -out <path to save decrypted file>
-```
+A member of the team should send an encrypted copy of the `.env` file. Decrypt the file and save in the root of the project.
 
 ## Run 💡
 
