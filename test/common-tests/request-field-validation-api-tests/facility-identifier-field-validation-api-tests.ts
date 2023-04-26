@@ -22,7 +22,7 @@ export const withFacilityIdentifierFieldValidationApiTests = <RequestBodyItem ex
   withStringFieldValidationApiTests<RequestBodyItem, FacilityIdentifierFieldName>({
     fieldName: 'facilityIdentifier',
     length: 10,
-    pattern: UKEFID.TEN_DIGIT_REGEX,
+    pattern: UKEFID.MAIN_ID.TEN_DIGIT_REGEX,
     generateFieldValueOfLength: (length: number) => valueGenerator.ukefId(length - 4),
     generateFieldValueThatDoesNotMatchRegex: () => '1000000000',
     validRequestBody,

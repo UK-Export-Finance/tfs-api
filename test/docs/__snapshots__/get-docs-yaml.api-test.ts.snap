@@ -213,6 +213,41 @@ paths:
         '500':
           description: An internal server error has occurred.
   /api/v1/facilities/{facilityIdentifier}/covenants:
+    post:
+      operationId: FacilityCovenantController_createCovenantForFacility
+      summary: Create a new covenant for a facility.
+      parameters:
+        - name: facilityIdentifier
+          required: true
+          in: path
+          description: The identifier of the facility in ACBS.
+          example: '0030000322'
+          schema:
+            minLength: 10
+            maxLength: 10
+            pattern: ^00\\d{8}$
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/CreateFacilityCovenantRequestItem'
+      responses:
+        '201':
+          description: The covenant has been successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateFacilityCovenantResponseDto'
+        '400':
+          description: Bad request.
+        '404':
+          description: The facility was not found.
+        '500':
+          description: An internal server error has occurred.
     get:
       operationId: FacilityCovenantController_getCovenantsForFacility
       summary: Get all covenants for a facility.
@@ -1141,6 +1176,79 @@ components:
           example: '0030000322'
       required:
         - facilityIdentifier
+    CreateFacilityCovenantRequestItem:
+      type: object
+      properties:
+        facilityIdentifier:
+          type: string
+          description: The identifier of the facility to create the covenant for in ACBS.
+          minLength: 10
+          maxLength: 10
+          pattern: ^00\\d{8}$
+          example: '0030000322'
+        covenantIdentifier:
+          type: string
+          description: >-
+            The identifier of the covenant in ACBS. When creating a covenant an
+            identifier from the number generator should be used.
+          minLength: 10
+          maxLength: 10
+          pattern: ^0{4}\\d{6}$
+          example: '0000000001'
+        covenantType:
+          type: string
+          description: >-
+            The covenant type code: 43 for a UK Contract Value covenant, 46 for
+            a Chargeable Amount covenant, and 47 for a Chargeable Amount
+            covenant not in GBP.
+          minLength: 2
+          maxLength: 2
+          example: '43'
+        maximumLiability:
+          type: number
+          description: >-
+            The amount used to determine if the covenant is in compliance or
+            not. It is called target amount in ACBS.
+          minimum: 0
+        currency:
+          type: string
+          description: >-
+            The covenant currency type code. The maximum number of characters
+            allowed is 1. It is called pledge type code in ACBS.
+          minLength: 0
+          maxLength: 1
+          example: 'N'
+        guaranteeExpiryDate:
+          format: date
+          type: string
+          description: >-
+            The expiration date of the covenant. It is called expiration date in
+            ACBS.
+          example: '2023-04-19'
+        effectiveDate:
+          format: date
+          type: string
+          description: The effective date of the covenant.
+          example: '2023-04-19'
+      required:
+        - facilityIdentifier
+        - covenantIdentifier
+        - covenantType
+        - maximumLiability
+        - currency
+        - guaranteeExpiryDate
+        - effectiveDate
+    CreateFacilityCovenantResponseDto:
+      type: object
+      properties:
+        facilityIdentifier:
+          type: string
+          description: >-
+            The identifier of the facility in ACBS for which the covenant has
+            been created. This will be a 10-digit code.
+          example: '0030000322'
+      required:
+        - facilityIdentifier
     GetFacilityCovenantsResponseDto:
       type: object
       properties:
@@ -1155,8 +1263,8 @@ components:
           type: string
           description: >-
             The covenant type code: 43 for a UK Contract Value covenant, 46 for
-            a Chargable Amount covenant, and 47 for a chargable Amount covenant
-            not in GBP.
+            a Chargeable Amount covenant, and 47 for a Chargeable Amount
+            covenant not in GBP.
         facilityIdentifier:
           type: string
           description: >-

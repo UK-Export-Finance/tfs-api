@@ -7,7 +7,7 @@ export class FacilityGuaranteesParamsDto {
     description: 'The identifier of the facility in ACBS.',
     example: EXAMPLES.FACILITY_ID,
     length: 10,
-    pattern: UKEFID.TEN_DIGIT_REGEX,
+    pattern: UKEFID.MAIN_ID.TEN_DIGIT_REGEX,
   })
   facilityIdentifier: UkefId;
 }

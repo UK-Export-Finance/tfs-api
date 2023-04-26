@@ -2,6 +2,33 @@ export const PROPERTIES = {
   GLOBAL: {
     portfolioIdentifier: 'E1',
   },
+  COVENANT: {
+    DEFAULTS: {
+      portfolioIdentifier: 'E1',
+      accountOwnerIdentifier: '00000000',
+      complianceEvaluationMode: {
+        covenantEvaluationModeCode: 'M',
+      },
+      dateCycleEvaluationMode: {
+        covenantEvaluationModeCode: 'M',
+      },
+      lenderType: {
+        covenantLenderTypeCode: '100',
+      },
+      limitType: {
+        covenantLimitTypeCode: '00',
+      },
+      sectionIdentifier: '00',
+      covenantType: {
+        covenantTypeCode: '43',
+      },
+      complianceRule: {
+        covenantComplianceRuleCode: 'EQ',
+      },
+      inComplianceIndicator: true,
+      waivedIndicator: false,
+    },
+  },
   DEAL: {
     DEFAULTS: {
       dealOriginationCode: 'C',

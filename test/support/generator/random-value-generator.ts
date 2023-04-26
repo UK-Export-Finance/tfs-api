@@ -1,5 +1,5 @@
 import { ACBSID, UKEFID } from '@ukef/constants';
-import { AcbsPartyId, DateOnlyString, DateString, UkefId } from '@ukef/helpers';
+import { AcbsPartyId, DateOnlyString, DateString, UkefCovenantId, UkefId } from '@ukef/helpers';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { Chance } from 'chance';
 
@@ -82,7 +82,12 @@ export class RandomValueGenerator {
 
   // UKEF id example 0030000321. It should be used for Deal and Facility IDs.
   ukefId(lengthExcludingPrefix?: number): UkefId {
-    return (UKEFID.MAIN_ID_PREFIX.DEV + this.stringOfNumericCharacters({ length: lengthExcludingPrefix ?? 6 })) as UkefId;
+    return (UKEFID.MAIN_ID.PREFIX.DEV + this.stringOfNumericCharacters({ length: lengthExcludingPrefix ?? 6 })) as UkefId;
+  }
+
+  // UKEF Covenant id example 0000123456.
+  ukefCovenantId(lengthExcludingPrefix?: number): UkefCovenantId {
+    return (UKEFID.COVENANT_ID.PREFIX + this.stringOfNumericCharacters({ length: lengthExcludingPrefix ?? 6 })) as UkefCovenantId;
   }
 
   acbsPartyId(lengthExcludingPrefix?: number): AcbsPartyId {

@@ -5,6 +5,6 @@ import { Matches } from 'class-validator';
 
 export class GetDealsInvestorsParamsDto {
   @ApiProperty({ description: 'UKEF id for deal', example: EXAMPLES.DEAL_ID })
-  @Matches(UKEFID.TEN_DIGIT_REGEX)
+  @Matches(UKEFID.MAIN_ID.TEN_DIGIT_REGEX)
   dealIdentifier: UkefId;
 }
