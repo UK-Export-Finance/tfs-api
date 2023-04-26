@@ -7,6 +7,13 @@ TFS micro-service provides endpoints for internal trade finance manager systems 
 npm install
 ```
 
+## Environment Variables
+A member of the team should send an encrypted copy of the `.env` file and password. To decrypt the file run the following command and enter the password when prompted.
+
+```bash
+$ winpty openssl enc -aes-256-cbc -pbkdf2 -d -in <path to encrypted file> -out <path to save decrypted file>
+```
+
 ## Run 💡
 
 How to run `tfs` on local environment as `dev` runtime mode.
@@ -20,6 +27,10 @@ $ docker compose up --build
 # without docker-compose
 $ npm run start:dev
 ```
+
+To view the Swagger API documentation visit [localhost:3001/docs](http://localhost:3001/docs). You will be prompted for a username & password, these are the Swagger credentials in your `.env`.
+
+To view the API documentation in YAML format visit [localhost:3001/openapi/yaml](http://localhost:3001/openapi/yaml).
 
 ## Test 💹
 
