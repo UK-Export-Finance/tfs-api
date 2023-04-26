@@ -7,4 +7,5 @@ export const UKEFID = {
   },
   // Prefix is used for 10 digit Covenant record id
   COVENANT_ID_PREFIX: '0000',
+  TEN_DIGIT_REGEX: /^00\d{8}$/,
 };

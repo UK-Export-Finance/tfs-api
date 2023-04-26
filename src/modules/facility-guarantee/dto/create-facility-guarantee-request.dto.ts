@@ -1,4 +1,4 @@
-import { EXAMPLES } from '@ukef/constants';
+import { ACBSID, ENUMS, EXAMPLES, UKEFID } from '@ukef/constants';
 import { ValidatedDateOnlyApiProperty } from '@ukef/decorators/validated-date-only-api-property.decorator';
 import { ValidatedNumberApiProperty } from '@ukef/decorators/validated-number-api-property.decorator';
 import { ValidatedStringApiProperty } from '@ukef/decorators/validated-string-api-property.decorator';
@@ -11,22 +11,21 @@ export class CreateFacilityGuaranteeRequestItem {
   @ValidatedStringApiProperty({
     description: 'The identifier of the facility to create the guarantee for.',
     example: EXAMPLES.FACILITY_ID,
-    minLength: 10,
-    maxLength: 10,
-    pattern: /^00\d{8}$/,
+    length: 10,
+    pattern: UKEFID.TEN_DIGIT_REGEX,
   })
   readonly facilityIdentifier: UkefId;
 
   @ValidatedDateOnlyApiProperty({
-    description: `The date that this guarantee will take effect. This will be replaced by today's date if a date in the past is provided.`,
+    description: `The date that this guarantee will take effect. This will be replaced by today's date if a date in the future is provided.`,
   })
   readonly effectiveDate: DateOnlyString;
 
   @ValidatedStringApiProperty({
     description: 'An ACBS party identifier.',
-    minLength: 8,
-    maxLength: 8,
+    length: 8,
     example: EXAMPLES.PARTY_ID,
+    pattern: ACBSID.PARTY_ID_REGEX,
   })
   readonly limitKey: AcbsPartyId;
 
@@ -42,16 +41,18 @@ export class CreateFacilityGuaranteeRequestItem {
   readonly maximumLiability: number;
 
   @ValidatedStringApiProperty({
-    description: `ACBS Party Identifier based on the type for investor, Bond Issuer, Bond Beneficiary, EWCS Facility Provider, EWCSBuyer Exporter, review functional spec for details.`,
-    minLength: 8,
-    maxLength: 8,
+    description: `ACBS Party Identifier based on the type for Investor, Bond Issuer, Bond Beneficiary, EWCS Facility Provider, EWCS Buyer Exporter. Review functional spec for details.`,
+    length: 8,
+    example: EXAMPLES.PARTY_ID,
+    pattern: ACBSID.PARTY_ID_REGEX,
   })
   readonly guarantorParty: AcbsPartyId;
 
   @ValidatedStringApiProperty({
-    description: `Possible values: bond giver(315), bond beneficiary (310), facility provider (500), buyer for (exporter EWCS) - 321`,
-    minLength: 3,
-    maxLength: 3,
+    description: `Possible values: bond giver - 315, bond beneficiary - 310, facility provider - 500, buyer for (exporter EWCS) - 321.`,
+    length: 3,
+    example: ENUMS.GUARANTEE_TYPE_CODES.BOND_BENEFICIARY,
+    enum: ENUMS.GUARANTEE_TYPE_CODES,
   })
   readonly guaranteeTypeCode: string;
 

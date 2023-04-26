@@ -16,7 +16,6 @@ import { CreateFacilityGuaranteeResponse } from './dto/create-facility-guarantee
 import { FacilityGuaranteesParamsDto } from './dto/facility-guarantees-params.dto';
 import { GetFacilityGuaranteesResponse, GetFacilityGuaranteesResponseItem } from './dto/get-facility-guarantees-response.dto';
 import { FacilityGuaranteeService } from './facility-guarantee.service';
-import { FacilityGuaranteeToCreate } from './facility-guarantee-to-create.interface';
 
 @Controller()
 export class FacilityGuaranteeController {
@@ -88,17 +87,7 @@ export class FacilityGuaranteeController {
     @Param() params: FacilityGuaranteesParamsDto,
     @Body(new ParseArrayPipe({ items: CreateFacilityGuaranteeRequestItem, whitelist: true })) newGuaranteeRequest: CreateFacilityGuaranteeRequest,
   ): Promise<CreateFacilityGuaranteeResponse> {
-    const newGuarantee = newGuaranteeRequest[0];
-    const guaranteeToCreate: FacilityGuaranteeToCreate = {
-      facilityIdentifier: newGuarantee.facilityIdentifier,
-      effectiveDate: newGuarantee.effectiveDate,
-      limitKey: newGuarantee.limitKey,
-      guaranteeExpiryDate: newGuarantee.guaranteeExpiryDate,
-      maximumLiability: newGuarantee.maximumLiability,
-      guarantorParty: newGuarantee.guarantorParty,
-      guaranteeTypeCode: newGuarantee.guaranteeTypeCode,
-    };
-    await this.facilityGuaranteeService.createGuaranteeForFacility(params.facilityIdentifier, guaranteeToCreate);
+    await this.facilityGuaranteeService.createGuaranteeForFacility(params.facilityIdentifier, newGuaranteeRequest[0]);
     return new CreateFacilityGuaranteeResponse(params.facilityIdentifier);
   }
 }

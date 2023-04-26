@@ -1,4 +1,4 @@
-import { EXAMPLES, PROPERTIES } from '@ukef/constants';
+import { EXAMPLES, PROPERTIES, UKEFID } from '@ukef/constants';
 import { ValidatedDateOnlyApiProperty } from '@ukef/decorators/validated-date-only-api-property.decorator';
 import { ValidatedNumberApiProperty } from '@ukef/decorators/validated-number-api-property.decorator';
 import { ValidatedStringApiProperty } from '@ukef/decorators/validated-string-api-property.decorator';
@@ -12,12 +12,12 @@ export class CreateDealGuaranteeRequestItem {
     example: EXAMPLES.DEAL_ID,
     minLength: 10,
     maxLength: 10,
-    pattern: /^00\d{8}$/,
+    pattern: UKEFID.TEN_DIGIT_REGEX,
   })
   readonly dealIdentifier: string;
 
   @ValidatedDateOnlyApiProperty({
-    description: `The date that this guarantee will take effect. This will be replaced by today's date if a date in the past is provided.`,
+    description: `The date that this guarantee will take effect. This will be replaced by today's date if a date in the future is provided.`,
   })
   readonly effectiveDate: DateOnlyString;
 

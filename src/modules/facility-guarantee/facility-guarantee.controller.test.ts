@@ -86,13 +86,5 @@ describe('FacilityGuaranteeController', () => {
 
       expect(response).toStrictEqual(new CreateFacilityGuaranteeResponse(facilityIdentifier));
     });
-
-    it('does NOT include unexpected keys from the request body', async () => {
-      const newGuaranteePlusUnexpectedKeys = { ...newGuarantee, unexpectedKey: 'unexpected value' };
-
-      await controller.createGuaranteeForFacility({ facilityIdentifier }, [newGuaranteePlusUnexpectedKeys]);
-
-      expect(facilityGuaranteeServiceCreateGuaranteeForFacility).toHaveBeenCalledWith(facilityIdentifier, newGuarantee);
-    });
   });
 });

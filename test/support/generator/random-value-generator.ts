@@ -1,4 +1,4 @@
-import { UKEFID } from '@ukef/constants';
+import { ACBSID, UKEFID } from '@ukef/constants';
 import { AcbsPartyId, DateOnlyString, DateString, UkefId } from '@ukef/helpers';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { Chance } from 'chance';
@@ -85,8 +85,8 @@ export class RandomValueGenerator {
     return (UKEFID.MAIN_ID_PREFIX.DEV + this.stringOfNumericCharacters({ length: lengthExcludingPrefix ?? 6 })) as UkefId;
   }
 
-  acbsPartyId(): AcbsPartyId {
-    return this.stringOfNumericCharacters({ length: 8 }) as AcbsPartyId;
+  acbsPartyId(lengthExcludingPrefix?: number): AcbsPartyId {
+    return (ACBSID.PARTY_ID_PREFIX + this.stringOfNumericCharacters({ length: lengthExcludingPrefix ?? 6 })) as AcbsPartyId;
   }
 
   dateTimeString(): DateString {

@@ -1,3 +1,4 @@
+import { UKEFID } from '@ukef/constants';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 
 import { StringFieldValidationApiTestOptions, withStringFieldValidationApiTests } from './string-field-validation-api-tests';
@@ -21,7 +22,7 @@ export const withFacilityIdentifierFieldValidationApiTests = <RequestBodyItem ex
   withStringFieldValidationApiTests<RequestBodyItem, FacilityIdentifierFieldName>({
     fieldName: 'facilityIdentifier',
     length: 10,
-    pattern: '/^00\\d{8}$/',
+    pattern: UKEFID.TEN_DIGIT_REGEX,
     generateFieldValueOfLength: (length: number) => valueGenerator.ukefId(length - 4),
     generateFieldValueThatDoesNotMatchRegex: () => '1000000000',
     validRequestBody,

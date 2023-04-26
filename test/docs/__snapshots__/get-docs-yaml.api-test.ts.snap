@@ -612,7 +612,7 @@ components:
           type: string
           description: >-
             The date that this guarantee will take effect. This will be replaced
-            by today's date if a date in the past is provided.
+            by today's date if a date in the future is provided.
         limitKey:
           type: string
           description: An ACBS party identifier.
@@ -1274,12 +1274,13 @@ components:
           type: string
           description: >-
             The date that this guarantee will take effect. This will be replaced
-            by today's date if a date in the past is provided.
+            by today's date if a date in the future is provided.
         limitKey:
           type: string
           description: An ACBS party identifier.
           minLength: 8
           maxLength: 8
+          pattern: ^00\\d{6}$
           example: '00001234'
         guaranteeExpiryDate:
           format: date
@@ -1292,18 +1293,21 @@ components:
         guarantorParty:
           type: string
           description: >-
-            ACBS Party Identifier based on the type for investor, Bond Issuer,
-            Bond Beneficiary, EWCS Facility Provider, EWCSBuyer Exporter, review
-            functional spec for details.
+            ACBS Party Identifier based on the type for Investor, Bond Issuer,
+            Bond Beneficiary, EWCS Facility Provider, EWCS Buyer Exporter.
+            Review functional spec for details.
           minLength: 8
           maxLength: 8
+          pattern: ^00\\d{6}$
+          example: '00001234'
         guaranteeTypeCode:
           type: string
           description: >-
-            Possible values: bond giver(315), bond beneficiary (310), facility
-            provider (500), buyer for (exporter EWCS) - 321
+            Possible values: bond giver - 315, bond beneficiary - 310, facility
+            provider - 500, buyer for (exporter EWCS) - 321.
           minLength: 3
           maxLength: 3
+          example: '310'
       required:
         - facilityIdentifier
         - effectiveDate

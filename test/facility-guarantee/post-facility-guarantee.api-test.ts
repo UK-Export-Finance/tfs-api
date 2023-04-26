@@ -1,8 +1,9 @@
-import { PROPERTIES } from '@ukef/constants';
+import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
 import { withDateOnlyFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/date-only-field-validation-api-tests';
+import { withFacilityIdentifierFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/facility-identifier-field-validation-api-tests';
 import { withNonNegativeNumberFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/non-negative-number-field-validation-api-tests';
 import { withStringFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/string-field-validation-api-tests';
 import { Api } from '@ukef-test/support/api';
@@ -10,6 +11,7 @@ import { TEST_DATES } from '@ukef-test/support/constants/test-date.constant';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import nock from 'nock';
+import supertest from 'supertest';
 
 describe('POST /facilities/{facilityIdentifier}/guarantees', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -24,11 +26,12 @@ describe('POST /facilities/{facilityIdentifier}/guarantees', () => {
   const sectionIdentifier = PROPERTIES.FACILITY_GUARANTEE.DEFAULT.sectionIdentifier;
   const guaranteedPercentage = PROPERTIES.FACILITY_GUARANTEE.DEFAULT.guaranteedPercentage;
 
-  const guarantorParty = valueGenerator.stringOfNumericCharacters({ length: 8 });
-  const limitKey = valueGenerator.stringOfNumericCharacters({ length: 8 });
+  const guarantorParty = valueGenerator.acbsPartyId();
+  const limitKey = valueGenerator.acbsPartyId();
   const effectiveDateInPast = TEST_DATES.A_PAST_EFFECTIVE_DATE_ONLY;
   const guaranteeExpiryDateInFuture = TEST_DATES.A_FUTURE_EXPIRY_DATE_ONLY;
-  const guaranteeTypeCode = valueGenerator.stringOfNumericCharacters({ length: 3 });
+  const possibleGuaranteeTypeCode = Object.values(ENUMS.GUARANTEE_TYPE_CODES);
+  const guaranteeTypeCode = possibleGuaranteeTypeCode[valueGenerator.integer({ min: 0, max: possibleGuaranteeTypeCode.length - 1 })] as string;
   const maximumLiability = 12345.6;
 
   const acbsRequestBodyToCreateFacilityGuarantee = {
@@ -94,7 +97,7 @@ describe('POST /facilities/{facilityIdentifier}/guarantees', () => {
       api.postWithoutAuth(createFacilityGuaranteeUrl, requestBodyToCreateFacilityGuarantee, incorrectAuth?.headerName, incorrectAuth?.headerValue),
   });
 
-  it('returns a 201 response with the facility guarantee location if it has been successfully created in ACBS', async () => {
+  it('returns a 201 response with the facility id if guarantee has been successfully created in ACBS', async () => {
     givenAuthenticationWithTheIdpSucceeds();
     const acbsRequest = givenRequestToCreateFacilityGuaranteeInAcbsSucceeds();
 
@@ -132,7 +135,7 @@ describe('POST /facilities/{facilityIdentifier}/guarantees', () => {
   });
 
   it(`replaces the effectiveDate with today's date if the specified effectiveDate is in future`, async () => {
-    const requestBodyWithFutureEffectiveDate = [{ ...requestBodyToCreateFacilityGuarantee[0], effectiveDate: '3000-01-02' }];
+    const requestBodyWithFutureEffectiveDate = [{ ...requestBodyToCreateFacilityGuarantee[0], effectiveDate: TEST_DATES.A_FUTURE_EXPIRY_DATE_ONLY }];
     const acbsRequestBodyWithTodayEffectiveDate = {
       ...acbsRequestBodyToCreateFacilityGuarantee,
       EffectiveDate: new Date().toISOString().split('T')[0] + 'T00:00:00Z',
@@ -151,87 +154,80 @@ describe('POST /facilities/{facilityIdentifier}/guarantees', () => {
     expect(acbsRequestWithTodayEffectiveDate.isDone()).toBe(true);
   });
 
+  const makeRequest = (body: unknown[]): supertest.Test => api.post(createFacilityGuaranteeUrl, body);
+
+  const givenAnyRequestBodyWouldSucceed = () => {
+    givenAuthenticationWithTheIdpSucceeds();
+    givenAnyRequestBodyToCreateFacilityGuaranteeInAcbsSucceeds();
+  };
+
+  withFacilityIdentifierFieldValidationApiTests({
+    valueGenerator,
+    validRequestBody: requestBodyToCreateFacilityGuarantee,
+    makeRequest,
+    givenAnyRequestBodyWouldSucceed,
+  });
+
   withStringFieldValidationApiTests({
     fieldName: 'facilityIdentifier',
     length: 10,
-    required: true,
     generateFieldValueOfLength: (length: number) => valueGenerator.facilityId(length - 4),
     validRequestBody: requestBodyToCreateFacilityGuarantee,
-    makeRequest: (body) => api.post(createFacilityGuaranteeUrl, body),
-    givenAnyRequestBodyWouldSucceed: () => {
-      givenAuthenticationWithTheIdpSucceeds();
-      givenAnyRequestBodyToCreateFacilityGuaranteeInAcbsSucceeds();
-    },
+    makeRequest,
+    givenAnyRequestBodyWouldSucceed,
   });
 
   withStringFieldValidationApiTests({
     fieldName: 'limitKey',
     length: 8,
-    required: true,
-    generateFieldValueOfLength: (length: number) => valueGenerator.stringOfNumericCharacters({ length }),
+    generateFieldValueOfLength: (length: number) => valueGenerator.acbsPartyId(length - 2),
     validRequestBody: requestBodyToCreateFacilityGuarantee,
-    makeRequest: (body) => api.post(createFacilityGuaranteeUrl, body),
-    givenAnyRequestBodyWouldSucceed: () => {
-      givenAuthenticationWithTheIdpSucceeds();
-      givenAnyRequestBodyToCreateFacilityGuaranteeInAcbsSucceeds();
-    },
+    makeRequest,
+    givenAnyRequestBodyWouldSucceed,
   });
 
   withDateOnlyFieldValidationApiTests({
     fieldName: 'effectiveDate',
     validRequestBody: requestBodyToCreateFacilityGuarantee,
-    makeRequest: (body) => api.post(createFacilityGuaranteeUrl, body),
-    givenAnyRequestBodyWouldSucceed: () => {
-      givenAuthenticationWithTheIdpSucceeds();
-      givenAnyRequestBodyToCreateFacilityGuaranteeInAcbsSucceeds();
-    },
+    makeRequest,
+    givenAnyRequestBodyWouldSucceed,
   });
 
   withDateOnlyFieldValidationApiTests({
     fieldName: 'guaranteeExpiryDate',
     validRequestBody: requestBodyToCreateFacilityGuarantee,
-    makeRequest: (body) => api.post(createFacilityGuaranteeUrl, body),
-    givenAnyRequestBodyWouldSucceed: () => {
-      givenAuthenticationWithTheIdpSucceeds();
-      givenAnyRequestBodyToCreateFacilityGuaranteeInAcbsSucceeds();
-    },
+    makeRequest,
+    givenAnyRequestBodyWouldSucceed,
   });
 
   withNonNegativeNumberFieldValidationApiTests({
     fieldName: 'maximumLiability',
-    required: true,
     validRequestBody: requestBodyToCreateFacilityGuarantee,
-    makeRequest: (body) => api.post(createFacilityGuaranteeUrl, body),
-    givenAnyRequestBodyWouldSucceed: () => {
-      givenAuthenticationWithTheIdpSucceeds();
-      givenAnyRequestBodyToCreateFacilityGuaranteeInAcbsSucceeds();
-    },
+    makeRequest,
+    givenAnyRequestBodyWouldSucceed,
   });
 
   withStringFieldValidationApiTests({
     fieldName: 'guarantorParty',
     length: 8,
-    required: true,
-    generateFieldValueOfLength: (length: number) => valueGenerator.stringOfNumericCharacters({ length }),
+    generateFieldValueOfLength: (length: number) => valueGenerator.acbsPartyId(length - 2),
     validRequestBody: requestBodyToCreateFacilityGuarantee,
-    makeRequest: (body) => api.post(createFacilityGuaranteeUrl, body),
-    givenAnyRequestBodyWouldSucceed: () => {
-      givenAuthenticationWithTheIdpSucceeds();
-      givenAnyRequestBodyToCreateFacilityGuaranteeInAcbsSucceeds();
-    },
+    makeRequest,
+    givenAnyRequestBodyWouldSucceed,
   });
 
   withStringFieldValidationApiTests({
     fieldName: 'guaranteeTypeCode',
+    enum: ENUMS.GUARANTEE_TYPE_CODES,
     length: 3,
-    required: true,
-    generateFieldValueOfLength: (length: number) => valueGenerator.stringOfNumericCharacters({ length }),
+    generateFieldValueOfLength: (length: number) =>
+      length === 3
+        ? possibleGuaranteeTypeCode[valueGenerator.integer({ min: 0, max: possibleGuaranteeTypeCode.length - 1 })]
+        : valueGenerator.string({ length }),
+    generateFieldValueThatDoesNotMatchEnum: () => '123',
     validRequestBody: requestBodyToCreateFacilityGuarantee,
-    makeRequest: (body) => api.post(createFacilityGuaranteeUrl, body),
-    givenAnyRequestBodyWouldSucceed: () => {
-      givenAuthenticationWithTheIdpSucceeds();
-      givenAnyRequestBodyToCreateFacilityGuaranteeInAcbsSucceeds();
-    },
+    makeRequest,
+    givenAnyRequestBodyWouldSucceed,
   });
 
   it('returns a 404 response if ACBS responds with a 400 response that is a string containing "The facility not found"', async () => {

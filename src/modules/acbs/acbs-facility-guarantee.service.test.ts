@@ -17,7 +17,6 @@ describe('AcbsFacilityGuaranteeService', () => {
   const valueGenerator = new RandomValueGenerator();
   const idToken = valueGenerator.string();
   const baseUrl = valueGenerator.httpsUrl();
-  const randomPortfolioIdentifier = valueGenerator.string({ length: 2 });
   const { portfolioIdentifier } = PROPERTIES.GLOBAL;
   const facilityIdentifier = valueGenerator.facilityId();
   const newFacilityGuarantee = generateAcbsCreateFacilityGuaranteeDtoUsing(valueGenerator);
@@ -29,7 +28,7 @@ describe('AcbsFacilityGuaranteeService', () => {
   let httpServicePost: jest.Mock;
 
   const expectedHttpServiceGetArgs = [
-    `/Portfolio/${randomPortfolioIdentifier}/Facility/${facilityIdentifier}/FacilityGuarantee`,
+    `/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/FacilityGuarantee`,
     {
       baseURL: baseUrl,
       headers: { Authorization: `Bearer ${idToken}` },
@@ -86,7 +85,7 @@ describe('AcbsFacilityGuaranteeService', () => {
           }),
         );
 
-      const guarantees = await service.getGuaranteesForFacility(randomPortfolioIdentifier, facilityIdentifier, idToken);
+      const guarantees = await service.getGuaranteesForFacility(portfolioIdentifier, facilityIdentifier, idToken);
 
       expect(guarantees).toBe(facilityGuaranteesInAcbs);
     });
@@ -104,7 +103,7 @@ describe('AcbsFacilityGuaranteeService', () => {
           }),
         );
 
-      const guarantees = await service.getGuaranteesForFacility(randomPortfolioIdentifier, facilityIdentifier, idToken);
+      const guarantees = await service.getGuaranteesForFacility(portfolioIdentifier, facilityIdentifier, idToken);
 
       expect(guarantees).toStrictEqual([]);
     });
@@ -115,7 +114,7 @@ describe('AcbsFacilityGuaranteeService', () => {
         .calledWith(...expectedHttpServiceGetArgs)
         .mockReturnValueOnce(throwError(() => getGuaranteesForFacilityError));
 
-      const getGuaranteesForFacilityPromise = service.getGuaranteesForFacility(randomPortfolioIdentifier, facilityIdentifier, idToken);
+      const getGuaranteesForFacilityPromise = service.getGuaranteesForFacility(portfolioIdentifier, facilityIdentifier, idToken);
 
       await expect(getGuaranteesForFacilityPromise).rejects.toBeInstanceOf(AcbsException);
       await expect(getGuaranteesForFacilityPromise).rejects.toThrow(`Failed to get the guarantees for the facility with identifier ${facilityIdentifier}.`);
@@ -135,7 +134,7 @@ describe('AcbsFacilityGuaranteeService', () => {
           }),
         );
 
-      const getGuaranteesForFacilityPromise = service.getGuaranteesForFacility(randomPortfolioIdentifier, facilityIdentifier, idToken);
+      const getGuaranteesForFacilityPromise = service.getGuaranteesForFacility(portfolioIdentifier, facilityIdentifier, idToken);
 
       await expect(getGuaranteesForFacilityPromise).rejects.toBeInstanceOf(AcbsResourceNotFoundException);
       await expect(getGuaranteesForFacilityPromise).rejects.toThrow(`Guarantees for facility with identifier ${facilityIdentifier} were not found by ACBS.`);
