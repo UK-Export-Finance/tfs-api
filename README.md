@@ -9,7 +9,7 @@ npm install
 
 ## Environment Variables 👨🏼‍💻
 
-On first setup you will need to create a `.env ` file in the route of the project, refer to `env.sample` for the required variables. A member of the team should send an encrypted copy of the `.env` file.
+On first setup you will need to create a `.env ` file in the route of the project, refer to `.env.sample` for the required variables. A member of the team should send an encrypted copy of the `.env` file.
 
 ## Run 💡
 
