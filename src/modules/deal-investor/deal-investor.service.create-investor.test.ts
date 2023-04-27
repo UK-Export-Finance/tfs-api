@@ -2,6 +2,7 @@ import { PROPERTIES } from '@ukef/constants';
 import { UkefId } from '@ukef/helpers';
 import { AcbsDealPartyService } from '@ukef/modules/acbs/acbs-deal-party.service';
 import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
+import { TEST_DATES } from '@ukef-test/support/constants/test-date.constant';
 import { CreateDealInvestorGenerator } from '@ukef-test/support/generator/create-deal-investor-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
@@ -89,19 +90,19 @@ describe('DealInvestorService', () => {
     });
 
     it(`replaces effectiveDate with today's date if effectiveDate is after today`, async () => {
-      await service.createInvestorForDeal(dealIdentifier, { ...requestBodyToCreateDealInvestor[0], effectiveDate: '9999-01-01' });
+      await service.createInvestorForDeal(dealIdentifier, { ...requestBodyToCreateDealInvestor[0], effectiveDate: TEST_DATES.A_FUTURE_EFFECTIVE_DATE_ONLY });
 
       const investorCreatedInAcbs: AcbsCreateDealInvestorRequest = acbsDealPartyServiceCreateInvestorForDeal.mock.calls[0][1];
 
-      expect(investorCreatedInAcbs.EffectiveDate).toBe(todayAsDateOnlyString + 'T00:00:00Z');
+      expect(investorCreatedInAcbs.EffectiveDate).toBe(dateStringTransformations.addTimeToDateOnlyString(todayAsDateOnlyString));
     });
 
     it(`does NOT replace effectiveDate with today's date if effectiveDate is NOT after today`, async () => {
-      await service.createInvestorForDeal(dealIdentifier, { ...requestBodyToCreateDealInvestor[0], effectiveDate: '2023-03-30' });
+      await service.createInvestorForDeal(dealIdentifier, requestBodyToCreateDealInvestor[0]);
 
       const investorCreatedInAcbs: AcbsCreateDealInvestorRequest = acbsDealPartyServiceCreateInvestorForDeal.mock.calls[0][1];
 
-      expect(investorCreatedInAcbs.EffectiveDate).toBe('2023-03-30T00:00:00Z');
+      expect(investorCreatedInAcbs.EffectiveDate).toBe(dateStringTransformations.addTimeToDateOnlyString(TEST_DATES.A_PAST_EFFECTIVE_DATE_ONLY));
     });
   });
 });

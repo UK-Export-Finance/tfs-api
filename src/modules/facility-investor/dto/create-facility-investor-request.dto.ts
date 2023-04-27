@@ -11,8 +11,7 @@ export class CreateFacilityInvestorRequestItem {
   @ValidatedStringApiProperty({
     description: 'The identifier of the facility to create the investor for.',
     example: '0000000001',
-    minLength: 10,
-    maxLength: 10,
+    length: 10,
   })
   readonly facilityIdentifier: string;
 

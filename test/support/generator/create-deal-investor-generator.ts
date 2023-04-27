@@ -4,6 +4,7 @@ import { AcbsCreateDealInvestorRequest } from '@ukef/modules/acbs/dto/acbs-creat
 import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { CreateDealInvestorRequest, CreateDealInvestorRequestItem } from '@ukef/modules/deal-investor/dto/create-deal-investor-request.dto';
+import { TEST_DATES } from '@ukef-test/support/constants/test-date.constant';
 
 import { AbstractGenerator } from './abstract-generator';
 import { RandomValueGenerator } from './random-value-generator';
@@ -21,7 +22,7 @@ export class CreateDealInvestorGenerator extends AbstractGenerator<CreateDealInv
     return {
       dealIdentifier: this.valueGenerator.ukefId(),
       lenderType: this.valueGenerator.string({ minLength: 0, maxLength: 3 }),
-      effectiveDate: this.valueGenerator.dateOnlyString(),
+      effectiveDate: TEST_DATES.A_PAST_EFFECTIVE_DATE_ONLY,
       expiryDate: this.valueGenerator.dateOnlyString(),
       dealStatus: this.valueGenerator.string({ minLength: 0, maxLength: 1 }),
       currency: this.valueGenerator.string({ length: 3 }),

@@ -9,9 +9,11 @@
  * 5. ENUMS
  * 6. PROPERTIES
  * 7. EXAMPLES
+ * 8. ACBSID
  */
 
 export * from './acbs.constant';
+export * from './acbs-id.constant';
 export * from './application.constant';
 export * from './auth.constant';
 export * from './date-formats.constant';
