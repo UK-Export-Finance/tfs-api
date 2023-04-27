@@ -1,11 +1,12 @@
-import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AcbsModule } from '@ukef/modules/acbs/acbs.module';
+import { HttpModule } from '@ukef/modules/http/http.module';
 
 import { DateModule } from '../date/date.module';
 import { PartyController } from './party.controller';
 import { PartyService } from './party.service';
+
 @Module({
   imports: [
     HttpModule.registerAsync({
