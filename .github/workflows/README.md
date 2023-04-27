@@ -27,7 +27,7 @@ The "codacy" job uses the Codacy analysis CLI action to perform SCA for code qua
 Secrets, such as the Fossa API key, are assumed to be set up beforehand in the repository's secrets.
 
 ## TEST
-This is a GitHub Actions workflow performs QA and then runs three different types of tests on a pull request on the main branch:
+This is a GitHub Actions workflow that performs QA and then runs three different types of tests on a pull request on the `main` branch:
 
 * Unit tests
 * API tests
