@@ -7,6 +7,10 @@ TFS micro-service provides endpoints for internal trade finance manager systems 
 npm install
 ```
 
+## Environment Variables 👨🏼‍💻
+
+On first setup you will need to create a `.env ` file in the route of the project, refer to `.env.sample` for the required variables. A member of the team should send an encrypted copy of the `.env` file.
+
 ## Run 💡
 
 How to run `tfs` on local environment as `dev` runtime mode.
@@ -20,6 +24,12 @@ $ docker compose up --build
 # without docker-compose
 $ npm run start:dev
 ```
+
+To view the Swagger API documentation visit [localhost:{PORT}/docs](http://localhost:3001/docs). You will be prompted for a username & password, these are the Swagger credentials in your `.env`. 
+
+To view the API documentation in YAML format visit [localhost:{PORT}/openapi/yaml](http://localhost:3001/openapi/yaml).
+
+Note: `PORT` will default to `3001` if it's not assigned a value in the `.env` file.
 
 ## Test 💹
 

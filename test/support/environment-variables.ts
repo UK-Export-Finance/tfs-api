@@ -4,6 +4,7 @@ const valueGenerator = new RandomValueGenerator();
 
 export const ENVIRONMENT_VARIABLES = Object.freeze({
   NODE_ENV: 'test',
+  LOG_LEVEL: 'debug',
 
   SWAGGER_USER: valueGenerator.string(),
   SWAGGER_PASSWORD: valueGenerator.string(),
