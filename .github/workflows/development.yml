@@ -114,7 +114,7 @@ jobs:
               "PORT=${{ secrets.PORT }}" \
               "NODE_ENV=${{ secrets.NODE_ENV }}" \
               "TZ=${{ secrets.TZ }}" \
-              "LOG_LEVEL=${{ secrets.LOG_LEVEL }}" \
+              "LOG_LEVEL=${{ vars.LOG_LEVEL }}" \
               "SWAGGER_USER=${{ secrets.SWAGGER_USER }}" \
               "SWAGGER_PASSWORD=${{ secrets.SWAGGER_PASSWORD }}" \
               "API_KEY=${{ secrets.API_KEY }}" \
