@@ -69,9 +69,9 @@ export class GetFacilityLoanGenerator extends AbstractGenerator<AcbsGetFacilityL
     }));
 
     const facilityLoansFromApi = values.map((v) => ({
-      portfolioIdentifier: v.PortfolioIdentifier,
+      portfolioIdentifier: portfolioIdentifier,
       loanIdentifier: v.LoanIdentifier,
-      facilityIdentifier: v.ParentFacilityIdentifier,
+      facilityIdentifier: facilityIdentifier,
       borrowerPartyIdentifier: v.PrimaryParty.PartyIdentifier,
       productTypeId: v.ProductType.ProductTypeCode,
       productTypeGroup: v.ProductGroupCode,
