@@ -7,6 +7,33 @@ TFS micro-service provides endpoints for internal trade finance manager systems 
 npm install
 ```
 
+## Compilation / Build
+
+### tsconfig.build.json
+# TypeScript Configuration ⚙️
+This file configures how TypeScript compiles your code.
+
+## Extends 🔱
+The `extends` property specifies the path to the base configuration file which is set to `./tsconfig.json`.
+
+## Compiler Options 🔧
+The `compilerOptions` property specifies the compiler options.
+
+* `types` specifies the types that should be included in the compilation, `node` in this case.
+
+## Include 📂
+The `include` property specifies the files that should be included in the compilation.
+
+## Exclude 🚫
+The `exclude` property specifies the files that should be excluded from the compilation.
+
+* `node_modules` excludes the `node_modules` directory.
+* `test` excludes the `test` directory and all files that end with `.test.ts`.
+* `dist` excludes the `dist` directory.
+* `docker-compose*.yml` excludes all files that start with `docker-compose` and end with `.yml`.
+* `Dockerfile` excludes the `Dockerfile` file.
+* `logs` excludes the `logs` directory.
+
 ## Run 💡
 
 How to run `tfs` on local environment as `dev` runtime mode.
@@ -27,7 +54,7 @@ We are running several test suites as part of our CI/CD pipeline.
 
 * Unit test :   These tests are written using Jest and ends with `*.test.ts` extension.
 * API test  :   These tests are written using Jest and ends with `*.api-test.ts` extension.
-* E2E test  :   These tests are written using Cypress and ends with `*.spec.ts` extension. Currently there are *no* E2E tests and none are executed during CI/CD.
+* E2E test  :   These tests are written using Cypress and ends with `*.e2e-test.ts` extension. Currently there are **no** E2E tests and none are executed during CI/CD.
 
 ```bash
 # unit tests
