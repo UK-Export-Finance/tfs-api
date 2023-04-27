@@ -38,7 +38,7 @@ describe('DealGuaranteeService', () => {
 
     const dateStringTransformations = new DateStringTransformations();
 
-    service = new DealGuaranteeService(acbsAuthenticationService, acbsDealGuaranteeService, currentDateProvider, dateStringTransformations);
+    service = new DealGuaranteeService(acbsAuthenticationService, acbsDealGuaranteeService, dateStringTransformations, currentDateProvider);
   });
 
   describe('getGuaranteesForDeal', () => {

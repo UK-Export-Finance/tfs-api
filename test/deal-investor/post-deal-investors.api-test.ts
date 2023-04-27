@@ -1,4 +1,4 @@
-import { PROPERTIES } from '@ukef/constants';
+import { PROPERTIES, UKEFID } from '@ukef/constants';
 import { UkefId } from '@ukef/helpers';
 import { AcbsCreateDealInvestorRequest } from '@ukef/modules/acbs/dto/acbs-create-deal-investor-request.dto';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
@@ -8,7 +8,8 @@ import { withCurrencyFieldValidationApiTests } from '@ukef-test/common-tests/req
 import { withDateOnlyFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/date-only-field-validation-api-tests';
 import { withStringFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/string-field-validation-api-tests';
 import { Api } from '@ukef-test/support/api';
-import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
+import { TEST_DATES } from '@ukef-test/support/constants/test-date.constant';
+import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
 import { CreateDealInvestorGenerator } from '@ukef-test/support/generator/create-deal-investor-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import nock from 'nock';
@@ -138,7 +139,7 @@ describe('POST /deals/{dealIdentifier}/investors', () => {
   });
 
   it(`replaces the effectiveDate with today's date if the specified effectiveDate is after today`, async () => {
-    const requestBodyWithFutureEffectiveDate = [{ ...requestBodyToCreateDealInvestor[0], effectiveDate: '9999-01-01' }];
+    const requestBodyWithFutureEffectiveDate = [{ ...requestBodyToCreateDealInvestor[0], effectiveDate: TEST_DATES.A_FUTURE_EFFECTIVE_DATE_ONLY }];
     const acbsRequestBodyWithTodayEffectiveDate = {
       ...acbsRequestBodyToCreateDealInvestor,
       EffectiveDate: dateStringTransformations.getDateStringFromDate(new Date()),
@@ -158,7 +159,7 @@ describe('POST /deals/{dealIdentifier}/investors', () => {
   withStringFieldValidationApiTests({
     fieldName: 'dealIdentifier',
     length: 10,
-    pattern: '/^00\\d{8}$/',
+    pattern: UKEFID.MAIN_ID.TEN_DIGIT_REGEX,
     generateFieldValueOfLength: (length: number) => valueGenerator.ukefId(length - 4),
     generateFieldValueThatDoesNotMatchRegex: () => '1000000000' as UkefId,
     validRequestBody: requestBodyToCreateDealInvestor,
@@ -261,7 +262,7 @@ describe('POST /deals/{dealIdentifier}/investors', () => {
     expect(body).toStrictEqual({ message: 'Bad request', error: acbsErrorMessage, statusCode: 400 });
   });
 
-  it('returns a 500 response if ACBS responds with an error code that is not 400"', async () => {
+  it('returns a 500 response if ACBS responds with an error code that is not 400', async () => {
     givenAuthenticationWithTheIdpSucceeds();
     requestToCreateDealInvestor().reply(401, 'Unauthorized');
 
@@ -273,9 +274,7 @@ describe('POST /deals/{dealIdentifier}/investors', () => {
 
   it('returns a 500 response if creating the deal investor in ACBS times out', async () => {
     givenAuthenticationWithTheIdpSucceeds();
-    requestToCreateDealInvestor()
-      .delay(ENVIRONMENT_VARIABLES.ACBS_TIMEOUT + 500)
-      .reply(201);
+    requestToCreateDealInvestor().delay(TIME_EXCEEDING_ACBS_TIMEOUT).reply(201);
 
     const { status, body } = await api.post(createDealInvestorUrl, requestBodyToCreateDealInvestor);
 
