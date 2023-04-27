@@ -7,8 +7,8 @@ import { of, throwError } from 'rxjs';
 
 import { DateStringTransformations } from '../date/date-string.transformations';
 import { AcbsFacilityLoanService } from './acbs-facility-loan.service';
-import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
 import { AcbsException } from './exception/acbs.exception';
+import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
 
 describe('AcbsFacilityLoanService', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -84,66 +84,66 @@ describe('AcbsFacilityLoanService', () => {
     });
 
     it('throws an AcbsResourceNotFoundException if ACBS responds with a 400 response that is a string containing "Facility not found"', async () => {
-        const axiosError = new AxiosError();
-        axiosError.response = {
-          data: 'Facility not found or user does not have access to it.',
-          status: 400,
-          statusText: 'Bad Request',
-          headers: undefined,
-          config: undefined,
-        };
-  
-        when(httpServiceGet)
-          .calledWith(...expectedHttpServiceGetArgs)
-          .mockReturnValueOnce(throwError(() => axiosError));
-  
-        const getLoansPromise = service.getLoansForFacility(portfolioIdentifier, facilityIdentifier, idToken);
-  
-        await expect(getLoansPromise).rejects.toBeInstanceOf(AcbsResourceNotFoundException);
-        await expect(getLoansPromise).rejects.toThrow(`Facility with identifier ${facilityIdentifier} was not found by ACBS.`);
-        await expect(getLoansPromise).rejects.toHaveProperty('innerError', axiosError);
-      });
-  
-      it('throws an AcbsException if ACBS responds with a 400 response that is a string that does NOT contain "The facility not found"', async () => {
-        const axiosError = new AxiosError();
-        axiosError.response = {
-          data: 'some error string',
-          status: 400,
-          statusText: 'Bad Request',
-          headers: undefined,
-          config: undefined,
-        };
-  
-        when(httpServiceGet)
-          .calledWith(...expectedHttpServiceGetArgs)
-          .mockReturnValueOnce(throwError(() => axiosError));
-  
-        const getLoansPromise = service.getLoansForFacility(portfolioIdentifier, facilityIdentifier, idToken);
-  
-        await expect(getLoansPromise).rejects.toBeInstanceOf(AcbsException);
-        await expect(getLoansPromise).rejects.toThrow(`Failed to get the loans for the facility with identifier ${facilityIdentifier}.`);
-        await expect(getLoansPromise).rejects.toHaveProperty('innerError', axiosError);
-      });
-  
-      it('throws an AcbsException if ACBS responds with a 400 response that is NOT a string', async () => {
-        const axiosError = new AxiosError();
-        axiosError.response = {
-          data: { errorMessage: valueGenerator.string() },
-          status: 400,
-          statusText: 'Bad Request',
-          headers: undefined,
-          config: undefined,
-        };
-  
-        when(httpServiceGet)
-          .calledWith(...expectedHttpServiceGetArgs)
-          .mockReturnValueOnce(throwError(() => axiosError));
-  
-          const getLoansPromise = service.getLoansForFacility(portfolioIdentifier, facilityIdentifier, idToken);
-  
-        await expect(getLoansPromise).rejects.toBeInstanceOf(AcbsException);
-        await expect(getLoansPromise).rejects.toThrow(`Failed to get the loans for the facility with identifier ${facilityIdentifier}.`);
-        await expect(getLoansPromise).rejects.toHaveProperty('innerError', axiosError);
-      });
+      const axiosError = new AxiosError();
+      axiosError.response = {
+        data: 'Facility not found or user does not have access to it.',
+        status: 400,
+        statusText: 'Bad Request',
+        headers: undefined,
+        config: undefined,
+      };
+
+      when(httpServiceGet)
+        .calledWith(...expectedHttpServiceGetArgs)
+        .mockReturnValueOnce(throwError(() => axiosError));
+
+      const getLoansPromise = service.getLoansForFacility(portfolioIdentifier, facilityIdentifier, idToken);
+
+      await expect(getLoansPromise).rejects.toBeInstanceOf(AcbsResourceNotFoundException);
+      await expect(getLoansPromise).rejects.toThrow(`Facility with identifier ${facilityIdentifier} was not found by ACBS.`);
+      await expect(getLoansPromise).rejects.toHaveProperty('innerError', axiosError);
     });
+
+    it('throws an AcbsException if ACBS responds with a 400 response that is a string that does NOT contain "The facility not found"', async () => {
+      const axiosError = new AxiosError();
+      axiosError.response = {
+        data: 'some error string',
+        status: 400,
+        statusText: 'Bad Request',
+        headers: undefined,
+        config: undefined,
+      };
+
+      when(httpServiceGet)
+        .calledWith(...expectedHttpServiceGetArgs)
+        .mockReturnValueOnce(throwError(() => axiosError));
+
+      const getLoansPromise = service.getLoansForFacility(portfolioIdentifier, facilityIdentifier, idToken);
+
+      await expect(getLoansPromise).rejects.toBeInstanceOf(AcbsException);
+      await expect(getLoansPromise).rejects.toThrow(`Failed to get the loans for the facility with identifier ${facilityIdentifier}.`);
+      await expect(getLoansPromise).rejects.toHaveProperty('innerError', axiosError);
+    });
+
+    it('throws an AcbsException if ACBS responds with a 400 response that is NOT a string', async () => {
+      const axiosError = new AxiosError();
+      axiosError.response = {
+        data: { errorMessage: valueGenerator.string() },
+        status: 400,
+        statusText: 'Bad Request',
+        headers: undefined,
+        config: undefined,
+      };
+
+      when(httpServiceGet)
+        .calledWith(...expectedHttpServiceGetArgs)
+        .mockReturnValueOnce(throwError(() => axiosError));
+
+      const getLoansPromise = service.getLoansForFacility(portfolioIdentifier, facilityIdentifier, idToken);
+
+      await expect(getLoansPromise).rejects.toBeInstanceOf(AcbsException);
+      await expect(getLoansPromise).rejects.toThrow(`Failed to get the loans for the facility with identifier ${facilityIdentifier}.`);
+      await expect(getLoansPromise).rejects.toHaveProperty('innerError', axiosError);
+    });
+  });
 });

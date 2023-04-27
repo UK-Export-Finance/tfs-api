@@ -25,7 +25,6 @@ export class AcbsFacilityLoanService {
       }),
     });
 
-
     return loans;
   }
 }
