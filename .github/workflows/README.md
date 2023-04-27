@@ -40,7 +40,7 @@ The workflow consists of four jobs:
 * 🔬 The `api-tests` job runs API tests using npm.
 * 👨‍💻 The `e2e-tests` job runs E2E tests using npm and Docker.
 
-The workflow is triggered whenever a pull request is made to the `main` branch, and the changes made in the pull request are tested using the three types of tests mentioned above. The tests are run on an Ubuntu machine with Node.js version 18 installed.
+The workflow is triggered whenever a pull request is made to the `main` branch, and the changes made (defined in the `paths`) in the pull request are tested using the three types of tests mentioned above. The tests are run on an Ubuntu machine with Node.js version 18 installed.
 
 Overall, this workflow provides a comprehensive test suite to ensure the quality of code changes made in the main branch of the repository.
 

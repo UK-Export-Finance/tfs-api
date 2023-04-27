@@ -7,8 +7,8 @@
   "author": "UKEF",
   "scripts": {
     "api-test": "jest --coverage --selectProjects=API",
-    "e2e-test": "jest --coverage --selectProjects=E2E",
     "build": "nest build -p tsconfig.build.json",
+    "e2e-test": "jest --coverage --selectProjects=E2E",
     "postinstall": "husky install",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
