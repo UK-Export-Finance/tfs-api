@@ -1,23 +1,22 @@
 {
-  "extends": "./tsconfig.json",
-  "compilerOptions": {
-    "types": ["node"]
-  },
-  "include": ["src", "jest.config.ts"],
-  "exclude": [
-    // NPM
-    "node_modules",
-    // Unit, API and E2E tests
-    "test",
-    "**/*.test.ts",
-    "**/*.test-parts",
-    "**/*.spec.ts",
-    // Build
-    "dist",
-    // Docker
-    "docker-compose*.yml",
-    "Dockerfile",
-    // Logs
-    "logs"
-  ]
-}
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+      "types": ["node"]
+    },
+    "include": ["src", "jest.config.ts"],
+    "exclude": [
+      // NPM
+      "node_modules",
+      // Unit, API and E2E tests
+      "test",
+      "**/*.test.ts",
+      "**/*.test-parts",
+      // Build
+      "dist",
+      // Docker
+      "docker-compose*.yml",
+      "Dockerfile",
+      // Logs
+      "logs"
+    ]
+  }
