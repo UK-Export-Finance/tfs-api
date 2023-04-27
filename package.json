@@ -8,6 +8,7 @@
   "scripts": {
     "api-test": "jest --coverage --selectProjects=API",
     "build": "nest build -p tsconfig.build.json",
+    "e2e-test": "jest --passWithNoTests --coverage --selectProjects=E2E",
     "postinstall": "husky install",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",

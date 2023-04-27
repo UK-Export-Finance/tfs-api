@@ -4,6 +4,7 @@
 # upon a PR creation. Following test suites are executed:
 # 1. Unit tests (Jest)
 # 2. API tests (Jest)
+# 3. E2E tests (Jest)
 
 name: Quality Assurance - Tests
 run-name: Executing test QA on ${{ github.repository }} 🚀
@@ -12,7 +13,15 @@ on:
   pull_request:
     branches: [ main ]
     paths:
-    - '**'
+      - '.github/workflows/test.yml'
+      - 'src/**'
+      - 'test/**'
+      - 'Dockerfile'
+      - 'docker-compose.yml'
+      - 'package*'
+      - 'tsconfig*'
+      - 'jest.config.ts'
+      - 'nest.cli.json'
 
 env:
   environment: dev
@@ -92,3 +101,59 @@ jobs:
       - name: Execute
         working-directory: ./
         run: npm run api-test
+
+# 4. E2E tests
+  e2e-tests:
+    name: E2E 🧑‍💻
+    needs: setup
+    environment:
+      name: ${{ needs.setup.outputs.environment }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Timezone
+        uses: szenius/set-timezone@v1.2
+        with:
+          timezoneLinux: ${{ needs.setup.outputs.timezone }}
+      
+      - name: Repository
+        uses: actions/checkout@v3
+
+      - name: Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.node }}
+
+      - name: Dependencies
+        working-directory: ./
+        run: npm ci
+
+      - name: Docker
+        working-directory: ./
+        env:
+          PORT: ${{ secrets.PORT }}
+          NODE_ENV: ${{ secrets.NODE_ENV }}
+          TZ: ${{ secrets.TZ }}
+          LOG_LEVEL: ${{ vars.LOG_LEVEL }}
+          SWAGGER_USER: ${{ secrets.SWAGGER_USER }}
+          SWAGGER_PASSWORD: ${{ secrets.SWAGGER_PASSWORD }}
+          ACBS_BASE_URL: ${{ secrets.ACBS_BASE_URL }}
+          ACBS_MAX_REDIRECTS: ${{ secrets.ACBS_MAX_REDIRECTS }}
+          ACBS_TIMEOUT: ${{ secrets.ACBS_TIMEOUT }}
+          ACBS_AUTHENTICATION_API_KEY: ${{ secrets.ACBS_AUTHENTICATION_API_KEY }}
+          ACBS_AUTHENTICATION_API_KEY_HEADER_NAME: ${{ secrets.ACBS_AUTHENTICATION_API_KEY_HEADER_NAME }}
+          ACBS_AUTHENTICATION_BASE_URL: ${{ secrets.ACBS_AUTHENTICATION_BASE_URL }}
+          ACBS_AUTHENTICATION_CLIENT_ID: ${{ secrets.ACBS_AUTHENTICATION_CLIENT_ID }}
+          ACBS_AUTHENTICATION_ID_TOKEN_CACHE_TTL_IN_MILLISECONDS: ${{ secrets.ACBS_AUTHENTICATION_ID_TOKEN_CACHE_TTL_IN_MILLISECONDS }}
+          ACBS_AUTHENTICATION_LOGIN_NAME: ${{ secrets.ACBS_AUTHENTICATION_LOGIN_NAME }}
+          ACBS_AUTHENTICATION_MAX_REDIRECTS: ${{ secrets.ACBS_AUTHENTICATION_MAX_REDIRECTS }}
+          ACBS_AUTHENTICATION_PASSWORD: ${{ secrets.ACBS_AUTHENTICATION_PASSWORD }}
+          ACBS_AUTHENTICATION_RETRY_DELAY_IN_MILLISECONDS: ${{ secrets.ACBS_AUTHENTICATION_RETRY_DELAY_IN_MILLISECONDS }}
+          ACBS_AUTHENTICATION_TIMEOUT: ${{ secrets.ACBS_AUTHENTICATION_TIMEOUT }}
+          ACBS_AUTHENTICATION_MAX_NUMBER_OF_RETRIES: ${{ secrets.ACBS_AUTHENTICATION_MAX_NUMBER_OF_RETRIES }}
+          API_KEY: ${{ secrets.API_KEY }}
+          API_KEY_STRATEGY: ${{ secrets.API_KEY_STRATEGY }}
+        run: docker-compose up --build -d
+
+      - name: Execute
+        working-directory: ./
+        run: npm run e2e-test
