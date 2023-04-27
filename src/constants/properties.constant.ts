@@ -2,6 +2,33 @@ export const PROPERTIES = {
   GLOBAL: {
     portfolioIdentifier: 'E1',
   },
+  COVENANT: {
+    DEFAULTS: {
+      portfolioIdentifier: 'E1',
+      accountOwnerIdentifier: '00000000',
+      complianceEvaluationMode: {
+        covenantEvaluationModeCode: 'M',
+      },
+      dateCycleEvaluationMode: {
+        covenantEvaluationModeCode: 'M',
+      },
+      lenderType: {
+        covenantLenderTypeCode: '100',
+      },
+      limitType: {
+        covenantLimitTypeCode: '00',
+      },
+      sectionIdentifier: '00',
+      covenantType: {
+        covenantTypeCode: '43',
+      },
+      complianceRule: {
+        covenantComplianceRuleCode: 'EQ',
+      },
+      inComplianceIndicator: true,
+      waivedIndicator: false,
+    },
+  },
   DEAL: {
     DEFAULTS: {
       dealOriginationCode: 'C',
@@ -215,6 +242,18 @@ export const PROPERTIES = {
         compBalPctReserveUnissued: 75,
         compBalPctReserveIssued: 100,
         riskMitigationCode: '',
+      },
+    },
+  },
+  FACILITY_GUARANTEE: {
+    DEFAULT: {
+      sectionIdentifier: '00',
+      guaranteedPercentage: 100,
+      lenderType: {
+        lenderTypeCode: '100',
+      },
+      limitType: {
+        limitTypeCode: '00',
       },
     },
   },

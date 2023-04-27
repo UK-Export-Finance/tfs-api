@@ -1,3 +1,4 @@
+import { ENUMS } from '@ukef/constants';
 import { AcbsGetFacilityCovenantsResponseDto } from '@ukef/modules/acbs/dto/acbs-get-facility-covenants-response.dto';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { GetFacilityCovenantsResponseDto } from '@ukef/modules/facility-covenant/dto/get-facility-covenants-response.dto';
@@ -11,6 +12,8 @@ export class GetFacilityCovenantGenerator extends AbstractGenerator<AcbsGetFacil
   }
 
   protected generateValues(): AcbsGetFacilityCovenantsResponseDto {
+    const possibleCovenantTypeCodes = Object.values(ENUMS.COVENANT_TYPE_CODES);
+
     return {
       FacilityIdentifier: this.valueGenerator.ukefId(),
       PortfolioIdentifier: this.valueGenerator.string(),
@@ -22,7 +25,7 @@ export class GetFacilityCovenantGenerator extends AbstractGenerator<AcbsGetFacil
         PledgeTypeCode: this.valueGenerator.string(),
       },
       CovenantType: {
-        CovenantTypeCode: ['43', '46', '47'][this.valueGenerator.integer({ min: 0, max: 2 })],
+        CovenantTypeCode: possibleCovenantTypeCodes[this.valueGenerator.integer({ min: 0, max: possibleCovenantTypeCodes.length - 1 })],
       },
     };
   }

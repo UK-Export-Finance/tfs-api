@@ -16,14 +16,13 @@ export class DealGuaranteeService {
   constructor(
     private readonly acbsAuthenticationService: AcbsAuthenticationService,
     private readonly acbsDealGuaranteeService: AcbsDealGuaranteeService,
-    private readonly currentDateProvider: CurrentDateProvider,
     private readonly dateStringTransformations: DateStringTransformations,
+    private readonly currentDateProvider: CurrentDateProvider,
   ) {}
 
   async createGuaranteeForDeal(dealIdentifier: string, newGuarantee: DealGuaranteeToCreate): Promise<void> {
     const idToken = await this.acbsAuthenticationService.getIdToken();
-
-    const effectiveDateTime = this.currentDateProvider.getLatestDateFromTodayAnd(
+    const effectiveDateTime = this.currentDateProvider.getEarliestDateFromTodayAnd(
       new Date(this.dateStringTransformations.addTimeToDateOnlyString(newGuarantee.effectiveDate)),
     );
     const effectiveDateOnlyString = this.dateStringTransformations.removeTime(effectiveDateTime.toISOString());

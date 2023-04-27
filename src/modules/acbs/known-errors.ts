@@ -21,7 +21,7 @@ export const getDealNotFoundKnownAcbsError = (dealIdentifier: string): KnownErro
 });
 
 export const getFacilityNotFoundKnownAcbsError = (facilityIdentifier: string): KnownError => ({
-  substringToFind: 'The facility not found',
+  substringToFind: 'acility not found', // This is used because ACBS uses the wording 'Facility not found...' for some endpoints and 'The facility not found...' for others.
   throwError: (error) => {
     throw new AcbsResourceNotFoundException(`Facility with identifier ${facilityIdentifier} was not found by ACBS.`, error);
   },
