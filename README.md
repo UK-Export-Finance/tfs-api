@@ -63,7 +63,7 @@ We are running several test suites as part of our CI/CD pipeline.
 
 * Unit test :   These tests are written using Jest and ends with `*.test.ts` extension.
 * API test  :   These tests are written using Jest and ends with `*.api-test.ts` extension.
-* E2E test  :   These tests are written using Cypress and ends with `*.e2e-test.ts` extension.
+* E2E test  :   These tests are written using Jest and ends with `*.e2e-test.ts` extension.
 
 ### NOTE ⚠️
 Currently there are **no** E2E tests and none are executed during CI/CD. Once tests have been added please remove `--passWithNoTests` flag from `e2e-tests` scripts, current flags allows Jest to exit with status instead of an error.
