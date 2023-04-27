@@ -20,20 +20,20 @@ export class FacilityLoanService {
     const loansInAcbs = await this.acbsFacilityLoanService.getLoansForFacility(portfolioIdentifier, facilityIdentifier, idToken);
     return loansInAcbs.map((loan) => {
       return {
-      portfolioIdentifier: loan.PortfolioIdentifier,
-      loanIdentifier: loan.LoanIdentifier,
-      facilityIdentifier: loan.ParentFacilityIdentifier,
-      borrowerPartyIdentifier: loan.PrimaryParty.PartyIdentifier,
-      productTypeId: loan.ProductType.ProductTypeCode,
-      productTypeGroup: loan.ProductGroupCode,
-      currency: loan.Currency.CurrencyCode,
-      issueDate: this.dateStringTransformations.removeTime(loan.EffectiveDate),
-      expiryDate: this.dateStringTransformations.removeTime(loan.MaturityDate),
-      principalBalance: loan.PrincipalBalance,
-      interestBalance: loan.InterestBalance,
-      feeBalance: loan.FeeBalance,
-      otherBalance: loan.OtherBalance,
-      discountedPrincipal: loan.DiscountedPrincipal,
+        portfolioIdentifier: loan.PortfolioIdentifier,
+        loanIdentifier: loan.LoanIdentifier,
+        facilityIdentifier: loan.ParentFacilityIdentifier,
+        borrowerPartyIdentifier: loan.PrimaryParty.PartyIdentifier,
+        productTypeId: loan.ProductType.ProductTypeCode,
+        productTypeGroup: loan.ProductGroupCode,
+        currency: loan.Currency.CurrencyCode,
+        issueDate: this.dateStringTransformations.removeTime(loan.EffectiveDate),
+        expiryDate: this.dateStringTransformations.removeTime(loan.MaturityDate),
+        principalBalance: loan.PrincipalBalance,
+        interestBalance: loan.InterestBalance,
+        feeBalance: loan.FeeBalance,
+        otherBalance: loan.OtherBalance,
+        discountedPrincipal: loan.DiscountedPrincipal,
       };
     });
   }
