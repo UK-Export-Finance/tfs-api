@@ -557,6 +557,20 @@ describe('POST /parties', () => {
     });
   });
 
+  // it('returns a 400 response if the industryClassification is not recognised', async () => {
+  //   const invalidCreatePartyRequest = JSON.parse(JSON.stringify(createPartyRequest));
+  //   invalidCreatePartyRequest[0].industryClassification = tooLongIndustryClassification;
+
+  //   const { status, body } = await api.post('/api/v1/parties', invalidCreatePartyRequest);
+
+  //   expect(status).toBe(400);
+  //   expect(body).toStrictEqual({
+  //     statusCode: 400,
+  //     error: 'Bad Request',
+  //     message: ['industryClassification is not valid'],
+  //   });
+  // });
+
   it('returns a 400 response if name1 is missing', async () => {
     const invalidCreatePartyRequest = JSON.parse(JSON.stringify(createPartyRequest));
     invalidCreatePartyRequest[0].name1 = undefined;
