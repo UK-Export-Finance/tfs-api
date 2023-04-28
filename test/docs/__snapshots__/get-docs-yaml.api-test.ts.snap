@@ -1627,7 +1627,9 @@ components:
             ACBS.
         principalBalance:
           type: number
-          description: ''
+          description: >-
+            This looks like the closest field to Loan Amount. It changes after
+            Loan Amendment.
         interestBalance:
           type: number
           description: ''
