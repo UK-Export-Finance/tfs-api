@@ -80,15 +80,15 @@ describe('GET /facilities/{facilityIdentifier}/loans', () => {
     expect(body).toStrictEqual({ message: 'Not found', statusCode: 404 });
   });
 
-  it('returns a 400 response if ACBS responds with a 400 response that is a string that does not contain "The facility not found"', async () => {
+  it('returns a 500 response if ACBS responds with a 400 response that is a string that does not contain "The facility not found"', async () => {
     givenAuthenticationWithTheIdpSucceeds();
     const acbsErrorMessage = 'ACBS error message';
     requestToGetFacilityLoans().reply(400, acbsErrorMessage);
 
     const { status, body } = await api.get(getFacilityLoansUrl);
 
-    expect(status).toBe(400);
-    expect(body).toStrictEqual({ message: 'Bad request', error: acbsErrorMessage, statusCode: 400 });
+    expect(status).toBe(500);
+    expect(body).toStrictEqual({ statusCode: 500, message: 'Internal server error' });
   });
 
   it('returns a 500 response if getting the facility loans from ACBS returns a status code that is NOT 200 or 400', async () => {

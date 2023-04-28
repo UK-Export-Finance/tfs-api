@@ -9,13 +9,13 @@ export class GetFacilityLoanResponseItem {
   })
   readonly portfolioIdentifier: string;
 
-  @ApiProperty({ description: 'The identifier of the loan in ACBS.' }) // TODO: how many characters will this be? Mulesoft docs say max 10 but ACBS says 0-9. Postman collection has 9 in the example.
+  @ApiProperty({ description: 'The identifier of the loan in ACBS.' }) // TODO APIM-126: how many characters will this be? Mulesoft docs say max 10 but ACBS says 0-9. Postman collection has 9 in the example.
   readonly loanIdentifier: string;
 
   @ApiProperty({ description: 'The identifier of the facility in ACBS. This will be a 10-digit code.' })
   readonly facilityIdentifier: string;
 
-  @ApiProperty({ description: 'The identifier of the loan borrower in ACBS. This will be a 8-digit code.' }) // TODO: is this correct? ACBS docs seemed to imply this was a party identifier.
+  @ApiProperty({ description: 'The identifier of the loan borrower in ACBS. This will be a 8-digit code.' })
   readonly borrowerPartyIdentifier: string;
 
   @ApiProperty({
@@ -45,27 +45,27 @@ export class GetFacilityLoanResponseItem {
   readonly expiryDate: DateOnlyString;
 
   @ApiProperty({
-    description: '', // TO-DO: description
+    description: 'This looks like the closest field to Loan Amount. It changes after Loan Amendment.', // TODO APIM-126: this was taken from the Mulesoft docs. Can we improve this description?
   })
   readonly principalBalance: number;
 
   @ApiProperty({
-    description: '', // TO-DO: description
+    description: '', // TODO APIM-126: description
   })
   readonly interestBalance: number;
 
   @ApiProperty({
-    description: '', // TO-DO: description
+    description: '', // TODO APIM-126: description
   })
   readonly feeBalance: number;
 
   @ApiProperty({
-    description: '', // TO-DO: description
+    description: '', // TODO APIM-126: description
   })
   otherBalance: number;
 
   @ApiProperty({
-    description: '', // TO-DO: description
+    description: '', // TODO APIM-126: description
   })
   discountedPrincipal: number;
 }
