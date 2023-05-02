@@ -444,7 +444,7 @@ jobs:
             az apim product create \
             --service-name apim-${{ env.environment }}-${{ env.target }}-${{ vars.VERSION }} \
             --product-name apim-${{ env.product }}-tfs \
-            --description 'Trade finance services endpoints' \
+            --description ${{ vars.DESCRIPTION }} \
             --state published \
             --approval-required true \
             --subscription-required true
@@ -455,7 +455,7 @@ jobs:
           inlineScript: |
             az apim api import \
             --display-name 'TFS' \
-            --description 'Trade finance services endpoints' \
+            --description ${{ vars.DESCRIPTION }} \
             --service-url https://$(az containerapp show --name ca-${{ env.product }}-tfs-${{ env.target }}-${{ vars.VERSION }} --query properties.latestRevisionFqdn -o tsv) \
             --path 'tfs' \
             --service-name apim-${{ env.environment }}-${{ env.target }}-${{ vars.VERSION }} \
