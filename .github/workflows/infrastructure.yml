@@ -39,9 +39,9 @@
 #
 # Flow
 # ****
-# MDM (https://github.com/UK-Export-Finance/mdm-api) infrastructure.yml will be executed prior to
+# TFS (https://github.com/UK-Export-Finance/tfs-api) infrastructure.yml will be executed prior to
 # TFS `infrastructure.yml` execution. Despite majority of the base infrastructure already being in
-# place (due to MDM execution) base infrastructure has been kept in place for an independent TFS
+# place (due to TFS execution) base infrastructure has been kept in place for an independent TFS
 # deployment scenarios.
 #
 # Azure CLI will merely ignore the new resource creation if already exist with same name.
@@ -250,7 +250,7 @@ jobs:
             --name cae-${{ env.product }}-${{ env.target }}-${{ vars.VERSION }} \
             --infrastructure-subnet-resource-id $(az network vnet subnet show --name snet-${{ env.product }}-${{ vars.VERSION }} --vnet-name vnet-${{ env.product }}-${{ vars.VERSION }} --query 'id' -o tsv) \
             --logs-workspace-id $(az monitor log-analytics workspace show --name log-${{ env.product }}-${{ env.target }}-${{ vars.VERSION }} --query customerId -o tsv) \
-            --logs-workspace-key $( az monitor log-analytics workspace get-shared-keys --name log-${{ env.product }}-${{ env.target }}-${{ vars.VERSION }} --query primarySharedKey -o tsv) \
+            --logs-workspace-key $(az monitor log-analytics workspace get-shared-keys --name log-${{ env.product }}-${{ env.target }}-${{ vars.VERSION }} --query primarySharedKey -o tsv) \
             --tags ${{ env.tags }}
 
       - name: Container app - TFS 📄
@@ -267,7 +267,7 @@ jobs:
             --min-replicas 1 \
             --max-replicas 4 \
             --ingress external \
-            --target-port ${{ vars.TFS_PORT }} \
+            --target-port ${{ vars.PORT }} \
             --revisions-mode multiple \
             --transport auto \
             --tags ${{ env.tags }}
@@ -299,11 +299,6 @@ jobs:
       - name: Production 💫
         if: ${{ 'prod' == env.target }}
         run: echo "type=Production" >> $GITHUB_ENV
-
-      - name: Tags 🏷️
-        run: echo tags='Environment=${{ env.type }}' \
-          'Product=${{ env.product }}' \
-          'Team=development' >> $GITHUB_ENV
 
       - name: Login 🔐
         uses: azure/login@v1
@@ -343,11 +338,6 @@ jobs:
         if: ${{ 'prod' == env.target }}
         run: echo "type=Production" >> $GITHUB_ENV
 
-      - name: Tags 🏷️
-        run: echo tags='Environment=${{ env.type }}' \
-          'Product=${{ env.product }}' \
-          'Team=development' >> $GITHUB_ENV
-
       - name: Login 🔐
         uses: azure/login@v1
         with:
@@ -360,6 +350,12 @@ jobs:
             # Basic
             az configure --defaults location=${{ vars.REGION }}
             az configure --defaults group=rg-${{ env.product }}-${{ env.target }}-${{ vars.VERSION }}
+
+      - name: APIM defaults ✨
+        run: |
+         echo product_starter=$(az apim product list --service-name apim-${{ env.environment }}-${{ env.target }}-${{ vars.VERSION }} --query '[?contains(displayName, `Starter`)].name' -o tsv) >> $GITHUB_ENV
+         echo product_unlimited=$(az apim product list --service-name apim-${{ env.environment }}-${{ env.target }}-${{ vars.VERSION }} --query '[?contains(displayName, `Unlimited`)].name' -o tsv) >> $GITHUB_ENV
+         echo api_echo=$(az apim api list --service-name apim-${{ env.environment }}-${{ env.target }}-${{ vars.VERSION }} --filter-display-name 'Echo API' --top 1 --query [0].name -o tsv) >> $GITHUB_ENV
 
       - name: IP restriction 🔒️
         uses: Azure/cli@v1.0.7
@@ -375,29 +371,33 @@ jobs:
             --rule-name APIM \
             --description 'Allow APIM public IP address'
 
-      - name: Delete default
+      - name: Delete - Starter product
         uses: Azure/cli@v1.0.7
+        if:  ${{ '' != env.product_starter }}
         with:
           inlineScript: |
-            # Delete default products and associated subscription:
-            
-            # 1. Starter
             az apim product delete \
             --product-id $(az apim product list --service-name apim-${{ env.environment }}-${{ env.target }}-${{ vars.VERSION }} --query '[?contains(displayName, `Starter`)].name' -o tsv) \
             --service-name apim-${{ env.environment }}-${{ env.target }}-${{ vars.VERSION }} \
             --delete-subscriptions true \
             --yes
 
-            # 2. Unlimited
+      - name: Delete - Unlimited product
+        uses: Azure/cli@v1.0.7
+        if: ${{ '' != env.product_unlimited }}
+        with:
+          inlineScript: |
             az apim product delete \
             --product-id $(az apim product list --service-name apim-${{ env.environment }}-${{ env.target }}-${{ vars.VERSION }} --query '[?contains(displayName, `Unlimited`)].name' -o tsv) \
             --service-name apim-${{ env.environment }}-${{ env.target }}-${{ vars.VERSION }} \
             --delete-subscriptions true \
             --yes
 
-            # Delete default API
-
-            # 1. Echo API
+      - name: Delete - Echo API
+        uses: Azure/cli@v1.0.7
+        if: ${{ '' != env.api_echo }}
+        with:
+          inlineScript: |
             az apim api delete \
             --api-id $(az apim api list --service-name apim-${{ env.environment }}-${{ env.target }}-${{ vars.VERSION }} --filter-display-name 'Echo API' --top 1 --query [0].name -o tsv) \
             --service-name apim-${{ env.environment }}-${{ env.target }}-${{ vars.VERSION }} \
@@ -420,11 +420,6 @@ jobs:
         if: ${{ 'prod' == env.target }}
         run: echo "type=Production" >> $GITHUB_ENV
 
-      - name: Tags 🏷️
-        run: echo tags='Environment=${{ env.type }}' \
-          'Product=${{ env.product }}' \
-          'Team=development' >> $GITHUB_ENV
-
       - name: Login 🔐
         uses: azure/login@v1
         with:
@@ -438,8 +433,13 @@ jobs:
             az configure --defaults location=${{ vars.REGION }}
             az configure --defaults group=rg-${{ env.product }}-${{ env.target }}-${{ vars.VERSION }}
 
+      - name: APIM defaults ✨
+        run: |
+         echo product_mdm=$(az apim product list --service-name apim-${{ env.environment }}-${{ env.target }}-${{ vars.VERSION }} --query '[?contains(displayName, `tfs`)].name' -o tsv) >> $GITHUB_ENV
+
       - name: TFS - Product ➕
         uses: Azure/cli@v1.0.7
+        if: ${{ '' == env.product_mdm }}
         with:
           inlineScript: |
             az apim product create \
