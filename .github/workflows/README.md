@@ -27,9 +27,22 @@ The "codacy" job uses the Codacy analysis CLI action to perform SCA for code qua
 Secrets, such as the Fossa API key, are assumed to be set up beforehand in the repository's secrets.
 
 ## TEST
-This is a GitHub Actions YAML file that is responsible for initiating unit tests (Jest) and API tests (Jest) upon a pull request (PR) creation on the main branch. 
-The first job, "setup," sets environment variables for the dev environment, a London timezone, and Node.js version 18. It also outputs these variables for later jobs to use.
-The second job, "unit-tests," runs on the ubuntu-latest operating system and executes the unit tests. It uses the output from the "setup" job to set the environment name and timezone, checks out the repository, sets up Node.js, installs dependencies using npm ci, and executes the unit tests using npm run unit-test.
+This is a GitHub Actions workflow that performs QA and then runs three different types of tests on a pull request on the `main` branch:
+
+* Unit tests
+* API tests
+* End to end (E2E) tests.
+
+The workflow consists of four jobs:
+
+* ⚙️ The `setup` job sets up the environment for the subsequent tests by outputting the `environment` and `timezone` variables.
+* 🧪 The `unit-tests` job runs unit tests using npm, which is a package manager for Node.js.
+* 🔬 The `api-tests` job runs API tests using npm.
+* 👨‍💻 The `e2e-tests` job runs E2E tests using npm and Docker.
+
+The workflow is triggered whenever a pull request is made to the `main` branch, and the changes made (defined in the `paths`) in the pull request are tested using the three types of tests mentioned above. The tests are run on an Ubuntu machine with Node.js version 18 installed.
+
+Overall, this workflow provides a comprehensive test suite to ensure the quality of code changes made in the main branch of the repository.
 
 ## Lint
 This code is a GitHub Actions YAML file that is responsible for initiating linting checks upon a pull request (PR) creation on the main branch for a Node.js project. The on event is set to pull_request with specified branches and paths. The file has two jobs; "setup" and "lint". The "setup" job sets environment variables for the dev environment, a London timezone, and Node.js version 18, then output these variables for later jobs to use. The "lint" job runs on the ubuntu-latest operating system, sets up the environment name and timezone using the output from the "setup" job, checks out the repository, sets up Node.js, installs dependencies, and executes the linting using npm run lint.

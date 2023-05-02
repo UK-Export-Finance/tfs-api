@@ -34,6 +34,13 @@ const config: JestConfigWithTsJest = {
       transform: { '^.+\\.(ts|tsx)?$': ['ts-jest', { useESM: true }] },
       ...defaultSettings,
     },
+    {
+      displayName: 'E2E',
+      setupFilesAfterEnv: ['./setup/override-environment-variables.ts'],
+      testMatch: ['**/*.e2e-test.ts'],
+      transform: { '^.+\\.(ts|tsx)?$': ['ts-jest', { useESM: true }] },
+      ...defaultSettings,
+    },
   ],
 };
 

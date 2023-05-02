@@ -1,4 +1,4 @@
-import { PROPERTIES } from '@ukef/constants';
+import { EXAMPLES, PROPERTIES, UKEFID } from '@ukef/constants';
 import { ValidatedDateOnlyApiProperty } from '@ukef/decorators/validated-date-only-api-property.decorator';
 import { ValidatedNumberApiProperty } from '@ukef/decorators/validated-number-api-property.decorator';
 import { ValidatedStringApiProperty } from '@ukef/decorators/validated-string-api-property.decorator';
@@ -9,14 +9,15 @@ export type CreateDealGuaranteeRequest = CreateDealGuaranteeRequestItem[];
 export class CreateDealGuaranteeRequestItem {
   @ValidatedStringApiProperty({
     description: 'The identifier of the deal to create the guarantee for.',
-    example: '00000001',
-    minLength: 8,
-    maxLength: 8,
+    example: EXAMPLES.DEAL_ID,
+    minLength: 10,
+    maxLength: 10,
+    pattern: UKEFID.MAIN_ID.TEN_DIGIT_REGEX,
   })
   readonly dealIdentifier: string;
 
   @ValidatedDateOnlyApiProperty({
-    description: `The date that this guarantee will take effect. This will be replaced by today's date if a date in the past is provided.`,
+    description: `The date that this guarantee will take effect. This will be replaced by today's date if a date in the future is provided.`,
   })
   readonly effectiveDate: DateOnlyString;
 
@@ -24,7 +25,7 @@ export class CreateDealGuaranteeRequestItem {
     description: 'An ACBS party identifier.',
     minLength: 8,
     maxLength: 8,
-    example: '00000002',
+    example: EXAMPLES.PARTY_ID,
   })
   readonly limitKey: string;
 

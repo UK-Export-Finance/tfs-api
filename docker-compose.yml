@@ -15,6 +15,7 @@ services:
       PORT:
       NODE_ENV:
       TZ:
+      LOG_LEVEL:
       SWAGGER_USER:
       SWAGGER_PASSWORD:
       API_KEY:
