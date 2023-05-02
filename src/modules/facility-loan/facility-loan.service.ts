@@ -25,7 +25,7 @@ export class FacilityLoanService {
         facilityIdentifier: loan.ParentFacilityIdentifier,
         borrowerPartyIdentifier: loan.PrimaryParty.PartyIdentifier,
         productTypeId: loan.ProductType.ProductTypeCode,
-        productTypeGroup: loan.ProductGroupCode,
+        productTypeGroup: loan.ProductGroup.ProductGroupCode,
         currency: loan.Currency.CurrencyCode,
         issueDate: this.dateStringTransformations.removeTime(loan.EffectiveDate),
         expiryDate: this.dateStringTransformations.removeTime(loan.MaturityDate),

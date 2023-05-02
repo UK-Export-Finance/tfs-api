@@ -27,7 +27,9 @@ export class GetFacilityLoanGenerator extends AbstractGenerator<AcbsGetFacilityL
       ProductType: {
         ProductTypeCode: possibleProductTypeIds[this.valueGenerator.integer({ min: 0, max: possibleProductTypeIds.length - 1 })],
       },
-      ProductGroupCode: possibleProductTypeGroups[this.valueGenerator.integer({ min: 0, max: possibleProductTypeGroups.length - 1 })],
+      ProductGroup: {
+        ProductGroupCode: possibleProductTypeGroups[this.valueGenerator.integer({ min: 0, max: possibleProductTypeGroups.length - 1 })],
+      },
       Currency: {
         CurrencyCode: TEST_CURRENCIES.A_TEST_CURRENCY,
       },
@@ -55,7 +57,9 @@ export class GetFacilityLoanGenerator extends AbstractGenerator<AcbsGetFacilityL
       ProductType: {
         ProductTypeCode: v.ProductType.ProductTypeCode,
       },
-      ProductGroupCode: v.ProductGroupCode,
+      ProductGroup: {
+        ProductGroupCode: v.ProductGroup.ProductGroupCode,
+      },
       Currency: {
         CurrencyCode: v.Currency.CurrencyCode,
       },
@@ -74,7 +78,7 @@ export class GetFacilityLoanGenerator extends AbstractGenerator<AcbsGetFacilityL
       facilityIdentifier: facilityIdentifier,
       borrowerPartyIdentifier: v.PrimaryParty.PartyIdentifier,
       productTypeId: v.ProductType.ProductTypeCode,
-      productTypeGroup: v.ProductGroupCode,
+      productTypeGroup: v.ProductGroup.ProductGroupCode,
       currency: v.Currency.CurrencyCode,
       issueDate: this.dateStringTransformations.removeTime(v.EffectiveDate),
       expiryDate: this.dateStringTransformations.removeTime(v.MaturityDate),
