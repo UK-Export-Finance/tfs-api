@@ -1,6 +1,7 @@
 export const PROPERTIES = {
   GLOBAL: {
     portfolioIdentifier: 'E1',
+    servicingQueueIdentifier: 'DCIS',
   },
   DEAL: {
     DEFAULTS: {
@@ -215,6 +216,21 @@ export const PROPERTIES = {
         compBalPctReserveUnissued: 75,
         compBalPctReserveIssued: 100,
         riskMitigationCode: '',
+      },
+    },
+  },
+  FACILITY_ACTIVATION_TRANSACTION: {
+    DEFAULT: {
+      initiatingUserName: 'APIUKEF',
+      useAPIUserIndicator: false,
+      bundleMessageList: {
+        type: 'FacilityCodeValueTransaction',
+        accountOwnerIdentifier: '00000000',
+        facilityTransactionCodeValue: { facilityTransactionCodeValueCode: 'A' },
+        facilityTransactionType: { typeCode: '2340' },
+        isDraftIndicator: false,
+        limitType: { limitTypeCode: '00' },
+        sectionIdentifier: '00',
       },
     },
   },
