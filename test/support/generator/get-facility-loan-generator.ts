@@ -44,49 +44,49 @@ export class GetFacilityLoanGenerator extends AbstractGenerator<AcbsGetFacilityL
   }
 
   protected transformRawValuesToGeneratedValues(
-    values: AcbsGetFacilityLoanResponseItem[],
+    facilityLoans: AcbsGetFacilityLoanResponseItem[],
     { facilityIdentifier, portfolioIdentifier }: GenerateOptions,
   ): GenerateResult {
-    const facilityLoansInAcbs: AcbsGetFacilityLoanResponseDto = values.map((v) => ({
+    const facilityLoansInAcbs: AcbsGetFacilityLoanResponseDto = facilityLoans.map((facilityLoan) => ({
       PortfolioIdentifier: portfolioIdentifier,
-      LoanIdentifier: v.LoanIdentifier,
+      LoanIdentifier: facilityLoan.LoanIdentifier,
       ParentFacilityIdentifier: facilityIdentifier,
       PrimaryParty: {
-        PartyIdentifier: v.PrimaryParty.PartyIdentifier,
+        PartyIdentifier: facilityLoan.PrimaryParty.PartyIdentifier,
       },
       ProductType: {
-        ProductTypeCode: v.ProductType.ProductTypeCode,
+        ProductTypeCode: facilityLoan.ProductType.ProductTypeCode,
       },
       ProductGroup: {
-        ProductGroupCode: v.ProductGroup.ProductGroupCode,
+        ProductGroupCode: facilityLoan.ProductGroup.ProductGroupCode,
       },
       Currency: {
-        CurrencyCode: v.Currency.CurrencyCode,
+        CurrencyCode: facilityLoan.Currency.CurrencyCode,
       },
-      EffectiveDate: v.EffectiveDate,
-      MaturityDate: v.MaturityDate,
-      PrincipalBalance: v.PrincipalBalance,
-      InterestBalance: v.InterestBalance,
-      FeeBalance: v.FeeBalance,
-      OtherBalance: v.OtherBalance,
-      DiscountedPrincipal: v.DiscountedPrincipal,
+      EffectiveDate: facilityLoan.EffectiveDate,
+      MaturityDate: facilityLoan.MaturityDate,
+      PrincipalBalance: facilityLoan.PrincipalBalance,
+      InterestBalance: facilityLoan.InterestBalance,
+      FeeBalance: facilityLoan.FeeBalance,
+      OtherBalance: facilityLoan.OtherBalance,
+      DiscountedPrincipal: facilityLoan.DiscountedPrincipal,
     }));
 
-    const facilityLoansFromApi = values.map((v) => ({
+    const facilityLoansFromApi = facilityLoans.map((facilityLoan) => ({
       portfolioIdentifier: portfolioIdentifier,
-      loanIdentifier: v.LoanIdentifier,
+      loanIdentifier: facilityLoan.LoanIdentifier,
       facilityIdentifier: facilityIdentifier,
-      borrowerPartyIdentifier: v.PrimaryParty.PartyIdentifier,
-      productTypeId: v.ProductType.ProductTypeCode,
-      productTypeGroup: v.ProductGroup.ProductGroupCode,
-      currency: v.Currency.CurrencyCode,
-      issueDate: this.dateStringTransformations.removeTime(v.EffectiveDate),
-      expiryDate: this.dateStringTransformations.removeTime(v.MaturityDate),
-      principalBalance: v.PrincipalBalance,
-      interestBalance: v.InterestBalance,
-      feeBalance: v.FeeBalance,
-      otherBalance: v.OtherBalance,
-      discountedPrincipal: v.DiscountedPrincipal,
+      borrowerPartyIdentifier: facilityLoan.PrimaryParty.PartyIdentifier,
+      productTypeId: facilityLoan.ProductType.ProductTypeCode,
+      productTypeGroup: facilityLoan.ProductGroup.ProductGroupCode,
+      currency: facilityLoan.Currency.CurrencyCode,
+      issueDate: this.dateStringTransformations.removeTime(facilityLoan.EffectiveDate),
+      expiryDate: this.dateStringTransformations.removeTime(facilityLoan.MaturityDate),
+      principalBalance: facilityLoan.PrincipalBalance,
+      interestBalance: facilityLoan.InterestBalance,
+      feeBalance: facilityLoan.FeeBalance,
+      otherBalance: facilityLoan.OtherBalance,
+      discountedPrincipal: facilityLoan.DiscountedPrincipal,
     }));
 
     return {

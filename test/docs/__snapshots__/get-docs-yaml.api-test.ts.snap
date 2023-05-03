@@ -1588,7 +1588,7 @@ components:
             The maximum number of characters allowed is 2.
         loanIdentifier:
           type: string
-          description: The identifier of the loan in ACBS.
+          description: The identifier of the loan in ACBS. This will be a 9-digit code.
         facilityIdentifier:
           type: string
           description: >-
@@ -1628,20 +1628,16 @@ components:
         principalBalance:
           type: number
           description: >-
-            This looks like the closest field to Loan Amount. It changes after
-            Loan Amendment.
+            The loan amount used during loan creation. This value goes down
+            after each fee and may be affected by other factors.
         interestBalance:
           type: number
-          description: ''
         feeBalance:
           type: number
-          description: ''
         otherBalance:
           type: number
-          description: ''
         discountedPrincipal:
           type: number
-          description: ''
       required:
         - portfolioIdentifier
         - loanIdentifier

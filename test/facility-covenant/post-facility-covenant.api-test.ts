@@ -91,7 +91,7 @@ describe('POST /facilities/{facilityIdentifier}/covenants', () => {
 
     expect(status).toBe(201);
     expect(body).toStrictEqual({
-      facilityIdentifier, // TODO APIM-106: is this the correct response?
+      facilityIdentifier,
     });
     expect(acbsRequest.isDone()).toBe(true);
   });

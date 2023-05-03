@@ -9,7 +9,7 @@ export class GetFacilityLoanResponseItem {
   })
   readonly portfolioIdentifier: string;
 
-  @ApiProperty({ description: 'The identifier of the loan in ACBS.' }) // TODO APIM-126: how many characters will this be? Mulesoft docs say max 10 but ACBS says 0-9. Postman collection has 9 in the example.
+  @ApiProperty({ description: 'The identifier of the loan in ACBS. This will be a 9-digit code.' })
   readonly loanIdentifier: string;
 
   @ApiProperty({ description: 'The identifier of the facility in ACBS. This will be a 10-digit code.' })
@@ -45,27 +45,19 @@ export class GetFacilityLoanResponseItem {
   readonly expiryDate: DateOnlyString;
 
   @ApiProperty({
-    description: 'This looks like the closest field to Loan Amount. It changes after Loan Amendment.', // TODO APIM-126: this was taken from the Mulesoft docs. Can we improve this description?
+    description: 'The loan amount used during loan creation. This value goes down after each fee and may be affected by other factors.',
   })
   readonly principalBalance: number;
 
-  @ApiProperty({
-    description: '', // TODO APIM-126: description
-  })
+  @ApiProperty({})
   readonly interestBalance: number;
 
-  @ApiProperty({
-    description: '', // TODO APIM-126: description
-  })
+  @ApiProperty({})
   readonly feeBalance: number;
 
-  @ApiProperty({
-    description: '', // TODO APIM-126: description
-  })
-  otherBalance: number;
+  @ApiProperty({})
+  readonly otherBalance: number;
 
-  @ApiProperty({
-    description: '', // TODO APIM-126: description
-  })
-  discountedPrincipal: number;
+  @ApiProperty({})
+  readonly discountedPrincipal: number;
 }
