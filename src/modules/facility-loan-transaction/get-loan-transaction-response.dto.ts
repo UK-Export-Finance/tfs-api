@@ -87,7 +87,7 @@ export class GetLoanTransactionResponseItem {
   readonly dealCustomerUsageOperationType: string | null;
 
   @ApiProperty({
-    description: 'The amount of the loan.',
+    description: 'The amount of the loan. It is called loan amount in ACBS.',
     example: EXAMPLES.LOAN_AMOUNT,
   })
   readonly amount: number;
@@ -153,3 +153,6 @@ export class GetLoanTransactionResponseItem {
   })
   loanBillingFrequencyType: string;
 }
+
+// TODO: update loan dto
+// TODO: raise ticket for validating facilityId for this endpoint
