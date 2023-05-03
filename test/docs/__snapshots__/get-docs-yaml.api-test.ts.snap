@@ -1442,6 +1442,9 @@ components:
           description: >-
             Defines the code for the role of the party in the Facility for which
             the fee is created.
+          enum:
+            - '100'
+            - '500'
           example: '500'
           minLength: 0
           maxLength: 3

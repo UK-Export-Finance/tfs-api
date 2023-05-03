@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ENUMS, EXAMPLES } from '@ukef/constants';
+import { LenderTypeCodeEnum } from '@ukef/constants/enums/lender-type-code';
 import { DateOnlyString } from '@ukef/helpers';
 
 export type GetFacilityFixedFeeResponse = GetFacilityFixedFeeResponseItem[];
@@ -83,6 +84,7 @@ export class GetFacilityFixedFeeResponseItem {
 
   @ApiProperty({
     description: 'Defines the code for the role of the party in the Facility for which the fee is created.',
+    enum: LenderTypeCodeEnum,
     example: ENUMS.LENDER_TYPE_CODES.ECGD,
     minLength: 0,
     maxLength: 3,
