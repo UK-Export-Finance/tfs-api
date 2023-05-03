@@ -20,7 +20,7 @@ export class AcbsBundleInformationService {
   }
 
   async createBundleInformation(newBundleInformation: AcbsCreateBundleInformationRequestDto, idToken: string): Promise<AcbsCreateBundleInformationResponseDto> {
-    const servicingQueueIdentifier = PROPERTIES.GLOBAL.servicingQueueIdentifier;
+    const { servicingQueueIdentifier } = PROPERTIES.GLOBAL;
     const postResponse = await this.acbsHttpService.post<AcbsCreateBundleInformationRequestDto>({
       path: `/BundleInformation?servicingQueueIdentifier=${servicingQueueIdentifier}`,
       requestBody: newBundleInformation,

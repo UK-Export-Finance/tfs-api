@@ -1,4 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { EXAMPLES } from '@ukef/constants';
+import { AcbsBundleId } from '@ukef/helpers';
 
 export class CreateFacilityActivationTransactionResponse {
   @ApiProperty({
@@ -6,11 +8,11 @@ export class CreateFacilityActivationTransactionResponse {
     minLength: 10,
     maxLength: 10,
     description: 'The identifier of the ACBS bundle.',
-    example: '0000257207',
+    example: EXAMPLES.ACBS_BUNDLE_ID,
   })
-  readonly bundleIdentifier: string;
+  readonly bundleIdentifier: AcbsBundleId;
 
-  constructor(bundleIdentifier: string) {
+  constructor(bundleIdentifier: AcbsBundleId) {
     this.bundleIdentifier = bundleIdentifier;
   }
 }

@@ -22,7 +22,6 @@ export const ValidatedNumberApiProperty = ({ description, minimum, maximum, requ
       default: theDefault,
     }),
     Min(minimum),
-    Max(maximum),
   ];
 
   const isRequiredProperty = required ?? true;
@@ -30,6 +29,10 @@ export const ValidatedNumberApiProperty = ({ description, minimum, maximum, requ
     decoratorsToApply.push(IsNotEmpty());
   } else {
     decoratorsToApply.push(IsOptional());
+  }
+
+  if (maximum) {
+    decoratorsToApply.push(Max(maximum));
   }
 
   return applyDecorators(...decoratorsToApply);

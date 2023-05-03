@@ -23,7 +23,7 @@ describe('POST /facilities/{facilityIdentifier}/covenants', () => {
   const facilityIdentifier = valueGenerator.facilityId();
   const createFacilityCovenantUrl = `/api/v1/facilities/${facilityIdentifier}/covenants`;
   const facilityTypeCode = valueGenerator.stringOfNumericCharacters();
-  const limitKeyValue = valueGenerator.string();
+  const limitKeyValue = valueGenerator.acbsPartyId();
 
   const { portfolioIdentifier } = PROPERTIES.GLOBAL;
 
