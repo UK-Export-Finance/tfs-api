@@ -83,7 +83,9 @@ describe('HttpModule', () => {
     it('specifies only module, imports, and exports', () => {
       const module = registerAsync();
 
-      expect(Object.keys(module).sort()).toStrictEqual(['exports', 'imports', 'module']);
+      const sortedModuleKeys = Object.keys(module).sort((a, b) => a.localeCompare(b));
+
+      expect(sortedModuleKeys).toStrictEqual(['exports', 'imports', 'module']);
     });
 
     it('specifies the module field as the class', () => {
