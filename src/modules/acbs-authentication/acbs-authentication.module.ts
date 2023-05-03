@@ -1,7 +1,7 @@
-import { HttpModule } from '@nestjs/axios';
 import { CacheModule } from '@nestjs/cache-manager';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { HttpModule } from '@ukef/modules/http/http.module';
 
 import { AcbsAuthenticationService } from './acbs-authentication.service';
 import { BaseAcbsAuthenticationService, BaseAcbsAuthenticationServiceInjectionKey } from './base-acbs-authentication.service';

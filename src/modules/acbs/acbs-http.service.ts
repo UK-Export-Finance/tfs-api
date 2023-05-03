@@ -2,7 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import { ConfigType } from '@nestjs/config';
 import AcbsConfig from '@ukef/config/acbs.config';
 import { AxiosResponse } from 'axios';
-import { catchError, lastValueFrom } from 'rxjs';
+import { catchError, lastValueFrom, ObservableInput } from 'rxjs';
 
 export class AcbsHttpService {
   constructor(private readonly config: Pick<ConfigType<typeof AcbsConfig>, 'baseUrl'>, private readonly httpService: HttpService) {}
@@ -14,7 +14,7 @@ export class AcbsHttpService {
   }: {
     path: string;
     idToken: string;
-    onError: (error: Error) => never;
+    onError: (error: Error) => ObservableInput<never>;
   }): Promise<AxiosResponse<ResponseBody, unknown>> {
     return await lastValueFrom(
       this.httpService
@@ -37,7 +37,7 @@ export class AcbsHttpService {
     path: string;
     requestBody: RequestBody;
     idToken: string;
-    onError: (error: Error) => never;
+    onError: (error: Error) => ObservableInput<never>;
   }): Promise<void> {
     await lastValueFrom(
       this.httpService
