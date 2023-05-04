@@ -49,7 +49,7 @@ export class AcbsDealPartyService {
         messageForUnknownError: `Failed to create an investor for deal ${dealIdentifier} in ACBS.`,
         knownErrors: [
           {
-            substringToFind: 'The deal not found',
+            caseInsensitiveSubstringToFind: 'The deal not found',
             throwError: (error) => {
               throw new AcbsResourceNotFoundException(`Deal with identifier ${dealIdentifier} was not found by ACBS.`, error);
             },
