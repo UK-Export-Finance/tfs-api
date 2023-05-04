@@ -20,14 +20,14 @@ export const getDealNotFoundKnownAcbsError = (dealIdentifier: string): KnownErro
   },
 });
 
-export const getFacilityNotFoundKnownAcbsError = (facilityIdentifier: string): KnownError => ({
+export const facilityNotFoundKnownAcbsError = (facilityIdentifier: string): KnownError => ({
   caseInsensitiveSubstringToFind: 'Facility not found',
   throwError: (error) => {
     throw new AcbsResourceNotFoundException(`Facility with identifier ${facilityIdentifier} was not found by ACBS.`, error);
   },
 });
 
-// TODO: allow multiple strings for same error and then merge with getFacilityNotFoundKnownAcbsError.
+// TODO: allow multiple strings for same error and then merge with facilityNotFoundKnownAcbsError.
 export const postFacilityNotFoundKnownAcbsError = (facilityIdentifier: string): KnownError => ({
   caseInsensitiveSubstringToFind: 'Facility does not exist',
   throwError: (error) => {

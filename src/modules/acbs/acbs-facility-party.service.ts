@@ -9,8 +9,8 @@ import { AcbsHttpService } from './acbs-http.service';
 import { AcbsCreateFacilityPartyDto } from './dto/acbs-create-facility-party.dto';
 import { AcbsGetFacilityPartyResponseDto } from './dto/acbs-get-facility-party-response.dto';
 import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
-import { getFacilityNotFoundKnownAcbsError } from './known-errors';
-import { createWrapAcbsHttpPostErrorCallback } from './wrap-acbs-http-error-callback';
+import { facilityNotFoundKnownAcbsError } from './known-errors';
+import { createWrapAcbsHttpPostOrPutErrorCallback } from './wrap-acbs-http-error-callback';
 
 @Injectable()
 export class AcbsFacilityPartyService {
@@ -26,9 +26,9 @@ export class AcbsFacilityPartyService {
       path: `/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/FacilityParty`,
       requestBody: newFacilityParty,
       idToken,
-      onError: createWrapAcbsHttpPostErrorCallback({
+      onError: createWrapAcbsHttpPostOrPutErrorCallback({
         messageForUnknownError: `Failed to create a party for facility ${facilityIdentifier} in ACBS.`,
-        knownErrors: [getFacilityNotFoundKnownAcbsError(facilityIdentifier)],
+        knownErrors: [facilityNotFoundKnownAcbsError(facilityIdentifier)],
       }),
     });
   }
@@ -37,7 +37,7 @@ export class AcbsFacilityPartyService {
     const { data: facilityPartiesInAcbs } = await this.acbsHttpService.get<AcbsGetFacilityPartyResponseDto[]>({
       path: `/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/FacilityParty`,
       idToken,
-      onError: createWrapAcbsHttpPostErrorCallback({
+      onError: createWrapAcbsHttpPostOrPutErrorCallback({
         messageForUnknownError: `Failed to get a party for facility ${facilityIdentifier} in ACBS.`,
         knownErrors: [],
       }),

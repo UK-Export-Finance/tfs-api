@@ -18,10 +18,7 @@ export class Api {
 
   getWithoutAuth(url: string, strategy?: string, key?: string): request.Test {
     const query = this.request().get(url);
-    if (strategy) {
-      return query.set({ [strategy]: key });
-    }
-    return query;
+    return this.setQueryWithAuthStrategyIfPresent(query, strategy, key);
   }
 
   getDocsWithBasicAuth(url: string, { username, password }: { username: string; password: string }): request.Test {
@@ -34,10 +31,16 @@ export class Api {
 
   postWithoutAuth(url: string, body: string | object, strategy?: string, key?: string): request.Test {
     const query = this.request().post(url).send(body);
-    if (strategy) {
-      return query.set({ [strategy]: key });
-    }
-    return query;
+    return this.setQueryWithAuthStrategyIfPresent(query, strategy, key);
+  }
+
+  put(url: string, body: string | object): request.Test {
+    return this.request().put(url).send(body).set(this.getValidAuthHeader());
+  }
+
+  putWithoutAuth(url: string, body: string | object, strategy?: string, key?: string): request.Test {
+    const query = this.request().put(url).send(body);
+    return this.setQueryWithAuthStrategyIfPresent(query, strategy, key);
   }
 
   destroy(): Promise<void> {
@@ -52,5 +55,12 @@ export class Api {
     const apiKey = ENVIRONMENT_VARIABLES.API_KEY;
     const strategy = AUTH.STRATEGY;
     return { [strategy]: apiKey };
+  }
+
+  private setQueryWithAuthStrategyIfPresent(query: request.Test, strategy?: string, key?: string) {
+    if (strategy) {
+      return query.set({ [strategy]: key });
+    }
+    return query;
   }
 }

@@ -69,6 +69,7 @@ export class GetFacilityGenerator extends AbstractGenerator<AcbsGetFacilityRespo
       },
       CompBalPctReserve: this.valueGenerator.nonnegativeFloat(),
       CompBalPctAmount: this.valueGenerator.nonnegativeFloat(),
+      AdministrativeUserIdentifier: this.valueGenerator.string(),
     };
   }
 
@@ -133,6 +134,7 @@ export class GetFacilityGenerator extends AbstractGenerator<AcbsGetFacilityRespo
       },
       CompBalPctReserve: v.CompBalPctReserve,
       CompBalPctAmount: v.CompBalPctAmount,
+      AdministrativeUserIdentifier: v.AdministrativeUserIdentifier,
     }));
 
     const facilitiesFromApi: GetFacilityByIdentifierResponseDto[] = values.map((v) => ({

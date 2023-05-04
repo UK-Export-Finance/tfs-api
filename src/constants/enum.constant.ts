@@ -1,5 +1,6 @@
 import * as BUNDLE_STATUSES from './enums/bundle-status';
 import * as COVENANT_TYPE_CODES from './enums/covenant-type-code';
+import * as FACILITY_UPDATE_OPERATIONS from './enums/facility-update-operations';
 import * as GUARANTEE_TYPE_CODES from './enums/guarantee-type-code';
 import * as INCOME_CLASS_CODES from './enums/income-class-code';
 import * as LENDER_TYPE_CODES from './enums/lender-type-code';
@@ -18,4 +19,5 @@ export const ENUMS = {
   GUARANTEE_TYPE_CODES: GUARANTEE_TYPE_CODES.GuaranteeTypeCodeEnum,
   INCOME_CLASS_CODES: INCOME_CLASS_CODES.IncomeClassCodeEnum,
   OPERATION_TYPE_CODES: OPERATION_TYPE_CODES.OperationTypeCodeEnum,
+  FACILITY_UPDATE_OPERATIONS: FACILITY_UPDATE_OPERATIONS.FacilityUpdateOperationEnum,
 };

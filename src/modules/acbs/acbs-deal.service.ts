@@ -7,7 +7,7 @@ import { AcbsHttpService } from './acbs-http.service';
 import { AcbsCreateDealDto } from './dto/acbs-create-deal.dto';
 import { AcbsGetDealResponseDto } from './dto/acbs-get-deal-response.dto';
 import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
-import { createWrapAcbsHttpGetErrorCallback, createWrapAcbsHttpPostErrorCallback } from './wrap-acbs-http-error-callback';
+import { createWrapAcbsHttpGetErrorCallback, createWrapAcbsHttpPostOrPutErrorCallback } from './wrap-acbs-http-error-callback';
 
 @Injectable()
 export class AcbsDealService {
@@ -26,7 +26,7 @@ export class AcbsDealService {
       path: this.getAcbsDealPath(portfolioIdentifier),
       requestBody: newDeal,
       idToken,
-      onError: createWrapAcbsHttpPostErrorCallback({
+      onError: createWrapAcbsHttpPostOrPutErrorCallback({
         messageForUnknownError: `Failed to create a deal with identifier ${newDeal.DealIdentifier} in ACBS.`,
         knownErrors: [],
       }),
