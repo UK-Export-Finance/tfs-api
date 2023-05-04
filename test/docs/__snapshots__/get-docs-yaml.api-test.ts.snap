@@ -239,6 +239,7 @@ paths:
           schema:
             enum:
               - issue
+              - amendExpiryDate
             type: string
         - name: facilityIdentifier
           required: true
@@ -1453,12 +1454,6 @@ components:
     UpdateFacilityRequest:
       type: object
       properties:
-        issueDate:
-          format: date
-          type: string
-          description: >-
-            Issue Date for Bond OR Disbursement Date for Loan/EWCS. Not required
-            at commitment stage.
         dealIdentifier:
           type: string
           description: The identifier of the deal for the facility.
@@ -1601,8 +1596,15 @@ components:
           minLength: 0
           maxLength: 2
           example: '1'
+        issueDate:
+          format: date
+          type: string
+          description: >-
+            Issue Date for Bond or Disbursement Date for Loan/EWCS. Not required
+            at commitment stage
+          default: null
+          nullable: true
       required:
-        - issueDate
         - dealIdentifier
         - dealBorrowerIdentifier
         - productTypeId

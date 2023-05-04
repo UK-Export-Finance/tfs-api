@@ -6,6 +6,7 @@ import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-
 import { UpdateFacilityGenerator } from '@ukef-test/support/generator/update-facility-generator';
 import { when } from 'jest-when';
 
+import { UpdateFacilityByOperationQueryDto } from './dto/update-facility-by-operation-query.dto';
 import { FacilityController } from './facility.controller';
 import { FacilityService } from './facility.service';
 
@@ -17,24 +18,27 @@ describe('FacilityController', () => {
   const { portfolioIdentifier } = PROPERTIES.GLOBAL;
   const facilityIdentifier = valueGenerator.ukefId();
 
-  let facilityService: FacilityService;
   let controller: FacilityController;
 
-  let facilityServiceGetFacilityByIdentifier: jest.Mock;
-  let facilityServiceCreateFacility: jest.Mock;
-  let facilityServiceIssueFacilityByIdentifier: jest.Mock;
+  const facilityService = new FacilityService(null, null, null, null);
+
+  const facilityServiceGetFacilityByIdentifier = jest.fn();
+  facilityService.getFacilityByIdentifier = facilityServiceGetFacilityByIdentifier;
+
+  const facilityServiceCreateFacility = jest.fn();
+  facilityService.createFacility = facilityServiceCreateFacility;
+
+  const facilityServiceIssueFacilityByIdentifier = jest.fn();
+  facilityService.issueFacilityByIdentifier = facilityServiceIssueFacilityByIdentifier;
+
+  const facilityServiceAmendExpiryDateByIdentifier = jest.fn();
+  facilityService.amendFacilityExpiryDateByIdentifier = facilityServiceAmendExpiryDateByIdentifier;
 
   beforeEach(() => {
-    facilityService = new FacilityService(null, null, null, null);
-
-    facilityServiceGetFacilityByIdentifier = jest.fn();
-    facilityService.getFacilityByIdentifier = facilityServiceGetFacilityByIdentifier;
-
-    facilityServiceCreateFacility = jest.fn();
-    facilityService.createFacility = facilityServiceCreateFacility;
-
-    facilityServiceIssueFacilityByIdentifier = jest.fn();
-    facilityService.issueFacilityByIdentifier = facilityServiceIssueFacilityByIdentifier;
+    facilityServiceGetFacilityByIdentifier.mockReset();
+    facilityServiceCreateFacility.mockReset();
+    facilityServiceIssueFacilityByIdentifier.mockReset();
+    facilityServiceAmendExpiryDateByIdentifier.mockReset();
 
     controller = new FacilityController(facilityService);
   });
@@ -88,24 +92,26 @@ describe('FacilityController', () => {
     });
   });
 
-  describe('updateFacility', () => {
+  describe.each([
+    { op: ENUMS.FACILITY_UPDATE_OPERATIONS.ISSUE, serviceMethod: facilityServiceIssueFacilityByIdentifier },
+    { op: ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_EXPIRY_DATE, serviceMethod: facilityServiceAmendExpiryDateByIdentifier },
+  ])('updateFacility $op', ({ op, serviceMethod }) => {
     const { updateFacilityRequest } = new UpdateFacilityGenerator(valueGenerator, dateStringTransformations).generate({
       numberToGenerate: 1,
       facilityIdentifier,
     });
 
-    const updateFacilityByOperationQuery = { op: ENUMS.FACILITY_UPDATE_OPERATIONS.ISSUE };
-
+    const query: UpdateFacilityByOperationQueryDto = { op };
     const updateFacilityByOperationParams = { facilityIdentifier };
 
-    it('issues a facility with the service if called with ISSUE enum', async () => {
-      await controller.updateFacilityByOperation(updateFacilityByOperationQuery, updateFacilityByOperationParams, updateFacilityRequest);
+    it(`calls if called with ${op} enum`, async () => {
+      await controller.updateFacilityByOperation(query, updateFacilityByOperationParams, updateFacilityRequest);
 
-      expect(facilityServiceIssueFacilityByIdentifier).toHaveBeenCalledWith(facilityIdentifier, updateFacilityRequest);
+      expect(serviceMethod).toHaveBeenCalledWith(facilityIdentifier, updateFacilityRequest);
     });
 
-    it('returns the facility identifier if updating the facility succeeds if called with ISSUE enum', async () => {
-      const response = await controller.updateFacilityByOperation(updateFacilityByOperationQuery, updateFacilityByOperationParams, updateFacilityRequest);
+    it(`returns the facility identifier if updating the facility succeeds if called with ${op} enum`, async () => {
+      const response = await controller.updateFacilityByOperation(query, updateFacilityByOperationParams, updateFacilityRequest);
 
       expect(response).toStrictEqual({ facilityIdentifier });
     });
