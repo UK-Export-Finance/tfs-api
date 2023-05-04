@@ -1,5 +1,4 @@
 import { PROPERTIES } from '@ukef/constants';
-import { AcbsCreateBundleInformationRequestDto } from '@ukef/modules/acbs/dto/acbs-create-bundleInformation-request.dto';
 import { AcbsGetFacilityResponseDto } from '@ukef/modules/acbs/dto/acbs-get-facility-response.dto';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
@@ -17,8 +16,6 @@ describe('POST /facilities/{facilityIdentifier}/activation-transactions', () => 
   const dateStringTransformations = new DateStringTransformations();
   const facilityIdentifier = valueGenerator.facilityId();
   const createFacilityActivationTransactionUrl = `/api/v1/facilities/${facilityIdentifier}/activation-transactions`;
-  const facilityTypeCode = valueGenerator.stringOfNumericCharacters();
-  const limitKeyValue = valueGenerator.acbsPartyId();
   const { servicingQueueIdentifier } = PROPERTIES.GLOBAL;
 
   const { portfolioIdentifier } = PROPERTIES.GLOBAL;
@@ -29,22 +26,19 @@ describe('POST /facilities/{facilityIdentifier}/activation-transactions', () => 
     facilityIdentifier,
     portfolioIdentifier,
   });
-  const effectiveDate = facilitiesInAcbs[0].OriginalEffectiveDate;
-  const facilityInAcbs: AcbsGetFacilityResponseDto = {
-    ...facilitiesInAcbs[0],
-    FacilityType: { FacilityTypeCode: facilityTypeCode },
-    BorrowerParty: { PartyIdentifier: limitKeyValue, PartyName1: valueGenerator.string() },
-  };
+  const effectiveDate = dateStringTransformations.removeTime(facilitiesInAcbs[0].OriginalEffectiveDate);
+  const borrowerPartyIdentifier = facilitiesInAcbs[0].BorrowerParty.PartyIdentifier;
+  const facilityInAcbs: AcbsGetFacilityResponseDto = facilitiesInAcbs[0];
 
   const {
     acbsRequestBodyToCreateFacilityActivationTransaction,
     requestBodyToCreateFacilityActivationTransaction,
-    createBundleInformationResponseFromAcbs,
     createFacilityActivationTransactionResponseFromService,
   } = new CreateFacilityActivationTransactionGenerator(valueGenerator, dateStringTransformations).generate({
-    numberToGenerate: 2,
+    numberToGenerate: 1,
     facilityIdentifier,
     bundleIdentifier,
+    borrowerPartyIdentifier,
     effectiveDate,
   });
 
@@ -87,7 +81,7 @@ describe('POST /facilities/{facilityIdentifier}/activation-transactions', () => 
       ),
   });
 
-  it.only('returns a 201 response with the bundle identifier if getting the facility succeeds and the facility activation transaction has been successfully created in ACBS', async () => {
+  it('returns a 201 response with the bundle identifier if getting the facility succeeds and the facility activation transaction has been successfully created in ACBS', async () => {
     givenAuthenticationWithTheIdpSucceeds();
     givenRequestToGetFacilityFromAcbsSucceeds();
     const acbsRequest = givenRequestToCreateFacilityActivationTransactionInAcbsSucceeds();
@@ -162,34 +156,34 @@ describe('POST /facilities/{facilityIdentifier}/activation-transactions', () => 
       givenRequestToGetFacilityFromAcbsSucceeds();
     });
 
-    // it('returns a 404 response if ACBS responds with a 400 response that is a string containing "Facility not found" when creating the facility activation transaction', async () => {
-    //   requestToCreateFacilityActivationTransaction().reply(400, 'Facility not found or the user does not have access to it');
+    it('returns a 404 response if ACBS responds with a 400 response that is a string containing "Facility not found" when creating the facility activation transaction', async () => {
+      requestToCreateFacilityActivationTransaction().reply(400, `Facility does not exist or user does not have access to it: '${facilityIdentifier}'`);
 
-    //   const { status, body } = await api.post(createFacilityActivationTransactionUrl, requestBodyToCreateFacilityActivationTransaction);
+      const { status, body } = await api.post(createFacilityActivationTransactionUrl, requestBodyToCreateFacilityActivationTransaction);
 
-    //   expect(status).toBe(404);
-    //   expect(body).toStrictEqual({ message: 'Not found', statusCode: 404 });
-    // });
+      expect(status).toBe(404);
+      expect(body).toStrictEqual({ message: 'Not found', statusCode: 404 });
+    });
 
-    // it('returns a 400 response if ACBS responds with a 400 response that is not a string when creating the facility activation transaction', async () => {
-    //   const acbsErrorMessage = JSON.stringify({ Message: 'error message' });
-    //   requestToCreateFacilityActivationTransaction().reply(400, acbsErrorMessage);
+    it('returns a 400 response if ACBS responds with a 400 response that is not a string when creating the facility activation transaction', async () => {
+      const acbsErrorMessage = JSON.stringify({ Message: 'error message' });
+      requestToCreateFacilityActivationTransaction().reply(400, acbsErrorMessage);
 
-    //   const { status, body } = await api.post(createFacilityActivationTransactionUrl, requestBodyToCreateFacilityActivationTransaction);
+      const { status, body } = await api.post(createFacilityActivationTransactionUrl, requestBodyToCreateFacilityActivationTransaction);
 
-    //   expect(status).toBe(400);
-    //   expect(body).toStrictEqual({ message: 'Bad request', error: acbsErrorMessage, statusCode: 400 });
-    // });
+      expect(status).toBe(400);
+      expect(body).toStrictEqual({ message: 'Bad request', error: acbsErrorMessage, statusCode: 400 });
+    });
 
-    // it('returns a 400 response if ACBS responds with a 400 response that is a string that does not contain "Facility not found" when creating the facility activation transaction', async () => {
-    //   const acbsErrorMessage = 'ACBS error message';
-    //   requestToCreateFacilityActivationTransaction().reply(400, acbsErrorMessage);
+    it('returns a 400 response if ACBS responds with a 400 response that is a string that does not contain "Facility not found" when creating the facility activation transaction', async () => {
+      const acbsErrorMessage = 'ACBS error message';
+      requestToCreateFacilityActivationTransaction().reply(400, acbsErrorMessage);
 
-    //   const { status, body } = await api.post(createFacilityActivationTransactionUrl, requestBodyToCreateFacilityActivationTransaction);
+      const { status, body } = await api.post(createFacilityActivationTransactionUrl, requestBodyToCreateFacilityActivationTransaction);
 
-    //   expect(status).toBe(400);
-    //   expect(body).toStrictEqual({ message: 'Bad request', error: acbsErrorMessage, statusCode: 400 });
-    // });
+      expect(status).toBe(400);
+      expect(body).toStrictEqual({ message: 'Bad request', error: acbsErrorMessage, statusCode: 400 });
+    });
 
     it('returns a 500 response if ACBS responds with an error code that is not 400 when creating the facility activation transaction', async () => {
       requestToCreateFacilityActivationTransaction().reply(401, 'Unauthorized');
@@ -229,9 +223,6 @@ describe('POST /facilities/{facilityIdentifier}/activation-transactions', () => 
     });
   });
 
-  // TODO APIM-106: add tests that check we respond with 400 if the facilityId is of the wrong length/format once injectable tests for this
-  // have been written.
-
   const givenRequestToGetFacilityFromAcbsSucceeds = (): nock.Scope => givenRequestToGetFacilityFromAcbsSucceedsReturning(facilityInAcbs);
 
   const givenRequestToGetFacilityFromAcbsSucceedsReturning = (acbsFacility: AcbsGetFacilityResponseDto): nock.Scope => {
@@ -244,15 +235,15 @@ describe('POST /facilities/{facilityIdentifier}/activation-transactions', () => 
       .matchHeader('authorization', `Bearer ${idToken}`);
 
   const givenRequestToCreateFacilityActivationTransactionInAcbsSucceeds = (): nock.Scope => {
-    return requestToCreateFacilityActivationTransaction().reply(201, undefined, { location: bundleIdentifier });
+    return requestToCreateFacilityActivationTransaction().reply(201, undefined, { bundleidentifier: bundleIdentifier });
   };
 
   const requestToCreateFacilityActivationTransaction = (): nock.Interceptor =>
-    requestToCreateFacilityActivationTransactionInAcbsWithBody(acbsRequestBodyToCreateFacilityActivationTransaction);
+    requestToCreateFacilityActivationTransactionInAcbsWithBody(JSON.parse(JSON.stringify(acbsRequestBodyToCreateFacilityActivationTransaction)));
 
-  const requestToCreateFacilityActivationTransactionInAcbsWithBody = (requestBody: AcbsCreateBundleInformationRequestDto): nock.Interceptor =>
+  const requestToCreateFacilityActivationTransactionInAcbsWithBody = (requestBody: nock.RequestBodyMatcher): nock.Interceptor =>
     nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .post(`/BundleInformation?servicingQueueIdentifier=${servicingQueueIdentifier}`, JSON.stringify(requestBody))
+      .post(`/BundleInformation?servicingQueueIdentifier=${servicingQueueIdentifier}`, requestBody)
       .matchHeader('authorization', `Bearer ${idToken}`)
       .matchHeader('Content-Type', 'application/json');
 

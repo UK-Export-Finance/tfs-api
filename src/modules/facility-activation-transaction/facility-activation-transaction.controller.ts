@@ -9,7 +9,6 @@ import {
   ApiParam,
 } from '@nestjs/swagger';
 import { EXAMPLES } from '@ukef/constants';
-import { UkefId } from '@ukef/helpers';
 import { FacilityService } from '@ukef/modules/facility/facility.service';
 
 import {
@@ -17,6 +16,7 @@ import {
   CreateFacilityActivationTransactionRequestItem,
 } from './dto/create-facility-activation-transaction-request.dto';
 import { CreateFacilityActivationTransactionResponse } from './dto/create-facility-activation-transaction-response.dto';
+import { FacilityActivationTransactionParamsDto } from './dto/facility-activation-transaction-params.dto';
 import { FacilityActivationTransactionService } from './facility-activation-transaction.service';
 
 @Controller()
@@ -52,16 +52,16 @@ export class FacilityActivationTransactionController {
     description: 'An internal server error has occurred.',
   })
   async createActivationTransactionForFacility(
-    @Param('facilityIdentifier') facilityIdentifier: UkefId,
+    @Param() params: FacilityActivationTransactionParamsDto,
     @Body(new ParseArrayPipe({ items: CreateFacilityActivationTransactionRequestItem }))
     newFacilityActivationTransactionRequest: CreateFacilityActivationTransactionRequest,
   ): Promise<CreateFacilityActivationTransactionResponse> {
-    const facility = await this.facilityService.getFacilityByIdentifier(facilityIdentifier);
+    const facility = await this.facilityService.getFacilityByIdentifier(params.facilityIdentifier);
 
     const newFacilityActivationTransaction = newFacilityActivationTransactionRequest[0];
 
     return this.facilityActivationTransactionService.createActivationTransactionForFacility(
-      facilityIdentifier,
+      params.facilityIdentifier,
       facility.obligorPartyIdentifier,
       facility.effectiveDate,
       newFacilityActivationTransaction,

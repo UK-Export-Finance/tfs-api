@@ -1,3 +1,4 @@
+import { ENUMS } from '@ukef/constants';
 import { ValidatedFacilityIdentifierApiProperty } from '@ukef/decorators/validated-facility-identifier-api-property';
 import { ValidatedNumberApiProperty } from '@ukef/decorators/validated-number-api-property.decorator';
 import { ValidatedStringApiProperty } from '@ukef/decorators/validated-string-api-property.decorator';
@@ -12,18 +13,16 @@ export class CreateFacilityActivationTransactionRequestItem {
   readonly facilityIdentifier: UkefId;
 
   @ValidatedNumberApiProperty({
-    description: 'Can be 2 or 3',
-    example: 3,
-    minimum: 2,
-    maximum: 3,
+    description: 'In most situations value should be 3, it means auto approval.',
+    example: ENUMS.BUNDLE_STATUSES.SUBMIT_FOR_POSTING,
+    enum: ENUMS.BUNDLE_STATUSES,
   })
   readonly initialBundleStatusCode: number;
 
   @ValidatedStringApiProperty({
-    description: 'Can be 100 or 500',
-    example: '100',
-    minLength: 3,
-    maxLength: 3,
+    description: 'In most situations value should be 100, it means first level obligor.',
+    example: ENUMS.LENDER_TYPE_CODES.FIRST_LEVEL_OBLIGOR,
+    enum: ENUMS.LENDER_TYPE_CODES,
   })
   readonly lenderTypeCode: string;
 

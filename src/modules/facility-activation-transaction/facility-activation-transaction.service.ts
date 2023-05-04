@@ -3,6 +3,7 @@ import { PROPERTIES } from '@ukef/constants';
 import { AcbsPartyId, DateOnlyString, UkefId } from '@ukef/helpers';
 import { AcbsBundleInformationService } from '@ukef/modules/acbs/acbs-bundleInformation.service';
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 
 import { CreateFacilityActivationTransactionResponse } from './dto/create-facility-activation-transaction-response.dto';
 import { FacilityActivationTransactionToCreate } from './facility-activation-transaction-to-create.interface';
@@ -12,6 +13,7 @@ export class FacilityActivationTransactionService {
   constructor(
     private readonly acbsAuthenticationService: AcbsAuthenticationService,
     private readonly acbsBundleInformationService: AcbsBundleInformationService,
+    private readonly dateStringTransformations: DateStringTransformations,
   ) {}
 
   async createActivationTransactionForFacility(
@@ -31,7 +33,7 @@ export class FacilityActivationTransactionService {
         {
           $type: PROPERTIES.FACILITY_ACTIVATION_TRANSACTION.DEFAULT.bundleMessageList.type,
           AccountOwnerIdentifier: PROPERTIES.FACILITY_ACTIVATION_TRANSACTION.DEFAULT.bundleMessageList.accountOwnerIdentifier,
-          EffectiveDate: originalEffectiveDate,
+          EffectiveDate: this.dateStringTransformations.addTimeToDateOnlyString(originalEffectiveDate),
           FacilityIdentifier: facilityIdentifier,
           FacilityTransactionCodeValue: {
             FacilityTransactionCodeValueCode:
@@ -53,7 +55,7 @@ export class FacilityActivationTransactionService {
       ],
     };
 
-    const bundleCreateResponse = await this.acbsBundleInformationService.createBundleInformation(bundleInformationToCreateInAcbs, idToken);
-    return { bundleIdentifier: bundleCreateResponse.BundleIdentifier };
+    const response = await this.acbsBundleInformationService.createBundleInformation(bundleInformationToCreateInAcbs, idToken);
+    return { bundleIdentifier: response.BundleIdentifier };
   }
 }

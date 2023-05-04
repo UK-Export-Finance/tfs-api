@@ -1,5 +1,5 @@
-import { PROPERTIES } from '@ukef/constants';
-import { AcbsBundleId, DateString, UkefId } from '@ukef/helpers';
+import { ENUMS, PROPERTIES } from '@ukef/constants';
+import { AcbsBundleId, AcbsPartyId, DateOnlyString, UkefId } from '@ukef/helpers';
 import { AcbsCreateBundleInformationRequestDto } from '@ukef/modules/acbs/dto/acbs-create-bundleInformation-request.dto';
 import { AcbsCreateBundleInformationResponseDto } from '@ukef/modules/acbs/dto/acbs-create-bundleInformation-response.dto';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
@@ -21,15 +21,21 @@ export class CreateFacilityActivationTransactionGenerator extends AbstractGenera
     super(valueGenerator);
   }
 
-  protected generateValues() {
+  protected generateValues(): CreateFacilityActivationTransactionRequestItem {
+    const possibleBundleStatuses = Object.values(ENUMS.BUNDLE_STATUSES);
+    const possibleLenderTypes = Object.values(ENUMS.LENDER_TYPE_CODES);
+
     return {
       facilityIdentifier: this.valueGenerator.ukefId(),
-      initialBundleStatusCode: 3,
-      lenderTypeCode: '100',
+      initialBundleStatusCode: possibleBundleStatuses[this.valueGenerator.integer({ min: 0, max: possibleBundleStatuses.length - 1 })] as number,
+      lenderTypeCode: possibleLenderTypes[this.valueGenerator.integer({ min: 0, max: possibleLenderTypes.length - 1 })],
     };
   }
 
-  protected transformRawValuesToGeneratedValues(values, { facilityIdentifier, bundleIdentifier, effectiveDate }: GenerateOptions): GenerateResult {
+  protected transformRawValuesToGeneratedValues(
+    values,
+    { facilityIdentifier, bundleIdentifier, borrowerPartyIdentifier, effectiveDate }: GenerateOptions,
+  ): GenerateResult {
     const firstFacilityActivationTransaction = values[0];
 
     const acbsRequestBodyToCreateFacilityActivationTransaction: AcbsCreateBundleInformationRequestDto = {
@@ -41,7 +47,7 @@ export class CreateFacilityActivationTransactionGenerator extends AbstractGenera
         {
           $type: PROPERTIES.FACILITY_ACTIVATION_TRANSACTION.DEFAULT.bundleMessageList.type,
           AccountOwnerIdentifier: PROPERTIES.FACILITY_ACTIVATION_TRANSACTION.DEFAULT.bundleMessageList.accountOwnerIdentifier,
-          EffectiveDate: effectiveDate,
+          EffectiveDate: this.dateStringTransformations.addTimeToDateOnlyString(effectiveDate),
           FacilityIdentifier: facilityIdentifier,
           FacilityTransactionCodeValue: {
             FacilityTransactionCodeValueCode:
@@ -54,7 +60,7 @@ export class CreateFacilityActivationTransactionGenerator extends AbstractGenera
           LenderType: {
             LenderTypeCode: firstFacilityActivationTransaction.lenderTypeCode,
           },
-          LimitKeyValue: this.valueGenerator.acbsPartyId(),
+          LimitKeyValue: borrowerPartyIdentifier,
           LimitType: {
             LimitTypeCode: PROPERTIES.FACILITY_ACTIVATION_TRANSACTION.DEFAULT.bundleMessageList.limitType.limitTypeCode,
           },
@@ -84,7 +90,8 @@ export class CreateFacilityActivationTransactionGenerator extends AbstractGenera
 interface GenerateOptions {
   facilityIdentifier: UkefId;
   bundleIdentifier: AcbsBundleId;
-  effectiveDate: DateString;
+  borrowerPartyIdentifier: AcbsPartyId;
+  effectiveDate: DateOnlyString;
 }
 
 interface GenerateResult {
