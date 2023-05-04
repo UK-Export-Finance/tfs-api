@@ -1379,13 +1379,16 @@ components:
         facilityIdentifier:
           type: string
           description: The identifier of the facility.
-          example: '0030000322'
           minLength: 10
           maxLength: 10
+          pattern: ^00\\d{8}$
+          example: '0030000322'
         portfolioIdentifier:
           type: string
           description: The identifier of the portfolio.
           example: E1
+          enum:
+            - E1
         amount:
           type: number
           description: >-
@@ -1421,8 +1424,8 @@ components:
           description: >-
             Segment identifier from income exposure table. 2 alphanumeric
             characters.
-          maxLength: 2
           minLength: 2
+          maxLength: 2
         description:
           type: string
           description: Description of accruing/Fixed fee which is be entered by user.

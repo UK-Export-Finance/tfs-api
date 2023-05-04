@@ -1,21 +1,22 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ENUMS, EXAMPLES } from '@ukef/constants';
 import { LenderTypeCodeEnum } from '@ukef/constants/enums/lender-type-code';
+import { PortfolioEnum } from '@ukef/constants/enums/portfolio';
+import { ValidatedFacilityIdentifierApiProperty } from '@ukef/decorators/validated-facility-identifier-api-property';
+import { ValidatedStringApiProperty } from '@ukef/decorators/validated-string-api-property.decorator';
 import { DateOnlyString } from '@ukef/helpers';
 
 export type GetFacilityFixedFeeResponse = GetFacilityFixedFeeResponseItem[];
 export class GetFacilityFixedFeeResponseItem {
-  @ApiProperty({
+  @ValidatedFacilityIdentifierApiProperty({
     description: 'The identifier of the facility.',
-    example: EXAMPLES.FACILITY_ID,
-    minLength: 10,
-    maxLength: 10,
   })
   readonly facilityIdentifier: string;
 
   @ApiProperty({
     description: 'The identifier of the portfolio.',
     example: ENUMS.PORTFOLIO.E1,
+    enum: PortfolioEnum,
   })
   readonly portfolioIdentifier: string;
 
@@ -59,10 +60,9 @@ export class GetFacilityFixedFeeResponseItem {
   })
   readonly nextAccrueToDate: DateOnlyString;
 
-  @ApiProperty({
+  @ValidatedStringApiProperty({
     description: 'Segment identifier from income exposure table. 2 alphanumeric characters.',
-    maxLength: 2,
-    minLength: 2,
+    length: 2,
   })
   readonly period: string;
 
