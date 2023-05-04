@@ -2,9 +2,9 @@ import { ApiProperty } from '@nestjs/swagger';
 import { EXAMPLES, PROPERTIES } from '@ukef/constants';
 import { DateOnlyString } from '@ukef/helpers/date-only-string.type';
 
-export type GetLoanTransactionResponse = GetLoanTransactionResponseItem[];
+export type GetFacilityLoanTransactionResponseDto = GetFacilityLoanTransactionResponseItem[];
 
-export class GetLoanTransactionResponseItem {
+export class GetFacilityLoanTransactionResponseItem {
   @ApiProperty({
     description: 'The identifier of the portfolio in ACBS. The UKEF portfolio is E1.',
     minLength: 0,
@@ -123,7 +123,7 @@ export class GetLoanTransactionResponseItem {
   readonly spreadRateCTL: number;
 
   @ApiProperty({
-    description: 'A numeric code denoting the year basis for the accrual schedule.',
+    description: 'A code denoting the year basis for the accrual schedule.',
     minLength: 0,
     maxLength: 1,
     example: EXAMPLES.YEAR_BASIS,

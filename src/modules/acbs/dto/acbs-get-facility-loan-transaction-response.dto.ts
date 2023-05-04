@@ -1,6 +1,11 @@
 import { DateString } from '@ukef/helpers';
 
+export type AcbsGetFacilityLoanTransactionResponseDto = AcbsGetFacilityLoanTransactionResponseItem[];
+
 interface AccrualSchedule {
+  AccrualCategory: {
+    AccrualCategoryCode: string;
+  };
   SpreadRate: number;
   YearBasis: {
     YearBasisCode: string;
@@ -40,12 +45,12 @@ interface NewLoanRequest {
   RepaymentScheduleList: RepaymentSchedule[];
 }
 
-export interface AcbsGetLoanTransactionResponseDto {
+export interface AcbsGetFacilityLoanTransactionResponseItem {
   PortfolioIdentifier: string;
   BundleStatus: {
     BundleStatusCode: string;
     BundleStatusShortDescription: string;
   };
   PostingDate: DateString;
-  BundleMessageList: (NewLoanRequest | any)[];
+  BundleMessageList: (NewLoanRequest | any)[]; // TODO: change to discriminated union
 }

@@ -6,6 +6,7 @@ import * as LENDER_TYPE_CODES from './enums/lender-type-code';
 import * as PORTFOLIO from './enums/portfolio';
 import * as PRODUCT_TYPE_GROUPS from './enums/product-type-group';
 import * as PRODUCT_TYPE_IDS from './enums/product-type-id';
+import * as OPERATION_TYPE_CODES from './enums/operation-type-code'
 
 export const ENUMS = {
   BUNDLE_STATUSES: BUNDLE_STATUSES.BundleStatusEnum,
@@ -16,4 +17,5 @@ export const ENUMS = {
   PRODUCT_TYPE_GROUPS: PRODUCT_TYPE_GROUPS.ProductTypeGroupEnum,
   GUARANTEE_TYPE_CODES: GUARANTEE_TYPE_CODES.GuaranteeTypeCodeEnum,
   INCOME_CLASS_CODES: INCOME_CLASS_CODES.IncomeClassCodeEnum,
+  OPERATION_TYPE_CODES: OPERATION_TYPE_CODES.OperationTypeCodeEnum,
 };
