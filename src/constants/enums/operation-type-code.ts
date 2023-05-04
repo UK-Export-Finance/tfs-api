@@ -1,5 +1,4 @@
 export enum OperationTypeCodeEnum {
-    MULTIPLY = 'M',
-    DIVIDE = 'D',
-  }
-  
+  MULTIPLY = 'M',
+  DIVIDE = 'D',
+}

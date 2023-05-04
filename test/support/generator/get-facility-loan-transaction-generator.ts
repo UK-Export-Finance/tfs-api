@@ -22,7 +22,7 @@ export class GetFacilityLoanGenerator extends AbstractGenerator<FacilityLoanTran
     const possibleOperationTypeCodes = Object.values(ENUMS.OPERATION_TYPE_CODES);
 
     return {
-      BundleStatusCode: this.valueGenerator.stringOfNumericCharacters({ length: 2}),
+      BundleStatusCode: this.valueGenerator.stringOfNumericCharacters({ length: 2 }),
       BundleStatusShortDescription: this.valueGenerator.string({ minLength: 0, maxLength: 20 }),
       PostingDate: this.valueGenerator.dateOnlyString(),
       BorrowerPartyIdentifier: this.valueGenerator.acbsPartyId(),
@@ -36,10 +36,10 @@ export class GetFacilityLoanGenerator extends AbstractGenerator<FacilityLoanTran
       ProductTypeCode: possibleProductTypeIds[this.valueGenerator.integer({ min: 0, max: possibleProductTypeIds.length - 1 })],
       SpreadRate: this.valueGenerator.nonnegativeFloat(),
       SpreadRateCTL: this.valueGenerator.nonnegativeFloat(),
-      YearBasisCode: this.valueGenerator.string({length: 1}),
-      IndexRateChangeFrequencyCode: this.valueGenerator.string({length: 1}),
+      YearBasisCode: this.valueGenerator.string({ length: 1 }),
+      IndexRateChangeFrequencyCode: this.valueGenerator.string({ length: 1 }),
       NextDueDate: this.valueGenerator.dateTimeString(),
-      LoanBillingFrequencyTypeCode: this.valueGenerator.string({length: 1}),
+      LoanBillingFrequencyTypeCode: this.valueGenerator.string({ length: 1 }),
     };
   }
 
@@ -77,7 +77,7 @@ export class GetFacilityLoanGenerator extends AbstractGenerator<FacilityLoanTran
           AccrualScheduleList: [
             {
               YearBasis: {
-                YearBasisCode: v.YearBasisCode
+                YearBasisCode: v.YearBasisCode,
               },
             },
             {
@@ -85,7 +85,7 @@ export class GetFacilityLoanGenerator extends AbstractGenerator<FacilityLoanTran
                 AccrualCategoryCode: 'PAC01', // TODO: constant
               },
               SpreadRate: v.SpreadRate,
-              IndexRateChangeFrequency: {    IndexRateChangeFrequencyCode: v.IndexRateChangeFrequencyCode,  },
+              IndexRateChangeFrequency: { IndexRateChangeFrequencyCode: v.IndexRateChangeFrequencyCode },
             },
             {
               AccrualCategory: {
@@ -98,12 +98,12 @@ export class GetFacilityLoanGenerator extends AbstractGenerator<FacilityLoanTran
             {
               NextDueDate: v.NextDueDate,
               LoanBillingFrequencyType: {
-                LoanBillingFrequencyTypeCode: v.LoanBillingFrequencyTypeCode
+                LoanBillingFrequencyTypeCode: v.LoanBillingFrequencyTypeCode,
               },
             },
           ],
         },
-      ]
+      ],
     }));
 
     const facilityLoanTransactionsFromApi = values.map((v) => ({
@@ -123,7 +123,7 @@ export class GetFacilityLoanGenerator extends AbstractGenerator<FacilityLoanTran
       expiryDate: this.dateStringTransformations.removeTime(v.MaturityDate),
       spreadRate: v.SpreadRate,
       spreadRateCTL: v.SpreadRateCTL,
-      yearBasis: v.YearBasisCode,  
+      yearBasis: v.YearBasisCode,
       nextDueDate: this.dateStringTransformations.removeTime(v.NextDueDate),
       indexRateChangeFrequency: v.IndexRateChangeFrequencyCode,
       loanBillingFrequencyType: v.LoanBillingFrequencyTypeCode,
@@ -137,24 +137,24 @@ export class GetFacilityLoanGenerator extends AbstractGenerator<FacilityLoanTran
 }
 
 interface FacilityLoanTransactionValues {
-  BundleStatusCode: string,
-  BundleStatusShortDescription: string,
-  PostingDate: DateString,
-  BorrowerPartyIdentifier: AcbsPartyId,
-  CurrencyCode: string,
-  DealCustomerUsageRate: number,
-  OperationTypeCode: OperationTypeCodeEnum,
-  LoanAmount: number,
-  EffectiveDate: DateString,
-  MaturityDate: DateString,
-  ProductGroupCode: ProductTypeGroupEnum,
-  ProductTypeCode: ProductTypeIdEnum,
-  SpreadRate: number,
-  SpreadRateCTL: number,
-  YearBasisCode: string,
-  IndexRateChangeFrequencyCode: string,
-  NextDueDate: DateString,
-  LoanBillingFrequencyTypeCode: string,
+  BundleStatusCode: string;
+  BundleStatusShortDescription: string;
+  PostingDate: DateString;
+  BorrowerPartyIdentifier: AcbsPartyId;
+  CurrencyCode: string;
+  DealCustomerUsageRate: number;
+  OperationTypeCode: OperationTypeCodeEnum;
+  LoanAmount: number;
+  EffectiveDate: DateString;
+  MaturityDate: DateString;
+  ProductGroupCode: ProductTypeGroupEnum;
+  ProductTypeCode: ProductTypeIdEnum;
+  SpreadRate: number;
+  SpreadRateCTL: number;
+  YearBasisCode: string;
+  IndexRateChangeFrequencyCode: string;
+  NextDueDate: DateString;
+  LoanBillingFrequencyTypeCode: string;
 }
 
 interface GenerateOptions {
