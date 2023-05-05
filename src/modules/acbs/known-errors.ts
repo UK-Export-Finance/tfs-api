@@ -29,7 +29,7 @@ export const getFacilityNotFoundKnownAcbsError = (facilityIdentifier: string): K
 
 // TODO: allow multiple strings for same error and then merge with getFacilityNotFoundKnownAcbsError.
 export const postFacilityNotFoundKnownAcbsError = (facilityIdentifier: string): KnownError => ({
-  substringToFind: 'Facility does not exist',
+  caseInsensitiveSubstringToFind: 'Facility does not exist',
   throwError: (error) => {
     throw new AcbsResourceNotFoundException(`Facility with identifier ${facilityIdentifier} was not found by ACBS.`, error);
   },
