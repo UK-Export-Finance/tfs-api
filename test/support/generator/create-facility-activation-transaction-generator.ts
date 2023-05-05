@@ -22,9 +22,9 @@ export class CreateFacilityActivationTransactionGenerator extends AbstractGenera
   }
 
   protected generateValues(): CreateFacilityActivationTransactionRequestItem {
-    const possibleBundleStatuses = Object.values(ENUMS.BUNDLE_STATUSES);
+    // Numeric enums needs filter to get possible values.
+    const possibleBundleStatuses = Object.values(ENUMS.BUNDLE_STATUSES).filter((value) => !isNaN(Number(value)));
     const possibleLenderTypes = Object.values(ENUMS.LENDER_TYPE_CODES);
-
     return {
       facilityIdentifier: this.valueGenerator.ukefId(),
       initialBundleStatusCode: possibleBundleStatuses[this.valueGenerator.integer({ min: 0, max: possibleBundleStatuses.length - 1 })] as number,

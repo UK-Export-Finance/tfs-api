@@ -15,6 +15,7 @@ export class CreateFacilityActivationTransactionRequestItem {
   @ValidatedNumberApiProperty({
     description: 'In most situations value should be 3, it means auto approval.',
     example: ENUMS.BUNDLE_STATUSES.SUBMIT_FOR_POSTING,
+    minimum: 0,
     enum: ENUMS.BUNDLE_STATUSES,
   })
   readonly initialBundleStatusCode: number;
@@ -22,6 +23,7 @@ export class CreateFacilityActivationTransactionRequestItem {
   @ValidatedStringApiProperty({
     description: 'In most situations value should be 100, it means first level obligor.',
     example: ENUMS.LENDER_TYPE_CODES.FIRST_LEVEL_OBLIGOR,
+    length: 3,
     enum: ENUMS.LENDER_TYPE_CODES,
   })
   readonly lenderTypeCode: string;

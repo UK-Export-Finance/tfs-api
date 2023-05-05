@@ -1,9 +1,11 @@
-import { PROPERTIES } from '@ukef/constants';
+import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { AcbsGetFacilityResponseDto } from '@ukef/modules/acbs/dto/acbs-get-facility-response.dto';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
 import { withFacilityIdentifierFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/facility-identifier-field-validation-api-tests';
+import { withNonNegativeNumberFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/non-negative-number-field-validation-api-tests';
+import { withStringFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/string-field-validation-api-tests';
 import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
 import { CreateFacilityActivationTransactionGenerator } from '@ukef-test/support/generator/create-facility-activation-transaction-generator';
@@ -209,6 +211,8 @@ describe('POST /facilities/{facilityIdentifier}/activation-transactions', () => 
 
   describe('field validation', () => {
     const makeRequest = (body: unknown[]) => api.post(createFacilityActivationTransactionUrl, body);
+    const possibleLenderTypeCode = Object.values(ENUMS.LENDER_TYPE_CODES);
+
     const givenAnyRequestBodyWouldSucceed = () => {
       givenAuthenticationWithTheIdpSucceeds();
       givenRequestToGetFacilityFromAcbsSucceeds();
@@ -217,6 +221,28 @@ describe('POST /facilities/{facilityIdentifier}/activation-transactions', () => 
 
     withFacilityIdentifierFieldValidationApiTests({
       valueGenerator,
+      validRequestBody: requestBodyToCreateFacilityActivationTransaction,
+      makeRequest,
+      givenAnyRequestBodyWouldSucceed,
+    });
+
+    withStringFieldValidationApiTests({
+      fieldName: 'lenderTypeCode',
+      enum: ENUMS.LENDER_TYPE_CODES,
+      length: 3,
+      generateFieldValueOfLength: (length: number) =>
+        length === 3 ? possibleLenderTypeCode[valueGenerator.integer({ min: 0, max: possibleLenderTypeCode.length - 1 })] : valueGenerator.string({ length }),
+      generateFieldValueThatDoesNotMatchEnum: () => '123',
+      validRequestBody: requestBodyToCreateFacilityActivationTransaction,
+      makeRequest,
+      givenAnyRequestBodyWouldSucceed,
+    });
+
+    // TODO: Add Enum support to Numeric field validation, add Enum check for initialBundleStatusCode, enable code bellow.
+    withNonNegativeNumberFieldValidationApiTests({
+      fieldName: 'initialBundleStatusCode',
+      enum: ENUMS.BUNDLE_STATUSES,
+      generateFieldValueThatDoesNotMatchEnum: () => 5,
       validRequestBody: requestBodyToCreateFacilityActivationTransaction,
       makeRequest,
       givenAnyRequestBodyWouldSucceed,

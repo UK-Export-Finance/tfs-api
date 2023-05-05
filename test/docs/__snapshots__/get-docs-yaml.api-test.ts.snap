@@ -897,6 +897,7 @@ components:
         initialBundleStatusCode:
           type: number
           description: In most situations value should be 3, it means auto approval.
+          minimum: 0
           example: 3
           enum:
             - 1
@@ -907,7 +908,8 @@ components:
           description: >-
             In most situations value should be 100, it means first level
             obligor.
-          minLength: 0
+          minLength: 3
+          maxLength: 3
           enum:
             - '100'
             - '500'
