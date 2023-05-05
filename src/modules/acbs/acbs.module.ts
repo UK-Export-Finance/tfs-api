@@ -12,6 +12,7 @@ import { AcbsFacilityCovenantService } from './acbs-facility-covenant.service';
 import { AcbsFacilityFixedFeeService } from './acbs-facility-fixed-fee.service';
 import { AcbsFacilityGuaranteeService } from './acbs-facility-guarantee.service';
 import { AcbsFacilityLoanService } from './acbs-facility-loan.service';
+import { AcbsFacilityLoanTransactionService } from './acbs-facility-loan-transaction.service';
 import { AcbsFacilityPartyService } from './acbs-facility-party.service';
 import { AcbsPartyService } from './acbs-party.service';
 import { AcbsPartyExternalRatingService } from './acbs-party-external-rating.service';
@@ -41,6 +42,7 @@ import { AcbsPartyExternalRatingService } from './acbs-party-external-rating.ser
     AcbsFacilityGuaranteeService,
     AcbsFacilityLoanService,
     AcbsFacilityPartyService,
+    AcbsFacilityLoanTransactionService,
   ],
   exports: [
     AcbsAuthenticationModule,
@@ -56,6 +58,7 @@ import { AcbsPartyExternalRatingService } from './acbs-party-external-rating.ser
     AcbsFacilityGuaranteeService,
     AcbsFacilityLoanService,
     AcbsFacilityPartyService,
+    AcbsFacilityLoanTransactionService,
   ],
 })
 export class AcbsModule {}

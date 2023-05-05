@@ -618,6 +618,41 @@ paths:
           description: The specified party was not found.
         '500':
           description: An internal server error has occurred.
+  /api/v1/facilities/{facilityIdentifier}/loan-transactions/{bundleIdentifier}:
+    get:
+      operationId: FacilityLoanTransactionController_getLoanTransactionByBundleIdentifier
+      summary: Get the loan transaction matching the specified bundle identifier.
+      parameters:
+        - name: facilityIdentifier
+          required: true
+          in: path
+          description: The identifier of the facility in ACBS.
+          example: '0030000322'
+          schema:
+            minLength: 10
+            maxLength: 10
+            pattern: ^\\d{10}$
+            type: string
+        - name: bundleIdentifier
+          required: true
+          in: path
+          description: The bundle identifier of the loan transaction in ACBS.
+          example: '0000233092'
+          schema:
+            minLength: 9
+            maxLength: 9
+            type: string
+      responses:
+        '200':
+          description: The loan transaction has been successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetFacilityLoanTransactionResponseItem'
+        '404':
+          description: The specified loan transaction was not found.
+        '500':
+          description: An internal server error has occurred.
 info:
   title: TFS API Specification
   description: TFS API documentation
@@ -2099,6 +2134,167 @@ components:
         - citizenshipClass
         - officerRiskDate
         - countryCode
+    GetFacilityLoanTransactionResponseItem:
+      type: object
+      properties:
+        portfolioIdentifier:
+          type: string
+          description: The identifier of the portfolio in ACBS. The UKEF portfolio is E1.
+          minLength: 0
+          maxLength: 2
+          example: E1
+          default: E1
+        bundleStatusCode:
+          type: string
+          description: A numeric code denoting the status of the bundle.
+          minLength: 0
+          maxLength: 2
+          example: '10'
+        bundleStatusDesc:
+          type: string
+          description: >-
+            A description of the status of the bundle corresponding to the
+            bundle status code.
+          minLength: 0
+          maxLength: 20
+          example: Pending Input With Drafts
+        postingDate:
+          format: date
+          type: string
+          description: >-
+            The date when the bundle will be posted. It cannot be before the
+            current processing date.
+          example: '2023-04-29'
+        facilityIdentifier:
+          type: string
+          description: The identifier of the facility in ACBS.
+          minLength: 10
+          maxLength: 10
+          example: '0030000322'
+        borrowerPartyIdentifier:
+          type: string
+          description: The identifier of the loan borrower in ACBS.
+          minLength: 8
+          maxLength: 8
+          example: '00001234'
+        productTypeId:
+          type: string
+          description: >-
+            The product type identifier for the loan: 250 for BSS, 260 for EWCS,
+            280 for GEF-Cash, 281 for GEF-Contingent. It is called the product
+            type code in ACBS.
+          example: '250'
+        productTypeGroup:
+          type: string
+          description: >-
+            The product type group identifier for the loan: EW for EWCS, BS for
+            Bond, GM for GEF. It is called the product group code in ACBS.
+          example: EW
+        currency:
+          type: string
+          description: The currency code for the loan.
+          minLength: 3
+          maxLength: 3
+          example: USD
+        dealCustomerUsageRate:
+          type: number
+          description: >-
+            The exchange rate between the loan currency and the deal currency.
+            It is only applicable when the loan currency differs from the
+            facility currency.
+          example: 1
+        dealCustomerUsageOperationType:
+          type: string
+          description: >-
+            This represents the operand (M for multiply or D for divide) used to
+            convert the amounts. It is only applicable when the loan currency
+            differs from the facility currency.
+          minLength: 0
+          maxLength: 1
+          example: 1
+        amount:
+          type: number
+          description: The amount of the loan. It is called loan amount in ACBS.
+          example: 1110
+        issueDate:
+          format: date
+          type: string
+          description: >-
+            The issue date for the loan. It is called the effective date in
+            ACBS.
+          example: '2023-04-29'
+        expiryDate:
+          format: date
+          type: string
+          description: >-
+            The expiry date for the loan. It is called the maturity date in
+            ACBS.
+          example: '2023-04-29'
+        spreadRate:
+          type: number
+          description: >-
+            The spread rate of the PAC accrual schedule to factor into the
+            all-in rate if a rate calculation method is selected that includes
+            the spread rate in the calculation.
+          example: 80.000051
+        spreadRateCTL:
+          type: number
+          description: >-
+            The spread rate of the CTL accrual schedule to factor into the
+            all-in rate if a rate calculation method is selected that includes
+            the spread rate in the calculation.
+          example: 80.000051
+        yearBasis:
+          type: string
+          description: A code denoting the year basis for the accrual schedule.
+          minLength: 0
+          maxLength: 1
+          example: '1'
+        nextDueDate:
+          format: date
+          type: string
+          description: >-
+            The date the next payment will be due for the loan repayment
+            schedule.
+          example: '2023-04-29'
+        indexRateChangeFrequency:
+          type: string
+          description: >-
+            A code denoting the index rate change frequency, which is used by
+            ACBS to determine the frequency at which the rate should change when
+            the change timing is set to 'On Anniversary'.
+          minLength: 0
+          maxLength: 1
+        loanBillingFrequencyType:
+          type: string
+          description: >-
+            A code denoting the loan billing frequency type, which is used by
+            ACBS to determine the frequency at which the bills should be
+            generated.
+          minLength: 0
+          maxLength: 1
+          example: C
+      required:
+        - portfolioIdentifier
+        - bundleStatusCode
+        - bundleStatusDesc
+        - postingDate
+        - facilityIdentifier
+        - borrowerPartyIdentifier
+        - productTypeId
+        - productTypeGroup
+        - currency
+        - dealCustomerUsageRate
+        - dealCustomerUsageOperationType
+        - amount
+        - issueDate
+        - expiryDate
+        - spreadRate
+        - spreadRateCTL
+        - yearBasis
+        - nextDueDate
+        - indexRateChangeFrequency
+        - loanBillingFrequencyType
 security:
   - ApiKeyHeader: []
 "

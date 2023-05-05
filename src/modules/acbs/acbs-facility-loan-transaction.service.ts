@@ -1,25 +1,34 @@
 import { HttpService } from '@nestjs/axios';
-import { Inject } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { ConfigType } from '@nestjs/config';
 import AcbsConfig from '@ukef/config/acbs.config';
 
-import { AcbsConfigBaseUrl } from './acbs-config-base-url.type';
 import { AcbsHttpService } from './acbs-http.service';
-import { AcbsGetFacilityLoanTransactionResponseDto } from './dto/acbs-get-facility-loan-transaction-response.dto';
+import { AcbsGetFacilityLoanTransactionResponseItem } from './dto/acbs-get-facility-loan-transaction-response.dto';
+import { getLoanTransactionNotFoundKnownAcbsError } from './known-errors';
+import { createWrapAcbsHttpGetErrorCallback } from './wrap-acbs-http-error-callback';
 
+@Injectable()
 export class AcbsFacilityLoanTransactionService {
   private readonly acbsHttpService: AcbsHttpService;
 
-  constructor(@Inject(AcbsConfig.KEY) config: AcbsConfigBaseUrl, httpService: HttpService) {
+  constructor(
+    @Inject(AcbsConfig.KEY)
+    config: Pick<ConfigType<typeof AcbsConfig>, 'baseUrl'>,
+    httpService: HttpService,
+  ) {
     this.acbsHttpService = new AcbsHttpService(config, httpService);
   }
 
-  async getLoanTransactionsForFacility(
-    portfolioIdentifier: string,
-    facilityIdentifier: string,
-    idToken: string,
-  ): Promise<AcbsGetFacilityLoanTransactionResponseDto> {
-    portfolioIdentifier + facilityIdentifier + idToken;
-    const loanTransactions = [];
-    return await loanTransactions;
+  async getLoanTransactionByBundleIdentifier(bundleIdentifier: string, idToken: string): Promise<AcbsGetFacilityLoanTransactionResponseItem> {
+    const { data: loanTransaction } = await this.acbsHttpService.get<AcbsGetFacilityLoanTransactionResponseItem>({
+      path: `/BundleInformation/${bundleIdentifier}?returnItems=true`,
+      idToken,
+      onError: createWrapAcbsHttpGetErrorCallback({
+        messageForUnknownError: `Failed to get the loan transaction with bundle identifier ${bundleIdentifier}.`,
+        knownErrors: [getLoanTransactionNotFoundKnownAcbsError(bundleIdentifier)],
+      }),
+    });
+    return loanTransaction;
   }
 }
