@@ -238,7 +238,6 @@ describe('POST /facilities/{facilityIdentifier}/activation-transactions', () => 
       givenAnyRequestBodyWouldSucceed,
     });
 
-    // TODO: Add Enum support to Numeric field validation, add Enum check for initialBundleStatusCode, enable code bellow.
     withNonNegativeNumberFieldValidationApiTests({
       fieldName: 'initialBundleStatusCode',
       enum: ENUMS.BUNDLE_STATUSES,
