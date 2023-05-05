@@ -82,20 +82,20 @@ export class RandomValueGenerator {
 
   // UKEF id example 0030000321. It should be used for Deal and Facility IDs.
   ukefId(lengthExcludingPrefix?: number): UkefId {
-    return (UKEFID.MAIN_ID.PREFIX.DEV + this.stringOfNumericCharacters({ length: lengthExcludingPrefix ?? 6 })) as UkefId;
+    return UKEFID.MAIN_ID.PREFIX.DEV.concat(this.stringOfNumericCharacters({ length: lengthExcludingPrefix ?? 6 })) as UkefId;
   }
 
   // UKEF Covenant id example 0000123456.
   ukefCovenantId(lengthExcludingPrefix?: number): UkefCovenantId {
-    return (UKEFID.COVENANT_ID.PREFIX + this.stringOfNumericCharacters({ length: lengthExcludingPrefix ?? 6 })) as UkefCovenantId;
+    return UKEFID.COVENANT_ID.PREFIX.concat(this.stringOfNumericCharacters({ length: lengthExcludingPrefix ?? 6 })) as UkefCovenantId;
   }
 
   acbsPartyId(lengthExcludingPrefix?: number): AcbsPartyId {
-    return (ACBSID.PARTY_ID.PREFIX + this.stringOfNumericCharacters({ length: lengthExcludingPrefix ?? 6 })) as AcbsPartyId;
+    return ACBSID.PARTY_ID.PREFIX.concat(this.stringOfNumericCharacters({ length: lengthExcludingPrefix ?? 6 })) as AcbsPartyId;
   }
 
   acbsBundleId(lengthExcludingPrefix?: number): AcbsBundleId {
-    return (ACBSID.BUNDLE_ID.PREFIX + this.stringOfNumericCharacters({ length: lengthExcludingPrefix ?? 6 })) as AcbsBundleId;
+    return ACBSID.BUNDLE_ID.PREFIX.concat(this.stringOfNumericCharacters({ length: lengthExcludingPrefix ?? 6 })) as AcbsBundleId;
   }
 
   dateTimeString(): DateString {
