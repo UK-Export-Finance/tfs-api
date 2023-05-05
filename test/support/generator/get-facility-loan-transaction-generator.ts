@@ -1,17 +1,17 @@
-import { ENUMS } from '@ukef/constants';
+import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { OperationTypeCodeEnum } from '@ukef/constants/enums/operation-type-code';
 import { ProductTypeGroupEnum } from '@ukef/constants/enums/product-type-group';
 import { ProductTypeIdEnum } from '@ukef/constants/enums/product-type-id';
 import { AcbsPartyId, DateString, UkefId } from '@ukef/helpers';
 import { AcbsGetFacilityLoanTransactionResponseDto } from '@ukef/modules/acbs/dto/acbs-get-facility-loan-transaction-response.dto';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
-import { GetFacilityLoanTransactionResponseDto } from '@ukef/modules/facility-loan-transaction/get-loan-transaction-response.dto';
+import { GetFacilityLoanTransactionResponseDto } from '@ukef/modules/facility-loan-transaction/dto/get-loan-transaction-response.dto';
 
 import { TEST_CURRENCIES } from '../constants/test-currency.constant';
 import { AbstractGenerator } from './abstract-generator';
 import { RandomValueGenerator } from './random-value-generator';
 
-export class GetFacilityLoanGenerator extends AbstractGenerator<FacilityLoanTransactionValues, GenerateResult, GenerateOptions> {
+export class GetFacilityLoanTransactionGenerator extends AbstractGenerator<FacilityLoanTransactionValues, GenerateResult, GenerateOptions> {
   constructor(protected readonly valueGenerator: RandomValueGenerator, protected readonly dateStringTransformations: DateStringTransformations) {
     super(valueGenerator);
   }
@@ -44,61 +44,80 @@ export class GetFacilityLoanGenerator extends AbstractGenerator<FacilityLoanTran
   }
 
   protected transformRawValuesToGeneratedValues(
-    values: FacilityLoanTransactionValues[],
+    valuesList: FacilityLoanTransactionValues[],
     { facilityIdentifier, portfolioIdentifier }: GenerateOptions,
   ): GenerateResult {
-    const facilityLoanTransactionsInAcbs: AcbsGetFacilityLoanTransactionResponseDto = values.map((v) => ({
+    const facilityLoanTransactionsInAcbs: AcbsGetFacilityLoanTransactionResponseDto = valuesList.map((values) => ({
       PortfolioIdentifier: portfolioIdentifier,
       BundleStatus: {
-        BundleStatusCode: v.BundleStatusCode,
-        BundleStatusShortDescription: v.BundleStatusShortDescription,
+        BundleStatusCode: values.BundleStatusCode,
+        BundleStatusShortDescription: values.BundleStatusShortDescription,
       },
-      PostingDate: v.PostingDate,
+      PostingDate: values.PostingDate,
       BundleMessageList: [
         {
+          $type: 'NewLoanRequest',
           FacilityIdentifier: facilityIdentifier,
-          BorrowerPartyIdentifier: v.BorrowerPartyIdentifier,
+          BorrowerPartyIdentifier: values.BorrowerPartyIdentifier,
           Currency: {
-            CurrencyCode: v.CurrencyCode,
+            CurrencyCode: values.CurrencyCode,
           },
-          DealCustomerUsageRate: v.DealCustomerUsageRate,
+          DealCustomerUsageRate: values.DealCustomerUsageRate,
           DealCustomerUsageOperationType: {
-            OperationTypeCode: v.OperationTypeCode,
+            OperationTypeCode: values.OperationTypeCode,
           },
-          LoanAmount: v.LoanAmount,
-          EffectiveDate: v.EffectiveDate,
-          MaturityDate: v.MaturityDate,
+          LoanAmount: values.LoanAmount,
+          EffectiveDate: values.EffectiveDate,
+          MaturityDate: values.MaturityDate,
           ProductGroup: {
-            ProductGroupCode: v.ProductGroupCode,
+            ProductGroupCode: values.ProductGroupCode,
           },
           ProductType: {
-            ProductTypeCode: v.ProductTypeCode,
+            ProductTypeCode: values.ProductTypeCode,
           },
           AccrualScheduleList: [
             {
+              AccrualCategory: {
+                AccrualCategoryCode: '',
+              },
+              SpreadRate: 0,
               YearBasis: {
-                YearBasisCode: v.YearBasisCode,
+                YearBasisCode: values.YearBasisCode,
+              },
+              IndexRateChangeFrequency: {
+                IndexRateChangeFrequencyCode: '',
               },
             },
             {
               AccrualCategory: {
-                AccrualCategoryCode: 'PAC01', // TODO: constant
+                AccrualCategoryCode: PROPERTIES.FACILITY_LOAN_TRANSACTION.DEFAULT.bundleMessageList.accrualScheduleList.accrualCategory.accrualCategoryCode.pac,
               },
-              SpreadRate: v.SpreadRate,
-              IndexRateChangeFrequency: { IndexRateChangeFrequencyCode: v.IndexRateChangeFrequencyCode },
+              SpreadRate: values.SpreadRate,
+              YearBasis: {
+                YearBasisCode: '',
+              },
+              IndexRateChangeFrequency: {
+                IndexRateChangeFrequencyCode: values.IndexRateChangeFrequencyCode,
+              },
             },
             {
               AccrualCategory: {
-                AccrualCategoryCode: 'CTL01', // TODO: constant
+                AccrualCategoryCode: PROPERTIES.FACILITY_LOAN_TRANSACTION.DEFAULT.bundleMessageList.accrualScheduleList.accrualCategory.accrualCategoryCode.ctl,
               },
-              SpreadRate: v.SpreadRateCTL,
+              SpreadRate: values.SpreadRateCTL,
+              YearBasis: {
+                YearBasisCode: '',
+              },
+              IndexRateChangeFrequency: {
+                IndexRateChangeFrequencyCode: '',
+              },
             },
           ],
           RepaymentScheduleList: [
             {
-              NextDueDate: v.NextDueDate,
+              NextDueDate: values.NextDueDate,
               LoanBillingFrequencyType: {
-                LoanBillingFrequencyTypeCode: v.LoanBillingFrequencyTypeCode,
+                LoanBillingFrequencyTypeCode: values.LoanBillingFrequencyTypeCode,
               },
             },
           ],
@@ -106,27 +125,27 @@ export class GetFacilityLoanGenerator extends AbstractGenerator<FacilityLoanTran
       ],
     }));
 
-    const facilityLoanTransactionsFromApi = values.map((v) => ({
+    const facilityLoanTransactionsFromApi = valuesList.map((values) => ({
       portfolioIdentifier: portfolioIdentifier,
-      bundleStatusCode: v.BundleStatusCode,
-      bundleStatusDesc: v.BundleStatusShortDescription,
-      postingDate: this.dateStringTransformations.removeTime(v.PostingDate),
+      bundleStatusCode: values.BundleStatusCode,
+      bundleStatusDesc: values.BundleStatusShortDescription,
+      postingDate: this.dateStringTransformations.removeTime(values.PostingDate),
       facilityIdentifier: facilityIdentifier,
-      borrowerPartyIdentifier: v.BorrowerPartyIdentifier,
-      productTypeId: v.ProductTypeCode,
-      productTypeGroup: v.ProductTypeCode,
-      currency: v.CurrencyCode,
-      dealCustomerUsageRate: v.DealCustomerUsageRate,
-      dealCustomerUsageOperationType: v.OperationTypeCode,
-      amount: v.LoanAmount,
-      issueDate: this.dateStringTransformations.removeTime(v.EffectiveDate),
-      expiryDate: this.dateStringTransformations.removeTime(v.MaturityDate),
-      spreadRate: v.SpreadRate,
-      spreadRateCTL: v.SpreadRateCTL,
-      yearBasis: v.YearBasisCode,
-      nextDueDate: this.dateStringTransformations.removeTime(v.NextDueDate),
-      indexRateChangeFrequency: v.IndexRateChangeFrequencyCode,
-      loanBillingFrequencyType: v.LoanBillingFrequencyTypeCode,
+      borrowerPartyIdentifier: values.BorrowerPartyIdentifier,
+      productTypeId: values.ProductTypeCode,
+      productTypeGroup: values.ProductGroupCode,
+      currency: values.CurrencyCode,
+      dealCustomerUsageRate: values.DealCustomerUsageRate,
+      dealCustomerUsageOperationType: values.OperationTypeCode,
+      amount: values.LoanAmount,
+      issueDate: this.dateStringTransformations.removeTime(values.EffectiveDate),
+      expiryDate: this.dateStringTransformations.removeTime(values.MaturityDate),
+      spreadRate: values.SpreadRate,
+      spreadRateCTL: values.SpreadRateCTL,
+      yearBasis: values.YearBasisCode,
+      nextDueDate: this.dateStringTransformations.removeTime(values.NextDueDate),
+      indexRateChangeFrequency: values.IndexRateChangeFrequencyCode,
+      loanBillingFrequencyType: values.LoanBillingFrequencyTypeCode,
     }));
 
     return {
