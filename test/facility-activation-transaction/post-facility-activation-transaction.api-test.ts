@@ -158,7 +158,7 @@ describe('POST /facilities/{facilityIdentifier}/activation-transactions', () => 
       givenRequestToGetFacilityFromAcbsSucceeds();
     });
 
-    it('returns a 404 response if ACBS responds with a 400 response that is a string containing "Facility not found" when creating the facility activation transaction', async () => {
+    it('returns a 404 response if ACBS responds with a 400 response that is a string containing "Facility does not exist" when creating the facility activation transaction', async () => {
       requestToCreateFacilityActivationTransaction().reply(400, `Facility does not exist or user does not have access to it: '${facilityIdentifier}'`);
 
       const { status, body } = await api.post(createFacilityActivationTransactionUrl, requestBodyToCreateFacilityActivationTransaction);
@@ -177,7 +177,7 @@ describe('POST /facilities/{facilityIdentifier}/activation-transactions', () => 
       expect(body).toStrictEqual({ message: 'Bad request', error: acbsErrorMessage, statusCode: 400 });
     });
 
-    it('returns a 400 response if ACBS responds with a 400 response that is a string that does not contain "Facility not found" when creating the facility activation transaction', async () => {
+    it('returns a 400 response if ACBS responds with a 400 response that is a string that does not contain "Facility does not exist" when creating the facility activation transaction', async () => {
       const acbsErrorMessage = 'ACBS error message';
       requestToCreateFacilityActivationTransaction().reply(400, acbsErrorMessage);
 

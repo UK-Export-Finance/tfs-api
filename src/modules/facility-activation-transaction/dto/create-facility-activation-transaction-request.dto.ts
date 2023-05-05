@@ -13,15 +13,16 @@ export class CreateFacilityActivationTransactionRequestItem {
   readonly facilityIdentifier: UkefId;
 
   @ValidatedNumberApiProperty({
-    description: 'In most situations value should be 3, it means auto approval.',
+    description: 'In most situations the value should be 3, it means auto approval.',
     example: ENUMS.BUNDLE_STATUSES.SUBMIT_FOR_POSTING,
+    // TODO: remove minimum and fix api-test helper to not fail.
     minimum: 0,
     enum: ENUMS.BUNDLE_STATUSES,
   })
   readonly initialBundleStatusCode: number;
 
   @ValidatedStringApiProperty({
-    description: 'In most situations value should be 100, it means first level obligor.',
+    description: 'In most situations the value should be 100, it means first level obligor.',
     example: ENUMS.LENDER_TYPE_CODES.FIRST_LEVEL_OBLIGOR,
     length: 3,
     enum: ENUMS.LENDER_TYPE_CODES,
