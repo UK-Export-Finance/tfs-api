@@ -10,6 +10,7 @@ import { AcbsDealPartyService } from './acbs-deal-party.service';
 import { AcbsFacilityService } from './acbs-facility.service';
 import { AcbsFacilityCovenantService } from './acbs-facility-covenant.service';
 import { AcbsFacilityGuaranteeService } from './acbs-facility-guarantee.service';
+import { AcbsFacilityLoanService } from './acbs-facility-loan.service';
 import { AcbsFacilityPartyService } from './acbs-facility-party.service';
 import { AcbsPartyService } from './acbs-party.service';
 import { AcbsPartyExternalRatingService } from './acbs-party-external-rating.service';
@@ -36,6 +37,7 @@ import { AcbsPartyExternalRatingService } from './acbs-party-external-rating.ser
     AcbsFacilityService,
     AcbsFacilityCovenantService,
     AcbsFacilityGuaranteeService,
+    AcbsFacilityLoanService,
     AcbsFacilityPartyService,
   ],
   exports: [
@@ -49,6 +51,7 @@ import { AcbsPartyExternalRatingService } from './acbs-party-external-rating.ser
     AcbsFacilityService,
     AcbsFacilityCovenantService,
     AcbsFacilityGuaranteeService,
+    AcbsFacilityLoanService,
     AcbsFacilityPartyService,
   ],
 })

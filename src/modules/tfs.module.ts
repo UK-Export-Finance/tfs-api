@@ -11,6 +11,7 @@ import { FacilityActivationTransactionModule } from '@ukef/modules/facility-acti
 import { FacilityCovenantModule } from '@ukef/modules/facility-covenant/facility-covenant.module';
 import { FacilityGuaranteeModule } from '@ukef/modules/facility-guarantee/facility-guarantee.module';
 import { FacilityInvestorModule } from '@ukef/modules/facility-investor/facility-investor.module';
+import { FacilityLoanModule } from '@ukef/modules/facility-loan/facility-loan.module';
 import { PartyModule } from '@ukef/modules/party/party.module';
 import { PartyExternalRatingModule } from '@ukef/modules/party-external-rating/party-external-rating.module';
 
@@ -26,6 +27,7 @@ import { PartyExternalRatingModule } from '@ukef/modules/party-external-rating/p
     FacilityCovenantModule,
     FacilityGuaranteeModule,
     FacilityInvestorModule,
+    FacilityLoanModule,
     PartyExternalRatingModule,
     PartyModule,
   ],

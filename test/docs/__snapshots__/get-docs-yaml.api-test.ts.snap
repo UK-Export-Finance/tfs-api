@@ -448,6 +448,36 @@ paths:
           description: The facility was not found.
         '500':
           description: An internal server error has occurred.
+  /api/v1/facilities/{facilityIdentifier}/loans:
+    get:
+      operationId: FacilityLoanController_getLoansForFacility
+      summary: Get all loans for a facility.
+      parameters:
+        - name: facilityIdentifier
+          required: true
+          in: path
+          description: The identifier of the facility in ACBS.
+          example: '0030000322'
+          schema:
+            minLength: 10
+            maxLength: 10
+            pattern: ^00\\d{8}$
+            type: string
+      responses:
+        '200':
+          description: The loans for the facility have been retrieved.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GetFacilityLoanResponseItem'
+        '400':
+          description: The specified facilityIdentifier is not valid.
+        '404':
+          description: The facility was not found.
+        '500':
+          description: An internal server error has occurred.
   /api/v1/parties/{partyIdentifier}/external-ratings:
     get:
       operationId: PartyExternalRatingController_getExternalRatingsForParty
@@ -1642,6 +1672,81 @@ components:
         - maximumLiability
         - lenderTypeCode
         - involvedParty
+    GetFacilityLoanResponseItem:
+      type: object
+      properties:
+        portfolioIdentifier:
+          type: string
+          description: >-
+            The identifier of the portfolio in ACBS. The UKEF portfolio is E1.
+            The maximum number of characters allowed is 2.
+        loanIdentifier:
+          type: string
+          description: The identifier of the loan in ACBS. This will be a 9-digit code.
+        facilityIdentifier:
+          type: string
+          description: >-
+            The identifier of the facility in ACBS. This will be a 10-digit
+            code.
+        borrowerPartyIdentifier:
+          type: string
+          description: >-
+            The identifier of the loan borrower in ACBS. This will be a 8-digit
+            code.
+        productTypeId:
+          type: string
+          description: >-
+            The product type identifier: 250 for BSS, 260 for EWCS, 280 for
+            GEF-Cash, 281 for GEF-Contingent. It is called the product type code
+            in ACBS.
+        productTypeGroup:
+          type: string
+          description: >-
+            The product type group identifier: EW for EWCS, BS for Bond, GM for
+            GEF. It is called the product group code in ACBS.
+        currency:
+          type: string
+          description: The 3-character currency code for the loan.
+        issueDate:
+          format: date
+          type: string
+          description: >-
+            The issue date for the loan. It is called the effective date in
+            ACBS.
+        expiryDate:
+          format: date
+          type: string
+          description: >-
+            The expiry date for the loan. It is called the maturity date in
+            ACBS.
+        principalBalance:
+          type: number
+          description: >-
+            The loan amount used during loan creation. This value goes down
+            after each fee and may be affected by other factors.
+        interestBalance:
+          type: number
+        feeBalance:
+          type: number
+        otherBalance:
+          type: number
+        discountedPrincipal:
+          type: number
+      required:
+        - portfolioIdentifier
+        - loanIdentifier
+        - facilityIdentifier
+        - borrowerPartyIdentifier
+        - productTypeId
+        - productTypeGroup
+        - currency
+        - issueDate
+        - expiryDate
+        - principalBalance
+        - interestBalance
+        - feeBalance
+        - otherBalance
+        - discountedPrincipal
     GetPartyExternalRatingResponseRatingEntity:
       type: object
       properties:

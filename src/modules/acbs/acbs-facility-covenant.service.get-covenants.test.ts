@@ -77,9 +77,9 @@ describe('AcbsFacilityCovenantService', () => {
           }),
         );
 
-      const guarantees = await service.getCovenantsForFacility(portfolioIdentifier, facilityIdentifier, idToken);
+      const covenants = await service.getCovenantsForFacility(portfolioIdentifier, facilityIdentifier, idToken);
 
-      expect(guarantees).toStrictEqual([]);
+      expect(covenants).toStrictEqual([]);
     });
 
     it('throws an AcbsException if the request to ACBS fails', async () => {
