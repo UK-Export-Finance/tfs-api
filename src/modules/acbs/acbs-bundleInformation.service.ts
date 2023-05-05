@@ -31,7 +31,7 @@ export class AcbsBundleInformationService {
         knownErrors: [postFacilityNotFoundKnownAcbsError(newBundleInformation.BundleMessageList[0].FacilityIdentifier)],
       }),
     });
-
+    // TODO: ACBS might create bundle but fail to process it. In this case it will return header "Processing-Warning" and we should handle it.
     return { BundleIdentifier: postResponse.headers.bundleidentifier };
   }
 }

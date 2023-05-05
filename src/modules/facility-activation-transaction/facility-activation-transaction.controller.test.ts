@@ -14,7 +14,6 @@ describe('FacilityActivationTransactionController', () => {
   const bundleIdentifier = valueGenerator.acbsBundleId();
   const borrowerPartyIdentifier = valueGenerator.acbsPartyId();
   const effectiveDate = valueGenerator.dateOnlyString();
-  //const effectiveDateOnly = dateStringTransformations.removeTime(effectiveDate);
   const obligorPartyIdentifier = valueGenerator.acbsPartyId();
 
   let facilityActivationTransactionService: FacilityActivationTransactionService;
