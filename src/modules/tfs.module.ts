@@ -15,6 +15,7 @@ import { FacilityInvestorModule } from '@ukef/modules/facility-investor/facility
 import { FacilityLoanModule } from '@ukef/modules/facility-loan/facility-loan.module';
 import { PartyModule } from '@ukef/modules/party/party.module';
 import { PartyExternalRatingModule } from '@ukef/modules/party-external-rating/party-external-rating.module';
+
 import { FacilityLoanTransactionModule } from './facility-loan-transaction/facility-loan-transaction.module';
 
 @Module({

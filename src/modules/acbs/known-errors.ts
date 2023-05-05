@@ -36,7 +36,7 @@ export const postFacilityNotFoundKnownAcbsError = (facilityIdentifier: string): 
 });
 
 export const getLoanTransactionNotFoundKnownAcbsError = (bundleIdentifier: string): KnownError => ({
-  substringToFind: 'BundleInformation not found',
+  caseInsensitiveSubstringToFind: 'BundleInformation not found',
   throwError: (error) => {
     throw new AcbsResourceNotFoundException(`Loan transaction with bundle identifier ${bundleIdentifier} was not found by ACBS.`, error);
   },
