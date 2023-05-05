@@ -13,8 +13,8 @@ export const createWrapAcbsHttpGetErrorCallback =
   (error: Error) => {
     if (error instanceof AxiosError && error.response && typeof error.response.data === 'string') {
       const errorMessageInLowerCase = error.response.data.toLowerCase();
-      knownErrors.forEach(({ substringToFind, throwError }) => {
-        if (errorMessageInLowerCase.includes(substringToFind.toLowerCase())) {
+      knownErrors.forEach(({ caseInsensitiveSubstringToFind, throwError }) => {
+        if (errorMessageInLowerCase.includes(caseInsensitiveSubstringToFind.toLowerCase())) {
           return throwError(error);
         }
       });
@@ -32,8 +32,8 @@ export const createWrapAcbsHttpPostErrorCallback =
 
     if (typeof error.response.data === 'string') {
       const errorMessageInLowerCase = error.response.data.toLowerCase();
-      knownErrors.forEach(({ substringToFind, throwError }) => {
-        if (errorMessageInLowerCase.includes(substringToFind.toLowerCase())) {
+      knownErrors.forEach(({ caseInsensitiveSubstringToFind, throwError }) => {
+        if (errorMessageInLowerCase.includes(caseInsensitiveSubstringToFind.toLowerCase())) {
           return throwError(error);
         }
       });
