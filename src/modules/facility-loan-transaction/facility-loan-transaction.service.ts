@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PROPERTIES } from '@ukef/constants';
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
@@ -25,7 +25,7 @@ export class FacilityLoanTransactionService {
     return loanTransactionsInAcbs.map((loanTransaction) => {
       const loan = loanTransaction.BundleMessageList[0];
       if (loan.$type !== 'NewLoanRequest') {
-        throw new Error('');
+        throw new BadRequestException('Bad request', 'The provided bundleIdentifier does not correspond to a loan transaction.');
       }
       const pacAccrual = loan.AccrualScheduleList.find((accrual) => accrual.AccrualCategory.AccrualCategoryCode === 'PAC01');
       const ctlAccrual = loan.AccrualScheduleList.find((accrual) => accrual.AccrualCategory.AccrualCategoryCode === 'CTL01');
@@ -41,7 +41,7 @@ export class FacilityLoanTransactionService {
         productTypeId: loan.ProductType.ProductTypeCode,
         productTypeGroup: loan.ProductGroup.ProductGroupCode,
         currency: loan.Currency.CurrencyCode,
-        dealCustomerUsageRate: loan.DealCustomerUsageRate ? loan.DealCustomerUsageRate : null,
+        dealCustomerUsageRate: loan.DealCustomerUsageRate ?? null,
         dealCustomerUsageOperationType: loan.DealCustomerUsageOperationType?.OperationTypeCode ? loan.DealCustomerUsageOperationType.OperationTypeCode : null,
         amount: loan.LoanAmount,
         issueDate: this.dateStringTransformations.removeTime(loan.EffectiveDate),
@@ -49,7 +49,7 @@ export class FacilityLoanTransactionService {
         spreadRate: pacAccrual.SpreadRate,
         spreadRateCTL: ctlAccrual.SpreadRate,
         yearBasis: firstAccrual.YearBasis.YearBasisCode,
-        nextDueDate: firstRepayment ? this.dateStringTransformations.removeTime(firstRepayment.NextDueDate) : null,
+        nextDueDate: this.dateStringTransformations.removeTime(firstRepayment.NextDueDate),
         indexRateChangeFrequency: pacAccrual.IndexRateChangeFrequency.IndexRateChangeFrequencyCode,
         loanBillingFrequencyType: firstRepayment.LoanBillingFrequencyType.LoanBillingFrequencyTypeCode,
       };

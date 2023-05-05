@@ -136,7 +136,7 @@ export class GetFacilityLoanTransactionResponseItem {
     type: Date,
     format: 'date',
   })
-  nextDueDate: DateOnlyString | null;
+  nextDueDate: DateOnlyString;
 
   @ApiProperty({
     description: `A code denoting the index rate change frequency, which is used by ACBS to determine the frequency at which the rate should change when the change timing is set to 'On Anniversary'.`,
