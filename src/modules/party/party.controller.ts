@@ -36,10 +36,7 @@ export class PartyController {
     description: 'An internal server error has occurred.',
   })
   async getPartiesBySearchText(@Query() query: GetPartiesBySearchTextQuery): Promise<GetPartiesBySearchTextResponse> {
-    const token = await this.acbsAuthenticationService.getIdToken();
-    const response = await this.partyService.getPartiesBySearchText(token, query.searchText);
-
-    return response;
+    return await this.partyService.getPartiesBySearchText(query.searchText);
   }
 
   @Post()
@@ -66,19 +63,18 @@ export class PartyController {
   })
   async createParty(
     @Body(new ParseArrayPipe({ items: CreatePartyRequestItem }))
-    requestBody: CreatePartyRequest,
+    createPartyDto: CreatePartyRequest,
     @Res({ passthrough: true }) res: Response,
   ): Promise<CreatePartyResponse> {
-    const party = requestBody[0];
-    const token = await this.acbsAuthenticationService.getIdToken();
-    const partyIdentifierOfMatchingParty = await this.partyService.getPartyIdentifierBySearchText(token, party.alternateIdentifier);
+    const newParty = createPartyDto[0];
+    const partyIdentifierOfMatchingParty = await this.partyService.getPartyIdentifierBySearchText(newParty.alternateIdentifier);
 
     if (partyIdentifierOfMatchingParty) {
       res.status(HttpStatus.OK);
       return partyIdentifierOfMatchingParty;
     }
 
-    return await this.partyService.createParty(token, party);
+    return await this.partyService.createParty(newParty);
   }
 
   @Get(':partyIdentifier')

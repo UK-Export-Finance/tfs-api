@@ -38,8 +38,8 @@ export class AcbsHttpService {
     requestBody: RequestBody;
     idToken: string;
     onError: (error: Error) => never;
-  }): Promise<void> {
-    await lastValueFrom(
+  }): Promise<AxiosResponse<RequestBody, unknown>> {
+    return await lastValueFrom(
       this.httpService
         .post<never>(path, requestBody, {
           baseURL: this.config.baseUrl,

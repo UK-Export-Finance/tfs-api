@@ -2,7 +2,7 @@ import { PROPERTIES } from '@ukef/constants';
 import { DateString } from '@ukef/helpers/date-string.type';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { AcbsCreatePartyRequest } from '@ukef/modules/party/dto/acbs-create-party-request.dto';
-import { CreatePartyRequest } from '@ukef/modules/party/dto/create-party-request.dto';
+import { CreatePartyRequest, CreatePartyRequestItem } from '@ukef/modules/party/dto/create-party-request.dto';
 
 import { AbstractGenerator } from './abstract-generator';
 import { RandomValueGenerator } from './random-value-generator';
@@ -29,7 +29,7 @@ export class CreatePartyGenerator extends AbstractGenerator<PartyValues, Generat
   protected transformRawValuesToGeneratedValues(values: PartyValues[], options: GenerateOptions): GenerateResult {
     const firstParty = values[0];
 
-    const acbsCreatePartyRequest = {
+    const acbsCreatePartyRequest: AcbsCreatePartyRequest = {
       PartyAlternateIdentifier: this.getPartyAlternateIdentifier(firstParty.alternateIdentifier, 0, options.basePartyAlternateIdentifier),
       IndustryClassification: {
         IndustryClassificationCode: firstParty.industryClassification,
@@ -97,7 +97,7 @@ export class CreatePartyGenerator extends AbstractGenerator<PartyValues, Generat
       },
     };
 
-    const createPartyRequest = values.map((v, index) => ({
+    const createPartyRequest: CreatePartyRequest = values.map((v, index) => ({
       alternateIdentifier: this.getPartyAlternateIdentifier(v.alternateIdentifier, index, options.basePartyAlternateIdentifier),
       industryClassification: v.industryClassification,
       name1: v.name1,
