@@ -251,7 +251,7 @@ export const PROPERTIES = {
       initiatingUserName: 'APIUKEF',
       useAPIUserIndicator: false,
       bundleMessageList: {
-        type: 'FacilityCodeValueTransaction',
+        type: 'FacilityCodeValueTransaction' as const,
         accountOwnerIdentifier: '00000000',
         facilityTransactionCodeValue: { facilityTransactionCodeValueCode: 'A' },
         facilityTransactionType: { typeCode: '2340' },

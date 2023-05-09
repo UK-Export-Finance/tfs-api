@@ -10,9 +10,6 @@ import { AcbsCreateBundleInformationResponseDto } from './dto/acbs-create-bundle
 import { postFacilityNotFoundKnownAcbsError } from './known-errors';
 import { createWrapAcbsHttpPostErrorCallback } from './wrap-acbs-http-error-callback';
 
-/**
- * ACBS transaction wrapper service.
- */
 export class AcbsBundleInformationService {
   private readonly acbsHttpService: AcbsHttpService;
 
