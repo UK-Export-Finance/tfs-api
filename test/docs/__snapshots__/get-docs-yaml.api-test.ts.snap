@@ -954,7 +954,7 @@ components:
           example: '0030000322'
         initialBundleStatusCode:
           type: number
-          description: In most situations value should be 3, it means auto approval.
+          description: In most situations the value should be 3, it means auto approval.
           minimum: 0
           example: 3
           enum:
@@ -964,7 +964,7 @@ components:
         lenderTypeCode:
           type: string
           description: >-
-            In most situations value should be 100, it means first level
+            In most situations the value should be 100, it means first level
             obligor.
           minLength: 3
           maxLength: 3

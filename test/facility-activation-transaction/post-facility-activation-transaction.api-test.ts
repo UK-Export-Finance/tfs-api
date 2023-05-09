@@ -30,7 +30,7 @@ describe('POST /facilities/{facilityIdentifier}/activation-transactions', () => 
   });
   const effectiveDate = dateStringTransformations.removeTime(facilitiesInAcbs[0].OriginalEffectiveDate);
   const borrowerPartyIdentifier = facilitiesInAcbs[0].BorrowerParty.PartyIdentifier;
-  const facilityInAcbs: AcbsGetFacilityResponseDto = facilitiesInAcbs[0];
+  const [facilityInAcbs]: AcbsGetFacilityResponseDto[] = facilitiesInAcbs;
 
   const {
     acbsRequestBodyToCreateFacilityActivationTransaction,
