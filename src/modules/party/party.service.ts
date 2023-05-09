@@ -87,7 +87,12 @@ export class PartyService {
 
   async getPartyIdentifierBySearchText(token: string, searchText: string): Promise<CreatePartyResponse> {
     const response = await this.getPartiesBySearchTextFromAcbs(token, searchText).then((partiesFromAcbs) => {
-      return partiesFromAcbs[0] ? (partiesFromAcbs[0].PartyIdentifier ? { partyIdentifier: partiesFromAcbs[0].PartyIdentifier } : {}) : undefined;
+      let party = {};
+
+      if (partiesFromAcbs[0]?.PartyIdentifier) {
+        party = { partyIdentifier: partiesFromAcbs[0].PartyIdentifier };
+      }
+      return party;
     });
 
     return response;
