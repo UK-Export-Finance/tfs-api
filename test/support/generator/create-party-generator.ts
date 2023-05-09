@@ -2,7 +2,7 @@ import { PROPERTIES } from '@ukef/constants';
 import { DateString } from '@ukef/helpers/date-string.type';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { AcbsCreatePartyRequest } from '@ukef/modules/party/dto/acbs-create-party-request.dto';
-import { CreatePartyRequest, CreatePartyRequestItem } from '@ukef/modules/party/dto/create-party-request.dto';
+import { CreatePartyRequest } from '@ukef/modules/party/dto/create-party-request.dto';
 
 import { AbstractGenerator } from './abstract-generator';
 import { RandomValueGenerator } from './random-value-generator';

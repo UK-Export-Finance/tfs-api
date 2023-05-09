@@ -64,7 +64,7 @@ describe('PartyController', () => {
   });
 
   describe('createParty', () => {
-    const {createPartyRequest: newParty} = new CreatePartyGenerator(valueGenerator, dateStringTransformations).generate({ numberToGenerate: 1});
+    const { createPartyRequest: newParty } = new CreatePartyGenerator(valueGenerator, dateStringTransformations).generate({ numberToGenerate: 1 });
     const res: Response = {
       status: jest.fn().mockReturnThis(),
     } as any;
@@ -77,7 +77,7 @@ describe('PartyController', () => {
 
     it('returns the party identifier if the PartyAlternateIdentifier matches an existing party', async () => {
       when(partyServiceGetPartyIdentifierBySearchText).calledWith(newParty[0].alternateIdentifier).mockResolvedValueOnce({ partyIdentifier });
-      
+
       const response = await controller.createParty(newParty, res);
 
       expect(res.status).toHaveBeenCalledWith(200);

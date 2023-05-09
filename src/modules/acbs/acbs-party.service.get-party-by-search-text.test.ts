@@ -8,7 +8,6 @@ import { of, throwError } from 'rxjs';
 import { DateStringTransformations } from '../date/date-string.transformations';
 import { AcbsPartyService } from './acbs-party.service';
 import { AcbsException } from './exception/acbs.exception';
-import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
 
 describe('AcbsPartyService', () => {
   const valueGenerator = new RandomValueGenerator();

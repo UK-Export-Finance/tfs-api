@@ -80,6 +80,7 @@ describe('POST /parties', () => {
   it('returns a 400 response if ACBS responds with a 400 response', async () => {
     givenAuthenticationWithTheIdpSucceeds();
     const acbsErrorMessage = { Message: 'error message' };
+    requestToGetPartiesBySearchText(alternateIdentifier).reply(200, []);
     requestToCreateParties(acbsCreatePartyRequest).reply(400, acbsErrorMessage);
 
     const { status, body } = await api.post(createPartyUrl, createPartyRequest);
@@ -90,6 +91,7 @@ describe('POST /parties', () => {
 
   it('returns a 500 response if ACBS responds with an error code that is not 400"', async () => {
     givenAuthenticationWithTheIdpSucceeds();
+    requestToGetPartiesBySearchText(alternateIdentifier).reply(200, []);
     requestToCreateParties(acbsCreatePartyRequest).reply(401, 'Unauthorized');
 
     const { status, body } = await api.post(createPartyUrl, createPartyRequest);
@@ -100,6 +102,7 @@ describe('POST /parties', () => {
 
   it('returns a 500 response if creating the facility in ACBS times out', async () => {
     givenAuthenticationWithTheIdpSucceeds();
+    requestToGetPartiesBySearchText(alternateIdentifier).reply(200, []);
     requestToCreateParties(acbsCreatePartyRequest).delay(TIME_EXCEEDING_ACBS_TIMEOUT).reply(201);
 
     const { status, body } = await api.post(createPartyUrl, createPartyRequest);

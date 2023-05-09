@@ -1,12 +1,12 @@
 import { HttpService } from '@nestjs/axios';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
+import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
 import { CreatePartyGenerator } from '@ukef-test/support/generator/create-party-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
 
-import { PartyService } from './party.service';
-import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
 import { AcbsPartyService } from '../acbs/acbs-party.service';
+import { PartyService } from './party.service';
 
 jest.mock('@ukef/modules/acbs/acbs-party.service');
 jest.mock('@ukef/modules/acbs-authentication/acbs-authentication.service');
@@ -47,7 +47,7 @@ describe('PartyService', () => {
     const createPartyRequestItem = createPartyRequest[0];
 
     it('returns the identifier of the new party if the request is successful', async () => {
-      when(acbsPartyServiceCreateParty).calledWith(acbsCreatePartyRequest, idToken).mockReturnValueOnce({partyIdentifier: '00000000'});
+      when(acbsPartyServiceCreateParty).calledWith(acbsCreatePartyRequest, idToken).mockReturnValueOnce({ partyIdentifier: '00000000' });
 
       const response = await partyService.createParty(createPartyRequestItem);
 

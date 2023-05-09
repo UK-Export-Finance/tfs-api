@@ -1,4 +1,5 @@
 import { HttpService } from '@nestjs/axios';
+import { CreatePartyGenerator } from '@ukef-test/support/generator/create-party-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { AxiosError } from 'axios';
 import { when } from 'jest-when';
@@ -6,8 +7,8 @@ import { of, throwError } from 'rxjs';
 
 import { DateStringTransformations } from '../date/date-string.transformations';
 import { AcbsPartyService } from './acbs-party.service';
-import { CreatePartyGenerator } from '@ukef-test/support/generator/create-party-generator';
-import { CreatePartyInAcbsFailedException } from '../party/exception/create-party-in-acbs-failed.exception';
+import { AcbsBadRequestException } from './exception/acbs-bad-request.exception';
+import { AcbsUnexpectedException } from './exception/acbs-unexpected.exception';
 
 describe('AcbsPartyService', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -52,7 +53,9 @@ describe('AcbsPartyService', () => {
             status: 201,
             statusText: 'Created',
             config: undefined,
-            headers: undefined,
+            headers: {
+              location: `/Party/00000000`,
+            },
           }),
         );
 
@@ -62,8 +65,7 @@ describe('AcbsPartyService', () => {
       expect(httpServicePost).toHaveBeenCalledWith(...expectedHttpServicePostArgs);
     });
 
-//rename and edit this to test what is returned
-    it('returns a party', async () => {
+    it('returns the identifier of the new party if the request is successful', async () => {
       when(httpServicePost)
         .calledWith(...expectedHttpServicePostArgs)
         .mockReturnValueOnce(
@@ -72,14 +74,17 @@ describe('AcbsPartyService', () => {
             status: 201,
             statusText: 'Created',
             config: undefined,
-            headers: undefined,
+            headers: {
+              location: `/Party/00000000`,
+            },
           }),
         );
 
-      await service.createParty(newParty, idToken);
+      const response = await service.createParty(newParty, idToken);
 
-      expect(httpServicePost).toHaveBeenCalledTimes(1);
-      expect(httpServicePost).toHaveBeenCalledWith(...expectedHttpServicePostArgs);
+      expect(response).toStrictEqual({
+        partyIdentifier: '00000000',
+      });
     });
 
     it('throws an AcbsBadRequestException if ACBS responds with a 400 error', async () => {
@@ -99,7 +104,7 @@ describe('AcbsPartyService', () => {
 
       const createFacilityPromise = service.createParty(newParty, idToken);
 
-      await expect(createFacilityPromise).rejects.toBeInstanceOf(CreatePartyInAcbsFailedException);
+      await expect(createFacilityPromise).rejects.toBeInstanceOf(AcbsBadRequestException);
       await expect(createFacilityPromise).rejects.toThrow(`Failed to create party in ACBS.`);
       await expect(createFacilityPromise).rejects.toHaveProperty('innerError', axiosError);
       await expect(createFacilityPromise).rejects.toHaveProperty('errorBody', errorString);
@@ -122,7 +127,7 @@ describe('AcbsPartyService', () => {
 
       const createDealPromise = service.createParty(newParty, idToken);
 
-      await expect(createDealPromise).rejects.toBeInstanceOf(CreatePartyInAcbsFailedException);
+      await expect(createDealPromise).rejects.toBeInstanceOf(AcbsUnexpectedException);
       await expect(createDealPromise).rejects.toThrow(`Failed to create party in ACBS.`);
       await expect(createDealPromise).rejects.toHaveProperty('innerError', axiosError);
     });

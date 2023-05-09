@@ -1,9 +1,8 @@
 import { HttpService } from '@nestjs/axios';
 import { Inject, Injectable } from '@nestjs/common';
 import AcbsConfig from '@ukef/config/acbs.config';
-import { AcbsGetPartiesBySearchTextResponse } from '../party/dto/acbs-get-parties-by-search-text-response.dto';
-import { CreatePartyInAcbsFailedException } from '../party/exception/create-party-in-acbs-failed.exception';
 
+import { AcbsGetPartiesBySearchTextResponse } from '../party/dto/acbs-get-parties-by-search-text-response.dto';
 import { AcbsConfigBaseUrl } from './acbs-config-base-url.type';
 import { AcbsHttpService } from './acbs-http.service';
 import { AcbsCreatePartyRequest } from './dto/acbs-create-party-request.dto';
@@ -48,15 +47,16 @@ export class AcbsPartyService {
   }
 
   async createParty(partyToCreate: AcbsCreatePartyRequest, idToken: string): Promise<{ partyIdentifier: string }> {
-    const response = await this.acbsHttpService.post<AcbsCreatePartyRequest>({
-      path: `/Party`,
-      requestBody: partyToCreate,
-      idToken,
-      onError: createWrapAcbsHttpPostErrorCallback({
-        messageForUnknownError: 'Failed to create party in ACBS.',
-        knownErrors: [],
-      }),
-    })
+    const response = await this.acbsHttpService
+      .post<AcbsCreatePartyRequest>({
+        path: `/Party`,
+        requestBody: partyToCreate,
+        idToken,
+        onError: createWrapAcbsHttpPostErrorCallback({
+          messageForUnknownError: 'Failed to create party in ACBS.',
+          knownErrors: [],
+        }),
+      })
       .then((acbsResponse) => {
         const locationHeader = acbsResponse.headers.location;
         const indexOfLastSlash = locationHeader.lastIndexOf('/');
@@ -65,9 +65,6 @@ export class AcbsPartyService {
           partyIdentifier: partyIdentifier,
         };
       })
-      .catch((error) => {
-        throw new CreatePartyInAcbsFailedException('Failed to create party in ACBS.', error);
-      });
 
     return response;
   }
