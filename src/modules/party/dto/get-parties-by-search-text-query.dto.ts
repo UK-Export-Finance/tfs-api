@@ -3,6 +3,10 @@ import { ValidatedStringApiProperty } from '@ukef/decorators/validated-string-ap
 const stringWithoutWhitespaces = /^\s*\S+\s*$/;
 
 export class GetPartiesBySearchTextQuery {
-  @ValidatedStringApiProperty({ description: 'Parties matching the provided Search Text will be returned. Cannot contain only whitespaces.', minLength: 3, pattern: stringWithoutWhitespaces })
+  @ValidatedStringApiProperty({
+    description: 'Parties matching the provided Search Text will be returned. Cannot contain only whitespaces.',
+    minLength: 3,
+    pattern: stringWithoutWhitespaces,
+  })
   searchText: string;
 }

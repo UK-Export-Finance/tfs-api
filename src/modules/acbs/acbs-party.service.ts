@@ -64,7 +64,7 @@ export class AcbsPartyService {
         return {
           partyIdentifier: partyIdentifier,
         };
-      })
+      });
 
     return response;
   }
