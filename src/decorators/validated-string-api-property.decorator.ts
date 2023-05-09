@@ -34,6 +34,7 @@ export const ValidatedStringApiProperty = ({
       minLength,
       maxLength,
       required,
+      enum: theEnum,
       pattern: pattern && pattern.toString().split('/')[1],
       example,
       default: theDefault,
