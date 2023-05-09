@@ -3,7 +3,7 @@ import request from 'supertest';
 
 const expectedFacilityIdentifierMustMatchPatternErrorMessage = `facilityIdentifier must match /^00\\d{8}$/ regular expression`;
 
-export const withFacilityIdentifierUrlParamValidationApiTests = ({
+export const withFacilityIdentifierUrlValidationApiTests = ({
   makeRequestWithFacilityId,
   givenRequestWouldOtherwiseSucceedForFacilityId,
   successStatusCode,
