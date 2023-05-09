@@ -15,8 +15,6 @@ export class CreateFacilityActivationTransactionRequestItem {
   @ValidatedNumberApiProperty({
     description: 'In most situations the value should be 3, it means auto approval.',
     example: ENUMS.BUNDLE_STATUSES.SUBMIT_FOR_POSTING,
-    // TODO: remove minimum and fix api-test helper to not fail.
-    minimum: 0,
     enum: ENUMS.BUNDLE_STATUSES,
   })
   readonly initialBundleStatusCode: number;

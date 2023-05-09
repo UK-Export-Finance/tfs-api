@@ -4,7 +4,7 @@ import { DateStringTransformations } from '@ukef/modules/date/date-string.transf
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
 import { withFacilityIdentifierFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/facility-identifier-field-validation-api-tests';
-import { withNonNegativeNumberFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/non-negative-number-field-validation-api-tests';
+import { withNumberFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/number-field-validation-api-tests';
 import { withStringFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/string-field-validation-api-tests';
 import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
@@ -238,7 +238,7 @@ describe('POST /facilities/{facilityIdentifier}/activation-transactions', () => 
       givenAnyRequestBodyWouldSucceed,
     });
 
-    withNonNegativeNumberFieldValidationApiTests({
+    withNumberFieldValidationApiTests({
       fieldName: 'initialBundleStatusCode',
       enum: ENUMS.BUNDLE_STATUSES,
       generateFieldValueThatDoesNotMatchEnum: () => 5,

@@ -955,7 +955,6 @@ components:
         initialBundleStatusCode:
           type: number
           description: In most situations the value should be 3, it means auto approval.
-          minimum: 0
           example: 3
           enum:
             - 1
