@@ -5,6 +5,7 @@ import { ApiKeyAuthGuard } from '@ukef/modules/auth/guard/api-key.guard';
 import { SwaggerDocs } from '@ukef/swagger';
 import compression from 'compression';
 import { Logger, LoggerErrorInterceptor } from 'nestjs-pino';
+import { LoggingInterceptor } from './helpers/logging-interceptor.helper';
 
 export class App {
   private readonly configService: ConfigService;
@@ -45,6 +46,7 @@ export class App {
     app.useGlobalInterceptors(new TransformInterceptor());
     app.useLogger(app.get(Logger));
     app.useGlobalInterceptors(new LoggerErrorInterceptor());
+    app.useGlobalInterceptors(new LoggingInterceptor());
     app.use(
       compression({
         filter: (req, res) => {
