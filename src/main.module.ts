@@ -1,8 +1,9 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import config from '@ukef/config';
 import { TfsModule } from '@ukef/modules/tfs.module';
 import { LoggerModule } from 'nestjs-pino';
+import { LoggerMiddleware } from './logger.middleware';
 
 @Module({
   imports: [
@@ -33,4 +34,8 @@ import { LoggerModule } from 'nestjs-pino';
   controllers: [],
   providers: [],
 })
-export class MainModule {}
+export class MainModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}
