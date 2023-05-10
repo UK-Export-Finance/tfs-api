@@ -425,6 +425,9 @@ paths:
           description: The identifier of the facility in ACBS.
           example: '0030000322'
           schema:
+            minLength: 10
+            maxLength: 10
+            pattern: ^00\\d{8}$
             type: string
       requestBody:
         required: true
