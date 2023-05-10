@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AcbsAuthenticationModule } from '@ukef/modules/acbs-authentication/acbs-authentication.module';
 import { HttpModule } from '@ukef/modules/http/http.module';
 
+import { AcbsBundleInformationService } from './acbs-bundleInformation.service';
 import { AcbsDealService } from './acbs-deal.service';
 import { AcbsDealGuaranteeService } from './acbs-deal-guarantee.service';
 import { AcbsDealPartyService } from './acbs-deal-party.service';
@@ -28,6 +29,7 @@ import { AcbsPartyExternalRatingService } from './acbs-party-external-rating.ser
     AcbsAuthenticationModule,
   ],
   providers: [
+    AcbsBundleInformationService,
     AcbsPartyService,
     AcbsPartyExternalRatingService,
     AcbsDealService,
@@ -42,6 +44,7 @@ import { AcbsPartyExternalRatingService } from './acbs-party-external-rating.ser
   ],
   exports: [
     AcbsAuthenticationModule,
+    AcbsBundleInformationService,
     AcbsPartyService,
     AcbsPartyExternalRatingService,
     AcbsDealService,

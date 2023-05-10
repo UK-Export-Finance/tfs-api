@@ -162,6 +162,45 @@ paths:
           description: The deal was not found.
         '500':
           description: An internal server error has occurred.
+  /api/v1/facilities/{facilityIdentifier}/activation-transactions:
+    post:
+      operationId: >-
+        FacilityActivationTransactionController_createActivationTransactionForFacility
+      summary: Create a new activation transaction for a facility.
+      parameters:
+        - name: facilityIdentifier
+          required: true
+          in: path
+          description: The identifier of the facility in ACBS.
+          example: '0030000322'
+          schema:
+            minLength: 10
+            maxLength: 10
+            pattern: ^00\\d{8}$
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: >-
+                  #/components/schemas/CreateFacilityActivationTransactionRequestItem
+      responses:
+        '201':
+          description: The activation transaction has been successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/CreateFacilityActivationTransactionResponse
+        '400':
+          description: Bad request.
+        '404':
+          description: The facility was not found.
+        '500':
+          description: An internal server error has occurred.
   /api/v1/facilities/{facilityIdentifier}:
     get:
       operationId: FacilityController_getFacilityByIdentifier
@@ -903,6 +942,51 @@ components:
         - dealIdentifier
         - effectiveDate
         - currency
+    CreateFacilityActivationTransactionRequestItem:
+      type: object
+      properties:
+        facilityIdentifier:
+          type: string
+          description: The identifier of the facility to activate.
+          minLength: 10
+          maxLength: 10
+          pattern: ^00\\d{8}$
+          example: '0030000322'
+        initialBundleStatusCode:
+          type: number
+          description: In most situations the value should be 3, it means auto approval.
+          example: 3
+          enum:
+            - 1
+            - 2
+            - 3
+        lenderTypeCode:
+          type: string
+          description: >-
+            In most situations the value should be 100, it means first level
+            obligor.
+          minLength: 3
+          maxLength: 3
+          enum:
+            - '100'
+            - '500'
+          example: '100'
+      required:
+        - facilityIdentifier
+        - initialBundleStatusCode
+        - lenderTypeCode
+    CreateFacilityActivationTransactionResponse:
+      type: object
+      properties:
+        bundleIdentifier:
+          type: string
+          readOnly: true
+          minLength: 10
+          maxLength: 10
+          description: The identifier of the ACBS bundle.
+          example: '0000321000'
+      required:
+        - bundleIdentifier
     GetFacilityByIdentifierResponseDto:
       type: object
       properties:
@@ -1261,6 +1345,10 @@ components:
             covenant not in GBP.
           minLength: 2
           maxLength: 2
+          enum:
+            - '43'
+            - '46'
+            - '47'
           example: '43'
         maximumLiability:
           type: number
@@ -1579,6 +1667,11 @@ components:
             provider - 500, buyer for (exporter EWCS) - 321.
           minLength: 3
           maxLength: 3
+          enum:
+            - '315'
+            - '310'
+            - '500'
+            - '321'
           example: '310'
       required:
         - facilityIdentifier

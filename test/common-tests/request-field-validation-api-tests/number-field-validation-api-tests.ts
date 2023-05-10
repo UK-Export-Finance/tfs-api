@@ -1,9 +1,10 @@
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import request from 'supertest';
 
-interface RequiredNonNegativeFieldValidationApiTestOptions<RequestBodyItem> {
+interface RequiredNumberFieldValidationApiTestOptions<RequestBodyItem> {
   fieldName: keyof RequestBodyItem;
   required?: boolean;
+  minimum?: number;
   enum?: any;
   generateFieldValueThatDoesNotMatchEnum?: () => number;
   validRequestBody: RequestBodyItem[];
@@ -11,15 +12,16 @@ interface RequiredNonNegativeFieldValidationApiTestOptions<RequestBodyItem> {
   givenAnyRequestBodyWouldSucceed: () => void;
 }
 
-export function withNonNegativeNumberFieldValidationApiTests<RequestBodyItem>({
+export function withNumberFieldValidationApiTests<RequestBodyItem>({
   fieldName: fieldNameSymbol,
   required,
   enum: theEnum,
+  minimum,
   generateFieldValueThatDoesNotMatchEnum,
   validRequestBody,
   makeRequest,
   givenAnyRequestBodyWouldSucceed,
-}: RequiredNonNegativeFieldValidationApiTestOptions<RequestBodyItem>): void {
+}: RequiredNumberFieldValidationApiTestOptions<RequestBodyItem>): void {
   const fieldName = fieldNameSymbol.toString();
   const valueGenerator = new RandomValueGenerator();
   required = required ?? true;
@@ -38,7 +40,7 @@ export function withNonNegativeNumberFieldValidationApiTests<RequestBodyItem>({
         expect(status).toBe(400);
         expect(body).toMatchObject({
           error: 'Bad Request',
-          message: expect.arrayContaining([`${fieldName} must not be less than 0`, `${fieldName} should not be empty`]),
+          message: expect.arrayContaining([`${fieldName} should not be empty`]),
           statusCode: 400,
         });
       });
@@ -52,18 +54,20 @@ export function withNonNegativeNumberFieldValidationApiTests<RequestBodyItem>({
       });
     }
 
-    it(`returns a 400 response if ${fieldName} is less than 0`, async () => {
-      const requestWithNegativeField = [{ ...validRequestBody[0], [fieldNameSymbol]: -0.01 }];
+    if (minimum) {
+      it(`returns a 400 response if ${fieldName} is less than minimum`, async () => {
+        const requestWithNegativeField = [{ ...validRequestBody[0], [fieldNameSymbol]: minimum - 0.01 }];
 
-      const { status, body } = await makeRequest(requestWithNegativeField);
+        const { status, body } = await makeRequest(requestWithNegativeField);
 
-      expect(status).toBe(400);
-      expect(body).toMatchObject({
-        error: 'Bad Request',
-        message: expect.arrayContaining([`${fieldName} must not be less than 0`]),
-        statusCode: 400,
+        expect(status).toBe(400);
+        expect(body).toMatchObject({
+          error: 'Bad Request',
+          message: expect.arrayContaining([`${fieldName} must not be less than minimum`]),
+          statusCode: 400,
+        });
       });
-    });
+    }
 
     if (theEnum && generateFieldValueThatDoesNotMatchEnum) {
       // Numeric enums needs filter to get possible values.
@@ -92,21 +96,23 @@ export function withNonNegativeNumberFieldValidationApiTests<RequestBodyItem>({
         });
       });
     } else {
-      it(`returns a 201 response if ${fieldName} is 0`, async () => {
-        const requestWithZeroField = [{ ...validRequestBody[0], [fieldNameSymbol]: 0 }];
+      if (minimum) {
+        it(`returns a 201 response if ${fieldName} is minimum`, async () => {
+          const requestWithZeroField = [{ ...validRequestBody[0], [fieldNameSymbol]: minimum }];
 
-        const { status } = await makeRequest(requestWithZeroField);
+          const { status } = await makeRequest(requestWithZeroField);
 
-        expect(status).toBe(201);
-      });
+          expect(status).toBe(201);
+        });
 
-      it(`returns a 201 response if ${fieldName} is greater than 0`, async () => {
-        const requestWithZeroField = [{ ...validRequestBody[0], [fieldNameSymbol]: 100 }];
+        it(`returns a 201 response if ${fieldName} is greater than minimum`, async () => {
+          const requestWithZeroField = [{ ...validRequestBody[0], [fieldNameSymbol]: minimum + 1 }];
 
-        const { status } = await makeRequest(requestWithZeroField);
+          const { status } = await makeRequest(requestWithZeroField);
 
-        expect(status).toBe(201);
-      });
+          expect(status).toBe(201);
+        });
+      }
     }
   });
 }

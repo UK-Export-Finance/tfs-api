@@ -21,7 +21,7 @@ export class GetFacilityGenerator extends AbstractGenerator<AcbsGetFacilityRespo
       OriginalEffectiveDate: this.valueGenerator.dateTimeString(),
       DealIdentifier: this.valueGenerator.string(),
       DealPortfolioIdentifier: this.valueGenerator.string(),
-      DealBorrowerPartyIdentifier: this.valueGenerator.string(),
+      DealBorrowerPartyIdentifier: this.valueGenerator.acbsPartyId(),
       ExpirationDate: this.valueGenerator.dateTimeString(),
       LimitAmount: this.valueGenerator.nonnegativeFloat(),
       ExternalReferenceIdentifier: this.valueGenerator.string(),
@@ -31,7 +31,7 @@ export class GetFacilityGenerator extends AbstractGenerator<AcbsGetFacilityRespo
       FacilityInitialStatus: {
         FacilityInitialStatusCode: this.valueGenerator.string(),
       },
-      AgentBankPartyIdentifier: this.valueGenerator.string(),
+      AgentBankPartyIdentifier: this.valueGenerator.acbsPartyId(),
       IndustryClassification: {
         IndustryClassificationCode: this.valueGenerator.string(),
       },
@@ -64,7 +64,7 @@ export class GetFacilityGenerator extends AbstractGenerator<AcbsGetFacilityRespo
         FacilityStatusCode: this.valueGenerator.string(),
       },
       BorrowerParty: {
-        PartyIdentifier: this.valueGenerator.string(),
+        PartyIdentifier: this.valueGenerator.acbsPartyId(),
         PartyName1: this.valueGenerator.string(),
       },
       CompBalPctReserve: this.valueGenerator.nonnegativeFloat(),
