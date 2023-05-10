@@ -56,7 +56,6 @@ export class FacilityInvestorController {
   ): Promise<CreateFacilityInvestorResponse> {
     const newFacilityInvestor = newFacilityInvestorRequest[0];
     const facilityInvestorToCreate: FacilityInvestorToCreate = {
-      facilityIdentifier,
       effectiveDate: newFacilityInvestor.effectiveDate,
       guaranteeExpiryDate: newFacilityInvestor.guaranteeExpiryDate,
       currency: newFacilityInvestor.currency,

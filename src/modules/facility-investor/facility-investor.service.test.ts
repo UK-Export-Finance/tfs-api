@@ -9,6 +9,7 @@ import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-
 import { when } from 'jest-when';
 
 import { FacilityInvestorService } from './facility-investor.service';
+import { FacilityInvestorToCreate } from './facility-investor-to-create.interface';
 
 describe('FacilityInvestorService', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -43,8 +44,7 @@ describe('FacilityInvestorService', () => {
     const currency = TEST_CURRENCIES.A_TEST_CURRENCY;
     const maximumLiability = 12345.6;
 
-    const newFacilityInvestorWithAllFields = {
-      facilityIdentifier,
+    const newFacilityInvestorWithAllFields: FacilityInvestorToCreate = {
       effectiveDate: effectiveDate,
       guaranteeExpiryDate: guaranteeExpiryDate,
       lenderType,

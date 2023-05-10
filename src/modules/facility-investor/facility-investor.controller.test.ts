@@ -32,14 +32,7 @@ describe('FacilityInvestorController', () => {
     const currency = TEST_CURRENCIES.A_TEST_CURRENCY;
     const maximumLiability = 12345.6;
 
-    const newFacilityInvestor = new CreateFacilityInvestorRequestItem(
-      facilityIdentifier,
-      effectiveDate,
-      guaranteeExpiryDate,
-      currency,
-      maximumLiability,
-      lenderType,
-    );
+    const newFacilityInvestor = new CreateFacilityInvestorRequestItem(effectiveDate, guaranteeExpiryDate, currency, maximumLiability, lenderType);
 
     it('creates an investor for the facility with the service from the request body', async () => {
       await controller.createInvestorForFacility(facilityIdentifier, [newFacilityInvestor]);

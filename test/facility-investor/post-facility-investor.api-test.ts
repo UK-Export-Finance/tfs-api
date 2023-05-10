@@ -34,7 +34,6 @@ describe('POST /facilities/{facilityIdentifier}/investors', () => {
 
   const requestBodyToCreateFacilityInvestor: CreateFacilityInvestorRequest = [
     {
-      facilityIdentifier,
       effectiveDate: effectiveDateInFuture,
       guaranteeExpiryDate: guaranteeExpiryDateInFuture,
       lenderType,
@@ -202,19 +201,6 @@ describe('POST /facilities/{facilityIdentifier}/investors', () => {
 
   withCurrencyFieldValidationApiTests({
     valueGenerator,
-    validRequestBody: requestBodyToCreateFacilityInvestor,
-    makeRequest: (body) => api.post(createFacilityInvestorUrl, body),
-    givenAnyRequestBodyWouldSucceed: () => {
-      givenAuthenticationWithTheIdpSucceeds();
-      givenAnyRequestBodyToCreateFacilityInvestorInAcbsSucceeds();
-    },
-  });
-
-  withStringFieldValidationApiTests({
-    fieldName: 'facilityIdentifier',
-    length: 10,
-    required: true,
-    generateFieldValueOfLength: (length: number) => valueGenerator.ukefId(length - 4),
     validRequestBody: requestBodyToCreateFacilityInvestor,
     makeRequest: (body) => api.post(createFacilityInvestorUrl, body),
     givenAnyRequestBodyWouldSucceed: () => {
