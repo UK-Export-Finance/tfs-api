@@ -1,10 +1,11 @@
-import { CallHandler, ExecutionContext, Injectable, Logger, NestInterceptor } from '@nestjs/common';
+import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
+import { Logger } from 'nestjs-pino';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
-  private readonly logger = new Logger();
+  constructor(private readonly logger: Logger) {}
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const requestBody = context.switchToHttp().getRequest().body;

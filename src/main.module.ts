@@ -1,8 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import config from '@ukef/config';
 import { TfsModule } from '@ukef/modules/tfs.module';
 import { LoggerModule } from 'nestjs-pino';
+
+import { LoggingInterceptor } from './helpers/logging-interceptor.helper';
 
 @Module({
   imports: [
@@ -31,6 +34,6 @@ import { LoggerModule } from 'nestjs-pino';
     TfsModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [{ provide: APP_INTERCEPTOR, useClass: LoggingInterceptor }],
 })
 export class MainModule {}

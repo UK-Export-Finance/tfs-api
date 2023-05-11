@@ -6,8 +6,6 @@ import { SwaggerDocs } from '@ukef/swagger';
 import compression from 'compression';
 import { Logger, LoggerErrorInterceptor } from 'nestjs-pino';
 
-import { LoggingInterceptor } from './helpers/logging-interceptor.helper';
-
 export class App {
   private readonly configService: ConfigService;
   public readonly port: number;
@@ -47,7 +45,6 @@ export class App {
     app.useGlobalInterceptors(new TransformInterceptor());
     app.useLogger(app.get(Logger));
     app.useGlobalInterceptors(new LoggerErrorInterceptor());
-    app.useGlobalInterceptors(new LoggingInterceptor());
     app.use(
       compression({
         filter: (req, res) => {
