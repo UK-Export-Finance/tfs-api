@@ -24,7 +24,7 @@ describe('POST /deals/{dealIdentifier}/investors', () => {
   const dealIdentifier: UkefId = valueGenerator.ukefId();
   const createDealInvestorUrl = `/api/v1/deals/${dealIdentifier}/investors`;
 
-  const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+  const { portfolioIdentifier } = PROPERTIES.GLOBAL;
 
   const { acbsRequestBodyToCreateDealInvestor, requestBodyToCreateDealInvestor } = new CreateDealInvestorGenerator(
     valueGenerator,

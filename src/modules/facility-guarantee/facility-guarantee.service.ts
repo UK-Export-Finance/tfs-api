@@ -20,7 +20,7 @@ export class FacilityGuaranteeService {
   ) {}
 
   async getGuaranteesForFacility(facilityIdentifier: string): Promise<FacilityGuarantee[]> {
-    const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+    const { portfolioIdentifier } = PROPERTIES.GLOBAL;
     const idToken = await this.acbsAuthenticationService.getIdToken();
     const guaranteesInAcbs = await this.acbsFacilityGuaranteeService.getGuaranteesForFacility(portfolioIdentifier, facilityIdentifier, idToken);
     return guaranteesInAcbs.map((guarantee) => {

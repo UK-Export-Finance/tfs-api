@@ -639,8 +639,8 @@ paths:
           description: The bundle identifier of the loan transaction in ACBS.
           example: '0000233092'
           schema:
-            minLength: 9
-            maxLength: 9
+            minLength: 10
+            maxLength: 10
             type: string
       responses:
         '200':

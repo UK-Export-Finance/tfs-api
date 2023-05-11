@@ -7,23 +7,23 @@ import { GetFacilityLoanTransactionGenerator } from '@ukef-test/support/generato
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
 
-import { AcbsFacilityLoanTransactionService } from '../acbs/acbs-facility-loan-transaction.service';
+import { AcbsBundleInformationService } from '../acbs/acbs-bundle-information.service';
 import { GetFacilityLoanTransactionResponseItem } from './dto/get-loan-transaction-response.dto';
 import { FacilityLoanTransactionService } from './facility-loan-transaction.service';
 
 describe('FacilityLoanTransactionService', () => {
-  const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+  const { portfolioIdentifier } = PROPERTIES.GLOBAL;
   const valueGenerator = new RandomValueGenerator();
   const idToken = valueGenerator.string();
   const facilityIdentifier = valueGenerator.facilityId();
-  const bundleIdentifier = valueGenerator.string({ length: 9 });
+  const bundleIdentifier = valueGenerator.acbsBundleId();
 
   const { facilityLoanTransactionsFromApi: expectedFacilityLoanTransactions, facilityLoanTransactionsInAcbs } = new GetFacilityLoanTransactionGenerator(
     valueGenerator,
     new DateStringTransformations(),
   ).generate({ numberToGenerate: 1, facilityIdentifier, portfolioIdentifier });
-  const loanTransactionInAcbs = facilityLoanTransactionsInAcbs[0];
-  const expectedLoanTransaction = expectedFacilityLoanTransactions[0];
+  const [loanTransactionInAcbs] = facilityLoanTransactionsInAcbs;
+  const [expectedLoanTransaction] = expectedFacilityLoanTransactions;
 
   let acbsAuthenticationService: AcbsAuthenticationService;
   let service: FacilityLoanTransactionService;
@@ -36,7 +36,7 @@ describe('FacilityLoanTransactionService', () => {
     const acbsAuthenticationServiceGetIdToken = mockAcbsAuthenticationService.getIdToken;
     when(acbsAuthenticationServiceGetIdToken).calledWith().mockResolvedValueOnce(idToken);
 
-    const acbsService = new AcbsFacilityLoanTransactionService(null, null);
+    const acbsService = new AcbsBundleInformationService(null, null);
     getFacilityLoanTransactionAcbsService = jest.fn();
     acbsService.getLoanTransactionByBundleIdentifier = getFacilityLoanTransactionAcbsService;
 

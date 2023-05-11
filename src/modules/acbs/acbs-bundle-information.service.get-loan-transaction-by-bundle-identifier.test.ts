@@ -7,18 +7,18 @@ import { when } from 'jest-when';
 import { of, throwError } from 'rxjs';
 
 import { DateStringTransformations } from '../date/date-string.transformations';
-import { AcbsFacilityLoanTransactionService } from './acbs-facility-loan-transaction.service';
+import { AcbsBundleInformationService } from './acbs-bundle-information.service';
 import { AcbsException } from './exception/acbs.exception';
 import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
 
-describe('AcbsFacilityLoanTransactionService', () => {
+describe('AcbsBundleInformationService', () => {
   const valueGenerator = new RandomValueGenerator();
   const dateStringTransformations = new DateStringTransformations();
   const idToken = valueGenerator.string();
   const baseUrl = valueGenerator.httpsUrl();
 
   let httpService: HttpService;
-  let service: AcbsFacilityLoanTransactionService;
+  let service: AcbsBundleInformationService;
 
   let httpServiceGet: jest.Mock;
 
@@ -28,13 +28,13 @@ describe('AcbsFacilityLoanTransactionService', () => {
     httpServiceGet = jest.fn();
     httpService.get = httpServiceGet;
 
-    service = new AcbsFacilityLoanTransactionService({ baseUrl }, httpService);
+    service = new AcbsBundleInformationService({ baseUrl }, httpService);
   });
 
   describe('getLoanTransactionByBundleIdentifier', () => {
-    const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+    const { portfolioIdentifier } = PROPERTIES.GLOBAL;
     const facilityIdentifier = valueGenerator.ukefId();
-    const bundleIdentifier = valueGenerator.string({ length: 9 });
+    const bundleIdentifier = valueGenerator.acbsBundleId();
 
     it('returns the loan transaction if ACBS responds with the loan transaction', async () => {
       const { facilityLoanTransactionsInAcbs } = new GetFacilityLoanTransactionGenerator(valueGenerator, dateStringTransformations).generate({
@@ -42,7 +42,7 @@ describe('AcbsFacilityLoanTransactionService', () => {
         facilityIdentifier,
         portfolioIdentifier,
       });
-      const loanTransactionInAcbs = facilityLoanTransactionsInAcbs[0];
+      const [loanTransactionInAcbs] = [facilityLoanTransactionsInAcbs];
 
       when(httpServiceGet)
         .calledWith(`/BundleInformation/${bundleIdentifier}?returnItems=true`, {

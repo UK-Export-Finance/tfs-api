@@ -119,6 +119,7 @@ export class GetFacilityLoanTransactionResponseItem {
     description:
       'The spread rate of the CTL accrual schedule to factor into the all-in rate if a rate calculation method is selected that includes the spread rate in the calculation.',
     example: EXAMPLES.SPREAD_RATE,
+    required: false,
   })
   readonly spreadRateCTL: number;
 
@@ -136,14 +137,14 @@ export class GetFacilityLoanTransactionResponseItem {
     type: Date,
     format: 'date',
   })
-  nextDueDate: DateOnlyString;
+  readonly nextDueDate: DateOnlyString;
 
   @ApiProperty({
     description: `A code denoting the index rate change frequency, which is used by ACBS to determine the frequency at which the rate should change when the change timing is set to 'On Anniversary'.`,
     minLength: 0,
     maxLength: 1,
   })
-  indexRateChangeFrequency: string;
+  readonly indexRateChangeFrequency: string;
 
   @ApiProperty({
     description: `A code denoting the loan billing frequency type, which is used by ACBS to determine the frequency at which the bills should be generated.`,
@@ -151,7 +152,7 @@ export class GetFacilityLoanTransactionResponseItem {
     maxLength: 1,
     example: EXAMPLES.LOAN_BILLING_FREQUENCY_TYPE,
   })
-  loanBillingFrequencyType: string;
+  readonly loanBillingFrequencyType: string;
 }
 
 // TODO: update loan dto

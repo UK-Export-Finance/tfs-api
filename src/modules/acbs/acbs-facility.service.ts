@@ -23,7 +23,7 @@ export class AcbsFacilityService {
   }
 
   async getFacilityByIdentifier(facilityIdentifier: string, idToken: string): Promise<AcbsGetFacilityResponseDto> {
-    const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+    const { portfolioIdentifier } = PROPERTIES.GLOBAL;
 
     const { data: facility } = await this.acbsHttpService.get<AcbsGetFacilityResponseDto>({
       path: `/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}`,

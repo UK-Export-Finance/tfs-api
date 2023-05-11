@@ -12,9 +12,9 @@ jest.mock('./facility-loan-transaction.service');
 describe('FacilityLoanTransactionController', () => {
   const valueGenerator = new RandomValueGenerator();
   const dateStringTransformations = new DateStringTransformations();
-  const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+  const { portfolioIdentifier } = PROPERTIES.GLOBAL;
   const facilityIdentifier = valueGenerator.ukefId();
-  const bundleIdentifier = valueGenerator.string({ length: 9 });
+  const bundleIdentifier = valueGenerator.acbsBundleId();
 
   let facilityLoanTransactionService: FacilityLoanTransactionService;
   let controller: FacilityLoanTransactionController;

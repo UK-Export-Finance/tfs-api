@@ -18,7 +18,7 @@ export class AcbsFacilityCovenantService {
   }
 
   async createCovenantForFacility(facilityIdentifier: string, newFacilityCovenant: AcbsCreateFacilityCovenantRequestDto, idToken: string): Promise<void> {
-    const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+    const { portfolioIdentifier } = PROPERTIES.GLOBAL;
     await this.acbsHttpService.post<AcbsCreateFacilityCovenantRequestDto>({
       path: `/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/Covenant`,
       requestBody: newFacilityCovenant,

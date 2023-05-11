@@ -36,7 +36,7 @@ export class FacilityLoanTransactionController {
   @ApiInternalServerErrorResponse({
     description: 'An internal server error has occurred.',
   })
-  async getLoanTransactionByBundleIdentifier(@Param() params: GetLoanTransactionParamsDto): Promise<GetFacilityLoanTransactionResponseItem> {
-    return await this.facilityLoanTransactionService.getLoanTransactionsByBundleIdentifier(params.bundleIdentifier);
+  getLoanTransactionByBundleIdentifier(@Param() params: GetLoanTransactionParamsDto): Promise<GetFacilityLoanTransactionResponseItem> {
+    return this.facilityLoanTransactionService.getLoanTransactionsByBundleIdentifier(params.bundleIdentifier);
   }
 }

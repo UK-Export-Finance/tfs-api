@@ -11,7 +11,7 @@ import nock from 'nock';
 describe('GET /facilities/{facilityIdentifier}/loans', () => {
   const valueGenerator = new RandomValueGenerator();
   const dateStringTransformations = new DateStringTransformations();
-  const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+  const { portfolioIdentifier } = PROPERTIES.GLOBAL;
   const facilityIdentifier = valueGenerator.ukefId();
   const getFacilityLoansUrl = `/api/v1/facilities/${facilityIdentifier}/loans`;
 

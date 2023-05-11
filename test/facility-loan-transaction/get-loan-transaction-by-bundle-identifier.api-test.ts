@@ -12,9 +12,9 @@ import nock from 'nock';
 describe('GET /facilities/{facilityIdentifier}/loan-transactions/{bundleIdentifier}', () => {
   const valueGenerator = new RandomValueGenerator();
   const dateStringTransformations = new DateStringTransformations();
-  const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+  const { portfolioIdentifier } = PROPERTIES.GLOBAL;
   const facilityIdentifier = valueGenerator.ukefId();
-  const bundleIdentifier = valueGenerator.string({ length: 9 });
+  const bundleIdentifier = valueGenerator.acbsBundleId();
   const getLoanTransactionUrl = `/api/v1/facilities/${facilityIdentifier}/loan-transactions/${bundleIdentifier}`;
 
   const { facilityLoanTransactionsInAcbs, facilityLoanTransactionsFromApi } = new GetFacilityLoanTransactionGenerator(
@@ -26,8 +26,8 @@ describe('GET /facilities/{facilityIdentifier}/loan-transactions/{bundleIdentifi
     portfolioIdentifier,
   });
 
-  const loanTransactionInAcbs = facilityLoanTransactionsInAcbs[0];
-  const expectedLoanTransaction = facilityLoanTransactionsFromApi[0];
+  const [loanTransactionInAcbs] = facilityLoanTransactionsInAcbs;
+  const [expectedLoanTransaction] = facilityLoanTransactionsFromApi;
 
   let api: Api;
 

@@ -2,8 +2,8 @@ import { ValidatedStringApiProperty } from '@ukef/decorators/validated-string-ap
 
 export class GetLoanTransactionParamsDto {
   @ValidatedStringApiProperty({ description: 'The UKEF identifier for the facility.', length: 10, pattern: /^\d{10}$/ })
-  facilityIdentifier: string;
+  readonly facilityIdentifier: string;
 
-  @ValidatedStringApiProperty({ description: 'The bundle identifier for the loan transaction.', length: 9 })
-  bundleIdentifier: string;
+  @ValidatedStringApiProperty({ description: 'The bundle identifier for the loan transaction.', length: 10 })
+  readonly bundleIdentifier: string;
 }
