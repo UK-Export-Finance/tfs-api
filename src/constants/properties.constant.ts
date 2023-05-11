@@ -277,47 +277,47 @@ export const PROPERTIES = {
     DEFAULT: {
       initiatingUserName: 'APIUKEF',
       servicingUserAccountIdentifier: 'APIUKEF',
-      useAPIUserIndicator: false,      
+      useAPIUserIndicator: false,
       initialBundleStatusCode: '3',
       messageType: 'NewLoanRequest',
       accountOwnerIdentifier: '00000000',
       sectionIdentifier: '00',
-      servicingUser: { 
-        userAcbsIdentifier: 'OPERATIONS', 
+      servicingUser: {
+        userAcbsIdentifier: 'OPERATIONS',
         userName: 'OPERATIONS',
       },
-      administrativeUser: { 
-        userAcbsIdentifier: 'OPERATIONS', 
+      administrativeUser: {
+        userAcbsIdentifier: 'OPERATIONS',
         userName: 'OPERATIONS',
       },
-      servicingUnit: { 
+      servicingUnit: {
         servicingUnitIdentifier: 'ACBS',
-      },        
-      servicingUnitSection: { 
-        servicingUnitSectionIdentifier: 'ACBS', 
       },
-      closureType: { 
+      servicingUnitSection: {
+        servicingUnitSectionIdentifier: 'ACBS',
+      },
+      closureType: {
         closureTypeCode: 'B',
       },
       agentPartyIdentifier: '00000000',
       agentAddressIdentifier: 'PRM',
-      interestRateType: { 
+      interestRateType: {
         interestRateTypeCode: 'INS',
       },
-      bookingType: { 
-        loanBookingTypeCode: 'A', 
+      bookingType: {
+        loanBookingTypeCode: 'A',
       },
-      loanReviewFrequencyType: { 
+      loanReviewFrequencyType: {
         loanReviewFrequencyTypeCode: 'A',
       },
       currentRiskOfficerIdentifier: 'DCIS',
-      loanAdvanceType: { 
+      loanAdvanceType: {
         loanAdvanceTypeCode: 'D',
       },
-      generalLedgerUnit: { 
+      generalLedgerUnit: {
         generalLedgerUnitIdentifier: 'ECGD',
       },
-      cashEventList: { 
+      cashEventList: {
         paymentInstructionCode: '',
         cashOffsetTypeCode: '02',
         settlementCurrencyCode: null,
@@ -327,27 +327,27 @@ export const PROPERTIES = {
       },
       financialRateGroup: 'UKRATEGRP',
       customerUsageRateGroup: 'UKRATEGRP',
-      financialFrequency: { 
+      financialFrequency: {
         usageFrequencyTypeCode: 'M',
       },
-      customerUsageFrequency: { 
+      customerUsageFrequency: {
         usageFrequencyTypeCode: 'M',
       },
-      financialBusinessDayAdjustment: { 
+      financialBusinessDayAdjustment: {
         businessDayAdjustmentTypeCode: 'S',
       },
-      customerUsageBusinessDayAdjustment: { 
+      customerUsageBusinessDayAdjustment: {
         businessDayAdjustmentTypeCode: 'S',
       },
-      financialCalendar: { 
-        calendarIdentifier: 'UK', 
+      financialCalendar: {
+        calendarIdentifier: 'UK',
       },
-      customerUsageCalendar: { 
+      customerUsageCalendar: {
         calendarIdentifier: 'UK',
       },
       financialLockMTMRateIndicator: true,
       customerUsageLockMTMRateIndicator: true,
-      securedType: { 
+      securedType: {
         loanSecuredTypeCode: 'N',
       },
     },

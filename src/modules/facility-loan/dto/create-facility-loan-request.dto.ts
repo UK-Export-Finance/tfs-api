@@ -1,8 +1,5 @@
-import { ENUMS, EXAMPLES, UKEFID } from '@ukef/constants';
-import { ValidatedDateOnlyApiProperty } from '@ukef/decorators/validated-date-only-api-property.decorator';
-import { ValidatedNumberApiProperty } from '@ukef/decorators/validated-number-api-property.decorator';
+import { EXAMPLES, UKEFID } from '@ukef/constants';
 import { ValidatedStringApiProperty } from '@ukef/decorators/validated-string-api-property.decorator';
-import { DateOnlyString } from '@ukef/helpers';
 
 export type CreateFacilityLoanRequestDto = CreateFacilityLoanRequestItem[];
 

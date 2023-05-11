@@ -1,13 +1,22 @@
 import { Body, Controller, Get, Param, ParseArrayPipe, Post } from '@nestjs/common';
-import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiInternalServerErrorResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiParam } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiBody,
+  ApiCreatedResponse,
+  ApiInternalServerErrorResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiParam,
+} from '@nestjs/swagger';
 import { EXAMPLES } from '@ukef/constants';
+
 import { CreateFacilityLoanRequestDto, CreateFacilityLoanRequestItem } from './dto/create-facility-loan-request.dto';
 import { CreateFacilityLoanResponseDto } from './dto/create-facility-loan-response.dto';
-
 import { FacilityLoanParamsDto } from './dto/facility-loan-params.dto';
 import { GetFacilityLoanResponseDto, GetFacilityLoanResponseItem } from './dto/get-facility-loan-response.dto';
-import { FacilityLoanToCreate } from './facility-loan-to-create.interface';
 import { FacilityLoanService } from './facility-loan.service';
+import { FacilityLoanToCreate } from './facility-loan-to-create.interface';
 
 @Controller()
 export class FacilityLoanController {
