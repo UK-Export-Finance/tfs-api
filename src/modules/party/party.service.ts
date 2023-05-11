@@ -77,7 +77,7 @@ export class PartyService {
     const token = await this.getIdToken();
     const newPartyInAcbs: AcbsCreatePartyRequest = this.buildAcbsCreatePartyRequest(partyToCreate);
 
-    return await this.acbsPartyService.createParty(newPartyInAcbs, token);
+    return this.acbsPartyService.createParty(newPartyInAcbs, token);
   }
 
   async getPartyByIdentifier(partyIdentifier: string): Promise<Party> {

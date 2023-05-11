@@ -74,7 +74,7 @@ export class PartyController {
       return partyIdentifierOfMatchingParty;
     }
 
-    return await this.partyService.createParty(newParty);
+    return this.partyService.createParty(newParty);
   }
 
   @Get(':partyIdentifier')
