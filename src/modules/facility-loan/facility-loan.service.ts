@@ -5,12 +5,17 @@ import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acb
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 
 import { GetFacilityLoanResponseDto } from './dto/get-facility-loan-response.dto';
+// import { UkefId } from '@ukef/helpers';
+import { CreateFacilityLoanResponseDto } from './dto/create-facility-loan-response.dto';
+import { AcbsBundleInformationService } from '../acbs/acbs-bundleInformation.service';
+// import { FacilityLoanToCreate } from './facility-loan-to-create.interface';
 
 @Injectable()
 export class FacilityLoanService {
   constructor(
     private readonly acbsAuthenticationService: AcbsAuthenticationService,
     private readonly acbsFacilityLoanService: AcbsFacilityLoanService,
+    private readonly acbsBundleInformationService: AcbsBundleInformationService,
     private readonly dateStringTransformations: DateStringTransformations,
   ) {}
 
@@ -36,5 +41,20 @@ export class FacilityLoanService {
         discountedPrincipal: loan.DiscountedPrincipal,
       };
     });
+  }
+
+  async createLoanForFacility(
+    // facilityIdentifier: UkefId,
+    // newFacilityLoan: FacilityLoanToCreate,
+  ): Promise<CreateFacilityLoanResponseDto> {
+    const idToken = await this.acbsAuthenticationService.getIdToken();
+
+    const bundleInformationToCreateInAcbs = {
+      PortfolioIdentifier: PROPERTIES.GLOBAL.portfolioIdentifier,
+      InitiatingUserName: PROPERTIES.FACILITY_LOAN.DEFAULT.initiatingUserName,
+      ServicingUserAccountIdentifier: 0
+    }
+    const response = await this.acbsBundleInformationService.createBundleInformation(bundleInformationToCreateInAcbs, idToken);
+    return { bundleIdentifier: response.BundleIdentifier };
   }
 }

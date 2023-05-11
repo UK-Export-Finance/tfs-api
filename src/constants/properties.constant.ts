@@ -273,4 +273,83 @@ export const PROPERTIES = {
       },
     },
   },
+  FACILITY_LOAN: {
+    DEFAULT: {
+      initiatingUserName: 'APIUKEF',
+      servicingUserAccountIdentifier: 'APIUKEF',
+      useAPIUserIndicator: false,      
+      initialBundleStatusCode: '3',
+      messageType: 'NewLoanRequest',
+      accountOwnerIdentifier: '00000000',
+      sectionIdentifier: '00',
+      servicingUser: { 
+        userAcbsIdentifier: 'OPERATIONS', 
+        userName: 'OPERATIONS',
+      },
+      administrativeUser: { 
+        userAcbsIdentifier: 'OPERATIONS', 
+        userName: 'OPERATIONS',
+      },
+      servicingUnit: { 
+        servicingUnitIdentifier: 'ACBS',
+      },        
+      servicingUnitSection: { 
+        servicingUnitSectionIdentifier: 'ACBS', 
+      },
+      closureType: { 
+        closureTypeCode: 'B',
+      },
+      agentPartyIdentifier: '00000000',
+      agentAddressIdentifier: 'PRM',
+      interestRateType: { 
+        interestRateTypeCode: 'INS',
+      },
+      bookingType: { 
+        loanBookingTypeCode: 'A', 
+      },
+      loanReviewFrequencyType: { 
+        loanReviewFrequencyTypeCode: 'A',
+      },
+      currentRiskOfficerIdentifier: 'DCIS',
+      loanAdvanceType: { 
+        loanAdvanceTypeCode: 'D',
+      },
+      generalLedgerUnit: { 
+        generalLedgerUnitIdentifier: 'ECGD',
+      },
+      cashEventList: { 
+        paymentInstructionCode: '',
+        cashOffsetTypeCode: '02',
+        settlementCurrencyCode: null,
+        originatingGeneralLedgerUnit: null,
+        dDAAccount: '',
+        cashReferenceIdentifier: '',
+      },
+      financialRateGroup: 'UKRATEGRP',
+      customerUsageRateGroup: 'UKRATEGRP',
+      financialFrequency: { 
+        usageFrequencyTypeCode: 'M',
+      },
+      customerUsageFrequency: { 
+        usageFrequencyTypeCode: 'M',
+      },
+      financialBusinessDayAdjustment: { 
+        businessDayAdjustmentTypeCode: 'S',
+      },
+      customerUsageBusinessDayAdjustment: { 
+        businessDayAdjustmentTypeCode: 'S',
+      },
+      financialCalendar: { 
+        calendarIdentifier: 'UK', 
+      },
+      customerUsageCalendar: { 
+        calendarIdentifier: 'UK',
+      },
+      financialLockMTMRateIndicator: true,
+      customerUsageLockMTMRateIndicator: true,
+      securedType: { 
+        loanSecuredTypeCode: 'N',
+      },
+    },
+  },
 };
