@@ -1,44 +1,50 @@
 import { AxiosError } from 'axios';
+import { ObservableInput, throwError } from 'rxjs';
 
 import { AcbsException } from './exception/acbs.exception';
 import { AcbsBadRequestException } from './exception/acbs-bad-request.exception';
 import { AcbsUnexpectedException } from './exception/acbs-unexpected.exception';
 import { KnownErrors } from './known-errors';
 
-type AcbsHttpErrorCallback = (error: Error) => never;
+type AcbsHttpErrorCallback = (error: Error) => ObservableInput<never>;
 
 export const createWrapAcbsHttpGetErrorCallback =
   ({ messageForUnknownError, knownErrors }: { messageForUnknownError: string; knownErrors: KnownErrors }): AcbsHttpErrorCallback =>
   (error: Error) => {
     if (error instanceof AxiosError && error.response && typeof error.response.data === 'string') {
-      knownErrors.forEach(({ substringToFind, throwError }) => {
-        if (error.response.data.includes(substringToFind)) {
-          throwError(error);
+      const errorMessageInLowerCase = error.response.data.toLowerCase();
+      knownErrors.forEach(({ caseInsensitiveSubstringToFind, throwError }) => {
+        if (errorMessageInLowerCase.includes(caseInsensitiveSubstringToFind.toLowerCase())) {
+          return throwError(error);
         }
       });
     }
 
-    throw new AcbsException(messageForUnknownError, error);
+    return throwError(() => new AcbsException(messageForUnknownError, error));
   };
 
 export const createWrapAcbsHttpPostErrorCallback =
   ({ messageForUnknownError, knownErrors }: { messageForUnknownError: string; knownErrors: KnownErrors }): AcbsHttpErrorCallback =>
   (error: Error) => {
     if (!(error instanceof AxiosError) || !error.response || error.response.status !== 400) {
-      throw new AcbsUnexpectedException(messageForUnknownError, error);
+      return throwError(() => new AcbsUnexpectedException(messageForUnknownError, error));
     }
 
     if (typeof error.response.data === 'string') {
-      knownErrors.forEach(({ substringToFind, throwError }) => {
-        if (error.response.data.includes(substringToFind)) {
-          throwError(error);
+      const errorMessageInLowerCase = error.response.data.toLowerCase();
+      knownErrors.forEach(({ caseInsensitiveSubstringToFind, throwError }) => {
+        if (errorMessageInLowerCase.includes(caseInsensitiveSubstringToFind.toLowerCase())) {
+          return throwError(error);
         }
       });
     }
 
-    throw new AcbsBadRequestException(
-      messageForUnknownError,
-      error,
-      typeof error.response.data === 'string' ? error.response.data : JSON.stringify(error.response.data),
+    return throwError(
+      () =>
+        new AcbsBadRequestException(
+          messageForUnknownError,
+          error,
+          typeof error.response.data === 'string' ? error.response.data : JSON.stringify(error.response.data),
+        ),
     );
   };

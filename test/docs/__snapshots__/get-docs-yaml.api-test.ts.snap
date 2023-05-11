@@ -162,6 +162,45 @@ paths:
           description: The deal was not found.
         '500':
           description: An internal server error has occurred.
+  /api/v1/facilities/{facilityIdentifier}/activation-transactions:
+    post:
+      operationId: >-
+        FacilityActivationTransactionController_createActivationTransactionForFacility
+      summary: Create a new activation transaction for a facility.
+      parameters:
+        - name: facilityIdentifier
+          required: true
+          in: path
+          description: The identifier of the facility in ACBS.
+          example: '0030000322'
+          schema:
+            minLength: 10
+            maxLength: 10
+            pattern: ^00\\d{8}$
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: >-
+                  #/components/schemas/CreateFacilityActivationTransactionRequestItem
+      responses:
+        '201':
+          description: The activation transaction has been successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/CreateFacilityActivationTransactionResponse
+        '400':
+          description: Bad request.
+        '404':
+          description: The facility was not found.
+        '500':
+          description: An internal server error has occurred.
   /api/v1/facilities/{facilityIdentifier}:
     get:
       operationId: FacilityController_getFacilityByIdentifier
@@ -275,6 +314,34 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/GetFacilityCovenantsResponseDto'
+        '400':
+          description: The specified facilityIdentifier is not valid.
+        '500':
+          description: An internal server error has occurred.
+  /api/v1/facilities/{facilityIdentifier}/fixed-fees:
+    get:
+      operationId: FacilityFixedFeeController_getFixedFeesForFacility
+      summary: Get all fixed fees for a facility.
+      parameters:
+        - name: facilityIdentifier
+          required: true
+          in: path
+          description: The identifier of the facility in ACBS.
+          example: '0030000322'
+          schema:
+            minLength: 10
+            maxLength: 10
+            pattern: ^00\\d{8}$
+            type: string
+      responses:
+        '200':
+          description: The fixed fees for the facility have been successfully retrieved.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GetFacilityFixedFeeResponseItem'
         '400':
           description: The specified facilityIdentifier is not valid.
         '500':
@@ -409,6 +476,36 @@ paths:
           description: The facility was not found.
         '500':
           description: An internal server error has occurred.
+  /api/v1/facilities/{facilityIdentifier}/loans:
+    get:
+      operationId: FacilityLoanController_getLoansForFacility
+      summary: Get all loans for a facility.
+      parameters:
+        - name: facilityIdentifier
+          required: true
+          in: path
+          description: The identifier of the facility in ACBS.
+          example: '0030000322'
+          schema:
+            minLength: 10
+            maxLength: 10
+            pattern: ^00\\d{8}$
+            type: string
+      responses:
+        '200':
+          description: The loans for the facility have been retrieved.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GetFacilityLoanResponseItem'
+        '400':
+          description: The specified facilityIdentifier is not valid.
+        '404':
+          description: The facility was not found.
+        '500':
+          description: An internal server error has occurred.
   /api/v1/parties/{partyIdentifier}/external-ratings:
     get:
       operationId: PartyExternalRatingController_getExternalRatingsForParty
@@ -444,9 +541,12 @@ paths:
         - name: searchText
           required: true
           in: query
-          description: 'Minimum length: 3. Cannot contain only whitespaces.'
+          description: >-
+            Parties matching the provided Search Text will be returned. Cannot
+            contain only whitespaces.
           schema:
             minLength: 3
+            pattern: ^\\s*\\S+\\s*$
             type: string
       responses:
         '200':
@@ -845,6 +945,51 @@ components:
         - dealIdentifier
         - effectiveDate
         - currency
+    CreateFacilityActivationTransactionRequestItem:
+      type: object
+      properties:
+        facilityIdentifier:
+          type: string
+          description: The identifier of the facility to activate.
+          minLength: 10
+          maxLength: 10
+          pattern: ^00\\d{8}$
+          example: '0030000322'
+        initialBundleStatusCode:
+          type: number
+          description: In most situations the value should be 3, it means auto approval.
+          example: 3
+          enum:
+            - 1
+            - 2
+            - 3
+        lenderTypeCode:
+          type: string
+          description: >-
+            In most situations the value should be 100, it means first level
+            obligor.
+          minLength: 3
+          maxLength: 3
+          enum:
+            - '100'
+            - '500'
+          example: '100'
+      required:
+        - facilityIdentifier
+        - initialBundleStatusCode
+        - lenderTypeCode
+    CreateFacilityActivationTransactionResponse:
+      type: object
+      properties:
+        bundleIdentifier:
+          type: string
+          readOnly: true
+          minLength: 10
+          maxLength: 10
+          description: The identifier of the ACBS bundle.
+          example: '0000321000'
+      required:
+        - bundleIdentifier
     GetFacilityByIdentifierResponseDto:
       type: object
       properties:
@@ -1203,6 +1348,10 @@ components:
             covenant not in GBP.
           minLength: 2
           maxLength: 2
+          enum:
+            - '43'
+            - '46'
+            - '47'
           example: '43'
         maximumLiability:
           type: number
@@ -1315,6 +1464,112 @@ components:
         - guaranteeCommencementDate
         - effectiveDate
         - guaranteeExpiryDate
+    GetFacilityFixedFeeResponseItem:
+      type: object
+      properties:
+        facilityIdentifier:
+          type: string
+          description: The identifier of the facility.
+          minLength: 10
+          maxLength: 10
+          pattern: ^00\\d{8}$
+          example: '0030000322'
+        portfolioIdentifier:
+          type: string
+          description: The identifier of the portfolio.
+          example: E1
+          enum:
+            - E1
+        amount:
+          type: number
+          description: >-
+            The fixed amount to be billed to the client. If a flat amount is
+            charged, this field is required.
+          example: 501927.25
+          minimum: 0
+          maximum: 100000000000000000
+        effectiveDate:
+          format: date
+          type: string
+          description: The effective date of this accruing/Fixed fee schedule.
+          example: '2023-03-24'
+        expirationDate:
+          format: date
+          type: string
+          description: The expiration date of this accruing/Fixed fee schedule.
+          example: '2023-03-24'
+        nextDueDate:
+          format: date
+          type: string
+          description: Date the next fee bill is due for this fee schedule.
+          example: '2023-03-24'
+        nextAccrueToDate:
+          format: date
+          type: string
+          description: >-
+            End date for the current accrual period. This date can be different
+            than the Next Due Date.
+          example: '2023-03-24'
+        period:
+          type: string
+          description: >-
+            Segment identifier from income exposure table. 2 alphanumeric
+            characters.
+          minLength: 2
+          maxLength: 2
+        description:
+          type: string
+          description: Description of accruing/Fixed fee which is be entered by user.
+          minLength: 0
+          maxLength: 35
+        currency:
+          type: string
+          description: >-
+            The currency of Facility Fee, defined in the Currency Definition
+            Table under Systems Administration of Servicing. For example, USD
+            for United States Dollar.
+          example: USD
+          minLength: 0
+          maxLength: 3
+        lenderTypeCode:
+          type: string
+          description: >-
+            Defines the code for the role of the party in the Facility for which
+            the fee is created.
+          enum:
+            - '100'
+            - '500'
+          example: '500'
+          minLength: 0
+          maxLength: 3
+        incomeClassCode:
+          type: string
+          description: >-
+            Defines the code for the fee type of this schedule for reporting and
+            GL purposes.
+          example: BPM
+          minLength: 0
+          maxLength: 3
+        spreadToInvestorsIndicator:
+          type: boolean
+          description: >-
+            Action indicator to be supplied together with the Fee to control
+            propagation of the fee effects to other investors. Not applicable to
+            output data.
+      required:
+        - facilityIdentifier
+        - portfolioIdentifier
+        - amount
+        - effectiveDate
+        - expirationDate
+        - nextDueDate
+        - nextAccrueToDate
+        - period
+        - description
+        - currency
+        - lenderTypeCode
+        - incomeClassCode
+        - spreadToInvestorsIndicator
     GetFacilityGuaranteesResponseItem:
       type: object
       properties:
@@ -1415,6 +1670,11 @@ components:
             provider - 500, buyer for (exporter EWCS) - 321.
           minLength: 3
           maxLength: 3
+          enum:
+            - '315'
+            - '310'
+            - '500'
+            - '321'
           example: '310'
       required:
         - facilityIdentifier
@@ -1548,6 +1808,81 @@ components:
         - maximumLiability
         - lenderTypeCode
         - involvedParty
+    GetFacilityLoanResponseItem:
+      type: object
+      properties:
+        portfolioIdentifier:
+          type: string
+          description: >-
+            The identifier of the portfolio in ACBS. The UKEF portfolio is E1.
+            The maximum number of characters allowed is 2.
+        loanIdentifier:
+          type: string
+          description: The identifier of the loan in ACBS. This will be a 9-digit code.
+        facilityIdentifier:
+          type: string
+          description: >-
+            The identifier of the facility in ACBS. This will be a 10-digit
+            code.
+        borrowerPartyIdentifier:
+          type: string
+          description: >-
+            The identifier of the loan borrower in ACBS. This will be a 8-digit
+            code.
+        productTypeId:
+          type: string
+          description: >-
+            The product type identifier: 250 for BSS, 260 for EWCS, 280 for
+            GEF-Cash, 281 for GEF-Contingent. It is called the product type code
+            in ACBS.
+        productTypeGroup:
+          type: string
+          description: >-
+            The product type group identifier: EW for EWCS, BS for Bond, GM for
+            GEF. It is called the product group code in ACBS.
+        currency:
+          type: string
+          description: The 3-character currency code for the loan.
+        issueDate:
+          format: date
+          type: string
+          description: >-
+            The issue date for the loan. It is called the effective date in
+            ACBS.
+        expiryDate:
+          format: date
+          type: string
+          description: >-
+            The expiry date for the loan. It is called the maturity date in
+            ACBS.
+        principalBalance:
+          type: number
+          description: >-
+            The loan amount used during loan creation. This value goes down
+            after each fee and may be affected by other factors.
+        interestBalance:
+          type: number
+        feeBalance:
+          type: number
+        otherBalance:
+          type: number
+        discountedPrincipal:
+          type: number
+      required:
+        - portfolioIdentifier
+        - loanIdentifier
+        - facilityIdentifier
+        - borrowerPartyIdentifier
+        - productTypeId
+        - productTypeGroup
+        - currency
+        - issueDate
+        - expiryDate
+        - principalBalance
+        - interestBalance
+        - feeBalance
+        - otherBalance
+        - discountedPrincipal
     GetPartyExternalRatingResponseRatingEntity:
       type: object
       properties:

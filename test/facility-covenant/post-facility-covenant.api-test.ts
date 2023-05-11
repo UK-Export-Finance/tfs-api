@@ -23,7 +23,7 @@ describe('POST /facilities/{facilityIdentifier}/covenants', () => {
   const facilityIdentifier = valueGenerator.facilityId();
   const createFacilityCovenantUrl = `/api/v1/facilities/${facilityIdentifier}/covenants`;
   const facilityTypeCode = valueGenerator.stringOfNumericCharacters();
-  const limitKeyValue = valueGenerator.string();
+  const limitKeyValue = valueGenerator.acbsPartyId();
 
   const { portfolioIdentifier } = PROPERTIES.GLOBAL;
 
@@ -91,7 +91,7 @@ describe('POST /facilities/{facilityIdentifier}/covenants', () => {
 
     expect(status).toBe(201);
     expect(body).toStrictEqual({
-      facilityIdentifier, // TODO APIM-106: is this the correct response?
+      facilityIdentifier,
     });
     expect(acbsRequest.isDone()).toBe(true);
   });
