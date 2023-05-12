@@ -544,9 +544,12 @@ paths:
         - name: searchText
           required: true
           in: query
-          description: 'Minimum length: 3. Cannot contain only whitespaces.'
+          description: >-
+            Parties matching the provided Search Text will be returned. Cannot
+            contain only whitespaces.
           schema:
             minLength: 3
+            pattern: ^\\s*\\S+\\s*$
             type: string
       responses:
         '200':

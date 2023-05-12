@@ -1,11 +1,11 @@
 import { HttpService } from '@nestjs/axios';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
+import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
 import { GetPartyGenerator } from '@ukef-test/support/generator/get-party-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { AxiosError } from 'axios';
 import { when } from 'jest-when';
-import { of, throwError } from 'rxjs';
 
+import { AcbsPartyService } from '../acbs/acbs-party.service';
 import { AcbsGetPartiesBySearchTextResponse } from './dto/acbs-get-parties-by-search-text-response.dto';
 import { GetPartiesBySearchTextException } from './exception/get-parties-by-search-text.exception';
 import { PartyService } from './party.service';
@@ -17,10 +17,10 @@ describe('PartyService', () => {
   const valueGenerator = new RandomValueGenerator();
   const dateStringTransformations = new DateStringTransformations();
   const idToken = valueGenerator.string();
-  const baseUrl = valueGenerator.httpsUrl();
 
   let httpService: HttpService;
   let partyService: PartyService;
+  let acbsPartyServiceGetPartyBySearchText: jest.Mock;
 
   let httpServiceGet: jest.Mock;
 
@@ -30,20 +30,19 @@ describe('PartyService', () => {
     httpServiceGet = jest.fn();
     httpService.get = httpServiceGet;
 
-    partyService = new PartyService({ baseUrl }, httpService, null, null, dateStringTransformations);
+    const acbsPartyService = new AcbsPartyService(null, null);
+    acbsPartyServiceGetPartyBySearchText = jest.fn();
+    acbsPartyService.getPartyBySearchText = acbsPartyServiceGetPartyBySearchText;
+
+    const mockAcbsAuthenticationService = getMockAcbsAuthenticationService();
+    const acbsAuthenticationService = mockAcbsAuthenticationService.service;
+    const acbsAuthenticationServiceGetIdToken = mockAcbsAuthenticationService.getIdToken;
+    when(acbsAuthenticationServiceGetIdToken).calledWith().mockResolvedValueOnce(idToken);
+
+    partyService = new PartyService(acbsAuthenticationService, acbsPartyService, dateStringTransformations);
   });
 
   describe('getPartyBySearchText', () => {
-    const getExpectedGetPartiesBySearchTextArguments = (searchText: string): [string, object] => [
-      `/Party/Search/${searchText}`,
-      {
-        baseURL: baseUrl,
-        headers: {
-          Authorization: `Bearer ${idToken}`,
-        },
-      },
-    ];
-
     const { partiesInAcbs, parties } = new GetPartyGenerator(valueGenerator, dateStringTransformations).generate({ numberToGenerate: 2 });
     const partiesInAcbsWithPartyIdentifiers: AcbsGetPartiesBySearchTextResponse = [
       { ...partiesInAcbs[0], PartyIdentifier: valueGenerator.stringOfNumericCharacters() },
@@ -53,9 +52,9 @@ describe('PartyService', () => {
     it('returns matching parties in the correct format if the request is successful', async () => {
       const searchText = 'searchText';
 
-      mockSuccessfulAcbsGetPartiesBySearchTextRequest(searchText, partiesInAcbsWithPartyIdentifiers);
+      when(acbsPartyServiceGetPartyBySearchText).calledWith(searchText, idToken).mockResolvedValueOnce(partiesInAcbsWithPartyIdentifiers);
 
-      const response = await partyService.getPartiesBySearchText(idToken, searchText);
+      const response = await partyService.getPartiesBySearchText(searchText);
 
       expect(response).toStrictEqual(parties);
     });
@@ -63,9 +62,9 @@ describe('PartyService', () => {
     it('returns matching parties in the correct format if the query parameter searchText is exactly 3 characters and the request is successful', async () => {
       const searchText = '999';
 
-      mockSuccessfulAcbsGetPartiesBySearchTextRequest(searchText, partiesInAcbsWithPartyIdentifiers);
+      when(acbsPartyServiceGetPartyBySearchText).calledWith(searchText, idToken).mockResolvedValueOnce(partiesInAcbsWithPartyIdentifiers);
 
-      const response = await partyService.getPartiesBySearchText(idToken, searchText);
+      const response = await partyService.getPartiesBySearchText(searchText);
 
       expect(response).toStrictEqual(parties);
     });
@@ -73,9 +72,9 @@ describe('PartyService', () => {
     it("returns matching parties in the correct format if the query parameter searchText is 'A!@'' and the request is successful", async () => {
       const searchText = 'A!@';
 
-      mockSuccessfulAcbsGetPartiesBySearchTextRequest(searchText, partiesInAcbsWithPartyIdentifiers);
+      when(acbsPartyServiceGetPartyBySearchText).calledWith(searchText, idToken).mockResolvedValueOnce(partiesInAcbsWithPartyIdentifiers);
 
-      const response = await partyService.getPartiesBySearchText(idToken, searchText);
+      const response = await partyService.getPartiesBySearchText(searchText);
 
       expect(response).toStrictEqual(parties);
     });
@@ -89,9 +88,9 @@ describe('PartyService', () => {
       const partiesWithNullOfficerRiskDate = JSON.parse(JSON.stringify(parties));
       partiesWithNullOfficerRiskDate[0].officerRiskDate = null;
 
-      mockSuccessfulAcbsGetPartiesBySearchTextRequest(searchText, partiesInAcbsWithNullOfficerRiskDate);
+      when(acbsPartyServiceGetPartyBySearchText).calledWith(searchText, idToken).mockResolvedValueOnce(partiesInAcbsWithNullOfficerRiskDate);
 
-      const response = await partyService.getPartiesBySearchText(idToken, searchText);
+      const response = await partyService.getPartiesBySearchText(searchText);
 
       expect(response).toStrictEqual(partiesWithNullOfficerRiskDate);
     });
@@ -99,40 +98,15 @@ describe('PartyService', () => {
     it('returns an empty array if the request is successful and there are no matching parties', async () => {
       const searchText = 'searchText';
 
-      when(httpServiceGet)
-        .calledWith(...getExpectedGetPartiesBySearchTextArguments(searchText))
-        .mockReturnValueOnce(
-          of({
-            data: [],
-            status: 200,
-            statusText: 'OK',
-            config: undefined,
-            headers: undefined,
-          }),
-        );
+      when(acbsPartyServiceGetPartyBySearchText).calledWith(searchText, idToken).mockResolvedValueOnce([]);
 
-      const response = await partyService.getPartiesBySearchText(idToken, searchText);
+      const response = await partyService.getPartiesBySearchText(searchText);
 
       expect(response).toStrictEqual([]);
     });
 
-    it('throws a GetPartiesBySearchTextException if there is an error when getting parties from ACBS', async () => {
-      const searchText = 'searchText';
-      const getPartiesError = new AxiosError();
-
-      when(httpServiceGet)
-        .calledWith(...getExpectedGetPartiesBySearchTextArguments(searchText))
-        .mockReturnValueOnce(throwError(() => getPartiesError));
-
-      const responsePromise = partyService.getPartiesBySearchText(idToken, searchText);
-
-      await expect(responsePromise).rejects.toBeInstanceOf(GetPartiesBySearchTextException);
-      await expect(responsePromise).rejects.toThrow('Failed to get parties from ACBS.');
-      await expect(responsePromise).rejects.toHaveProperty('innerError', getPartiesError);
-    });
-
     it('throws a GetPartiesBySearchTextException if the required query parameter searchText is not specified', async () => {
-      const responsePromise = partyService.getPartiesBySearchText(idToken, null);
+      const responsePromise = partyService.getPartiesBySearchText(null);
 
       await expect(responsePromise).rejects.toBeInstanceOf(GetPartiesBySearchTextException);
       await expect(responsePromise).rejects.toThrow('The required query parameter searchText was not specified.');
@@ -140,7 +114,7 @@ describe('PartyService', () => {
     });
 
     it('throws a GetPartiesBySearchTextException if the query parameter searchText is empty', async () => {
-      const responsePromise = partyService.getPartiesBySearchText(idToken, '');
+      const responsePromise = partyService.getPartiesBySearchText('');
 
       await expect(responsePromise).rejects.toBeInstanceOf(GetPartiesBySearchTextException);
       await expect(responsePromise).rejects.toThrow('The query parameter searchText must be non-empty.');
@@ -148,7 +122,7 @@ describe('PartyService', () => {
     });
 
     it('throws a GetPartiesBySearchTextException if the query parameter searchText is less than 3 characters', async () => {
-      const responsePromise = partyService.getPartiesBySearchText(idToken, '00');
+      const responsePromise = partyService.getPartiesBySearchText('00');
 
       await expect(responsePromise).rejects.toBeInstanceOf(GetPartiesBySearchTextException);
       await expect(responsePromise).rejects.toThrow('The query parameter searchText must be at least 3 characters.');
@@ -156,25 +130,11 @@ describe('PartyService', () => {
     });
 
     it('throws a GetPartiesBySearchTextException if the query parameter searchText is 3 whitespaces', async () => {
-      const responsePromise = partyService.getPartiesBySearchText(idToken, '   ');
+      const responsePromise = partyService.getPartiesBySearchText('   ');
 
       await expect(responsePromise).rejects.toBeInstanceOf(GetPartiesBySearchTextException);
       await expect(responsePromise).rejects.toThrow('The query parameter searchText cannot contain only whitespaces.');
       await expect(responsePromise).rejects.toHaveProperty('innerError', undefined);
     });
-
-    function mockSuccessfulAcbsGetPartiesBySearchTextRequest(searchText: string, response: AcbsGetPartiesBySearchTextResponse): void {
-      when(httpServiceGet)
-        .calledWith(...getExpectedGetPartiesBySearchTextArguments(searchText))
-        .mockReturnValueOnce(
-          of({
-            data: response,
-            status: 200,
-            statusText: 'OK',
-            config: undefined,
-            headers: undefined,
-          }),
-        );
-    }
   });
 });
