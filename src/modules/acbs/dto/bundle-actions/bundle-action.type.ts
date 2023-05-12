@@ -1,3 +1,4 @@
+import { PROPERTIES } from '@ukef/constants';
 import { DateString } from '@ukef/helpers';
 
 import { AccrualSchedule } from './accrual-schedule.interface';
@@ -6,7 +7,7 @@ import { RepaymentSchedule } from './repayment-schedule.interface';
 export type BundleAction = NewLoanRequest | { $type: string };
 
 export const isNewLoanRequest = (bundleAction: BundleAction): bundleAction is NewLoanRequest => {
-  return bundleAction.$type === 'NewLoanRequest';
+  return bundleAction.$type === PROPERTIES.FACILITY_LOAN_TRANSACTION.DEFAULT.bundleMessageList.$type.newLoanRequest;
 };
 
 interface NewLoanRequest {
