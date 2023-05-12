@@ -24,7 +24,7 @@ on:
       - 'nest.cli.json'
 
 env:
-  environment: 'cicd'
+  environment: 'qa'
   timezone: 'Europe/London'
   node: ${{ vars.NODE_VERSION }}
 
