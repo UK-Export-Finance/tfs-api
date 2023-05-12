@@ -1,4 +1,5 @@
 import { PROPERTIES } from '@ukef/constants';
+import { AcbsBundleInformationService } from '@ukef/modules/acbs/acbs-bundle-information.service';
 import { AcbsFacilityLoanService } from '@ukef/modules/acbs/acbs-facility-loan.service';
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
@@ -14,16 +15,17 @@ describe('FacilityLoanService', () => {
   const valueGenerator = new RandomValueGenerator();
   const idToken = valueGenerator.string();
   const facilityIdentifier = valueGenerator.facilityId();
+  const dateStringTransformations = new DateStringTransformations();
 
-  const { facilityLoansFromApi: expectedFacilityLoans, facilityLoansInAcbs } = new GetFacilityLoanGenerator(
-    valueGenerator,
-    new DateStringTransformations(),
-  ).generate({ numberToGenerate: 2, facilityIdentifier, portfolioIdentifier });
+  const { facilityLoansFromApi: expectedFacilityLoans, facilityLoansInAcbs } = new GetFacilityLoanGenerator(valueGenerator, dateStringTransformations).generate(
+    { numberToGenerate: 2, facilityIdentifier, portfolioIdentifier },
+  );
 
   let acbsAuthenticationService: AcbsAuthenticationService;
   let service: FacilityLoanService;
 
   let getFacilityLoansAcbsService: jest.Mock;
+  let createBundleInformation: jest.Mock;
 
   beforeEach(() => {
     const mockAcbsAuthenticationService = getMockAcbsAuthenticationService();
@@ -35,7 +37,11 @@ describe('FacilityLoanService', () => {
     getFacilityLoansAcbsService = jest.fn();
     acbsService.getLoansForFacility = getFacilityLoansAcbsService;
 
-    service = new FacilityLoanService(acbsAuthenticationService, acbsService, new DateStringTransformations());
+    const acbsBundleService = new AcbsBundleInformationService(null, null);
+    createBundleInformation = jest.fn();
+    acbsBundleService.createBundleInformation = createBundleInformation;
+
+    service = new FacilityLoanService(acbsAuthenticationService, acbsService, acbsBundleService, new DateStringTransformations());
   });
 
   describe('getLoansForFacility', () => {

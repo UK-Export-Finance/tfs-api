@@ -1,5 +1,6 @@
 import { PROPERTIES } from '@ukef/constants';
 import { AcbsDealService } from '@ukef/modules/acbs/acbs-deal.service';
+import { AcbsGetDealResponseDto } from '@ukef/modules/acbs/dto/acbs-get-deal-response.dto';
 import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
@@ -7,7 +8,6 @@ import { TEST_CURRENCIES } from '@ukef-test/support/constants/test-currency.cons
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
 
-import { AcbsGetDealResponseDto } from '../acbs/dto/acbs-get-deal-response.dto';
 import { Deal } from './deal.interface';
 import { DealService } from './deal.service';
 

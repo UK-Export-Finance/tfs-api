@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseArrayPipe, Post } from '@nestjs/common';
+import { Controller, Get, Param, Post } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -10,6 +10,7 @@ import {
   ApiParam,
 } from '@nestjs/swagger';
 import { EXAMPLES } from '@ukef/constants';
+import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decorator';
 
 import { FacilityService } from '../facility/facility.service';
 import { CreateFacilityCovenantRequestDto, CreateFacilityCovenantRequestItem } from './dto/create-facility-covenant-request.dto';
@@ -52,7 +53,7 @@ export class FacilityCovenantController {
   })
   async createCovenantForFacility(
     @Param() params: FacilityCovenantsParamsDto,
-    @Body(new ParseArrayPipe({ items: CreateFacilityCovenantRequestItem, whitelist: true })) newCovenantRequest: CreateFacilityCovenantRequestDto,
+    @ValidatedArrayBody({ items: CreateFacilityCovenantRequestItem }) newCovenantRequest: CreateFacilityCovenantRequestDto,
   ): Promise<CreateFacilityCovenantResponseDto> {
     const facilityIdentifier = params.facilityIdentifier;
     const facility = await this.facilityService.getFacilityByIdentifier(facilityIdentifier);

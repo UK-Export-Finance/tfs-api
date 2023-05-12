@@ -8,4 +8,7 @@ export const ACBSID = {
     PREFIX: '0000',
     REGEX: /^0{4}\d{6}$/,
   },
+  LOAN_ID: {
+    REGEX: /^\d{10}$/, // TODO APIM-128: Should this have a prefix?
+  },
 };

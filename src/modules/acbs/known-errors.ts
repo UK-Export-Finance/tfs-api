@@ -41,3 +41,10 @@ export const getLoanTransactionNotFoundKnownAcbsError = (bundleIdentifier: strin
     throw new AcbsResourceNotFoundException(`Loan transaction with bundle identifier ${bundleIdentifier} was not found by ACBS.`, error);
   },
 });
+
+export const getLoanNotFoundKnownAcbsBundleInformationError = (loanIdentifier: string): KnownError => ({
+  caseInsensitiveSubstringToFind: 'Loan does not exist',
+  throwError: (error) => {
+    throw new AcbsResourceNotFoundException(`Loan with identifier ${loanIdentifier} was not found by ACBS.`, error);
+  },
+});

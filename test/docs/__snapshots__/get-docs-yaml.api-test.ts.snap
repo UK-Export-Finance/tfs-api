@@ -551,6 +551,54 @@ paths:
           description: The facility was not found.
         '500':
           description: An internal server error has occurred.
+  /api/v1/facilities/{facilityIdentifier}/loans/{loanIdentifier}/amendments/amount:
+    post:
+      operationId: FacilityLoanController_createAmountAmendmentForLoan
+      summary: Create a loan amount amendment bundle.
+      parameters:
+        - name: loanIdentifier
+          required: true
+          in: path
+          description: The identifier of the loan in ACBS.
+          example: '000272017'
+          schema:
+            minLength: 10
+            maxLength: 10
+            pattern: ^\\d{10}$
+            type: string
+        - name: facilityIdentifier
+          required: true
+          in: path
+          description: >-
+            The identifier of the facility in ACBS. Note that this endpoint does
+            not check that the loan belongs to this facility.
+          example: '0030000322'
+          schema:
+            minLength: 10
+            maxLength: 10
+            pattern: ^00\\d{8}$
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/CreateLoanAmountAmendmentRequestItem'
+      responses:
+        '201':
+          description: The loan amount amendment bundle has been successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateLoanAmountAmendmentResponse'
+        '400':
+          description: Bad request.
+        '404':
+          description: The loan was not found.
+        '500':
+          description: An internal server error has occurred.
   /api/v1/parties/{partyIdentifier}/external-ratings:
     get:
       operationId: PartyExternalRatingController_getExternalRatingsForParty
@@ -680,7 +728,7 @@ paths:
           required: true
           in: path
           description: The bundle identifier of the loan transaction in ACBS.
-          example: '0000233092'
+          example: '0000321000'
           schema:
             minLength: 10
             maxLength: 10
@@ -2154,6 +2202,35 @@ components:
         - feeBalance
         - otherBalance
         - discountedPrincipal
+    CreateLoanAmountAmendmentRequestItem:
+      type: object
+      properties:
+        effectiveDate:
+          format: date
+          type: string
+          description: The date that this amendment is effective.
+        amountAmendment:
+          type: number
+          description: >-
+            The amount to change the loan amount by. A positive number increases
+            the loan amount, a negative number decreases the loan amount. 0 is
+            not allowed.
+          example: 1000000
+          not:
+            enum:
+              - 0
+      required:
+        - effectiveDate
+        - amountAmendment
+    CreateLoanAmountAmendmentResponse:
+      type: object
+      properties:
+        bundleIdentifier:
+          type: string
+          description: The ID of the created loan amendment bundle.
+          example: '0000321000'
+      required:
+        - bundleIdentifier
     GetPartyExternalRatingResponseRatingEntity:
       type: object
       properties:

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseArrayPipe, Post } from '@nestjs/common';
+import { Controller, Get, Param, Post } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -10,6 +10,7 @@ import {
   ApiParam,
 } from '@nestjs/swagger';
 import { EXAMPLES } from '@ukef/constants';
+import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decorator';
 
 import { CreateFacilityInvestorParams } from './dto/create-facility-investor-params.dto';
 import { CreateFacilityInvestorRequest, CreateFacilityInvestorRequestItem } from './dto/create-facility-investor-request.dto';
@@ -53,7 +54,7 @@ export class FacilityInvestorController {
   })
   async createInvestorForFacility(
     @Param() params: CreateFacilityInvestorParams,
-    @Body(new ParseArrayPipe({ items: CreateFacilityInvestorRequestItem })) newFacilityInvestorRequest: CreateFacilityInvestorRequest,
+    @ValidatedArrayBody({ items: CreateFacilityInvestorRequestItem }) newFacilityInvestorRequest: CreateFacilityInvestorRequest,
   ): Promise<CreateFacilityInvestorResponse> {
     const newFacilityInvestor = newFacilityInvestorRequest[0];
     const facilityInvestorToCreate: FacilityInvestorToCreate = {
