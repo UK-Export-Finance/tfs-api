@@ -50,7 +50,8 @@
     "ukef",
     "UKRATEGRP",
     "venv",
-    "vnet"
+    "vnet",
+    "CICD"
   ],
   "dictionaries": [
     "en-gb",
