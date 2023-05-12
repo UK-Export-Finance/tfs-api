@@ -83,7 +83,7 @@ export class FacilityLoanController {
     @Body(new ParseArrayPipe({ items: CreateFacilityLoanRequestItem, whitelist: true })) newLoanRequest: CreateFacilityLoanRequestDto,
   ): Promise<CreateFacilityLoanResponseDto> {
     const facilityIdentifier = params.facilityIdentifier;
-    const newLoan: FacilityLoanToCreate = newLoanRequest[0];
+    const newLoan = newLoanRequest[0];
 
     return await this.facilityLoanService.createLoanForFacility(facilityIdentifier, newLoan);
   }

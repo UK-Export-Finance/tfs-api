@@ -1,6 +1,15 @@
-import { UkefId } from '@ukef/helpers';
+import { DateOnlyString, UkefId } from '@ukef/helpers';
 
 export interface FacilityLoanToCreate {
+  postingDate: DateOnlyString;
   facilityIdentifier: UkefId;
-  // TODO add request body properties here
+  borrowerPartyIdentifier: string;
+  productTypeId: string;
+  productTypeGroup: string;
+  currency: string;
+  dealCustomerUsageRate?: number;
+  dealCustomerUsageOperationType?: string;
+  amount: number;
+  issueDate: DateOnlyString;
+  expiryDate: DateOnlyString;
 }

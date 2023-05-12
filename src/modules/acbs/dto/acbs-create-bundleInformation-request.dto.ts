@@ -1,3 +1,4 @@
+import { DateString } from '@ukef/helpers';
 import { BundleAction } from './bundle-actions/bundle-actions';
 
 export interface AcbsCreateBundleInformationRequestDto {
@@ -6,5 +7,7 @@ export interface AcbsCreateBundleInformationRequestDto {
   InitialBundleStatusCode: number;
   InitiatingUserName: string;
   UseAPIUserIndicator: boolean;
+  ServicingUserAccountIdentifier?: string;
+  PostingDate?: DateString; 
   BundleMessageList: BundleAction[];
 }
