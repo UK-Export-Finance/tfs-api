@@ -24,9 +24,9 @@ on:
       - 'nest.cli.json'
 
 env:
-  environment: dev
+  environment: 'qa'
   timezone: 'Europe/London'
-  node: '18'
+  node: ${{ vars.NODE_VERSION }}
 
 jobs:
 

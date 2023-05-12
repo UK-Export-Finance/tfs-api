@@ -4,7 +4,7 @@ import { AcbsGetPartiesBySearchTextResponse } from '@ukef/modules/party/dto/acbs
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
 import { Api } from '@ukef-test/support/api';
-import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
+import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
 import { CreatePartyGenerator } from '@ukef-test/support/generator/create-party-generator';
 import { GetPartyGenerator } from '@ukef-test/support/generator/get-party-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
@@ -30,6 +30,8 @@ describe('POST /parties', () => {
   const tooLongSmeType = valueGenerator.stringOfNumericCharacters({ minLength: 3 });
   const countryCode3Characters = valueGenerator.string({ length: 3 });
   const tooLongCountryCode = valueGenerator.string({ minLength: 4 });
+
+  const createPartyUrl = `/api/v1/parties`;
 
   const { acbsCreatePartyRequest, createPartyRequest } = new CreatePartyGenerator(valueGenerator, dateStringTransformations).generate({ numberToGenerate: 2 });
   acbsCreatePartyRequest.PartyAlternateIdentifier = alternateIdentifier;
@@ -61,7 +63,7 @@ describe('POST /parties', () => {
       requestToGetPartiesBySearchText(alternateIdentifier).reply(200, []);
       requestToCreateParties(acbsCreatePartyRequest).reply(201, undefined, { Location: `/Party/${partyIdentifier}` });
     },
-    makeRequest: () => api.post(`/api/v1/parties`, createPartyRequest),
+    makeRequest: () => api.post(createPartyUrl, createPartyRequest),
     successStatusCode: 201,
   });
 
@@ -72,7 +74,44 @@ describe('POST /parties', () => {
       requestToCreateParties(acbsCreatePartyRequest).reply(201, undefined, { Location: `/Party/${partyIdentifier}` });
     },
     makeRequestWithoutAuth: (incorrectAuth?: IncorrectAuthArg) =>
-      api.postWithoutAuth(`/api/v1/parties`, createPartyRequest, incorrectAuth?.headerName, incorrectAuth?.headerValue),
+      api.postWithoutAuth(createPartyUrl, createPartyRequest, incorrectAuth?.headerName, incorrectAuth?.headerValue),
+  });
+
+  it('returns a 400 response if ACBS responds with a 400 response', async () => {
+    givenAuthenticationWithTheIdpSucceeds();
+    const acbsErrorMessage = { Message: 'error message' };
+    requestToGetPartiesBySearchText(alternateIdentifier).reply(200, []);
+    requestToCreateParties(acbsCreatePartyRequest).reply(400, acbsErrorMessage);
+
+    const { status, body } = await api.post(createPartyUrl, createPartyRequest);
+
+    expect(status).toBe(400);
+    expect(body).toStrictEqual({ message: 'Bad request', error: JSON.stringify(acbsErrorMessage), statusCode: 400 });
+  });
+
+  it('returns a 500 response if ACBS responds with an error code that is not 400"', async () => {
+    givenAuthenticationWithTheIdpSucceeds();
+    requestToGetPartiesBySearchText(alternateIdentifier).reply(200, []);
+    requestToCreateParties(acbsCreatePartyRequest).reply(401, 'Unauthorized');
+
+    const { status, body } = await api.post(createPartyUrl, createPartyRequest);
+
+    expect(status).toBe(500);
+    expect(body).toStrictEqual({ message: 'Internal server error', statusCode: 500 });
+  });
+
+  it('returns a 500 response if creating the facility in ACBS times out', async () => {
+    givenAuthenticationWithTheIdpSucceeds();
+    requestToGetPartiesBySearchText(alternateIdentifier).reply(200, []);
+    requestToCreateParties(acbsCreatePartyRequest).delay(TIME_EXCEEDING_ACBS_TIMEOUT).reply(201);
+
+    const { status, body } = await api.post(createPartyUrl, createPartyRequest);
+
+    expect(status).toBe(500);
+    expect(body).toStrictEqual({
+      statusCode: 500,
+      message: 'Internal server error',
+    });
   });
 
   it('returns a 201 response with the identifier of the new party if ACBS returns a location header containing this', async () => {
@@ -80,7 +119,7 @@ describe('POST /parties', () => {
     requestToGetPartiesBySearchText(alternateIdentifier).reply(200, []);
     requestToCreateParties(acbsCreatePartyRequest).reply(201, undefined, { Location: `/Party/${partyIdentifier}` });
 
-    const { status, body } = await api.post('/api/v1/parties', createPartyRequest);
+    const { status, body } = await api.post(createPartyUrl, createPartyRequest);
 
     expect(status).toBe(201);
     expect(body).toStrictEqual(JSON.parse(JSON.stringify({ partyIdentifier: partyIdentifier })));
@@ -97,7 +136,7 @@ describe('POST /parties', () => {
     requestToGetPartiesBySearchText(alternateIdentifier).reply(200, []);
     requestToCreateParties(validAcbsCreatePartyRequest).reply(201, undefined, { Location: `/Party/${partyIdentifier}` });
 
-    const { status, body } = await api.post('/api/v1/parties', validCreatePartyRequest);
+    const { status, body } = await api.post(createPartyUrl, validCreatePartyRequest);
 
     expect(status).toBe(201);
     expect(body).toStrictEqual(JSON.parse(JSON.stringify({ partyIdentifier: partyIdentifier })));
@@ -114,7 +153,7 @@ describe('POST /parties', () => {
     requestToGetPartiesBySearchText(alternateIdentifier).reply(200, []);
     requestToCreateParties(validAcbsCreatePartyRequest).reply(201, undefined, { Location: `/Party/${partyIdentifier}` });
 
-    const { status, body } = await api.post('/api/v1/parties', validCreatePartyRequest);
+    const { status, body } = await api.post(createPartyUrl, validCreatePartyRequest);
 
     expect(status).toBe(201);
     expect(body).toStrictEqual(JSON.parse(JSON.stringify({ partyIdentifier: partyIdentifier })));
@@ -133,7 +172,7 @@ describe('POST /parties', () => {
     requestToGetPartiesBySearchText(alternateIdentifier).reply(200, []);
     requestToCreateParties(validAcbsCreatePartyRequest).reply(201, undefined, { Location: `/Party/${partyIdentifier}` });
 
-    const { status, body } = await api.post('/api/v1/parties', validCreatePartyRequest);
+    const { status, body } = await api.post(createPartyUrl, validCreatePartyRequest);
 
     expect(status).toBe(201);
     expect(body).toStrictEqual(JSON.parse(JSON.stringify({ partyIdentifier: partyIdentifier })));
@@ -152,7 +191,7 @@ describe('POST /parties', () => {
     requestToGetPartiesBySearchText(alternateIdentifier).reply(200, []);
     requestToCreateParties(validAcbsCreatePartyRequest).reply(201, undefined, { Location: `/Party/${partyIdentifier}` });
 
-    const { status, body } = await api.post('/api/v1/parties', validCreatePartyRequest);
+    const { status, body } = await api.post(createPartyUrl, validCreatePartyRequest);
 
     expect(status).toBe(201);
     expect(body).toStrictEqual(JSON.parse(JSON.stringify({ partyIdentifier: partyIdentifier })));
@@ -169,7 +208,7 @@ describe('POST /parties', () => {
     requestToGetPartiesBySearchText(alternateIdentifier).reply(200, []);
     requestToCreateParties(validAcbsCreatePartyRequest).reply(201, undefined, { Location: `/Party/${partyIdentifier}` });
 
-    const { status, body } = await api.post('/api/v1/parties', validCreatePartyRequest);
+    const { status, body } = await api.post(createPartyUrl, validCreatePartyRequest);
 
     expect(status).toBe(201);
     expect(body).toStrictEqual(JSON.parse(JSON.stringify({ partyIdentifier: partyIdentifier })));
@@ -186,7 +225,7 @@ describe('POST /parties', () => {
     requestToGetPartiesBySearchText(alternateIdentifier).reply(200, []);
     requestToCreateParties(validAcbsCreatePartyRequest).reply(201, undefined, { Location: `/Party/${partyIdentifier}` });
 
-    const { status, body } = await api.post('/api/v1/parties', validCreatePartyRequest);
+    const { status, body } = await api.post(createPartyUrl, validCreatePartyRequest);
 
     expect(status).toBe(201);
     expect(body).toStrictEqual(JSON.parse(JSON.stringify({ partyIdentifier: partyIdentifier })));
@@ -203,7 +242,7 @@ describe('POST /parties', () => {
     requestToGetPartiesBySearchText(alternateIdentifier).reply(200, []);
     requestToCreateParties(validAcbsCreatePartyRequest).reply(201, undefined, { Location: `/Party/${partyIdentifier}` });
 
-    const { status, body } = await api.post('/api/v1/parties', validCreatePartyRequest);
+    const { status, body } = await api.post(createPartyUrl, validCreatePartyRequest);
 
     expect(status).toBe(201);
     expect(body).toStrictEqual(JSON.parse(JSON.stringify({ partyIdentifier: partyIdentifier })));
@@ -220,7 +259,7 @@ describe('POST /parties', () => {
     requestToGetPartiesBySearchText(alternateIdentifier).reply(200, []);
     requestToCreateParties(validAcbsCreatePartyRequest).reply(201, undefined, { Location: `/Party/${partyIdentifier}` });
 
-    const { status, body } = await api.post('/api/v1/parties', validCreatePartyRequest);
+    const { status, body } = await api.post(createPartyUrl, validCreatePartyRequest);
 
     expect(status).toBe(201);
     expect(body).toStrictEqual(JSON.parse(JSON.stringify({ partyIdentifier: partyIdentifier })));
@@ -237,7 +276,7 @@ describe('POST /parties', () => {
     requestToGetPartiesBySearchText(alternateIdentifier).reply(200, []);
     requestToCreateParties(validAcbsCreatePartyRequest).reply(201, undefined, { Location: `/Party/${partyIdentifier}` });
 
-    const { status, body } = await api.post('/api/v1/parties', validCreatePartyRequest);
+    const { status, body } = await api.post(createPartyUrl, validCreatePartyRequest);
 
     expect(status).toBe(201);
     expect(body).toStrictEqual(JSON.parse(JSON.stringify({ partyIdentifier: partyIdentifier })));
@@ -254,7 +293,7 @@ describe('POST /parties', () => {
     requestToGetPartiesBySearchText(alternateIdentifier).reply(200, []);
     requestToCreateParties(validAcbsCreatePartyRequest).reply(201, undefined, { Location: `/Party/${partyIdentifier}` });
 
-    const { status, body } = await api.post('/api/v1/parties', validCreatePartyRequest);
+    const { status, body } = await api.post(createPartyUrl, validCreatePartyRequest);
 
     expect(status).toBe(201);
     expect(body).toStrictEqual(JSON.parse(JSON.stringify({ partyIdentifier: partyIdentifier })));
@@ -271,7 +310,7 @@ describe('POST /parties', () => {
     requestToGetPartiesBySearchText(alternateIdentifier).reply(200, []);
     requestToCreateParties(validAcbsCreatePartyRequest).reply(201, undefined, { Location: `/Party/${partyIdentifier}` });
 
-    const { status, body } = await api.post('/api/v1/parties', validCreatePartyRequest);
+    const { status, body } = await api.post(createPartyUrl, validCreatePartyRequest);
 
     expect(status).toBe(201);
     expect(body).toStrictEqual(JSON.parse(JSON.stringify({ partyIdentifier: partyIdentifier })));
@@ -288,7 +327,7 @@ describe('POST /parties', () => {
     requestToGetPartiesBySearchText(alternateIdentifier).reply(200, []);
     requestToCreateParties(validAcbsCreatePartyRequest).reply(201, undefined, { Location: `/Party/${partyIdentifier}` });
 
-    const { status, body } = await api.post('/api/v1/parties', validCreatePartyRequest);
+    const { status, body } = await api.post(createPartyUrl, validCreatePartyRequest);
 
     expect(status).toBe(201);
     expect(body).toStrictEqual(JSON.parse(JSON.stringify({ partyIdentifier: partyIdentifier })));
@@ -305,7 +344,7 @@ describe('POST /parties', () => {
     requestToGetPartiesBySearchText(alternateIdentifier).reply(200, []);
     requestToCreateParties(validAcbsCreatePartyRequest).reply(201, undefined, { Location: `/Party/${partyIdentifier}` });
 
-    const { status, body } = await api.post('/api/v1/parties', validCreatePartyRequest);
+    const { status, body } = await api.post(createPartyUrl, validCreatePartyRequest);
 
     expect(status).toBe(201);
     expect(body).toStrictEqual(JSON.parse(JSON.stringify({ partyIdentifier: partyIdentifier })));
@@ -322,7 +361,7 @@ describe('POST /parties', () => {
     requestToGetPartiesBySearchText(alternateIdentifier).reply(200, []);
     requestToCreateParties(validAcbsCreatePartyRequest).reply(201, undefined, { Location: `/Party/${partyIdentifier}` });
 
-    const { status, body } = await api.post('/api/v1/parties', validCreatePartyRequest);
+    const { status, body } = await api.post(createPartyUrl, validCreatePartyRequest);
 
     expect(status).toBe(201);
     expect(body).toStrictEqual(JSON.parse(JSON.stringify({ partyIdentifier: partyIdentifier })));
@@ -339,7 +378,7 @@ describe('POST /parties', () => {
     requestToGetPartiesBySearchText(alternateIdentifier).reply(200, []);
     requestToCreateParties(validAcbsCreatePartyRequest).reply(201, undefined, { Location: `/Party/${partyIdentifier}` });
 
-    const { status, body } = await api.post('/api/v1/parties', validCreatePartyRequest);
+    const { status, body } = await api.post(createPartyUrl, validCreatePartyRequest);
 
     expect(status).toBe(201);
     expect(body).toStrictEqual(JSON.parse(JSON.stringify({ partyIdentifier: partyIdentifier })));
@@ -356,7 +395,7 @@ describe('POST /parties', () => {
     requestToGetPartiesBySearchText(alternateIdentifier).reply(200, []);
     requestToCreateParties(validAcbsCreatePartyRequest).reply(201, undefined, { Location: `/Party/${partyIdentifier}` });
 
-    const { status, body } = await api.post('/api/v1/parties', validCreatePartyRequest);
+    const { status, body } = await api.post(createPartyUrl, validCreatePartyRequest);
 
     expect(status).toBe(201);
     expect(body).toStrictEqual(JSON.parse(JSON.stringify({ partyIdentifier: partyIdentifier })));
@@ -373,7 +412,7 @@ describe('POST /parties', () => {
     requestToGetPartiesBySearchText(alternateIdentifier).reply(200, []);
     requestToCreateParties(validAcbsCreatePartyRequest).reply(201, undefined, { Location: `/Party/${partyIdentifier}` });
 
-    const { status, body } = await api.post('/api/v1/parties', validCreatePartyRequest);
+    const { status, body } = await api.post(createPartyUrl, validCreatePartyRequest);
 
     expect(status).toBe(201);
     expect(body).toStrictEqual(JSON.parse(JSON.stringify({ partyIdentifier: partyIdentifier })));
@@ -383,7 +422,7 @@ describe('POST /parties', () => {
     givenAuthenticationWithTheIdpSucceeds();
     requestToGetPartiesBySearchText(alternateIdentifier).reply(200, partiesInAcbsWithPartyIdentifiers);
 
-    const { status, body } = await api.post('/api/v1/parties', createPartyRequest);
+    const { status, body } = await api.post(createPartyUrl, createPartyRequest);
 
     expect(status).toBe(200);
     expect(body).toStrictEqual({ partyIdentifier: partyIdentifier });
@@ -396,7 +435,7 @@ describe('POST /parties', () => {
     givenAuthenticationWithTheIdpSucceeds();
     requestToGetPartiesBySearchText(alternateIdentifier).reply(200, partiesInAcbsWithEmptyPartyIdentifier);
 
-    const { status, body } = await api.post('/api/v1/parties', createPartyRequest);
+    const { status, body } = await api.post(createPartyUrl, createPartyRequest);
 
     expect(status).toBe(200);
     expect(body).toStrictEqual({});
@@ -406,7 +445,7 @@ describe('POST /parties', () => {
     givenAuthenticationWithTheIdpSucceeds();
     requestToGetPartiesBySearchText(alternateIdentifier).reply(401);
 
-    const { status, body } = await api.post('/api/v1/parties', createPartyRequest);
+    const { status, body } = await api.post(createPartyUrl, createPartyRequest);
 
     expect(status).toBe(500);
     expect(body).toStrictEqual({
@@ -420,7 +459,7 @@ describe('POST /parties', () => {
     requestToGetPartiesBySearchText(alternateIdentifier).reply(200, []);
     requestToCreateParties(acbsCreatePartyRequest).reply(401);
 
-    const { status, body } = await api.post('/api/v1/parties', createPartyRequest);
+    const { status, body } = await api.post(createPartyUrl, createPartyRequest);
 
     expect(status).toBe(500);
     expect(body).toStrictEqual({
@@ -434,7 +473,7 @@ describe('POST /parties', () => {
     requestToGetPartiesBySearchText(alternateIdentifier).delay(1500).reply(200, []);
     requestToCreateParties(acbsCreatePartyRequest).reply(201, undefined, { Location: `/Party/${partyIdentifier}` });
 
-    const { status, body } = await api.post('/api/v1/parties', createPartyRequest);
+    const { status, body } = await api.post(createPartyUrl, createPartyRequest);
 
     expect(status).toBe(500);
     expect(body).toStrictEqual({
@@ -450,7 +489,7 @@ describe('POST /parties', () => {
       .delay(1500)
       .reply(201, undefined, { Location: `/Party/${partyIdentifier}` });
 
-    const { status, body } = await api.post('/api/v1/parties', createPartyRequest);
+    const { status, body } = await api.post(createPartyUrl, createPartyRequest);
 
     expect(status).toBe(500);
     expect(body).toStrictEqual({
@@ -463,7 +502,7 @@ describe('POST /parties', () => {
     const invalidCreatePartyRequest = JSON.parse(JSON.stringify(createPartyRequest));
     invalidCreatePartyRequest[0].alternateIdentifier = undefined;
 
-    const { status, body } = await api.post('/api/v1/parties', invalidCreatePartyRequest);
+    const { status, body } = await api.post(createPartyUrl, invalidCreatePartyRequest);
 
     expect(status).toBe(400);
     expect(body).toStrictEqual({
@@ -477,7 +516,7 @@ describe('POST /parties', () => {
     const invalidCreatePartyRequest = JSON.parse(JSON.stringify(createPartyRequest));
     invalidCreatePartyRequest[0].alternateIdentifier = tooShortAlternateIdentifier;
 
-    const { status, body } = await api.post('/api/v1/parties', invalidCreatePartyRequest);
+    const { status, body } = await api.post(createPartyUrl, invalidCreatePartyRequest);
 
     expect(status).toBe(400);
     expect(body).toStrictEqual({
@@ -491,7 +530,7 @@ describe('POST /parties', () => {
     const invalidCreatePartyRequest = JSON.parse(JSON.stringify(createPartyRequest));
     invalidCreatePartyRequest[0].alternateIdentifier = tooLongAlternateIdentifier;
 
-    const { status, body } = await api.post('/api/v1/parties', invalidCreatePartyRequest);
+    const { status, body } = await api.post(createPartyUrl, invalidCreatePartyRequest);
 
     expect(status).toBe(400);
     expect(body).toStrictEqual({
@@ -505,7 +544,7 @@ describe('POST /parties', () => {
     const invalidCreatePartyRequest = JSON.parse(JSON.stringify(createPartyRequest));
     invalidCreatePartyRequest[0].alternateIdentifier = nonDigitCharactersAlternateIdentifier;
 
-    const { status, body } = await api.post('/api/v1/parties', invalidCreatePartyRequest);
+    const { status, body } = await api.post(createPartyUrl, invalidCreatePartyRequest);
 
     expect(status).toBe(400);
     expect(body).toStrictEqual({
@@ -519,7 +558,7 @@ describe('POST /parties', () => {
     const invalidCreatePartyRequest = JSON.parse(JSON.stringify(createPartyRequest));
     invalidCreatePartyRequest[0].industryClassification = undefined;
 
-    const { status, body } = await api.post('/api/v1/parties', invalidCreatePartyRequest);
+    const { status, body } = await api.post(createPartyUrl, invalidCreatePartyRequest);
 
     expect(status).toBe(400);
     expect(body).toStrictEqual({
@@ -533,7 +572,7 @@ describe('POST /parties', () => {
     const invalidCreatePartyRequest = JSON.parse(JSON.stringify(createPartyRequest));
     invalidCreatePartyRequest[0].industryClassification = '';
 
-    const { status, body } = await api.post('/api/v1/parties', invalidCreatePartyRequest);
+    const { status, body } = await api.post(createPartyUrl, invalidCreatePartyRequest);
 
     expect(status).toBe(400);
     expect(body).toStrictEqual({
@@ -547,7 +586,7 @@ describe('POST /parties', () => {
     const invalidCreatePartyRequest = JSON.parse(JSON.stringify(createPartyRequest));
     invalidCreatePartyRequest[0].industryClassification = tooLongIndustryClassification;
 
-    const { status, body } = await api.post('/api/v1/parties', invalidCreatePartyRequest);
+    const { status, body } = await api.post(createPartyUrl, invalidCreatePartyRequest);
 
     expect(status).toBe(400);
     expect(body).toStrictEqual({
@@ -561,7 +600,7 @@ describe('POST /parties', () => {
     const invalidCreatePartyRequest = JSON.parse(JSON.stringify(createPartyRequest));
     invalidCreatePartyRequest[0].name1 = undefined;
 
-    const { status, body } = await api.post('/api/v1/parties', invalidCreatePartyRequest);
+    const { status, body } = await api.post(createPartyUrl, invalidCreatePartyRequest);
 
     expect(status).toBe(400);
     expect(body).toStrictEqual({
@@ -575,7 +614,7 @@ describe('POST /parties', () => {
     const invalidCreatePartyRequest = JSON.parse(JSON.stringify(createPartyRequest));
     invalidCreatePartyRequest[0].name1 = '';
 
-    const { status, body } = await api.post('/api/v1/parties', invalidCreatePartyRequest);
+    const { status, body } = await api.post(createPartyUrl, invalidCreatePartyRequest);
 
     expect(status).toBe(400);
     expect(body).toStrictEqual({
@@ -589,7 +628,7 @@ describe('POST /parties', () => {
     const invalidCreatePartyRequest = JSON.parse(JSON.stringify(createPartyRequest));
     invalidCreatePartyRequest[0].name1 = tooLongName;
 
-    const { status, body } = await api.post('/api/v1/parties', invalidCreatePartyRequest);
+    const { status, body } = await api.post(createPartyUrl, invalidCreatePartyRequest);
 
     expect(status).toBe(400);
     expect(body).toStrictEqual({
@@ -603,7 +642,7 @@ describe('POST /parties', () => {
     const invalidCreatePartyRequest = JSON.parse(JSON.stringify(createPartyRequest));
     invalidCreatePartyRequest[0].name2 = tooLongName;
 
-    const { status, body } = await api.post('/api/v1/parties', invalidCreatePartyRequest);
+    const { status, body } = await api.post(createPartyUrl, invalidCreatePartyRequest);
 
     expect(status).toBe(400);
     expect(body).toStrictEqual({
@@ -617,7 +656,7 @@ describe('POST /parties', () => {
     const invalidCreatePartyRequest = JSON.parse(JSON.stringify(createPartyRequest));
     invalidCreatePartyRequest[0].name3 = tooLongName;
 
-    const { status, body } = await api.post('/api/v1/parties', invalidCreatePartyRequest);
+    const { status, body } = await api.post(createPartyUrl, invalidCreatePartyRequest);
 
     expect(status).toBe(400);
     expect(body).toStrictEqual({
@@ -631,7 +670,7 @@ describe('POST /parties', () => {
     const invalidCreatePartyRequest = JSON.parse(JSON.stringify(createPartyRequest));
     invalidCreatePartyRequest[0].smeType = undefined;
 
-    const { status, body } = await api.post('/api/v1/parties', invalidCreatePartyRequest);
+    const { status, body } = await api.post(createPartyUrl, invalidCreatePartyRequest);
 
     expect(status).toBe(400);
     expect(body).toStrictEqual({
@@ -645,7 +684,7 @@ describe('POST /parties', () => {
     const invalidCreatePartyRequest = JSON.parse(JSON.stringify(createPartyRequest));
     invalidCreatePartyRequest[0].smeType = '';
 
-    const { status, body } = await api.post('/api/v1/parties', invalidCreatePartyRequest);
+    const { status, body } = await api.post(createPartyUrl, invalidCreatePartyRequest);
 
     expect(status).toBe(400);
     expect(body).toStrictEqual({
@@ -659,7 +698,7 @@ describe('POST /parties', () => {
     const invalidCreatePartyRequest = JSON.parse(JSON.stringify(createPartyRequest));
     invalidCreatePartyRequest[0].smeType = tooLongSmeType;
 
-    const { status, body } = await api.post('/api/v1/parties', invalidCreatePartyRequest);
+    const { status, body } = await api.post(createPartyUrl, invalidCreatePartyRequest);
 
     expect(status).toBe(400);
     expect(body).toStrictEqual({
@@ -673,7 +712,7 @@ describe('POST /parties', () => {
     const invalidCreatePartyRequest = JSON.parse(JSON.stringify(createPartyRequest));
     invalidCreatePartyRequest[0].citizenshipClass = undefined;
 
-    const { status, body } = await api.post('/api/v1/parties', invalidCreatePartyRequest);
+    const { status, body } = await api.post(createPartyUrl, invalidCreatePartyRequest);
 
     expect(status).toBe(400);
     expect(body).toStrictEqual({
@@ -687,7 +726,7 @@ describe('POST /parties', () => {
     const invalidCreatePartyRequest = JSON.parse(JSON.stringify(createPartyRequest));
     invalidCreatePartyRequest[0].citizenshipClass = 1;
 
-    const { status, body } = await api.post('/api/v1/parties', invalidCreatePartyRequest);
+    const { status, body } = await api.post(createPartyUrl, invalidCreatePartyRequest);
 
     expect(status).toBe(400);
     expect(body).toStrictEqual({
@@ -701,7 +740,7 @@ describe('POST /parties', () => {
     const invalidCreatePartyRequest = JSON.parse(JSON.stringify(createPartyRequest));
     invalidCreatePartyRequest[0].citizenshipClass = '3';
 
-    const { status, body } = await api.post('/api/v1/parties', invalidCreatePartyRequest);
+    const { status, body } = await api.post(createPartyUrl, invalidCreatePartyRequest);
 
     expect(status).toBe(400);
     expect(body).toStrictEqual({
@@ -715,7 +754,7 @@ describe('POST /parties', () => {
     const invalidCreatePartyRequest = JSON.parse(JSON.stringify(createPartyRequest));
     invalidCreatePartyRequest[0].officerRiskDate = undefined;
 
-    const { status, body } = await api.post('/api/v1/parties', invalidCreatePartyRequest);
+    const { status, body } = await api.post(createPartyUrl, invalidCreatePartyRequest);
 
     expect(status).toBe(400);
     expect(body).toStrictEqual({
@@ -729,7 +768,7 @@ describe('POST /parties', () => {
     const invalidCreatePartyRequest = JSON.parse(JSON.stringify(createPartyRequest));
     invalidCreatePartyRequest[0].officerRiskDate = '';
 
-    const { status, body } = await api.post('/api/v1/parties', invalidCreatePartyRequest);
+    const { status, body } = await api.post(createPartyUrl, invalidCreatePartyRequest);
 
     expect(status).toBe(400);
     expect(body).toStrictEqual({
@@ -743,7 +782,7 @@ describe('POST /parties', () => {
     const invalidCreatePartyRequest = JSON.parse(JSON.stringify(createPartyRequest));
     invalidCreatePartyRequest[0].officerRiskDate += 'T00:00:00Z';
 
-    const { status, body } = await api.post('/api/v1/parties', invalidCreatePartyRequest);
+    const { status, body } = await api.post(createPartyUrl, invalidCreatePartyRequest);
 
     expect(status).toBe(400);
     expect(body).toStrictEqual({
@@ -757,7 +796,7 @@ describe('POST /parties', () => {
     const invalidCreatePartyRequest = JSON.parse(JSON.stringify(createPartyRequest));
     invalidCreatePartyRequest[0].countryCode = tooLongCountryCode;
 
-    const { status, body } = await api.post('/api/v1/parties', invalidCreatePartyRequest);
+    const { status, body } = await api.post(createPartyUrl, invalidCreatePartyRequest);
 
     expect(status).toBe(400);
     expect(body).toStrictEqual({

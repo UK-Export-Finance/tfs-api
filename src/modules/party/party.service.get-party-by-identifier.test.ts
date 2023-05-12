@@ -17,7 +17,6 @@ describe('PartyService', () => {
   const valueGenerator = new RandomValueGenerator();
   const dateStringTransformations = new DateStringTransformations();
   const idToken = valueGenerator.string();
-  const baseUrl = valueGenerator.httpsUrl();
 
   let acbsAuthenticationService: AcbsAuthenticationService;
   let acbsPartyService: AcbsPartyService;
@@ -36,7 +35,7 @@ describe('PartyService', () => {
     const acbsAuthenticationServiceGetIdToken = mockAcbsAuthenticationService.getIdToken;
     when(acbsAuthenticationServiceGetIdToken).calledWith().mockResolvedValueOnce(idToken);
 
-    service = new PartyService({ baseUrl }, null, acbsAuthenticationService, acbsPartyService, dateStringTransformations);
+    service = new PartyService(acbsAuthenticationService, acbsPartyService, dateStringTransformations);
   });
 
   describe('getPartyByIdentifier', () => {

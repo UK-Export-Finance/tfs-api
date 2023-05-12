@@ -425,6 +425,9 @@ paths:
           description: The identifier of the facility in ACBS.
           example: '0030000322'
           schema:
+            minLength: 10
+            maxLength: 10
+            pattern: ^00\\d{8}$
             type: string
       requestBody:
         required: true
@@ -541,9 +544,12 @@ paths:
         - name: searchText
           required: true
           in: query
-          description: 'Minimum length: 3. Cannot contain only whitespaces.'
+          description: >-
+            Parties matching the provided Search Text will be returned. Cannot
+            contain only whitespaces.
           schema:
             minLength: 3
+            pattern: ^\\s*\\S+\\s*$
             type: string
       responses:
         '200':
@@ -1693,12 +1699,6 @@ components:
     CreateFacilityInvestorRequestItem:
       type: object
       properties:
-        facilityIdentifier:
-          type: string
-          description: The identifier of the facility to create the investor for.
-          minLength: 10
-          maxLength: 10
-          example: '0000000001'
         effectiveDate:
           format: date
           type: string
@@ -1728,7 +1728,6 @@ components:
           maxLength: 3
           default: '500'
       required:
-        - facilityIdentifier
         - effectiveDate
         - guaranteeExpiryDate
         - currency
