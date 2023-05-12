@@ -1,7 +1,7 @@
 import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { AcbsBundleId, AcbsPartyId, DateOnlyString, UkefId } from '@ukef/helpers';
-import { AcbsCreateBundleInformationRequestDto } from '@ukef/modules/acbs/dto/acbs-create-bundleInformation-request.dto';
-import { AcbsCreateBundleInformationResponseDto } from '@ukef/modules/acbs/dto/acbs-create-bundleInformation-response.dto';
+import { AcbsCreateBundleInformationRequestDto } from '@ukef/modules/acbs/dto/acbs-create-bundle-information-request.dto';
+import { AcbsCreateBundleInformationResponseDto } from '@ukef/modules/acbs/dto/acbs-create-bundle-information-response.dto';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import {
   CreateFacilityActivationTransactionRequest,

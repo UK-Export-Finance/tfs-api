@@ -54,7 +54,7 @@ describe('AcbsBundleInformationService', () => {
     service = new AcbsBundleInformationService({ baseUrl }, httpService);
   });
 
-  describe('createFacilityActivationTransaction', () => {
+  describe('createBundleInformation', () => {
     it('sends a POST to ACBS with the specified parameters', async () => {
       when(httpServicePost)
         .calledWith(...expectedHttpServicePostArgs)
