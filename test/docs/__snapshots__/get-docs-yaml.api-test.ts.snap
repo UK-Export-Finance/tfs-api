@@ -1844,36 +1844,47 @@ components:
       properties:
         portfolioIdentifier:
           type: string
-          description: >-
-            The identifier of the portfolio in ACBS. The UKEF portfolio is E1.
-            The maximum number of characters allowed is 2.
+          description: The identifier of the portfolio in ACBS. The UKEF portfolio is E1.
+          minLength: 0
+          maxLength: 2
+          example: E1
         loanIdentifier:
           type: string
-          description: The identifier of the loan in ACBS. This will be a 9-digit code.
+          description: The identifier of the loan in ACBS.
+          minLength: 9
+          maxLength: 9
+          example: '000272017'
         facilityIdentifier:
           type: string
-          description: >-
-            The identifier of the facility in ACBS. This will be a 10-digit
-            code.
+          description: The identifier of the facility in ACBS.
+          minLength: 10
+          maxLength: 10
+          example: '0030000322'
         borrowerPartyIdentifier:
           type: string
-          description: >-
-            The identifier of the loan borrower in ACBS. This will be a 8-digit
-            code.
+          description: The identifier of the loan borrower in ACBS.
+          minLength: 8
+          maxLength: 8
+          example: '00001234'
         productTypeId:
           type: string
           description: >-
-            The product type identifier: 250 for BSS, 260 for EWCS, 280 for
-            GEF-Cash, 281 for GEF-Contingent. It is called the product type code
-            in ACBS.
+            The product type identifier for the loan: 250 for BSS, 260 for EWCS,
+            280 for GEF-Cash, 281 for GEF-Contingent. It is called the product
+            type code in ACBS.
+          example: '250'
         productTypeGroup:
           type: string
           description: >-
-            The product type group identifier: EW for EWCS, BS for Bond, GM for
-            GEF. It is called the product group code in ACBS.
+            The product type group identifier for the loan: EW for EWCS, BS for
+            Bond, GM for GEF. It is called the product group code in ACBS.
+          example: EW
         currency:
           type: string
-          description: The 3-character currency code for the loan.
+          description: The currency code for the loan.
+          minLength: 3
+          maxLength: 3
+          example: USD
         issueDate:
           format: date
           type: string
@@ -2143,7 +2154,6 @@ components:
           minLength: 0
           maxLength: 2
           example: E1
-          default: E1
         bundleStatusCode:
           type: string
           description: A numeric code denoting the status of the bundle.
@@ -2164,7 +2174,6 @@ components:
           description: >-
             The date when the bundle will be posted. It cannot be before the
             current processing date.
-          example: '2023-04-29'
         facilityIdentifier:
           type: string
           description: The identifier of the facility in ACBS.
@@ -2222,14 +2231,12 @@ components:
           description: >-
             The issue date for the loan. It is called the effective date in
             ACBS.
-          example: '2023-04-29'
         expiryDate:
           format: date
           type: string
           description: >-
             The expiry date for the loan. It is called the maturity date in
             ACBS.
-          example: '2023-04-29'
         spreadRate:
           type: number
           description: >-
@@ -2256,7 +2263,6 @@ components:
           description: >-
             The date the next payment will be due for the loan repayment
             schedule.
-          example: '2023-04-29'
         indexRateChangeFrequency:
           type: string
           description: >-

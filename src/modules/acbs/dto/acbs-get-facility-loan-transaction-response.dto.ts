@@ -1,5 +1,6 @@
 import { DateString } from '@ukef/helpers';
-import { BundleAction } from '@ukef/helpers/bundle-action.type';
+
+import { BundleAction } from './bundle-actions/bundle-action.type';
 
 export type AcbsGetFacilityLoanTransactionResponseDto = AcbsGetFacilityLoanTransactionResponseItem[];
 

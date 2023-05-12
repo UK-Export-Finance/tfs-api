@@ -221,6 +221,20 @@ describe('GET /facilities/{facilityIdentifier}/loan-transactions/{bundleIdentifi
     });
   });
 
+  it('returns a 500 response if ACBS returns a 400 response that is not a string when getting the loan transaction', async () => {
+    const acbsErrorMessage = { Message: 'error message' };
+    givenAuthenticationWithTheIdpSucceeds();
+    requestToGetLoanTransaction().reply(400, acbsErrorMessage);
+
+    const { status, body } = await api.get(getLoanTransactionUrl);
+
+    expect(status).toBe(500);
+    expect(body).toStrictEqual({
+      statusCode: 500,
+      message: 'Internal server error',
+    });
+  });
+
   it('returns a 500 response if getting the loan transaction from ACBS returns a status code that is NOT 200 or 400', async () => {
     givenAuthenticationWithTheIdpSucceeds();
     requestToGetLoanTransaction().reply(401);

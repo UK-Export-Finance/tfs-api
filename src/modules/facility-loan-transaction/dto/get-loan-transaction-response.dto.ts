@@ -10,7 +10,6 @@ export class GetFacilityLoanTransactionResponseItem {
     minLength: 0,
     maxLength: 2,
     example: PROPERTIES.GLOBAL.portfolioIdentifier,
-    default: PROPERTIES.GLOBAL.portfolioIdentifier,
   })
   readonly portfolioIdentifier: string;
 
@@ -32,7 +31,6 @@ export class GetFacilityLoanTransactionResponseItem {
 
   @ApiProperty({
     description: 'The date when the bundle will be posted. It cannot be before the current processing date.',
-    example: EXAMPLES.DATE_ONLY_STRING,
     type: Date,
     format: 'date',
   })
@@ -94,7 +92,6 @@ export class GetFacilityLoanTransactionResponseItem {
 
   @ApiProperty({
     description: 'The issue date for the loan. It is called the effective date in ACBS.',
-    example: EXAMPLES.DATE_ONLY_STRING,
     type: Date,
     format: 'date',
   })
@@ -102,7 +99,6 @@ export class GetFacilityLoanTransactionResponseItem {
 
   @ApiProperty({
     description: 'The expiry date for the loan. It is called the maturity date in ACBS.',
-    example: EXAMPLES.DATE_ONLY_STRING,
     type: Date,
     format: 'date',
   })
@@ -133,7 +129,6 @@ export class GetFacilityLoanTransactionResponseItem {
 
   @ApiProperty({
     description: 'The date the next payment will be due for the loan repayment schedule.',
-    example: EXAMPLES.DATE_ONLY_STRING,
     type: Date,
     format: 'date',
   })
@@ -154,6 +149,3 @@ export class GetFacilityLoanTransactionResponseItem {
   })
   readonly loanBillingFrequencyType: string;
 }
-
-// TODO: update loan dto
-// TODO: raise ticket for validating facilityId for this endpoint
