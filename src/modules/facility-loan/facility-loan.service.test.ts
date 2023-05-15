@@ -10,7 +10,7 @@ import { when } from 'jest-when';
 import { FacilityLoanService } from './facility-loan.service';
 
 describe('FacilityLoanService', () => {
-  const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+  const { portfolioIdentifier } = PROPERTIES.GLOBAL;
   const valueGenerator = new RandomValueGenerator();
   const idToken = valueGenerator.string();
   const facilityIdentifier = valueGenerator.facilityId();

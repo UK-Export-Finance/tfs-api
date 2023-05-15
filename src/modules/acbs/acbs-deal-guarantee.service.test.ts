@@ -16,7 +16,7 @@ describe('AcbsDealGuaranteeService', () => {
   const authToken = valueGenerator.string();
   const baseUrl = valueGenerator.httpsUrl();
   const dealIdentifier = valueGenerator.stringOfNumericCharacters();
-  const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+  const { portfolioIdentifier } = PROPERTIES.GLOBAL;
 
   let httpService: HttpService;
   let service: AcbsDealGuaranteeService;

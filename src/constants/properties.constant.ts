@@ -273,4 +273,21 @@ export const PROPERTIES = {
       },
     },
   },
+  FACILITY_LOAN_TRANSACTION: {
+    DEFAULT: {
+      bundleMessageList: {
+        $type: {
+          newLoanRequest: 'NewLoanRequest',
+        },
+        accrualScheduleList: {
+          accrualCategory: {
+            accrualCategoryCode: {
+              pac: 'PAC01',
+              ctl: 'CTL01',
+            },
+          },
+        },
+      },
+    },
+  },
 };

@@ -1,4 +1,4 @@
-import { AcbsBundleInformationService } from '@ukef/modules/acbs/acbs-bundleInformation.service';
+import { AcbsBundleInformationService } from '@ukef/modules/acbs/acbs-bundle-information.service';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
 import { CreateFacilityActivationTransactionGenerator } from '@ukef-test/support/generator/create-facility-activation-transaction-generator';
@@ -7,7 +7,7 @@ import { when } from 'jest-when';
 
 import { FacilityActivationTransactionService } from './facility-activation-transaction.service';
 
-jest.mock('@ukef/modules/acbs/acbs-bundleInformation.service');
+jest.mock('@ukef/modules/acbs/acbs-bundle-information.service');
 jest.mock('@ukef/modules/acbs-authentication/acbs-authentication.service');
 
 describe('FacilityActivationTransactionService', () => {

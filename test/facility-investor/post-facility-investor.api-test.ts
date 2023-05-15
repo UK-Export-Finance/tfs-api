@@ -19,7 +19,7 @@ import supertest from 'supertest';
 describe('POST /facilities/{facilityIdentifier}/investors', () => {
   const valueGenerator = new RandomValueGenerator();
   const dateStringTransformations = new DateStringTransformations();
-  const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+  const { portfolioIdentifier } = PROPERTIES.GLOBAL;
   const facilityIdentifier = valueGenerator.facilityId();
   const createFacilityInvestorUrl = `/api/v1/facilities/${facilityIdentifier}/investors`;
 

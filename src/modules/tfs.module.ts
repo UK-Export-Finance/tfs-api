@@ -13,6 +13,7 @@ import { FacilityFixedFeeModule } from '@ukef/modules/facility-fixed-fee/facilit
 import { FacilityGuaranteeModule } from '@ukef/modules/facility-guarantee/facility-guarantee.module';
 import { FacilityInvestorModule } from '@ukef/modules/facility-investor/facility-investor.module';
 import { FacilityLoanModule } from '@ukef/modules/facility-loan/facility-loan.module';
+import { FacilityLoanTransactionModule } from '@ukef/modules/facility-loan-transaction/facility-loan-transaction.module';
 import { PartyModule } from '@ukef/modules/party/party.module';
 import { PartyExternalRatingModule } from '@ukef/modules/party-external-rating/party-external-rating.module';
 
@@ -32,6 +33,7 @@ import { PartyExternalRatingModule } from '@ukef/modules/party-external-rating/p
     FacilityLoanModule,
     PartyExternalRatingModule,
     PartyModule,
+    FacilityLoanTransactionModule,
   ],
   providers: [
     {
