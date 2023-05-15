@@ -6,6 +6,8 @@ import { SwaggerDocs } from '@ukef/swagger';
 import compression from 'compression';
 import { Logger, LoggerErrorInterceptor } from 'nestjs-pino';
 
+import { InputCharacterValidationPipe } from './pipes/input-characters-validation';
+
 export class App {
   private readonly configService: ConfigService;
   public readonly port: number;
@@ -27,6 +29,7 @@ export class App {
     });
 
     app.setGlobalPrefix(globalPrefix);
+
     app.useGlobalPipes(
       new ValidationPipe({
         whitelist: true,
@@ -37,6 +40,8 @@ export class App {
         },
       }),
     );
+
+    app.useGlobalPipes(new InputCharacterValidationPipe());
 
     // Swagger docs
     SwaggerDocs(app);
