@@ -10,7 +10,7 @@ export const isNewLoanRequest = (bundleAction: BundleAction): bundleAction is Ne
   return bundleAction.$type === PROPERTIES.FACILITY_LOAN_TRANSACTION.DEFAULT.bundleMessageList.$type.newLoanRequest;
 };
 
-interface NewLoanRequest {
+export interface NewLoanRequest {
   $type: 'NewLoanRequest';
   FacilityIdentifier: string;
   BorrowerPartyIdentifier: string;
