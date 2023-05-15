@@ -129,11 +129,11 @@ describe('PartyService', () => {
       await expect(responsePromise).rejects.toHaveProperty('innerError', undefined);
     });
 
-    it('throws a GetPartiesBySearchTextException if the query parameter searchText is 3 whitespaces', async () => {
+    it('throws a GetPartiesBySearchTextException if the query parameter searchText ends in whitespace', async () => {
       const responsePromise = partyService.getPartiesBySearchText('   ');
 
       await expect(responsePromise).rejects.toBeInstanceOf(GetPartiesBySearchTextException);
-      await expect(responsePromise).rejects.toThrow('The query parameter searchText cannot contain only whitespaces.');
+      await expect(responsePromise).rejects.toThrow('The query parameter searchText cannot end with whitespace.');
       await expect(responsePromise).rejects.toHaveProperty('innerError', undefined);
     });
   });

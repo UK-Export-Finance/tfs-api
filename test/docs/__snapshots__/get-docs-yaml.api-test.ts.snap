@@ -545,11 +545,12 @@ paths:
           required: true
           in: query
           description: >-
-            Parties matching the provided Search Text will be returned. Cannot
-            contain only whitespaces.
+            Parties matching the provided Search Text will be returned. It must
+            end in a non-whitespace character, but leading whitespace characters
+            are allowed and will be included in the search.
           schema:
             minLength: 3
-            pattern: ^\\s*\\S+\\s*$
+            pattern: \\S$
             type: string
       responses:
         '200':
