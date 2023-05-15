@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post } from '@nestjs/common';
+import { Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -11,12 +11,14 @@ import {
 } from '@nestjs/swagger';
 import { EXAMPLES } from '@ukef/constants';
 import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decorator';
+import { NonEmptyRequestBodyValidationPipe } from '@ukef/helpers/non-empty-request-body-validation-pipe';
 
 import { FacilityService } from '../facility/facility.service';
 import { CreateFacilityCovenantRequestDto, CreateFacilityCovenantRequestItem } from './dto/create-facility-covenant-request.dto';
 import { CreateFacilityCovenantResponseDto } from './dto/create-facility-covenant-response.dto';
-import { FacilityCovenantsParamsDto } from './dto/get-facility-covenants-params.dto';
+import { FacilityCovenantsParamsDto } from './dto/facility-covenants-params.dto';
 import { GetFacilityCovenantsResponseDto } from './dto/get-facility-covenants-response.dto';
+import { PatchFacilityCovenantRequestDto } from './dto/patch-facility-covenants-request.dto';
 import { FacilityCovenantService } from './facility-covenant.service';
 
 @Controller()
@@ -88,5 +90,16 @@ export class FacilityCovenantController {
   })
   async getCovenantsForFacility(@Param() params: FacilityCovenantsParamsDto): Promise<GetFacilityCovenantsResponseDto[]> {
     return await this.facilityCovenantService.getCovenantsForFacility(params.facilityIdentifier);
+  }
+
+  @Patch('/facilities/:facilityIdentifier/covenants')
+  patchCovenantsForFacility(
+    @Param() params: FacilityCovenantsParamsDto,
+    @Body(new NonEmptyRequestBodyValidationPipe()) patchCovenantRequest: PatchFacilityCovenantRequestDto,
+  ): any {
+    return {
+      params,
+      patchCovenantRequest
+    };
   }
 }
