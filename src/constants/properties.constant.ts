@@ -278,7 +278,7 @@ export const PROPERTIES = {
       initiatingUserName: 'APIUKEF',
       servicingUserAccountIdentifier: 'APIUKEF',
       useAPIUserIndicator: false,
-      initialBundleStatusCode: '3',
+      initialBundleStatusCode: 3,
       messageType: 'NewLoanRequest' as const,
       accountOwnerIdentifier: '00000000',
       sectionIdentifier: '00',

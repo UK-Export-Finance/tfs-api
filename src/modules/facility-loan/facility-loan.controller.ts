@@ -65,7 +65,7 @@ export class FacilityLoanController {
     isArray: true,
   })
   @ApiCreatedResponse({
-    description: 'The covenant has been successfully created.',
+    description: 'The loan has been successfully created.',
     type: CreateFacilityLoanResponseDto,
   })
   @ApiNotFoundResponse({

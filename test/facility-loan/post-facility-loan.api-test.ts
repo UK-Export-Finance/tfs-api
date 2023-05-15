@@ -12,13 +12,16 @@ describe('POST /facilities/{facilityIdentifier}/loans', () => {
   const valueGenerator = new RandomValueGenerator();
   const dateStringTransformations = new DateStringTransformations();
   const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
-  const facilityIdentifier = valueGenerator.ukefId();
+  const facilityIdentifier = valueGenerator.facilityId();
   const postFacilityLoansUrl = `/api/v1/facilities/${facilityIdentifier}/loans`;
 
-  const { facilityLoansInAcbs, facilityLoansFromApi } = new GetFacilityLoanGenerator(valueGenerator, dateStringTransformations).generate({
-    numberToGenerate: 2,
+  const { facilityLoansInAcbs, facilityLoansFromApi } = new CreateFacilityLoanGenerator(valueGenerator, dateStringTransformations).generate({
+    numberToGenerate: 1,
     facilityIdentifier,
     portfolioIdentifier,
+    // bundleIdentifier,
+    // borrowerPartyIdentifier,
+    // effectiveDate,
   });
 
   let api: Api;

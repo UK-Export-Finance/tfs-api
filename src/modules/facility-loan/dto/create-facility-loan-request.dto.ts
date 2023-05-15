@@ -3,14 +3,14 @@ import { ValidatedCurrencyApiProperty } from '@ukef/decorators/validated-currenc
 import { ValidatedDateOnlyApiProperty } from '@ukef/decorators/validated-date-only-api-property.decorator';
 import { ValidatedNumberApiProperty } from '@ukef/decorators/validated-number-api-property.decorator';
 import { ValidatedStringApiProperty } from '@ukef/decorators/validated-string-api-property.decorator';
-import { DateOnlyString } from '@ukef/helpers';
+import { DateOnlyString, UkefId } from '@ukef/helpers';
 
 export type CreateFacilityLoanRequestDto = CreateFacilityLoanRequestItem[];
 
 export class CreateFacilityLoanRequestItem {
   @ValidatedDateOnlyApiProperty({
     description: 'The date of the action.',
-    example: '2023-04-19',
+    example: '2024-04-19',
   })
   postingDate: DateOnlyString;
 
@@ -20,11 +20,11 @@ export class CreateFacilityLoanRequestItem {
     length: 10,
     pattern: UKEFID.MAIN_ID.TEN_DIGIT_REGEX,
   })
-  readonly facilityIdentifier: string;
+  readonly facilityIdentifier: UkefId;
 
   @ValidatedStringApiProperty({
     description: 'The customer identifier representing the borrower for the loan.',
-    example: '00000001',
+    example: '00291013',
     length: 8,
   })
   readonly borrowerPartyIdentifier: string;
@@ -57,8 +57,7 @@ export class CreateFacilityLoanRequestItem {
 
   @ValidatedStringApiProperty({
     description: `Represents the currency exchange rate operand (M-multiply or D-divide). Required when loan currency differs from deal currency.`,
-    example: 'BS',
-    enum: ENUMS.PRODUCT_TYPE_GROUPS,
+    example: 'M',
     required: false,
   })
   readonly dealCustomerUsageOperationType: string;
@@ -77,7 +76,7 @@ export class CreateFacilityLoanRequestItem {
 
   @ValidatedDateOnlyApiProperty({
     description: 'The facility expiry date.',
-    example: '2023-04-19',
+    example: '2024-04-19',
   })
   expiryDate: DateOnlyString;
 }
