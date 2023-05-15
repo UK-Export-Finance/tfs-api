@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { ENUMS, PROPERTIES } from '@ukef/constants';
+import { PROPERTIES } from '@ukef/constants';
+import { DateString, UkefId } from '@ukef/helpers';
 import { AcbsFacilityLoanService } from '@ukef/modules/acbs/acbs-facility-loan.service';
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 
 import { AcbsBundleInformationService } from '../acbs/acbs-bundleInformation.service';
+import { CurrentDateProvider } from '../date/current-date.provider';
 import { CreateFacilityLoanResponseDto } from './dto/create-facility-loan-response.dto';
 import { GetFacilityLoanResponseDto } from './dto/get-facility-loan-response.dto';
 import { FacilityLoanToCreate } from './facility-loan-to-create.interface';
-import { DateString, UkefId } from '@ukef/helpers';
-import { CurrentDateProvider } from '../date/current-date.provider';
 
 @Injectable()
 export class FacilityLoanService {
@@ -19,7 +19,7 @@ export class FacilityLoanService {
     private readonly acbsBundleInformationService: AcbsBundleInformationService,
     private readonly dateStringTransformations: DateStringTransformations,
     private readonly currentDateProvider: CurrentDateProvider,
-  ) { }
+  ) {}
 
   async getLoansForFacility(facilityIdentifier: string): Promise<GetFacilityLoanResponseDto> {
     const { portfolioIdentifier } = PROPERTIES.GLOBAL;
@@ -45,10 +45,7 @@ export class FacilityLoanService {
     });
   }
 
-  async createLoanForFacility(
-    facilityIdentifier: UkefId,
-    newFacilityLoan: FacilityLoanToCreate,
-  ): Promise<CreateFacilityLoanResponseDto> {
+  async createLoanForFacility(facilityIdentifier: UkefId, newFacilityLoan: FacilityLoanToCreate): Promise<CreateFacilityLoanResponseDto> {
     const idToken = await this.acbsAuthenticationService.getIdToken();
     const defaultValues = PROPERTIES.FACILITY_LOAN.DEFAULT;
 
@@ -76,11 +73,7 @@ export class FacilityLoanService {
   //add types to these functions
   private getBaseMessage(defaultValues, facilityIdentifier, newFacilityLoan) {
     //use enum here and change this to use if(){}
-    const loanInstrumentCode = newFacilityLoan.productTypeGroup === 'GM'
-      ? '280'
-      : newFacilityLoan.productTypeGroup === 'BS'
-        ? '250'
-        : '260';
+    const loanInstrumentCode = newFacilityLoan.productTypeGroup === 'GM' ? '280' : newFacilityLoan.productTypeGroup === 'BS' ? '250' : '260';
     const issueDateString = this.getIssueDateToCreate(newFacilityLoan);
 
     return {
@@ -159,51 +152,49 @@ export class FacilityLoanService {
   }
 
   private getDealCustomerUsageRate(newFacilityLoan) {
-    return newFacilityLoan.dealCustomerUsageRate
-      ? { DealCustomerUsageRate: newFacilityLoan.dealCustomerUsageRate, }
-      : {}
+    return newFacilityLoan.dealCustomerUsageRate ? { DealCustomerUsageRate: newFacilityLoan.dealCustomerUsageRate } : {};
   }
 
   private getDealCustomerUsageOperationType(newFacilityLoan) {
     return newFacilityLoan.dealCustomerUsageOperationType
       ? {
-        DealCustomerUsageOperationType: {
-          OperationTypeCode: newFacilityLoan.dealCustomerUsageOperationType,
-        },
-      }
-      : {}
+          DealCustomerUsageOperationType: {
+            OperationTypeCode: newFacilityLoan.dealCustomerUsageOperationType,
+          },
+        }
+      : {};
   }
 
   private getFieldsThatDependOnGbp(defaultValues, newFacilityLoan) {
     const isNotGbp = newFacilityLoan.currency !== 'GBP';
     return isNotGbp
       ? {
-        FinancialRateGroup: defaultValues.financialRateGroup,
-        CustomerUsageRateGroup: defaultValues.customerUsageRateGroup,
-        FinancialFrequency: {
-          UsageFrequencyTypeCode: defaultValues.financialFrequency.usageFrequencyTypeCode,
-        },
-        CustomerUsageFrequency: {
-          UsageFrequencyTypeCode: defaultValues.customerUsageFrequency.usageFrequencyTypeCode,
-        },
-        FinancialBusinessDayAdjustment: {
-          BusinessDayAdjustmentTypeCode: defaultValues.financialBusinessDayAdjustment.businessDayAdjustmentTypeCode,
-        },
-        CustomerUsageBusinessDayAdjustment: {
-          BusinessDayAdjustmentTypeCode: defaultValues.customerUsageBusinessDayAdjustment.businessDayAdjustmentTypeCode,
-        },
-        FinancialCalendar: {
-          CalendarIdentifier: defaultValues.financialCalendar.calendarIdentifier,
-        },
-        CustomerUsageCalendar: {
-          CalendarIdentifier: defaultValues.customerUsageCalendar.calendarIdentifier,
-        },
-        FinancialNextValuationDate: this.dateStringTransformations.addTimeToDateOnlyString(newFacilityLoan.expiryDate),
-        CustomerUsageNextValuationDate: this.dateStringTransformations.addTimeToDateOnlyString(newFacilityLoan.expiryDate),
-        FinancialLockMTMRateIndicator: defaultValues.financialLockMTMRateIndicator,
-        CustomerUsageLockMTMRateIndicator: defaultValues.customerUsageLockMTMRateIndicator,
-      }
-      : {}
+          FinancialRateGroup: defaultValues.financialRateGroup,
+          CustomerUsageRateGroup: defaultValues.customerUsageRateGroup,
+          FinancialFrequency: {
+            UsageFrequencyTypeCode: defaultValues.financialFrequency.usageFrequencyTypeCode,
+          },
+          CustomerUsageFrequency: {
+            UsageFrequencyTypeCode: defaultValues.customerUsageFrequency.usageFrequencyTypeCode,
+          },
+          FinancialBusinessDayAdjustment: {
+            BusinessDayAdjustmentTypeCode: defaultValues.financialBusinessDayAdjustment.businessDayAdjustmentTypeCode,
+          },
+          CustomerUsageBusinessDayAdjustment: {
+            BusinessDayAdjustmentTypeCode: defaultValues.customerUsageBusinessDayAdjustment.businessDayAdjustmentTypeCode,
+          },
+          FinancialCalendar: {
+            CalendarIdentifier: defaultValues.financialCalendar.calendarIdentifier,
+          },
+          CustomerUsageCalendar: {
+            CalendarIdentifier: defaultValues.customerUsageCalendar.calendarIdentifier,
+          },
+          FinancialNextValuationDate: this.dateStringTransformations.addTimeToDateOnlyString(newFacilityLoan.expiryDate),
+          CustomerUsageNextValuationDate: this.dateStringTransformations.addTimeToDateOnlyString(newFacilityLoan.expiryDate),
+          FinancialLockMTMRateIndicator: defaultValues.financialLockMTMRateIndicator,
+          CustomerUsageLockMTMRateIndicator: defaultValues.customerUsageLockMTMRateIndicator,
+        }
+      : {};
   }
 
   private getIssueDateToCreate(facilityLoanToCreate: FacilityLoanToCreate): DateString {

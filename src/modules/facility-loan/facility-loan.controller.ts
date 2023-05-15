@@ -16,7 +16,6 @@ import { CreateFacilityLoanResponseDto } from './dto/create-facility-loan-respon
 import { FacilityLoanParamsDto } from './dto/facility-loan-params.dto';
 import { GetFacilityLoanResponseDto, GetFacilityLoanResponseItem } from './dto/get-facility-loan-response.dto';
 import { FacilityLoanService } from './facility-loan.service';
-import { FacilityLoanToCreate } from './facility-loan-to-create.interface';
 
 @Controller()
 export class FacilityLoanController {
