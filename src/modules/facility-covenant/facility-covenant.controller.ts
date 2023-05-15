@@ -99,7 +99,7 @@ export class FacilityCovenantController {
   ): any {
     return {
       params,
-      patchCovenantRequest
+      patchCovenantRequest,
     };
   }
 }
