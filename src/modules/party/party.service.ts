@@ -22,7 +22,7 @@ export class PartyService {
 
   async getPartiesBySearchTextFromAcbs(searchText: string): Promise<AcbsGetPartiesBySearchTextResponse> {
     const token = await this.getIdToken();
-    const onlyWhitespaces = /^\s*$/;
+    const endsInWhitespace = /\s$/;
 
     if (searchText === null) {
       throw new GetPartiesBySearchTextException('The required query parameter searchText was not specified.');
@@ -36,8 +36,8 @@ export class PartyService {
       throw new GetPartiesBySearchTextException('The query parameter searchText must be at least 3 characters.');
     }
 
-    if (onlyWhitespaces.test(searchText)) {
-      throw new GetPartiesBySearchTextException('The query parameter searchText cannot contain only whitespaces.');
+    if (endsInWhitespace.test(searchText)) {
+      throw new GetPartiesBySearchTextException('The query parameter searchText cannot end with whitespace.');
     }
 
     return await this.acbsPartyService.getPartyBySearchText(searchText, token);
