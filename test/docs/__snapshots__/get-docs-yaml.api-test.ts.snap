@@ -323,7 +323,8 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreateFacilityCovenantResponseDto'
+                $ref: >-
+                  #/components/schemas/CreateOrUpdateFacilityCovenantsResponseDto
         '400':
           description: Bad request.
         '404':
@@ -362,7 +363,7 @@ paths:
         '500':
           description: An internal server error has occurred.
     patch:
-      operationId: FacilityCovenantController_patchCovenantsForFacility
+      operationId: FacilityCovenantController_updateCovenantsForFacility
       parameters:
         - name: facilityIdentifier
           required: true
@@ -379,7 +380,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchFacilityCovenantRequestDto'
+              $ref: '#/components/schemas/UpdateFacilityCovenantsRequestDto'
       responses:
         '200':
           description: ''
@@ -1726,14 +1727,14 @@ components:
         - currency
         - guaranteeExpiryDate
         - effectiveDate
-    CreateFacilityCovenantResponseDto:
+    CreateOrUpdateFacilityCovenantsResponseDto:
       type: object
       properties:
         facilityIdentifier:
           type: string
           description: >-
-            The identifier of the facility in ACBS for which the covenant has
-            been created. This will be a 10-digit code.
+            The identifier of the facility in ACBS for which the covenant(s)
+            have been created/updated. This will be a 10-digit code.
           example: '0030000322'
       required:
         - facilityIdentifier
@@ -1803,7 +1804,7 @@ components:
         - guaranteeCommencementDate
         - effectiveDate
         - guaranteeExpiryDate
-    PatchFacilityCovenantRequestDto:
+    UpdateFacilityCovenantsRequestDto:
       type: object
       properties:
         targetAmount:
@@ -1813,6 +1814,7 @@ components:
             not. It is required if expirationDate is not provided.
           minimum: 0
           example: 5040
+          nullable: false
         expirationDate:
           format: date
           type: string

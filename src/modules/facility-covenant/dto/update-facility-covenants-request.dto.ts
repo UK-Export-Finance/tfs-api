@@ -3,7 +3,7 @@ import { ValidatedDateOnlyApiProperty } from '@ukef/decorators/validated-date-on
 import { ValidatedNumberApiProperty } from '@ukef/decorators/validated-number-api-property.decorator';
 import { DateOnlyString } from '@ukef/helpers';
 
-export class PatchFacilityCovenantRequestDto {
+export class UpdateFacilityCovenantsRequestDto {
   @ValidatedNumberApiProperty({
     description: 'The amount used to determine if the covenant is in compliance or not. It is required if expirationDate is not provided.',
     minimum: 0,

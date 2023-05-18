@@ -15,10 +15,10 @@ import { NonEmptyRequestBodyValidationPipe } from '@ukef/helpers/non-empty-reque
 
 import { FacilityService } from '../facility/facility.service';
 import { CreateFacilityCovenantRequestDto, CreateFacilityCovenantRequestItem } from './dto/create-facility-covenant-request.dto';
-import { CreateFacilityCovenantResponseDto } from './dto/create-facility-covenant-response.dto';
+import { CreateOrUpdateFacilityCovenantsResponseDto } from './dto/create-or-update-covenants-response.dto';
 import { FacilityCovenantsParamsDto } from './dto/facility-covenants-params.dto';
 import { GetFacilityCovenantsResponseDto } from './dto/get-facility-covenants-response.dto';
-import { PatchFacilityCovenantRequestDto } from './dto/patch-facility-covenants-request.dto';
+import { UpdateFacilityCovenantsRequestDto } from './dto/update-facility-covenants-request.dto';
 import { FacilityCovenantService } from './facility-covenant.service';
 
 @Controller()
@@ -42,7 +42,7 @@ export class FacilityCovenantController {
   })
   @ApiCreatedResponse({
     description: 'The covenant has been successfully created.',
-    type: CreateFacilityCovenantResponseDto,
+    type: CreateOrUpdateFacilityCovenantsResponseDto,
   })
   @ApiNotFoundResponse({
     description: 'The facility was not found.',
@@ -62,7 +62,7 @@ export class FacilityCovenantController {
     const newCovenant = newCovenantRequest[0];
 
     await this.facilityCovenantService.createCovenantForFacility(facilityIdentifier, facility.productTypeId, facility.obligorPartyIdentifier, newCovenant);
-    return new CreateFacilityCovenantResponseDto(facilityIdentifier);
+    return new CreateOrUpdateFacilityCovenantsResponseDto(facilityIdentifier);
   }
 
   @Get('/facilities/:facilityIdentifier/covenants')
@@ -93,13 +93,12 @@ export class FacilityCovenantController {
   }
 
   @Patch('/facilities/:facilityIdentifier/covenants')
-  patchCovenantsForFacility(
+  async updateCovenantsForFacility(
     @Param() params: FacilityCovenantsParamsDto,
-    @Body(new NonEmptyRequestBodyValidationPipe()) patchCovenantRequest: PatchFacilityCovenantRequestDto,
-  ): any {
-    return {
-      params,
-      patchCovenantRequest,
-    };
+    @Body(new NonEmptyRequestBodyValidationPipe()) updateCovenantRequest: UpdateFacilityCovenantsRequestDto,
+  ): Promise<CreateOrUpdateFacilityCovenantsResponseDto> {
+    const { facilityIdentifier } = params;
+    await this.facilityCovenantService.updateCovenantsForFacility(facilityIdentifier, updateCovenantRequest);
+    return new CreateOrUpdateFacilityCovenantsResponseDto(facilityIdentifier);
   }
 }

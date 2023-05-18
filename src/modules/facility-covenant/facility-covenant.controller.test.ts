@@ -5,7 +5,7 @@ import { when } from 'jest-when';
 
 import { DateStringTransformations } from '../date/date-string.transformations';
 import { FacilityService } from '../facility/facility.service';
-import { CreateFacilityCovenantResponseDto } from './dto/create-facility-covenant-response.dto';
+import { CreateOrUpdateFacilityCovenantsResponseDto } from './dto/create-or-update-covenants-response.dto';
 import { FacilityCovenantController } from './facility-covenant.controller';
 import { FacilityCovenantService } from './facility-covenant.service';
 
@@ -71,7 +71,7 @@ describe('FacilityCovenantController', () => {
 
       const response = await controller.createCovenantForFacility({ facilityIdentifier }, requestBodyToCreateFacilityCovenant);
 
-      expect(response).toStrictEqual(new CreateFacilityCovenantResponseDto(facilityIdentifier));
+      expect(response).toStrictEqual(new CreateOrUpdateFacilityCovenantsResponseDto(facilityIdentifier));
     });
   });
 
