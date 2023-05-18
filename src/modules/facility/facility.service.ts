@@ -6,13 +6,13 @@ import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acb
 
 import { AcbsBaseFacilityRequest } from '../acbs/dto/acbs-base-facility-request.dto';
 import { AcbsCreateFacilityRequest } from '../acbs/dto/acbs-create-facility-request.dto';
-import { AcbsUpdateFacilityRequest, AcbsUpdateFacilityRequestWithoutGetFacilityAdditionalFields } from '../acbs/dto/acbs-update-facility-request.dto';
 import { CurrentDateProvider } from '../date/current-date.provider';
 import { DateStringTransformations } from '../date/date-string.transformations';
 import { BaseFacilityRequestItemWithFacilityIdentifier } from './dto/base-facility-request.dto';
 import { CreateFacilityRequestItem } from './dto/create-facility-request.dto';
 import { GetFacilityByIdentifierResponseDto } from './dto/get-facility-by-identifier-response.dto';
 import { UpdateFacilityRequest, UpdateFacilityRequestWithFacilityIdentifier } from './dto/update-facility-request.dto';
+import { AcbsUpdateFacilityRequest, AcbsUpdateFacilityRequestWithoutGetFacilityAdditionalFields } from '../acbs/dto/acbs-update-facility-request.dto';
 
 @Injectable()
 export class FacilityService {
@@ -73,7 +73,7 @@ export class FacilityService {
     const idToken = await this.acbsAuthenticationService.getIdToken();
 
     if (this.isFacilityUnissued(updateFacilityRequest.facilityStageCode)) {
-      throw new BadRequestException('Facility stage code is not issued');
+      throw new BadRequestException('Bad request', {description: 'Facility stage code is not issued' });
     }
 
     const updateFacilityRequestWithFacilityIdentifier: UpdateFacilityRequestWithFacilityIdentifier = { ...updateFacilityRequest, facilityIdentifier };
