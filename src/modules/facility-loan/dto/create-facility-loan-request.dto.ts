@@ -40,6 +40,7 @@ export class CreateFacilityLoanRequestItem {
   @ValidatedStringApiProperty({
     description: `The product group, r.g. 'BS' for BOND.`,
     example: 'BS',
+    length: 2,
     enum: ENUMS.PRODUCT_TYPE_GROUPS,
   })
   readonly productTypeGroup: string;
@@ -58,6 +59,8 @@ export class CreateFacilityLoanRequestItem {
   @ValidatedStringApiProperty({
     description: `Represents the currency exchange rate operand (M-multiply or D-divide). Required when loan currency differs from deal currency.`,
     example: 'M',
+    length: 1,
+    enum: ENUMS.OPERATION_TYPE_CODES,
     required: false,
   })
   readonly dealCustomerUsageOperationType: string;

@@ -94,7 +94,7 @@ interface NewLoanRequestCashEvent {
   CashOffsetTypeCode: string;
   Currency: {
     CurrencyCode: string;
-  },
+  };
   SettlementCurrencyCode: string;
   OriginatingGeneralLedgerUnit: string;
   DDAAccount: string;

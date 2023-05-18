@@ -8,6 +8,8 @@ import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-
 import { when } from 'jest-when';
 
 import { FacilityLoanService } from './facility-loan.service';
+import { AcbsBundleInformationService } from '../acbs/acbs-bundleInformation.service';
+import { CurrentDateProvider } from '../date/current-date.provider';
 
 describe('FacilityLoanService', () => {
   const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
@@ -22,8 +24,10 @@ describe('FacilityLoanService', () => {
 
   let acbsAuthenticationService: AcbsAuthenticationService;
   let service: FacilityLoanService;
+  let acbsFacilityLoanService: AcbsFacilityLoanService;
+  let acbsBundleInformationService: AcbsBundleInformationService;
 
-  let getFacilityLoansAcbsService: jest.Mock;
+  let acbsFacilityLoanServiceGetLoansForFacility: jest.Mock;
 
   beforeEach(() => {
     const mockAcbsAuthenticationService = getMockAcbsAuthenticationService();
@@ -31,16 +35,16 @@ describe('FacilityLoanService', () => {
     const acbsAuthenticationServiceGetIdToken = mockAcbsAuthenticationService.getIdToken;
     when(acbsAuthenticationServiceGetIdToken).calledWith().mockResolvedValueOnce(idToken);
 
-    const acbsService = new AcbsFacilityLoanService(null, null);
-    getFacilityLoansAcbsService = jest.fn();
-    acbsService.getLoansForFacility = getFacilityLoansAcbsService;
+    acbsFacilityLoanService = new AcbsFacilityLoanService(null, null);
+    acbsFacilityLoanServiceGetLoansForFacility = jest.fn();
+    acbsFacilityLoanService.getLoansForFacility = acbsFacilityLoanServiceGetLoansForFacility;
 
-    service = new FacilityLoanService(acbsAuthenticationService, acbsService, new DateStringTransformations());
+    service = new FacilityLoanService(acbsAuthenticationService, acbsFacilityLoanService, acbsBundleInformationService, new DateStringTransformations(), new CurrentDateProvider());
   });
 
   describe('getLoansForFacility', () => {
     it('returns a transformation of the loans from ACBS', async () => {
-      when(getFacilityLoansAcbsService).calledWith(portfolioIdentifier, facilityIdentifier, idToken).mockResolvedValueOnce(facilityLoansInAcbs);
+      when(acbsFacilityLoanServiceGetLoansForFacility).calledWith(portfolioIdentifier, facilityIdentifier, idToken).mockResolvedValueOnce(facilityLoansInAcbs);
 
       const loans = await service.getLoansForFacility(facilityIdentifier);
 
@@ -48,7 +52,7 @@ describe('FacilityLoanService', () => {
     });
 
     it('returns an empty array if ACBS returns an empty array', async () => {
-      when(getFacilityLoansAcbsService).calledWith(portfolioIdentifier, facilityIdentifier, idToken).mockResolvedValueOnce([]);
+      when(acbsFacilityLoanServiceGetLoansForFacility).calledWith(portfolioIdentifier, facilityIdentifier, idToken).mockResolvedValueOnce([]);
 
       const loans = await service.getLoansForFacility(facilityIdentifier);
 

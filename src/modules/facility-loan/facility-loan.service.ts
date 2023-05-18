@@ -6,11 +6,11 @@ import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acb
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 
 import { AcbsBundleInformationService } from '../acbs/acbs-bundleInformation.service';
+import { BundleActionNewLoanRequest } from '../acbs/dto/bundle-actions/bundle-action-newLoanRequest';
 import { CurrentDateProvider } from '../date/current-date.provider';
 import { CreateFacilityLoanResponseDto } from './dto/create-facility-loan-response.dto';
 import { GetFacilityLoanResponseDto } from './dto/get-facility-loan-response.dto';
 import { FacilityLoanToCreate } from './facility-loan-to-create.interface';
-import { BundleActionNewLoanRequest } from '../acbs/dto/bundle-actions/bundle-action-newLoanRequest';
 
 @Injectable()
 export class FacilityLoanService {
@@ -20,7 +20,7 @@ export class FacilityLoanService {
     private readonly acbsBundleInformationService: AcbsBundleInformationService,
     private readonly dateStringTransformations: DateStringTransformations,
     private readonly currentDateProvider: CurrentDateProvider,
-  ) { }
+  ) {}
 
   async getLoansForFacility(facilityIdentifier: string): Promise<GetFacilityLoanResponseDto> {
     const { portfolioIdentifier } = PROPERTIES.GLOBAL;
@@ -162,12 +162,15 @@ export class FacilityLoanService {
   }
 
   private getDealCustomerUsageOperationType(newFacilityLoan: FacilityLoanToCreate) {
+    const operationTypeCode = newFacilityLoan.dealCustomerUsageOperationType && newFacilityLoan.dealCustomerUsageOperationType === ENUMS.OPERATION_TYPE_CODES.DIVIDE
+      ? ENUMS.OPERATION_TYPE_CODES.DIVIDE
+      : ENUMS.OPERATION_TYPE_CODES.MULTIPLY;
     return newFacilityLoan.dealCustomerUsageOperationType
       ? {
-        DealCustomerUsageOperationType: {
-          OperationTypeCode: newFacilityLoan.dealCustomerUsageOperationType,
-        },
-      }
+          DealCustomerUsageOperationType: {
+            OperationTypeCode: operationTypeCode,
+          },
+        }
       : {};
   }
 
@@ -175,31 +178,31 @@ export class FacilityLoanService {
     const isNotGbp = newFacilityLoan.currency !== 'GBP';
     return isNotGbp
       ? {
-        FinancialRateGroup: PROPERTIES.FACILITY_LOAN.DEFAULT.financialRateGroup,
-        CustomerUsageRateGroup: PROPERTIES.FACILITY_LOAN.DEFAULT.customerUsageRateGroup,
-        FinancialFrequency: {
-          UsageFrequencyTypeCode: PROPERTIES.FACILITY_LOAN.DEFAULT.financialFrequency.usageFrequencyTypeCode,
-        },
-        CustomerUsageFrequency: {
-          UsageFrequencyTypeCode: PROPERTIES.FACILITY_LOAN.DEFAULT.customerUsageFrequency.usageFrequencyTypeCode,
-        },
-        FinancialBusinessDayAdjustment: {
-          BusinessDayAdjustmentTypeCode: PROPERTIES.FACILITY_LOAN.DEFAULT.financialBusinessDayAdjustment.businessDayAdjustmentTypeCode,
-        },
-        CustomerUsageBusinessDayAdjustment: {
-          BusinessDayAdjustmentTypeCode: PROPERTIES.FACILITY_LOAN.DEFAULT.customerUsageBusinessDayAdjustment.businessDayAdjustmentTypeCode,
-        },
-        FinancialCalendar: {
-          CalendarIdentifier: PROPERTIES.FACILITY_LOAN.DEFAULT.financialCalendar.calendarIdentifier,
-        },
-        CustomerUsageCalendar: {
-          CalendarIdentifier: PROPERTIES.FACILITY_LOAN.DEFAULT.customerUsageCalendar.calendarIdentifier,
-        },
-        FinancialNextValuationDate: this.dateStringTransformations.addTimeToDateOnlyString(newFacilityLoan.expiryDate),
-        CustomerUsageNextValuationDate: this.dateStringTransformations.addTimeToDateOnlyString(newFacilityLoan.expiryDate),
-        FinancialLockMTMRateIndicator: PROPERTIES.FACILITY_LOAN.DEFAULT.financialLockMTMRateIndicator,
-        CustomerUsageLockMTMRateIndicator: PROPERTIES.FACILITY_LOAN.DEFAULT.customerUsageLockMTMRateIndicator,
-      }
+          FinancialRateGroup: PROPERTIES.FACILITY_LOAN.DEFAULT.financialRateGroup,
+          CustomerUsageRateGroup: PROPERTIES.FACILITY_LOAN.DEFAULT.customerUsageRateGroup,
+          FinancialFrequency: {
+            UsageFrequencyTypeCode: PROPERTIES.FACILITY_LOAN.DEFAULT.financialFrequency.usageFrequencyTypeCode,
+          },
+          CustomerUsageFrequency: {
+            UsageFrequencyTypeCode: PROPERTIES.FACILITY_LOAN.DEFAULT.customerUsageFrequency.usageFrequencyTypeCode,
+          },
+          FinancialBusinessDayAdjustment: {
+            BusinessDayAdjustmentTypeCode: PROPERTIES.FACILITY_LOAN.DEFAULT.financialBusinessDayAdjustment.businessDayAdjustmentTypeCode,
+          },
+          CustomerUsageBusinessDayAdjustment: {
+            BusinessDayAdjustmentTypeCode: PROPERTIES.FACILITY_LOAN.DEFAULT.customerUsageBusinessDayAdjustment.businessDayAdjustmentTypeCode,
+          },
+          FinancialCalendar: {
+            CalendarIdentifier: PROPERTIES.FACILITY_LOAN.DEFAULT.financialCalendar.calendarIdentifier,
+          },
+          CustomerUsageCalendar: {
+            CalendarIdentifier: PROPERTIES.FACILITY_LOAN.DEFAULT.customerUsageCalendar.calendarIdentifier,
+          },
+          FinancialNextValuationDate: this.dateStringTransformations.addTimeToDateOnlyString(newFacilityLoan.expiryDate),
+          CustomerUsageNextValuationDate: this.dateStringTransformations.addTimeToDateOnlyString(newFacilityLoan.expiryDate),
+          FinancialLockMTMRateIndicator: PROPERTIES.FACILITY_LOAN.DEFAULT.financialLockMTMRateIndicator,
+          CustomerUsageLockMTMRateIndicator: PROPERTIES.FACILITY_LOAN.DEFAULT.customerUsageLockMTMRateIndicator,
+        }
       : {};
   }
 

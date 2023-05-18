@@ -506,6 +506,41 @@ paths:
           description: The facility was not found.
         '500':
           description: An internal server error has occurred.
+    post:
+      operationId: FacilityLoanController_createLoanForFacility
+      summary: Create a new loan for a facility.
+      parameters:
+        - name: facilityIdentifier
+          required: true
+          in: path
+          description: The identifier of the facility in ACBS.
+          example: '0030000322'
+          schema:
+            minLength: 10
+            maxLength: 10
+            pattern: ^00\\d{8}$
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/CreateFacilityLoanRequestItem'
+      responses:
+        '201':
+          description: The loan has been successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateFacilityLoanResponseDto'
+        '400':
+          description: Bad request.
+        '404':
+          description: The facility was not found.
+        '500':
+          description: An internal server error has occurred.
   /api/v1/parties/{partyIdentifier}/external-ratings:
     get:
       operationId: PartyExternalRatingController_getExternalRatingsForParty
@@ -1880,6 +1915,108 @@ components:
         - feeBalance
         - otherBalance
         - discountedPrincipal
+    CreateFacilityLoanRequestItem:
+      type: object
+      properties:
+        postingDate:
+          format: date
+          type: string
+          description: The date of the action.
+          example: '2024-04-19'
+        facilityIdentifier:
+          type: string
+          description: The identifier of the facility to create the loan for in ACBS.
+          minLength: 10
+          maxLength: 10
+          pattern: ^00\\d{8}$
+          example: '0030000322'
+        borrowerPartyIdentifier:
+          type: string
+          description: The customer identifier representing the borrower for the loan.
+          minLength: 8
+          maxLength: 8
+          example: '00291013'
+        productTypeId:
+          type: string
+          description: The product type identifier, e.g. '250' for BOND.
+          minLength: 3
+          maxLength: 3
+          enum:
+            - '250'
+            - '260'
+            - '280'
+            - '281'
+          example: '250'
+        productTypeGroup:
+          type: string
+          description: The product group, r.g. 'BS' for BOND.
+          minLength: 2
+          maxLength: 2
+          enum:
+            - EW
+            - BS
+            - GM
+          example: BS
+        currency:
+          type: string
+          description: >-
+            The currency code of the primary currency of the loan, from the
+            Currency Definition Table.
+          minLength: 3
+          maxLength: 3
+          example: USD
+        dealCustomerUsageRate:
+          type: number
+          description: >-
+            The exchange rate between the loan currency and the deal currency.
+            Required when loan currency differs from deal currency.
+        dealCustomerUsageOperationType:
+          type: string
+          description: >-
+            Represents the currency exchange rate operand (M-multiply or
+            D-divide). Required when loan currency differs from deal currency.
+          minLength: 1
+          maxLength: 1
+          enum:
+            - D
+            - M
+          example: M
+        amount:
+          type: number
+          description: Populated with the amount of the loan.
+          minimum: 0
+        issueDate:
+          format: date
+          type: string
+          description: The facility issue date.
+          example: '2023-04-19'
+        expiryDate:
+          format: date
+          type: string
+          description: The facility expiry date.
+          example: '2024-04-19'
+      required:
+        - postingDate
+        - facilityIdentifier
+        - borrowerPartyIdentifier
+        - productTypeId
+        - productTypeGroup
+        - currency
+        - amount
+        - issueDate
+        - expiryDate
+    CreateFacilityLoanResponseDto:
+      type: object
+      properties:
+        bundleIdentifier:
+          type: string
+          readOnly: true
+          minLength: 10
+          maxLength: 10
+          description: The identifier of the ACBS bundle.
+          example: '0000321000'
+      required:
+        - bundleIdentifier
     GetPartyExternalRatingResponseRatingEntity:
       type: object
       properties:
