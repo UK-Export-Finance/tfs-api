@@ -67,7 +67,6 @@ export class AcbsBundleInformationService {
       return [getLoanNotFoundKnownAcbsBundleInformationError(action.LoanIdentifier)];
     }
 
-    // TODO APIM-128: Should we throw an error instead?
     return [];
   }
 }
