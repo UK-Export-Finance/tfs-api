@@ -22,7 +22,7 @@ describe('FacilityService', () => {
   const dateStringTransformations = new DateStringTransformations();
   const idToken = valueGenerator.string();
   const facilityIdentifier = valueGenerator.facilityId();
-  const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+  const { portfolioIdentifier } = PROPERTIES.GLOBAL;
 
   let acbsFacilityServiceCreateFacility: jest.Mock;
   let service: FacilityService;

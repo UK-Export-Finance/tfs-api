@@ -14,7 +14,7 @@ import { FacilityGuaranteeService } from './facility-guarantee.service';
 import { FacilityGuaranteeToCreate } from './facility-guarantee-to-create.interface';
 
 describe('FacilityGuaranteeService', () => {
-  const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+  const { portfolioIdentifier } = PROPERTIES.GLOBAL;
   const valueGenerator = new RandomValueGenerator();
   const dateStringTransformations = new DateStringTransformations();
   const idToken = valueGenerator.string();

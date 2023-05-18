@@ -20,7 +20,7 @@ describe('AcbsFacilityCovenantService', () => {
   const facilityIdentifier = valueGenerator.ukefId();
   const facilityTypeCode = valueGenerator.stringOfNumericCharacters();
   const limitKeyValue = valueGenerator.string();
-  const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+  const { portfolioIdentifier } = PROPERTIES.GLOBAL;
 
   let httpService: HttpService;
   let service: AcbsFacilityCovenantService;

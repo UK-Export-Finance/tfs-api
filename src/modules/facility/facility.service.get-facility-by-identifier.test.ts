@@ -41,7 +41,7 @@ describe('FacilityService', () => {
   });
 
   describe('getFacilityByIdentifier', () => {
-    const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+    const { portfolioIdentifier } = PROPERTIES.GLOBAL;
     const facilityIdentifier = valueGenerator.ukefId();
     const { facilitiesInAcbs, facilitiesFromApi } = new GetFacilityGenerator(valueGenerator, dateStringTransformations).generate({
       numberToGenerate: 1,

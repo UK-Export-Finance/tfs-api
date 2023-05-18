@@ -21,7 +21,7 @@ export class AcbsFacilityPartyService {
   }
 
   async createPartyForFacility(facilityIdentifier: string, newFacilityParty: AcbsCreateFacilityPartyDto, idToken: string): Promise<void> {
-    const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+    const { portfolioIdentifier } = PROPERTIES.GLOBAL;
     await this.acbsHttpService.post<AcbsCreateFacilityPartyDto>({
       path: `/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/FacilityParty`,
       requestBody: newFacilityParty,

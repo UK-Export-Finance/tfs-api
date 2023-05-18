@@ -12,7 +12,7 @@ import nock from 'nock';
 describe('GET /facilities/{facilityIdentifier}/guarantees', () => {
   const valueGenerator = new RandomValueGenerator();
   const facilityIdentifier = valueGenerator.facilityId();
-  const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+  const { portfolioIdentifier } = PROPERTIES.GLOBAL;
 
   const getGetFacilityGuaranteesUrlForFacilityId = (facilityId: string) => `/api/v1/facilities/${facilityId}/guarantees`;
 

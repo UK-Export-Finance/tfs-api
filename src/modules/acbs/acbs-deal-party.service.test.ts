@@ -131,7 +131,7 @@ describe('AcbsDealPartyService', () => {
     const dateStringTransformations = new DateStringTransformations();
 
     const dealIdentifier: UkefId = valueGenerator.ukefId();
-    const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+    const { portfolioIdentifier } = PROPERTIES.GLOBAL;
 
     const { acbsRequestBodyToCreateDealInvestor } = new CreateDealInvestorGenerator(valueGenerator, currentDateProvider, dateStringTransformations).generate({
       numberToGenerate: 1,

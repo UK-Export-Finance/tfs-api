@@ -32,7 +32,7 @@ describe('AcbsFacilityService', () => {
   });
 
   describe('getFacilityByIdentifier', () => {
-    const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+    const { portfolioIdentifier } = PROPERTIES.GLOBAL;
     const facilityIdentifier = valueGenerator.ukefId();
 
     it('returns the facility if ACBS responds with the facility', async () => {

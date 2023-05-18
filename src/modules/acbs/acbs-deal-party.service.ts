@@ -40,7 +40,7 @@ export class AcbsDealPartyService {
   }
 
   async createInvestorForDeal(dealIdentifier: string, newDealInvestor: AcbsCreateDealInvestorRequest, idToken: string): Promise<void> {
-    const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+    const { portfolioIdentifier } = PROPERTIES.GLOBAL;
     await this.acbsHttpService.post<AcbsCreateDealInvestorRequest>({
       path: `/Portfolio/${portfolioIdentifier}/Deal/${dealIdentifier}/DealParty`,
       requestBody: newDealInvestor,

@@ -16,7 +16,7 @@ describe('DealService', () => {
   const dateStringTransformations = new DateStringTransformations();
   const idToken = valueGenerator.string();
   const dealIdentifier = valueGenerator.stringOfNumericCharacters({ length: 10 });
-  const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+  const { portfolioIdentifier } = PROPERTIES.GLOBAL;
   const currency = TEST_CURRENCIES.A_TEST_CURRENCY;
   const dealValue = valueGenerator.nonnegativeFloat();
   const guaranteeCommencementDateInAcbs = '2023-02-01T00:00:00Z';
@@ -70,7 +70,7 @@ describe('DealService', () => {
   });
 
   describe('getDealByIdentifier', () => {
-    const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+    const { portfolioIdentifier } = PROPERTIES.GLOBAL;
 
     it('returns a transformation of the deal from ACBS', async () => {
       when(acbsDealServiceGetDealByIdentifier).calledWith(portfolioIdentifier, dealIdentifier, idToken).mockResolvedValueOnce(dealInAcbs);

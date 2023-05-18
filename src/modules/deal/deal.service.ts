@@ -21,7 +21,7 @@ export class DealService {
   ) {}
 
   async getDealByIdentifier(dealIdentifier: string): Promise<Deal> {
-    const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+    const { portfolioIdentifier } = PROPERTIES.GLOBAL;
     const idToken = await this.getIdToken();
     const dealInAcbs = await this.acbsDealService.getDealByIdentifier(portfolioIdentifier, dealIdentifier, idToken);
 
@@ -38,7 +38,7 @@ export class DealService {
   }
 
   async createDeal(dealToCreate: DealToCreate): Promise<void> {
-    const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+    const { portfolioIdentifier } = PROPERTIES.GLOBAL;
     const idToken = await this.getIdToken();
 
     const requestBody: AcbsCreateDealDto = this.buildAcbsRequestBodyToCreateDeal(dealToCreate, portfolioIdentifier);
