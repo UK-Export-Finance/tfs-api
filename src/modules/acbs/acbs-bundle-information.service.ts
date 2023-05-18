@@ -9,7 +9,7 @@ import { AcbsCreateBundleInformationRequestDto } from './dto/acbs-create-bundleI
 import { AcbsCreateBundleInformationResponseDto } from './dto/acbs-create-bundleInformation-response.dto';
 import { AcbsGetFacilityLoanTransactionResponseItem } from './dto/acbs-get-facility-loan-transaction-response.dto';
 import { getLoanTransactionNotFoundKnownAcbsError, postFacilityNotFoundKnownAcbsError } from './known-errors';
-import { createWrapAcbsHttpGetErrorCallback, createWrapAcbsHttpPostErrorCallback } from './wrap-acbs-http-error-callback';
+import { createWrapAcbsHttpGetErrorCallback, createWrapAcbsHttpPostOrPutErrorCallback } from './wrap-acbs-http-error-callback';
 
 export class AcbsBundleInformationService {
   private readonly acbsHttpService: AcbsHttpService;
@@ -24,7 +24,7 @@ export class AcbsBundleInformationService {
       path: `/BundleInformation?servicingQueueIdentifier=${servicingQueueIdentifier}`,
       requestBody: newBundleInformation,
       idToken,
-      onError: createWrapAcbsHttpPostErrorCallback({
+      onError: createWrapAcbsHttpPostOrPutErrorCallback({
         messageForUnknownError: `Failed to create a bundleInformation in ACBS.`,
         knownErrors: [postFacilityNotFoundKnownAcbsError(newBundleInformation.BundleMessageList[0].FacilityIdentifier)],
       }),

@@ -8,7 +8,7 @@ import { AcbsHttpService } from './acbs-http.service';
 import { AcbsCreatePartyRequest } from './dto/acbs-create-party-request.dto';
 import { AcbsGetPartyResponseDto } from './dto/acbs-get-party-response.dto';
 import { getPartyNotFoundKnownAcbsError } from './known-errors';
-import { createWrapAcbsHttpGetErrorCallback, createWrapAcbsHttpPostErrorCallback } from './wrap-acbs-http-error-callback';
+import { createWrapAcbsHttpGetErrorCallback, createWrapAcbsHttpPostOrPutErrorCallback } from './wrap-acbs-http-error-callback';
 
 @Injectable()
 export class AcbsPartyService {
@@ -52,7 +52,7 @@ export class AcbsPartyService {
         path: `/Party`,
         requestBody: partyToCreate,
         idToken,
-        onError: createWrapAcbsHttpPostErrorCallback({
+        onError: createWrapAcbsHttpPostOrPutErrorCallback({
           messageForUnknownError: 'Failed to create party in ACBS.',
           knownErrors: [],
         }),

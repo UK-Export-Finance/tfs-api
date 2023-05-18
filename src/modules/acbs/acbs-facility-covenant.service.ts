@@ -7,8 +7,8 @@ import { AcbsConfigBaseUrl } from './acbs-config-base-url.type';
 import { AcbsHttpService } from './acbs-http.service';
 import { AcbsCreateFacilityCovenantRequestDto } from './dto/acbs-create-facility-covenant-request.dto';
 import { AcbsGetFacilityCovenantsResponseDto } from './dto/acbs-get-facility-covenants-response.dto';
-import { getFacilityNotFoundKnownAcbsError } from './known-errors';
-import { createWrapAcbsHttpGetErrorCallback, createWrapAcbsHttpPostErrorCallback } from './wrap-acbs-http-error-callback';
+import { facilityNotFoundKnownAcbsError } from './known-errors';
+import { createWrapAcbsHttpGetErrorCallback, createWrapAcbsHttpPostOrPutErrorCallback } from './wrap-acbs-http-error-callback';
 
 export class AcbsFacilityCovenantService {
   private readonly acbsHttpService: AcbsHttpService;
@@ -23,9 +23,9 @@ export class AcbsFacilityCovenantService {
       path: `/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/Covenant`,
       requestBody: newFacilityCovenant,
       idToken,
-      onError: createWrapAcbsHttpPostErrorCallback({
+      onError: createWrapAcbsHttpPostOrPutErrorCallback({
         messageForUnknownError: `Failed to create a covenant for facility ${facilityIdentifier} in ACBS.`,
-        knownErrors: [getFacilityNotFoundKnownAcbsError(facilityIdentifier)],
+        knownErrors: [facilityNotFoundKnownAcbsError(facilityIdentifier)],
       }),
     });
   }

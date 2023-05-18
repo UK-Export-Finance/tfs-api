@@ -7,8 +7,10 @@ import { PROPERTIES } from '@ukef/constants';
 import { AcbsHttpService } from './acbs-http.service';
 import { AcbsCreateFacilityRequest } from './dto/acbs-create-facility-request.dto';
 import { AcbsGetFacilityResponseDto } from './dto/acbs-get-facility-response.dto';
-import { getFacilityNotFoundKnownAcbsError } from './known-errors';
-import { createWrapAcbsHttpGetErrorCallback, createWrapAcbsHttpPostErrorCallback } from './wrap-acbs-http-error-callback';
+import { AcbsUpdateFacilityRequest } from './dto/acbs-update-facility-request.dto';
+import { AcbsUpdateFacilityResponseDto } from './dto/acbs-update-facility-response.dto';
+import { facilityNotFoundKnownAcbsError } from './known-errors';
+import { createWrapAcbsHttpGetErrorCallback, createWrapAcbsHttpPostOrPutErrorCallback } from './wrap-acbs-http-error-callback';
 
 @Injectable()
 export class AcbsFacilityService {
@@ -30,7 +32,7 @@ export class AcbsFacilityService {
       idToken,
       onError: createWrapAcbsHttpGetErrorCallback({
         messageForUnknownError: `Failed to get the facility with identifier ${facilityIdentifier}.`,
-        knownErrors: [getFacilityNotFoundKnownAcbsError(facilityIdentifier)],
+        knownErrors: [facilityNotFoundKnownAcbsError(facilityIdentifier)],
       }),
     });
     return facility;
@@ -41,10 +43,27 @@ export class AcbsFacilityService {
       path: `/Portfolio/${portfolioIdentifier}/Facility`,
       requestBody: facilityToCreate,
       idToken,
-      onError: createWrapAcbsHttpPostErrorCallback({
+      onError: createWrapAcbsHttpPostOrPutErrorCallback({
         messageForUnknownError: `Failed to create a facility with identifier ${facilityToCreate.FacilityIdentifier} in ACBS.`,
         knownErrors: [],
       }),
     });
+  }
+
+  async updateFacilityByIdentifier(
+    portfolioIdentifier: string,
+    facilityToUpdate: AcbsUpdateFacilityRequest,
+    idToken: string,
+  ): Promise<AcbsUpdateFacilityResponseDto> {
+    const { data: facilityIdentifier } = await this.acbsHttpService.put<AcbsUpdateFacilityRequest, AcbsUpdateFacilityResponseDto>({
+      path: `/Portfolio/${portfolioIdentifier}/Facility/${facilityToUpdate.FacilityIdentifier}`,
+      requestBody: facilityToUpdate,
+      idToken,
+      onError: createWrapAcbsHttpPostOrPutErrorCallback({
+        messageForUnknownError: `Failed to update a facility with identifier ${facilityToUpdate.FacilityIdentifier} in ACBS.`,
+        knownErrors: [facilityNotFoundKnownAcbsError(facilityToUpdate.FacilityIdentifier)],
+      }),
+    });
+    return facilityIdentifier;
   }
 }

@@ -227,6 +227,48 @@ paths:
           description: The specified facility was not found.
         '500':
           description: An internal server error has occurred.
+    put:
+      operationId: FacilityController_updateFacilityByOperation
+      summary: Update a facility by facility identifier and operation enum query
+      parameters:
+        - name: op
+          required: true
+          in: query
+          description: Update operation
+          example: issue
+          schema:
+            enum:
+              - issue
+            type: string
+        - name: facilityIdentifier
+          required: true
+          in: path
+          description: The identifier of the facility in ACBS.
+          example: '0030000322'
+          schema:
+            minLength: 10
+            maxLength: 10
+            pattern: ^00\\d{8}$
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateFacilityRequest'
+      responses:
+        '200':
+          description: The facility has been successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateFacilityResponse'
+        '400':
+          description: Bad request.
+        '404':
+          description: The specified facility was not found.
+        '500':
+          description: An internal server error has occurred.
   /api/v1/facilities:
     post:
       operationId: FacilityController_createFacility
@@ -1177,13 +1219,6 @@ components:
           maxLength: 10
           pattern: ^00\\d{8}$
           example: '0030000321'
-        facilityIdentifier:
-          type: string
-          description: The identifier of the facility to create.
-          minLength: 10
-          maxLength: 10
-          pattern: ^00\\d{8}$
-          example: '0030000322'
         dealBorrowerIdentifier:
           type: string
           description: >-
@@ -1323,13 +1358,19 @@ components:
           format: date
           type: string
           description: >-
-            At Commitment stage its not required, Issued when issued it would be
-            Issue Date for Bond OR Disbursement Date for Loan/EWCS.
+            Issue Date for Bond or Disbursement Date for Loan/EWCS. Not required
+            at commitment stage
           default: null
           nullable: true
+        facilityIdentifier:
+          type: string
+          description: The identifier of the facility.
+          minLength: 10
+          maxLength: 10
+          pattern: ^00\\d{8}$
+          example: '0030000322'
       required:
         - dealIdentifier
-        - facilityIdentifier
         - dealBorrowerIdentifier
         - productTypeId
         - productTypeName
@@ -1350,6 +1391,7 @@ components:
         - interestOrFeeRate
         - obligorPartyIdentifier
         - forecastPercentage
+        - facilityIdentifier
     CreateFacilityResponse:
       type: object
       properties:
@@ -1357,6 +1399,192 @@ components:
           type: string
           description: The identifier of the created facility.
           readOnly: true
+          example: '0030000322'
+      required:
+        - facilityIdentifier
+    UpdateFacilityRequest:
+      type: object
+      properties:
+        issueDate:
+          format: date
+          type: string
+          description: >-
+            Issue Date for Bond OR Disbursement Date for Loan/EWCS. Not required
+            at commitment stage.
+        dealIdentifier:
+          type: string
+          description: The identifier of the deal for the facility.
+          minLength: 10
+          maxLength: 10
+          pattern: ^00\\d{8}$
+          example: '0030000321'
+        dealBorrowerIdentifier:
+          type: string
+          description: >-
+            Look up the Obligors ACBS Customer record using Party URN on the
+            Deal = Alternate Customer Id (J$MSZI). Use ACBS Customer Id (J$MRUI)
+            Note there may be multiple customers in ACBS with the same Party
+            URN. Use the first record found.
+          minLength: 8
+          maxLength: 8
+          example: '00001234'
+        productTypeId:
+          type: string
+          description: The facility type, e.g. '250' for BOND.
+          minLength: 0
+          maxLength: 3
+          example: '250'
+        productTypeName:
+          type: string
+          description: The name or description of the facility type.
+          minLength: 0
+          maxLength: 13
+          example: BOND
+        exposurePeriod:
+          type: string
+          description: Credit Period
+          minLength: 0
+          maxLength: 12
+          example: '1'
+        currency:
+          type: string
+          description: Facility Currency Code e.g. CAD, USD.
+          minLength: 3
+          maxLength: 3
+          example: USD
+        obligorIndustryClassification:
+          type: string
+          description: The industry classification code of the obligor.
+          minLength: 0
+          maxLength: 10
+          example: '0116'
+        effectiveDate:
+          format: date
+          type: string
+          description: >-
+            The date from which the borrower can draw funds from the facility.
+            If this is a future date then it will be replaced with today's date.
+        guaranteeExpiryDate:
+          format: date
+          type: string
+          description: The expiration date of the facility.
+        nextQuarterEndDate:
+          format: date
+          type: string
+          description: The end date of the next quarter.
+        maximumLiability:
+          type: number
+          description: The overall limit for the facility.
+          minimum: 0
+        agentBankIdentifier:
+          type: string
+          description: The party identifier of the Agent Bank for this facility.
+          minLength: 0
+          maxLength: 10
+          example: '00000000'
+        riskCountryCode:
+          type: string
+          description: >-
+            The code of the primary country of risk designated for this credit
+            arrangement.
+          minLength: 0
+          maxLength: 3
+          example: GBR
+        premiumFrequencyCode:
+          type: string
+          description: Pre-Issue Est. Payment Frequency QUARTERLY(2)
+          minLength: 0
+          maxLength: 1
+          example: '2'
+        riskStatusCode:
+          type: string
+          description: CORPORATE(03)
+          minLength: 0
+          maxLength: 2
+          example: '03'
+        creditRatingCode:
+          type: string
+          description: Credit Review Risk Code
+          minLength: 0
+          maxLength: 2
+          example: '13'
+        facilityStageCode:
+          type: string
+          description: Case Stage this can be 06 Commitment and 07 Issued
+          minLength: 0
+          maxLength: 2
+          example: '07'
+        delegationType:
+          type: string
+          description: Derive values A, M or N
+          minLength: 0
+          maxLength: 4
+          example: A
+        interestOrFeeRate:
+          type: number
+          description: >-
+            Bank Rate, this can be for Bond facility corresponding fee rate or
+            for Loan/EWCS interest rate.
+          minimum: 0
+        obligorPartyIdentifier:
+          type: string
+          description: The party identifier of the obligor.
+          minLength: 8
+          maxLength: 8
+          example: '00001234'
+        forecastPercentage:
+          type: number
+          description: Forecast % Derive from FACILITY:Stage, i.e. Commitment or Issued
+          minimum: 0
+        probabilityOfDefault:
+          type: number
+          description: >-
+            A percentage indicating how likely it is that a default on the
+            credit will occur. This should be specified for GEF.
+          minimum: 0
+          default: 0
+        capitalConversionFactorCode:
+          type: string
+          description: >-
+            The code of the Capital Conversion Factor for the facility (e.g.
+            100% Conversion, 80% Conversion, No Conversion) from the T1125 table
+            in ACBS. This field should be specified for GEF. When this field is
+            not specified, a default will be chosen based on the productTypeId.
+          minLength: 0
+          maxLength: 2
+          example: '1'
+      required:
+        - issueDate
+        - dealIdentifier
+        - dealBorrowerIdentifier
+        - productTypeId
+        - productTypeName
+        - exposurePeriod
+        - currency
+        - obligorIndustryClassification
+        - effectiveDate
+        - guaranteeExpiryDate
+        - nextQuarterEndDate
+        - maximumLiability
+        - agentBankIdentifier
+        - riskCountryCode
+        - premiumFrequencyCode
+        - riskStatusCode
+        - creditRatingCode
+        - facilityStageCode
+        - delegationType
+        - interestOrFeeRate
+        - obligorPartyIdentifier
+        - forecastPercentage
+    UpdateFacilityResponse:
+      type: object
+      properties:
+        facilityIdentifier:
+          type: string
+          description: The identifier of the updated facility.
+          minLength: 10
+          maxLength: 10
+          pattern: ^00\\d{8}$
           example: '0030000322'
       required:
         - facilityIdentifier

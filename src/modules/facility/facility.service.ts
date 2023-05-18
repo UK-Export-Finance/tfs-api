@@ -1,14 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PROPERTIES } from '@ukef/constants';
 import { DateString } from '@ukef/helpers';
 import { AcbsFacilityService } from '@ukef/modules/acbs/acbs-facility.service';
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 
+import { AcbsBaseFacilityRequest } from '../acbs/dto/acbs-base-facility-request.dto';
 import { AcbsCreateFacilityRequest } from '../acbs/dto/acbs-create-facility-request.dto';
+import { AcbsUpdateFacilityRequest, AcbsUpdateFacilityRequestWithoutGetFacilityAdditionalFields } from '../acbs/dto/acbs-update-facility-request.dto';
 import { CurrentDateProvider } from '../date/current-date.provider';
 import { DateStringTransformations } from '../date/date-string.transformations';
+import { BaseFacilityRequestItemWithFacilityIdentifier } from './dto/base-facility-request.dto';
 import { CreateFacilityRequestItem } from './dto/create-facility-request.dto';
 import { GetFacilityByIdentifierResponseDto } from './dto/get-facility-by-identifier-response.dto';
+import { UpdateFacilityRequest, UpdateFacilityRequestWithFacilityIdentifier } from './dto/update-facility-request.dto';
 
 @Injectable()
 export class FacilityService {
@@ -60,54 +64,86 @@ export class FacilityService {
   async createFacility(facilityToCreate: CreateFacilityRequestItem): Promise<void> {
     const { portfolioIdentifier } = PROPERTIES.GLOBAL;
     const idToken = await this.acbsAuthenticationService.getIdToken();
-    const newFacilityInAcbs = this.buildAcbsCreateFacilityRequest(facilityToCreate);
-    await this.acbsFacilityService.createFacility(portfolioIdentifier, newFacilityInAcbs, idToken);
+    const acbsCreateFacilityRequest = this.buildCreateAcbsFacilityRequest(facilityToCreate);
+    await this.acbsFacilityService.createFacility(portfolioIdentifier, acbsCreateFacilityRequest, idToken);
   }
 
-  private buildAcbsCreateFacilityRequest(facilityToCreate: CreateFacilityRequestItem): AcbsCreateFacilityRequest {
+  async issueFacilityByIdentifier(facilityIdentifier: string, updateFacilityRequest: UpdateFacilityRequest): Promise<void> {
+    const { portfolioIdentifier } = PROPERTIES.GLOBAL;
+    const idToken = await this.acbsAuthenticationService.getIdToken();
+
+    if (this.isFacilityUnissued(updateFacilityRequest.facilityStageCode)) {
+      throw new BadRequestException('Bad request', { description: 'Facility stage code is not issued' });
+    }
+
+    const updateFacilityRequestWithFacilityIdentifier: UpdateFacilityRequestWithFacilityIdentifier = { ...updateFacilityRequest, facilityIdentifier };
+    const acbsUpdateFacilityRequest = this.buildUpdateAcbsFacilityRequest(updateFacilityRequestWithFacilityIdentifier);
+
+    const existingAcbsFacilityData = await this.acbsFacilityService.getFacilityByIdentifier(facilityIdentifier, idToken);
+    // Remove AdministrativeUserIdentifier as its a depreciated field and
+    // causes issue with old facilities which were manually created using old adminstrative profile.
+    delete existingAcbsFacilityData.AdministrativeUserIdentifier;
+
+    const acbsMergedUpdateFacilityRequest: AcbsUpdateFacilityRequest = { ...existingAcbsFacilityData, ...acbsUpdateFacilityRequest };
+    await this.acbsFacilityService.updateFacilityByIdentifier(portfolioIdentifier, acbsMergedUpdateFacilityRequest, idToken);
+  }
+
+  private buildCreateAcbsFacilityRequest(facilityToCreate: CreateFacilityRequestItem): AcbsCreateFacilityRequest {
+    const defaultValues = PROPERTIES.FACILITY.DEFAULT.POST;
+    const acbsBaseFacilityRequest = this.buildBaseAcbsFacilityRequest(facilityToCreate);
+    const description = this.buildFacilityDescriptionToCreate(facilityToCreate.productTypeName, facilityToCreate.exposurePeriod);
+    const facilityInitialStatus = { FacilityInitialStatusCode: defaultValues.facilityInitialStatusCode };
+    return { ...acbsBaseFacilityRequest, Description: description, FacilityInitialStatus: facilityInitialStatus };
+  }
+
+  private buildUpdateAcbsFacilityRequest(
+    facilityToUpdate: UpdateFacilityRequestWithFacilityIdentifier,
+  ): AcbsUpdateFacilityRequestWithoutGetFacilityAdditionalFields {
+    return this.buildBaseAcbsFacilityRequest(facilityToUpdate);
+  }
+
+  private buildBaseAcbsFacilityRequest(facilityToTranform: BaseFacilityRequestItemWithFacilityIdentifier): AcbsBaseFacilityRequest {
     const defaultValues = PROPERTIES.FACILITY.DEFAULT.POST;
 
-    const { compBalPctReserve, userDefinedDate1, isUserDefinedDate1Zero } = this.buildFacilityStageDerivedValuesToCreate(facilityToCreate);
+    const { compBalPctReserve, userDefinedDate1, isUserDefinedDate1Zero } = this.buildFacilityStageDerivedValuesToCreate(
+      facilityToTranform.facilityStageCode,
+      facilityToTranform.issueDate,
+    );
 
-    const acbsGuaranteeExpiryDate = this.dateStringTransformations.addTimeToDateOnlyString(facilityToCreate.guaranteeExpiryDate);
+    const acbsGuaranteeExpiryDate = this.dateStringTransformations.addTimeToDateOnlyString(facilityToTranform.guaranteeExpiryDate);
     const midnightToday = this.dateStringTransformations.getDateStringFromDate(new Date());
 
     const capitalConversionFactorCode =
-      facilityToCreate.capitalConversionFactorCode ??
-      defaultValues.capitalConversionFactorCode[facilityToCreate.productTypeId] ??
+      facilityToTranform.capitalConversionFactorCode ??
+      defaultValues.capitalConversionFactorCode[facilityToTranform.productTypeId] ??
       defaultValues.capitalConversionFactorCodeFallback;
 
-    const description = this.buildFacilityDescriptionToCreate(facilityToCreate);
-    const effectiveDateString = this.getFacilityEffectiveDateToCreate(facilityToCreate);
+    const effectiveDateString = this.getFacilityEffectiveDateToCreateOrUpdate(facilityToTranform.effectiveDate);
 
     return {
-      FacilityIdentifier: facilityToCreate.facilityIdentifier,
-      Description: description,
+      FacilityIdentifier: facilityToTranform.facilityIdentifier,
       Currency: {
-        CurrencyCode: facilityToCreate.currency,
+        CurrencyCode: facilityToTranform.currency,
         IsActiveIndicator: true,
       },
       OriginalEffectiveDate: effectiveDateString,
-      DealIdentifier: facilityToCreate.dealIdentifier,
+      DealIdentifier: facilityToTranform.dealIdentifier,
       DealPortfolioIdentifier: PROPERTIES.GLOBAL.portfolioIdentifier,
-      DealBorrowerPartyIdentifier: facilityToCreate.dealBorrowerIdentifier,
+      DealBorrowerPartyIdentifier: facilityToTranform.dealBorrowerIdentifier,
       BookingDate: midnightToday,
       FinalAvailableDate: acbsGuaranteeExpiryDate,
       IsFinalAvailableDateMaximum: defaultValues.isFinalAvailableDateMaximum,
       ExpirationDate: acbsGuaranteeExpiryDate,
       IsExpirationDateMaximum: defaultValues.isExpirationDateMaximum,
-      LimitAmount: facilityToCreate.maximumLiability,
-      ExternalReferenceIdentifier: facilityToCreate.exposurePeriod,
+      LimitAmount: facilityToTranform.maximumLiability,
+      ExternalReferenceIdentifier: facilityToTranform.exposurePeriod,
       BookingClass: {
         BookingClassCode: defaultValues.bookingClassCode,
       },
       FacilityType: {
-        FacilityTypeCode: facilityToCreate.productTypeId,
+        FacilityTypeCode: facilityToTranform.productTypeId,
       },
       TargetClosingDate: effectiveDateString,
-      FacilityInitialStatus: {
-        FacilityInitialStatusCode: defaultValues.facilityInitialStatusCode,
-      },
       OriginalApprovalDate: effectiveDateString,
       CurrentOfficer: {
         LineOfficerIdentifier: defaultValues.lineOfficerIdentifier,
@@ -124,18 +160,18 @@ export class FacilityService {
       ServicingUnitSection: {
         ServicingUnitSectionIdentifier: defaultValues.servicingUnitSectionIdentifier,
       },
-      AgentBankPartyIdentifier: facilityToCreate.agentBankIdentifier,
+      AgentBankPartyIdentifier: facilityToTranform.agentBankIdentifier,
       IndustryClassification: {
-        IndustryClassificationCode: facilityToCreate.obligorIndustryClassification,
+        IndustryClassificationCode: facilityToTranform.obligorIndustryClassification,
       },
       RiskCountry: {
-        CountryCode: facilityToCreate.riskCountryCode,
+        CountryCode: facilityToTranform.riskCountryCode,
       },
       PurposeType: {
         PurposeTypeCode: defaultValues.purposeTypeCode,
       },
       FacilityReviewFrequencyType: {
-        FacilityReviewFrequencyTypeCode: facilityToCreate.premiumFrequencyCode,
+        FacilityReviewFrequencyTypeCode: facilityToTranform.premiumFrequencyCode,
       },
       CapitalClass: {
         CapitalClassCode: defaultValues.capitalClassCode,
@@ -170,12 +206,12 @@ export class FacilityService {
         UserName: defaultValues.administrativeUser.userName,
       },
       CreditReviewRiskType: {
-        CreditReviewRiskTypeCode: facilityToCreate.riskStatusCode,
+        CreditReviewRiskTypeCode: facilityToTranform.riskStatusCode,
       },
       NextReviewDate: defaultValues.nextReviewDate,
       IsNextReviewDateZero: defaultValues.isNextReviewDateZero,
       OfficerRiskRatingType: {
-        OfficerRiskRatingTypeCode: facilityToCreate.creditRatingCode,
+        OfficerRiskRatingTypeCode: facilityToTranform.creditRatingCode,
       },
       OfficerRiskDate: midnightToday,
       IsOfficerRiskDateZero: defaultValues.isOfficerRiskDateZero,
@@ -185,22 +221,22 @@ export class FacilityService {
       IsRegulatorRiskDateZero: defaultValues.isRegulatorRiskDateZero,
       MultiCurrencyArrangementIndicator: defaultValues.multiCurrencyArrangementIndicator,
       FacilityUserDefinedList1: {
-        FacilityUserDefinedList1Code: facilityToCreate.facilityStageCode,
+        FacilityUserDefinedList1Code: facilityToTranform.facilityStageCode,
       },
       FacilityUserDefinedList3: {
         FacilityUserDefinedList3Code: defaultValues.facilityUserDefinedList3Code,
       },
       FacilityUserDefinedList6: {
-        FacilityUserDefinedList6Code: facilityToCreate.delegationType,
+        FacilityUserDefinedList6Code: facilityToTranform.delegationType,
       },
       UserDefinedDate1: userDefinedDate1,
       IsUserDefinedDate1Zero: isUserDefinedDate1Zero,
-      UserDefinedDate2: this.dateStringTransformations.addTimeToDateOnlyString(facilityToCreate.nextQuarterEndDate),
+      UserDefinedDate2: this.dateStringTransformations.addTimeToDateOnlyString(facilityToTranform.nextQuarterEndDate),
       IsUserDefinedDate2Zero: false,
       IsUserDefinedDate3Zero: defaultValues.isUserDefinedDate3Zero,
       IsUserDefinedDate4Zero: defaultValues.isUserDefinedDate4Zero,
-      UserDefinedAmount3: facilityToCreate.interestOrFeeRate,
-      ProbabilityofDefault: facilityToCreate.probabilityOfDefault ?? defaultValues.probabilityofDefault,
+      UserDefinedAmount3: facilityToTranform.interestOrFeeRate,
+      ProbabilityofDefault: facilityToTranform.probabilityOfDefault ?? defaultValues.probabilityofDefault,
       DefaultReason: {
         DefaultReasonCode: defaultValues.defaultReasonCode,
       },
@@ -219,29 +255,30 @@ export class FacilityService {
         LenderTypeCode: defaultValues.lenderTypeCode,
       },
       BorrowerParty: {
-        PartyIdentifier: facilityToCreate.obligorPartyIdentifier,
+        PartyIdentifier: facilityToTranform.obligorPartyIdentifier,
       },
       ServicingUser: {
         UserAcbsIdentifier: defaultValues.servicingUser.userAcbsIdentifier,
         UserName: defaultValues.servicingUser.userName,
       },
       CompBalPctReserve: compBalPctReserve,
-      CompBalPctAmount: facilityToCreate.forecastPercentage,
+      CompBalPctAmount: facilityToTranform.forecastPercentage,
       RiskMitigation: {
         RiskMitigationCode: defaultValues.riskMitigationCode,
       },
     };
   }
 
-  private buildFacilityStageDerivedValuesToCreate(facilityToCreate: CreateFacilityRequestItem): {
+  private buildFacilityStageDerivedValuesToCreate(
+    facilityStageCode: string,
+    issueDate: string,
+  ): {
     compBalPctReserve: number;
     userDefinedDate1: DateString;
     isUserDefinedDate1Zero: boolean;
   } {
     const defaultValues = PROPERTIES.FACILITY.DEFAULT.POST;
-    const { facilityStageCode, issueDate } = facilityToCreate;
-    const isFacilityUnissued = facilityStageCode === '06';
-    return isFacilityUnissued
+    return this.isFacilityUnissued(facilityStageCode)
       ? {
           compBalPctReserve: defaultValues.compBalPctReserveUnissued,
           userDefinedDate1: null,
@@ -254,14 +291,18 @@ export class FacilityService {
         };
   }
 
-  private buildFacilityDescriptionToCreate(facilityToCreate: CreateFacilityRequestItem): string {
-    return `${facilityToCreate.productTypeName.substring(0, 13)} : ${facilityToCreate.exposurePeriod} Months`;
+  private buildFacilityDescriptionToCreate(productTypeName: string, exposurePeriod: string): string {
+    return `${productTypeName.substring(0, 13)} : ${exposurePeriod} Months`;
   }
 
-  private getFacilityEffectiveDateToCreate(facilityToCreate: CreateFacilityRequestItem): DateString {
+  private getFacilityEffectiveDateToCreateOrUpdate(effectiveDate: string): DateString {
     const effectiveDateTime = this.currentDateProvider.getEarliestDateFromTodayAnd(
-      new Date(this.dateStringTransformations.addTimeToDateOnlyString(facilityToCreate.effectiveDate)),
+      new Date(this.dateStringTransformations.addTimeToDateOnlyString(effectiveDate)),
     );
     return this.dateStringTransformations.getDateStringFromDate(effectiveDateTime);
+  }
+
+  private isFacilityUnissued(facilityStageCode: string) {
+    return facilityStageCode === '06';
   }
 }

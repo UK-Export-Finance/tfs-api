@@ -9,7 +9,7 @@ import { AcbsCreateDealGuaranteeDto } from './dto/acbs-create-deal-guarantee.dto
 import { AcbsGetDealGuaranteeResponseDto } from './dto/acbs-get-deal-guarantee-response.dto';
 import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
 import { getDealNotFoundKnownAcbsError } from './known-errors';
-import { createWrapAcbsHttpGetErrorCallback, createWrapAcbsHttpPostErrorCallback } from './wrap-acbs-http-error-callback';
+import { createWrapAcbsHttpGetErrorCallback, createWrapAcbsHttpPostOrPutErrorCallback } from './wrap-acbs-http-error-callback';
 
 @Injectable()
 export class AcbsDealGuaranteeService {
@@ -29,7 +29,7 @@ export class AcbsDealGuaranteeService {
       path: `/Portfolio/${portfolioIdentifier}/Deal/${dealIdentifier}/DealGuarantee`,
       requestBody: newDealGuarantee,
       idToken,
-      onError: createWrapAcbsHttpPostErrorCallback({
+      onError: createWrapAcbsHttpPostOrPutErrorCallback({
         messageForUnknownError: `Failed to create a guarantee for deal ${dealIdentifier} in ACBS.`,
         knownErrors: [getDealNotFoundKnownAcbsError(dealIdentifier)],
       }),
