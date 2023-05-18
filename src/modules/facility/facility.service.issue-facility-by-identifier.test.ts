@@ -10,6 +10,7 @@ import { CurrentDateProvider } from '../date/current-date.provider';
 import { DateStringTransformations } from '../date/date-string.transformations';
 import { UpdateFacilityRequest } from './dto/update-facility-request.dto';
 import { FacilityService } from './facility.service';
+import { BadRequestException } from '@nestjs/common';
 
 describe('FacilityService', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -125,7 +126,9 @@ describe('FacilityService', () => {
 
       const responsePromise = service.issueFacilityByIdentifier(facilityIdentifier, modifiedUpdateFacilityRequest);
 
-      await expect(responsePromise).rejects.toThrow('Facility stage code is not issued');
+      await expect(responsePromise).rejects.toBeInstanceOf(BadRequestException);
+      await expect(responsePromise).rejects.toThrow('Bad request');
+      await expect(responsePromise).rejects.toHaveProperty('response.error', "Facility stage code is not issued")
     });
   });
 });
