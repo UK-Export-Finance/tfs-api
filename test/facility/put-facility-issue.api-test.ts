@@ -2,15 +2,15 @@ import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
+import { withBaseFacilityFieldsValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/base-facility-fields-validation-api-tests';
 import { withDateOnlyFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/date-only-field-validation-api-tests';
 import { Api } from '@ukef-test/support/api';
+import { TEST_FACILITY_STAGE_CODE } from '@ukef-test/support/constants/test-issue-code.constant';
 import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
+import { UpdateFacilityGenerator } from '@ukef-test/support/generator/update-facility-generator';
 import nock from 'nock';
 import supertest from 'supertest';
-import { withBaseFacilityFieldsValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/base-facility-fields-validation-api-tests';
-import { TEST_FACILITY_STAGE_CODE } from '@ukef-test/support/constants/test-issue-code.constant';
-import { UpdateFacilityGenerator } from '@ukef-test/support/generator/update-facility-generator';
 
 describe('PUT /facilities?op=ISSUE', () => {
   const valueGenerator = new RandomValueGenerator();
