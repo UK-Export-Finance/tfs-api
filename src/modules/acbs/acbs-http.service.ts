@@ -88,7 +88,6 @@ export class AcbsHttpService {
           headers: {
             Authorization: `Bearer ${idToken}`,
             'Content-Type': 'application/json',
-            ReturnException: 'True',
           },
         })
         .pipe(catchError(onError)),

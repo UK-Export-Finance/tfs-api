@@ -20,6 +20,7 @@ describe('FacilityCovenantController', () => {
 
   let facilityCovenantServiceCreateCovenantForFacility: jest.Mock;
   let facilityCovenantServiceGetCovenantsForFacility: jest.Mock;
+  let facilityCovenantServiceUpdateCovenantForFacility: jest.Mock;
   let facilityServiceGetFacilityByIdentifier: jest.Mock;
 
   beforeEach(() => {
@@ -28,9 +29,11 @@ describe('FacilityCovenantController', () => {
 
     facilityCovenantServiceCreateCovenantForFacility = jest.fn();
     facilityCovenantServiceGetCovenantsForFacility = jest.fn();
+    facilityCovenantServiceUpdateCovenantForFacility = jest.fn();
     facilityServiceGetFacilityByIdentifier = jest.fn();
     facilityCovenantService.createCovenantForFacility = facilityCovenantServiceCreateCovenantForFacility;
     facilityCovenantService.getCovenantsForFacility = facilityCovenantServiceGetCovenantsForFacility;
+    facilityCovenantService.updateCovenantsForFacility = facilityCovenantServiceUpdateCovenantForFacility;
     facilityService.getFacilityByIdentifier = facilityServiceGetFacilityByIdentifier;
 
     controller = new FacilityCovenantController(facilityCovenantService, facilityService);
@@ -90,6 +93,26 @@ describe('FacilityCovenantController', () => {
       const covenants = await controller.getCovenantsForFacility({ facilityIdentifier });
 
       expect(covenants).toStrictEqual(covenantsFromService);
+    });
+  });
+
+  describe('updateCovenantsForFacility', () => {
+    const expirationDate = valueGenerator.dateOnlyString();
+    const targetAmount = valueGenerator.nonnegativeFloat();
+    const updateCovenantRequest = { expirationDate, targetAmount };
+
+    it('updates the covenants for the facility with the service using the fields supplied in the request body', async () => {
+      await controller.updateCovenantsForFacility({ facilityIdentifier }, updateCovenantRequest);
+
+      expect(facilityCovenantServiceUpdateCovenantForFacility).toHaveBeenCalledWith(facilityIdentifier, updateCovenantRequest);
+    });
+
+    it('returns the facility identifier if updating the covenants succeeds', async () => {
+      await controller.updateCovenantsForFacility({ facilityIdentifier }, updateCovenantRequest);
+
+      const response = await controller.updateCovenantsForFacility({ facilityIdentifier }, updateCovenantRequest);
+
+      expect(response).toStrictEqual(new CreateOrUpdateFacilityCovenantsResponseDto(facilityIdentifier));
     });
   });
 });
