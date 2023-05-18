@@ -1,12 +1,13 @@
 import { PROPERTIES } from '@ukef/constants';
+import { AcbsFacilityFixedFeeService } from '@ukef/modules/acbs/acbs-facility-fixed-fee.service';
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
+import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
 import { GetFacilityFixedFeeGenerator } from '@ukef-test/support/generator/get-facility-fixed-fee-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
 
-import { AcbsFacilityFixedFeeService } from '../acbs/acbs-facility-fixed-fee.service';
 import { FacilityFixedFeeService } from './facility-fixed-fee.service';
 
 describe('FacilityFixedFeeService', () => {
@@ -35,7 +36,7 @@ describe('FacilityFixedFeeService', () => {
     getFacilityFixedFeesAcbsService = jest.fn();
     acbsService.getFixedFeesForFacility = getFacilityFixedFeesAcbsService;
 
-    service = new FacilityFixedFeeService(acbsAuthenticationService, acbsService, new DateStringTransformations());
+    service = new FacilityFixedFeeService(acbsAuthenticationService, acbsService, new DateStringTransformations(), new CurrentDateProvider());
   });
 
   describe('getFixedFeesForFacility', () => {

@@ -98,10 +98,4 @@ export class GetFacilityFixedFeeResponseItem {
     maxLength: 3,
   })
   readonly incomeClassCode: string;
-
-  @ApiProperty({
-    description:
-      'Action indicator to be supplied together with the Fee to control propagation of the fee effects to other investors. Not applicable to output data.',
-  })
-  readonly spreadToInvestorsIndicator: boolean;
 }
