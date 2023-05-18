@@ -1,3 +1,4 @@
+import { BadRequestException } from '@nestjs/common';
 import { PROPERTIES } from '@ukef/constants';
 import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
 import { TEST_FACILITY_STAGE_CODE } from '@ukef-test/support/constants/test-issue-code.constant';
@@ -10,7 +11,6 @@ import { CurrentDateProvider } from '../date/current-date.provider';
 import { DateStringTransformations } from '../date/date-string.transformations';
 import { UpdateFacilityRequest } from './dto/update-facility-request.dto';
 import { FacilityService } from './facility.service';
-import { BadRequestException } from '@nestjs/common';
 
 describe('FacilityService', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -128,7 +128,7 @@ describe('FacilityService', () => {
 
       await expect(responsePromise).rejects.toBeInstanceOf(BadRequestException);
       await expect(responsePromise).rejects.toThrow('Bad request');
-      await expect(responsePromise).rejects.toHaveProperty('response.error', "Facility stage code is not issued")
+      await expect(responsePromise).rejects.toHaveProperty('response.error', 'Facility stage code is not issued');
     });
   });
 });
