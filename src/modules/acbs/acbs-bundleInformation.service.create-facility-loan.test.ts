@@ -1,6 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { PROPERTIES } from '@ukef/constants';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
+import { CreateFacilityLoanGenerator } from '@ukef-test/support/generator/create-facility-loan-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { AxiosError } from 'axios';
 import { when } from 'jest-when';
@@ -9,7 +10,6 @@ import { of, throwError } from 'rxjs';
 import { AcbsBundleInformationService } from './acbs-bundleInformation.service';
 import { AcbsBadRequestException } from './exception/acbs-bad-request.exception';
 import { AcbsUnexpectedException } from './exception/acbs-unexpected.exception';
-import { CreateFacilityLoanGenerator } from '@ukef-test/support/generator/create-facility-loan-generator';
 
 describe('AcbsBundleInformationService', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -24,10 +24,7 @@ describe('AcbsBundleInformationService', () => {
 
   let httpServicePost: jest.Mock;
 
-  const { acbsRequestBodyToCreateFacilityLoan } = new CreateFacilityLoanGenerator(
-    valueGenerator,
-    new DateStringTransformations(),
-  ).generate({
+  const { acbsRequestBodyToCreateFacilityLoan } = new CreateFacilityLoanGenerator(valueGenerator, new DateStringTransformations()).generate({
     numberToGenerate: 1,
     facilityIdentifier,
     bundleIdentifier,

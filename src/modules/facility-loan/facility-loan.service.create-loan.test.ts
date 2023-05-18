@@ -2,13 +2,13 @@ import { AcbsFacilityLoanService } from '@ukef/modules/acbs/acbs-facility-loan.s
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
+import { CreateFacilityLoanGenerator } from '@ukef-test/support/generator/create-facility-loan-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
 
-import { FacilityLoanService } from './facility-loan.service';
 import { AcbsBundleInformationService } from '../acbs/acbs-bundleInformation.service';
 import { CurrentDateProvider } from '../date/current-date.provider';
-import { CreateFacilityLoanGenerator } from '@ukef-test/support/generator/create-facility-loan-generator';
+import { FacilityLoanService } from './facility-loan.service';
 
 describe('FacilityLoanService', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -36,16 +36,24 @@ describe('FacilityLoanService', () => {
     }));
     acbsBundleInformationService.createBundleInformation = acbsBundleInformationServiceCreateBundleInformation;
 
-    service = new FacilityLoanService(acbsAuthenticationService, acbsFacilityLoanService, acbsBundleInformationService, new DateStringTransformations(), new CurrentDateProvider());
+    service = new FacilityLoanService(
+      acbsAuthenticationService,
+      acbsFacilityLoanService,
+      acbsBundleInformationService,
+      new DateStringTransformations(),
+      new CurrentDateProvider(),
+    );
   });
 
   describe('createLoanForFacility', () => {
-    const { acbsRequestBodyToCreateFacilityLoan, requestBodyToCreateFacilityLoan } =
-      new CreateFacilityLoanGenerator(valueGenerator, dateStringTransformations).generate({
-        numberToGenerate: 1,
-        facilityIdentifier,
-        bundleIdentifier,
-      });
+    const { acbsRequestBodyToCreateFacilityLoan, requestBodyToCreateFacilityLoan } = new CreateFacilityLoanGenerator(
+      valueGenerator,
+      dateStringTransformations,
+    ).generate({
+      numberToGenerate: 1,
+      facilityIdentifier,
+      bundleIdentifier,
+    });
     const newLoanWithAllFields = requestBodyToCreateFacilityLoan[0];
 
     it('creates a bundle information in ACBS with a transformation of the requested new loan', async () => {
@@ -55,10 +63,7 @@ describe('FacilityLoanService', () => {
     });
 
     it('returns a bundle identifier from ACBS', async () => {
-      const response = await service.createLoanForFacility(
-        facilityIdentifier,
-        newLoanWithAllFields,
-      );
+      const response = await service.createLoanForFacility(facilityIdentifier, newLoanWithAllFields);
 
       expect(response).toEqual({ bundleIdentifier });
     });

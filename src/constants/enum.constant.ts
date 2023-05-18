@@ -3,10 +3,10 @@ import * as COVENANT_TYPE_CODES from './enums/covenant-type-code';
 import * as GUARANTEE_TYPE_CODES from './enums/guarantee-type-code';
 import * as INCOME_CLASS_CODES from './enums/income-class-code';
 import * as LENDER_TYPE_CODES from './enums/lender-type-code';
+import * as OPERATION_TYPE_CODES from './enums/operation-type-code';
 import * as PORTFOLIO from './enums/portfolio';
 import * as PRODUCT_TYPE_GROUPS from './enums/product-type-group';
 import * as PRODUCT_TYPE_IDS from './enums/product-type-id';
-import * as OPERATION_TYPE_CODES from './enums/operation-type-code';
 
 export const ENUMS = {
   BUNDLE_STATUSES: BUNDLE_STATUSES.BundleStatusEnum,

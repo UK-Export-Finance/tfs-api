@@ -6,17 +6,13 @@ import { DateStringTransformations } from '@ukef/modules/date/date-string.transf
 import { CreateFacilityLoanRequestDto, CreateFacilityLoanRequestItem } from '@ukef/modules/facility-loan/dto/create-facility-loan-request.dto';
 import { CreateFacilityLoanResponseDto } from '@ukef/modules/facility-loan/dto/create-facility-loan-response.dto';
 import { FacilityLoanToCreate } from '@ukef/modules/facility-loan/facility-loan-to-create.interface';
+
 import { TEST_CURRENCIES } from '../constants/test-currency.constant';
 import { TEST_DATES } from '../constants/test-date.constant';
-
 import { AbstractGenerator } from './abstract-generator';
 import { RandomValueGenerator } from './random-value-generator';
 
-export class CreateFacilityLoanGenerator extends AbstractGenerator<
-  CreateFacilityLoanRequestItem,
-  GenerateResult,
-  GenerateOptions
-> {
+export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilityLoanRequestItem, GenerateResult, GenerateOptions> {
   constructor(protected readonly valueGenerator: RandomValueGenerator, protected readonly dateStringTransformations: DateStringTransformations) {
     super(valueGenerator);
   }
@@ -41,19 +37,16 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<
     };
   }
 
-  protected transformRawValuesToGeneratedValues(
-    values,
-    { facilityIdentifier, bundleIdentifier }: GenerateOptions,
-  ): GenerateResult {
+  protected transformRawValuesToGeneratedValues(values, { facilityIdentifier, bundleIdentifier }: GenerateOptions): GenerateResult {
     const firstFacilityLoan: CreateFacilityLoanRequestItem = values[0];
 
     const effectiveDate = TEST_DATES.A_PAST_EFFECTIVE_DATE_ONLY;
     const acbsEffectiveDate = this.dateStringTransformations.addTimeToDateOnlyString(effectiveDate);
 
     const bundleMessage = {
-      ...this.getBaseMessage(facilityIdentifier, firstFacilityLoan, acbsEffectiveDate, ),
+      ...this.getBaseMessage(facilityIdentifier, firstFacilityLoan, acbsEffectiveDate),
       ...this.getFieldsThatDependOnGbp(firstFacilityLoan),
-    }
+    };
 
     const acbsRequestBodyToCreateFacilityLoan: AcbsCreateBundleInformationRequestDto = {
       PortfolioIdentifier: PROPERTIES.GLOBAL.portfolioIdentifier,
@@ -176,37 +169,37 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<
       DealCustomerUsageOperationType: {
         OperationTypeCode: facilityLoan.dealCustomerUsageOperationType,
       },
-    }
+    };
   }
 
   private getFieldsThatDependOnGbp(facilityLoan: FacilityLoanToCreate) {
     const isNotGbp = facilityLoan.currency !== 'GBP';
     return isNotGbp
       ? {
-        FinancialRateGroup: PROPERTIES.FACILITY_LOAN.DEFAULT.financialRateGroup,
-        CustomerUsageRateGroup: PROPERTIES.FACILITY_LOAN.DEFAULT.customerUsageRateGroup,
-        FinancialFrequency: {
-          UsageFrequencyTypeCode: PROPERTIES.FACILITY_LOAN.DEFAULT.financialFrequency.usageFrequencyTypeCode,
-        },
-        CustomerUsageFrequency: {
-          UsageFrequencyTypeCode: PROPERTIES.FACILITY_LOAN.DEFAULT.customerUsageFrequency.usageFrequencyTypeCode,
-        },
-        FinancialBusinessDayAdjustment: {
-          BusinessDayAdjustmentTypeCode: PROPERTIES.FACILITY_LOAN.DEFAULT.financialBusinessDayAdjustment.businessDayAdjustmentTypeCode,
-        },
-        CustomerUsageBusinessDayAdjustment: {
-          BusinessDayAdjustmentTypeCode: PROPERTIES.FACILITY_LOAN.DEFAULT.customerUsageBusinessDayAdjustment.businessDayAdjustmentTypeCode,
-        },
-        FinancialCalendar: {
-          CalendarIdentifier: PROPERTIES.FACILITY_LOAN.DEFAULT.financialCalendar.calendarIdentifier,
-        },
-        CustomerUsageCalendar: {
-          CalendarIdentifier: PROPERTIES.FACILITY_LOAN.DEFAULT.customerUsageCalendar.calendarIdentifier,
-        },
-        FinancialNextValuationDate: this.dateStringTransformations.addTimeToDateOnlyString(facilityLoan.expiryDate),
-        FinancialLockMTMRateIndicator: PROPERTIES.FACILITY_LOAN.DEFAULT.financialLockMTMRateIndicator,
-        CustomerUsageLockMTMRateIndicator: PROPERTIES.FACILITY_LOAN.DEFAULT.customerUsageLockMTMRateIndicator,
-      }
+          FinancialRateGroup: PROPERTIES.FACILITY_LOAN.DEFAULT.financialRateGroup,
+          CustomerUsageRateGroup: PROPERTIES.FACILITY_LOAN.DEFAULT.customerUsageRateGroup,
+          FinancialFrequency: {
+            UsageFrequencyTypeCode: PROPERTIES.FACILITY_LOAN.DEFAULT.financialFrequency.usageFrequencyTypeCode,
+          },
+          CustomerUsageFrequency: {
+            UsageFrequencyTypeCode: PROPERTIES.FACILITY_LOAN.DEFAULT.customerUsageFrequency.usageFrequencyTypeCode,
+          },
+          FinancialBusinessDayAdjustment: {
+            BusinessDayAdjustmentTypeCode: PROPERTIES.FACILITY_LOAN.DEFAULT.financialBusinessDayAdjustment.businessDayAdjustmentTypeCode,
+          },
+          CustomerUsageBusinessDayAdjustment: {
+            BusinessDayAdjustmentTypeCode: PROPERTIES.FACILITY_LOAN.DEFAULT.customerUsageBusinessDayAdjustment.businessDayAdjustmentTypeCode,
+          },
+          FinancialCalendar: {
+            CalendarIdentifier: PROPERTIES.FACILITY_LOAN.DEFAULT.financialCalendar.calendarIdentifier,
+          },
+          CustomerUsageCalendar: {
+            CalendarIdentifier: PROPERTIES.FACILITY_LOAN.DEFAULT.customerUsageCalendar.calendarIdentifier,
+          },
+          FinancialNextValuationDate: this.dateStringTransformations.addTimeToDateOnlyString(facilityLoan.expiryDate),
+          FinancialLockMTMRateIndicator: PROPERTIES.FACILITY_LOAN.DEFAULT.financialLockMTMRateIndicator,
+          CustomerUsageLockMTMRateIndicator: PROPERTIES.FACILITY_LOAN.DEFAULT.customerUsageLockMTMRateIndicator,
+        }
       : {};
   }
 }

@@ -162,9 +162,10 @@ export class FacilityLoanService {
   }
 
   private getDealCustomerUsageOperationType(newFacilityLoan: FacilityLoanToCreate) {
-    const operationTypeCode = newFacilityLoan.dealCustomerUsageOperationType && newFacilityLoan.dealCustomerUsageOperationType === ENUMS.OPERATION_TYPE_CODES.DIVIDE
-      ? ENUMS.OPERATION_TYPE_CODES.DIVIDE
-      : ENUMS.OPERATION_TYPE_CODES.MULTIPLY;
+    const operationTypeCode =
+      newFacilityLoan.dealCustomerUsageOperationType && newFacilityLoan.dealCustomerUsageOperationType === ENUMS.OPERATION_TYPE_CODES.DIVIDE
+        ? ENUMS.OPERATION_TYPE_CODES.DIVIDE
+        : ENUMS.OPERATION_TYPE_CODES.MULTIPLY;
     return newFacilityLoan.dealCustomerUsageOperationType
       ? {
           DealCustomerUsageOperationType: {

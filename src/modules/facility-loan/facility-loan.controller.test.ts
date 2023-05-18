@@ -48,20 +48,19 @@ describe('FacilityLoanController', () => {
   });
 
   describe('createLoanForFacility', () => {
-    const { requestBodyToCreateFacilityLoan, createFacilityLoanResponseFromService } =
-      new CreateFacilityLoanGenerator(valueGenerator, dateStringTransformations).generate({
-        numberToGenerate: 1,
-        facilityIdentifier,
-        bundleIdentifier,
-      });
+    const { requestBodyToCreateFacilityLoan, createFacilityLoanResponseFromService } = new CreateFacilityLoanGenerator(
+      valueGenerator,
+      dateStringTransformations,
+    ).generate({
+      numberToGenerate: 1,
+      facilityIdentifier,
+      bundleIdentifier,
+    });
 
     it('creates a loan for the facility with the service from the request body', async () => {
       await controller.createLoanForFacility({ facilityIdentifier }, requestBodyToCreateFacilityLoan);
 
-      expect(facilityLoanServiceCreateLoanForFacility).toHaveBeenCalledWith(
-        facilityIdentifier,
-        requestBodyToCreateFacilityLoan[0],
-      );
+      expect(facilityLoanServiceCreateLoanForFacility).toHaveBeenCalledWith(facilityIdentifier, requestBodyToCreateFacilityLoan[0]);
     });
 
     it('returns the bundle identifier if creating the loan succeeds', async () => {

@@ -2,17 +2,17 @@ import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
-import { Api } from '@ukef-test/support/api';
-import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
-import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import nock from 'nock';
-import { CreateFacilityLoanGenerator } from '@ukef-test/support/generator/create-facility-loan-generator';
-import { withFacilityIdentifierFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/facility-identifier-field-validation-api-tests';
-import { withDateOnlyFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/date-only-field-validation-api-tests';
-import { withStringFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/string-field-validation-api-tests';
 import { withCurrencyFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/currency-field-validation-api-tests';
+import { withDateOnlyFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/date-only-field-validation-api-tests';
+import { withFacilityIdentifierFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/facility-identifier-field-validation-api-tests';
 import { withNonNegativeNumberFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/non-negative-number-field-validation-api-tests';
 import { withNumberFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/number-field-validation-api-tests';
+import { withStringFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/string-field-validation-api-tests';
+import { Api } from '@ukef-test/support/api';
+import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
+import { CreateFacilityLoanGenerator } from '@ukef-test/support/generator/create-facility-loan-generator';
+import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
+import nock from 'nock';
 
 describe('POST /facilities/{facilityIdentifier}/loans', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -22,11 +22,10 @@ describe('POST /facilities/{facilityIdentifier}/loans', () => {
   const postFacilityLoanUrl = `/api/v1/facilities/${facilityIdentifier}/loans`;
   const { servicingQueueIdentifier } = PROPERTIES.GLOBAL;
 
-  const {
-    acbsRequestBodyToCreateFacilityLoan,
-    requestBodyToCreateFacilityLoan,
-    createFacilityLoanResponseFromService,
-  } = new CreateFacilityLoanGenerator(valueGenerator, dateStringTransformations).generate({
+  const { acbsRequestBodyToCreateFacilityLoan, requestBodyToCreateFacilityLoan, createFacilityLoanResponseFromService } = new CreateFacilityLoanGenerator(
+    valueGenerator,
+    dateStringTransformations,
+  ).generate({
     numberToGenerate: 1,
     facilityIdentifier,
     bundleIdentifier,
@@ -59,12 +58,7 @@ describe('POST /facilities/{facilityIdentifier}/loans', () => {
       givenRequestToCreateFacilityLoanInAcbsSucceeds();
     },
     makeRequestWithoutAuth: (incorrectAuth?: IncorrectAuthArg) =>
-      api.postWithoutAuth(
-        postFacilityLoanUrl,
-        requestBodyToCreateFacilityLoan,
-        incorrectAuth?.headerName,
-        incorrectAuth?.headerValue,
-      ),
+      api.postWithoutAuth(postFacilityLoanUrl, requestBodyToCreateFacilityLoan, incorrectAuth?.headerName, incorrectAuth?.headerValue),
   });
 
   it('returns a 201 response with the bundle identifier if the facility loan has been successfully created in ACBS', async () => {
@@ -187,7 +181,9 @@ describe('POST /facilities/{facilityIdentifier}/loans', () => {
       enum: ENUMS.PRODUCT_TYPE_GROUPS,
       length: 2,
       generateFieldValueOfLength: (length: number) =>
-        length === 2 ? possibleProductTypeGroups[valueGenerator.integer({ min: 0, max: possibleProductTypeGroups.length - 1 })] : valueGenerator.string({ length }),
+        length === 2
+          ? possibleProductTypeGroups[valueGenerator.integer({ min: 0, max: possibleProductTypeGroups.length - 1 })]
+          : valueGenerator.string({ length }),
       generateFieldValueThatDoesNotMatchEnum: () => '12',
       validRequestBody: requestBodyToCreateFacilityLoan,
       makeRequest,
