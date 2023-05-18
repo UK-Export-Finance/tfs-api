@@ -6,7 +6,7 @@ import { PROPERTIES } from '@ukef/constants';
 import { AcbsConfigBaseUrl } from './acbs-config-base-url.type';
 import { AcbsHttpService } from './acbs-http.service';
 import { AcbsCreateBundleInformationRequestDto } from './dto/acbs-create-bundle-information-request.dto';
-import { AcbsCreateBundleInformationResponseDto } from './dto/acbs-create-bundle-information-response.dto';
+import { AcbsCreateBundleInformationResponseHeadersDto } from './dto/acbs-create-bundle-information-response.dto';
 import { AcbsGetFacilityLoanTransactionResponseItem } from './dto/acbs-get-facility-loan-transaction-response.dto';
 import { BundleAction, isFacilityCodeValueTransaction, isLoanAdvanceTransaction } from './dto/bundle-actions/bundle-action.type';
 import {
@@ -38,7 +38,10 @@ export class AcbsBundleInformationService {
     return loanTransaction;
   }
 
-  async createBundleInformation(newBundleInformation: AcbsCreateBundleInformationRequestDto, idToken: string): Promise<AcbsCreateBundleInformationResponseDto> {
+  async createBundleInformation(
+    newBundleInformation: AcbsCreateBundleInformationRequestDto,
+    idToken: string,
+  ): Promise<AcbsCreateBundleInformationResponseHeadersDto> {
     const { servicingQueueIdentifier } = PROPERTIES.GLOBAL;
     const [action] = newBundleInformation.BundleMessageList;
 

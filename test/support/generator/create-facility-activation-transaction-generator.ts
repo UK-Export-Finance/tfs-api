@@ -1,7 +1,7 @@
 import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { AcbsBundleId, AcbsPartyId, DateOnlyString, UkefId } from '@ukef/helpers';
 import { AcbsCreateBundleInformationRequestDto } from '@ukef/modules/acbs/dto/acbs-create-bundle-information-request.dto';
-import { AcbsCreateBundleInformationResponseDto } from '@ukef/modules/acbs/dto/acbs-create-bundle-information-response.dto';
+import { AcbsCreateBundleInformationResponseHeadersDto } from '@ukef/modules/acbs/dto/acbs-create-bundle-information-response.dto';
 import { FacilityCodeValueTransaction } from '@ukef/modules/acbs/dto/bundle-actions/facility-code-value-transaction.bundle-action';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import {
@@ -98,6 +98,6 @@ interface GenerateOptions {
 interface GenerateResult {
   acbsRequestBodyToCreateFacilityActivationTransaction: AcbsCreateBundleInformationRequestDto<FacilityCodeValueTransaction>;
   requestBodyToCreateFacilityActivationTransaction: CreateFacilityActivationTransactionRequest;
-  createBundleInformationResponseFromAcbs: AcbsCreateBundleInformationResponseDto;
+  createBundleInformationResponseFromAcbs: AcbsCreateBundleInformationResponseHeadersDto;
   createFacilityActivationTransactionResponseFromService: CreateFacilityActivationTransactionResponse;
 }
