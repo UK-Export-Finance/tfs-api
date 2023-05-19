@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { PROPERTIES } from '@ukef/constants';
+import { AcbsFacilityFixedFeeService } from '@ukef/modules/acbs/acbs-facility-fixed-fee.service';
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 
-import { AcbsFacilityFixedFeeService } from '../acbs/acbs-facility-fixed-fee.service';
-import { DateStringTransformations } from '../date/date-string.transformations';
 import { GetFacilityFixedFeeResponse } from './dto/get-facility-fixed-fee-response.dto';
 
 @Injectable()

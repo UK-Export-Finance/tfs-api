@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Param, ParseArrayPipe, Post, Query, Res } from '@nestjs/common';
+import { Controller, Get, HttpStatus, Param, Post, Query, Res } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -9,6 +9,7 @@ import {
   ApiOperation,
   ApiParam,
 } from '@nestjs/swagger';
+import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decorator';
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 import { Response } from 'express';
 
@@ -62,7 +63,7 @@ export class PartyController {
     description: 'An internal server error has occurred.',
   })
   async createParty(
-    @Body(new ParseArrayPipe({ items: CreatePartyRequestItem }))
+    @ValidatedArrayBody({ items: CreatePartyRequestItem })
     createPartyDto: CreatePartyRequest,
     @Res({ passthrough: true }) res: Response,
   ): Promise<CreatePartyResponse> {

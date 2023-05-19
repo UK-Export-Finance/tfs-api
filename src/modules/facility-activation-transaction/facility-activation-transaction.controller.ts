@@ -1,4 +1,4 @@
-import { Body, Controller, Param, ParseArrayPipe, Post } from '@nestjs/common';
+import { Controller, Param, Post } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -9,6 +9,7 @@ import {
   ApiParam,
 } from '@nestjs/swagger';
 import { EXAMPLES } from '@ukef/constants';
+import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decorator';
 import { FacilityService } from '@ukef/modules/facility/facility.service';
 
 import {
@@ -53,7 +54,7 @@ export class FacilityActivationTransactionController {
   })
   async createActivationTransactionForFacility(
     @Param() params: FacilityActivationTransactionParamsDto,
-    @Body(new ParseArrayPipe({ items: CreateFacilityActivationTransactionRequestItem }))
+    @ValidatedArrayBody({ items: CreateFacilityActivationTransactionRequestItem })
     newFacilityActivationTransactionRequest: CreateFacilityActivationTransactionRequest,
   ): Promise<CreateFacilityActivationTransactionResponse> {
     const facility = await this.facilityService.getFacilityByIdentifier(params.facilityIdentifier);

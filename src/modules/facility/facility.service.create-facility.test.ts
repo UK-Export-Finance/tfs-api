@@ -1,11 +1,11 @@
 import { PROPERTIES } from '@ukef/constants';
+import { AcbsFacilityService } from '@ukef/modules/acbs/acbs-facility.service';
+import { AcbsCreateFacilityRequest } from '@ukef/modules/acbs/dto/acbs-create-facility-request.dto';
 import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
 import { CreateFacilityGenerator } from '@ukef-test/support/generator/create-facility-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
 
-import { AcbsFacilityService } from '../acbs/acbs-facility.service';
-import { AcbsCreateFacilityRequest } from '../acbs/dto/acbs-create-facility-request.dto';
 import { CurrentDateProvider } from '../date/current-date.provider';
 import { DateStringTransformations } from '../date/date-string.transformations';
 import { CreateFacilityRequestItem } from './dto/create-facility-request.dto';

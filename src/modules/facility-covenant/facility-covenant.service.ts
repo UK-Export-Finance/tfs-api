@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { AcbsFacilityCovenantService } from '@ukef/modules/acbs/acbs-facility-covenant.service';
+import { AcbsCreateFacilityCovenantRequestDto } from '@ukef/modules/acbs/dto/acbs-create-facility-covenant-request.dto';
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 
-import { AcbsCreateFacilityCovenantRequestDto } from '../acbs/dto/acbs-create-facility-covenant-request.dto';
 import { CreateFacilityCovenantRequestItem } from './dto/create-facility-covenant-request.dto';
 import { GetFacilityCovenantsResponseDto } from './dto/get-facility-covenants-response.dto';
 

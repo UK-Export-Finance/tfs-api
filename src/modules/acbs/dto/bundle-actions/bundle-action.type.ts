@@ -1,35 +1,19 @@
 import { PROPERTIES } from '@ukef/constants';
-import { DateString } from '@ukef/helpers';
 
-import { AccrualSchedule } from './accrual-schedule.interface';
-import { RepaymentSchedule } from './repayment-schedule.interface';
+import { FacilityCodeValueTransaction } from './facility-code-value-transaction.bundle-action';
+import { LoanAdvanceTransaction } from './loan-advance-transaction.bundle-action';
+import { NewLoanRequest } from './new-loan-request.bundle-action';
 
-export type BundleAction = NewLoanRequest | { $type: string };
+export type BundleAction = FacilityCodeValueTransaction | LoanAdvanceTransaction | NewLoanRequest | { $type: string };
+
+export const isFacilityCodeValueTransaction = (action: BundleAction): action is FacilityCodeValueTransaction => {
+  return action.$type === 'FacilityCodeValueTransaction';
+};
+
+export const isLoanAdvanceTransaction = (action: BundleAction): action is LoanAdvanceTransaction => {
+  return action.$type === 'LoanAdvanceTransaction';
+};
 
 export const isNewLoanRequest = (bundleAction: BundleAction): bundleAction is NewLoanRequest => {
   return bundleAction.$type === PROPERTIES.FACILITY_LOAN_TRANSACTION.DEFAULT.bundleMessageList.$type.newLoanRequest;
 };
-
-export interface NewLoanRequest {
-  $type: 'NewLoanRequest';
-  FacilityIdentifier: string;
-  BorrowerPartyIdentifier: string;
-  Currency: {
-    CurrencyCode: string;
-  };
-  DealCustomerUsageRate: number | null;
-  DealCustomerUsageOperationType: {
-    OperationTypeCode: string | null;
-  };
-  LoanAmount: number;
-  EffectiveDate: DateString;
-  MaturityDate: DateString;
-  ProductGroup: {
-    ProductGroupCode: string;
-  };
-  ProductType: {
-    ProductTypeCode: string;
-  };
-  AccrualScheduleList: AccrualSchedule[];
-  RepaymentScheduleList: RepaymentSchedule[];
-}

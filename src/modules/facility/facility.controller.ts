@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseArrayPipe, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -10,6 +10,7 @@ import {
   ApiParam,
 } from '@nestjs/swagger';
 import { ENUMS, EXAMPLES } from '@ukef/constants';
+import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decorator';
 
 import { CreateFacilityRequest, CreateFacilityRequestItem } from './dto/create-facility-request.dto';
 import { CreateFacilityResponse } from './dto/create-facility-response.dto';
@@ -96,9 +97,7 @@ export class FacilityController {
   @ApiInternalServerErrorResponse({
     description: 'An internal server error has occurred.',
   })
-  async createFacility(
-    @Body(new ParseArrayPipe({ items: CreateFacilityRequestItem })) createFacilityDto: CreateFacilityRequest,
-  ): Promise<CreateFacilityResponse> {
+  async createFacility(@ValidatedArrayBody({ items: CreateFacilityRequestItem }) createFacilityDto: CreateFacilityRequest): Promise<CreateFacilityResponse> {
     const facilityToCreate = createFacilityDto[0];
     await this.facilityService.createFacility(facilityToCreate);
     return { facilityIdentifier: facilityToCreate.facilityIdentifier };

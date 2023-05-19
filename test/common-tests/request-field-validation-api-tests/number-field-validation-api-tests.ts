@@ -10,6 +10,7 @@ interface RequiredNumberFieldValidationApiTestOptions<RequestBodyItem> {
   validRequestBody: RequestBodyItem[];
   makeRequest: (body: unknown[]) => request.Test;
   givenAnyRequestBodyWouldSucceed: () => void;
+  forbidZero?: boolean;
 }
 
 export function withNumberFieldValidationApiTests<RequestBodyItem>({
@@ -21,6 +22,7 @@ export function withNumberFieldValidationApiTests<RequestBodyItem>({
   validRequestBody,
   makeRequest,
   givenAnyRequestBodyWouldSucceed,
+  forbidZero,
 }: RequiredNumberFieldValidationApiTestOptions<RequestBodyItem>): void {
   const fieldName = fieldNameSymbol.toString();
   const valueGenerator = new RandomValueGenerator();
@@ -36,6 +38,19 @@ export function withNumberFieldValidationApiTests<RequestBodyItem>({
         const { [fieldNameSymbol]: _removed, ...requestWithoutField } = validRequestBody[0];
 
         const { status, body } = await makeRequest([requestWithoutField]);
+
+        expect(status).toBe(400);
+        expect(body).toMatchObject({
+          error: 'Bad Request',
+          message: expect.arrayContaining([`${fieldName} should not be empty`]),
+          statusCode: 400,
+        });
+      });
+
+      it(`returns a 400 response if ${fieldName} is null`, async () => {
+        const requestWithNullField = { ...validRequestBody[0], [fieldNameSymbol]: null };
+
+        const { status, body } = await makeRequest([requestWithNullField]);
 
         expect(status).toBe(400);
         expect(body).toMatchObject({
@@ -64,6 +79,21 @@ export function withNumberFieldValidationApiTests<RequestBodyItem>({
         expect(body).toMatchObject({
           error: 'Bad Request',
           message: expect.arrayContaining([`${fieldName} must not be less than minimum`]),
+          statusCode: 400,
+        });
+      });
+    }
+
+    if (forbidZero) {
+      it(`returns a 400 response if ${fieldName} is 0`, async () => {
+        const requestWithZeroValue = [{ ...validRequestBody[0], [fieldNameSymbol]: 0 }];
+
+        const { status, body } = await makeRequest(requestWithZeroValue);
+
+        expect(status).toBe(400);
+        expect(body).toMatchObject({
+          error: 'Bad Request',
+          message: expect.arrayContaining([`${fieldName} should not be equal to 0`]),
           statusCode: 400,
         });
       });

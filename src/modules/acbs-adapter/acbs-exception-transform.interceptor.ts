@@ -1,8 +1,7 @@
 import { BadRequestException, CallHandler, ExecutionContext, Injectable, NestInterceptor, NotFoundException } from '@nestjs/common';
+import { AcbsBadRequestException } from '@ukef/modules/acbs/exception/acbs-bad-request.exception';
 import { AcbsResourceNotFoundException } from '@ukef/modules/acbs/exception/acbs-resource-not-found.exception';
 import { catchError, Observable, throwError } from 'rxjs';
-
-import { AcbsBadRequestException } from '../acbs/exception/acbs-bad-request.exception';
 
 @Injectable()
 export class AcbsExceptionTransformInterceptor implements NestInterceptor {

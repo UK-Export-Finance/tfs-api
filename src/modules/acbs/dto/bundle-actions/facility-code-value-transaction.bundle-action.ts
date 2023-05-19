@@ -1,6 +1,6 @@
 import { AcbsPartyId, DateString, UkefId } from '@ukef/helpers';
 
-export interface BundleActionFacilityCodeValueTransaction {
+export interface FacilityCodeValueTransaction {
   $type: 'FacilityCodeValueTransaction';
   AccountOwnerIdentifier: string;
   EffectiveDate: DateString;
