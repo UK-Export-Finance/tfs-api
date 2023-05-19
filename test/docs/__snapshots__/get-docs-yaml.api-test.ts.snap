@@ -347,7 +347,7 @@ paths:
         '500':
           description: An internal server error has occurred.
     post:
-      operationId: FacilityFixedFeeController_createActivationTransactionForFacility
+      operationId: FacilityFixedFeeController_createFixedFeeForFacility
       summary: Create a new activation transaction for a facility.
       parameters:
         - name: facilityIdentifier
@@ -1624,12 +1624,6 @@ components:
           example: BPM
           minLength: 0
           maxLength: 3
-        spreadToInvestorsIndicator:
-          type: boolean
-          description: >-
-            Action indicator to be supplied together with the Fee to control
-            propagation of the fee effects to other investors. Not applicable to
-            output data.
       required:
         - facilityIdentifier
         - portfolioIdentifier
@@ -1643,7 +1637,6 @@ components:
         - currency
         - lenderTypeCode
         - incomeClassCode
-        - spreadToInvestorsIndicator
     CreateFacilityFixedFeeRequestItem:
       type: object
       properties:
@@ -1652,9 +1645,8 @@ components:
           description: >-
             The fixed amount to be billed to the client. If a flat amount is
             charged, this field is required.
-          example: 501927.25
           minimum: 0
-          maximum: 100000000000000000
+          example: 501927.25
         effectiveDate:
           format: date
           type: string
@@ -1686,14 +1678,15 @@ components:
             The currency of Facility Fee, defined in the Currency Definition
             Table under Systems Administration of Servicing. For example, USD
             for United States Dollar.
-          example: USD
-          minLength: 0
+          minLength: 3
           maxLength: 3
+          example: USD
         lenderTypeCode:
           type: string
           description: >-
             Defines the code for the role of the party in the Facility for which
             the fee is created.
+          minLength: 0
           enum:
             - '100'
             - '500'
@@ -1703,11 +1696,13 @@ components:
           description: >-
             Defines the code for the fee type of this schedule for reporting and
             GL purposes.
-          example: BPM
+          minLength: 0
           enum:
             - BPM
             - EMP
             - FGT
+          example: BPM
+          default: BPM
         spreadToInvestorsIndicator:
           type: boolean
           description: >-
@@ -1723,7 +1718,6 @@ components:
         - period
         - currency
         - lenderTypeCode
-        - incomeClassCode
         - spreadToInvestorsIndicator
     CreateFacilityFixedFeeResponse:
       type: object

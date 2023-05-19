@@ -109,8 +109,8 @@ export class RandomValueGenerator {
     return this.dateStringTransformations.removeTime(this.dateTimeString());
   }
 
-  enumValue(theEnum: Enum): string | number {
+  enumValue(theEnum: Enum): string {
     const possibleValues = Object.values(theEnum);
-    return this.integer({ min: 0, max: possibleValues.length - 1 });
+    return possibleValues[this.integer({ min: 0, max: possibleValues.length - 1 })] as string;
   }
 }

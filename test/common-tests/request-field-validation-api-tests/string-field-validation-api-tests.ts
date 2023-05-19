@@ -8,7 +8,7 @@ export interface StringFieldValidationApiTestOptions<RequestBodyItem, RequestBod
   required?: boolean;
   pattern?: RegExp;
   enum?: any;
-  generateFieldValueOfLength: (length: number) => RequestBodyItem[RequestBodyItemKey];
+  generateFieldValueOfLength?: (length: number) => RequestBodyItem[RequestBodyItemKey];
   generateFieldValueThatDoesNotMatchRegex?: () => RequestBodyItem[RequestBodyItemKey];
   generateFieldValueThatDoesNotMatchEnum?: () => RequestBodyItem[RequestBodyItemKey];
   validRequestBody: RequestBodyItem[];
@@ -32,7 +32,7 @@ export function withStringFieldValidationApiTests<RequestBodyItem, RequestBodyIt
   givenAnyRequestBodyWouldSucceed,
 }: StringFieldValidationApiTestOptions<RequestBodyItem, RequestBodyItemKey>): void {
   const fieldName = fieldNameSymbol.toString();
-  const { minLength, maxLength } = getMinAndMaxLengthFromOptions({ fieldName, minLengthOption, maxLengthOption, lengthOption });
+  const { minLength, maxLength } = getMinAndMaxLengthFromOptions({ fieldName, minLengthOption, maxLengthOption, lengthOption, theEnum });
   required = required ?? true;
 
   describe(`${fieldName} validation`, () => {
@@ -41,18 +41,33 @@ export function withStringFieldValidationApiTests<RequestBodyItem, RequestBodyIt
     });
 
     if (required) {
-      it(`returns a 400 response if ${fieldName} is not present`, async () => {
-        const { [fieldNameSymbol]: _removed, ...requestWithoutTheField } = validRequestBody[0];
+      if (theEnum && generateFieldValueThatDoesNotMatchEnum) {
+        it(`returns a 400 response if ${fieldName} is not present`, async () => {
+          const { [fieldNameSymbol]: _removed, ...requestWithoutTheField } = validRequestBody[0];
 
-        const { status, body } = await makeRequest([requestWithoutTheField]);
+          const { status, body } = await makeRequest([requestWithoutTheField]);
 
-        expect(status).toBe(400);
-        expect(body).toMatchObject({
-          error: 'Bad Request',
-          message: expect.arrayContaining([`${fieldName} must be longer than or equal to ${minLength} characters`]),
-          statusCode: 400,
+          expect(status).toBe(400);
+          expect(body).toMatchObject({
+            error: 'Bad Request',
+            message: expect.arrayContaining([`${fieldName} must be one of the following values: ${Object.values(theEnum).join(', ')}`]),
+            statusCode: 400,
+          });
         });
-      });
+      } else {
+        it(`returns a 400 response if ${fieldName} is not present`, async () => {
+          const { [fieldNameSymbol]: _removed, ...requestWithoutTheField } = validRequestBody[0];
+
+          const { status, body } = await makeRequest([requestWithoutTheField]);
+
+          expect(status).toBe(400);
+          expect(body).toMatchObject({
+            error: 'Bad Request',
+            message: expect.arrayContaining([`${fieldName} must be longer than or equal to ${minLength} characters`]),
+            statusCode: 400,
+          });
+        });
+      }
     } else {
       it(`returns a 201 response if ${fieldName} is not present`, async () => {
         const { [fieldNameSymbol]: _removed, ...requestWithField } = validRequestBody[0];
@@ -91,7 +106,7 @@ export function withStringFieldValidationApiTests<RequestBodyItem, RequestBodyIt
           });
         });
       }
-    } else {
+    } else if (!theEnum) {
       it(`returns a 201 response if ${fieldName} is an empty string`, async () => {
         const requestWithEmptyField = [{ ...validRequestBody[0], [fieldNameSymbol]: '' }];
 
@@ -101,13 +116,15 @@ export function withStringFieldValidationApiTests<RequestBodyItem, RequestBodyIt
       });
     }
 
-    it(`returns a 201 response if ${fieldName} has ${minLength} characters`, async () => {
-      const requestWithValidField = [{ ...validRequestBody[0], [fieldNameSymbol]: generateFieldValueOfLength(minLength) }];
+    if (minLength) {
+      it(`returns a 201 response if ${fieldName} has ${minLength} characters`, async () => {
+        const requestWithValidField = [{ ...validRequestBody[0], [fieldNameSymbol]: generateFieldValueOfLength(minLength) }];
 
-      const { status } = await makeRequest(requestWithValidField);
+        const { status } = await makeRequest(requestWithValidField);
 
-      expect(status).toBe(201);
-    });
+        expect(status).toBe(201);
+      });
+    }
 
     if (minLength !== maxLength) {
       it(`returns a 201 response if ${fieldName} has ${maxLength} characters`, async () => {
@@ -119,18 +136,20 @@ export function withStringFieldValidationApiTests<RequestBodyItem, RequestBodyIt
       });
     }
 
-    it(`returns a 400 response if ${fieldName} has more than ${maxLength} characters`, async () => {
-      const requestWithTooLongField = [{ ...validRequestBody[0], [fieldNameSymbol]: generateFieldValueOfLength(maxLength + 1) }];
+    if (maxLength) {
+      it(`returns a 400 response if ${fieldName} has more than ${maxLength} characters`, async () => {
+        const requestWithTooLongField = [{ ...validRequestBody[0], [fieldNameSymbol]: generateFieldValueOfLength(maxLength + 1) }];
 
-      const { status, body } = await makeRequest(requestWithTooLongField);
+        const { status, body } = await makeRequest(requestWithTooLongField);
 
-      expect(status).toBe(400);
-      expect(body).toMatchObject({
-        error: 'Bad Request',
-        message: expect.arrayContaining([`${fieldName} must be shorter than or equal to ${maxLength} characters`]),
-        statusCode: 400,
+        expect(status).toBe(400);
+        expect(body).toMatchObject({
+          error: 'Bad Request',
+          message: expect.arrayContaining([`${fieldName} must be shorter than or equal to ${maxLength} characters`]),
+          statusCode: 400,
+        });
       });
-    });
+    }
 
     if (pattern && generateFieldValueThatDoesNotMatchRegex) {
       it(`returns a 400 response if ${fieldName} does not match the regular expression ${pattern}`, async () => {
@@ -169,11 +188,13 @@ const getMinAndMaxLengthFromOptions = ({
   minLengthOption,
   maxLengthOption,
   lengthOption,
+  theEnum,
 }: {
   fieldName: string;
   minLengthOption?: number;
   maxLengthOption?: number;
   lengthOption?: number;
+  theEnum?: any;
 }): { minLength: number; maxLength: number } => {
   const isLengthDefined = lengthOption || lengthOption === 0;
   const isMinLengthDefined = minLengthOption || minLengthOption === 0;
@@ -194,8 +215,8 @@ const getMinAndMaxLengthFromOptions = ({
     };
   }
 
-  if (!isMinLengthDefined || !isMaxLengthDefined) {
-    throw new Error(`You must specify either length or minLength and maxLength for ${fieldName}.`);
+  if ((!isMinLengthDefined || !isMaxLengthDefined) && !theEnum) {
+    throw new Error(`You must specify either length, enum, or minLength and maxLength for ${fieldName}.`);
   }
 
   return {

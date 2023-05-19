@@ -68,11 +68,13 @@ export class FacilityFixedFeeController {
 
     const newCreateFacilityFixedFee = newCreateFacilityFixedFeeRequest[0];
 
-    return this.facilityFixedFeeService.createFixedFeeForFacility(
+    await this.facilityFixedFeeService.createFixedFeeForFacility(
       params.facilityIdentifier,
       facility.obligorPartyIdentifier,
       facility.productTypeId,
       newCreateFacilityFixedFee,
     );
+
+    return new CreateFacilityFixedFeeResponse(params.facilityIdentifier);
   }
 }

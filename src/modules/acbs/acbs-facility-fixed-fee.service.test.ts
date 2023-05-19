@@ -21,7 +21,7 @@ describe('AcbsFacilityFixedFeeService', () => {
   const portfolioIdentifier = valueGenerator.string({ length: 2 });
   const facilityIdentifier = valueGenerator.facilityId();
   const borrowerPartyIdentifier = valueGenerator.acbsPartyId();
-  const facilityTypeCode = valueGenerator.enumValue(ENUMS.FACILITY_TYPE_IDS) as string;
+  const facilityTypeCode = valueGenerator.enumValue(ENUMS.FACILITY_TYPE_IDS);
 
   let httpService: HttpService;
   let service: AcbsFacilityFixedFeeService;

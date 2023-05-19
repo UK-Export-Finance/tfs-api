@@ -45,7 +45,7 @@ export class CreateFacilityFixedFeeRequestItem {
     description:
       'The currency of Facility Fee, defined in the Currency Definition Table under Systems Administration of Servicing. For example, USD for United States Dollar.',
     example: EXAMPLES.CURRENCY,
-    minLength: 0,
+    minLength: 3,
     maxLength: 3,
   })
   readonly currency: string;

@@ -15,13 +15,13 @@ export class CreateFacilityFixedFeeGenerator extends AbstractGenerator<CreateFac
   }
 
   protected generateValues(): any {
-    const lenderType = this.valueGenerator.enumValue(ENUMS.LENDER_TYPE_CODES);
+    const lenderType = this.valueGenerator.enumValue(ENUMS.LENDER_TYPE_CODES) as string;
 
     return {
       amount: this.valueGenerator.nonnegativeFloat({ fixed: 2 }),
       period: this.valueGenerator.string({ length: 2 }),
-      lenderTypeCode: lenderType,
       effectiveDate: TEST_DATES.A_PAST_EFFECTIVE_DATE_ONLY,
+      lenderTypeCode: lenderType,
       expirationDate: this.valueGenerator.dateOnlyString(),
       nextDueDate: this.valueGenerator.dateOnlyString(),
       nextAccrueToDate: this.valueGenerator.dateOnlyString(),

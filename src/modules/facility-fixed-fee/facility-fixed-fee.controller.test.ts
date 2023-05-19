@@ -50,13 +50,10 @@ describe('FacilityFixedFeeController', () => {
   });
 
   describe('createFixedFeeForFacility', () => {
-    const facilityTypeCode = valueGenerator.enumValue(ENUMS.FACILITY_TYPE_IDS) as string;
+    const facilityTypeCode = valueGenerator.enumValue(ENUMS.FACILITY_TYPE_IDS);
     const borrowerPartyIdentifier = valueGenerator.acbsPartyId();
 
-    const { acbsRequestBodyToCreateFacilityFixedFee, requestBodyToCreateFacilityFixedFee } = new CreateFacilityFixedFeeGenerator(
-      valueGenerator,
-      new DateStringTransformations(),
-    ).generate({
+    const { requestBodyToCreateFacilityFixedFee } = new CreateFacilityFixedFeeGenerator(valueGenerator, new DateStringTransformations()).generate({
       numberToGenerate: 1,
       facilityTypeCode,
       borrowerPartyIdentifier,
@@ -72,8 +69,8 @@ describe('FacilityFixedFeeController', () => {
 
       expect(createFacilityFixedFeesService).toHaveBeenCalledWith(
         facilityIdentifier,
-        facilityTypeCode,
         borrowerPartyIdentifier,
+        facilityTypeCode,
         requestBodyToCreateFacilityFixedFee[0],
       );
     });
@@ -86,7 +83,7 @@ describe('FacilityFixedFeeController', () => {
 
       const response = await controller.createFixedFeeForFacility({ facilityIdentifier }, requestBodyToCreateFacilityFixedFee);
 
-      expect(response).toStrictEqual(acbsRequestBodyToCreateFacilityFixedFee);
+      expect(response).toEqual({ facilityIdentifier });
     });
   });
 });
