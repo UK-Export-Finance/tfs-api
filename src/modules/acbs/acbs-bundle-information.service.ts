@@ -67,7 +67,7 @@ export class AcbsBundleInformationService {
       return [getLoanNotFoundKnownAcbsBundleInformationError(action.LoanIdentifier)];
     }
 
-    if(isNewLoanRequest(action)) {
+    if (isNewLoanRequest(action)) {
       return [postFacilityNotFoundKnownAcbsError(action.FacilityIdentifier)];
     }
 

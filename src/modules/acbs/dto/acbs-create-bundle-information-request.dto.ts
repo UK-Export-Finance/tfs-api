@@ -1,4 +1,5 @@
 import { DateString } from '@ukef/helpers';
+
 import { BundleAction } from './bundle-actions/bundle-action.type';
 
 export interface AcbsCreateBundleInformationRequestDto<BundleMessageListItem extends BundleAction = BundleAction> {

@@ -13,10 +13,10 @@ import { EXAMPLES } from '@ukef/constants';
 import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decorator';
 
 import { CreateFacilityLoanRequestDto, CreateFacilityLoanRequestItem } from './dto/create-facility-loan-request.dto';
+import { CreateFacilityLoanResponseDto } from './dto/create-facility-loan-response.dto';
 import { CreateLoanAmountAmendmentParams } from './dto/create-loan-amount-amendment-params.dto';
 import { CreateLoanAmountAmendmentRequest, CreateLoanAmountAmendmentRequestItem } from './dto/create-loan-amount-amendment-request.dto';
 import { CreateLoanAmountAmendmentResponse } from './dto/create-loan-amount-amendment-response.dto';
-import { CreateFacilityLoanResponseDto } from './dto/create-facility-loan-response.dto';
 import { FacilityLoanParamsDto } from './dto/facility-loan-params.dto';
 import { GetFacilityLoanResponseDto, GetFacilityLoanResponseItem } from './dto/get-facility-loan-response.dto';
 import { FacilityLoanService } from './facility-loan.service';
