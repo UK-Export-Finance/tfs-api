@@ -2252,8 +2252,8 @@ components:
           minLength: 1
           maxLength: 1
           enum:
-            - D
             - M
+            - D
           example: M
         amount:
           type: number

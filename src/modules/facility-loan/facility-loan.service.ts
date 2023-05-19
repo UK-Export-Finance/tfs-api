@@ -5,7 +5,7 @@ import { AcbsFacilityLoanService } from '@ukef/modules/acbs/acbs-facility-loan.s
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 
-import { AcbsBundleInformationService } from '../acbs/acbs-bundleInformation.service';
+import { AcbsBundleInformationService } from '../acbs/acbs-bundle-information.service';
 import { BundleActionNewLoanRequest } from '../acbs/dto/bundle-actions/bundle-action-newLoanRequest';
 import { CurrentDateProvider } from '../date/current-date.provider';
 import { CreateFacilityLoanResponseDto } from './dto/create-facility-loan-response.dto';

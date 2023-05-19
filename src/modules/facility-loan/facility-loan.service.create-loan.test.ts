@@ -6,7 +6,7 @@ import { CreateFacilityLoanGenerator } from '@ukef-test/support/generator/create
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
 
-import { AcbsBundleInformationService } from '../acbs/acbs-bundleInformation.service';
+import { AcbsBundleInformationService } from '../acbs/acbs-bundle-information.service';
 import { CurrentDateProvider } from '../date/current-date.provider';
 import { FacilityLoanService } from './facility-loan.service';
 
