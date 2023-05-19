@@ -10,8 +10,12 @@ import {
   ApiParam,
 } from '@nestjs/swagger';
 import { EXAMPLES } from '@ukef/constants';
+import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decorator';
 
 import { CreateFacilityLoanRequestDto, CreateFacilityLoanRequestItem } from './dto/create-facility-loan-request.dto';
+import { CreateLoanAmountAmendmentParams } from './dto/create-loan-amount-amendment-params.dto';
+import { CreateLoanAmountAmendmentRequest, CreateLoanAmountAmendmentRequestItem } from './dto/create-loan-amount-amendment-request.dto';
+import { CreateLoanAmountAmendmentResponse } from './dto/create-loan-amount-amendment-response.dto';
 import { CreateFacilityLoanResponseDto } from './dto/create-facility-loan-response.dto';
 import { FacilityLoanParamsDto } from './dto/facility-loan-params.dto';
 import { GetFacilityLoanResponseDto, GetFacilityLoanResponseItem } from './dto/get-facility-loan-response.dto';
@@ -20,6 +24,7 @@ import { FacilityLoanService } from './facility-loan.service';
 @Controller()
 export class FacilityLoanController {
   constructor(private readonly facilityLoanService: FacilityLoanService) {}
+
   @Get('/facilities/:facilityIdentifier/loans')
   @ApiOperation({
     summary: 'Get all loans for a facility.',
@@ -85,5 +90,49 @@ export class FacilityLoanController {
     const newLoan = newLoanRequest[0];
 
     return this.facilityLoanService.createLoanForFacility(facilityIdentifier, newLoan);
+  }
+
+  @Post('/facilities/:facilityIdentifier/loans/:loanIdentifier/amendments/amount')
+  @ApiOperation({
+    summary: 'Create a loan amount amendment bundle.',
+  })
+  @ApiParam({
+    name: 'facilityIdentifier',
+    required: true,
+    type: 'string',
+    description: 'The identifier of the facility in ACBS. Note that this endpoint does not check that the loan belongs to this facility.',
+    example: EXAMPLES.FACILITY_ID,
+  })
+  @ApiParam({
+    name: 'loanIdentifier',
+    required: true,
+    type: 'string',
+    description: 'The identifier of the loan in ACBS.',
+    example: EXAMPLES.LOAN_ID,
+  })
+  @ApiBody({
+    type: CreateLoanAmountAmendmentRequestItem,
+    isArray: true,
+  })
+  @ApiCreatedResponse({
+    description: 'The loan amount amendment bundle has been successfully created.',
+    type: CreateLoanAmountAmendmentResponse,
+  })
+  @ApiNotFoundResponse({
+    description: 'The loan was not found.',
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad request.',
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'An internal server error has occurred.',
+  })
+  async createAmountAmendmentForLoan(
+    @Param() params: CreateLoanAmountAmendmentParams,
+    @ValidatedArrayBody({ items: CreateLoanAmountAmendmentRequestItem }) newLoanAmountAmendmentRequest: CreateLoanAmountAmendmentRequest,
+  ): Promise<CreateLoanAmountAmendmentResponse> {
+    const [newLoanAmountAmendment] = newLoanAmountAmendmentRequest;
+    const createdBundleIdentifier = await this.facilityLoanService.createAmountAmendmentForLoan(params.loanIdentifier, newLoanAmountAmendment);
+    return { bundleIdentifier: createdBundleIdentifier };
   }
 }

@@ -1,13 +1,20 @@
-import { DateString, UkefId } from '@ukef/helpers';
+import { DateString } from '@ukef/helpers';
 
-export interface BundleActionNewLoanRequest {
+import { AccrualSchedule } from './accrual-schedule.interface';
+import { RepaymentSchedule } from './repayment-schedule.interface';
+
+export interface NewLoanRequest {
   $type: 'NewLoanRequest';
-  FacilityIdentifier: UkefId;
+  FacilityIdentifier: string;
   BorrowerPartyIdentifier: string;
   SectionIdentifier: string;
   LoanInstrumentCode: string;
   Currency: {
     CurrencyCode: string;
+  };
+  DealCustomerUsageRate?: number | null;
+  DealCustomerUsageOperationType?: {
+    OperationTypeCode: string | null;
   };
   LoanAmount: number;
   EffectiveDate: DateString;
@@ -59,10 +66,6 @@ export interface BundleActionNewLoanRequest {
   SecuredType: {
     LoanSecuredTypeCode: string;
   };
-  DealCustomerUsageRate?: number;
-  DealCustomerUsageOperationType?: {
-    OperationTypeCode: string;
-  };
   FinancialRateGroup?: string;
   CustomerUsageRateGroup?: string;
   FinancialFrequency?: {
@@ -87,6 +90,8 @@ export interface BundleActionNewLoanRequest {
   CustomerUsageNextValuationDate?: DateString;
   FinancialLockMTMRateIndicator?: boolean;
   CustomerUsageLockMTMRateIndicator?: boolean;
+  AccrualScheduleList: AccrualSchedule[];
+  RepaymentScheduleList: RepaymentSchedule[];
 }
 
 interface NewLoanRequestCashEvent {

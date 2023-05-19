@@ -1,19 +1,19 @@
 import { PROPERTIES } from '@ukef/constants';
 import { UkefId } from '@ukef/helpers';
 import { AcbsDealPartyService } from '@ukef/modules/acbs/acbs-deal-party.service';
+import { AcbsCreateDealInvestorRequest } from '@ukef/modules/acbs/dto/acbs-create-deal-investor-request.dto';
+import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
 import { TEST_DATES } from '@ukef-test/support/constants/test-date.constant';
 import { CreateDealInvestorGenerator } from '@ukef-test/support/generator/create-deal-investor-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
 
-import { AcbsCreateDealInvestorRequest } from '../acbs/dto/acbs-create-deal-investor-request.dto';
-import { CurrentDateProvider } from '../date/current-date.provider';
-import { DateStringTransformations } from '../date/date-string.transformations';
 import { DealInvestorService } from './deal-investor.service';
 
 jest.mock('@ukef/modules/acbs/acbs-deal-party.service');
-jest.mock('../acbs-authentication/acbs-authentication.service');
+jest.mock('@ukef/modules/acbs-authentication/acbs-authentication.service');
 
 describe('DealInvestorService', () => {
   const valueGenerator = new RandomValueGenerator();

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseArrayPipe, Post } from '@nestjs/common';
+import { Controller, Get, Param, Post } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -9,6 +9,7 @@ import {
   ApiOperation,
   ApiParam,
 } from '@nestjs/swagger';
+import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decorator';
 
 import { DealInvestorService } from './deal-investor.service';
 import { CreateDealInvestorRequest, CreateDealInvestorRequestItem } from './dto/create-deal-investor-request.dto';
@@ -68,7 +69,7 @@ export class DealInvestorController {
   })
   async createInvestorForDeal(
     @Param('dealIdentifier') dealIdentifier: string,
-    @Body(new ParseArrayPipe({ items: CreateDealInvestorRequestItem })) newInvestorRequest: CreateDealInvestorRequest,
+    @ValidatedArrayBody({ items: CreateDealInvestorRequestItem }) newInvestorRequest: CreateDealInvestorRequest,
   ): Promise<CreateDealInvestorResponse> {
     const newInvestor = newInvestorRequest[0];
     const investorToCreate: CreateDealInvestorRequestItem = {

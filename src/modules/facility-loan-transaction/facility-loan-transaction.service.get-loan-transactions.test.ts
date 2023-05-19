@@ -1,5 +1,6 @@
 import { BadRequestException } from '@nestjs/common';
 import { PROPERTIES } from '@ukef/constants';
+import { AcbsBundleInformationService } from '@ukef/modules/acbs/acbs-bundle-information.service';
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
@@ -7,7 +8,6 @@ import { GetFacilityLoanTransactionGenerator } from '@ukef-test/support/generato
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
 
-import { AcbsBundleInformationService } from '../acbs/acbs-bundle-information.service';
 import { GetFacilityLoanTransactionResponseItem } from './dto/get-loan-transaction-response.dto';
 import { FacilityLoanTransactionService } from './facility-loan-transaction.service';
 

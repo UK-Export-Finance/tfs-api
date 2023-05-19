@@ -1,7 +1,8 @@
 import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { AcbsBundleId, UkefId } from '@ukef/helpers';
-import { AcbsCreateBundleInformationRequestDto } from '@ukef/modules/acbs/dto/acbs-create-bundleInformation-request.dto';
-import { AcbsCreateBundleInformationResponseDto } from '@ukef/modules/acbs/dto/acbs-create-bundleInformation-response.dto';
+import { AcbsCreateBundleInformationRequestDto } from '@ukef/modules/acbs/dto/acbs-create-bundle-information-request.dto';
+import { AcbsCreateBundleInformationResponseHeadersDto } from '@ukef/modules/acbs/dto/acbs-create-bundle-information-response.dto';
+import { NewLoanRequest } from '@ukef/modules/acbs/dto/bundle-actions/new-loan-request.bundle-action';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { CreateFacilityLoanRequestDto, CreateFacilityLoanRequestItem } from '@ukef/modules/facility-loan/dto/create-facility-loan-request.dto';
 import { CreateFacilityLoanResponseDto } from '@ukef/modules/facility-loan/dto/create-facility-loan-response.dto';
@@ -48,7 +49,7 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
       ...this.getFieldsThatDependOnGbp(firstFacilityLoan),
     };
 
-    const acbsRequestBodyToCreateFacilityLoan: AcbsCreateBundleInformationRequestDto = {
+    const acbsRequestBodyToCreateFacilityLoan: AcbsCreateBundleInformationRequestDto<NewLoanRequest> = {
       PortfolioIdentifier: PROPERTIES.GLOBAL.portfolioIdentifier,
       InitiatingUserName: PROPERTIES.FACILITY_LOAN.DEFAULT.initiatingUserName,
       ServicingUserAccountIdentifier: PROPERTIES.FACILITY_LOAN.DEFAULT.servicingUserAccountIdentifier,
@@ -83,7 +84,7 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
     };
   }
 
-  private getBaseMessage(facilityIdentifier: UkefId, facilityLoan: FacilityLoanToCreate, acbsEffectiveDate: string) {
+  private getBaseMessage(facilityIdentifier: UkefId, facilityLoan: FacilityLoanToCreate, acbsEffectiveDate: string): NewLoanRequest {
     let loanInstrumentCode;
     if (facilityLoan.productTypeGroup === ENUMS.PRODUCT_TYPE_GROUPS.GEF) {
       loanInstrumentCode = ENUMS.PRODUCT_TYPE_IDS.GEF_CASH;
@@ -169,6 +170,8 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
       DealCustomerUsageOperationType: {
         OperationTypeCode: facilityLoan.dealCustomerUsageOperationType,
       },
+      AccrualScheduleList: [],
+      RepaymentScheduleList: [],
     };
   }
 
@@ -212,6 +215,6 @@ interface GenerateOptions {
 interface GenerateResult {
   acbsRequestBodyToCreateFacilityLoan: AcbsCreateBundleInformationRequestDto;
   requestBodyToCreateFacilityLoan: CreateFacilityLoanRequestDto;
-  createBundleInformationResponseFromAcbs: AcbsCreateBundleInformationResponseDto;
+  createBundleInformationResponseFromAcbs: AcbsCreateBundleInformationResponseHeadersDto;
   createFacilityLoanResponseFromService: CreateFacilityLoanResponseDto;
 }

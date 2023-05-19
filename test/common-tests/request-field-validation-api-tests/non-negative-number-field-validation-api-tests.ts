@@ -44,7 +44,20 @@ export function withNonNegativeNumberFieldValidationApiTests<RequestBodyItem>({
         expect(status).toBe(400);
         expect(body).toMatchObject({
           error: 'Bad Request',
-          message: expect.arrayContaining([`${fieldName} must not be less than 0`, `${fieldName} should not be empty`]),
+          message: expect.arrayContaining([`${fieldName} should not be empty`]),
+          statusCode: 400,
+        });
+      });
+
+      it(`returns a 400 response if ${fieldName} is null`, async () => {
+        const requestWithNullField = { ...validRequestBody[0], [fieldNameSymbol]: null };
+
+        const { status, body } = await makeRequest([requestWithNullField]);
+
+        expect(status).toBe(400);
+        expect(body).toMatchObject({
+          error: 'Bad Request',
+          message: expect.arrayContaining([`${fieldName} should not be empty`]),
           statusCode: 400,
         });
       });

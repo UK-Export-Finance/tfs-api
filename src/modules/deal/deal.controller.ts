@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseArrayPipe, Post } from '@nestjs/common';
+import { Controller, Get, Param, Post } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -10,6 +10,7 @@ import {
   ApiParam,
 } from '@nestjs/swagger';
 import { EXAMPLES } from '@ukef/constants';
+import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decorator';
 
 import { DealService } from './deal.service';
 import { DealToCreate } from './deal-to-create.interface';
@@ -70,7 +71,7 @@ export class DealController {
   @ApiInternalServerErrorResponse({
     description: 'An internal server error has occurred.',
   })
-  async createDeal(@Body(new ParseArrayPipe({ items: CreateDealRequestItem })) createDealDto: CreateDealRequest): Promise<CreateDealResponse> {
+  async createDeal(@ValidatedArrayBody({ items: CreateDealRequestItem }) createDealDto: CreateDealRequest): Promise<CreateDealResponse> {
     const newDeal = createDealDto[0];
     const dealToCreate: DealToCreate = {
       dealIdentifier: newDeal.dealIdentifier,

@@ -1,16 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { ENUMS, PROPERTIES } from '@ukef/constants';
-import { DateString, UkefId } from '@ukef/helpers';
+import { DateString, UkefId, AcbsBundleId } from '@ukef/helpers';
+import { AcbsBundleInformationService } from '@ukef/modules/acbs/acbs-bundle-information.service';
 import { AcbsFacilityLoanService } from '@ukef/modules/acbs/acbs-facility-loan.service';
+import { AcbsCreateBundleInformationRequestDto } from '@ukef/modules/acbs/dto/acbs-create-bundle-information-request.dto';
+import { LoanAdvanceTransaction } from '@ukef/modules/acbs/dto/bundle-actions/loan-advance-transaction.bundle-action';
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 
-import { AcbsBundleInformationService } from '../acbs/acbs-bundle-information.service';
-import { BundleActionNewLoanRequest } from '../acbs/dto/bundle-actions/bundle-action-newLoanRequest';
 import { CurrentDateProvider } from '../date/current-date.provider';
 import { CreateFacilityLoanResponseDto } from './dto/create-facility-loan-response.dto';
+import { CreateLoanAmountAmendmentRequestItem } from './dto/create-loan-amount-amendment-request.dto';
 import { GetFacilityLoanResponseDto } from './dto/get-facility-loan-response.dto';
 import { FacilityLoanToCreate } from './facility-loan-to-create.interface';
+import { NewLoanRequest } from '../acbs/dto/bundle-actions/new-loan-request.bundle-action';
+import { BundleAction } from '../acbs/dto/bundle-actions/bundle-action.type';
 
 @Injectable()
 export class FacilityLoanService {
@@ -24,7 +28,7 @@ export class FacilityLoanService {
 
   async getLoansForFacility(facilityIdentifier: string): Promise<GetFacilityLoanResponseDto> {
     const { portfolioIdentifier } = PROPERTIES.GLOBAL;
-    const idToken = await this.acbsAuthenticationService.getIdToken();
+    const idToken = await this.getIdToken();
     const loansInAcbs = await this.acbsFacilityLoanService.getLoansForFacility(portfolioIdentifier, facilityIdentifier, idToken);
     return loansInAcbs.map((loan) => {
       return {
@@ -47,16 +51,16 @@ export class FacilityLoanService {
   }
 
   async createLoanForFacility(facilityIdentifier: UkefId, newFacilityLoan: FacilityLoanToCreate): Promise<CreateFacilityLoanResponseDto> {
-    const idToken = await this.acbsAuthenticationService.getIdToken();
+    const idToken = await this.getIdToken();
 
-    const bundleMessage: BundleActionNewLoanRequest = {
+    const bundleMessage: NewLoanRequest = {
       ...this.getBaseMessage(facilityIdentifier, newFacilityLoan),
       ...this.getDealCustomerUsageRate(newFacilityLoan),
       ...this.getDealCustomerUsageOperationType(newFacilityLoan),
       ...this.getFieldsThatDependOnGbp(newFacilityLoan),
     };
 
-    const bundleInformationToCreateInAcbs = {
+    const bundleInformationToCreateInAcbs: AcbsCreateBundleInformationRequestDto<NewLoanRequest> = {
       PortfolioIdentifier: PROPERTIES.GLOBAL.portfolioIdentifier,
       InitiatingUserName: PROPERTIES.FACILITY_LOAN.DEFAULT.initiatingUserName,
       ServicingUserAccountIdentifier: PROPERTIES.FACILITY_LOAN.DEFAULT.servicingUserAccountIdentifier,
@@ -70,7 +74,18 @@ export class FacilityLoanService {
     return { bundleIdentifier: response.BundleIdentifier };
   }
 
-  private getBaseMessage(facilityIdentifier: UkefId, newFacilityLoan: FacilityLoanToCreate): BundleActionNewLoanRequest {
+  async createAmountAmendmentForLoan(loanIdentifier: string, loanAmountAmendment: CreateLoanAmountAmendmentRequestItem): Promise<AcbsBundleId> {
+    const idToken = await this.getIdToken();
+    const loanAmountAmendmentBundle = this.buildLoanAmountAmendmentBundle(loanIdentifier, loanAmountAmendment);
+    const { BundleIdentifier } = await this.acbsBundleInformationService.createBundleInformation(loanAmountAmendmentBundle, idToken);
+    return BundleIdentifier;
+  }
+
+  private getIdToken(): Promise<string> {
+    return this.acbsAuthenticationService.getIdToken();
+  }
+
+  private getBaseMessage(facilityIdentifier: UkefId, newFacilityLoan: FacilityLoanToCreate) {
     let loanInstrumentCode;
     if (newFacilityLoan.productTypeGroup === ENUMS.PRODUCT_TYPE_GROUPS.GEF) {
       loanInstrumentCode = ENUMS.PRODUCT_TYPE_IDS.GEF_CASH;
@@ -154,6 +169,8 @@ export class FacilityLoanService {
       SecuredType: {
         LoanSecuredTypeCode: PROPERTIES.FACILITY_LOAN.DEFAULT.securedType.loanSecuredTypeCode,
       },
+      AccrualScheduleList: [],
+      RepaymentScheduleList: [],
     };
   }
 
@@ -212,5 +229,37 @@ export class FacilityLoanService {
       new Date(this.dateStringTransformations.addTimeToDateOnlyString(facilityLoanToCreate.issueDate)),
     );
     return this.dateStringTransformations.getDateStringFromDate(issueDateTime);
+  }
+
+  private buildLoanAmountAmendmentBundle(
+    loanIdentifier: string,
+    loanAmountAmendment: CreateLoanAmountAmendmentRequestItem,
+  ): AcbsCreateBundleInformationRequestDto<LoanAdvanceTransaction> {
+    const { portfolioIdentifier } = PROPERTIES.GLOBAL;
+    const { bundleMessageList: messageListDefaultValues, ...defaultValues } = PROPERTIES.LOAN_AMOUNT_AMENDMENT.DEFAULT;
+    const { increase: increaseTransactionTypeCode, decrease: decreaseTransactionTypeCode } = messageListDefaultValues.transactionTypeCode;
+
+    const isIncrease = loanAmountAmendment.amountAmendment > 0;
+    const transactionTypeCode = isIncrease ? increaseTransactionTypeCode : decreaseTransactionTypeCode;
+    const loanAdvanceAmount = Math.abs(loanAmountAmendment.amountAmendment);
+    const effectiveDate = this.dateStringTransformations.addTimeToDateOnlyString(loanAmountAmendment.effectiveDate);
+
+    return {
+      PortfolioIdentifier: portfolioIdentifier,
+      InitialBundleStatusCode: defaultValues.initialBundleStatusCode,
+      InitiatingUserName: defaultValues.initiatingUserName,
+      UseAPIUserIndicator: defaultValues.useAPIUserIndicator,
+      BundleMessageList: [
+        {
+          $type: messageListDefaultValues.type,
+          EffectiveDate: effectiveDate,
+          LoanIdentifier: loanIdentifier,
+          TransactionTypeCode: transactionTypeCode,
+          IsDraftIndicator: messageListDefaultValues.isDraftIndicator,
+          CashOffsetTypeCode: messageListDefaultValues.cashOffsetTypeCode,
+          LoanAdvanceAmount: loanAdvanceAmount,
+        },
+      ],
+    };
   }
 }

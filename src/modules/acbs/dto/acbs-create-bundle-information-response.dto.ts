@@ -1,5 +1,5 @@
 import { AcbsBundleId } from '@ukef/helpers';
 
-export interface AcbsCreateBundleInformationResponseDto {
+export interface AcbsCreateBundleInformationResponseHeadersDto {
   BundleIdentifier: AcbsBundleId;
 }
