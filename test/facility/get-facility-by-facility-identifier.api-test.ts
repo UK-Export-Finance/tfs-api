@@ -11,7 +11,7 @@ import nock from 'nock';
 describe('GET /facilities/{facilityIdentifier}', () => {
   const valueGenerator = new RandomValueGenerator();
   const dateStringTransformations = new DateStringTransformations();
-  const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+  const { portfolioIdentifier } = PROPERTIES.GLOBAL;
   const facilityIdentifier = valueGenerator.ukefId();
   const getFacilityUrl = `/api/v1/facilities/${facilityIdentifier}`;
 
@@ -40,7 +40,7 @@ describe('GET /facilities/{facilityIdentifier}', () => {
   });
 
   const { idToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
-    givenRequestWouldOtherwiseSucceed: () => requestToGetFacility().reply(200, facilityInAcbs),
+    givenRequestWouldOtherwiseSucceed: () => givenRequestToGetFacilityInAcbsSucceeds(),
     makeRequest: () => api.get(getFacilityUrl),
   });
 
@@ -200,4 +200,6 @@ describe('GET /facilities/{facilityIdentifier}', () => {
     nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
       .get(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}`)
       .matchHeader('authorization', `Bearer ${idToken}`);
+
+  const givenRequestToGetFacilityInAcbsSucceeds = () => requestToGetFacility().reply(200, facilityInAcbs);
 });

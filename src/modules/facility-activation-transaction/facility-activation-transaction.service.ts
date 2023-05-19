@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PROPERTIES } from '@ukef/constants';
 import { AcbsPartyId, DateOnlyString, UkefId } from '@ukef/helpers';
-import { AcbsBundleInformationService } from '@ukef/modules/acbs/acbs-bundleInformation.service';
+import { AcbsBundleInformationService } from '@ukef/modules/acbs/acbs-bundle-information.service';
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 

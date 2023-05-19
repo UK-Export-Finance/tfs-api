@@ -53,8 +53,8 @@ export class RandomValueGenerator {
   nonnegativeFloat(options?: { max?: number; fixed?: number }): number {
     const min = 0;
     // Fixed is for number of decimal places.
-    const fixed = options && options.fixed ? options.fixed : 2;
-    return options && options.max ? this.chance.floating({ min, fixed: fixed, max: options.max }) : this.chance.floating({ min, fixed: fixed });
+    const fixed = options?.fixed ? options.fixed : 2;
+    return options?.max ? this.chance.floating({ min, fixed: fixed, max: options.max }) : this.chance.floating({ min, fixed: fixed });
   }
 
   date(): Date {

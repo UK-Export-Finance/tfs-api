@@ -1,8 +1,9 @@
-import { PROPERTIES } from '@ukef/constants';
+import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { CreateFacilityGenerator } from '@ukef-test/support/generator/create-facility-generator';
 import { GetFacilityGenerator } from '@ukef-test/support/generator/get-facility-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
+import { UpdateFacilityGenerator } from '@ukef-test/support/generator/update-facility-generator';
 import { when } from 'jest-when';
 
 import { FacilityController } from './facility.controller';
@@ -13,7 +14,7 @@ jest.mock('./facility.service');
 describe('FacilityController', () => {
   const valueGenerator = new RandomValueGenerator();
   const dateStringTransformations = new DateStringTransformations();
-  const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+  const { portfolioIdentifier } = PROPERTIES.GLOBAL;
   const facilityIdentifier = valueGenerator.ukefId();
 
   let facilityService: FacilityService;
@@ -21,6 +22,7 @@ describe('FacilityController', () => {
 
   let facilityServiceGetFacilityByIdentifier: jest.Mock;
   let facilityServiceCreateFacility: jest.Mock;
+  let facilityServiceIssueFacilityByIdentifier: jest.Mock;
 
   beforeEach(() => {
     facilityService = new FacilityService(null, null, null, null);
@@ -30,6 +32,9 @@ describe('FacilityController', () => {
 
     facilityServiceCreateFacility = jest.fn();
     facilityService.createFacility = facilityServiceCreateFacility;
+
+    facilityServiceIssueFacilityByIdentifier = jest.fn();
+    facilityService.issueFacilityByIdentifier = facilityServiceIssueFacilityByIdentifier;
 
     controller = new FacilityController(facilityService);
   });
@@ -78,6 +83,29 @@ describe('FacilityController', () => {
 
     it('returns the facility identifier if creating the facility succeeds', async () => {
       const response = await controller.createFacility([newFacility]);
+
+      expect(response).toStrictEqual({ facilityIdentifier });
+    });
+  });
+
+  describe('updateFacility', () => {
+    const { updateFacilityRequest } = new UpdateFacilityGenerator(valueGenerator, dateStringTransformations).generate({
+      numberToGenerate: 1,
+      facilityIdentifier,
+    });
+
+    const updateFacilityByOperationQuery = { op: ENUMS.FACILITY_UPDATE_OPERATIONS.ISSUE };
+
+    const updateFacilityByOperationParams = { facilityIdentifier };
+
+    it('issues a facility with the service if called with ISSUE enum', async () => {
+      await controller.updateFacilityByOperation(updateFacilityByOperationQuery, updateFacilityByOperationParams, updateFacilityRequest);
+
+      expect(facilityServiceIssueFacilityByIdentifier).toHaveBeenCalledWith(facilityIdentifier, updateFacilityRequest);
+    });
+
+    it('returns the facility identifier if updating the facility succeeds if called with ISSUE enum', async () => {
+      const response = await controller.updateFacilityByOperation(updateFacilityByOperationQuery, updateFacilityByOperationParams, updateFacilityRequest);
 
       expect(response).toStrictEqual({ facilityIdentifier });
     });

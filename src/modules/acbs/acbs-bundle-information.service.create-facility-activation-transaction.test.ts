@@ -7,7 +7,7 @@ import { AxiosError } from 'axios';
 import { when } from 'jest-when';
 import { of, throwError } from 'rxjs';
 
-import { AcbsBundleInformationService } from './acbs-bundleInformation.service';
+import { AcbsBundleInformationService } from './acbs-bundle-information.service';
 import { AcbsBadRequestException } from './exception/acbs-bad-request.exception';
 import { AcbsUnexpectedException } from './exception/acbs-unexpected.exception';
 

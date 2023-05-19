@@ -2,7 +2,7 @@ import { PROPERTIES } from '@ukef/constants';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
-import { withFacilityIdentifierUrlParamValidationApiTests } from '@ukef-test/common-tests/request-url-param-validation-api-tests/facility-identifier-url-param-validation-api-tests';
+import { withFacilityIdentifierUrlValidationApiTests } from '@ukef-test/common-tests/request-url-param-validation-api-tests/facility-identifier-url-validation-api-tests';
 import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
 import { GetFacilityGuaranteeGenerator } from '@ukef-test/support/generator/get-facility-guarantee-generator';
@@ -12,7 +12,7 @@ import nock from 'nock';
 describe('GET /facilities/{facilityIdentifier}/guarantees', () => {
   const valueGenerator = new RandomValueGenerator();
   const facilityIdentifier = valueGenerator.facilityId();
-  const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+  const { portfolioIdentifier } = PROPERTIES.GLOBAL;
 
   const getGetFacilityGuaranteesUrlForFacilityId = (facilityId: string) => `/api/v1/facilities/${facilityId}/guarantees`;
 
@@ -52,7 +52,7 @@ describe('GET /facilities/{facilityIdentifier}/guarantees', () => {
       api.getWithoutAuth(getFacilityGuaranteesUrl, incorrectAuth?.headerName, incorrectAuth?.headerValue),
   });
 
-  withFacilityIdentifierUrlParamValidationApiTests({
+  withFacilityIdentifierUrlValidationApiTests({
     givenRequestWouldOtherwiseSucceedForFacilityId: (facilityId) => {
       givenAuthenticationWithTheIdpSucceeds();
       requestToGetGuaranteesForFacilityWithId(facilityId).reply(200, facilityGuaranteesInAcbs);

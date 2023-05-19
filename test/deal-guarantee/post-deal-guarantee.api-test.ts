@@ -18,7 +18,7 @@ describe('POST /deals/{dealIdentifier}/guarantees', () => {
   const dealIdentifier = valueGenerator.ukefId();
   const createDealGuaranteeUrl = `/api/v1/deals/${dealIdentifier}/guarantees`;
 
-  const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+  const { portfolioIdentifier } = PROPERTIES.GLOBAL;
   const lenderTypeCode = PROPERTIES.DEAL_GUARANTEE.DEFAULT.lenderType.lenderTypeCode;
   const limitTypeCode = PROPERTIES.DEAL_GUARANTEE.DEFAULT.limitType.limitTypeCode;
   const sectionIdentifier = PROPERTIES.DEAL_GUARANTEE.DEFAULT.sectionIdentifier;

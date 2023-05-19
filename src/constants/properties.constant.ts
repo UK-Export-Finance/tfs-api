@@ -350,6 +350,14 @@ export const PROPERTIES = {
       securedType: {
         loanSecuredTypeCode: 'N',
       },
+      accrualScheduleList: {
+        accrualCategory: {
+          accrualCategoryCode: {
+            pac: 'PAC01',
+            ctl: 'CTL01',
+          },
+        },
+      },
     },
   },
 };

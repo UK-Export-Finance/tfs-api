@@ -2,13 +2,9 @@ import { PROPERTIES } from '@ukef/constants';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
-import { withCurrencyFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/currency-field-validation-api-tests';
+import { withBaseFacilityFieldsValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/base-facility-fields-validation-api-tests';
 import { withDateOnlyFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/date-only-field-validation-api-tests';
-import { withDealIdentifierFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/deal-identifier-field-validation-api-tests';
 import { withFacilityIdentifierFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/facility-identifier-field-validation-api-tests';
-import { withNonNegativeNumberFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/non-negative-number-field-validation-api-tests';
-import { withPartyIdentifierFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/party-identifier-field-validation-api-tests';
-import { withStringFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/string-field-validation-api-tests';
 import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
 import { CreateFacilityGenerator } from '@ukef-test/support/generator/create-facility-generator';
@@ -19,7 +15,7 @@ import supertest from 'supertest';
 describe('POST /facilities', () => {
   const valueGenerator = new RandomValueGenerator();
   const dateStringTransformations = new DateStringTransformations();
-  const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+  const { portfolioIdentifier } = PROPERTIES.GLOBAL;
   const facilityIdentifier = valueGenerator.facilityId();
 
   const createFacilityUrl = `/api/v1/facilities`;
@@ -115,209 +111,10 @@ describe('POST /facilities', () => {
     givenAnyRequestBodyToCreateFacilityInAcbsSucceeds();
   };
 
-  withDealIdentifierFieldValidationApiTests({
-    valueGenerator,
-    validRequestBody: requestBodyToCreateFacility,
-    makeRequest,
-    givenAnyRequestBodyWouldSucceed,
-  });
+  withBaseFacilityFieldsValidationApiTests({ valueGenerator, validRequestBody: requestBodyToCreateFacility, makeRequest, givenAnyRequestBodyWouldSucceed });
 
   withFacilityIdentifierFieldValidationApiTests({
     valueGenerator,
-    validRequestBody: requestBodyToCreateFacility,
-    makeRequest,
-    givenAnyRequestBodyWouldSucceed,
-  });
-
-  withPartyIdentifierFieldValidationApiTests({
-    fieldName: 'dealBorrowerIdentifier',
-    valueGenerator,
-    validRequestBody: requestBodyToCreateFacility,
-    makeRequest,
-    givenAnyRequestBodyWouldSucceed,
-  });
-
-  withStringFieldValidationApiTests({
-    fieldName: 'productTypeId',
-    minLength: 0,
-    maxLength: 3,
-    generateFieldValueOfLength: (length) => valueGenerator.string({ length }),
-    validRequestBody: requestBodyToCreateFacility,
-    makeRequest,
-    givenAnyRequestBodyWouldSucceed,
-  });
-
-  withStringFieldValidationApiTests({
-    fieldName: 'productTypeName',
-    minLength: 0,
-    maxLength: 13,
-    generateFieldValueOfLength: (length) => valueGenerator.string({ length }),
-    validRequestBody: requestBodyToCreateFacility,
-    makeRequest,
-    givenAnyRequestBodyWouldSucceed,
-  });
-
-  withStringFieldValidationApiTests({
-    fieldName: 'exposurePeriod',
-    minLength: 0,
-    maxLength: 12,
-    generateFieldValueOfLength: (length) => valueGenerator.string({ length }),
-    validRequestBody: requestBodyToCreateFacility,
-    makeRequest,
-    givenAnyRequestBodyWouldSucceed,
-  });
-
-  withCurrencyFieldValidationApiTests({
-    valueGenerator,
-    validRequestBody: requestBodyToCreateFacility,
-    makeRequest,
-    givenAnyRequestBodyWouldSucceed,
-  });
-
-  withStringFieldValidationApiTests({
-    fieldName: 'obligorIndustryClassification',
-    minLength: 0,
-    maxLength: 10,
-    generateFieldValueOfLength: (length) => valueGenerator.string({ length }),
-    validRequestBody: requestBodyToCreateFacility,
-    makeRequest,
-    givenAnyRequestBodyWouldSucceed,
-  });
-
-  withDateOnlyFieldValidationApiTests({
-    fieldName: 'effectiveDate',
-    validRequestBody: requestBodyToCreateFacility,
-    makeRequest,
-    givenAnyRequestBodyWouldSucceed,
-  });
-
-  withDateOnlyFieldValidationApiTests({
-    fieldName: 'guaranteeExpiryDate',
-    validRequestBody: requestBodyToCreateFacility,
-    makeRequest,
-    givenAnyRequestBodyWouldSucceed,
-  });
-
-  withDateOnlyFieldValidationApiTests({
-    fieldName: 'nextQuarterEndDate',
-    validRequestBody: requestBodyToCreateFacility,
-    makeRequest,
-    givenAnyRequestBodyWouldSucceed,
-  });
-
-  withNonNegativeNumberFieldValidationApiTests({
-    fieldName: 'maximumLiability',
-    validRequestBody: requestBodyToCreateFacility,
-    makeRequest,
-    givenAnyRequestBodyWouldSucceed,
-  });
-
-  withStringFieldValidationApiTests({
-    fieldName: 'agentBankIdentifier',
-    minLength: 0,
-    maxLength: 10,
-    generateFieldValueOfLength: (length) => valueGenerator.stringOfNumericCharacters({ length }),
-    validRequestBody: requestBodyToCreateFacility,
-    makeRequest,
-    givenAnyRequestBodyWouldSucceed,
-  });
-
-  withStringFieldValidationApiTests({
-    fieldName: 'riskCountryCode',
-    minLength: 0,
-    maxLength: 3,
-    generateFieldValueOfLength: (length) => valueGenerator.string({ length }),
-    validRequestBody: requestBodyToCreateFacility,
-    makeRequest,
-    givenAnyRequestBodyWouldSucceed,
-  });
-
-  withStringFieldValidationApiTests({
-    fieldName: 'premiumFrequencyCode',
-    minLength: 0,
-    maxLength: 1,
-    generateFieldValueOfLength: (length) => valueGenerator.string({ length }),
-    validRequestBody: requestBodyToCreateFacility,
-    makeRequest,
-    givenAnyRequestBodyWouldSucceed,
-  });
-
-  withStringFieldValidationApiTests({
-    fieldName: 'riskStatusCode',
-    minLength: 0,
-    maxLength: 2,
-    generateFieldValueOfLength: (length) => valueGenerator.string({ length }),
-    validRequestBody: requestBodyToCreateFacility,
-    makeRequest,
-    givenAnyRequestBodyWouldSucceed,
-  });
-
-  withStringFieldValidationApiTests({
-    fieldName: 'creditRatingCode',
-    minLength: 0,
-    maxLength: 2,
-    generateFieldValueOfLength: (length) => valueGenerator.string({ length }),
-    validRequestBody: requestBodyToCreateFacility,
-    makeRequest,
-    givenAnyRequestBodyWouldSucceed,
-  });
-
-  withStringFieldValidationApiTests({
-    fieldName: 'facilityStageCode',
-    minLength: 0,
-    maxLength: 2,
-    generateFieldValueOfLength: (length) => valueGenerator.string({ length }),
-    validRequestBody: requestBodyToCreateFacility,
-    makeRequest,
-    givenAnyRequestBodyWouldSucceed,
-  });
-
-  withStringFieldValidationApiTests({
-    fieldName: 'delegationType',
-    minLength: 0,
-    maxLength: 4,
-    generateFieldValueOfLength: (length) => valueGenerator.string({ length }),
-    validRequestBody: requestBodyToCreateFacility,
-    makeRequest,
-    givenAnyRequestBodyWouldSucceed,
-  });
-
-  withNonNegativeNumberFieldValidationApiTests({
-    fieldName: 'interestOrFeeRate',
-    validRequestBody: requestBodyToCreateFacility,
-    makeRequest,
-    givenAnyRequestBodyWouldSucceed,
-  });
-
-  withPartyIdentifierFieldValidationApiTests({
-    fieldName: 'obligorPartyIdentifier',
-    valueGenerator,
-    validRequestBody: requestBodyToCreateFacility,
-    makeRequest,
-    givenAnyRequestBodyWouldSucceed,
-  });
-
-  withNonNegativeNumberFieldValidationApiTests({
-    fieldName: 'forecastPercentage',
-    validRequestBody: requestBodyToCreateFacility,
-    makeRequest,
-    givenAnyRequestBodyWouldSucceed,
-  });
-
-  withNonNegativeNumberFieldValidationApiTests({
-    fieldName: 'probabilityOfDefault',
-    required: false,
-    validRequestBody: requestBodyToCreateFacility,
-    makeRequest,
-    givenAnyRequestBodyWouldSucceed,
-  });
-
-  withStringFieldValidationApiTests({
-    fieldName: 'capitalConversionFactorCode',
-    minLength: 0,
-    maxLength: 2,
-    required: false,
-    generateFieldValueOfLength: (length) => valueGenerator.string({ length }),
     validRequestBody: requestBodyToCreateFacility,
     makeRequest,
     givenAnyRequestBodyWouldSucceed,

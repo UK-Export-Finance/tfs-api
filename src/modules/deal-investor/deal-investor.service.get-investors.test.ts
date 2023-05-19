@@ -16,7 +16,7 @@ jest.mock('@ukef/modules/acbs-authentication/acbs-authentication.service');
 describe('DealInvestorService', () => {
   const valueGenerator = new RandomValueGenerator();
   const idToken = valueGenerator.string();
-  const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+  const { portfolioIdentifier } = PROPERTIES.GLOBAL;
 
   let acbsAuthenticationService: AcbsAuthenticationService;
   let acbsDealPartyService: AcbsDealPartyService;

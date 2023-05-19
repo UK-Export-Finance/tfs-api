@@ -227,6 +227,48 @@ paths:
           description: The specified facility was not found.
         '500':
           description: An internal server error has occurred.
+    put:
+      operationId: FacilityController_updateFacilityByOperation
+      summary: Update a facility by facility identifier and operation enum query
+      parameters:
+        - name: op
+          required: true
+          in: query
+          description: Update operation
+          example: issue
+          schema:
+            enum:
+              - issue
+            type: string
+        - name: facilityIdentifier
+          required: true
+          in: path
+          description: The identifier of the facility in ACBS.
+          example: '0030000322'
+          schema:
+            minLength: 10
+            maxLength: 10
+            pattern: ^00\\d{8}$
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateFacilityRequest'
+      responses:
+        '200':
+          description: The facility has been successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateFacilityResponse'
+        '400':
+          description: Bad request.
+        '404':
+          description: The specified facility was not found.
+        '500':
+          description: An internal server error has occurred.
   /api/v1/facilities:
     post:
       operationId: FacilityController_createFacility
@@ -425,6 +467,9 @@ paths:
           description: The identifier of the facility in ACBS.
           example: '0030000322'
           schema:
+            minLength: 10
+            maxLength: 10
+            pattern: ^00\\d{8}$
             type: string
       requestBody:
         required: true
@@ -576,9 +621,13 @@ paths:
         - name: searchText
           required: true
           in: query
-          description: 'Minimum length: 3. Cannot contain only whitespaces.'
+          description: >-
+            Parties matching the provided Search Text will be returned. It must
+            end in a non-whitespace character, but leading whitespace characters
+            are allowed and will be included in the search.
           schema:
             minLength: 3
+            pattern: \\S$
             type: string
       responses:
         '200':
@@ -645,6 +694,41 @@ paths:
                 $ref: '#/components/schemas/GetPartyByIdentifierResponse'
         '404':
           description: The specified party was not found.
+        '500':
+          description: An internal server error has occurred.
+  /api/v1/facilities/{facilityIdentifier}/loan-transactions/{bundleIdentifier}:
+    get:
+      operationId: FacilityLoanTransactionController_getLoanTransactionByBundleIdentifier
+      summary: Get the loan transaction matching the specified bundle identifier.
+      parameters:
+        - name: facilityIdentifier
+          required: true
+          in: path
+          description: The identifier of the facility in ACBS.
+          example: '0030000322'
+          schema:
+            minLength: 10
+            maxLength: 10
+            pattern: ^\\d{10}$
+            type: string
+        - name: bundleIdentifier
+          required: true
+          in: path
+          description: The bundle identifier of the loan transaction in ACBS.
+          example: '0000233092'
+          schema:
+            minLength: 10
+            maxLength: 10
+            type: string
+      responses:
+        '200':
+          description: The loan transaction has been successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetFacilityLoanTransactionResponseItem'
+        '404':
+          description: The specified loan transaction was not found.
         '500':
           description: An internal server error has occurred.
 info:
@@ -1170,13 +1254,6 @@ components:
           maxLength: 10
           pattern: ^00\\d{8}$
           example: '0030000321'
-        facilityIdentifier:
-          type: string
-          description: The identifier of the facility to create.
-          minLength: 10
-          maxLength: 10
-          pattern: ^00\\d{8}$
-          example: '0030000322'
         dealBorrowerIdentifier:
           type: string
           description: >-
@@ -1316,13 +1393,19 @@ components:
           format: date
           type: string
           description: >-
-            At Commitment stage its not required, Issued when issued it would be
-            Issue Date for Bond OR Disbursement Date for Loan/EWCS.
+            Issue Date for Bond or Disbursement Date for Loan/EWCS. Not required
+            at commitment stage
           default: null
           nullable: true
+        facilityIdentifier:
+          type: string
+          description: The identifier of the facility.
+          minLength: 10
+          maxLength: 10
+          pattern: ^00\\d{8}$
+          example: '0030000322'
       required:
         - dealIdentifier
-        - facilityIdentifier
         - dealBorrowerIdentifier
         - productTypeId
         - productTypeName
@@ -1343,6 +1426,7 @@ components:
         - interestOrFeeRate
         - obligorPartyIdentifier
         - forecastPercentage
+        - facilityIdentifier
     CreateFacilityResponse:
       type: object
       properties:
@@ -1350,6 +1434,192 @@ components:
           type: string
           description: The identifier of the created facility.
           readOnly: true
+          example: '0030000322'
+      required:
+        - facilityIdentifier
+    UpdateFacilityRequest:
+      type: object
+      properties:
+        issueDate:
+          format: date
+          type: string
+          description: >-
+            Issue Date for Bond OR Disbursement Date for Loan/EWCS. Not required
+            at commitment stage.
+        dealIdentifier:
+          type: string
+          description: The identifier of the deal for the facility.
+          minLength: 10
+          maxLength: 10
+          pattern: ^00\\d{8}$
+          example: '0030000321'
+        dealBorrowerIdentifier:
+          type: string
+          description: >-
+            Look up the Obligors ACBS Customer record using Party URN on the
+            Deal = Alternate Customer Id (J$MSZI). Use ACBS Customer Id (J$MRUI)
+            Note there may be multiple customers in ACBS with the same Party
+            URN. Use the first record found.
+          minLength: 8
+          maxLength: 8
+          example: '00001234'
+        productTypeId:
+          type: string
+          description: The facility type, e.g. '250' for BOND.
+          minLength: 0
+          maxLength: 3
+          example: '250'
+        productTypeName:
+          type: string
+          description: The name or description of the facility type.
+          minLength: 0
+          maxLength: 13
+          example: BOND
+        exposurePeriod:
+          type: string
+          description: Credit Period
+          minLength: 0
+          maxLength: 12
+          example: '1'
+        currency:
+          type: string
+          description: Facility Currency Code e.g. CAD, USD.
+          minLength: 3
+          maxLength: 3
+          example: USD
+        obligorIndustryClassification:
+          type: string
+          description: The industry classification code of the obligor.
+          minLength: 0
+          maxLength: 10
+          example: '0116'
+        effectiveDate:
+          format: date
+          type: string
+          description: >-
+            The date from which the borrower can draw funds from the facility.
+            If this is a future date then it will be replaced with today's date.
+        guaranteeExpiryDate:
+          format: date
+          type: string
+          description: The expiration date of the facility.
+        nextQuarterEndDate:
+          format: date
+          type: string
+          description: The end date of the next quarter.
+        maximumLiability:
+          type: number
+          description: The overall limit for the facility.
+          minimum: 0
+        agentBankIdentifier:
+          type: string
+          description: The party identifier of the Agent Bank for this facility.
+          minLength: 0
+          maxLength: 10
+          example: '00000000'
+        riskCountryCode:
+          type: string
+          description: >-
+            The code of the primary country of risk designated for this credit
+            arrangement.
+          minLength: 0
+          maxLength: 3
+          example: GBR
+        premiumFrequencyCode:
+          type: string
+          description: Pre-Issue Est. Payment Frequency QUARTERLY(2)
+          minLength: 0
+          maxLength: 1
+          example: '2'
+        riskStatusCode:
+          type: string
+          description: CORPORATE(03)
+          minLength: 0
+          maxLength: 2
+          example: '03'
+        creditRatingCode:
+          type: string
+          description: Credit Review Risk Code
+          minLength: 0
+          maxLength: 2
+          example: '13'
+        facilityStageCode:
+          type: string
+          description: Case Stage this can be 06 Commitment and 07 Issued
+          minLength: 0
+          maxLength: 2
+          example: '07'
+        delegationType:
+          type: string
+          description: Derive values A, M or N
+          minLength: 0
+          maxLength: 4
+          example: A
+        interestOrFeeRate:
+          type: number
+          description: >-
+            Bank Rate, this can be for Bond facility corresponding fee rate or
+            for Loan/EWCS interest rate.
+          minimum: 0
+        obligorPartyIdentifier:
+          type: string
+          description: The party identifier of the obligor.
+          minLength: 8
+          maxLength: 8
+          example: '00001234'
+        forecastPercentage:
+          type: number
+          description: Forecast % Derive from FACILITY:Stage, i.e. Commitment or Issued
+          minimum: 0
+        probabilityOfDefault:
+          type: number
+          description: >-
+            A percentage indicating how likely it is that a default on the
+            credit will occur. This should be specified for GEF.
+          minimum: 0
+          default: 0
+        capitalConversionFactorCode:
+          type: string
+          description: >-
+            The code of the Capital Conversion Factor for the facility (e.g.
+            100% Conversion, 80% Conversion, No Conversion) from the T1125 table
+            in ACBS. This field should be specified for GEF. When this field is
+            not specified, a default will be chosen based on the productTypeId.
+          minLength: 0
+          maxLength: 2
+          example: '1'
+      required:
+        - issueDate
+        - dealIdentifier
+        - dealBorrowerIdentifier
+        - productTypeId
+        - productTypeName
+        - exposurePeriod
+        - currency
+        - obligorIndustryClassification
+        - effectiveDate
+        - guaranteeExpiryDate
+        - nextQuarterEndDate
+        - maximumLiability
+        - agentBankIdentifier
+        - riskCountryCode
+        - premiumFrequencyCode
+        - riskStatusCode
+        - creditRatingCode
+        - facilityStageCode
+        - delegationType
+        - interestOrFeeRate
+        - obligorPartyIdentifier
+        - forecastPercentage
+    UpdateFacilityResponse:
+      type: object
+      properties:
+        facilityIdentifier:
+          type: string
+          description: The identifier of the updated facility.
+          minLength: 10
+          maxLength: 10
+          pattern: ^00\\d{8}$
           example: '0030000322'
       required:
         - facilityIdentifier
@@ -1728,12 +1998,6 @@ components:
     CreateFacilityInvestorRequestItem:
       type: object
       properties:
-        facilityIdentifier:
-          type: string
-          description: The identifier of the facility to create the investor for.
-          minLength: 10
-          maxLength: 10
-          example: '0000000001'
         effectiveDate:
           format: date
           type: string
@@ -1763,7 +2027,6 @@ components:
           maxLength: 3
           default: '500'
       required:
-        - facilityIdentifier
         - effectiveDate
         - guaranteeExpiryDate
         - currency
@@ -1845,36 +2108,47 @@ components:
       properties:
         portfolioIdentifier:
           type: string
-          description: >-
-            The identifier of the portfolio in ACBS. The UKEF portfolio is E1.
-            The maximum number of characters allowed is 2.
+          description: The identifier of the portfolio in ACBS. The UKEF portfolio is E1.
+          minLength: 0
+          maxLength: 2
+          example: E1
         loanIdentifier:
           type: string
-          description: The identifier of the loan in ACBS. This will be a 9-digit code.
+          description: The identifier of the loan in ACBS.
+          minLength: 9
+          maxLength: 9
+          example: '000272017'
         facilityIdentifier:
           type: string
-          description: >-
-            The identifier of the facility in ACBS. This will be a 10-digit
-            code.
+          description: The identifier of the facility in ACBS.
+          minLength: 10
+          maxLength: 10
+          example: '0030000322'
         borrowerPartyIdentifier:
           type: string
-          description: >-
-            The identifier of the loan borrower in ACBS. This will be a 8-digit
-            code.
+          description: The identifier of the loan borrower in ACBS.
+          minLength: 8
+          maxLength: 8
+          example: '00001234'
         productTypeId:
           type: string
           description: >-
-            The product type identifier: 250 for BSS, 260 for EWCS, 280 for
-            GEF-Cash, 281 for GEF-Contingent. It is called the product type code
-            in ACBS.
+            The product type identifier for the loan: 250 for BSS, 260 for EWCS,
+            280 for GEF-Cash, 281 for GEF-Contingent. It is called the product
+            type code in ACBS.
+          example: '250'
         productTypeGroup:
           type: string
           description: >-
-            The product type group identifier: EW for EWCS, BS for Bond, GM for
-            GEF. It is called the product group code in ACBS.
+            The product type group identifier for the loan: EW for EWCS, BS for
+            Bond, GM for GEF. It is called the product group code in ACBS.
+          example: EW
         currency:
           type: string
-          description: The 3-character currency code for the loan.
+          description: The currency code for the loan.
+          minLength: 3
+          maxLength: 3
+          example: USD
         issueDate:
           format: date
           type: string
@@ -2237,6 +2511,161 @@ components:
         - citizenshipClass
         - officerRiskDate
         - countryCode
+    GetFacilityLoanTransactionResponseItem:
+      type: object
+      properties:
+        portfolioIdentifier:
+          type: string
+          description: The identifier of the portfolio in ACBS. The UKEF portfolio is E1.
+          minLength: 0
+          maxLength: 2
+          example: E1
+        bundleStatusCode:
+          type: string
+          description: A numeric code denoting the status of the bundle.
+          minLength: 0
+          maxLength: 2
+          example: '10'
+        bundleStatusDesc:
+          type: string
+          description: >-
+            A description of the status of the bundle corresponding to the
+            bundle status code.
+          minLength: 0
+          maxLength: 20
+          example: Pending Input With Drafts
+        postingDate:
+          format: date
+          type: string
+          description: >-
+            The date when the bundle will be posted. It cannot be before the
+            current processing date.
+        facilityIdentifier:
+          type: string
+          description: The identifier of the facility in ACBS.
+          minLength: 10
+          maxLength: 10
+          example: '0030000322'
+        borrowerPartyIdentifier:
+          type: string
+          description: The identifier of the loan borrower in ACBS.
+          minLength: 8
+          maxLength: 8
+          example: '00001234'
+        productTypeId:
+          type: string
+          description: >-
+            The product type identifier for the loan: 250 for BSS, 260 for EWCS,
+            280 for GEF-Cash, 281 for GEF-Contingent. It is called the product
+            type code in ACBS.
+          example: '250'
+        productTypeGroup:
+          type: string
+          description: >-
+            The product type group identifier for the loan: EW for EWCS, BS for
+            Bond, GM for GEF. It is called the product group code in ACBS.
+          example: EW
+        currency:
+          type: string
+          description: The currency code for the loan.
+          minLength: 3
+          maxLength: 3
+          example: USD
+        dealCustomerUsageRate:
+          type: number
+          description: >-
+            The exchange rate between the loan currency and the deal currency.
+            It is only applicable when the loan currency differs from the
+            facility currency.
+          example: 1
+        dealCustomerUsageOperationType:
+          type: string
+          description: >-
+            This represents the operand (M for multiply or D for divide) used to
+            convert the amounts. It is only applicable when the loan currency
+            differs from the facility currency.
+          minLength: 0
+          maxLength: 1
+          example: 1
+        amount:
+          type: number
+          description: The amount of the loan. It is called loan amount in ACBS.
+          example: 1110
+        issueDate:
+          format: date
+          type: string
+          description: >-
+            The issue date for the loan. It is called the effective date in
+            ACBS.
+        expiryDate:
+          format: date
+          type: string
+          description: >-
+            The expiry date for the loan. It is called the maturity date in
+            ACBS.
+        spreadRate:
+          type: number
+          description: >-
+            The spread rate of the PAC accrual schedule to factor into the
+            all-in rate if a rate calculation method is selected that includes
+            the spread rate in the calculation.
+          example: 80.000051
+        spreadRateCTL:
+          type: number
+          description: >-
+            The spread rate of the CTL accrual schedule to factor into the
+            all-in rate if a rate calculation method is selected that includes
+            the spread rate in the calculation.
+          example: 80.000051
+        yearBasis:
+          type: string
+          description: A code denoting the year basis for the accrual schedule.
+          minLength: 0
+          maxLength: 1
+          example: '1'
+        nextDueDate:
+          format: date
+          type: string
+          description: >-
+            The date the next payment will be due for the loan repayment
+            schedule.
+        indexRateChangeFrequency:
+          type: string
+          description: >-
+            A code denoting the index rate change frequency, which is used by
+            ACBS to determine the frequency at which the rate should change when
+            the change timing is set to 'On Anniversary'.
+          minLength: 0
+          maxLength: 1
+        loanBillingFrequencyType:
+          type: string
+          description: >-
+            A code denoting the loan billing frequency type, which is used by
+            ACBS to determine the frequency at which the bills should be
+            generated.
+          minLength: 0
+          maxLength: 1
+          example: C
+      required:
+        - portfolioIdentifier
+        - bundleStatusCode
+        - bundleStatusDesc
+        - postingDate
+        - facilityIdentifier
+        - borrowerPartyIdentifier
+        - productTypeId
+        - productTypeGroup
+        - currency
+        - dealCustomerUsageRate
+        - dealCustomerUsageOperationType
+        - amount
+        - issueDate
+        - expiryDate
+        - spreadRate
+        - yearBasis
+        - nextDueDate
+        - indexRateChangeFrequency
+        - loanBillingFrequencyType
 security:
   - ApiKeyHeader: []
 "

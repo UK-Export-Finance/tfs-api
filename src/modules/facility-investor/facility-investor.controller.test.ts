@@ -32,23 +32,16 @@ describe('FacilityInvestorController', () => {
     const currency = TEST_CURRENCIES.A_TEST_CURRENCY;
     const maximumLiability = 12345.6;
 
-    const newFacilityInvestor = new CreateFacilityInvestorRequestItem(
-      facilityIdentifier,
-      effectiveDate,
-      guaranteeExpiryDate,
-      currency,
-      maximumLiability,
-      lenderType,
-    );
+    const newFacilityInvestor = new CreateFacilityInvestorRequestItem(effectiveDate, guaranteeExpiryDate, currency, maximumLiability, lenderType);
 
     it('creates an investor for the facility with the service from the request body', async () => {
-      await controller.createInvestorForFacility(facilityIdentifier, [newFacilityInvestor]);
+      await controller.createInvestorForFacility({ facilityIdentifier }, [newFacilityInvestor]);
 
       expect(facilityInvestorServiceCreateInvestorForFacility).toHaveBeenCalledWith(facilityIdentifier, newFacilityInvestor);
     });
 
     it('returns the facility identifier if creating the investor succeeds', async () => {
-      const response = await controller.createInvestorForFacility(facilityIdentifier, [newFacilityInvestor]);
+      const response = await controller.createInvestorForFacility({ facilityIdentifier }, [newFacilityInvestor]);
 
       expect(response).toStrictEqual(new CreateFacilityInvestorResponse(facilityIdentifier));
     });
@@ -56,7 +49,7 @@ describe('FacilityInvestorController', () => {
     it('does NOT include unexpected keys from the request body', async () => {
       const newFacilityInvestorPlusUnexpectedKeys = { ...newFacilityInvestor, unexpectedKey: 'unexpected value' };
 
-      await controller.createInvestorForFacility(facilityIdentifier, [newFacilityInvestorPlusUnexpectedKeys]);
+      await controller.createInvestorForFacility({ facilityIdentifier }, [newFacilityInvestorPlusUnexpectedKeys]);
 
       expect(facilityInvestorServiceCreateInvestorForFacility).toHaveBeenCalledWith(facilityIdentifier, newFacilityInvestor);
     });
