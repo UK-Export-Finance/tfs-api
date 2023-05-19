@@ -77,13 +77,13 @@ export class FacilityLoanController {
   @ApiInternalServerErrorResponse({
     description: 'An internal server error has occurred.',
   })
-  async createLoanForFacility(
+  createLoanForFacility(
     @Param() params: FacilityLoanParamsDto,
     @Body(new ParseArrayPipe({ items: CreateFacilityLoanRequestItem, whitelist: true })) newLoanRequest: CreateFacilityLoanRequestDto,
   ): Promise<CreateFacilityLoanResponseDto> {
     const facilityIdentifier = params.facilityIdentifier;
     const newLoan = newLoanRequest[0];
 
-    return await this.facilityLoanService.createLoanForFacility(facilityIdentifier, newLoan);
+    return this.facilityLoanService.createLoanForFacility(facilityIdentifier, newLoan);
   }
 }
