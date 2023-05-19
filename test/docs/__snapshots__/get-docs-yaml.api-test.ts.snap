@@ -1827,7 +1827,6 @@ components:
             not. It is required if expirationDate is not provided.
           minimum: 0
           example: 5040
-          nullable: false
         expirationDate:
           format: date
           type: string

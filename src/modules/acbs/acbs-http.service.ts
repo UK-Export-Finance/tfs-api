@@ -69,28 +69,4 @@ export class AcbsHttpService {
       onError,
     });
   }
-
-  async put<RequestBody, ResponseBody>({
-    path,
-    requestBody,
-    idToken,
-    onError,
-  }: {
-    path: string;
-    requestBody: RequestBody;
-    idToken: string;
-    onError: (error: Error) => ObservableInput<never>;
-  }): Promise<AxiosResponse<ResponseBody, unknown>> {
-    return await lastValueFrom(
-      this.httpService
-        .put<never>(path, requestBody, {
-          baseURL: this.config.baseUrl,
-          headers: {
-            Authorization: `Bearer ${idToken}`,
-            'Content-Type': 'application/json',
-          },
-        })
-        .pipe(catchError(onError)),
-    );
-  }
 }

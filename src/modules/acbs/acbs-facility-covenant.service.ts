@@ -53,7 +53,7 @@ export class AcbsFacilityCovenantService {
       path: `/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/Covenant`,
       requestBody: replacingCovenant,
       idToken,
-      onError: createWrapAcbsHttpPostErrorCallback({
+      onError: createWrapAcbsHttpPostOrPutErrorCallback({
         messageForUnknownError: `Failed to replace covenant ${replacingCovenant.CovenantIdentifier} for facility ${facilityIdentifier} in ACBS.`,
         knownErrors: [facilityNotFoundKnownAcbsError(facilityIdentifier)],
       }),

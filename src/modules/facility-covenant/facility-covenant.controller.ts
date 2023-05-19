@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -56,7 +56,7 @@ export class FacilityCovenantController {
   async createCovenantForFacility(
     @Param() params: FacilityCovenantsParamsDto,
     @ValidatedArrayBody({ items: CreateFacilityCovenantRequestItem }) newCovenantRequest: CreateFacilityCovenantRequestDto,
-  ): Promise<CreateFacilityCovenantResponseDto> {
+  ): Promise<CreateOrUpdateFacilityCovenantsResponseDto> {
     const facilityIdentifier = params.facilityIdentifier;
     const facility = await this.facilityService.getFacilityByIdentifier(facilityIdentifier);
     const newCovenant = newCovenantRequest[0];
