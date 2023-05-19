@@ -93,6 +93,27 @@ export class FacilityCovenantController {
   }
 
   @Patch('/facilities/:facilityIdentifier/covenants')
+  @ApiOperation({
+    summary: 'Update all covenants for a facility.',
+  })
+  @ApiParam({
+    name: 'facilityIdentifier',
+    required: true,
+    type: 'string',
+    description: 'The identifier of the facility in ACBS.',
+    example: EXAMPLES.FACILITY_ID,
+  })
+  @ApiOkResponse({
+    description:
+      'The covenants for the facility have been updated. Due to limitations of ACBS, there is no 404 response; if the facility does not exist or it has no covenants, we will receive a 200 response',
+    type: CreateOrUpdateFacilityCovenantsResponseDto,
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad request.',
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'An internal server error has occurred.',
+  })
   async updateCovenantsForFacility(
     @Param() params: FacilityCovenantsParamsDto,
     @Body(new NonEmptyRequestBodyValidationPipe()) updateCovenantRequest: UpdateFacilityCovenantsRequestDto,

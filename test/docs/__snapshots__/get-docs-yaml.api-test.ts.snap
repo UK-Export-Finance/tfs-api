@@ -364,6 +364,7 @@ paths:
           description: An internal server error has occurred.
     patch:
       operationId: FacilityCovenantController_updateCovenantsForFacility
+      summary: Update all covenants for a facility.
       parameters:
         - name: facilityIdentifier
           required: true
@@ -383,7 +384,19 @@ paths:
               $ref: '#/components/schemas/UpdateFacilityCovenantsRequestDto'
       responses:
         '200':
-          description: ''
+          description: >-
+            The covenants for the facility have been updated. Due to limitations
+            of ACBS, there is no 404 response; if the facility does not exist or
+            it has no covenants, we will receive a 200 response
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/CreateOrUpdateFacilityCovenantsResponseDto
+        '400':
+          description: Bad request.
+        '500':
+          description: An internal server error has occurred.
   /api/v1/facilities/{facilityIdentifier}/fixed-fees:
     get:
       operationId: FacilityFixedFeeController_getFixedFeesForFacility
