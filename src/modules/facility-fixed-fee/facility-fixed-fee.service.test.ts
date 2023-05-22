@@ -45,7 +45,7 @@ describe('FacilityFixedFeeService', () => {
   });
 
   describe('getFixedFeesForFacility', () => {
-    it('returns a transformation of the guarantees from ACBS', async () => {
+    it('returns a transformation of the fixed fee from ACBS', async () => {
       when(getFacilityFixedFeesAcbsService).calledWith(portfolioIdentifier, facilityIdentifier, idToken).mockResolvedValueOnce(acbsFacilityFixedFees);
 
       const result = await service.getFixedFeesForFacility(facilityIdentifier);

@@ -1,12 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { EXAMPLES } from '@ukef/constants';
 
 export class CreateFacilityFixedFeeResponse {
   @ApiProperty({
-    readOnly: true,
-    minLength: 10,
-    maxLength: 10,
-    description: 'The identifier of the facility that the investor was created for.',
-    example: '0000000001',
+    description: 'The identifier of the facility in ACBS for which the fixed fee has been created. This will be a 10-digit code.',
+    example: EXAMPLES.FACILITY_ID,
   })
   readonly facilityIdentifier: string;
 

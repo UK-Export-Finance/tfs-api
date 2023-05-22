@@ -2003,11 +2003,10 @@ components:
       properties:
         facilityIdentifier:
           type: string
-          readOnly: true
-          minLength: 10
-          maxLength: 10
-          description: The identifier of the facility that the investor was created for.
-          example: '0000000001'
+          description: >-
+            The identifier of the facility in ACBS for which the fixed fee has
+            been created. This will be a 10-digit code.
+          example: '0030000322'
       required:
         - facilityIdentifier
     GetFacilityGuaranteesResponseItem:

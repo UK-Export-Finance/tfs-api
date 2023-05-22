@@ -59,7 +59,7 @@ describe('FacilityFixedFeeController', () => {
       borrowerPartyIdentifier,
     });
 
-    it('creates a covenant for the facility with the service from the request body', async () => {
+    it('creates a fixed fee for the facility with the service from the request body', async () => {
       when(getFacilityByIdentifierFacilityService).calledWith(facilityIdentifier).mockResolvedValueOnce({
         productTypeId: facilityTypeCode,
         obligorPartyIdentifier: borrowerPartyIdentifier,
@@ -75,7 +75,7 @@ describe('FacilityFixedFeeController', () => {
       );
     });
 
-    it('returns the facility identifier if creating the covenant succeeds', async () => {
+    it('returns the facility identifier if creating the fixed fee succeeds', async () => {
       when(getFacilityByIdentifierFacilityService).calledWith(facilityIdentifier).mockResolvedValueOnce({
         productTypeId: facilityTypeCode,
         obligorPartyIdentifier: borrowerPartyIdentifier,
