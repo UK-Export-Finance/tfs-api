@@ -1833,7 +1833,6 @@ components:
           description: >-
             The expiration date of the covenant. It is called expiration date in
             ACBS. It is required if targetAmount is not provided.
-          example: '2023-04-19'
           nullable: false
     GetFacilityFixedFeeResponseItem:
       type: object

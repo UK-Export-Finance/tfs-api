@@ -11,7 +11,7 @@ import {
 } from '@nestjs/swagger';
 import { EXAMPLES } from '@ukef/constants';
 import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decorator';
-import { NonEmptyRequestBodyValidationPipe } from '@ukef/helpers/non-empty-request-body-validation-pipe';
+import { NonEmptyObjectRequestBodyValidationPipe } from '@ukef/helpers/non-empty-object-request-body-validation-pipe';
 
 import { FacilityService } from '../facility/facility.service';
 import { CreateFacilityCovenantRequestDto, CreateFacilityCovenantRequestItem } from './dto/create-facility-covenant-request.dto';
@@ -116,7 +116,7 @@ export class FacilityCovenantController {
   })
   async updateCovenantsForFacility(
     @Param() params: FacilityCovenantsParamsDto,
-    @Body(new NonEmptyRequestBodyValidationPipe()) updateCovenantRequest: UpdateFacilityCovenantsRequestDto,
+    @Body(new NonEmptyObjectRequestBodyValidationPipe()) updateCovenantRequest: UpdateFacilityCovenantsRequestDto,
   ): Promise<CreateOrUpdateFacilityCovenantsResponseDto> {
     const { facilityIdentifier } = params;
     await this.facilityCovenantService.updateCovenantsForFacility(facilityIdentifier, updateCovenantRequest);

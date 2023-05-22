@@ -17,7 +17,6 @@ export class UpdateFacilityCovenantsRequestDto {
     description: 'The expiration date of the covenant. It is called expiration date in ACBS. It is required if targetAmount is not provided.',
     required: false,
     nullable: false,
-    example: '2023-04-19',
   })
   readonly expirationDate?: DateOnlyString;
 }
