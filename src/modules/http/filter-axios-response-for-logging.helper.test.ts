@@ -2,6 +2,7 @@ import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-
 import { AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 
 import { filterAxiosResponseForLogging } from './filter-axios-response-for-logging.helper';
+import { BODY_LOG_KEY, HEADERS_LOG_KEY } from './http.constants';
 
 describe('filterAxiosResponseForLogging', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -21,10 +22,10 @@ describe('filterAxiosResponseForLogging', () => {
     request: {},
   };
 
-  it('returns only the data, headers, status, statusText of the response', () => {
+  it('returns only the data, headers, status, statusText of the response, using BODY_LOG_KEY and HEADERS_LOG_KEY', () => {
     expect(filterAxiosResponseForLogging(response)).toStrictEqual({
-      data,
-      headers,
+      [BODY_LOG_KEY]: data,
+      [HEADERS_LOG_KEY]: headers,
       status,
       statusText,
     });

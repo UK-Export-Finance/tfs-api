@@ -2,6 +2,7 @@ import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-
 import { AxiosRequestConfig } from 'axios';
 
 import { filterAxiosRequestForLogging } from './filter-axios-request-for-logging.helper';
+import { BODY_LOG_KEY, HEADERS_LOG_KEY } from './http.constants';
 
 describe('filterAxiosRequestForLogging', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -27,15 +28,15 @@ describe('filterAxiosRequestForLogging', () => {
     transformResponse: jest.fn(),
   };
 
-  it('returns only the timeout, headers, maxRedirects, baseURL, url, method, and data of the request', () => {
+  it('returns only the timeout, headers, maxRedirects, baseURL, url, method, and data of the request, using BODY_LOG_KEY and HEADERS_LOG_KEY', () => {
     expect(filterAxiosRequestForLogging(request)).toStrictEqual({
       timeout,
-      headers,
+      [HEADERS_LOG_KEY]: headers,
       maxRedirects,
       baseURL,
       url,
       method,
-      data,
+      [BODY_LOG_KEY]: data,
     });
   });
 });

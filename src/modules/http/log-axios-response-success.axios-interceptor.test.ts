@@ -4,6 +4,7 @@ import { when } from 'jest-when';
 import { PinoLogger } from 'nestjs-pino';
 
 import { filterAxiosResponseForLogging } from './filter-axios-response-for-logging.helper';
+import { INCOMING_RESPONSE_LOG_KEY } from './http.constants';
 import { logAxiosResponseSuccessWith } from './log-axios-response-success.axios-interceptor';
 import { AxiosResponseSuccessInterceptor } from './type/axios-response-success-interceptor.type';
 
@@ -47,10 +48,10 @@ describe('logAxiosResponseSuccess', () => {
     when(filterAxiosResponseForLogging).calledWith(response).mockReturnValueOnce(filteredResponse);
   });
 
-  it('logs the filtered response at debug level', () => {
+  it('logs the filtered response at debug level using key INCOMING_RESPONSE_LOG_KEY', () => {
     logAxiosResponseSuccess(response);
 
-    expect(logger.debug).toHaveBeenCalledWith({ response: filteredResponse }, 'Received successful HTTP response.');
+    expect(logger.debug).toHaveBeenCalledWith({ [INCOMING_RESPONSE_LOG_KEY]: filteredResponse }, 'Received successful HTTP response.');
   });
 
   it('returns the original response', () => {
