@@ -7,6 +7,12 @@ import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 import { catchError, lastValueFrom } from 'rxjs';
 
+import {
+  ID_TOKEN_RESPONSE_FIELD_NAME,
+  LOGIN_NAME_REQUEST_FIELD_NAME,
+  PASSWORD_REQUEST_FIELD_NAME,
+  SET_COOKIE_HEADER_NAME,
+} from './acbs-authentication.constants';
 import { AcbsAuthenticationService } from './acbs-authentication.service';
 import { IdpConnectResponse } from './dto/idp-connect-response.dto';
 import { AcbsAuthenticationFailedException } from './exception/acbs-authentication-failed.exception';
@@ -38,7 +44,7 @@ export class BaseAcbsAuthenticationService extends AcbsAuthenticationService {
       this.httpService
         .post<never>(
           BaseAcbsAuthenticationService.sessionsPath,
-          { loginName: this.config.loginName, password: this.config.password },
+          { [LOGIN_NAME_REQUEST_FIELD_NAME]: this.config.loginName, [PASSWORD_REQUEST_FIELD_NAME]: this.config.password },
           {
             baseURL: this.config.baseUrl,
             headers: {
@@ -58,7 +64,7 @@ export class BaseAcbsAuthenticationService extends AcbsAuthenticationService {
   }
 
   private extractSessionIdFromCreateSessionResponse(response: AxiosResponse): string {
-    const sessionIdCookie = response.headers['set-cookie'].find((cookie) => cookie.startsWith(ACBS.AUTHENTICATION.SESSION_ID_COOKIE_NAME));
+    const sessionIdCookie = response.headers[SET_COOKIE_HEADER_NAME].find((cookie) => cookie.startsWith(ACBS.AUTHENTICATION.SESSION_ID_COOKIE_NAME));
 
     if (!sessionIdCookie) {
       throw new AcbsAuthenticationFailedException('Session cookie was not returned by the IdP.');
@@ -93,7 +99,7 @@ export class BaseAcbsAuthenticationService extends AcbsAuthenticationService {
   }
 
   private extractIdTokenFromConnectResponse(response: AxiosResponse<IdpConnectResponse>): string {
-    const { id_token: idToken } = response.data || {};
+    const { [ID_TOKEN_RESPONSE_FIELD_NAME]: idToken } = response.data || {};
 
     if (!idToken || typeof idToken !== 'string') {
       throw new AcbsAuthenticationFailedException('ID token was not returned by the IdP.');
