@@ -61,7 +61,7 @@ export function withStringFieldValidationApiTests<RequestBodyItem, RequestBodyIt
         });
       } else {
         it(`returns a 400 response if ${fieldName} is not present`, async () => {
-          const { [fieldNameSymbol]: _removed, ...requestWithoutTheField } = validRequestBody[0];
+          const { [fieldNameSymbol]: _removed, ...requestWithoutTheField } = requestBodyItem;
 
           const { status, body } = await makeRequest([requestWithoutTheField]);
 
@@ -126,14 +126,16 @@ export function withStringFieldValidationApiTests<RequestBodyItem, RequestBodyIt
         });
       }
     } else {
-      it(`returns a 2xx response if ${fieldName} is an empty string`, async () => {
-        const requestWithEmptyField = { ...requestBodyItem, [fieldNameSymbol]: '' };
-        const preparedRequestWithEmptyField = prepareModifiedRequest(requestIsAnArray, requestWithEmptyField);
-        const { status } = await makeRequest(preparedRequestWithEmptyField);
+      if (!theEnum) {
+        it(`returns a 2xx response if ${fieldName} is an empty string`, async () => {
+          const requestWithEmptyField = { ...requestBodyItem, [fieldNameSymbol]: '' };
+          const preparedRequestWithEmptyField = prepareModifiedRequest(requestIsAnArray, requestWithEmptyField);
+          const { status } = await makeRequest(preparedRequestWithEmptyField);
 
-        expect(status).toBeGreaterThanOrEqual(200);
-        expect(status).toBeLessThan(300);
-      });
+          expect(status).toBeGreaterThanOrEqual(200);
+          expect(status).toBeLessThan(300);
+        });
+      }
     }
 
     if (minLength !== maxLength) {

@@ -1316,7 +1316,10 @@ components:
           type: string
           description: The facility type, e.g. '250' for BOND.
           minLength: 0
-          maxLength: 3
+          enum: &ref_0
+            - '250'
+            - '260'
+            - '280'
           example: '250'
         productTypeName:
           type: string
@@ -1515,7 +1518,7 @@ components:
           type: string
           description: The facility type, e.g. '250' for BOND.
           minLength: 0
-          maxLength: 3
+          enum: *ref_0
           example: '250'
         productTypeName:
           type: string
