@@ -323,4 +323,20 @@ export const PROPERTIES = {
       },
     },
   },
+  LOAN_AMOUNT_AMENDMENT: {
+    DEFAULT: {
+      initialBundleStatusCode: 3,
+      initiatingUserName: 'APIUKEF',
+      useAPIUserIndicator: false,
+      bundleMessageList: {
+        type: 'LoanAdvanceTransaction' as const,
+        cashOffsetTypeCode: '02',
+        isDraftIndicator: false,
+        transactionTypeCode: {
+          increase: '9020',
+          decrease: '9030',
+        },
+      },
+    },
+  },
 };

@@ -20,14 +20,14 @@ export const getDealNotFoundKnownAcbsError = (dealIdentifier: string): KnownErro
   },
 });
 
-export const getFacilityNotFoundKnownAcbsError = (facilityIdentifier: string): KnownError => ({
+export const facilityNotFoundKnownAcbsError = (facilityIdentifier: string): KnownError => ({
   caseInsensitiveSubstringToFind: 'Facility not found',
   throwError: (error) => {
     throw new AcbsResourceNotFoundException(`Facility with identifier ${facilityIdentifier} was not found by ACBS.`, error);
   },
 });
 
-// TODO: allow multiple strings for same error and then merge with getFacilityNotFoundKnownAcbsError.
+// TODO: allow multiple strings for same error and then merge with facilityNotFoundKnownAcbsError.
 export const postFacilityNotFoundKnownAcbsError = (facilityIdentifier: string): KnownError => ({
   caseInsensitiveSubstringToFind: 'Facility does not exist',
   throwError: (error) => {
@@ -47,5 +47,12 @@ export const getLoanTransactionNotFoundKnownAcbsError = (bundleIdentifier: strin
   caseInsensitiveSubstringToFind: 'BundleInformation not found',
   throwError: (error) => {
     throw new AcbsResourceNotFoundException(`Loan transaction with bundle identifier ${bundleIdentifier} was not found by ACBS.`, error);
+  },
+});
+
+export const getLoanNotFoundKnownAcbsBundleInformationError = (loanIdentifier: string): KnownError => ({
+  caseInsensitiveSubstringToFind: 'Loan does not exist',
+  throwError: (error) => {
+    throw new AcbsResourceNotFoundException(`Loan with identifier ${loanIdentifier} was not found by ACBS.`, error);
   },
 });

@@ -1,7 +1,8 @@
 import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { AcbsBundleId, AcbsPartyId, DateOnlyString, UkefId } from '@ukef/helpers';
-import { AcbsCreateBundleInformationRequestDto } from '@ukef/modules/acbs/dto/acbs-create-bundleInformation-request.dto';
-import { AcbsCreateBundleInformationResponseDto } from '@ukef/modules/acbs/dto/acbs-create-bundleInformation-response.dto';
+import { AcbsCreateBundleInformationRequestDto } from '@ukef/modules/acbs/dto/acbs-create-bundle-information-request.dto';
+import { AcbsCreateBundleInformationResponseHeadersDto } from '@ukef/modules/acbs/dto/acbs-create-bundle-information-response.dto';
+import { FacilityCodeValueTransaction } from '@ukef/modules/acbs/dto/bundle-actions/facility-code-value-transaction.bundle-action';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import {
   CreateFacilityActivationTransactionRequest,
@@ -38,7 +39,7 @@ export class CreateFacilityActivationTransactionGenerator extends AbstractGenera
   ): GenerateResult {
     const firstFacilityActivationTransaction = values[0];
 
-    const acbsRequestBodyToCreateFacilityActivationTransaction: AcbsCreateBundleInformationRequestDto = {
+    const acbsRequestBodyToCreateFacilityActivationTransaction: AcbsCreateBundleInformationRequestDto<FacilityCodeValueTransaction> = {
       PortfolioIdentifier: PROPERTIES.GLOBAL.portfolioIdentifier,
       InitialBundleStatusCode: firstFacilityActivationTransaction.initialBundleStatusCode,
       InitiatingUserName: PROPERTIES.FACILITY_ACTIVATION_TRANSACTION.DEFAULT.initiatingUserName,
@@ -95,8 +96,8 @@ interface GenerateOptions {
 }
 
 interface GenerateResult {
-  acbsRequestBodyToCreateFacilityActivationTransaction: AcbsCreateBundleInformationRequestDto;
+  acbsRequestBodyToCreateFacilityActivationTransaction: AcbsCreateBundleInformationRequestDto<FacilityCodeValueTransaction>;
   requestBodyToCreateFacilityActivationTransaction: CreateFacilityActivationTransactionRequest;
-  createBundleInformationResponseFromAcbs: AcbsCreateBundleInformationResponseDto;
+  createBundleInformationResponseFromAcbs: AcbsCreateBundleInformationResponseHeadersDto;
   createFacilityActivationTransactionResponseFromService: CreateFacilityActivationTransactionResponse;
 }

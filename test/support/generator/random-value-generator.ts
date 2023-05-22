@@ -50,14 +50,19 @@ export class RandomValueGenerator {
   }
 
   probabilityFloat(): number {
-    return this.chance.floating({ min: 0, max: 1 });
+    return this.float({ min: 0, max: 1 });
   }
 
   nonnegativeFloat(options?: { max?: number; fixed?: number }): number {
     const min = 0;
+    const max = options?.max;
+    const fixed = options?.fixed ?? 2;
+    return this.float({ min, max, fixed });
+  }
+
+  float({ min, max, fixed }: { min?: number; max?: number; fixed?: number }): number {
     // Fixed is for number of decimal places.
-    const fixed = options?.fixed ? options.fixed : 2;
-    return options?.max ? this.chance.floating({ min, fixed: fixed, max: options.max }) : this.chance.floating({ min, fixed: fixed });
+    return this.chance.floating({ min, max, fixed });
   }
 
   date(): Date {
@@ -99,6 +104,10 @@ export class RandomValueGenerator {
 
   acbsBundleId(lengthExcludingPrefix?: number): AcbsBundleId {
     return ACBSID.BUNDLE_ID.PREFIX.concat(this.stringOfNumericCharacters({ length: lengthExcludingPrefix ?? 6 })) as AcbsBundleId;
+  }
+
+  loanId(): string {
+    return this.stringOfNumericCharacters({ length: 10 });
   }
 
   dateTimeString(): DateString {

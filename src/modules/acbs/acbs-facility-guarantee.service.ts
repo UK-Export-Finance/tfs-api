@@ -8,8 +8,8 @@ import { AcbsHttpService } from './acbs-http.service';
 import { AcbsCreateFacilityGuaranteeDto } from './dto/acbs-create-facility-guarantee.dto';
 import { AcbsGetFacilityGuaranteesResponseDto } from './dto/acbs-get-facility-guarantees-response.dto';
 import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
-import { getFacilityNotFoundKnownAcbsError } from './known-errors';
-import { createWrapAcbsHttpGetErrorCallback, createWrapAcbsHttpPostErrorCallback } from './wrap-acbs-http-error-callback';
+import { facilityNotFoundKnownAcbsError } from './known-errors';
+import { createWrapAcbsHttpGetErrorCallback, createWrapAcbsHttpPostOrPutErrorCallback } from './wrap-acbs-http-error-callback';
 
 export class AcbsFacilityGuaranteeService {
   private readonly acbsHttpService: AcbsHttpService;
@@ -44,9 +44,9 @@ export class AcbsFacilityGuaranteeService {
       path: `/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/FacilityGuarantee`,
       requestBody: newFacilityGuarantee,
       idToken,
-      onError: createWrapAcbsHttpPostErrorCallback({
+      onError: createWrapAcbsHttpPostOrPutErrorCallback({
         messageForUnknownError: `Failed to create a guarantee for facility ${facilityIdentifier} in ACBS.`,
-        knownErrors: [getFacilityNotFoundKnownAcbsError(facilityIdentifier)],
+        knownErrors: [facilityNotFoundKnownAcbsError(facilityIdentifier)],
       }),
     });
   }

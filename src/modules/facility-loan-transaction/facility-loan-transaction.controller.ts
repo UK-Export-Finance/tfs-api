@@ -24,7 +24,7 @@ export class FacilityLoanTransactionController {
     required: true,
     type: 'string',
     description: 'The bundle identifier of the loan transaction in ACBS.',
-    example: EXAMPLES.BUNDLE_ID,
+    example: EXAMPLES.ACBS_BUNDLE_ID,
   })
   @ApiOkResponse({
     description: 'The loan transaction has been successfully retrieved.',

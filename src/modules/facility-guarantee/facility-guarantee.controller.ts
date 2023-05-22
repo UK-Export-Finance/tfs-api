@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseArrayPipe, Post, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Param, Post, UsePipes, ValidationPipe } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -10,6 +10,7 @@ import {
   ApiParam,
 } from '@nestjs/swagger';
 import { EXAMPLES } from '@ukef/constants';
+import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decorator';
 
 import { CreateFacilityGuaranteeRequest, CreateFacilityGuaranteeRequestItem } from './dto/create-facility-guarantee-request.dto';
 import { CreateFacilityGuaranteeResponse } from './dto/create-facility-guarantee-response.dto';
@@ -85,7 +86,7 @@ export class FacilityGuaranteeController {
   @UsePipes(new ValidationPipe({ skipMissingProperties: true }))
   async createGuaranteeForFacility(
     @Param() params: FacilityGuaranteesParamsDto,
-    @Body(new ParseArrayPipe({ items: CreateFacilityGuaranteeRequestItem, whitelist: true })) newGuaranteeRequest: CreateFacilityGuaranteeRequest,
+    @ValidatedArrayBody({ items: CreateFacilityGuaranteeRequestItem }) newGuaranteeRequest: CreateFacilityGuaranteeRequest,
   ): Promise<CreateFacilityGuaranteeResponse> {
     await this.facilityGuaranteeService.createGuaranteeForFacility(params.facilityIdentifier, newGuaranteeRequest[0]);
     return new CreateFacilityGuaranteeResponse(params.facilityIdentifier);

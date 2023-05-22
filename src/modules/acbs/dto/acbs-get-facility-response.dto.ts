@@ -57,4 +57,5 @@ export interface AcbsGetFacilityResponseDto {
   };
   CompBalPctReserve: number | null;
   CompBalPctAmount: number | null;
+  AdministrativeUserIdentifier: string;
 }

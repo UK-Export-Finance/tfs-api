@@ -40,7 +40,7 @@ describe('GET /facilities/{facilityIdentifier}', () => {
   });
 
   const { idToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
-    givenRequestWouldOtherwiseSucceed: () => requestToGetFacility().reply(200, facilityInAcbs),
+    givenRequestWouldOtherwiseSucceed: () => givenRequestToGetFacilityInAcbsSucceeds(),
     makeRequest: () => api.get(getFacilityUrl),
   });
 
@@ -200,4 +200,6 @@ describe('GET /facilities/{facilityIdentifier}', () => {
     nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
       .get(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}`)
       .matchHeader('authorization', `Bearer ${idToken}`);
+
+  const givenRequestToGetFacilityInAcbsSucceeds = () => requestToGetFacility().reply(200, facilityInAcbs);
 });

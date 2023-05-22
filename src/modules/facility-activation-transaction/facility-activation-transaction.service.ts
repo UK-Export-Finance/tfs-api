@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { PROPERTIES } from '@ukef/constants';
 import { AcbsPartyId, DateOnlyString, UkefId } from '@ukef/helpers';
 import { AcbsBundleInformationService } from '@ukef/modules/acbs/acbs-bundle-information.service';
+import { AcbsCreateBundleInformationRequestDto } from '@ukef/modules/acbs/dto/acbs-create-bundle-information-request.dto';
+import { FacilityCodeValueTransaction } from '@ukef/modules/acbs/dto/bundle-actions/facility-code-value-transaction.bundle-action';
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 
@@ -24,7 +26,7 @@ export class FacilityActivationTransactionService {
   ): Promise<CreateFacilityActivationTransactionResponse> {
     const idToken = await this.acbsAuthenticationService.getIdToken();
 
-    const bundleInformationToCreateInAcbs = {
+    const bundleInformationToCreateInAcbs: AcbsCreateBundleInformationRequestDto<FacilityCodeValueTransaction> = {
       PortfolioIdentifier: PROPERTIES.GLOBAL.portfolioIdentifier,
       InitialBundleStatusCode: newFacilityActivationTransaction.initialBundleStatusCode,
       InitiatingUserName: PROPERTIES.FACILITY_ACTIVATION_TRANSACTION.DEFAULT.initiatingUserName,

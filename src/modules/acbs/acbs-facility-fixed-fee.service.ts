@@ -7,7 +7,7 @@ import { AcbsHttpService } from './acbs-http.service';
 import { AcbsCreateFacilityFixedFeeRequestDto } from './dto/acbs-create-facility-fixed-fee-request.dto';
 import { AcbsGetFacilityFixedFeeResponseDto } from './dto/acbs-get-facility-fixed-fee-response.dto';
 import { postInvalidPortfolioAndFacilityIdCombinationKnownAcbsError } from './known-errors';
-import { createWrapAcbsHttpGetErrorCallback, createWrapAcbsHttpPostErrorCallback } from './wrap-acbs-http-error-callback';
+import { createWrapAcbsHttpGetErrorCallback, createWrapAcbsHttpPostOrPutErrorCallback } from './wrap-acbs-http-error-callback';
 
 export class AcbsFacilityFixedFeeService {
   private readonly acbsHttpService: AcbsHttpService;
@@ -39,7 +39,7 @@ export class AcbsFacilityFixedFeeService {
       path: `/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/Fee/FixedFee`,
       requestBody: newFacilityFixedFee,
       idToken,
-      onError: createWrapAcbsHttpPostErrorCallback({
+      onError: createWrapAcbsHttpPostOrPutErrorCallback({
         messageForUnknownError: `Failed to create a fixed fee for facility ${facilityIdentifier} in ACBS.`,
         knownErrors: [postInvalidPortfolioAndFacilityIdCombinationKnownAcbsError(facilityIdentifier)],
       }),
