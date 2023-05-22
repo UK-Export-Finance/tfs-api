@@ -14,6 +14,7 @@ export interface withBaseFacilityFieldsValidationApiTestInterface {
   validRequestBody: BaseFacilityRequestItem[] | BaseFacilityRequestItem;
   makeRequest: ((body: unknown[]) => request.Test) | ((body: unknown) => request.Test);
   givenAnyRequestBodyWouldSucceed: () => void;
+  includeIssueDate?: boolean;
 }
 
 export function withBaseFacilityFieldsValidationApiTests({
@@ -21,7 +22,19 @@ export function withBaseFacilityFieldsValidationApiTests({
   validRequestBody,
   makeRequest,
   givenAnyRequestBodyWouldSucceed,
+  includeIssueDate = true,
 }: withBaseFacilityFieldsValidationApiTestInterface) {
+  if (!includeIssueDate) {
+    withDateOnlyFieldValidationApiTests({
+      fieldName: 'issueDate',
+      required: false,
+      nullable: true,
+      validRequestBody,
+      makeRequest,
+      givenAnyRequestBodyWouldSucceed,
+    });
+  }
+
   withDealIdentifierFieldValidationApiTests({
     valueGenerator,
     validRequestBody,

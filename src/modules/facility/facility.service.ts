@@ -6,7 +6,7 @@ import { AcbsCreateFacilityRequest } from '@ukef/modules/acbs/dto/acbs-create-fa
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 
 import { AcbsBaseFacilityRequest } from '../acbs/dto/acbs-base-facility-request.dto';
-import { AcbsUpdateFacilityRequest, AcbsUpdateFacilityRequestWithoutGetFacilityAdditionalFields } from '../acbs/dto/acbs-update-facility-request.dto';
+import { AcbsUpdateFacilityRequest } from '../acbs/dto/acbs-update-facility-request.dto';
 import { CurrentDateProvider } from '../date/current-date.provider';
 import { DateStringTransformations } from '../date/date-string.transformations';
 import { BaseFacilityRequestItemWithFacilityIdentifier } from './dto/base-facility-request.dto';
@@ -72,12 +72,38 @@ export class FacilityService {
     const { portfolioIdentifier } = PROPERTIES.GLOBAL;
     const idToken = await this.acbsAuthenticationService.getIdToken();
 
+    if (!updateFacilityRequest.issueDate) {
+      throw new BadRequestException('Bad request', { description: 'Issue date is not present' });
+    }
+
     if (this.isFacilityUnissued(updateFacilityRequest.facilityStageCode)) {
       throw new BadRequestException('Bad request', { description: 'Facility stage code is not issued' });
     }
 
+    await this.buildReqestAndUpdateFacility(updateFacilityRequest, facilityIdentifier, idToken, portfolioIdentifier);
+  }
+
+  async amendFacilityExpiryDateByIdentifier(facilityIdentifier: string, updateFacilityRequest: UpdateFacilityRequest): Promise<void> {
+    const { portfolioIdentifier } = PROPERTIES.GLOBAL;
+    const idToken = await this.acbsAuthenticationService.getIdToken();
+
+    await this.buildReqestAndUpdateFacility(updateFacilityRequest, facilityIdentifier, idToken, portfolioIdentifier);
+  }
+
+  private async buildReqestAndUpdateFacility(
+    updateFacilityRequest: UpdateFacilityRequest,
+    facilityIdentifier: string,
+    idToken: string,
+    portfolioIdentifier: string,
+  ) {
+    const acbsUpdateFacilityRequest: AcbsUpdateFacilityRequest = await this.buildAcbsUpdateFacilityRequest(updateFacilityRequest, facilityIdentifier, idToken);
+
+    await this.acbsFacilityService.updateFacilityByIdentifier(portfolioIdentifier, acbsUpdateFacilityRequest, idToken);
+  }
+
+  private async buildAcbsUpdateFacilityRequest(updateFacilityRequest: UpdateFacilityRequest, facilityIdentifier: string, idToken: string) {
     const updateFacilityRequestWithFacilityIdentifier: UpdateFacilityRequestWithFacilityIdentifier = { ...updateFacilityRequest, facilityIdentifier };
-    const acbsUpdateFacilityRequest = this.buildUpdateAcbsFacilityRequest(updateFacilityRequestWithFacilityIdentifier);
+    const acbsUpdateFacilityRequest = this.buildBaseAcbsFacilityRequest(updateFacilityRequestWithFacilityIdentifier);
 
     const existingAcbsFacilityData = await this.acbsFacilityService.getFacilityByIdentifier(facilityIdentifier, idToken);
     // Remove AdministrativeUserIdentifier as its a depreciated field and
@@ -85,7 +111,7 @@ export class FacilityService {
     delete existingAcbsFacilityData.AdministrativeUserIdentifier;
 
     const acbsMergedUpdateFacilityRequest: AcbsUpdateFacilityRequest = { ...existingAcbsFacilityData, ...acbsUpdateFacilityRequest };
-    await this.acbsFacilityService.updateFacilityByIdentifier(portfolioIdentifier, acbsMergedUpdateFacilityRequest, idToken);
+    return acbsMergedUpdateFacilityRequest;
   }
 
   private buildCreateAcbsFacilityRequest(facilityToCreate: CreateFacilityRequestItem): AcbsCreateFacilityRequest {
@@ -94,12 +120,6 @@ export class FacilityService {
     const description = this.buildFacilityDescriptionToCreate(facilityToCreate.productTypeName, facilityToCreate.exposurePeriod);
     const facilityInitialStatus = { FacilityInitialStatusCode: defaultValues.facilityInitialStatusCode };
     return { ...acbsBaseFacilityRequest, Description: description, FacilityInitialStatus: facilityInitialStatus };
-  }
-
-  private buildUpdateAcbsFacilityRequest(
-    facilityToUpdate: UpdateFacilityRequestWithFacilityIdentifier,
-  ): AcbsUpdateFacilityRequestWithoutGetFacilityAdditionalFields {
-    return this.buildBaseAcbsFacilityRequest(facilityToUpdate);
   }
 
   private buildBaseAcbsFacilityRequest(facilityToTranform: BaseFacilityRequestItemWithFacilityIdentifier): AcbsBaseFacilityRequest {

@@ -1,7 +1,5 @@
-import { BadRequestException } from '@nestjs/common';
 import { PROPERTIES } from '@ukef/constants';
 import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
-import { TEST_FACILITY_STAGE_CODE } from '@ukef-test/support/constants/test-issue-code.constant';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { UpdateFacilityGenerator } from '@ukef-test/support/generator/update-facility-generator';
 import { when } from 'jest-when';
@@ -22,24 +20,24 @@ describe('FacilityService', () => {
   const idToken = valueGenerator.string();
   const facilityIdentifier = valueGenerator.facilityId();
   const { portfolioIdentifier } = PROPERTIES.GLOBAL;
-  const { unissuedFacilityStageCode } = TEST_FACILITY_STAGE_CODE;
 
-  const issueFacility = (updateFacilityRequest: UpdateFacilityRequest): Promise<void> =>
-    service.issueFacilityByIdentifier(facilityIdentifier, updateFacilityRequest);
+  const amendExpiryDateByIdentifier = (updateFacilityRequest: UpdateFacilityRequest): Promise<void> =>
+    service.amendFacilityExpiryDateByIdentifier(facilityIdentifier, updateFacilityRequest);
 
   let acbsFacilityServiceUpdateFacilityByIdentifier: jest.Mock;
   let acbsFacilityServiceGetFacilityByIdentifier: jest.Mock;
   let service: FacilityService;
 
   beforeEach(() => {
-    acbsFacilityServiceUpdateFacilityByIdentifier = jest.fn();
     const acbsFacilityService = new AcbsFacilityService(null, null);
-    acbsFacilityService.updateFacilityByIdentifier = acbsFacilityServiceUpdateFacilityByIdentifier;
 
     const mockAcbsAuthenticationService = getMockAcbsAuthenticationService();
     const acbsAuthenticationService = mockAcbsAuthenticationService.service;
     const acbsAuthenticationServiceGetIdToken = mockAcbsAuthenticationService.getIdToken;
     when(acbsAuthenticationServiceGetIdToken).calledWith().mockResolvedValueOnce(idToken);
+
+    acbsFacilityServiceUpdateFacilityByIdentifier = jest.fn();
+    acbsFacilityService.updateFacilityByIdentifier = acbsFacilityServiceUpdateFacilityByIdentifier;
 
     acbsFacilityServiceGetFacilityByIdentifier = jest.fn();
     acbsFacilityService.getFacilityByIdentifier = acbsFacilityServiceGetFacilityByIdentifier;
@@ -52,7 +50,7 @@ describe('FacilityService', () => {
     dateStringTransformations,
   ).generate({ numberToGenerate: 1, facilityIdentifier });
 
-  describe('issueFacilityByIdentifier', () => {
+  describe('amendExpiryDateByIdentifier', () => {
     const getAcbsFacilityServiceGetFacilityByIdentifierMock = () => acbsFacilityServiceGetFacilityByIdentifier;
     const getAcbsFacilityServiceUpdateFacilityByIdentifierMock = () => acbsFacilityServiceUpdateFacilityByIdentifier;
 
@@ -61,58 +59,12 @@ describe('FacilityService', () => {
     const expectAcbsUpdateFacilityToBeCalledWith = (acbsUpdateFacilityRequest: AcbsUpdateFacilityRequest) =>
       expect(acbsFacilityServiceUpdateFacilityByIdentifier).toHaveBeenCalledWith(portfolioIdentifier, acbsUpdateFacilityRequest, idToken);
 
-    it('throws an error if the new facility stage code is not issued', async () => {
-      const modifiedUpdateFacilityRequest = { ...updateFacilityRequest, facilityStageCode: unissuedFacilityStageCode };
-
-      const responsePromise = service.issueFacilityByIdentifier(facilityIdentifier, modifiedUpdateFacilityRequest);
-
-      await expect(responsePromise).rejects.toBeInstanceOf(BadRequestException);
-      await expect(responsePromise).rejects.toThrow('Bad request');
-      await expect(responsePromise).rejects.toHaveProperty('response.error', 'Facility stage code is not issued');
-    });
-
-    it('throws an error if the issue date is not present', async () => {
-      const modifiedUpdateFacilityRequest = { ...updateFacilityRequest };
-
-      delete modifiedUpdateFacilityRequest.issueDate;
-
-      const responsePromise = service.issueFacilityByIdentifier(facilityIdentifier, modifiedUpdateFacilityRequest);
-
-      await expect(responsePromise).rejects.toBeInstanceOf(BadRequestException);
-      await expect(responsePromise).rejects.toThrow('Bad request');
-      await expect(responsePromise).rejects.toHaveProperty('response.error', 'Issue date is not present');
-    });
-
-    it('throws an error if the issue date is null', async () => {
-      const modifiedUpdateFacilityRequest = { ...updateFacilityRequest };
-
-      modifiedUpdateFacilityRequest.issueDate = null;
-
-      const responsePromise = service.issueFacilityByIdentifier(facilityIdentifier, modifiedUpdateFacilityRequest);
-
-      await expect(responsePromise).rejects.toBeInstanceOf(BadRequestException);
-      await expect(responsePromise).rejects.toThrow('Bad request');
-      await expect(responsePromise).rejects.toHaveProperty('response.error', 'Issue date is not present');
-    });
-
-    it('throws an error if the issue date is undefined', async () => {
-      const modifiedUpdateFacilityRequest = { ...updateFacilityRequest };
-
-      modifiedUpdateFacilityRequest.issueDate = undefined;
-
-      const responsePromise = service.issueFacilityByIdentifier(facilityIdentifier, modifiedUpdateFacilityRequest);
-
-      await expect(responsePromise).rejects.toBeInstanceOf(BadRequestException);
-      await expect(responsePromise).rejects.toThrow('Bad request');
-      await expect(responsePromise).rejects.toHaveProperty('response.error', 'Issue date is not present');
-    });
-
     const testArgs: UpdateFacilityTestPartsArgs = {
       valueGenerator,
       updateFacilityRequest,
       acbsGetExistingFacilityResponse,
       acbsUpdateFacilityRequest,
-      updateFacility: issueFacility,
+      updateFacility: amendExpiryDateByIdentifier,
       expectAcbsUpdateFacilityToBeCalledWith,
       getAcbsGetFacilityRequestMock,
       getAcbsFacilityServiceGetFacilityByIdentifierMock,
