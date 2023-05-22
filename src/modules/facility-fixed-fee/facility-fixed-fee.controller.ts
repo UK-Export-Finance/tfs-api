@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseArrayPipe, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Param, ParseArrayPipe, Post } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -40,14 +40,14 @@ export class FacilityFixedFeeController {
 
   @Post('facilities/:facilityIdentifier/fixed-fees')
   @ApiOperation({
-    summary: 'Create a new activation transaction for a facility.',
+    summary: 'Create a new fixed fee for a facility.',
   })
   @ApiBody({
     type: CreateFacilityFixedFeeRequestItem,
     isArray: true,
   })
   @ApiCreatedResponse({
-    description: 'The activation transaction has been successfully created.',
+    description: 'The fixed fee has been successfully created.',
     type: CreateFacilityFixedFeeResponse,
   })
   @ApiNotFoundResponse({
@@ -65,6 +65,14 @@ export class FacilityFixedFeeController {
     newCreateFacilityFixedFeeRequest: CreateFacilityFixedFeeRequest,
   ): Promise<CreateFacilityFixedFeeResponse> {
     const facility = await this.facilityService.getFacilityByIdentifier(params.facilityIdentifier);
+
+    if (facility.facilityStageCode !== '07') {
+      throw new BadRequestException('Bad Request', 'Facility needs to be issued before Fee is created');
+    }
+
+    if (facility.facilityOverallStatus !== 'A') {
+      throw new BadRequestException('Bad Request', 'Facility needs to be activated before Fee is created');
+    }
 
     const newCreateFacilityFixedFee = newCreateFacilityFixedFeeRequest[0];
 

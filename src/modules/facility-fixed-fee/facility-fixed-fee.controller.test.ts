@@ -1,3 +1,4 @@
+import { BadRequestException } from '@nestjs/common';
 import { ENUMS } from '@ukef/constants';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { FacilityService } from '@ukef/modules/facility/facility.service';
@@ -63,6 +64,8 @@ describe('FacilityFixedFeeController', () => {
       when(getFacilityByIdentifierFacilityService).calledWith(facilityIdentifier).mockResolvedValueOnce({
         productTypeId: facilityTypeCode,
         obligorPartyIdentifier: borrowerPartyIdentifier,
+        facilityOverallStatus: 'A',
+        facilityStageCode: '07',
       });
 
       await controller.createFixedFeeForFacility({ facilityIdentifier }, requestBodyToCreateFacilityFixedFee);
@@ -79,11 +82,39 @@ describe('FacilityFixedFeeController', () => {
       when(getFacilityByIdentifierFacilityService).calledWith(facilityIdentifier).mockResolvedValueOnce({
         productTypeId: facilityTypeCode,
         obligorPartyIdentifier: borrowerPartyIdentifier,
+        facilityOverallStatus: 'A',
+        facilityStageCode: '07',
       });
 
       const response = await controller.createFixedFeeForFacility({ facilityIdentifier }, requestBodyToCreateFacilityFixedFee);
 
       expect(response).toEqual({ facilityIdentifier });
+    });
+
+    it('returns activation error if the facility is not active', async () => {
+      when(getFacilityByIdentifierFacilityService).calledWith(facilityIdentifier).mockResolvedValueOnce({
+        facilityOverallStatus: 'D',
+        facilityStageCode: '07',
+      });
+
+      const responsePromise = controller.createFixedFeeForFacility({ facilityIdentifier }, requestBodyToCreateFacilityFixedFee);
+
+      await expect(responsePromise).rejects.toBeInstanceOf(BadRequestException);
+      await expect(responsePromise).rejects.toThrow('Bad Request');
+      await expect(responsePromise).rejects.toHaveProperty('response.error', 'Facility needs to be activated before Fee is created');
+    });
+
+    it('returns Facility not issued error if the facility is not active', async () => {
+      when(getFacilityByIdentifierFacilityService).calledWith(facilityIdentifier).mockResolvedValueOnce({
+        facilityOverallStatus: 'A',
+        facilityStageCode: '06',
+      });
+
+      const responsePromise = controller.createFixedFeeForFacility({ facilityIdentifier }, requestBodyToCreateFacilityFixedFee);
+
+      await expect(responsePromise).rejects.toBeInstanceOf(BadRequestException);
+      await expect(responsePromise).rejects.toThrow('Bad Request');
+      await expect(responsePromise).rejects.toHaveProperty('response.error', 'Facility needs to be issued before Fee is created');
     });
   });
 });

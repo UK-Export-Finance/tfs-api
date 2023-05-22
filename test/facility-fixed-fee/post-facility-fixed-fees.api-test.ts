@@ -36,6 +36,8 @@ describe('POST /facilities/{facilityIdentifier}/fixed-fees', () => {
     ...facilitiesInAcbs[0],
     FacilityType: { FacilityTypeCode: facilityTypeCode },
     BorrowerParty: { PartyIdentifier: borrowerPartyIdentifier, PartyName1: valueGenerator.string() },
+    FacilityUserDefinedList1: { FacilityUserDefinedList1Code: '07' }, // Set stage to issued
+    FacilityOverallStatus: { FacilityStatusCode: 'A' }, // Set status to active
   };
 
   const { acbsRequestBodyToCreateFacilityFixedFee, requestBodyToCreateFacilityFixedFee } = new CreateFacilityFixedFeeGenerator(
@@ -93,6 +95,38 @@ describe('POST /facilities/{facilityIdentifier}/fixed-fees', () => {
       facilityIdentifier,
     });
     expect(acbsRequest.isDone()).toBe(true);
+  });
+
+  describe('Facility state checks', () => {
+    beforeEach(() => {
+      givenAuthenticationWithTheIdpSucceeds();
+    });
+
+    it('returns a 400 response if ACBS respond with Facility status that is not A', async () => {
+      const facilityNotActive: AcbsGetFacilityResponseDto = {
+        ...facilityInAcbs,
+        FacilityOverallStatus: { FacilityStatusCode: 'D' },
+      };
+      givenRequestToGetFacilityFromAcbsSucceedsReturning(facilityNotActive);
+
+      const { status, body } = await api.post(createFacilityFixedFeeUrl, requestBodyToCreateFacilityFixedFee);
+
+      expect(status).toBe(400);
+      expect(body).toStrictEqual({ message: 'Bad Request', error: 'Facility needs to be activated before Fee is created', statusCode: 400 });
+    });
+
+    it('returns a 400 response if ACBS respond with Facility stage that is not issued', async () => {
+      const facilityNotIssued: AcbsGetFacilityResponseDto = {
+        ...facilityInAcbs,
+        FacilityUserDefinedList1: { FacilityUserDefinedList1Code: '06' },
+      };
+      givenRequestToGetFacilityFromAcbsSucceedsReturning(facilityNotIssued);
+
+      const { status, body } = await api.post(createFacilityFixedFeeUrl, requestBodyToCreateFacilityFixedFee);
+
+      expect(status).toBe(400);
+      expect(body).toStrictEqual({ message: 'Bad Request', error: 'Facility needs to be issued before Fee is created', statusCode: 400 });
+    });
   });
 
   describe('InvolvedParty mapping', () => {

@@ -390,7 +390,7 @@ paths:
           description: An internal server error has occurred.
     post:
       operationId: FacilityFixedFeeController_createFixedFeeForFacility
-      summary: Create a new activation transaction for a facility.
+      summary: Create a new fixed fee for a facility.
       parameters:
         - name: facilityIdentifier
           required: true
@@ -412,7 +412,7 @@ paths:
                 $ref: '#/components/schemas/CreateFacilityFixedFeeRequestItem'
       responses:
         '201':
-          description: The activation transaction has been successfully created.
+          description: The fixed fee has been successfully created.
           content:
             application/json:
               schema:
