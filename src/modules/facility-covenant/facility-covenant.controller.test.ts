@@ -76,7 +76,7 @@ describe('FacilityCovenantController', () => {
   });
 
   describe('getCovenantsForFacility', () => {
-    const portfolioIdentifier = valueGenerator.string();
+    const portfolioIdentifier = valueGenerator.portfolioId();
 
     const { facilityCovenantsFromApi: covenantsFromService } = new GetFacilityCovenantGenerator(valueGenerator, dateStringTransformations).generate({
       numberToGenerate: 2,

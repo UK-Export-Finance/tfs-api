@@ -9,7 +9,7 @@ import { FacilityLoanService } from './facility-loan.service';
 
 describe('FacilityLoanController', () => {
   const valueGenerator = new RandomValueGenerator();
-  const portfolioIdentifier = valueGenerator.string();
+  const portfolioIdentifier = valueGenerator.portfolioId();
   const facilityIdentifier = valueGenerator.facilityId();
 
   let getFacilityLoansService: jest.Mock;
