@@ -78,7 +78,7 @@ export class FacilityCovenantController {
   })
   @ApiOkResponse({
     description:
-      'The covenants for the facility have been retrieved. Due to limitations of ACBS, there is no 404 response; instead, an empty array means that either the facility does not exist or it has no covenants.',
+      'The covenants for the facility have been retrieved; an empty array means that the facility does not exist/has no covenants (due to limitations of ACBS, there is no 404 response).',
     type: GetFacilityCovenantsResponseDto,
     isArray: true,
   })
@@ -105,7 +105,7 @@ export class FacilityCovenantController {
   })
   @ApiOkResponse({
     description:
-      'The covenants for the facility have been updated. Due to limitations of ACBS, there is no 404 response; if the facility does not exist or it has no covenants, we will receive a 200 response',
+      'The covenants for the facility have been updated or the facility does not exist/has no covenants (due to limitations of ACBS, there is no 404 response).',
     type: CreateOrUpdateFacilityCovenantsResponseDto,
   })
   @ApiBadRequestResponse({

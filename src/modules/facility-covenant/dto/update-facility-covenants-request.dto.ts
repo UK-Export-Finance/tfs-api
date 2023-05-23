@@ -9,7 +9,7 @@ export class UpdateFacilityCovenantsRequestDto {
     minimum: 0,
     required: false,
     nullable: false,
-    example: EXAMPLES.TARGET_AMOUNT,
+    example: EXAMPLES.DEAL_OR_FACILITY_VALUE,
   })
   readonly targetAmount?: number;
 

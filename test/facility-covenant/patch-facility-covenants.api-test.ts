@@ -333,10 +333,34 @@ describe('PATCH /facilities/{facilityIdentifier}/covenants', () => {
       expect(status).toBe(400);
     });
 
+    it('returns a 400 response if the request body is a number', async () => {
+      givenAnyRequestBodyWouldSucceed();
+
+      const { status } = await api.patch(updateFacilityCovenantUrl, JSON.stringify(2));
+
+      expect(status).toBe(400);
+    });
+
     it('returns a 400 response if the request body is null', async () => {
       givenAnyRequestBodyWouldSucceed();
 
       const { status } = await api.patch(updateFacilityCovenantUrl, null);
+
+      expect(status).toBe(400);
+    });
+
+    it('returns a 400 response if the request body is the boolean value true', async () => {
+      givenAnyRequestBodyWouldSucceed();
+
+      const { status } = await api.patch(updateFacilityCovenantUrl, JSON.stringify(true));
+
+      expect(status).toBe(400);
+    });
+
+    it('returns a 400 response if the request body is the boolean value false', async () => {
+      givenAnyRequestBodyWouldSucceed();
+
+      const { status } = await api.patch(updateFacilityCovenantUrl, JSON.stringify(false));
 
       expect(status).toBe(400);
     });
