@@ -88,5 +88,19 @@ describe('logKeysToRedact', () => {
       expect(result).toContain(buildKeyToRedact([logKey, 'innerError', sensitiveChildKeys[0]]));
       expect(result).toContain(buildKeyToRedact([logKey, 'innerError', sensitiveChildKeys[1]]));
     });
+
+    it('includes all sensitive child keys of an error cause', () => {
+      const { logKey, sensitiveChildKeys } = options.error;
+
+      expect(result).toContain(buildKeyToRedact([logKey, 'options', 'cause', sensitiveChildKeys[0]]));
+      expect(result).toContain(buildKeyToRedact([logKey, 'options', 'cause', sensitiveChildKeys[1]]));
+    });
+
+    it(`includes all sensitive child keys of an error cause's inner error`, () => {
+      const { logKey, sensitiveChildKeys } = options.error;
+
+      expect(result).toContain(buildKeyToRedact([logKey, 'options', 'cause', 'innerError', sensitiveChildKeys[0]]));
+      expect(result).toContain(buildKeyToRedact([logKey, 'options', 'cause', 'innerError', sensitiveChildKeys[1]]));
+    });
   });
 });

@@ -1,6 +1,7 @@
 import { PROPERTIES } from '@ukef/constants';
 import { DateOnlyString, DateString } from '@ukef/helpers';
 import { AcbsCreateDealDto } from '@ukef/modules/acbs/dto/acbs-create-deal.dto';
+import { AcbsUpdateDealBorrowingRestrictionRequest } from '@ukef/modules/acbs/dto/acbs-update-deal-borrowing-restriction-request.dto';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { CreateDealRequestItem } from '@ukef/modules/deal/dto/create-deal-request.dto';
 import { TEST_CURRENCIES } from '@ukef-test/support/constants/test-currency.constant';
@@ -198,13 +199,29 @@ export class CreateDealGenerator extends AbstractGenerator<DealValues, GenerateR
       },
     };
 
+    const acbsUpdateDealBorrowingRestrictionRequest: AcbsUpdateDealBorrowingRestrictionRequest = this.buildAcbsUpdateDealBorrowingRestrictionRequest();
+
     return {
       acbsCreateDealRequest,
+      acbsUpdateDealBorrowingRestrictionRequest,
       createDealRequestItem,
       guaranteeCommencementDateAsDate: dealValues.guaranteeCommencementDateAsDate,
       guaranteeCommencementDateString: dealValues.guaranteeCommencementDateAsDateString,
       guaranteeCommencementDateForDescription: dealValues.guaranteeCommencementDateForDescription,
     };
+  }
+
+  private buildAcbsUpdateDealBorrowingRestrictionRequest() {
+    const borrowingRestrictionDefaultValues = PROPERTIES.DEAL_BORROWING_RESTRICTION.DEFAULT;
+    const acbsUpdateDealBorrowingRestrictionRequest: AcbsUpdateDealBorrowingRestrictionRequest = {
+      SequenceNumber: borrowingRestrictionDefaultValues.sequenceNumber,
+      RestrictGroupCategory: {
+        RestrictGroupCategoryCode: borrowingRestrictionDefaultValues.restrictGroupCategory.restrictGroupCategoryCode,
+      },
+      IncludingIndicator: borrowingRestrictionDefaultValues.includingIndicator,
+      IncludeExcludeAllItemsIndicator: borrowingRestrictionDefaultValues.includeExcludeAllItemsIndicator,
+    };
+    return acbsUpdateDealBorrowingRestrictionRequest;
   }
 }
 
@@ -224,6 +241,7 @@ interface DealValues {
 
 interface GenerateResult {
   acbsCreateDealRequest: AcbsCreateDealDto;
+  acbsUpdateDealBorrowingRestrictionRequest: AcbsUpdateDealBorrowingRestrictionRequest;
   createDealRequestItem: CreateDealRequestItem;
   guaranteeCommencementDateAsDate: Date;
   guaranteeCommencementDateString: string;
