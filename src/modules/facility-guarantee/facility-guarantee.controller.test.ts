@@ -1,8 +1,8 @@
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { GetFacilityGuaranteeGenerator } from '@ukef-test/support/generator/get-facility-guarantee-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
 
-import { DateStringTransformations } from '../date/date-string.transformations';
 import { CreateFacilityGuaranteeRequestItem } from './dto/create-facility-guarantee-request.dto';
 import { CreateFacilityGuaranteeResponse } from './dto/create-facility-guarantee-response.dto';
 import { FacilityGuaranteeController } from './facility-guarantee.controller';
@@ -10,7 +10,7 @@ import { FacilityGuaranteeService } from './facility-guarantee.service';
 
 describe('FacilityGuaranteeController', () => {
   const valueGenerator = new RandomValueGenerator();
-  const portfolioIdentifier = valueGenerator.string();
+  const portfolioIdentifier = valueGenerator.portfolioId();
   const facilityIdentifier = valueGenerator.facilityId();
 
   const { facilityGuarantees: guaranteesFromService } = new GetFacilityGuaranteeGenerator(valueGenerator, new DateStringTransformations()).generate({
