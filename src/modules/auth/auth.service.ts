@@ -10,7 +10,7 @@ export class AuthService {
   ) {}
 
   validateApiKey(key: string): boolean {
-    const apiKey: string = this.config.apiKey;
+    const { apiKey } = this.config;
     return apiKey === key;
   }
 }

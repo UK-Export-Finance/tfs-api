@@ -27,6 +27,7 @@ export function withNumberFieldValidationApiTests<RequestBodyItem>({
   const fieldName = fieldNameSymbol.toString();
   const valueGenerator = new RandomValueGenerator();
   required = required ?? true;
+  const [validRequestItem] = validRequestBody;
 
   describe(`${fieldName} validation`, () => {
     beforeEach(() => {
@@ -35,7 +36,7 @@ export function withNumberFieldValidationApiTests<RequestBodyItem>({
 
     if (required) {
       it(`returns a 400 response if ${fieldName} is not present`, async () => {
-        const { [fieldNameSymbol]: _removed, ...requestWithoutField } = validRequestBody[0];
+        const { [fieldNameSymbol]: _removed, ...requestWithoutField } = validRequestItem;
 
         const { status, body } = await makeRequest([requestWithoutField]);
 
@@ -48,7 +49,7 @@ export function withNumberFieldValidationApiTests<RequestBodyItem>({
       });
 
       it(`returns a 400 response if ${fieldName} is null`, async () => {
-        const requestWithNullField = { ...validRequestBody[0], [fieldNameSymbol]: null };
+        const requestWithNullField = { ...validRequestItem, [fieldNameSymbol]: null };
 
         const { status, body } = await makeRequest([requestWithNullField]);
 
@@ -61,7 +62,7 @@ export function withNumberFieldValidationApiTests<RequestBodyItem>({
       });
     } else {
       it(`returns a 201 response if ${fieldName} is not present`, async () => {
-        const { [fieldNameSymbol]: _removed, ...requestWithoutField } = validRequestBody[0];
+        const { [fieldNameSymbol]: _removed, ...requestWithoutField } = validRequestItem;
 
         const { status } = await makeRequest([requestWithoutField]);
 
@@ -71,7 +72,7 @@ export function withNumberFieldValidationApiTests<RequestBodyItem>({
 
     if (minimum) {
       it(`returns a 400 response if ${fieldName} is less than minimum`, async () => {
-        const requestWithNegativeField = [{ ...validRequestBody[0], [fieldNameSymbol]: minimum - 0.01 }];
+        const requestWithNegativeField = [{ ...validRequestItem, [fieldNameSymbol]: minimum - 0.01 }];
 
         const { status, body } = await makeRequest(requestWithNegativeField);
 
@@ -86,7 +87,7 @@ export function withNumberFieldValidationApiTests<RequestBodyItem>({
 
     if (forbidZero) {
       it(`returns a 400 response if ${fieldName} is 0`, async () => {
-        const requestWithZeroValue = [{ ...validRequestBody[0], [fieldNameSymbol]: 0 }];
+        const requestWithZeroValue = [{ ...validRequestItem, [fieldNameSymbol]: 0 }];
 
         const { status, body } = await makeRequest(requestWithZeroValue);
 
@@ -105,7 +106,7 @@ export function withNumberFieldValidationApiTests<RequestBodyItem>({
 
       it(`returns a 201 response if ${fieldName} does match the enum`, async () => {
         const requestWithInvalidField = [
-          { ...validRequestBody[0], [fieldNameSymbol]: possibleValues[valueGenerator.integer({ min: 0, max: possibleValues.length - 1 })] },
+          { ...validRequestItem, [fieldNameSymbol]: possibleValues[valueGenerator.integer({ min: 0, max: possibleValues.length - 1 })] },
         ];
 
         const { status } = await makeRequest(requestWithInvalidField);
@@ -114,7 +115,7 @@ export function withNumberFieldValidationApiTests<RequestBodyItem>({
       });
 
       it(`returns a 400 response if ${fieldName} does not match the enum`, async () => {
-        const requestWithInvalidField = [{ ...validRequestBody[0], [fieldNameSymbol]: generateFieldValueThatDoesNotMatchEnum() }];
+        const requestWithInvalidField = [{ ...validRequestItem, [fieldNameSymbol]: generateFieldValueThatDoesNotMatchEnum() }];
 
         const { status, body } = await makeRequest(requestWithInvalidField);
 
@@ -128,7 +129,7 @@ export function withNumberFieldValidationApiTests<RequestBodyItem>({
     } else {
       if (minimum) {
         it(`returns a 201 response if ${fieldName} is minimum`, async () => {
-          const requestWithZeroField = [{ ...validRequestBody[0], [fieldNameSymbol]: minimum }];
+          const requestWithZeroField = [{ ...validRequestItem, [fieldNameSymbol]: minimum }];
 
           const { status } = await makeRequest(requestWithZeroField);
 
@@ -136,7 +137,7 @@ export function withNumberFieldValidationApiTests<RequestBodyItem>({
         });
 
         it(`returns a 201 response if ${fieldName} is greater than minimum`, async () => {
-          const requestWithZeroField = [{ ...validRequestBody[0], [fieldNameSymbol]: minimum + 1 }];
+          const requestWithZeroField = [{ ...validRequestItem, [fieldNameSymbol]: minimum + 1 }];
 
           const { status } = await makeRequest(requestWithZeroField);
 

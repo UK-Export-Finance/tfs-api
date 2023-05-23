@@ -22,8 +22,8 @@ describe('GET /facilities/{facilityIdentifier}', () => {
     portfolioIdentifier,
   });
 
-  const facilityInAcbs = facilitiesInAcbs[0];
-  const expectedFacility = facilitiesFromApi[0];
+  const [facilityInAcbs] = facilitiesInAcbs;
+  const [expectedFacility] = facilitiesFromApi;
 
   let api: Api;
 

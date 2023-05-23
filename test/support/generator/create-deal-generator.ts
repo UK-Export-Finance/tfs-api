@@ -36,7 +36,7 @@ export class CreateDealGenerator extends AbstractGenerator<DealValues, GenerateR
   }
 
   protected transformRawValuesToGeneratedValues(values: DealValues[], _options: GenerateOptions): GenerateResult {
-    const dealValues = values[0];
+    const [dealValues] = values;
     const { portfolioIdentifier } = PROPERTIES.GLOBAL;
 
     const createDealRequestItem: CreateDealRequestItem = {

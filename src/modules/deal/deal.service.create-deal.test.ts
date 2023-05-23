@@ -72,7 +72,7 @@ describe('DealService', () => {
 
       await service.createDeal(dealWithTooLongObligorName);
 
-      const dealCreatedInAcbs: AcbsCreateDealDto = acbsDealServiceCreateDeal.mock.calls[0][1];
+      const dealCreatedInAcbs = getDealCreatedInAcbs();
 
       expect(dealCreatedInAcbs.Description).toBe(descriptionWithTruncatedObligorName);
     });
@@ -84,7 +84,7 @@ describe('DealService', () => {
 
       await service.createDeal(dealWithDealValueWithMoreThan2dp);
 
-      const dealCreatedInAcbs: AcbsCreateDealDto = acbsDealServiceCreateDeal.mock.calls[0][1];
+      const dealCreatedInAcbs = getDealCreatedInAcbs();
 
       expect(dealCreatedInAcbs.LimitAmount).toBe(dealValueRoundedTo2dp);
     });
@@ -98,7 +98,7 @@ describe('DealService', () => {
 
         await service.createDeal(dealToCreate);
 
-        dealCreatedInAcbs = acbsDealServiceCreateDeal.mock.calls[0][1];
+        dealCreatedInAcbs = getDealCreatedInAcbs();
       });
 
       it('in the OriginalEffectiveDate field in ACBS', () => {
@@ -133,7 +133,7 @@ describe('DealService', () => {
 
         await service.createDeal(dealToCreate);
 
-        dealCreatedInAcbs = acbsDealServiceCreateDeal.mock.calls[0][1];
+        dealCreatedInAcbs = getDealCreatedInAcbs();
       });
 
       it('in the OriginalEffectiveDate field in ACBS', () => {
@@ -158,5 +158,7 @@ describe('DealService', () => {
         expect(dealCreatedInAcbs.Description).toBe(expectedDescriptionWithGuaranteeCommencementDate);
       });
     });
+
+    const getDealCreatedInAcbs = (): AcbsCreateDealDto => acbsDealServiceCreateDeal.mock.calls[0][1];
   });
 });

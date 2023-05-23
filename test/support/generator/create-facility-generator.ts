@@ -42,7 +42,7 @@ export class CreateFacilityGenerator extends AbstractGenerator<FacilityValues, G
     const { facilityIdentifier } = options;
     const { portfolioIdentifier } = PROPERTIES.GLOBAL;
 
-    const facilityToCreate = values[0];
+    const [facilityToCreate] = values;
     const facilityStageCode = '07';
     const productTypeId = '001';
     const productTypeName = 'The product';
