@@ -1,7 +1,8 @@
+import { BundleInformationType } from '@ukef/constants/enums/bundle-information-type';
 import { AcbsPartyId, DateString, UkefId } from '@ukef/helpers';
 
 export interface FacilityCodeValueTransaction {
-  $type: 'FacilityCodeValueTransaction';
+  $type: BundleInformationType.FACILITY_CODE_VALUE_TRANSACTION;
   AccountOwnerIdentifier: AcbsPartyId;
   EffectiveDate: DateString;
   FacilityIdentifier: UkefId;

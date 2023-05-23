@@ -1,10 +1,10 @@
+import { BundleInformationType } from '@ukef/constants/enums/bundle-information-type';
 import { DateString } from '@ukef/helpers';
-
-import { AccrualSchedule } from './accrual-schedule.interface';
-import { RepaymentSchedule } from './repayment-schedule.interface';
+import { AccrualSchedule } from '@ukef/modules/acbs/dto/bundle-actions/accrual-schedule.interface';
+import { RepaymentSchedule } from '@ukef/modules/acbs/dto/bundle-actions/repayment-schedule.interface';
 
 export interface NewLoanRequest {
-  $type: 'NewLoanRequest';
+  $type: BundleInformationType.NEW_LOAN_REQUEST;
   FacilityIdentifier: string;
   BorrowerPartyIdentifier: string;
   SectionIdentifier: string;

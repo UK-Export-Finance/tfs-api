@@ -278,6 +278,7 @@ paths:
             enum:
               - issue
               - amendExpiryDate
+              - amendAmount
             type: string
         - name: facilityIdentifier
           required: true
@@ -297,11 +298,30 @@ paths:
               $ref: '#/components/schemas/UpdateFacilityRequest'
       responses:
         '200':
-          description: The facility has been successfully updated.
+          description: >-
+            The facility has been successfully updated.
+
+
+            \`issue\` and \`amendExpiryDate\` ops returns
+            \`UpdateFacilityFacilityIdentifierResponse\`.
+
+
+            \`amendAmount\` op returns \`UpdateFacilityBundleIdentifierResponse
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UpdateFacilityResponse'
+                oneOf:
+                  - $ref: >-
+                      #/components/schemas/UpdateFacilityFacilityIdentifierResponse
+                  - $ref: >-
+                      #/components/schemas/UpdateFacilityBundleIdentifierResponse
+              examples:
+                issue and amendExpiryDate:
+                  value:
+                    facilityIdentifier: '0000321000'
+                amendAmount:
+                  value:
+                    bundleIdentifier: '0000321000'
         '400':
           description: Bad request.
         '404':
@@ -1763,6 +1783,27 @@ components:
           example: '0030000322'
       required:
         - facilityIdentifier
+    UpdateFacilityFacilityIdentifierResponse:
+      type: object
+      properties:
+        facilityIdentifier:
+          type: string
+          description: The identifier of the updated facility.
+          minLength: 10
+          maxLength: 10
+          pattern: ^00\\d{8}$
+          example: '0030000322'
+      required:
+        - facilityIdentifier
+    UpdateFacilityBundleIdentifierResponse:
+      type: object
+      properties:
+        bundleIdentifier:
+          type: string
+          description: The ID of the created loan amendment bundle.
+          example: '0000321000'
+      required:
+        - bundleIdentifier
     UpdateFacilityRequest:
       type: object
       properties:
@@ -1939,18 +1980,6 @@ components:
         - interestOrFeeRate
         - obligorPartyIdentifier
         - forecastPercentage
-    UpdateFacilityResponse:
-      type: object
-      properties:
-        facilityIdentifier:
-          type: string
-          description: The identifier of the updated facility.
-          minLength: 10
-          maxLength: 10
-          pattern: ^00\\d{8}$
-          example: '0030000322'
-      required:
-        - facilityIdentifier
     CreateFacilityCovenantRequestItem:
       type: object
       properties:

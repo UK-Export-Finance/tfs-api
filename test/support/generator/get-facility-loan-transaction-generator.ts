@@ -6,10 +6,9 @@ import { AcbsPartyId, DateString, UkefId } from '@ukef/helpers';
 import { AcbsGetBundleInformationResponseDto } from '@ukef/modules/acbs/dto/acbs-get-bundle-information-response.dto';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { GetFacilityLoanTransactionResponseDto } from '@ukef/modules/facility-loan-transaction/dto/get-facility-loan-transaction-response.dto';
-
-import { TEST_CURRENCIES } from '../constants/test-currency.constant';
-import { AbstractGenerator } from './abstract-generator';
-import { RandomValueGenerator } from './random-value-generator';
+import { TEST_CURRENCIES } from '@ukef-test/support/constants/test-currency.constant';
+import { AbstractGenerator } from '@ukef-test/support/generator/abstract-generator';
+import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 
 export class GetFacilityLoanTransactionGenerator extends AbstractGenerator<FacilityLoanTransactionValues, GenerateResult, GenerateOptions> {
   constructor(protected readonly valueGenerator: RandomValueGenerator, protected readonly dateStringTransformations: DateStringTransformations) {
@@ -71,7 +70,7 @@ export class GetFacilityLoanTransactionGenerator extends AbstractGenerator<Facil
       PostingDate: postingDateTime,
       BundleMessageList: [
         {
-          $type: 'NewLoanRequest',
+          $type: ENUMS.BUNDLE_INFORMATION_TYPES.NEW_LOAN_REQUEST,
           FacilityIdentifier: facilityIdentifier,
           BorrowerPartyIdentifier: firstFacilityLoanTransaction.borrowerPartyIdentifier,
           Currency: {

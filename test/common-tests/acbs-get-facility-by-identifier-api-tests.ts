@@ -4,17 +4,17 @@ import supertest from 'supertest';
 
 export const withAcbsGetFacilityServiceCommonTests = ({
   givenTheRequestWouldOtherwiseSucceed,
-  requestToGetFacility,
+  requestToGetFacilityInAcbs,
   makeRequest,
 }: {
   givenTheRequestWouldOtherwiseSucceed: () => void;
-  requestToGetFacility: () => nock.Interceptor;
+  requestToGetFacilityInAcbs: () => nock.Interceptor;
   makeRequest: () => supertest.Test;
 }) => {
   describe('Common ACBS get facility service tests', () => {
     it('returns a 404 response if ACBS get facility returns a 400 response with the string "The facility not found"', async () => {
       givenTheRequestWouldOtherwiseSucceed();
-      requestToGetFacility().reply(400, 'The facility not found');
+      requestToGetFacilityInAcbs().reply(400, 'The facility not found');
 
       const { status, body } = await makeRequest();
 
@@ -27,7 +27,7 @@ export const withAcbsGetFacilityServiceCommonTests = ({
 
     it('returns a 500 response if ACBS get facility returns a 400 response without the string "The facility not found"', async () => {
       givenTheRequestWouldOtherwiseSucceed();
-      requestToGetFacility().reply(400, 'An error message from ACBS.');
+      requestToGetFacilityInAcbs().reply(400, 'An error message from ACBS.');
 
       const { status, body } = await makeRequest();
 
@@ -42,7 +42,7 @@ export const withAcbsGetFacilityServiceCommonTests = ({
       givenTheRequestWouldOtherwiseSucceed();
 
       const acbsErrorMessage = { Message: 'error message' };
-      requestToGetFacility().reply(400, acbsErrorMessage);
+      requestToGetFacilityInAcbs().reply(400, acbsErrorMessage);
 
       const { status, body } = await makeRequest();
 
@@ -52,7 +52,7 @@ export const withAcbsGetFacilityServiceCommonTests = ({
 
     it('returns a 500 response if ACBS get facility responds with a status code that is NOT 200 or 400', async () => {
       givenTheRequestWouldOtherwiseSucceed();
-      requestToGetFacility().reply(401);
+      requestToGetFacilityInAcbs().reply(401);
 
       const { status, body } = await makeRequest();
 
@@ -65,7 +65,7 @@ export const withAcbsGetFacilityServiceCommonTests = ({
 
     it('returns a 500 response if ACBS get facility times out', async () => {
       givenTheRequestWouldOtherwiseSucceed();
-      requestToGetFacility().delay(TIME_EXCEEDING_ACBS_TIMEOUT).reply(200);
+      requestToGetFacilityInAcbs().delay(TIME_EXCEEDING_ACBS_TIMEOUT).reply(200);
 
       const { status, body } = await makeRequest();
 

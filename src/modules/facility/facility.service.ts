@@ -1,23 +1,28 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { PROPERTIES } from '@ukef/constants';
-import { DateString } from '@ukef/helpers';
+import { ENUMS, PROPERTIES } from '@ukef/constants';
+import { DateString, UkefId } from '@ukef/helpers';
+import { AcbsBundleInformationService } from '@ukef/modules/acbs/acbs-bundle-information.service';
 import { AcbsFacilityService } from '@ukef/modules/acbs/acbs-facility.service';
+import { AcbsBaseFacilityRequest } from '@ukef/modules/acbs/dto/acbs-base-facility-request.dto';
+import { AcbsCreateBundleInformationRequestDto } from '@ukef/modules/acbs/dto/acbs-create-bundle-information-request.dto';
 import { AcbsCreateFacilityRequest } from '@ukef/modules/acbs/dto/acbs-create-facility-request.dto';
+import { AcbsGetFacilityResponseDto } from '@ukef/modules/acbs/dto/acbs-get-facility-response.dto';
+import { AcbsUpdateFacilityRequest } from '@ukef/modules/acbs/dto/acbs-update-facility-request.dto';
+import { FacilityAmountTransaction } from '@ukef/modules/acbs/dto/bundle-actions/facility-amount-transaction.bundle-action';
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
-
-import { AcbsBaseFacilityRequest } from '../acbs/dto/acbs-base-facility-request.dto';
-import { AcbsUpdateFacilityRequest } from '../acbs/dto/acbs-update-facility-request.dto';
-import { CurrentDateProvider } from '../date/current-date.provider';
-import { DateStringTransformations } from '../date/date-string.transformations';
-import { BaseFacilityRequestItemWithFacilityIdentifier } from './dto/base-facility-request.dto';
-import { CreateFacilityRequestItem } from './dto/create-facility-request.dto';
-import { GetFacilityByIdentifierResponseDto } from './dto/get-facility-by-identifier-response.dto';
-import { UpdateFacilityRequest, UpdateFacilityRequestWithFacilityIdentifier } from './dto/update-facility-request.dto';
+import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
+import { BaseFacilityRequestItemWithFacilityIdentifier } from '@ukef/modules/facility/dto/base-facility-request.dto';
+import { CreateFacilityRequestItem } from '@ukef/modules/facility/dto/create-facility-request.dto';
+import { GetFacilityByIdentifierResponseDto } from '@ukef/modules/facility/dto/get-facility-by-identifier-response.dto';
+import { UpdateFacilityRequest, UpdateFacilityRequestWithFacilityIdentifier } from '@ukef/modules/facility/dto/update-facility-request.dto';
+import { UpdateFacilityBundleIdentifierResponse } from '@ukef/modules/facility/dto/update-facility-response.dto';
 
 @Injectable()
 export class FacilityService {
   constructor(
     private readonly acbsAuthenticationService: AcbsAuthenticationService,
+    private readonly acbsBundleInformationService: AcbsBundleInformationService,
     private readonly acbsFacilityService: AcbsFacilityService,
     private readonly dateStringTransformations: DateStringTransformations,
     private readonly currentDateProvider: CurrentDateProvider,
@@ -68,7 +73,7 @@ export class FacilityService {
     await this.acbsFacilityService.createFacility(portfolioIdentifier, acbsCreateFacilityRequest, idToken);
   }
 
-  async issueFacilityByIdentifier(facilityIdentifier: string, updateFacilityRequest: UpdateFacilityRequest): Promise<void> {
+  async issueFacilityByIdentifier(facilityIdentifier: UkefId, updateFacilityRequest: UpdateFacilityRequest): Promise<void> {
     const { portfolioIdentifier } = PROPERTIES.GLOBAL;
     const idToken = await this.acbsAuthenticationService.getIdToken();
 
@@ -80,17 +85,28 @@ export class FacilityService {
       throw new BadRequestException('Bad request', { description: 'Facility stage code is not issued' });
     }
 
-    await this.buildReqestAndUpdateFacility(updateFacilityRequest, facilityIdentifier, idToken, portfolioIdentifier);
+    await this.buildRequestAndUpdateFacility(updateFacilityRequest, facilityIdentifier, idToken, portfolioIdentifier);
   }
 
-  async amendFacilityExpiryDateByIdentifier(facilityIdentifier: string, updateFacilityRequest: UpdateFacilityRequest): Promise<void> {
+  async amendFacilityExpiryDateByIdentifier(facilityIdentifier: UkefId, updateFacilityRequest: UpdateFacilityRequest): Promise<void> {
     const { portfolioIdentifier } = PROPERTIES.GLOBAL;
     const idToken = await this.acbsAuthenticationService.getIdToken();
 
-    await this.buildReqestAndUpdateFacility(updateFacilityRequest, facilityIdentifier, idToken, portfolioIdentifier);
+    await this.buildRequestAndUpdateFacility(updateFacilityRequest, facilityIdentifier, idToken, portfolioIdentifier);
   }
 
-  private async buildReqestAndUpdateFacility(
+  async amendFacilityAmountByIdentifier(
+    facilityIdentifier: UkefId,
+    updateFacilityRequest: UpdateFacilityRequest,
+  ): Promise<UpdateFacilityBundleIdentifierResponse> {
+    const idToken = await this.acbsAuthenticationService.getIdToken();
+
+    const existingFacilityData = await this.acbsFacilityService.getFacilityByIdentifier(facilityIdentifier, idToken);
+
+    return await this.buildAmendFacilityAmountBundleInformationRequestAndCreateBundleInformation(updateFacilityRequest, existingFacilityData, idToken);
+  }
+
+  private async buildRequestAndUpdateFacility(
     updateFacilityRequest: UpdateFacilityRequest,
     facilityIdentifier: string,
     idToken: string,
@@ -289,6 +305,80 @@ export class FacilityService {
     };
   }
 
+  private async buildAmendFacilityAmountBundleInformationRequestAndCreateBundleInformation(
+    updateFacilityRequest: UpdateFacilityRequest,
+    existingFacilityData: AcbsGetFacilityResponseDto,
+    idToken: string,
+  ): Promise<UpdateFacilityBundleIdentifierResponse> {
+    const bundleInformationToCreateInAcbs: AcbsCreateBundleInformationRequestDto<FacilityAmountTransaction> =
+      this.buildAmendFacilityAmountBundleInformationRequest(updateFacilityRequest, existingFacilityData);
+
+    const { BundleIdentifier } = await this.acbsBundleInformationService.createBundleInformation(bundleInformationToCreateInAcbs, idToken);
+
+    return { bundleIdentifier: BundleIdentifier };
+  }
+
+  private buildAmendFacilityAmountBundleInformationRequest(
+    updateFacilityRequest: UpdateFacilityRequest,
+    existingFacilityData: AcbsGetFacilityResponseDto,
+  ): AcbsCreateBundleInformationRequestDto<FacilityAmountTransaction> {
+    const { portfolioIdentifier } = PROPERTIES.GLOBAL;
+
+    const {
+      initialBundleStatusCode,
+      initiatingUserName,
+      useAPIUserIndicator,
+      bundleMessageList: {
+        type,
+        accountOwnerIdentifier,
+        isDraftIndicator,
+        lenderTypeCode,
+        limitType: { limitTypeCode },
+        sectionIdentifier,
+      },
+    } = PROPERTIES.FACILITY_AMOUNT_TRANSACTION.DEFAULT;
+
+    const { maximumLiability: newTransactionValue } = updateFacilityRequest;
+
+    const {
+      FacilityIdentifier: facilityIdentifier,
+      BorrowerParty: { PartyIdentifier: limitKeyValue },
+      OriginalEffectiveDate: effectiveDate,
+      LimitAmount: oldTransactionValue,
+    } = existingFacilityData;
+
+    const transactionAmount = this.getUpdatedTransactionAmount(newTransactionValue, oldTransactionValue);
+    const typeCode = this.getAmendFacilityTypeCode(newTransactionValue, oldTransactionValue);
+
+    return {
+      PortfolioIdentifier: portfolioIdentifier,
+      InitialBundleStatusCode: initialBundleStatusCode,
+      InitiatingUserName: initiatingUserName,
+      UseAPIUserIndicator: useAPIUserIndicator,
+      BundleMessageList: [
+        {
+          $type: type,
+          AccountOwnerIdentifier: accountOwnerIdentifier,
+          EffectiveDate: effectiveDate,
+          FacilityIdentifier: facilityIdentifier as UkefId,
+          FacilityTransactionType: {
+            TypeCode: typeCode,
+          },
+          IsDraftIndicator: isDraftIndicator,
+          LenderType: {
+            LenderTypeCode: lenderTypeCode,
+          },
+          LimitKeyValue: limitKeyValue,
+          LimitType: {
+            LimitTypeCode: limitTypeCode,
+          },
+          SectionIdentifier: sectionIdentifier,
+          TransactionAmount: transactionAmount,
+        },
+      ],
+    };
+  }
+
   private buildFacilityStageDerivedValuesToCreate(
     facilityStageCode: string,
     issueDate: string,
@@ -324,5 +414,13 @@ export class FacilityService {
 
   private isFacilityUnissued(facilityStageCode: string) {
     return facilityStageCode === '06';
+  }
+
+  private getAmendFacilityTypeCode(newTransactionValue: number, oldTransactionValue: number) {
+    return newTransactionValue > oldTransactionValue ? ENUMS.FACILITY_TRANSACTION_TYPE_CODES.PLUS : ENUMS.FACILITY_TRANSACTION_TYPE_CODES.MINUS;
+  }
+
+  private getUpdatedTransactionAmount(newTransactionValue: number, oldTransactionValue: number) {
+    return Math.abs(newTransactionValue - oldTransactionValue);
   }
 }
