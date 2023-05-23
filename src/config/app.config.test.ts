@@ -79,53 +79,53 @@ describe('appConfig', () => {
     });
   });
 
-  describe('parsing REDACT_SENSITIVE_DATA_IN_LOGS', () => {
-    it('sets redactSensitiveDataInLogs to true if REDACT_SENSITIVE_DATA_IN_LOGS is true', () => {
+  describe('parsing REDACT_LOGS', () => {
+    it('sets redactLogs to true if REDACT_LOGS is true', () => {
       replaceEnvironmentVariables({
-        REDACT_SENSITIVE_DATA_IN_LOGS: 'true',
+        REDACT_LOGS: 'true',
       });
 
       const config = appConfig();
 
-      expect(config.redactSensitiveDataInLogs).toBe(true);
+      expect(config.redactLogs).toBe(true);
     });
 
-    it('sets redactSensitiveDataInLogs to false if REDACT_SENSITIVE_DATA_IN_LOGS is false', () => {
+    it('sets redactLogs to false if REDACT_LOGS is false', () => {
       replaceEnvironmentVariables({
-        REDACT_SENSITIVE_DATA_IN_LOGS: 'false',
+        REDACT_LOGS: 'false',
       });
 
       const config = appConfig();
 
-      expect(config.redactSensitiveDataInLogs).toBe(false);
+      expect(config.redactLogs).toBe(false);
     });
 
-    it('sets redactSensitiveDataInLogs to true if REDACT_SENSITIVE_DATA_IN_LOGS is not specified', () => {
+    it('sets redactLogs to true if REDACT_LOGS is not specified', () => {
       replaceEnvironmentVariables({});
 
       const config = appConfig();
 
-      expect(config.redactSensitiveDataInLogs).toBe(true);
+      expect(config.redactLogs).toBe(true);
     });
 
-    it('sets redactSensitiveDataInLogs to true if REDACT_SENSITIVE_DATA_IN_LOGS is the empty string', () => {
+    it('sets redactLogs to true if REDACT_LOGS is the empty string', () => {
       replaceEnvironmentVariables({
-        REDACT_SENSITIVE_DATA_IN_LOGS: '',
+        REDACT_LOGS: '',
       });
 
       const config = appConfig();
 
-      expect(config.redactSensitiveDataInLogs).toBe(true);
+      expect(config.redactLogs).toBe(true);
     });
 
-    it('sets redactSensitiveDataInLogs to true if REDACT_SENSITIVE_DATA_IN_LOGS is any string other than true or false', () => {
+    it('sets redactLogs to true if REDACT_LOGS is any string other than true or false', () => {
       replaceEnvironmentVariables({
-        REDACT_SENSITIVE_DATA_IN_LOGS: valueGenerator.string(),
+        REDACT_LOGS: valueGenerator.string(),
       });
 
       const config = appConfig();
 
-      expect(config.redactSensitiveDataInLogs).toBe(true);
+      expect(config.redactLogs).toBe(true);
     });
   });
 

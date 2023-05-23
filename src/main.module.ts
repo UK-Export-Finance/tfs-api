@@ -38,7 +38,7 @@ import {
           // TODO APIM-222: Do we need to do this for MDM also?
           // TODO APIM-222: Are the base URLs for ACBS and FIS IdP secret?
           redact: logKeysToRedact({
-            redactSensitiveDataInLogs: config.get<boolean>('app.redactSensitiveDataInLogs'),
+            redactLogs: config.get<boolean>('app.redactLogs'),
             clientRequest: {
               logKey: 'req',
               headersLogKey: 'headers',

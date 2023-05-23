@@ -1,7 +1,7 @@
 import { buildKeyToRedact } from './build-key-to-redact';
 
 export interface LogKeysToRedactOptions {
-  redactSensitiveDataInLogs: boolean;
+  redactLogs: boolean;
   clientRequest: {
     logKey: string;
     headersLogKey: string;
@@ -25,8 +25,8 @@ export interface LogKeysToRedactOptions {
   };
 }
 
-export const logKeysToRedact = ({ redactSensitiveDataInLogs, clientRequest, outgoingRequest, incomingResponse, error }: LogKeysToRedactOptions): string[] => {
-  if (!redactSensitiveDataInLogs) {
+export const logKeysToRedact = ({ redactLogs, clientRequest, outgoingRequest, incomingResponse, error }: LogKeysToRedactOptions): string[] => {
+  if (!redactLogs) {
     return [];
   }
   return [

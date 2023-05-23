@@ -5,7 +5,7 @@ import { logKeysToRedact, LogKeysToRedactOptions } from './log-keys-to-redact';
 
 describe('logKeysToRedact', () => {
   const valueGenerator = new RandomValueGenerator();
-  const options: Omit<LogKeysToRedactOptions, 'redactSensitiveDataInLogs'> = {
+  const options: Omit<LogKeysToRedactOptions, 'redactLogs'> = {
     clientRequest: {
       logKey: valueGenerator.string(),
       headersLogKey: valueGenerator.string(),
@@ -29,17 +29,17 @@ describe('logKeysToRedact', () => {
     },
   };
 
-  describe('when redactSensitiveDataInLogs is false', () => {
+  describe('when redactLogs is false', () => {
     it('returns an empty array', () => {
-      expect(logKeysToRedact({ redactSensitiveDataInLogs: false, ...options })).toStrictEqual([]);
+      expect(logKeysToRedact({ redactLogs: false, ...options })).toStrictEqual([]);
     });
   });
 
-  describe('when redactSensitiveDataInLogs is true', () => {
+  describe('when redactLogs is true', () => {
     let result: string[];
 
     beforeEach(() => {
-      result = logKeysToRedact({ redactSensitiveDataInLogs: true, ...options });
+      result = logKeysToRedact({ redactLogs: true, ...options });
     });
 
     it('includes the headers of a client request', () => {

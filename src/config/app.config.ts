@@ -26,6 +26,6 @@ export default registerAs('app', (): Record<string, any> => {
     port: process.env.HTTP_PORT ? Number.parseInt(process.env.HTTP_PORT, 10) : 3001,
     apiKey: process.env.API_KEY,
     logLevel: process.env.LOG_LEVEL || 'info',
-    redactSensitiveDataInLogs: process.env.REDACT_SENSITIVE_DATA_IN_LOGS !== 'false',
+    redactLogs: process.env.REDACT_LOGS !== 'false',
   };
 });
