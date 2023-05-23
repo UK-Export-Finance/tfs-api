@@ -50,11 +50,11 @@ export class CreateFacilityCovenantRequestItem {
     description: 'The expiration date of the covenant. It is called expiration date in ACBS.',
     example: '2023-04-19',
   })
-  guaranteeExpiryDate: DateOnlyString;
+  readonly guaranteeExpiryDate: DateOnlyString;
 
   @ValidatedDateOnlyApiProperty({
     description: 'The effective date of the covenant.',
     example: '2023-04-19',
   })
-  effectiveDate: DateOnlyString;
+  readonly effectiveDate: DateOnlyString;
 }

@@ -323,7 +323,8 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreateFacilityCovenantResponseDto'
+                $ref: >-
+                  #/components/schemas/CreateOrUpdateFacilityCovenantsResponseDto
         '400':
           description: Bad request.
         '404':
@@ -347,10 +348,9 @@ paths:
       responses:
         '200':
           description: >-
-            The covenants for the facility have been retrieved. Due to
-            limitations of ACBS, there is no 404 response; instead, an empty
-            array means that either the facility does not exist or it has no
-            covenants.
+            The covenants for the facility have been retrieved; an empty array
+            means that the facility does not exist/has no covenants (due to
+            limitations of ACBS, there is no 404 response).
           content:
             application/json:
               schema:
@@ -359,6 +359,41 @@ paths:
                   $ref: '#/components/schemas/GetFacilityCovenantsResponseDto'
         '400':
           description: The specified facilityIdentifier is not valid.
+        '500':
+          description: An internal server error has occurred.
+    patch:
+      operationId: FacilityCovenantController_updateCovenantsForFacility
+      summary: Update all covenants for a facility.
+      parameters:
+        - name: facilityIdentifier
+          required: true
+          in: path
+          description: The identifier of the facility in ACBS.
+          example: '0030000322'
+          schema:
+            minLength: 10
+            maxLength: 10
+            pattern: ^00\\d{8}$
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateFacilityCovenantsRequestDto'
+      responses:
+        '200':
+          description: >-
+            The covenants for the facility have been updated or the facility
+            does not exist/has no covenants (due to limitations of ACBS, there
+            is no 404 response).
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/CreateOrUpdateFacilityCovenantsResponseDto
+        '400':
+          description: Bad request.
         '500':
           description: An internal server error has occurred.
   /api/v1/facilities/{facilityIdentifier}/fixed-fees:
@@ -1704,14 +1739,14 @@ components:
         - currency
         - guaranteeExpiryDate
         - effectiveDate
-    CreateFacilityCovenantResponseDto:
+    CreateOrUpdateFacilityCovenantsResponseDto:
       type: object
       properties:
         facilityIdentifier:
           type: string
           description: >-
-            The identifier of the facility in ACBS for which the covenant has
-            been created. This will be a 10-digit code.
+            The identifier of the facility in ACBS for which the covenant(s)
+            have been created/updated. This will be a 10-digit code.
           example: '0030000322'
       required:
         - facilityIdentifier
@@ -1781,6 +1816,23 @@ components:
         - guaranteeCommencementDate
         - effectiveDate
         - guaranteeExpiryDate
+    UpdateFacilityCovenantsRequestDto:
+      type: object
+      properties:
+        targetAmount:
+          type: number
+          description: >-
+            The amount used to determine if the covenant is in compliance or
+            not. It is required if expirationDate is not provided.
+          minimum: 0
+          example: 501927.25
+        expirationDate:
+          format: date
+          type: string
+          description: >-
+            The expiration date of the covenant. It is called expiration date in
+            ACBS. It is required if targetAmount is not provided.
+          nullable: false
     GetFacilityFixedFeeResponseItem:
       type: object
       properties:
