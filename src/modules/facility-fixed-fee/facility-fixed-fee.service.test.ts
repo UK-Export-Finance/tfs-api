@@ -75,7 +75,7 @@ describe('FacilityFixedFeeService', () => {
       borrowerPartyIdentifier,
     });
 
-    const newFixedFeeWithAllFields = requestBodyToCreateFacilityFixedFee[0];
+    const [newFixedFeeWithAllFields] = requestBodyToCreateFacilityFixedFee;
 
     it('creates a fixed fee in ACBS with a transformation of the requested new fixed fee', async () => {
       await service.createFixedFeeForFacility(facilityIdentifier, borrowerPartyIdentifier, facilityTypeCode, newFixedFeeWithAllFields);

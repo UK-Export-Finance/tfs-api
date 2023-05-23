@@ -53,7 +53,7 @@ export class FacilityFixedFeeService {
     facilityTypeCode,
     newCreateFacilityFixedFee: CreateFacilityFixedFeeRequestItem,
   ): Promise<CreateFacilityFixedFeeResponse> {
-    const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+    const { portfolioIdentifier } = PROPERTIES.GLOBAL;
     const idToken = await this.acbsAuthenticationService.getIdToken();
 
     const defaultValues = PROPERTIES.FACILITY_FIXED_FEE.DEFAULT;

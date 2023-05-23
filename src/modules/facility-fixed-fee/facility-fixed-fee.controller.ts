@@ -74,7 +74,7 @@ export class FacilityFixedFeeController {
       throw new BadRequestException('Bad Request', 'Facility needs to be activated before Fee is created');
     }
 
-    const newCreateFacilityFixedFee = newCreateFacilityFixedFeeRequest[0];
+    const [newCreateFacilityFixedFee] = newCreateFacilityFixedFeeRequest;
 
     await this.facilityFixedFeeService.createFixedFeeForFacility(
       params.facilityIdentifier,
