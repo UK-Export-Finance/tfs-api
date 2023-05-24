@@ -587,6 +587,41 @@ paths:
           description: The facility was not found.
         '500':
           description: An internal server error has occurred.
+    post:
+      operationId: FacilityLoanController_createLoanForFacility
+      summary: Create a new loan for a facility.
+      parameters:
+        - name: facilityIdentifier
+          required: true
+          in: path
+          description: The identifier of the facility in ACBS.
+          example: '0030000322'
+          schema:
+            minLength: 10
+            maxLength: 10
+            pattern: ^00\\d{8}$
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/CreateFacilityLoanRequestItem'
+      responses:
+        '201':
+          description: The loan has been successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateFacilityLoanResponse'
+        '400':
+          description: Bad request.
+        '404':
+          description: The facility was not found.
+        '500':
+          description: An internal server error has occurred.
   /api/v1/facilities/{facilityIdentifier}/loans/{loanIdentifier}/amendments/amount:
     post:
       operationId: FacilityLoanController_createAmountAmendmentForLoan
@@ -1148,7 +1183,6 @@ components:
       properties:
         bundleIdentifier:
           type: string
-          readOnly: true
           minLength: 10
           maxLength: 10
           description: The identifier of the ACBS bundle.
@@ -2256,6 +2290,99 @@ components:
         - feeBalance
         - otherBalance
         - discountedPrincipal
+    CreateFacilityLoanRequestItem:
+      type: object
+      properties:
+        postingDate:
+          format: date
+          type: string
+          description: The date of the action.
+        borrowerPartyIdentifier:
+          type: string
+          description: The customer identifier representing the borrower for the loan.
+          minLength: 8
+          maxLength: 8
+          example: '00001234'
+        productTypeId:
+          type: string
+          description: >-
+            The product type identifier for the loan: 250 for BSS, 260 for EWCS,
+            280 for GEF-Cash, 281 for GEF-Contingent. It is called the product
+            type code in ACBS.
+          minLength: 0
+          enum:
+            - '250'
+            - '260'
+            - '280'
+            - '281'
+          example: '250'
+        productTypeGroup:
+          type: string
+          description: >-
+            The product type group identifier for the loan: EW for EWCS, BS for
+            Bond, GM for GEF. It is called the product group code in ACBS.
+          minLength: 0
+          enum:
+            - EW
+            - BS
+            - GM
+          example: BS
+        currency:
+          type: string
+          description: >-
+            The currency code of the primary currency of the loan, from the
+            Currency Definition Table.
+          minLength: 3
+          maxLength: 3
+          example: USD
+        dealCustomerUsageRate:
+          type: number
+          description: >-
+            The exchange rate between the loan currency and the deal currency.
+            Required when loan currency differs from deal currency.
+        dealCustomerUsageOperationType:
+          type: string
+          description: >-
+            Represents the currency exchange rate operand (M-multiply or
+            D-divide). Required when loan currency differs from deal currency.
+          minLength: 0
+          enum:
+            - M
+            - D
+          example: M
+        amount:
+          type: number
+          description: The amount of the loan.
+          minimum: 0
+        issueDate:
+          format: date
+          type: string
+          description: The facility issue date.
+        expiryDate:
+          format: date
+          type: string
+          description: The facility expiry date.
+      required:
+        - postingDate
+        - borrowerPartyIdentifier
+        - productTypeId
+        - productTypeGroup
+        - currency
+        - amount
+        - issueDate
+        - expiryDate
+    CreateFacilityLoanResponse:
+      type: object
+      properties:
+        bundleIdentifier:
+          type: string
+          description: The identifier of the ACBS bundle.
+          minLength: 10
+          maxLength: 10
+          pattern: ^0{4}\\d{6}$
+          example: '0000321000'
+      required:
+        - bundleIdentifier
     CreateLoanAmountAmendmentRequestItem:
       type: object
       properties:

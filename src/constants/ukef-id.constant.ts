@@ -13,4 +13,8 @@ export const UKEFID = {
     PREFIX: '0000',
     REGEX: /^0{4}\d{6}$/,
   },
+  BUNDLE_ID: {
+    PREFIX: '0000',
+    REGEX: /^0{4}\d{6}$/,
+  },
 };

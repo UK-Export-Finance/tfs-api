@@ -90,7 +90,7 @@ export class GetFacilityLoanTransactionGenerator extends AbstractGenerator<Facil
             },
             {
               AccrualCategory: {
-                AccrualCategoryCode: PROPERTIES.FACILITY_LOAN_TRANSACTION.DEFAULT.bundleMessageList.accrualScheduleList.accrualCategory.accrualCategoryCode.pac,
+                AccrualCategoryCode: PROPERTIES.FACILITY_LOAN.DEFAULT.accrualScheduleList.accrualCategory.accrualCategoryCode.pac,
               },
               SpreadRate: values.SpreadRate,
               YearBasis: {
@@ -102,7 +102,7 @@ export class GetFacilityLoanTransactionGenerator extends AbstractGenerator<Facil
             },
             {
               AccrualCategory: {
-                AccrualCategoryCode: PROPERTIES.FACILITY_LOAN_TRANSACTION.DEFAULT.bundleMessageList.accrualScheduleList.accrualCategory.accrualCategoryCode.ctl,
+                AccrualCategoryCode: PROPERTIES.FACILITY_LOAN.DEFAULT.accrualScheduleList.accrualCategory.accrualCategoryCode.ctl,
               },
               SpreadRate: values.SpreadRateCTL,
               YearBasis: {

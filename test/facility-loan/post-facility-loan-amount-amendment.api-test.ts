@@ -87,7 +87,7 @@ describe('POST /facilities/{facilityIdentifier}/loans/{loanIdentifier}/amendment
       givenAuthenticationWithTheIdpSucceeds();
     });
 
-    it('returns a 404 response if ACBS responds with a 400 response that is a string containing "Loan does not exist" when creating the facility activation transaction', async () => {
+    it('returns a 404 response if ACBS responds with a 400 response that is a string containing "Loan does not exist" when creating the facility loan amount amendment', async () => {
       requestToCreateIncreaseLoanAdvanceTransactionInAcbs().reply(400, `Loan does not exist or user does not have access to it: '${facilityIdentifier}'`);
 
       const { status, body } = await api.post(createLoanAmountAmendmentUrl(), increaseAmountRequest);
@@ -96,7 +96,7 @@ describe('POST /facilities/{facilityIdentifier}/loans/{loanIdentifier}/amendment
       expect(body).toStrictEqual({ message: 'Not found', statusCode: 404 });
     });
 
-    it('returns a 400 response if ACBS responds with a 400 response that is not a string when creating the facility activation transaction', async () => {
+    it('returns a 400 response if ACBS responds with a 400 response that is not a string when creating the facility loan amount amendment', async () => {
       const acbsErrorMessage = JSON.stringify({ Message: 'error message' });
       requestToCreateIncreaseLoanAdvanceTransactionInAcbs().reply(400, acbsErrorMessage);
 
@@ -106,7 +106,7 @@ describe('POST /facilities/{facilityIdentifier}/loans/{loanIdentifier}/amendment
       expect(body).toStrictEqual({ message: 'Bad request', error: acbsErrorMessage, statusCode: 400 });
     });
 
-    it('returns a 400 response if ACBS responds with a 400 response that is a string that does not contain "Loan does not exist" when creating the facility activation transaction', async () => {
+    it('returns a 400 response if ACBS responds with a 400 response that is a string that does not contain "Loan does not exist" when creating the facility loan amount amendment', async () => {
       const acbsErrorMessage = 'ACBS error message';
       requestToCreateIncreaseLoanAdvanceTransactionInAcbs().reply(400, acbsErrorMessage);
 
@@ -116,7 +116,7 @@ describe('POST /facilities/{facilityIdentifier}/loans/{loanIdentifier}/amendment
       expect(body).toStrictEqual({ message: 'Bad request', error: acbsErrorMessage, statusCode: 400 });
     });
 
-    it('returns a 500 response if ACBS responds with an error code that is not 400 when creating the facility activation transaction', async () => {
+    it('returns a 500 response if ACBS responds with an error code that is not 400 when creating the facility loan amount amendment', async () => {
       requestToCreateIncreaseLoanAdvanceTransactionInAcbs().reply(401, 'Unauthorized');
 
       const { status, body } = await api.post(createLoanAmountAmendmentUrl(), increaseAmountRequest);
@@ -125,7 +125,7 @@ describe('POST /facilities/{facilityIdentifier}/loans/{loanIdentifier}/amendment
       expect(body).toStrictEqual({ message: 'Internal server error', statusCode: 500 });
     });
 
-    it('returns a 500 response if ACBS times out when creating the facility activation transaction', async () => {
+    it('returns a 500 response if ACBS times out when creating the facility loan amount amendment', async () => {
       requestToCreateIncreaseLoanAdvanceTransactionInAcbs()
         .delay(TIME_EXCEEDING_ACBS_TIMEOUT)
         .reply(...acbsSuccessfulResponse);

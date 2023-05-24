@@ -2,6 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import { PROPERTIES } from '@ukef/constants';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { CreateFacilityActivationTransactionGenerator } from '@ukef-test/support/generator/create-facility-activation-transaction-generator';
+import { CreateFacilityLoanGenerator } from '@ukef-test/support/generator/create-facility-loan-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { AxiosError } from 'axios';
 import { when } from 'jest-when';
@@ -273,6 +274,82 @@ describe('AcbsBundleInformationService', () => {
           .mockReturnValueOnce(throwError(() => axiosError));
 
         const createBundleInformationPromise = service.createBundleInformation(acbsRequestBodyToCreateLoanAdvanceTransaction, idToken);
+
+        await expect(createBundleInformationPromise).rejects.toBeInstanceOf(AcbsBadRequestException);
+        await expect(createBundleInformationPromise).rejects.toThrow(`Failed to create a bundleInformation in ACBS.`);
+        await expect(createBundleInformationPromise).rejects.toHaveProperty('innerError', axiosError);
+        await expect(createBundleInformationPromise).rejects.toHaveProperty('errorBody', JSON.stringify(errorBody));
+      });
+    });
+
+    describe('creating a NewLoanRequest', () => {
+      const { acbsRequestBodyToCreateFacilityLoanGbp } = new CreateFacilityLoanGenerator(valueGenerator, new DateStringTransformations()).generate({
+        numberToGenerate: 1,
+        facilityIdentifier,
+        bundleIdentifier,
+      });
+      const expectedHttpServicePostArgsForNewLoanRequest = expectedHttpServicePostArgsWithBody(acbsRequestBodyToCreateFacilityLoanGbp);
+
+      it('throws an AcbsResourceNotFoundException if ACBS responds with a 400 error that is a string containing "Facility does not exist"', async () => {
+        const axiosError = new AxiosError();
+        axiosError.response = {
+          data: `Facility does not exist or user does not have access to it: '${facilityIdentifier}'`,
+          status: 400,
+          statusText: 'Bad Request',
+          headers: undefined,
+          config: undefined,
+        };
+
+        when(httpServicePost)
+          .calledWith(...expectedHttpServicePostArgsForNewLoanRequest)
+          .mockReturnValueOnce(throwError(() => axiosError));
+
+        const createBundleInformationPromise = service.createBundleInformation(acbsRequestBodyToCreateFacilityLoanGbp, idToken);
+
+        await expect(createBundleInformationPromise).rejects.toBeInstanceOf(AcbsResourceNotFoundException);
+        await expect(createBundleInformationPromise).rejects.toThrow(`Facility with identifier ${facilityIdentifier} was not found by ACBS.`);
+        await expect(createBundleInformationPromise).rejects.toHaveProperty('innerError', axiosError);
+      });
+
+      it('throws an AcbsBadRequestException if ACBS responds with a 400 error that is a string that does not contain "Facility does not exist"', async () => {
+        const axiosError = new AxiosError();
+        const errorString = valueGenerator.string();
+        axiosError.response = {
+          data: errorString,
+          status: 400,
+          statusText: 'Bad Request',
+          headers: undefined,
+          config: undefined,
+        };
+
+        when(httpServicePost)
+          .calledWith(...expectedHttpServicePostArgsForNewLoanRequest)
+          .mockReturnValueOnce(throwError(() => axiosError));
+
+        const createBundleInformationPromise = service.createBundleInformation(acbsRequestBodyToCreateFacilityLoanGbp, idToken);
+
+        await expect(createBundleInformationPromise).rejects.toBeInstanceOf(AcbsBadRequestException);
+        await expect(createBundleInformationPromise).rejects.toThrow(`Failed to create a bundleInformation in ACBS.`);
+        await expect(createBundleInformationPromise).rejects.toHaveProperty('innerError', axiosError);
+        await expect(createBundleInformationPromise).rejects.toHaveProperty('errorBody', errorString);
+      });
+
+      it('throws an AcbsBadRequestException if ACBS responds with a 400 error that is not a string', async () => {
+        const axiosError = new AxiosError();
+        const errorBody = { errorMessage: valueGenerator.string() };
+        axiosError.response = {
+          data: errorBody,
+          status: 400,
+          statusText: 'Bad Request',
+          headers: undefined,
+          config: undefined,
+        };
+
+        when(httpServicePost)
+          .calledWith(...expectedHttpServicePostArgsForNewLoanRequest)
+          .mockReturnValueOnce(throwError(() => axiosError));
+
+        const createBundleInformationPromise = service.createBundleInformation(acbsRequestBodyToCreateFacilityLoanGbp, idToken);
 
         await expect(createBundleInformationPromise).rejects.toBeInstanceOf(AcbsBadRequestException);
         await expect(createBundleInformationPromise).rejects.toThrow(`Failed to create a bundleInformation in ACBS.`);
