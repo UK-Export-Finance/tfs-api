@@ -33,7 +33,7 @@ describe('PUT /facilities', () => {
 
   const valueGenerator = new RandomValueGenerator();
   const dateStringTransformations = new DateStringTransformations();
-  const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+  const { portfolioIdentifier } = PROPERTIES.GLOBAL;
   const facilityIdentifier = valueGenerator.facilityId();
 
   const updateFacilityBaseUrl = `/api/v1/facilities/${facilityIdentifier}`;
@@ -97,7 +97,7 @@ describe('PUT /facilities', () => {
       });
 
       if (queryToTest === ENUMS.FACILITY_UPDATE_OPERATIONS.ISSUE) {
-        const unissuedFacilityStageCode = TEST_FACILITY_STAGE_CODE.unissuedFacilityStageCode;
+        const { unissuedFacilityStageCode } = TEST_FACILITY_STAGE_CODE;
         it('returns a 400 response if request has an unissued facility stage code', async () => {
           givenTheRequestWouldOtherwiseSucceed();
 

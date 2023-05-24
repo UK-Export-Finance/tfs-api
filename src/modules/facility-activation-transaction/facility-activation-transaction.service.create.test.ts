@@ -47,7 +47,7 @@ describe('FacilityActivationTransactionService', () => {
         borrowerPartyIdentifier,
         effectiveDate,
       });
-    const newActivationTransactionWithAllFields = requestBodyToCreateFacilityActivationTransaction[0];
+    const [newActivationTransactionWithAllFields] = requestBodyToCreateFacilityActivationTransaction;
 
     it('creates a bundle information in ACBS with a transformation of the requested new activation-transaction', async () => {
       await service.createActivationTransactionForFacility(facilityIdentifier, borrowerPartyIdentifier, effectiveDate, newActivationTransactionWithAllFields);

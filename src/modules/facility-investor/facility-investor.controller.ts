@@ -56,7 +56,7 @@ export class FacilityInvestorController {
     @Param() params: CreateFacilityInvestorParams,
     @ValidatedArrayBody({ items: CreateFacilityInvestorRequestItem }) newFacilityInvestorRequest: CreateFacilityInvestorRequest,
   ): Promise<CreateFacilityInvestorResponse> {
-    const newFacilityInvestor = newFacilityInvestorRequest[0];
+    const [newFacilityInvestor] = newFacilityInvestorRequest;
     const facilityInvestorToCreate: FacilityInvestorToCreate = {
       effectiveDate: newFacilityInvestor.effectiveDate,
       guaranteeExpiryDate: newFacilityInvestor.guaranteeExpiryDate,

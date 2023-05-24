@@ -30,7 +30,7 @@ export class CreateFacilityCovenantGenerator extends AbstractGenerator<CreateFac
     values: CreateFacilityCovenantRequestDto,
     { facilityIdentifier, facilityTypeCode, limitKeyValue }: GenerateOptions,
   ): GenerateResult {
-    const firstFacilityCovenant = values[0];
+    const [firstFacilityCovenant] = values;
 
     let covenantName;
 

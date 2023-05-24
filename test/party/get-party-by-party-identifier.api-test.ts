@@ -16,8 +16,8 @@ describe('GET /parties/{partyIdentifier}', () => {
   let api: Api;
 
   const { partiesInAcbs, partiesFromApi } = new GetPartyGenerator(valueGenerator, dateStringTransformations).generate({ numberToGenerate: 1 });
-  const partyInAcbs = partiesInAcbs[0];
-  const expectedParty = partiesFromApi[0];
+  const [partyInAcbs] = partiesInAcbs;
+  const [expectedParty] = partiesFromApi;
 
   beforeAll(async () => {
     api = await Api.create();

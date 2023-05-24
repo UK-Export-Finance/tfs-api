@@ -37,7 +37,7 @@ export class CreateFacilityActivationTransactionGenerator extends AbstractGenera
     values,
     { facilityIdentifier, bundleIdentifier, borrowerPartyIdentifier, effectiveDate }: GenerateOptions,
   ): GenerateResult {
-    const firstFacilityActivationTransaction = values[0];
+    const [firstFacilityActivationTransaction] = values;
 
     const acbsRequestBodyToCreateFacilityActivationTransaction: AcbsCreateBundleInformationRequestDto<FacilityCodeValueTransaction> = {
       PortfolioIdentifier: PROPERTIES.GLOBAL.portfolioIdentifier,

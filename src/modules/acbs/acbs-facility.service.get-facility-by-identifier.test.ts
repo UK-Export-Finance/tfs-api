@@ -41,7 +41,7 @@ describe('AcbsFacilityService', () => {
         facilityIdentifier,
         portfolioIdentifier,
       });
-      const facilityInAcbs = facilitiesInAcbs[0];
+      const [facilityInAcbs] = facilitiesInAcbs;
 
       when(httpServiceGet)
         .calledWith(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}`, {

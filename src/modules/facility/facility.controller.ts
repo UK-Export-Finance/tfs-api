@@ -99,7 +99,7 @@ export class FacilityController {
     description: 'An internal server error has occurred.',
   })
   async createFacility(@ValidatedArrayBody({ items: CreateFacilityRequestItem }) createFacilityDto: CreateFacilityRequest): Promise<CreateFacilityResponse> {
-    const facilityToCreate = createFacilityDto[0];
+    const [facilityToCreate] = createFacilityDto;
     await this.facilityService.createFacility(facilityToCreate);
     return { facilityIdentifier: facilityToCreate.facilityIdentifier };
   }

@@ -57,9 +57,9 @@ export class FacilityCovenantController {
     @Param() params: FacilityCovenantsParamsDto,
     @ValidatedArrayBody({ items: CreateFacilityCovenantRequestItem }) newCovenantRequest: CreateFacilityCovenantRequestDto,
   ): Promise<CreateOrUpdateFacilityCovenantsResponseDto> {
-    const facilityIdentifier = params.facilityIdentifier;
+    const { facilityIdentifier } = params;
     const facility = await this.facilityService.getFacilityByIdentifier(facilityIdentifier);
-    const newCovenant = newCovenantRequest[0];
+    const [newCovenant] = newCovenantRequest;
 
     await this.facilityCovenantService.createCovenantForFacility(facilityIdentifier, facility.productTypeId, facility.obligorPartyIdentifier, newCovenant);
     return new CreateOrUpdateFacilityCovenantsResponseDto(facilityIdentifier);
