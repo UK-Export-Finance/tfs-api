@@ -1400,6 +1400,9 @@ components:
           description: Case Stage this can be 06 Commitment and 07 Issued
           minLength: 0
           maxLength: 2
+          enum: &ref_1
+            - '06'
+            - '07'
           example: '07'
         delegationType:
           type: string
@@ -1599,6 +1602,7 @@ components:
           description: Case Stage this can be 06 Commitment and 07 Issued
           minLength: 0
           maxLength: 2
+          enum: *ref_1
           example: '07'
         delegationType:
           type: string
@@ -1747,7 +1751,7 @@ components:
           type: string
           description: >-
             The identifier of the facility in ACBS for which the covenant has
-            been created. This will be a 10-digit code.
+            been created.
           example: '0030000322'
       required:
         - facilityIdentifier
@@ -1769,9 +1773,7 @@ components:
             covenant not in GBP.
         facilityIdentifier:
           type: string
-          description: >-
-            The identifier of the facility in ACBS. This will be a 10-digit
-            code.
+          description: The identifier of the facility in ACBS.
         portfolioIdentifier:
           type: string
           description: >-
@@ -1844,12 +1846,12 @@ components:
         effectiveDate:
           format: date
           type: string
-          description: The effective date of this accruing/Fixed fee schedule.
+          description: The effective date of this accruing/fixed fee schedule.
           example: '2023-03-24'
         expirationDate:
           format: date
           type: string
-          description: The expiration date of this accruing/Fixed fee schedule.
+          description: The expiration date of this accruing/fixed fee schedule.
           example: '2023-03-24'
         nextDueDate:
           format: date
@@ -1929,11 +1931,11 @@ components:
         effectiveDate:
           format: date
           type: string
-          description: The effective date of this accruing/Fixed fee schedule.
+          description: The effective date of this accruing/fixed fee schedule.
         expirationDate:
           format: date
           type: string
-          description: The expiration date of this accruing/Fixed fee schedule.
+          description: The expiration date of this accruing/fixed fee schedule.
         nextDueDate:
           format: date
           type: string
@@ -2005,7 +2007,7 @@ components:
           type: string
           description: >-
             The identifier of the facility in ACBS for which the fixed fee has
-            been created. This will be a 10-digit code.
+            been created.
           example: '0030000322'
       required:
         - facilityIdentifier

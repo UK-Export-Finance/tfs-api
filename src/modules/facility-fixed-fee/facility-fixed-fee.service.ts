@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { AcbsPartyId, DateOnlyString, DateString, UkefId } from '@ukef/helpers';
 import { AcbsFacilityFixedFeeService } from '@ukef/modules/acbs/acbs-facility-fixed-fee.service';
@@ -52,7 +52,17 @@ export class FacilityFixedFeeService {
     borrowerPartyIdentifier: AcbsPartyId,
     facilityTypeCode,
     newCreateFacilityFixedFee: CreateFacilityFixedFeeRequestItem,
+    facilityOverallStatus,
+    facilityStageCode,
   ): Promise<CreateFacilityFixedFeeResponse> {
+    if (facilityStageCode !== ENUMS.FACILITY_STAGES.ISSUED) {
+      throw new BadRequestException('Bad Request', 'Facility needs to be issued before a fixed fee is created');
+    }
+
+    if (facilityOverallStatus !== ENUMS.FACILITY_STATUSES.ACTIVE) {
+      throw new BadRequestException('Bad Request', 'Facility needs to be activated before a fixed fee is created');
+    }
+
     const { portfolioIdentifier } = PROPERTIES.GLOBAL;
     const idToken = await this.acbsAuthenticationService.getIdToken();
 

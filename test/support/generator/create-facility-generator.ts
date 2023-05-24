@@ -43,7 +43,7 @@ export class CreateFacilityGenerator extends AbstractGenerator<FacilityValues, G
     const { portfolioIdentifier } = PROPERTIES.GLOBAL;
 
     const facilityToCreate = values[0];
-    const facilityStageCode = '07';
+    const facilityStageCode = ENUMS.FACILITY_STAGES.ISSUED;
     const productTypeId = this.valueGenerator.enumValue(ENUMS.FACILITY_TYPE_IDS);
     const productTypeName = 'The product';
     const effectiveDate = TEST_DATES.A_PAST_EFFECTIVE_DATE_ONLY;

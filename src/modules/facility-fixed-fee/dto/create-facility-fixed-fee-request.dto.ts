@@ -1,6 +1,7 @@
 import { ENUMS, EXAMPLES, PROPERTIES } from '@ukef/constants';
 import { LenderTypeCodeEnum } from '@ukef/constants/enums/lender-type-code';
 import { ValidatedBooleanApiProperty } from '@ukef/decorators/validated-boolean-api-property.decorator';
+import { ValidatedCurrencyApiProperty } from '@ukef/decorators/validated-currency-api-property-decorator';
 import { ValidatedDateOnlyApiProperty } from '@ukef/decorators/validated-date-only-api-property.decorator';
 import { ValidatedNumberApiProperty } from '@ukef/decorators/validated-number-api-property.decorator';
 import { ValidatedStringApiProperty } from '@ukef/decorators/validated-string-api-property.decorator';
@@ -16,12 +17,12 @@ export class CreateFacilityFixedFeeRequestItem {
   readonly amount: number;
 
   @ValidatedDateOnlyApiProperty({
-    description: 'The effective date of this accruing/Fixed fee schedule.',
+    description: 'The effective date of this accruing/fixed fee schedule.',
   })
   readonly effectiveDate: DateOnlyString;
 
   @ValidatedDateOnlyApiProperty({
-    description: 'The expiration date of this accruing/Fixed fee schedule.',
+    description: 'The expiration date of this accruing/fixed fee schedule.',
   })
   readonly expirationDate: DateOnlyString;
 
@@ -41,12 +42,9 @@ export class CreateFacilityFixedFeeRequestItem {
   })
   readonly period: string;
 
-  @ValidatedStringApiProperty({
+  @ValidatedCurrencyApiProperty({
     description:
       'The currency of Facility Fee, defined in the Currency Definition Table under Systems Administration of Servicing. For example, USD for United States Dollar.',
-    example: EXAMPLES.CURRENCY,
-    minLength: 3,
-    maxLength: 3,
   })
   readonly currency: string;
 
@@ -64,7 +62,7 @@ export class CreateFacilityFixedFeeRequestItem {
     default: PROPERTIES.FACILITY_FIXED_FEE.DEFAULT.incomeClassCode,
     required: false,
   })
-  readonly incomeClassCode: string;
+  readonly incomeClassCode?: string;
 
   @ValidatedBooleanApiProperty({
     description:

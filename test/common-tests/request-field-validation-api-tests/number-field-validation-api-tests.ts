@@ -69,6 +69,19 @@ export function withNumberFieldValidationApiTests<RequestBodyItem>({
       });
     }
 
+    it(`returns a 400 response if ${fieldName} is string`, async () => {
+      const requestWithNullField = { ...validRequestBody[0], [fieldNameSymbol]: 'true' };
+
+      const { status, body } = await makeRequest([requestWithNullField]);
+
+      expect(status).toBe(400);
+      expect(body).toMatchObject({
+        error: 'Bad Request',
+        message: expect.arrayContaining([`${fieldName} must be a number conforming to the specified constraints`]),
+        statusCode: 400,
+      });
+    });
+
     if (minimum) {
       it(`returns a 400 response if ${fieldName} is less than minimum`, async () => {
         const requestWithNegativeField = [{ ...validRequestBody[0], [fieldNameSymbol]: minimum - 0.01 }];

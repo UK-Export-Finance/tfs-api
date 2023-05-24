@@ -45,5 +45,44 @@ export function withBooleanFieldValidationApiTests<RequestBodyItem, RequestBodyI
         expect(status).toBe(201);
       });
     }
+
+    it(`returns a 400 response if ${fieldName} is null`, async () => {
+      const requestWithNullField = { ...validRequestBody[0], [fieldNameSymbol]: null };
+
+      const { status, body } = await makeRequest([requestWithNullField]);
+
+      expect(status).toBe(400);
+      expect(body).toMatchObject({
+        error: 'Bad Request',
+        message: expect.arrayContaining([`${fieldName} must be a boolean value`]),
+        statusCode: 400,
+      });
+    });
+
+    it(`returns a 400 response if ${fieldName} is string`, async () => {
+      const requestWithStringField = { ...validRequestBody[0], [fieldNameSymbol]: 'true' };
+
+      const { status, body } = await makeRequest([requestWithStringField]);
+
+      expect(status).toBe(400);
+      expect(body).toMatchObject({
+        error: 'Bad Request',
+        message: expect.arrayContaining([`${fieldName} must be a boolean value`]),
+        statusCode: 400,
+      });
+    });
+
+    it(`returns a 400 response if ${fieldName} is number`, async () => {
+      const requestWithNumberField = { ...validRequestBody[0], [fieldNameSymbol]: 1 };
+
+      const { status, body } = await makeRequest([requestWithNumberField]);
+
+      expect(status).toBe(400);
+      expect(body).toMatchObject({
+        error: 'Bad Request',
+        message: expect.arrayContaining([`${fieldName} must be a boolean value`]),
+        statusCode: 400,
+      });
+    });
   });
 }

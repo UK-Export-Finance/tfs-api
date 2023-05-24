@@ -1,6 +1,6 @@
 import { applyDecorators } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsOptional } from 'class-validator';
 
 interface Options {
   description: string;
@@ -20,6 +20,7 @@ export const ValidatedBooleanApiProperty = ({ description, required, example, de
       required,
       default: theDefault,
     }),
+    IsBoolean(),
   ];
 
   const isRequiredProperty = required ?? true;

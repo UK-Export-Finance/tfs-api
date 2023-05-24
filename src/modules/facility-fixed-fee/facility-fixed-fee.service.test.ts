@@ -1,3 +1,4 @@
+import { BadRequestException } from '@nestjs/common';
 import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { AcbsFacilityFixedFeeService } from '@ukef/modules/acbs/acbs-facility-fixed-fee.service';
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
@@ -78,7 +79,14 @@ describe('FacilityFixedFeeService', () => {
     const [newFixedFeeWithAllFields] = requestBodyToCreateFacilityFixedFee;
 
     it('creates a fixed fee in ACBS with a transformation of the requested new fixed fee', async () => {
-      await service.createFixedFeeForFacility(facilityIdentifier, borrowerPartyIdentifier, facilityTypeCode, newFixedFeeWithAllFields);
+      await service.createFixedFeeForFacility(
+        facilityIdentifier,
+        borrowerPartyIdentifier,
+        facilityTypeCode,
+        newFixedFeeWithAllFields,
+        ENUMS.FACILITY_STATUSES.ACTIVE,
+        ENUMS.FACILITY_STAGES.ISSUED,
+      );
 
       expect(createFacilityFixedFeesAcbsService).toHaveBeenCalledWith(
         portfolioIdentifier,
@@ -89,7 +97,14 @@ describe('FacilityFixedFeeService', () => {
     });
 
     it(`sets the description to 'Bond Support Premium' if the facility is 'BSS'`, async () => {
-      await service.createFixedFeeForFacility(facilityIdentifier, borrowerPartyIdentifier, ENUMS.FACILITY_TYPE_IDS.BSS, newFixedFeeWithAllFields);
+      await service.createFixedFeeForFacility(
+        facilityIdentifier,
+        borrowerPartyIdentifier,
+        ENUMS.FACILITY_TYPE_IDS.BSS,
+        newFixedFeeWithAllFields,
+        ENUMS.FACILITY_STATUSES.ACTIVE,
+        ENUMS.FACILITY_STAGES.ISSUED,
+      );
 
       const fixedFeeAcbsPayload: AcbsCreateFacilityFixedFeeRequestDto = createFacilityFixedFeesAcbsService.mock.calls[0][2];
 
@@ -97,7 +112,14 @@ describe('FacilityFixedFeeService', () => {
     });
 
     it(`sets the description to 'EWCS Premium' if the facility is 'EWCS'`, async () => {
-      await service.createFixedFeeForFacility(facilityIdentifier, borrowerPartyIdentifier, ENUMS.FACILITY_TYPE_IDS.EWCS, newFixedFeeWithAllFields);
+      await service.createFixedFeeForFacility(
+        facilityIdentifier,
+        borrowerPartyIdentifier,
+        ENUMS.FACILITY_TYPE_IDS.EWCS,
+        newFixedFeeWithAllFields,
+        ENUMS.FACILITY_STATUSES.ACTIVE,
+        ENUMS.FACILITY_STAGES.ISSUED,
+      );
 
       const fixedFeeAcbsPayload: AcbsCreateFacilityFixedFeeRequestDto = createFacilityFixedFeesAcbsService.mock.calls[0][2];
 
@@ -105,7 +127,14 @@ describe('FacilityFixedFeeService', () => {
     });
 
     it(`sets the description to 'Financial Guarantee Fee' if the facility is 'GEF'`, async () => {
-      await service.createFixedFeeForFacility(facilityIdentifier, borrowerPartyIdentifier, ENUMS.FACILITY_TYPE_IDS.GEF, newFixedFeeWithAllFields);
+      await service.createFixedFeeForFacility(
+        facilityIdentifier,
+        borrowerPartyIdentifier,
+        ENUMS.FACILITY_TYPE_IDS.GEF,
+        newFixedFeeWithAllFields,
+        ENUMS.FACILITY_STATUSES.ACTIVE,
+        ENUMS.FACILITY_STAGES.ISSUED,
+      );
 
       const fixedFeeAcbsPayload: AcbsCreateFacilityFixedFeeRequestDto = createFacilityFixedFeesAcbsService.mock.calls[0][2];
 
@@ -115,7 +144,14 @@ describe('FacilityFixedFeeService', () => {
     it(`sets the InvolvedParty to ECGD default party id if lenderTypeCode is ECGD`, async () => {
       const newFixedFeeWithLenderTypeECGD = { ...newFixedFeeWithAllFields, lenderTypeCode: ENUMS.LENDER_TYPE_CODES.ECGD };
 
-      await service.createFixedFeeForFacility(facilityIdentifier, borrowerPartyIdentifier, facilityTypeCode, newFixedFeeWithLenderTypeECGD);
+      await service.createFixedFeeForFacility(
+        facilityIdentifier,
+        borrowerPartyIdentifier,
+        facilityTypeCode,
+        newFixedFeeWithLenderTypeECGD,
+        ENUMS.FACILITY_STATUSES.ACTIVE,
+        ENUMS.FACILITY_STAGES.ISSUED,
+      );
 
       const fixedFeeAcbsPayload: AcbsCreateFacilityFixedFeeRequestDto = createFacilityFixedFeesAcbsService.mock.calls[0][2];
 
@@ -125,11 +161,48 @@ describe('FacilityFixedFeeService', () => {
     it(`sets the InvolvedParty to borrowerPartyIdentifier if lenderTypeCode is FIRST_LEVEL_OBLIGOR`, async () => {
       const newFixedFeeWithLenderTypeECGD = { ...newFixedFeeWithAllFields, lenderTypeCode: ENUMS.LENDER_TYPE_CODES.FIRST_LEVEL_OBLIGOR };
 
-      await service.createFixedFeeForFacility(facilityIdentifier, borrowerPartyIdentifier, facilityTypeCode, newFixedFeeWithLenderTypeECGD);
+      await service.createFixedFeeForFacility(
+        facilityIdentifier,
+        borrowerPartyIdentifier,
+        facilityTypeCode,
+        newFixedFeeWithLenderTypeECGD,
+        ENUMS.FACILITY_STATUSES.ACTIVE,
+        ENUMS.FACILITY_STAGES.ISSUED,
+      );
 
       const fixedFeeAcbsPayload: AcbsCreateFacilityFixedFeeRequestDto = createFacilityFixedFeesAcbsService.mock.calls[0][2];
 
       expect(fixedFeeAcbsPayload.InvolvedParty.PartyIdentifier).toBe(borrowerPartyIdentifier);
+    });
+
+    it('returns activation error if the facility is not active', async () => {
+      const responsePromise = service.createFixedFeeForFacility(
+        facilityIdentifier,
+        borrowerPartyIdentifier,
+        facilityTypeCode,
+        newFixedFeeWithAllFields,
+        ENUMS.FACILITY_STATUSES.PENDING,
+        ENUMS.FACILITY_STAGES.ISSUED,
+      );
+
+      await expect(responsePromise).rejects.toBeInstanceOf(BadRequestException);
+      await expect(responsePromise).rejects.toThrow('Bad Request');
+      await expect(responsePromise).rejects.toHaveProperty('response.error', 'Facility needs to be activated before a fixed fee is created');
+    });
+
+    it('returns Facility not issued error if the facility is not active', async () => {
+      const responsePromise = service.createFixedFeeForFacility(
+        facilityIdentifier,
+        borrowerPartyIdentifier,
+        facilityTypeCode,
+        newFixedFeeWithAllFields,
+        ENUMS.FACILITY_STATUSES.ACTIVE,
+        ENUMS.FACILITY_STAGES.UNISSUED,
+      );
+
+      await expect(responsePromise).rejects.toBeInstanceOf(BadRequestException);
+      await expect(responsePromise).rejects.toThrow('Bad Request');
+      await expect(responsePromise).rejects.toHaveProperty('response.error', 'Facility needs to be issued before a fixed fee is created');
     });
   });
 });

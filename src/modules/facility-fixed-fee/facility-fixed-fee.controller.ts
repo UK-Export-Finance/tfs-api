@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Param, ParseArrayPipe, Post } from '@nestjs/common';
+import { Controller, Get, Param, Post } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -8,6 +8,7 @@ import {
   ApiOkResponse,
   ApiOperation,
 } from '@nestjs/swagger';
+import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decorator';
 import { FacilityService } from '@ukef/modules/facility/facility.service';
 
 import { CreateFacilityFixedFeeRequest, CreateFacilityFixedFeeRequestItem } from './dto/create-facility-fixed-fee-request.dto';
@@ -61,28 +62,22 @@ export class FacilityFixedFeeController {
   })
   async createFixedFeeForFacility(
     @Param() params: FacilityFixedFeeParamsDto,
-    @Body(new ParseArrayPipe({ items: CreateFacilityFixedFeeRequestItem }))
-    newCreateFacilityFixedFeeRequest: CreateFacilityFixedFeeRequest,
+    @ValidatedArrayBody({ items: CreateFacilityFixedFeeRequestItem }) newCreateFacilityFixedFeeRequest: CreateFacilityFixedFeeRequest,
   ): Promise<CreateFacilityFixedFeeResponse> {
-    const facility = await this.facilityService.getFacilityByIdentifier(params.facilityIdentifier);
-
-    if (facility.facilityStageCode !== '07') {
-      throw new BadRequestException('Bad Request', 'Facility needs to be issued before Fee is created');
-    }
-
-    if (facility.facilityOverallStatus !== 'A') {
-      throw new BadRequestException('Bad Request', 'Facility needs to be activated before Fee is created');
-    }
+    const { facilityIdentifier } = params;
+    const facility = await this.facilityService.getFacilityByIdentifier(facilityIdentifier);
 
     const [newCreateFacilityFixedFee] = newCreateFacilityFixedFeeRequest;
 
     await this.facilityFixedFeeService.createFixedFeeForFacility(
-      params.facilityIdentifier,
+      facilityIdentifier,
       facility.obligorPartyIdentifier,
       facility.productTypeId,
       newCreateFacilityFixedFee,
+      facility.facilityOverallStatus,
+      facility.facilityStageCode,
     );
 
-    return new CreateFacilityFixedFeeResponse(params.facilityIdentifier);
+    return new CreateFacilityFixedFeeResponse(facilityIdentifier);
   }
 }

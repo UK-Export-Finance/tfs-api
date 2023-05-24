@@ -36,8 +36,8 @@ describe('POST /facilities/{facilityIdentifier}/fixed-fees', () => {
     ...facilitiesInAcbs[0],
     FacilityType: { FacilityTypeCode: facilityTypeCode },
     BorrowerParty: { PartyIdentifier: borrowerPartyIdentifier, PartyName1: valueGenerator.string() },
-    FacilityUserDefinedList1: { FacilityUserDefinedList1Code: '07' }, // Set stage to issued
-    FacilityOverallStatus: { FacilityStatusCode: 'A' }, // Set status to active
+    FacilityUserDefinedList1: { FacilityUserDefinedList1Code: ENUMS.FACILITY_STAGES.ISSUED },
+    FacilityOverallStatus: { FacilityStatusCode: ENUMS.FACILITY_STATUSES.ACTIVE },
   };
 
   const { acbsRequestBodyToCreateFacilityFixedFee, requestBodyToCreateFacilityFixedFee } = new CreateFacilityFixedFeeGenerator(
@@ -112,7 +112,7 @@ describe('POST /facilities/{facilityIdentifier}/fixed-fees', () => {
       const { status, body } = await api.post(createFacilityFixedFeeUrl, requestBodyToCreateFacilityFixedFee);
 
       expect(status).toBe(400);
-      expect(body).toStrictEqual({ message: 'Bad Request', error: 'Facility needs to be activated before Fee is created', statusCode: 400 });
+      expect(body).toStrictEqual({ message: 'Bad Request', error: 'Facility needs to be activated before a fixed fee is created', statusCode: 400 });
     });
 
     it('returns a 400 response if ACBS respond with Facility stage that is not issued', async () => {
@@ -125,7 +125,7 @@ describe('POST /facilities/{facilityIdentifier}/fixed-fees', () => {
       const { status, body } = await api.post(createFacilityFixedFeeUrl, requestBodyToCreateFacilityFixedFee);
 
       expect(status).toBe(400);
-      expect(body).toStrictEqual({ message: 'Bad Request', error: 'Facility needs to be issued before Fee is created', statusCode: 400 });
+      expect(body).toStrictEqual({ message: 'Bad Request', error: 'Facility needs to be issued before a fixed fee is created', statusCode: 400 });
     });
   });
 

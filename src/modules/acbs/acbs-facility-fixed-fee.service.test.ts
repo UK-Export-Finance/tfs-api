@@ -148,7 +148,7 @@ describe('AcbsFacilityFixedFeeService', () => {
       );
     });
 
-    it('throws an AcbsResourceNotFoundException if ACBS responds with a 400 that is a string containing "The facility not found"', async () => {
+    it('throws an AcbsResourceNotFoundException if ACBS responds with a 400 that is a string containing "Invalid PortfolioId and FacilityId combination"', async () => {
       const axiosError = new AxiosError();
       const errorString = 'Invalid PortfolioId and FacilityId combination.';
       axiosError.response = {

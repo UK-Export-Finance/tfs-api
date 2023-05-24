@@ -15,13 +15,11 @@ export class CreateFacilityFixedFeeGenerator extends AbstractGenerator<CreateFac
   }
 
   protected generateValues(): any {
-    const lenderType = this.valueGenerator.enumValue(ENUMS.LENDER_TYPE_CODES) as string;
-
     return {
       amount: this.valueGenerator.nonnegativeFloat({ fixed: 2 }),
       period: this.valueGenerator.string({ length: 2 }),
       effectiveDate: TEST_DATES.A_PAST_EFFECTIVE_DATE_ONLY,
-      lenderTypeCode: lenderType,
+      lenderTypeCode: ENUMS.LENDER_TYPE_CODES.ECGD,
       expirationDate: this.valueGenerator.dateOnlyString(),
       nextDueDate: this.valueGenerator.dateOnlyString(),
       nextAccrueToDate: this.valueGenerator.dateOnlyString(),
@@ -49,10 +47,7 @@ export class CreateFacilityFixedFeeGenerator extends AbstractGenerator<CreateFac
       },
       LimitKey: borrowerPartyIdentifier,
       InvolvedParty: {
-        PartyIdentifier:
-          firstFacilityFixedFee.lenderTypeCode == ENUMS.LENDER_TYPE_CODES.ECGD
-            ? (defaultValues.involvedParty.partyIdentifier as AcbsPartyId)
-            : borrowerPartyIdentifier,
+        PartyIdentifier: defaultValues.involvedParty.partyIdentifier as AcbsPartyId,
       },
       SegmentIdentifier: firstFacilityFixedFee.period,
       EffectiveDate: this.dateStringTransformations.addTimeToDateOnlyString(firstFacilityFixedFee.effectiveDate),

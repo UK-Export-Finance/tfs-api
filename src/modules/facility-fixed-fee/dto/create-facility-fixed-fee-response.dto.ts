@@ -3,7 +3,7 @@ import { EXAMPLES } from '@ukef/constants';
 
 export class CreateFacilityFixedFeeResponse {
   @ApiProperty({
-    description: 'The identifier of the facility in ACBS for which the fixed fee has been created. This will be a 10-digit code.',
+    description: 'The identifier of the facility in ACBS for which the fixed fee has been created.',
     example: EXAMPLES.FACILITY_ID,
   })
   readonly facilityIdentifier: string;

@@ -29,7 +29,7 @@ export class GetFacilityFixedFeeResponseItem {
   readonly amount: number;
 
   @ApiProperty({
-    description: 'The effective date of this accruing/Fixed fee schedule.',
+    description: 'The effective date of this accruing/fixed fee schedule.',
     type: Date,
     format: 'date',
     example: '2023-03-24',
@@ -37,7 +37,7 @@ export class GetFacilityFixedFeeResponseItem {
   readonly effectiveDate: DateOnlyString;
 
   @ApiProperty({
-    description: 'The expiration date of this accruing/Fixed fee schedule.',
+    description: 'The expiration date of this accruing/fixed fee schedule.',
     type: Date,
     format: 'date',
     example: '2023-03-24',

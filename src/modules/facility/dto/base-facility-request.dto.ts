@@ -111,7 +111,8 @@ export class BaseFacilityRequestItem {
 
   @ValidatedStringApiProperty({
     description: 'Case Stage this can be 06 Commitment and 07 Issued',
-    example: '07',
+    example: ENUMS.FACILITY_STAGES.ISSUED,
+    enum: ENUMS.FACILITY_STAGES,
     maxLength: 2,
   })
   readonly facilityStageCode: string;

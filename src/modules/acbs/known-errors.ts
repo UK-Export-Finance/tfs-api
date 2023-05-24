@@ -27,7 +27,6 @@ export const facilityNotFoundKnownAcbsError = (facilityIdentifier: string): Know
   },
 });
 
-// TODO: allow multiple strings for same error and then merge with facilityNotFoundKnownAcbsError.
 export const postFacilityNotFoundKnownAcbsError = (facilityIdentifier: string): KnownError => ({
   caseInsensitiveSubstringToFind: 'Facility does not exist',
   throwError: (error) => {
@@ -35,7 +34,6 @@ export const postFacilityNotFoundKnownAcbsError = (facilityIdentifier: string): 
   },
 });
 
-// TODO: allow multiple strings for same error and then merge with getFacilityNotFoundKnownAcbsError.
 export const postInvalidPortfolioAndFacilityIdCombinationKnownAcbsError = (facilityIdentifier: string): KnownError => ({
   caseInsensitiveSubstringToFind: 'Invalid PortfolioId and FacilityId combination.',
   throwError: (error) => {
