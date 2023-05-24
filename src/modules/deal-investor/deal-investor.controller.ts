@@ -71,7 +71,7 @@ export class DealInvestorController {
     @Param('dealIdentifier') dealIdentifier: string,
     @ValidatedArrayBody({ items: CreateDealInvestorRequestItem }) newInvestorRequest: CreateDealInvestorRequest,
   ): Promise<CreateDealInvestorResponse> {
-    const newInvestor = newInvestorRequest[0];
+    const [newInvestor] = newInvestorRequest;
     const investorToCreate: CreateDealInvestorRequestItem = {
       dealIdentifier: newInvestor.dealIdentifier,
       lenderType: newInvestor.lenderType,

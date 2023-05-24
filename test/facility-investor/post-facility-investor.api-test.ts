@@ -1,6 +1,6 @@
 import { PROPERTIES } from '@ukef/constants';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
-import { CreateFacilityInvestorRequest } from '@ukef/modules/facility-investor/dto/create-facility-investor-request.dto';
+import { CreateFacilityInvestorRequest, CreateFacilityInvestorRequestItem } from '@ukef/modules/facility-investor/dto/create-facility-investor-request.dto';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
 import { withCurrencyFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/currency-field-validation-api-tests';
@@ -23,9 +23,11 @@ describe('POST /facilities/{facilityIdentifier}/investors', () => {
   const facilityIdentifier = valueGenerator.facilityId();
   const createFacilityInvestorUrl = `/api/v1/facilities/${facilityIdentifier}/investors`;
 
-  const sectionIdentifier = PROPERTIES.FACILITY_INVESTOR.DEFAULT.sectionIdentifier;
-  const facilityStatusCode = PROPERTIES.FACILITY_INVESTOR.DEFAULT.facilityStatus.facilityStatusCode;
-  const involvedPartyIdentifier = PROPERTIES.FACILITY_INVESTOR.DEFAULT.involvedParty.partyIdentifier;
+  const {
+    facilityStatus: { facilityStatusCode },
+    involvedParty: { partyIdentifier: involvedPartyIdentifier },
+    sectionIdentifier,
+  } = PROPERTIES.FACILITY_INVESTOR.DEFAULT;
   const effectiveDateInFuture = TEST_DATES.A_FUTURE_EFFECTIVE_DATE_ONLY;
   const guaranteeExpiryDateInFuture = TEST_DATES.A_FUTURE_EXPIRY_DATE_ONLY;
   const lenderType = valueGenerator.stringOfNumericCharacters({ length: 3 });
@@ -34,15 +36,15 @@ describe('POST /facilities/{facilityIdentifier}/investors', () => {
   const limitTypeCode = valueGenerator.stringOfNumericCharacters({ minLength: 1, maxLength: 2 });
   const limitKey = valueGenerator.stringOfNumericCharacters({ maxLength: 10 });
 
-  const requestBodyToCreateFacilityInvestor: CreateFacilityInvestorRequest = [
-    {
-      effectiveDate: effectiveDateInFuture,
-      guaranteeExpiryDate: guaranteeExpiryDateInFuture,
-      lenderType,
-      currency,
-      maximumLiability,
-    },
-  ];
+  const requestItemToCreateFacilityInvestor: CreateFacilityInvestorRequestItem = {
+    effectiveDate: effectiveDateInFuture,
+    guaranteeExpiryDate: guaranteeExpiryDateInFuture,
+    lenderType,
+    currency,
+    maximumLiability,
+  };
+
+  const requestBodyToCreateFacilityInvestor: CreateFacilityInvestorRequest = [requestItemToCreateFacilityInvestor];
 
   const acbsRequestBodyToCreateFacilityParty = {
     FacilityStatus: {
@@ -109,7 +111,7 @@ describe('POST /facilities/{facilityIdentifier}/investors', () => {
   });
 
   it('creates a facility party in ACBS with a default lenderType if it is not specified in the request', async () => {
-    const { lenderType: _removed, ...requestWithoutLenderType } = requestBodyToCreateFacilityInvestor[0];
+    const { lenderType: _removed, ...requestWithoutLenderType } = requestItemToCreateFacilityInvestor;
     const requestBodyWithoutLenderType = [requestWithoutLenderType];
     const acbsRequestBodyWithDefaultLenderTypeCode = {
       ...acbsRequestBodyToCreateFacilityParty,

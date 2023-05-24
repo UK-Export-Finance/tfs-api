@@ -119,7 +119,7 @@ describe('FacilityGuaranteeService', () => {
       };
       await service.createGuaranteeForFacility(facilityIdentifier, newGuaranteeWithFutureEffectiveDate);
 
-      const guaranteeCreatedInAcbs: AcbsCreateFacilityGuaranteeDto = createFacilityGuaranteesAcbsService.mock.calls[0][1];
+      const guaranteeCreatedInAcbs = getGuaranteeCreatedInAcbs();
 
       expect(guaranteeCreatedInAcbs.EffectiveDate).toBe(dateStringTransformations.addTimeToDateOnlyString(todayAsDateOnlyString));
     });
@@ -127,7 +127,7 @@ describe('FacilityGuaranteeService', () => {
     it(`does NOT replace effectiveDate with today's date if effectiveDate is NOT after today`, async () => {
       await service.createGuaranteeForFacility(facilityIdentifier, newGuaranteeWithAllFields);
 
-      const guaranteeCreatedInAcbs: AcbsCreateFacilityGuaranteeDto = createFacilityGuaranteesAcbsService.mock.calls[0][1];
+      const guaranteeCreatedInAcbs = getGuaranteeCreatedInAcbs();
 
       expect(guaranteeCreatedInAcbs.EffectiveDate).toBe(dateStringTransformations.addTimeToDateOnlyString(effectiveDate));
     });
@@ -139,9 +139,11 @@ describe('FacilityGuaranteeService', () => {
 
       await service.createGuaranteeForFacility(facilityIdentifier, newGuaranteeWithMaximumLiabilityToRound);
 
-      const guaranteeCreatedInAcbs: AcbsCreateFacilityGuaranteeDto = createFacilityGuaranteesAcbsService.mock.calls[0][1];
+      const guaranteeCreatedInAcbs = getGuaranteeCreatedInAcbs();
 
       expect(guaranteeCreatedInAcbs.GuaranteedLimit).toBeCloseTo(maximumLiabilityRoundedToTwoDecimalPlaces, 8);
     });
+
+    const getGuaranteeCreatedInAcbs = (): AcbsCreateFacilityGuaranteeDto => createFacilityGuaranteesAcbsService.mock.calls[0][1];
   });
 });

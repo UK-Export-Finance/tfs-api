@@ -39,8 +39,8 @@ describe('PartyController', () => {
 
   describe('getPartyByIdentifier', () => {
     const { parties, partiesFromApi } = new GetPartyGenerator(valueGenerator, dateStringTransformations).generate({ numberToGenerate: 1 });
-    const partyFromService = parties[0];
-    const expectedParty = partiesFromApi[0];
+    const [partyFromService] = parties;
+    const [expectedParty] = partiesFromApi;
 
     it('returns the party from the service', async () => {
       when(partyServiceGetPartyByIdentifier).calledWith(partyIdentifier).mockResolvedValueOnce(partyFromService);

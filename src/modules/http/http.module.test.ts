@@ -42,10 +42,10 @@ describe('HttpModule', () => {
     it('registers the request and response logging interceptors on the axiosRef of the httpService', () => {
       createNewHttpModule();
 
-      const requestInterceptor = (httpService.axiosRef.interceptors.request.use as jest.Mock).mock.calls[0][0];
-      const responseInterceptors = (httpService.axiosRef.interceptors.response.use as jest.Mock).mock.calls[0];
-      const responseSuccessInterceptor = responseInterceptors[0];
-      const responseErrorInterceptor = responseInterceptors[1];
+      const [requestInterceptorUseArgs] = (httpService.axiosRef.interceptors.request.use as jest.Mock).mock.calls;
+      const [requestInterceptor] = requestInterceptorUseArgs;
+      const [responseInterceptorsUseArgs] = (httpService.axiosRef.interceptors.response.use as jest.Mock).mock.calls;
+      const [responseSuccessInterceptor, responseErrorInterceptor] = responseInterceptorsUseArgs;
 
       expect(requestInterceptor).toBe(axiosRequestInterceptor);
       expect(responseSuccessInterceptor).toBe(axiosResponseSuccessInterceptor);
