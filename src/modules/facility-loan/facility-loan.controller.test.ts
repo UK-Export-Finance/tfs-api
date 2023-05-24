@@ -4,7 +4,7 @@ import { GetFacilityLoanGenerator } from '@ukef-test/support/generator/get-facil
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
 
-import { DateStringTransformations } from '../date/date-string.transformations';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { FacilityLoanController } from './facility-loan.controller';
 import { FacilityLoanService } from './facility-loan.service';
 
@@ -53,7 +53,7 @@ describe('FacilityLoanController', () => {
   });
 
   describe('createLoanForFacility', () => {
-    const { requestBodyToCreateFacilityLoan, createFacilityLoanResponseFromService } = new CreateFacilityLoanGenerator(
+    const { requestBodyToCreateFacilityLoanGbp, createFacilityLoanResponseFromService } = new CreateFacilityLoanGenerator(
       valueGenerator,
       dateStringTransformations,
     ).generate({
@@ -63,13 +63,13 @@ describe('FacilityLoanController', () => {
     });
 
     it('creates a loan for the facility with the service from the request body', async () => {
-      await controller.createLoanForFacility({ facilityIdentifier }, requestBodyToCreateFacilityLoan);
+      await controller.createLoanForFacility({ facilityIdentifier }, requestBodyToCreateFacilityLoanGbp);
 
-      expect(facilityLoanServiceCreateLoanForFacility).toHaveBeenCalledWith(facilityIdentifier, requestBodyToCreateFacilityLoan[0]);
+      expect(facilityLoanServiceCreateLoanForFacility).toHaveBeenCalledWith(facilityIdentifier, requestBodyToCreateFacilityLoanGbp[0]);
     });
 
     it('returns the bundle identifier if creating the loan succeeds', async () => {
-      const response = await controller.createLoanForFacility({ facilityIdentifier }, requestBodyToCreateFacilityLoan);
+      const response = await controller.createLoanForFacility({ facilityIdentifier }, requestBodyToCreateFacilityLoanGbp);
 
       expect(response).toStrictEqual(createFacilityLoanResponseFromService);
     });

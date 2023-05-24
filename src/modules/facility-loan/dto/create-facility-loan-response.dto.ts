@@ -2,9 +2,8 @@ import { ApiProperty } from '@nestjs/swagger';
 import { EXAMPLES } from '@ukef/constants';
 import { AcbsBundleId } from '@ukef/helpers';
 
-export class CreateFacilityLoanResponseDto {
+export class CreateFacilityLoanResponse {
   @ApiProperty({
-    readOnly: true,
     minLength: 10,
     maxLength: 10,
     description: 'The identifier of the ACBS bundle.',

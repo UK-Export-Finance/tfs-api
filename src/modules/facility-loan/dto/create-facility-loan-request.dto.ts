@@ -1,85 +1,75 @@
-import { ENUMS, EXAMPLES, UKEFID } from '@ukef/constants';
+import { ENUMS } from '@ukef/constants';
+import { OperationTypeCodeEnum } from '@ukef/constants/enums/operation-type-code';
+import { ProductTypeGroupEnum } from '@ukef/constants/enums/product-type-group';
+import { ProductTypeIdEnum } from '@ukef/constants/enums/product-type-id';
 import { ValidatedCurrencyApiProperty } from '@ukef/decorators/validated-currency-api-property-decorator';
 import { ValidatedDateOnlyApiProperty } from '@ukef/decorators/validated-date-only-api-property.decorator';
 import { ValidatedNumberApiProperty } from '@ukef/decorators/validated-number-api-property.decorator';
+import { ValidatedPartyIdentifierApiProperty } from '@ukef/decorators/validated-party-identifier-api-property.decorator';
 import { ValidatedStringApiProperty } from '@ukef/decorators/validated-string-api-property.decorator';
-import { DateOnlyString, UkefId } from '@ukef/helpers';
+import { DateOnlyString } from '@ukef/helpers';
 
-export type CreateFacilityLoanRequestDto = CreateFacilityLoanRequestItem[];
+export type CreateFacilityLoanRequest = CreateFacilityLoanRequestItem[];
 
 export class CreateFacilityLoanRequestItem {
   @ValidatedDateOnlyApiProperty({
     description: 'The date of the action.',
-    example: '2024-04-19',
   })
-  postingDate: DateOnlyString;
+  readonly postingDate: DateOnlyString;
 
-  @ValidatedStringApiProperty({
-    description: 'The identifier of the facility to create the loan for in ACBS.',
-    example: EXAMPLES.FACILITY_ID,
-    length: 10,
-    pattern: UKEFID.MAIN_ID.TEN_DIGIT_REGEX,
-  })
-  readonly facilityIdentifier: UkefId;
-
-  @ValidatedStringApiProperty({
+  @ValidatedPartyIdentifierApiProperty({
     description: 'The customer identifier representing the borrower for the loan.',
-    example: '00291013',
-    length: 8,
   })
   readonly borrowerPartyIdentifier: string;
 
   @ValidatedStringApiProperty({
-    description: `The product type identifier, e.g. '250' for BOND.`,
-    example: '250',
+    description: `The product type identifier for the loan: 250 for BSS, 260 for EWCS, 280 for GEF-Cash, 281 for GEF-Contingent. It is called the product type code in ACBS.`,
+    example: ENUMS.PRODUCT_TYPE_IDS.BSS,
     length: 3,
     enum: ENUMS.PRODUCT_TYPE_IDS,
   })
-  readonly productTypeId: string;
+  readonly productTypeId: ProductTypeIdEnum;
 
   @ValidatedStringApiProperty({
-    description: `The product group, r.g. 'BS' for BOND.`,
-    example: 'BS',
+    description: `The product type group identifier for the loan: EW for EWCS, BS for Bond, GM for GEF. It is called the product group code in ACBS.`,
+    example: ENUMS.PRODUCT_TYPE_GROUPS.BOND,
     length: 2,
     enum: ENUMS.PRODUCT_TYPE_GROUPS,
   })
-  readonly productTypeGroup: string;
+  readonly productTypeGroup: ProductTypeGroupEnum;
 
   @ValidatedCurrencyApiProperty({
     description: 'The currency code of the primary currency of the loan, from the Currency Definition Table.',
   })
-  currency: string;
+  readonly currency: string;
 
   @ValidatedNumberApiProperty({
     description: 'The exchange rate between the loan currency and the deal currency. Required when loan currency differs from deal currency.',
     required: false,
   })
-  dealCustomerUsageRate: number;
+  readonly dealCustomerUsageRate?: number;
 
   @ValidatedStringApiProperty({
     description: `Represents the currency exchange rate operand (M-multiply or D-divide). Required when loan currency differs from deal currency.`,
-    example: 'M',
-    length: 1,
+    example: ENUMS.OPERATION_TYPE_CODES.MULTIPLY,
     enum: ENUMS.OPERATION_TYPE_CODES,
     required: false,
   })
-  readonly dealCustomerUsageOperationType: string;
+  readonly dealCustomerUsageOperationType?: OperationTypeCodeEnum;
 
   @ValidatedNumberApiProperty({
-    description: 'Populated with the amount of the loan.',
+    description: 'The amount of the loan.',
     minimum: 0,
   })
-  amount: number;
+  readonly amount: number;
 
   @ValidatedDateOnlyApiProperty({
     description: 'The facility issue date.',
-    example: '2023-04-19',
   })
-  issueDate: DateOnlyString;
+  readonly issueDate: DateOnlyString;
 
   @ValidatedDateOnlyApiProperty({
     description: 'The facility expiry date.',
-    example: '2024-04-19',
   })
-  expiryDate: DateOnlyString;
+  readonly expiryDate: DateOnlyString;
 }

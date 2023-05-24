@@ -579,7 +579,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreateFacilityLoanResponseDto'
+                $ref: '#/components/schemas/CreateFacilityLoanResponse'
         '400':
           description: Bad request.
         '404':
@@ -1147,7 +1147,6 @@ components:
       properties:
         bundleIdentifier:
           type: string
-          readOnly: true
           minLength: 10
           maxLength: 10
           description: The identifier of the ACBS bundle.
@@ -2244,23 +2243,18 @@ components:
           format: date
           type: string
           description: The date of the action.
-          example: '2024-04-19'
-        facilityIdentifier:
-          type: string
-          description: The identifier of the facility to create the loan for in ACBS.
-          minLength: 10
-          maxLength: 10
-          pattern: ^00\\d{8}$
-          example: '0030000322'
         borrowerPartyIdentifier:
           type: string
           description: The customer identifier representing the borrower for the loan.
           minLength: 8
           maxLength: 8
-          example: '00291013'
+          example: '00001234'
         productTypeId:
           type: string
-          description: The product type identifier, e.g. '250' for BOND.
+          description: >-
+            The product type identifier for the loan: 250 for BSS, 260 for EWCS,
+            280 for GEF-Cash, 281 for GEF-Contingent. It is called the product
+            type code in ACBS.
           minLength: 3
           maxLength: 3
           enum:
@@ -2271,7 +2265,9 @@ components:
           example: '250'
         productTypeGroup:
           type: string
-          description: The product group, r.g. 'BS' for BOND.
+          description: >-
+            The product type group identifier for the loan: EW for EWCS, BS for
+            Bond, GM for GEF. It is called the product group code in ACBS.
           minLength: 2
           maxLength: 2
           enum:
@@ -2297,29 +2293,25 @@ components:
           description: >-
             Represents the currency exchange rate operand (M-multiply or
             D-divide). Required when loan currency differs from deal currency.
-          minLength: 1
-          maxLength: 1
+          minLength: 0
           enum:
             - M
             - D
           example: M
         amount:
           type: number
-          description: Populated with the amount of the loan.
+          description: The amount of the loan.
           minimum: 0
         issueDate:
           format: date
           type: string
           description: The facility issue date.
-          example: '2023-04-19'
         expiryDate:
           format: date
           type: string
           description: The facility expiry date.
-          example: '2024-04-19'
       required:
         - postingDate
-        - facilityIdentifier
         - borrowerPartyIdentifier
         - productTypeId
         - productTypeGroup
@@ -2327,12 +2319,11 @@ components:
         - amount
         - issueDate
         - expiryDate
-    CreateFacilityLoanResponseDto:
+    CreateFacilityLoanResponse:
       type: object
       properties:
         bundleIdentifier:
           type: string
-          readOnly: true
           minLength: 10
           maxLength: 10
           description: The identifier of the ACBS bundle.

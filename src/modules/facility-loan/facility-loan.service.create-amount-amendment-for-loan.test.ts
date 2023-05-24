@@ -11,7 +11,7 @@ import { CreateFacilityLoanAmountAmendmentGenerator } from '@ukef-test/support/g
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
 
-import { CurrentDateProvider } from '../date/current-date.provider';
+import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
 import { FacilityLoanService } from './facility-loan.service';
 
 describe('FacilityLoanService', () => {

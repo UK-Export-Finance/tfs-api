@@ -8,7 +8,7 @@ import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acb
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 
 import { CreateFacilityActivationTransactionResponse } from './dto/create-facility-activation-transaction-response.dto';
-import { FacilityActivationTransactionToCreate } from './facility-activation-transaction-to-create.interface';
+import { CreateFacilityActivationTransactionRequestItem } from './dto/create-facility-activation-transaction-request.dto';
 
 @Injectable()
 export class FacilityActivationTransactionService {
@@ -22,7 +22,7 @@ export class FacilityActivationTransactionService {
     facilityIdentifier: UkefId,
     borrowerPartyIdentifier: AcbsPartyId,
     originalEffectiveDate: DateOnlyString,
-    newFacilityActivationTransaction: FacilityActivationTransactionToCreate,
+    newFacilityActivationTransaction: CreateFacilityActivationTransactionRequestItem,
   ): Promise<CreateFacilityActivationTransactionResponse> {
     const idToken = await this.acbsAuthenticationService.getIdToken();
 

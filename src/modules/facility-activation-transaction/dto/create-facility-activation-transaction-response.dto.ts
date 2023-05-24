@@ -4,7 +4,6 @@ import { AcbsBundleId } from '@ukef/helpers';
 
 export class CreateFacilityActivationTransactionResponse {
   @ApiProperty({
-    readOnly: true,
     minLength: 10,
     maxLength: 10,
     description: 'The identifier of the ACBS bundle.',

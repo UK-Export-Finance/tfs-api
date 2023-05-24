@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseArrayPipe, Post } from '@nestjs/common';
+import { Controller, Get, Param, Post } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -12,8 +12,8 @@ import {
 import { EXAMPLES } from '@ukef/constants';
 import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decorator';
 
-import { CreateFacilityLoanRequestDto, CreateFacilityLoanRequestItem } from './dto/create-facility-loan-request.dto';
-import { CreateFacilityLoanResponseDto } from './dto/create-facility-loan-response.dto';
+import { CreateFacilityLoanRequest, CreateFacilityLoanRequestItem } from './dto/create-facility-loan-request.dto';
+import { CreateFacilityLoanResponse } from './dto/create-facility-loan-response.dto';
 import { CreateLoanAmountAmendmentParams } from './dto/create-loan-amount-amendment-params.dto';
 import { CreateLoanAmountAmendmentRequest, CreateLoanAmountAmendmentRequestItem } from './dto/create-loan-amount-amendment-request.dto';
 import { CreateLoanAmountAmendmentResponse } from './dto/create-loan-amount-amendment-response.dto';
@@ -23,7 +23,7 @@ import { FacilityLoanService } from './facility-loan.service';
 
 @Controller()
 export class FacilityLoanController {
-  constructor(private readonly facilityLoanService: FacilityLoanService) {}
+  constructor(private readonly facilityLoanService: FacilityLoanService) { }
 
   @Get('/facilities/:facilityIdentifier/loans')
   @ApiOperation({
@@ -71,7 +71,7 @@ export class FacilityLoanController {
   })
   @ApiCreatedResponse({
     description: 'The loan has been successfully created.',
-    type: CreateFacilityLoanResponseDto,
+    type: CreateFacilityLoanResponse,
   })
   @ApiNotFoundResponse({
     description: 'The facility was not found.',
@@ -84,10 +84,10 @@ export class FacilityLoanController {
   })
   createLoanForFacility(
     @Param() params: FacilityLoanParamsDto,
-    @Body(new ParseArrayPipe({ items: CreateFacilityLoanRequestItem, whitelist: true })) newLoanRequest: CreateFacilityLoanRequestDto,
-  ): Promise<CreateFacilityLoanResponseDto> {
-    const facilityIdentifier = params.facilityIdentifier;
-    const newLoan = newLoanRequest[0];
+    @ValidatedArrayBody({ items: CreateFacilityLoanRequestItem }) newLoanRequest: CreateFacilityLoanRequest,
+  ): Promise<CreateFacilityLoanResponse> {
+    const { facilityIdentifier } = params;
+    const [newLoan] = newLoanRequest;
 
     return this.facilityLoanService.createLoanForFacility(facilityIdentifier, newLoan);
   }
