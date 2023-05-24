@@ -3,9 +3,9 @@ import { AcbsPartyId } from '@ukef/helpers';
 import { AcbsCreateFacilityFixedFeeRequestDto } from '@ukef/modules/acbs/dto/acbs-create-facility-fixed-fee-request.dto';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { CreateFacilityFixedFeeRequest, CreateFacilityFixedFeeRequestItem } from '@ukef/modules/facility-fixed-fee/dto/create-facility-fixed-fee-request.dto';
+import { TEST_CURRENCIES } from '@ukef-test/support/constants/test-currency.constant';
+import { TEST_DATES } from '@ukef-test/support/constants/test-date.constant';
 
-import { TEST_CURRENCIES } from '../constants/test-currency.constant';
-import { TEST_DATES } from '../constants/test-date.constant';
 import { AbstractGenerator } from './abstract-generator';
 import { RandomValueGenerator } from './random-value-generator';
 
@@ -29,7 +29,7 @@ export class CreateFacilityFixedFeeGenerator extends AbstractGenerator<CreateFac
   }
 
   protected transformRawValuesToGeneratedValues(values: any, { borrowerPartyIdentifier, facilityTypeCode }: GenerateOptions): GenerateResult {
-    const firstFacilityFixedFee = values[0];
+    const [firstFacilityFixedFee] = values;
 
     const defaultValues = PROPERTIES.FACILITY_FIXED_FEE.DEFAULT;
 

@@ -1,6 +1,7 @@
 import { BadRequestException } from '@nestjs/common';
 import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { AcbsFacilityFixedFeeService } from '@ukef/modules/acbs/acbs-facility-fixed-fee.service';
+import { AcbsCreateFacilityFixedFeeRequestDto } from '@ukef/modules/acbs/dto/acbs-create-facility-fixed-fee-request.dto';
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
@@ -10,7 +11,6 @@ import { GetFacilityFixedFeeGenerator } from '@ukef-test/support/generator/get-f
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
 
-import { AcbsCreateFacilityFixedFeeRequestDto } from '../acbs/dto/acbs-create-facility-fixed-fee-request.dto';
 import { FacilityFixedFeeService } from './facility-fixed-fee.service';
 
 describe('FacilityFixedFeeService', () => {
@@ -106,7 +106,7 @@ describe('FacilityFixedFeeService', () => {
         ENUMS.FACILITY_STAGES.ISSUED,
       );
 
-      const fixedFeeAcbsPayload: AcbsCreateFacilityFixedFeeRequestDto = createFacilityFixedFeesAcbsService.mock.calls[0][2];
+      const fixedFeeAcbsPayload = getFixedFeeAcbsPayload();
 
       expect(fixedFeeAcbsPayload.Description).toBe('Bond Support Premium');
     });
@@ -121,7 +121,7 @@ describe('FacilityFixedFeeService', () => {
         ENUMS.FACILITY_STAGES.ISSUED,
       );
 
-      const fixedFeeAcbsPayload: AcbsCreateFacilityFixedFeeRequestDto = createFacilityFixedFeesAcbsService.mock.calls[0][2];
+      const fixedFeeAcbsPayload = getFixedFeeAcbsPayload();
 
       expect(fixedFeeAcbsPayload.Description).toBe('EWCS Premium');
     });
@@ -136,7 +136,7 @@ describe('FacilityFixedFeeService', () => {
         ENUMS.FACILITY_STAGES.ISSUED,
       );
 
-      const fixedFeeAcbsPayload: AcbsCreateFacilityFixedFeeRequestDto = createFacilityFixedFeesAcbsService.mock.calls[0][2];
+      const fixedFeeAcbsPayload = getFixedFeeAcbsPayload();
 
       expect(fixedFeeAcbsPayload.Description).toBe('Financial Guarantee Fee');
     });
@@ -153,7 +153,7 @@ describe('FacilityFixedFeeService', () => {
         ENUMS.FACILITY_STAGES.ISSUED,
       );
 
-      const fixedFeeAcbsPayload: AcbsCreateFacilityFixedFeeRequestDto = createFacilityFixedFeesAcbsService.mock.calls[0][2];
+      const fixedFeeAcbsPayload = getFixedFeeAcbsPayload();
 
       expect(fixedFeeAcbsPayload.InvolvedParty.PartyIdentifier).toBe(PROPERTIES.FACILITY_FIXED_FEE.DEFAULT.involvedParty.partyIdentifier);
     });
@@ -170,7 +170,7 @@ describe('FacilityFixedFeeService', () => {
         ENUMS.FACILITY_STAGES.ISSUED,
       );
 
-      const fixedFeeAcbsPayload: AcbsCreateFacilityFixedFeeRequestDto = createFacilityFixedFeesAcbsService.mock.calls[0][2];
+      const fixedFeeAcbsPayload = getFixedFeeAcbsPayload();
 
       expect(fixedFeeAcbsPayload.InvolvedParty.PartyIdentifier).toBe(borrowerPartyIdentifier);
     });
@@ -205,4 +205,6 @@ describe('FacilityFixedFeeService', () => {
       await expect(responsePromise).rejects.toHaveProperty('response.error', 'Facility needs to be issued before a fixed fee is created');
     });
   });
+
+  const getFixedFeeAcbsPayload = (): AcbsCreateFacilityFixedFeeRequestDto => createFacilityFixedFeesAcbsService.mock.calls[0][2];
 });
