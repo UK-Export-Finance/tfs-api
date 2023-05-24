@@ -106,6 +106,10 @@ export class RandomValueGenerator {
     return ACBSID.BUNDLE_ID.PREFIX.concat(this.stringOfNumericCharacters({ length: lengthExcludingPrefix ?? 6 })) as AcbsBundleId;
   }
 
+  portfolioId(): string {
+    return this.string({ length: 2 });
+  }
+
   loanId(): string {
     return this.stringOfNumericCharacters({ length: 10 });
   }

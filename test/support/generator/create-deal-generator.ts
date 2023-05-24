@@ -49,7 +49,7 @@ export class CreateDealGenerator extends AbstractGenerator<DealValues, GenerateR
       obligorIndustryClassification: dealValues.obligorIndustryClassification,
     };
 
-    const defaultValues = PROPERTIES.DEAL.DEFAULTS;
+    const defaultValues = PROPERTIES.DEAL.DEFAULT;
     const acbsCreateDealRequest: AcbsCreateDealDto = {
       DealIdentifier: dealValues.dealIdentifier,
       DealOrigination: {

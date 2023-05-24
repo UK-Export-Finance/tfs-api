@@ -44,7 +44,7 @@ export function withStringFieldValidationApiTests<RequestBodyItem, RequestBodyIt
       givenAnyRequestBodyWouldSucceed();
     });
 
-    it.only(`returns a 400 response if ${fieldName} is number`, async () => {
+    it(`returns a 400 response if ${fieldName} is number`, async () => {
       const requestWithNumberField = { ...requestBodyItem, [fieldNameSymbol]: 1 };
       const preparedRequestWithNumberField = prepareModifiedRequest(requestIsAnArray, requestWithNumberField);
 

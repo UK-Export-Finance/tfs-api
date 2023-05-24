@@ -90,7 +90,7 @@ export class DealService {
     effectiveDateAsDateString: DateString;
     officerRiskDate: DateString;
   }): AcbsCreateDealDto {
-    const defaultValues = PROPERTIES.DEAL.DEFAULTS;
+    const defaultValues = PROPERTIES.DEAL.DEFAULT;
 
     return {
       DealIdentifier: dealToCreate.dealIdentifier,

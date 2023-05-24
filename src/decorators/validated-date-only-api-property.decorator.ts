@@ -2,7 +2,7 @@ import { applyDecorators } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
 import { DATE_FORMATS } from '@ukef/constants';
 import { DateOnlyString } from '@ukef/helpers';
-import { IsISO8601, IsOptional, Matches } from 'class-validator';
+import { IsISO8601, IsOptional, Matches, ValidateIf } from 'class-validator';
 
 interface Options {
   description: string;
@@ -28,8 +28,15 @@ export const ValidatedDateOnlyApiProperty = ({ description, example, required, d
   ];
 
   const isRequiredProperty = required ?? true;
-  if (!isRequiredProperty) {
+  const isNullableProperty = nullable ?? false;
+
+  if (!isRequiredProperty && isNullableProperty) {
     decoratorsToApply.push(IsOptional());
+  } else if (!isRequiredProperty) {
+    decoratorsToApply.push(ValidateIf((_object, value) => value !== undefined));
+  } else if (isNullableProperty) {
+    decoratorsToApply.push(ValidateIf((_object, value) => value !== null));
   }
+
   return applyDecorators(...decoratorsToApply);
 };

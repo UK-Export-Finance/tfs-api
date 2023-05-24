@@ -16,6 +16,7 @@ services:
       NODE_ENV:
       TZ:
       LOG_LEVEL:
+      REDACT_LOGS:
       SWAGGER_USER:
       SWAGGER_PASSWORD:
       API_KEY:

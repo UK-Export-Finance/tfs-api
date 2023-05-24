@@ -15,6 +15,7 @@ export interface withBaseFacilityFieldsValidationApiTestInterface {
   validRequestBody: BaseFacilityRequestItem[] | BaseFacilityRequestItem;
   makeRequest: ((body: unknown[]) => request.Test) | ((body: unknown) => request.Test);
   givenAnyRequestBodyWouldSucceed: () => void;
+  includeIssueDate?: boolean;
 }
 
 export function withBaseFacilityFieldsValidationApiTests({
@@ -22,7 +23,19 @@ export function withBaseFacilityFieldsValidationApiTests({
   validRequestBody,
   makeRequest,
   givenAnyRequestBodyWouldSucceed,
+  includeIssueDate = true,
 }: withBaseFacilityFieldsValidationApiTestInterface) {
+  if (!includeIssueDate) {
+    withDateOnlyFieldValidationApiTests({
+      fieldName: 'issueDate',
+      required: false,
+      nullable: true,
+      validRequestBody,
+      makeRequest,
+      givenAnyRequestBodyWouldSucceed,
+    });
+  }
+
   withDealIdentifierFieldValidationApiTests({
     valueGenerator,
     validRequestBody,
@@ -164,9 +177,8 @@ export function withBaseFacilityFieldsValidationApiTests({
 
   withStringFieldValidationApiTests({
     fieldName: 'facilityStageCode',
-    minLength: 0,
-    maxLength: 2,
-    generateFieldValueOfLength: (length) => valueGenerator.string({ length }),
+    enum: ENUMS.FACILITY_STAGES,
+    generateFieldValueThatDoesNotMatchEnum: () => '12',
     validRequestBody,
     makeRequest,
     givenAnyRequestBodyWouldSucceed,

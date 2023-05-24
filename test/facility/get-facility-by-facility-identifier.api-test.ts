@@ -1,9 +1,10 @@
 import { PROPERTIES } from '@ukef/constants';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
+import { withAcbsGetFacilityServiceCommonTests } from '@ukef-test/common-tests/acbs-get-facility-by-identifier-api-tests';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
 import { Api } from '@ukef-test/support/api';
-import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
+import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import { GetFacilityGenerator } from '@ukef-test/support/generator/get-facility-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import nock from 'nock';
@@ -41,7 +42,7 @@ describe('GET /facilities/{facilityIdentifier}', () => {
 
   const { idToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
     givenRequestWouldOtherwiseSucceed: () => givenRequestToGetFacilityInAcbsSucceeds(),
-    makeRequest: () => api.get(getFacilityUrl),
+    makeRequest: () => makeRequest(),
   });
 
   withClientAuthenticationTests({
@@ -56,7 +57,7 @@ describe('GET /facilities/{facilityIdentifier}', () => {
     givenAuthenticationWithTheIdpSucceeds();
     requestToGetFacility().reply(200, facilityInAcbs);
 
-    const { status, body } = await api.get(getFacilityUrl);
+    const { status, body } = await makeRequest();
 
     expect(status).toBe(200);
     expect(body).toStrictEqual(JSON.parse(JSON.stringify(expectedFacility)));
@@ -69,7 +70,7 @@ describe('GET /facilities/{facilityIdentifier}', () => {
     givenAuthenticationWithTheIdpSucceeds();
     requestToGetFacility().reply(200, facilityInAcbsWithNullOriginalEffectiveDate);
 
-    const { status, body } = await api.get(getFacilityUrl);
+    const { status, body } = await makeRequest();
 
     expect(status).toBe(200);
     expect(body).toStrictEqual(JSON.parse(JSON.stringify(expectedFacilityWithNullEffectiveDate)));
@@ -82,7 +83,7 @@ describe('GET /facilities/{facilityIdentifier}', () => {
     givenAuthenticationWithTheIdpSucceeds();
     requestToGetFacility().reply(200, facilityInAcbsWithNullExpirationDate);
 
-    const { status, body } = await api.get(getFacilityUrl);
+    const { status, body } = await makeRequest();
 
     expect(status).toBe(200);
     expect(body).toStrictEqual(JSON.parse(JSON.stringify(expectedFacilityWithNullGuaranteeExpiryDate)));
@@ -95,7 +96,7 @@ describe('GET /facilities/{facilityIdentifier}', () => {
     givenAuthenticationWithTheIdpSucceeds();
     requestToGetFacility().reply(200, facilityInAcbsWithNullUserDefinedDate1);
 
-    const { status, body } = await api.get(getFacilityUrl);
+    const { status, body } = await makeRequest();
 
     expect(status).toBe(200);
     expect(body).toStrictEqual(JSON.parse(JSON.stringify(expectedFacilityWithNullIssueDate)));
@@ -112,7 +113,7 @@ describe('GET /facilities/{facilityIdentifier}', () => {
     givenAuthenticationWithTheIdpSucceeds();
     requestToGetFacility().reply(200, facilityInAcbsWithNullUserDefinedDate2);
 
-    const { status, body } = await api.get(getFacilityUrl);
+    const { status, body } = await makeRequest();
 
     expect(status).toBe(200);
     expect(body).toStrictEqual(JSON.parse(JSON.stringify(expectedFacilityWithNullGuaranteeCommencementDateAndNextQuarterEndDate)));
@@ -125,7 +126,7 @@ describe('GET /facilities/{facilityIdentifier}', () => {
     givenAuthenticationWithTheIdpSucceeds();
     requestToGetFacility().reply(200, facilityInAcbsWithNullCompBalPctReserve1);
 
-    const { status, body } = await api.get(getFacilityUrl);
+    const { status, body } = await makeRequest();
 
     expect(status).toBe(200);
     expect(body).toStrictEqual(JSON.parse(JSON.stringify(expectedFacilityWithDefaultGuaranteePercentage)));
@@ -138,62 +139,16 @@ describe('GET /facilities/{facilityIdentifier}', () => {
     givenAuthenticationWithTheIdpSucceeds();
     requestToGetFacility().reply(200, facilityInAcbsWithNullCompBalPctAmount);
 
-    const { status, body } = await api.get(getFacilityUrl);
+    const { status, body } = await makeRequest();
 
     expect(status).toBe(200);
     expect(body).toStrictEqual(JSON.parse(JSON.stringify(expectedFacilityWithDefaultForeCastPercentage)));
   });
 
-  it('returns a 404 response if ACBS returns a 400 response with the string "The facility not found"', async () => {
-    givenAuthenticationWithTheIdpSucceeds();
-    requestToGetFacility().reply(400, 'The facility not found');
-
-    const { status, body } = await api.get(getFacilityUrl);
-
-    expect(status).toBe(404);
-    expect(body).toStrictEqual({
-      statusCode: 404,
-      message: 'Not found',
-    });
-  });
-
-  it('returns a 500 response if ACBS returns a 400 response without the string "The facility not found"', async () => {
-    givenAuthenticationWithTheIdpSucceeds();
-    requestToGetFacility().reply(400, 'An error message from ACBS.');
-
-    const { status, body } = await api.get(getFacilityUrl);
-
-    expect(status).toBe(500);
-    expect(body).toStrictEqual({
-      statusCode: 500,
-      message: 'Internal server error',
-    });
-  });
-
-  it('returns a 500 response if getting the facility from ACBS returns a status code that is NOT 200 or 400', async () => {
-    givenAuthenticationWithTheIdpSucceeds();
-    requestToGetFacility().reply(401);
-
-    const { status, body } = await api.get(getFacilityUrl);
-
-    expect(status).toBe(500);
-    expect(body).toStrictEqual({
-      statusCode: 500,
-      message: 'Internal server error',
-    });
-  });
-
-  it('returns a 500 response if getting the facility from ACBS times out', async () => {
-    givenAuthenticationWithTheIdpSucceeds();
-    requestToGetFacility().delay(TIME_EXCEEDING_ACBS_TIMEOUT).reply(200, facilityInAcbs);
-
-    const { status, body } = await api.get(getFacilityUrl);
-
-    expect(status).toBe(500);
-    expect(body).toStrictEqual({
-      statusCode: 500,
-      message: 'Internal server error',
-    });
+  withAcbsGetFacilityServiceCommonTests({
+    givenTheRequestWouldOtherwiseSucceed: () => givenAuthenticationWithTheIdpSucceeds(),
+    requestToGetFacility: () => requestToGetFacility(),
+    makeRequest: () => makeRequest(),
   });
 
   const requestToGetFacility = () =>
@@ -202,4 +157,5 @@ describe('GET /facilities/{facilityIdentifier}', () => {
       .matchHeader('authorization', `Bearer ${idToken}`);
 
   const givenRequestToGetFacilityInAcbsSucceeds = () => requestToGetFacility().reply(200, facilityInAcbs);
+  const makeRequest = () => api.get(getFacilityUrl);
 });

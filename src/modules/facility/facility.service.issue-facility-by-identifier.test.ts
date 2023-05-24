@@ -7,18 +7,22 @@ import { UpdateFacilityGenerator } from '@ukef-test/support/generator/update-fac
 import { when } from 'jest-when';
 
 import { AcbsFacilityService } from '../acbs/acbs-facility.service';
+import { AcbsUpdateFacilityRequest } from '../acbs/dto/acbs-update-facility-request.dto';
 import { CurrentDateProvider } from '../date/current-date.provider';
 import { DateStringTransformations } from '../date/date-string.transformations';
 import { UpdateFacilityRequest } from './dto/update-facility-request.dto';
 import { FacilityService } from './facility.service';
+import { withAcbsUpdateFacilityRequestCreationTests } from './facility.service.update-facility.test-parts/acbs-update-facility-request-creation-tests';
+import { withUpdateFacilityGeneralTests } from './facility.service.update-facility.test-parts/update-facility-general-tests';
+import { UpdateFacilityTestPartsArgs } from './facility.service.update-facility.test-parts/update-facility-test-parts-args.interface';
 
 describe('FacilityService', () => {
   const valueGenerator = new RandomValueGenerator();
   const dateStringTransformations = new DateStringTransformations();
   const idToken = valueGenerator.string();
   const facilityIdentifier = valueGenerator.facilityId();
-  const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
-  const unissuedFacilityStageCode = TEST_FACILITY_STAGE_CODE.unissuedFacilityStageCode;
+  const { portfolioIdentifier } = PROPERTIES.GLOBAL;
+  const { unissuedFacilityStageCode } = TEST_FACILITY_STAGE_CODE;
 
   const issueFacility = (updateFacilityRequest: UpdateFacilityRequest): Promise<void> =>
     service.issueFacilityByIdentifier(facilityIdentifier, updateFacilityRequest);
@@ -49,79 +53,15 @@ describe('FacilityService', () => {
   ).generate({ numberToGenerate: 1, facilityIdentifier });
 
   describe('issueFacilityByIdentifier', () => {
-    it('updates a facility in ACBS with a transformation of the requested updated facility', async () => {
-      when(acbsFacilityServiceGetFacilityByIdentifier).calledWith(facilityIdentifier, idToken).mockResolvedValueOnce(acbsGetExistingFacilityResponse);
+    const getAcbsFacilityServiceGetFacilityByIdentifierMock = () => acbsFacilityServiceGetFacilityByIdentifier;
+    const getAcbsFacilityServiceUpdateFacilityByIdentifierMock = () => acbsFacilityServiceUpdateFacilityByIdentifier;
 
-      await issueFacility(updateFacilityRequest);
+    const getAcbsGetFacilityRequestMock = () => when(acbsFacilityServiceGetFacilityByIdentifier).calledWith(facilityIdentifier, idToken);
 
+    const expectAcbsUpdateFacilityToBeCalledWith = (acbsUpdateFacilityRequest: AcbsUpdateFacilityRequest) =>
       expect(acbsFacilityServiceUpdateFacilityByIdentifier).toHaveBeenCalledWith(portfolioIdentifier, acbsUpdateFacilityRequest, idToken);
-    });
 
-    it('does not replace facility request data with existing facility data', async () => {
-      const differentDealIdentifier = valueGenerator.ukefId();
-
-      const modifiedAcbsGetExistingFacilityResponse = {
-        ...acbsGetExistingFacilityResponse,
-        DealIdentifier: differentDealIdentifier,
-      };
-
-      when(acbsFacilityServiceGetFacilityByIdentifier).calledWith(facilityIdentifier, idToken).mockResolvedValueOnce(modifiedAcbsGetExistingFacilityResponse);
-
-      await issueFacility(updateFacilityRequest);
-
-      expect(acbsFacilityServiceUpdateFacilityByIdentifier).toHaveBeenCalledWith(portfolioIdentifier, acbsUpdateFacilityRequest, idToken);
-    });
-
-    it('uses existing facility data to fill missing update request data', async () => {
-      const newFieldData = 'test';
-      const modifiedAcbsGetExistingFacilityResponse = { ...acbsGetExistingFacilityResponse, NewField: newFieldData };
-      const modifiedAcbsUpdateFacilityRequest = { ...acbsUpdateFacilityRequest, NewField: newFieldData };
-
-      when(acbsFacilityServiceGetFacilityByIdentifier).calledWith(facilityIdentifier, idToken).mockResolvedValueOnce(modifiedAcbsGetExistingFacilityResponse);
-
-      await issueFacility(updateFacilityRequest);
-
-      expect(acbsFacilityServiceUpdateFacilityByIdentifier).toHaveBeenCalledWith(portfolioIdentifier, modifiedAcbsUpdateFacilityRequest, idToken);
-    });
-
-    it('removes AdministrativeUserIdentifier from the ACBS update request body', async () => {
-      const modifiedAcbsGetExistingFacilityResponse = {
-        ...acbsGetExistingFacilityResponse,
-        AdministrativeUserIdentifier: valueGenerator.string(),
-      };
-      when(acbsFacilityServiceGetFacilityByIdentifier).calledWith(facilityIdentifier, idToken).mockResolvedValueOnce(modifiedAcbsGetExistingFacilityResponse);
-
-      await issueFacility(updateFacilityRequest);
-
-      expect(acbsUpdateFacilityRequest).not.toHaveProperty('AdministrativeUserIdentifier');
-    });
-
-    // This is existing behaviour from previous implementations of this service and is maintained
-    it('does not deep merge existing facility object data to fill missing update request data', async () => {
-      const newRiskCountryCode = 'ZZZ';
-      const modifiedUpdateFacilityRequest = { ...updateFacilityRequest, riskCountryCode: newRiskCountryCode };
-
-      const newFieldValue = 'New Field';
-      const modifiedAcbsGetExistingFacilityResponse = {
-        ...acbsGetExistingFacilityResponse,
-        RiskCountry: {
-          CountryCode: acbsGetExistingFacilityResponse.RiskCountry.CountryCode,
-          NewField: newFieldValue,
-        },
-      };
-
-      const modifiedAcbsUpdateFacilityRequest = {
-        ...acbsUpdateFacilityRequest,
-        RiskCountry: { CountryCode: newRiskCountryCode },
-      };
-
-      when(acbsFacilityServiceGetFacilityByIdentifier).calledWith(facilityIdentifier, idToken).mockResolvedValueOnce(modifiedAcbsGetExistingFacilityResponse);
-      await issueFacility(modifiedUpdateFacilityRequest);
-
-      expect(acbsFacilityServiceUpdateFacilityByIdentifier).toHaveBeenCalledWith(portfolioIdentifier, modifiedAcbsUpdateFacilityRequest, idToken);
-    });
-
-    it('throws an error if facility is unissued', async () => {
+    it('throws an error if the new facility stage code is not issued', async () => {
       const modifiedUpdateFacilityRequest = { ...updateFacilityRequest, facilityStageCode: unissuedFacilityStageCode };
 
       const responsePromise = service.issueFacilityByIdentifier(facilityIdentifier, modifiedUpdateFacilityRequest);
@@ -130,5 +70,57 @@ describe('FacilityService', () => {
       await expect(responsePromise).rejects.toThrow('Bad request');
       await expect(responsePromise).rejects.toHaveProperty('response.error', 'Facility stage code is not issued');
     });
+
+    it('throws an error if the issue date is not present', async () => {
+      const modifiedUpdateFacilityRequest = { ...updateFacilityRequest };
+
+      delete modifiedUpdateFacilityRequest.issueDate;
+
+      const responsePromise = service.issueFacilityByIdentifier(facilityIdentifier, modifiedUpdateFacilityRequest);
+
+      await expect(responsePromise).rejects.toBeInstanceOf(BadRequestException);
+      await expect(responsePromise).rejects.toThrow('Bad request');
+      await expect(responsePromise).rejects.toHaveProperty('response.error', 'Issue date is not present');
+    });
+
+    it('throws an error if the issue date is null', async () => {
+      const modifiedUpdateFacilityRequest = { ...updateFacilityRequest };
+
+      modifiedUpdateFacilityRequest.issueDate = null;
+
+      const responsePromise = service.issueFacilityByIdentifier(facilityIdentifier, modifiedUpdateFacilityRequest);
+
+      await expect(responsePromise).rejects.toBeInstanceOf(BadRequestException);
+      await expect(responsePromise).rejects.toThrow('Bad request');
+      await expect(responsePromise).rejects.toHaveProperty('response.error', 'Issue date is not present');
+    });
+
+    it('throws an error if the issue date is undefined', async () => {
+      const modifiedUpdateFacilityRequest = { ...updateFacilityRequest };
+
+      modifiedUpdateFacilityRequest.issueDate = undefined;
+
+      const responsePromise = service.issueFacilityByIdentifier(facilityIdentifier, modifiedUpdateFacilityRequest);
+
+      await expect(responsePromise).rejects.toBeInstanceOf(BadRequestException);
+      await expect(responsePromise).rejects.toThrow('Bad request');
+      await expect(responsePromise).rejects.toHaveProperty('response.error', 'Issue date is not present');
+    });
+
+    const testArgs: UpdateFacilityTestPartsArgs = {
+      valueGenerator,
+      updateFacilityRequest,
+      acbsGetExistingFacilityResponse,
+      acbsUpdateFacilityRequest,
+      updateFacility: issueFacility,
+      expectAcbsUpdateFacilityToBeCalledWith,
+      getAcbsGetFacilityRequestMock,
+      getAcbsFacilityServiceGetFacilityByIdentifierMock,
+      getAcbsFacilityServiceUpdateFacilityByIdentifierMock,
+    };
+
+    withUpdateFacilityGeneralTests(testArgs);
+
+    withAcbsUpdateFacilityRequestCreationTests(testArgs);
   });
 });
