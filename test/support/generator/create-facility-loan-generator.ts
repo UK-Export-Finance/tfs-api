@@ -37,7 +37,7 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
   }
 
   protected transformRawValuesToGeneratedValues(values, { facilityIdentifier, bundleIdentifier }: GenerateOptions): GenerateResult {
-    const firstFacilityLoan: CreateFacilityLoanRequestItem = values[0];
+    const [firstFacilityLoan] = values;
 
     const effectiveDate = TEST_DATES.A_PAST_EFFECTIVE_DATE_ONLY;
     const acbsEffectiveDate = this.dateStringTransformations.addTimeToDateOnlyString(effectiveDate);
