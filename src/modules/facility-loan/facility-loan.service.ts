@@ -1,22 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { ENUMS, PROPERTIES } from '@ukef/constants';
+import { CURRENCIES } from '@ukef/constants/currencies.constant';
 import { AcbsBundleId, DateString, UkefId } from '@ukef/helpers';
 import { AcbsBundleInformationService } from '@ukef/modules/acbs/acbs-bundle-information.service';
 import { AcbsFacilityLoanService } from '@ukef/modules/acbs/acbs-facility-loan.service';
 import { AcbsCreateBundleInformationRequestDto } from '@ukef/modules/acbs/dto/acbs-create-bundle-information-request.dto';
 import { LoanAdvanceTransaction } from '@ukef/modules/acbs/dto/bundle-actions/loan-advance-transaction.bundle-action';
+import { NewLoanRequest } from '@ukef/modules/acbs/dto/bundle-actions/new-loan-request.bundle-action';
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
+import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 
-import { NewLoanRequest } from '@ukef/modules/acbs/dto/bundle-actions/new-loan-request.bundle-action';
-import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
+import { CreateFacilityLoanRequestItem } from './dto/create-facility-loan-request.dto';
 import { CreateFacilityLoanResponse } from './dto/create-facility-loan-response.dto';
 import { CreateLoanAmountAmendmentRequestItem } from './dto/create-loan-amount-amendment-request.dto';
 import { GetFacilityLoanResponseDto } from './dto/get-facility-loan-response.dto';
-import { CreateFacilityLoanRequestItem } from './dto/create-facility-loan-request.dto';
-import { ProductTypeGroupEnum } from '@ukef/constants/enums/product-type-group';
-import { ProductTypeIdEnum } from '@ukef/constants/enums/product-type-id';
-import { CURRENCIES } from '@ukef/constants/currencies.constant';
 
 @Injectable()
 export class FacilityLoanService {
@@ -26,7 +24,7 @@ export class FacilityLoanService {
     private readonly acbsBundleInformationService: AcbsBundleInformationService,
     private readonly dateStringTransformations: DateStringTransformations,
     private readonly currentDateProvider: CurrentDateProvider,
-  ) { }
+  ) {}
 
   async getLoansForFacility(facilityIdentifier: string): Promise<GetFacilityLoanResponseDto> {
     const { portfolioIdentifier } = PROPERTIES.GLOBAL;
@@ -92,9 +90,8 @@ export class FacilityLoanService {
   }
 
   private getBaseMessage(facilityIdentifier: UkefId, newFacilityLoan: CreateFacilityLoanRequestItem) {
-    const loanInstrumentCode = newFacilityLoan.productTypeId === ENUMS.PRODUCT_TYPE_IDS.GEF_CONTINGENT
-      ? ENUMS.PRODUCT_TYPE_IDS.GEF_CASH
-      : newFacilityLoan.productTypeId;
+    const loanInstrumentCode =
+      newFacilityLoan.productTypeId === ENUMS.PRODUCT_TYPE_IDS.GEF_CONTINGENT ? ENUMS.PRODUCT_TYPE_IDS.GEF_CASH : newFacilityLoan.productTypeId;
     const issueDateString = this.getIssueDateToCreate(newFacilityLoan.issueDate);
 
     return {
@@ -178,38 +175,36 @@ export class FacilityLoanService {
     const isNotGbp = newFacilityLoan.currency !== CURRENCIES.GBP;
     return isNotGbp
       ? {
-        FinancialRateGroup: PROPERTIES.FACILITY_LOAN.DEFAULT.financialRateGroup,
-        CustomerUsageRateGroup: PROPERTIES.FACILITY_LOAN.DEFAULT.customerUsageRateGroup,
-        FinancialFrequency: {
-          UsageFrequencyTypeCode: PROPERTIES.FACILITY_LOAN.DEFAULT.financialFrequency.usageFrequencyTypeCode,
-        },
-        CustomerUsageFrequency: {
-          UsageFrequencyTypeCode: PROPERTIES.FACILITY_LOAN.DEFAULT.customerUsageFrequency.usageFrequencyTypeCode,
-        },
-        FinancialBusinessDayAdjustment: {
-          BusinessDayAdjustmentTypeCode: PROPERTIES.FACILITY_LOAN.DEFAULT.financialBusinessDayAdjustment.businessDayAdjustmentTypeCode,
-        },
-        CustomerUsageBusinessDayAdjustment: {
-          BusinessDayAdjustmentTypeCode: PROPERTIES.FACILITY_LOAN.DEFAULT.customerUsageBusinessDayAdjustment.businessDayAdjustmentTypeCode,
-        },
-        FinancialCalendar: {
-          CalendarIdentifier: PROPERTIES.FACILITY_LOAN.DEFAULT.financialCalendar.calendarIdentifier,
-        },
-        CustomerUsageCalendar: {
-          CalendarIdentifier: PROPERTIES.FACILITY_LOAN.DEFAULT.customerUsageCalendar.calendarIdentifier,
-        },
-        FinancialNextValuationDate: this.dateStringTransformations.addTimeToDateOnlyString(newFacilityLoan.expiryDate),
-        CustomerUsageNextValuationDate: this.dateStringTransformations.addTimeToDateOnlyString(newFacilityLoan.expiryDate),
-        FinancialLockMTMRateIndicator: PROPERTIES.FACILITY_LOAN.DEFAULT.financialLockMTMRateIndicator,
-        CustomerUsageLockMTMRateIndicator: PROPERTIES.FACILITY_LOAN.DEFAULT.customerUsageLockMTMRateIndicator,
-      }
+          FinancialRateGroup: PROPERTIES.FACILITY_LOAN.DEFAULT.financialRateGroup,
+          CustomerUsageRateGroup: PROPERTIES.FACILITY_LOAN.DEFAULT.customerUsageRateGroup,
+          FinancialFrequency: {
+            UsageFrequencyTypeCode: PROPERTIES.FACILITY_LOAN.DEFAULT.financialFrequency.usageFrequencyTypeCode,
+          },
+          CustomerUsageFrequency: {
+            UsageFrequencyTypeCode: PROPERTIES.FACILITY_LOAN.DEFAULT.customerUsageFrequency.usageFrequencyTypeCode,
+          },
+          FinancialBusinessDayAdjustment: {
+            BusinessDayAdjustmentTypeCode: PROPERTIES.FACILITY_LOAN.DEFAULT.financialBusinessDayAdjustment.businessDayAdjustmentTypeCode,
+          },
+          CustomerUsageBusinessDayAdjustment: {
+            BusinessDayAdjustmentTypeCode: PROPERTIES.FACILITY_LOAN.DEFAULT.customerUsageBusinessDayAdjustment.businessDayAdjustmentTypeCode,
+          },
+          FinancialCalendar: {
+            CalendarIdentifier: PROPERTIES.FACILITY_LOAN.DEFAULT.financialCalendar.calendarIdentifier,
+          },
+          CustomerUsageCalendar: {
+            CalendarIdentifier: PROPERTIES.FACILITY_LOAN.DEFAULT.customerUsageCalendar.calendarIdentifier,
+          },
+          FinancialNextValuationDate: this.dateStringTransformations.addTimeToDateOnlyString(newFacilityLoan.expiryDate),
+          CustomerUsageNextValuationDate: this.dateStringTransformations.addTimeToDateOnlyString(newFacilityLoan.expiryDate),
+          FinancialLockMTMRateIndicator: PROPERTIES.FACILITY_LOAN.DEFAULT.financialLockMTMRateIndicator,
+          CustomerUsageLockMTMRateIndicator: PROPERTIES.FACILITY_LOAN.DEFAULT.customerUsageLockMTMRateIndicator,
+        }
       : {};
   }
 
   private getIssueDateToCreate(issueDate: string): DateString {
-    const issueDateTime = this.currentDateProvider.getEarliestDateFromTodayAnd(
-      new Date(this.dateStringTransformations.addTimeToDateOnlyString(issueDate)),
-    );
+    const issueDateTime = this.currentDateProvider.getEarliestDateFromTodayAnd(new Date(this.dateStringTransformations.addTimeToDateOnlyString(issueDate)));
     return this.dateStringTransformations.getDateStringFromDate(issueDateTime);
   }
 

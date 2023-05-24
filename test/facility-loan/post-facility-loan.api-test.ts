@@ -4,6 +4,7 @@ import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-aut
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
 import { withCurrencyFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/currency-field-validation-api-tests';
 import { withDateOnlyFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/date-only-field-validation-api-tests';
+import { withEnumFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/enum-field-validation-api-tests';
 import { withNonNegativeNumberFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/non-negative-number-field-validation-api-tests';
 import { withNumberFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/number-field-validation-api-tests';
 import { withStringFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/string-field-validation-api-tests';
@@ -12,7 +13,6 @@ import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/s
 import { CreateFacilityLoanGenerator } from '@ukef-test/support/generator/create-facility-loan-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import nock from 'nock';
-import { withEnumFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/enum-field-validation-api-tests';
 
 describe('POST /facilities/{facilityIdentifier}/loans', () => {
   const valueGenerator = new RandomValueGenerator();

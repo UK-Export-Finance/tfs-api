@@ -1,4 +1,5 @@
 import { ENUMS, PROPERTIES } from '@ukef/constants';
+import { CURRENCIES } from '@ukef/constants/currencies.constant';
 import { AcbsBundleId, UkefId } from '@ukef/helpers';
 import { AcbsCreateBundleInformationRequestDto } from '@ukef/modules/acbs/dto/acbs-create-bundle-information-request.dto';
 import { AcbsCreateBundleInformationResponseHeadersDto } from '@ukef/modules/acbs/dto/acbs-create-bundle-information-response.dto';
@@ -6,12 +7,11 @@ import { NewLoanRequest } from '@ukef/modules/acbs/dto/bundle-actions/new-loan-r
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { CreateFacilityLoanRequest, CreateFacilityLoanRequestItem } from '@ukef/modules/facility-loan/dto/create-facility-loan-request.dto';
 import { CreateFacilityLoanResponse } from '@ukef/modules/facility-loan/dto/create-facility-loan-response.dto';
-
 import { TEST_CURRENCIES } from '@ukef-test/support/constants/test-currency.constant';
 import { TEST_DATES } from '@ukef-test/support/constants/test-date.constant';
+
 import { AbstractGenerator } from './abstract-generator';
 import { RandomValueGenerator } from './random-value-generator';
-import { CURRENCIES } from '@ukef/constants/currencies.constant';
 
 export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilityLoanRequestItem, GenerateResult, GenerateOptions> {
   constructor(protected readonly valueGenerator: RandomValueGenerator, protected readonly dateStringTransformations: DateStringTransformations) {
@@ -75,7 +75,7 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
     const acbsRequestBodyToCreateFacilityLoanNonGbp: AcbsCreateBundleInformationRequestDto<NewLoanRequest> = {
       ...acbsRequestBodyToCreateFacilityLoanGbp,
       BundleMessageList: [bundleMessageNonGbp],
-    }
+    };
 
     const requestBodyToCreateFacilityLoanGbp = values.map((value) => ({
       postingDate: value.postingDate,
@@ -91,10 +91,12 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
       expiryDate: value.expiryDate,
     }));
 
-    const requestBodyToCreateFacilityLoanNonGbp = [{
-      ...requestBodyToCreateFacilityLoanGbp[0],
-      currency: TEST_CURRENCIES.NON_GBP_CURRENCY,
-    }];
+    const requestBodyToCreateFacilityLoanNonGbp = [
+      {
+        ...requestBodyToCreateFacilityLoanGbp[0],
+        currency: TEST_CURRENCIES.NON_GBP_CURRENCY,
+      },
+    ];
 
     const createBundleInformationResponseFromAcbs = { BundleIdentifier: bundleIdentifier };
     const createFacilityLoanResponseFromService = { bundleIdentifier };
@@ -110,9 +112,8 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
   }
 
   private getBaseMessage(facilityIdentifier: UkefId, facilityLoan: CreateFacilityLoanRequestItem, acbsEffectiveDate: string): NewLoanRequest {
-    let loanInstrumentCode = facilityLoan.productTypeId === ENUMS.PRODUCT_TYPE_IDS.GEF_CONTINGENT
-      ? ENUMS.PRODUCT_TYPE_IDS.GEF_CASH
-      : facilityLoan.productTypeId;
+    const loanInstrumentCode =
+      facilityLoan.productTypeId === ENUMS.PRODUCT_TYPE_IDS.GEF_CONTINGENT ? ENUMS.PRODUCT_TYPE_IDS.GEF_CASH : facilityLoan.productTypeId;
 
     return {
       $type: PROPERTIES.FACILITY_LOAN.DEFAULT.messageType,

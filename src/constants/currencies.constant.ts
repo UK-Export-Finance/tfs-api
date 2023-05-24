@@ -1,3 +1,3 @@
 export const CURRENCIES = {
-    GBP: 'GBP',
+  GBP: 'GBP',
 };

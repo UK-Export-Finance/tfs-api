@@ -7,8 +7,8 @@ import { FacilityCodeValueTransaction } from '@ukef/modules/acbs/dto/bundle-acti
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 
-import { CreateFacilityActivationTransactionResponse } from './dto/create-facility-activation-transaction-response.dto';
 import { CreateFacilityActivationTransactionRequestItem } from './dto/create-facility-activation-transaction-request.dto';
+import { CreateFacilityActivationTransactionResponse } from './dto/create-facility-activation-transaction-response.dto';
 
 @Injectable()
 export class FacilityActivationTransactionService {

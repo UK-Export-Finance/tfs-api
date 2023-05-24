@@ -1,16 +1,16 @@
+import { ENUMS } from '@ukef/constants';
+import { AcbsBundleInformationService } from '@ukef/modules/acbs/acbs-bundle-information.service';
 import { AcbsFacilityLoanService } from '@ukef/modules/acbs/acbs-facility-loan.service';
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
+import { TEST_DATES } from '@ukef-test/support/constants/test-date.constant';
 import { CreateFacilityLoanGenerator } from '@ukef-test/support/generator/create-facility-loan-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
 
-import { AcbsBundleInformationService } from '@ukef/modules/acbs/acbs-bundle-information.service';
 import { FacilityLoanService } from './facility-loan.service';
-import { TEST_DATES } from '@ukef-test/support/constants/test-date.constant';
-import { ENUMS } from '@ukef/constants';
 
 describe('FacilityLoanService', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -48,10 +48,12 @@ describe('FacilityLoanService', () => {
   });
 
   describe('createLoanForFacility', () => {
-    const { acbsRequestBodyToCreateFacilityLoanGbp, acbsRequestBodyToCreateFacilityLoanNonGbp, requestBodyToCreateFacilityLoanGbp, requestBodyToCreateFacilityLoanNonGbp } = new CreateFacilityLoanGenerator(
-      valueGenerator,
-      dateStringTransformations,
-    ).generate({
+    const {
+      acbsRequestBodyToCreateFacilityLoanGbp,
+      acbsRequestBodyToCreateFacilityLoanNonGbp,
+      requestBodyToCreateFacilityLoanGbp,
+      requestBodyToCreateFacilityLoanNonGbp,
+    } = new CreateFacilityLoanGenerator(valueGenerator, dateStringTransformations).generate({
       numberToGenerate: 1,
       facilityIdentifier,
       bundleIdentifier,
@@ -92,11 +94,13 @@ describe('FacilityLoanService', () => {
         const midnightToday = dateStringTransformations.getDateStringFromDate(new Date());
         const acbsRequestBodyToCreateFacilityLoanWithIssueDateAfterToday = {
           ...acbsRequestBodyToCreateFacilityLoanGbp,
-          BundleMessageList: [{
-            ...acbsRequestBodyToCreateFacilityLoanGbp.BundleMessageList[0],
-            EffectiveDate: midnightToday,
-            RateSettingDate: midnightToday,
-          }]
+          BundleMessageList: [
+            {
+              ...acbsRequestBodyToCreateFacilityLoanGbp.BundleMessageList[0],
+              EffectiveDate: midnightToday,
+              RateSettingDate: midnightToday,
+            },
+          ],
         };
         await service.createLoanForFacility(facilityIdentifier, newLoanWithFutureIssueDate);
 
@@ -110,13 +114,15 @@ describe('FacilityLoanService', () => {
         };
         const acbsRequestBodyToCreateFacilityLoanWithProductTypeId250 = {
           ...acbsRequestBodyToCreateFacilityLoanGbp,
-          BundleMessageList: [{
-            ...acbsRequestBodyToCreateFacilityLoanGbp.BundleMessageList[0],
-            LoanInstrumentCode: ENUMS.PRODUCT_TYPE_IDS.BSS,
-            ProductType: {
-              ProductTypeCode: ENUMS.PRODUCT_TYPE_IDS.BSS,
+          BundleMessageList: [
+            {
+              ...acbsRequestBodyToCreateFacilityLoanGbp.BundleMessageList[0],
+              LoanInstrumentCode: ENUMS.PRODUCT_TYPE_IDS.BSS,
+              ProductType: {
+                ProductTypeCode: ENUMS.PRODUCT_TYPE_IDS.BSS,
+              },
             },
-          }]
+          ],
         };
         await service.createLoanForFacility(facilityIdentifier, newLoanWithProductTypeId250);
 
@@ -130,13 +136,15 @@ describe('FacilityLoanService', () => {
         };
         const acbsRequestBodyToCreateFacilityLoanWithProductTypeId260 = {
           ...acbsRequestBodyToCreateFacilityLoanGbp,
-          BundleMessageList: [{
-            ...acbsRequestBodyToCreateFacilityLoanGbp.BundleMessageList[0],
-            LoanInstrumentCode: ENUMS.PRODUCT_TYPE_IDS.EWCS,
-            ProductType: {
-              ProductTypeCode: ENUMS.PRODUCT_TYPE_IDS.EWCS,
+          BundleMessageList: [
+            {
+              ...acbsRequestBodyToCreateFacilityLoanGbp.BundleMessageList[0],
+              LoanInstrumentCode: ENUMS.PRODUCT_TYPE_IDS.EWCS,
+              ProductType: {
+                ProductTypeCode: ENUMS.PRODUCT_TYPE_IDS.EWCS,
+              },
             },
-          }]
+          ],
         };
         await service.createLoanForFacility(facilityIdentifier, newLoanWithProductTypeId260);
 
@@ -150,13 +158,15 @@ describe('FacilityLoanService', () => {
         };
         const acbsRequestBodyToCreateFacilityLoanWithProductTypeId280 = {
           ...acbsRequestBodyToCreateFacilityLoanGbp,
-          BundleMessageList: [{
-            ...acbsRequestBodyToCreateFacilityLoanGbp.BundleMessageList[0],
-            LoanInstrumentCode: ENUMS.PRODUCT_TYPE_IDS.GEF_CASH,
-            ProductType: {
-              ProductTypeCode: ENUMS.PRODUCT_TYPE_IDS.GEF_CASH,
+          BundleMessageList: [
+            {
+              ...acbsRequestBodyToCreateFacilityLoanGbp.BundleMessageList[0],
+              LoanInstrumentCode: ENUMS.PRODUCT_TYPE_IDS.GEF_CASH,
+              ProductType: {
+                ProductTypeCode: ENUMS.PRODUCT_TYPE_IDS.GEF_CASH,
+              },
             },
-          }]
+          ],
         };
         await service.createLoanForFacility(facilityIdentifier, newLoanWithProductTypeId280);
 
@@ -170,13 +180,15 @@ describe('FacilityLoanService', () => {
         };
         const acbsRequestBodyToCreateFacilityLoanWithProductTypeId281 = {
           ...acbsRequestBodyToCreateFacilityLoanGbp,
-          BundleMessageList: [{
-            ...acbsRequestBodyToCreateFacilityLoanGbp.BundleMessageList[0],
-            LoanInstrumentCode: ENUMS.PRODUCT_TYPE_IDS.GEF_CASH,
-            ProductType: {
-              ProductTypeCode: ENUMS.PRODUCT_TYPE_IDS.GEF_CONTINGENT,
+          BundleMessageList: [
+            {
+              ...acbsRequestBodyToCreateFacilityLoanGbp.BundleMessageList[0],
+              LoanInstrumentCode: ENUMS.PRODUCT_TYPE_IDS.GEF_CASH,
+              ProductType: {
+                ProductTypeCode: ENUMS.PRODUCT_TYPE_IDS.GEF_CONTINGENT,
+              },
             },
-          }]
+          ],
         };
         await service.createLoanForFacility(facilityIdentifier, newLoanWithProductTypeId281);
 

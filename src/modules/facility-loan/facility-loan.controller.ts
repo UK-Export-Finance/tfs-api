@@ -23,7 +23,7 @@ import { FacilityLoanService } from './facility-loan.service';
 
 @Controller()
 export class FacilityLoanController {
-  constructor(private readonly facilityLoanService: FacilityLoanService) { }
+  constructor(private readonly facilityLoanService: FacilityLoanService) {}
 
   @Get('/facilities/:facilityIdentifier/loans')
   @ApiOperation({
