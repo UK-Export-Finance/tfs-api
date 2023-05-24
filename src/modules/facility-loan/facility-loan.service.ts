@@ -7,6 +7,7 @@ import { AcbsFacilityLoanService } from '@ukef/modules/acbs/acbs-facility-loan.s
 import { AcbsCreateBundleInformationRequestDto } from '@ukef/modules/acbs/dto/acbs-create-bundle-information-request.dto';
 import { LoanAdvanceTransaction } from '@ukef/modules/acbs/dto/bundle-actions/loan-advance-transaction.bundle-action';
 import { NewLoanRequest } from '@ukef/modules/acbs/dto/bundle-actions/new-loan-request.bundle-action';
+import { RepaymentSchedule } from '@ukef/modules/acbs/dto/bundle-actions/repayment-schedule.interface';
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
@@ -15,7 +16,6 @@ import { CreateFacilityLoanRequestItem } from './dto/create-facility-loan-reques
 import { CreateFacilityLoanResponse } from './dto/create-facility-loan-response.dto';
 import { CreateLoanAmountAmendmentRequestItem } from './dto/create-loan-amount-amendment-request.dto';
 import { GetFacilityLoanResponseDto } from './dto/get-facility-loan-response.dto';
-import { RepaymentSchedule } from '../acbs/dto/bundle-actions/repayment-schedule.interface';
 
 @Injectable()
 export class FacilityLoanService {
@@ -215,7 +215,7 @@ export class FacilityLoanService {
       return [this.getRepaymentInt(), this.getRepaymentPac()];
     } else if (facilityLoan.productTypeGroup === ENUMS.PRODUCT_TYPE_GROUPS.GEF) {
       return [this.getRepaymentPac()];
-    };
+    }
     return [this.getRepaymentPacBss()];
   }
 

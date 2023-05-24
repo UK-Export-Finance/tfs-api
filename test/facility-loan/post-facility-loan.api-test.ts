@@ -7,13 +7,13 @@ import { withDateOnlyFieldValidationApiTests } from '@ukef-test/common-tests/req
 import { withEnumFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/enum-field-validation-api-tests';
 import { withNonNegativeNumberFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/non-negative-number-field-validation-api-tests';
 import { withNumberFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/number-field-validation-api-tests';
+import { withPartyIdentifierFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/party-identifier-field-validation-api-tests';
 import { withStringFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/string-field-validation-api-tests';
 import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
 import { CreateFacilityLoanGenerator } from '@ukef-test/support/generator/create-facility-loan-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import nock from 'nock';
-import { withPartyIdentifierFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/party-identifier-field-validation-api-tests';
 
 describe('POST /facilities/{facilityIdentifier}/loans', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -148,12 +148,12 @@ describe('POST /facilities/{facilityIdentifier}/loans', () => {
       givenAnyRequestBodyWouldSucceed,
     });
 
-    withPartyIdentifierFieldValidationApiTests({    
-      fieldName: 'borrowerPartyIdentifier',    
-      valueGenerator,    
-      validRequestBody: requestBodyToCreateFacilityLoanGbp,    
-      makeRequest,   
-      givenAnyRequestBodyWouldSucceed,  
+    withPartyIdentifierFieldValidationApiTests({
+      fieldName: 'borrowerPartyIdentifier',
+      valueGenerator,
+      validRequestBody: requestBodyToCreateFacilityLoanGbp,
+      makeRequest,
+      givenAnyRequestBodyWouldSucceed,
     });
 
     withEnumFieldValidationApiTests({
