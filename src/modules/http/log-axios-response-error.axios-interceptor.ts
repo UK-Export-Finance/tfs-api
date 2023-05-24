@@ -2,6 +2,7 @@ import { AxiosError } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 
 import { filterAxiosResponseForLogging } from './filter-axios-response-for-logging.helper';
+import { INCOMING_RESPONSE_LOG_KEY } from './http.constants';
 import { AxiosResponseErrorInterceptor } from './type/axios-response-error-interceptor.type';
 
 export const logAxiosResponseErrorWith =
@@ -17,7 +18,7 @@ const buildAxiosResponseLogInput = (error: AxiosError): { object: unknown; messa
   const receivedResponseFromServer = !!responseFromServer;
   return receivedResponseFromServer
     ? {
-        object: { response: filterAxiosResponseForLogging(responseFromServer) },
+        object: { [INCOMING_RESPONSE_LOG_KEY]: filterAxiosResponseForLogging(responseFromServer) },
         message: 'A HTTP server responded to our request with an error response.',
       }
     : { object: error, message: 'A HTTP server failed to respond to our request.' };

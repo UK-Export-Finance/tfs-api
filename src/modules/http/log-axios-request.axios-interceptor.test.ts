@@ -4,6 +4,7 @@ import { when } from 'jest-when';
 import { PinoLogger } from 'nestjs-pino';
 
 import { filterAxiosRequestForLogging } from './filter-axios-request-for-logging.helper';
+import { OUTGOING_REQUEST_LOG_KEY } from './http.constants';
 import { logAxiosRequestWith } from './log-axios-request.axios-interceptor';
 import { AxiosRequestInterceptor } from './type/axios-request-interceptor.type';
 
@@ -41,10 +42,10 @@ describe('logAxiosRequest', () => {
     when(filterAxiosRequestForLogging).calledWith(request).mockReturnValueOnce(filteredRequest);
   });
 
-  it('logs the filtered request at debug level', () => {
+  it('logs the filtered request at debug level using key OUTGOING_REQUEST_LOG_KEY', () => {
     logAxiosRequest(request);
 
-    expect(logger.debug).toHaveBeenCalledWith({ outgoingRequest: filteredRequest }, 'Sending the following HTTP request.');
+    expect(logger.debug).toHaveBeenCalledWith({ [OUTGOING_REQUEST_LOG_KEY]: filteredRequest }, 'Sending the following HTTP request.');
   });
 
   it('returns the original request', () => {
