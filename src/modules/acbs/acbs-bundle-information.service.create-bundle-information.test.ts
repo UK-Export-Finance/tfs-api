@@ -2,6 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import { PROPERTIES } from '@ukef/constants';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { CreateFacilityActivationTransactionGenerator } from '@ukef-test/support/generator/create-facility-activation-transaction-generator';
+import { CreateFacilityLoanGenerator } from '@ukef-test/support/generator/create-facility-loan-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { AxiosError } from 'axios';
 import { when } from 'jest-when';
@@ -13,8 +14,6 @@ import { LoanAdvanceTransaction } from './dto/bundle-actions/loan-advance-transa
 import { AcbsBadRequestException } from './exception/acbs-bad-request.exception';
 import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
 import { AcbsUnexpectedException } from './exception/acbs-unexpected.exception';
-import { NewLoanRequest } from './dto/bundle-actions/new-loan-request.bundle-action';
-import { CreateFacilityLoanGenerator } from '@ukef-test/support/generator/create-facility-loan-generator';
 
 describe('AcbsBundleInformationService', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -284,10 +283,7 @@ describe('AcbsBundleInformationService', () => {
     });
 
     describe('creating a NewLoanRequest', () => {
-      const { acbsRequestBodyToCreateFacilityLoanGbp } = new CreateFacilityLoanGenerator(
-        valueGenerator,
-        new DateStringTransformations(),
-      ).generate({
+      const { acbsRequestBodyToCreateFacilityLoanGbp } = new CreateFacilityLoanGenerator(valueGenerator, new DateStringTransformations()).generate({
         numberToGenerate: 1,
         facilityIdentifier,
         bundleIdentifier,
@@ -315,7 +311,7 @@ describe('AcbsBundleInformationService', () => {
         await expect(createBundleInformationPromise).rejects.toHaveProperty('innerError', axiosError);
       });
 
-      it('throws an AcbsBadRequestException if ACBS responds with a 400 error that is a string that does not contain "Loan does not exist"', async () => {
+      it('throws an AcbsBadRequestException if ACBS responds with a 400 error that is a string that does not contain "Facility does not exist"', async () => {
         const axiosError = new AxiosError();
         const errorString = valueGenerator.string();
         axiosError.response = {

@@ -2309,8 +2309,7 @@ components:
             The product type identifier for the loan: 250 for BSS, 260 for EWCS,
             280 for GEF-Cash, 281 for GEF-Contingent. It is called the product
             type code in ACBS.
-          minLength: 3
-          maxLength: 3
+          minLength: 0
           enum:
             - '250'
             - '260'
@@ -2322,8 +2321,7 @@ components:
           description: >-
             The product type group identifier for the loan: EW for EWCS, BS for
             Bond, GM for GEF. It is called the product group code in ACBS.
-          minLength: 2
-          maxLength: 2
+          minLength: 0
           enum:
             - EW
             - BS
@@ -2378,9 +2376,10 @@ components:
       properties:
         bundleIdentifier:
           type: string
+          description: The identifier of the ACBS bundle.
           minLength: 10
           maxLength: 10
-          description: The identifier of the ACBS bundle.
+          pattern: ^0{4}\\d{6}$
           example: '0000321000'
       required:
         - bundleIdentifier
