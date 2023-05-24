@@ -17,7 +17,7 @@ export default registerAs('app', (): Record<string, any> => {
     env: process.env.NODE_ENV || 'development',
 
     versioning: {
-      enable: process.env.HTTP_VERSIONING_ENABLE === 'true' || false,
+      enable: process.env.HTTP_VERSIONING_ENABLE === 'true',
       prefix: 'v',
       version: process.env.HTTP_VERSION || '1',
     },
@@ -26,5 +26,6 @@ export default registerAs('app', (): Record<string, any> => {
     port: process.env.HTTP_PORT ? Number.parseInt(process.env.HTTP_PORT, 10) : 3001,
     apiKey: process.env.API_KEY,
     logLevel: process.env.LOG_LEVEL || 'info',
+    redactLogs: process.env.REDACT_LOGS !== 'false',
   };
 });

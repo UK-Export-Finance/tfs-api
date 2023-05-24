@@ -4,8 +4,7 @@ export const PROPERTIES = {
     servicingQueueIdentifier: 'DCIS',
   },
   COVENANT: {
-    DEFAULTS: {
-      portfolioIdentifier: 'E1',
+    DEFAULT: {
       accountOwnerIdentifier: '00000000',
       complianceEvaluationMode: {
         covenantEvaluationModeCode: 'M',
@@ -31,7 +30,7 @@ export const PROPERTIES = {
     },
   },
   DEAL: {
-    DEFAULTS: {
+    DEFAULT: {
       dealOriginationCode: 'C',
       isDealSyndicationIndicator: true,
       dealInitialStatusCode: 'A',

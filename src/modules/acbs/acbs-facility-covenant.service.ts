@@ -42,4 +42,21 @@ export class AcbsFacilityCovenantService {
 
     return covenants;
   }
+
+  async replaceCovenantForFacility(
+    portfolioIdentifier: string,
+    facilityIdentifier: string,
+    replacingCovenant: AcbsCreateFacilityCovenantRequestDto,
+    idToken: string,
+  ): Promise<void> {
+    await this.acbsHttpService.put({
+      path: `/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/Covenant`,
+      requestBody: replacingCovenant,
+      idToken,
+      onError: createWrapAcbsHttpPostOrPutErrorCallback({
+        messageForUnknownError: `Failed to replace covenant ${replacingCovenant.CovenantIdentifier} for facility ${facilityIdentifier} in ACBS.`,
+        knownErrors: [facilityNotFoundKnownAcbsError(facilityIdentifier)],
+      }),
+    });
+  }
 }

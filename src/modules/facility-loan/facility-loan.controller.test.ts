@@ -11,7 +11,7 @@ import { FacilityLoanService } from './facility-loan.service';
 describe('FacilityLoanController', () => {
   const valueGenerator = new RandomValueGenerator();
   const dateStringTransformations = new DateStringTransformations();
-  const portfolioIdentifier = valueGenerator.string();
+  const portfolioIdentifier = valueGenerator.portfolioId();
   const facilityIdentifier = valueGenerator.facilityId();
   const bundleIdentifier = valueGenerator.acbsBundleId();
 

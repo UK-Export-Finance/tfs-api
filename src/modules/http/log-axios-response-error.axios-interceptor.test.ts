@@ -4,6 +4,7 @@ import { when } from 'jest-when';
 import { PinoLogger } from 'nestjs-pino';
 
 import { filterAxiosResponseForLogging } from './filter-axios-response-for-logging.helper';
+import { INCOMING_RESPONSE_LOG_KEY } from './http.constants';
 import { logAxiosResponseErrorWith } from './log-axios-response-error.axios-interceptor';
 import { AxiosResponseErrorInterceptor } from './type/axios-response-error-interceptor.type';
 
@@ -51,27 +52,34 @@ describe('logAxiosResponseError', () => {
     when(filterAxiosResponseForLogging).calledWith(response).mockReturnValueOnce(filteredResponse);
   });
 
-  it('logs the full error at warn level for an error without a response', async () => {
-    await logAxiosResponseError(errorWithoutResponse).catch(() => {});
+  describe('when the error does not include a response', () => {
+    it('logs the full error at warn level', async () => {
+      await logAxiosResponseError(errorWithoutResponse).catch(() => {});
 
-    expect(logger.warn).toHaveBeenCalledWith(errorWithoutResponse, 'A HTTP server failed to respond to our request.');
+      expect(logger.warn).toHaveBeenCalledWith(errorWithoutResponse, 'A HTTP server failed to respond to our request.');
+    });
+
+    it('rejects with the original error', async () => {
+      const logAxiosResponseErrorPromise = logAxiosResponseError(errorWithoutResponse);
+
+      await expect(logAxiosResponseErrorPromise).rejects.toBe(errorWithoutResponse);
+    });
   });
 
-  it('logs the filtered response at warn level for an error with a response', async () => {
-    await logAxiosResponseError(errorWithResponse).catch(() => {});
+  describe('when the error does include a response', () => {
+    it('logs the filtered response at warn level using key INCOMING_RESPONSE_LOG_KEY', async () => {
+      await logAxiosResponseError(errorWithResponse).catch(() => {});
 
-    expect(logger.warn).toHaveBeenCalledWith({ response: filteredResponse }, 'A HTTP server responded to our request with an error response.');
-  });
+      expect(logger.warn).toHaveBeenCalledWith(
+        { [INCOMING_RESPONSE_LOG_KEY]: filteredResponse },
+        'A HTTP server responded to our request with an error response.',
+      );
+    });
 
-  it('rejects with the original error for an error without a response', async () => {
-    const logAxiosResponseErrorPromise = logAxiosResponseError(errorWithoutResponse);
+    it('rejects with the original error', async () => {
+      const logAxiosResponseErrorPromise = logAxiosResponseError(errorWithResponse);
 
-    await expect(logAxiosResponseErrorPromise).rejects.toBe(errorWithoutResponse);
-  });
-
-  it('rejects with the original error for an error with a response', async () => {
-    const logAxiosResponseErrorPromise = logAxiosResponseError(errorWithResponse);
-
-    await expect(logAxiosResponseErrorPromise).rejects.toBe(errorWithResponse);
+      await expect(logAxiosResponseErrorPromise).rejects.toBe(errorWithResponse);
+    });
   });
 });

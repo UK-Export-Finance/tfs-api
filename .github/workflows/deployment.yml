@@ -119,6 +119,7 @@ jobs:
               "NODE_ENV=${{ secrets.NODE_ENV }}" \
               "TZ=${{ secrets.TZ }}" \
               "LOG_LEVEL=${{ vars.LOG_LEVEL }}" \
+              "REDACT_LOGS=${{ vars.REDACT_LOGS }}" \
               "SWAGGER_USER=${{ secrets.SWAGGER_USER }}" \
               "SWAGGER_PASSWORD=${{ secrets.SWAGGER_PASSWORD }}" \
               "API_KEY=${{ secrets.API_KEY }}" \

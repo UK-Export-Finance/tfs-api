@@ -21,6 +21,7 @@ import { UpdateFacilityByOperationQueryDto } from './dto/update-facility-by-oper
 import { UpdateFacilityRequest } from './dto/update-facility-request.dto';
 import { UpdateFacilityResponse } from './dto/update-facility-response.dto';
 import { FacilityService } from './facility.service';
+
 @Controller('facilities')
 export class FacilityController {
   constructor(private readonly facilityService: FacilityService) {}
@@ -133,6 +134,10 @@ export class FacilityController {
   ): Promise<UpdateFacilityResponse> {
     if (query.op === ENUMS.FACILITY_UPDATE_OPERATIONS.ISSUE) {
       await this.facilityService.issueFacilityByIdentifier(params.facilityIdentifier, updateFacilityDto);
+      return { facilityIdentifier: params.facilityIdentifier };
+    }
+    if (query.op === ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_EXPIRY_DATE) {
+      await this.facilityService.amendFacilityExpiryDateByIdentifier(params.facilityIdentifier, updateFacilityDto);
       return { facilityIdentifier: params.facilityIdentifier };
     }
   }

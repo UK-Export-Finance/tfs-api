@@ -1,11 +1,11 @@
 import { HttpService } from '@nestjs/axios';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { GetFacilityFixedFeeGenerator } from '@ukef-test/support/generator/get-facility-fixed-fee-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { AxiosError } from 'axios';
 import { when } from 'jest-when';
 import { of, throwError } from 'rxjs';
 
-import { DateStringTransformations } from '../date/date-string.transformations';
 import { AcbsFacilityFixedFeeService } from './acbs-facility-fixed-fee.service';
 import { AcbsException } from './exception/acbs.exception';
 
@@ -13,7 +13,7 @@ describe('AcbsFacilityFixedFeeService', () => {
   const valueGenerator = new RandomValueGenerator();
   const idToken = valueGenerator.string();
   const baseUrl = valueGenerator.httpsUrl();
-  const portfolioIdentifier = valueGenerator.string({ length: 2 });
+  const portfolioIdentifier = valueGenerator.portfolioId();
   const facilityIdentifier = valueGenerator.facilityId();
 
   let httpService: HttpService;

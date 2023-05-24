@@ -69,7 +69,7 @@ describe('DealGuaranteeController', () => {
 
   describe('getGuaranteesForDeal', () => {
     const dealIdentifier = valueGenerator.ukefId();
-    const portfolioIdentifier = valueGenerator.string();
+    const portfolioIdentifier = valueGenerator.portfolioId();
 
     const { dealGuaranteesFromService } = new GetDealGuaranteeGenerator(valueGenerator).generate({
       numberToGenerate: 2,

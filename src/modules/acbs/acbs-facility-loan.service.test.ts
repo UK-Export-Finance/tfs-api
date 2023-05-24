@@ -1,11 +1,11 @@
 import { HttpService } from '@nestjs/axios';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { GetFacilityLoanGenerator } from '@ukef-test/support/generator/get-facility-loan-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { AxiosError } from 'axios';
 import { when } from 'jest-when';
 import { of, throwError } from 'rxjs';
 
-import { DateStringTransformations } from '../date/date-string.transformations';
 import { AcbsFacilityLoanService } from './acbs-facility-loan.service';
 import { AcbsException } from './exception/acbs.exception';
 import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
@@ -15,7 +15,7 @@ describe('AcbsFacilityLoanService', () => {
   const dateStringTransformations = new DateStringTransformations();
   const idToken = valueGenerator.string();
   const baseUrl = valueGenerator.httpsUrl();
-  const portfolioIdentifier = valueGenerator.string({ length: 2 });
+  const portfolioIdentifier = valueGenerator.portfolioId();
   const facilityIdentifier = valueGenerator.facilityId();
 
   let httpService: HttpService;

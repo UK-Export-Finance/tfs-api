@@ -1,11 +1,11 @@
 import { UkefId } from '@ukef/helpers';
+import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { CreateDealInvestorGenerator } from '@ukef-test/support/generator/create-deal-investor-generator';
 import { GetDealInvestorGenerator } from '@ukef-test/support/generator/get-deal-investor-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
 
-import { CurrentDateProvider } from '../date/current-date.provider';
-import { DateStringTransformations } from '../date/date-string.transformations';
 import { DealInvestorController } from './deal-investor.controller';
 import { DealInvestorService } from './deal-investor.service';
 import { CreateDealInvestorResponse } from './dto/create-deal-investor-response.dto';
@@ -37,7 +37,7 @@ describe('DealInvestorController', () => {
 
   describe('getDealInvestors', () => {
     const dealIdentifier = valueGenerator.ukefId();
-    const portfolioIdentifier = valueGenerator.string();
+    const portfolioIdentifier = valueGenerator.portfolioId();
 
     const { dealInvestorsFromService } = new GetDealInvestorGenerator(valueGenerator).generate({
       numberToGenerate: 2,

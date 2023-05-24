@@ -3,7 +3,6 @@ import { DateStringTransformations } from '@ukef/modules/date/date-string.transf
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
 import { withBaseFacilityFieldsValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/base-facility-fields-validation-api-tests';
-import { withDateOnlyFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/date-only-field-validation-api-tests';
 import { withFacilityIdentifierFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/facility-identifier-field-validation-api-tests';
 import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
@@ -115,15 +114,6 @@ describe('POST /facilities', () => {
 
   withFacilityIdentifierFieldValidationApiTests({
     valueGenerator,
-    validRequestBody: requestBodyToCreateFacility,
-    makeRequest,
-    givenAnyRequestBodyWouldSucceed,
-  });
-
-  withDateOnlyFieldValidationApiTests({
-    fieldName: 'issueDate',
-    required: false,
-    nullable: true,
     validRequestBody: requestBodyToCreateFacility,
     makeRequest,
     givenAnyRequestBodyWouldSucceed,
