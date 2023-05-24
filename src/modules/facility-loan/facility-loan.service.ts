@@ -15,6 +15,7 @@ import { CreateFacilityLoanRequestItem } from './dto/create-facility-loan-reques
 import { CreateFacilityLoanResponse } from './dto/create-facility-loan-response.dto';
 import { CreateLoanAmountAmendmentRequestItem } from './dto/create-loan-amount-amendment-request.dto';
 import { GetFacilityLoanResponseDto } from './dto/get-facility-loan-response.dto';
+import { RepaymentSchedule } from '../acbs/dto/bundle-actions/repayment-schedule.interface';
 
 @Injectable()
 export class FacilityLoanService {
@@ -93,6 +94,7 @@ export class FacilityLoanService {
     const loanInstrumentCode =
       newFacilityLoan.productTypeId === ENUMS.PRODUCT_TYPE_IDS.GEF_CONTINGENT ? ENUMS.PRODUCT_TYPE_IDS.GEF_CASH : newFacilityLoan.productTypeId;
     const issueDateString = this.getIssueDateToCreate(newFacilityLoan.issueDate);
+    const repaymentSchedules = this.getRepaymentSchedules(newFacilityLoan);
 
     return {
       $type: PROPERTIES.FACILITY_LOAN.DEFAULT.messageType,
@@ -167,7 +169,7 @@ export class FacilityLoanService {
         LoanSecuredTypeCode: PROPERTIES.FACILITY_LOAN.DEFAULT.securedType.loanSecuredTypeCode,
       },
       AccrualScheduleList: [],
-      RepaymentScheduleList: [],
+      RepaymentScheduleList: repaymentSchedules,
     };
   }
 
@@ -206,6 +208,15 @@ export class FacilityLoanService {
   private getIssueDateToCreate(issueDate: string): DateString {
     const issueDateTime = this.currentDateProvider.getEarliestDateFromTodayAnd(new Date(this.dateStringTransformations.addTimeToDateOnlyString(issueDate)));
     return this.dateStringTransformations.getDateStringFromDate(issueDateTime);
+  }
+
+  private getRepaymentSchedules(facilityLoan: CreateFacilityLoanRequestItem): RepaymentSchedule[] {
+    if (facilityLoan.productTypeGroup === ENUMS.PRODUCT_TYPE_GROUPS.EWCS) {
+      return [this.getRepaymentInt(), this.getRepaymentPac()];
+    } else if (facilityLoan.productTypeGroup === ENUMS.PRODUCT_TYPE_GROUPS.GEF) {
+      return [this.getRepaymentPac()];
+    };
+    return [this.getRepaymentPacBss()];
   }
 
   private buildLoanAmountAmendmentBundle(

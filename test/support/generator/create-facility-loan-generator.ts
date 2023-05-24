@@ -33,6 +33,8 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
       amount: 123.45,
       issueDate: this.valueGenerator.dateOnlyString(),
       expiryDate: this.valueGenerator.dateOnlyString(),
+      nextDueDate: this.valueGenerator.dateOnlyString(),
+      loanBillingFrequencyType: 'C',
     };
   }
 
@@ -89,6 +91,8 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
       amount: value.amount,
       issueDate: effectiveDate,
       expiryDate: value.expiryDate,
+      nextDueDate: value.nextDueDate,
+      loanBillingFrequencyType: value.loanBillingFrequencyType,
     }));
 
     const requestBodyToCreateFacilityLoanNonGbp = [

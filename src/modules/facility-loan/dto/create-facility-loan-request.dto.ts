@@ -72,4 +72,15 @@ export class CreateFacilityLoanRequestItem {
     description: 'The facility expiry date.',
   })
   readonly expiryDate: DateOnlyString;
+
+  @ValidatedDateOnlyApiProperty({
+    description: 'The next payment due date of the repayment schedule.',
+  })
+  readonly nextDueDate: DateOnlyString;
+
+  @ValidatedStringApiProperty({
+    description: 'The frequency at which loan bills should be generated.',
+    length: 1,
+  })
+  readonly loanBillingFrequencyType: string;
 }

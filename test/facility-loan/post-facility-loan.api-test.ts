@@ -13,6 +13,7 @@ import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/s
 import { CreateFacilityLoanGenerator } from '@ukef-test/support/generator/create-facility-loan-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import nock from 'nock';
+import { withPartyIdentifierFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/party-identifier-field-validation-api-tests';
 
 describe('POST /facilities/{facilityIdentifier}/loans', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -147,14 +148,12 @@ describe('POST /facilities/{facilityIdentifier}/loans', () => {
       givenAnyRequestBodyWouldSucceed,
     });
 
-    withStringFieldValidationApiTests({
-      fieldName: 'borrowerPartyIdentifier',
-      length: 8,
-      required: true,
-      generateFieldValueOfLength: (length: number) => valueGenerator.stringOfNumericCharacters({ length }),
-      validRequestBody: requestBodyToCreateFacilityLoanGbp,
-      makeRequest,
-      givenAnyRequestBodyWouldSucceed,
+    withPartyIdentifierFieldValidationApiTests({    
+      fieldName: 'borrowerPartyIdentifier',    
+      valueGenerator,    
+      validRequestBody: requestBodyToCreateFacilityLoanGbp,    
+      makeRequest,   
+      givenAnyRequestBodyWouldSucceed,  
     });
 
     withEnumFieldValidationApiTests({
@@ -227,6 +226,23 @@ describe('POST /facilities/{facilityIdentifier}/loans', () => {
 
     withDateOnlyFieldValidationApiTests({
       fieldName: 'expiryDate',
+      validRequestBody: requestBodyToCreateFacilityLoanGbp,
+      makeRequest,
+      givenAnyRequestBodyWouldSucceed,
+    });
+
+    withDateOnlyFieldValidationApiTests({
+      fieldName: 'nextDueDate',
+      validRequestBody: requestBodyToCreateFacilityLoanGbp,
+      makeRequest,
+      givenAnyRequestBodyWouldSucceed,
+    });
+
+    withStringFieldValidationApiTests({
+      fieldName: 'loanBillingFrequencyType',
+      length: 1,
+      required: true,
+      generateFieldValueOfLength: (length: number) => valueGenerator.stringOfNumericCharacters({ length }),
       validRequestBody: requestBodyToCreateFacilityLoanGbp,
       makeRequest,
       givenAnyRequestBodyWouldSucceed,
