@@ -864,7 +864,7 @@ paths:
           schema:
             minLength: 10
             maxLength: 10
-            pattern: ^\\d{10}$
+            pattern: ^00\\d{8}$
             type: string
         - name: bundleIdentifier
           required: true
@@ -874,6 +874,7 @@ paths:
           schema:
             minLength: 10
             maxLength: 10
+            pattern: ^\\d{10}$
             type: string
       responses:
         '200':
