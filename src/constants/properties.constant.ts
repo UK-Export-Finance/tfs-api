@@ -109,6 +109,16 @@ export const PROPERTIES = {
       riskMitigationCode: '',
     },
   },
+  DEAL_BORROWING_RESTRICTION: {
+    DEFAULT: {
+      sequenceNumber: 1,
+      restrictGroupCategory: {
+        restrictGroupCategoryCode: '36',
+      },
+      includingIndicator: true,
+      includeExcludeAllItemsIndicator: true,
+    },
+  },
   DEAL_GUARANTEE: {
     DEFAULT: {
       sectionIdentifier: '00',

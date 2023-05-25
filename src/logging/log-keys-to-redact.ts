@@ -66,10 +66,16 @@ const getIncomingResponseLogKeysToRedact = ({
   ];
 };
 
-const getErrorLogKeysToRedact = ({ logKey, sensitiveChildKeys }: LogKeysToRedactOptions['error']): string[] =>
-  sensitiveChildKeys.flatMap((childKey) => [
+const getErrorLogKeysToRedact = ({ logKey, sensitiveChildKeys }: LogKeysToRedactOptions['error']): string[] => {
+  const innerErrorKey = 'innerError';
+  const causeNestedErrorKey = ['options', 'cause'];
+  return sensitiveChildKeys.flatMap((childKey) => [
     buildKeyToRedact([logKey, childKey]),
     // Some errors are wrapped in a new error and logged as the `innerError` field on the new error.
-    // We need to make sure the sensitive child keys are still redacted in this case.
-    buildKeyToRedact([logKey, 'innerError', childKey]),
+    // Some errors also contain a `cause` field containing a wrapped error.
+    // We need to make sure the sensitive child keys are still redacted in these cases.
+    buildKeyToRedact([logKey, innerErrorKey, childKey]),
+    buildKeyToRedact([logKey, ...causeNestedErrorKey, childKey]),
+    buildKeyToRedact([logKey, ...causeNestedErrorKey, innerErrorKey, childKey]),
   ]);
+};
