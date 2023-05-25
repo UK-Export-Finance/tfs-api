@@ -1,22 +1,3 @@
-import { DateString } from '@ukef/helpers/date-string.type';
+import { AcbsBaseFacilityGuarantee } from './base-entities/acbs-base-facility-guarantee.interface';
 
-export interface AcbsCreateFacilityGuaranteeDto {
-  LenderType: {
-    LenderTypeCode: string;
-  };
-  SectionIdentifier: string;
-  LimitType: {
-    LimitTypeCode: string;
-  };
-  LimitKey: string;
-  GuarantorParty: {
-    PartyIdentifier: string;
-  };
-  GuaranteeType: {
-    GuaranteeTypeCode: string;
-  };
-  EffectiveDate: DateString;
-  ExpirationDate: DateString;
-  GuaranteedLimit: number;
-  GuaranteedPercentage: number;
-}
+export type AcbsCreateFacilityGuaranteeDto = AcbsBaseFacilityGuarantee;
