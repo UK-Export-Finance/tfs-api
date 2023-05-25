@@ -1,6 +1,6 @@
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 
-import { BundleAction, isFacilityCodeValueTransaction, isLoanAdvanceTransaction, isNewLoanRequest } from './bundle-action.type';
+import { BundleAction, isFacilityCodeValueTransaction, isFacilityFeeAmountTransaction, isLoanAdvanceTransaction, isNewLoanRequest } from './bundle-action.type';
 
 const valueGenerator = new RandomValueGenerator();
 
@@ -8,6 +8,7 @@ const valueGenerator = new RandomValueGenerator();
   { type: 'FacilityCodeValueTransaction', typeGuard: isFacilityCodeValueTransaction },
   { type: 'LoanAdvanceTransaction', typeGuard: isLoanAdvanceTransaction },
   { type: 'NewLoanRequest', typeGuard: isNewLoanRequest },
+  { type: 'FacilityFeeAmountTransaction', typeGuard: isFacilityFeeAmountTransaction },
 ].forEach(({ type, typeGuard }) => {
   describe(`${typeGuard.name}`, () => {
     it(`returns true if $type is ${type}`, () => {
