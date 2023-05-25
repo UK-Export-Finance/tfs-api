@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import { Inject } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import AcbsConfig from '@ukef/config/acbs.config';
 
 import { AcbsConfigBaseUrl } from './acbs-config-base-url.type';
@@ -9,6 +9,7 @@ import { AcbsGetFacilityFixedFeeResponseDto } from './dto/acbs-get-facility-fixe
 import { postFixedFeeExistsAcbsError, postInvalidPortfolioAndFacilityIdCombinationKnownAcbsError } from './known-errors';
 import { createWrapAcbsHttpGetErrorCallback, createWrapAcbsHttpPostOrPutErrorCallback } from './wrap-acbs-http-error-callback';
 
+@Injectable()
 export class AcbsFacilityFixedFeeService {
   private readonly acbsHttpService: AcbsHttpService;
 
