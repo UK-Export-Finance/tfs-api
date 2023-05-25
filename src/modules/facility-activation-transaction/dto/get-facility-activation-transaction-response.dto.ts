@@ -25,7 +25,7 @@ export class GetFacilityActivationTransactionResponseDto {
     maxLength: 2,
     example: EXAMPLES.BUNDLE_STATUS_CODE,
   })
-  readonly bundleStatusCode: string; // TODO: should this use ENUMS.BUNDLE_STATUSES?
+  readonly bundleStatusCode: string; // TODO APIM-125: should this use ENUMS.BUNDLE_STATUSES?
 
   @ApiProperty({
     description: 'A description of the status of the bundle corresponding to the bundle status code.',
@@ -49,7 +49,7 @@ export class GetFacilityActivationTransactionResponseDto {
     example: ENUMS.BUNDLE_STATUSES.SUBMIT_FOR_POSTING,
     enum: ENUMS.BUNDLE_STATUSES,
   })
-  readonly initialBundleStatusCode: number; // TODO: Postman collection has 0?
+  readonly initialBundleStatusCode: number;
 
   @ApiProperty({
     description: `A value used to populate the Bundle Properties 'Initiated By' field.`,
@@ -67,10 +67,10 @@ export class GetFacilityActivationTransactionResponseDto {
     example: PROPERTIES.FACILITY_ACTIVATION_TRANSACTION.DEFAULT.bundleMessageList.accountOwnerIdentifier,
     required: false,
   })
-  readonly accountOwnerIdentifier: string; // TODO: Does this have to be length 8?
+  readonly accountOwnerIdentifier: string; // TODO APIM-125: Does this have to be length 8?
 
   @ApiProperty({
-    description: '', // TODO: description
+    description: '', // TODO APIM-125: description? (nothing in Mulesoft or ACBS docs)
     type: Date,
     format: 'date',
     required: false,
@@ -78,7 +78,7 @@ export class GetFacilityActivationTransactionResponseDto {
   readonly effectiveDate: DateOnlyString;
 
   @ApiProperty({
-    description: '', // TODO: description
+    description: '', // TODO APIM-125: description? (nothing in Mulesoft or ACBS docs)
     minLength: 0,
     maxLength: 10,
     example: PROPERTIES.FACILITY_ACTIVATION_TRANSACTION.DEFAULT.bundleMessageList.facilityTransactionCodeValue.facilityTransactionCodeValueCode,
@@ -102,7 +102,7 @@ export class GetFacilityActivationTransactionResponseDto {
   readonly isDraftIndicator: boolean;
 
   @ApiProperty({
-    description: '', // TODO: description
+    description: '', // TODO APIM-125: description? (nothing in Mulesoft or ACBS docs)
     minLength: 0,
     maxLength: 8,
     example: EXAMPLES.PARTY_ID,
@@ -111,7 +111,7 @@ export class GetFacilityActivationTransactionResponseDto {
   readonly limitKeyValue: string;
 
   @ApiProperty({
-    description: '', // TODO: description
+    description: '', // TODO APIM-125: description? (nothing in Mulesoft or ACBS docs)
     minLength: 0,
     maxLength: 2,
     example: PROPERTIES.FACILITY_ACTIVATION_TRANSACTION.DEFAULT.bundleMessageList.limitType.limitTypeCode,
@@ -120,7 +120,7 @@ export class GetFacilityActivationTransactionResponseDto {
   readonly limitTypeCode: string;
 
   @ApiProperty({
-    description: '', // TODO: description
+    description: '', // TODO APIM-125: description? (nothing in Mulesoft or ACBS docs)
     minLength: 0,
     maxLength: 2,
     example: PROPERTIES.FACILITY_ACTIVATION_TRANSACTION.DEFAULT.bundleMessageList.sectionIdentifier,

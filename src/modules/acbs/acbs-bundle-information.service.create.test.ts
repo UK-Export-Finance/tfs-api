@@ -100,7 +100,7 @@ describe('AcbsBundleInformationService', () => {
       const createBundleInformationPromise = service.createBundleInformation(acbsRequestBodyToCreateFacilityActivationTransaction, idToken);
 
       await expect(createBundleInformationPromise).rejects.toBeInstanceOf(AcbsBadRequestException);
-      await expect(createBundleInformationPromise).rejects.toThrow(`Failed to create a bundleInformation in ACBS.`);
+      await expect(createBundleInformationPromise).rejects.toThrow(`Failed to create a bundle information in ACBS.`);
       await expect(createBundleInformationPromise).rejects.toHaveProperty('innerError', axiosError);
       await expect(createBundleInformationPromise).rejects.toHaveProperty('errorBody', errorString);
     });
@@ -123,7 +123,7 @@ describe('AcbsBundleInformationService', () => {
       const createBundleInformationPromise = service.createBundleInformation(acbsRequestBodyToCreateFacilityActivationTransaction, idToken);
 
       await expect(createBundleInformationPromise).rejects.toBeInstanceOf(AcbsUnexpectedException);
-      await expect(createBundleInformationPromise).rejects.toThrow(`Failed to create a bundleInformation in ACBS.`);
+      await expect(createBundleInformationPromise).rejects.toThrow(`Failed to create a bundle information in ACBS.`);
       await expect(createBundleInformationPromise).rejects.toHaveProperty('innerError', axiosError);
     });
 
@@ -167,7 +167,7 @@ describe('AcbsBundleInformationService', () => {
         const createBundleInformationPromise = service.createBundleInformation(acbsRequestBodyToCreateFacilityActivationTransaction, idToken);
 
         await expect(createBundleInformationPromise).rejects.toBeInstanceOf(AcbsBadRequestException);
-        await expect(createBundleInformationPromise).rejects.toThrow(`Failed to create a bundleInformation in ACBS.`);
+        await expect(createBundleInformationPromise).rejects.toThrow(`Failed to create a bundle information in ACBS.`);
         await expect(createBundleInformationPromise).rejects.toHaveProperty('innerError', axiosError);
         await expect(createBundleInformationPromise).rejects.toHaveProperty('errorBody', errorString);
       });
@@ -190,7 +190,7 @@ describe('AcbsBundleInformationService', () => {
         const createBundleInformationPromise = service.createBundleInformation(acbsRequestBodyToCreateFacilityActivationTransaction, idToken);
 
         await expect(createBundleInformationPromise).rejects.toBeInstanceOf(AcbsBadRequestException);
-        await expect(createBundleInformationPromise).rejects.toThrow(`Failed to create a bundleInformation in ACBS.`);
+        await expect(createBundleInformationPromise).rejects.toThrow(`Failed to create a bundle information in ACBS.`);
         await expect(createBundleInformationPromise).rejects.toHaveProperty('innerError', axiosError);
         await expect(createBundleInformationPromise).rejects.toHaveProperty('errorBody', JSON.stringify(errorBody));
       });
@@ -253,7 +253,7 @@ describe('AcbsBundleInformationService', () => {
         const createBundleInformationPromise = service.createBundleInformation(acbsRequestBodyToCreateLoanAdvanceTransaction, idToken);
 
         await expect(createBundleInformationPromise).rejects.toBeInstanceOf(AcbsBadRequestException);
-        await expect(createBundleInformationPromise).rejects.toThrow(`Failed to create a bundleInformation in ACBS.`);
+        await expect(createBundleInformationPromise).rejects.toThrow(`Failed to create a bundle information in ACBS.`);
         await expect(createBundleInformationPromise).rejects.toHaveProperty('innerError', axiosError);
         await expect(createBundleInformationPromise).rejects.toHaveProperty('errorBody', errorString);
       });
@@ -276,7 +276,7 @@ describe('AcbsBundleInformationService', () => {
         const createBundleInformationPromise = service.createBundleInformation(acbsRequestBodyToCreateLoanAdvanceTransaction, idToken);
 
         await expect(createBundleInformationPromise).rejects.toBeInstanceOf(AcbsBadRequestException);
-        await expect(createBundleInformationPromise).rejects.toThrow(`Failed to create a bundleInformation in ACBS.`);
+        await expect(createBundleInformationPromise).rejects.toThrow(`Failed to create a bundle information in ACBS.`);
         await expect(createBundleInformationPromise).rejects.toHaveProperty('innerError', axiosError);
         await expect(createBundleInformationPromise).rejects.toHaveProperty('errorBody', JSON.stringify(errorBody));
       });
@@ -329,7 +329,7 @@ describe('AcbsBundleInformationService', () => {
         const createBundleInformationPromise = service.createBundleInformation(acbsRequestBodyToCreateFacilityLoanGbp, idToken);
 
         await expect(createBundleInformationPromise).rejects.toBeInstanceOf(AcbsBadRequestException);
-        await expect(createBundleInformationPromise).rejects.toThrow(`Failed to create a bundleInformation in ACBS.`);
+        await expect(createBundleInformationPromise).rejects.toThrow(`Failed to create a bundle information in ACBS.`);
         await expect(createBundleInformationPromise).rejects.toHaveProperty('innerError', axiosError);
         await expect(createBundleInformationPromise).rejects.toHaveProperty('errorBody', errorString);
       });
@@ -352,7 +352,7 @@ describe('AcbsBundleInformationService', () => {
         const createBundleInformationPromise = service.createBundleInformation(acbsRequestBodyToCreateFacilityLoanGbp, idToken);
 
         await expect(createBundleInformationPromise).rejects.toBeInstanceOf(AcbsBadRequestException);
-        await expect(createBundleInformationPromise).rejects.toThrow(`Failed to create a bundleInformation in ACBS.`);
+        await expect(createBundleInformationPromise).rejects.toThrow(`Failed to create a bundle information in ACBS.`);
         await expect(createBundleInformationPromise).rejects.toHaveProperty('innerError', axiosError);
         await expect(createBundleInformationPromise).rejects.toHaveProperty('errorBody', JSON.stringify(errorBody));
       });

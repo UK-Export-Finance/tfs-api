@@ -1,6 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import { PROPERTIES } from '@ukef/constants';
-import { GetFacilityLoanTransactionGenerator } from '@ukef-test/support/generator/get-facility-loan-transaction-generator';
+import { GetFacilityActivationTransactionGenerator } from '@ukef-test/support/generator/get-facility-activation-transaction-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { AxiosError } from 'axios';
 import { when } from 'jest-when';
@@ -31,18 +30,18 @@ describe('AcbsBundleInformationService', () => {
     service = new AcbsBundleInformationService({ baseUrl }, httpService);
   });
 
-  describe('getLoanTransactionByBundleIdentifier', () => {
-    const { portfolioIdentifier } = PROPERTIES.GLOBAL;
+  describe('getBundleInformationByIdentifier', () => {
     const facilityIdentifier = valueGenerator.ukefId();
     const bundleIdentifier = valueGenerator.acbsBundleId();
 
-    it('returns the loan transaction if ACBS responds with the loan transaction', async () => {
-      const { facilityLoanTransactionsInAcbs } = new GetFacilityLoanTransactionGenerator(valueGenerator, dateStringTransformations).generate({
+    it('returns the bundle information if ACBS responds with the bundle information', async () => {
+      const { acbsFacilityActivationTransaction: expectedBundleInformation } = new GetFacilityActivationTransactionGenerator(
+        valueGenerator,
+        dateStringTransformations,
+      ).generate({
         numberToGenerate: 1,
         facilityIdentifier,
-        portfolioIdentifier,
       });
-      const [loanTransactionInAcbs] = [facilityLoanTransactionsInAcbs];
 
       when(httpServiceGet)
         .calledWith(`/BundleInformation/${bundleIdentifier}?returnItems=true`, {
@@ -51,7 +50,7 @@ describe('AcbsBundleInformationService', () => {
         })
         .mockReturnValueOnce(
           of({
-            data: loanTransactionInAcbs,
+            data: expectedBundleInformation,
             status: 200,
             statusText: 'OK',
             config: undefined,
@@ -59,25 +58,25 @@ describe('AcbsBundleInformationService', () => {
           }),
         );
 
-      const loanTransaction = await service.getLoanTransactionByBundleIdentifier(bundleIdentifier, idToken);
+      const bundleInformation = await service.getBundleInformationByIdentifier(bundleIdentifier, 'Bundle action', idToken);
 
-      expect(loanTransaction).toStrictEqual(loanTransactionInAcbs);
+      expect(bundleInformation).toStrictEqual(expectedBundleInformation);
     });
 
     it('throws an AcbsException if the request to ACBS fails', async () => {
-      const getLoanTransactionByBundleIdentifierError = new AxiosError();
+      const getBundleInformationByIdentifierError = new AxiosError();
       when(httpServiceGet)
         .calledWith(`/BundleInformation/${bundleIdentifier}?returnItems=true`, {
           baseURL: baseUrl,
           headers: { Authorization: `Bearer ${idToken}` },
         })
-        .mockReturnValueOnce(throwError(() => getLoanTransactionByBundleIdentifierError));
+        .mockReturnValueOnce(throwError(() => getBundleInformationByIdentifierError));
 
-      const getLoanTransactionPromise = service.getLoanTransactionByBundleIdentifier(bundleIdentifier, idToken);
+      const getLoanTransactionPromise = service.getBundleInformationByIdentifier(bundleIdentifier, 'Bundle action', idToken);
 
       await expect(getLoanTransactionPromise).rejects.toBeInstanceOf(AcbsException);
-      await expect(getLoanTransactionPromise).rejects.toThrow(`Failed to get the loan transaction with bundle identifier ${bundleIdentifier}.`);
-      await expect(getLoanTransactionPromise).rejects.toHaveProperty('innerError', getLoanTransactionByBundleIdentifierError);
+      await expect(getLoanTransactionPromise).rejects.toThrow(`Failed to get the bundle information with bundle identifier ${bundleIdentifier}.`);
+      await expect(getLoanTransactionPromise).rejects.toHaveProperty('innerError', getBundleInformationByIdentifierError);
     });
 
     it('throws an AcbsResourceNotFoundException if ACBS responds with a 400 response that is a string containing "BundleInformation not found"', async () => {
@@ -97,10 +96,10 @@ describe('AcbsBundleInformationService', () => {
         })
         .mockReturnValueOnce(throwError(() => axiosError));
 
-      const getLoanTransactionPromise = service.getLoanTransactionByBundleIdentifier(bundleIdentifier, idToken);
+      const getLoanTransactionPromise = service.getBundleInformationByIdentifier(bundleIdentifier, 'Bundle action', idToken);
 
       await expect(getLoanTransactionPromise).rejects.toBeInstanceOf(AcbsResourceNotFoundException);
-      await expect(getLoanTransactionPromise).rejects.toThrow(`Loan transaction with bundle identifier ${bundleIdentifier} was not found by ACBS.`);
+      await expect(getLoanTransactionPromise).rejects.toThrow(`Bundle action with bundle identifier ${bundleIdentifier} was not found by ACBS.`);
       await expect(getLoanTransactionPromise).rejects.toHaveProperty('innerError', axiosError);
     });
 
@@ -121,10 +120,10 @@ describe('AcbsBundleInformationService', () => {
         })
         .mockReturnValueOnce(throwError(() => axiosError));
 
-      const getLoanTransactionPromise = service.getLoanTransactionByBundleIdentifier(bundleIdentifier, idToken);
+      const getLoanTransactionPromise = service.getBundleInformationByIdentifier(bundleIdentifier, 'Bundle action', idToken);
 
       await expect(getLoanTransactionPromise).rejects.toBeInstanceOf(AcbsException);
-      await expect(getLoanTransactionPromise).rejects.toThrow(`Failed to get the loan transaction with bundle identifier ${bundleIdentifier}.`);
+      await expect(getLoanTransactionPromise).rejects.toThrow(`Failed to get the bundle information with bundle identifier ${bundleIdentifier}.`);
       await expect(getLoanTransactionPromise).rejects.toHaveProperty('innerError', axiosError);
     });
 
@@ -145,10 +144,10 @@ describe('AcbsBundleInformationService', () => {
         })
         .mockReturnValueOnce(throwError(() => axiosError));
 
-      const getLoanTransactionPromise = service.getLoanTransactionByBundleIdentifier(bundleIdentifier, idToken);
+      const getLoanTransactionPromise = service.getBundleInformationByIdentifier(bundleIdentifier, 'Bundle action', idToken);
 
       await expect(getLoanTransactionPromise).rejects.toBeInstanceOf(AcbsException);
-      await expect(getLoanTransactionPromise).rejects.toThrow(`Failed to get the loan transaction with bundle identifier ${bundleIdentifier}.`);
+      await expect(getLoanTransactionPromise).rejects.toThrow(`Failed to get the bundle information with bundle identifier ${bundleIdentifier}.`);
       await expect(getLoanTransactionPromise).rejects.toHaveProperty('innerError', axiosError);
     });
   });

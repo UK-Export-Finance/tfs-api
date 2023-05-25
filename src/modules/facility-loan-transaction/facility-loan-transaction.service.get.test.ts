@@ -8,27 +8,24 @@ import { GetFacilityLoanTransactionGenerator } from '@ukef-test/support/generato
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
 
-import { GetFacilityLoanTransactionResponseItem } from './dto/get-loan-transaction-response.dto';
+import { GetFacilityLoanTransactionResponseDto } from './dto/get-facility-loan-transaction-response.dto';
 import { FacilityLoanTransactionService } from './facility-loan-transaction.service';
 
 describe('FacilityLoanTransactionService', () => {
-  const { portfolioIdentifier } = PROPERTIES.GLOBAL;
   const valueGenerator = new RandomValueGenerator();
   const idToken = valueGenerator.string();
   const facilityIdentifier = valueGenerator.facilityId();
   const bundleIdentifier = valueGenerator.acbsBundleId();
 
-  const { facilityLoanTransactionsFromApi: expectedFacilityLoanTransactions, facilityLoanTransactionsInAcbs } = new GetFacilityLoanTransactionGenerator(
+  const { acbsFacilityLoanTransaction, apiFacilityLoanTransaction: expectedLoanTransaction } = new GetFacilityLoanTransactionGenerator(
     valueGenerator,
     new DateStringTransformations(),
-  ).generate({ numberToGenerate: 1, facilityIdentifier, portfolioIdentifier });
-  const [loanTransactionInAcbs] = facilityLoanTransactionsInAcbs;
-  const [expectedLoanTransaction] = expectedFacilityLoanTransactions;
+  ).generate({ numberToGenerate: 1, facilityIdentifier });
 
   let acbsAuthenticationService: AcbsAuthenticationService;
   let service: FacilityLoanTransactionService;
 
-  let getFacilityLoanTransactionAcbsService: jest.Mock;
+  let getBundleInformationAcbsService: jest.Mock;
 
   beforeEach(() => {
     const mockAcbsAuthenticationService = getMockAcbsAuthenticationService();
@@ -37,15 +34,15 @@ describe('FacilityLoanTransactionService', () => {
     when(acbsAuthenticationServiceGetIdToken).calledWith().mockResolvedValueOnce(idToken);
 
     const acbsService = new AcbsBundleInformationService(null, null);
-    getFacilityLoanTransactionAcbsService = jest.fn();
-    acbsService.getLoanTransactionByBundleIdentifier = getFacilityLoanTransactionAcbsService;
+    getBundleInformationAcbsService = jest.fn();
+    acbsService.getBundleInformationByIdentifier = getBundleInformationAcbsService;
 
     service = new FacilityLoanTransactionService(acbsAuthenticationService, acbsService, new DateStringTransformations());
   });
 
   describe('getLoanTransactionByBundleIdentifier', () => {
     it('returns a transformation of the loan transaction from ACBS', async () => {
-      when(getFacilityLoanTransactionAcbsService).calledWith(bundleIdentifier, idToken).mockResolvedValueOnce(loanTransactionInAcbs);
+      when(getBundleInformationAcbsService).calledWith(bundleIdentifier, 'Loan transaction', idToken).mockResolvedValueOnce(acbsFacilityLoanTransaction);
 
       const loanTransaction = await service.getLoanTransactionsByBundleIdentifier(bundleIdentifier);
 
@@ -53,15 +50,15 @@ describe('FacilityLoanTransactionService', () => {
     });
 
     it('returns a transformation of the loan transaction from ACBS when it has a null deal customer usage rate', async () => {
-      const loanTransactionInAcbsWithNullDealCustomerUsageRate = JSON.parse(JSON.stringify(loanTransactionInAcbs));
+      const loanTransactionInAcbsWithNullDealCustomerUsageRate = JSON.parse(JSON.stringify(acbsFacilityLoanTransaction));
       loanTransactionInAcbsWithNullDealCustomerUsageRate.BundleMessageList[0].DealCustomerUsageRate = null;
-      const expectedLoanTransactionWithNullValue: GetFacilityLoanTransactionResponseItem = {
+      const expectedLoanTransactionWithNullValue: GetFacilityLoanTransactionResponseDto = {
         ...expectedLoanTransaction,
         dealCustomerUsageRate: null,
       };
 
-      when(getFacilityLoanTransactionAcbsService)
-        .calledWith(bundleIdentifier, idToken)
+      when(getBundleInformationAcbsService)
+        .calledWith(bundleIdentifier, 'Loan transaction', idToken)
         .mockResolvedValueOnce(loanTransactionInAcbsWithNullDealCustomerUsageRate);
 
       const loanTransactions = await service.getLoanTransactionsByBundleIdentifier(bundleIdentifier);
@@ -70,14 +67,16 @@ describe('FacilityLoanTransactionService', () => {
     });
 
     it('returns a transformation of the loan transaction from ACBS when it has a null operation type code', async () => {
-      const loanTransactionInAcbsWithNullOperationTypeCode = JSON.parse(JSON.stringify(loanTransactionInAcbs));
+      const loanTransactionInAcbsWithNullOperationTypeCode = JSON.parse(JSON.stringify(acbsFacilityLoanTransaction));
       loanTransactionInAcbsWithNullOperationTypeCode.BundleMessageList[0].DealCustomerUsageOperationType.OperationTypeCode = null;
-      const expectedFacilityLoanTransactionsWithNullValue: GetFacilityLoanTransactionResponseItem = {
+      const expectedFacilityLoanTransactionsWithNullValue: GetFacilityLoanTransactionResponseDto = {
         ...expectedLoanTransaction,
         dealCustomerUsageOperationType: null,
       };
 
-      when(getFacilityLoanTransactionAcbsService).calledWith(bundleIdentifier, idToken).mockResolvedValueOnce(loanTransactionInAcbsWithNullOperationTypeCode);
+      when(getBundleInformationAcbsService)
+        .calledWith(bundleIdentifier, 'Loan transaction', idToken)
+        .mockResolvedValueOnce(loanTransactionInAcbsWithNullOperationTypeCode);
 
       const loanTransactions = await service.getLoanTransactionsByBundleIdentifier(bundleIdentifier);
 
@@ -85,14 +84,16 @@ describe('FacilityLoanTransactionService', () => {
     });
 
     it('returns a transformation of the loan transaction from ACBS when it has an empty operation type code', async () => {
-      const loanTransactionInAcbsWithEmptyOperationTypeCode = JSON.parse(JSON.stringify(loanTransactionInAcbs));
+      const loanTransactionInAcbsWithEmptyOperationTypeCode = JSON.parse(JSON.stringify(acbsFacilityLoanTransaction));
       loanTransactionInAcbsWithEmptyOperationTypeCode.BundleMessageList[0].DealCustomerUsageOperationType.OperationTypeCode = '';
-      const expectedFacilityLoanTransactionsWithNullValue: GetFacilityLoanTransactionResponseItem = {
+      const expectedFacilityLoanTransactionsWithNullValue: GetFacilityLoanTransactionResponseDto = {
         ...expectedLoanTransaction,
         dealCustomerUsageOperationType: null,
       };
 
-      when(getFacilityLoanTransactionAcbsService).calledWith(bundleIdentifier, idToken).mockResolvedValueOnce(loanTransactionInAcbsWithEmptyOperationTypeCode);
+      when(getBundleInformationAcbsService)
+        .calledWith(bundleIdentifier, 'Loan transaction', idToken)
+        .mockResolvedValueOnce(loanTransactionInAcbsWithEmptyOperationTypeCode);
 
       const loanTransactions = await service.getLoanTransactionsByBundleIdentifier(bundleIdentifier);
 
@@ -100,7 +101,7 @@ describe('FacilityLoanTransactionService', () => {
     });
 
     it(`returns a transformation of the loan transaction from ACBS when it has more than one accrual with the category code 'PAC01'`, async () => {
-      const loanTransactionInAcbsWithMoreThanOnePacAccrual = JSON.parse(JSON.stringify(loanTransactionInAcbs));
+      const loanTransactionInAcbsWithMoreThanOnePacAccrual = JSON.parse(JSON.stringify(acbsFacilityLoanTransaction));
       loanTransactionInAcbsWithMoreThanOnePacAccrual.BundleMessageList[0].AccrualScheduleList.splice(1, 0, {
         AccrualCategory: {
           AccrualCategoryCode: PROPERTIES.FACILITY_LOAN.DEFAULT.accrualScheduleList.accrualCategory.accrualCategoryCode.pac,
@@ -113,13 +114,15 @@ describe('FacilityLoanTransactionService', () => {
           IndexRateChangeFrequencyCode: '',
         },
       });
-      const expectedFacilityLoanTransactionsWithAdditionalAccrual: GetFacilityLoanTransactionResponseItem = {
+      const expectedFacilityLoanTransactionsWithAdditionalAccrual: GetFacilityLoanTransactionResponseDto = {
         ...expectedLoanTransaction,
         spreadRate: 0,
         indexRateChangeFrequency: '',
       };
 
-      when(getFacilityLoanTransactionAcbsService).calledWith(bundleIdentifier, idToken).mockResolvedValueOnce(loanTransactionInAcbsWithMoreThanOnePacAccrual);
+      when(getBundleInformationAcbsService)
+        .calledWith(bundleIdentifier, 'Loan transaction', idToken)
+        .mockResolvedValueOnce(loanTransactionInAcbsWithMoreThanOnePacAccrual);
 
       const loanTransactions = await service.getLoanTransactionsByBundleIdentifier(bundleIdentifier);
 
@@ -127,7 +130,7 @@ describe('FacilityLoanTransactionService', () => {
     });
 
     it(`returns a transformation of the loan transaction from ACBS when it has more than one accrual with the category code 'CTL01'`, async () => {
-      const loanTransactionInAcbsWithMoreThanOneCtlAccrual = JSON.parse(JSON.stringify(loanTransactionInAcbs));
+      const loanTransactionInAcbsWithMoreThanOneCtlAccrual = JSON.parse(JSON.stringify(acbsFacilityLoanTransaction));
       loanTransactionInAcbsWithMoreThanOneCtlAccrual.BundleMessageList[0].AccrualScheduleList.splice(1, 0, {
         AccrualCategory: {
           AccrualCategoryCode: PROPERTIES.FACILITY_LOAN.DEFAULT.accrualScheduleList.accrualCategory.accrualCategoryCode.ctl,
@@ -140,12 +143,14 @@ describe('FacilityLoanTransactionService', () => {
           IndexRateChangeFrequencyCode: '',
         },
       });
-      const expectedFacilityLoanTransactionsWithAdditionalAccrual: GetFacilityLoanTransactionResponseItem = {
+      const expectedFacilityLoanTransactionsWithAdditionalAccrual: GetFacilityLoanTransactionResponseDto = {
         ...expectedLoanTransaction,
         spreadRateCTL: 0,
       };
 
-      when(getFacilityLoanTransactionAcbsService).calledWith(bundleIdentifier, idToken).mockResolvedValueOnce(loanTransactionInAcbsWithMoreThanOneCtlAccrual);
+      when(getBundleInformationAcbsService)
+        .calledWith(bundleIdentifier, 'Loan transaction', idToken)
+        .mockResolvedValueOnce(loanTransactionInAcbsWithMoreThanOneCtlAccrual);
 
       const loanTransactions = await service.getLoanTransactionsByBundleIdentifier(bundleIdentifier);
 
@@ -153,12 +158,12 @@ describe('FacilityLoanTransactionService', () => {
     });
 
     it('throws a BadRequestException if the 0th element of the bundle message list is NOT a new loan request', async () => {
-      const invalidloanTransactionInAcbs = JSON.parse(JSON.stringify(loanTransactionInAcbs));
-      invalidloanTransactionInAcbs.BundleMessageList.unshift({
+      const invalidLoanTransactionInAcbs = JSON.parse(JSON.stringify(acbsFacilityLoanTransaction));
+      invalidLoanTransactionInAcbs.BundleMessageList.unshift({
         $type: 'AccrualScheduleAmountTransaction',
       });
 
-      when(getFacilityLoanTransactionAcbsService).calledWith(bundleIdentifier, idToken).mockResolvedValueOnce(invalidloanTransactionInAcbs);
+      when(getBundleInformationAcbsService).calledWith(bundleIdentifier, 'Loan transaction', idToken).mockResolvedValueOnce(invalidLoanTransactionInAcbs);
 
       const responsePromise = service.getLoanTransactionsByBundleIdentifier(bundleIdentifier);
 

@@ -2,9 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { EXAMPLES, PROPERTIES } from '@ukef/constants';
 import { DateOnlyString } from '@ukef/helpers/date-only-string.type';
 
-export type GetFacilityLoanTransactionResponseDto = GetFacilityLoanTransactionResponseItem[];
-
-export class GetFacilityLoanTransactionResponseItem {
+export class GetFacilityLoanTransactionResponseDto {
   @ApiProperty({
     description: 'The identifier of the portfolio in ACBS. The UKEF portfolio is E1.',
     minLength: 0,

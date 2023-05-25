@@ -1,13 +1,14 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PROPERTIES } from '@ukef/constants';
 import { AcbsBundleInformationService } from '@ukef/modules/acbs/acbs-bundle-information.service';
-import { AcbsGetFacilityLoanTransactionResponseItem } from '@ukef/modules/acbs/dto/acbs-get-facility-loan-transaction-response.dto';
 import { AccrualSchedule } from '@ukef/modules/acbs/dto/bundle-actions/accrual-schedule.interface';
 import { isNewLoanRequest } from '@ukef/modules/acbs/dto/bundle-actions/bundle-action.type';
 import { NewLoanRequest } from '@ukef/modules/acbs/dto/bundle-actions/new-loan-request.bundle-action';
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
-import { GetFacilityLoanTransactionResponseItem } from '@ukef/modules/facility-loan-transaction/dto/get-loan-transaction-response.dto';
+import { GetFacilityLoanTransactionResponseDto } from '@ukef/modules/facility-loan-transaction/dto/get-facility-loan-transaction-response.dto';
+
+import { AcbsGetBundleInformationResponseDto } from '../acbs/dto/acbs-get-bundle-information-response.dto';
 
 @Injectable()
 export class FacilityLoanTransactionService {
@@ -17,9 +18,9 @@ export class FacilityLoanTransactionService {
     private readonly dateStringTransformations: DateStringTransformations,
   ) {}
 
-  async getLoanTransactionsByBundleIdentifier(bundleIdentifier: string): Promise<GetFacilityLoanTransactionResponseItem> {
+  async getLoanTransactionsByBundleIdentifier(bundleIdentifier: string): Promise<GetFacilityLoanTransactionResponseDto> {
     const idToken = await this.acbsAuthenticationService.getIdToken();
-    const loanTransaction = await this.acbsBundleInformationService.getLoanTransactionByBundleIdentifier(bundleIdentifier, idToken);
+    const loanTransaction = await this.acbsBundleInformationService.getBundleInformationByIdentifier(bundleIdentifier, 'Loan transaction', idToken);
     const [loan] = loanTransaction.BundleMessageList;
 
     if (!isNewLoanRequest(loan)) {
@@ -28,7 +29,7 @@ export class FacilityLoanTransactionService {
     return this.mapLoanTransaction(loanTransaction, loan);
   }
 
-  private mapLoanTransaction(loanTransaction: AcbsGetFacilityLoanTransactionResponseItem, loan: NewLoanRequest): GetFacilityLoanTransactionResponseItem {
+  private mapLoanTransaction(loanTransaction: AcbsGetBundleInformationResponseDto, loan: NewLoanRequest): GetFacilityLoanTransactionResponseDto {
     const accrualScheduleList = loan.AccrualScheduleList;
     const pacAccrual = this.findFirstAccrualMatchingCategoryCode(
       PROPERTIES.FACILITY_LOAN.DEFAULT.accrualScheduleList.accrualCategory.accrualCategoryCode.pac,

@@ -2,7 +2,7 @@ import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { BundleStatusEnum } from '@ukef/constants/enums/bundle-status';
 import { LenderTypeCodeEnum } from '@ukef/constants/enums/lender-type-code';
 import { AcbsPartyId, DateOnlyString, UkefId } from '@ukef/helpers';
-import { AcbsGetFacilityActivationTransactionResponseDto } from '@ukef/modules/acbs/dto/acbs-get-facility-activation-transaction-response.dto';
+import { AcbsGetBundleInformationResponseDto } from '@ukef/modules/acbs/dto/acbs-get-bundle-information-response.dto';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { GetFacilityActivationTransactionResponseDto } from '@ukef/modules/facility-activation-transaction/dto/get-facility-activation-transaction-response.dto';
 
@@ -33,6 +33,7 @@ export class GetFacilityActivationTransactionGenerator extends AbstractGenerator
       limitKeyValue: this.valueGenerator.acbsPartyId(),
       limitTypeCode: this.valueGenerator.string({ maxLength: 2 }),
       sectionIdentifier: this.valueGenerator.string({ maxLength: 2 }),
+      postingDate: this.valueGenerator.dateOnlyString(),
     };
   }
 
@@ -41,10 +42,11 @@ export class GetFacilityActivationTransactionGenerator extends AbstractGenerator
     { facilityIdentifier }: GenerateOptions,
   ): GenerateResult {
     const { portfolioIdentifier } = PROPERTIES.GLOBAL;
-    const firstFacilityActivationTransaction = facilityActivationTransactions[0];
+    const [firstFacilityActivationTransaction] = facilityActivationTransactions;
     const effectiveDateTime = this.dateStringTransformations.addTimeToDateOnlyString(firstFacilityActivationTransaction.effectiveDate);
+    const postingDateTime = this.dateStringTransformations.addTimeToDateOnlyString(firstFacilityActivationTransaction.postingDate);
 
-    const acbsFacilityActivationTransaction: AcbsGetFacilityActivationTransactionResponseDto = {
+    const acbsFacilityActivationTransaction: AcbsGetBundleInformationResponseDto = {
       PortfolioIdentifier: portfolioIdentifier,
       InitialBundleStatusCode: firstFacilityActivationTransaction.initialBundleStatusCode,
       BundleStatus: {
@@ -52,6 +54,7 @@ export class GetFacilityActivationTransactionGenerator extends AbstractGenerator
         BundleStatusShortDescription: firstFacilityActivationTransaction.bundleStatusDesc,
       },
       InitiatingUserName: firstFacilityActivationTransaction.initiatingUserName,
+      PostingDate: postingDateTime,
       BundleMessageList: [
         {
           $type: 'FacilityCodeValueTransaction',
@@ -116,6 +119,7 @@ interface FacilityActivationTransactionValues {
   limitKeyValue: AcbsPartyId;
   limitTypeCode: string;
   sectionIdentifier: string;
+  postingDate: DateOnlyString;
 }
 
 interface GenerateOptions {
@@ -123,6 +127,6 @@ interface GenerateOptions {
 }
 
 interface GenerateResult {
-  acbsFacilityActivationTransaction: AcbsGetFacilityActivationTransactionResponseDto;
+  acbsFacilityActivationTransaction: AcbsGetBundleInformationResponseDto;
   apiFacilityActivationTransaction: GetFacilityActivationTransactionResponseDto;
 }

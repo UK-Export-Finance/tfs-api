@@ -1,7 +1,7 @@
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import request from 'supertest';
 
-const expectedBundleIdentifierMustMatchPatternErrorMessage = `BundleIdentifier must match /^0000\\d{6}$/ regular expression`;
+const expectedBundleIdentifierMustMatchPatternErrorMessage = `bundleIdentifier must match /^0{4}\\d{6}$/ regular expression`;
 
 export const withBundleIdentifierUrlValidationApiTests = ({
   makeRequestWithBundleId,

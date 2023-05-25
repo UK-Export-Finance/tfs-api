@@ -9,7 +9,7 @@ import { GetFacilityActivationTransactionGenerator } from '@ukef-test/support/ge
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import nock from 'nock';
 
-describe('GET /facilities/{facilityIdentifier}/activation-transactions', () => {
+describe('GET /facilities/{facilityIdentifier}/activation-transactions/{bundleIdentifier}', () => {
   const valueGenerator = new RandomValueGenerator();
   const dateStringTransformations = new DateStringTransformations();
 

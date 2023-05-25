@@ -49,10 +49,24 @@ export const postInvalidPortfolioAndFacilityIdCombinationKnownAcbsError = (facil
   },
 });
 
-export const getLoanTransactionNotFoundKnownAcbsError = (bundleIdentifier: string): KnownError => ({
+export const postFixedFeeExistsAcbsError = (): KnownError => ({
+  caseInsensitiveSubstringToFind: 'FixedFee exists',
+  throwError: (error) => {
+    throw new AcbsBadRequestException('Bad request', error, 'Fixed fee with this period and lenderTypeCode combination already exist.');
+  },
+});
+
+export const postInvalidPortfolioAndFacilityIdCombinationKnownAcbsError = (facilityIdentifier: string): KnownError => ({
+  caseInsensitiveSubstringToFind: 'Invalid PortfolioId and FacilityId combination.',
+  throwError: (error) => {
+    throw new AcbsResourceNotFoundException(`Facility with identifier ${facilityIdentifier} was not found by ACBS.`, error);
+  },
+});
+
+export const getBundleInformationNotFoundKnownAcbsError = (bundleIdentifier: string, actionName: string): KnownError => ({
   caseInsensitiveSubstringToFind: 'BundleInformation not found',
   throwError: (error) => {
-    throw new AcbsResourceNotFoundException(`Loan transaction with bundle identifier ${bundleIdentifier} was not found by ACBS.`, error);
+    throw new AcbsResourceNotFoundException(`${actionName} with bundle identifier ${bundleIdentifier} was not found by ACBS.`, error);
   },
 });
 
