@@ -88,14 +88,14 @@ export class FacilityActivationTransactionService {
       bundleStatusDesc: activationTransaction.BundleStatus.BundleStatusShortDescription,
       lenderTypeCode: codeValueTransaction.LenderType.LenderTypeCode,
       initialBundleStatusCode: activationTransaction.InitialBundleStatusCode,
-      initiatingUsername: activationTransaction.InitiatingUserName,
+      initiatingUserName: activationTransaction.InitiatingUserName,
       accountOwnerIdentifier: codeValueTransaction.AccountOwnerIdentifier,
       effectiveDate: effectiveDateOnly,
-      facilityTransactionCodeValueCode: codeValueTransaction.FacilityTransactionCodeValue.FacilityTransactionCodeValueCode,
-      facilityTransactionTypeCode: Number(codeValueTransaction.FacilityTransactionType.TypeCode),
+      facilityTransactionCodeValueCode: codeValueTransaction.FacilityTransactionCodeValue?.FacilityTransactionCodeValueCode,
+      facilityTransactionTypeCode: Number(codeValueTransaction.FacilityTransactionType?.TypeCode),
       isDraftIndicator: codeValueTransaction.IsDraftIndicator,
       limitKeyValue: codeValueTransaction.LimitKeyValue,
-      limitTypeCode: codeValueTransaction.LimitType.LimitTypeCode,
+      limitTypeCode: codeValueTransaction.LimitType?.LimitTypeCode,
       sectionIdentifier: codeValueTransaction.SectionIdentifier,
     };
   }

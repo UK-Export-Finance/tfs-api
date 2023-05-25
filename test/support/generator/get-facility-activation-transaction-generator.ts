@@ -87,7 +87,7 @@ export class GetFacilityActivationTransactionGenerator extends AbstractGenerator
       bundleStatusDesc: firstFacilityActivationTransaction.bundleStatusDesc,
       lenderTypeCode: firstFacilityActivationTransaction.lenderTypeCode,
       initialBundleStatusCode: firstFacilityActivationTransaction.initialBundleStatusCode,
-      initiatingUsername: firstFacilityActivationTransaction.initiatingUserName,
+      initiatingUserName: firstFacilityActivationTransaction.initiatingUserName,
       accountOwnerIdentifier: firstFacilityActivationTransaction.accountOwnerIdentifier,
       effectiveDate: firstFacilityActivationTransaction.effectiveDate,
       facilityTransactionCodeValueCode: firstFacilityActivationTransaction.facilityTransactionCodeValueCode,

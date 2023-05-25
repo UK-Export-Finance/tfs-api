@@ -58,7 +58,7 @@ export class GetFacilityActivationTransactionResponseDto {
     example: EXAMPLES.INITIATING_USERNAME,
     required: false,
   })
-  readonly initiatingUsername: string;
+  readonly initiatingUserName: string;
 
   @ApiProperty({
     description: `The identifier of the account owner in ACBS.`,
