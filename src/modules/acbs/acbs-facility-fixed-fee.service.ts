@@ -4,8 +4,10 @@ import AcbsConfig from '@ukef/config/acbs.config';
 
 import { AcbsConfigBaseUrl } from './acbs-config-base-url.type';
 import { AcbsHttpService } from './acbs-http.service';
+import { AcbsCreateFacilityFixedFeeRequestDto } from './dto/acbs-create-facility-fixed-fee-request.dto';
 import { AcbsGetFacilityFixedFeeResponseDto } from './dto/acbs-get-facility-fixed-fee-response.dto';
-import { createWrapAcbsHttpGetErrorCallback } from './wrap-acbs-http-error-callback';
+import { postFixedFeeExistsAcbsError, postInvalidPortfolioAndFacilityIdCombinationKnownAcbsError } from './known-errors';
+import { createWrapAcbsHttpGetErrorCallback, createWrapAcbsHttpPostOrPutErrorCallback } from './wrap-acbs-http-error-callback';
 
 export class AcbsFacilityFixedFeeService {
   private readonly acbsHttpService: AcbsHttpService;
@@ -25,5 +27,22 @@ export class AcbsFacilityFixedFeeService {
     });
 
     return fixedFees;
+  }
+
+  async createFixedFeeForFacility(
+    portfolioIdentifier: string,
+    facilityIdentifier: string,
+    newFacilityFixedFee: AcbsCreateFacilityFixedFeeRequestDto,
+    idToken: string,
+  ): Promise<void> {
+    await this.acbsHttpService.post<AcbsCreateFacilityFixedFeeRequestDto>({
+      path: `/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/Fee/FixedFee`,
+      requestBody: newFacilityFixedFee,
+      idToken,
+      onError: createWrapAcbsHttpPostOrPutErrorCallback({
+        messageForUnknownError: `Failed to create a fixed fee for facility ${facilityIdentifier} in ACBS.`,
+        knownErrors: [postInvalidPortfolioAndFacilityIdCombinationKnownAcbsError(facilityIdentifier), postFixedFeeExistsAcbsError()],
+      }),
+    });
   }
 }

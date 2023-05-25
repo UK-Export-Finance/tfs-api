@@ -1,3 +1,4 @@
+import { ENUMS } from '@ukef/constants';
 import { BaseFacilityRequestItem } from '@ukef/modules/facility/dto/base-facility-request.dto';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import request from 'supertest';
@@ -52,9 +53,8 @@ export function withBaseFacilityFieldsValidationApiTests({
 
   withStringFieldValidationApiTests({
     fieldName: 'productTypeId',
-    minLength: 0,
-    maxLength: 3,
-    generateFieldValueOfLength: (length) => valueGenerator.string({ length }),
+    enum: ENUMS.FACILITY_TYPE_IDS,
+    generateFieldValueThatDoesNotMatchEnum: () => '123',
     validRequestBody,
     makeRequest,
     givenAnyRequestBodyWouldSucceed,
@@ -177,9 +177,8 @@ export function withBaseFacilityFieldsValidationApiTests({
 
   withStringFieldValidationApiTests({
     fieldName: 'facilityStageCode',
-    minLength: 0,
-    maxLength: 2,
-    generateFieldValueOfLength: (length) => valueGenerator.string({ length }),
+    enum: ENUMS.FACILITY_STAGES,
+    generateFieldValueThatDoesNotMatchEnum: () => '12',
     validRequestBody,
     makeRequest,
     givenAnyRequestBodyWouldSucceed,

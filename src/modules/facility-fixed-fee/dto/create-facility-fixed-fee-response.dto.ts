@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { EXAMPLES } from '@ukef/constants';
 
-export class CreateOrUpdateFacilityCovenantsResponseDto {
+export class CreateFacilityFixedFeeResponse {
   @ApiProperty({
-    description: 'The identifier of the facility in ACBS for which the covenant(s) has been created/updated.',
+    description: 'The identifier of the facility in ACBS for which the fixed fee has been created.',
     example: EXAMPLES.FACILITY_ID,
   })
   readonly facilityIdentifier: string;

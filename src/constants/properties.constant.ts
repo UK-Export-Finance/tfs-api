@@ -272,6 +272,39 @@ export const PROPERTIES = {
       },
     },
   },
+  FACILITY_FIXED_FEE: {
+    DEFAULT: {
+      fixedFeeChargeType: {
+        fixedFeeChargeTypeCode: '1',
+      },
+      description: {
+        '250': 'Bond Support Premium',
+        '260': 'EWCS Premium',
+        '280': 'Financial Guarantee Fee',
+      },
+      fixedFeeEarningMethod: {
+        fixedFeeEarningMethodCode: 'A',
+      },
+      sectionIdentifier: '00',
+      limitType: {
+        limitTypeCode: '00',
+      },
+      involvedParty: {
+        partyIdentifier: '00000000',
+      },
+      leadDays: 1,
+      accountingMethodCode: 'A',
+      feeStartDateTypeCode: 'A',
+      billingFrequencyTypeCode: 'G',
+      feeStatusCode: 'A',
+      incomeClassCode: 'BPM',
+      businessDayAdjustmentTypeCode: 'M',
+      accrueToBusinessDayAdjustmentTypeCode: 'M',
+      calendarIdentifier: 'UK',
+      financialCurrentFXRate: 1,
+      financialCurrentFXRateOperand: 'D',
+    },
+  },
   FACILITY_LOAN: {
     DEFAULT: {
       initiatingUserName: 'APIUKEF',

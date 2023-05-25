@@ -29,7 +29,6 @@ export class GetFacilityFixedFeeGenerator extends AbstractGenerator<FacilityFixe
       incomeClass: {
         incomeClassCode: this.valueGenerator.string({ length: 3 }),
       },
-      spreadToInvestorsIndicator: this.valueGenerator.boolean(),
     };
   }
 
@@ -54,7 +53,6 @@ export class GetFacilityFixedFeeGenerator extends AbstractGenerator<FacilityFixe
       IncomeClass: {
         IncomeClassCode: acbsFacilityFixedFee.incomeClass.incomeClassCode,
       },
-      SpreadToInvestorsIndicator: acbsFacilityFixedFee.spreadToInvestorsIndicator,
     }));
 
     const apiFacilityFixedFees: GetFacilityFixedFeeResponse = values.map((apiFacilityFixedFee) => ({
@@ -70,7 +68,6 @@ export class GetFacilityFixedFeeGenerator extends AbstractGenerator<FacilityFixe
       currency: apiFacilityFixedFee.currency.currencyCode,
       lenderTypeCode: apiFacilityFixedFee.lenderType.lenderTypeCode,
       incomeClassCode: apiFacilityFixedFee.incomeClass.incomeClassCode,
-      spreadToInvestorsIndicator: apiFacilityFixedFee.spreadToInvestorsIndicator,
     }));
 
     return {
@@ -97,7 +94,6 @@ interface FacilityFixedFeeValues {
   incomeClass: {
     incomeClassCode: string;
   };
-  spreadToInvestorsIndicator: boolean;
 }
 
 interface GenerateOptions {

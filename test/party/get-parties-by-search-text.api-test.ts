@@ -119,7 +119,7 @@ describe('GET /parties?searchText={searchText}', () => {
     expect(body).toStrictEqual({
       statusCode: 400,
       error: 'Bad Request',
-      message: ['searchText must be longer than or equal to 3 characters', 'searchText must match /\\S$/ regular expression'],
+      message: ['searchText must be a string', 'searchText must be longer than or equal to 3 characters', 'searchText must match /\\S$/ regular expression'],
     });
   });
 

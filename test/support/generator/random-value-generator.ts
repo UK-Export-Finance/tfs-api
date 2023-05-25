@@ -3,6 +3,9 @@ import { AcbsBundleId, AcbsPartyId, DateOnlyString, DateString, UkefCovenantId, 
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { Chance } from 'chance';
 
+interface Enum {
+  [key: number | string]: string | number;
+}
 export class RandomValueGenerator {
   private static readonly seed = 0;
   private readonly chance: Chance.Chance;
@@ -117,5 +120,10 @@ export class RandomValueGenerator {
 
   dateOnlyString(): DateOnlyString {
     return this.dateStringTransformations.removeTime(this.dateTimeString());
+  }
+
+  enumValue(theEnum: Enum): string {
+    const possibleValues = Object.values(theEnum);
+    return possibleValues[this.integer({ min: 0, max: possibleValues.length - 1 })] as string;
   }
 }

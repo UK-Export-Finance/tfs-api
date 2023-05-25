@@ -1,4 +1,4 @@
-import { PROPERTIES } from '@ukef/constants';
+import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { AcbsPartyId, DateOnlyString, UkefId } from '@ukef/helpers';
 import { AcbsGetFacilityResponseDto } from '@ukef/modules/acbs/dto/acbs-get-facility-response.dto';
 import { AcbsUpdateFacilityRequest } from '@ukef/modules/acbs/dto/acbs-update-facility-request.dto';
@@ -52,7 +52,7 @@ export class UpdateFacilityGenerator extends AbstractGenerator<FacilityValues, G
 
     const [facilityToUpdate] = values;
     const facilityStageCode = TEST_FACILITY_STAGE_CODE.issuedFacilityStageCode;
-    const productTypeId = '001';
+    const productTypeId = this.valueGenerator.enumValue(ENUMS.FACILITY_TYPE_IDS);
     const productTypeName = 'The product';
     const effectiveDate = TEST_DATES.A_PAST_EFFECTIVE_DATE_ONLY;
     const nextQuarterEndDate = TEST_DATES.A_FUTURE_EXPIRY_DATE_ONLY;
