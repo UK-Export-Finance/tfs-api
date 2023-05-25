@@ -59,7 +59,7 @@ export class FacilityActivationTransactionController {
   ): Promise<CreateFacilityActivationTransactionResponse> {
     const facility = await this.facilityService.getFacilityByIdentifier(params.facilityIdentifier);
 
-    const newFacilityActivationTransaction = newFacilityActivationTransactionRequest[0];
+    const [newFacilityActivationTransaction] = newFacilityActivationTransactionRequest;
 
     return this.facilityActivationTransactionService.createActivationTransactionForFacility(
       params.facilityIdentifier,

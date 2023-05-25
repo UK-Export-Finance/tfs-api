@@ -1,3 +1,5 @@
+import { DateString } from '@ukef/helpers';
+
 import { BundleAction } from './bundle-actions/bundle-action.type';
 
 export interface AcbsCreateBundleInformationRequestDto<BundleMessageListItem extends BundleAction = BundleAction> {
@@ -6,6 +8,8 @@ export interface AcbsCreateBundleInformationRequestDto<BundleMessageListItem ext
   InitialBundleStatusCode: number;
   InitiatingUserName: string;
   UseAPIUserIndicator: boolean;
+  ServicingUserAccountIdentifier?: string;
+  PostingDate?: DateString;
   // ACBS supports creating bundle information with multiple bundle message list items, but we do not support (or use) this functionality.
   BundleMessageList: [BundleMessageListItem];
 }

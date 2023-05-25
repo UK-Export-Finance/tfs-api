@@ -72,7 +72,7 @@ export class DealController {
     description: 'An internal server error has occurred.',
   })
   async createDeal(@ValidatedArrayBody({ items: CreateDealRequestItem }) createDealDto: CreateDealRequest): Promise<CreateDealResponse> {
-    const newDeal = createDealDto[0];
+    const [newDeal] = createDealDto;
     const dealToCreate: DealToCreate = {
       dealIdentifier: newDeal.dealIdentifier,
       currency: newDeal.currency,

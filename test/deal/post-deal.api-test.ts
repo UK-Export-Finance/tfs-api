@@ -25,7 +25,7 @@ describe('POST /deals', () => {
     acbsCreateDealRequest: acbsRequestBodyToCreateDeal,
     guaranteeCommencementDateForDescription,
   } = new CreateDealGenerator(valueGenerator, dateStringTransformations).generate({ numberToGenerate: 1 });
-  const dealIdentifier = dealToCreate.dealIdentifier;
+  const { dealIdentifier } = dealToCreate;
 
   const now = new Date();
   const midnightToday = dateStringTransformations.getDateStringFromDate(now);

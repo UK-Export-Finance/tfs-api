@@ -31,11 +31,11 @@ export class FacilityLoanTransactionService {
   private mapLoanTransaction(loanTransaction: AcbsGetFacilityLoanTransactionResponseItem, loan: NewLoanRequest): GetFacilityLoanTransactionResponseItem {
     const accrualScheduleList = loan.AccrualScheduleList;
     const pacAccrual = this.findFirstAccrualMatchingCategoryCode(
-      PROPERTIES.FACILITY_LOAN_TRANSACTION.DEFAULT.bundleMessageList.accrualScheduleList.accrualCategory.accrualCategoryCode.pac,
+      PROPERTIES.FACILITY_LOAN.DEFAULT.accrualScheduleList.accrualCategory.accrualCategoryCode.pac,
       accrualScheduleList,
     );
     const ctlAccrual = this.findFirstAccrualMatchingCategoryCode(
-      PROPERTIES.FACILITY_LOAN_TRANSACTION.DEFAULT.bundleMessageList.accrualScheduleList.accrualCategory.accrualCategoryCode.ctl,
+      PROPERTIES.FACILITY_LOAN.DEFAULT.accrualScheduleList.accrualCategory.accrualCategoryCode.ctl,
       accrualScheduleList,
     );
     const [firstAccrual] = accrualScheduleList;

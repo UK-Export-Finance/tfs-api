@@ -123,7 +123,7 @@ describe('GET /facilities/{facilityIdentifier}/loan-transactions/{bundleIdentifi
     const loanTransactionInAcbsWithMoreThanOnePacAccrual = JSON.parse(JSON.stringify(loanTransactionInAcbs));
     loanTransactionInAcbsWithMoreThanOnePacAccrual.BundleMessageList[0].AccrualScheduleList.splice(1, 0, {
       AccrualCategory: {
-        AccrualCategoryCode: PROPERTIES.FACILITY_LOAN_TRANSACTION.DEFAULT.bundleMessageList.accrualScheduleList.accrualCategory.accrualCategoryCode.pac,
+        AccrualCategoryCode: PROPERTIES.FACILITY_LOAN.DEFAULT.accrualScheduleList.accrualCategory.accrualCategoryCode.pac,
       },
       SpreadRate: 0,
       YearBasis: {
@@ -152,7 +152,7 @@ describe('GET /facilities/{facilityIdentifier}/loan-transactions/{bundleIdentifi
     const loanTransactionInAcbsWithMoreThanOneCtlAccrual = JSON.parse(JSON.stringify(loanTransactionInAcbs));
     loanTransactionInAcbsWithMoreThanOneCtlAccrual.BundleMessageList[0].AccrualScheduleList.splice(1, 0, {
       AccrualCategory: {
-        AccrualCategoryCode: PROPERTIES.FACILITY_LOAN_TRANSACTION.DEFAULT.bundleMessageList.accrualScheduleList.accrualCategory.accrualCategoryCode.ctl,
+        AccrualCategoryCode: PROPERTIES.FACILITY_LOAN.DEFAULT.accrualScheduleList.accrualCategory.accrualCategoryCode.ctl,
       },
       SpreadRate: 0,
       YearBasis: {

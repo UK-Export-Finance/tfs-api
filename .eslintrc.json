@@ -38,8 +38,7 @@
         ".js",
         ".json",
         ".ts"
-      ],
-      "allowModules": ["express"]
+      ]
     },
     "import/parsers": {
       "@typescript-eslint/parser": [
@@ -129,7 +128,11 @@
         "consistent": true
       }
     ],
-    "import/no-named-as-default-member": "off"
+    "import/no-named-as-default-member": "off",
+    "prefer-destructuring": ["error", {
+      "array": true,
+      "object": true
+    }]
   },
   "overrides": [
     {
