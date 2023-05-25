@@ -1347,7 +1347,7 @@ components:
             - 1
             - 2
             - 3
-        initiatingUsername:
+        initiatingUserName:
           type: string
           description: A value used to populate the Bundle Properties 'Initiated By' field.
           minLength: 0
