@@ -51,15 +51,97 @@ describe('FacilityCovenantService', () => {
     const targetAmount = valueGenerator.nonnegativeFloat();
 
     it('updates the covenants in ACBS with the supplied fields', async () => {
+      const updateRequest = { expirationDate: expirationDateOnlyString, targetAmount };
       when(acbsFacilityCovenantServiceGetCovenantsForFacility)
         .calledWith(portfolioIdentifier, facilityIdentifier, idToken)
         .mockResolvedValueOnce(facilityCovenantsInAcbs);
 
-      await service.updateCovenantsForFacility(facilityIdentifier, { expirationDate: expirationDateOnlyString, targetAmount });
+      await service.updateCovenantsForFacility(facilityIdentifier, updateRequest);
 
       const updatedCovenants = [
         { ...facilityCovenantsInAcbs[0], ExpirationDate: expirationDateTimeString, TargetAmount: targetAmount },
         { ...facilityCovenantsInAcbs[1], ExpirationDate: expirationDateTimeString, TargetAmount: targetAmount },
+      ];
+
+      expect(acbsFacilityCovenantServiceReplaceCovenantForFacility.mock.calls[0]).toStrictEqual([
+        portfolioIdentifier,
+        facilityIdentifier,
+        updatedCovenants[0],
+        idToken,
+      ]);
+      expect(acbsFacilityCovenantServiceReplaceCovenantForFacility.mock.calls[1]).toStrictEqual([
+        portfolioIdentifier,
+        facilityIdentifier,
+        updatedCovenants[1],
+        idToken,
+      ]);
+    });
+
+    it('does not update ExpirationDate if expirationDate is not defined in the update request', async () => {
+      const updateRequest = { targetAmount };
+      when(acbsFacilityCovenantServiceGetCovenantsForFacility)
+        .calledWith(portfolioIdentifier, facilityIdentifier, idToken)
+        .mockResolvedValueOnce(facilityCovenantsInAcbs);
+
+      await service.updateCovenantsForFacility(facilityIdentifier, updateRequest);
+
+      const updatedCovenants = [
+        { ...facilityCovenantsInAcbs[0], TargetAmount: targetAmount },
+        { ...facilityCovenantsInAcbs[1], TargetAmount: targetAmount },
+      ];
+
+      expect(acbsFacilityCovenantServiceReplaceCovenantForFacility.mock.calls[0]).toStrictEqual([
+        portfolioIdentifier,
+        facilityIdentifier,
+        updatedCovenants[0],
+        idToken,
+      ]);
+      expect(acbsFacilityCovenantServiceReplaceCovenantForFacility.mock.calls[1]).toStrictEqual([
+        portfolioIdentifier,
+        facilityIdentifier,
+        updatedCovenants[1],
+        idToken,
+      ]);
+    });
+
+    it('does not update TargetAmount if targetAmount is not defined in the update request', async () => {
+      const updateRequest = { expirationDate: expirationDateOnlyString };
+      when(acbsFacilityCovenantServiceGetCovenantsForFacility)
+        .calledWith(portfolioIdentifier, facilityIdentifier, idToken)
+        .mockResolvedValueOnce(facilityCovenantsInAcbs);
+
+      await service.updateCovenantsForFacility(facilityIdentifier, updateRequest);
+
+      const updatedCovenants = [
+        { ...facilityCovenantsInAcbs[0], ExpirationDate: expirationDateTimeString },
+        { ...facilityCovenantsInAcbs[1], ExpirationDate: expirationDateTimeString },
+      ];
+
+      expect(acbsFacilityCovenantServiceReplaceCovenantForFacility.mock.calls[0]).toStrictEqual([
+        portfolioIdentifier,
+        facilityIdentifier,
+        updatedCovenants[0],
+        idToken,
+      ]);
+      expect(acbsFacilityCovenantServiceReplaceCovenantForFacility.mock.calls[1]).toStrictEqual([
+        portfolioIdentifier,
+        facilityIdentifier,
+        updatedCovenants[1],
+        idToken,
+      ]);
+    });
+
+    it('does update TargetAmount if targetAmount is 0 in the update request', async () => {
+      const updateRequest = { targetAmount: 0 };
+      when(acbsFacilityCovenantServiceGetCovenantsForFacility)
+        .calledWith(portfolioIdentifier, facilityIdentifier, idToken)
+        .mockResolvedValueOnce(facilityCovenantsInAcbs);
+
+      await service.updateCovenantsForFacility(facilityIdentifier, updateRequest);
+
+      const updatedCovenants = [
+        { ...facilityCovenantsInAcbs[0], TargetAmount: 0 },
+        { ...facilityCovenantsInAcbs[1], TargetAmount: 0 },
       ];
 
       expect(acbsFacilityCovenantServiceReplaceCovenantForFacility.mock.calls[0]).toStrictEqual([
