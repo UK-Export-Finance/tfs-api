@@ -25,7 +25,7 @@ export function withBooleanFieldValidationApiTests<RequestBodyItem, RequestBodyI
 
     if (required) {
       it(`returns a 400 response if ${fieldName} is not present`, async () => {
-        const { [fieldNameSymbol]: _removed, ...requestWithoutTheField } = validRequestBody[0];
+        const [{ [fieldNameSymbol]: _removed, ...requestWithoutTheField }] = validRequestBody;
 
         const { status, body } = await makeRequest([requestWithoutTheField]);
 
@@ -38,7 +38,7 @@ export function withBooleanFieldValidationApiTests<RequestBodyItem, RequestBodyI
       });
     } else {
       it(`returns a 201 response if ${fieldName} is not present`, async () => {
-        const { [fieldNameSymbol]: _removed, ...requestWithField } = validRequestBody[0];
+        const [{ [fieldNameSymbol]: _removed, ...requestWithField }] = validRequestBody;
 
         const { status } = await makeRequest([requestWithField]);
 
