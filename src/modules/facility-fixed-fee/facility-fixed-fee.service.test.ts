@@ -186,7 +186,7 @@ describe('FacilityFixedFeeService', () => {
       );
 
       await expect(responsePromise).rejects.toBeInstanceOf(BadRequestException);
-      await expect(responsePromise).rejects.toThrow('Bad Request');
+      await expect(responsePromise).rejects.toThrow('Bad request');
       await expect(responsePromise).rejects.toHaveProperty('response.error', 'Facility needs to be activated before a fixed fee is created');
     });
 
@@ -201,7 +201,7 @@ describe('FacilityFixedFeeService', () => {
       );
 
       await expect(responsePromise).rejects.toBeInstanceOf(BadRequestException);
-      await expect(responsePromise).rejects.toThrow('Bad Request');
+      await expect(responsePromise).rejects.toThrow('Bad request');
       await expect(responsePromise).rejects.toHaveProperty('response.error', 'Facility needs to be issued before a fixed fee is created');
     });
   });

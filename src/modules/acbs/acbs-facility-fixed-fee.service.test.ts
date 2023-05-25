@@ -175,7 +175,34 @@ describe('AcbsFacilityFixedFeeService', () => {
       await expect(createFixedFeeForFacilityPromise).rejects.toHaveProperty('innerError', axiosError);
     });
 
-    it('throws an AcbsBadRequestException if ACBS responds with a 400 that is a string that does not contain "The facility not found"', async () => {
+    it('throws an AcbsBadRequestException if ACBS responds with a 400 that is a string containing "FixedFee exists"', async () => {
+      const axiosError = new AxiosError();
+      const errorString = 'FixedFee exists';
+      axiosError.response = {
+        data: errorString,
+        status: 400,
+        statusText: 'Bad Request',
+        headers: undefined,
+        config: undefined,
+      };
+
+      when(httpServicePost)
+        .calledWith(...expectedHttpServicePostArgs)
+        .mockReturnValueOnce(throwError(() => axiosError));
+
+      const createFixedFeeForFacilityPromise = service.createFixedFeeForFacility(
+        portfolioIdentifier,
+        facilityIdentifier,
+        acbsRequestBodyToCreateFacilityFixedFee,
+        idToken,
+      );
+
+      await expect(createFixedFeeForFacilityPromise).rejects.toBeInstanceOf(AcbsBadRequestException);
+      await expect(createFixedFeeForFacilityPromise).rejects.toThrow(`Bad request`);
+      await expect(createFixedFeeForFacilityPromise).rejects.toHaveProperty('innerError', axiosError);
+    });
+
+    it('throws an AcbsBadRequestException if ACBS responds with a 400 that is a string that does not contain "Invalid PortfolioId and FacilityId combination" and "FixedFee exists"', async () => {
       const axiosError = new AxiosError();
       const errorString = valueGenerator.string();
       axiosError.response = {

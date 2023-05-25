@@ -1,5 +1,6 @@
 import { AxiosError } from 'axios';
 
+import { AcbsBadRequestException } from './exception/acbs-bad-request.exception';
 import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
 
 export type KnownErrors = KnownError[];
@@ -31,6 +32,13 @@ export const postFacilityNotFoundKnownAcbsError = (facilityIdentifier: string): 
   caseInsensitiveSubstringToFind: 'Facility does not exist',
   throwError: (error) => {
     throw new AcbsResourceNotFoundException(`Facility with identifier ${facilityIdentifier} was not found by ACBS.`, error);
+  },
+});
+
+export const postFixedFeeExistsAcbsError = (): KnownError => ({
+  caseInsensitiveSubstringToFind: 'FixedFee exists',
+  throwError: (error) => {
+    throw new AcbsBadRequestException('Bad request', error, 'Fixed fee with this period and lenderTypeCode combination already exist.');
   },
 });
 

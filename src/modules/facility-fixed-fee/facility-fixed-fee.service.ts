@@ -56,11 +56,11 @@ export class FacilityFixedFeeService {
     facilityStageCode,
   ): Promise<CreateFacilityFixedFeeResponse> {
     if (facilityStageCode !== ENUMS.FACILITY_STAGES.ISSUED) {
-      throw new BadRequestException('Bad Request', 'Facility needs to be issued before a fixed fee is created');
+      throw new BadRequestException('Bad request', 'Facility needs to be issued before a fixed fee is created');
     }
 
     if (facilityOverallStatus !== ENUMS.FACILITY_STATUSES.ACTIVE) {
-      throw new BadRequestException('Bad Request', 'Facility needs to be activated before a fixed fee is created');
+      throw new BadRequestException('Bad request', 'Facility needs to be activated before a fixed fee is created');
     }
 
     const { portfolioIdentifier } = PROPERTIES.GLOBAL;

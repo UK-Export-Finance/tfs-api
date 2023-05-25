@@ -112,7 +112,7 @@ describe('POST /facilities/{facilityIdentifier}/fixed-fees', () => {
       const { status, body } = await api.post(createFacilityFixedFeeUrl, requestBodyToCreateFacilityFixedFee);
 
       expect(status).toBe(400);
-      expect(body).toStrictEqual({ message: 'Bad Request', error: 'Facility needs to be activated before a fixed fee is created', statusCode: 400 });
+      expect(body).toStrictEqual({ message: 'Bad request', error: 'Facility needs to be activated before a fixed fee is created', statusCode: 400 });
     });
 
     it('returns a 400 response if ACBS respond with Facility stage that is not issued', async () => {
@@ -125,7 +125,7 @@ describe('POST /facilities/{facilityIdentifier}/fixed-fees', () => {
       const { status, body } = await api.post(createFacilityFixedFeeUrl, requestBodyToCreateFacilityFixedFee);
 
       expect(status).toBe(400);
-      expect(body).toStrictEqual({ message: 'Bad Request', error: 'Facility needs to be issued before a fixed fee is created', statusCode: 400 });
+      expect(body).toStrictEqual({ message: 'Bad request', error: 'Facility needs to be issued before a fixed fee is created', statusCode: 400 });
     });
   });
 
@@ -255,6 +255,19 @@ describe('POST /facilities/{facilityIdentifier}/fixed-fees', () => {
       expect(body).toStrictEqual({ message: 'Not found', statusCode: 404 });
     });
 
+    it('returns a 400 response if ACBS responds with a 400 response that is a string containing "FixedFee exists." when creating the facility fixedFee', async () => {
+      requestToCreateFacilityFixedFee().reply(400, 'FixedFee exists');
+
+      const { status, body } = await api.post(createFacilityFixedFeeUrl, requestBodyToCreateFacilityFixedFee);
+
+      expect(status).toBe(400);
+      expect(body).toStrictEqual({
+        message: 'Bad request',
+        statusCode: 400,
+        error: 'Fixed fee with this period and lenderTypeCode combination already exist.',
+      });
+    });
+
     it('returns a 400 response if ACBS responds with a 400 response that is not a string when creating the facility fixedFee', async () => {
       const acbsErrorMessage = JSON.stringify({ Message: 'error message' });
       requestToCreateFacilityFixedFee().reply(400, acbsErrorMessage);
@@ -265,7 +278,7 @@ describe('POST /facilities/{facilityIdentifier}/fixed-fees', () => {
       expect(body).toStrictEqual({ message: 'Bad request', error: acbsErrorMessage, statusCode: 400 });
     });
 
-    it('returns a 400 response if ACBS responds with a 400 response that is a string that does not contain "Invalid PortfolioId and FacilityId combination." when creating the facility fixedFee', async () => {
+    it('returns a 400 response if ACBS responds with a 400 response that is a string that does not contain "Invalid PortfolioId and FacilityId combination." or "FixedFee exists" when creating the facility fixedFee', async () => {
       const acbsErrorMessage = 'ACBS error message';
       requestToCreateFacilityFixedFee().reply(400, acbsErrorMessage);
 
