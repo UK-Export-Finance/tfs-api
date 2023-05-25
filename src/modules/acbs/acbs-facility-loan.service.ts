@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import { Inject } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import AcbsConfig from '@ukef/config/acbs.config';
 
 import { AcbsConfigBaseUrl } from './acbs-config-base-url.type';
@@ -8,6 +8,7 @@ import { AcbsGetFacilityLoanResponseDto } from './dto/acbs-get-facility-loan-res
 import { facilityNotFoundKnownAcbsError } from './known-errors';
 import { createWrapAcbsHttpGetErrorCallback } from './wrap-acbs-http-error-callback';
 
+@Injectable()
 export class AcbsFacilityLoanService {
   private readonly acbsHttpService: AcbsHttpService;
 

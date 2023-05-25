@@ -7,8 +7,6 @@ import { when } from 'jest-when';
 import { of, throwError } from 'rxjs';
 
 import { AcbsFacilityGuaranteeService } from './acbs-facility-guarantee.service';
-import { AcbsGetFacilityGuaranteeDto, AcbsGetFacilityGuaranteesResponseDto } from './dto/acbs-get-facility-guarantees-response.dto';
-import { AcbsException } from './exception/acbs.exception';
 import { AcbsBadRequestException } from './exception/acbs-bad-request.exception';
 import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
 import { AcbsUnexpectedException } from './exception/acbs-unexpected.exception';
@@ -24,16 +22,7 @@ describe('AcbsFacilityGuaranteeService', () => {
   let httpService: HttpService;
   let service: AcbsFacilityGuaranteeService;
 
-  let httpServiceGet: jest.Mock;
   let httpServicePost: jest.Mock;
-
-  const expectedHttpServiceGetArgs = [
-    `/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/FacilityGuarantee`,
-    {
-      baseURL: baseUrl,
-      headers: { Authorization: `Bearer ${idToken}` },
-    },
-  ];
 
   const expectedHttpServicePostArgs = [
     `/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/FacilityGuarantee`,
@@ -47,98 +36,10 @@ describe('AcbsFacilityGuaranteeService', () => {
   beforeEach(() => {
     httpService = new HttpService();
 
-    httpServiceGet = jest.fn();
-    httpService.get = httpServiceGet;
-
     httpServicePost = jest.fn();
     httpService.post = httpServicePost;
 
     service = new AcbsFacilityGuaranteeService({ baseUrl }, httpService);
-  });
-
-  const generateFacilityGuarantee = (): AcbsGetFacilityGuaranteeDto => ({
-    EffectiveDate: valueGenerator.dateTimeString(),
-    GuarantorParty: {
-      PartyIdentifier: valueGenerator.acbsPartyId(),
-    },
-    LimitKey: valueGenerator.acbsPartyId(),
-    ExpirationDate: valueGenerator.dateTimeString(),
-    GuaranteedLimit: valueGenerator.nonnegativeFloat(),
-    GuaranteeType: {
-      GuaranteeTypeCode: valueGenerator.string(),
-    },
-  });
-
-  const facilityGuaranteesInAcbs: AcbsGetFacilityGuaranteesResponseDto = [generateFacilityGuarantee(), generateFacilityGuarantee()];
-
-  describe('getGuaranteesForFacility', () => {
-    it('returns the guarantees for the facility from ACBS if ACBS responds with the guarantees', async () => {
-      when(httpServiceGet)
-        .calledWith(...expectedHttpServiceGetArgs)
-        .mockReturnValueOnce(
-          of({
-            data: facilityGuaranteesInAcbs,
-            status: 200,
-            statusText: 'Ok',
-            config: undefined,
-            headers: undefined,
-          }),
-        );
-
-      const guarantees = await service.getGuaranteesForFacility(portfolioIdentifier, facilityIdentifier, idToken);
-
-      expect(guarantees).toBe(facilityGuaranteesInAcbs);
-    });
-
-    it('returns an empty array if ACBS responds with an empty array', async () => {
-      when(httpServiceGet)
-        .calledWith(...expectedHttpServiceGetArgs)
-        .mockReturnValueOnce(
-          of({
-            data: [],
-            status: 200,
-            statusText: 'Ok',
-            config: undefined,
-            headers: undefined,
-          }),
-        );
-
-      const guarantees = await service.getGuaranteesForFacility(portfolioIdentifier, facilityIdentifier, idToken);
-
-      expect(guarantees).toStrictEqual([]);
-    });
-
-    it('throws an AcbsException if the request to ACBS fails', async () => {
-      const getGuaranteesForFacilityError = new AxiosError();
-      when(httpServiceGet)
-        .calledWith(...expectedHttpServiceGetArgs)
-        .mockReturnValueOnce(throwError(() => getGuaranteesForFacilityError));
-
-      const getGuaranteesForFacilityPromise = service.getGuaranteesForFacility(portfolioIdentifier, facilityIdentifier, idToken);
-
-      await expect(getGuaranteesForFacilityPromise).rejects.toBeInstanceOf(AcbsException);
-      await expect(getGuaranteesForFacilityPromise).rejects.toThrow(`Failed to get the guarantees for the facility with identifier ${facilityIdentifier}.`);
-      await expect(getGuaranteesForFacilityPromise).rejects.toHaveProperty('innerError', getGuaranteesForFacilityError);
-    });
-
-    it(`throws an AcbsResourceNotFoundException if ACBS responds with a 200 response where the response body is 'null'`, async () => {
-      when(httpServiceGet)
-        .calledWith(...expectedHttpServiceGetArgs)
-        .mockReturnValueOnce(
-          of({
-            data: null,
-            status: 200,
-            statusText: 'Ok',
-            config: undefined,
-            headers: undefined,
-          }),
-        );
-
-      const getGuaranteesForFacilityPromise = service.getGuaranteesForFacility(portfolioIdentifier, facilityIdentifier, idToken);
-
-      await expect(getGuaranteesForFacilityPromise).rejects.toBeInstanceOf(AcbsResourceNotFoundException);
-      await expect(getGuaranteesForFacilityPromise).rejects.toThrow(`Guarantees for facility with identifier ${facilityIdentifier} were not found by ACBS.`);
-    });
   });
 
   describe('createGuaranteeForFacility', () => {

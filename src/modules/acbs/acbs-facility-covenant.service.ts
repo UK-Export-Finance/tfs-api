@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import { Inject } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import AcbsConfig from '@ukef/config/acbs.config';
 import { PROPERTIES } from '@ukef/constants';
 
@@ -10,6 +10,7 @@ import { AcbsGetFacilityCovenantsResponseDto } from './dto/acbs-get-facility-cov
 import { facilityNotFoundKnownAcbsError } from './known-errors';
 import { createWrapAcbsHttpGetErrorCallback, createWrapAcbsHttpPostOrPutErrorCallback } from './wrap-acbs-http-error-callback';
 
+@Injectable()
 export class AcbsFacilityCovenantService {
   private readonly acbsHttpService: AcbsHttpService;
 
