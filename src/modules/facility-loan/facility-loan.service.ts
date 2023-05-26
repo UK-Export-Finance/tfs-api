@@ -11,10 +11,13 @@ import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acb
 import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 
+import { AcbsLoanService } from '../acbs/acbs-loan-service';
+import { AcbsUpdateLoanRequest } from '../acbs/dto/acbs-update-loan-request.dto';
 import { CreateFacilityLoanRequestItem } from './dto/create-facility-loan-request.dto';
 import { CreateFacilityLoanResponse } from './dto/create-facility-loan-response.dto';
 import { CreateLoanAmountAmendmentRequestItem } from './dto/create-loan-amount-amendment-request.dto';
 import { GetFacilityLoanResponseDto } from './dto/get-facility-loan-response.dto';
+import { UpdateLoanExpiryDateRequest } from './dto/update-loan-expiry-date-request.dto';
 import { RepaymentScheduleBuilder } from './repayment-schedule.builder';
 
 @Injectable()
@@ -26,6 +29,7 @@ export class FacilityLoanService {
     private readonly dateStringTransformations: DateStringTransformations,
     private readonly currentDateProvider: CurrentDateProvider,
     private readonly repaymentScheduleBuilder: RepaymentScheduleBuilder,
+    private readonly acbsLoanService: AcbsLoanService,
   ) {}
 
   async getLoansForFacility(facilityIdentifier: string): Promise<GetFacilityLoanResponseDto> {
@@ -85,6 +89,29 @@ export class FacilityLoanService {
     const loanAmountAmendmentBundle = this.buildLoanAmountAmendmentBundle(loanIdentifier, loanAmountAmendment);
     const { BundleIdentifier } = await this.acbsBundleInformationService.createBundleInformation(loanAmountAmendmentBundle, idToken);
     return BundleIdentifier;
+  }
+
+  async updateLoanExpiryDate(loanIdentifier: string, updateLoanExpiryDateRequest: UpdateLoanExpiryDateRequest): Promise<void> {
+    const { portfolioIdentifier } = PROPERTIES.GLOBAL;
+    const { expiryDate } = updateLoanExpiryDateRequest;
+
+    // try {
+    const newExpiryDate = this.dateStringTransformations.addTimeToDateOnlyString(expiryDate);
+    const idToken = await this.getIdToken();
+    const loanInAcbs = await this.acbsLoanService.getLoanByIdentifier(portfolioIdentifier, loanIdentifier, idToken);
+    const acbsUpdateLoanExpiryDateRequest: AcbsUpdateLoanRequest = {
+      ...loanInAcbs,
+      MaturityDate: newExpiryDate,
+      RateMaturityDate: newExpiryDate,
+      ...(loanInAcbs.FinancialNextValuationDate && { FinancialNextValuationDate: newExpiryDate }),
+      ...(loanInAcbs.CustomerUsageNextValuationDate && { CustomerUsageNextValuationDate: newExpiryDate }),
+    };
+    await this.acbsLoanService.updateLoanByIdentifier(portfolioIdentifier, acbsUpdateLoanExpiryDateRequest, idToken);
+    // }
+    //   catch (e) {
+    //     console.log({consoleLog:e})
+    //     throw e
+    //   }
   }
 
   private getIdToken(): Promise<string> {

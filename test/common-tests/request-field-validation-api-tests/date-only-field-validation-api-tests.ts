@@ -6,7 +6,7 @@ interface DateOnlyFieldValidationApiTestOptions<RequestBodyItem> {
   required?: boolean;
   nullable?: boolean;
   validRequestBody: RequestBodyItem[] | RequestBodyItem;
-  makeRequest: (body: unknown[]) => request.Test;
+  makeRequest: ((body: unknown[]) => request.Test) | ((body: unknown) => request.Test);
   givenAnyRequestBodyWouldSucceed: () => void;
 }
 

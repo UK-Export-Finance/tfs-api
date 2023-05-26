@@ -8,7 +8,7 @@ interface RequiredNonNegativeFieldValidationApiTestOptions<RequestBodyItem> {
   enum?: any;
   generateFieldValueThatDoesNotMatchEnum?: () => number;
   validRequestBody: RequestBodyItem[] | RequestBodyItem;
-  makeRequest: (body: unknown[]) => request.Test;
+  makeRequest: ((body: unknown[]) => request.Test) | ((body: unknown) => request.Test);
   givenAnyRequestBodyWouldSucceed: () => void;
 }
 

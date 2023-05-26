@@ -3,6 +3,7 @@ import { CreateFacilityLoanAmountAmendmentGenerator } from '@ukef-test/support/g
 import { CreateFacilityLoanGenerator } from '@ukef-test/support/generator/create-facility-loan-generator';
 import { GetFacilityLoanGenerator } from '@ukef-test/support/generator/get-facility-loan-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
+import { UpdateLoanGenerator } from '@ukef-test/support/generator/update-loan-generator';
 import { when } from 'jest-when';
 
 import { FacilityLoanController } from './facility-loan.controller';
@@ -14,14 +15,17 @@ describe('FacilityLoanController', () => {
   const portfolioIdentifier = valueGenerator.portfolioId();
   const facilityIdentifier = valueGenerator.facilityId();
   const bundleIdentifier = valueGenerator.acbsBundleId();
+  const loanIdentifier = valueGenerator.loanId();
 
   let facilityLoanServiceGetLoansForFacility: jest.Mock;
   let facilityLoanServiceCreateLoanForFacility: jest.Mock;
   let createAmountAmendmentForLoanService: jest.Mock;
+  let facilityLoanServiceUpdateLoanExpiryDate: jest.Mock;
+
   let controller: FacilityLoanController;
 
   beforeEach(() => {
-    const facilityLoanService = new FacilityLoanService(null, null, null, null, null, null);
+    const facilityLoanService = new FacilityLoanService(null, null, null, null, null, null, null);
     facilityLoanServiceGetLoansForFacility = jest.fn();
     facilityLoanService.getLoansForFacility = facilityLoanServiceGetLoansForFacility;
 
@@ -32,6 +36,9 @@ describe('FacilityLoanController', () => {
 
     createAmountAmendmentForLoanService = jest.fn();
     facilityLoanService.createAmountAmendmentForLoan = createAmountAmendmentForLoanService;
+
+    facilityLoanServiceUpdateLoanExpiryDate = jest.fn();
+    facilityLoanService.updateLoanExpiryDate = facilityLoanServiceUpdateLoanExpiryDate;
 
     controller = new FacilityLoanController(facilityLoanService);
   });
@@ -89,6 +96,35 @@ describe('FacilityLoanController', () => {
       const bundleIdentifierResponse = await controller.createAmountAmendmentForLoan({ loanIdentifier, facilityIdentifier }, loanAmountAmendmentRequest);
 
       expect(bundleIdentifierResponse).toStrictEqual({ bundleIdentifier: expectedBundleIdentifier });
+    });
+  });
+
+  describe('updateLoanExpiryDate', () => {
+    const { updateLoanExpiryDateRequest } = new UpdateLoanGenerator(valueGenerator, new DateStringTransformations()).generate({
+      numberToGenerate: 1,
+      facilityIdentifier,
+      portfolioIdentifier,
+      loanIdentifier,
+    });
+
+    it('calls the facility loan updateLoanExpiryDate method with expected request', async () => {
+      await controller.updateLoanExpiryDate({ loanIdentifier, facilityIdentifier }, updateLoanExpiryDateRequest);
+
+      expect(facilityLoanServiceUpdateLoanExpiryDate).toHaveBeenCalledWith(loanIdentifier, updateLoanExpiryDateRequest);
+    });
+
+    it('calls the facility loan updateLoanExpiryDate method once', async () => {
+      await controller.updateLoanExpiryDate({ loanIdentifier, facilityIdentifier }, updateLoanExpiryDateRequest);
+
+      expect(facilityLoanServiceUpdateLoanExpiryDate).toHaveBeenCalledTimes(1);
+    });
+
+    it('returns the loan identifier from updateLoanExpiryDate', async () => {
+      when(facilityLoanServiceUpdateLoanExpiryDate).calledWith(loanIdentifier, updateLoanExpiryDateRequest).mockResolvedValueOnce(loanIdentifier);
+
+      const loanIdentifierResponse = await controller.updateLoanExpiryDate({ loanIdentifier, facilityIdentifier }, updateLoanExpiryDateRequest);
+
+      expect(loanIdentifierResponse).toStrictEqual({ loanIdentifier });
     });
   });
 });

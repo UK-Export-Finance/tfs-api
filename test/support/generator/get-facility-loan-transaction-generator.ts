@@ -18,9 +18,6 @@ export class GetFacilityLoanTransactionGenerator extends AbstractGenerator<Facil
   protected generateValues(): FacilityLoanTransactionValues {
     // Numeric enums needs filter to get possible values.
     const possibleInitialBundleStatusCodes = Object.values(ENUMS.INITIAL_BUNDLE_STATUS_CODES).filter((value) => !isNaN(Number(value)));
-    const possibleProductTypeIds = Object.values(ENUMS.PRODUCT_TYPE_IDS);
-    const possibleProductTypeGroups = Object.values(ENUMS.PRODUCT_TYPE_GROUPS);
-    const possibleOperationTypeCodes = Object.values(ENUMS.OPERATION_TYPE_CODES);
 
     return {
       bundleStatusCode: this.valueGenerator.stringOfNumericCharacters({ length: 2 }),
@@ -29,12 +26,12 @@ export class GetFacilityLoanTransactionGenerator extends AbstractGenerator<Facil
       borrowerPartyIdentifier: this.valueGenerator.acbsPartyId(),
       currencyCode: TEST_CURRENCIES.A_TEST_CURRENCY,
       dealCustomerUsageRate: this.valueGenerator.nonnegativeFloat(),
-      operationTypeCode: possibleOperationTypeCodes[this.valueGenerator.integer({ min: 0, max: possibleOperationTypeCodes.length - 1 })],
+      operationTypeCode: this.valueGenerator.enumValue(OperationTypeCodeEnum) as OperationTypeCodeEnum,
       loanAmount: this.valueGenerator.nonnegativeFloat(),
       effectiveDate: this.valueGenerator.dateOnlyString(),
       maturityDate: this.valueGenerator.dateOnlyString(),
-      productGroupCode: possibleProductTypeGroups[this.valueGenerator.integer({ min: 0, max: possibleProductTypeGroups.length - 1 })],
-      productTypeCode: possibleProductTypeIds[this.valueGenerator.integer({ min: 0, max: possibleProductTypeIds.length - 1 })],
+      productGroupCode: this.valueGenerator.enumValue(ProductTypeGroupEnum) as ProductTypeGroupEnum,
+      productTypeCode: this.valueGenerator.enumValue(ProductTypeIdEnum) as ProductTypeIdEnum,
       spreadRate: this.valueGenerator.nonnegativeFloat(),
       spreadRateCTL: this.valueGenerator.nonnegativeFloat(),
       yearBasisCode: this.valueGenerator.string({ length: 1 }),
