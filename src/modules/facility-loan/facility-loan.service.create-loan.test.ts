@@ -11,6 +11,7 @@ import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-
 import { when } from 'jest-when';
 
 import { FacilityLoanService } from './facility-loan.service';
+import { RepaymentScheduleBuilder } from './repayment-schedule.builder';
 
 describe('FacilityLoanService', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -23,8 +24,10 @@ describe('FacilityLoanService', () => {
   let service: FacilityLoanService;
   let acbsFacilityLoanService: AcbsFacilityLoanService;
   let acbsBundleInformationService: AcbsBundleInformationService;
+  let repaymentScheduleBuilder: RepaymentScheduleBuilder;
 
   let acbsBundleInformationServiceCreateBundleInformation: jest.Mock;
+  let repaymentScheduleBuilderGetRepaymentSchedules: jest.Mock;
 
   beforeEach(() => {
     const mockAcbsAuthenticationService = getMockAcbsAuthenticationService();
@@ -38,12 +41,17 @@ describe('FacilityLoanService', () => {
     }));
     acbsBundleInformationService.createBundleInformation = acbsBundleInformationServiceCreateBundleInformation;
 
+    repaymentScheduleBuilder = new RepaymentScheduleBuilder(null);
+    repaymentScheduleBuilderGetRepaymentSchedules = jest.fn();
+    repaymentScheduleBuilder.getRepaymentSchedules = repaymentScheduleBuilderGetRepaymentSchedules;
+
     service = new FacilityLoanService(
       acbsAuthenticationService,
       acbsFacilityLoanService,
       acbsBundleInformationService,
       dateStringTransformations,
       new CurrentDateProvider(),
+      repaymentScheduleBuilder,
     );
   });
 
@@ -53,6 +61,7 @@ describe('FacilityLoanService', () => {
       acbsRequestBodyToCreateFacilityLoanNonGbp,
       requestBodyToCreateFacilityLoanGbp,
       requestBodyToCreateFacilityLoanNonGbp,
+      bondRepaymentSchedulesGbp,
     } = new CreateFacilityLoanGenerator(valueGenerator, dateStringTransformations).generate({
       numberToGenerate: 1,
       facilityIdentifier,
@@ -63,12 +72,16 @@ describe('FacilityLoanService', () => {
 
     describe('creates a bundle information in ACBS with a transformation of the requested new loan', () => {
       it('uses GBP dependent fields when request currency is GBP', async () => {
+        when(repaymentScheduleBuilderGetRepaymentSchedules).calledWith(newLoanGbp).mockReturnValueOnce(bondRepaymentSchedulesGbp);
+
         await service.createLoanForFacility(facilityIdentifier, newLoanGbp);
 
         expect(acbsBundleInformationServiceCreateBundleInformation).toHaveBeenCalledWith(acbsRequestBodyToCreateFacilityLoanGbp, idToken);
       });
 
       it('uses non-GBP dependent fields when request currency is not GBP', async () => {
+        when(repaymentScheduleBuilderGetRepaymentSchedules).calledWith(newLoanNonGbp).mockReturnValueOnce(bondRepaymentSchedulesGbp);
+
         await service.createLoanForFacility(facilityIdentifier, newLoanNonGbp);
 
         expect(acbsBundleInformationServiceCreateBundleInformation).toHaveBeenCalledWith(acbsRequestBodyToCreateFacilityLoanNonGbp, idToken);
@@ -80,6 +93,8 @@ describe('FacilityLoanService', () => {
           ...newLoanGbp,
           issueDate: dateBeforeToday,
         };
+        when(repaymentScheduleBuilderGetRepaymentSchedules).calledWith(newLoanWithPastIssueDate).mockReturnValueOnce(bondRepaymentSchedulesGbp);
+
         await service.createLoanForFacility(facilityIdentifier, newLoanWithPastIssueDate);
 
         expect(acbsBundleInformationServiceCreateBundleInformation).toHaveBeenCalledWith(acbsRequestBodyToCreateFacilityLoanGbp, idToken);
@@ -102,6 +117,8 @@ describe('FacilityLoanService', () => {
             },
           ],
         };
+        when(repaymentScheduleBuilderGetRepaymentSchedules).calledWith(newLoanWithFutureIssueDate).mockReturnValueOnce(bondRepaymentSchedulesGbp);
+
         await service.createLoanForFacility(facilityIdentifier, newLoanWithFutureIssueDate);
 
         expect(acbsBundleInformationServiceCreateBundleInformation).toHaveBeenCalledWith(acbsRequestBodyToCreateFacilityLoanWithIssueDateAfterToday, idToken);
@@ -124,6 +141,8 @@ describe('FacilityLoanService', () => {
             },
           ],
         };
+        when(repaymentScheduleBuilderGetRepaymentSchedules).calledWith(newLoanWithProductTypeId250).mockReturnValueOnce(bondRepaymentSchedulesGbp);
+
         await service.createLoanForFacility(facilityIdentifier, newLoanWithProductTypeId250);
 
         expect(acbsBundleInformationServiceCreateBundleInformation).toHaveBeenCalledWith(acbsRequestBodyToCreateFacilityLoanWithProductTypeId250, idToken);
@@ -146,6 +165,8 @@ describe('FacilityLoanService', () => {
             },
           ],
         };
+        when(repaymentScheduleBuilderGetRepaymentSchedules).calledWith(newLoanWithProductTypeId260).mockReturnValueOnce(bondRepaymentSchedulesGbp);
+
         await service.createLoanForFacility(facilityIdentifier, newLoanWithProductTypeId260);
 
         expect(acbsBundleInformationServiceCreateBundleInformation).toHaveBeenCalledWith(acbsRequestBodyToCreateFacilityLoanWithProductTypeId260, idToken);
@@ -168,6 +189,8 @@ describe('FacilityLoanService', () => {
             },
           ],
         };
+        when(repaymentScheduleBuilderGetRepaymentSchedules).calledWith(newLoanWithProductTypeId280).mockReturnValueOnce(bondRepaymentSchedulesGbp);
+
         await service.createLoanForFacility(facilityIdentifier, newLoanWithProductTypeId280);
 
         expect(acbsBundleInformationServiceCreateBundleInformation).toHaveBeenCalledWith(acbsRequestBodyToCreateFacilityLoanWithProductTypeId280, idToken);
@@ -190,6 +213,8 @@ describe('FacilityLoanService', () => {
             },
           ],
         };
+        when(repaymentScheduleBuilderGetRepaymentSchedules).calledWith(newLoanWithProductTypeId281).mockReturnValueOnce(bondRepaymentSchedulesGbp);
+
         await service.createLoanForFacility(facilityIdentifier, newLoanWithProductTypeId281);
 
         expect(acbsBundleInformationServiceCreateBundleInformation).toHaveBeenCalledWith(acbsRequestBodyToCreateFacilityLoanWithProductTypeId281, idToken);
@@ -197,6 +222,8 @@ describe('FacilityLoanService', () => {
     });
 
     it('returns a bundle identifier from ACBS', async () => {
+      when(repaymentScheduleBuilderGetRepaymentSchedules).calledWith(newLoanGbp).mockResolvedValueOnce(bondRepaymentSchedulesGbp);
+
       const response = await service.createLoanForFacility(facilityIdentifier, newLoanGbp);
 
       expect(response).toEqual({ bundleIdentifier });

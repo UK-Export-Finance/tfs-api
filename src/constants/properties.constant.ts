@@ -375,4 +375,64 @@ export const PROPERTIES = {
       },
     },
   },
+  REPAYMENT: {
+    DEFAULT: {
+      primaryScheduleIndicator: "true",
+      involvedParty: {
+        partyIdentifier: "00000000",
+      },
+      lenderType: {
+        lenderTypeCode: "100",
+      },
+      accountSequence: "1",
+      leadDays: 5,
+      nextDueBusinessDayAdjustmentType: {
+        loanSystemBusinessDayAdjustmentTypeCode: "M",
+      },
+      nextAccrueBusinessDayAdjustmentType: {
+        loanSystemBusinessDayAdjustmentTypeCode: "M",
+      },
+      billingPeriod: 0,
+      collectionInstructionMethod: {
+        collectionInstructionMethodCode: "",
+      },
+      billFormatType: {
+        billFormatTypeCode: "",
+      },
+      mailingInstructionType: {
+        mailingInstructionTypeCode: "",
+      },
+      spreadToInvestorsIndicator: true,
+      balloonPaymentAmount: 0,
+      loanPrePaymentType: {
+        loanPrePaymentTypeCode: 2,
+      },
+    },
+    INT: {
+      billingScheduleType: {
+        billingScheduleTypeCode: "A",
+      },
+      billingSequenceNumber: 2,
+    },
+    PAC: {
+      primaryScheduleIndicator: "false",
+      billingScheduleType: {
+        billingScheduleTypeCode: "N",
+      },
+      balanceCategory: {
+        balanceCategoryCode: "PAC",
+      },
+      numberOfBillsToPrint: 99999,
+      percentageOfBalance: 100,
+      billingSequenceNumber: 1,
+    },
+    PAC_BSS: {
+      billingScheduleType: {
+        billingScheduleTypeCode: "B",
+      },
+      numberOfBillsToPrint: 99999,
+      percentageOfBalance: 100,
+      billingSequenceNumber: 1,
+    },
+  },
 };

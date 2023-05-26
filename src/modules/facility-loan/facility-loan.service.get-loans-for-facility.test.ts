@@ -10,6 +10,7 @@ import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-
 import { when } from 'jest-when';
 
 import { FacilityLoanService } from './facility-loan.service';
+import { RepaymentScheduleBuilder } from './repayment-schedule.builder';
 
 describe('FacilityLoanService', () => {
   const { portfolioIdentifier } = PROPERTIES.GLOBAL;
@@ -26,6 +27,7 @@ describe('FacilityLoanService', () => {
   let service: FacilityLoanService;
   let acbsFacilityLoanService: AcbsFacilityLoanService;
   let acbsBundleInformationService: AcbsBundleInformationService;
+  let repaymentScheduleBuilder: RepaymentScheduleBuilder;
 
   let acbsFacilityLoanServiceGetLoansForFacility: jest.Mock;
 
@@ -45,6 +47,7 @@ describe('FacilityLoanService', () => {
       acbsBundleInformationService,
       new DateStringTransformations(),
       new CurrentDateProvider(),
+      repaymentScheduleBuilder,
     );
   });
 

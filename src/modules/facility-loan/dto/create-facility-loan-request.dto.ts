@@ -81,6 +81,7 @@ export class CreateFacilityLoanRequestItem {
   @ValidatedStringApiProperty({
     description: 'The frequency at which loan bills should be generated.',
     length: 1,
+    example: 'C',
   })
   readonly loanBillingFrequencyType: string;
 }
