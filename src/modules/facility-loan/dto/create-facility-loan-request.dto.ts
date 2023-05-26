@@ -25,7 +25,6 @@ export class CreateFacilityLoanRequestItem {
   @ValidatedStringApiProperty({
     description: `The product type identifier for the loan: 250 for BSS, 260 for EWCS, 280 for GEF-Cash, 281 for GEF-Contingent. It is called the product type code in ACBS.`,
     example: ENUMS.PRODUCT_TYPE_IDS.BSS,
-    length: 3,
     enum: ENUMS.PRODUCT_TYPE_IDS,
   })
   readonly productTypeId: ProductTypeIdEnum;
@@ -33,7 +32,6 @@ export class CreateFacilityLoanRequestItem {
   @ValidatedStringApiProperty({
     description: `The product type group identifier for the loan: EW for EWCS, BS for Bond, GM for GEF. It is called the product group code in ACBS.`,
     example: ENUMS.PRODUCT_TYPE_GROUPS.BOND,
-    length: 2,
     enum: ENUMS.PRODUCT_TYPE_GROUPS,
   })
   readonly productTypeGroup: ProductTypeGroupEnum;

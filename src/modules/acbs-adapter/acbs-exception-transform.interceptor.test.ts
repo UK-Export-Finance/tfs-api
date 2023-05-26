@@ -31,6 +31,7 @@ describe('AcbsExceptionTransformInterceptor', () => {
     await expect(interceptPromise).rejects.toBeInstanceOf(BadRequestException);
     await expect(interceptPromise).rejects.toHaveProperty('message', 'Bad request');
     await expect(interceptPromise).rejects.toHaveProperty('cause', acbsBadRequestException);
+    await expect(interceptPromise).rejects.toHaveProperty('response.error', errorBody);
   });
 
   it('does NOT convert thrown exceptions that are NOT AcbsResourceNotFoundException or AcbsBadRequestException', async () => {

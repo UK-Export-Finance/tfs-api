@@ -28,7 +28,7 @@ describe('DealController', () => {
   let dealServiceGetDealByIdentifier: jest.Mock;
 
   beforeEach(() => {
-    dealService = new DealService(null, null, null, null);
+    dealService = new DealService(null, null, null, null, null);
 
     dealServiceCreateDeal = jest.fn();
     dealService.createDeal = dealServiceCreateDeal;

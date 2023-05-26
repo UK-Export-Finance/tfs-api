@@ -1,6 +1,6 @@
 import { applyDecorators } from '@nestjs/common';
 import { ApiProperty, ApiPropertyOptions } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsOptional, Min, NotEquals, ValidateIf } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsNumber, IsOptional, Min, NotEquals, ValidateIf } from 'class-validator';
 
 interface Options {
   description: string;
@@ -14,7 +14,7 @@ interface Options {
 }
 
 export const ValidatedNumberApiProperty = (options: Options) => {
-  const decoratorsToApply = [ApiProperty(buildSwaggerPropertyOptions(options))];
+  const decoratorsToApply = [ApiProperty(buildSwaggerPropertyOptions(options)), IsNumber()];
 
   const { minimum, enum: theEnum, required, nullable, forbidZero } = options;
 

@@ -57,7 +57,7 @@ export class DealGuaranteeController {
     @Param('dealIdentifier') dealIdentifier: UkefId,
     @ValidatedArrayBody({ items: CreateDealGuaranteeRequestItem }) newGuaranteeRequest: CreateDealGuaranteeRequest,
   ): Promise<CreateDealGuaranteeResponse> {
-    const newGuarantee = newGuaranteeRequest[0];
+    const [newGuarantee] = newGuaranteeRequest;
     const guaranteeToCreate: DealGuaranteeToCreate = {
       dealIdentifier: newGuarantee.dealIdentifier,
       effectiveDate: newGuarantee.effectiveDate,

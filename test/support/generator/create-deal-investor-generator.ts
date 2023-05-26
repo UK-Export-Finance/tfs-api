@@ -30,7 +30,7 @@ export class CreateDealInvestorGenerator extends AbstractGenerator<CreateDealInv
   }
 
   protected transformRawValuesToGeneratedValues(values: CreateDealInvestorRequest, { dealIdentifier }: GenerateOptions): GenerateResult {
-    const firstDealInvestor = values[0];
+    const [firstDealInvestor] = values;
 
     const effectiveDateTime = this.currentDateProvider.getEarliestDateFromTodayAnd(
       new Date(this.dateStringTransformations.addTimeToDateOnlyString(firstDealInvestor.effectiveDate)),

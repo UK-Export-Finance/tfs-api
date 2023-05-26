@@ -55,7 +55,7 @@ export function withEnumFieldValidationApiTests<RequestBodyItem, RequestBodyItem
         expect(status).toBe(400);
         expect(body).toMatchObject({
           error: 'Bad Request',
-          message: expect.arrayContaining([`${fieldName} must be longer than or equal to ${minLength} characters`]),
+          message: expect.arrayContaining([`${fieldName} must be one of the following values: ${Object.values(theEnum).join(', ')}`]),
           statusCode: 400,
         });
       });
@@ -96,7 +96,7 @@ export function withEnumFieldValidationApiTests<RequestBodyItem, RequestBodyItem
           expect(status).toBe(400);
           expect(body).toMatchObject({
             error: 'Bad Request',
-            message: expect.arrayContaining([`${fieldName} must be longer than or equal to ${minLength} characters`]),
+            message: expect.arrayContaining([`${fieldName} must be one of the following values: ${Object.values(theEnum).join(', ')}`]),
             statusCode: 400,
           });
         });

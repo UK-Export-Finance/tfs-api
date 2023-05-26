@@ -1,16 +1,8 @@
-import { DateString } from '@ukef/helpers';
+import { AcbsBaseFacilityGuarantee } from './base-entities/acbs-base-facility-guarantee.interface';
 
 export type AcbsGetFacilityGuaranteesResponseDto = AcbsGetFacilityGuaranteeDto[];
 
-export interface AcbsGetFacilityGuaranteeDto {
-  EffectiveDate: DateString;
-  GuarantorParty: {
-    PartyIdentifier: string;
-  };
-  LimitKey: string;
-  ExpirationDate: DateString;
-  GuaranteedLimit: number;
-  GuaranteeType: {
-    GuaranteeTypeCode: string;
-  };
-}
+export type AcbsGetFacilityGuaranteeDto = Pick<
+  AcbsBaseFacilityGuarantee,
+  'EffectiveDate' | 'GuarantorParty' | 'LimitKey' | 'ExpirationDate' | 'GuaranteedLimit' | 'GuaranteeType'
+>;

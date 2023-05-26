@@ -90,7 +90,7 @@ describe('DealGuaranteeService', () => {
 
       await service.createGuaranteeForDeal(dealIdentifier, newGuaranteeWithoutGuarantorParty);
 
-      const guaranteeCreatedInAcbs: AcbsCreateDealGuaranteeDto = acbsDealGuaranteeServiceCreateGuaranteeForDeal.mock.calls[0][1];
+      const guaranteeCreatedInAcbs = getGuaranteeCreatedInAcbs();
 
       expect(guaranteeCreatedInAcbs.GuarantorParty.PartyIdentifier).toBe(PROPERTIES.DEAL_GUARANTEE.DEFAULT.guarantorParty);
     });
@@ -100,7 +100,7 @@ describe('DealGuaranteeService', () => {
 
       await service.createGuaranteeForDeal(dealIdentifier, newGuaranteeWithoutGuaranteeTypeCode);
 
-      const guaranteeCreatedInAcbs: AcbsCreateDealGuaranteeDto = acbsDealGuaranteeServiceCreateGuaranteeForDeal.mock.calls[0][1];
+      const guaranteeCreatedInAcbs = getGuaranteeCreatedInAcbs();
 
       expect(guaranteeCreatedInAcbs.GuaranteeType.GuaranteeTypeCode).toBe(PROPERTIES.DEAL_GUARANTEE.DEFAULT.guaranteeTypeCode);
     });
@@ -113,7 +113,7 @@ describe('DealGuaranteeService', () => {
 
       await service.createGuaranteeForDeal(dealIdentifier, newGuaranteeWithFutureEffectiveDate);
 
-      const guaranteeCreatedInAcbs: AcbsCreateDealGuaranteeDto = acbsDealGuaranteeServiceCreateGuaranteeForDeal.mock.calls[0][1];
+      const guaranteeCreatedInAcbs = getGuaranteeCreatedInAcbs();
 
       expect(guaranteeCreatedInAcbs.EffectiveDate).toBe(dateStringTransformations.addTimeToDateOnlyString(todayAsDateOnlyString));
     });
@@ -121,7 +121,7 @@ describe('DealGuaranteeService', () => {
     it(`does NOT replace effectiveDate with today's date if effectiveDate is NOT after today`, async () => {
       await service.createGuaranteeForDeal(dealIdentifier, newGuaranteeWithAllFields);
 
-      const guaranteeCreatedInAcbs: AcbsCreateDealGuaranteeDto = acbsDealGuaranteeServiceCreateGuaranteeForDeal.mock.calls[0][1];
+      const guaranteeCreatedInAcbs = getGuaranteeCreatedInAcbs();
 
       expect(guaranteeCreatedInAcbs.EffectiveDate).toBe(dateStringTransformations.addTimeToDateOnlyString(effectiveDate));
     });
@@ -133,9 +133,11 @@ describe('DealGuaranteeService', () => {
 
       await service.createGuaranteeForDeal(dealIdentifier, newGuaranteeWithMaximumLiabilityToRound);
 
-      const guaranteeCreatedInAcbs: AcbsCreateDealGuaranteeDto = acbsDealGuaranteeServiceCreateGuaranteeForDeal.mock.calls[0][1];
+      const guaranteeCreatedInAcbs = getGuaranteeCreatedInAcbs();
 
       expect(guaranteeCreatedInAcbs.GuaranteedLimit).toBeCloseTo(maximumLiabilityRoundedToTwoDecimalPlaces, 8);
     });
+
+    const getGuaranteeCreatedInAcbs = (): AcbsCreateDealGuaranteeDto => acbsDealGuaranteeServiceCreateGuaranteeForDeal.mock.calls[0][1];
   });
 });

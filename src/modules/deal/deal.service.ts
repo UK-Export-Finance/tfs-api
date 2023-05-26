@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { PROPERTIES } from '@ukef/constants/properties.constant';
 import { DateString } from '@ukef/helpers';
 import { roundTo2DecimalPlaces } from '@ukef/helpers/round-to-2-decimal-places.helper';
@@ -9,6 +9,7 @@ import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 
 import { Deal } from './deal.interface';
+import { DealBorrowingRestrictionService } from './deal-borrowing-restriction.service';
 import { DealToCreate } from './deal-to-create.interface';
 
 @Injectable()
@@ -18,6 +19,7 @@ export class DealService {
     private readonly acbsDealService: AcbsDealService,
     private readonly dateStringTransformations: DateStringTransformations,
     private readonly currentDateProvider: CurrentDateProvider,
+    private readonly dealBorrowingRestrictionService: DealBorrowingRestrictionService,
   ) {}
 
   async getDealByIdentifier(dealIdentifier: string): Promise<Deal> {
@@ -40,9 +42,9 @@ export class DealService {
   async createDeal(dealToCreate: DealToCreate): Promise<void> {
     const { portfolioIdentifier } = PROPERTIES.GLOBAL;
     const idToken = await this.getIdToken();
-
     const requestBody: AcbsCreateDealDto = this.buildAcbsRequestBodyToCreateDeal(dealToCreate, portfolioIdentifier);
     await this.acbsDealService.createDeal(portfolioIdentifier, requestBody, idToken);
+    return this.updateBorrowingRestrictionForNewDeal(dealToCreate.dealIdentifier);
   }
 
   private getIdToken(): Promise<string> {
@@ -235,5 +237,16 @@ export class DealService {
         RiskMitigationCode: defaultValues.riskMitigationCode,
       },
     };
+  }
+
+  private async updateBorrowingRestrictionForNewDeal(dealIdentifier: string): Promise<void> {
+    try {
+      await this.dealBorrowingRestrictionService.updateBorrowingRestrictionForDeal(dealIdentifier);
+    } catch (error: unknown) {
+      throw new InternalServerErrorException('Internal server error', {
+        cause: error as Error,
+        description: `Failed to update the deal borrowing restriction after creating deal ${dealIdentifier}`,
+      });
+    }
   }
 }

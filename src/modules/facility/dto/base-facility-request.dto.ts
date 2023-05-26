@@ -1,4 +1,4 @@
-import { EXAMPLES, PROPERTIES } from '@ukef/constants';
+import { ENUMS, EXAMPLES, PROPERTIES } from '@ukef/constants';
 import { ValidatedCurrencyApiProperty } from '@ukef/decorators/validated-currency-api-property-decorator';
 import { ValidatedDateOnlyApiProperty } from '@ukef/decorators/validated-date-only-api-property.decorator';
 import { ValidatedDealIdentifierApiProperty } from '@ukef/decorators/validated-deal-identifier-api-property.decorator';
@@ -22,8 +22,8 @@ export class BaseFacilityRequestItem {
 
   @ValidatedStringApiProperty({
     description: `The facility type, e.g. '250' for BOND.`,
-    example: '250',
-    maxLength: 3,
+    example: ENUMS.FACILITY_TYPE_IDS.BSS,
+    enum: ENUMS.FACILITY_TYPE_IDS,
   })
   readonly productTypeId: string;
 
@@ -111,7 +111,8 @@ export class BaseFacilityRequestItem {
 
   @ValidatedStringApiProperty({
     description: 'Case Stage this can be 06 Commitment and 07 Issued',
-    example: '07',
+    example: ENUMS.FACILITY_STAGES.ISSUED,
+    enum: ENUMS.FACILITY_STAGES,
     maxLength: 2,
   })
   readonly facilityStageCode: string;

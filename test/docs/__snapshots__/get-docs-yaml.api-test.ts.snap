@@ -424,6 +424,41 @@ paths:
           description: The specified facilityIdentifier is not valid.
         '500':
           description: An internal server error has occurred.
+    post:
+      operationId: FacilityFixedFeeController_createFixedFeeForFacility
+      summary: Create a new fixed fee for a facility.
+      parameters:
+        - name: facilityIdentifier
+          required: true
+          in: path
+          description: The identifier of the facility in ACBS.
+          example: '0030000322'
+          schema:
+            minLength: 10
+            maxLength: 10
+            pattern: ^00\\d{8}$
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/CreateFacilityFixedFeeRequestItem'
+      responses:
+        '201':
+          description: The fixed fee has been successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateFacilityFixedFeeResponse'
+        '400':
+          description: Bad request.
+        '404':
+          description: The facility was not found.
+        '500':
+          description: An internal server error has occurred.
   /api/v1/facilities/{facilityIdentifier}/guarantees:
     get:
       operationId: FacilityGuaranteeController_getGuaranteesForFacility
@@ -1351,7 +1386,10 @@ components:
           type: string
           description: The facility type, e.g. '250' for BOND.
           minLength: 0
-          maxLength: 3
+          enum: &ref_0
+            - '250'
+            - '260'
+            - '280'
           example: '250'
         productTypeName:
           type: string
@@ -1432,6 +1470,9 @@ components:
           description: Case Stage this can be 06 Commitment and 07 Issued
           minLength: 0
           maxLength: 2
+          enum: &ref_1
+            - '06'
+            - '07'
           example: '07'
         delegationType:
           type: string
@@ -1544,7 +1585,7 @@ components:
           type: string
           description: The facility type, e.g. '250' for BOND.
           minLength: 0
-          maxLength: 3
+          enum: *ref_0
           example: '250'
         productTypeName:
           type: string
@@ -1625,6 +1666,7 @@ components:
           description: Case Stage this can be 06 Commitment and 07 Issued
           minLength: 0
           maxLength: 2
+          enum: *ref_1
           example: '07'
         delegationType:
           type: string
@@ -1779,8 +1821,8 @@ components:
         facilityIdentifier:
           type: string
           description: >-
-            The identifier of the facility in ACBS for which the covenant(s)
-            have been created/updated. This will be a 10-digit code.
+            The identifier of the facility in ACBS for which the covenant(s) has
+            been created/updated.
           example: '0030000322'
       required:
         - facilityIdentifier
@@ -1802,9 +1844,7 @@ components:
             covenant not in GBP.
         facilityIdentifier:
           type: string
-          description: >-
-            The identifier of the facility in ACBS. This will be a 10-digit
-            code.
+          description: The identifier of the facility in ACBS.
         portfolioIdentifier:
           type: string
           description: >-
@@ -1894,12 +1934,12 @@ components:
         effectiveDate:
           format: date
           type: string
-          description: The effective date of this accruing/Fixed fee schedule.
+          description: The effective date of this accruing/fixed fee schedule.
           example: '2023-03-24'
         expirationDate:
           format: date
           type: string
-          description: The expiration date of this accruing/Fixed fee schedule.
+          description: The expiration date of this accruing/fixed fee schedule.
           example: '2023-03-24'
         nextDueDate:
           format: date
@@ -1953,12 +1993,6 @@ components:
           example: BPM
           minLength: 0
           maxLength: 3
-        spreadToInvestorsIndicator:
-          type: boolean
-          description: >-
-            Action indicator to be supplied together with the Fee to control
-            propagation of the fee effects to other investors. Not applicable to
-            output data.
       required:
         - facilityIdentifier
         - portfolioIdentifier
@@ -1972,7 +2006,99 @@ components:
         - currency
         - lenderTypeCode
         - incomeClassCode
+    CreateFacilityFixedFeeRequestItem:
+      type: object
+      properties:
+        amount:
+          type: number
+          description: >-
+            The fixed amount to be billed to the client. If a flat amount is
+            charged, this field is required.
+          minimum: 0
+          example: 501927.25
+        effectiveDate:
+          format: date
+          type: string
+          description: The effective date of this accruing/fixed fee schedule.
+        expirationDate:
+          format: date
+          type: string
+          description: The expiration date of this accruing/fixed fee schedule.
+        nextDueDate:
+          format: date
+          type: string
+          description: Date the next fee bill is due for this fee schedule.
+        nextAccrueToDate:
+          format: date
+          type: string
+          description: >-
+            End date for the current accrual period. This date can be different
+            than the Next Due Date.
+        period:
+          type: string
+          description: >-
+            Segment identifier from income exposure table. 2 alphanumeric
+            characters.
+          minLength: 2
+          maxLength: 2
+        currency:
+          type: string
+          description: >-
+            The currency of Facility Fee, defined in the Currency Definition
+            Table under Systems Administration of Servicing. For example, USD
+            for United States Dollar.
+          minLength: 3
+          maxLength: 3
+          example: USD
+        lenderTypeCode:
+          type: string
+          description: >-
+            Defines the code for the role of the party in the Facility for which
+            the fee is created.
+          minLength: 0
+          enum:
+            - '100'
+            - '500'
+          example: '500'
+        incomeClassCode:
+          type: string
+          description: >-
+            Defines the code for the fee type of this schedule for reporting and
+            GL purposes.
+          minLength: 0
+          enum:
+            - BPM
+            - EMP
+            - FGT
+          example: BPM
+          default: BPM
+        spreadToInvestorsIndicator:
+          type: boolean
+          description: >-
+            Action indicator to be supplied together with the Fee to control
+            propagation of the fee effects to other investors. Not applicable to
+            output data.
+      required:
+        - amount
+        - effectiveDate
+        - expirationDate
+        - nextDueDate
+        - nextAccrueToDate
+        - period
+        - currency
+        - lenderTypeCode
         - spreadToInvestorsIndicator
+    CreateFacilityFixedFeeResponse:
+      type: object
+      properties:
+        facilityIdentifier:
+          type: string
+          description: >-
+            The identifier of the facility in ACBS for which the fixed fee has
+            been created.
+          example: '0030000322'
+      required:
+        - facilityIdentifier
     GetFacilityGuaranteesResponseItem:
       type: object
       properties:
@@ -2309,8 +2435,7 @@ components:
             The product type identifier for the loan: 250 for BSS, 260 for EWCS,
             280 for GEF-Cash, 281 for GEF-Contingent. It is called the product
             type code in ACBS.
-          minLength: 3
-          maxLength: 3
+          minLength: 0
           enum:
             - '250'
             - '260'
@@ -2322,8 +2447,7 @@ components:
           description: >-
             The product type group identifier for the loan: EW for EWCS, BS for
             Bond, GM for GEF. It is called the product group code in ACBS.
-          minLength: 2
-          maxLength: 2
+          minLength: 0
           enum:
             - EW
             - BS
@@ -2390,9 +2514,10 @@ components:
       properties:
         bundleIdentifier:
           type: string
+          description: The identifier of the ACBS bundle.
           minLength: 10
           maxLength: 10
-          description: The identifier of the ACBS bundle.
+          pattern: ^0{4}\\d{6}$
           example: '0000321000'
       required:
         - bundleIdentifier

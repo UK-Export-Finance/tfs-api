@@ -36,7 +36,7 @@ describe('FacilityLoanTransactionController', () => {
       portfolioIdentifier,
       facilityIdentifier,
     });
-    const loanTransactionFromService = facilityLoanTransactionsFromApi[0];
+    const [loanTransactionFromService] = facilityLoanTransactionsFromApi;
     const expectedLoanTransaction = loanTransactionFromService;
 
     it('returns the facility from the service', async () => {

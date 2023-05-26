@@ -1,6 +1,6 @@
 import { applyDecorators } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsOptional, Length, Matches } from 'class-validator';
+import { IsEnum, IsOptional, IsString, Length, Matches } from 'class-validator';
 
 interface Options {
   description: string;
@@ -39,6 +39,7 @@ export const ValidatedStringApiProperty = ({
       example,
       default: theDefault,
     }),
+    IsString(),
     Length(minLength, maxLength),
   ];
 

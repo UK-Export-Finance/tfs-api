@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import { Inject } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import AcbsConfig from '@ukef/config/acbs.config';
 import { PROPERTIES } from '@ukef/constants';
 
@@ -7,10 +7,12 @@ import { AcbsConfigBaseUrl } from './acbs-config-base-url.type';
 import { AcbsHttpService } from './acbs-http.service';
 import { AcbsCreateFacilityGuaranteeDto } from './dto/acbs-create-facility-guarantee.dto';
 import { AcbsGetFacilityGuaranteesResponseDto } from './dto/acbs-get-facility-guarantees-response.dto';
+import { AcbsUpdateFacilityGuaranteeRequest } from './dto/acbs-update-facility-guarantee-request.dto';
 import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
 import { facilityNotFoundKnownAcbsError } from './known-errors';
 import { createWrapAcbsHttpGetErrorCallback, createWrapAcbsHttpPostOrPutErrorCallback } from './wrap-acbs-http-error-callback';
 
+@Injectable()
 export class AcbsFacilityGuaranteeService {
   private readonly acbsHttpService: AcbsHttpService;
 
@@ -20,7 +22,7 @@ export class AcbsFacilityGuaranteeService {
 
   async getGuaranteesForFacility(portfolioIdentifier: string, facilityIdentifier: string, idToken: string): Promise<AcbsGetFacilityGuaranteesResponseDto> {
     const { data: guarantees } = await this.acbsHttpService.get<AcbsGetFacilityGuaranteesResponseDto>({
-      path: `/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/FacilityGuarantee`,
+      path: this.facilityGuaranteePath({ portfolioIdentifier, facilityIdentifier }),
       idToken,
       onError: createWrapAcbsHttpGetErrorCallback({
         messageForUnknownError: `Failed to get the guarantees for the facility with identifier ${facilityIdentifier}.`,
@@ -41,7 +43,7 @@ export class AcbsFacilityGuaranteeService {
   async createGuaranteeForFacility(facilityIdentifier: string, newFacilityGuarantee: AcbsCreateFacilityGuaranteeDto, idToken: string): Promise<void> {
     const { portfolioIdentifier } = PROPERTIES.GLOBAL;
     await this.acbsHttpService.post<AcbsCreateFacilityGuaranteeDto>({
-      path: `/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/FacilityGuarantee`,
+      path: this.facilityGuaranteePath({ portfolioIdentifier, facilityIdentifier }),
       requestBody: newFacilityGuarantee,
       idToken,
       onError: createWrapAcbsHttpPostOrPutErrorCallback({
@@ -49,5 +51,26 @@ export class AcbsFacilityGuaranteeService {
         knownErrors: [facilityNotFoundKnownAcbsError(facilityIdentifier)],
       }),
     });
+  }
+
+  async replaceGuaranteeForFacility(
+    portfolioIdentifier: string,
+    facilityIdentifier: string,
+    replacingGuarantee: AcbsUpdateFacilityGuaranteeRequest,
+    idToken: string,
+  ): Promise<void> {
+    await this.acbsHttpService.put<AcbsUpdateFacilityGuaranteeRequest, never>({
+      path: this.facilityGuaranteePath({ portfolioIdentifier, facilityIdentifier }),
+      requestBody: replacingGuarantee,
+      idToken,
+      onError: createWrapAcbsHttpPostOrPutErrorCallback({
+        messageForUnknownError: `Failed to replace a guarantee for facility ${facilityIdentifier} in ACBS.`,
+        knownErrors: [facilityNotFoundKnownAcbsError(facilityIdentifier)],
+      }),
+    });
+  }
+
+  private facilityGuaranteePath({ portfolioIdentifier, facilityIdentifier }: { portfolioIdentifier: string; facilityIdentifier: string }): string {
+    return `/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/FacilityGuarantee`;
   }
 }
