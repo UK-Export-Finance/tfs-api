@@ -1,17 +1,16 @@
-import { Injectable } from "@nestjs/common";
-import { ENUMS, PROPERTIES } from "@ukef/constants";
-import { CALENDAR_IDENTIFIERS } from "@ukef/constants/calendar-identifiers.constant";
-import { CURRENCIES } from "@ukef/constants/currencies.constant";
-import { RepaymentSchedule } from "../acbs/dto/bundle-actions/repayment-schedule.interface";
-import { DateStringTransformations } from "../date/date-string.transformations";
-import { CreateFacilityLoanRequestItem } from "./dto/create-facility-loan-request.dto";
+import { Injectable } from '@nestjs/common';
+import { ENUMS, PROPERTIES } from '@ukef/constants';
+import { CALENDAR_IDENTIFIERS } from '@ukef/constants/calendar-identifiers.constant';
+import { CURRENCIES } from '@ukef/constants/currencies.constant';
+
+import { RepaymentSchedule } from '../acbs/dto/bundle-actions/repayment-schedule.interface';
+import { DateStringTransformations } from '../date/date-string.transformations';
+import { CreateFacilityLoanRequestItem } from './dto/create-facility-loan-request.dto';
 
 @Injectable()
 export class RepaymentScheduleBuilder {
-  constructor(
-    private readonly dateStringTransformations: DateStringTransformations,
-  ) { }
-  
+  constructor(private readonly dateStringTransformations: DateStringTransformations) {}
+
   getRepaymentSchedules(facilityLoan: CreateFacilityLoanRequestItem): RepaymentSchedule[] {
     if (facilityLoan.productTypeGroup === ENUMS.PRODUCT_TYPE_GROUPS.EWCS) {
       return [this.getRepaymentInt(facilityLoan), this.getRepaymentPac(facilityLoan)];
@@ -29,13 +28,14 @@ export class RepaymentScheduleBuilder {
         BillingScheduleTypeCode: PROPERTIES.REPAYMENT.INT.billingScheduleType.billingScheduleTypeCode,
       },
       BillingSequenceNumber: PROPERTIES.REPAYMENT.INT.billingSequenceNumber,
-    }
+    };
   }
 
   private getRepaymentPac(facilityLoan: CreateFacilityLoanRequestItem): RepaymentSchedule {
-    const primaryScheduleIndicator = facilityLoan.productTypeGroup === ENUMS.PRODUCT_TYPE_GROUPS.EWCS
-      ? PROPERTIES.REPAYMENT.PAC.primaryScheduleIndicator
-      : PROPERTIES.REPAYMENT.DEFAULT.primaryScheduleIndicator;
+    const primaryScheduleIndicator =
+      facilityLoan.productTypeGroup === ENUMS.PRODUCT_TYPE_GROUPS.EWCS
+        ? PROPERTIES.REPAYMENT.PAC.primaryScheduleIndicator
+        : PROPERTIES.REPAYMENT.DEFAULT.primaryScheduleIndicator;
     return {
       ...this.getBaseRepaymentSchedule(facilityLoan),
       PrimaryScheduleIndicator: primaryScheduleIndicator,
@@ -48,9 +48,9 @@ export class RepaymentScheduleBuilder {
       BillingSequenceNumber: PROPERTIES.REPAYMENT.PAC.billingSequenceNumber,
       PercentageOfBalance: PROPERTIES.REPAYMENT.PAC.percentageOfBalance,
       ...(facilityLoan.productTypeGroup === ENUMS.PRODUCT_TYPE_GROUPS.EWCS && {
-        NumberOfBillsToPrint: PROPERTIES.REPAYMENT.PAC.numberOfBillsToPrint
+        NumberOfBillsToPrint: PROPERTIES.REPAYMENT.PAC.numberOfBillsToPrint,
       }),
-    }
+    };
   }
 
   private getRepaymentPacBss(facilityLoan: CreateFacilityLoanRequestItem): RepaymentSchedule {
@@ -64,9 +64,9 @@ export class RepaymentScheduleBuilder {
       PercentageOfBalance: PROPERTIES.REPAYMENT.PAC_BSS.percentageOfBalance,
       PaymentAmount: facilityLoan.amount,
       ...(facilityLoan.productTypeGroup === ENUMS.PRODUCT_TYPE_GROUPS.EWCS && {
-        NumberOfBillsToPrint: PROPERTIES.REPAYMENT.PAC_BSS.numberOfBillsToPrint
+        NumberOfBillsToPrint: PROPERTIES.REPAYMENT.PAC_BSS.numberOfBillsToPrint,
       }),
-    }
+    };
   }
 
   private getBaseRepaymentSchedule(facilityLoan: CreateFacilityLoanRequestItem) {
@@ -111,7 +111,7 @@ export class RepaymentScheduleBuilder {
       LoanPrePaymentType: {
         LoanPrePaymentTypeCode: PROPERTIES.REPAYMENT.DEFAULT.loanPrePaymentType.loanPrePaymentTypeCode,
       },
-    }
+    };
   }
 
   private getCalendarIdentifier(facilityLoan: CreateFacilityLoanRequestItem): string {

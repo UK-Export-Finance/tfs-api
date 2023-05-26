@@ -377,30 +377,30 @@ export const PROPERTIES = {
   },
   REPAYMENT: {
     DEFAULT: {
-      primaryScheduleIndicator: "true",
+      primaryScheduleIndicator: 'true',
       involvedParty: {
-        partyIdentifier: "00000000",
+        partyIdentifier: '00000000',
       },
       lenderType: {
-        lenderTypeCode: "100",
+        lenderTypeCode: '100',
       },
-      accountSequence: "1",
+      accountSequence: '1',
       leadDays: 5,
       nextDueBusinessDayAdjustmentType: {
-        loanSystemBusinessDayAdjustmentTypeCode: "M",
+        loanSystemBusinessDayAdjustmentTypeCode: 'M',
       },
       nextAccrueBusinessDayAdjustmentType: {
-        loanSystemBusinessDayAdjustmentTypeCode: "M",
+        loanSystemBusinessDayAdjustmentTypeCode: 'M',
       },
       billingPeriod: 0,
       collectionInstructionMethod: {
-        collectionInstructionMethodCode: "",
+        collectionInstructionMethodCode: '',
       },
       billFormatType: {
-        billFormatTypeCode: "",
+        billFormatTypeCode: '',
       },
       mailingInstructionType: {
-        mailingInstructionTypeCode: "",
+        mailingInstructionTypeCode: '',
       },
       spreadToInvestorsIndicator: true,
       balloonPaymentAmount: 0,
@@ -410,17 +410,17 @@ export const PROPERTIES = {
     },
     INT: {
       billingScheduleType: {
-        billingScheduleTypeCode: "A",
+        billingScheduleTypeCode: 'A',
       },
       billingSequenceNumber: 2,
     },
     PAC: {
-      primaryScheduleIndicator: "false",
+      primaryScheduleIndicator: 'false',
       billingScheduleType: {
-        billingScheduleTypeCode: "N",
+        billingScheduleTypeCode: 'N',
       },
       balanceCategory: {
-        balanceCategoryCode: "PAC",
+        balanceCategoryCode: 'PAC',
       },
       numberOfBillsToPrint: 99999,
       percentageOfBalance: 100,
@@ -428,7 +428,7 @@ export const PROPERTIES = {
     },
     PAC_BSS: {
       billingScheduleType: {
-        billingScheduleTypeCode: "B",
+        billingScheduleTypeCode: 'B',
       },
       numberOfBillsToPrint: 99999,
       percentageOfBalance: 100,

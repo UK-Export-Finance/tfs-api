@@ -1,9 +1,11 @@
 import { ENUMS, PROPERTIES } from '@ukef/constants';
+import { CALENDAR_IDENTIFIERS } from '@ukef/constants/calendar-identifiers.constant';
 import { CURRENCIES } from '@ukef/constants/currencies.constant';
 import { AcbsBundleId, UkefId } from '@ukef/helpers';
 import { AcbsCreateBundleInformationRequestDto } from '@ukef/modules/acbs/dto/acbs-create-bundle-information-request.dto';
 import { AcbsCreateBundleInformationResponseHeadersDto } from '@ukef/modules/acbs/dto/acbs-create-bundle-information-response.dto';
 import { NewLoanRequest } from '@ukef/modules/acbs/dto/bundle-actions/new-loan-request.bundle-action';
+import { RepaymentSchedule } from '@ukef/modules/acbs/dto/bundle-actions/repayment-schedule.interface';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { CreateFacilityLoanRequest, CreateFacilityLoanRequestItem } from '@ukef/modules/facility-loan/dto/create-facility-loan-request.dto';
 import { CreateFacilityLoanResponse } from '@ukef/modules/facility-loan/dto/create-facility-loan-response.dto';
@@ -12,8 +14,6 @@ import { TEST_DATES } from '@ukef-test/support/constants/test-date.constant';
 
 import { AbstractGenerator } from './abstract-generator';
 import { RandomValueGenerator } from './random-value-generator';
-import { RepaymentSchedule } from '@ukef/modules/acbs/dto/bundle-actions/repayment-schedule.interface';
-import { CALENDAR_IDENTIFIERS } from '@ukef/constants/calendar-identifiers.constant';
 
 export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilityLoanRequestItem, GenerateResult, GenerateOptions> {
   constructor(protected readonly valueGenerator: RandomValueGenerator, protected readonly dateStringTransformations: DateStringTransformations) {
@@ -276,20 +276,22 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
       LoanPrePaymentType: {
         LoanPrePaymentTypeCode: PROPERTIES.REPAYMENT.DEFAULT.loanPrePaymentType.loanPrePaymentTypeCode,
       },
-    }
+    };
   }
 
   private getBondRepaymentSchedules(facilityLoan: CreateFacilityLoanRequestItem): RepaymentSchedule[] {
-    return [{
-      ...this.getBaseRepaymentSchedule(facilityLoan),
-      PrimaryScheduleIndicator: PROPERTIES.REPAYMENT.DEFAULT.primaryScheduleIndicator,
-      BillingScheduleType: {
-        BillingScheduleTypeCode: PROPERTIES.REPAYMENT.PAC_BSS.billingScheduleType.billingScheduleTypeCode,
+    return [
+      {
+        ...this.getBaseRepaymentSchedule(facilityLoan),
+        PrimaryScheduleIndicator: PROPERTIES.REPAYMENT.DEFAULT.primaryScheduleIndicator,
+        BillingScheduleType: {
+          BillingScheduleTypeCode: PROPERTIES.REPAYMENT.PAC_BSS.billingScheduleType.billingScheduleTypeCode,
+        },
+        PercentageOfBalance: PROPERTIES.REPAYMENT.PAC_BSS.percentageOfBalance,
+        PaymentAmount: facilityLoan.amount,
+        BillingSequenceNumber: PROPERTIES.REPAYMENT.PAC_BSS.billingSequenceNumber,
       },
-      PercentageOfBalance: PROPERTIES.REPAYMENT.PAC_BSS.percentageOfBalance,
-      PaymentAmount: facilityLoan.amount,
-      BillingSequenceNumber: PROPERTIES.REPAYMENT.PAC_BSS.billingSequenceNumber,
-    }]
+    ];
   }
 
   private getEwcsRepaymentSchedules(facilityLoan: CreateFacilityLoanRequestItem): RepaymentSchedule[] {
@@ -315,7 +317,7 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
         BillingSequenceNumber: PROPERTIES.REPAYMENT.PAC.billingSequenceNumber,
         NumberOfBillsToPrint: PROPERTIES.REPAYMENT.PAC.numberOfBillsToPrint,
       },
-    ]
+    ];
   }
 
   private getGefRepaymentSchedules(facilityLoan: CreateFacilityLoanRequestItem): RepaymentSchedule[] {
@@ -332,7 +334,7 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
         PercentageOfBalance: PROPERTIES.REPAYMENT.PAC.percentageOfBalance,
         BillingSequenceNumber: PROPERTIES.REPAYMENT.PAC.billingSequenceNumber,
       },
-    ]
+    ];
   }
 }
 

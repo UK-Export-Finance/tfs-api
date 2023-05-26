@@ -1,10 +1,10 @@
 import { ENUMS } from '@ukef/constants';
+import { CALENDAR_IDENTIFIERS } from '@ukef/constants/calendar-identifiers.constant';
+import { CURRENCIES } from '@ukef/constants/currencies.constant';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { CreateFacilityLoanGenerator } from '@ukef-test/support/generator/create-facility-loan-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 
-import { CURRENCIES } from '@ukef/constants/currencies.constant';
-import { CALENDAR_IDENTIFIERS } from '@ukef/constants/calendar-identifiers.constant';
 import { RepaymentScheduleBuilder } from './repayment-schedule.builder';
 
 describe('FacilityLoanService', () => {
@@ -16,10 +16,7 @@ describe('FacilityLoanService', () => {
   let repaymentScheduleBuilder: RepaymentScheduleBuilder;
 
   beforeEach(() => {
-
-    repaymentScheduleBuilder = new RepaymentScheduleBuilder(
-      dateStringTransformations,
-    );
+    repaymentScheduleBuilder = new RepaymentScheduleBuilder(dateStringTransformations);
   });
 
   describe('createRepaymentSchedulesForLoan', () => {
@@ -38,8 +35,7 @@ describe('FacilityLoanService', () => {
     const [newLoanNonGbp] = requestBodyToCreateFacilityLoanNonGbp;
 
     describe('generates correct repayment schedules', () => {
-      
-      it(`productTypeGroup is 'BOND' and currency is 'GBP `, () => {
+      it(`productTypeGroup is 'BOND' and currency is 'GBP`, () => {
         const newLoanWithProductTypeGroupBondCurrencyGbp = {
           ...newLoanGbp,
           productTypeGroup: ENUMS.PRODUCT_TYPE_GROUPS.BOND,
@@ -49,7 +45,7 @@ describe('FacilityLoanService', () => {
         expect(repaymentSchedules).toEqual(bondRepaymentSchedulesGbp);
       });
 
-      it(`productTypeGroup is 'BOND' and currency is 'EUR `, () => {
+      it(`productTypeGroup is 'BOND' and currency is 'EUR`, () => {
         const newLoanWithProductTypeGroupBondCurrencyEur = {
           ...newLoanNonGbp,
           productTypeGroup: ENUMS.PRODUCT_TYPE_GROUPS.BOND,
@@ -69,7 +65,7 @@ describe('FacilityLoanService', () => {
         expect(repaymentSchedules).toEqual(bondRepaymentSchedulesEur);
       });
 
-      it(`productTypeGroup is 'BOND' and currency is 'USD `, () => {
+      it(`productTypeGroup is 'BOND' and currency is 'USD`, () => {
         const newLoanWithProductTypeGroupBondCurrencyUsd = {
           ...newLoanNonGbp,
           productTypeGroup: ENUMS.PRODUCT_TYPE_GROUPS.BOND,
@@ -89,7 +85,7 @@ describe('FacilityLoanService', () => {
         expect(repaymentSchedules).toEqual(bondRepaymentSchedulesUsd);
       });
 
-      it(`productTypeGroup is 'GEF' and currency is 'GBP `, () => {
+      it(`productTypeGroup is 'GEF' and currency is 'GBP`, () => {
         const newLoanWithProductTypeGroupGefCurrencyGbp = {
           ...newLoanGbp,
           productTypeGroup: ENUMS.PRODUCT_TYPE_GROUPS.GEF,
@@ -100,7 +96,7 @@ describe('FacilityLoanService', () => {
         expect(repaymentSchedules).toEqual(gefRepaymentSchedulesGbp);
       });
 
-      it(`productTypeGroup is 'GEF' and currency is 'EUR `, () => {
+      it(`productTypeGroup is 'GEF' and currency is 'EUR`, () => {
         const newLoanWithProductTypeGroupGefCurrencyEur = {
           ...newLoanNonGbp,
           productTypeGroup: ENUMS.PRODUCT_TYPE_GROUPS.GEF,
@@ -120,7 +116,7 @@ describe('FacilityLoanService', () => {
         expect(repaymentSchedules).toEqual(gefRepaymentSchedulesEur);
       });
 
-      it(`productTypeGroup is 'GEF' and currency is 'USD `, () => {
+      it(`productTypeGroup is 'GEF' and currency is 'USD`, () => {
         const newLoanWithProductTypeGroupGefCurrencyUsd = {
           ...newLoanNonGbp,
           productTypeGroup: ENUMS.PRODUCT_TYPE_GROUPS.GEF,
@@ -140,7 +136,7 @@ describe('FacilityLoanService', () => {
         expect(repaymentSchedules).toEqual(gefRepaymentSchedulesUsd);
       });
 
-      it(`productTypeGroup is 'EWCS' and currency is 'GBP `, () => {
+      it(`productTypeGroup is 'EWCS' and currency is 'GBP`, () => {
         const newLoanWithProductTypeGroupEwcsCurrencyGbp = {
           ...newLoanGbp,
           productTypeGroup: ENUMS.PRODUCT_TYPE_GROUPS.EWCS,
@@ -151,7 +147,7 @@ describe('FacilityLoanService', () => {
         expect(repaymentSchedules).toEqual(ewcsRepaymentSchedulesGbp);
       });
 
-      it(`productTypeGroup is 'EWCS' and currency is 'EUR `, () => {
+      it(`productTypeGroup is 'EWCS' and currency is 'EUR`, () => {
         const newLoanWithProductTypeGroupEwcsCurrencyEur = {
           ...newLoanNonGbp,
           productTypeGroup: ENUMS.PRODUCT_TYPE_GROUPS.EWCS,
@@ -177,7 +173,7 @@ describe('FacilityLoanService', () => {
         expect(repaymentSchedules).toEqual(ewcsRepaymentSchedulesEur);
       });
 
-      it(`productTypeGroup is 'EWCS' and currency is 'USD `, () => {
+      it(`productTypeGroup is 'EWCS' and currency is 'USD`, () => {
         const newLoanWithProductTypeGroupEwcsCurrencyUsd = {
           ...newLoanNonGbp,
           productTypeGroup: ENUMS.PRODUCT_TYPE_GROUPS.EWCS,

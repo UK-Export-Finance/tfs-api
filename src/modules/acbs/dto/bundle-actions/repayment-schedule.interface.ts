@@ -17,7 +17,7 @@ export interface RepaymentSchedule {
   };
   LoanBillingFrequencyType: {
     LoanBillingFrequencyTypeCode: string;
-  },
+  };
   NextDueDate: DateString;
   BillingDueCycleDay: number;
   NextAccrueToDate: DateString;
@@ -28,20 +28,20 @@ export interface RepaymentSchedule {
   };
   NextAccrueBusinessDayAdjustmentType: {
     LoanSystemBusinessDayAdjustmentTypeCode: string;
-  },
+  };
   BillingPeriod: number;
   BalanceCategory?: {
     BalanceCategoryCode: string;
   };
   CollectionInstructionMethod: {
     CollectionInstructionMethodCode: string;
-  },
+  };
   BillFormatType: {
     BillFormatTypeCode: string;
-  },
+  };
   MailingInstructionType: {
     MailingInstructionTypeCode: string;
-  },
+  };
   SpreadToInvestorsIndicator: boolean;
   BalloonPaymentAmount: number;
   NumberOfBillsToPrint?: number;
