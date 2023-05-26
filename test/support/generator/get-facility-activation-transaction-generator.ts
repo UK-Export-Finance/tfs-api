@@ -24,7 +24,7 @@ export class GetFacilityActivationTransactionGenerator extends AbstractGenerator
       bundleStatusCode: this.valueGenerator.stringOfNumericCharacters({ maxLength: 2 }),
       bundleStatusDesc: this.valueGenerator.string({ maxLength: 20 }),
       initiatingUserName: this.valueGenerator.string({ maxLength: 60 }),
-      accountOwnerIdentifier: this.valueGenerator.acbsPartyId(), // TODO: is this right to use acbsPartyId?
+      accountOwnerIdentifier: this.valueGenerator.acbsPartyId(), // TODO APIM-125: is this right to use acbsPartyId?
       effectiveDate: this.valueGenerator.dateOnlyString(),
       facilityTransactionCodeValueCode: this.valueGenerator.string({ maxLength: 10 }),
       lenderTypeCode: possibleLenderTypes[this.valueGenerator.integer({ min: 0, max: possibleLenderTypes.length - 1 })],
@@ -110,7 +110,7 @@ interface FacilityActivationTransactionValues {
   bundleStatusCode: string;
   bundleStatusDesc: string;
   initiatingUserName: string;
-  accountOwnerIdentifier: AcbsPartyId; // TODO: is this right to use acbsPartyId?
+  accountOwnerIdentifier: AcbsPartyId; // TODO APIM-125: is this right to use acbsPartyId?
   effectiveDate: DateOnlyString;
   facilityTransactionCodeValueCode: string;
   lenderTypeCode: LenderTypeCodeEnum;
