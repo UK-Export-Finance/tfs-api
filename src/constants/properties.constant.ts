@@ -109,6 +109,16 @@ export const PROPERTIES = {
       riskMitigationCode: '',
     },
   },
+  DEAL_BORROWING_RESTRICTION: {
+    DEFAULT: {
+      sequenceNumber: 1,
+      restrictGroupCategory: {
+        restrictGroupCategoryCode: '36',
+      },
+      includingIndicator: true,
+      includeExcludeAllItemsIndicator: true,
+    },
+  },
   DEAL_GUARANTEE: {
     DEFAULT: {
       sectionIdentifier: '00',
@@ -293,18 +303,121 @@ export const PROPERTIES = {
       },
     },
   },
-  FACILITY_LOAN_TRANSACTION: {
+  FACILITY_FIXED_FEE: {
     DEFAULT: {
-      bundleMessageList: {
-        $type: {
-          newLoanRequest: 'NewLoanRequest',
-        },
-        accrualScheduleList: {
-          accrualCategory: {
-            accrualCategoryCode: {
-              pac: 'PAC01',
-              ctl: 'CTL01',
-            },
+      fixedFeeChargeType: {
+        fixedFeeChargeTypeCode: '1',
+      },
+      description: {
+        '250': 'Bond Support Premium',
+        '260': 'EWCS Premium',
+        '280': 'Financial Guarantee Fee',
+      },
+      fixedFeeEarningMethod: {
+        fixedFeeEarningMethodCode: 'A',
+      },
+      sectionIdentifier: '00',
+      limitType: {
+        limitTypeCode: '00',
+      },
+      involvedParty: {
+        partyIdentifier: '00000000',
+      },
+      leadDays: 1,
+      accountingMethodCode: 'A',
+      feeStartDateTypeCode: 'A',
+      billingFrequencyTypeCode: 'G',
+      feeStatusCode: 'A',
+      incomeClassCode: 'BPM',
+      businessDayAdjustmentTypeCode: 'M',
+      accrueToBusinessDayAdjustmentTypeCode: 'M',
+      calendarIdentifier: 'UK',
+      financialCurrentFXRate: 1,
+      financialCurrentFXRateOperand: 'D',
+    },
+  },
+  FACILITY_LOAN: {
+    DEFAULT: {
+      initiatingUserName: 'APIUKEF',
+      servicingUserAccountIdentifier: 'APIUKEF',
+      useAPIUserIndicator: false,
+      initialBundleStatusCode: 3,
+      messageType: 'NewLoanRequest' as const,
+      accountOwnerIdentifier: '00000000',
+      sectionIdentifier: '00',
+      servicingUser: {
+        userAcbsIdentifier: 'OPERATIONS',
+        userName: 'OPERATIONS',
+      },
+      administrativeUser: {
+        userAcbsIdentifier: 'OPERATIONS',
+        userName: 'OPERATIONS',
+      },
+      servicingUnit: {
+        servicingUnitIdentifier: 'ACBS',
+      },
+      servicingUnitSection: {
+        servicingUnitSectionIdentifier: 'ACBS',
+      },
+      closureType: {
+        closureTypeCode: 'B',
+      },
+      agentPartyIdentifier: '00000000',
+      agentAddressIdentifier: 'PRM',
+      interestRateType: {
+        interestRateTypeCode: 'INS',
+      },
+      bookingType: {
+        loanBookingTypeCode: 'A',
+      },
+      loanReviewFrequencyType: {
+        loanReviewFrequencyTypeCode: 'A',
+      },
+      currentRiskOfficerIdentifier: 'DCIS',
+      loanAdvanceType: {
+        loanAdvanceTypeCode: 'D',
+      },
+      generalLedgerUnit: {
+        generalLedgerUnitIdentifier: 'ECGD',
+      },
+      cashEventList: {
+        paymentInstructionCode: '',
+        cashOffsetTypeCode: '02',
+        settlementCurrencyCode: null,
+        originatingGeneralLedgerUnit: null,
+        dDAAccount: '',
+        cashReferenceIdentifier: '',
+      },
+      financialRateGroup: 'UKRATEGRP',
+      customerUsageRateGroup: 'UKRATEGRP',
+      financialFrequency: {
+        usageFrequencyTypeCode: 'M',
+      },
+      customerUsageFrequency: {
+        usageFrequencyTypeCode: 'M',
+      },
+      financialBusinessDayAdjustment: {
+        businessDayAdjustmentTypeCode: 'S',
+      },
+      customerUsageBusinessDayAdjustment: {
+        businessDayAdjustmentTypeCode: 'S',
+      },
+      financialCalendar: {
+        calendarIdentifier: 'UK',
+      },
+      customerUsageCalendar: {
+        calendarIdentifier: 'UK',
+      },
+      financialLockMTMRateIndicator: true,
+      customerUsageLockMTMRateIndicator: true,
+      securedType: {
+        loanSecuredTypeCode: 'N',
+      },
+      accrualScheduleList: {
+        accrualCategory: {
+          accrualCategoryCode: {
+            pac: 'PAC01',
+            ctl: 'CTL01',
           },
         },
       },

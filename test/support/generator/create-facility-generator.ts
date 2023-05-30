@@ -1,4 +1,4 @@
-import { PROPERTIES } from '@ukef/constants';
+import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { DateOnlyString, UkefId } from '@ukef/helpers';
 import { AcbsCreateFacilityRequest } from '@ukef/modules/acbs/dto/acbs-create-facility-request.dto';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
@@ -41,10 +41,9 @@ export class CreateFacilityGenerator extends AbstractGenerator<FacilityValues, G
   protected transformRawValuesToGeneratedValues(values: FacilityValues[], options: GenerateOptions): GenerateResult {
     const { facilityIdentifier } = options;
     const { portfolioIdentifier } = PROPERTIES.GLOBAL;
-
-    const facilityToCreate = values[0];
-    const facilityStageCode = '07';
-    const productTypeId = '001';
+    const [facilityToCreate] = values;
+    const facilityStageCode = ENUMS.FACILITY_STAGES.ISSUED;
+    const productTypeId = this.valueGenerator.enumValue(ENUMS.FACILITY_TYPE_IDS);
     const productTypeName = 'The product';
     const effectiveDate = TEST_DATES.A_PAST_EFFECTIVE_DATE_ONLY;
     const nextQuarterEndDate = TEST_DATES.A_FUTURE_EXPIRY_DATE_ONLY;

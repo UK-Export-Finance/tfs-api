@@ -16,7 +16,7 @@ export const isLoanAdvanceTransaction = (action: BundleAction): action is LoanAd
 };
 
 export const isNewLoanRequest = (bundleAction: BundleAction): bundleAction is NewLoanRequest => {
-  return bundleAction.$type === PROPERTIES.FACILITY_LOAN_TRANSACTION.DEFAULT.bundleMessageList.$type.newLoanRequest;
+  return bundleAction.$type === PROPERTIES.FACILITY_LOAN.DEFAULT.messageType;
 };
 
 export const isFacilityFeeAmountTransaction = (bundleAction: BundleAction): bundleAction is FacilityFeeAmountTransaction => {

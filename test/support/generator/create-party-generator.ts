@@ -27,7 +27,7 @@ export class CreatePartyGenerator extends AbstractGenerator<PartyValues, Generat
   }
 
   protected transformRawValuesToGeneratedValues(values: PartyValues[], options: GenerateOptions): GenerateResult {
-    const firstParty = values[0];
+    const [firstParty] = values;
 
     const acbsCreatePartyRequest: AcbsCreatePartyRequest = {
       PartyAlternateIdentifier: this.getPartyAlternateIdentifier(firstParty.alternateIdentifier, 0, options.basePartyAlternateIdentifier),

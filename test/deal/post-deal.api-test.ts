@@ -7,7 +7,7 @@ import { withDateOnlyFieldValidationApiTests } from '@ukef-test/common-tests/req
 import { withNonNegativeNumberFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/non-negative-number-field-validation-api-tests';
 import { withStringFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/string-field-validation-api-tests';
 import { Api } from '@ukef-test/support/api';
-import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
+import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
 import { CreateDealGenerator } from '@ukef-test/support/generator/create-deal-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import nock from 'nock';
@@ -23,9 +23,10 @@ describe('POST /deals', () => {
   const {
     createDealRequestItem: dealToCreate,
     acbsCreateDealRequest: acbsRequestBodyToCreateDeal,
+    acbsUpdateDealBorrowingRestrictionRequest: acbsRequestBodyToUpdateBorrowingRestriction,
     guaranteeCommencementDateForDescription,
   } = new CreateDealGenerator(valueGenerator, dateStringTransformations).generate({ numberToGenerate: 1 });
-  const dealIdentifier = dealToCreate.dealIdentifier;
+  const { dealIdentifier } = dealToCreate;
 
   const now = new Date();
   const midnightToday = dateStringTransformations.getDateStringFromDate(now);
@@ -51,7 +52,10 @@ describe('POST /deals', () => {
   });
 
   const { idToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
-    givenRequestWouldOtherwiseSucceed: () => givenRequestToCreateDealInAcbsSucceeds(),
+    givenRequestWouldOtherwiseSucceed: () => {
+      givenRequestToCreateDealInAcbsSucceeds();
+      givenRequestToUpdateDealBorrowingRestrictionForDealInAcbsSucceeds();
+    },
     makeRequest: () => api.post(createDealUrl, requestBodyToCreateDeal),
     successStatusCode: 201,
   });
@@ -60,85 +64,216 @@ describe('POST /deals', () => {
     givenTheRequestWouldOtherwiseSucceed: () => {
       givenAuthenticationWithTheIdpSucceeds();
       givenAnyRequestBodyToCreateDealInAcbsSucceeds();
+      givenRequestToUpdateDealBorrowingRestrictionForDealInAcbsSucceeds();
     },
     makeRequestWithoutAuth: (incorrectAuth?: IncorrectAuthArg) =>
       api.postWithoutAuth(createDealUrl, requestBodyToCreateDeal, incorrectAuth?.headerName, incorrectAuth?.headerValue),
   });
 
-  it('returns a 201 response with the identifier of the new deal if ACBS responds with 201', async () => {
+  it('returns a 201 response with the identifier of the new deal if creating the deal and updating the borrowing restriction for the deal both succeed in ACBS', async () => {
     givenAuthenticationWithTheIdpSucceeds();
-    const acbsRequest = requestToCreateDealInAcbs().reply(201, undefined, { location: `/Deal/${dealIdentifier}` });
+    const acbsRequestToCreateDeal = givenRequestToCreateDealInAcbsSucceeds();
+    const acbsRequestToUpdateDealBorrowingRestriction = givenRequestToUpdateDealBorrowingRestrictionForDealInAcbsSucceeds();
 
     const { status, body } = await api.post(createDealUrl, requestBodyToCreateDeal);
 
     expect(status).toBe(201);
     expect(body).toStrictEqual(JSON.parse(JSON.stringify(expectedDealIdentifierResponse)));
-    expect(acbsRequest.isDone()).toBe(true);
+    expect(acbsRequestToCreateDeal.isDone()).toBe(true);
+    expect(acbsRequestToUpdateDealBorrowingRestriction.isDone()).toBe(true);
   });
 
-  it('rounds the dealValue to 2dp', async () => {
-    givenAuthenticationWithTheIdpSucceeds();
-    const requestBodyWithDealValueToRound = [{ ...requestBodyToCreateDeal[0], dealValue: 1.234 }];
-    const acbsRequestBodyWithRoundedDealValue = {
-      ...acbsRequestBodyToCreateDeal,
-      LimitAmount: 1.23,
-    };
-    const acbsRequest = requestToCreateDealInAcbsWithBody(acbsRequestBodyWithRoundedDealValue).reply(201, undefined, { location: `/Deal/${dealIdentifier}` });
+  describe('transformations of the data for the deal to be created', () => {
+    beforeEach(() => {
+      givenRequestToUpdateDealBorrowingRestrictionForDealInAcbsSucceeds();
+    });
 
-    const { status, body } = await api.post(createDealUrl, requestBodyWithDealValueToRound);
+    it('rounds the dealValue to 2dp', async () => {
+      givenAuthenticationWithTheIdpSucceeds();
+      const requestBodyWithDealValueToRound = [{ ...requestBodyToCreateDeal[0], dealValue: 1.234 }];
+      const acbsRequestBodyWithRoundedDealValue = {
+        ...acbsRequestBodyToCreateDeal,
+        LimitAmount: 1.23,
+      };
+      const acbsRequest = requestToCreateDealInAcbsWithBody(acbsRequestBodyWithRoundedDealValue).reply(201, undefined, { location: `/Deal/${dealIdentifier}` });
 
-    expect(status).toBe(201);
-    expect(body).toStrictEqual(JSON.parse(JSON.stringify(expectedDealIdentifierResponse)));
-    expect(acbsRequest.isDone()).toBe(true);
+      const { status, body } = await api.post(createDealUrl, requestBodyWithDealValueToRound);
+
+      expect(status).toBe(201);
+      expect(body).toStrictEqual(JSON.parse(JSON.stringify(expectedDealIdentifierResponse)));
+      expect(acbsRequest.isDone()).toBe(true);
+    });
+
+    it('truncates the obligorName in the description after 19 characters', async () => {
+      givenAuthenticationWithTheIdpSucceeds();
+      const requestBodyWithObligorNameToTruncate = [{ ...requestBodyToCreateDeal[0], obligorName: '123456789-123456789-123456789' }];
+      const acbsRequestBodyWithTruncatedObligorName = {
+        ...acbsRequestBodyToCreateDeal,
+        Description: CreateDealGenerator.getExpectedDescription({
+          obligorName: '123456789-123456789',
+          currency: dealToCreate.currency,
+          formattedDate: guaranteeCommencementDateForDescription,
+        }),
+      };
+      const acbsRequest = requestToCreateDealInAcbsWithBody(acbsRequestBodyWithTruncatedObligorName).reply(201, undefined, {
+        location: `/Deal/${dealIdentifier}`,
+      });
+
+      const { status, body } = await api.post(createDealUrl, requestBodyWithObligorNameToTruncate);
+
+      expect(status).toBe(201);
+      expect(body).toStrictEqual(JSON.parse(JSON.stringify(expectedDealIdentifierResponse)));
+      expect(acbsRequest.isDone()).toBe(true);
+    });
+
+    it(`replaces the guaranteeCommencementdate with today's date if the specified effectiveDate is after today`, async () => {
+      const requestBodyWithFutureEffectiveDate = [{ ...requestBodyToCreateDeal[0], guaranteeCommencementDate: '9999-01-01' }];
+      const acbsRequestBodyWithTodayEffectiveDate = {
+        ...acbsRequestBodyToCreateDeal,
+        OriginalEffectiveDate: midnightToday,
+        TargetClosingDate: midnightToday,
+        OriginalApprovalDate: midnightToday,
+        Description: CreateDealGenerator.getExpectedDescription({
+          obligorName: dealToCreate.obligorName,
+          currency: dealToCreate.currency,
+          formattedDate: todayFormattedForDescription,
+        }),
+      };
+      givenAuthenticationWithTheIdpSucceeds();
+      const acbsRequestWithTodayEffectiveDate = requestToCreateDealInAcbsWithBody(acbsRequestBodyWithTodayEffectiveDate).reply(201, undefined, {
+        location: `/Deal/${dealIdentifier}`,
+      });
+
+      const { status, body } = await api.post(createDealUrl, requestBodyWithFutureEffectiveDate);
+
+      expect(status).toBe(201);
+      expect(body).toStrictEqual({
+        dealIdentifier,
+      });
+      expect(acbsRequestWithTodayEffectiveDate.isDone()).toBe(true);
+    });
   });
 
-  it('truncates the obligorName in the description after 19 characters', async () => {
-    givenAuthenticationWithTheIdpSucceeds();
-    const requestBodyWithObligorNameToTruncate = [{ ...requestBodyToCreateDeal[0], obligorName: '123456789-123456789-123456789' }];
-    const acbsRequestBodyWithTruncatedObligorName = {
-      ...acbsRequestBodyToCreateDeal,
-      Description: CreateDealGenerator.getExpectedDescription({
-        obligorName: '123456789-123456789',
-        currency: dealToCreate.currency,
-        formattedDate: guaranteeCommencementDateForDescription,
-      }),
-    };
-    const acbsRequest = requestToCreateDealInAcbsWithBody(acbsRequestBodyWithTruncatedObligorName).reply(201, undefined, {
-      location: `/Deal/${dealIdentifier}`,
+  describe('error cases when creating the deal in ACBS', () => {
+    beforeEach(() => {
+      givenAuthenticationWithTheIdpSucceeds();
+      givenRequestToUpdateDealBorrowingRestrictionForDealInAcbsSucceeds();
     });
 
-    const { status, body } = await api.post(createDealUrl, requestBodyWithObligorNameToTruncate);
+    it('returns a 400 response if ACBS responds with a 400 response that is not a string', async () => {
+      const acbsErrorMessage = { Message: 'error message' };
+      requestToCreateDealInAcbs().reply(400, acbsErrorMessage);
 
-    expect(status).toBe(201);
-    expect(body).toStrictEqual(JSON.parse(JSON.stringify(expectedDealIdentifierResponse)));
-    expect(acbsRequest.isDone()).toBe(true);
+      const { status, body } = await api.post(createDealUrl, requestBodyToCreateDeal);
+
+      expect(status).toBe(400);
+      expect(body).toStrictEqual({ message: 'Bad request', error: JSON.stringify(acbsErrorMessage), statusCode: 400 });
+    });
+
+    it('returns a 400 response if ACBS responds with a 400 response that is a string', async () => {
+      const acbsErrorMessage = 'ACBS error message';
+      requestToCreateDealInAcbs().reply(400, acbsErrorMessage);
+
+      const { status, body } = await api.post(createDealUrl, requestBodyToCreateDeal);
+
+      expect(status).toBe(400);
+      expect(body).toStrictEqual({ message: 'Bad request', error: acbsErrorMessage, statusCode: 400 });
+    });
+
+    it('returns a 500 response if ACBS responds with an error code that is not 400"', async () => {
+      requestToCreateDealInAcbs().reply(401, 'Unauthorized');
+
+      const { status, body } = await api.post(createDealUrl, requestBodyToCreateDeal);
+
+      expect(status).toBe(500);
+      expect(body).toStrictEqual({ message: 'Internal server error', statusCode: 500 });
+    });
+
+    it('returns a 500 response if ACBS times out"', async () => {
+      requestToCreateDealInAcbs()
+        .delay(TIME_EXCEEDING_ACBS_TIMEOUT)
+        .reply(201, undefined, { location: `/Deal/${dealIdentifier}` });
+
+      const { status, body } = await api.post(createDealUrl, requestBodyToCreateDeal);
+
+      expect(status).toBe(500);
+      expect(body).toStrictEqual({ message: 'Internal server error', statusCode: 500 });
+    });
   });
 
-  it(`replaces the guaranteeCommencementdate with today's date if the specified effectiveDate is after today`, async () => {
-    const requestBodyWithFutureEffectiveDate = [{ ...requestBodyToCreateDeal[0], guaranteeCommencementDate: '9999-01-01' }];
-    const acbsRequestBodyWithTodayEffectiveDate = {
-      ...acbsRequestBodyToCreateDeal,
-      OriginalEffectiveDate: midnightToday,
-      TargetClosingDate: midnightToday,
-      OriginalApprovalDate: midnightToday,
-      Description: CreateDealGenerator.getExpectedDescription({
-        obligorName: dealToCreate.obligorName,
-        currency: dealToCreate.currency,
-        formattedDate: todayFormattedForDescription,
-      }),
-    };
-    givenAuthenticationWithTheIdpSucceeds();
-    const acbsRequestWithTodayEffectiveDate = requestToCreateDealInAcbsWithBody(acbsRequestBodyWithTodayEffectiveDate).reply(201, undefined, {
-      location: `/Deal/${dealIdentifier}`,
+  describe('error cases when updating the deal borrowing restriction in ACBS', () => {
+    beforeEach(() => {
+      givenAuthenticationWithTheIdpSucceeds();
+      givenRequestToCreateDealInAcbsSucceeds();
     });
 
-    const { status, body } = await api.post(createDealUrl, requestBodyWithFutureEffectiveDate);
+    it('returns a 500 response if ACBS responds with a 400 response that is a string containing "The deal not found"', async () => {
+      const acbsErrorMessage = 'The deal not found or the user does not have access to it.';
+      requestToUpdateDealBorrowingRestrictionInAcbs().reply(400, acbsErrorMessage);
 
-    expect(status).toBe(201);
-    expect(body).toStrictEqual({
-      dealIdentifier,
+      const { status, body } = await api.post(createDealUrl, requestBodyToCreateDeal);
+
+      expect(status).toBe(500);
+      expect(body).toStrictEqual({
+        message: 'Internal server error',
+        statusCode: 500,
+        error: `Failed to update the deal borrowing restriction after creating deal ${dealIdentifier}`,
+      });
     });
-    expect(acbsRequestWithTodayEffectiveDate.isDone()).toBe(true);
+
+    it('returns a 500 response if ACBS responds with a 400 response that is a string that does not contain "The deal not found"', async () => {
+      const acbsErrorMessage = 'ACBS error message';
+      requestToUpdateDealBorrowingRestrictionInAcbs().reply(400, acbsErrorMessage);
+
+      const { status, body } = await api.post(createDealUrl, requestBodyToCreateDeal);
+
+      expect(status).toBe(500);
+      expect(body).toStrictEqual({
+        message: 'Internal server error',
+        statusCode: 500,
+        error: `Failed to update the deal borrowing restriction after creating deal ${dealIdentifier}`,
+      });
+    });
+
+    it('returns a 500 response if ACBS responds with a 400 response that is not a string', async () => {
+      const acbsErrorMessage = { Message: 'error message' };
+      requestToUpdateDealBorrowingRestrictionInAcbs().reply(400, acbsErrorMessage);
+
+      const { status, body } = await api.post(createDealUrl, requestBodyToCreateDeal);
+
+      expect(status).toBe(500);
+      expect(body).toStrictEqual({
+        message: 'Internal server error',
+        statusCode: 500,
+        error: `Failed to update the deal borrowing restriction after creating deal ${dealIdentifier}`,
+      });
+    });
+
+    it('returns a 500 response if ACBS responds with an error code that is not 400"', async () => {
+      requestToUpdateDealBorrowingRestrictionInAcbs().reply(401, 'Unauthorized');
+
+      const { status, body } = await api.post(createDealUrl, requestBodyToCreateDeal);
+
+      expect(status).toBe(500);
+      expect(body).toStrictEqual({
+        message: 'Internal server error',
+        statusCode: 500,
+        error: `Failed to update the deal borrowing restriction after creating deal ${dealIdentifier}`,
+      });
+    });
+
+    it('returns a 500 response if ACBS times out"', async () => {
+      requestToUpdateDealBorrowingRestrictionInAcbs().delay(TIME_EXCEEDING_ACBS_TIMEOUT).reply(200);
+
+      const { status, body } = await api.post(createDealUrl, requestBodyToCreateDeal);
+
+      expect(status).toBe(500);
+      expect(body).toStrictEqual({
+        message: 'Internal server error',
+        statusCode: 500,
+        error: `Failed to update the deal borrowing restriction after creating deal ${dealIdentifier}`,
+      });
+    });
   });
 
   withStringFieldValidationApiTests({
@@ -151,6 +286,7 @@ describe('POST /deals', () => {
     givenAnyRequestBodyWouldSucceed: () => {
       givenAuthenticationWithTheIdpSucceeds();
       givenAnyRequestBodyToCreateDealInAcbsSucceeds();
+      givenRequestToUpdateAnyDealBorrowingRestrictionInAcbsSucceeds();
     },
   });
 
@@ -161,6 +297,7 @@ describe('POST /deals', () => {
     givenAnyRequestBodyWouldSucceed: () => {
       givenAuthenticationWithTheIdpSucceeds();
       givenAnyRequestBodyToCreateDealInAcbsSucceeds();
+      givenRequestToUpdateDealBorrowingRestrictionForDealInAcbsSucceeds();
     },
   });
 
@@ -171,6 +308,7 @@ describe('POST /deals', () => {
     givenAnyRequestBodyWouldSucceed: () => {
       givenAuthenticationWithTheIdpSucceeds();
       givenAnyRequestBodyToCreateDealInAcbsSucceeds();
+      givenRequestToUpdateDealBorrowingRestrictionForDealInAcbsSucceeds();
     },
   });
 
@@ -181,6 +319,7 @@ describe('POST /deals', () => {
     givenAnyRequestBodyWouldSucceed: () => {
       givenAuthenticationWithTheIdpSucceeds();
       givenAnyRequestBodyToCreateDealInAcbsSucceeds();
+      givenRequestToUpdateDealBorrowingRestrictionForDealInAcbsSucceeds();
     },
   });
 
@@ -194,6 +333,7 @@ describe('POST /deals', () => {
     givenAnyRequestBodyWouldSucceed: () => {
       givenAuthenticationWithTheIdpSucceeds();
       givenAnyRequestBodyToCreateDealInAcbsSucceeds();
+      givenRequestToUpdateDealBorrowingRestrictionForDealInAcbsSucceeds();
     },
   });
 
@@ -208,6 +348,7 @@ describe('POST /deals', () => {
     givenAnyRequestBodyWouldSucceed: () => {
       givenAuthenticationWithTheIdpSucceeds();
       givenAnyRequestBodyToCreateDealInAcbsSucceeds();
+      givenRequestToUpdateDealBorrowingRestrictionForDealInAcbsSucceeds();
     },
   });
 
@@ -222,44 +363,11 @@ describe('POST /deals', () => {
     givenAnyRequestBodyWouldSucceed: () => {
       givenAuthenticationWithTheIdpSucceeds();
       givenAnyRequestBodyToCreateDealInAcbsSucceeds();
+      givenRequestToUpdateDealBorrowingRestrictionForDealInAcbsSucceeds();
     },
   });
 
-  it('returns a 400 response if ACBS responds with a 400 response that is not a string', async () => {
-    givenAuthenticationWithTheIdpSucceeds();
-    const acbsErrorMessage = { Message: 'error message' };
-    requestToCreateDealInAcbs().reply(400, acbsErrorMessage);
-
-    const { status, body } = await api.post(createDealUrl, requestBodyToCreateDeal);
-
-    expect(status).toBe(400);
-    expect(body).toStrictEqual({ message: 'Bad request', error: JSON.stringify(acbsErrorMessage), statusCode: 400 });
-  });
-
-  it('returns a 400 response if ACBS responds with a 400 response that is a string', async () => {
-    givenAuthenticationWithTheIdpSucceeds();
-    const acbsErrorMessage = 'ACBS error message';
-    requestToCreateDealInAcbs().reply(400, acbsErrorMessage);
-
-    const { status, body } = await api.post(createDealUrl, requestBodyToCreateDeal);
-
-    expect(status).toBe(400);
-    expect(body).toStrictEqual({ message: 'Bad request', error: acbsErrorMessage, statusCode: 400 });
-  });
-
-  it('returns a 500 response if ACBS responds with an error code that is not 400"', async () => {
-    givenAuthenticationWithTheIdpSucceeds();
-    requestToCreateDealInAcbs().reply(401, 'Unauthorized');
-
-    const { status, body } = await api.post(createDealUrl, requestBodyToCreateDeal);
-
-    expect(status).toBe(500);
-    expect(body).toStrictEqual({ message: 'Internal server error', statusCode: 500 });
-  });
-
-  const givenRequestToCreateDealInAcbsSucceeds = (): void => {
-    requestToCreateDealInAcbs().reply(201, undefined, { location: `/Deal/${dealIdentifier}` });
-  };
+  const givenRequestToCreateDealInAcbsSucceeds = (): nock.Scope => requestToCreateDealInAcbs().reply(201, undefined, { location: `/Deal/${dealIdentifier}` });
 
   const requestToCreateDealInAcbs = (): nock.Interceptor => requestToCreateDealInAcbsWithBody(JSON.stringify(acbsRequestBodyToCreateDeal));
 
@@ -274,4 +382,20 @@ describe('POST /deals', () => {
       .matchHeader('authorization', `Bearer ${idToken}`)
       .reply(201, undefined, { location: `/Deal/${dealIdentifier}` });
   };
+
+  const givenRequestToUpdateDealBorrowingRestrictionForDealInAcbsSucceeds = (): nock.Scope => requestToUpdateDealBorrowingRestrictionInAcbs().reply(200);
+
+  const requestToUpdateDealBorrowingRestrictionInAcbs = (): nock.Interceptor =>
+    requestToUpdateDealBorrowingRestrictionInAcbsWithBody(JSON.stringify(acbsRequestBodyToUpdateBorrowingRestriction));
+
+  const requestToUpdateDealBorrowingRestrictionInAcbsWithBody = (requestBody: nock.RequestBodyMatcher): nock.Interceptor =>
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .put(`/Portfolio/${portfolioIdentifier}/Deal/${dealIdentifier}/BorrowingRestriction`, requestBody)
+      .matchHeader('authorization', `Bearer ${idToken}`);
+
+  const givenRequestToUpdateAnyDealBorrowingRestrictionInAcbsSucceeds = (): nock.Scope =>
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .put(new RegExp(`/Portfolio/${portfolioIdentifier}/Deal/\\d{10}/BorrowingRestriction`), JSON.stringify(acbsRequestBodyToUpdateBorrowingRestriction))
+      .matchHeader('authorization', `Bearer ${idToken}`)
+      .reply(200);
 });

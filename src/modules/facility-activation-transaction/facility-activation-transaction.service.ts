@@ -7,8 +7,8 @@ import { FacilityCodeValueTransaction } from '@ukef/modules/acbs/dto/bundle-acti
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 
+import { CreateFacilityActivationTransactionRequestItem } from './dto/create-facility-activation-transaction-request.dto';
 import { CreateFacilityActivationTransactionResponse } from './dto/create-facility-activation-transaction-response.dto';
-import { FacilityActivationTransactionToCreate } from './facility-activation-transaction-to-create.interface';
 
 @Injectable()
 export class FacilityActivationTransactionService {
@@ -22,7 +22,7 @@ export class FacilityActivationTransactionService {
     facilityIdentifier: UkefId,
     borrowerPartyIdentifier: AcbsPartyId,
     originalEffectiveDate: DateOnlyString,
-    newFacilityActivationTransaction: FacilityActivationTransactionToCreate,
+    newFacilityActivationTransaction: CreateFacilityActivationTransactionRequestItem,
   ): Promise<CreateFacilityActivationTransactionResponse> {
     const idToken = await this.acbsAuthenticationService.getIdToken();
 

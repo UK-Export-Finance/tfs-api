@@ -20,7 +20,7 @@ describe('DealInvestorService', () => {
   const currentDateProvider = new CurrentDateProvider();
   const dateStringTransformations = new DateStringTransformations();
   const idToken = valueGenerator.string();
-  const todayAsDateOnlyString = new Date().toISOString().split('T')[0];
+  const [todayAsDateOnlyString] = new Date().toISOString().split('T');
 
   let acbsDealPartyService: AcbsDealPartyService;
   let service: DealInvestorService;
@@ -52,57 +52,60 @@ describe('DealInvestorService', () => {
       numberToGenerate: 2,
       dealIdentifier: dealIdentifier,
     });
+    const [requestItemToCreateDealInvestor] = requestBodyToCreateDealInvestor;
 
     it('creates an investor in ACBS with a transformation of the requested new investor', async () => {
-      await service.createInvestorForDeal(dealIdentifier, requestBodyToCreateDealInvestor[0]);
+      await service.createInvestorForDeal(dealIdentifier, requestItemToCreateDealInvestor);
 
       expect(acbsDealPartyServiceCreateInvestorForDeal).toHaveBeenCalledWith(dealIdentifier, acbsRequestBodyToCreateDealInvestor, idToken);
     });
 
     it('adds a default value for lenderType before creating the new investor if it is not specified', async () => {
-      const { lenderType: _removed, ...newInvestorWithoutLenderType } = requestBodyToCreateDealInvestor[0];
+      const { lenderType: _removed, ...newInvestorWithoutLenderType } = requestItemToCreateDealInvestor;
 
       await service.createInvestorForDeal(dealIdentifier, newInvestorWithoutLenderType);
 
-      const investorCreatedInAcbs: AcbsCreateDealInvestorRequest = acbsDealPartyServiceCreateInvestorForDeal.mock.calls[0][1];
+      const investorCreatedInAcbs = getInvestorCreatedInAcbs();
 
       expect(investorCreatedInAcbs.LenderType.LenderTypeCode).toBe(PROPERTIES.DEAL_INVESTOR.DEFAULT.lenderType.lenderTypeCode);
     });
 
     it('adds a default value for expiryDate before creating the new investor if it is not specified', async () => {
-      const { expiryDate: _removed, ...newInvestorWithoutExpiryDate } = requestBodyToCreateDealInvestor[0];
+      const { expiryDate: _removed, ...newInvestorWithoutExpiryDate } = requestItemToCreateDealInvestor;
 
       await service.createInvestorForDeal(dealIdentifier, newInvestorWithoutExpiryDate);
 
-      const investorCreatedInAcbs: AcbsCreateDealInvestorRequest = acbsDealPartyServiceCreateInvestorForDeal.mock.calls[0][1];
+      const investorCreatedInAcbs = getInvestorCreatedInAcbs();
 
       expect(investorCreatedInAcbs.ExpirationDate).toBe(PROPERTIES.DEAL_INVESTOR.DEFAULT.expirationDate);
     });
 
     it('adds a default value for dealStatus before creating the new investor if it is not specified', async () => {
-      const { dealStatus: _removed, ...newInvestorWithoutDealStatus } = requestBodyToCreateDealInvestor[0];
+      const { dealStatus: _removed, ...newInvestorWithoutDealStatus } = requestItemToCreateDealInvestor;
 
       await service.createInvestorForDeal(dealIdentifier, newInvestorWithoutDealStatus);
 
-      const investorCreatedInAcbs: AcbsCreateDealInvestorRequest = acbsDealPartyServiceCreateInvestorForDeal.mock.calls[0][1];
+      const investorCreatedInAcbs = getInvestorCreatedInAcbs();
 
       expect(investorCreatedInAcbs.DealStatus.DealStatusCode).toBe(PROPERTIES.DEAL_INVESTOR.DEFAULT.dealStatus.dealStatusCode);
     });
 
     it(`replaces effectiveDate with today's date if effectiveDate is after today`, async () => {
-      await service.createInvestorForDeal(dealIdentifier, { ...requestBodyToCreateDealInvestor[0], effectiveDate: TEST_DATES.A_FUTURE_EFFECTIVE_DATE_ONLY });
+      await service.createInvestorForDeal(dealIdentifier, { ...requestItemToCreateDealInvestor, effectiveDate: TEST_DATES.A_FUTURE_EFFECTIVE_DATE_ONLY });
 
-      const investorCreatedInAcbs: AcbsCreateDealInvestorRequest = acbsDealPartyServiceCreateInvestorForDeal.mock.calls[0][1];
+      const investorCreatedInAcbs = getInvestorCreatedInAcbs();
 
       expect(investorCreatedInAcbs.EffectiveDate).toBe(dateStringTransformations.addTimeToDateOnlyString(todayAsDateOnlyString));
     });
 
     it(`does NOT replace effectiveDate with today's date if effectiveDate is NOT after today`, async () => {
-      await service.createInvestorForDeal(dealIdentifier, requestBodyToCreateDealInvestor[0]);
+      await service.createInvestorForDeal(dealIdentifier, requestItemToCreateDealInvestor);
 
-      const investorCreatedInAcbs: AcbsCreateDealInvestorRequest = acbsDealPartyServiceCreateInvestorForDeal.mock.calls[0][1];
+      const investorCreatedInAcbs = getInvestorCreatedInAcbs();
 
       expect(investorCreatedInAcbs.EffectiveDate).toBe(dateStringTransformations.addTimeToDateOnlyString(TEST_DATES.A_PAST_EFFECTIVE_DATE_ONLY));
     });
+
+    const getInvestorCreatedInAcbs = (): AcbsCreateDealInvestorRequest => acbsDealPartyServiceCreateInvestorForDeal.mock.calls[0][1];
   });
 });

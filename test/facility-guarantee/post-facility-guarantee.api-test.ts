@@ -21,10 +21,12 @@ describe('POST /facilities/{facilityIdentifier}/guarantees', () => {
   const createFacilityGuaranteeUrl = `/api/v1/facilities/${facilityIdentifier}/guarantees`;
 
   const { portfolioIdentifier } = PROPERTIES.GLOBAL;
-  const lenderTypeCode = PROPERTIES.FACILITY_GUARANTEE.DEFAULT.lenderType.lenderTypeCode;
-  const limitTypeCode = PROPERTIES.FACILITY_GUARANTEE.DEFAULT.limitType.limitTypeCode;
-  const sectionIdentifier = PROPERTIES.FACILITY_GUARANTEE.DEFAULT.sectionIdentifier;
-  const guaranteedPercentage = PROPERTIES.FACILITY_GUARANTEE.DEFAULT.guaranteedPercentage;
+  const {
+    guaranteedPercentage,
+    lenderType: { lenderTypeCode },
+    limitType: { limitTypeCode },
+    sectionIdentifier,
+  } = PROPERTIES.FACILITY_GUARANTEE.DEFAULT;
 
   const guarantorParty = valueGenerator.acbsPartyId();
   const limitKey = valueGenerator.acbsPartyId();

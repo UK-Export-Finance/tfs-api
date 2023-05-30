@@ -10,14 +10,20 @@ import {
   ApiParam,
 } from '@nestjs/swagger';
 import { EXAMPLES } from '@ukef/constants';
+import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decorator';
+import { FacilityService } from '@ukef/modules/facility/facility.service';
 
-import { GetFacilityFixedFeeParamsDto } from './dto/get-facility-fixed-fee-params.dto';
+import { CreateFixedFeeAmountAmendmentRequest, CreateFixedFeeAmountAmendmentRequestItem } from './dto/create-facility-fixed-fee-amount-amendment-request.dto';
+import { CreateFixedFeeAmountAmendmentResponse } from './dto/create-facility-fixed-fee-amount-amendment-response.dto';
+import { CreateFacilityFixedFeeRequest, CreateFacilityFixedFeeRequestItem } from './dto/create-facility-fixed-fee-request.dto';
+import { CreateFacilityFixedFeeResponse } from './dto/create-facility-fixed-fee-response.dto';
+import { FacilityFixedFeeParamsDto } from './dto/facility-fixed-fee-params.dto';
 import { GetFacilityFixedFeeResponse, GetFacilityFixedFeeResponseItem } from './dto/get-facility-fixed-fee-response.dto';
 import { FacilityFixedFeeService } from './facility-fixed-fee.service';
 
 @Controller()
 export class FacilityFixedFeeController {
-  constructor(private readonly facilityFixedFeeService: FacilityFixedFeeService) {}
+  constructor(private readonly facilityFixedFeeService: FacilityFixedFeeService, private readonly facilityService: FacilityService) {}
   @Get('/facilities/:facilityIdentifier/fixed-fees')
   @ApiOperation({
     summary: 'Get all fixed fees for a facility.',
@@ -33,7 +39,7 @@ export class FacilityFixedFeeController {
   @ApiInternalServerErrorResponse({
     description: 'An internal server error has occurred.',
   })
-  async getFixedFeesForFacility(@Param() params: GetFacilityFixedFeeParamsDto): Promise<GetFacilityFixedFeeResponse> {
+  async getFixedFeesForFacility(@Param() params: FacilityFixedFeeParamsDto): Promise<GetFacilityFixedFeeResponse> {
     return await this.facilityFixedFeeService.getFixedFeesForFacility(params.facilityIdentifier);
   }
 
@@ -65,12 +71,52 @@ export class FacilityFixedFeeController {
   @ApiInternalServerErrorResponse({
     description: 'An internal server error has occurred.',
   })
-  async createAmountAmendmentForLoan(
-    @Param() params: CreateLoanAmountAmendmentParams,
-    @ValidatedArrayBody({ items: CreateLoanAmountAmendmentRequestItem }) newLoanAmountAmendmentRequest: CreateLoanAmountAmendmentRequest,
-  ): Promise<CreateLoanAmountAmendmentResponse> {
-    const [newLoanAmountAmendment] = newLoanAmountAmendmentRequest;
-    const createdBundleIdentifier = await this.facilityLoanService.createAmountAmendmentForLoan(params.loanIdentifier, newLoanAmountAmendment);
-    return { bundleIdentifier: createdBundleIdentifier };
+  async createAmountAmendmentForFixedFees(
+    @Param() params: FacilityFixedFeeParamsDto,
+    @ValidatedArrayBody({ items: CreateFixedFeeAmountAmendmentRequestItem }) newFixedFeeAmountAmendmentRequest: CreateFixedFeeAmountAmendmentRequest,
+  ): Promise<CreateFixedFeeAmountAmendmentResponse> {
+    return await this.facilityFixedFeeService.createAmountAmendmentForFixedFees(params.facilityIdentifier, newFixedFeeAmountAmendmentRequest);
+  }
+
+  @Post('facilities/:facilityIdentifier/fixed-fees')
+  @ApiOperation({
+    summary: 'Create a new fixed fee for a facility.',
+  })
+  @ApiBody({
+    type: CreateFacilityFixedFeeRequestItem,
+    isArray: true,
+  })
+  @ApiCreatedResponse({
+    description: 'The fixed fee has been successfully created.',
+    type: CreateFacilityFixedFeeResponse,
+  })
+  @ApiNotFoundResponse({
+    description: 'The facility was not found.',
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad request.',
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'An internal server error has occurred.',
+  })
+  async createFixedFeeForFacility(
+    @Param() params: FacilityFixedFeeParamsDto,
+    @ValidatedArrayBody({ items: CreateFacilityFixedFeeRequestItem }) newCreateFacilityFixedFeeRequest: CreateFacilityFixedFeeRequest,
+  ): Promise<CreateFacilityFixedFeeResponse> {
+    const { facilityIdentifier } = params;
+    const facility = await this.facilityService.getFacilityByIdentifier(facilityIdentifier);
+
+    const [newCreateFacilityFixedFee] = newCreateFacilityFixedFeeRequest;
+
+    await this.facilityFixedFeeService.createFixedFeeForFacility(
+      facilityIdentifier,
+      facility.obligorPartyIdentifier,
+      facility.productTypeId,
+      newCreateFacilityFixedFee,
+      facility.facilityOverallStatus,
+      facility.facilityStageCode,
+    );
+
+    return new CreateFacilityFixedFeeResponse(facilityIdentifier);
   }
 }

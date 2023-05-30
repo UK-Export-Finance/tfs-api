@@ -2,6 +2,7 @@ import { PROPERTIES } from '@ukef/constants';
 import { AcbsBundleInformationService } from '@ukef/modules/acbs/acbs-bundle-information.service';
 import { AcbsFacilityLoanService } from '@ukef/modules/acbs/acbs-facility-loan.service';
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
+import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
 import { GetFacilityLoanGenerator } from '@ukef-test/support/generator/get-facility-loan-generator';
@@ -23,9 +24,10 @@ describe('FacilityLoanService', () => {
 
   let acbsAuthenticationService: AcbsAuthenticationService;
   let service: FacilityLoanService;
+  let acbsFacilityLoanService: AcbsFacilityLoanService;
+  let acbsBundleInformationService: AcbsBundleInformationService;
 
-  let getFacilityLoansAcbsService: jest.Mock;
-  let createBundleInformation: jest.Mock;
+  let acbsFacilityLoanServiceGetLoansForFacility: jest.Mock;
 
   beforeEach(() => {
     const mockAcbsAuthenticationService = getMockAcbsAuthenticationService();
@@ -33,20 +35,22 @@ describe('FacilityLoanService', () => {
     const acbsAuthenticationServiceGetIdToken = mockAcbsAuthenticationService.getIdToken;
     when(acbsAuthenticationServiceGetIdToken).calledWith().mockResolvedValueOnce(idToken);
 
-    const acbsService = new AcbsFacilityLoanService(null, null);
-    getFacilityLoansAcbsService = jest.fn();
-    acbsService.getLoansForFacility = getFacilityLoansAcbsService;
+    acbsFacilityLoanService = new AcbsFacilityLoanService(null, null);
+    acbsFacilityLoanServiceGetLoansForFacility = jest.fn();
+    acbsFacilityLoanService.getLoansForFacility = acbsFacilityLoanServiceGetLoansForFacility;
 
-    const acbsBundleService = new AcbsBundleInformationService(null, null);
-    createBundleInformation = jest.fn();
-    acbsBundleService.createBundleInformation = createBundleInformation;
-
-    service = new FacilityLoanService(acbsAuthenticationService, acbsService, acbsBundleService, new DateStringTransformations());
+    service = new FacilityLoanService(
+      acbsAuthenticationService,
+      acbsFacilityLoanService,
+      acbsBundleInformationService,
+      new DateStringTransformations(),
+      new CurrentDateProvider(),
+    );
   });
 
   describe('getLoansForFacility', () => {
     it('returns a transformation of the loans from ACBS', async () => {
-      when(getFacilityLoansAcbsService).calledWith(portfolioIdentifier, facilityIdentifier, idToken).mockResolvedValueOnce(facilityLoansInAcbs);
+      when(acbsFacilityLoanServiceGetLoansForFacility).calledWith(portfolioIdentifier, facilityIdentifier, idToken).mockResolvedValueOnce(facilityLoansInAcbs);
 
       const loans = await service.getLoansForFacility(facilityIdentifier);
 
@@ -54,7 +58,7 @@ describe('FacilityLoanService', () => {
     });
 
     it('returns an empty array if ACBS returns an empty array', async () => {
-      when(getFacilityLoansAcbsService).calledWith(portfolioIdentifier, facilityIdentifier, idToken).mockResolvedValueOnce([]);
+      when(acbsFacilityLoanServiceGetLoansForFacility).calledWith(portfolioIdentifier, facilityIdentifier, idToken).mockResolvedValueOnce([]);
 
       const loans = await service.getLoansForFacility(facilityIdentifier);
 

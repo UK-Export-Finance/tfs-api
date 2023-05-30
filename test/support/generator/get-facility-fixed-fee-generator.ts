@@ -14,6 +14,7 @@ export class GetFacilityFixedFeeGenerator extends AbstractGenerator<FacilityFixe
   protected generateValues(): FacilityFixedFeeValues {
     return {
       fixedFeeAmount: this.valueGenerator.nonnegativeFloat({ fixed: 2 }),
+      currentPayoffAmount: this.valueGenerator.nonnegativeFloat({ fixed: 2 }),
       effectiveDateInAcbs: this.valueGenerator.dateTimeString(),
       expirationDateInAcbs: this.valueGenerator.dateTimeString(),
       nextDueDateInAcbs: this.valueGenerator.dateTimeString(),
@@ -29,7 +30,6 @@ export class GetFacilityFixedFeeGenerator extends AbstractGenerator<FacilityFixe
       incomeClass: {
         incomeClassCode: this.valueGenerator.string({ length: 3 }),
       },
-      spreadToInvestorsIndicator: this.valueGenerator.boolean(),
     };
   }
 
@@ -39,6 +39,7 @@ export class GetFacilityFixedFeeGenerator extends AbstractGenerator<FacilityFixe
   ): GenerateResult {
     const acbsFacilityFixedFees: AcbsGetFacilityFixedFeeResponseDto = values.map((acbsFacilityFixedFee) => ({
       FixedFeeAmount: acbsFacilityFixedFee.fixedFeeAmount,
+      CurrentPayoffAmount: acbsFacilityFixedFee.currentPayoffAmount,
       EffectiveDate: acbsFacilityFixedFee.effectiveDateInAcbs,
       ExpirationDate: acbsFacilityFixedFee.expirationDateInAcbs,
       NextDueDate: acbsFacilityFixedFee.nextDueDateInAcbs,
@@ -54,13 +55,13 @@ export class GetFacilityFixedFeeGenerator extends AbstractGenerator<FacilityFixe
       IncomeClass: {
         IncomeClassCode: acbsFacilityFixedFee.incomeClass.incomeClassCode,
       },
-      SpreadToInvestorsIndicator: acbsFacilityFixedFee.spreadToInvestorsIndicator,
     }));
 
     const apiFacilityFixedFees: GetFacilityFixedFeeResponse = values.map((apiFacilityFixedFee) => ({
       facilityIdentifier,
       portfolioIdentifier,
       amount: apiFacilityFixedFee.fixedFeeAmount,
+      currentPayoffAmount: apiFacilityFixedFee.currentPayoffAmount,
       effectiveDate: this.dateStringTransformations.removeTime(apiFacilityFixedFee.effectiveDateInAcbs),
       expirationDate: this.dateStringTransformations.removeTime(apiFacilityFixedFee.expirationDateInAcbs),
       nextDueDate: this.dateStringTransformations.removeTime(apiFacilityFixedFee.nextDueDateInAcbs),
@@ -70,7 +71,6 @@ export class GetFacilityFixedFeeGenerator extends AbstractGenerator<FacilityFixe
       currency: apiFacilityFixedFee.currency.currencyCode,
       lenderTypeCode: apiFacilityFixedFee.lenderType.lenderTypeCode,
       incomeClassCode: apiFacilityFixedFee.incomeClass.incomeClassCode,
-      spreadToInvestorsIndicator: apiFacilityFixedFee.spreadToInvestorsIndicator,
     }));
 
     return {
@@ -82,6 +82,7 @@ export class GetFacilityFixedFeeGenerator extends AbstractGenerator<FacilityFixe
 
 interface FacilityFixedFeeValues {
   fixedFeeAmount: number;
+  currentPayoffAmount: number;
   effectiveDateInAcbs: DateString;
   expirationDateInAcbs: DateString;
   nextDueDateInAcbs: DateString;
@@ -97,7 +98,6 @@ interface FacilityFixedFeeValues {
   incomeClass: {
     incomeClassCode: string;
   };
-  spreadToInvestorsIndicator: boolean;
 }
 
 interface GenerateOptions {

@@ -67,7 +67,7 @@ export class PartyController {
     createPartyDto: CreatePartyRequest,
     @Res({ passthrough: true }) res: Response,
   ): Promise<CreatePartyResponse> {
-    const newParty = createPartyDto[0];
+    const [newParty] = createPartyDto;
     const partyIdentifierOfMatchingParty = await this.partyService.getPartyIdentifierBySearchText(newParty.alternateIdentifier);
 
     if (partyIdentifierOfMatchingParty) {

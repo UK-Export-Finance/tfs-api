@@ -35,9 +35,11 @@ describe('FacilityInvestorService', () => {
 
   describe('createInvestorForFacility', () => {
     const facilityIdentifier = valueGenerator.facilityId();
-    const sectionIdentifier = PROPERTIES.FACILITY_INVESTOR.DEFAULT.sectionIdentifier;
-    const facilityStatusCode = PROPERTIES.FACILITY_INVESTOR.DEFAULT.facilityStatus.facilityStatusCode;
-    const involvedPartyIdentifier = PROPERTIES.FACILITY_INVESTOR.DEFAULT.involvedParty.partyIdentifier;
+    const {
+      facilityStatus: { facilityStatusCode },
+      involvedParty: { partyIdentifier: involvedPartyIdentifier },
+      sectionIdentifier,
+    } = PROPERTIES.FACILITY_INVESTOR.DEFAULT;
     const effectiveDate = TEST_DATES.A_FUTURE_EFFECTIVE_DATE_ONLY;
     const guaranteeExpiryDate = TEST_DATES.A_FUTURE_EXPIRY_DATE_ONLY;
     const lenderType = valueGenerator.stringOfNumericCharacters();
@@ -88,7 +90,8 @@ describe('FacilityInvestorService', () => {
 
       await service.createInvestorForFacility(facilityIdentifier, newInvestorWithoutLenderType);
 
-      const facilityPartyCreatedInAcbs: AcbsCreateFacilityPartyDto = acbsFacilityPartyServiceCreatePartyForFacility.mock.calls[0][1];
+      const [createPartyForFacilityArgs] = acbsFacilityPartyServiceCreatePartyForFacility.mock.calls as [[unknown, AcbsCreateFacilityPartyDto]];
+      const [, facilityPartyCreatedInAcbs] = createPartyForFacilityArgs;
 
       expect(facilityPartyCreatedInAcbs.LenderType.LenderTypeCode).toBe(PROPERTIES.FACILITY_INVESTOR.DEFAULT.lenderType.lenderTypeCode);
     });

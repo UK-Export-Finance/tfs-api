@@ -4,6 +4,7 @@ export type AcbsGetFacilityFixedFeeResponseDto = AcbsGetFacilityFixedFeeResponse
 
 export interface AcbsGetFacilityFixedFeeResponseItem {
   FixedFeeAmount: number;
+  CurrentPayoffAmount: number;
   EffectiveDate: DateString;
   ExpirationDate: DateString;
   NextDueDate: DateString;
@@ -19,5 +20,4 @@ export interface AcbsGetFacilityFixedFeeResponseItem {
   IncomeClass: {
     IncomeClassCode: string;
   };
-  SpreadToInvestorsIndicator: boolean;
 }

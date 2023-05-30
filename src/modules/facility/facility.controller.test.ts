@@ -49,7 +49,7 @@ describe('FacilityController', () => {
       portfolioIdentifier,
       facilityIdentifier,
     });
-    const facilityFromService = facilitiesFromApi[0];
+    const [facilityFromService] = facilitiesFromApi;
     const expectedFacility = facilityFromService;
 
     it('returns the facility from the service', async () => {
