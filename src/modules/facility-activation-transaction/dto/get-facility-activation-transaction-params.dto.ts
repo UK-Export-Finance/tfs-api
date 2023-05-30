@@ -1,9 +1,10 @@
-import { ValidatedStringApiProperty } from '@ukef/decorators/validated-string-api-property.decorator';
+import { ValidatedBundleIdentifierApiProperty } from '@ukef/decorators/validated-bundle-identifier-api-property.decorator';
+import { ValidatedFacilityIdentifierApiProperty } from '@ukef/decorators/validated-facility-identifier-api-property';
 
 export class GetFacilityActivationTransactionParamsDto {
-  @ValidatedStringApiProperty({ description: 'The UKEF identifier for the facility.', length: 10, pattern: /^00\d{8}$/ })
+  @ValidatedFacilityIdentifierApiProperty({ description: 'The UKEF identifier for the facility.' })
   readonly facilityIdentifier: string;
 
-  @ValidatedStringApiProperty({ description: 'The bundle identifier for the loan transaction.', length: 10, pattern: /^0{4}\d{6}$/ })
+  @ValidatedBundleIdentifierApiProperty({ description: 'The bundle identifier for the loan transaction.' })
   readonly bundleIdentifier: string;
 }

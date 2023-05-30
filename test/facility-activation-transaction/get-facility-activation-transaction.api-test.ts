@@ -70,6 +70,25 @@ describe('GET /facilities/{facilityIdentifier}/activation-transactions/{bundleId
     expect(body).toStrictEqual(apiFacilityActivationTransaction);
   });
 
+  it(`returns a 400 response if the loan transaction is returned by ACBS and the 0th element of BundleMessageList is NOT a 'NewLoanRequest'`, async () => {
+    const invalidloanTransactionInAcbs = JSON.parse(JSON.stringify(acbsFacilityActivationTransaction));
+    invalidloanTransactionInAcbs.BundleMessageList.unshift({
+      $type: 'AccrualScheduleAmountTransaction',
+    });
+
+    givenAuthenticationWithTheIdpSucceeds();
+    requestToGetFacilityActivationTransaction().reply(200, invalidloanTransactionInAcbs);
+
+    const { status, body } = await api.get(getFacilityActivationTransactionUrl);
+
+    expect(status).toBe(400);
+    expect(body).toStrictEqual({
+      statusCode: 400,
+      message: 'Bad request',
+      error: 'The provided bundleIdentifier does not correspond to an activation transaction.',
+    });
+  });
+
   it('returns a 404 response if ACBS returns a 400 response with the string "BundleInformation not found"', async () => {
     givenAuthenticationWithTheIdpSucceeds();
     requestToGetFacilityActivationTransaction().reply(400, 'BundleInformation not found or user does not have access to it.');
@@ -110,7 +129,7 @@ describe('GET /facilities/{facilityIdentifier}/activation-transactions/{bundleId
     });
   });
 
-  it('returns a 500 response if getting the loan transaction from ACBS returns a status code that is NOT 200 or 400', async () => {
+  it('returns a 500 response if getting the activation transaction from ACBS returns a status code that is NOT 200 or 400', async () => {
     givenAuthenticationWithTheIdpSucceeds();
     requestToGetFacilityActivationTransaction().reply(401);
 
@@ -123,7 +142,7 @@ describe('GET /facilities/{facilityIdentifier}/activation-transactions/{bundleId
     });
   });
 
-  it('returns a 500 response if getting the loan transaction from ACBS times out', async () => {
+  it('returns a 500 response if getting the activation transaction from ACBS times out', async () => {
     givenAuthenticationWithTheIdpSucceeds();
     requestToGetFacilityActivationTransaction().delay(TIME_EXCEEDING_ACBS_TIMEOUT).reply(200, acbsFacilityActivationTransaction);
 

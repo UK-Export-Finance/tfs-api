@@ -93,7 +93,7 @@ export class GetFacilityActivationTransactionResponseDto {
     example: PROPERTIES.FACILITY_ACTIVATION_TRANSACTION.DEFAULT.bundleMessageList.facilityTransactionCodeValue.facilityTransactionCodeValueCode,
     required: false,
   })
-  readonly facilityTransactionTypeCode: number; // TODO APIM-125: should this be a number or a string?
+  readonly facilityTransactionTypeCode: number;
 
   @ApiProperty({
     description: 'If this value is true, it sets the bundle to draft.',

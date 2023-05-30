@@ -89,14 +89,14 @@ describe('FacilityActivationTransactionController', () => {
       facilityIdentifier,
     });
 
-    it('returns the facility from the service', async () => {
+    it('returns the activation transaction from the service', async () => {
       when(facilityActivationTransactionServiceGetActivationTransactionByBundleIdentifier)
         .calledWith(bundleIdentifier)
         .mockResolvedValueOnce(expectedActivationTransaction);
 
-      const facility = await controller.getActivationTransactionByBundleIdentifier({ facilityIdentifier, bundleIdentifier });
+      const activationTransaction = await controller.getActivationTransactionByBundleIdentifier({ facilityIdentifier, bundleIdentifier });
 
-      expect(facility).toStrictEqual(expectedActivationTransaction);
+      expect(activationTransaction).toStrictEqual(expectedActivationTransaction);
     });
   });
 });
