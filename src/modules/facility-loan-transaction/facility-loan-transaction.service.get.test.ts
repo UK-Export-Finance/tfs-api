@@ -42,7 +42,7 @@ describe('FacilityLoanTransactionService', () => {
 
   describe('getLoanTransactionByBundleIdentifier', () => {
     it('returns a transformation of the loan transaction from ACBS', async () => {
-      when(getBundleInformationAcbsService).calledWith(bundleIdentifier, 'Loan transaction', idToken).mockResolvedValueOnce(acbsFacilityLoanTransaction);
+      when(getBundleInformationAcbsService).calledWith(bundleIdentifier, idToken).mockResolvedValueOnce(acbsFacilityLoanTransaction);
 
       const loanTransaction = await service.getLoanTransactionsByBundleIdentifier(bundleIdentifier);
 
@@ -57,9 +57,7 @@ describe('FacilityLoanTransactionService', () => {
         dealCustomerUsageRate: null,
       };
 
-      when(getBundleInformationAcbsService)
-        .calledWith(bundleIdentifier, 'Loan transaction', idToken)
-        .mockResolvedValueOnce(loanTransactionInAcbsWithNullDealCustomerUsageRate);
+      when(getBundleInformationAcbsService).calledWith(bundleIdentifier, idToken).mockResolvedValueOnce(loanTransactionInAcbsWithNullDealCustomerUsageRate);
 
       const loanTransactions = await service.getLoanTransactionsByBundleIdentifier(bundleIdentifier);
 
@@ -74,9 +72,7 @@ describe('FacilityLoanTransactionService', () => {
         dealCustomerUsageOperationType: null,
       };
 
-      when(getBundleInformationAcbsService)
-        .calledWith(bundleIdentifier, 'Loan transaction', idToken)
-        .mockResolvedValueOnce(loanTransactionInAcbsWithNullOperationTypeCode);
+      when(getBundleInformationAcbsService).calledWith(bundleIdentifier, idToken).mockResolvedValueOnce(loanTransactionInAcbsWithNullOperationTypeCode);
 
       const loanTransactions = await service.getLoanTransactionsByBundleIdentifier(bundleIdentifier);
 
@@ -91,9 +87,7 @@ describe('FacilityLoanTransactionService', () => {
         dealCustomerUsageOperationType: null,
       };
 
-      when(getBundleInformationAcbsService)
-        .calledWith(bundleIdentifier, 'Loan transaction', idToken)
-        .mockResolvedValueOnce(loanTransactionInAcbsWithEmptyOperationTypeCode);
+      when(getBundleInformationAcbsService).calledWith(bundleIdentifier, idToken).mockResolvedValueOnce(loanTransactionInAcbsWithEmptyOperationTypeCode);
 
       const loanTransactions = await service.getLoanTransactionsByBundleIdentifier(bundleIdentifier);
 
@@ -120,9 +114,7 @@ describe('FacilityLoanTransactionService', () => {
         indexRateChangeFrequency: '',
       };
 
-      when(getBundleInformationAcbsService)
-        .calledWith(bundleIdentifier, 'Loan transaction', idToken)
-        .mockResolvedValueOnce(loanTransactionInAcbsWithMoreThanOnePacAccrual);
+      when(getBundleInformationAcbsService).calledWith(bundleIdentifier, idToken).mockResolvedValueOnce(loanTransactionInAcbsWithMoreThanOnePacAccrual);
 
       const loanTransactions = await service.getLoanTransactionsByBundleIdentifier(bundleIdentifier);
 
@@ -148,9 +140,7 @@ describe('FacilityLoanTransactionService', () => {
         spreadRateCTL: 0,
       };
 
-      when(getBundleInformationAcbsService)
-        .calledWith(bundleIdentifier, 'Loan transaction', idToken)
-        .mockResolvedValueOnce(loanTransactionInAcbsWithMoreThanOneCtlAccrual);
+      when(getBundleInformationAcbsService).calledWith(bundleIdentifier, idToken).mockResolvedValueOnce(loanTransactionInAcbsWithMoreThanOneCtlAccrual);
 
       const loanTransactions = await service.getLoanTransactionsByBundleIdentifier(bundleIdentifier);
 
@@ -163,7 +153,7 @@ describe('FacilityLoanTransactionService', () => {
         $type: 'AccrualScheduleAmountTransaction',
       });
 
-      when(getBundleInformationAcbsService).calledWith(bundleIdentifier, 'Loan transaction', idToken).mockResolvedValueOnce(invalidLoanTransactionInAcbs);
+      when(getBundleInformationAcbsService).calledWith(bundleIdentifier, idToken).mockResolvedValueOnce(invalidLoanTransactionInAcbs);
 
       const responsePromise = service.getLoanTransactionsByBundleIdentifier(bundleIdentifier);
 

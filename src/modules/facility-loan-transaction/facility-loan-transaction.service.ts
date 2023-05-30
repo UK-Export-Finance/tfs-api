@@ -19,7 +19,7 @@ export class FacilityLoanTransactionService {
 
   async getLoanTransactionsByBundleIdentifier(bundleIdentifier: string): Promise<GetFacilityLoanTransactionResponseDto> {
     const idToken = await this.acbsAuthenticationService.getIdToken();
-    const loanTransaction = await this.acbsBundleInformationService.getBundleInformationByIdentifier(bundleIdentifier, 'Loan transaction', idToken);
+    const loanTransaction = await this.acbsBundleInformationService.getBundleInformationByIdentifier(bundleIdentifier, idToken);
     const [loan] = loanTransaction.BundleMessageList;
 
     if (!isNewLoanRequest(loan)) {

@@ -27,13 +27,13 @@ export class AcbsBundleInformationService {
     this.acbsHttpService = new AcbsHttpService(config, httpService);
   }
 
-  async getBundleInformationByIdentifier(bundleIdentifier: string, actionName: string, idToken: string): Promise<AcbsGetBundleInformationResponseDto> {
+  async getBundleInformationByIdentifier(bundleIdentifier: string, idToken: string): Promise<AcbsGetBundleInformationResponseDto> {
     const { data: bundleInformation } = await this.acbsHttpService.get<AcbsGetBundleInformationResponseDto>({
       path: `${AcbsBundleInformationService.bundleInformationPath}/${bundleIdentifier}?returnItems=true`,
       idToken,
       onError: createWrapAcbsHttpGetErrorCallback({
         messageForUnknownError: `Failed to get the bundle information with bundle identifier ${bundleIdentifier}.`,
-        knownErrors: [getBundleInformationNotFoundKnownAcbsError(bundleIdentifier, actionName)],
+        knownErrors: [getBundleInformationNotFoundKnownAcbsError(bundleIdentifier)],
       }),
     });
     return bundleInformation;

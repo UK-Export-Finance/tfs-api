@@ -49,10 +49,10 @@ export const postInvalidPortfolioAndFacilityIdCombinationKnownAcbsError = (facil
   },
 });
 
-export const getBundleInformationNotFoundKnownAcbsError = (bundleIdentifier: string, actionName: string): KnownError => ({
+export const getBundleInformationNotFoundKnownAcbsError = (bundleIdentifier: string): KnownError => ({
   caseInsensitiveSubstringToFind: 'BundleInformation not found',
   throwError: (error) => {
-    throw new AcbsResourceNotFoundException(`${actionName} with bundle identifier ${bundleIdentifier} was not found by ACBS.`, error);
+    throw new AcbsResourceNotFoundException(`Bundle information with bundle identifier ${bundleIdentifier} was not found by ACBS.`, error);
   },
 });
 

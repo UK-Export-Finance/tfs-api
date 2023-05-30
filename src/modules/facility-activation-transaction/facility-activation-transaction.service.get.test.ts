@@ -40,9 +40,7 @@ describe('FacilityActivationTransactionService', () => {
 
   describe('getActivationTransactionByBundleIdentifier', () => {
     it('returns a transformation of the activation transaction from ACBS', async () => {
-      when(getBundleInformationAcbsService)
-        .calledWith(bundleIdentifier, 'Activation transaction', idToken)
-        .mockResolvedValueOnce(acbsFacilityActivationTransaction);
+      when(getBundleInformationAcbsService).calledWith(bundleIdentifier, idToken).mockResolvedValueOnce(acbsFacilityActivationTransaction);
 
       const activationTransaction = await service.getActivationTransactionByBundleIdentifier(bundleIdentifier);
 
@@ -55,9 +53,7 @@ describe('FacilityActivationTransactionService', () => {
         $type: 'AccrualScheduleAmountTransaction',
       });
 
-      when(getBundleInformationAcbsService)
-        .calledWith(bundleIdentifier, 'Activation transaction', idToken)
-        .mockResolvedValueOnce(invalidActivationTransactionInAcbs);
+      when(getBundleInformationAcbsService).calledWith(bundleIdentifier, idToken).mockResolvedValueOnce(invalidActivationTransactionInAcbs);
 
       const responsePromise = service.getActivationTransactionByBundleIdentifier(bundleIdentifier);
 

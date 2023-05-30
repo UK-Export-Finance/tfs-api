@@ -58,7 +58,7 @@ describe('AcbsBundleInformationService', () => {
           }),
         );
 
-      const bundleInformation = await service.getBundleInformationByIdentifier(bundleIdentifier, 'Bundle action', idToken);
+      const bundleInformation = await service.getBundleInformationByIdentifier(bundleIdentifier, idToken);
 
       expect(bundleInformation).toStrictEqual(expectedBundleInformation);
     });
@@ -72,7 +72,7 @@ describe('AcbsBundleInformationService', () => {
         })
         .mockReturnValueOnce(throwError(() => getBundleInformationByIdentifierError));
 
-      const getLoanTransactionPromise = service.getBundleInformationByIdentifier(bundleIdentifier, 'Bundle action', idToken);
+      const getLoanTransactionPromise = service.getBundleInformationByIdentifier(bundleIdentifier, idToken);
 
       await expect(getLoanTransactionPromise).rejects.toBeInstanceOf(AcbsException);
       await expect(getLoanTransactionPromise).rejects.toThrow(`Failed to get the bundle information with bundle identifier ${bundleIdentifier}.`);
@@ -96,10 +96,10 @@ describe('AcbsBundleInformationService', () => {
         })
         .mockReturnValueOnce(throwError(() => axiosError));
 
-      const getLoanTransactionPromise = service.getBundleInformationByIdentifier(bundleIdentifier, 'Bundle action', idToken);
+      const getLoanTransactionPromise = service.getBundleInformationByIdentifier(bundleIdentifier, idToken);
 
       await expect(getLoanTransactionPromise).rejects.toBeInstanceOf(AcbsResourceNotFoundException);
-      await expect(getLoanTransactionPromise).rejects.toThrow(`Bundle action with bundle identifier ${bundleIdentifier} was not found by ACBS.`);
+      await expect(getLoanTransactionPromise).rejects.toThrow(`Bundle information with bundle identifier ${bundleIdentifier} was not found by ACBS.`);
       await expect(getLoanTransactionPromise).rejects.toHaveProperty('innerError', axiosError);
     });
 
@@ -120,7 +120,7 @@ describe('AcbsBundleInformationService', () => {
         })
         .mockReturnValueOnce(throwError(() => axiosError));
 
-      const getLoanTransactionPromise = service.getBundleInformationByIdentifier(bundleIdentifier, 'Bundle action', idToken);
+      const getLoanTransactionPromise = service.getBundleInformationByIdentifier(bundleIdentifier, idToken);
 
       await expect(getLoanTransactionPromise).rejects.toBeInstanceOf(AcbsException);
       await expect(getLoanTransactionPromise).rejects.toThrow(`Failed to get the bundle information with bundle identifier ${bundleIdentifier}.`);
@@ -144,7 +144,7 @@ describe('AcbsBundleInformationService', () => {
         })
         .mockReturnValueOnce(throwError(() => axiosError));
 
-      const getLoanTransactionPromise = service.getBundleInformationByIdentifier(bundleIdentifier, 'Bundle action', idToken);
+      const getLoanTransactionPromise = service.getBundleInformationByIdentifier(bundleIdentifier, idToken);
 
       await expect(getLoanTransactionPromise).rejects.toBeInstanceOf(AcbsException);
       await expect(getLoanTransactionPromise).rejects.toThrow(`Failed to get the bundle information with bundle identifier ${bundleIdentifier}.`);

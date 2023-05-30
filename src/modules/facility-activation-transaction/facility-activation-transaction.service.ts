@@ -66,7 +66,7 @@ export class FacilityActivationTransactionService {
 
   async getActivationTransactionByBundleIdentifier(bundleIdentifier: string): Promise<GetFacilityActivationTransactionResponseDto> {
     const idToken = await this.acbsAuthenticationService.getIdToken();
-    const activationTransaction = await this.acbsBundleInformationService.getBundleInformationByIdentifier(bundleIdentifier, 'Activation transaction', idToken);
+    const activationTransaction = await this.acbsBundleInformationService.getBundleInformationByIdentifier(bundleIdentifier, idToken);
     const [codeValueTransaction] = activationTransaction.BundleMessageList;
 
     if (!isFacilityCodeValueTransaction(codeValueTransaction)) {
