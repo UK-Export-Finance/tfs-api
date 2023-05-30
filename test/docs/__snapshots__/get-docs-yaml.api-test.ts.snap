@@ -520,11 +520,47 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreateFacilityGuaranteeResponse'
+                $ref: '#/components/schemas/CreateOrUpdateFacilityGuaranteeResponse'
         '400':
           description: Bad request.
         '404':
           description: The facility was not found.
+        '500':
+          description: An internal server error has occurred.
+    patch:
+      operationId: FacilityGuaranteeController_updateGuaranteesForFacility
+      summary: Update all guarantees for a facility.
+      parameters:
+        - name: facilityIdentifier
+          required: true
+          in: path
+          description: The identifier of the facility in ACBS.
+          example: '0030000322'
+          schema:
+            minLength: 10
+            maxLength: 10
+            pattern: ^00\\d{8}$
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateFacilityGuaranteesRequestDto'
+      responses:
+        '200':
+          description: The guarantees for the facility have been updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateOrUpdateFacilityGuaranteeResponse'
+        '400':
+          description: Bad request.
+        '404':
+          description: >-
+            The specified facility, or the guarantees for that facility, were
+            not found. (Due to limitations of ACBS, a 404 response does not
+            guarantee that the facility does not exist.)
         '500':
           description: An internal server error has occurred.
   /api/v1/facilities/{facilityIdentifier}/investors:
@@ -2213,7 +2249,7 @@ components:
         - maximumLiability
         - guarantorParty
         - guaranteeTypeCode
-    CreateFacilityGuaranteeResponse:
+    CreateOrUpdateFacilityGuaranteeResponse:
       type: object
       properties:
         facilityIdentifier:
@@ -2222,6 +2258,23 @@ components:
           example: '0030000322'
       required:
         - facilityIdentifier
+    UpdateFacilityGuaranteesRequestDto:
+      type: object
+      properties:
+        expirationDate:
+          format: date
+          type: string
+          description: >-
+            The date that the guarantee will expire on. It is required if
+            guaranteedLimit is not provided.
+          nullable: false
+        guaranteedLimit:
+          type: number
+          description: >-
+            The maximum amount the guarantor will guarantee. It is required if
+            expirationDate is not provided.
+          minimum: 0
+          example: 501927.25
     CreateFacilityInvestorRequestItem:
       type: object
       properties:

@@ -1,7 +1,7 @@
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 
 import { CreateFacilityGuaranteeRequestItem } from './dto/create-facility-guarantee-request.dto';
-import { CreateFacilityGuaranteeResponse } from './dto/create-facility-guarantee-response.dto';
+import { CreateOrUpdateFacilityGuaranteeResponse } from './dto/create-facility-guarantee-response.dto';
 import { FacilityGuaranteeController } from './facility-guarantee.controller';
 import { FacilityGuaranteeService } from './facility-guarantee.service';
 
@@ -47,7 +47,7 @@ describe('FacilityGuaranteeController', () => {
     it('returns the facility identifier if creating the guarantee succeeds', async () => {
       const response = await controller.createGuaranteeForFacility({ facilityIdentifier }, [newGuarantee]);
 
-      expect(response).toStrictEqual(new CreateFacilityGuaranteeResponse(facilityIdentifier));
+      expect(response).toStrictEqual(new CreateOrUpdateFacilityGuaranteeResponse(facilityIdentifier));
     });
   });
 });
