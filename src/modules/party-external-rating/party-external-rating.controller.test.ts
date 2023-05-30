@@ -24,7 +24,7 @@ describe('PartyExternalRatingController', () => {
     let partyExternalRatingServiceGetExternalRatingsForParty: jest.Mock;
 
     beforeEach(() => {
-      partyExternalRatingService = new PartyExternalRatingService(null, null);
+      partyExternalRatingService = new PartyExternalRatingService(null, null, null);
 
       partyExternalRatingServiceGetExternalRatingsForParty = jest.fn();
       partyExternalRatingService.getExternalRatingsForParty = partyExternalRatingServiceGetExternalRatingsForParty;

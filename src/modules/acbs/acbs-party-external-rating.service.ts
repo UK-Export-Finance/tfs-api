@@ -5,7 +5,7 @@ import AcbsConfig from '@ukef/config/acbs.config';
 import { AcbsConfigBaseUrl } from './acbs-config-base-url.type';
 import { AcbsHttpService } from './acbs-http.service';
 import { AcbsCreatePartyExternalRatingRequestDto } from './dto/acbs-create-party-external-rating-request.dto';
-import { AcbsPartyExternalRatingsResponseDto } from './dto/acbs-party-external-ratings-response.dto';
+import { AcbsGetPartyExternalRatingsResponseDto } from './dto/acbs-get-party-external-ratings-response.dto';
 import { getPartyNotFoundKnownAcbsError, postPartyExternalRatingExistsKnownAcbsError, postPartyExternalRatingNotFoundKnownAcbsError } from './known-errors';
 import { createWrapAcbsHttpGetErrorCallback, createWrapAcbsHttpPostOrPutErrorCallback } from './wrap-acbs-http-error-callback';
 
@@ -21,8 +21,8 @@ export class AcbsPartyExternalRatingService {
     this.acbsHttpService = new AcbsHttpService(config, httpService);
   }
 
-  async getExternalRatingsForParty(partyIdentifier: string, idToken: string): Promise<AcbsPartyExternalRatingsResponseDto> {
-    const { data: externalRatingsInAcbs } = await this.acbsHttpService.get<AcbsPartyExternalRatingsResponseDto>({
+  async getExternalRatingsForParty(partyIdentifier: string, idToken: string): Promise<AcbsGetPartyExternalRatingsResponseDto> {
+    const { data: externalRatingsInAcbs } = await this.acbsHttpService.get<AcbsGetPartyExternalRatingsResponseDto>({
       path: `/Party/${partyIdentifier}/PartyExternalRating`,
       idToken,
       onError: createWrapAcbsHttpGetErrorCallback({

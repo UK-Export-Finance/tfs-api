@@ -1,5 +1,5 @@
 import { DateString } from '@ukef/helpers/date-string.type';
-import { AcbsPartyExternalRatingsResponseDto } from '@ukef/modules/acbs/dto/acbs-party-external-ratings-response.dto';
+import { AcbsGetPartyExternalRatingsResponseDto } from '@ukef/modules/acbs/dto/acbs-get-party-external-ratings-response.dto';
 import { GetPartyExternalRatingsResponse } from '@ukef/modules/party-external-rating/dto/get-party-external-ratings-response.dto';
 import { PartyExternalRating } from '@ukef/modules/party-external-rating/party-external-rating.interface';
 
@@ -22,7 +22,7 @@ export class GetPartyExternalRatingGenerator extends AbstractGenerator<PartyExte
   }
 
   protected transformRawValuesToGeneratedValues(values: PartyExternalRatingValues[], { partyIdentifier }: GenerateOptions): GenerateResult {
-    const externalRatingsInAcbs: AcbsPartyExternalRatingsResponseDto = values.map((v) => ({
+    const externalRatingsInAcbs: AcbsGetPartyExternalRatingsResponseDto = values.map((v) => ({
       PartyIdentifier: partyIdentifier,
       RatingEntity: {
         RatingEntityCode: v.ratingEntityCode,
@@ -90,7 +90,7 @@ interface GenerateOptions {
 }
 
 interface GenerateResult {
-  externalRatingsInAcbs: AcbsPartyExternalRatingsResponseDto;
+  externalRatingsInAcbs: AcbsGetPartyExternalRatingsResponseDto;
   externalRatings: PartyExternalRating[];
   externalRatingsFromApi: GetPartyExternalRatingsResponse;
 }

@@ -5,6 +5,7 @@ import { Response } from 'express';
 import { when } from 'jest-when';
 
 import { DateStringTransformations } from '../date/date-string.transformations';
+import { PartyExternalRatingService } from '../party-external-rating/party-external-rating.service';
 import { PartyController } from './party.controller';
 import { PartyService } from './party.service';
 
@@ -16,6 +17,7 @@ describe('PartyController', () => {
   const partyIdentifier = valueGenerator.stringOfNumericCharacters();
 
   let partyService: PartyService;
+  let partyExternalRatingService: PartyExternalRatingService
   let controller: PartyController;
 
   let partyServiceGetPartyByIdentifier: jest.Mock;
@@ -34,7 +36,7 @@ describe('PartyController', () => {
     partyServiceGetPartyIdentifierBySearchText = jest.fn();
     partyService.getPartyIdentifierBySearchText = partyServiceGetPartyIdentifierBySearchText;
 
-    controller = new PartyController(null, partyService);
+    controller = new PartyController(partyService, partyExternalRatingService);
   });
 
   describe('getPartyByIdentifier', () => {
