@@ -157,6 +157,16 @@ export const PROPERTIES = {
       watchListReasonCode: '',
     },
   },
+  PARTY_EXTERNAL_RATING: {
+    DEFAULT: {
+      ratingEntityCode: '150',
+      probabilityofDefault: '0.000000',
+      lossGivenDefault: '0.000000',
+      riskWeighting: '0.000000',
+      externalRatingNote1: '',
+      externalRatingNote2: '',
+    },
+  },
   FACILITY_INVESTOR: {
     DEFAULT: {
       sectionIdentifier: '00',

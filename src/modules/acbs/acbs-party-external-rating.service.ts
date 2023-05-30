@@ -4,9 +4,10 @@ import AcbsConfig from '@ukef/config/acbs.config';
 
 import { AcbsConfigBaseUrl } from './acbs-config-base-url.type';
 import { AcbsHttpService } from './acbs-http.service';
+import { AcbsCreatePartyExternalRatingRequestDto } from './dto/acbs-create-party-external-rating-request.dto';
 import { AcbsPartyExternalRatingsResponseDto } from './dto/acbs-party-external-ratings-response.dto';
-import { getPartyNotFoundKnownAcbsError } from './known-errors';
-import { createWrapAcbsHttpGetErrorCallback } from './wrap-acbs-http-error-callback';
+import { getPartyNotFoundKnownAcbsError, postPartyExternalRatingExistsKnownAcbsError, postPartyExternalRatingNotFoundKnownAcbsError } from './known-errors';
+import { createWrapAcbsHttpGetErrorCallback, createWrapAcbsHttpPostOrPutErrorCallback } from './wrap-acbs-http-error-callback';
 
 @Injectable()
 export class AcbsPartyExternalRatingService {
@@ -31,5 +32,18 @@ export class AcbsPartyExternalRatingService {
     });
 
     return externalRatingsInAcbs;
+  }
+
+  async createExternalRatingForParty(acbsCreatePartyExternalRatingRequest: AcbsCreatePartyExternalRatingRequestDto, idToken: string): Promise<void> {
+    const { PartyIdentifier } = acbsCreatePartyExternalRatingRequest;
+    await this.acbsHttpService.post<AcbsCreatePartyExternalRatingRequestDto>({
+      path: `/Party/${PartyIdentifier}/PartyExternalRating`,
+      requestBody: acbsCreatePartyExternalRatingRequest,
+      idToken,
+      onError: createWrapAcbsHttpPostOrPutErrorCallback({
+        messageForUnknownError: 'Failed to create party external rating in ACBS.',
+        knownErrors: [postPartyExternalRatingExistsKnownAcbsError(), postPartyExternalRatingNotFoundKnownAcbsError(PartyIdentifier)],
+      }),
+    });
   }
 }

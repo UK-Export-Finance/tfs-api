@@ -1,3 +1,4 @@
+import * as ASSIGNED_RATING_CODES from './enums/assigned-rating-code';
 import * as BUNDLE_INFORMATION_TYPES from './enums/bundle-information-type';
 import * as BUNDLE_STATUS_CODES from './enums/bundle-status-code';
 import * as COVENANT_TYPE_CODES from './enums/covenant-type-code';
@@ -36,4 +37,5 @@ export const ENUMS = {
   BUNDLE_INFORMATION_TYPES: BUNDLE_INFORMATION_TYPES.BundleInformationType,
   LOAN_BILLING_FREQUENCY_TYPES: LOAN_BILLING_FREQUENCY_TYPES.LoanBillingFrequencyTypeEnum,
   LIMIT_TYPE_CODES: LIMIT_TYPE_CODES.LimitTypeCodeEnum,
+  ASSIGNED_RATING_CODES: ASSIGNED_RATING_CODES.AssignedRatingCodeEnum,
 };

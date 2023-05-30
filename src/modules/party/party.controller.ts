@@ -9,10 +9,12 @@ import {
   ApiOperation,
   ApiParam,
 } from '@nestjs/swagger';
+import { ENUMS } from '@ukef/constants';
+import { SOVEREIGN_ACCOUNT_TYPES } from '@ukef/constants/sovereign-account-types.constant';
 import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decorator';
-import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 import { Response } from 'express';
 
+import { PartyExternalRatingService } from '../party-external-rating/party-external-rating.service';
 import { CreatePartyRequest, CreatePartyRequestItem } from './dto/create-party-request.dto';
 import { CreatePartyResponse } from './dto/create-party-response.dto';
 import { GetPartiesBySearchTextQuery } from './dto/get-parties-by-search-text-query.dto';
@@ -22,7 +24,7 @@ import { PartyService } from './party.service';
 
 @Controller('parties')
 export class PartyController {
-  constructor(private readonly acbsAuthenticationService: AcbsAuthenticationService, private readonly partyService: PartyService) {}
+  constructor(private readonly partyService: PartyService, private readonly partyExternalRatingService: PartyExternalRatingService) {}
 
   @Get()
   @ApiOperation({
@@ -68,14 +70,37 @@ export class PartyController {
     @Res({ passthrough: true }) res: Response,
   ): Promise<CreatePartyResponse> {
     const [newParty] = createPartyDto;
-    const partyIdentifierOfMatchingParty = await this.partyService.getPartyIdentifierBySearchText(newParty.alternateIdentifier);
+    const { alternateIdentifier, officerRiskDate: ratedDate } = newParty;
+
+    const partyIdentifierOfMatchingParty = await this.partyService.getPartyIdentifierBySearchText(alternateIdentifier);
 
     if (partyIdentifierOfMatchingParty) {
       res.status(HttpStatus.OK);
       return partyIdentifierOfMatchingParty;
     }
 
-    return this.partyService.createParty(newParty);
+    const { partyIdentifier } = await this.partyService.createParty(newParty);
+
+    const existingExternalRatingsOfParty = await this.partyExternalRatingService.getExternalRatingsForParty(partyIdentifier);
+
+    if (Array.isArray(existingExternalRatingsOfParty) && existingExternalRatingsOfParty.length === 0) {
+      // TODO APIM-336: This is a placeholder function which returns a hard-coded value, and should be replaced when Informatica is ready.
+      const [salesforceParty] = await this.salesforceGetPartyByAlternateIdentifierPlaceholder(alternateIdentifier);
+
+      const accountType = salesforceParty?.account?.type;
+      const { SOVEREIGN, CORPORATE } = ENUMS.ASSIGNED_RATING_CODES;
+      const assignedRatingCode = SOVEREIGN_ACCOUNT_TYPES.includes(accountType) ? SOVEREIGN : CORPORATE;
+
+      await this.partyExternalRatingService.createExternalRatingForParty(partyIdentifier, { assignedRatingCode, ratedDate });
+    }
+
+    return { partyIdentifier };
+  }
+
+  // TODO APIM-336: This is a placeholder function which returns a hard-coded value, and should be replaced when Informatica is ready.
+  async salesforceGetPartyByAlternateIdentifierPlaceholder(alternateIdentifier: string) {
+    alternateIdentifier;
+    return await [{ account: { type: 'Overseas Government Dept' } }];
   }
 
   @Get(':partyIdentifier')
