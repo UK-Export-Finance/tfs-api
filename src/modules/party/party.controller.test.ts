@@ -17,7 +17,7 @@ describe('PartyController', () => {
   const partyIdentifier = valueGenerator.stringOfNumericCharacters();
 
   let partyService: PartyService;
-  let partyExternalRatingService: PartyExternalRatingService
+  let partyExternalRatingService: PartyExternalRatingService;
   let controller: PartyController;
 
   let partyServiceGetPartyByIdentifier: jest.Mock;
