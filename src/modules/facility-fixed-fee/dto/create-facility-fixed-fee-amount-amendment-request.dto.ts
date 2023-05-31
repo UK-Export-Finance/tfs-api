@@ -35,6 +35,7 @@ export class CreateFixedFeeAmountAmendmentRequestItem {
   @ValidatedNumberApiProperty({
     description: 'Fee amount amendment. For example: if current Fee amount is 352.10 GBP and you want to set Fee to 0, then set amount to -352.10',
     example: -352.1,
+    forbidZero: true,
   })
   readonly amountAmendment: number;
 

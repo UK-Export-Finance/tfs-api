@@ -459,6 +459,44 @@ paths:
           description: The facility was not found.
         '500':
           description: An internal server error has occurred.
+  /api/v1/facilities/{facilityIdentifier}/fixed-fees/amendments/amount:
+    post:
+      operationId: FacilityFixedFeeController_createAmountAmendmentForFixedFees
+      summary: Create a fixed fees amount amendment bundle.
+      parameters:
+        - name: facilityIdentifier
+          required: true
+          in: path
+          description: The identifier of the facility in ACBS.
+          example: '0030000322'
+          schema:
+            minLength: 10
+            maxLength: 10
+            pattern: ^00\\d{8}$
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/CreateFixedFeeAmountAmendmentRequestItem'
+      responses:
+        '201':
+          description: >-
+            The fixed fees amount amendment bundle has been successfully
+            created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateFixedFeeAmountAmendmentResponse'
+        '400':
+          description: Bad request.
+        '404':
+          description: The facility was not found.
+        '500':
+          description: An internal server error has occurred.
   /api/v1/facilities/{facilityIdentifier}/guarantees:
     get:
       operationId: FacilityGuaranteeController_getGuaranteesForFacility
@@ -1931,6 +1969,15 @@ components:
           example: 501927.25
           minimum: 0
           maximum: 100000000000000000
+        currentPayoffAmount:
+          type: number
+          description: >-
+            This field is automatically populated and appears only after the fee
+            has been accepted. It displays the amount needed to pay the fee in
+            full as of the current processing date.
+          example: 501927.25
+          minimum: 0
+          maximum: 99999999999.99
         effectiveDate:
           format: date
           type: string
@@ -1997,6 +2044,7 @@ components:
         - facilityIdentifier
         - portfolioIdentifier
         - amount
+        - currentPayoffAmount
         - effectiveDate
         - expirationDate
         - nextDueDate
@@ -2006,6 +2054,60 @@ components:
         - currency
         - lenderTypeCode
         - incomeClassCode
+    CreateFixedFeeAmountAmendmentRequestItem:
+      type: object
+      properties:
+        partyIdentifier:
+          type: string
+          description: ''
+          minLength: 8
+          maxLength: 8
+          example: '00001234'
+        period:
+          type: string
+          description: >-
+            Segment identifier from income exposure table. 2 alphanumeric
+            characters.
+          minLength: 2
+          maxLength: 2
+        lenderTypeCode:
+          type: string
+          description: >-
+            Defines the code for the role of the party in the Facility for which
+            the fee is created.
+          minLength: 0
+          enum:
+            - '100'
+            - '500'
+          example: '500'
+        effectiveDate:
+          format: date
+          type: string
+          description: The effective date of this accruing/fixed fee schedule.
+        amountAmendment:
+          type: number
+          description: >-
+            Fee amount amendment. For example: if current Fee amount is 352.10
+            GBP and you want to set Fee to 0, then set amount to -352.10
+          example: -352.1
+          not:
+            enum:
+              - 0
+      required:
+        - partyIdentifier
+        - period
+        - lenderTypeCode
+        - effectiveDate
+        - amountAmendment
+    CreateFixedFeeAmountAmendmentResponse:
+      type: object
+      properties:
+        bundleIdentifier:
+          type: string
+          description: The identifier of the ACBS bundle.
+          example: '0000321000'
+      required:
+        - bundleIdentifier
     CreateFacilityFixedFeeRequestItem:
       type: object
       properties:

@@ -287,7 +287,6 @@ export const PROPERTIES = {
           limitTypeCode: '00',
         },
         sectionIdentifier: '00',
-        lenderTypeCode: '100',
       },
     },
   },

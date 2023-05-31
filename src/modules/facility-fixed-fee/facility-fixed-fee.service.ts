@@ -186,7 +186,7 @@ export class FacilityFixedFeeService {
       },
       IsDraftIndicator: defaultValues.isDraftIndicator,
       LenderType: {
-        LenderTypeCode: item.lenderTypeCode || defaultValues.lenderTypeCode,
+        LenderTypeCode: item.lenderTypeCode,
       },
       LimitKeyValue: item.partyIdentifier,
       LimitType: {
