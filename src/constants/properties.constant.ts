@@ -420,7 +420,7 @@ export const PROPERTIES = {
   },
   REPAYMENT: {
     DEFAULT: {
-      primaryScheduleIndicator: 'true',
+      primaryScheduleIndicator: true,
       involvedParty: {
         partyIdentifier: '00000000',
       },
@@ -458,7 +458,7 @@ export const PROPERTIES = {
       billingSequenceNumber: 2,
     },
     PAC: {
-      primaryScheduleIndicator: 'false',
+      primaryScheduleIndicator: false,
       billingScheduleType: {
         billingScheduleTypeCode: 'N',
       },

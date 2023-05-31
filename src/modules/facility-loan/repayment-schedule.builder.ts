@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { CALENDAR_IDENTIFIERS } from '@ukef/constants/calendar-identifiers.constant';
 import { CURRENCIES } from '@ukef/constants/currencies.constant';
+import { RepaymentSchedule } from '@ukef/modules/acbs/dto/bundle-actions/repayment-schedule.interface';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 
-import { RepaymentSchedule } from '../acbs/dto/bundle-actions/repayment-schedule.interface';
-import { DateStringTransformations } from '../date/date-string.transformations';
 import { CreateFacilityLoanRequestItem } from './dto/create-facility-loan-request.dto';
 
 @Injectable()

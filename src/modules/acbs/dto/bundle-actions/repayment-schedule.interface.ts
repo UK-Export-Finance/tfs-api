@@ -1,7 +1,7 @@
 import { DateString } from '@ukef/helpers';
 
 export interface RepaymentSchedule {
-  PrimaryScheduleIndicator: string;
+  PrimaryScheduleIndicator: boolean;
   InvolvedParty: {
     PartyIdentifier: string;
   };
