@@ -9,7 +9,7 @@ import { CreateFacilityLoanRequestItem } from './dto/create-facility-loan-reques
 
 @Injectable()
 export class RepaymentScheduleBuilder {
-  constructor(private readonly dateStringTransformations: DateStringTransformations) { }
+  constructor(private readonly dateStringTransformations: DateStringTransformations) {}
 
   getRepaymentSchedules(facilityLoan: CreateFacilityLoanRequestItem): RepaymentSchedule[] {
     if (facilityLoan.productTypeGroup === ENUMS.PRODUCT_TYPE_GROUPS.EWCS) {
