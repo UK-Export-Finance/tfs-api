@@ -63,9 +63,6 @@ export class RepaymentScheduleBuilder {
       BillingSequenceNumber: PROPERTIES.REPAYMENT.PAC_BSS.billingSequenceNumber,
       PercentageOfBalance: PROPERTIES.REPAYMENT.PAC_BSS.percentageOfBalance,
       PaymentAmount: facilityLoan.amount,
-      ...(facilityLoan.productTypeGroup === ENUMS.PRODUCT_TYPE_GROUPS.EWCS && {
-        NumberOfBillsToPrint: PROPERTIES.REPAYMENT.PAC_BSS.numberOfBillsToPrint,
-      }),
     };
   }
 
