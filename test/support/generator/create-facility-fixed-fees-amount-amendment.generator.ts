@@ -84,40 +84,6 @@ export class CreateFacilityFixedFeesAmountAmendmentGenerator extends AbstractGen
       acbsFixedFeesAmendmentForDecrease,
     };
   }
-
-  // private buildExpectedAcbsLoanAmendment = ({
-  //   typeCode,
-  //   acbsEffectiveDate,
-  //   facilityIdentifier,
-  //   amountAmendment,
-  // }: {
-  //   typeCode: string;
-  //   acbsEffectiveDate: DateString;
-  //   facilityIdentifier: string;
-  //   amountAmendment: number;
-  // }): AcbsCreateBundleInformationRequestDto<LoanAdvanceTransaction> => {
-  //   const { portfolioIdentifier } = PROPERTIES.GLOBAL;
-  //   const defaultValues = PROPERTIES.LOAN_AMOUNT_AMENDMENT.DEFAULT;
-  //   const messageListDefaultValues = defaultValues.bundleMessageList;
-
-  //   return {
-  //     PortfolioIdentifier: portfolioIdentifier,
-  //     InitialBundleStatusCode: defaultValues.initialBundleStatusCode,
-  //     InitiatingUserName: defaultValues.initiatingUserName,
-  //     UseAPIUserIndicator: defaultValues.useAPIUserIndicator,
-  //     BundleMessageList: [
-  //       {
-  //         $type: messageListDefaultValues.type,
-  //         EffectiveDate: acbsEffectiveDate,
-  //         LoanIdentifier: loanIdentifier,
-  //         TransactionTypeCode: typeCode,
-  //         IsDraftIndicator: messageListDefaultValues.isDraftIndicator,
-  //         LoanAdvanceAmount: amountAmendment,
-  //         CashOffsetTypeCode: messageListDefaultValues.cashOffsetTypeCode,
-  //       },
-  //     ],
-  //   };
-  // };
 }
 
 interface GenerateValues {
