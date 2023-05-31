@@ -418,4 +418,104 @@ export const PROPERTIES = {
       },
     },
   },
+  ACCRUAL: {
+    DEFAULT: {
+      involvedParty: {
+        partyIdentifier: "00000000",
+      },
+      accountSequence: "1",
+      lenderType: {
+        lenderTypeCode: "100",
+      },
+      baseRate: "0",
+      reserveRate: "0",
+      costOfFundsRate: "0",
+      percentageOfRate: "100",
+      percentOfBaseBalance: "100",
+      lowBalancePercent: "0",
+      cappedAccrualRate: "0",
+      spreadToInvestorsIndicator: "true",
+    },
+    PAC: {
+      scheduleIdentifier: "PAC1",
+      accrualCategory: {
+        accrualCategoryCode: "PAC01",
+      },
+      rateCalculationMethod: {
+        rateCalculationMethodCode: "A",
+      },
+    },
+    INT_RFR: {
+      scheduleIdentifier: "INT1",
+      accrualCategory: {
+        accrualCategoryCode: "CTL01",
+      },
+      businessDayCalendar: {
+        calendarIdentifier: "UK",
+      },
+      rateCalculationMethod: {
+        rateCalculationMethodCode: "H",
+      },
+      indexRateChangeFrequency: {
+        indexRateChangeFrequencyCode: "A",
+      },
+      indexRateChangeTiming: {
+        indexRateChangeTimingCode: "A",
+      },
+      indexedRateIndicator: "true",
+      nextDueBusinessDayAdjustmentType: {
+        businessDayAdjustmentTypeCode: "M",
+      },
+      rateSetLeadDays: "0",
+      accrualScheduleIBORDetails: {
+        isDailyRFR: "true",
+        rFRCalculationMethod: {
+          rFRCalculationMethodCode: "2",
+        },
+        compoundingDateType: {
+          compoundingDateTypeCode: "B",
+        },
+        calculationFeature: {
+          calculationFeatureCode: "1",
+        },
+        rateSetLagDays: "5",
+        lagDaysType: {
+          compoundingDateTypeCode: "B",
+        },
+        calendar: {
+          calendarIdentifier: "UK",
+        },
+        nextRatePeriodBusinessDayAdjustment: {
+          nextRatePeriodBusinessDayAdjustmentCode: "M",
+        },
+        ratePeriodResetFrequency: {
+          ratePeriodResetFrequencyCode: "E",
+        },
+        frequencyPeriod: "0",
+      },
+    },
+    INT_NON_RFR: {
+      scheduleIdentifier: "INT1",
+      accrualCategory: {
+        accrualCategoryCode: "CTL01",
+      },
+      businessDayCalendar: {
+        calendarIdentifier: "UK",
+      },
+      rateCalculationMethod: {
+        rateCalculationMethodCode: "A",
+      },
+      indexRateChangeFrequency: {
+        indexRateChangeFrequencyCode: "A",
+      },
+      indexRateChangeTiming: {
+        indexRateChangeTimingCode: "L",
+      },
+      indexedRateIndicator: "true",
+      nextDueBusinessDayAdjustmentType: {
+        businessDayAdjustmentTypeCode: "M",
+      },
+      rateSetLeadDays: "0",
+    },
+  },      
 };

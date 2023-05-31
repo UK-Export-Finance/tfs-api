@@ -70,4 +70,33 @@ export class CreateFacilityLoanRequestItem {
     description: 'The facility expiry date.',
   })
   readonly expiryDate: DateOnlyString;
+
+  @ValidatedDateOnlyApiProperty({
+    description: 'The next payment due date of the repayment schedule & date the next rate will be set for accrual schedules.',
+  })
+  readonly nextDueDate: DateOnlyString;
+  
+  @ValidatedNumberApiProperty({
+    description: 'The guarantee fee percentage.',
+    minimum: 0,
+  })
+  readonly spreadRate: number;
+  
+  @ValidatedNumberApiProperty({
+    description: 'The corresponding fee rate. If null interest rate will be used.',
+    minimum: 0,
+    required: false,
+  })
+  readonly spreadRateCtl: number;
+
+  @ValidatedStringApiProperty({
+    description: 'The year basis for the accrual schedule.',
+  })
+  readonly yearBasis: string;
+
+  @ValidatedStringApiProperty({
+    description: 'The frequency which the rate will change.',
+    required: false,
+  })
+  readonly indexRateChangeFrequency: string;
 }
