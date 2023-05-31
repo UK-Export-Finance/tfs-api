@@ -19,7 +19,7 @@ describe('RepaymentScheduleBuilder', () => {
     repaymentScheduleBuilder = new RepaymentScheduleBuilder(dateStringTransformations);
   });
 
-  describe('createLoansAndRepaymentSchedulesForLoan', () => {
+  describe('getRepaymentSchedules', () => {
     const {
       requestBodyToCreateFacilityLoanGbp,
       requestBodyToCreateFacilityLoanNonGbp,
