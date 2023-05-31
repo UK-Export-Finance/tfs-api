@@ -9,7 +9,7 @@ import { CreateFacilityLoanRequestItem } from './dto/create-facility-loan-reques
 
 @Injectable()
 export class RepaymentScheduleBuilder {
-  constructor(private readonly dateStringTransformations: DateStringTransformations) {}
+  constructor(private readonly dateStringTransformations: DateStringTransformations) { }
 
   getRepaymentSchedules(facilityLoan: CreateFacilityLoanRequestItem): RepaymentSchedule[] {
     if (facilityLoan.productTypeGroup === ENUMS.PRODUCT_TYPE_GROUPS.EWCS) {
@@ -115,11 +115,13 @@ export class RepaymentScheduleBuilder {
   }
 
   private getCalendarIdentifier(facilityLoan: CreateFacilityLoanRequestItem): string {
-    if (facilityLoan.currency === CURRENCIES.EUR) {
-      return CALENDAR_IDENTIFIERS.EU;
-    } else if (facilityLoan.currency === CURRENCIES.USD) {
-      return CALENDAR_IDENTIFIERS.US;
+    switch (facilityLoan.currency) {
+      case CURRENCIES.EUR:
+        return CALENDAR_IDENTIFIERS.EU;
+      case CURRENCIES.USD:
+        return CALENDAR_IDENTIFIERS.US;
+      default:
+        return CALENDAR_IDENTIFIERS.UK;
     }
-    return CALENDAR_IDENTIFIERS.UK;
   }
 }
