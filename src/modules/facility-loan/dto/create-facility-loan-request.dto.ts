@@ -75,13 +75,13 @@ export class CreateFacilityLoanRequestItem {
     description: 'The next payment due date of the repayment schedule & date the next rate will be set for accrual schedules.',
   })
   readonly nextDueDate: DateOnlyString;
-  
+
   @ValidatedNumberApiProperty({
     description: 'The guarantee fee percentage.',
     minimum: 0,
   })
   readonly spreadRate: number;
-  
+
   @ValidatedNumberApiProperty({
     description: 'The corresponding fee rate. If null interest rate will be used.',
     minimum: 0,

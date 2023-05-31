@@ -421,101 +421,101 @@ export const PROPERTIES = {
   ACCRUAL: {
     DEFAULT: {
       involvedParty: {
-        partyIdentifier: "00000000",
+        partyIdentifier: '00000000',
       },
-      accountSequence: "1",
+      accountSequence: '1',
       lenderType: {
-        lenderTypeCode: "100",
+        lenderTypeCode: '100',
       },
-      baseRate: "0",
-      reserveRate: "0",
-      costOfFundsRate: "0",
-      percentageOfRate: "100",
-      percentOfBaseBalance: "100",
-      lowBalancePercent: "0",
-      cappedAccrualRate: "0",
-      spreadToInvestorsIndicator: "true",
+      baseRate: '0',
+      reserveRate: '0',
+      costOfFundsRate: '0',
+      percentageOfRate: '100',
+      percentOfBaseBalance: '100',
+      lowBalancePercent: '0',
+      cappedAccrualRate: '0',
+      spreadToInvestorsIndicator: 'true',
     },
     PAC: {
-      scheduleIdentifier: "PAC1",
+      scheduleIdentifier: 'PAC1',
       accrualCategory: {
-        accrualCategoryCode: "PAC01",
+        accrualCategoryCode: 'PAC01',
       },
       rateCalculationMethod: {
-        rateCalculationMethodCode: "A",
+        rateCalculationMethodCode: 'A',
       },
     },
     INT_RFR: {
-      scheduleIdentifier: "INT1",
+      scheduleIdentifier: 'INT1',
       accrualCategory: {
-        accrualCategoryCode: "CTL01",
+        accrualCategoryCode: 'CTL01',
       },
       businessDayCalendar: {
-        calendarIdentifier: "UK",
+        calendarIdentifier: 'UK',
       },
       rateCalculationMethod: {
-        rateCalculationMethodCode: "H",
+        rateCalculationMethodCode: 'H',
       },
       indexRateChangeFrequency: {
-        indexRateChangeFrequencyCode: "A",
+        indexRateChangeFrequencyCode: 'A',
       },
       indexRateChangeTiming: {
-        indexRateChangeTimingCode: "A",
+        indexRateChangeTimingCode: 'A',
       },
-      indexedRateIndicator: "true",
+      indexedRateIndicator: 'true',
       nextDueBusinessDayAdjustmentType: {
-        businessDayAdjustmentTypeCode: "M",
+        businessDayAdjustmentTypeCode: 'M',
       },
-      rateSetLeadDays: "0",
+      rateSetLeadDays: '0',
       accrualScheduleIBORDetails: {
-        isDailyRFR: "true",
+        isDailyRFR: 'true',
         rFRCalculationMethod: {
-          rFRCalculationMethodCode: "2",
+          rFRCalculationMethodCode: '2',
         },
         compoundingDateType: {
-          compoundingDateTypeCode: "B",
+          compoundingDateTypeCode: 'B',
         },
         calculationFeature: {
-          calculationFeatureCode: "1",
+          calculationFeatureCode: '1',
         },
-        rateSetLagDays: "5",
+        rateSetLagDays: '5',
         lagDaysType: {
-          compoundingDateTypeCode: "B",
+          compoundingDateTypeCode: 'B',
         },
         calendar: {
-          calendarIdentifier: "UK",
+          calendarIdentifier: 'UK',
         },
         nextRatePeriodBusinessDayAdjustment: {
-          nextRatePeriodBusinessDayAdjustmentCode: "M",
+          nextRatePeriodBusinessDayAdjustmentCode: 'M',
         },
         ratePeriodResetFrequency: {
-          ratePeriodResetFrequencyCode: "E",
+          ratePeriodResetFrequencyCode: 'E',
         },
-        frequencyPeriod: "0",
+        frequencyPeriod: '0',
       },
     },
     INT_NON_RFR: {
-      scheduleIdentifier: "INT1",
+      scheduleIdentifier: 'INT1',
       accrualCategory: {
-        accrualCategoryCode: "CTL01",
+        accrualCategoryCode: 'CTL01',
       },
       businessDayCalendar: {
-        calendarIdentifier: "UK",
+        calendarIdentifier: 'UK',
       },
       rateCalculationMethod: {
-        rateCalculationMethodCode: "A",
+        rateCalculationMethodCode: 'A',
       },
       indexRateChangeFrequency: {
-        indexRateChangeFrequencyCode: "A",
+        indexRateChangeFrequencyCode: 'A',
       },
       indexRateChangeTiming: {
-        indexRateChangeTimingCode: "L",
+        indexRateChangeTimingCode: 'L',
       },
-      indexedRateIndicator: "true",
+      indexedRateIndicator: 'true',
       nextDueBusinessDayAdjustmentType: {
-        businessDayAdjustmentTypeCode: "M",
+        businessDayAdjustmentTypeCode: 'M',
       },
-      rateSetLeadDays: "0",
+      rateSetLeadDays: '0',
     },
-  },      
+  },
 };
