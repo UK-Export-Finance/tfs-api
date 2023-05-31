@@ -10,7 +10,7 @@ export type CreateFixedFeeAmountAmendmentRequest = CreateFixedFeeAmountAmendment
 
 export class CreateFixedFeeAmountAmendmentRequestItem {
   @ValidatedPartyIdentifierApiProperty({
-    description: '',
+    description: 'ACBS id for Exporter party record.',
   })
   readonly partyIdentifier: AcbsPartyId;
 

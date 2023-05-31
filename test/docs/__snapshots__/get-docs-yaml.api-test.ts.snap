@@ -2059,7 +2059,7 @@ components:
       properties:
         partyIdentifier:
           type: string
-          description: ''
+          description: ACBS id for Exporter party record.
           minLength: 8
           maxLength: 8
           example: '00001234'
