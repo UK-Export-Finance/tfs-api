@@ -12,7 +12,6 @@ import { when } from 'jest-when';
 
 import { FacilityLoanService } from './facility-loan.service';
 import { RepaymentScheduleBuilder } from './repayment-schedule.builder';
-import { CALENDAR_IDENTIFIERS } from '@ukef/constants/calendar-identifiers.constant';
 
 describe('FacilityLoanService', () => {
   const valueGenerator = new RandomValueGenerator();

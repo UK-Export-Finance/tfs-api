@@ -1,4 +1,4 @@
 export const TEST_CURRENCIES = {
   A_TEST_CURRENCY: 'EUR',
-  NON_GBP_CURRENCY: 'USD',
+  NON_GBP_CURRENCY: 'AUD',
 };
