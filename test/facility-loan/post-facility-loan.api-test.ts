@@ -243,8 +243,10 @@ describe('POST /facilities/{facilityIdentifier}/loans', () => {
       length: 1,
       required: true,
       enum: ENUMS.LOAN_BILLING_FREQUENCY_TYPES,
-      generateFieldValueOfLength: (length: number) => 
-        length === 1 ? possibleLoanBillingFrequencyTypes[valueGenerator.integer({ min: 0, max: possibleLoanBillingFrequencyTypes.length - 1 })] : valueGenerator.string({ length }),
+      generateFieldValueOfLength: (length: number) =>
+        length === 1
+          ? possibleLoanBillingFrequencyTypes[valueGenerator.integer({ min: 0, max: possibleLoanBillingFrequencyTypes.length - 1 })]
+          : valueGenerator.string({ length }),
       generateFieldValueThatDoesNotMatchEnum: () => '3',
       validRequestBody: requestBodyToCreateFacilityLoanGbp,
       makeRequest,

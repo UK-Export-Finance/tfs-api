@@ -7,11 +7,11 @@ import * as FACILITY_UPDATE_OPERATIONS from './enums/facility-update-operations'
 import * as GUARANTEE_TYPE_CODES from './enums/guarantee-type-code';
 import * as INCOME_CLASS_CODES from './enums/income-class-code';
 import * as LENDER_TYPE_CODES from './enums/lender-type-code';
+import * as LOAN_BILLING_FREQUENCY_TYPES from './enums/loan-billing-frequency-type';
 import * as OPERATION_TYPE_CODES from './enums/operation-type-code';
 import * as PORTFOLIO from './enums/portfolio';
 import * as PRODUCT_TYPE_GROUPS from './enums/product-type-group';
 import * as PRODUCT_TYPE_IDS from './enums/product-type-id';
-import * as LOAN_BILLING_FREQUENCY_TYPES from './enums/loan-billing-frequency-type';
 
 export const ENUMS = {
   BUNDLE_STATUSES: BUNDLE_STATUSES.BundleStatusEnum,
