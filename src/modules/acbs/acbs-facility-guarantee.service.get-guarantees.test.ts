@@ -50,6 +50,10 @@ describe('AcbsFacilityGuaranteeService', () => {
     GuaranteeType: {
       GuaranteeTypeCode: valueGenerator.string(),
     },
+    SectionIdentifier: valueGenerator.string({ length: 2 }),
+    GuaranteedPercentage: valueGenerator.nonnegativeInteger(),
+    LimitType: { LimitTypeCode: valueGenerator.string({ length: 2 }) },
+    LenderType: { LenderTypeCode: valueGenerator.string({ length: 3 }) },
   });
 
   const facilityGuaranteesInAcbs: AcbsGetFacilityGuaranteesResponseDto = [generateFacilityGuarantee(), generateFacilityGuarantee()];

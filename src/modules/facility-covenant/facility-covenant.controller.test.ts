@@ -108,8 +108,6 @@ describe('FacilityCovenantController', () => {
     });
 
     it('returns the facility identifier if updating the covenants succeeds', async () => {
-      await controller.updateCovenantsForFacility({ facilityIdentifier }, updateCovenantRequest);
-
       const response = await controller.updateCovenantsForFacility({ facilityIdentifier }, updateCovenantRequest);
 
       expect(response).toStrictEqual(new CreateOrUpdateFacilityCovenantsResponseDto(facilityIdentifier));

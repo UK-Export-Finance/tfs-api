@@ -2,7 +2,4 @@ import { AcbsBaseFacilityGuarantee } from './base-entities/acbs-base-facility-gu
 
 export type AcbsGetFacilityGuaranteesResponseDto = AcbsGetFacilityGuaranteeDto[];
 
-export type AcbsGetFacilityGuaranteeDto = Pick<
-  AcbsBaseFacilityGuarantee,
-  'EffectiveDate' | 'GuarantorParty' | 'LimitKey' | 'ExpirationDate' | 'GuaranteedLimit' | 'GuaranteeType'
->;
+export type AcbsGetFacilityGuaranteeDto = AcbsBaseFacilityGuarantee;
