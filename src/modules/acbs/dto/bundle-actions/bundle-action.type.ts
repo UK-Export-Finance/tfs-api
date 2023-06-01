@@ -1,8 +1,8 @@
 import { ENUMS } from '@ukef/constants';
+import { FacilityAmountTransaction } from '@ukef/modules/acbs/dto/bundle-actions/facility-amount-transaction.bundle-action';
 import { FacilityCodeValueTransaction } from '@ukef/modules/acbs/dto/bundle-actions/facility-code-value-transaction.bundle-action';
 import { LoanAdvanceTransaction } from '@ukef/modules/acbs/dto/bundle-actions/loan-advance-transaction.bundle-action';
 import { NewLoanRequest } from '@ukef/modules/acbs/dto/bundle-actions/new-loan-request.bundle-action';
-import { FacilityAmountTransaction } from '@ukef/modules/acbs/dto/bundle-actions/facility-amount-transaction.bundle-action';
 
 export type BundleAction = FacilityCodeValueTransaction | FacilityAmountTransaction | LoanAdvanceTransaction | NewLoanRequest | { $type: string };
 
