@@ -37,7 +37,7 @@ export class FacilityActivationTransactionService {
       BundleMessageList: [
         {
           $type: PROPERTIES.FACILITY_ACTIVATION_TRANSACTION.DEFAULT.bundleMessageList.type,
-          AccountOwnerIdentifier: PROPERTIES.FACILITY_ACTIVATION_TRANSACTION.DEFAULT.bundleMessageList.accountOwnerIdentifier,
+          AccountOwnerIdentifier: PROPERTIES.FACILITY_ACTIVATION_TRANSACTION.DEFAULT.bundleMessageList.accountOwnerIdentifier as AcbsPartyId,
           EffectiveDate: this.dateStringTransformations.addTimeToDateOnlyString(originalEffectiveDate),
           FacilityIdentifier: facilityIdentifier,
           FacilityTransactionCodeValue: {

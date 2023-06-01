@@ -1,5 +1,5 @@
 import { ENUMS, PROPERTIES } from '@ukef/constants';
-import { BundleStatusEnum } from '@ukef/constants/enums/bundle-status';
+import { InitialBundleStatusCodeEnum } from '@ukef/constants/enums/initial-bundle-status-code';
 import { LenderTypeCodeEnum } from '@ukef/constants/enums/lender-type-code';
 import { AcbsPartyId, DateOnlyString, UkefId } from '@ukef/helpers';
 import { AcbsGetBundleInformationResponseDto } from '@ukef/modules/acbs/dto/acbs-get-bundle-information-response.dto';
@@ -16,11 +16,13 @@ export class GetFacilityActivationTransactionGenerator extends AbstractGenerator
 
   protected generateValues(): FacilityActivationTransactionValues {
     // Numeric enums needs filter to get possible values.
-    const possibleBundleStatuses = Object.values(ENUMS.BUNDLE_STATUSES).filter((value) => !isNaN(Number(value)));
+    const possibleInitialBundleStatusCodes = Object.values(ENUMS.INITIAL_BUNDLE_STATUS_CODES).filter((value) => !isNaN(Number(value)));
     const possibleLenderTypes = Object.values(ENUMS.LENDER_TYPE_CODES);
 
     return {
-      initialBundleStatusCode: possibleBundleStatuses[this.valueGenerator.integer({ min: 0, max: possibleBundleStatuses.length - 1 })] as number,
+      initialBundleStatusCode: possibleInitialBundleStatusCodes[
+        this.valueGenerator.integer({ min: 0, max: possibleInitialBundleStatusCodes.length - 1 })
+      ] as number,
       bundleStatusCode: this.valueGenerator.stringOfNumericCharacters({ maxLength: 2 }),
       bundleStatusDesc: this.valueGenerator.string({ maxLength: 20 }),
       initiatingUserName: this.valueGenerator.string({ maxLength: 60 }),
@@ -106,7 +108,7 @@ export class GetFacilityActivationTransactionGenerator extends AbstractGenerator
 }
 
 interface FacilityActivationTransactionValues {
-  initialBundleStatusCode: BundleStatusEnum;
+  initialBundleStatusCode: InitialBundleStatusCodeEnum;
   bundleStatusCode: string;
   bundleStatusDesc: string;
   initiatingUserName: string;

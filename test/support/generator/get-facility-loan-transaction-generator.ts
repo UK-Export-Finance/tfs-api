@@ -18,7 +18,7 @@ export class GetFacilityLoanTransactionGenerator extends AbstractGenerator<Facil
 
   protected generateValues(): FacilityLoanTransactionValues {
     // Numeric enums needs filter to get possible values.
-    const possibleBundleStatuses = Object.values(ENUMS.BUNDLE_STATUSES).filter((value) => !isNaN(Number(value)));
+    const possibleInitialBundleStatusCodes = Object.values(ENUMS.INITIAL_BUNDLE_STATUS_CODES).filter((value) => !isNaN(Number(value)));
     const possibleProductTypeIds = Object.values(ENUMS.PRODUCT_TYPE_IDS);
     const possibleProductTypeGroups = Object.values(ENUMS.PRODUCT_TYPE_GROUPS);
     const possibleOperationTypeCodes = Object.values(ENUMS.OPERATION_TYPE_CODES);
@@ -42,7 +42,9 @@ export class GetFacilityLoanTransactionGenerator extends AbstractGenerator<Facil
       indexRateChangeFrequencyCode: this.valueGenerator.string({ length: 1 }),
       nextDueDate: this.valueGenerator.dateOnlyString(),
       loanBillingFrequencyTypeCode: this.valueGenerator.string({ length: 1 }),
-      initialBundleStatusCode: possibleBundleStatuses[this.valueGenerator.integer({ min: 0, max: possibleBundleStatuses.length - 1 })] as number,
+      initialBundleStatusCode: possibleInitialBundleStatusCodes[
+        this.valueGenerator.integer({ min: 0, max: possibleInitialBundleStatusCodes.length - 1 })
+      ] as number,
       initiatingUserName: this.valueGenerator.string({ maxLength: 60 }),
     };
   }

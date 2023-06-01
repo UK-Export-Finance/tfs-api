@@ -1319,6 +1319,19 @@ components:
           description: A numeric code denoting the status of the bundle.
           minLength: 0
           maxLength: 2
+          enum:
+            - '10'
+            - '15'
+            - '20'
+            - '25'
+            - '30'
+            - '35'
+            - '40'
+            - '50'
+            - '55'
+            - '80'
+            - '85'
+            - '90'
           example: '10'
         bundleStatusDesc:
           type: string
@@ -1362,10 +1375,10 @@ components:
         effectiveDate:
           format: date
           type: string
-          description: ''
+          description: The effective date of the facility.
         facilityTransactionCodeValueCode:
           type: string
-          description: ''
+          description: '''A'' for ''Active'' to activate facility or ''C'' to cancel.'
           minLength: 0
           maxLength: 10
           example: A
@@ -1382,19 +1395,25 @@ components:
           description: If this value is true, it sets the bundle to draft.
         limitKeyValue:
           type: string
-          description: ''
+          description: The party identifier of the obligor.
           minLength: 0
           maxLength: 8
           example: '00001234'
         limitTypeCode:
           type: string
-          description: ''
+          description: >-
+            A numeric code denoting the type of limit established for the
+            involved fee. '00' is 'overall limit'.
           minLength: 0
           maxLength: 2
           example: '00'
         sectionIdentifier:
           type: string
-          description: ''
+          description: >-
+            The section identifier to which the limit is associated. For
+            example, if the limit is created under the overall facility, this
+            value is '00'; if created under a section, this is the ID of that
+            section.
           minLength: 0
           maxLength: 2
           example: '00'

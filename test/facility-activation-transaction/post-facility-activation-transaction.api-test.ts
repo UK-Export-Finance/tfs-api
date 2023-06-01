@@ -240,7 +240,7 @@ describe('POST /facilities/{facilityIdentifier}/activation-transactions', () => 
 
     withNumberFieldValidationApiTests({
       fieldName: 'initialBundleStatusCode',
-      enum: ENUMS.BUNDLE_STATUSES,
+      enum: ENUMS.INITIAL_BUNDLE_STATUS_CODES,
       generateFieldValueThatDoesNotMatchEnum: () => 5,
       validRequestBody: requestBodyToCreateFacilityActivationTransaction,
       makeRequest,

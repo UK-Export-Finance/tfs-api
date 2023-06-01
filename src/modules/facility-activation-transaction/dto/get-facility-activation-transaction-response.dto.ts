@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ENUMS, EXAMPLES, PROPERTIES } from '@ukef/constants';
-import { DateOnlyString } from '@ukef/helpers';
+import { AcbsPartyId, DateOnlyString } from '@ukef/helpers';
 
 export class GetFacilityActivationTransactionResponseDto {
   @ApiProperty({
@@ -23,9 +23,10 @@ export class GetFacilityActivationTransactionResponseDto {
     description: 'A numeric code denoting the status of the bundle.',
     minLength: 0,
     maxLength: 2,
+    enum: ENUMS.BUNDLE_STATUS_CODES,
     example: EXAMPLES.BUNDLE_STATUS_CODE,
   })
-  readonly bundleStatusCode: string; // TODO APIM-125: should this use ENUMS.BUNDLE_STATUSES?
+  readonly bundleStatusCode: string;
 
   @ApiProperty({
     description: 'A description of the status of the bundle corresponding to the bundle status code.',
@@ -46,8 +47,8 @@ export class GetFacilityActivationTransactionResponseDto {
 
   @ApiProperty({
     description: 'In most situations the value should be 3, it means auto approval.',
-    example: ENUMS.BUNDLE_STATUSES.SUBMIT_FOR_POSTING,
-    enum: ENUMS.BUNDLE_STATUSES,
+    example: ENUMS.INITIAL_BUNDLE_STATUS_CODES.SUBMIT_FOR_POSTING,
+    enum: ENUMS.INITIAL_BUNDLE_STATUS_CODES,
   })
   readonly initialBundleStatusCode: number;
 
@@ -67,10 +68,10 @@ export class GetFacilityActivationTransactionResponseDto {
     example: PROPERTIES.FACILITY_ACTIVATION_TRANSACTION.DEFAULT.bundleMessageList.accountOwnerIdentifier,
     required: false,
   })
-  readonly accountOwnerIdentifier: string; // TODO APIM-125: Does this have to be length 8?
+  readonly accountOwnerIdentifier: AcbsPartyId;
 
   @ApiProperty({
-    description: '', // TODO APIM-125: description? (nothing in Mulesoft or ACBS docs)
+    description: 'The effective date of the facility.',
     type: Date,
     format: 'date',
     required: false,
@@ -78,7 +79,7 @@ export class GetFacilityActivationTransactionResponseDto {
   readonly effectiveDate: DateOnlyString;
 
   @ApiProperty({
-    description: '', // TODO APIM-125: description? (nothing in Mulesoft or ACBS docs)
+    description: `'A' for 'Active' to activate facility or 'C' to cancel.`,
     minLength: 0,
     maxLength: 10,
     example: PROPERTIES.FACILITY_ACTIVATION_TRANSACTION.DEFAULT.bundleMessageList.facilityTransactionCodeValue.facilityTransactionCodeValueCode,
@@ -102,16 +103,16 @@ export class GetFacilityActivationTransactionResponseDto {
   readonly isDraftIndicator: boolean;
 
   @ApiProperty({
-    description: '', // TODO APIM-125: description? (nothing in Mulesoft or ACBS docs)
+    description: 'The party identifier of the obligor.',
     minLength: 0,
     maxLength: 8,
     example: EXAMPLES.PARTY_ID,
     required: false,
   })
-  readonly limitKeyValue: string;
+  readonly limitKeyValue: AcbsPartyId;
 
   @ApiProperty({
-    description: '', // TODO APIM-125: description? (nothing in Mulesoft or ACBS docs)
+    description: `A numeric code denoting the type of limit established for the involved fee. '00' is 'overall limit'.`,
     minLength: 0,
     maxLength: 2,
     example: PROPERTIES.FACILITY_ACTIVATION_TRANSACTION.DEFAULT.bundleMessageList.limitType.limitTypeCode,
@@ -120,7 +121,7 @@ export class GetFacilityActivationTransactionResponseDto {
   readonly limitTypeCode: string;
 
   @ApiProperty({
-    description: '', // TODO APIM-125: description? (nothing in Mulesoft or ACBS docs)
+    description: `The section identifier to which the limit is associated. For example, if the limit is created under the overall facility, this value is '00'; if created under a section, this is the ID of that section.`,
     minLength: 0,
     maxLength: 2,
     example: PROPERTIES.FACILITY_ACTIVATION_TRANSACTION.DEFAULT.bundleMessageList.sectionIdentifier,
