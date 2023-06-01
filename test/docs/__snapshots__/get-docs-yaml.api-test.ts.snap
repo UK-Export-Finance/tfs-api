@@ -2495,9 +2495,17 @@ components:
         loanBillingFrequencyType:
           type: string
           description: The frequency at which loan bills should be generated.
-          minLength: 1
-          maxLength: 1
-          example: C
+          minLength: 0
+          enum:
+            - A
+            - B
+            - C
+            - D
+            - E
+            - F
+            - G
+            - H
+          example: A
       required:
         - postingDate
         - borrowerPartyIdentifier

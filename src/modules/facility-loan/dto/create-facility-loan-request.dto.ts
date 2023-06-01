@@ -1,4 +1,5 @@
 import { ENUMS } from '@ukef/constants';
+import { LoanBillingFrequencyTypeEnum } from '@ukef/constants/enums/loan-billing-frequency-type';
 import { OperationTypeCodeEnum } from '@ukef/constants/enums/operation-type-code';
 import { ProductTypeGroupEnum } from '@ukef/constants/enums/product-type-group';
 import { ProductTypeIdEnum } from '@ukef/constants/enums/product-type-id';
@@ -78,8 +79,8 @@ export class CreateFacilityLoanRequestItem {
 
   @ValidatedStringApiProperty({
     description: 'The frequency at which loan bills should be generated.',
-    length: 1,
-    example: 'C',
+    enum: ENUMS.LOAN_BILLING_FREQUENCY_TYPES,
+    example: ENUMS.LOAN_BILLING_FREQUENCY_TYPES.WEEKLY,
   })
-  readonly loanBillingFrequencyType: string;
+  readonly loanBillingFrequencyType: LoanBillingFrequencyTypeEnum;
 }

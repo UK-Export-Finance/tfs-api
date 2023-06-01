@@ -8,7 +8,6 @@ import { withEnumFieldValidationApiTests } from '@ukef-test/common-tests/request
 import { withNonNegativeNumberFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/non-negative-number-field-validation-api-tests';
 import { withNumberFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/number-field-validation-api-tests';
 import { withPartyIdentifierFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/party-identifier-field-validation-api-tests';
-import { withStringFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/string-field-validation-api-tests';
 import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
 import { CreateFacilityLoanGenerator } from '@ukef-test/support/generator/create-facility-loan-generator';
@@ -135,6 +134,7 @@ describe('POST /facilities/{facilityIdentifier}/loans', () => {
     const possibleProductTypeIds = Object.values(ENUMS.PRODUCT_TYPE_IDS);
     const possibleProductTypeGroups = Object.values(ENUMS.PRODUCT_TYPE_GROUPS);
     const possibleOperationTypes = Object.values(ENUMS.OPERATION_TYPE_CODES);
+    const possibleLoanBillingFrequencyTypes = Object.values(ENUMS.LOAN_BILLING_FREQUENCY_TYPES);
 
     const givenAnyRequestBodyWouldSucceed = () => {
       givenAuthenticationWithTheIdpSucceeds();
@@ -238,11 +238,14 @@ describe('POST /facilities/{facilityIdentifier}/loans', () => {
       givenAnyRequestBodyWouldSucceed,
     });
 
-    withStringFieldValidationApiTests({
+    withEnumFieldValidationApiTests({
       fieldName: 'loanBillingFrequencyType',
       length: 1,
       required: true,
-      generateFieldValueOfLength: (length: number) => valueGenerator.stringOfNumericCharacters({ length }),
+      enum: ENUMS.LOAN_BILLING_FREQUENCY_TYPES,
+      generateFieldValueOfLength: (length: number) => 
+        length === 1 ? possibleLoanBillingFrequencyTypes[valueGenerator.integer({ min: 0, max: possibleLoanBillingFrequencyTypes.length - 1 })] : valueGenerator.string({ length }),
+      generateFieldValueThatDoesNotMatchEnum: () => '3',
       validRequestBody: requestBodyToCreateFacilityLoanGbp,
       makeRequest,
       givenAnyRequestBodyWouldSucceed,
