@@ -86,7 +86,7 @@ describe('PartyController', () => {
       status: jest.fn().mockReturnThis(),
     } as any;
     const [newParty] = apiCreatePartyRequest;
-    const { alternateIdentifier, officerRiskDate: ratedDate } = newParty;
+    const { officerRiskDate: ratedDate } = newParty;
     const { externalRatings } = new GetPartyExternalRatingGenerator(valueGenerator).generate({ numberToGenerate: 1, partyIdentifier });
     const salesforcePartyWithSovereignAccountType = { account: { type: 'Overseas Government Dept' } };
     const salesforcePartyWithCorporateAccountType = { account: { type: 'Some corporate account type' } };
@@ -122,9 +122,7 @@ describe('PartyController', () => {
       when(partyServiceGetPartyIdentifierBySearchText).calledWith(newParty.alternateIdentifier).mockResolvedValueOnce(undefined);
       when(partyServiceCreateParty).calledWith(newParty).mockResolvedValueOnce({ partyIdentifier });
       when(partyExternalRatingServiceGetExternalRatingsForParty).calledWith(partyIdentifier).mockResolvedValueOnce(externalRatings);
-      when(controllerSalesforceGetPartyByAlternateIdentifierPlaceholder)
-        .calledWith(alternateIdentifier)
-        .mockResolvedValueOnce([salesforcePartyWithSovereignAccountType]);
+      when(controllerSalesforceGetPartyByAlternateIdentifierPlaceholder).calledWith().mockResolvedValueOnce([salesforcePartyWithSovereignAccountType]);
 
       await controller.createParty(apiCreatePartyRequest, res);
 
@@ -136,9 +134,7 @@ describe('PartyController', () => {
       when(partyServiceGetPartyIdentifierBySearchText).calledWith(newParty.alternateIdentifier).mockResolvedValueOnce(undefined);
       when(partyServiceCreateParty).calledWith(newParty).mockResolvedValueOnce({ partyIdentifier });
       when(partyExternalRatingServiceGetExternalRatingsForParty).calledWith(partyIdentifier).mockResolvedValueOnce([]);
-      when(controllerSalesforceGetPartyByAlternateIdentifierPlaceholder)
-        .calledWith(alternateIdentifier)
-        .mockResolvedValueOnce([salesforcePartyWithSovereignAccountType]);
+      when(controllerSalesforceGetPartyByAlternateIdentifierPlaceholder).calledWith().mockResolvedValueOnce([salesforcePartyWithSovereignAccountType]);
 
       await controller.createParty(apiCreatePartyRequest, res);
 
@@ -149,9 +145,7 @@ describe('PartyController', () => {
       when(partyServiceGetPartyIdentifierBySearchText).calledWith(newParty.alternateIdentifier).mockResolvedValueOnce(undefined);
       when(partyServiceCreateParty).calledWith(newParty).mockResolvedValueOnce({ partyIdentifier });
       when(partyExternalRatingServiceGetExternalRatingsForParty).calledWith(partyIdentifier).mockResolvedValueOnce([]);
-      when(controllerSalesforceGetPartyByAlternateIdentifierPlaceholder)
-        .calledWith(alternateIdentifier)
-        .mockResolvedValueOnce([salesforcePartyWithCorporateAccountType]);
+      when(controllerSalesforceGetPartyByAlternateIdentifierPlaceholder).calledWith().mockResolvedValueOnce([salesforcePartyWithCorporateAccountType]);
 
       await controller.createParty(apiCreatePartyRequest, res);
 
