@@ -20,6 +20,10 @@ export class GetFacilityGuaranteeGenerator extends AbstractGenerator<FacilityGua
       expirationDateInAcbs: this.valueGenerator.dateTimeString(),
       guaranteedLimit: this.valueGenerator.nonnegativeFloat(),
       guaranteeTypeCode: this.valueGenerator.string(),
+      sectionIdentifier: this.valueGenerator.string({ length: 2 }),
+      guaranteedPercentage: this.valueGenerator.nonnegativeInteger(),
+      limitTypeCode: this.valueGenerator.string({ length: 2 }),
+      lenderTypeCode: this.valueGenerator.string({ length: 3 }),
     };
   }
 
@@ -38,6 +42,10 @@ export class GetFacilityGuaranteeGenerator extends AbstractGenerator<FacilityGua
       GuaranteeType: {
         GuaranteeTypeCode: v.guaranteeTypeCode,
       },
+      SectionIdentifier: v.sectionIdentifier,
+      GuaranteedPercentage: v.guaranteedPercentage,
+      LimitType: { LimitTypeCode: v.limitTypeCode },
+      LenderType: { LenderTypeCode: v.lenderTypeCode },
     }));
 
     const facilityGuarantees: FacilityGuarantee[] = values.map((v) => ({
@@ -69,6 +77,10 @@ interface FacilityGuaranteeValues {
   expirationDateInAcbs: DateString;
   guaranteedLimit: number;
   guaranteeTypeCode: string;
+  sectionIdentifier: string;
+  guaranteedPercentage: number;
+  limitTypeCode: string;
+  lenderTypeCode: string;
 }
 
 interface GenerateOptions {

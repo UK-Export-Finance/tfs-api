@@ -243,7 +243,6 @@ export class DealService {
     try {
       await this.dealBorrowingRestrictionService.updateBorrowingRestrictionForDeal(dealIdentifier);
     } catch (error: unknown) {
-      // TODO APIM-170: do we want more logging here?
       throw new InternalServerErrorException('Internal server error', {
         cause: error as Error,
         description: `Failed to update the deal borrowing restriction after creating deal ${dealIdentifier}`,
