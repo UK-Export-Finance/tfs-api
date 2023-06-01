@@ -1,4 +1,3 @@
-import { PROPERTIES } from '@ukef/constants';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { GetFacilityLoanTransactionGenerator } from '@ukef-test/support/generator/get-facility-loan-transaction-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
@@ -12,7 +11,6 @@ jest.mock('./facility-loan-transaction.service');
 describe('FacilityLoanTransactionController', () => {
   const valueGenerator = new RandomValueGenerator();
   const dateStringTransformations = new DateStringTransformations();
-  const { portfolioIdentifier } = PROPERTIES.GLOBAL;
   const facilityIdentifier = valueGenerator.ukefId();
   const bundleIdentifier = valueGenerator.acbsBundleId();
 
@@ -31,20 +29,19 @@ describe('FacilityLoanTransactionController', () => {
   });
 
   describe('getLoanTransactionByBundleIdentifier', () => {
-    const { facilityLoanTransactionsFromApi } = new GetFacilityLoanTransactionGenerator(valueGenerator, dateStringTransformations).generate({
-      numberToGenerate: 1,
-      portfolioIdentifier,
-      facilityIdentifier,
-    });
-    const [loanTransactionFromService] = facilityLoanTransactionsFromApi;
-    const expectedLoanTransaction = loanTransactionFromService;
+    const { apiFacilityLoanTransaction: expectedLoanTransaction } = new GetFacilityLoanTransactionGenerator(valueGenerator, dateStringTransformations).generate(
+      {
+        numberToGenerate: 1,
+        facilityIdentifier,
+      },
+    );
 
-    it('returns the facility from the service', async () => {
-      when(facilityLoanTransactionServiceGetLoanTransactionByBundleIdentifier).calledWith(bundleIdentifier).mockResolvedValueOnce(loanTransactionFromService);
+    it('returns the loan transaction from the service', async () => {
+      when(facilityLoanTransactionServiceGetLoanTransactionByBundleIdentifier).calledWith(bundleIdentifier).mockResolvedValueOnce(expectedLoanTransaction);
 
-      const facility = await controller.getLoanTransactionByBundleIdentifier({ facilityIdentifier, bundleIdentifier });
+      const loanTransaction = await controller.getLoanTransactionByBundleIdentifier({ facilityIdentifier, bundleIdentifier });
 
-      expect(facility).toStrictEqual(expectedLoanTransaction);
+      expect(loanTransaction).toStrictEqual(expectedLoanTransaction);
     });
   });
 });

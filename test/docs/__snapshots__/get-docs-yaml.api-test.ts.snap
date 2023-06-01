@@ -201,6 +201,44 @@ paths:
           description: The facility was not found.
         '500':
           description: An internal server error has occurred.
+  /api/v1/facilities/{facilityIdentifier}/activation-transactions/{bundleIdentifier}:
+    get:
+      operationId: >-
+        FacilityActivationTransactionController_getActivationTransactionByBundleIdentifier
+      summary: Get the activation transaction matching the specified bundle identifier.
+      parameters:
+        - name: facilityIdentifier
+          required: true
+          in: path
+          description: The identifier of the facility in ACBS.
+          example: '0030000322'
+          schema:
+            minLength: 10
+            maxLength: 10
+            pattern: ^00\\d{8}$
+            type: string
+        - name: bundleIdentifier
+          required: true
+          in: path
+          description: The bundle identifier of the activation transaction in ACBS.
+          example: '0000321000'
+          schema:
+            minLength: 10
+            maxLength: 10
+            pattern: ^0{4}\\d{6}$
+            type: string
+      responses:
+        '200':
+          description: The activation transaction has been successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/GetFacilityActivationTransactionResponseDto
+        '404':
+          description: The specified activation transaction was not found.
+        '500':
+          description: An internal server error has occurred.
   /api/v1/facilities/{facilityIdentifier}:
     get:
       operationId: FacilityController_getFacilityByIdentifier
@@ -864,7 +902,7 @@ paths:
           schema:
             minLength: 10
             maxLength: 10
-            pattern: ^\\d{10}$
+            pattern: ^00\\d{8}$
             type: string
         - name: bundleIdentifier
           required: true
@@ -874,6 +912,7 @@ paths:
           schema:
             minLength: 10
             maxLength: 10
+            pattern: ^0{4}\\d{6}$
             type: string
       responses:
         '200':
@@ -881,7 +920,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetFacilityLoanTransactionResponseItem'
+                $ref: '#/components/schemas/GetFacilityLoanTransactionResponseDto'
         '404':
           description: The specified loan transaction was not found.
         '500':
@@ -1260,6 +1299,133 @@ components:
           example: '0000321000'
       required:
         - bundleIdentifier
+    GetFacilityActivationTransactionResponseDto:
+      type: object
+      properties:
+        portfolioIdentifier:
+          type: string
+          description: The identifier of the portfolio in ACBS. The UKEF portfolio is E1.
+          minLength: 0
+          maxLength: 2
+          example: E1
+        facilityIdentifier:
+          type: string
+          description: The identifier of the facility in ACBS.
+          minLength: 10
+          maxLength: 10
+          example: '0030000322'
+        bundleStatusCode:
+          type: string
+          description: A numeric code denoting the status of the bundle.
+          minLength: 0
+          maxLength: 2
+          enum:
+            - '10'
+            - '15'
+            - '20'
+            - '25'
+            - '30'
+            - '35'
+            - '40'
+            - '50'
+            - '55'
+            - '80'
+            - '85'
+            - '90'
+          example: '10'
+        bundleStatusDesc:
+          type: string
+          description: >-
+            A description of the status of the bundle corresponding to the
+            bundle status code.
+          minLength: 0
+          maxLength: 20
+          example: Pending Input With Drafts
+        lenderTypeCode:
+          type: string
+          description: >-
+            In most situations the value should be 100, it means first level
+            obligor.
+          example: '100'
+          minLength: 3
+          maxLength: 3
+          enum:
+            - '100'
+            - '500'
+        initialBundleStatusCode:
+          type: number
+          description: In most situations the value should be 3, it means auto approval.
+          example: 3
+          enum:
+            - 1
+            - 2
+            - 3
+        initiatingUserName:
+          type: string
+          description: A value used to populate the Bundle Properties 'Initiated By' field.
+          minLength: 0
+          maxLength: 60
+          example: user1
+        accountOwnerIdentifier:
+          type: string
+          description: The identifier of the account owner in ACBS.
+          minLength: 8
+          maxLength: 8
+          example: '00000000'
+        effectiveDate:
+          format: date
+          type: string
+          description: The effective date of the facility.
+        facilityTransactionCodeValueCode:
+          type: string
+          description: '''A'' for ''Active'' to activate facility or ''C'' to cancel.'
+          minLength: 0
+          maxLength: 10
+          example: A
+        facilityTransactionTypeCode:
+          type: number
+          description: >-
+            A numeric code denoting the credit arrangement payment transaction
+            type.
+          minimum: 0
+          maximum: 9999
+          example: A
+        isDraftIndicator:
+          type: boolean
+          description: If this value is true, it sets the bundle to draft.
+        limitKeyValue:
+          type: string
+          description: The party identifier of the obligor.
+          minLength: 0
+          maxLength: 8
+          example: '00001234'
+        limitTypeCode:
+          type: string
+          description: >-
+            A numeric code denoting the type of limit established for the
+            involved fee. '00' is 'overall limit'.
+          minLength: 0
+          maxLength: 2
+          enum:
+            - '00'
+          example: '00'
+        sectionIdentifier:
+          type: string
+          description: >-
+            The section identifier to which the limit is associated. For
+            example, if the limit is created under the overall facility, this
+            value is '00'; if created under a section, this is the ID of that
+            section.
+          minLength: 0
+          maxLength: 2
+          example: '00'
+      required:
+        - portfolioIdentifier
+        - facilityIdentifier
+        - bundleStatusCode
+        - bundleStatusDesc
+        - lenderTypeCode
+        - initialBundleStatusCode
     GetFacilityByIdentifierResponseDto:
       type: object
       properties:
@@ -2831,7 +2997,7 @@ components:
         - citizenshipClass
         - officerRiskDate
         - countryCode
-    GetFacilityLoanTransactionResponseItem:
+    GetFacilityLoanTransactionResponseDto:
       type: object
       properties:
         portfolioIdentifier:

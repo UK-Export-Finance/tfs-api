@@ -3,9 +3,9 @@ import { OperationTypeCodeEnum } from '@ukef/constants/enums/operation-type-code
 import { ProductTypeGroupEnum } from '@ukef/constants/enums/product-type-group';
 import { ProductTypeIdEnum } from '@ukef/constants/enums/product-type-id';
 import { AcbsPartyId, DateString, UkefId } from '@ukef/helpers';
-import { AcbsGetFacilityLoanTransactionResponseDto } from '@ukef/modules/acbs/dto/acbs-get-facility-loan-transaction-response.dto';
+import { AcbsGetBundleInformationResponseDto } from '@ukef/modules/acbs/dto/acbs-get-bundle-information-response.dto';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
-import { GetFacilityLoanTransactionResponseDto } from '@ukef/modules/facility-loan-transaction/dto/get-loan-transaction-response.dto';
+import { GetFacilityLoanTransactionResponseDto } from '@ukef/modules/facility-loan-transaction/dto/get-facility-loan-transaction-response.dto';
 
 import { TEST_CURRENCIES } from '../constants/test-currency.constant';
 import { AbstractGenerator } from './abstract-generator';
@@ -17,63 +17,78 @@ export class GetFacilityLoanTransactionGenerator extends AbstractGenerator<Facil
   }
 
   protected generateValues(): FacilityLoanTransactionValues {
+    // Numeric enums needs filter to get possible values.
+    const possibleInitialBundleStatusCodes = Object.values(ENUMS.INITIAL_BUNDLE_STATUS_CODES).filter((value) => !isNaN(Number(value)));
     const possibleProductTypeIds = Object.values(ENUMS.PRODUCT_TYPE_IDS);
     const possibleProductTypeGroups = Object.values(ENUMS.PRODUCT_TYPE_GROUPS);
     const possibleOperationTypeCodes = Object.values(ENUMS.OPERATION_TYPE_CODES);
 
     return {
-      BundleStatusCode: this.valueGenerator.stringOfNumericCharacters({ length: 2 }),
-      BundleStatusShortDescription: this.valueGenerator.string({ minLength: 0, maxLength: 20 }),
-      PostingDate: this.valueGenerator.dateOnlyString(),
-      BorrowerPartyIdentifier: this.valueGenerator.acbsPartyId(),
-      CurrencyCode: TEST_CURRENCIES.A_TEST_CURRENCY,
-      DealCustomerUsageRate: this.valueGenerator.nonnegativeFloat(),
-      OperationTypeCode: possibleOperationTypeCodes[this.valueGenerator.integer({ min: 0, max: possibleOperationTypeCodes.length - 1 })],
-      LoanAmount: this.valueGenerator.nonnegativeFloat(),
-      EffectiveDate: this.valueGenerator.dateTimeString(),
-      MaturityDate: this.valueGenerator.dateTimeString(),
-      ProductGroupCode: possibleProductTypeGroups[this.valueGenerator.integer({ min: 0, max: possibleProductTypeGroups.length - 1 })],
-      ProductTypeCode: possibleProductTypeIds[this.valueGenerator.integer({ min: 0, max: possibleProductTypeIds.length - 1 })],
-      SpreadRate: this.valueGenerator.nonnegativeFloat(),
-      SpreadRateCTL: this.valueGenerator.nonnegativeFloat(),
-      YearBasisCode: this.valueGenerator.string({ length: 1 }),
-      IndexRateChangeFrequencyCode: this.valueGenerator.string({ length: 1 }),
-      NextDueDate: this.valueGenerator.dateTimeString(),
-      LoanBillingFrequencyTypeCode: this.valueGenerator.string({ length: 1 }),
+      bundleStatusCode: this.valueGenerator.stringOfNumericCharacters({ length: 2 }),
+      bundleStatusShortDescription: this.valueGenerator.string({ minLength: 0, maxLength: 20 }),
+      postingDate: this.valueGenerator.dateOnlyString(),
+      borrowerPartyIdentifier: this.valueGenerator.acbsPartyId(),
+      currencyCode: TEST_CURRENCIES.A_TEST_CURRENCY,
+      dealCustomerUsageRate: this.valueGenerator.nonnegativeFloat(),
+      operationTypeCode: possibleOperationTypeCodes[this.valueGenerator.integer({ min: 0, max: possibleOperationTypeCodes.length - 1 })],
+      loanAmount: this.valueGenerator.nonnegativeFloat(),
+      effectiveDate: this.valueGenerator.dateOnlyString(),
+      maturityDate: this.valueGenerator.dateOnlyString(),
+      productGroupCode: possibleProductTypeGroups[this.valueGenerator.integer({ min: 0, max: possibleProductTypeGroups.length - 1 })],
+      productTypeCode: possibleProductTypeIds[this.valueGenerator.integer({ min: 0, max: possibleProductTypeIds.length - 1 })],
+      spreadRate: this.valueGenerator.nonnegativeFloat(),
+      spreadRateCTL: this.valueGenerator.nonnegativeFloat(),
+      yearBasisCode: this.valueGenerator.string({ length: 1 }),
+      indexRateChangeFrequencyCode: this.valueGenerator.string({ length: 1 }),
+      nextDueDate: this.valueGenerator.dateOnlyString(),
+      loanBillingFrequencyTypeCode: this.valueGenerator.string({ length: 1 }),
+      initialBundleStatusCode: possibleInitialBundleStatusCodes[
+        this.valueGenerator.integer({ min: 0, max: possibleInitialBundleStatusCodes.length - 1 })
+      ] as number,
+      initiatingUserName: this.valueGenerator.string({ maxLength: 60 }),
     };
   }
 
   protected transformRawValuesToGeneratedValues(
-    valuesList: FacilityLoanTransactionValues[],
-    { facilityIdentifier, portfolioIdentifier }: GenerateOptions,
+    facilityLoanTransactions: FacilityLoanTransactionValues[],
+    { facilityIdentifier }: GenerateOptions,
   ): GenerateResult {
-    const facilityLoanTransactionsInAcbs: AcbsGetFacilityLoanTransactionResponseDto = valuesList.map((values) => ({
+    const { portfolioIdentifier } = PROPERTIES.GLOBAL;
+    const [firstFacilityLoanTransaction] = facilityLoanTransactions;
+    const postingDateTime = this.dateStringTransformations.addTimeToDateOnlyString(firstFacilityLoanTransaction.postingDate);
+    const effectiveDateTime = this.dateStringTransformations.addTimeToDateOnlyString(firstFacilityLoanTransaction.effectiveDate);
+    const maturityDateTime = this.dateStringTransformations.addTimeToDateOnlyString(firstFacilityLoanTransaction.maturityDate);
+    const nextDueDateTime = this.dateStringTransformations.addTimeToDateOnlyString(firstFacilityLoanTransaction.nextDueDate);
+
+    const acbsFacilityLoanTransaction: AcbsGetBundleInformationResponseDto = {
       PortfolioIdentifier: portfolioIdentifier,
+      InitialBundleStatusCode: firstFacilityLoanTransaction.initialBundleStatusCode,
       BundleStatus: {
-        BundleStatusCode: values.BundleStatusCode,
-        BundleStatusShortDescription: values.BundleStatusShortDescription,
+        BundleStatusCode: firstFacilityLoanTransaction.bundleStatusCode,
+        BundleStatusShortDescription: firstFacilityLoanTransaction.bundleStatusShortDescription,
       },
-      PostingDate: values.PostingDate,
+      InitiatingUserName: firstFacilityLoanTransaction.initiatingUserName,
+      PostingDate: postingDateTime,
       BundleMessageList: [
         {
           $type: 'NewLoanRequest',
           FacilityIdentifier: facilityIdentifier,
-          BorrowerPartyIdentifier: values.BorrowerPartyIdentifier,
+          BorrowerPartyIdentifier: firstFacilityLoanTransaction.borrowerPartyIdentifier,
           Currency: {
-            CurrencyCode: values.CurrencyCode,
+            CurrencyCode: firstFacilityLoanTransaction.currencyCode,
           },
-          DealCustomerUsageRate: values.DealCustomerUsageRate,
+          DealCustomerUsageRate: firstFacilityLoanTransaction.dealCustomerUsageRate,
           DealCustomerUsageOperationType: {
-            OperationTypeCode: values.OperationTypeCode,
+            OperationTypeCode: firstFacilityLoanTransaction.operationTypeCode,
           },
-          LoanAmount: values.LoanAmount,
-          EffectiveDate: values.EffectiveDate,
-          MaturityDate: values.MaturityDate,
+          LoanAmount: firstFacilityLoanTransaction.loanAmount,
+          EffectiveDate: effectiveDateTime,
+          MaturityDate: maturityDateTime,
           ProductGroup: {
-            ProductGroupCode: values.ProductGroupCode,
+            ProductGroupCode: firstFacilityLoanTransaction.productGroupCode,
           },
           ProductType: {
-            ProductTypeCode: values.ProductTypeCode,
+            ProductTypeCode: firstFacilityLoanTransaction.productTypeCode,
           },
           AccrualScheduleList: [
             {
@@ -82,7 +97,7 @@ export class GetFacilityLoanTransactionGenerator extends AbstractGenerator<Facil
               },
               SpreadRate: 0,
               YearBasis: {
-                YearBasisCode: values.YearBasisCode,
+                YearBasisCode: firstFacilityLoanTransaction.yearBasisCode,
               },
               IndexRateChangeFrequency: {
                 IndexRateChangeFrequencyCode: '',
@@ -92,19 +107,19 @@ export class GetFacilityLoanTransactionGenerator extends AbstractGenerator<Facil
               AccrualCategory: {
                 AccrualCategoryCode: PROPERTIES.FACILITY_LOAN.DEFAULT.accrualScheduleList.accrualCategory.accrualCategoryCode.pac,
               },
-              SpreadRate: values.SpreadRate,
+              SpreadRate: firstFacilityLoanTransaction.spreadRate,
               YearBasis: {
                 YearBasisCode: '',
               },
               IndexRateChangeFrequency: {
-                IndexRateChangeFrequencyCode: values.IndexRateChangeFrequencyCode,
+                IndexRateChangeFrequencyCode: firstFacilityLoanTransaction.indexRateChangeFrequencyCode,
               },
             },
             {
               AccrualCategory: {
                 AccrualCategoryCode: PROPERTIES.FACILITY_LOAN.DEFAULT.accrualScheduleList.accrualCategory.accrualCategoryCode.ctl,
               },
-              SpreadRate: values.SpreadRateCTL,
+              SpreadRate: firstFacilityLoanTransaction.spreadRateCTL,
               YearBasis: {
                 YearBasisCode: '',
               },
@@ -115,73 +130,74 @@ export class GetFacilityLoanTransactionGenerator extends AbstractGenerator<Facil
           ],
           RepaymentScheduleList: [
             {
-              NextDueDate: values.NextDueDate,
+              NextDueDate: nextDueDateTime,
               LoanBillingFrequencyType: {
-                LoanBillingFrequencyTypeCode: values.LoanBillingFrequencyTypeCode,
+                LoanBillingFrequencyTypeCode: firstFacilityLoanTransaction.loanBillingFrequencyTypeCode,
               },
             },
           ],
         },
       ],
-    }));
+    };
 
-    const facilityLoanTransactionsFromApi = valuesList.map((values) => ({
+    const apiFacilityLoanTransaction: GetFacilityLoanTransactionResponseDto = {
       portfolioIdentifier: portfolioIdentifier,
-      bundleStatusCode: values.BundleStatusCode,
-      bundleStatusDesc: values.BundleStatusShortDescription,
-      postingDate: this.dateStringTransformations.removeTime(values.PostingDate),
+      bundleStatusCode: firstFacilityLoanTransaction.bundleStatusCode,
+      bundleStatusDesc: firstFacilityLoanTransaction.bundleStatusShortDescription,
+      postingDate: firstFacilityLoanTransaction.postingDate,
       facilityIdentifier: facilityIdentifier,
-      borrowerPartyIdentifier: values.BorrowerPartyIdentifier,
-      productTypeId: values.ProductTypeCode,
-      productTypeGroup: values.ProductGroupCode,
-      currency: values.CurrencyCode,
-      dealCustomerUsageRate: values.DealCustomerUsageRate,
-      dealCustomerUsageOperationType: values.OperationTypeCode,
-      amount: values.LoanAmount,
-      issueDate: this.dateStringTransformations.removeTime(values.EffectiveDate),
-      expiryDate: this.dateStringTransformations.removeTime(values.MaturityDate),
-      spreadRate: values.SpreadRate,
-      spreadRateCTL: values.SpreadRateCTL,
-      yearBasis: values.YearBasisCode,
-      nextDueDate: this.dateStringTransformations.removeTime(values.NextDueDate),
-      indexRateChangeFrequency: values.IndexRateChangeFrequencyCode,
-      loanBillingFrequencyType: values.LoanBillingFrequencyTypeCode,
-    }));
+      borrowerPartyIdentifier: firstFacilityLoanTransaction.borrowerPartyIdentifier,
+      productTypeId: firstFacilityLoanTransaction.productTypeCode,
+      productTypeGroup: firstFacilityLoanTransaction.productGroupCode,
+      currency: firstFacilityLoanTransaction.currencyCode,
+      dealCustomerUsageRate: firstFacilityLoanTransaction.dealCustomerUsageRate,
+      dealCustomerUsageOperationType: firstFacilityLoanTransaction.operationTypeCode,
+      amount: firstFacilityLoanTransaction.loanAmount,
+      issueDate: firstFacilityLoanTransaction.effectiveDate,
+      expiryDate: firstFacilityLoanTransaction.maturityDate,
+      spreadRate: firstFacilityLoanTransaction.spreadRate,
+      spreadRateCTL: firstFacilityLoanTransaction.spreadRateCTL,
+      yearBasis: firstFacilityLoanTransaction.yearBasisCode,
+      nextDueDate: firstFacilityLoanTransaction.nextDueDate,
+      indexRateChangeFrequency: firstFacilityLoanTransaction.indexRateChangeFrequencyCode,
+      loanBillingFrequencyType: firstFacilityLoanTransaction.loanBillingFrequencyTypeCode,
+    };
 
     return {
-      facilityLoanTransactionsInAcbs,
-      facilityLoanTransactionsFromApi,
+      acbsFacilityLoanTransaction,
+      apiFacilityLoanTransaction,
     };
   }
 }
 
 interface FacilityLoanTransactionValues {
-  BundleStatusCode: string;
-  BundleStatusShortDescription: string;
-  PostingDate: DateString;
-  BorrowerPartyIdentifier: AcbsPartyId;
-  CurrencyCode: string;
-  DealCustomerUsageRate: number;
-  OperationTypeCode: OperationTypeCodeEnum;
-  LoanAmount: number;
-  EffectiveDate: DateString;
-  MaturityDate: DateString;
-  ProductGroupCode: ProductTypeGroupEnum;
-  ProductTypeCode: ProductTypeIdEnum;
-  SpreadRate: number;
-  SpreadRateCTL: number;
-  YearBasisCode: string;
-  IndexRateChangeFrequencyCode: string;
-  NextDueDate: DateString;
-  LoanBillingFrequencyTypeCode: string;
+  bundleStatusCode: string;
+  bundleStatusShortDescription: string;
+  postingDate: DateString;
+  borrowerPartyIdentifier: AcbsPartyId;
+  currencyCode: string;
+  dealCustomerUsageRate: number;
+  operationTypeCode: OperationTypeCodeEnum;
+  loanAmount: number;
+  effectiveDate: DateString;
+  maturityDate: DateString;
+  productGroupCode: ProductTypeGroupEnum;
+  productTypeCode: ProductTypeIdEnum;
+  spreadRate: number;
+  spreadRateCTL: number;
+  yearBasisCode: string;
+  indexRateChangeFrequencyCode: string;
+  nextDueDate: DateString;
+  loanBillingFrequencyTypeCode: string;
+  initialBundleStatusCode: number;
+  initiatingUserName: string;
 }
 
 interface GenerateOptions {
   facilityIdentifier: UkefId;
-  portfolioIdentifier: string;
 }
 
 interface GenerateResult {
-  facilityLoanTransactionsInAcbs: AcbsGetFacilityLoanTransactionResponseDto;
-  facilityLoanTransactionsFromApi: GetFacilityLoanTransactionResponseDto;
+  acbsFacilityLoanTransaction: AcbsGetBundleInformationResponseDto;
+  apiFacilityLoanTransaction: GetFacilityLoanTransactionResponseDto;
 }

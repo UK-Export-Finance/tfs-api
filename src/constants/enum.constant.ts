@@ -1,4 +1,4 @@
-import * as BUNDLE_STATUSES from './enums/bundle-status';
+import * as BUNDLE_STATUS_CODES from './enums/bundle-status-code';
 import * as COVENANT_TYPE_CODES from './enums/covenant-type-code';
 import * as FACILITY_STAGES from './enums/facility-stage';
 import * as FACILITY_STATUSES from './enums/facility-status';
@@ -6,7 +6,9 @@ import * as FACILITY_TYPE_IDS from './enums/facility-type-id';
 import * as FACILITY_UPDATE_OPERATIONS from './enums/facility-update-operations';
 import * as GUARANTEE_TYPE_CODES from './enums/guarantee-type-code';
 import * as INCOME_CLASS_CODES from './enums/income-class-code';
+import * as INITIAL_BUNDLE_STATUS_CODES from './enums/initial-bundle-status-code';
 import * as LENDER_TYPE_CODES from './enums/lender-type-code';
+import * as LIMIT_TYPE_CODES from './enums/limit-type-code';
 import * as LOAN_BILLING_FREQUENCY_TYPES from './enums/loan-billing-frequency-type';
 import * as OPERATION_TYPE_CODES from './enums/operation-type-code';
 import * as PORTFOLIO from './enums/portfolio';
@@ -14,7 +16,8 @@ import * as PRODUCT_TYPE_GROUPS from './enums/product-type-group';
 import * as PRODUCT_TYPE_IDS from './enums/product-type-id';
 
 export const ENUMS = {
-  BUNDLE_STATUSES: BUNDLE_STATUSES.BundleStatusEnum,
+  BUNDLE_STATUS_CODES: BUNDLE_STATUS_CODES.BundleStatusCodeEnum,
+  INITIAL_BUNDLE_STATUS_CODES: INITIAL_BUNDLE_STATUS_CODES.InitialBundleStatusCodeEnum,
   LENDER_TYPE_CODES: LENDER_TYPE_CODES.LenderTypeCodeEnum,
   PORTFOLIO: PORTFOLIO.PortfolioEnum,
   COVENANT_TYPE_CODES: COVENANT_TYPE_CODES.CovenantTypeCodeEnum,
@@ -28,4 +31,5 @@ export const ENUMS = {
   OPERATION_TYPE_CODES: OPERATION_TYPE_CODES.OperationTypeCodeEnum,
   FACILITY_UPDATE_OPERATIONS: FACILITY_UPDATE_OPERATIONS.FacilityUpdateOperationEnum,
   LOAN_BILLING_FREQUENCY_TYPES: LOAN_BILLING_FREQUENCY_TYPES.LoanBillingFrequencyTypeEnum,
+  LIMIT_TYPE_CODES: LIMIT_TYPE_CODES.LimitTypeCodeEnum,
 };

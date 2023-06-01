@@ -91,7 +91,7 @@ export interface NewLoanRequest {
   FinancialLockMTMRateIndicator?: boolean;
   CustomerUsageLockMTMRateIndicator?: boolean;
   AccrualScheduleList: AccrualSchedule[];
-  RepaymentScheduleList: RepaymentSchedule[];
+  RepaymentScheduleList: Pick<RepaymentSchedule, 'NextDueDate' | 'LoanBillingFrequencyType'>[];
 }
 
 interface NewLoanRequestCashEvent {

@@ -2,7 +2,7 @@ import { AcbsPartyId, DateString, UkefId } from '@ukef/helpers';
 
 export interface FacilityCodeValueTransaction {
   $type: 'FacilityCodeValueTransaction';
-  AccountOwnerIdentifier: string;
+  AccountOwnerIdentifier: AcbsPartyId;
   EffectiveDate: DateString;
   FacilityIdentifier: UkefId;
   FacilityTransactionCodeValue: {

@@ -7,11 +7,11 @@ import { AcbsConfigBaseUrl } from './acbs-config-base-url.type';
 import { AcbsHttpService } from './acbs-http.service';
 import { AcbsCreateBundleInformationRequestDto } from './dto/acbs-create-bundle-information-request.dto';
 import { AcbsCreateBundleInformationResponseHeadersDto } from './dto/acbs-create-bundle-information-response.dto';
-import { AcbsGetFacilityLoanTransactionResponseItem } from './dto/acbs-get-facility-loan-transaction-response.dto';
+import { AcbsGetBundleInformationResponseDto } from './dto/acbs-get-bundle-information-response.dto';
 import { BundleAction, isFacilityCodeValueTransaction, isLoanAdvanceTransaction, isNewLoanRequest } from './dto/bundle-actions/bundle-action.type';
 import {
+  getBundleInformationNotFoundKnownAcbsError,
   getLoanNotFoundKnownAcbsBundleInformationError,
-  getLoanTransactionNotFoundKnownAcbsError,
   KnownErrors,
   postFacilityNotFoundKnownAcbsError,
 } from './known-errors';
@@ -27,16 +27,16 @@ export class AcbsBundleInformationService {
     this.acbsHttpService = new AcbsHttpService(config, httpService);
   }
 
-  async getLoanTransactionByBundleIdentifier(bundleIdentifier: string, idToken: string): Promise<AcbsGetFacilityLoanTransactionResponseItem> {
-    const { data: loanTransaction } = await this.acbsHttpService.get<AcbsGetFacilityLoanTransactionResponseItem>({
+  async getBundleInformationByIdentifier(bundleIdentifier: string, idToken: string): Promise<AcbsGetBundleInformationResponseDto> {
+    const { data: bundleInformation } = await this.acbsHttpService.get<AcbsGetBundleInformationResponseDto>({
       path: `${AcbsBundleInformationService.bundleInformationPath}/${bundleIdentifier}?returnItems=true`,
       idToken,
       onError: createWrapAcbsHttpGetErrorCallback({
-        messageForUnknownError: `Failed to get the loan transaction with bundle identifier ${bundleIdentifier}.`,
-        knownErrors: [getLoanTransactionNotFoundKnownAcbsError(bundleIdentifier)],
+        messageForUnknownError: `Failed to get the bundle information with bundle identifier ${bundleIdentifier}.`,
+        knownErrors: [getBundleInformationNotFoundKnownAcbsError(bundleIdentifier)],
       }),
     });
-    return loanTransaction;
+    return bundleInformation;
   }
 
   async createBundleInformation(
@@ -51,7 +51,7 @@ export class AcbsBundleInformationService {
       requestBody: newBundleInformation,
       idToken,
       onError: createWrapAcbsHttpPostOrPutErrorCallback({
-        messageForUnknownError: `Failed to create a bundleInformation in ACBS.`,
+        messageForUnknownError: `Failed to create a bundle information in ACBS.`,
         knownErrors: this.getKnownErrorsForAction(action),
       }),
     });
