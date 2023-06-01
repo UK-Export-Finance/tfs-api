@@ -85,7 +85,7 @@ export class PartyController {
 
     if (Array.isArray(existingExternalRatingsOfParty) && existingExternalRatingsOfParty.length === 0) {
       // TODO APIM-336: This is a placeholder function which returns a hard-coded value, and should be replaced when Informatica is ready.
-      const [salesforceParty] = await this.salesforceGetPartyByAlternateIdentifierPlaceholder(alternateIdentifier);
+      const [salesforceParty] = await this.salesforceGetPartyByAlternateIdentifierPlaceholder();
 
       const accountType = salesforceParty?.account?.type;
       const { SOVEREIGN, CORPORATE } = ENUMS.ASSIGNED_RATING_CODES;
@@ -98,8 +98,7 @@ export class PartyController {
   }
 
   // TODO APIM-336: This is a placeholder function which returns a hard-coded value, and should be replaced when Informatica is ready.
-  async salesforceGetPartyByAlternateIdentifierPlaceholder(alternateIdentifier: string) {
-    alternateIdentifier;
+  async salesforceGetPartyByAlternateIdentifierPlaceholder() {
     return await [{ account: { type: 'Overseas Government Dept' } }];
   }
 
