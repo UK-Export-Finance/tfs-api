@@ -94,7 +94,7 @@ export class FacilityLoanService {
   private getBaseMessage(facilityIdentifier: UkefId, newFacilityLoan: CreateFacilityLoanRequestItem) {
     const loanInstrumentCode =
       newFacilityLoan.productTypeId === ENUMS.PRODUCT_TYPE_IDS.GEF_CONTINGENT ? ENUMS.PRODUCT_TYPE_IDS.GEF_CASH : newFacilityLoan.productTypeId;
-    const issueDateString = this.getIssueDateToCreate(newFacilityLoan.issueDate);
+    const issueDateString = this.dateStringTransformations.getEarliestDateFromTodayAndDateAsString(newFacilityLoan.issueDate, this.currentDateProvider);
     const repaymentSchedules = this.repaymentScheduleBuilder.getRepaymentSchedules(newFacilityLoan);
 
     return {

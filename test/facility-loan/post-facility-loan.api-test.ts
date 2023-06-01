@@ -134,7 +134,7 @@ describe('POST /facilities/{facilityIdentifier}/loans', () => {
     const possibleProductTypeIds = Object.values(ENUMS.PRODUCT_TYPE_IDS);
     const possibleProductTypeGroups = Object.values(ENUMS.PRODUCT_TYPE_GROUPS);
     const possibleOperationTypes = Object.values(ENUMS.OPERATION_TYPE_CODES);
-    const possibleLoanBillingFrequencyTypes = Object.values(ENUMS.LOAN_BILLING_FREQUENCY_TYPES);
+    const possibleLoanBillingFrequencyTypes = Object.values(ENUMS.FEE_FREQUENCY_TYPES);
 
     const givenAnyRequestBodyWouldSucceed = () => {
       givenAuthenticationWithTheIdpSucceeds();
@@ -242,7 +242,7 @@ describe('POST /facilities/{facilityIdentifier}/loans', () => {
       fieldName: 'loanBillingFrequencyType',
       length: 1,
       required: true,
-      enum: ENUMS.LOAN_BILLING_FREQUENCY_TYPES,
+      enum: ENUMS.FEE_FREQUENCY_TYPES,
       generateFieldValueOfLength: (length: number) =>
         length === 1
           ? possibleLoanBillingFrequencyTypes[valueGenerator.integer({ min: 0, max: possibleLoanBillingFrequencyTypes.length - 1 })]

@@ -138,7 +138,7 @@ export class FacilityService {
       defaultValues.capitalConversionFactorCode[facilityToTranform.productTypeId] ??
       defaultValues.capitalConversionFactorCodeFallback;
 
-    const effectiveDateString = this.getFacilityEffectiveDateToCreateOrUpdate(facilityToTranform.effectiveDate);
+    const effectiveDateString = this.dateStringTransformations.getEarliestDateFromTodayAndDateAsString(facilityToTranform.effectiveDate, this.currentDateProvider);
 
     return {
       FacilityIdentifier: facilityToTranform.facilityIdentifier,

@@ -22,7 +22,7 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
 
   protected generateValues(): CreateFacilityLoanRequestItem {
     const possibleOperationTypes = Object.values(ENUMS.OPERATION_TYPE_CODES);
-    const possibleLoanBillingFrequencyTypes = Object.values(ENUMS.LOAN_BILLING_FREQUENCY_TYPES);
+    const possibleLoanBillingFrequencyTypes = Object.values(ENUMS.FEE_FREQUENCY_TYPES);
     return {
       postingDate: this.valueGenerator.dateOnlyString(),
       borrowerPartyIdentifier: this.valueGenerator.stringOfNumericCharacters({ length: 8 }),

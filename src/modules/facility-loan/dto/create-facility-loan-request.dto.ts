@@ -1,8 +1,9 @@
 import { ENUMS } from '@ukef/constants';
-import { LoanBillingFrequencyTypeEnum } from '@ukef/constants/enums/loan-billing-frequency-type';
+import { FeeFrequencyTypeEnum } from '@ukef/constants/enums/fee-frequency-type';
 import { OperationTypeCodeEnum } from '@ukef/constants/enums/operation-type-code';
 import { ProductTypeGroupEnum } from '@ukef/constants/enums/product-type-group';
 import { ProductTypeIdEnum } from '@ukef/constants/enums/product-type-id';
+import { YearBasisEnum } from '@ukef/constants/enums/year-basis';
 import { ValidatedCurrencyApiProperty } from '@ukef/decorators/validated-currency-api-property-decorator';
 import { ValidatedDateOnlyApiProperty } from '@ukef/decorators/validated-date-only-api-property.decorator';
 import { ValidatedNumberApiProperty } from '@ukef/decorators/validated-number-api-property.decorator';
@@ -79,10 +80,10 @@ export class CreateFacilityLoanRequestItem {
 
   @ValidatedStringApiProperty({
     description: 'The frequency at which loan bills should be generated.',
-    enum: ENUMS.LOAN_BILLING_FREQUENCY_TYPES,
-    example: ENUMS.LOAN_BILLING_FREQUENCY_TYPES.WEEKLY,
+    enum: ENUMS.FEE_FREQUENCY_TYPES,
+    example: ENUMS.FEE_FREQUENCY_TYPES.WEEKLY,
   })
-  readonly loanBillingFrequencyType: LoanBillingFrequencyTypeEnum;
+  readonly loanBillingFrequencyType: FeeFrequencyTypeEnum;
 
   @ValidatedNumberApiProperty({
     description: 'The guarantee fee percentage.',
@@ -99,12 +100,16 @@ export class CreateFacilityLoanRequestItem {
 
   @ValidatedStringApiProperty({
     description: 'The year basis for the accrual schedule.',
+    enum: ENUMS.YEAR_BASIS,
+    example: ENUMS.YEAR_BASIS.DAY_COUNT_365,
   })
-  readonly yearBasis: string;
+  readonly yearBasis: YearBasisEnum;
 
   @ValidatedStringApiProperty({
     description: 'The frequency which the rate will change.',
     required: false,
+    enum: ENUMS.FEE_FREQUENCY_TYPES,
+    example: ENUMS.FEE_FREQUENCY_TYPES.WEEKLY,
   })
-  readonly indexRateChangeFrequency: string;
+  readonly indexRateChangeFrequency: FeeFrequencyTypeEnum;
 }

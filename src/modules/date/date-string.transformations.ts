@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { DATE_FORMATS } from '@ukef/constants';
 import { DateOnlyString } from '@ukef/helpers';
 import { DateString } from '@ukef/helpers/date-string.type';
+import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
 import { matches } from 'class-validator';
 
 @Injectable()
@@ -47,5 +48,12 @@ export class DateStringTransformations {
   getDayFromDateOnlyString(dateOnlyString: DateOnlyString): number {
     const date = new Date(dateOnlyString);
     return date.getDate();
+  }
+
+  getEarliestDateFromTodayAndDateAsString(dateAsString: string, currentDateProvider: CurrentDateProvider): DateString {
+    const dateTime = currentDateProvider.getEarliestDateFromTodayAnd(
+      new Date(this.addTimeToDateOnlyString(dateAsString)),
+    );
+    return this.getDateStringFromDate(dateTime);
   }
 }
