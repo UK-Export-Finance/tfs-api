@@ -115,6 +115,7 @@ export class GetFacilityActivationTransactionResponseDto {
     description: `A numeric code denoting the type of limit established for the involved fee. '00' is 'overall limit'.`,
     minLength: 0,
     maxLength: 2,
+    enum: ENUMS.LIMIT_TYPE_CODES,
     example: PROPERTIES.FACILITY_ACTIVATION_TRANSACTION.DEFAULT.bundleMessageList.limitType.limitTypeCode,
     required: false,
   })

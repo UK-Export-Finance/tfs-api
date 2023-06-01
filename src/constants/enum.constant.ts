@@ -8,6 +8,7 @@ import * as GUARANTEE_TYPE_CODES from './enums/guarantee-type-code';
 import * as INCOME_CLASS_CODES from './enums/income-class-code';
 import * as INITIAL_BUNDLE_STATUS_CODES from './enums/initial-bundle-status-code';
 import * as LENDER_TYPE_CODES from './enums/lender-type-code';
+import * as LIMIT_TYPE_CODES from './enums/limit-type-code';
 import * as LOAN_BILLING_FREQUENCY_TYPES from './enums/loan-billing-frequency-type';
 import * as OPERATION_TYPE_CODES from './enums/operation-type-code';
 import * as PORTFOLIO from './enums/portfolio';
@@ -30,4 +31,5 @@ export const ENUMS = {
   OPERATION_TYPE_CODES: OPERATION_TYPE_CODES.OperationTypeCodeEnum,
   FACILITY_UPDATE_OPERATIONS: FACILITY_UPDATE_OPERATIONS.FacilityUpdateOperationEnum,
   LOAN_BILLING_FREQUENCY_TYPES: LOAN_BILLING_FREQUENCY_TYPES.LoanBillingFrequencyTypeEnum,
+  LIMIT_TYPE_CODES: LIMIT_TYPE_CODES.LimitTypeCodeEnum,
 };

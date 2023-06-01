@@ -1406,6 +1406,8 @@ components:
             involved fee. '00' is 'overall limit'.
           minLength: 0
           maxLength: 2
+          enum:
+            - '00'
           example: '00'
         sectionIdentifier:
           type: string
