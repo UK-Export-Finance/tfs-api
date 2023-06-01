@@ -10,10 +10,7 @@ import { CreateFacilityLoanRequestItem } from './dto/create-facility-loan-reques
 
 @Injectable()
 export class AccrualScheduleBuilder {
-  constructor(
-    private readonly dateStringTransformations: DateStringTransformations,
-    private readonly currentDateProvider: CurrentDateProvider,
-  ) { }
+  constructor(private readonly dateStringTransformations: DateStringTransformations, private readonly currentDateProvider: CurrentDateProvider) {}
 
   getAccrualSchedules(facilityLoan: CreateFacilityLoanRequestItem): AccrualSchedule[] {
     if (facilityLoan.productTypeGroup === ENUMS.PRODUCT_TYPE_GROUPS.EWCS) {

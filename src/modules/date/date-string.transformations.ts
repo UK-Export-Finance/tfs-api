@@ -51,9 +51,7 @@ export class DateStringTransformations {
   }
 
   getEarliestDateFromTodayAndDateAsString(dateAsString: string, currentDateProvider: CurrentDateProvider): DateString {
-    const dateTime = currentDateProvider.getEarliestDateFromTodayAnd(
-      new Date(this.addTimeToDateOnlyString(dateAsString)),
-    );
+    const dateTime = currentDateProvider.getEarliestDateFromTodayAnd(new Date(this.addTimeToDateOnlyString(dateAsString)));
     return this.getDateStringFromDate(dateTime);
   }
 }
