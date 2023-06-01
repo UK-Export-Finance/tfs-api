@@ -1,7 +1,9 @@
 import { ApiProperty, ApiResponseProperty } from '@nestjs/swagger';
 import { DateString } from '@ukef/helpers/date-string.type';
 
-export class GetPartyByIdentifierResponse {
+export type GetPartyByIdentifierResponseDto = GetPartyByIdentifierResponseItem[];
+
+export class GetPartyByIdentifierResponseItem {
   @ApiResponseProperty()
   alternateIdentifier: string;
 

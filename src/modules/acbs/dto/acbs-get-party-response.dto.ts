@@ -1,6 +1,8 @@
 import { DateString } from '@ukef/helpers/date-string.type';
 
-export interface AcbsGetPartyResponseDto {
+export type AcbsGetPartyResponseDto = AcbsGetPartyResponseItem[];
+
+export interface AcbsGetPartyResponseItem {
   PartyAlternateIdentifier: string;
   IndustryClassification: { IndustryClassificationCode: string };
   PartyName1: string;

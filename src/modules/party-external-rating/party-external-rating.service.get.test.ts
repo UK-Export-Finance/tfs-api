@@ -39,11 +39,11 @@ describe('PartyExternalRatingService', () => {
     const partyIdentifier = valueGenerator.stringOfNumericCharacters();
 
     it('returns a transformation of the external ratings from ACBS', async () => {
-      const { externalRatingsInAcbs, externalRatings: expectedExternalRatings } = new GetPartyExternalRatingGenerator(valueGenerator).generate({
+      const { acbsExternalRatings, externalRatings: expectedExternalRatings } = new GetPartyExternalRatingGenerator(valueGenerator).generate({
         partyIdentifier,
         numberToGenerate: 2,
       });
-      when(acbsPartyExternalRatingServiceGetExternalRatingsForParty).calledWith(partyIdentifier, authToken).mockResolvedValueOnce(externalRatingsInAcbs);
+      when(acbsPartyExternalRatingServiceGetExternalRatingsForParty).calledWith(partyIdentifier, authToken).mockResolvedValueOnce(acbsExternalRatings);
 
       const externalRatings = await service.getExternalRatingsForParty(partyIdentifier);
 

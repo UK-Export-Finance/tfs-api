@@ -141,7 +141,10 @@ describe('AcbsPartyExternalRatingService', () => {
     });
 
     it('returns the external ratings for the party if ACBS responds with the external ratings', async () => {
-      const { externalRatingsInAcbs } = new GetPartyExternalRatingGenerator(valueGenerator).generate({ partyIdentifier, numberToGenerate: 2 });
+      const { acbsExternalRatings } = new GetPartyExternalRatingGenerator(valueGenerator).generate({
+        partyIdentifier,
+        numberToGenerate: 2,
+      });
 
       when(httpServiceGet)
         .calledWith(`/Party/${partyIdentifier}/PartyExternalRating`, {
@@ -150,7 +153,7 @@ describe('AcbsPartyExternalRatingService', () => {
         })
         .mockReturnValueOnce(
           of({
-            data: externalRatingsInAcbs,
+            data: acbsExternalRatings,
             status: 200,
             statusText: 'OK',
             config: undefined,
@@ -160,7 +163,7 @@ describe('AcbsPartyExternalRatingService', () => {
 
       const externalRatings = await service.getExternalRatingsForParty(partyIdentifier, authToken);
 
-      expect(externalRatings).toStrictEqual(externalRatingsInAcbs);
+      expect(externalRatings).toStrictEqual(acbsExternalRatings);
     });
   });
 });

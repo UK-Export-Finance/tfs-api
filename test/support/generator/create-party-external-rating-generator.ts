@@ -21,9 +21,13 @@ export class CreatePartyExternalRatingGenerator extends AbstractGenerator<PartyE
     };
   }
 
-  protected transformRawValuesToGeneratedValues(externalRatings: PartyExternalRatingValues[], { partyIdentifier }: GenerateOptions): GenerateResult {
+  protected transformRawValuesToGeneratedValues(
+    externalRatings: PartyExternalRatingValues[],
+    { partyIdentifier, assignedRatingCode, ratedDate }: GenerateOptions,
+  ): GenerateResult {
     const [firstExternalRating] = externalRatings;
-    const ratedDateTime = this.dateStringTransformations.addTimeToDateOnlyString(firstExternalRating.ratedDate);
+    const ratedDateOnly = ratedDate ?? firstExternalRating.ratedDate;
+    const ratedDateTime = this.dateStringTransformations.addTimeToDateOnlyString(ratedDateOnly);
 
     const acbsExternalRatingToCreate: AcbsCreatePartyExternalRatingRequestDto = {
       PartyIdentifier: partyIdentifier,
@@ -31,7 +35,7 @@ export class CreatePartyExternalRatingGenerator extends AbstractGenerator<PartyE
         RatingEntityCode: PROPERTIES.PARTY_EXTERNAL_RATING.DEFAULT.ratingEntityCode,
       },
       AssignedRating: {
-        AssignedRatingCode: firstExternalRating.assignedRatingCode,
+        AssignedRatingCode: assignedRatingCode ?? firstExternalRating.assignedRatingCode,
       },
       RatedDate: ratedDateTime,
       ProbabilityofDefault: PROPERTIES.PARTY_EXTERNAL_RATING.DEFAULT.probabilityofDefault,
@@ -42,8 +46,8 @@ export class CreatePartyExternalRatingGenerator extends AbstractGenerator<PartyE
     };
 
     const apiExternalRatingToCreate: CreatePartyExternalRatingRequestDto = {
-      assignedRatingCode: firstExternalRating.assignedRatingCode,
-      ratedDate: firstExternalRating.ratedDate,
+      assignedRatingCode: assignedRatingCode ?? firstExternalRating.assignedRatingCode,
+      ratedDate: ratedDateOnly,
     };
 
     return {
@@ -60,6 +64,8 @@ interface PartyExternalRatingValues {
 
 interface GenerateOptions {
   partyIdentifier: string;
+  assignedRatingCode?: string;
+  ratedDate?: DateString;
 }
 
 interface GenerateResult {

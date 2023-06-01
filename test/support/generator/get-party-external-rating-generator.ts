@@ -1,6 +1,6 @@
 import { DateString } from '@ukef/helpers/date-string.type';
 import { AcbsGetPartyExternalRatingsResponseDto } from '@ukef/modules/acbs/dto/acbs-get-party-external-ratings-response.dto';
-import { GetPartyExternalRatingsResponse } from '@ukef/modules/party-external-rating/dto/get-party-external-ratings-response.dto';
+import { GetPartyExternalRatingsResponseDto } from '@ukef/modules/party-external-rating/dto/get-party-external-ratings-response.dto';
 import { PartyExternalRating } from '@ukef/modules/party-external-rating/party-external-rating.interface';
 
 import { AbstractGenerator } from './abstract-generator';
@@ -62,12 +62,12 @@ export class GetPartyExternalRatingGenerator extends AbstractGenerator<PartyExte
       externalRatingUserCode2: v.externalRatingUserCode2,
     }));
 
-    const externalRatingsFromApi: GetPartyExternalRatingsResponse = externalRatings;
+    const externalRatingsFromApi: GetPartyExternalRatingsResponseDto = externalRatings;
 
     return {
-      externalRatingsInAcbs,
+      acbsExternalRatings: externalRatingsInAcbs,
       externalRatings,
-      externalRatingsFromApi,
+      apiExternalRatings: externalRatingsFromApi,
     };
   }
 }
@@ -90,7 +90,7 @@ interface GenerateOptions {
 }
 
 interface GenerateResult {
-  externalRatingsInAcbs: AcbsGetPartyExternalRatingsResponseDto;
+  acbsExternalRatings: AcbsGetPartyExternalRatingsResponseDto;
   externalRatings: PartyExternalRating[];
-  externalRatingsFromApi: GetPartyExternalRatingsResponse;
+  apiExternalRatings: GetPartyExternalRatingsResponseDto;
 }

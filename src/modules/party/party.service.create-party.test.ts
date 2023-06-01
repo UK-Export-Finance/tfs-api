@@ -41,10 +41,10 @@ describe('PartyService', () => {
   });
 
   describe('createParty', () => {
-    const { acbsCreatePartyRequest, createPartyRequest } = new CreatePartyGenerator(valueGenerator, dateStringTransformations).generate({
+    const { acbsCreatePartyRequest, apiCreatePartyRequest } = new CreatePartyGenerator(valueGenerator, dateStringTransformations).generate({
       numberToGenerate: 1,
     });
-    const [createPartyRequestItem] = createPartyRequest;
+    const [createPartyRequestItem] = apiCreatePartyRequest;
 
     it('returns the identifier of the new party if the request is successful', async () => {
       when(acbsPartyServiceCreateParty).calledWith(acbsCreatePartyRequest, idToken).mockReturnValueOnce({ partyIdentifier: '00000000' });

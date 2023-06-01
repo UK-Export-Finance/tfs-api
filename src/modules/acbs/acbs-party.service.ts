@@ -2,11 +2,11 @@ import { HttpService } from '@nestjs/axios';
 import { Inject, Injectable } from '@nestjs/common';
 import AcbsConfig from '@ukef/config/acbs.config';
 
-import { AcbsGetPartiesBySearchTextResponse } from '../party/dto/acbs-get-parties-by-search-text-response.dto';
+import { AcbsGetPartiesBySearchTextResponseDto } from '../party/dto/acbs-get-parties-by-search-text-response.dto';
 import { AcbsConfigBaseUrl } from './acbs-config-base-url.type';
 import { AcbsHttpService } from './acbs-http.service';
 import { AcbsCreatePartyRequest } from './dto/acbs-create-party-request.dto';
-import { AcbsGetPartyResponseDto } from './dto/acbs-get-party-response.dto';
+import { AcbsGetPartyResponseItem } from './dto/acbs-get-party-response.dto';
 import { getPartyNotFoundKnownAcbsError } from './known-errors';
 import { createWrapAcbsHttpGetErrorCallback, createWrapAcbsHttpPostOrPutErrorCallback } from './wrap-acbs-http-error-callback';
 
@@ -22,8 +22,8 @@ export class AcbsPartyService {
     this.acbsHttpService = new AcbsHttpService(config, httpService);
   }
 
-  async getPartyByIdentifier(partyIdentifier: string, idToken: string): Promise<AcbsGetPartyResponseDto> {
-    const { data: party } = await this.acbsHttpService.get<AcbsGetPartyResponseDto>({
+  async getPartyByIdentifier(partyIdentifier: string, idToken: string): Promise<AcbsGetPartyResponseItem> {
+    const { data: party } = await this.acbsHttpService.get<AcbsGetPartyResponseItem>({
       path: `/Party/${partyIdentifier}`,
       idToken,
       onError: createWrapAcbsHttpGetErrorCallback({
@@ -34,13 +34,13 @@ export class AcbsPartyService {
     return party;
   }
 
-  async getPartyBySearchText(searchText: string, idToken: string): Promise<AcbsGetPartiesBySearchTextResponse> {
-    const { data: party } = await this.acbsHttpService.get<AcbsGetPartiesBySearchTextResponse>({
+  async getPartyBySearchText(searchText: string, idToken: string): Promise<AcbsGetPartiesBySearchTextResponseDto> {
+    const { data: party } = await this.acbsHttpService.get<AcbsGetPartiesBySearchTextResponseDto>({
       path: `/Party/Search/${searchText}`,
       idToken,
       onError: createWrapAcbsHttpGetErrorCallback({
         messageForUnknownError: `Failed to get parties from ACBS with search text ${searchText}.`,
-        knownErrors: [getPartyNotFoundKnownAcbsError(searchText)],
+        knownErrors: [],
       }),
     });
     return party;

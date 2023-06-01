@@ -13,7 +13,7 @@ describe('PartyExternalRatingController', () => {
   describe('getExternalRatingsForParty', () => {
     const partyIdentifier = '010';
 
-    const { externalRatings, externalRatingsFromApi: expectedExternalRatings } = new GetPartyExternalRatingGenerator(valueGenerator).generate({
+    const { externalRatings, apiExternalRatings: expectedExternalRatings } = new GetPartyExternalRatingGenerator(valueGenerator).generate({
       partyIdentifier,
       numberToGenerate: 2,
     });

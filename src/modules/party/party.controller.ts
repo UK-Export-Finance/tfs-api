@@ -15,11 +15,11 @@ import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decora
 import { Response } from 'express';
 
 import { PartyExternalRatingService } from '../party-external-rating/party-external-rating.service';
-import { CreatePartyRequest, CreatePartyRequestItem } from './dto/create-party-request.dto';
+import { CreatePartyRequestDto, CreatePartyRequestItem } from './dto/create-party-request.dto';
 import { CreatePartyResponse } from './dto/create-party-response.dto';
 import { GetPartiesBySearchTextQuery } from './dto/get-parties-by-search-text-query.dto';
 import { GetPartiesBySearchTextResponse, GetPartiesBySearchTextResponseItem } from './dto/get-parties-by-search-text-response.dto';
-import { GetPartyByIdentifierResponse } from './dto/get-party-by-identifier-response.dto';
+import { GetPartyByIdentifierResponseItem } from './dto/get-party-by-identifier-response.dto';
 import { PartyService } from './party.service';
 
 @Controller('parties')
@@ -66,7 +66,7 @@ export class PartyController {
   })
   async createParty(
     @ValidatedArrayBody({ items: CreatePartyRequestItem })
-    createPartyDto: CreatePartyRequest,
+    createPartyDto: CreatePartyRequestDto,
     @Res({ passthrough: true }) res: Response,
   ): Promise<CreatePartyResponse> {
     const [newParty] = createPartyDto;
@@ -114,7 +114,7 @@ export class PartyController {
   })
   @ApiOkResponse({
     description: 'The party has been successfully retrieved.',
-    type: GetPartyByIdentifierResponse,
+    type: GetPartyByIdentifierResponseItem,
   })
   @ApiNotFoundResponse({
     description: 'The specified party was not found.',
@@ -122,7 +122,7 @@ export class PartyController {
   @ApiInternalServerErrorResponse({
     description: 'An internal server error has occurred.',
   })
-  async getPartyByIdentifier(@Param('partyIdentifier') partyIdentifier: string): Promise<GetPartyByIdentifierResponse> {
+  async getPartyByIdentifier(@Param('partyIdentifier') partyIdentifier: string): Promise<GetPartyByIdentifierResponseItem> {
     const party = await this.partyService.getPartyByIdentifier(partyIdentifier);
     return {
       alternateIdentifier: party.alternateIdentifier,

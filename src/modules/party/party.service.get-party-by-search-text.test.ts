@@ -6,7 +6,7 @@ import { GetPartyGenerator } from '@ukef-test/support/generator/get-party-genera
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
 
-import { AcbsGetPartiesBySearchTextResponse } from './dto/acbs-get-parties-by-search-text-response.dto';
+import { AcbsGetPartiesBySearchTextResponseDto } from './dto/acbs-get-parties-by-search-text-response.dto';
 import { GetPartiesBySearchTextException } from './exception/get-parties-by-search-text.exception';
 import { PartyService } from './party.service';
 
@@ -43,10 +43,10 @@ describe('PartyService', () => {
   });
 
   describe('getPartyBySearchText', () => {
-    const { partiesInAcbs, parties } = new GetPartyGenerator(valueGenerator, dateStringTransformations).generate({ numberToGenerate: 2 });
-    const partiesInAcbsWithPartyIdentifiers: AcbsGetPartiesBySearchTextResponse = [
-      { ...partiesInAcbs[0], PartyIdentifier: valueGenerator.stringOfNumericCharacters() },
-      { ...partiesInAcbs[1], PartyIdentifier: valueGenerator.stringOfNumericCharacters() },
+    const { acbsParties, parties } = new GetPartyGenerator(valueGenerator, dateStringTransformations).generate({ numberToGenerate: 2 });
+    const partiesInAcbsWithPartyIdentifiers: AcbsGetPartiesBySearchTextResponseDto = [
+      { ...acbsParties[0], PartyIdentifier: valueGenerator.stringOfNumericCharacters() },
+      { ...acbsParties[1], PartyIdentifier: valueGenerator.stringOfNumericCharacters() },
     ];
 
     it('returns matching parties in the correct format if the request is successful', async () => {
@@ -82,7 +82,7 @@ describe('PartyService', () => {
     it('returns matching parties in the correct format in the case that there is a null officerRiskDate and the request is successful', async () => {
       const searchText = 'searchText';
 
-      const partiesInAcbsWithNullOfficerRiskDate = JSON.parse(JSON.stringify(partiesInAcbs));
+      const partiesInAcbsWithNullOfficerRiskDate = JSON.parse(JSON.stringify(acbsParties));
       partiesInAcbsWithNullOfficerRiskDate[0].OfficerRiskDate = null;
 
       const partiesWithNullOfficerRiskDate = JSON.parse(JSON.stringify(parties));

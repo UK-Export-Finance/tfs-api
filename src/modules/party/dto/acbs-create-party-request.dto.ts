@@ -1,6 +1,6 @@
 import { DateString } from '@ukef/helpers/date-string.type';
 
-export interface AcbsCreatePartyRequest {
+export interface AcbsCreatePartyRequestDto {
   PartyAlternateIdentifier: string;
   IndustryClassification: {
     IndustryClassificationCode: string;
