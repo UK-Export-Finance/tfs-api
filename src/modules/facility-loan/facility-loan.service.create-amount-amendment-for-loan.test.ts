@@ -39,7 +39,14 @@ describe('FacilityLoanService', () => {
     createBundleInformation = jest.fn();
     acbsBundleService.createBundleInformation = createBundleInformation;
 
-    service = new FacilityLoanService(acbsAuthenticationService, acbsService, acbsBundleService, new DateStringTransformations(), new CurrentDateProvider());
+    service = new FacilityLoanService(
+      acbsAuthenticationService,
+      acbsService,
+      acbsBundleService,
+      new DateStringTransformations(),
+      new CurrentDateProvider(),
+      null,
+    );
   });
 
   describe('createAmountAmendmentForLoan', () => {
