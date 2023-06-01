@@ -2,20 +2,25 @@ import { HttpService } from '@nestjs/axios';
 import { Inject, Injectable } from '@nestjs/common';
 import AcbsConfig from '@ukef/config/acbs.config';
 import { PROPERTIES } from '@ukef/constants';
-
-import { AcbsConfigBaseUrl } from './acbs-config-base-url.type';
-import { AcbsHttpService } from './acbs-http.service';
-import { AcbsCreateBundleInformationRequestDto } from './dto/acbs-create-bundle-information-request.dto';
-import { AcbsCreateBundleInformationResponseHeadersDto } from './dto/acbs-create-bundle-information-response.dto';
-import { AcbsGetBundleInformationResponseDto } from './dto/acbs-get-bundle-information-response.dto';
-import { BundleAction, isFacilityCodeValueTransaction, isLoanAdvanceTransaction, isNewLoanRequest } from './dto/bundle-actions/bundle-action.type';
+import { AcbsConfigBaseUrl } from '@ukef/modules/acbs/acbs-config-base-url.type';
+import { AcbsHttpService } from '@ukef/modules/acbs/acbs-http.service';
+import { AcbsCreateBundleInformationRequestDto } from '@ukef/modules/acbs/dto/acbs-create-bundle-information-request.dto';
+import { AcbsCreateBundleInformationResponseHeadersDto } from '@ukef/modules/acbs/dto/acbs-create-bundle-information-response.dto';
+import { AcbsGetBundleInformationResponseDto } from '@ukef/modules/acbs/dto/acbs-get-bundle-information-response.dto';
+import {
+  BundleAction,
+  isFacilityAmountTransaction,
+  isFacilityCodeValueTransaction,
+  isLoanAdvanceTransaction,
+  isNewLoanRequest,
+} from '@ukef/modules/acbs/dto/bundle-actions/bundle-action.type';
 import {
   getBundleInformationNotFoundKnownAcbsError,
   getLoanNotFoundKnownAcbsBundleInformationError,
   KnownErrors,
   postFacilityNotFoundKnownAcbsError,
-} from './known-errors';
-import { createWrapAcbsHttpGetErrorCallback, createWrapAcbsHttpPostOrPutErrorCallback } from './wrap-acbs-http-error-callback';
+} from '@ukef/modules/acbs/known-errors';
+import { createWrapAcbsHttpGetErrorCallback, createWrapAcbsHttpPostOrPutErrorCallback } from '@ukef/modules/acbs/wrap-acbs-http-error-callback';
 
 @Injectable()
 export class AcbsBundleInformationService {
@@ -61,6 +66,10 @@ export class AcbsBundleInformationService {
 
   private getKnownErrorsForAction(action: BundleAction): KnownErrors {
     if (isFacilityCodeValueTransaction(action)) {
+      return [postFacilityNotFoundKnownAcbsError(action.FacilityIdentifier)];
+    }
+
+    if (isFacilityAmountTransaction(action)) {
       return [postFacilityNotFoundKnownAcbsError(action.FacilityIdentifier)];
     }
 

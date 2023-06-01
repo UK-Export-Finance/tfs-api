@@ -1,7 +1,9 @@
+import * as BUNDLE_INFORMATION_TYPES from './enums/bundle-information-type';
 import * as BUNDLE_STATUS_CODES from './enums/bundle-status-code';
 import * as COVENANT_TYPE_CODES from './enums/covenant-type-code';
 import * as FACILITY_STAGES from './enums/facility-stage';
 import * as FACILITY_STATUSES from './enums/facility-status';
+import * as FACILITY_TRANSACTION_TYPE_CODES from './enums/facility-transaction-type-code';
 import * as FACILITY_TYPE_IDS from './enums/facility-type-id';
 import * as FACILITY_UPDATE_OPERATIONS from './enums/facility-update-operations';
 import * as GUARANTEE_TYPE_CODES from './enums/guarantee-type-code';
@@ -30,6 +32,8 @@ export const ENUMS = {
   INCOME_CLASS_CODES: INCOME_CLASS_CODES.IncomeClassCodeEnum,
   OPERATION_TYPE_CODES: OPERATION_TYPE_CODES.OperationTypeCodeEnum,
   FACILITY_UPDATE_OPERATIONS: FACILITY_UPDATE_OPERATIONS.FacilityUpdateOperationEnum,
+  FACILITY_TRANSACTION_TYPE_CODES: FACILITY_TRANSACTION_TYPE_CODES.FacilityTransactionTypeCodeEnum,
+  BUNDLE_INFORMATION_TYPES: BUNDLE_INFORMATION_TYPES.BundleInformationType,
   LOAN_BILLING_FREQUENCY_TYPES: LOAN_BILLING_FREQUENCY_TYPES.LoanBillingFrequencyTypeEnum,
   LIMIT_TYPE_CODES: LIMIT_TYPE_CODES.LimitTypeCodeEnum,
 };

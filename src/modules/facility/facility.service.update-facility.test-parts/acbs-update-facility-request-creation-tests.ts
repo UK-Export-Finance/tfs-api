@@ -1,19 +1,18 @@
 import { AcbsGetFacilityResponseDto } from '@ukef/modules/acbs/dto/acbs-get-facility-response.dto';
+import { UpdateFacilityServiceTestPartsArgs } from '@ukef/modules/facility/facility.service.update-facility.test-parts/update-facility-service-test-parts-args.interface';
 
-import { UpdateFacilityTestPartsArgs } from './update-facility-test-parts-args.interface';
-
-export const withAcbsUpdateFacilityRequestCreationTests = ({
+export const withAcbsUpdateFacilityRequestCreationTests = <T>({
   valueGenerator,
   updateFacilityRequest,
   acbsGetExistingFacilityResponse,
-  acbsUpdateFacilityRequest,
+  expectedAcbsUpdateMethodRequest: acbsUpdateFacilityRequest,
   updateFacility,
-  expectAcbsUpdateFacilityToBeCalledWith,
-  getAcbsGetFacilityRequestMock,
-}: UpdateFacilityTestPartsArgs) => {
+  expectAcbsUpdateMethodToBeCalledOnceWith,
+  getAcbsGetFacilityRequestCalledCorrectlyMock,
+}: UpdateFacilityServiceTestPartsArgs<T>) => {
   describe('Creates ACBS update facility request', () => {
     const mockAcbsGetFacilityRequest = (acbsGetFacilityResponse: AcbsGetFacilityResponseDto) =>
-      getAcbsGetFacilityRequestMock().mockResolvedValueOnce(acbsGetFacilityResponse);
+      getAcbsGetFacilityRequestCalledCorrectlyMock().mockResolvedValueOnce(acbsGetFacilityResponse);
 
     it('does not update facility request data with existing facility data', async () => {
       const differentDealIdentifier = valueGenerator.ukefId();
@@ -27,7 +26,7 @@ export const withAcbsUpdateFacilityRequestCreationTests = ({
 
       await updateFacility(updateFacilityRequest);
 
-      expectAcbsUpdateFacilityToBeCalledWith(acbsUpdateFacilityRequest);
+      expectAcbsUpdateMethodToBeCalledOnceWith(acbsUpdateFacilityRequest);
     });
 
     it('uses existing facility data to fill missing update request data', async () => {
@@ -39,7 +38,7 @@ export const withAcbsUpdateFacilityRequestCreationTests = ({
 
       await updateFacility(updateFacilityRequest);
 
-      expectAcbsUpdateFacilityToBeCalledWith(modifiedAcbsUpdateFacilityRequest);
+      expectAcbsUpdateMethodToBeCalledOnceWith(modifiedAcbsUpdateFacilityRequest);
     });
 
     it('removes AdministrativeUserIdentifier from the ACBS update request body', async () => {
@@ -74,9 +73,10 @@ export const withAcbsUpdateFacilityRequestCreationTests = ({
       };
 
       mockAcbsGetFacilityRequest(modifiedAcbsGetExistingFacilityResponse);
+
       await updateFacility(modifiedUpdateFacilityRequest);
 
-      expectAcbsUpdateFacilityToBeCalledWith(modifiedAcbsUpdateFacilityRequest);
+      expectAcbsUpdateMethodToBeCalledOnceWith(modifiedAcbsUpdateFacilityRequest);
     });
   });
 };

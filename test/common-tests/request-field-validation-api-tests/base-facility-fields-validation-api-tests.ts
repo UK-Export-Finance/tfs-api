@@ -1,14 +1,13 @@
 import { ENUMS } from '@ukef/constants';
 import { BaseFacilityRequestItem } from '@ukef/modules/facility/dto/base-facility-request.dto';
+import { withCurrencyFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/currency-field-validation-api-tests';
+import { withDateOnlyFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/date-only-field-validation-api-tests';
+import { withDealIdentifierFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/deal-identifier-field-validation-api-tests';
+import { withNonNegativeNumberFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/non-negative-number-field-validation-api-tests';
+import { withPartyIdentifierFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/party-identifier-field-validation-api-tests';
+import { withStringFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/string-field-validation-api-tests';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import request from 'supertest';
-
-import { withCurrencyFieldValidationApiTests } from './currency-field-validation-api-tests';
-import { withDateOnlyFieldValidationApiTests } from './date-only-field-validation-api-tests';
-import { withDealIdentifierFieldValidationApiTests } from './deal-identifier-field-validation-api-tests';
-import { withNonNegativeNumberFieldValidationApiTests } from './non-negative-number-field-validation-api-tests';
-import { withPartyIdentifierFieldValidationApiTests } from './party-identifier-field-validation-api-tests';
-import { withStringFieldValidationApiTests } from './string-field-validation-api-tests';
 
 export interface withBaseFacilityFieldsValidationApiTestInterface {
   valueGenerator: RandomValueGenerator;
@@ -25,7 +24,7 @@ export function withBaseFacilityFieldsValidationApiTests({
   givenAnyRequestBodyWouldSucceed,
   includeIssueDate = true,
 }: withBaseFacilityFieldsValidationApiTestInterface) {
-  if (!includeIssueDate) {
+  if (includeIssueDate) {
     withDateOnlyFieldValidationApiTests({
       fieldName: 'issueDate',
       required: false,

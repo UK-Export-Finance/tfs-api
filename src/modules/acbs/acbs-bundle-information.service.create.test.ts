@@ -1,5 +1,11 @@
 import { HttpService } from '@nestjs/axios';
-import { PROPERTIES } from '@ukef/constants';
+import { ENUMS, PROPERTIES } from '@ukef/constants';
+import { AcbsBundleInformationService } from '@ukef/modules/acbs/acbs-bundle-information.service';
+import { AcbsCreateBundleInformationRequestDto } from '@ukef/modules/acbs/dto/acbs-create-bundle-information-request.dto';
+import { LoanAdvanceTransaction } from '@ukef/modules/acbs/dto/bundle-actions/loan-advance-transaction.bundle-action';
+import { AcbsBadRequestException } from '@ukef/modules/acbs/exception/acbs-bad-request.exception';
+import { AcbsResourceNotFoundException } from '@ukef/modules/acbs/exception/acbs-resource-not-found.exception';
+import { AcbsUnexpectedException } from '@ukef/modules/acbs/exception/acbs-unexpected.exception';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { CreateFacilityActivationTransactionGenerator } from '@ukef-test/support/generator/create-facility-activation-transaction-generator';
 import { CreateFacilityLoanGenerator } from '@ukef-test/support/generator/create-facility-loan-generator';
@@ -7,13 +13,6 @@ import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-
 import { AxiosError } from 'axios';
 import { when } from 'jest-when';
 import { of, throwError } from 'rxjs';
-
-import { AcbsBundleInformationService } from './acbs-bundle-information.service';
-import { AcbsCreateBundleInformationRequestDto } from './dto/acbs-create-bundle-information-request.dto';
-import { LoanAdvanceTransaction } from './dto/bundle-actions/loan-advance-transaction.bundle-action';
-import { AcbsBadRequestException } from './exception/acbs-bad-request.exception';
-import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
-import { AcbsUnexpectedException } from './exception/acbs-unexpected.exception';
 
 describe('AcbsBundleInformationService', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -200,7 +199,7 @@ describe('AcbsBundleInformationService', () => {
       const loanIdentifier = valueGenerator.loanId();
 
       const loanAdvanceTransactionMessage: LoanAdvanceTransaction = {
-        $type: 'LoanAdvanceTransaction',
+        $type: ENUMS.BUNDLE_INFORMATION_TYPES.LOAN_ADVANCE_TRANSACTION,
         EffectiveDate: valueGenerator.dateTimeString(),
         LoanIdentifier: loanIdentifier,
         TransactionTypeCode: valueGenerator.string(),

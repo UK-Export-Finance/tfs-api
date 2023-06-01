@@ -1,12 +1,11 @@
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { FacilityService } from '@ukef/modules/facility/facility.service';
+import { FacilityActivationTransactionController } from '@ukef/modules/facility-activation-transaction/facility-activation-transaction.controller';
+import { FacilityActivationTransactionService } from '@ukef/modules/facility-activation-transaction/facility-activation-transaction.service';
 import { CreateFacilityActivationTransactionGenerator } from '@ukef-test/support/generator/create-facility-activation-transaction-generator';
 import { GetFacilityActivationTransactionGenerator } from '@ukef-test/support/generator/get-facility-activation-transaction-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
-
-import { FacilityActivationTransactionController } from './facility-activation-transaction.controller';
-import { FacilityActivationTransactionService } from './facility-activation-transaction.service';
 
 describe('FacilityActivationTransactionController', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -27,7 +26,7 @@ describe('FacilityActivationTransactionController', () => {
 
   beforeEach(() => {
     facilityActivationTransactionService = new FacilityActivationTransactionService(null, null, null);
-    facilityService = new FacilityService(null, null, null, null);
+    facilityService = new FacilityService(null, null, null, null, null);
 
     facilityActivationTransactionServiceCreateActivationTransactionForFacility = jest.fn(() => ({
       bundleIdentifier: bundleIdentifier,
