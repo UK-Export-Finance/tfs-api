@@ -1,9 +1,11 @@
 import { ENUMS, PROPERTIES } from '@ukef/constants';
+import { CALENDAR_IDENTIFIERS } from '@ukef/constants/calendar-identifiers.constant';
 import { CURRENCIES } from '@ukef/constants/currencies.constant';
 import { AcbsBundleId, UkefId } from '@ukef/helpers';
 import { AcbsCreateBundleInformationRequestDto } from '@ukef/modules/acbs/dto/acbs-create-bundle-information-request.dto';
 import { AcbsCreateBundleInformationResponseHeadersDto } from '@ukef/modules/acbs/dto/acbs-create-bundle-information-response.dto';
 import { NewLoanRequest } from '@ukef/modules/acbs/dto/bundle-actions/new-loan-request.bundle-action';
+import { RepaymentSchedule } from '@ukef/modules/acbs/dto/bundle-actions/repayment-schedule.interface';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { CreateFacilityLoanRequest, CreateFacilityLoanRequestItem } from '@ukef/modules/facility-loan/dto/create-facility-loan-request.dto';
 import { CreateFacilityLoanResponse } from '@ukef/modules/facility-loan/dto/create-facility-loan-response.dto';
@@ -19,20 +21,21 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
   }
 
   protected generateValues(): CreateFacilityLoanRequestItem {
-    const possibleProductTypeIds = Object.values(ENUMS.PRODUCT_TYPE_IDS);
-    const possibleProductTypeGroups = Object.values(ENUMS.PRODUCT_TYPE_GROUPS);
     const possibleOperationTypes = Object.values(ENUMS.OPERATION_TYPE_CODES);
+    const possibleLoanBillingFrequencyTypes = Object.values(ENUMS.LOAN_BILLING_FREQUENCY_TYPES);
     return {
       postingDate: this.valueGenerator.dateOnlyString(),
       borrowerPartyIdentifier: this.valueGenerator.stringOfNumericCharacters({ length: 8 }),
-      productTypeId: possibleProductTypeIds[this.valueGenerator.integer({ min: 0, max: possibleProductTypeIds.length - 1 })],
-      productTypeGroup: possibleProductTypeGroups[this.valueGenerator.integer({ min: 0, max: possibleProductTypeGroups.length - 1 })],
+      productTypeId: ENUMS.PRODUCT_TYPE_IDS.BSS,
+      productTypeGroup: ENUMS.PRODUCT_TYPE_GROUPS.BOND,
       currency: CURRENCIES.GBP,
       dealCustomerUsageRate: 0.123,
       dealCustomerUsageOperationType: possibleOperationTypes[this.valueGenerator.integer({ min: 0, max: possibleOperationTypes.length - 1 })],
       amount: 123.45,
       issueDate: this.valueGenerator.dateOnlyString(),
       expiryDate: this.valueGenerator.dateOnlyString(),
+      nextDueDate: this.valueGenerator.dateOnlyString(),
+      loanBillingFrequencyType: possibleLoanBillingFrequencyTypes[this.valueGenerator.integer({ min: 0, max: possibleOperationTypes.length - 1 })],
     };
   }
 
@@ -89,6 +92,8 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
       amount: value.amount,
       issueDate: effectiveDate,
       expiryDate: value.expiryDate,
+      nextDueDate: value.nextDueDate,
+      loanBillingFrequencyType: value.loanBillingFrequencyType,
     }));
 
     const requestBodyToCreateFacilityLoanNonGbp = [
@@ -100,6 +105,9 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
 
     const createBundleInformationResponseFromAcbs = { BundleIdentifier: bundleIdentifier };
     const createFacilityLoanResponseFromService = { bundleIdentifier };
+    const bondRepaymentSchedulesGbp = this.getBondRepaymentSchedules(firstFacilityLoan);
+    const ewcsRepaymentSchedulesGbp = this.getEwcsRepaymentSchedules(firstFacilityLoan);
+    const gefRepaymentSchedulesGbp = this.getGefRepaymentSchedules(firstFacilityLoan);
 
     return {
       acbsRequestBodyToCreateFacilityLoanGbp,
@@ -108,12 +116,15 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
       requestBodyToCreateFacilityLoanNonGbp,
       createBundleInformationResponseFromAcbs,
       createFacilityLoanResponseFromService,
+      bondRepaymentSchedulesGbp,
+      ewcsRepaymentSchedulesGbp,
+      gefRepaymentSchedulesGbp,
     };
   }
 
   private getBaseMessage(facilityIdentifier: UkefId, facilityLoan: CreateFacilityLoanRequestItem, acbsEffectiveDate: string): NewLoanRequest {
-    const loanInstrumentCode =
-      facilityLoan.productTypeId === ENUMS.PRODUCT_TYPE_IDS.GEF_CONTINGENT ? ENUMS.PRODUCT_TYPE_IDS.GEF_CASH : facilityLoan.productTypeId;
+    const loanInstrumentCode = facilityLoan.productTypeId;
+    const repaymentSchedules = this.getBondRepaymentSchedules(facilityLoan);
 
     return {
       $type: PROPERTIES.FACILITY_LOAN.DEFAULT.messageType,
@@ -192,7 +203,7 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
         OperationTypeCode: facilityLoan.dealCustomerUsageOperationType,
       },
       AccrualScheduleList: [],
-      RepaymentScheduleList: [],
+      RepaymentScheduleList: repaymentSchedules,
     };
   }
 
@@ -224,6 +235,108 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
       CustomerUsageLockMTMRateIndicator: PROPERTIES.FACILITY_LOAN.DEFAULT.customerUsageLockMTMRateIndicator,
     };
   }
+
+  private getBaseRepaymentSchedule(facilityLoan: CreateFacilityLoanRequestItem) {
+    return {
+      InvolvedParty: {
+        PartyIdentifier: PROPERTIES.REPAYMENT.DEFAULT.involvedParty.partyIdentifier,
+      },
+      LenderType: {
+        LenderTypeCode: PROPERTIES.REPAYMENT.DEFAULT.lenderType.lenderTypeCode,
+      },
+      AccountSequence: PROPERTIES.REPAYMENT.DEFAULT.accountSequence,
+      BillingCalendar: {
+        CalendarIdentifier: CALENDAR_IDENTIFIERS.UK,
+      },
+      LoanBillingFrequencyType: {
+        LoanBillingFrequencyTypeCode: facilityLoan.loanBillingFrequencyType,
+      },
+      NextDueDate: this.dateStringTransformations.addTimeToDateOnlyString(facilityLoan.nextDueDate),
+      BillingDueCycleDay: this.dateStringTransformations.getDayFromDateOnlyString(facilityLoan.nextDueDate),
+      NextAccrueToDate: this.dateStringTransformations.addTimeToDateOnlyString(facilityLoan.nextDueDate),
+      BillingAccrueToCycleDay: this.dateStringTransformations.getDayFromDateOnlyString(facilityLoan.nextDueDate),
+      LeadDays: PROPERTIES.REPAYMENT.DEFAULT.leadDays,
+      NextDueBusinessDayAdjustmentType: {
+        LoanSystemBusinessDayAdjustmentTypeCode: PROPERTIES.REPAYMENT.DEFAULT.nextDueBusinessDayAdjustmentType.loanSystemBusinessDayAdjustmentTypeCode,
+      },
+      NextAccrueBusinessDayAdjustmentType: {
+        LoanSystemBusinessDayAdjustmentTypeCode: PROPERTIES.REPAYMENT.DEFAULT.nextAccrueBusinessDayAdjustmentType.loanSystemBusinessDayAdjustmentTypeCode,
+      },
+      BillingPeriod: PROPERTIES.REPAYMENT.DEFAULT.billingPeriod,
+      CollectionInstructionMethod: {
+        CollectionInstructionMethodCode: PROPERTIES.REPAYMENT.DEFAULT.collectionInstructionMethod.collectionInstructionMethodCode,
+      },
+      BillFormatType: {
+        BillFormatTypeCode: PROPERTIES.REPAYMENT.DEFAULT.billFormatType.billFormatTypeCode,
+      },
+      MailingInstructionType: {
+        MailingInstructionTypeCode: PROPERTIES.REPAYMENT.DEFAULT.mailingInstructionType.mailingInstructionTypeCode,
+      },
+      SpreadToInvestorsIndicator: PROPERTIES.REPAYMENT.DEFAULT.spreadToInvestorsIndicator,
+      BalloonPaymentAmount: PROPERTIES.REPAYMENT.DEFAULT.balloonPaymentAmount,
+      LoanPrePaymentType: {
+        LoanPrePaymentTypeCode: PROPERTIES.REPAYMENT.DEFAULT.loanPrePaymentType.loanPrePaymentTypeCode,
+      },
+    };
+  }
+
+  private getBondRepaymentSchedules(facilityLoan: CreateFacilityLoanRequestItem): RepaymentSchedule[] {
+    return [
+      {
+        ...this.getBaseRepaymentSchedule(facilityLoan),
+        PrimaryScheduleIndicator: PROPERTIES.REPAYMENT.DEFAULT.primaryScheduleIndicator,
+        BillingScheduleType: {
+          BillingScheduleTypeCode: PROPERTIES.REPAYMENT.PAC_BSS.billingScheduleType.billingScheduleTypeCode,
+        },
+        PercentageOfBalance: PROPERTIES.REPAYMENT.PAC_BSS.percentageOfBalance,
+        PaymentAmount: facilityLoan.amount,
+        BillingSequenceNumber: PROPERTIES.REPAYMENT.PAC_BSS.billingSequenceNumber,
+      },
+    ];
+  }
+
+  private getEwcsRepaymentSchedules(facilityLoan: CreateFacilityLoanRequestItem): RepaymentSchedule[] {
+    return [
+      {
+        ...this.getBaseRepaymentSchedule(facilityLoan),
+        PrimaryScheduleIndicator: PROPERTIES.REPAYMENT.DEFAULT.primaryScheduleIndicator,
+        BillingScheduleType: {
+          BillingScheduleTypeCode: PROPERTIES.REPAYMENT.INT.billingScheduleType.billingScheduleTypeCode,
+        },
+        BillingSequenceNumber: PROPERTIES.REPAYMENT.INT.billingSequenceNumber,
+      },
+      {
+        ...this.getBaseRepaymentSchedule(facilityLoan),
+        PrimaryScheduleIndicator: PROPERTIES.REPAYMENT.PAC.primaryScheduleIndicator,
+        BillingScheduleType: {
+          BillingScheduleTypeCode: PROPERTIES.REPAYMENT.PAC.billingScheduleType.billingScheduleTypeCode,
+        },
+        BalanceCategory: {
+          BalanceCategoryCode: PROPERTIES.REPAYMENT.PAC.balanceCategory.balanceCategoryCode,
+        },
+        PercentageOfBalance: PROPERTIES.REPAYMENT.PAC.percentageOfBalance,
+        BillingSequenceNumber: PROPERTIES.REPAYMENT.PAC.billingSequenceNumber,
+        NumberOfBillsToPrint: PROPERTIES.REPAYMENT.PAC.numberOfBillsToPrint,
+      },
+    ];
+  }
+
+  private getGefRepaymentSchedules(facilityLoan: CreateFacilityLoanRequestItem): RepaymentSchedule[] {
+    return [
+      {
+        ...this.getBaseRepaymentSchedule(facilityLoan),
+        PrimaryScheduleIndicator: PROPERTIES.REPAYMENT.DEFAULT.primaryScheduleIndicator,
+        BillingScheduleType: {
+          BillingScheduleTypeCode: PROPERTIES.REPAYMENT.PAC.billingScheduleType.billingScheduleTypeCode,
+        },
+        BalanceCategory: {
+          BalanceCategoryCode: PROPERTIES.REPAYMENT.PAC.balanceCategory.balanceCategoryCode,
+        },
+        PercentageOfBalance: PROPERTIES.REPAYMENT.PAC.percentageOfBalance,
+        BillingSequenceNumber: PROPERTIES.REPAYMENT.PAC.billingSequenceNumber,
+      },
+    ];
+  }
 }
 
 interface GenerateOptions {
@@ -232,10 +345,13 @@ interface GenerateOptions {
 }
 
 interface GenerateResult {
-  acbsRequestBodyToCreateFacilityLoanGbp: AcbsCreateBundleInformationRequestDto;
-  acbsRequestBodyToCreateFacilityLoanNonGbp: AcbsCreateBundleInformationRequestDto;
+  acbsRequestBodyToCreateFacilityLoanGbp: AcbsCreateBundleInformationRequestDto<NewLoanRequest>;
+  acbsRequestBodyToCreateFacilityLoanNonGbp: AcbsCreateBundleInformationRequestDto<NewLoanRequest>;
   requestBodyToCreateFacilityLoanGbp: CreateFacilityLoanRequest;
   requestBodyToCreateFacilityLoanNonGbp: CreateFacilityLoanRequest;
   createBundleInformationResponseFromAcbs: AcbsCreateBundleInformationResponseHeadersDto;
   createFacilityLoanResponseFromService: CreateFacilityLoanResponse;
+  bondRepaymentSchedulesGbp: RepaymentSchedule[];
+  ewcsRepaymentSchedulesGbp: RepaymentSchedule[];
+  gefRepaymentSchedulesGbp: RepaymentSchedule[];
 }

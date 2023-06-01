@@ -15,6 +15,7 @@ import { CreateFacilityLoanRequestItem } from './dto/create-facility-loan-reques
 import { CreateFacilityLoanResponse } from './dto/create-facility-loan-response.dto';
 import { CreateLoanAmountAmendmentRequestItem } from './dto/create-loan-amount-amendment-request.dto';
 import { GetFacilityLoanResponseDto } from './dto/get-facility-loan-response.dto';
+import { RepaymentScheduleBuilder } from './repayment-schedule.builder';
 
 @Injectable()
 export class FacilityLoanService {
@@ -24,6 +25,7 @@ export class FacilityLoanService {
     private readonly acbsBundleInformationService: AcbsBundleInformationService,
     private readonly dateStringTransformations: DateStringTransformations,
     private readonly currentDateProvider: CurrentDateProvider,
+    private readonly repaymentScheduleBuilder: RepaymentScheduleBuilder,
   ) {}
 
   async getLoansForFacility(facilityIdentifier: string): Promise<GetFacilityLoanResponseDto> {
@@ -93,6 +95,7 @@ export class FacilityLoanService {
     const loanInstrumentCode =
       newFacilityLoan.productTypeId === ENUMS.PRODUCT_TYPE_IDS.GEF_CONTINGENT ? ENUMS.PRODUCT_TYPE_IDS.GEF_CASH : newFacilityLoan.productTypeId;
     const issueDateString = this.getIssueDateToCreate(newFacilityLoan.issueDate);
+    const repaymentSchedules = this.repaymentScheduleBuilder.getRepaymentSchedules(newFacilityLoan);
 
     return {
       $type: PROPERTIES.FACILITY_LOAN.DEFAULT.messageType,
@@ -167,7 +170,7 @@ export class FacilityLoanService {
         LoanSecuredTypeCode: PROPERTIES.FACILITY_LOAN.DEFAULT.securedType.loanSecuredTypeCode,
       },
       AccrualScheduleList: [],
-      RepaymentScheduleList: [],
+      RepaymentScheduleList: repaymentSchedules,
     };
   }
 

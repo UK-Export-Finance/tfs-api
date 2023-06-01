@@ -45,6 +45,7 @@ describe('FacilityLoanService', () => {
       acbsBundleInformationService,
       new DateStringTransformations(),
       new CurrentDateProvider(),
+      null,
     );
   });
 
