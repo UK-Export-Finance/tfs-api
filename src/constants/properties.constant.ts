@@ -487,14 +487,14 @@ export const PROPERTIES = {
       lenderType: {
         lenderTypeCode: '100',
       },
-      baseRate: '0',
-      reserveRate: '0',
-      costOfFundsRate: '0',
-      percentageOfRate: '100',
-      percentOfBaseBalance: '100',
-      lowBalancePercent: '0',
-      cappedAccrualRate: '0',
-      spreadToInvestorsIndicator: 'true',
+      baseRate: 0,
+      reserveRate: 0,
+      costOfFundsRate: 0,
+      percentageOfRate: 100,
+      percentOfBaseBalance: 100,
+      lowBalancePercent: 0,
+      cappedAccrualRate: 0,
+      spreadToInvestorsIndicator: true,
     },
     PAC: {
       scheduleIdentifier: 'PAC1',
@@ -522,23 +522,23 @@ export const PROPERTIES = {
       indexRateChangeTiming: {
         indexRateChangeTimingCode: 'A',
       },
-      indexedRateIndicator: 'true',
+      indexedRateIndicator: true,
       nextDueBusinessDayAdjustmentType: {
         businessDayAdjustmentTypeCode: 'M',
       },
       rateSetLeadDays: '0',
       accrualScheduleIBORDetails: {
-        isDailyRFR: 'true',
+        isDailyRFR: true,
         rFRCalculationMethod: {
-          rFRCalculationMethodCode: '2',
+          rFRCalculationMethodCode: 2,
         },
         compoundingDateType: {
           compoundingDateTypeCode: 'B',
         },
         calculationFeature: {
-          calculationFeatureCode: '1',
+          calculationFeatureCode: 1,
         },
-        rateSetLagDays: '5',
+        rateSetLagDays: 5,
         lagDaysType: {
           compoundingDateTypeCode: 'B',
         },
@@ -551,7 +551,7 @@ export const PROPERTIES = {
         ratePeriodResetFrequency: {
           ratePeriodResetFrequencyCode: 'E',
         },
-        frequencyPeriod: '0',
+        frequencyPeriod: 0,
       },
     },
     INT_NON_RFR: {
@@ -571,11 +571,11 @@ export const PROPERTIES = {
       indexRateChangeTiming: {
         indexRateChangeTimingCode: 'L',
       },
-      indexedRateIndicator: 'true',
+      indexedRateIndicator: true,
       nextDueBusinessDayAdjustmentType: {
         businessDayAdjustmentTypeCode: 'M',
       },
-      rateSetLeadDays: '0',
+      rateSetLeadDays: 0,
     },
   },
 };
