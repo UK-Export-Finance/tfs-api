@@ -762,9 +762,9 @@ paths:
           description: The identifier of the loan in ACBS.
           example: '000272017'
           schema:
-            minLength: 10
-            maxLength: 10
-            pattern: ^\\d{10}$
+            minLength: 9
+            maxLength: 9
+            pattern: ^\\d{9}$
             type: string
         - name: facilityIdentifier
           required: true
