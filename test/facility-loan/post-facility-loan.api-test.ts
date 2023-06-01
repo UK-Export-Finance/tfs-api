@@ -131,11 +131,6 @@ describe('POST /facilities/{facilityIdentifier}/loans', () => {
   describe('field validation', () => {
     const makeRequest = (body: unknown[]) => api.post(postFacilityLoanUrl, body);
 
-    const possibleProductTypeIds = Object.values(ENUMS.PRODUCT_TYPE_IDS);
-    const possibleProductTypeGroups = Object.values(ENUMS.PRODUCT_TYPE_GROUPS);
-    const possibleOperationTypes = Object.values(ENUMS.OPERATION_TYPE_CODES);
-    const possibleLoanBillingFrequencyTypes = Object.values(ENUMS.FEE_FREQUENCY_TYPES);
-
     const givenAnyRequestBodyWouldSucceed = () => {
       givenAuthenticationWithTheIdpSucceeds();
       givenAnyRequestBodyToCreateFacilityLoanInAcbsSucceeds();
@@ -160,8 +155,7 @@ describe('POST /facilities/{facilityIdentifier}/loans', () => {
       fieldName: 'productTypeId',
       enum: ENUMS.PRODUCT_TYPE_IDS,
       length: 3,
-      generateFieldValueOfLength: (length: number) =>
-        length === 3 ? possibleProductTypeIds[valueGenerator.integer({ min: 0, max: possibleProductTypeIds.length - 1 })] : valueGenerator.string({ length }),
+      generateFieldValueOfLength: (length: number) => (length === 3 ? valueGenerator.enumValue(ENUMS.PRODUCT_TYPE_IDS) : valueGenerator.string({ length })),
       generateFieldValueThatDoesNotMatchEnum: () => '123',
       validRequestBody: requestBodyToCreateFacilityLoanGbp,
       makeRequest,
@@ -172,10 +166,7 @@ describe('POST /facilities/{facilityIdentifier}/loans', () => {
       fieldName: 'productTypeGroup',
       enum: ENUMS.PRODUCT_TYPE_GROUPS,
       length: 2,
-      generateFieldValueOfLength: (length: number) =>
-        length === 2
-          ? possibleProductTypeGroups[valueGenerator.integer({ min: 0, max: possibleProductTypeGroups.length - 1 })]
-          : valueGenerator.string({ length }),
+      generateFieldValueOfLength: (length: number) => (length === 2 ? valueGenerator.enumValue(ENUMS.PRODUCT_TYPE_GROUPS) : valueGenerator.string({ length })),
       generateFieldValueThatDoesNotMatchEnum: () => '12',
       validRequestBody: requestBodyToCreateFacilityLoanGbp,
       makeRequest,
@@ -202,8 +193,7 @@ describe('POST /facilities/{facilityIdentifier}/loans', () => {
       required: false,
       enum: ENUMS.OPERATION_TYPE_CODES,
       length: 1,
-      generateFieldValueOfLength: (length: number) =>
-        length === 1 ? possibleOperationTypes[valueGenerator.integer({ min: 0, max: possibleOperationTypes.length - 1 })] : valueGenerator.string({ length }),
+      generateFieldValueOfLength: (length: number) => (length === 1 ? valueGenerator.enumValue(ENUMS.OPERATION_TYPE_CODES) : valueGenerator.string({ length })),
       generateFieldValueThatDoesNotMatchEnum: () => '3',
       validRequestBody: requestBodyToCreateFacilityLoanGbp,
       makeRequest,
@@ -243,10 +233,46 @@ describe('POST /facilities/{facilityIdentifier}/loans', () => {
       length: 1,
       required: true,
       enum: ENUMS.FEE_FREQUENCY_TYPES,
-      generateFieldValueOfLength: (length: number) =>
-        length === 1
-          ? possibleLoanBillingFrequencyTypes[valueGenerator.integer({ min: 0, max: possibleLoanBillingFrequencyTypes.length - 1 })]
-          : valueGenerator.string({ length }),
+      generateFieldValueOfLength: (length: number) => (length === 1 ? valueGenerator.enumValue(ENUMS.FEE_FREQUENCY_TYPES) : valueGenerator.string({ length })),
+      generateFieldValueThatDoesNotMatchEnum: () => '3',
+      validRequestBody: requestBodyToCreateFacilityLoanGbp,
+      makeRequest,
+      givenAnyRequestBodyWouldSucceed,
+    });
+
+    withNonNegativeNumberFieldValidationApiTests({
+      fieldName: 'spreadRate',
+      validRequestBody: requestBodyToCreateFacilityLoanGbp,
+      makeRequest,
+      givenAnyRequestBodyWouldSucceed,
+    });
+
+    withNonNegativeNumberFieldValidationApiTests({
+      fieldName: 'spreadRateCtl',
+      validRequestBody: requestBodyToCreateFacilityLoanGbp,
+      makeRequest,
+      givenAnyRequestBodyWouldSucceed,
+      required: false,
+    });
+
+    withEnumFieldValidationApiTests({
+      fieldName: 'yearBasis',
+      length: 1,
+      required: true,
+      enum: ENUMS.YEAR_BASIS,
+      generateFieldValueOfLength: (length: number) => (length === 1 ? valueGenerator.enumValue(ENUMS.YEAR_BASIS) : valueGenerator.string({ length })),
+      generateFieldValueThatDoesNotMatchEnum: () => 'A',
+      validRequestBody: requestBodyToCreateFacilityLoanGbp,
+      makeRequest,
+      givenAnyRequestBodyWouldSucceed,
+    });
+
+    withEnumFieldValidationApiTests({
+      fieldName: 'indexRateChangeFrequency',
+      length: 1,
+      required: false,
+      enum: ENUMS.FEE_FREQUENCY_TYPES,
+      generateFieldValueOfLength: (length: number) => (length === 1 ? valueGenerator.enumValue(ENUMS.FEE_FREQUENCY_TYPES) : valueGenerator.string({ length })),
       generateFieldValueThatDoesNotMatchEnum: () => '3',
       validRequestBody: requestBodyToCreateFacilityLoanGbp,
       makeRequest,
