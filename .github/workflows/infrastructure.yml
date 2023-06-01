@@ -174,7 +174,7 @@ jobs:
         uses: Azure/cli@v1.0.7
         with:
           inlineScript: |
-            # Azure Managed Instance (AMI) SQL non-production DB VNET peering
+            # Azure Managed Instance (AMI) SQL DB non-production VNET peering
 
             # Local VNET peer
             az network vnet peering create \
