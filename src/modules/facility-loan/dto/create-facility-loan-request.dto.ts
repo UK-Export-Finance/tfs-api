@@ -1,4 +1,5 @@
 import { ENUMS } from '@ukef/constants';
+import { LoanBillingFrequencyTypeEnum } from '@ukef/constants/enums/loan-billing-frequency-type';
 import { OperationTypeCodeEnum } from '@ukef/constants/enums/operation-type-code';
 import { ProductTypeGroupEnum } from '@ukef/constants/enums/product-type-group';
 import { ProductTypeIdEnum } from '@ukef/constants/enums/product-type-id';
@@ -70,4 +71,16 @@ export class CreateFacilityLoanRequestItem {
     description: 'The facility expiry date.',
   })
   readonly expiryDate: DateOnlyString;
+
+  @ValidatedDateOnlyApiProperty({
+    description: 'The next payment due date of the repayment schedule.',
+  })
+  readonly nextDueDate: DateOnlyString;
+
+  @ValidatedStringApiProperty({
+    description: 'The frequency at which loan bills should be generated.',
+    enum: ENUMS.LOAN_BILLING_FREQUENCY_TYPES,
+    example: ENUMS.LOAN_BILLING_FREQUENCY_TYPES.WEEKLY,
+  })
+  readonly loanBillingFrequencyType: LoanBillingFrequencyTypeEnum;
 }

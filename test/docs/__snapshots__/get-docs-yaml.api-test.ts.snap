@@ -2488,6 +2488,24 @@ components:
           format: date
           type: string
           description: The facility expiry date.
+        nextDueDate:
+          format: date
+          type: string
+          description: The next payment due date of the repayment schedule.
+        loanBillingFrequencyType:
+          type: string
+          description: The frequency at which loan bills should be generated.
+          minLength: 0
+          enum:
+            - A
+            - B
+            - C
+            - D
+            - E
+            - F
+            - G
+            - H
+          example: A
       required:
         - postingDate
         - borrowerPartyIdentifier
@@ -2497,6 +2515,8 @@ components:
         - amount
         - issueDate
         - expiryDate
+        - nextDueDate
+        - loanBillingFrequencyType
     CreateFacilityLoanResponse:
       type: object
       properties:
