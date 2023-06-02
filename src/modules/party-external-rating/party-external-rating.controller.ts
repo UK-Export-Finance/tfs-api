@@ -2,7 +2,7 @@ import { Controller, Get, Param } from '@nestjs/common';
 import { ApiInternalServerErrorResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiParam } from '@nestjs/swagger';
 
 import { GetPartyExternalRatingsResponseDto, GetPartyExternalRatingsResponseItem } from './dto/get-party-external-ratings-response.dto';
-import { PartyExternalRating } from './party-external-rating.interface';
+import { GetPartyExternalRating } from './get-party-external-rating.interface';
 import { PartyExternalRatingService } from './party-external-rating.service';
 
 @Controller()
@@ -34,7 +34,7 @@ export class PartyExternalRatingController {
     partyIdentifier: string,
   ): Promise<GetPartyExternalRatingsResponseDto> {
     const externalRatings = await this.partyExternalRatingService.getExternalRatingsForParty(partyIdentifier);
-    return externalRatings.map((externalRating: PartyExternalRating) => ({
+    return externalRatings.map((externalRating: GetPartyExternalRating) => ({
       partyIdentifier: externalRating.partyIdentifier,
       ratingEntity: {
         ratingEntityCode: externalRating.ratingEntity.ratingEntityCode,

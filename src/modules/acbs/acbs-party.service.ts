@@ -6,7 +6,7 @@ import { AcbsGetPartiesBySearchTextResponseDto } from '../party/dto/acbs-get-par
 import { AcbsConfigBaseUrl } from './acbs-config-base-url.type';
 import { AcbsHttpService } from './acbs-http.service';
 import { AcbsCreatePartyRequest } from './dto/acbs-create-party-request.dto';
-import { AcbsGetPartyResponseItem } from './dto/acbs-get-party-response.dto';
+import { AcbsGetPartyResponseDto } from './dto/acbs-get-party-response.dto';
 import { getPartyNotFoundKnownAcbsError } from './known-errors';
 import { createWrapAcbsHttpGetErrorCallback, createWrapAcbsHttpPostOrPutErrorCallback } from './wrap-acbs-http-error-callback';
 
@@ -22,8 +22,8 @@ export class AcbsPartyService {
     this.acbsHttpService = new AcbsHttpService(config, httpService);
   }
 
-  async getPartyByIdentifier(partyIdentifier: string, idToken: string): Promise<AcbsGetPartyResponseItem> {
-    const { data: party } = await this.acbsHttpService.get<AcbsGetPartyResponseItem>({
+  async getPartyByIdentifier(partyIdentifier: string, idToken: string): Promise<AcbsGetPartyResponseDto> {
+    const { data: party } = await this.acbsHttpService.get<AcbsGetPartyResponseDto>({
       path: `/Party/${partyIdentifier}`,
       idToken,
       onError: createWrapAcbsHttpGetErrorCallback({

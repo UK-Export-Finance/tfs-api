@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AcbsModule } from '@ukef/modules/acbs/acbs.module';
 import { HttpModule } from '@ukef/modules/http/http.module';
+import { AssignedRatingCodeProvider } from '@ukef/modules/party/assigned-rating-code.provider';
 
 import { DateModule } from '../date/date.module';
 import { PartyExternalRatingModule } from '../party-external-rating/party-external-rating.module';
@@ -23,6 +24,6 @@ import { PartyService } from './party.service';
     PartyExternalRatingModule,
   ],
   controllers: [PartyController],
-  providers: [PartyService],
+  providers: [PartyService, AssignedRatingCodeProvider],
 })
 export class PartyModule {}

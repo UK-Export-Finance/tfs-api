@@ -1,4 +1,5 @@
-import { ENUMS } from '@ukef/constants';
+import { ENUMS, UKEFID } from '@ukef/constants';
+import { AssignedRatingCodeEnum } from '@ukef/constants/enums/assigned-rating-code';
 import { AcbsCreatePartyExternalRatingRequestDto } from '@ukef/modules/acbs/dto/acbs-create-party-external-rating-request.dto';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { AcbsCreatePartyRequestDto } from '@ukef/modules/party/dto/acbs-create-party-request.dto';
@@ -41,7 +42,7 @@ describe('POST /parties', () => {
   const { acbsExternalRatingToCreate } = new CreatePartyExternalRatingGenerator(valueGenerator, dateStringTransformations).generate({
     numberToGenerate: 1,
     partyIdentifier,
-    assignedRatingCode: '01',
+    assignedRatingCode: '03' as AssignedRatingCodeEnum,
     ratedDate,
   });
 
@@ -93,24 +94,13 @@ describe('POST /parties', () => {
 
     it('returns a 200 response with the identifier of the first matching party if ACBS returns one or more matching parties when using the alternate identifier as search text', async () => {
       requestToGetPartiesBySearchText(alternateIdentifier).reply(200, partiesInAcbsWithPartyIdentifiers);
+      givenRequestToGetPartyExternalRatingsSucceeds();
+      givenRequestToCreatePartyExternalRatingSucceeds();
 
       const { status, body } = await api.post(createPartyUrl, apiCreatePartyRequest);
 
       expect(status).toBe(200);
       expect(body).toStrictEqual({ partyIdentifier });
-    });
-
-    it("returns a 200 response with an empty object if ACBS returns one or more matching parties when using the alternate identifier as search text but the first matching party's PartyIdentifier is equal to the empty string", async () => {
-      const partiesInAcbsWithEmptyPartyIdentifier = JSON.parse(JSON.stringify(partiesInAcbsWithPartyIdentifiers));
-      partiesInAcbsWithEmptyPartyIdentifier[0].PartyIdentifier = '';
-
-      givenAuthenticationWithTheIdpSucceeds();
-      requestToGetPartiesBySearchText(alternateIdentifier).reply(200, partiesInAcbsWithEmptyPartyIdentifier);
-
-      const { status, body } = await api.post(createPartyUrl, apiCreatePartyRequest);
-
-      expect(status).toBe(200);
-      expect(body).toStrictEqual({});
     });
   });
 
@@ -351,6 +341,7 @@ describe('POST /parties', () => {
       fieldName: 'alternateIdentifier',
       length: 8,
       generateFieldValueOfLength: (length: number) => valueGenerator.stringOfNumericCharacters({ length }),
+      pattern: UKEFID.PARTY_ID.REGEX,
       generateFieldValueThatDoesNotMatchRegex: () => 'abcdefgh',
       validRequestBody: apiCreatePartyRequest,
       makeRequest,
@@ -412,8 +403,7 @@ describe('POST /parties', () => {
     withStringFieldValidationApiTests({
       fieldName: 'citizenshipClass',
       length: 1,
-      generateFieldValueOfLength: (length: number) =>
-        length === 1 ? ['1', '2'][valueGenerator.integer({ min: 0, max: 1 })] : valueGenerator.string({ length }),
+      generateFieldValueOfLength: (length: number) => (length === 1 ? valueGenerator.enumValue(ENUMS.CITIZENSHIP_CLASSES) : valueGenerator.string({ length })),
       enum: ENUMS.CITIZENSHIP_CLASSES,
       generateFieldValueThatDoesNotMatchEnum: () => '3',
       validRequestBody: apiCreatePartyRequest,

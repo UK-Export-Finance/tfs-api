@@ -1,5 +1,5 @@
 import { AcbsPartyService } from '@ukef/modules/acbs/acbs-party.service';
-import { AcbsGetPartyResponseItem } from '@ukef/modules/acbs/dto/acbs-get-party-response.dto';
+import { AcbsGetPartyResponseDto } from '@ukef/modules/acbs/dto/acbs-get-party-response.dto';
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
@@ -45,7 +45,7 @@ describe('PartyService', () => {
       const officerRiskDateInAcbs = '2023-02-01T00:00:00Z';
       const expectedOfficerRiskDate = '2023-02-01';
       const { acbsParties, parties } = new GetPartyGenerator(valueGenerator, dateStringTransformations).generate({ numberToGenerate: 1 });
-      const partyInAcbs: AcbsGetPartyResponseItem = {
+      const partyInAcbs: AcbsGetPartyResponseDto = {
         ...acbsParties[0],
         OfficerRiskDate: officerRiskDateInAcbs,
       };
@@ -62,7 +62,7 @@ describe('PartyService', () => {
 
     it('returns a transformation of the external ratings from ACBS when OfficerRiskDate IS null', async () => {
       const { acbsParties, parties } = new GetPartyGenerator(valueGenerator, dateStringTransformations).generate({ numberToGenerate: 1 });
-      const acbsParty: AcbsGetPartyResponseItem = {
+      const acbsParty: AcbsGetPartyResponseDto = {
         ...acbsParties[0],
         OfficerRiskDate: null,
       };

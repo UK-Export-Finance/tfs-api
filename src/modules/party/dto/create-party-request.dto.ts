@@ -1,4 +1,4 @@
-import { ENUMS, EXAMPLES, PROPERTIES } from '@ukef/constants';
+import { ENUMS, EXAMPLES, PROPERTIES, UKEFID } from '@ukef/constants';
 import { ValidatedDateOnlyApiProperty } from '@ukef/decorators/validated-date-only-api-property.decorator';
 import { ValidatedStringApiProperty } from '@ukef/decorators/validated-string-api-property.decorator';
 
@@ -8,7 +8,8 @@ export class CreatePartyRequestItem {
   @ValidatedStringApiProperty({
     description: 'The UKEF ID for the party.',
     length: 8,
-    example: EXAMPLES.PARTY_ID,
+    pattern: UKEFID.PARTY_ID.REGEX,
+    example: EXAMPLES.PARTY_ALTERNATE_ID,
   })
   alternateIdentifier: string;
 
@@ -34,7 +35,7 @@ export class CreatePartyRequestItem {
     maxLength: 35,
     example: EXAMPLES.PARTY_NAME,
   })
-  name2: string;
+  name2?: string;
 
   @ValidatedStringApiProperty({
     description: 'The tertiary customer name.',
@@ -42,7 +43,7 @@ export class CreatePartyRequestItem {
     maxLength: 35,
     example: EXAMPLES.PARTY_NAME,
   })
-  name3: string;
+  name3?: string;
 
   @ValidatedStringApiProperty({
     description: 'A code that indicates what minority class this customer represents.',
@@ -56,7 +57,7 @@ export class CreatePartyRequestItem {
     description: `A code that identifies the citizenship category of this customer. Should be '1' if the domicile country is the UK, otherwise '2'.`,
     length: 1,
     enum: ENUMS.CITIZENSHIP_CLASSES,
-    example: EXAMPLES.SME_TYPE,
+    example: EXAMPLES.CITIZENSHIP_CLASS,
   })
   citizenshipClass: string;
 
@@ -72,5 +73,5 @@ export class CreatePartyRequestItem {
     default: PROPERTIES.PARTY.DEFAULT.address.countryCode,
     example: EXAMPLES.COUNTRY_CODE,
   })
-  countryCode: string;
+  countryCode?: string;
 }

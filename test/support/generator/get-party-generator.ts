@@ -81,9 +81,9 @@ interface PartyValues {
 }
 
 interface GenerateResult {
-  acbsParties: AcbsGetPartyResponseDto;
+  acbsParties: AcbsGetPartyResponseDto[];
   parties: Party[];
-  apiParties: GetPartyByIdentifierResponseDto;
+  apiParties: GetPartyByIdentifierResponseDto[];
 }
 
 interface GenerateOptions {

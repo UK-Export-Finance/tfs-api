@@ -1,7 +1,7 @@
 import { DateString } from '@ukef/helpers/date-string.type';
 import { AcbsGetPartyExternalRatingsResponseDto } from '@ukef/modules/acbs/dto/acbs-get-party-external-ratings-response.dto';
 import { GetPartyExternalRatingsResponseDto } from '@ukef/modules/party-external-rating/dto/get-party-external-ratings-response.dto';
-import { PartyExternalRating } from '@ukef/modules/party-external-rating/party-external-rating.interface';
+import { GetPartyExternalRating } from '@ukef/modules/party-external-rating/get-party-external-rating.interface';
 
 import { AbstractGenerator } from './abstract-generator';
 
@@ -44,7 +44,7 @@ export class GetPartyExternalRatingGenerator extends AbstractGenerator<PartyExte
       },
     }));
 
-    const externalRatings: PartyExternalRating[] = values.map((v) => ({
+    const externalRatings: GetPartyExternalRating[] = values.map((v) => ({
       partyIdentifier: partyIdentifier,
       ratingEntity: {
         ratingEntityCode: v.ratingEntityCode,
@@ -91,6 +91,6 @@ interface GenerateOptions {
 
 interface GenerateResult {
   acbsExternalRatings: AcbsGetPartyExternalRatingsResponseDto;
-  externalRatings: PartyExternalRating[];
+  externalRatings: GetPartyExternalRating[];
   apiExternalRatings: GetPartyExternalRatingsResponseDto;
 }

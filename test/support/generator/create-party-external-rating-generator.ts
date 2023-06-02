@@ -1,8 +1,9 @@
 import { ENUMS, PROPERTIES } from '@ukef/constants';
+import { AssignedRatingCodeEnum } from '@ukef/constants/enums/assigned-rating-code';
 import { DateString } from '@ukef/helpers/date-string.type';
 import { AcbsCreatePartyExternalRatingRequestDto } from '@ukef/modules/acbs/dto/acbs-create-party-external-rating-request.dto';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
-import { CreatePartyExternalRatingRequestDto } from '@ukef/modules/party-external-rating/dto/create-party-external-rating-request.dto';
+import { CreatePartyExternalRating } from '@ukef/modules/party-external-rating/create-party-external-rating.interface';
 
 import { AbstractGenerator } from './abstract-generator';
 import { RandomValueGenerator } from './random-value-generator';
@@ -13,10 +14,8 @@ export class CreatePartyExternalRatingGenerator extends AbstractGenerator<PartyE
   }
 
   protected generateValues(): PartyExternalRatingValues {
-    const possibleAssignedRatingCodes = Object.values(ENUMS.ASSIGNED_RATING_CODES);
-
     return {
-      assignedRatingCode: possibleAssignedRatingCodes[this.valueGenerator.integer({ min: 0, max: possibleAssignedRatingCodes.length - 1 })],
+      assignedRatingCode: this.valueGenerator.enumValue(ENUMS.ASSIGNED_RATING_CODES) as AssignedRatingCodeEnum,
       ratedDate: this.valueGenerator.dateOnlyString(),
     };
   }
@@ -45,7 +44,7 @@ export class CreatePartyExternalRatingGenerator extends AbstractGenerator<PartyE
       ExternalRatingNote2: PROPERTIES.PARTY_EXTERNAL_RATING.DEFAULT.externalRatingNote2,
     };
 
-    const apiExternalRatingToCreate: CreatePartyExternalRatingRequestDto = {
+    const apiExternalRatingToCreate: CreatePartyExternalRating = {
       assignedRatingCode: assignedRatingCode ?? firstExternalRating.assignedRatingCode,
       ratedDate: ratedDateOnly,
     };
@@ -58,17 +57,17 @@ export class CreatePartyExternalRatingGenerator extends AbstractGenerator<PartyE
 }
 
 interface PartyExternalRatingValues {
-  assignedRatingCode: string;
+  assignedRatingCode: AssignedRatingCodeEnum;
   ratedDate: DateString;
 }
 
 interface GenerateOptions {
   partyIdentifier: string;
-  assignedRatingCode?: string;
+  assignedRatingCode?: AssignedRatingCodeEnum;
   ratedDate?: DateString;
 }
 
 interface GenerateResult {
   acbsExternalRatingToCreate: AcbsCreatePartyExternalRatingRequestDto;
-  apiExternalRatingToCreate: CreatePartyExternalRatingRequestDto;
+  apiExternalRatingToCreate: CreatePartyExternalRating;
 }

@@ -2,10 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { PROPERTIES } from '@ukef/constants';
 import { AcbsPartyExternalRatingService } from '@ukef/modules/acbs/acbs-party-external-rating.service';
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
-import { PartyExternalRating } from '@ukef/modules/party-external-rating/party-external-rating.interface';
+import { GetPartyExternalRating } from '@ukef/modules/party-external-rating/get-party-external-rating.interface';
 
 import { DateStringTransformations } from '../date/date-string.transformations';
-import { CreatePartyExternalRatingRequestDto } from './dto/create-party-external-rating-request.dto';
+import { CreatePartyExternalRating } from './create-party-external-rating.interface';
 
 @Injectable()
 export class PartyExternalRatingService {
@@ -15,7 +15,7 @@ export class PartyExternalRatingService {
     private readonly dateStringTransformations: DateStringTransformations,
   ) {}
 
-  async getExternalRatingsForParty(partyIdentifier: string): Promise<PartyExternalRating[]> {
+  async getExternalRatingsForParty(partyIdentifier: string): Promise<GetPartyExternalRating[]> {
     const idToken = await this.acbsAuthenticationService.getIdToken();
     const externalRatingsInAcbs = await this.acbsService.getExternalRatingsForParty(partyIdentifier, idToken);
     return externalRatingsInAcbs.map((rating) => ({
@@ -37,7 +37,7 @@ export class PartyExternalRatingService {
     }));
   }
 
-  async createExternalRatingForParty(partyIdentifier: string, createPartyExternalRatingRequest: CreatePartyExternalRatingRequestDto): Promise<void> {
+  async createExternalRatingForParty(partyIdentifier: string, createPartyExternalRatingRequest: CreatePartyExternalRating): Promise<void> {
     const idToken = await this.acbsAuthenticationService.getIdToken();
 
     const { assignedRatingCode, ratedDate } = createPartyExternalRatingRequest;
