@@ -48,14 +48,14 @@ describe('GET /facilities/{facilityIdentifier}', () => {
   withClientAuthenticationTests({
     givenTheRequestWouldOtherwiseSucceed: () => {
       givenAuthenticationWithTheIdpSucceeds();
-      requestToGetFacility().reply(200, facilityInAcbs);
+      requestToGetFacilityInAcbs().reply(200, facilityInAcbs);
     },
     makeRequestWithoutAuth: (incorrectAuth?: IncorrectAuthArg) => api.getWithoutAuth(getFacilityUrl, incorrectAuth?.headerName, incorrectAuth?.headerValue),
   });
 
   it('returns a 200 response with the facility if it is returned by ACBS', async () => {
     givenAuthenticationWithTheIdpSucceeds();
-    requestToGetFacility().reply(200, facilityInAcbs);
+    requestToGetFacilityInAcbs().reply(200, facilityInAcbs);
 
     const { status, body } = await makeRequest();
 
@@ -68,7 +68,7 @@ describe('GET /facilities/{facilityIdentifier}', () => {
     const expectedFacilityWithNullEffectiveDate = { ...expectedFacility, effectiveDate: null };
 
     givenAuthenticationWithTheIdpSucceeds();
-    requestToGetFacility().reply(200, facilityInAcbsWithNullOriginalEffectiveDate);
+    requestToGetFacilityInAcbs().reply(200, facilityInAcbsWithNullOriginalEffectiveDate);
 
     const { status, body } = await makeRequest();
 
@@ -81,7 +81,7 @@ describe('GET /facilities/{facilityIdentifier}', () => {
     const expectedFacilityWithNullGuaranteeExpiryDate = { ...expectedFacility, guaranteeExpiryDate: null };
 
     givenAuthenticationWithTheIdpSucceeds();
-    requestToGetFacility().reply(200, facilityInAcbsWithNullExpirationDate);
+    requestToGetFacilityInAcbs().reply(200, facilityInAcbsWithNullExpirationDate);
 
     const { status, body } = await makeRequest();
 
@@ -94,7 +94,7 @@ describe('GET /facilities/{facilityIdentifier}', () => {
     const expectedFacilityWithNullIssueDate = { ...expectedFacility, issueDate: null };
 
     givenAuthenticationWithTheIdpSucceeds();
-    requestToGetFacility().reply(200, facilityInAcbsWithNullUserDefinedDate1);
+    requestToGetFacilityInAcbs().reply(200, facilityInAcbsWithNullUserDefinedDate1);
 
     const { status, body } = await makeRequest();
 
@@ -111,7 +111,7 @@ describe('GET /facilities/{facilityIdentifier}', () => {
     };
 
     givenAuthenticationWithTheIdpSucceeds();
-    requestToGetFacility().reply(200, facilityInAcbsWithNullUserDefinedDate2);
+    requestToGetFacilityInAcbs().reply(200, facilityInAcbsWithNullUserDefinedDate2);
 
     const { status, body } = await makeRequest();
 
@@ -124,7 +124,7 @@ describe('GET /facilities/{facilityIdentifier}', () => {
     const expectedFacilityWithDefaultGuaranteePercentage = { ...expectedFacility, guaranteePercentage: PROPERTIES.FACILITY.DEFAULT.GET.compBalPctReserve };
 
     givenAuthenticationWithTheIdpSucceeds();
-    requestToGetFacility().reply(200, facilityInAcbsWithNullCompBalPctReserve1);
+    requestToGetFacilityInAcbs().reply(200, facilityInAcbsWithNullCompBalPctReserve1);
 
     const { status, body } = await makeRequest();
 
@@ -137,7 +137,7 @@ describe('GET /facilities/{facilityIdentifier}', () => {
     const expectedFacilityWithDefaultForeCastPercentage = { ...expectedFacility, forecastPercentage: PROPERTIES.FACILITY.DEFAULT.GET.compBalPctAmount };
 
     givenAuthenticationWithTheIdpSucceeds();
-    requestToGetFacility().reply(200, facilityInAcbsWithNullCompBalPctAmount);
+    requestToGetFacilityInAcbs().reply(200, facilityInAcbsWithNullCompBalPctAmount);
 
     const { status, body } = await makeRequest();
 
@@ -147,15 +147,15 @@ describe('GET /facilities/{facilityIdentifier}', () => {
 
   withAcbsGetFacilityServiceCommonTests({
     givenTheRequestWouldOtherwiseSucceed: () => givenAuthenticationWithTheIdpSucceeds(),
-    requestToGetFacility: () => requestToGetFacility(),
+    requestToGetFacilityInAcbs: () => requestToGetFacilityInAcbs(),
     makeRequest: () => makeRequest(),
   });
 
-  const requestToGetFacility = () =>
+  const requestToGetFacilityInAcbs = () =>
     nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
       .get(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}`)
       .matchHeader('authorization', `Bearer ${idToken}`);
 
-  const givenRequestToGetFacilityInAcbsSucceeds = () => requestToGetFacility().reply(200, facilityInAcbs);
+  const givenRequestToGetFacilityInAcbsSucceeds = () => requestToGetFacilityInAcbs().reply(200, facilityInAcbs);
   const makeRequest = () => api.get(getFacilityUrl);
 });

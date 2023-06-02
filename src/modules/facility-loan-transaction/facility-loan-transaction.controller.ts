@@ -2,8 +2,8 @@ import { Controller, Get, Param } from '@nestjs/common';
 import { ApiInternalServerErrorResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiParam } from '@nestjs/swagger';
 import { EXAMPLES } from '@ukef/constants';
 
-import { GetLoanTransactionParamsDto } from './dto/get-loan-transaction-params.dto';
-import { GetFacilityLoanTransactionResponseItem } from './dto/get-loan-transaction-response.dto';
+import { GetLoanTransactionParamsDto } from './dto/get-facility-loan-transaction-params.dto';
+import { GetFacilityLoanTransactionResponseDto } from './dto/get-facility-loan-transaction-response.dto';
 import { FacilityLoanTransactionService } from './facility-loan-transaction.service';
 
 @Controller()
@@ -28,7 +28,7 @@ export class FacilityLoanTransactionController {
   })
   @ApiOkResponse({
     description: 'The loan transaction has been successfully retrieved.',
-    type: GetFacilityLoanTransactionResponseItem,
+    type: GetFacilityLoanTransactionResponseDto,
   })
   @ApiNotFoundResponse({
     description: 'The specified loan transaction was not found.',
@@ -36,7 +36,7 @@ export class FacilityLoanTransactionController {
   @ApiInternalServerErrorResponse({
     description: 'An internal server error has occurred.',
   })
-  getLoanTransactionByBundleIdentifier(@Param() params: GetLoanTransactionParamsDto): Promise<GetFacilityLoanTransactionResponseItem> {
+  getLoanTransactionByBundleIdentifier(@Param() params: GetLoanTransactionParamsDto): Promise<GetFacilityLoanTransactionResponseDto> {
     return this.facilityLoanTransactionService.getLoanTransactionsByBundleIdentifier(params.bundleIdentifier);
   }
 }

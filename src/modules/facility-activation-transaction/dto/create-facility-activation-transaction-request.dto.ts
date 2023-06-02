@@ -14,8 +14,8 @@ export class CreateFacilityActivationTransactionRequestItem {
 
   @ValidatedNumberApiProperty({
     description: 'In most situations the value should be 3, it means auto approval.',
-    example: ENUMS.BUNDLE_STATUSES.SUBMIT_FOR_POSTING,
-    enum: ENUMS.BUNDLE_STATUSES,
+    example: ENUMS.INITIAL_BUNDLE_STATUS_CODES.SUBMIT_FOR_POSTING,
+    enum: ENUMS.INITIAL_BUNDLE_STATUS_CODES,
   })
   readonly initialBundleStatusCode: number;
 

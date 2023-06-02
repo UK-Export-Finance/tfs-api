@@ -1,14 +1,14 @@
 import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
+import { UpdateFacilityByOperationQueryDto } from '@ukef/modules/facility/dto/update-facility-by-operation-query.dto';
+import { FacilityController } from '@ukef/modules/facility/facility.controller';
+import { withUpdateFacilityControllerGeneralTests } from '@ukef/modules/facility/facility.controller.update-facility.test-parts/update-facility-controller-general-tests';
+import { FacilityService } from '@ukef/modules/facility/facility.service';
 import { CreateFacilityGenerator } from '@ukef-test/support/generator/create-facility-generator';
 import { GetFacilityGenerator } from '@ukef-test/support/generator/get-facility-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { UpdateFacilityGenerator } from '@ukef-test/support/generator/update-facility-generator';
 import { when } from 'jest-when';
-
-import { UpdateFacilityByOperationQueryDto } from './dto/update-facility-by-operation-query.dto';
-import { FacilityController } from './facility.controller';
-import { FacilityService } from './facility.service';
 
 jest.mock('./facility.service');
 
@@ -20,7 +20,7 @@ describe('FacilityController', () => {
 
   let controller: FacilityController;
 
-  const facilityService = new FacilityService(null, null, null, null);
+  const facilityService = new FacilityService(null, null, null, null, null);
 
   const facilityServiceGetFacilityByIdentifier = jest.fn();
   facilityService.getFacilityByIdentifier = facilityServiceGetFacilityByIdentifier;
@@ -31,14 +31,18 @@ describe('FacilityController', () => {
   const facilityServiceIssueFacilityByIdentifier = jest.fn();
   facilityService.issueFacilityByIdentifier = facilityServiceIssueFacilityByIdentifier;
 
-  const facilityServiceAmendExpiryDateByIdentifier = jest.fn();
-  facilityService.amendFacilityExpiryDateByIdentifier = facilityServiceAmendExpiryDateByIdentifier;
+  const facilityServiceAmendFacilityExpiryDateByIdentifier = jest.fn();
+  facilityService.amendFacilityExpiryDateByIdentifier = facilityServiceAmendFacilityExpiryDateByIdentifier;
+
+  const facilityServiceAmendFacilityAmountByIdentifier = jest.fn();
+  facilityService.amendFacilityAmountByIdentifier = facilityServiceAmendFacilityAmountByIdentifier;
 
   beforeEach(() => {
     facilityServiceGetFacilityByIdentifier.mockReset();
     facilityServiceCreateFacility.mockReset();
     facilityServiceIssueFacilityByIdentifier.mockReset();
-    facilityServiceAmendExpiryDateByIdentifier.mockReset();
+    facilityServiceAmendFacilityExpiryDateByIdentifier.mockReset();
+    facilityServiceAmendFacilityAmountByIdentifier.mockReset();
 
     controller = new FacilityController(facilityService);
   });
@@ -94,7 +98,8 @@ describe('FacilityController', () => {
 
   describe.each([
     { op: ENUMS.FACILITY_UPDATE_OPERATIONS.ISSUE, serviceMethod: facilityServiceIssueFacilityByIdentifier },
-    { op: ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_EXPIRY_DATE, serviceMethod: facilityServiceAmendExpiryDateByIdentifier },
+    { op: ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_EXPIRY_DATE, serviceMethod: facilityServiceAmendFacilityExpiryDateByIdentifier },
+    { op: ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_AMOUNT, serviceMethod: facilityServiceAmendFacilityAmountByIdentifier },
   ])('updateFacility $op', ({ op, serviceMethod }) => {
     const { updateFacilityRequest } = new UpdateFacilityGenerator(valueGenerator, dateStringTransformations).generate({
       numberToGenerate: 1,
@@ -102,18 +107,26 @@ describe('FacilityController', () => {
     });
 
     const query: UpdateFacilityByOperationQueryDto = { op };
+
     const updateFacilityByOperationParams = { facilityIdentifier };
 
-    it(`calls if called with ${op} enum`, async () => {
-      await controller.updateFacilityByOperation(query, updateFacilityByOperationParams, updateFacilityRequest);
+    const expectedResponse =
+      op === ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_AMOUNT ? { bundleIdentifier: valueGenerator.acbsBundleId() } : { facilityIdentifier };
 
-      expect(serviceMethod).toHaveBeenCalledWith(facilityIdentifier, updateFacilityRequest);
+    withUpdateFacilityControllerGeneralTests({
+      updateFacilityRequest,
+      serviceMethod,
+      facilityIdentifier,
+      expectedResponse,
+      getGivenUpdateRequestWouldOtherwiseSucceed: () => givenUpdateRequestWouldOtherwiseSucceed(),
+      makeRequest: () => controller.updateFacilityByOperation(query, updateFacilityByOperationParams, updateFacilityRequest),
     });
 
-    it(`returns the facility identifier if updating the facility succeeds if called with ${op} enum`, async () => {
-      const response = await controller.updateFacilityByOperation(query, updateFacilityByOperationParams, updateFacilityRequest);
-
-      expect(response).toStrictEqual({ facilityIdentifier });
-    });
+    const givenUpdateRequestWouldOtherwiseSucceed = () => {
+      if (op === ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_AMOUNT) {
+        return when(serviceMethod).calledWith(facilityIdentifier, updateFacilityRequest).mockResolvedValueOnce(expectedResponse);
+      }
+      return () => {};
+    };
   });
 });

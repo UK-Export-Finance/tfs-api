@@ -1,3 +1,5 @@
+import { BundleInformationType } from '@ukef/constants/enums/bundle-information-type';
+
 export const PROPERTIES = {
   GLOBAL: {
     portfolioIdentifier: 'E1',
@@ -260,7 +262,7 @@ export const PROPERTIES = {
       initiatingUserName: 'APIUKEF',
       useAPIUserIndicator: false,
       bundleMessageList: {
-        type: 'FacilityCodeValueTransaction' as const,
+        type: BundleInformationType.FACILITY_CODE_VALUE_TRANSACTION as const,
         accountOwnerIdentifier: '00000000',
         facilityTransactionCodeValue: { facilityTransactionCodeValueCode: 'A' },
         facilityTransactionType: { typeCode: '2340' },
@@ -341,7 +343,7 @@ export const PROPERTIES = {
       servicingUserAccountIdentifier: 'APIUKEF',
       useAPIUserIndicator: false,
       initialBundleStatusCode: 3,
-      messageType: 'NewLoanRequest' as const,
+      messageType: BundleInformationType.NEW_LOAN_REQUEST as const,
       accountOwnerIdentifier: '00000000',
       sectionIdentifier: '00',
       servicingUser: {
@@ -422,13 +424,32 @@ export const PROPERTIES = {
       },
     },
   },
+  FACILITY_AMOUNT_TRANSACTION: {
+    DEFAULT: {
+      servicingQueueIdentifier: 'DCIS',
+      portfolioIdentifier: 'E1',
+      initialBundleStatusCode: 3,
+      initiatingUserName: 'APIUKEF',
+      useAPIUserIndicator: false,
+      bundleMessageList: {
+        type: BundleInformationType.FACILITY_AMOUNT_TRANSACTION as const,
+        accountOwnerIdentifier: '00000000',
+        isDraftIndicator: false,
+        limitType: {
+          limitTypeCode: '00',
+        },
+        sectionIdentifier: '00',
+        lenderTypeCode: '100',
+      },
+    },
+  },
   LOAN_AMOUNT_AMENDMENT: {
     DEFAULT: {
       initialBundleStatusCode: 3,
       initiatingUserName: 'APIUKEF',
       useAPIUserIndicator: false,
       bundleMessageList: {
-        type: 'LoanAdvanceTransaction' as const,
+        type: BundleInformationType.LOAN_ADVANCE_TRANSACTION as const,
         cashOffsetTypeCode: '02',
         isDraftIndicator: false,
         transactionTypeCode: {

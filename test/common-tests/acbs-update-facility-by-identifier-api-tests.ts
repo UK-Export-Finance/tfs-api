@@ -4,18 +4,18 @@ import supertest from 'supertest';
 
 export const withAcbsUpdateFacilityByIdentifierServiceTests = ({
   givenTheRequestWouldOtherwiseSucceed,
-  requestToUpdateFacility,
+  requestToUpdateFacilityInAcbs,
   makeRequest,
 }: {
   givenTheRequestWouldOtherwiseSucceed: () => void;
-  requestToUpdateFacility: () => nock.Interceptor;
+  requestToUpdateFacilityInAcbs: () => nock.Interceptor;
   makeRequest: () => supertest.Test;
 }) => {
   describe('Common ACBS update facility service tests', () => {
     it('returns a 400 response if ACBS update endpoint responds with a 400 response without the string "The Facility not found or the user does not have access to it."', async () => {
       givenTheRequestWouldOtherwiseSucceed();
 
-      requestToUpdateFacility().reply(400, 'error message');
+      requestToUpdateFacilityInAcbs().reply(400, 'error message');
 
       const { status, body } = await makeRequest();
 
@@ -27,7 +27,7 @@ export const withAcbsUpdateFacilityByIdentifierServiceTests = ({
       givenTheRequestWouldOtherwiseSucceed();
 
       const acbsErrorMessage = { Message: 'error message' };
-      requestToUpdateFacility().reply(400, acbsErrorMessage);
+      requestToUpdateFacilityInAcbs().reply(400, acbsErrorMessage);
       const { status, body } = await makeRequest();
 
       expect(status).toBe(400);
@@ -37,7 +37,7 @@ export const withAcbsUpdateFacilityByIdentifierServiceTests = ({
     it('returns a 404 response if ACBS update endpoint responds with a 400 response with the string "The Facility not found or the user does not have access to it."', async () => {
       givenTheRequestWouldOtherwiseSucceed();
 
-      requestToUpdateFacility().reply(400, 'The Facility not found or the user does not have access to it.');
+      requestToUpdateFacilityInAcbs().reply(400, 'The Facility not found or the user does not have access to it.');
 
       const { status, body } = await makeRequest();
 
@@ -48,7 +48,7 @@ export const withAcbsUpdateFacilityByIdentifierServiceTests = ({
     it('returns a 500 response if ACBS update endpoint responds with an error code that is not 400', async () => {
       givenTheRequestWouldOtherwiseSucceed();
 
-      requestToUpdateFacility().reply(401, 'Unauthorized');
+      requestToUpdateFacilityInAcbs().reply(401, 'Unauthorized');
 
       const { status, body } = await makeRequest();
 
@@ -59,7 +59,7 @@ export const withAcbsUpdateFacilityByIdentifierServiceTests = ({
     it('returns a 500 response if updating the facility in ACBS times out', async () => {
       givenTheRequestWouldOtherwiseSucceed();
 
-      requestToUpdateFacility().delay(TIME_EXCEEDING_ACBS_TIMEOUT).reply(200);
+      requestToUpdateFacilityInAcbs().delay(TIME_EXCEEDING_ACBS_TIMEOUT).reply(200);
 
       const { status, body } = await makeRequest();
 

@@ -1,14 +1,13 @@
 import { ENUMS } from '@ukef/constants';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { FacilityService } from '@ukef/modules/facility/facility.service';
+import { FacilityFixedFeeController } from '@ukef/modules/facility-fixed-fee/facility-fixed-fee.controller';
+import { FacilityFixedFeeService } from '@ukef/modules/facility-fixed-fee/facility-fixed-fee.service';
 import { CreateFacilityFixedFeeGenerator } from '@ukef-test/support/generator/create-facility-fixed-fee-generator';
 import { CreateFacilityFixedFeesAmountAmendmentGenerator } from '@ukef-test/support/generator/create-facility-fixed-fees-amount-amendment.generator';
 import { GetFacilityFixedFeeGenerator } from '@ukef-test/support/generator/get-facility-fixed-fee-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
-
-import { FacilityFixedFeeController } from './facility-fixed-fee.controller';
-import { FacilityFixedFeeService } from './facility-fixed-fee.service';
 
 describe('FacilityFixedFeeController', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -37,7 +36,7 @@ describe('FacilityFixedFeeController', () => {
     facilityFixedFeeService.createFixedFeeForFacility = createFacilityFixedFeesService;
     facilityFixedFeeService.createAmountAmendmentForFixedFees = createAmountAmendmentForFixedFeesService;
 
-    const facilityService = new FacilityService(null, null, null, null);
+    const facilityService = new FacilityService(null, null, null, null, null);
     getFacilityByIdentifierFacilityService = jest.fn();
     facilityService.getFacilityByIdentifier = getFacilityByIdentifierFacilityService;
 

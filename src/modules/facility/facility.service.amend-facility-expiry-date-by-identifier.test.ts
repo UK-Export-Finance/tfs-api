@@ -1,18 +1,18 @@
 import { PROPERTIES } from '@ukef/constants';
+import { AcbsBundleInformationService } from '@ukef/modules/acbs/acbs-bundle-information.service';
+import { AcbsFacilityService } from '@ukef/modules/acbs/acbs-facility.service';
+import { AcbsUpdateFacilityRequest } from '@ukef/modules/acbs/dto/acbs-update-facility-request.dto';
+import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
+import { UpdateFacilityRequest } from '@ukef/modules/facility/dto/update-facility-request.dto';
+import { FacilityService } from '@ukef/modules/facility/facility.service';
+import { withAcbsUpdateFacilityRequestCreationTests } from '@ukef/modules/facility/facility.service.update-facility.test-parts/acbs-update-facility-request-creation-tests';
+import { withUpdateFacilityServiceGeneralTests } from '@ukef/modules/facility/facility.service.update-facility.test-parts/update-facility-service-general-tests';
+import { UpdateFacilityServiceTestPartsArgs } from '@ukef/modules/facility/facility.service.update-facility.test-parts/update-facility-service-test-parts-args.interface';
 import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { UpdateFacilityGenerator } from '@ukef-test/support/generator/update-facility-generator';
 import { when } from 'jest-when';
-
-import { AcbsFacilityService } from '../acbs/acbs-facility.service';
-import { AcbsUpdateFacilityRequest } from '../acbs/dto/acbs-update-facility-request.dto';
-import { CurrentDateProvider } from '../date/current-date.provider';
-import { DateStringTransformations } from '../date/date-string.transformations';
-import { UpdateFacilityRequest } from './dto/update-facility-request.dto';
-import { FacilityService } from './facility.service';
-import { withAcbsUpdateFacilityRequestCreationTests } from './facility.service.update-facility.test-parts/acbs-update-facility-request-creation-tests';
-import { withUpdateFacilityGeneralTests } from './facility.service.update-facility.test-parts/update-facility-general-tests';
-import { UpdateFacilityTestPartsArgs } from './facility.service.update-facility.test-parts/update-facility-test-parts-args.interface';
 
 describe('FacilityService', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -36,13 +36,21 @@ describe('FacilityService', () => {
     const acbsAuthenticationServiceGetIdToken = mockAcbsAuthenticationService.getIdToken;
     when(acbsAuthenticationServiceGetIdToken).calledWith().mockResolvedValueOnce(idToken);
 
+    const acbsBundleInformationService = new AcbsBundleInformationService(null, null);
+
     acbsFacilityServiceUpdateFacilityByIdentifier = jest.fn();
     acbsFacilityService.updateFacilityByIdentifier = acbsFacilityServiceUpdateFacilityByIdentifier;
 
     acbsFacilityServiceGetFacilityByIdentifier = jest.fn();
     acbsFacilityService.getFacilityByIdentifier = acbsFacilityServiceGetFacilityByIdentifier;
 
-    service = new FacilityService(acbsAuthenticationService, acbsFacilityService, dateStringTransformations, new CurrentDateProvider());
+    service = new FacilityService(
+      acbsAuthenticationService,
+      acbsBundleInformationService,
+      acbsFacilityService,
+      dateStringTransformations,
+      new CurrentDateProvider(),
+    );
   });
 
   const { updateFacilityRequest, acbsGetExistingFacilityResponse, acbsUpdateFacilityRequest } = new UpdateFacilityGenerator(
@@ -51,28 +59,36 @@ describe('FacilityService', () => {
   ).generate({ numberToGenerate: 1, facilityIdentifier });
 
   describe('amendExpiryDateByIdentifier', () => {
-    const getAcbsFacilityServiceGetFacilityByIdentifierMock = () => acbsFacilityServiceGetFacilityByIdentifier;
-    const getAcbsFacilityServiceUpdateFacilityByIdentifierMock = () => acbsFacilityServiceUpdateFacilityByIdentifier;
-
-    const getAcbsGetFacilityRequestMock = () => when(acbsFacilityServiceGetFacilityByIdentifier).calledWith(facilityIdentifier, idToken);
-
-    const expectAcbsUpdateFacilityToBeCalledWith = (acbsUpdateFacilityRequest: AcbsUpdateFacilityRequest) =>
-      expect(acbsFacilityServiceUpdateFacilityByIdentifier).toHaveBeenCalledWith(portfolioIdentifier, acbsUpdateFacilityRequest, idToken);
-
-    const testArgs: UpdateFacilityTestPartsArgs = {
+    const testArgs: UpdateFacilityServiceTestPartsArgs<AcbsUpdateFacilityRequest> = {
       valueGenerator,
       updateFacilityRequest,
       acbsGetExistingFacilityResponse,
-      acbsUpdateFacilityRequest,
+      expectedAcbsUpdateMethodRequest: acbsUpdateFacilityRequest,
+      expectedResult: undefined,
       updateFacility: amendExpiryDateByIdentifier,
-      expectAcbsUpdateFacilityToBeCalledWith,
-      getAcbsGetFacilityRequestMock,
-      getAcbsFacilityServiceGetFacilityByIdentifierMock,
-      getAcbsFacilityServiceUpdateFacilityByIdentifierMock,
+      expectAcbsUpdateMethodToBeCalledOnceWith: (acbsUpdateFacilityRequest) => expectAcbsUpdateFacilityToBeCalledOnceWith(acbsUpdateFacilityRequest),
+      getAcbsGetFacilityRequestCalledCorrectlyMock: () => getAcbsGetFacilityRequestCalledCorrectlyMock(),
+      getAcbsFacilityServiceGetFacilityByIdentifierMock: () => getAcbsFacilityServiceGetFacilityByIdentifierMock(),
+      getAcbsUpdateMethodMock: () => getAcbsFacilityServiceUpdateFacilityByIdentifierMock(),
+      mockSuccessfulAcbsUpdateMethod: () => mockSuccessfulAcbsUpdateMethodMock(),
     };
 
-    withUpdateFacilityGeneralTests(testArgs);
+    withUpdateFacilityServiceGeneralTests(testArgs);
 
     withAcbsUpdateFacilityRequestCreationTests(testArgs);
+
+    const getAcbsFacilityServiceGetFacilityByIdentifierMock = () => acbsFacilityServiceGetFacilityByIdentifier;
+    const getAcbsFacilityServiceUpdateFacilityByIdentifierMock = () => acbsFacilityServiceUpdateFacilityByIdentifier;
+
+    const getAcbsGetFacilityRequestCalledCorrectlyMock = () => when(acbsFacilityServiceGetFacilityByIdentifier).calledWith(facilityIdentifier, idToken);
+
+    const expectAcbsUpdateFacilityToBeCalledOnceWith = (acbsUpdateFacilityRequest: AcbsUpdateFacilityRequest) => {
+      expect(acbsFacilityServiceUpdateFacilityByIdentifier).toHaveBeenCalledWith(portfolioIdentifier, acbsUpdateFacilityRequest, idToken);
+      expect(acbsFacilityServiceUpdateFacilityByIdentifier).toHaveBeenCalledTimes(1);
+    };
+
+    const mockSuccessfulAcbsUpdateMethodMock = () => {
+      when(acbsFacilityServiceUpdateFacilityByIdentifier).calledWith(portfolioIdentifier, acbsUpdateFacilityRequest, idToken).mockReturnValueOnce(undefined);
+    };
   });
 });
