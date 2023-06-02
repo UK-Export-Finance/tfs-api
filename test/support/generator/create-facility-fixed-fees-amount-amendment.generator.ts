@@ -28,16 +28,12 @@ export class CreateFacilityFixedFeesAmountAmendmentGenerator extends AbstractGen
 
   protected transformRawValuesToGeneratedValues(values: GenerateValues[], { facilityIdentifier }: GenerateOptions): GenerateResult {
     const increaseAmountRequest: CreateFixedFeeAmountAmendmentRequestItem[] = values.map((value) => ({
-      partyIdentifier: value.partyIdentifier,
-      period: value.period,
-      lenderTypeCode: value.lenderTypeCode,
-      effectiveDate: value.effectiveDate,
-      amountAmendment: value.amountAmendment,
+      ...value,
     }));
 
-    const decreaseAmountRequest: CreateFixedFeeAmountAmendmentRequestItem[] = increaseAmountRequest.map((value) => ({
-      ...value,
-      amountAmendment: -value.amountAmendment,
+    const decreaseAmountRequest: CreateFixedFeeAmountAmendmentRequestItem[] = increaseAmountRequest.map((increaseAmountItem) => ({
+      ...increaseAmountItem,
+      amountAmendment: -increaseAmountItem.amountAmendment,
     }));
 
     const defaultValues = PROPERTIES.FACILITY_FEE_AMOUNT_TRANSACTION.DEFAULT;
@@ -71,8 +67,8 @@ export class CreateFacilityFixedFeesAmountAmendmentGenerator extends AbstractGen
 
     const acbsFixedFeesAmendmentForDecrease = {
       ...acbsFixedFeesAmendmentForIncrease,
-      BundleMessageList: acbsFixedFeesAmendmentForIncrease.BundleMessageList.map((value) => ({
-        ...value,
+      BundleMessageList: acbsFixedFeesAmendmentForIncrease.BundleMessageList.map((bundleMessage) => ({
+        ...bundleMessage,
         FacilityFeeTransactionType: { TypeCode: defaultMessageValues.facilityFeeTransactionType.decreaseTypeCode },
       })),
     };
