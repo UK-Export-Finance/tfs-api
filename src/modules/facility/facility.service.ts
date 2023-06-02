@@ -318,13 +318,6 @@ export class FacilityService {
     return `${productTypeName.substring(0, 13)} : ${exposurePeriod} Months`;
   }
 
-  private getFacilityEffectiveDateToCreateOrUpdate(effectiveDate: string): DateString {
-    const effectiveDateTime = this.currentDateProvider.getEarliestDateFromTodayAnd(
-      new Date(this.dateStringTransformations.addTimeToDateOnlyString(effectiveDate)),
-    );
-    return this.dateStringTransformations.getDateStringFromDate(effectiveDateTime);
-  }
-
   private isFacilityUnissued(facilityStageCode: string) {
     return facilityStageCode === '06';
   }

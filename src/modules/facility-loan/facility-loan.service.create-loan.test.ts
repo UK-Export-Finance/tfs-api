@@ -10,6 +10,7 @@ import { CreateFacilityLoanGenerator } from '@ukef-test/support/generator/create
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
 
+import { AccrualScheduleBuilder } from './accrual-schedule.builder';
 import { FacilityLoanService } from './facility-loan.service';
 import { RepaymentScheduleBuilder } from './repayment-schedule.builder';
 
@@ -19,15 +20,18 @@ describe('FacilityLoanService', () => {
   const facilityIdentifier = valueGenerator.facilityId();
   const bundleIdentifier = valueGenerator.acbsBundleId();
   const dateStringTransformations = new DateStringTransformations();
+  const currentDateProvider = new CurrentDateProvider();
 
   let acbsAuthenticationService: AcbsAuthenticationService;
   let service: FacilityLoanService;
   let acbsFacilityLoanService: AcbsFacilityLoanService;
   let acbsBundleInformationService: AcbsBundleInformationService;
   let repaymentScheduleBuilder: RepaymentScheduleBuilder;
+  let accrualScheduleBuilder: AccrualScheduleBuilder;
 
   let acbsBundleInformationServiceCreateBundleInformation: jest.Mock;
   let repaymentScheduleBuilderGetRepaymentSchedules: jest.Mock;
+  let accrualScheduleBuilderGetAccrualSchedules: jest.Mock;
 
   beforeEach(() => {
     const mockAcbsAuthenticationService = getMockAcbsAuthenticationService();
@@ -45,13 +49,18 @@ describe('FacilityLoanService', () => {
     repaymentScheduleBuilderGetRepaymentSchedules = jest.fn();
     repaymentScheduleBuilder.getRepaymentSchedules = repaymentScheduleBuilderGetRepaymentSchedules;
 
+    accrualScheduleBuilder = new AccrualScheduleBuilder(null, currentDateProvider);
+    accrualScheduleBuilderGetAccrualSchedules = jest.fn();
+    accrualScheduleBuilder.getAccrualSchedules = accrualScheduleBuilderGetAccrualSchedules;
+
     service = new FacilityLoanService(
       acbsAuthenticationService,
       acbsFacilityLoanService,
       acbsBundleInformationService,
       dateStringTransformations,
-      new CurrentDateProvider(),
+      currentDateProvider,
       repaymentScheduleBuilder,
+      accrualScheduleBuilder,
     );
   });
 
@@ -62,6 +71,7 @@ describe('FacilityLoanService', () => {
       requestBodyToCreateFacilityLoanGbp,
       requestBodyToCreateFacilityLoanNonGbp,
       bondRepaymentSchedulesGbp: bondRepaymentSchedules,
+      bondAndGefAccrualSchedulesGbp: bondAccrualSchedules,
     } = new CreateFacilityLoanGenerator(valueGenerator, dateStringTransformations).generate({
       numberToGenerate: 1,
       facilityIdentifier,
@@ -73,6 +83,7 @@ describe('FacilityLoanService', () => {
     describe('creates a bundle information in ACBS with a transformation of the requested new loan', () => {
       it('uses GBP dependent fields when request currency is GBP', async () => {
         when(repaymentScheduleBuilderGetRepaymentSchedules).calledWith(newLoanGbp).mockReturnValueOnce(bondRepaymentSchedules);
+        when(accrualScheduleBuilderGetAccrualSchedules).calledWith(newLoanGbp).mockReturnValueOnce(bondAccrualSchedules);
 
         await service.createLoanForFacility(facilityIdentifier, newLoanGbp);
 
@@ -81,6 +92,7 @@ describe('FacilityLoanService', () => {
 
       it('uses non-GBP dependent fields when request currency is not GBP', async () => {
         when(repaymentScheduleBuilderGetRepaymentSchedules).calledWith(newLoanNonGbp).mockReturnValueOnce(bondRepaymentSchedules);
+        when(accrualScheduleBuilderGetAccrualSchedules).calledWith(newLoanNonGbp).mockReturnValueOnce(bondAccrualSchedules);
 
         await service.createLoanForFacility(facilityIdentifier, newLoanNonGbp);
 
@@ -94,6 +106,7 @@ describe('FacilityLoanService', () => {
           issueDate: dateBeforeToday,
         };
         when(repaymentScheduleBuilderGetRepaymentSchedules).calledWith(newLoanWithPastIssueDate).mockReturnValueOnce(bondRepaymentSchedules);
+        when(accrualScheduleBuilderGetAccrualSchedules).calledWith(newLoanWithPastIssueDate).mockReturnValueOnce(bondAccrualSchedules);
 
         await service.createLoanForFacility(facilityIdentifier, newLoanWithPastIssueDate);
 
@@ -118,6 +131,7 @@ describe('FacilityLoanService', () => {
           ],
         };
         when(repaymentScheduleBuilderGetRepaymentSchedules).calledWith(newLoanWithFutureIssueDate).mockReturnValueOnce(bondRepaymentSchedules);
+        when(accrualScheduleBuilderGetAccrualSchedules).calledWith(newLoanWithFutureIssueDate).mockReturnValueOnce(bondAccrualSchedules);
 
         await service.createLoanForFacility(facilityIdentifier, newLoanWithFutureIssueDate);
 
@@ -142,6 +156,7 @@ describe('FacilityLoanService', () => {
           ],
         };
         when(repaymentScheduleBuilderGetRepaymentSchedules).calledWith(newLoanWithProductTypeId250).mockReturnValueOnce(bondRepaymentSchedules);
+        when(accrualScheduleBuilderGetAccrualSchedules).calledWith(newLoanWithProductTypeId250).mockReturnValueOnce(bondAccrualSchedules);
 
         await service.createLoanForFacility(facilityIdentifier, newLoanWithProductTypeId250);
 
@@ -166,6 +181,7 @@ describe('FacilityLoanService', () => {
           ],
         };
         when(repaymentScheduleBuilderGetRepaymentSchedules).calledWith(newLoanWithProductTypeId260).mockReturnValueOnce(bondRepaymentSchedules);
+        when(accrualScheduleBuilderGetAccrualSchedules).calledWith(newLoanWithProductTypeId260).mockReturnValueOnce(bondAccrualSchedules);
 
         await service.createLoanForFacility(facilityIdentifier, newLoanWithProductTypeId260);
 
@@ -190,6 +206,7 @@ describe('FacilityLoanService', () => {
           ],
         };
         when(repaymentScheduleBuilderGetRepaymentSchedules).calledWith(newLoanWithProductTypeId280).mockReturnValueOnce(bondRepaymentSchedules);
+        when(accrualScheduleBuilderGetAccrualSchedules).calledWith(newLoanWithProductTypeId280).mockReturnValueOnce(bondAccrualSchedules);
 
         await service.createLoanForFacility(facilityIdentifier, newLoanWithProductTypeId280);
 
@@ -214,6 +231,7 @@ describe('FacilityLoanService', () => {
           ],
         };
         when(repaymentScheduleBuilderGetRepaymentSchedules).calledWith(newLoanWithProductTypeId281).mockReturnValueOnce(bondRepaymentSchedules);
+        when(accrualScheduleBuilderGetAccrualSchedules).calledWith(newLoanWithProductTypeId281).mockReturnValueOnce(bondAccrualSchedules);
 
         await service.createLoanForFacility(facilityIdentifier, newLoanWithProductTypeId281);
 
@@ -223,6 +241,7 @@ describe('FacilityLoanService', () => {
 
     it('returns a bundle identifier from ACBS', async () => {
       when(repaymentScheduleBuilderGetRepaymentSchedules).calledWith(newLoanGbp).mockResolvedValueOnce(bondRepaymentSchedules);
+      when(accrualScheduleBuilderGetAccrualSchedules).calledWith(newLoanGbp).mockReturnValueOnce(bondAccrualSchedules);
 
       const response = await service.createLoanForFacility(facilityIdentifier, newLoanGbp);
 

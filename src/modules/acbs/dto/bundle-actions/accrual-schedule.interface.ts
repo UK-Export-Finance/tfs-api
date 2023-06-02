@@ -1,4 +1,4 @@
-import { DateString } from "@ukef/helpers";
+import { DateString } from '@ukef/helpers';
 
 export interface AccrualSchedule {
   InvolvedParty: {
@@ -41,7 +41,7 @@ export interface AccrualSchedule {
   LowBalancePercent: number;
   NextDueBusinessDayAdjustmentType?: {
     BusinessDayAdjustmentTypeCode: string;
-  },
+  };
   NextRateSetDate?: DateString;
   RateNextEffectiveDate?: DateString;
   RateSetLeadDays?: number;

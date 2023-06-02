@@ -1,7 +1,10 @@
+import { TEST_DATES } from '@ukef-test/support/constants/test-date.constant';
+import { CurrentDateProvider } from './current-date.provider';
 import { DateStringTransformations } from './date-string.transformations';
 
 describe('DateStringTransformations', () => {
   const dateStringTransformations = new DateStringTransformations();
+  const currentDateProvider = new CurrentDateProvider();
 
   describe('addTimeToDateOnlyString', () => {
     it('converts a valid DateOnlyString to an ISO DateString', () => {
@@ -89,6 +92,35 @@ describe('DateStringTransformations', () => {
       const dateTime = new Date('1987-12-03T01:00:00Z');
 
       expect(dateStringTransformations.getDisplayDateFromDate(dateTime)).toBe('03/12/1987');
+    });
+  });
+
+  describe('getDayFromDateOnlyString', () => {
+    it('returns the day in DD format', () => {
+      const date = '1987-04-23';
+
+      expect(dateStringTransformations.getDayFromDateOnlyString(date)).toBe(23);
+    });
+
+    it('returns the day in D format if the day number is a single digit', () => {
+      const date ='1987-12-03';
+
+      expect(dateStringTransformations.getDayFromDateOnlyString(date)).toBe(3);
+    });
+  });
+
+  describe('getEarliestDateFromTodayAndDateAsString', () => {
+    it('returns the parameter as an ISO DateString if parameter is in the past', () => {
+      const dateBeforeToday = TEST_DATES.A_PAST_EFFECTIVE_DATE_ONLY;
+
+      expect(dateStringTransformations.getEarliestDateFromTodayAndDateAsString(dateBeforeToday, currentDateProvider)).toBe('2000-01-01T00:00:00Z');
+    });
+
+    it('returns todays date as an ISO DateString if parameter is in the future', () => {
+      const dateAfterToday = TEST_DATES.A_FUTURE_EFFECTIVE_DATE_ONLY;
+      const midnightToday = dateStringTransformations.getDateStringFromDate(new Date());
+
+      expect(dateStringTransformations.getEarliestDateFromTodayAndDateAsString(dateAfterToday, currentDateProvider)).toBe(midnightToday);
     });
   });
 });

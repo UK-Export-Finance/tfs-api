@@ -11,7 +11,7 @@ import { CreateFacilityLoanRequestItem } from './dto/create-facility-loan-reques
 
 @Injectable()
 export class AccrualScheduleBuilder {
-  constructor(private readonly dateStringTransformations: DateStringTransformations, private readonly currentDateProvider: CurrentDateProvider) { }
+  constructor(private readonly dateStringTransformations: DateStringTransformations, private readonly currentDateProvider: CurrentDateProvider) {}
 
   getAccrualSchedules(facilityLoan: CreateFacilityLoanRequestItem): AccrualSchedule[] {
     if (facilityLoan.productTypeGroup === ENUMS.PRODUCT_TYPE_GROUPS.EWCS) {
@@ -38,7 +38,6 @@ export class AccrualScheduleBuilder {
   }
 
   private getAccrualNonRfr(facilityLoan: CreateFacilityLoanRequestItem): AccrualSchedule {
-    const loanRateIndexCode = this.getLoanRateIndexCode(facilityLoan);
     return {
       ...this.getBaseAccrualSchedule(facilityLoan),
       ScheduleIdentifier: PROPERTIES.ACCRUAL.INT_NON_RFR.scheduleIdentifier,
@@ -59,7 +58,7 @@ export class AccrualScheduleBuilder {
         IndexRateChangeTimingCode: PROPERTIES.ACCRUAL.INT_NON_RFR.indexRateChangeTiming.indexRateChangeTimingCode,
       },
       LoanRateIndex: {
-        LoanRateIndexCode: loanRateIndexCode,
+        LoanRateIndexCode: LOAN_RATE_INDEX.USD,
       },
       IndexedRateIndicator: PROPERTIES.ACCRUAL.INT_NON_RFR.indexedRateIndicator,
       NextDueBusinessDayAdjustmentType: {
@@ -112,7 +111,8 @@ export class AccrualScheduleBuilder {
           CalendarIdentifier: PROPERTIES.ACCRUAL.INT_RFR.accrualScheduleIBORDetails.calendar.calendarIdentifier,
         },
         NextRatePeriodBusinessDayAdjustment: {
-          NextRatePeriodBusinessDayAdjustmentCode: PROPERTIES.ACCRUAL.INT_RFR.accrualScheduleIBORDetails.nextRatePeriodBusinessDayAdjustment.nextRatePeriodBusinessDayAdjustmentCode,
+          NextRatePeriodBusinessDayAdjustmentCode:
+            PROPERTIES.ACCRUAL.INT_RFR.accrualScheduleIBORDetails.nextRatePeriodBusinessDayAdjustment.nextRatePeriodBusinessDayAdjustmentCode,
         },
         RatePeriodResetFrequency: {
           RatePeriodResetFrequencyCode: PROPERTIES.ACCRUAL.INT_RFR.accrualScheduleIBORDetails.ratePeriodResetFrequency.ratePeriodResetFrequencyCode,
@@ -128,7 +128,6 @@ export class AccrualScheduleBuilder {
       InvolvedParty: {
         PartyIdentifier: PROPERTIES.ACCRUAL.DEFAULT.involvedParty.partyIdentifier,
       },
-      ScheduleIdentifier: PROPERTIES.ACCRUAL.PAC.scheduleIdentifier,
       AccountSequence: PROPERTIES.ACCRUAL.DEFAULT.accountSequence,
       LenderType: {
         LenderTypeCode: PROPERTIES.ACCRUAL.DEFAULT.lenderType.lenderTypeCode,
@@ -162,8 +161,8 @@ export class AccrualScheduleBuilder {
   }
 
   private getDatePlusThreeMonths(dateAsString: string): DateString {
-    const dateTime = new Date(this.dateStringTransformations.addTimeToDateOnlyString(dateAsString));
-    const datePlus3Months = new Date(dateTime.setMonth(dateTime.getMonth()+3));
-    return this.dateStringTransformations.getDateStringFromDate(datePlus3Months);
+    const date = new Date(dateAsString);
+    const datePlus3Months = new Date(date.setMonth(date.getMonth() + 3));
+    return this.dateStringTransformations.getDateOnlyStringFromDate(datePlus3Months);
   }
 }

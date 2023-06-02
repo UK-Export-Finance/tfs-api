@@ -16,6 +16,7 @@ import { CreateFacilityLoanResponse } from './dto/create-facility-loan-response.
 import { CreateLoanAmountAmendmentRequestItem } from './dto/create-loan-amount-amendment-request.dto';
 import { GetFacilityLoanResponseDto } from './dto/get-facility-loan-response.dto';
 import { RepaymentScheduleBuilder } from './repayment-schedule.builder';
+import { AccrualScheduleBuilder } from '@ukef/modules/facility-loan/accrual-schedule.builder';
 
 @Injectable()
 export class FacilityLoanService {
@@ -26,6 +27,7 @@ export class FacilityLoanService {
     private readonly dateStringTransformations: DateStringTransformations,
     private readonly currentDateProvider: CurrentDateProvider,
     private readonly repaymentScheduleBuilder: RepaymentScheduleBuilder,
+    private readonly accrualScheduleBuilder: AccrualScheduleBuilder,
   ) {}
 
   async getLoansForFacility(facilityIdentifier: string): Promise<GetFacilityLoanResponseDto> {
@@ -96,6 +98,7 @@ export class FacilityLoanService {
       newFacilityLoan.productTypeId === ENUMS.PRODUCT_TYPE_IDS.GEF_CONTINGENT ? ENUMS.PRODUCT_TYPE_IDS.GEF_CASH : newFacilityLoan.productTypeId;
     const issueDateString = this.dateStringTransformations.getEarliestDateFromTodayAndDateAsString(newFacilityLoan.issueDate, this.currentDateProvider);
     const repaymentSchedules = this.repaymentScheduleBuilder.getRepaymentSchedules(newFacilityLoan);
+    const accrualSchedules = this.accrualScheduleBuilder.getAccrualSchedules(newFacilityLoan);
 
     return {
       $type: PROPERTIES.FACILITY_LOAN.DEFAULT.messageType,
@@ -169,7 +172,7 @@ export class FacilityLoanService {
       SecuredType: {
         LoanSecuredTypeCode: PROPERTIES.FACILITY_LOAN.DEFAULT.securedType.loanSecuredTypeCode,
       },
-      AccrualScheduleList: [],
+      AccrualScheduleList: accrualSchedules,
       RepaymentScheduleList: repaymentSchedules,
     };
   }
@@ -204,11 +207,6 @@ export class FacilityLoanService {
           CustomerUsageLockMTMRateIndicator: PROPERTIES.FACILITY_LOAN.DEFAULT.customerUsageLockMTMRateIndicator,
         }
       : {};
-  }
-
-  private getIssueDateToCreate(issueDate: string): DateString {
-    const issueDateTime = this.currentDateProvider.getEarliestDateFromTodayAnd(new Date(this.dateStringTransformations.addTimeToDateOnlyString(issueDate)));
-    return this.dateStringTransformations.getDateStringFromDate(issueDateTime);
   }
 
   private buildLoanAmountAmendmentBundle(
