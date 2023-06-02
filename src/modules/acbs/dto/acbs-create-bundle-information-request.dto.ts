@@ -10,6 +10,6 @@ export interface AcbsCreateBundleInformationRequestDto<BundleMessageListItem ext
   UseAPIUserIndicator: boolean;
   ServicingUserAccountIdentifier?: string;
   PostingDate?: DateString;
-  // ACBS supports creating bundle information with multiple bundle message list items, but we do not support (or use) this functionality.
-  BundleMessageList: [BundleMessageListItem];
+  // In most cases BundleMessageList will have 1 item, but we support multiple for FacilityFeeAmountTransaction.
+  BundleMessageList: BundleMessageListItem[];
 }

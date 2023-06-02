@@ -11,6 +11,7 @@ import {
   BundleAction,
   isFacilityAmountTransaction,
   isFacilityCodeValueTransaction,
+  isFacilityFeeAmountTransaction,
   isLoanAdvanceTransaction,
   isNewLoanRequest,
 } from '@ukef/modules/acbs/dto/bundle-actions/bundle-action.type';
@@ -78,6 +79,10 @@ export class AcbsBundleInformationService {
     }
 
     if (isNewLoanRequest(action)) {
+      return [postFacilityNotFoundKnownAcbsError(action.FacilityIdentifier)];
+    }
+
+    if (isFacilityFeeAmountTransaction(action)) {
       return [postFacilityNotFoundKnownAcbsError(action.FacilityIdentifier)];
     }
 

@@ -7,10 +7,14 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiParam,
 } from '@nestjs/swagger';
+import { EXAMPLES } from '@ukef/constants';
 import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decorator';
 import { FacilityService } from '@ukef/modules/facility/facility.service';
 
+import { CreateFixedFeeAmountAmendmentRequest, CreateFixedFeeAmountAmendmentRequestItem } from './dto/create-facility-fixed-fee-amount-amendment-request.dto';
+import { CreateFixedFeeAmountAmendmentResponse } from './dto/create-facility-fixed-fee-amount-amendment-response.dto';
 import { CreateFacilityFixedFeeRequest, CreateFacilityFixedFeeRequestItem } from './dto/create-facility-fixed-fee-request.dto';
 import { CreateFacilityFixedFeeResponse } from './dto/create-facility-fixed-fee-response.dto';
 import { FacilityFixedFeeParamsDto } from './dto/facility-fixed-fee-params.dto';
@@ -35,8 +39,43 @@ export class FacilityFixedFeeController {
   @ApiInternalServerErrorResponse({
     description: 'An internal server error has occurred.',
   })
-  async getFixedFeesForFacility(@Param() params: FacilityFixedFeeParamsDto): Promise<GetFacilityFixedFeeResponse> {
-    return await this.facilityFixedFeeService.getFixedFeesForFacility(params.facilityIdentifier);
+  getFixedFeesForFacility(@Param() params: FacilityFixedFeeParamsDto): Promise<GetFacilityFixedFeeResponse> {
+    return this.facilityFixedFeeService.getFixedFeesForFacility(params.facilityIdentifier);
+  }
+
+  @Post('/facilities/:facilityIdentifier/fixed-fees/amendments/amount')
+  @ApiOperation({
+    summary: 'Create a fixed fees amount amendment bundle.',
+  })
+  @ApiParam({
+    name: 'facilityIdentifier',
+    required: true,
+    type: 'string',
+    description: 'The identifier of the facility in ACBS.',
+    example: EXAMPLES.FACILITY_ID,
+  })
+  @ApiBody({
+    type: CreateFixedFeeAmountAmendmentRequestItem,
+    isArray: true,
+  })
+  @ApiCreatedResponse({
+    description: 'The fixed fees amount amendment bundle has been successfully created.',
+    type: CreateFixedFeeAmountAmendmentResponse,
+  })
+  @ApiNotFoundResponse({
+    description: 'The facility was not found.',
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad request.',
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'An internal server error has occurred.',
+  })
+  createAmountAmendmentForFixedFees(
+    @Param() params: FacilityFixedFeeParamsDto,
+    @ValidatedArrayBody({ items: CreateFixedFeeAmountAmendmentRequestItem }) newFixedFeeAmountAmendmentRequest: CreateFixedFeeAmountAmendmentRequest,
+  ): Promise<CreateFixedFeeAmountAmendmentResponse> {
+    return this.facilityFixedFeeService.createAmountAmendmentForFixedFees(params.facilityIdentifier, newFixedFeeAmountAmendmentRequest);
   }
 
   @Post('facilities/:facilityIdentifier/fixed-fees')

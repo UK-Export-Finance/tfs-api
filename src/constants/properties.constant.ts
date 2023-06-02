@@ -272,6 +272,26 @@ export const PROPERTIES = {
       },
     },
   },
+  FACILITY_FEE_AMOUNT_TRANSACTION: {
+    DEFAULT: {
+      initialBundleStatusCode: 3,
+      initiatingUserName: 'APIUKEF',
+      useAPIUserIndicator: false,
+      bundleMessageList: {
+        type: 'FacilityFeeAmountTransaction' as const,
+        facilityFeeTransactionType: {
+          decreaseTypeCode: 2750,
+          increaseTypeCode: 2740,
+        },
+        accountOwnerIdentifier: '00000000',
+        isDraftIndicator: false,
+        limitType: {
+          limitTypeCode: '00',
+        },
+        sectionIdentifier: '00',
+      },
+    },
+  },
   FACILITY_GUARANTEE: {
     DEFAULT: {
       sectionIdentifier: '00',
