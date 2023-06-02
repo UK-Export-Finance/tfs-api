@@ -23,9 +23,6 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
   }
 
   protected generateValues(): CreateFacilityLoanRequestItem {
-    const possibleOperationTypes = Object.values(ENUMS.OPERATION_TYPE_CODES);
-    const possibleFeeFrequencyTypes = Object.values(ENUMS.FEE_FREQUENCY_TYPES);
-    const possibleYearBasisValues = Object.values(ENUMS.YEAR_BASIS);
     return {
       postingDate: this.valueGenerator.dateOnlyString(),
       borrowerPartyIdentifier: this.valueGenerator.stringOfNumericCharacters({ length: 8 }),
@@ -33,20 +30,23 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
       productTypeGroup: ENUMS.PRODUCT_TYPE_GROUPS.BOND,
       currency: CURRENCIES.GBP,
       dealCustomerUsageRate: 0.123,
-      dealCustomerUsageOperationType: possibleOperationTypes[this.valueGenerator.integer({ min: 0, max: possibleOperationTypes.length - 1 })],
+      dealCustomerUsageOperationType: this.valueGenerator.enumValue(ENUMS.OPERATION_TYPE_CODES),
       amount: 123.45,
       issueDate: this.valueGenerator.dateOnlyString(),
       expiryDate: this.valueGenerator.dateOnlyString(),
       nextDueDate: this.valueGenerator.dateOnlyString(),
-      loanBillingFrequencyType: possibleFeeFrequencyTypes[this.valueGenerator.integer({ min: 0, max: possibleOperationTypes.length - 1 })],
-      spreadRate: this.valueGenerator.nonnegativeFloat({ fixed: 2 }),
-      spreadRateCtl: this.valueGenerator.nonnegativeFloat({ fixed: 2 }),
-      yearBasis: possibleYearBasisValues[this.valueGenerator.integer({ min: 0, max: possibleYearBasisValues.length - 1 })],
-      indexRateChangeFrequency: possibleFeeFrequencyTypes[this.valueGenerator.integer({ min: 0, max: possibleOperationTypes.length - 1 })],
+      loanBillingFrequencyType: this.valueGenerator.enumValue(ENUMS.FEE_FREQUENCY_TYPES),
+      spreadRate: this.valueGenerator.nonnegativeFloat(),
+      spreadRateCtl: this.valueGenerator.nonnegativeFloat(),
+      yearBasis: this.valueGenerator.enumValue(ENUMS.YEAR_BASIS),
+      indexRateChangeFrequency: this.valueGenerator.enumValue(ENUMS.FEE_FREQUENCY_TYPES),
     };
   }
 
-  protected transformRawValuesToGeneratedValues(values, { facilityIdentifier, bundleIdentifier }: GenerateOptions): GenerateResult {
+  protected transformRawValuesToGeneratedValues(
+    values: CreateFacilityLoanRequestItem[],
+    { facilityIdentifier, bundleIdentifier }: GenerateOptions,
+  ): GenerateResult {
     const [firstFacilityLoan] = values;
 
     const effectiveDate = TEST_DATES.A_PAST_EFFECTIVE_DATE_ONLY;
@@ -87,7 +87,7 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
       BundleMessageList: [bundleMessageNonGbp],
     };
 
-    const requestBodyToCreateFacilityLoanGbp = values.map((value) => ({
+    const requestBodyToCreateFacilityLoanGbp: CreateFacilityLoanRequest = values.map((value) => ({
       postingDate: value.postingDate,
       facilityIdentifier: facilityIdentifier,
       borrowerPartyIdentifier: value.borrowerPartyIdentifier,
