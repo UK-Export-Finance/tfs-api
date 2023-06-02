@@ -2,10 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { PROPERTIES } from '@ukef/constants';
 import { UkefId } from '@ukef/helpers';
 import { AcbsDealPartyService } from '@ukef/modules/acbs/acbs-deal-party.service';
+import { AcbsCreateDealInvestorRequest } from '@ukef/modules/acbs/dto/acbs-create-deal-investor-request.dto';
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 
-import { AcbsCreateDealInvestorRequest } from '../acbs/dto/acbs-create-deal-investor-request.dto';
 import { CurrentDateProvider } from '../date/current-date.provider';
 import { DealInvestor } from './deal-investor.interface';
 import { CreateDealInvestorRequestItem } from './dto/create-deal-investor-request.dto';

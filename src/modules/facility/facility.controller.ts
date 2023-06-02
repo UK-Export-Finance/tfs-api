@@ -1,21 +1,27 @@
-import { Body, Controller, Get, Param, ParseArrayPipe, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
   ApiCreatedResponse,
+  ApiExtraModels,
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiParam,
+  refs,
 } from '@nestjs/swagger';
-import { EXAMPLES } from '@ukef/constants';
-
-import { CreateFacilityRequest, CreateFacilityRequestItem } from './dto/create-facility-request.dto';
-import { CreateFacilityResponse } from './dto/create-facility-response.dto';
-import { GetFacilityByIdentifierParamsDto } from './dto/get-facility-by-identifier-params.dto';
-import { GetFacilityByIdentifierResponseDto } from './dto/get-facility-by-identifier-response.dto';
-import { FacilityService } from './facility.service';
+import { ENUMS, EXAMPLES } from '@ukef/constants';
+import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decorator';
+import { CreateFacilityRequest, CreateFacilityRequestItem } from '@ukef/modules/facility/dto/create-facility-request.dto';
+import { CreateFacilityResponse } from '@ukef/modules/facility/dto/create-facility-response.dto';
+import { GetFacilityByIdentifierParamsDto } from '@ukef/modules/facility/dto/get-facility-by-identifier-params.dto';
+import { GetFacilityByIdentifierResponseDto } from '@ukef/modules/facility/dto/get-facility-by-identifier-response.dto';
+import { UpdateFacilityByOperationParamsDto } from '@ukef/modules/facility/dto/update-facility-by-operation-params.dto';
+import { UpdateFacilityByOperationQueryDto } from '@ukef/modules/facility/dto/update-facility-by-operation-query.dto';
+import { UpdateFacilityRequest } from '@ukef/modules/facility/dto/update-facility-request.dto';
+import { UpdateFacilityBundleIdentifierResponse, UpdateFacilityFacilityIdentifierResponse } from '@ukef/modules/facility/dto/update-facility-response.dto';
+import { FacilityService } from '@ukef/modules/facility/facility.service';
 
 @Controller('facilities')
 export class FacilityController {
@@ -93,11 +99,62 @@ export class FacilityController {
   @ApiInternalServerErrorResponse({
     description: 'An internal server error has occurred.',
   })
-  async createFacility(
-    @Body(new ParseArrayPipe({ items: CreateFacilityRequestItem })) createFacilityDto: CreateFacilityRequest,
-  ): Promise<CreateFacilityResponse> {
-    const facilityToCreate = createFacilityDto[0];
+  async createFacility(@ValidatedArrayBody({ items: CreateFacilityRequestItem }) createFacilityDto: CreateFacilityRequest): Promise<CreateFacilityResponse> {
+    const [facilityToCreate] = createFacilityDto;
     await this.facilityService.createFacility(facilityToCreate);
     return { facilityIdentifier: facilityToCreate.facilityIdentifier };
+  }
+
+  @Put(':facilityIdentifier')
+  @ApiOperation({ summary: 'Update a facility by facility identifier and operation enum query' })
+  @ApiBody({ type: UpdateFacilityRequest })
+  @ApiParam({
+    name: 'facilityIdentifier',
+    required: true,
+    type: 'string',
+    description: 'The identifier of the facility in ACBS.',
+    example: EXAMPLES.FACILITY_ID,
+  })
+  @ApiExtraModels(UpdateFacilityFacilityIdentifierResponse, UpdateFacilityBundleIdentifierResponse)
+  @ApiOkResponse({
+    description:
+      'The facility has been successfully updated.\n\n`issue` and `amendExpiryDate` ops returns `UpdateFacilityFacilityIdentifierResponse`.\n\n`amendAmount` op returns `UpdateFacilityBundleIdentifierResponse',
+    content: {
+      'application/json': {
+        schema: {
+          oneOf: refs(UpdateFacilityFacilityIdentifierResponse, UpdateFacilityBundleIdentifierResponse),
+        },
+        examples: {
+          'issue and amendExpiryDate': { value: { facilityIdentifier: EXAMPLES.ACBS_BUNDLE_ID } },
+          amendAmount: { value: { bundleIdentifier: EXAMPLES.ACBS_BUNDLE_ID } },
+        },
+      },
+    },
+  })
+  @ApiNotFoundResponse({
+    description: 'The specified facility was not found.',
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad request.',
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'An internal server error has occurred.',
+  })
+  async updateFacilityByOperation(
+    @Query() query: UpdateFacilityByOperationQueryDto,
+    @Param() params: UpdateFacilityByOperationParamsDto,
+    @Body() updateFacilityDto: UpdateFacilityRequest,
+  ): Promise<UpdateFacilityFacilityIdentifierResponse | UpdateFacilityBundleIdentifierResponse> {
+    if (query.op === ENUMS.FACILITY_UPDATE_OPERATIONS.ISSUE) {
+      await this.facilityService.issueFacilityByIdentifier(params.facilityIdentifier, updateFacilityDto);
+      return { facilityIdentifier: params.facilityIdentifier };
+    }
+    if (query.op === ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_EXPIRY_DATE) {
+      await this.facilityService.amendFacilityExpiryDateByIdentifier(params.facilityIdentifier, updateFacilityDto);
+      return { facilityIdentifier: params.facilityIdentifier };
+    }
+    if (query.op === ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_AMOUNT) {
+      return await this.facilityService.amendFacilityAmountByIdentifier(params.facilityIdentifier, updateFacilityDto);
+    }
   }
 }

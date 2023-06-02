@@ -19,5 +19,4 @@ export interface AcbsGetFacilityFixedFeeResponseItem {
   IncomeClass: {
     IncomeClassCode: string;
   };
-  SpreadToInvestorsIndicator: boolean;
 }

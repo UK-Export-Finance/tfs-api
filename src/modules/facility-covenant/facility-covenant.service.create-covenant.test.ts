@@ -1,11 +1,11 @@
 import { ENUMS } from '@ukef/constants';
 import { AcbsFacilityCovenantService } from '@ukef/modules/acbs/acbs-facility-covenant.service';
+import { AcbsCreateFacilityCovenantRequestDto } from '@ukef/modules/acbs/dto/acbs-create-facility-covenant-request.dto';
 import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
 import { CreateFacilityCovenantGenerator } from '@ukef-test/support/generator/create-facility-covenant-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
 
-import { AcbsCreateFacilityCovenantRequestDto } from '../acbs/dto/acbs-create-facility-covenant-request.dto';
 import { DateStringTransformations } from '../date/date-string.transformations';
 import { FacilityCovenantService } from './facility-covenant.service';
 
@@ -49,7 +49,7 @@ describe('FacilityCovenantService', () => {
       limitKeyValue,
     });
 
-    const newCovenantWithAllFields = requestBodyToCreateFacilityCovenant[0];
+    const [newCovenantWithAllFields] = requestBodyToCreateFacilityCovenant;
 
     it('creates a covenant in ACBS with a transformation of the requested new covenant', async () => {
       await service.createCovenantForFacility(facilityIdentifier, facilityTypeCode, limitKeyValue, newCovenantWithAllFields);
@@ -62,7 +62,7 @@ describe('FacilityCovenantService', () => {
 
       await service.createCovenantForFacility(facilityIdentifier, facilityTypeCode, limitKeyValue, newCovenantWithCovenantType46);
 
-      const covenantCreatedInAcbs: AcbsCreateFacilityCovenantRequestDto = acbsFacilityCovenantServiceCreateCovenantForFacility.mock.calls[0][1];
+      const covenantCreatedInAcbs = getCovenantCreatedInAcbs();
 
       expect(covenantCreatedInAcbs.CovenantName).toBe('CHARGEABLE AMOUNT');
     });
@@ -72,7 +72,7 @@ describe('FacilityCovenantService', () => {
 
       await service.createCovenantForFacility(facilityIdentifier, facilityTypeCode, limitKeyValue, newCovenantWithCovenantType47);
 
-      const covenantCreatedInAcbs: AcbsCreateFacilityCovenantRequestDto = acbsFacilityCovenantServiceCreateCovenantForFacility.mock.calls[0][1];
+      const covenantCreatedInAcbs = getCovenantCreatedInAcbs();
 
       expect(covenantCreatedInAcbs.CovenantName).toBe('CHARGEABLE AMOUNT');
     });
@@ -82,7 +82,7 @@ describe('FacilityCovenantService', () => {
 
       await service.createCovenantForFacility(facilityIdentifier, '250', limitKeyValue, newCovenantWithCovenantType43);
 
-      const covenantCreatedInAcbs: AcbsCreateFacilityCovenantRequestDto = acbsFacilityCovenantServiceCreateCovenantForFacility.mock.calls[0][1];
+      const covenantCreatedInAcbs = getCovenantCreatedInAcbs();
 
       expect(covenantCreatedInAcbs.CovenantName).toBe('AMOUNT OF SUPPORTED BOND');
     });
@@ -92,7 +92,7 @@ describe('FacilityCovenantService', () => {
 
       await service.createCovenantForFacility(facilityIdentifier, '260', limitKeyValue, newCovenantWithCovenantType43);
 
-      const covenantCreatedInAcbs: AcbsCreateFacilityCovenantRequestDto = acbsFacilityCovenantServiceCreateCovenantForFacility.mock.calls[0][1];
+      const covenantCreatedInAcbs = getCovenantCreatedInAcbs();
 
       expect(covenantCreatedInAcbs.CovenantName).toBe('AMOUNT OF SUPPORTED FACILITY');
     });
@@ -102,7 +102,7 @@ describe('FacilityCovenantService', () => {
 
       await service.createCovenantForFacility(facilityIdentifier, '280', limitKeyValue, newCovenantWithCovenantType43);
 
-      const covenantCreatedInAcbs: AcbsCreateFacilityCovenantRequestDto = acbsFacilityCovenantServiceCreateCovenantForFacility.mock.calls[0][1];
+      const covenantCreatedInAcbs = getCovenantCreatedInAcbs();
 
       expect(covenantCreatedInAcbs.CovenantName).toBe('AMOUNT OF SUPPORTED FACILITY');
     });
@@ -112,9 +112,11 @@ describe('FacilityCovenantService', () => {
 
       await service.createCovenantForFacility(facilityIdentifier, '270', limitKeyValue, newCovenantWithCovenantType43);
 
-      const covenantCreatedInAcbs: AcbsCreateFacilityCovenantRequestDto = acbsFacilityCovenantServiceCreateCovenantForFacility.mock.calls[0][1];
+      const covenantCreatedInAcbs = getCovenantCreatedInAcbs();
 
       expect(covenantCreatedInAcbs.CovenantName).toBe('270');
     });
+
+    const getCovenantCreatedInAcbs = (): AcbsCreateFacilityCovenantRequestDto => acbsFacilityCovenantServiceCreateCovenantForFacility.mock.calls[0][1];
   });
 });

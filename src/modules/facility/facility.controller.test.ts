@@ -1,35 +1,48 @@
-import { PROPERTIES } from '@ukef/constants';
+import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
+import { UpdateFacilityByOperationQueryDto } from '@ukef/modules/facility/dto/update-facility-by-operation-query.dto';
+import { FacilityController } from '@ukef/modules/facility/facility.controller';
+import { withUpdateFacilityControllerGeneralTests } from '@ukef/modules/facility/facility.controller.update-facility.test-parts/update-facility-controller-general-tests';
+import { FacilityService } from '@ukef/modules/facility/facility.service';
 import { CreateFacilityGenerator } from '@ukef-test/support/generator/create-facility-generator';
 import { GetFacilityGenerator } from '@ukef-test/support/generator/get-facility-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
+import { UpdateFacilityGenerator } from '@ukef-test/support/generator/update-facility-generator';
 import { when } from 'jest-when';
-
-import { FacilityController } from './facility.controller';
-import { FacilityService } from './facility.service';
 
 jest.mock('./facility.service');
 
 describe('FacilityController', () => {
   const valueGenerator = new RandomValueGenerator();
   const dateStringTransformations = new DateStringTransformations();
-  const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+  const { portfolioIdentifier } = PROPERTIES.GLOBAL;
   const facilityIdentifier = valueGenerator.ukefId();
 
-  let facilityService: FacilityService;
   let controller: FacilityController;
 
-  let facilityServiceGetFacilityByIdentifier: jest.Mock;
-  let facilityServiceCreateFacility: jest.Mock;
+  const facilityService = new FacilityService(null, null, null, null, null);
+
+  const facilityServiceGetFacilityByIdentifier = jest.fn();
+  facilityService.getFacilityByIdentifier = facilityServiceGetFacilityByIdentifier;
+
+  const facilityServiceCreateFacility = jest.fn();
+  facilityService.createFacility = facilityServiceCreateFacility;
+
+  const facilityServiceIssueFacilityByIdentifier = jest.fn();
+  facilityService.issueFacilityByIdentifier = facilityServiceIssueFacilityByIdentifier;
+
+  const facilityServiceAmendFacilityExpiryDateByIdentifier = jest.fn();
+  facilityService.amendFacilityExpiryDateByIdentifier = facilityServiceAmendFacilityExpiryDateByIdentifier;
+
+  const facilityServiceAmendFacilityAmountByIdentifier = jest.fn();
+  facilityService.amendFacilityAmountByIdentifier = facilityServiceAmendFacilityAmountByIdentifier;
 
   beforeEach(() => {
-    facilityService = new FacilityService(null, null, null, null);
-
-    facilityServiceGetFacilityByIdentifier = jest.fn();
-    facilityService.getFacilityByIdentifier = facilityServiceGetFacilityByIdentifier;
-
-    facilityServiceCreateFacility = jest.fn();
-    facilityService.createFacility = facilityServiceCreateFacility;
+    facilityServiceGetFacilityByIdentifier.mockReset();
+    facilityServiceCreateFacility.mockReset();
+    facilityServiceIssueFacilityByIdentifier.mockReset();
+    facilityServiceAmendFacilityExpiryDateByIdentifier.mockReset();
+    facilityServiceAmendFacilityAmountByIdentifier.mockReset();
 
     controller = new FacilityController(facilityService);
   });
@@ -40,7 +53,7 @@ describe('FacilityController', () => {
       portfolioIdentifier,
       facilityIdentifier,
     });
-    const facilityFromService = facilitiesFromApi[0];
+    const [facilityFromService] = facilitiesFromApi;
     const expectedFacility = facilityFromService;
 
     it('returns the facility from the service', async () => {
@@ -81,5 +94,39 @@ describe('FacilityController', () => {
 
       expect(response).toStrictEqual({ facilityIdentifier });
     });
+  });
+
+  describe.each([
+    { op: ENUMS.FACILITY_UPDATE_OPERATIONS.ISSUE, serviceMethod: facilityServiceIssueFacilityByIdentifier },
+    { op: ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_EXPIRY_DATE, serviceMethod: facilityServiceAmendFacilityExpiryDateByIdentifier },
+    { op: ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_AMOUNT, serviceMethod: facilityServiceAmendFacilityAmountByIdentifier },
+  ])('updateFacility $op', ({ op, serviceMethod }) => {
+    const { updateFacilityRequest } = new UpdateFacilityGenerator(valueGenerator, dateStringTransformations).generate({
+      numberToGenerate: 1,
+      facilityIdentifier,
+    });
+
+    const query: UpdateFacilityByOperationQueryDto = { op };
+
+    const updateFacilityByOperationParams = { facilityIdentifier };
+
+    const expectedResponse =
+      op === ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_AMOUNT ? { bundleIdentifier: valueGenerator.acbsBundleId() } : { facilityIdentifier };
+
+    withUpdateFacilityControllerGeneralTests({
+      updateFacilityRequest,
+      serviceMethod,
+      facilityIdentifier,
+      expectedResponse,
+      getGivenUpdateRequestWouldOtherwiseSucceed: () => givenUpdateRequestWouldOtherwiseSucceed(),
+      makeRequest: () => controller.updateFacilityByOperation(query, updateFacilityByOperationParams, updateFacilityRequest),
+    });
+
+    const givenUpdateRequestWouldOtherwiseSucceed = () => {
+      if (op === ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_AMOUNT) {
+        return when(serviceMethod).calledWith(facilityIdentifier, updateFacilityRequest).mockResolvedValueOnce(expectedResponse);
+      }
+      return () => {};
+    };
   });
 });

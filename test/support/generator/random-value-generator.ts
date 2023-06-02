@@ -1,8 +1,11 @@
 import { ACBSID, UKEFID } from '@ukef/constants';
-import { AcbsPartyId, DateOnlyString, DateString, UkefCovenantId, UkefId } from '@ukef/helpers';
+import { AcbsBundleId, AcbsPartyId, DateOnlyString, DateString, UkefCovenantId, UkefId } from '@ukef/helpers';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { Chance } from 'chance';
 
+interface Enum {
+  [key: number | string]: string | number;
+}
 export class RandomValueGenerator {
   private static readonly seed = 0;
   private readonly chance: Chance.Chance;
@@ -47,14 +50,19 @@ export class RandomValueGenerator {
   }
 
   probabilityFloat(): number {
-    return this.chance.floating({ min: 0, max: 1 });
+    return this.float({ min: 0, max: 1 });
   }
 
   nonnegativeFloat(options?: { max?: number; fixed?: number }): number {
     const min = 0;
+    const max = options?.max;
+    const fixed = options?.fixed ?? 2;
+    return this.float({ min, max, fixed });
+  }
+
+  float({ min, max, fixed }: { min?: number; max?: number; fixed?: number }): number {
     // Fixed is for number of decimal places.
-    const fixed = options && options.fixed ? options.fixed : 2;
-    return options && options.max ? this.chance.floating({ min, fixed: fixed, max: options.max }) : this.chance.floating({ min, fixed: fixed });
+    return this.chance.floating({ min, max, fixed });
   }
 
   date(): Date {
@@ -82,16 +90,28 @@ export class RandomValueGenerator {
 
   // UKEF id example 0030000321. It should be used for Deal and Facility IDs.
   ukefId(lengthExcludingPrefix?: number): UkefId {
-    return (UKEFID.MAIN_ID.PREFIX.DEV + this.stringOfNumericCharacters({ length: lengthExcludingPrefix ?? 6 })) as UkefId;
+    return UKEFID.MAIN_ID.PREFIX.DEV.concat(this.stringOfNumericCharacters({ length: lengthExcludingPrefix ?? 6 })) as UkefId;
   }
 
   // UKEF Covenant id example 0000123456.
   ukefCovenantId(lengthExcludingPrefix?: number): UkefCovenantId {
-    return (UKEFID.COVENANT_ID.PREFIX + this.stringOfNumericCharacters({ length: lengthExcludingPrefix ?? 6 })) as UkefCovenantId;
+    return UKEFID.COVENANT_ID.PREFIX.concat(this.stringOfNumericCharacters({ length: lengthExcludingPrefix ?? 6 })) as UkefCovenantId;
   }
 
   acbsPartyId(lengthExcludingPrefix?: number): AcbsPartyId {
-    return (ACBSID.PARTY_ID.PREFIX + this.stringOfNumericCharacters({ length: lengthExcludingPrefix ?? 6 })) as AcbsPartyId;
+    return ACBSID.PARTY_ID.PREFIX.concat(this.stringOfNumericCharacters({ length: lengthExcludingPrefix ?? 6 })) as AcbsPartyId;
+  }
+
+  acbsBundleId(lengthExcludingPrefix?: number): AcbsBundleId {
+    return ACBSID.BUNDLE_ID.PREFIX.concat(this.stringOfNumericCharacters({ length: lengthExcludingPrefix ?? 6 })) as AcbsBundleId;
+  }
+
+  portfolioId(): string {
+    return this.string({ length: 2 });
+  }
+
+  loanId(): string {
+    return this.stringOfNumericCharacters({ length: 10 });
   }
 
   dateTimeString(): DateString {
@@ -100,5 +120,10 @@ export class RandomValueGenerator {
 
   dateOnlyString(): DateOnlyString {
     return this.dateStringTransformations.removeTime(this.dateTimeString());
+  }
+
+  enumValue(theEnum: Enum): string {
+    const possibleValues = Object.values(theEnum);
+    return possibleValues[this.integer({ min: 0, max: possibleValues.length - 1 })] as string;
   }
 }

@@ -1,4 +1,4 @@
-import { DateString } from '@ukef/helpers';
+import { AcbsPartyId, DateString } from '@ukef/helpers';
 
 export interface AcbsGetFacilityResponseDto {
   FacilityIdentifier: string;
@@ -9,7 +9,7 @@ export interface AcbsGetFacilityResponseDto {
   OriginalEffectiveDate: DateString;
   DealIdentifier: string;
   DealPortfolioIdentifier: string;
-  DealBorrowerPartyIdentifier: string;
+  DealBorrowerPartyIdentifier: AcbsPartyId;
   ExpirationDate: DateString;
   LimitAmount: number;
   ExternalReferenceIdentifier: string;
@@ -19,7 +19,7 @@ export interface AcbsGetFacilityResponseDto {
   FacilityInitialStatus: {
     FacilityInitialStatusCode: string;
   };
-  AgentBankPartyIdentifier: string;
+  AgentBankPartyIdentifier: AcbsPartyId;
   IndustryClassification: {
     IndustryClassificationCode: string;
   };
@@ -52,9 +52,10 @@ export interface AcbsGetFacilityResponseDto {
     FacilityStatusCode: string;
   };
   BorrowerParty: {
-    PartyIdentifier: string;
+    PartyIdentifier: AcbsPartyId;
     PartyName1: string;
   };
   CompBalPctReserve: number | null;
   CompBalPctAmount: number | null;
+  AdministrativeUserIdentifier: string;
 }

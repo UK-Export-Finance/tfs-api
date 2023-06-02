@@ -1,13 +1,14 @@
 import { HttpService } from '@nestjs/axios';
-import { Inject } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import AcbsConfig from '@ukef/config/acbs.config';
 
 import { AcbsConfigBaseUrl } from './acbs-config-base-url.type';
 import { AcbsHttpService } from './acbs-http.service';
 import { AcbsGetFacilityLoanResponseDto } from './dto/acbs-get-facility-loan-response.dto';
-import { getFacilityNotFoundKnownAcbsError } from './known-errors';
+import { facilityNotFoundKnownAcbsError } from './known-errors';
 import { createWrapAcbsHttpGetErrorCallback } from './wrap-acbs-http-error-callback';
 
+@Injectable()
 export class AcbsFacilityLoanService {
   private readonly acbsHttpService: AcbsHttpService;
 
@@ -21,7 +22,7 @@ export class AcbsFacilityLoanService {
       idToken,
       onError: createWrapAcbsHttpGetErrorCallback({
         messageForUnknownError: `Failed to get the loans for the facility with identifier ${facilityIdentifier}.`,
-        knownErrors: [getFacilityNotFoundKnownAcbsError(facilityIdentifier)],
+        knownErrors: [facilityNotFoundKnownAcbsError(facilityIdentifier)],
       }),
     });
 

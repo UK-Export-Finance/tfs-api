@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import { Inject } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import AcbsConfig from '@ukef/config/acbs.config';
 import { PROPERTIES } from '@ukef/constants';
 
@@ -7,9 +7,10 @@ import { AcbsConfigBaseUrl } from './acbs-config-base-url.type';
 import { AcbsHttpService } from './acbs-http.service';
 import { AcbsCreateFacilityCovenantRequestDto } from './dto/acbs-create-facility-covenant-request.dto';
 import { AcbsGetFacilityCovenantsResponseDto } from './dto/acbs-get-facility-covenants-response.dto';
-import { getFacilityNotFoundKnownAcbsError } from './known-errors';
-import { createWrapAcbsHttpGetErrorCallback, createWrapAcbsHttpPostErrorCallback } from './wrap-acbs-http-error-callback';
+import { facilityNotFoundKnownAcbsError } from './known-errors';
+import { createWrapAcbsHttpGetErrorCallback, createWrapAcbsHttpPostOrPutErrorCallback } from './wrap-acbs-http-error-callback';
 
+@Injectable()
 export class AcbsFacilityCovenantService {
   private readonly acbsHttpService: AcbsHttpService;
 
@@ -18,14 +19,14 @@ export class AcbsFacilityCovenantService {
   }
 
   async createCovenantForFacility(facilityIdentifier: string, newFacilityCovenant: AcbsCreateFacilityCovenantRequestDto, idToken: string): Promise<void> {
-    const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+    const { portfolioIdentifier } = PROPERTIES.GLOBAL;
     await this.acbsHttpService.post<AcbsCreateFacilityCovenantRequestDto>({
       path: `/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/Covenant`,
       requestBody: newFacilityCovenant,
       idToken,
-      onError: createWrapAcbsHttpPostErrorCallback({
+      onError: createWrapAcbsHttpPostOrPutErrorCallback({
         messageForUnknownError: `Failed to create a covenant for facility ${facilityIdentifier} in ACBS.`,
-        knownErrors: [getFacilityNotFoundKnownAcbsError(facilityIdentifier)],
+        knownErrors: [facilityNotFoundKnownAcbsError(facilityIdentifier)],
       }),
     });
   }
@@ -41,5 +42,22 @@ export class AcbsFacilityCovenantService {
     });
 
     return covenants;
+  }
+
+  async replaceCovenantForFacility(
+    portfolioIdentifier: string,
+    facilityIdentifier: string,
+    replacingCovenant: AcbsCreateFacilityCovenantRequestDto,
+    idToken: string,
+  ): Promise<void> {
+    await this.acbsHttpService.put({
+      path: `/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/Covenant`,
+      requestBody: replacingCovenant,
+      idToken,
+      onError: createWrapAcbsHttpPostOrPutErrorCallback({
+        messageForUnknownError: `Failed to replace covenant ${replacingCovenant.CovenantIdentifier} for facility ${facilityIdentifier} in ACBS.`,
+        knownErrors: [facilityNotFoundKnownAcbsError(facilityIdentifier)],
+      }),
+    });
   }
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseArrayPipe, Post } from '@nestjs/common';
+import { Controller, Get, Param, Post } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -10,7 +10,9 @@ import {
   ApiParam,
 } from '@nestjs/swagger';
 import { EXAMPLES } from '@ukef/constants';
+import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decorator';
 
+import { CreateFacilityInvestorParams } from './dto/create-facility-investor-params.dto';
 import { CreateFacilityInvestorRequest, CreateFacilityInvestorRequestItem } from './dto/create-facility-investor-request.dto';
 import { CreateFacilityInvestorResponse } from './dto/create-facility-investor-response.dto';
 import { GetFacilityInvestorsParamsDto } from './dto/get-facility-investors-params.dto';
@@ -51,18 +53,18 @@ export class FacilityInvestorController {
     description: 'An internal server error has occurred.',
   })
   async createInvestorForFacility(
-    @Param('facilityIdentifier') facilityIdentifier: string,
-    @Body(new ParseArrayPipe({ items: CreateFacilityInvestorRequestItem })) newFacilityInvestorRequest: CreateFacilityInvestorRequest,
+    @Param() params: CreateFacilityInvestorParams,
+    @ValidatedArrayBody({ items: CreateFacilityInvestorRequestItem }) newFacilityInvestorRequest: CreateFacilityInvestorRequest,
   ): Promise<CreateFacilityInvestorResponse> {
-    const newFacilityInvestor = newFacilityInvestorRequest[0];
+    const [newFacilityInvestor] = newFacilityInvestorRequest;
     const facilityInvestorToCreate: FacilityInvestorToCreate = {
-      facilityIdentifier,
       effectiveDate: newFacilityInvestor.effectiveDate,
       guaranteeExpiryDate: newFacilityInvestor.guaranteeExpiryDate,
       currency: newFacilityInvestor.currency,
       maximumLiability: newFacilityInvestor.maximumLiability,
       lenderType: newFacilityInvestor.lenderType,
     };
+    const { facilityIdentifier } = params;
     await this.facilityInvestorService.createInvestorForFacility(facilityIdentifier, facilityInvestorToCreate);
     return Promise.resolve(new CreateFacilityInvestorResponse(facilityIdentifier));
   }

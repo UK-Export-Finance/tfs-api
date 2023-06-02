@@ -30,7 +30,7 @@ export class CreateFacilityCovenantGenerator extends AbstractGenerator<CreateFac
     values: CreateFacilityCovenantRequestDto,
     { facilityIdentifier, facilityTypeCode, limitKeyValue }: GenerateOptions,
   ): GenerateResult {
-    const firstFacilityCovenant = values[0];
+    const [firstFacilityCovenant] = values;
 
     let covenantName;
 
@@ -54,26 +54,26 @@ export class CreateFacilityCovenantGenerator extends AbstractGenerator<CreateFac
     const guaranteeExpiryDateString = this.dateStringTransformations.addTimeToDateOnlyString(firstFacilityCovenant.guaranteeExpiryDate);
 
     const acbsRequestBodyToCreateFacilityCovenant: AcbsCreateFacilityCovenantRequestDto = {
-      AccountOwnerIdentifier: PROPERTIES.COVENANT.DEFAULTS.accountOwnerIdentifier,
+      AccountOwnerIdentifier: PROPERTIES.COVENANT.DEFAULT.accountOwnerIdentifier,
       ComplianceEvaluationMode: {
-        CovenantEvaluationModeCode: PROPERTIES.COVENANT.DEFAULTS.complianceEvaluationMode.covenantEvaluationModeCode,
+        CovenantEvaluationModeCode: PROPERTIES.COVENANT.DEFAULT.complianceEvaluationMode.covenantEvaluationModeCode,
       },
       ComplianceStatusDate: effectiveDateString,
       CovenantIdentifier: firstFacilityCovenant.covenantIdentifier,
       CovenantName: covenantName,
       DateCycleEvaluationMode: {
-        CovenantEvaluationModeCode: PROPERTIES.COVENANT.DEFAULTS.dateCycleEvaluationMode.covenantEvaluationModeCode,
+        CovenantEvaluationModeCode: PROPERTIES.COVENANT.DEFAULT.dateCycleEvaluationMode.covenantEvaluationModeCode,
       },
       EffectiveDate: effectiveDateString,
       ExpirationDate: guaranteeExpiryDateString,
       LenderType: {
-        LenderTypeCode: PROPERTIES.COVENANT.DEFAULTS.lenderType.covenantLenderTypeCode,
+        LenderTypeCode: PROPERTIES.COVENANT.DEFAULT.lenderType.covenantLenderTypeCode,
       },
       LimitKeyValue: limitKeyValue,
       LimitType: {
-        LimitTypeCode: PROPERTIES.COVENANT.DEFAULTS.limitType.covenantLimitTypeCode,
+        LimitTypeCode: PROPERTIES.COVENANT.DEFAULT.limitType.covenantLimitTypeCode,
       },
-      SectionIdentifier: PROPERTIES.COVENANT.DEFAULTS.sectionIdentifier,
+      SectionIdentifier: PROPERTIES.COVENANT.DEFAULT.sectionIdentifier,
       TargetAmount: firstFacilityCovenant.maximumLiability,
       PledgeType: {
         PledgeTypeCode: firstFacilityCovenant.currency,
@@ -82,10 +82,10 @@ export class CreateFacilityCovenantGenerator extends AbstractGenerator<CreateFac
         CovenantTypeCode: firstFacilityCovenant.covenantType,
       },
       ComplianceRule: {
-        ComplianceRuleCode: PROPERTIES.COVENANT.DEFAULTS.complianceRule.covenantComplianceRuleCode,
+        ComplianceRuleCode: PROPERTIES.COVENANT.DEFAULT.complianceRule.covenantComplianceRuleCode,
       },
-      InComplianceIndicator: PROPERTIES.COVENANT.DEFAULTS.inComplianceIndicator,
-      WaivedIndicator: PROPERTIES.COVENANT.DEFAULTS.waivedIndicator,
+      InComplianceIndicator: PROPERTIES.COVENANT.DEFAULT.inComplianceIndicator,
+      WaivedIndicator: PROPERTIES.COVENANT.DEFAULT.waivedIndicator,
       NextReviewDate: effectiveDateString,
     };
 

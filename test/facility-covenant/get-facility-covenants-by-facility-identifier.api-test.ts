@@ -2,6 +2,7 @@ import { PROPERTIES } from '@ukef/constants';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
+import { withFacilityIdentifierUrlValidationApiTests } from '@ukef-test/common-tests/request-url-param-validation-api-tests/facility-identifier-url-validation-api-tests';
 import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
 import { GetFacilityCovenantGenerator } from '@ukef-test/support/generator/get-facility-covenant-generator';
@@ -11,9 +12,12 @@ import nock from 'nock';
 describe('GET /facilities/{facilityIdentifier}/covenants', () => {
   const valueGenerator = new RandomValueGenerator();
   const dateStringTransformations = new DateStringTransformations();
-  const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+  const { portfolioIdentifier } = PROPERTIES.GLOBAL;
   const facilityIdentifier = valueGenerator.ukefId();
-  const getFacilityCovenantsUrl = `/api/v1/facilities/${facilityIdentifier}/covenants`;
+
+  const getGetFacilityCovenantsUrlForFacilityId = (facilityId: string) => `/api/v1/facilities/${facilityId}/covenants`;
+
+  const getFacilityCovenantsUrl = getGetFacilityCovenantsUrlForFacilityId(facilityIdentifier);
 
   const { facilityCovenantsInAcbs, facilityCovenantsFromApi } = new GetFacilityCovenantGenerator(valueGenerator, dateStringTransformations).generate({
     numberToGenerate: 2,
@@ -37,22 +41,30 @@ describe('GET /facilities/{facilityIdentifier}/covenants', () => {
   });
 
   const { idToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
-    givenRequestWouldOtherwiseSucceed: () => requestToGetFacilityCovenants().reply(200, facilityCovenantsInAcbs),
+    givenRequestWouldOtherwiseSucceed: () => requestToGetCovenantsForFacility().reply(200, facilityCovenantsInAcbs),
     makeRequest: () => api.get(getFacilityCovenantsUrl),
   });
 
   withClientAuthenticationTests({
     givenTheRequestWouldOtherwiseSucceed: () => {
       givenAuthenticationWithTheIdpSucceeds();
-      requestToGetFacilityCovenants().reply(200, facilityCovenantsInAcbs);
+      requestToGetCovenantsForFacility().reply(200, facilityCovenantsInAcbs);
     },
     makeRequestWithoutAuth: (incorrectAuth?: IncorrectAuthArg) =>
       api.getWithoutAuth(getFacilityCovenantsUrl, incorrectAuth?.headerName, incorrectAuth?.headerValue),
   });
 
+  withFacilityIdentifierUrlValidationApiTests({
+    givenRequestWouldOtherwiseSucceedForFacilityId: (facilityId) => {
+      givenAuthenticationWithTheIdpSucceeds();
+      requestToGetCovenantsForFacilityWithId(facilityId).reply(200, facilityCovenantsInAcbs);
+    },
+    makeRequestWithFacilityId: (facilityId) => api.get(getGetFacilityCovenantsUrlForFacilityId(facilityId)),
+  });
+
   it('returns a 200 response with the facility covenants if they are returned by ACBS', async () => {
     givenAuthenticationWithTheIdpSucceeds();
-    requestToGetFacilityCovenants().reply(200, facilityCovenantsInAcbs);
+    requestToGetCovenantsForFacility().reply(200, facilityCovenantsInAcbs);
 
     const { status, body } = await api.get(getFacilityCovenantsUrl);
 
@@ -62,7 +74,7 @@ describe('GET /facilities/{facilityIdentifier}/covenants', () => {
 
   it('returns a 200 response with an empty array if ACBS returns a 200 response with an empty array', async () => {
     givenAuthenticationWithTheIdpSucceeds();
-    requestToGetFacilityCovenants().reply(200, []);
+    requestToGetCovenantsForFacility().reply(200, []);
 
     const { status, body } = await api.get(getFacilityCovenantsUrl);
 
@@ -72,7 +84,7 @@ describe('GET /facilities/{facilityIdentifier}/covenants', () => {
 
   it('returns a 500 response if getting the facility covenants from ACBS returns a status code that is NOT 200', async () => {
     givenAuthenticationWithTheIdpSucceeds();
-    requestToGetFacilityCovenants().reply(401);
+    requestToGetCovenantsForFacility().reply(401);
 
     const { status, body } = await api.get(getFacilityCovenantsUrl);
 
@@ -85,7 +97,7 @@ describe('GET /facilities/{facilityIdentifier}/covenants', () => {
 
   it('returns a 500 response if getting the facility covenants from ACBS times out', async () => {
     givenAuthenticationWithTheIdpSucceeds();
-    requestToGetFacilityCovenants().delay(TIME_EXCEEDING_ACBS_TIMEOUT).reply(200, facilityCovenantsInAcbs);
+    requestToGetCovenantsForFacility().delay(TIME_EXCEEDING_ACBS_TIMEOUT).reply(200, facilityCovenantsInAcbs);
 
     const { status, body } = await api.get(getFacilityCovenantsUrl);
 
@@ -96,11 +108,10 @@ describe('GET /facilities/{facilityIdentifier}/covenants', () => {
     });
   });
 
-  // TODO APIM-118: add tests that check we respond with 400 if the facilityId is of the wrong length/format once injectable tests for this
-  // have been written.
+  const requestToGetCovenantsForFacility = () => requestToGetCovenantsForFacilityWithId(facilityIdentifier);
 
-  const requestToGetFacilityCovenants = () =>
+  const requestToGetCovenantsForFacilityWithId = (facilityId: string) =>
     nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .get(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/Covenant`)
+      .get(`/Portfolio/${portfolioIdentifier}/Facility/${facilityId}/Covenant`)
       .matchHeader('authorization', `Bearer ${idToken}`);
 });

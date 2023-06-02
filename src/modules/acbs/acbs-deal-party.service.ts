@@ -8,7 +8,7 @@ import { AcbsHttpService } from './acbs-http.service';
 import { AcbsCreateDealInvestorRequest } from './dto/acbs-create-deal-investor-request.dto';
 import { AcbsGetDealPartyResponseDto } from './dto/acbs-get-deal-party-response.dto';
 import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
-import { createWrapAcbsHttpGetErrorCallback, createWrapAcbsHttpPostErrorCallback } from './wrap-acbs-http-error-callback';
+import { createWrapAcbsHttpGetErrorCallback, createWrapAcbsHttpPostOrPutErrorCallback } from './wrap-acbs-http-error-callback';
 
 @Injectable()
 export class AcbsDealPartyService {
@@ -40,12 +40,12 @@ export class AcbsDealPartyService {
   }
 
   async createInvestorForDeal(dealIdentifier: string, newDealInvestor: AcbsCreateDealInvestorRequest, idToken: string): Promise<void> {
-    const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+    const { portfolioIdentifier } = PROPERTIES.GLOBAL;
     await this.acbsHttpService.post<AcbsCreateDealInvestorRequest>({
       path: `/Portfolio/${portfolioIdentifier}/Deal/${dealIdentifier}/DealParty`,
       requestBody: newDealInvestor,
       idToken,
-      onError: createWrapAcbsHttpPostErrorCallback({
+      onError: createWrapAcbsHttpPostOrPutErrorCallback({
         messageForUnknownError: `Failed to create an investor for deal ${dealIdentifier} in ACBS.`,
         knownErrors: [
           {

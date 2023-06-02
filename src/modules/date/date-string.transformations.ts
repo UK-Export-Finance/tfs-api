@@ -43,4 +43,9 @@ export class DateStringTransformations {
   getDisplayDateFromDate(date: Date): string {
     return new Intl.DateTimeFormat('en-GB').format(date);
   }
+
+  getDayFromDateOnlyString(dateOnlyString: DateOnlyString): number {
+    const date = new Date(dateOnlyString);
+    return date.getDate();
+  }
 }

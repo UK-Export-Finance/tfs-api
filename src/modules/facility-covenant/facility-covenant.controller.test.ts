@@ -1,13 +1,12 @@
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
+import { FacilityService } from '@ukef/modules/facility/facility.service';
+import { CreateOrUpdateFacilityCovenantsResponseDto } from '@ukef/modules/facility-covenant/dto/create-or-update-covenants-response.dto';
+import { FacilityCovenantController } from '@ukef/modules/facility-covenant/facility-covenant.controller';
+import { FacilityCovenantService } from '@ukef/modules/facility-covenant/facility-covenant.service';
 import { CreateFacilityCovenantGenerator } from '@ukef-test/support/generator/create-facility-covenant-generator';
 import { GetFacilityCovenantGenerator } from '@ukef-test/support/generator/get-facility-covenant-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
-
-import { DateStringTransformations } from '../date/date-string.transformations';
-import { FacilityService } from '../facility/facility.service';
-import { CreateFacilityCovenantResponseDto } from './dto/create-facility-covenant-response.dto';
-import { FacilityCovenantController } from './facility-covenant.controller';
-import { FacilityCovenantService } from './facility-covenant.service';
 
 describe('FacilityCovenantController', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -20,17 +19,20 @@ describe('FacilityCovenantController', () => {
 
   let facilityCovenantServiceCreateCovenantForFacility: jest.Mock;
   let facilityCovenantServiceGetCovenantsForFacility: jest.Mock;
+  let facilityCovenantServiceUpdateCovenantForFacility: jest.Mock;
   let facilityServiceGetFacilityByIdentifier: jest.Mock;
 
   beforeEach(() => {
     facilityCovenantService = new FacilityCovenantService(null, null, null);
-    facilityService = new FacilityService(null, null, null, null);
+    facilityService = new FacilityService(null, null, null, null, null);
 
     facilityCovenantServiceCreateCovenantForFacility = jest.fn();
     facilityCovenantServiceGetCovenantsForFacility = jest.fn();
+    facilityCovenantServiceUpdateCovenantForFacility = jest.fn();
     facilityServiceGetFacilityByIdentifier = jest.fn();
     facilityCovenantService.createCovenantForFacility = facilityCovenantServiceCreateCovenantForFacility;
     facilityCovenantService.getCovenantsForFacility = facilityCovenantServiceGetCovenantsForFacility;
+    facilityCovenantService.updateCovenantsForFacility = facilityCovenantServiceUpdateCovenantForFacility;
     facilityService.getFacilityByIdentifier = facilityServiceGetFacilityByIdentifier;
 
     controller = new FacilityCovenantController(facilityCovenantService, facilityService);
@@ -71,12 +73,12 @@ describe('FacilityCovenantController', () => {
 
       const response = await controller.createCovenantForFacility({ facilityIdentifier }, requestBodyToCreateFacilityCovenant);
 
-      expect(response).toStrictEqual(new CreateFacilityCovenantResponseDto(facilityIdentifier));
+      expect(response).toStrictEqual(new CreateOrUpdateFacilityCovenantsResponseDto(facilityIdentifier));
     });
   });
 
   describe('getCovenantsForFacility', () => {
-    const portfolioIdentifier = valueGenerator.string();
+    const portfolioIdentifier = valueGenerator.portfolioId();
 
     const { facilityCovenantsFromApi: covenantsFromService } = new GetFacilityCovenantGenerator(valueGenerator, dateStringTransformations).generate({
       numberToGenerate: 2,
@@ -90,6 +92,24 @@ describe('FacilityCovenantController', () => {
       const covenants = await controller.getCovenantsForFacility({ facilityIdentifier });
 
       expect(covenants).toStrictEqual(covenantsFromService);
+    });
+  });
+
+  describe('updateCovenantsForFacility', () => {
+    const expirationDate = valueGenerator.dateOnlyString();
+    const targetAmount = valueGenerator.nonnegativeFloat();
+    const updateCovenantRequest = { expirationDate, targetAmount };
+
+    it('updates the covenants for the facility with the service using the fields supplied in the request body', async () => {
+      await controller.updateCovenantsForFacility({ facilityIdentifier }, updateCovenantRequest);
+
+      expect(facilityCovenantServiceUpdateCovenantForFacility).toHaveBeenCalledWith(facilityIdentifier, updateCovenantRequest);
+    });
+
+    it('returns the facility identifier if updating the covenants succeeds', async () => {
+      const response = await controller.updateCovenantsForFacility({ facilityIdentifier }, updateCovenantRequest);
+
+      expect(response).toStrictEqual(new CreateOrUpdateFacilityCovenantsResponseDto(facilityIdentifier));
     });
   });
 });

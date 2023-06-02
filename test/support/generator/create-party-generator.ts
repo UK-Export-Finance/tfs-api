@@ -27,9 +27,9 @@ export class CreatePartyGenerator extends AbstractGenerator<PartyValues, Generat
   }
 
   protected transformRawValuesToGeneratedValues(values: PartyValues[], options: GenerateOptions): GenerateResult {
-    const firstParty = values[0];
+    const [firstParty] = values;
 
-    const acbsCreatePartyRequest = {
+    const acbsCreatePartyRequest: AcbsCreatePartyRequest = {
       PartyAlternateIdentifier: this.getPartyAlternateIdentifier(firstParty.alternateIdentifier, 0, options.basePartyAlternateIdentifier),
       IndustryClassification: {
         IndustryClassificationCode: firstParty.industryClassification,
@@ -97,7 +97,7 @@ export class CreatePartyGenerator extends AbstractGenerator<PartyValues, Generat
       },
     };
 
-    const createPartyRequest = values.map((v, index) => ({
+    const createPartyRequest: CreatePartyRequest = values.map((v, index) => ({
       alternateIdentifier: this.getPartyAlternateIdentifier(v.alternateIdentifier, index, options.basePartyAlternateIdentifier),
       industryClassification: v.industryClassification,
       name1: v.name1,

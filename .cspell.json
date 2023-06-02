@@ -19,6 +19,7 @@
     "ACBSID",
     "acility",
     "APIM",
+    "APIUKEF",
     "azurecr",
     "chara",
     "codacy",
@@ -49,7 +50,8 @@
     "ukef",
     "UKRATEGRP",
     "venv",
-    "vnet"
+    "vnet",
+    "CICD"
   ],
   "dictionaries": [
     "en-gb",

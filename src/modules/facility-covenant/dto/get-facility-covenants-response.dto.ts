@@ -14,7 +14,7 @@ export class GetFacilityCovenantsResponseDto {
   })
   readonly covenantType: string;
 
-  @ApiProperty({ description: 'The identifier of the facility in ACBS. This will be a 10-digit code.' })
+  @ApiProperty({ description: 'The identifier of the facility in ACBS.' })
   readonly facilityIdentifier: string;
 
   @ApiProperty({

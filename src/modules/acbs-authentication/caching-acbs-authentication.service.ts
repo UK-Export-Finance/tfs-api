@@ -30,7 +30,7 @@ export class CachingAcbsAuthenticationService extends AcbsAuthenticationService 
       onError: (error: unknown) => this.logger.warn(error, 'An error occurred when trying to get the id token from the cache. A new token will be requested.'),
       onCachedIdTokenNotRetrieved: async () => {
         const newIdToken = await this.getNewIdToken();
-        this.tryStoreIdTokenInCache(newIdToken);
+        await this.tryStoreIdTokenInCache(newIdToken);
         return newIdToken;
       },
     });

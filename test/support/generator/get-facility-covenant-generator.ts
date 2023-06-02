@@ -1,4 +1,5 @@
-import { ENUMS } from '@ukef/constants';
+import { ENUMS, PROPERTIES } from '@ukef/constants';
+import { DateString } from '@ukef/helpers';
 import { AcbsGetFacilityCovenantsResponseDto } from '@ukef/modules/acbs/dto/acbs-get-facility-covenants-response.dto';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { GetFacilityCovenantsResponseDto } from '@ukef/modules/facility-covenant/dto/get-facility-covenants-response.dto';
@@ -6,17 +7,15 @@ import { GetFacilityCovenantsResponseDto } from '@ukef/modules/facility-covenant
 import { AbstractGenerator } from './abstract-generator';
 import { RandomValueGenerator } from './random-value-generator';
 
-export class GetFacilityCovenantGenerator extends AbstractGenerator<AcbsGetFacilityCovenantsResponseDto, GenerateResult, GenerateOptions> {
+export class GetFacilityCovenantGenerator extends AbstractGenerator<CovenantValues, GenerateResult, GenerateOptions> {
   constructor(protected readonly valueGenerator: RandomValueGenerator, protected readonly dateStringTransformations: DateStringTransformations) {
     super(valueGenerator);
   }
 
-  protected generateValues(): AcbsGetFacilityCovenantsResponseDto {
+  protected generateValues(): CovenantValues {
     const possibleCovenantTypeCodes = Object.values(ENUMS.COVENANT_TYPE_CODES);
 
     return {
-      FacilityIdentifier: this.valueGenerator.ukefId(),
-      PortfolioIdentifier: this.valueGenerator.string(),
       CovenantIdentifier: this.valueGenerator.stringOfNumericCharacters(),
       EffectiveDate: this.valueGenerator.dateTimeString(),
       ExpirationDate: this.valueGenerator.dateTimeString(),
@@ -27,6 +26,8 @@ export class GetFacilityCovenantGenerator extends AbstractGenerator<AcbsGetFacil
       CovenantType: {
         CovenantTypeCode: possibleCovenantTypeCodes[this.valueGenerator.integer({ min: 0, max: possibleCovenantTypeCodes.length - 1 })],
       },
+      CovenantName: this.valueGenerator.string(),
+      LimitKeyValue: this.valueGenerator.string(),
     };
   }
 
@@ -47,6 +48,29 @@ export class GetFacilityCovenantGenerator extends AbstractGenerator<AcbsGetFacil
       CovenantType: {
         CovenantTypeCode: v.CovenantType.CovenantTypeCode,
       },
+      AccountOwnerIdentifier: PROPERTIES.COVENANT.DEFAULT.accountOwnerIdentifier,
+      ComplianceEvaluationMode: {
+        CovenantEvaluationModeCode: PROPERTIES.COVENANT.DEFAULT.complianceEvaluationMode.covenantEvaluationModeCode,
+      },
+      ComplianceStatusDate: v.EffectiveDate,
+      CovenantName: v.CovenantName,
+      DateCycleEvaluationMode: {
+        CovenantEvaluationModeCode: PROPERTIES.COVENANT.DEFAULT.dateCycleEvaluationMode.covenantEvaluationModeCode,
+      },
+      LenderType: {
+        LenderTypeCode: PROPERTIES.COVENANT.DEFAULT.lenderType.covenantLenderTypeCode,
+      },
+      LimitKeyValue: v.LimitKeyValue,
+      LimitType: {
+        LimitTypeCode: PROPERTIES.COVENANT.DEFAULT.limitType.covenantLimitTypeCode,
+      },
+      SectionIdentifier: PROPERTIES.COVENANT.DEFAULT.sectionIdentifier,
+      ComplianceRule: {
+        ComplianceRuleCode: PROPERTIES.COVENANT.DEFAULT.complianceRule.covenantComplianceRuleCode,
+      },
+      InComplianceIndicator: PROPERTIES.COVENANT.DEFAULT.inComplianceIndicator,
+      WaivedIndicator: PROPERTIES.COVENANT.DEFAULT.waivedIndicator,
+      NextReviewDate: v.EffectiveDate,
     }));
 
     const facilityCovenantsFromApi: GetFacilityCovenantsResponseDto[] = values.map((v) => ({
@@ -66,6 +90,21 @@ export class GetFacilityCovenantGenerator extends AbstractGenerator<AcbsGetFacil
       facilityCovenantsFromApi,
     };
   }
+}
+
+interface CovenantValues {
+  CovenantIdentifier: string;
+  EffectiveDate: DateString;
+  ExpirationDate: DateString;
+  TargetAmount: number;
+  PledgeType: {
+    PledgeTypeCode: string;
+  };
+  CovenantType: {
+    CovenantTypeCode: string;
+  };
+  CovenantName: string;
+  LimitKeyValue: string;
 }
 
 interface GenerateOptions {

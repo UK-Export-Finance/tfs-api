@@ -31,14 +31,14 @@ describe('GET /parties?searchText={searchText}', () => {
   });
 
   const { idToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
-    givenRequestWouldOtherwiseSucceed: () => requestToGetPartiesBySearchText().reply(200, partiesInAcbs),
+    givenRequestWouldOtherwiseSucceed: () => requestToGetPartiesBySearchText(searchText).reply(200, partiesInAcbs),
     makeRequest: () => api.get(getPartiesBySearchTextUrl),
   });
 
   withClientAuthenticationTests({
     givenTheRequestWouldOtherwiseSucceed: () => {
       givenAuthenticationWithTheIdpSucceeds();
-      requestToGetPartiesBySearchText().reply(200, partiesInAcbs);
+      requestToGetPartiesBySearchText(searchText).reply(200, partiesInAcbs);
     },
     makeRequestWithoutAuth: (incorrectAuth?: IncorrectAuthArg) =>
       api.getWithoutAuth(getPartiesBySearchTextUrl, incorrectAuth?.headerName, incorrectAuth?.headerValue),
@@ -46,7 +46,7 @@ describe('GET /parties?searchText={searchText}', () => {
 
   it('returns a 200 response with the matching parties if they are returned by ACBS', async () => {
     givenAuthenticationWithTheIdpSucceeds();
-    requestToGetPartiesBySearchText().reply(200, partiesInAcbs);
+    requestToGetPartiesBySearchText(searchText).reply(200, partiesInAcbs);
 
     const { status, body } = await api.get(getPartiesBySearchTextUrl);
 
@@ -54,9 +54,31 @@ describe('GET /parties?searchText={searchText}', () => {
     expect(body).toStrictEqual(JSON.parse(JSON.stringify(parties)));
   });
 
+  it('returns a 200 response with the matching parties if they are returned by ACBS and the search text has a whitespace in the middle and ends with a non-whitespace', async () => {
+    const searchTextWithSpaces = 'Company Name';
+    givenAuthenticationWithTheIdpSucceeds();
+    requestToGetPartiesBySearchText('Company%20Name').reply(200, partiesInAcbs);
+
+    const { status, body } = await api.get(`/api/v1/parties?searchText=${searchTextWithSpaces}`);
+
+    expect(status).toBe(200);
+    expect(body).toStrictEqual(JSON.parse(JSON.stringify(parties)));
+  });
+
+  it('returns a 200 response with the matching parties if they are returned by ACBS and the search text starts with a whitespace and ends with a non-whitespace', async () => {
+    const searchTextWithLeadingSpace = ' endInNonWhitespace';
+    givenAuthenticationWithTheIdpSucceeds();
+    requestToGetPartiesBySearchText('%20endInNonWhitespace').reply(200, partiesInAcbs);
+
+    const { status, body } = await api.get(`/api/v1/parties?searchText=${searchTextWithLeadingSpace}`);
+
+    expect(status).toBe(200);
+    expect(body).toStrictEqual(JSON.parse(JSON.stringify(parties)));
+  });
+
   it('returns a 200 response with an empty array of parties if ACBS returns a 200 response with an empty array of parties', async () => {
     givenAuthenticationWithTheIdpSucceeds();
-    requestToGetPartiesBySearchText().reply(200, []);
+    requestToGetPartiesBySearchText(searchText).reply(200, []);
 
     const { status, body } = await api.get(getPartiesBySearchTextUrl);
 
@@ -66,7 +88,7 @@ describe('GET /parties?searchText={searchText}', () => {
 
   it('returns a 500 response if ACBS returns a status code that is not 200 or 400', async () => {
     givenAuthenticationWithTheIdpSucceeds();
-    requestToGetPartiesBySearchText().reply(401);
+    requestToGetPartiesBySearchText(searchText).reply(401);
 
     const { status, body } = await api.get(getPartiesBySearchTextUrl);
 
@@ -79,9 +101,9 @@ describe('GET /parties?searchText={searchText}', () => {
 
   it('returns a 500 response if getting the parties from ACBS times out', async () => {
     givenAuthenticationWithTheIdpSucceeds();
-    requestToGetPartiesBySearchText().delay(1500).reply(200, partiesInAcbs);
+    requestToGetPartiesBySearchText(searchText).delay(1500).reply(200, partiesInAcbs);
 
-    const { status, body } = await api.get(`/api/v1/parties?searchText=${searchText}`);
+    const { status, body } = await api.get(getPartiesBySearchTextUrl);
 
     expect(status).toBe(500);
     expect(body).toStrictEqual({
@@ -97,7 +119,7 @@ describe('GET /parties?searchText={searchText}', () => {
     expect(body).toStrictEqual({
       statusCode: 400,
       error: 'Bad Request',
-      message: ['searchText must be longer than or equal to 3 characters'],
+      message: ['searchText must be a string', 'searchText must be longer than or equal to 3 characters', 'searchText must match /\\S$/ regular expression'],
     });
   });
 
@@ -108,7 +130,7 @@ describe('GET /parties?searchText={searchText}', () => {
     expect(body).toStrictEqual({
       statusCode: 400,
       error: 'Bad Request',
-      message: ['searchText must be longer than or equal to 3 characters'],
+      message: ['searchText must be longer than or equal to 3 characters', 'searchText must match /\\S$/ regular expression'],
     });
   });
 
@@ -119,7 +141,7 @@ describe('GET /parties?searchText={searchText}', () => {
     expect(body).toStrictEqual({
       statusCode: 400,
       error: 'Bad Request',
-      message: ['searchText must be longer than or equal to 3 characters'],
+      message: ['searchText must be longer than or equal to 3 characters', 'searchText must match /\\S$/ regular expression'],
     });
   });
 
@@ -134,17 +156,17 @@ describe('GET /parties?searchText={searchText}', () => {
     });
   });
 
-  it('returns a 400 response if searchText is 3 whitespaces', async () => {
-    const { status, body } = await api.get(`/api/v1/parties?searchText=   `);
+  it('returns a 400 response if searchText ends with a whitespace', async () => {
+    const { status, body } = await api.get(`/api/v1/parties`).query({ searchText: '   ' }); // superagent will trim the query string if we specify it in the path instead of in `query`
 
     expect(status).toBe(400);
     expect(body).toStrictEqual({
       statusCode: 400,
       error: 'Bad Request',
-      message: ['searchText must be longer than or equal to 3 characters'],
+      message: ['searchText must match /\\S$/ regular expression'],
     });
   });
 
-  const requestToGetPartiesBySearchText = (): nock.Interceptor =>
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL).get(`/Party/Search/${searchText}`).matchHeader('authorization', `Bearer ${idToken}`);
+  const requestToGetPartiesBySearchText = (search): nock.Interceptor =>
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL).get(`/Party/Search/${search}`).matchHeader('authorization', `Bearer ${idToken}`);
 });

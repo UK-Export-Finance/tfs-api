@@ -1,13 +1,11 @@
 import { HttpService } from '@nestjs/axios';
+import { AcbsPartyService } from '@ukef/modules/acbs/acbs-party.service';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
+import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
 import { CreatePartyGenerator } from '@ukef-test/support/generator/create-party-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { AxiosError } from 'axios';
 import { when } from 'jest-when';
-import { of, throwError } from 'rxjs';
 
-import { AcbsCreatePartyRequest } from './dto/acbs-create-party-request.dto';
-import { CreatePartyInAcbsFailedException } from './exception/create-party-in-acbs-failed.exception';
 import { PartyService } from './party.service';
 
 jest.mock('@ukef/modules/acbs/acbs-party.service');
@@ -17,10 +15,10 @@ describe('PartyService', () => {
   const valueGenerator = new RandomValueGenerator();
   const dateStringTransformations = new DateStringTransformations();
   const idToken = valueGenerator.string();
-  const baseUrl = valueGenerator.httpsUrl();
 
   let httpService: HttpService;
   let partyService: PartyService;
+  let acbsPartyServiceCreateParty: jest.Mock;
 
   let httpServicePost: jest.Mock;
 
@@ -30,65 +28,38 @@ describe('PartyService', () => {
     httpServicePost = jest.fn();
     httpService.post = httpServicePost;
 
-    partyService = new PartyService({ baseUrl }, httpService, null, null, new DateStringTransformations());
+    const acbsPartyService = new AcbsPartyService(null, null);
+    acbsPartyServiceCreateParty = jest.fn();
+    acbsPartyService.createParty = acbsPartyServiceCreateParty;
+
+    const mockAcbsAuthenticationService = getMockAcbsAuthenticationService();
+    const acbsAuthenticationService = mockAcbsAuthenticationService.service;
+    const acbsAuthenticationServiceGetIdToken = mockAcbsAuthenticationService.getIdToken;
+    when(acbsAuthenticationServiceGetIdToken).calledWith().mockResolvedValueOnce(idToken);
+
+    partyService = new PartyService(acbsAuthenticationService, acbsPartyService, new DateStringTransformations());
   });
 
   describe('createParty', () => {
-    const getExpectedCreatePartyArguments = (request: AcbsCreatePartyRequest): [string, object, object] => [
-      '/Party',
-      request,
-      {
-        baseURL: baseUrl,
-        headers: {
-          Authorization: `Bearer ${idToken}`,
-          'Content-Type': 'application/json',
-        },
-      },
-    ];
-
     const { acbsCreatePartyRequest, createPartyRequest } = new CreatePartyGenerator(valueGenerator, dateStringTransformations).generate({
       numberToGenerate: 1,
     });
-    const createPartyRequestItem = createPartyRequest[0];
+    const [createPartyRequestItem] = createPartyRequest;
 
     it('returns the identifier of the new party if the request is successful', async () => {
-      mockSuccessfulAcbsCreatePartyRequest(acbsCreatePartyRequest, '00000000');
+      when(acbsPartyServiceCreateParty).calledWith(acbsCreatePartyRequest, idToken).mockReturnValueOnce({ partyIdentifier: '00000000' });
 
-      const response = await partyService.createParty(idToken, createPartyRequestItem);
+      const response = await partyService.createParty(createPartyRequestItem);
 
       expect(response).toStrictEqual({
         partyIdentifier: '00000000',
       });
     });
 
-    it('throws a CreatePartyInAcbsFailedException if there is an error when creating the party in ACBS', async () => {
-      const createPartyError = new AxiosError();
+    it('creates a party in ACBS with a transformation of the requested new party', async () => {
+      await partyService.createParty(createPartyRequestItem);
 
-      when(httpServicePost)
-        .calledWith(...getExpectedCreatePartyArguments(acbsCreatePartyRequest))
-        .mockReturnValueOnce(throwError(() => createPartyError));
-
-      const responsePromise = partyService.createParty(idToken, createPartyRequestItem);
-
-      await expect(responsePromise).rejects.toBeInstanceOf(CreatePartyInAcbsFailedException);
-      await expect(responsePromise).rejects.toThrow('Failed to create party in ACBS.');
-      await expect(responsePromise).rejects.toHaveProperty('innerError', createPartyError);
+      expect(acbsPartyServiceCreateParty).toHaveBeenCalledWith(acbsCreatePartyRequest, idToken);
     });
-
-    function mockSuccessfulAcbsCreatePartyRequest(request: AcbsCreatePartyRequest, partyIdentifier: string): void {
-      when(httpServicePost)
-        .calledWith(...getExpectedCreatePartyArguments(request))
-        .mockReturnValueOnce(
-          of({
-            data: undefined,
-            status: 201,
-            statusText: 'Created',
-            config: undefined,
-            headers: {
-              location: `/Party/${partyIdentifier}`,
-            },
-          }),
-        );
-    }
   });
 });

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseArrayPipe, Post, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Param, Post, UsePipes, ValidationPipe } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -10,6 +10,7 @@ import {
   ApiParam,
 } from '@nestjs/swagger';
 import { EXAMPLES } from '@ukef/constants';
+import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decorator';
 import { UkefId } from '@ukef/helpers';
 
 import { DealGuaranteeService } from './deal-guarantee.service';
@@ -54,9 +55,9 @@ export class DealGuaranteeController {
   @UsePipes(new ValidationPipe({ skipMissingProperties: true }))
   async createGuaranteeForDeal(
     @Param('dealIdentifier') dealIdentifier: UkefId,
-    @Body(new ParseArrayPipe({ items: CreateDealGuaranteeRequestItem, whitelist: true })) newGuaranteeRequest: CreateDealGuaranteeRequest,
+    @ValidatedArrayBody({ items: CreateDealGuaranteeRequestItem }) newGuaranteeRequest: CreateDealGuaranteeRequest,
   ): Promise<CreateDealGuaranteeResponse> {
-    const newGuarantee = newGuaranteeRequest[0];
+    const [newGuarantee] = newGuaranteeRequest;
     const guaranteeToCreate: DealGuaranteeToCreate = {
       dealIdentifier: newGuarantee.dealIdentifier,
       effectiveDate: newGuarantee.effectiveDate,

@@ -9,5 +9,6 @@ import { FacilityService } from './facility.service';
   imports: [AcbsModule, DateModule],
   controllers: [FacilityController],
   providers: [FacilityService],
+  exports: [FacilityService],
 })
 export class FacilityModule {}

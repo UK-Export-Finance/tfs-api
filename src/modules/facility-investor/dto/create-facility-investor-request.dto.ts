@@ -8,13 +8,6 @@ import { DateOnlyString } from '@ukef/helpers/date-only-string.type';
 export type CreateFacilityInvestorRequest = CreateFacilityInvestorRequestItem[];
 
 export class CreateFacilityInvestorRequestItem {
-  @ValidatedStringApiProperty({
-    description: 'The identifier of the facility to create the investor for.',
-    example: '0000000001',
-    length: 10,
-  })
-  readonly facilityIdentifier: string;
-
   @ValidatedDateOnlyApiProperty({
     description: `The date from which this limit is effective.`,
   })
@@ -45,15 +38,7 @@ export class CreateFacilityInvestorRequestItem {
   })
   readonly lenderType?: string;
 
-  constructor(
-    facilityIdentifier: string,
-    effectiveDate: DateOnlyString,
-    guaranteeExpiryDate: DateOnlyString,
-    currency: string,
-    maximumLiability: number,
-    lenderType?: string,
-  ) {
-    this.facilityIdentifier = facilityIdentifier;
+  constructor(effectiveDate: DateOnlyString, guaranteeExpiryDate: DateOnlyString, currency: string, maximumLiability: number, lenderType?: string) {
     this.effectiveDate = effectiveDate;
     this.guaranteeExpiryDate = guaranteeExpiryDate;
     this.currency = currency;

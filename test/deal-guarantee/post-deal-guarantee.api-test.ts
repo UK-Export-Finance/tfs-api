@@ -18,11 +18,13 @@ describe('POST /deals/{dealIdentifier}/guarantees', () => {
   const dealIdentifier = valueGenerator.ukefId();
   const createDealGuaranteeUrl = `/api/v1/deals/${dealIdentifier}/guarantees`;
 
-  const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
-  const lenderTypeCode = PROPERTIES.DEAL_GUARANTEE.DEFAULT.lenderType.lenderTypeCode;
-  const limitTypeCode = PROPERTIES.DEAL_GUARANTEE.DEFAULT.limitType.limitTypeCode;
-  const sectionIdentifier = PROPERTIES.DEAL_GUARANTEE.DEFAULT.sectionIdentifier;
-  const guaranteedPercentage = PROPERTIES.DEAL_GUARANTEE.DEFAULT.guaranteedPercentage;
+  const { portfolioIdentifier } = PROPERTIES.GLOBAL;
+  const {
+    guaranteedPercentage,
+    lenderType: { lenderTypeCode },
+    limitType: { limitTypeCode },
+    sectionIdentifier,
+  } = PROPERTIES.DEAL_GUARANTEE.DEFAULT;
 
   const guarantorParty = valueGenerator.stringOfNumericCharacters({ length: 8 });
   const limitKey = valueGenerator.stringOfNumericCharacters({ length: 8 });
@@ -52,17 +54,17 @@ describe('POST /deals/{dealIdentifier}/guarantees', () => {
     GuaranteedPercentage: guaranteedPercentage,
   };
 
-  const requestBodyToCreateDealGuarantee = [
-    {
-      dealIdentifier,
-      guarantorParty,
-      limitKey,
-      effectiveDate: effectiveDateInPast,
-      guaranteeExpiryDate: guaranteeExpiryDateInFuture,
-      maximumLiability,
-      guaranteeTypeCode,
-    },
-  ];
+  const requestItemToCreateDealGuarantee = {
+    dealIdentifier,
+    guarantorParty,
+    limitKey,
+    effectiveDate: effectiveDateInPast,
+    guaranteeExpiryDate: guaranteeExpiryDateInFuture,
+    maximumLiability,
+    guaranteeTypeCode,
+  };
+
+  const requestBodyToCreateDealGuarantee = [requestItemToCreateDealGuarantee];
 
   let api: Api;
 
@@ -108,7 +110,7 @@ describe('POST /deals/{dealIdentifier}/guarantees', () => {
   });
 
   it('sets the default guarantorParty if it is not specified in the request', async () => {
-    const { guarantorParty: _removed, ...newDealGuaranteeWithoutGuarantorParty } = requestBodyToCreateDealGuarantee[0];
+    const { guarantorParty: _removed, ...newDealGuaranteeWithoutGuarantorParty } = requestItemToCreateDealGuarantee;
     const requestBodyWithoutGuarantorParty = [newDealGuaranteeWithoutGuarantorParty];
     const acbsRequestBodyWithDefaultGuarantorParty = {
       ...acbsRequestBodyToCreateDealGuarantee,
@@ -129,7 +131,7 @@ describe('POST /deals/{dealIdentifier}/guarantees', () => {
   });
 
   it('sets the default guaranteeTypeCode if it is not specified in the request', async () => {
-    const { guaranteeTypeCode: _removed, ...newDealGuaranteeWithoutGuaranteeTypeCode } = requestBodyToCreateDealGuarantee[0];
+    const { guaranteeTypeCode: _removed, ...newDealGuaranteeWithoutGuaranteeTypeCode } = requestItemToCreateDealGuarantee;
     const requestBodyWithoutGuaranteeTypeCode = [newDealGuaranteeWithoutGuaranteeTypeCode];
     const acbsRequestBodyWithDefaultGuaranteeTypeCode = {
       ...acbsRequestBodyToCreateDealGuarantee,

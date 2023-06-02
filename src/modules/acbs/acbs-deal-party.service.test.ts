@@ -1,6 +1,8 @@
 import { HttpService } from '@nestjs/axios';
 import { PROPERTIES } from '@ukef/constants';
 import { UkefId } from '@ukef/helpers';
+import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { CreateDealInvestorGenerator } from '@ukef-test/support/generator/create-deal-investor-generator';
 import { GetDealInvestorGenerator } from '@ukef-test/support/generator/get-deal-investor-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
@@ -8,8 +10,6 @@ import { AxiosError } from 'axios';
 import { when } from 'jest-when';
 import { of, throwError } from 'rxjs';
 
-import { CurrentDateProvider } from '../date/current-date.provider';
-import { DateStringTransformations } from '../date/date-string.transformations';
 import { AcbsDealPartyService } from './acbs-deal-party.service';
 import { AcbsException } from './exception/acbs.exception';
 import { AcbsBadRequestException } from './exception/acbs-bad-request.exception';
@@ -40,7 +40,7 @@ describe('AcbsDealPartyService', () => {
 
   describe('getDealPartyForDeal', () => {
     const dealIdentifier = valueGenerator.ukefId();
-    const portfolioIdentifier = valueGenerator.string();
+    const portfolioIdentifier = valueGenerator.portfolioId();
     const acbsDealPartyURL = `/Portfolio/${portfolioIdentifier}/Deal/${dealIdentifier}/DealParty`;
 
     it('throws an AcbsException if the request to ACBS fails', async () => {
@@ -131,7 +131,7 @@ describe('AcbsDealPartyService', () => {
     const dateStringTransformations = new DateStringTransformations();
 
     const dealIdentifier: UkefId = valueGenerator.ukefId();
-    const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+    const { portfolioIdentifier } = PROPERTIES.GLOBAL;
 
     const { acbsRequestBodyToCreateDealInvestor } = new CreateDealInvestorGenerator(valueGenerator, currentDateProvider, dateStringTransformations).generate({
       numberToGenerate: 1,

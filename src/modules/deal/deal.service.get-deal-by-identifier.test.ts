@@ -1,5 +1,6 @@
 import { PROPERTIES } from '@ukef/constants';
 import { AcbsDealService } from '@ukef/modules/acbs/acbs-deal.service';
+import { AcbsGetDealResponseDto } from '@ukef/modules/acbs/dto/acbs-get-deal-response.dto';
 import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
@@ -7,7 +8,6 @@ import { TEST_CURRENCIES } from '@ukef-test/support/constants/test-currency.cons
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
 
-import { AcbsGetDealResponseDto } from '../acbs/dto/acbs-get-deal-response.dto';
 import { Deal } from './deal.interface';
 import { DealService } from './deal.service';
 
@@ -16,7 +16,7 @@ describe('DealService', () => {
   const dateStringTransformations = new DateStringTransformations();
   const idToken = valueGenerator.string();
   const dealIdentifier = valueGenerator.stringOfNumericCharacters({ length: 10 });
-  const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+  const { portfolioIdentifier } = PROPERTIES.GLOBAL;
   const currency = TEST_CURRENCIES.A_TEST_CURRENCY;
   const dealValue = valueGenerator.nonnegativeFloat();
   const guaranteeCommencementDateInAcbs = '2023-02-01T00:00:00Z';
@@ -66,11 +66,11 @@ describe('DealService', () => {
     const acbsAuthenticationServiceGetIdToken = mockAcbsAuthenticationService.getIdToken;
     when(acbsAuthenticationServiceGetIdToken).calledWith().mockResolvedValueOnce(idToken);
 
-    service = new DealService(acbsAuthenticationService, acbsDealService, dateStringTransformations, new CurrentDateProvider());
+    service = new DealService(acbsAuthenticationService, acbsDealService, dateStringTransformations, new CurrentDateProvider(), null);
   });
 
   describe('getDealByIdentifier', () => {
-    const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+    const { portfolioIdentifier } = PROPERTIES.GLOBAL;
 
     it('returns a transformation of the deal from ACBS', async () => {
       when(acbsDealServiceGetDealByIdentifier).calledWith(portfolioIdentifier, dealIdentifier, idToken).mockResolvedValueOnce(dealInAcbs);

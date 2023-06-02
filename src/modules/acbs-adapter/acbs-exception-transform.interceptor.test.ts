@@ -1,9 +1,9 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { AcbsBadRequestException } from '@ukef/modules/acbs/exception/acbs-bad-request.exception';
+import { AcbsResourceNotFoundException } from '@ukef/modules/acbs/exception/acbs-resource-not-found.exception';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { lastValueFrom, throwError } from 'rxjs';
 
-import { AcbsBadRequestException } from '../acbs/exception/acbs-bad-request.exception';
-import { AcbsResourceNotFoundException } from '../acbs/exception/acbs-resource-not-found.exception';
 import { AcbsExceptionTransformInterceptor } from './acbs-exception-transform.interceptor';
 
 describe('AcbsExceptionTransformInterceptor', () => {
@@ -31,6 +31,7 @@ describe('AcbsExceptionTransformInterceptor', () => {
     await expect(interceptPromise).rejects.toBeInstanceOf(BadRequestException);
     await expect(interceptPromise).rejects.toHaveProperty('message', 'Bad request');
     await expect(interceptPromise).rejects.toHaveProperty('cause', acbsBadRequestException);
+    await expect(interceptPromise).rejects.toHaveProperty('response.error', errorBody);
   });
 
   it('does NOT convert thrown exceptions that are NOT AcbsResourceNotFoundException or AcbsBadRequestException', async () => {

@@ -1,5 +1,5 @@
 import { ApiProperty, ApiResponseProperty } from '@nestjs/swagger';
-import { DateOnlyString } from '@ukef/helpers';
+import { AcbsPartyId, DateOnlyString } from '@ukef/helpers';
 
 export class GetFacilityByIdentifierResponseDto {
   @ApiResponseProperty()
@@ -81,10 +81,10 @@ export class GetFacilityByIdentifierResponseDto {
   description: string;
 
   @ApiResponseProperty()
-  agentBankIdentifier: string;
+  agentBankIdentifier: AcbsPartyId;
 
   @ApiResponseProperty()
-  obligorPartyIdentifier: string;
+  obligorPartyIdentifier: AcbsPartyId;
 
   @ApiResponseProperty()
   obligorName: string;

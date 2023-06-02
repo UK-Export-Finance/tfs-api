@@ -1,10 +1,11 @@
+import { prepareModifiedRequest } from '@ukef-test/support/helpers/request-field-validation-helper';
 import request from 'supertest';
 
 interface DateOnlyFieldValidationApiTestOptions<RequestBodyItem> {
   fieldName: keyof RequestBodyItem;
   required?: boolean;
   nullable?: boolean;
-  validRequestBody: RequestBodyItem[];
+  validRequestBody: RequestBodyItem[] | RequestBodyItem;
   makeRequest: (body: unknown[]) => request.Test;
   givenAnyRequestBodyWouldSucceed: () => void;
 }
@@ -18,6 +19,10 @@ export function withDateOnlyFieldValidationApiTests<RequestBodyItem>({
   givenAnyRequestBodyWouldSucceed,
 }: DateOnlyFieldValidationApiTestOptions<RequestBodyItem>): void {
   const fieldName = fieldNameSymbol.toString();
+
+  const requestIsAnArray = Array.isArray(validRequestBody);
+  const requestBodyItem = requestIsAnArray ? validRequestBody[0] : validRequestBody;
+
   required = required ?? true;
 
   describe(`${fieldName} validation`, () => {
@@ -27,9 +32,10 @@ export function withDateOnlyFieldValidationApiTests<RequestBodyItem>({
 
     if (required) {
       it(`returns a 400 response if ${fieldName} is not present`, async () => {
-        const { [fieldNameSymbol]: _removed, ...requestWithoutTheField } = validRequestBody[0];
+        const { [fieldNameSymbol]: _removed, ...requestWithoutTheField } = requestBodyItem;
+        const preparedRequestWithoutTheField = prepareModifiedRequest(requestIsAnArray, requestWithoutTheField);
 
-        const { status, body } = await makeRequest([requestWithoutTheField]);
+        const { status, body } = await makeRequest(preparedRequestWithoutTheField);
 
         expect(status).toBe(400);
         expect(body).toStrictEqual({
@@ -39,28 +45,32 @@ export function withDateOnlyFieldValidationApiTests<RequestBodyItem>({
         });
       });
     } else {
-      it(`returns a 201 response if ${fieldName} is not present`, async () => {
-        const { [fieldNameSymbol]: _removed, ...requestWithField } = validRequestBody[0];
+      it(`returns a 2xx response if ${fieldName} is not present`, async () => {
+        const { [fieldNameSymbol]: _removed, ...requestWithField } = requestBodyItem;
+        const preparedRequestWithField = prepareModifiedRequest(requestIsAnArray, requestWithField);
 
-        const { status } = await makeRequest([requestWithField]);
-
-        expect(status).toBe(201);
+        const { status } = await makeRequest(preparedRequestWithField);
+        expect(status).toBeGreaterThanOrEqual(200);
+        expect(status).toBeLessThan(300);
       });
     }
 
     if (nullable) {
-      it(`returns a 201 response if ${fieldName} is null`, async () => {
-        const requestWithNullDate = [{ ...validRequestBody[0], [fieldName]: null }];
+      it(`returns a 2xx response if ${fieldName} is null`, async () => {
+        const requestWithNullDate = { ...requestBodyItem, [fieldName]: null };
+        const preparedRequestWithNullDate = prepareModifiedRequest(requestIsAnArray, requestWithNullDate);
 
-        const { status } = await makeRequest(requestWithNullDate);
+        const { status } = await makeRequest(preparedRequestWithNullDate);
 
-        expect(status).toBe(201);
+        expect(status).toBeGreaterThanOrEqual(200);
+        expect(status).toBeLessThan(300);
       });
     } else {
       it(`returns a 400 response if ${fieldName} is null`, async () => {
-        const requestWithNullDate = [{ ...validRequestBody[0], [fieldName]: null }];
+        const requestWithNullDate = { ...requestBodyItem, [fieldName]: null };
+        const preparedRequestWithNullDate = prepareModifiedRequest(requestIsAnArray, requestWithNullDate);
 
-        const { status, body } = await makeRequest(requestWithNullDate);
+        const { status, body } = await makeRequest(preparedRequestWithNullDate);
 
         expect(status).toBe(400);
         expect(body).toStrictEqual({
@@ -72,9 +82,10 @@ export function withDateOnlyFieldValidationApiTests<RequestBodyItem>({
     }
 
     it(`returns a 400 response if ${fieldName} has time part of date string`, async () => {
-      const requestWithDateInIncorrectFormat = [{ ...validRequestBody[0], [fieldName]: '2023-02-01T00:00:00Z' }];
+      const requestWithDateInIncorrectFormat = { ...requestBodyItem, [fieldName]: '2023-02-01T00:00:00Z' };
+      const preparedRequestWithDateInIncorrectFormat = prepareModifiedRequest(requestIsAnArray, requestWithDateInIncorrectFormat);
 
-      const { status, body } = await makeRequest(requestWithDateInIncorrectFormat);
+      const { status, body } = await makeRequest(preparedRequestWithDateInIncorrectFormat);
 
       expect(status).toBe(400);
       expect(body).toStrictEqual({
@@ -85,9 +96,9 @@ export function withDateOnlyFieldValidationApiTests<RequestBodyItem>({
     });
 
     it(`returns a 400 response if ${fieldName} is not in YYYY-MM-DD date format`, async () => {
-      const requestWithDateInIncorrectFormat = [{ ...validRequestBody[0], [fieldName]: '20230201' }];
-
-      const { status, body } = await makeRequest(requestWithDateInIncorrectFormat);
+      const requestWithDateInIncorrectFormat = { ...requestBodyItem, [fieldName]: '20230201' };
+      const preparedRequestWithDateInIncorrectFormat = prepareModifiedRequest(requestIsAnArray, requestWithDateInIncorrectFormat);
+      const { status, body } = await makeRequest(preparedRequestWithDateInIncorrectFormat);
 
       expect(status).toBe(400);
       expect(body).toStrictEqual({
@@ -98,9 +109,9 @@ export function withDateOnlyFieldValidationApiTests<RequestBodyItem>({
     });
 
     it(`returns a 400 response if ${fieldName} is not a valid date`, async () => {
-      const requestWithInvalidDate = [{ ...validRequestBody[0], [fieldName]: '2023-99-10' }];
-
-      const { status, body } = await makeRequest(requestWithInvalidDate);
+      const requestWithInvalidDate = { ...requestBodyItem, [fieldName]: '2023-99-10' };
+      const preparedRequestWithInvalidDate = prepareModifiedRequest(requestIsAnArray, requestWithInvalidDate);
+      const { status, body } = await makeRequest(preparedRequestWithInvalidDate);
 
       expect(status).toBe(400);
       expect(body).toStrictEqual({
@@ -111,9 +122,10 @@ export function withDateOnlyFieldValidationApiTests<RequestBodyItem>({
     });
 
     it(`returns a 400 response if ${fieldName} is not a real day`, async () => {
-      const requestWithInvalidDate = [{ ...validRequestBody[0], [fieldName]: '2019-02-29' }];
+      const requestWithInvalidDate = { ...requestBodyItem, [fieldName]: '2019-02-29' };
+      const preparedRequestWithInvalidDate = prepareModifiedRequest(requestIsAnArray, requestWithInvalidDate);
 
-      const { status, body } = await makeRequest(requestWithInvalidDate);
+      const { status, body } = await makeRequest(preparedRequestWithInvalidDate);
 
       expect(status).toBe(400);
       expect(body).toStrictEqual({
@@ -123,12 +135,14 @@ export function withDateOnlyFieldValidationApiTests<RequestBodyItem>({
       });
     });
 
-    it(`returns a 201 response if ${fieldName} is a valid date`, async () => {
-      const requestWithValidDate = [{ ...validRequestBody[0], [fieldName]: '2022-02-01' }];
+    it(`returns a 2xx response if ${fieldName} is a valid date`, async () => {
+      const requestWithValidDate = { ...requestBodyItem, [fieldName]: '2022-02-01' };
+      const preparedRequestWithValidDate = prepareModifiedRequest(requestIsAnArray, requestWithValidDate);
 
-      const { status } = await makeRequest(requestWithValidDate);
+      const { status } = await makeRequest(preparedRequestWithValidDate);
 
-      expect(status).toBe(201);
+      expect(status).toBeGreaterThanOrEqual(200);
+      expect(status).toBeLessThan(300);
     });
   });
 }

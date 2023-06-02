@@ -14,7 +14,7 @@ describe('AcbsDealService', () => {
   const valueGenerator = new RandomValueGenerator();
   const idToken = valueGenerator.string();
   const baseUrl = valueGenerator.httpsUrl();
-  const portfolioIdentifier = valueGenerator.string({ length: 2 });
+  const portfolioIdentifier = valueGenerator.portfolioId();
   const dealIdentifier = valueGenerator.stringOfNumericCharacters({ length: 10 });
 
   let httpService: HttpService;

@@ -13,7 +13,7 @@ describe('AcbsFacilityPartyService', () => {
   const valueGenerator = new RandomValueGenerator();
   const idToken = valueGenerator.string();
   const baseUrl = valueGenerator.httpsUrl();
-  const portfolioIdentifier = valueGenerator.string({ length: 2 });
+  const portfolioIdentifier = valueGenerator.portfolioId();
   const facilityIdentifier = valueGenerator.ukefId();
 
   const { facilityInvestorsInAcbs } = new GetFacilityInvestorGenerator(valueGenerator).generate({

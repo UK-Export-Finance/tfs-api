@@ -1,7 +1,7 @@
 import { PROPERTIES } from '@ukef/constants';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
-import { withFacilityIdentifierUrlParamValidationApiTests } from '@ukef-test/common-tests/request-url-param-validation-api-tests/facility-identifier-url-param-validation-api-tests';
+import { withFacilityIdentifierUrlValidationApiTests } from '@ukef-test/common-tests/request-url-param-validation-api-tests/facility-identifier-url-validation-api-tests';
 import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
 import { GetFacilityInvestorGenerator } from '@ukef-test/support/generator/get-facility-investor-generator';
@@ -52,7 +52,7 @@ describe('GET /facilities/{facilityIdentifier}/investors', () => {
       api.getWithoutAuth(getFacilityInvestorsUrl, incorrectAuth?.headerName, incorrectAuth?.headerValue),
   });
 
-  withFacilityIdentifierUrlParamValidationApiTests({
+  withFacilityIdentifierUrlValidationApiTests({
     givenRequestWouldOtherwiseSucceedForFacilityId: (facilityId) => {
       givenAuthenticationWithTheIdpSucceeds();
       requestToGetFacilityInvestorsWithId(facilityId).reply(200, facilityInvestorsInAcbs);

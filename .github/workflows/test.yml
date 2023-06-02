@@ -24,9 +24,9 @@ on:
       - 'nest.cli.json'
 
 env:
-  environment: dev
+  environment: 'qa'
   timezone: 'Europe/London'
-  node: '18'
+  node: ${{ vars.NODE_VERSION }}
 
 jobs:
 
@@ -134,6 +134,7 @@ jobs:
           NODE_ENV: ${{ secrets.NODE_ENV }}
           TZ: ${{ secrets.TZ }}
           LOG_LEVEL: ${{ vars.LOG_LEVEL }}
+          REDACT_LOGS: ${{ vars.REDACT_LOGS }}
           SWAGGER_USER: ${{ secrets.SWAGGER_USER }}
           SWAGGER_PASSWORD: ${{ secrets.SWAGGER_PASSWORD }}
           ACBS_BASE_URL: ${{ secrets.ACBS_BASE_URL }}

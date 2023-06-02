@@ -24,7 +24,7 @@ describe('POST /deals/{dealIdentifier}/investors', () => {
   const dealIdentifier: UkefId = valueGenerator.ukefId();
   const createDealInvestorUrl = `/api/v1/deals/${dealIdentifier}/investors`;
 
-  const portfolioIdentifier = PROPERTIES.GLOBAL.portfolioIdentifier;
+  const { portfolioIdentifier } = PROPERTIES.GLOBAL;
 
   const { acbsRequestBodyToCreateDealInvestor, requestBodyToCreateDealInvestor } = new CreateDealInvestorGenerator(
     valueGenerator,
@@ -34,6 +34,7 @@ describe('POST /deals/{dealIdentifier}/investors', () => {
     numberToGenerate: 2,
     dealIdentifier: dealIdentifier,
   });
+  const [requestItemToCreateDealInvestor] = requestBodyToCreateDealInvestor;
 
   let api: Api;
 
@@ -79,7 +80,7 @@ describe('POST /deals/{dealIdentifier}/investors', () => {
   });
 
   it('sets the default lenderType if it is not specified in the request', async () => {
-    const { lenderType: _removed, ...newDealInvestorWithoutLenderType } = requestBodyToCreateDealInvestor[0];
+    const { lenderType: _removed, ...newDealInvestorWithoutLenderType } = requestItemToCreateDealInvestor;
     const requestBodyWithoutLenderType = [newDealInvestorWithoutLenderType];
     const acbsRequestBodyWithDefaultLenderType = {
       ...acbsRequestBodyToCreateDealInvestor,
@@ -98,7 +99,7 @@ describe('POST /deals/{dealIdentifier}/investors', () => {
   });
 
   it('sets the default expiryDate if it is not specified in the request', async () => {
-    const { expiryDate: _removed, ...newDealInvestorWithoutExpiryDate } = requestBodyToCreateDealInvestor[0];
+    const { expiryDate: _removed, ...newDealInvestorWithoutExpiryDate } = requestItemToCreateDealInvestor;
     const requestBodyWithoutExpiryDate = [newDealInvestorWithoutExpiryDate];
     const acbsRequestBodyWithDefaultExpirationDate = {
       ...acbsRequestBodyToCreateDealInvestor,
@@ -118,7 +119,7 @@ describe('POST /deals/{dealIdentifier}/investors', () => {
   });
 
   it('sets the default dealStatus if it is not specified in the request', async () => {
-    const { dealStatus: _removed, ...newDealInvestorWithoutDealStatus } = requestBodyToCreateDealInvestor[0];
+    const { dealStatus: _removed, ...newDealInvestorWithoutDealStatus } = requestItemToCreateDealInvestor;
     const requestBodyWithoutDealStatus = [newDealInvestorWithoutDealStatus];
     const acbsRequestBodyWithDefaultDealStatus = {
       ...acbsRequestBodyToCreateDealInvestor,

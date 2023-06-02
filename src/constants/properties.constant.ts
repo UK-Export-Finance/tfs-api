@@ -1,10 +1,12 @@
+import { BundleInformationType } from '@ukef/constants/enums/bundle-information-type';
+
 export const PROPERTIES = {
   GLOBAL: {
     portfolioIdentifier: 'E1',
+    servicingQueueIdentifier: 'DCIS',
   },
   COVENANT: {
-    DEFAULTS: {
-      portfolioIdentifier: 'E1',
+    DEFAULT: {
       accountOwnerIdentifier: '00000000',
       complianceEvaluationMode: {
         covenantEvaluationModeCode: 'M',
@@ -30,7 +32,7 @@ export const PROPERTIES = {
     },
   },
   DEAL: {
-    DEFAULTS: {
+    DEFAULT: {
       dealOriginationCode: 'C',
       isDealSyndicationIndicator: true,
       dealInitialStatusCode: 'A',
@@ -107,6 +109,16 @@ export const PROPERTIES = {
       accountStructureCode: 'C',
       lenderTypeCode: '100',
       riskMitigationCode: '',
+    },
+  },
+  DEAL_BORROWING_RESTRICTION: {
+    DEFAULT: {
+      sequenceNumber: 1,
+      restrictGroupCategory: {
+        restrictGroupCategoryCode: '36',
+      },
+      includingIndicator: true,
+      includeExcludeAllItemsIndicator: true,
     },
   },
   DEAL_GUARANTEE: {
@@ -245,6 +257,21 @@ export const PROPERTIES = {
       },
     },
   },
+  FACILITY_ACTIVATION_TRANSACTION: {
+    DEFAULT: {
+      initiatingUserName: 'APIUKEF',
+      useAPIUserIndicator: false,
+      bundleMessageList: {
+        type: BundleInformationType.FACILITY_CODE_VALUE_TRANSACTION as const,
+        accountOwnerIdentifier: '00000000',
+        facilityTransactionCodeValue: { facilityTransactionCodeValueCode: 'A' },
+        facilityTransactionType: { typeCode: '2340' },
+        isDraftIndicator: false,
+        limitType: { limitTypeCode: '00' },
+        sectionIdentifier: '00',
+      },
+    },
+  },
   FACILITY_GUARANTEE: {
     DEFAULT: {
       sectionIdentifier: '00',
@@ -255,6 +282,221 @@ export const PROPERTIES = {
       limitType: {
         limitTypeCode: '00',
       },
+    },
+  },
+  FACILITY_FIXED_FEE: {
+    DEFAULT: {
+      fixedFeeChargeType: {
+        fixedFeeChargeTypeCode: '1',
+      },
+      description: {
+        '250': 'Bond Support Premium',
+        '260': 'EWCS Premium',
+        '280': 'Financial Guarantee Fee',
+      },
+      fixedFeeEarningMethod: {
+        fixedFeeEarningMethodCode: 'A',
+      },
+      sectionIdentifier: '00',
+      limitType: {
+        limitTypeCode: '00',
+      },
+      involvedParty: {
+        partyIdentifier: '00000000',
+      },
+      leadDays: 1,
+      accountingMethodCode: 'A',
+      feeStartDateTypeCode: 'A',
+      billingFrequencyTypeCode: 'G',
+      feeStatusCode: 'A',
+      incomeClassCode: 'BPM',
+      businessDayAdjustmentTypeCode: 'M',
+      accrueToBusinessDayAdjustmentTypeCode: 'M',
+      calendarIdentifier: 'UK',
+      financialCurrentFXRate: 1,
+      financialCurrentFXRateOperand: 'D',
+    },
+  },
+  FACILITY_LOAN: {
+    DEFAULT: {
+      initiatingUserName: 'APIUKEF',
+      servicingUserAccountIdentifier: 'APIUKEF',
+      useAPIUserIndicator: false,
+      initialBundleStatusCode: 3,
+      messageType: BundleInformationType.NEW_LOAN_REQUEST as const,
+      accountOwnerIdentifier: '00000000',
+      sectionIdentifier: '00',
+      servicingUser: {
+        userAcbsIdentifier: 'OPERATIONS',
+        userName: 'OPERATIONS',
+      },
+      administrativeUser: {
+        userAcbsIdentifier: 'OPERATIONS',
+        userName: 'OPERATIONS',
+      },
+      servicingUnit: {
+        servicingUnitIdentifier: 'ACBS',
+      },
+      servicingUnitSection: {
+        servicingUnitSectionIdentifier: 'ACBS',
+      },
+      closureType: {
+        closureTypeCode: 'B',
+      },
+      agentPartyIdentifier: '00000000',
+      agentAddressIdentifier: 'PRM',
+      interestRateType: {
+        interestRateTypeCode: 'INS',
+      },
+      bookingType: {
+        loanBookingTypeCode: 'A',
+      },
+      loanReviewFrequencyType: {
+        loanReviewFrequencyTypeCode: 'A',
+      },
+      currentRiskOfficerIdentifier: 'DCIS',
+      loanAdvanceType: {
+        loanAdvanceTypeCode: 'D',
+      },
+      generalLedgerUnit: {
+        generalLedgerUnitIdentifier: 'ECGD',
+      },
+      cashEventList: {
+        paymentInstructionCode: '',
+        cashOffsetTypeCode: '02',
+        settlementCurrencyCode: null,
+        originatingGeneralLedgerUnit: null,
+        dDAAccount: '',
+        cashReferenceIdentifier: '',
+      },
+      financialRateGroup: 'UKRATEGRP',
+      customerUsageRateGroup: 'UKRATEGRP',
+      financialFrequency: {
+        usageFrequencyTypeCode: 'M',
+      },
+      customerUsageFrequency: {
+        usageFrequencyTypeCode: 'M',
+      },
+      financialBusinessDayAdjustment: {
+        businessDayAdjustmentTypeCode: 'S',
+      },
+      customerUsageBusinessDayAdjustment: {
+        businessDayAdjustmentTypeCode: 'S',
+      },
+      financialCalendar: {
+        calendarIdentifier: 'UK',
+      },
+      customerUsageCalendar: {
+        calendarIdentifier: 'UK',
+      },
+      financialLockMTMRateIndicator: true,
+      customerUsageLockMTMRateIndicator: true,
+      securedType: {
+        loanSecuredTypeCode: 'N',
+      },
+      accrualScheduleList: {
+        accrualCategory: {
+          accrualCategoryCode: {
+            pac: 'PAC01',
+            ctl: 'CTL01',
+          },
+        },
+      },
+    },
+  },
+  FACILITY_AMOUNT_TRANSACTION: {
+    DEFAULT: {
+      servicingQueueIdentifier: 'DCIS',
+      portfolioIdentifier: 'E1',
+      initialBundleStatusCode: 3,
+      initiatingUserName: 'APIUKEF',
+      useAPIUserIndicator: false,
+      bundleMessageList: {
+        type: BundleInformationType.FACILITY_AMOUNT_TRANSACTION as const,
+        accountOwnerIdentifier: '00000000',
+        isDraftIndicator: false,
+        limitType: {
+          limitTypeCode: '00',
+        },
+        sectionIdentifier: '00',
+        lenderTypeCode: '100',
+      },
+    },
+  },
+  LOAN_AMOUNT_AMENDMENT: {
+    DEFAULT: {
+      initialBundleStatusCode: 3,
+      initiatingUserName: 'APIUKEF',
+      useAPIUserIndicator: false,
+      bundleMessageList: {
+        type: BundleInformationType.LOAN_ADVANCE_TRANSACTION as const,
+        cashOffsetTypeCode: '02',
+        isDraftIndicator: false,
+        transactionTypeCode: {
+          increase: '9020',
+          decrease: '9030',
+        },
+      },
+    },
+  },
+  REPAYMENT: {
+    DEFAULT: {
+      primaryScheduleIndicator: true,
+      involvedParty: {
+        partyIdentifier: '00000000',
+      },
+      lenderType: {
+        lenderTypeCode: '100',
+      },
+      accountSequence: '1',
+      leadDays: 5,
+      nextDueBusinessDayAdjustmentType: {
+        loanSystemBusinessDayAdjustmentTypeCode: 'M',
+      },
+      nextAccrueBusinessDayAdjustmentType: {
+        loanSystemBusinessDayAdjustmentTypeCode: 'M',
+      },
+      billingPeriod: 0,
+      collectionInstructionMethod: {
+        collectionInstructionMethodCode: '',
+      },
+      billFormatType: {
+        billFormatTypeCode: '',
+      },
+      mailingInstructionType: {
+        mailingInstructionTypeCode: '',
+      },
+      spreadToInvestorsIndicator: true,
+      balloonPaymentAmount: 0,
+      loanPrePaymentType: {
+        loanPrePaymentTypeCode: 2,
+      },
+    },
+    INT: {
+      billingScheduleType: {
+        billingScheduleTypeCode: 'A',
+      },
+      billingSequenceNumber: 2,
+    },
+    PAC: {
+      primaryScheduleIndicator: false,
+      billingScheduleType: {
+        billingScheduleTypeCode: 'N',
+      },
+      balanceCategory: {
+        balanceCategoryCode: 'PAC',
+      },
+      numberOfBillsToPrint: 99999,
+      percentageOfBalance: 100,
+      billingSequenceNumber: 1,
+    },
+    PAC_BSS: {
+      billingScheduleType: {
+        billingScheduleTypeCode: 'B',
+      },
+      numberOfBillsToPrint: 99999,
+      percentageOfBalance: 100,
+      billingSequenceNumber: 1,
     },
   },
 };
