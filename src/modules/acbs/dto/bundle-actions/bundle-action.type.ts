@@ -12,7 +12,7 @@ export const isFacilityCodeValueTransaction = (action: BundleAction): action is 
   return action.$type === ENUMS.BUNDLE_INFORMATION_TYPES.FACILITY_CODE_VALUE_TRANSACTION;
 };
 
-export const isFacilityAmountTransaction = (action: BundleAction): action is FacilityCodeValueTransaction => {
+export const isFacilityAmountTransaction = (action: BundleAction): action is FacilityAmountTransaction => {
   return action.$type === ENUMS.BUNDLE_INFORMATION_TYPES.FACILITY_AMOUNT_TRANSACTION;
 };
 
