@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { CURRENCIES } from '@ukef/constants/currencies.constant';
-import { AcbsBundleId, DateString, UkefId } from '@ukef/helpers';
+import { AcbsBundleId, UkefId } from '@ukef/helpers';
 import { AcbsBundleInformationService } from '@ukef/modules/acbs/acbs-bundle-information.service';
 import { AcbsFacilityLoanService } from '@ukef/modules/acbs/acbs-facility-loan.service';
 import { AcbsCreateBundleInformationRequestDto } from '@ukef/modules/acbs/dto/acbs-create-bundle-information-request.dto';
@@ -10,13 +10,13 @@ import { NewLoanRequest } from '@ukef/modules/acbs/dto/bundle-actions/new-loan-r
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
+import { AccrualScheduleBuilder } from '@ukef/modules/facility-loan/accrual-schedule.builder';
 
 import { CreateFacilityLoanRequestItem } from './dto/create-facility-loan-request.dto';
 import { CreateFacilityLoanResponse } from './dto/create-facility-loan-response.dto';
 import { CreateLoanAmountAmendmentRequestItem } from './dto/create-loan-amount-amendment-request.dto';
 import { GetFacilityLoanResponseDto } from './dto/get-facility-loan-response.dto';
 import { RepaymentScheduleBuilder } from './repayment-schedule.builder';
-import { AccrualScheduleBuilder } from '@ukef/modules/facility-loan/accrual-schedule.builder';
 
 @Injectable()
 export class FacilityLoanService {

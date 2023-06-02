@@ -1,9 +1,11 @@
 import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { CALENDAR_IDENTIFIERS } from '@ukef/constants/calendar-identifiers.constant';
 import { CURRENCIES } from '@ukef/constants/currencies.constant';
+import { LOAN_RATE_INDEX } from '@ukef/constants/loan-rate-index.constant';
 import { AcbsBundleId, UkefId } from '@ukef/helpers';
 import { AcbsCreateBundleInformationRequestDto } from '@ukef/modules/acbs/dto/acbs-create-bundle-information-request.dto';
 import { AcbsCreateBundleInformationResponseHeadersDto } from '@ukef/modules/acbs/dto/acbs-create-bundle-information-response.dto';
+import { AccrualSchedule } from '@ukef/modules/acbs/dto/bundle-actions/accrual-schedule.interface';
 import { NewLoanRequest } from '@ukef/modules/acbs/dto/bundle-actions/new-loan-request.bundle-action';
 import { RepaymentSchedule } from '@ukef/modules/acbs/dto/bundle-actions/repayment-schedule.interface';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
@@ -14,8 +16,6 @@ import { TEST_DATES } from '@ukef-test/support/constants/test-date.constant';
 
 import { AbstractGenerator } from './abstract-generator';
 import { RandomValueGenerator } from './random-value-generator';
-import { AccrualSchedule } from '@ukef/modules/acbs/dto/bundle-actions/accrual-schedule.interface';
-import { LOAN_RATE_INDEX } from '@ukef/constants/loan-rate-index.constant';
 
 export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilityLoanRequestItem, GenerateResult, GenerateOptions> {
   constructor(protected readonly valueGenerator: RandomValueGenerator, protected readonly dateStringTransformations: DateStringTransformations) {
@@ -381,9 +381,7 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
   }
 
   private getBondAndGefAccrualSchedules(facilityLoan: CreateFacilityLoanRequestItem, acbsEffectiveDate: string): AccrualSchedule[] {
-    return [
-      this.getPacAccrualSchedule(facilityLoan, acbsEffectiveDate),
-    ];
+    return [this.getPacAccrualSchedule(facilityLoan, acbsEffectiveDate)];
   }
 
   private getPacAccrualSchedule(facilityLoan: CreateFacilityLoanRequestItem, acbsEffectiveDate: string): AccrualSchedule {
@@ -442,51 +440,51 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
       {
         ...this.getBaseAccrualSchedule(facilityLoan, acbsEffectiveDate),
         ScheduleIdentifier: PROPERTIES.ACCRUAL.INT_RFR.scheduleIdentifier,
-      AccrualCategory: {
-        AccrualCategoryCode: PROPERTIES.ACCRUAL.INT_RFR.accrualCategory.accrualCategoryCode,
+        AccrualCategory: {
+          AccrualCategoryCode: PROPERTIES.ACCRUAL.INT_RFR.accrualCategory.accrualCategoryCode,
+        },
+        RateCalculationMethod: {
+          RateCalculationMethodCode: PROPERTIES.ACCRUAL.INT_RFR.rateCalculationMethod.rateCalculationMethodCode,
+        },
+        SpreadRate: facilityLoan.spreadRateCtl,
+        IndexRateChangeTiming: {
+          IndexRateChangeTimingCode: PROPERTIES.ACCRUAL.INT_RFR.indexRateChangeTiming.indexRateChangeTimingCode,
+        },
+        LoanRateIndex: {
+          LoanRateIndexCode: LOAN_RATE_INDEX.OTHER,
+        },
+        IndexedRateIndicator: PROPERTIES.ACCRUAL.INT_RFR.indexedRateIndicator,
+        AccrualScheduleIBORDetails: {
+          IsDailyRFR: PROPERTIES.ACCRUAL.INT_RFR.accrualScheduleIBORDetails.isDailyRFR,
+          RFRCalculationMethod: {
+            RFRCalculationMethodCode: PROPERTIES.ACCRUAL.INT_RFR.accrualScheduleIBORDetails.rFRCalculationMethod.rFRCalculationMethodCode,
+          },
+          CompoundingDateType: {
+            CompoundingDateTypeCode: PROPERTIES.ACCRUAL.INT_RFR.accrualScheduleIBORDetails.compoundingDateType.compoundingDateTypeCode,
+          },
+          CalculationFeature: {
+            CalculationFeatureCode: PROPERTIES.ACCRUAL.INT_RFR.accrualScheduleIBORDetails.calculationFeature.calculationFeatureCode,
+          },
+          NextRatePeriod: facilityLoan.issueDate,
+          UseObservationShiftIndicator: facilityLoan.currency === CURRENCIES.EUR,
+          RateSetLagDays: PROPERTIES.ACCRUAL.INT_RFR.accrualScheduleIBORDetails.rateSetLagDays,
+          LagDaysType: {
+            CompoundingDateTypeCode: PROPERTIES.ACCRUAL.INT_RFR.accrualScheduleIBORDetails.compoundingDateType.compoundingDateTypeCode,
+          },
+          Calendar: {
+            CalendarIdentifier: PROPERTIES.ACCRUAL.INT_RFR.accrualScheduleIBORDetails.calendar.calendarIdentifier,
+          },
+          NextRatePeriodBusinessDayAdjustment: {
+            NextRatePeriodBusinessDayAdjustmentCode:
+              PROPERTIES.ACCRUAL.INT_RFR.accrualScheduleIBORDetails.nextRatePeriodBusinessDayAdjustment.nextRatePeriodBusinessDayAdjustmentCode,
+          },
+          RatePeriodResetFrequency: {
+            RatePeriodResetFrequencyCode: PROPERTIES.ACCRUAL.INT_RFR.accrualScheduleIBORDetails.ratePeriodResetFrequency.ratePeriodResetFrequencyCode,
+          },
+          FrequencyPeriod: PROPERTIES.ACCRUAL.INT_RFR.accrualScheduleIBORDetails.frequencyPeriod,
+        },
       },
-      RateCalculationMethod: {
-        RateCalculationMethodCode: PROPERTIES.ACCRUAL.INT_RFR.rateCalculationMethod.rateCalculationMethodCode,
-      },
-      SpreadRate: facilityLoan.spreadRateCtl,
-      IndexRateChangeTiming: {
-        IndexRateChangeTimingCode: PROPERTIES.ACCRUAL.INT_RFR.indexRateChangeTiming.indexRateChangeTimingCode,
-      },
-      LoanRateIndex: {
-        LoanRateIndexCode: LOAN_RATE_INDEX.OTHER,
-      },
-      IndexedRateIndicator: PROPERTIES.ACCRUAL.INT_RFR.indexedRateIndicator,
-      AccrualScheduleIBORDetails: {
-        IsDailyRFR: PROPERTIES.ACCRUAL.INT_RFR.accrualScheduleIBORDetails.isDailyRFR,
-        RFRCalculationMethod: {
-          RFRCalculationMethodCode: PROPERTIES.ACCRUAL.INT_RFR.accrualScheduleIBORDetails.rFRCalculationMethod.rFRCalculationMethodCode,
-        },
-        CompoundingDateType: {
-          CompoundingDateTypeCode: PROPERTIES.ACCRUAL.INT_RFR.accrualScheduleIBORDetails.compoundingDateType.compoundingDateTypeCode,
-        },
-        CalculationFeature: {
-          CalculationFeatureCode: PROPERTIES.ACCRUAL.INT_RFR.accrualScheduleIBORDetails.calculationFeature.calculationFeatureCode,
-        },
-        NextRatePeriod: facilityLoan.issueDate,
-        UseObservationShiftIndicator: facilityLoan.currency === CURRENCIES.EUR,
-        RateSetLagDays: PROPERTIES.ACCRUAL.INT_RFR.accrualScheduleIBORDetails.rateSetLagDays,
-        LagDaysType: {
-          CompoundingDateTypeCode: PROPERTIES.ACCRUAL.INT_RFR.accrualScheduleIBORDetails.compoundingDateType.compoundingDateTypeCode,
-        },
-        Calendar: {
-          CalendarIdentifier: PROPERTIES.ACCRUAL.INT_RFR.accrualScheduleIBORDetails.calendar.calendarIdentifier,
-        },
-        NextRatePeriodBusinessDayAdjustment: {
-          NextRatePeriodBusinessDayAdjustmentCode:
-            PROPERTIES.ACCRUAL.INT_RFR.accrualScheduleIBORDetails.nextRatePeriodBusinessDayAdjustment.nextRatePeriodBusinessDayAdjustmentCode,
-        },
-        RatePeriodResetFrequency: {
-          RatePeriodResetFrequencyCode: PROPERTIES.ACCRUAL.INT_RFR.accrualScheduleIBORDetails.ratePeriodResetFrequency.ratePeriodResetFrequencyCode,
-        },
-        FrequencyPeriod: PROPERTIES.ACCRUAL.INT_RFR.accrualScheduleIBORDetails.frequencyPeriod,
-      },
-      }
-    ]
+    ];
   }
 }
 

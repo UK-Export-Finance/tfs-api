@@ -1,4 +1,5 @@
 import { TEST_DATES } from '@ukef-test/support/constants/test-date.constant';
+
 import { CurrentDateProvider } from './current-date.provider';
 import { DateStringTransformations } from './date-string.transformations';
 
@@ -103,7 +104,7 @@ describe('DateStringTransformations', () => {
     });
 
     it('returns the day in D format if the day number is a single digit', () => {
-      const date ='1987-12-03';
+      const date = '1987-12-03';
 
       expect(dateStringTransformations.getDayFromDateOnlyString(date)).toBe(3);
     });

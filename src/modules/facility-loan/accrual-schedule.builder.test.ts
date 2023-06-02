@@ -1,13 +1,13 @@
 import { ENUMS } from '@ukef/constants';
 import { CURRENCIES } from '@ukef/constants/currencies.constant';
+import { LOAN_RATE_INDEX } from '@ukef/constants/loan-rate-index.constant';
+import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
+import { TEST_DATES } from '@ukef-test/support/constants/test-date.constant';
 import { CreateFacilityLoanGenerator } from '@ukef-test/support/generator/create-facility-loan-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 
 import { AccrualScheduleBuilder } from './accrual-schedule.builder';
-import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
-import { TEST_DATES } from '@ukef-test/support/constants/test-date.constant';
-import { LOAN_RATE_INDEX } from '@ukef/constants/loan-rate-index.constant';
 
 describe('AccrualScheduleBuilder', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -79,7 +79,7 @@ describe('AccrualScheduleBuilder', () => {
         {
           ...bondAndGefAccrualSchedulesGbp[0],
           EffectiveDate: midnightToday,
-        }
+        },
       ];
       const accrualSchedules = accrualScheduleBuilder.getAccrualSchedules(newLoanWithFutureIssueDate);
 
@@ -116,7 +116,7 @@ describe('AccrualScheduleBuilder', () => {
             AccrualScheduleIBORDetails: {
               ...ewcsAccrualSchedulesGbp[1].AccrualScheduleIBORDetails,
               UseObservationShiftIndicator: true,
-            }
+            },
           },
         ];
 
