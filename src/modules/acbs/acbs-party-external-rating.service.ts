@@ -6,7 +6,7 @@ import { AcbsConfigBaseUrl } from './acbs-config-base-url.type';
 import { AcbsHttpService } from './acbs-http.service';
 import { AcbsCreatePartyExternalRatingRequestDto } from './dto/acbs-create-party-external-rating-request.dto';
 import { AcbsGetPartyExternalRatingsResponseDto } from './dto/acbs-get-party-external-ratings-response.dto';
-import { getPartyNotFoundKnownAcbsError, postPartyExternalRatingExistsKnownAcbsError, postPartyExternalRatingNotFoundKnownAcbsError } from './known-errors';
+import { getPartyNotFoundKnownAcbsError, postPartyExternalRatingNotFoundKnownAcbsError } from './known-errors';
 import { createWrapAcbsHttpGetErrorCallback, createWrapAcbsHttpPostOrPutErrorCallback } from './wrap-acbs-http-error-callback';
 
 @Injectable()
@@ -42,7 +42,7 @@ export class AcbsPartyExternalRatingService {
       idToken,
       onError: createWrapAcbsHttpPostOrPutErrorCallback({
         messageForUnknownError: 'Failed to create party external rating in ACBS.',
-        knownErrors: [postPartyExternalRatingExistsKnownAcbsError(), postPartyExternalRatingNotFoundKnownAcbsError(PartyIdentifier)],
+        knownErrors: [postPartyExternalRatingNotFoundKnownAcbsError(PartyIdentifier)],
       }),
     });
   }

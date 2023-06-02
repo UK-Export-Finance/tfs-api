@@ -9,9 +9,9 @@ export interface AcbsCreatePartyExternalRatingRequestDto {
     AssignedRatingCode: string;
   };
   RatedDate: DateString;
-  ProbabilityofDefault: string;
-  LossGivenDefault: string;
-  RiskWeighting: string;
+  ProbabilityofDefault: number;
+  LossGivenDefault: number;
+  RiskWeighting: number;
   ExternalRatingNote1: string;
   ExternalRatingNote2: string;
 }

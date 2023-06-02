@@ -160,9 +160,9 @@ export const PROPERTIES = {
   PARTY_EXTERNAL_RATING: {
     DEFAULT: {
       ratingEntityCode: '150',
-      probabilityofDefault: '0.000000',
-      lossGivenDefault: '0.000000',
-      riskWeighting: '0.000000',
+      probabilityofDefault: 0,
+      lossGivenDefault: 0,
+      riskWeighting: 0,
       externalRatingNote1: '',
       externalRatingNote2: '',
     },

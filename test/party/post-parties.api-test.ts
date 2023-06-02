@@ -21,7 +21,8 @@ describe('POST /parties', () => {
   const dateStringTransformations = new DateStringTransformations();
 
   const partyIdentifier = valueGenerator.acbsPartyId();
-  const alternateIdentifier = valueGenerator.stringOfNumericCharacters({ length: 8 });
+  const basePartyAlternateIdentifier = valueGenerator.stringOfNumericCharacters({ length: 7 });
+  const alternateIdentifier = `${basePartyAlternateIdentifier}0`;
 
   const createPartyUrl = `/api/v1/parties`;
 
@@ -33,11 +34,10 @@ describe('POST /parties', () => {
 
   const { acbsCreatePartyRequest, apiCreatePartyRequest } = new CreatePartyGenerator(valueGenerator, dateStringTransformations).generate({
     numberToGenerate: 2,
+    basePartyAlternateIdentifier,
   });
   const [apiPartyToCreate] = apiCreatePartyRequest;
   const { officerRiskDate: ratedDate } = apiPartyToCreate;
-  apiPartyToCreate.alternateIdentifier = alternateIdentifier;
-  acbsCreatePartyRequest.PartyAlternateIdentifier = alternateIdentifier;
 
   const { acbsExternalRatingToCreate } = new CreatePartyExternalRatingGenerator(valueGenerator, dateStringTransformations).generate({
     numberToGenerate: 1,
@@ -251,25 +251,7 @@ describe('POST /parties', () => {
       expect(body).toStrictEqual({ message: 'Not found', statusCode: 404 });
     });
 
-    it(`returns a 400 response with the correct error string if ACBS responds with a 400 response that is a string containing 'PartyExternalRating exists'`, async () => {
-      givenAuthenticationWithTheIdpSucceeds();
-      const acbsErrorMessage = 'PartyExternalRating exists';
-      givenRequestToGetPartiesBySearchTextSucceeds();
-      givenRequestToCreatePartySucceeds();
-      givenRequestToGetPartyExternalRatingsSucceeds();
-      requestToCreatePartyExternalRating(acbsExternalRatingToCreate).reply(400, acbsErrorMessage);
-
-      const { status, body } = await api.post(createPartyUrl, apiCreatePartyRequest);
-
-      expect(status).toBe(400);
-      expect(body).toStrictEqual({
-        message: 'Bad request',
-        error: 'Party external rating with this assignedRatingCode and ratedDate combination already exists.',
-        statusCode: 400,
-      });
-    });
-
-    it(`returns a 400 response if ACBS responds with a 400 response that is a string that does not contain 'partyIdentifier is not valid' or 'PartyExternalRating exists'`, async () => {
+    it(`returns a 400 response if ACBS responds with a 400 response that is a string that does not contain 'partyIdentifier is not valid'`, async () => {
       givenAuthenticationWithTheIdpSucceeds();
       const acbsErrorMessage = 'ACBS error message';
       givenRequestToGetPartiesBySearchTextSucceeds();

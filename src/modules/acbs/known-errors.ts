@@ -56,13 +56,6 @@ export const getBundleInformationNotFoundKnownAcbsError = (bundleIdentifier: str
   },
 });
 
-export const postPartyExternalRatingExistsKnownAcbsError = (): KnownError => ({
-  caseInsensitiveSubstringToFind: 'PartyExternalRating exists',
-  throwError: (error) => {
-    throw new AcbsBadRequestException('Bad request', error, 'Party external rating with this assignedRatingCode and ratedDate combination already exists.');
-  },
-});
-
 export const postPartyExternalRatingNotFoundKnownAcbsError = (partyIdentifier: string): KnownError => ({
   caseInsensitiveSubstringToFind: 'partyIdentifier is not valid',
   throwError: (error) => {

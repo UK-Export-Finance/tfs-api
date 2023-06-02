@@ -11,7 +11,7 @@ export class CreatePartyRequestItem {
     pattern: UKEFID.PARTY_ID.REGEX,
     example: EXAMPLES.PARTY_ALTERNATE_ID,
   })
-  alternateIdentifier: string;
+  readonly alternateIdentifier: string;
 
   @ValidatedStringApiProperty({
     description: 'The primary industry classification code for this customer.',
@@ -19,7 +19,7 @@ export class CreatePartyRequestItem {
     maxLength: 10,
     example: EXAMPLES.INDUSTRY_CLASSIFICATION,
   })
-  industryClassification: string;
+  readonly industryClassification: string;
 
   @ValidatedStringApiProperty({
     description: 'The primary customer name.',
@@ -27,7 +27,7 @@ export class CreatePartyRequestItem {
     maxLength: 35,
     example: EXAMPLES.PARTY_NAME,
   })
-  name1: string;
+  readonly name1: string;
 
   @ValidatedStringApiProperty({
     description: 'The secondary customer name.',
@@ -35,7 +35,7 @@ export class CreatePartyRequestItem {
     maxLength: 35,
     example: EXAMPLES.PARTY_NAME,
   })
-  name2?: string;
+  readonly name2?: string;
 
   @ValidatedStringApiProperty({
     description: 'The tertiary customer name.',
@@ -43,7 +43,7 @@ export class CreatePartyRequestItem {
     maxLength: 35,
     example: EXAMPLES.PARTY_NAME,
   })
-  name3?: string;
+  readonly name3?: string;
 
   @ValidatedStringApiProperty({
     description: 'A code that indicates what minority class this customer represents.',
@@ -51,7 +51,7 @@ export class CreatePartyRequestItem {
     maxLength: 2,
     example: EXAMPLES.SME_TYPE,
   })
-  smeType: string;
+  readonly smeType: string;
 
   @ValidatedStringApiProperty({
     description: `A code that identifies the citizenship category of this customer. Should be '1' if the domicile country is the UK, otherwise '2'.`,
@@ -59,12 +59,12 @@ export class CreatePartyRequestItem {
     enum: ENUMS.CITIZENSHIP_CLASSES,
     example: EXAMPLES.CITIZENSHIP_CLASS,
   })
-  citizenshipClass: string;
+  readonly citizenshipClass: string;
 
   @ValidatedDateOnlyApiProperty({
     description: 'The date of creation.',
   })
-  officerRiskDate: string;
+  readonly officerRiskDate: string;
 
   @ValidatedStringApiProperty({
     description: "The country code for the party's primary address.",
@@ -73,5 +73,5 @@ export class CreatePartyRequestItem {
     default: PROPERTIES.PARTY.DEFAULT.address.countryCode,
     example: EXAMPLES.COUNTRY_CODE,
   })
-  countryCode?: string;
+  readonly countryCode?: string;
 }

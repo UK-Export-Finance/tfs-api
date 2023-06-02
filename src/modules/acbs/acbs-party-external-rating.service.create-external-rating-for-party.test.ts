@@ -135,32 +135,6 @@ describe('AcbsPartyExternalRatingService', () => {
       await expect(createExternalRatingPromise).rejects.toHaveProperty('errorBody', JSON.stringify(errorBody));
     });
 
-    it('throws an AcbsBadRequestException if ACBS responds with a 400 that is a string containing "PartyExternalRating exists"', async () => {
-      const axiosError = new AxiosError();
-      const errorString = 'PartyExternalRating exists';
-      axiosError.response = {
-        data: errorString,
-        status: 400,
-        statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
-      };
-
-      when(httpServicePost)
-        .calledWith(...expectedHttpServicePostArgs)
-        .mockReturnValueOnce(throwError(() => axiosError));
-
-      const createExternalRatingPromise = service.createExternalRatingForParty(acbsExternalRatingToCreate, idToken);
-
-      await expect(createExternalRatingPromise).rejects.toBeInstanceOf(AcbsBadRequestException);
-      await expect(createExternalRatingPromise).rejects.toThrow('Bad request');
-      await expect(createExternalRatingPromise).rejects.toHaveProperty('innerError', axiosError);
-      await expect(createExternalRatingPromise).rejects.toHaveProperty(
-        'errorBody',
-        'Party external rating with this assignedRatingCode and ratedDate combination already exists.',
-      );
-    });
-
     it('throws an AcbsUnexpectedException if ACBS responds with an error code that is not 400', async () => {
       const axiosError = new AxiosError();
       const errorBody = { errorMessage: valueGenerator.string() };
