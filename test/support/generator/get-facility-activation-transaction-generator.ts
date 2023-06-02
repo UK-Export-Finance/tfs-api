@@ -59,7 +59,7 @@ export class GetFacilityActivationTransactionGenerator extends AbstractGenerator
       PostingDate: postingDateTime,
       BundleMessageList: [
         {
-          $type: 'FacilityCodeValueTransaction',
+          $type: ENUMS.BUNDLE_INFORMATION_TYPES.FACILITY_CODE_VALUE_TRANSACTION,
           AccountOwnerIdentifier: firstFacilityActivationTransaction.accountOwnerIdentifier,
           EffectiveDate: effectiveDateTime,
           FacilityIdentifier: facilityIdentifier,
