@@ -124,4 +124,30 @@ describe('DateStringTransformations', () => {
       expect(dateStringTransformations.getEarliestDateFromTodayAndDateAsString(dateAfterToday, currentDateProvider)).toBe(midnightToday);
     });
   });
+
+  describe('getDatePlusThreeMonths', () => {
+    it('returns the date in YYYY-MM-DD format', () => {
+      const date = '1987-04-23';
+
+      expect(dateStringTransformations.getDatePlusThreeMonths(date)).toBe('1987-07-23');
+    });
+
+    it('returns the date in YYYY-MM-DD format, month is incremented by 3 despite leap year and short months', () => {
+      const date = '2000-01-01';
+
+      expect(dateStringTransformations.getDatePlusThreeMonths(date)).toBe('2000-04-01');
+    });
+
+    it('returns the date in YYYY-MM-DD format, month is incremented by 3 despite DST shift -1 hour', () => {
+      const date = '2001-01-01';
+
+      expect(dateStringTransformations.getDatePlusThreeMonths(date)).toBe('2001-04-01');
+    });
+
+    it('returns the date in YYYY-MM-DD format, month is incremented by 3 despite DST shift +1 hour', () => {
+      const date = '2001-09-01';
+
+      expect(dateStringTransformations.getDatePlusThreeMonths(date)).toBe('2001-12-01');
+    });
+  });
 });

@@ -121,7 +121,7 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
     const gefRepaymentSchedulesGbp = this.getGefRepaymentSchedules(firstFacilityLoan);
     const bondAndGefAccrualSchedulesGbp = this.getBondAndGefAccrualSchedules(firstFacilityLoan, acbsEffectiveDate);
     const ewcsAccrualSchedulesUsd = this.getEwcsAccrualSchedulesUsd(firstFacilityLoan, acbsEffectiveDate);
-    const ewcsAccrualSchedulesGbp = this.getEwcsAccrualSchedulesGbp(firstFacilityLoan, acbsEffectiveDate);
+    const ewcsAccrualSchedulesGbp = this.getEwcsAccrualSchedulesGbp(firstFacilityLoan, acbsEffectiveDate, effectiveDate);
 
     return {
       acbsRequestBodyToCreateFacilityLoanGbp,
@@ -434,7 +434,8 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
     ];
   }
 
-  private getEwcsAccrualSchedulesGbp(facilityLoan: CreateFacilityLoanRequestItem, acbsEffectiveDate: string): AccrualSchedule[] {
+  private getEwcsAccrualSchedulesGbp(facilityLoan: CreateFacilityLoanRequestItem, acbsEffectiveDate: string, effectiveDate: string): AccrualSchedule[] {
+    const nextRatePeriod = this.dateStringTransformations.getDatePlusThreeMonths(effectiveDate);
     return [
       this.getPacAccrualSchedule(facilityLoan, acbsEffectiveDate),
       {
@@ -465,7 +466,7 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
           CalculationFeature: {
             CalculationFeatureCode: PROPERTIES.ACCRUAL.INT_RFR.accrualScheduleIBORDetails.calculationFeature.calculationFeatureCode,
           },
-          NextRatePeriod: facilityLoan.issueDate,
+          NextRatePeriod: nextRatePeriod,
           UseObservationShiftIndicator: facilityLoan.currency === CURRENCIES.EUR,
           RateSetLagDays: PROPERTIES.ACCRUAL.INT_RFR.accrualScheduleIBORDetails.rateSetLagDays,
           LagDaysType: {

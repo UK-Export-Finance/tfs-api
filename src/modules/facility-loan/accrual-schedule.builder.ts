@@ -72,7 +72,7 @@ export class AccrualScheduleBuilder {
 
   private getAccrualRfr(facilityLoan: CreateFacilityLoanRequestItem): AccrualSchedule {
     const loanRateIndexCode = this.getLoanRateIndexCode(facilityLoan);
-    const issueDatePlusThreeMonths = this.getDatePlusThreeMonths(facilityLoan.issueDate);
+    const issueDatePlusThreeMonths = this.dateStringTransformations.getDatePlusThreeMonths(facilityLoan.issueDate);
     return {
       ...this.getBaseAccrualSchedule(facilityLoan),
       ScheduleIdentifier: PROPERTIES.ACCRUAL.INT_RFR.scheduleIdentifier,
@@ -158,11 +158,5 @@ export class AccrualScheduleBuilder {
       default:
         return LOAN_RATE_INDEX.OTHER;
     }
-  }
-
-  private getDatePlusThreeMonths(dateAsString: string): DateString {
-    const date = new Date(dateAsString);
-    const datePlus3Months = new Date(date.setMonth(date.getMonth() + 3));
-    return this.dateStringTransformations.getDateOnlyStringFromDate(datePlus3Months);
   }
 }

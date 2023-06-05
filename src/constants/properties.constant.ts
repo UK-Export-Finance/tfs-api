@@ -474,7 +474,7 @@ export const PROPERTIES = {
         billingScheduleTypeCode: 'B',
       },
       numberOfBillsToPrint: 99999,
-      percentageOfBalance: 100,
+      percentageOfBalance: 0,
       billingSequenceNumber: 1,
     },
   },
