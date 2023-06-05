@@ -1,4 +1,4 @@
-export type AcbsGetPartiesBySearchTextResponse = AcbsGetPartiesBySearchTextResponseItem[];
+export type AcbsGetPartiesBySearchTextResponseDto = AcbsGetPartiesBySearchTextResponseItem[];
 
 export interface AcbsGetPartiesBySearchTextResponseItem {
   PartyIdentifier: string;

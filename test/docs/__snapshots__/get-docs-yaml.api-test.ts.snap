@@ -942,7 +942,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetPartyByIdentifierResponse'
+                $ref: '#/components/schemas/GetPartyByIdentifierResponseDto'
         '404':
           description: The specified party was not found.
         '500':
@@ -3021,11 +3021,11 @@ components:
       properties:
         alternateIdentifier:
           type: string
-          description: The UKEF ID for the party. Should contain just digits.
+          description: The UKEF ID for the party.
           minLength: 8
           maxLength: 8
-          example: '00291013'
-          pattern: /^d{8}$/
+          pattern: ^\\d{8}$
+          example: '00345678'
         industryClassification:
           type: string
           description: The primary industry classification code for this customer.
@@ -3041,13 +3041,13 @@ components:
         name2:
           type: string
           description: The secondary customer name.
-          minLength: 1
+          minLength: 0
           maxLength: 35
           example: ACTUAL IMPORT EXPORT
         name3:
           type: string
           description: The tertiary customer name.
-          minLength: 1
+          minLength: 0
           maxLength: 35
           example: ACTUAL IMPORT EXPORT
         smeType:
@@ -3061,18 +3061,23 @@ components:
           description: >-
             A code that identifies the citizenship category of this customer.
             Should be '1' if the domicile country is the UK, otherwise '2'.
+          minLength: 1
+          maxLength: 1
+          enum:
+            - '1'
+            - '2'
           example: '2'
         officerRiskDate:
           format: date
           type: string
-          description: The date of creation in YYYY-MM-DD (ISO 8601) format.
-          example: '2023-03-15'
+          description: The date of creation.
         countryCode:
           type: string
           description: The country code for the party's primary address.
+          minLength: 0
           maxLength: 3
-          default: GBR
           example: GBR
+          default: GBR
       required:
         - alternateIdentifier
         - industryClassification
@@ -3086,7 +3091,7 @@ components:
         partyIdentifier:
           type: string
           readOnly: true
-    GetPartyByIdentifierResponse:
+    GetPartyByIdentifierResponseDto:
       type: object
       properties:
         alternateIdentifier:

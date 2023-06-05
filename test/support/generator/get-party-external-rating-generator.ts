@@ -1,7 +1,7 @@
 import { DateString } from '@ukef/helpers/date-string.type';
-import { AcbsPartyExternalRatingsResponseDto } from '@ukef/modules/acbs/dto/acbs-party-external-ratings-response.dto';
-import { GetPartyExternalRatingsResponse } from '@ukef/modules/party-external-rating/dto/get-party-external-ratings-response.dto';
-import { PartyExternalRating } from '@ukef/modules/party-external-rating/party-external-rating.interface';
+import { AcbsGetPartyExternalRatingsResponseDto } from '@ukef/modules/acbs/dto/acbs-get-party-external-ratings-response.dto';
+import { GetPartyExternalRatingsResponseDto } from '@ukef/modules/party-external-rating/dto/get-party-external-ratings-response.dto';
+import { GetPartyExternalRating } from '@ukef/modules/party-external-rating/get-party-external-rating.interface';
 
 import { AbstractGenerator } from './abstract-generator';
 
@@ -22,7 +22,7 @@ export class GetPartyExternalRatingGenerator extends AbstractGenerator<PartyExte
   }
 
   protected transformRawValuesToGeneratedValues(values: PartyExternalRatingValues[], { partyIdentifier }: GenerateOptions): GenerateResult {
-    const externalRatingsInAcbs: AcbsPartyExternalRatingsResponseDto = values.map((v) => ({
+    const externalRatingsInAcbs: AcbsGetPartyExternalRatingsResponseDto = values.map((v) => ({
       PartyIdentifier: partyIdentifier,
       RatingEntity: {
         RatingEntityCode: v.ratingEntityCode,
@@ -44,7 +44,7 @@ export class GetPartyExternalRatingGenerator extends AbstractGenerator<PartyExte
       },
     }));
 
-    const externalRatings: PartyExternalRating[] = values.map((v) => ({
+    const externalRatings: GetPartyExternalRating[] = values.map((v) => ({
       partyIdentifier: partyIdentifier,
       ratingEntity: {
         ratingEntityCode: v.ratingEntityCode,
@@ -62,12 +62,12 @@ export class GetPartyExternalRatingGenerator extends AbstractGenerator<PartyExte
       externalRatingUserCode2: v.externalRatingUserCode2,
     }));
 
-    const externalRatingsFromApi: GetPartyExternalRatingsResponse = externalRatings;
+    const externalRatingsFromApi: GetPartyExternalRatingsResponseDto = externalRatings;
 
     return {
-      externalRatingsInAcbs,
+      acbsExternalRatings: externalRatingsInAcbs,
       externalRatings,
-      externalRatingsFromApi,
+      apiExternalRatings: externalRatingsFromApi,
     };
   }
 }
@@ -90,7 +90,7 @@ interface GenerateOptions {
 }
 
 interface GenerateResult {
-  externalRatingsInAcbs: AcbsPartyExternalRatingsResponseDto;
-  externalRatings: PartyExternalRating[];
-  externalRatingsFromApi: GetPartyExternalRatingsResponse;
+  acbsExternalRatings: AcbsGetPartyExternalRatingsResponseDto;
+  externalRatings: GetPartyExternalRating[];
+  apiExternalRatings: GetPartyExternalRatingsResponseDto;
 }

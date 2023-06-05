@@ -6,7 +6,7 @@ import { GetPartyGenerator } from '@ukef-test/support/generator/get-party-genera
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
 
-import { AcbsGetPartiesBySearchTextResponse } from './dto/acbs-get-parties-by-search-text-response.dto';
+import { AcbsGetPartiesBySearchTextResponseDto } from './dto/acbs-get-parties-by-search-text-response.dto';
 import { GetPartiesBySearchTextException } from './exception/get-parties-by-search-text.exception';
 import { PartyService } from './party.service';
 
@@ -44,10 +44,10 @@ describe('PartyService', () => {
   });
 
   describe('getPartyIdentifierBySearchText', () => {
-    const { partiesInAcbs } = new GetPartyGenerator(valueGenerator, dateStringTransformations).generate({ numberToGenerate: 2 });
-    const partiesInAcbsWithPartyIdentifiers: AcbsGetPartiesBySearchTextResponse = [
-      { ...partiesInAcbs[0], PartyIdentifier: partyIdentifier },
-      { ...partiesInAcbs[1], PartyIdentifier: valueGenerator.stringOfNumericCharacters() },
+    const { acbsParties } = new GetPartyGenerator(valueGenerator, dateStringTransformations).generate({ numberToGenerate: 2 });
+    const partiesInAcbsWithPartyIdentifiers: AcbsGetPartiesBySearchTextResponseDto = [
+      { ...acbsParties[0], PartyIdentifier: partyIdentifier },
+      { ...acbsParties[1], PartyIdentifier: valueGenerator.stringOfNumericCharacters() },
     ];
 
     it('returns the party identifier of the first matching party if the request is successful', async () => {

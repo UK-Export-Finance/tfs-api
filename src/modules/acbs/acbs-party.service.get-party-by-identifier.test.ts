@@ -34,8 +34,8 @@ describe('AcbsPartyService', () => {
     const partyIdentifier = valueGenerator.stringOfNumericCharacters();
 
     it('returns the party if ACBS responds with the party', async () => {
-      const { partiesInAcbs } = new GetPartyGenerator(valueGenerator, dateStringTransformations).generate({ numberToGenerate: 1 });
-      const [partyInAcbs] = partiesInAcbs;
+      const { acbsParties } = new GetPartyGenerator(valueGenerator, dateStringTransformations).generate({ numberToGenerate: 1 });
+      const [partyInAcbs] = acbsParties;
 
       when(httpServiceGet)
         .calledWith(`/Party/${partyIdentifier}`, {

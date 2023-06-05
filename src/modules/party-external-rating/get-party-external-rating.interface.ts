@@ -1,6 +1,6 @@
 import { DateString } from '@ukef/helpers/date-string.type';
 
-export interface PartyExternalRating {
+export interface GetPartyExternalRating {
   partyIdentifier: string;
   ratingEntity: {
     ratingEntityCode: string;

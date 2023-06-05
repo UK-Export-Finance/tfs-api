@@ -264,7 +264,7 @@ describe('POST /facilities/{facilityIdentifier}/fixed-fees', () => {
       expect(body).toStrictEqual({
         message: 'Bad request',
         statusCode: 400,
-        error: 'Fixed fee with this period and lenderTypeCode combination already exist.',
+        error: 'Fixed fee with this period and lenderTypeCode combination already exists.',
       });
     });
 

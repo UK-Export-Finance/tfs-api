@@ -102,12 +102,12 @@ describe('AcbsPartyService', () => {
         .calledWith(...expectedHttpServicePostArgs)
         .mockReturnValueOnce(throwError(() => axiosError));
 
-      const createFacilityPromise = service.createParty(newParty, idToken);
+      const createPartyPromise = service.createParty(newParty, idToken);
 
-      await expect(createFacilityPromise).rejects.toBeInstanceOf(AcbsBadRequestException);
-      await expect(createFacilityPromise).rejects.toThrow(`Failed to create party in ACBS.`);
-      await expect(createFacilityPromise).rejects.toHaveProperty('innerError', axiosError);
-      await expect(createFacilityPromise).rejects.toHaveProperty('errorBody', errorString);
+      await expect(createPartyPromise).rejects.toBeInstanceOf(AcbsBadRequestException);
+      await expect(createPartyPromise).rejects.toThrow(`Failed to create party in ACBS.`);
+      await expect(createPartyPromise).rejects.toHaveProperty('innerError', axiosError);
+      await expect(createPartyPromise).rejects.toHaveProperty('errorBody', errorString);
     });
 
     it('throws an AcbsUnexpectedException if ACBS responds with an error code that is not 400', async () => {
@@ -125,11 +125,11 @@ describe('AcbsPartyService', () => {
         .calledWith(...expectedHttpServicePostArgs)
         .mockReturnValueOnce(throwError(() => axiosError));
 
-      const createDealPromise = service.createParty(newParty, idToken);
+      const createPartyPromise = service.createParty(newParty, idToken);
 
-      await expect(createDealPromise).rejects.toBeInstanceOf(AcbsUnexpectedException);
-      await expect(createDealPromise).rejects.toThrow(`Failed to create party in ACBS.`);
-      await expect(createDealPromise).rejects.toHaveProperty('innerError', axiosError);
+      await expect(createPartyPromise).rejects.toBeInstanceOf(AcbsUnexpectedException);
+      await expect(createPartyPromise).rejects.toThrow(`Failed to create party in ACBS.`);
+      await expect(createPartyPromise).rejects.toHaveProperty('innerError', axiosError);
     });
   });
 });
