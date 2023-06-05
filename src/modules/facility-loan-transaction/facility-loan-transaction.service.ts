@@ -56,12 +56,12 @@ export class FacilityLoanTransactionService {
       amount: loan.LoanAmount,
       issueDate: this.dateStringTransformations.removeTime(loan.EffectiveDate),
       expiryDate: this.dateStringTransformations.removeTime(loan.MaturityDate),
-      spreadRate: pacAccrual.SpreadRate,
+      spreadRate: pacAccrual?.SpreadRate,
       spreadRateCTL: ctlAccrual?.SpreadRate,
-      yearBasis: firstAccrual.YearBasis.YearBasisCode,
-      nextDueDate: this.dateStringTransformations.removeTime(firstRepayment.NextDueDate),
-      indexRateChangeFrequency: pacAccrual.IndexRateChangeFrequency.IndexRateChangeFrequencyCode,
-      loanBillingFrequencyType: firstRepayment.LoanBillingFrequencyType.LoanBillingFrequencyTypeCode,
+      yearBasis: firstAccrual?.YearBasis?.YearBasisCode,
+      nextDueDate: this.dateStringTransformations.removeTimeIfExists(firstRepayment?.NextDueDate),
+      indexRateChangeFrequency: pacAccrual?.IndexRateChangeFrequency?.IndexRateChangeFrequencyCode,
+      loanBillingFrequencyType: firstRepayment?.LoanBillingFrequencyType?.LoanBillingFrequencyTypeCode,
     };
   }
 

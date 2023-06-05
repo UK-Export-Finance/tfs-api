@@ -3283,11 +3283,6 @@ components:
         - amount
         - issueDate
         - expiryDate
-        - spreadRate
-        - yearBasis
-        - nextDueDate
-        - indexRateChangeFrequency
-        - loanBillingFrequencyType
 security:
   - ApiKeyHeader: []
 "
