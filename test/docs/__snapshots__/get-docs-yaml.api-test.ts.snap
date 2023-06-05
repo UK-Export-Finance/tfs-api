@@ -2929,7 +2929,7 @@ components:
         expiryDate:
           format: date
           type: string
-          description: The date that this amendment is effective.
+          description: The new expiry date of the loan.
       required:
         - expiryDate
     UpdateLoanExpiryDateResponse:
