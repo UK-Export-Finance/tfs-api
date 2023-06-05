@@ -119,9 +119,7 @@ describe('FacilityLoanController', () => {
       expect(facilityLoanServiceUpdateLoanExpiryDate).toHaveBeenCalledTimes(1);
     });
 
-    it('returns the loan identifier from updateLoanExpiryDate', async () => {
-      when(facilityLoanServiceUpdateLoanExpiryDate).calledWith(loanIdentifier, updateLoanExpiryDateRequest).mockResolvedValueOnce(loanIdentifier);
-
+    it('returns the loan identifier of the loan if creating loan succeeds', async () => {
       const loanIdentifierResponse = await controller.updateLoanExpiryDate({ loanIdentifier, facilityIdentifier }, updateLoanExpiryDateRequest);
 
       expect(loanIdentifierResponse).toStrictEqual({ loanIdentifier });

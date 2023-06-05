@@ -3,7 +3,7 @@ import { DateOnlyString } from '@ukef/helpers';
 
 export class UpdateLoanExpiryDateRequest {
   @ValidatedDateOnlyApiProperty({
-    description: 'The date that this amendment is effective.',
+    description: 'The new expiry date of the loan.',
   })
   readonly expiryDate: DateOnlyString;
 }

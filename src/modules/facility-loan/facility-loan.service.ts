@@ -107,11 +107,6 @@ export class FacilityLoanService {
       ...(loanInAcbs.CustomerUsageNextValuationDate && { CustomerUsageNextValuationDate: newExpiryDate }),
     };
     await this.acbsLoanService.updateLoanByIdentifier(portfolioIdentifier, acbsUpdateLoanExpiryDateRequest, idToken);
-    // }
-    //   catch (e) {
-    //     console.log({consoleLog:e})
-    //     throw e
-    //   }
   }
 
   private getIdToken(): Promise<string> {
