@@ -106,6 +106,7 @@ export class GetFacilityLoanTransactionResponseDto {
     description:
       'The spread rate of the PAC accrual schedule to factor into the all-in rate if a rate calculation method is selected that includes the spread rate in the calculation.',
     example: EXAMPLES.SPREAD_RATE,
+    required: false,
   })
   readonly spreadRate: number | null;
 
@@ -121,6 +122,7 @@ export class GetFacilityLoanTransactionResponseDto {
     minLength: 0,
     maxLength: 1,
     example: EXAMPLES.YEAR_BASIS,
+    required: false,
   })
   readonly yearBasis: string | null;
 
@@ -128,6 +130,7 @@ export class GetFacilityLoanTransactionResponseDto {
     description: 'The date the next payment will be due for the loan repayment schedule.',
     type: Date,
     format: 'date',
+    required: false,
   })
   readonly nextDueDate: DateOnlyString | null;
 
@@ -135,6 +138,7 @@ export class GetFacilityLoanTransactionResponseDto {
     description: `A code denoting the index rate change frequency, which is used by ACBS to determine the frequency at which the rate should change when the change timing is set to 'On Anniversary'.`,
     minLength: 0,
     maxLength: 1,
+    required: false,
   })
   readonly indexRateChangeFrequency: string | null;
 
@@ -143,6 +147,7 @@ export class GetFacilityLoanTransactionResponseDto {
     minLength: 0,
     maxLength: 1,
     example: EXAMPLES.LOAN_BILLING_FREQUENCY_TYPE,
+    required: false,
   })
   readonly loanBillingFrequencyType: string | null;
 }
