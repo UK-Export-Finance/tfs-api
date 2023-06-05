@@ -15,7 +15,7 @@ export class FacilityLoanTransactionService {
     private readonly acbsAuthenticationService: AcbsAuthenticationService,
     private readonly acbsBundleInformationService: AcbsBundleInformationService,
     private readonly dateStringTransformations: DateStringTransformations,
-  ) { }
+  ) {}
 
   async getLoanTransactionsByBundleIdentifier(bundleIdentifier: string): Promise<GetFacilityLoanTransactionResponseDto> {
     const idToken = await this.acbsAuthenticationService.getIdToken();
@@ -65,7 +65,10 @@ export class FacilityLoanTransactionService {
     };
   }
 
-  private findFirstAccrualMatchingCategoryCode(categoryCode: string, accrualScheduleList: Pick<AccrualSchedule, 'AccrualCategory' | 'SpreadRate' | 'YearBasis' | 'IndexRateChangeFrequency'>[]): Pick<AccrualSchedule, 'AccrualCategory' | 'SpreadRate' | 'YearBasis' | 'IndexRateChangeFrequency'> {
+  private findFirstAccrualMatchingCategoryCode(
+    categoryCode: string,
+    accrualScheduleList: Pick<AccrualSchedule, 'AccrualCategory' | 'SpreadRate' | 'YearBasis' | 'IndexRateChangeFrequency'>[],
+  ): Pick<AccrualSchedule, 'AccrualCategory' | 'SpreadRate' | 'YearBasis' | 'IndexRateChangeFrequency'> {
     return accrualScheduleList.find((accrual) => accrual.AccrualCategory.AccrualCategoryCode === categoryCode);
   }
 }
