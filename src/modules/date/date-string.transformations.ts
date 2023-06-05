@@ -58,7 +58,7 @@ export class DateStringTransformations {
 
   getDatePlusThreeMonths(dateAsString: string): DateString {
     const date = DateTime.fromISO(this.addTimeToDateOnlyString(dateAsString)).setZone('utc');
-    const datePlusThreeMonths = date.plus({months: 3})
+    const datePlusThreeMonths = date.plus({ months: 3 });
     return this.getDateOnlyStringFromDate(new Date(datePlusThreeMonths.toString()));
   }
 }

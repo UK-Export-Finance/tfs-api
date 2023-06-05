@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { CURRENCIES } from '@ukef/constants/currencies.constant';
 import { LOAN_RATE_INDEX } from '@ukef/constants/loan-rate-index.constant';
-import { DateString } from '@ukef/helpers';
 import { AccrualSchedule } from '@ukef/modules/acbs/dto/bundle-actions/accrual-schedule.interface';
 import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
