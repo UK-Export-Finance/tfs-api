@@ -94,7 +94,7 @@ export class PartyController {
     return { partyIdentifier };
   }
 
-  private async createPartyIfItDoesNotExist(partyToCreate: CreatePartyRequestItem) {
+  private async createPartyIfItDoesNotExist(partyToCreate: CreatePartyRequestItem): Promise<{ partyIdentifier: string; partyWasCreated: boolean }> {
     const { alternateIdentifier } = partyToCreate;
 
     const getPartyIdBySearchTextResponse = await this.partyService.getPartyIdentifierBySearchText(alternateIdentifier);
