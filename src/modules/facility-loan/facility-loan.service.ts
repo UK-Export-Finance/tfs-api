@@ -95,7 +95,6 @@ export class FacilityLoanService {
     const { portfolioIdentifier } = PROPERTIES.GLOBAL;
     const { expiryDate } = updateLoanExpiryDateRequest;
 
-    // try {
     const newExpiryDate = this.dateStringTransformations.addTimeToDateOnlyString(expiryDate);
     const idToken = await this.getIdToken();
     const loanInAcbs = await this.acbsLoanService.getLoanByIdentifier(portfolioIdentifier, loanIdentifier, idToken);
