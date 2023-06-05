@@ -7,6 +7,8 @@ import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acb
 import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 
+import { AcbsUpdateFacilityGuaranteeRequest } from '../acbs/dto/acbs-update-facility-guarantee-request.dto';
+import { UpdateFacilityGuaranteesRequestDto } from './dto/update-facility-guarantees-request.dto';
 import { FacilityGuarantee } from './facility-guarantee.interface';
 import { FacilityGuaranteeToCreate } from './facility-guarantee-to-create.interface';
 
@@ -70,5 +72,24 @@ export class FacilityGuaranteeService {
     };
 
     await this.acbsFacilityGuaranteeService.createGuaranteeForFacility(facilityIdentifier, guaranteeToCreateInAcbs, idToken);
+  }
+
+  async updateGuaranteesForFacility(facilityIdentifier: string, updateFacilityGuaranteesRequest: UpdateFacilityGuaranteesRequestDto): Promise<void> {
+    const { portfolioIdentifier } = PROPERTIES.GLOBAL;
+    const idToken = await this.acbsAuthenticationService.getIdToken();
+    const guaranteesToUpdate = await this.acbsFacilityGuaranteeService.getGuaranteesForFacility(portfolioIdentifier, facilityIdentifier, idToken);
+
+    const guaranteeFieldsToUpdate = this.getGuaranteeFieldsToUpdate(updateFacilityGuaranteesRequest);
+    for (const guarantee of guaranteesToUpdate) {
+      const updatedGuarantee = { ...guarantee, ...guaranteeFieldsToUpdate };
+      await this.acbsFacilityGuaranteeService.replaceGuaranteeForFacility(portfolioIdentifier, facilityIdentifier, updatedGuarantee, idToken);
+    }
+  }
+
+  private getGuaranteeFieldsToUpdate({ expirationDate, guaranteedLimit }: UpdateFacilityGuaranteesRequestDto): Partial<AcbsUpdateFacilityGuaranteeRequest> {
+    return {
+      ...(expirationDate && { ExpirationDate: this.dateStringTransformations.addTimeToDateOnlyString(expirationDate) }),
+      ...((guaranteedLimit || guaranteedLimit === 0) && { GuaranteedLimit: guaranteedLimit }),
+    };
   }
 }

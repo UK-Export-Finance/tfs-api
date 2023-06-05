@@ -16,7 +16,7 @@
 # *********
 # GHA is only invoked when following conditions are satisfied:
 # 1. Push to the `dev`, `staging` and `production` branches only.
-# 2. Any modifications inside `src` directory
+# 2. Any modifications to atleast one of the `paths` targets.
 
 name: Deployment 🚀
 run-name: APIM deployment for ${{ github.repository }}
@@ -24,21 +24,23 @@ run-name: APIM deployment for ${{ github.repository }}
 on:
   push:
     branches:
-      - deployment
+      - dev
+      - staging
+      - production
 
     paths:
-      - "src/**"
-      - "package.json"
-      - "package-lock.json"
-      - "Dockerfile"
-      - "tsconfig.json"
-      - "tsconfig.build.json"
-      - ".github/workflows/deployment.yml"
+      - 'src/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'Dockerfile'
+      - 'tsconfig.json'
+      - 'tsconfig.build.json'
+      - '.github/workflows/deployment.yml'
 
 env:
   PRODUCT: apim
-  ENVIRONMENT: dev
-  TIMEZONE: "Europe/London"
+  ENVIRONMENT: ${{ github.ref_name }}
+  TIMEZONE: 'Europe/London'
   # Base artifact
   FROM: latest
 
@@ -81,6 +83,7 @@ jobs:
           echo ACR=$(az acr show -n $(az resource list --resource-type 'Microsoft.ContainerRegistry/registries' --query '[0].name' -o tsv) --query loginServer -o tsv) >> $GITHUB_ENV
           echo ACR_USER=$(az acr show -n $(az resource list --resource-type 'Microsoft.ContainerRegistry/registries' --query '[0].name' -o tsv) --query name -o tsv) >> $GITHUB_ENV
           echo CA_NAME=$(az resource list --resource-type 'Microsoft.App/containerApps' --query '[?contains(name, `${{ env.NAME }}`)].name' -o tsv) >> $GITHUB_ENV
+          echo APIM=$(az resource list --resource-type 'Microsoft.ApiManagement/service' --query '[0].name' -o tsv) >> $GITHUB_ENV
 
       - name: Defaults ✨
         uses: Azure/cli@v1.0.7
@@ -88,7 +91,7 @@ jobs:
           inlineScript: |
             # Basic
             az configure --defaults location=${{ vars.REGION }}
-            az configure --defaults group=rg-${{ env.PRODUCT }}-${{ vars.TARGET }}-${{ vars.VERSION }}
+            az configure --defaults group=rg-${{ env.PRODUCT }}-${{ github.ref_name }}-${{ vars.VERSION }}
 
       - name: ACR 🔐
         uses: azure/docker-login@v1
@@ -137,3 +140,20 @@ jobs:
               "ACBS_AUTHENTICATION_PASSWORD=${{ secrets.ACBS_AUTHENTICATION_PASSWORD }}" \
               "ACBS_AUTHENTICATION_RETRY_DELAY_IN_MILLISECONDS=${{ secrets.ACBS_AUTHENTICATION_RETRY_DELAY_IN_MILLISECONDS }}" \
               "ACBS_AUTHENTICATION_TIMEOUT=${{ secrets.ACBS_AUTHENTICATION_TIMEOUT }}"
+
+      - name: Import ⬇️
+        uses: Azure/cli@v1.0.7
+        with:
+          inlineScript: |
+            # API specification import
+
+            az apim api import \
+            --path '${{ env.NAME }}' \
+            --service-name ${{ env.APIM }} \
+            --specification-format OpenApi \
+            --api-id $(az apim api list --service-name ${{ env.APIM }} --filter-display-name '${{ vars.DESCRIPTION }}' --top 1 --query [0].name -o tsv) \
+            --api-type http \
+            --service-url https://$(az containerapp show --name ${{ env.CA_NAME }} --query properties.latestRevisionFqdn -o tsv) \
+            --protocols https \
+            --specification-url https://$(az containerapp show --name ${{ env.CA_NAME }} --query properties.latestRevisionFqdn -o tsv)/openapi/json \
+            --subscription-required true

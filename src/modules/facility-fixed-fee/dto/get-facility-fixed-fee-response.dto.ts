@@ -29,6 +29,15 @@ export class GetFacilityFixedFeeResponseItem {
   readonly amount: number;
 
   @ApiProperty({
+    description:
+      'This field is automatically populated and appears only after the fee has been accepted. It displays the amount needed to pay the fee in full as of the current processing date.',
+    example: EXAMPLES.DEAL_OR_FACILITY_VALUE,
+    minimum: 0,
+    maximum: 99999999999.99,
+  })
+  readonly currentPayoffAmount: number;
+
+  @ApiProperty({
     description: 'The effective date of this accruing/fixed fee schedule.',
     type: Date,
     format: 'date',

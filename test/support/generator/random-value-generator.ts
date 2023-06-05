@@ -111,7 +111,7 @@ export class RandomValueGenerator {
   }
 
   loanId(): string {
-    return this.stringOfNumericCharacters({ length: 10 });
+    return this.stringOfNumericCharacters({ length: ACBSID.LOAN_ID.LENGTH });
   }
 
   dateTimeString(): DateString {

@@ -35,10 +35,10 @@ export const postFacilityNotFoundKnownAcbsError = (facilityIdentifier: string): 
   },
 });
 
-export const postFixedFeeExistsAcbsError = (): KnownError => ({
+export const postFixedFeeExistsKnownAcbsError = (): KnownError => ({
   caseInsensitiveSubstringToFind: 'FixedFee exists',
   throwError: (error) => {
-    throw new AcbsBadRequestException('Bad request', error, 'Fixed fee with this period and lenderTypeCode combination already exist.');
+    throw new AcbsBadRequestException('Bad request', error, 'Fixed fee with this period and lenderTypeCode combination already exists.');
   },
 });
 
@@ -49,10 +49,17 @@ export const postInvalidPortfolioAndFacilityIdCombinationKnownAcbsError = (facil
   },
 });
 
-export const getLoanTransactionNotFoundKnownAcbsError = (bundleIdentifier: string): KnownError => ({
+export const getBundleInformationNotFoundKnownAcbsError = (bundleIdentifier: string): KnownError => ({
   caseInsensitiveSubstringToFind: 'BundleInformation not found',
   throwError: (error) => {
-    throw new AcbsResourceNotFoundException(`Loan transaction with bundle identifier ${bundleIdentifier} was not found by ACBS.`, error);
+    throw new AcbsResourceNotFoundException(`Bundle information with bundle identifier ${bundleIdentifier} was not found by ACBS.`, error);
+  },
+});
+
+export const postPartyExternalRatingNotFoundKnownAcbsError = (partyIdentifier: string): KnownError => ({
+  caseInsensitiveSubstringToFind: 'partyIdentifier is not valid',
+  throwError: (error) => {
+    throw new AcbsResourceNotFoundException(`Party with identifier ${partyIdentifier} was not found by ACBS.`, error);
   },
 });
 

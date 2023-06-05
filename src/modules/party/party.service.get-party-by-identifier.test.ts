@@ -44,9 +44,9 @@ describe('PartyService', () => {
     it('returns a transformation of the external ratings from ACBS when OfficerRiskDate IS NOT null', async () => {
       const officerRiskDateInAcbs = '2023-02-01T00:00:00Z';
       const expectedOfficerRiskDate = '2023-02-01';
-      const { partiesInAcbs, parties } = new GetPartyGenerator(valueGenerator, dateStringTransformations).generate({ numberToGenerate: 1 });
+      const { acbsParties, parties } = new GetPartyGenerator(valueGenerator, dateStringTransformations).generate({ numberToGenerate: 1 });
       const partyInAcbs: AcbsGetPartyResponseDto = {
-        ...partiesInAcbs[0],
+        ...acbsParties[0],
         OfficerRiskDate: officerRiskDateInAcbs,
       };
       const expectedParty: Party = {
@@ -61,16 +61,16 @@ describe('PartyService', () => {
     });
 
     it('returns a transformation of the external ratings from ACBS when OfficerRiskDate IS null', async () => {
-      const { partiesInAcbs, parties } = new GetPartyGenerator(valueGenerator, dateStringTransformations).generate({ numberToGenerate: 1 });
-      const partyInAcbs: AcbsGetPartyResponseDto = {
-        ...partiesInAcbs[0],
+      const { acbsParties, parties } = new GetPartyGenerator(valueGenerator, dateStringTransformations).generate({ numberToGenerate: 1 });
+      const acbsParty: AcbsGetPartyResponseDto = {
+        ...acbsParties[0],
         OfficerRiskDate: null,
       };
       const expectedParty: Party = {
         ...parties[0],
         officerRiskDate: null,
       };
-      when(acbsPartyServiceGetPartyByIdentifier).calledWith(partyIdentifier, idToken).mockResolvedValueOnce(partyInAcbs);
+      when(acbsPartyServiceGetPartyByIdentifier).calledWith(partyIdentifier, idToken).mockResolvedValueOnce(acbsParty);
 
       const party = await service.getPartyByIdentifier(partyIdentifier);
 

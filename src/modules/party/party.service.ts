@@ -4,8 +4,8 @@ import { AcbsPartyService } from '@ukef/modules/acbs/acbs-party.service';
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 
 import { DateStringTransformations } from '../date/date-string.transformations';
-import { AcbsCreatePartyRequest } from './dto/acbs-create-party-request.dto';
-import { AcbsGetPartiesBySearchTextResponse } from './dto/acbs-get-parties-by-search-text-response.dto';
+import { AcbsCreatePartyRequestDto } from './dto/acbs-create-party-request.dto';
+import { AcbsGetPartiesBySearchTextResponseDto } from './dto/acbs-get-parties-by-search-text-response.dto';
 import { CreatePartyRequestItem } from './dto/create-party-request.dto';
 import { CreatePartyResponse } from './dto/create-party-response.dto';
 import { GetPartiesBySearchTextResponse } from './dto/get-parties-by-search-text-response.dto';
@@ -20,7 +20,7 @@ export class PartyService {
     private readonly dateStringTransformations: DateStringTransformations,
   ) {}
 
-  async getPartiesBySearchTextFromAcbs(searchText: string): Promise<AcbsGetPartiesBySearchTextResponse> {
+  async getPartiesBySearchTextFromAcbs(searchText: string): Promise<AcbsGetPartiesBySearchTextResponseDto> {
     const token = await this.getIdToken();
     const endsInWhitespace = /\s$/;
 
@@ -75,7 +75,7 @@ export class PartyService {
 
   async createParty(partyToCreate: CreatePartyRequestItem): Promise<CreatePartyResponse> {
     const token = await this.getIdToken();
-    const newPartyInAcbs: AcbsCreatePartyRequest = this.buildAcbsCreatePartyRequest(partyToCreate);
+    const newPartyInAcbs: AcbsCreatePartyRequestDto = this.buildAcbsCreatePartyRequest(partyToCreate);
 
     return this.acbsPartyService.createParty(newPartyInAcbs, token);
   }
@@ -100,7 +100,7 @@ export class PartyService {
     return this.acbsAuthenticationService.getIdToken();
   }
 
-  private buildAcbsCreatePartyRequest(partyToCreate: CreatePartyRequestItem): AcbsCreatePartyRequest {
+  private buildAcbsCreatePartyRequest(partyToCreate: CreatePartyRequestItem): AcbsCreatePartyRequestDto {
     return {
       PartyAlternateIdentifier: partyToCreate.alternateIdentifier,
       IndustryClassification: {

@@ -10,7 +10,7 @@ describe('GET /parties/{partyIdentifier}/external-ratings', () => {
   const valueGenerator = new RandomValueGenerator();
 
   const partyIdentifier = '001';
-  const { externalRatingsInAcbs, externalRatingsFromApi: expectedExternalRatings } = new GetPartyExternalRatingGenerator(valueGenerator).generate({
+  const { acbsExternalRatings, apiExternalRatings: expectedExternalRatings } = new GetPartyExternalRatingGenerator(valueGenerator).generate({
     partyIdentifier,
     numberToGenerate: 2,
   });
@@ -33,14 +33,14 @@ describe('GET /parties/{partyIdentifier}/external-ratings', () => {
   });
 
   const { idToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
-    givenRequestWouldOtherwiseSucceed: () => requestToGetExternalRatingsForParty().reply(200, externalRatingsInAcbs),
+    givenRequestWouldOtherwiseSucceed: () => requestToGetExternalRatingsForParty().reply(200, acbsExternalRatings),
     makeRequest: () => api.get(getPartyExternalRatingsUrl),
   });
 
   withClientAuthenticationTests({
     givenTheRequestWouldOtherwiseSucceed: () => {
       givenAuthenticationWithTheIdpSucceeds();
-      requestToGetExternalRatingsForParty().reply(200, externalRatingsInAcbs);
+      requestToGetExternalRatingsForParty().reply(200, acbsExternalRatings);
     },
     makeRequestWithoutAuth: (incorrectAuth?: IncorrectAuthArg) =>
       api.getWithoutAuth(getPartyExternalRatingsUrl, incorrectAuth?.headerName, incorrectAuth?.headerValue),
@@ -48,7 +48,7 @@ describe('GET /parties/{partyIdentifier}/external-ratings', () => {
 
   it('returns a 200 response with the external ratings of the party if they are returned by ACBS', async () => {
     givenAuthenticationWithTheIdpSucceeds();
-    requestToGetExternalRatingsForParty().reply(200, externalRatingsInAcbs);
+    requestToGetExternalRatingsForParty().reply(200, acbsExternalRatings);
 
     const { status, body } = await api.get(getPartyExternalRatingsUrl);
 
@@ -107,7 +107,7 @@ describe('GET /parties/{partyIdentifier}/external-ratings', () => {
 
   it('returns a 500 response if getting the external ratings from ACBS times out', async () => {
     givenAuthenticationWithTheIdpSucceeds();
-    requestToGetExternalRatingsForParty().delay(TIME_EXCEEDING_ACBS_TIMEOUT).reply(200, externalRatingsInAcbs);
+    requestToGetExternalRatingsForParty().delay(TIME_EXCEEDING_ACBS_TIMEOUT).reply(200, acbsExternalRatings);
 
     const { status, body } = await api.get(getPartyExternalRatingsUrl);
 

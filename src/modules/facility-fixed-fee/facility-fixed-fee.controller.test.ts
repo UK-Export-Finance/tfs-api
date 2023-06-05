@@ -1,13 +1,13 @@
 import { ENUMS } from '@ukef/constants';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { FacilityService } from '@ukef/modules/facility/facility.service';
+import { FacilityFixedFeeController } from '@ukef/modules/facility-fixed-fee/facility-fixed-fee.controller';
+import { FacilityFixedFeeService } from '@ukef/modules/facility-fixed-fee/facility-fixed-fee.service';
 import { CreateFacilityFixedFeeGenerator } from '@ukef-test/support/generator/create-facility-fixed-fee-generator';
+import { CreateFacilityFixedFeesAmountAmendmentGenerator } from '@ukef-test/support/generator/create-facility-fixed-fees-amount-amendment.generator';
 import { GetFacilityFixedFeeGenerator } from '@ukef-test/support/generator/get-facility-fixed-fee-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
-
-import { FacilityFixedFeeController } from './facility-fixed-fee.controller';
-import { FacilityFixedFeeService } from './facility-fixed-fee.service';
 
 describe('FacilityFixedFeeController', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -22,18 +22,21 @@ describe('FacilityFixedFeeController', () => {
 
   let getFacilityFixedFeesService: jest.Mock;
   let createFacilityFixedFeesService: jest.Mock;
+  let createAmountAmendmentForFixedFeesService: jest.Mock;
   let getFacilityByIdentifierFacilityService: jest.Mock;
 
   let controller: FacilityFixedFeeController;
 
   beforeEach(() => {
-    const facilityFixedFeeService = new FacilityFixedFeeService(null, null, null, null);
+    const facilityFixedFeeService = new FacilityFixedFeeService(null, null, null, null, null);
     getFacilityFixedFeesService = jest.fn();
     createFacilityFixedFeesService = jest.fn();
+    createAmountAmendmentForFixedFeesService = jest.fn();
     facilityFixedFeeService.getFixedFeesForFacility = getFacilityFixedFeesService;
     facilityFixedFeeService.createFixedFeeForFacility = createFacilityFixedFeesService;
+    facilityFixedFeeService.createAmountAmendmentForFixedFees = createAmountAmendmentForFixedFeesService;
 
-    const facilityService = new FacilityService(null, null, null, null);
+    const facilityService = new FacilityService(null, null, null, null, null);
     getFacilityByIdentifierFacilityService = jest.fn();
     facilityService.getFacilityByIdentifier = getFacilityByIdentifierFacilityService;
 
@@ -91,6 +94,25 @@ describe('FacilityFixedFeeController', () => {
       const response = await controller.createFixedFeeForFacility({ facilityIdentifier }, requestBodyToCreateFacilityFixedFee);
 
       expect(response).toEqual({ facilityIdentifier });
+    });
+  });
+
+  describe('createAmountAmendmentForFixedFees', () => {
+    const facilityIdentifier = valueGenerator.facilityId();
+    const { increaseAmountRequest } = new CreateFacilityFixedFeesAmountAmendmentGenerator(valueGenerator, new DateStringTransformations()).generate({
+      numberToGenerate: 3,
+      facilityIdentifier,
+    });
+    const expectedBundleIdentifier = valueGenerator.acbsBundleId();
+
+    it('returns the bundleIdentifier from creating a loan amount amendment with the service', async () => {
+      when(createAmountAmendmentForFixedFeesService)
+        .calledWith(facilityIdentifier, increaseAmountRequest)
+        .mockResolvedValueOnce({ bundleIdentifier: expectedBundleIdentifier });
+
+      const bundleIdentifierResponse = await controller.createAmountAmendmentForFixedFees({ facilityIdentifier }, increaseAmountRequest);
+
+      expect(bundleIdentifierResponse).toStrictEqual({ bundleIdentifier: expectedBundleIdentifier });
     });
   });
 });

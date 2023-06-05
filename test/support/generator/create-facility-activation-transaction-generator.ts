@@ -24,11 +24,13 @@ export class CreateFacilityActivationTransactionGenerator extends AbstractGenera
 
   protected generateValues(): CreateFacilityActivationTransactionRequestItem {
     // Numeric enums needs filter to get possible values.
-    const possibleBundleStatuses = Object.values(ENUMS.BUNDLE_STATUSES).filter((value) => !isNaN(Number(value)));
+    const possibleInitialBundleStatusCodes = Object.values(ENUMS.INITIAL_BUNDLE_STATUS_CODES).filter((value) => !isNaN(Number(value)));
     const possibleLenderTypes = Object.values(ENUMS.LENDER_TYPE_CODES);
     return {
       facilityIdentifier: this.valueGenerator.ukefId(),
-      initialBundleStatusCode: possibleBundleStatuses[this.valueGenerator.integer({ min: 0, max: possibleBundleStatuses.length - 1 })] as number,
+      initialBundleStatusCode: possibleInitialBundleStatusCodes[
+        this.valueGenerator.integer({ min: 0, max: possibleInitialBundleStatusCodes.length - 1 })
+      ] as number,
       lenderTypeCode: possibleLenderTypes[this.valueGenerator.integer({ min: 0, max: possibleLenderTypes.length - 1 })],
     };
   }
@@ -47,7 +49,7 @@ export class CreateFacilityActivationTransactionGenerator extends AbstractGenera
       BundleMessageList: [
         {
           $type: PROPERTIES.FACILITY_ACTIVATION_TRANSACTION.DEFAULT.bundleMessageList.type,
-          AccountOwnerIdentifier: PROPERTIES.FACILITY_ACTIVATION_TRANSACTION.DEFAULT.bundleMessageList.accountOwnerIdentifier,
+          AccountOwnerIdentifier: PROPERTIES.FACILITY_ACTIVATION_TRANSACTION.DEFAULT.bundleMessageList.accountOwnerIdentifier as AcbsPartyId,
           EffectiveDate: this.dateStringTransformations.addTimeToDateOnlyString(effectiveDate),
           FacilityIdentifier: facilityIdentifier,
           FacilityTransactionCodeValue: {

@@ -1,15 +1,16 @@
 import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { AcbsPartyId, DateOnlyString, UkefId } from '@ukef/helpers';
+import { AcbsCreateBundleInformationRequestDto } from '@ukef/modules/acbs/dto/acbs-create-bundle-information-request.dto';
 import { AcbsGetFacilityResponseDto } from '@ukef/modules/acbs/dto/acbs-get-facility-response.dto';
 import { AcbsUpdateFacilityRequest } from '@ukef/modules/acbs/dto/acbs-update-facility-request.dto';
+import { FacilityAmountTransaction } from '@ukef/modules/acbs/dto/bundle-actions/facility-amount-transaction.bundle-action';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { UpdateFacilityRequest } from '@ukef/modules/facility/dto/update-facility-request.dto';
-
-import { TEST_CURRENCIES } from '../constants/test-currency.constant';
-import { TEST_DATES } from '../constants/test-date.constant';
-import { TEST_FACILITY_STAGE_CODE } from '../constants/test-issue-code.constant';
-import { AbstractGenerator } from './abstract-generator';
-import { RandomValueGenerator } from './random-value-generator';
+import { TEST_CURRENCIES } from '@ukef-test/support/constants/test-currency.constant';
+import { TEST_DATES } from '@ukef-test/support/constants/test-date.constant';
+import { TEST_FACILITY_STAGE_CODE } from '@ukef-test/support/constants/test-issue-code.constant';
+import { AbstractGenerator } from '@ukef-test/support/generator/abstract-generator';
+import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 
 export class UpdateFacilityGenerator extends AbstractGenerator<FacilityValues, GenerateResult, GenerateOptions> {
   constructor(protected readonly valueGenerator: RandomValueGenerator, protected readonly dateStringTransformations: DateStringTransformations) {
@@ -58,7 +59,9 @@ export class UpdateFacilityGenerator extends AbstractGenerator<FacilityValues, G
     const nextQuarterEndDate = TEST_DATES.A_FUTURE_EXPIRY_DATE_ONLY;
     const midnightToday = this.dateStringTransformations.getDateStringFromDate(new Date());
 
-    const defaultValues = PROPERTIES.FACILITY.DEFAULT.POST;
+    const defaultFacilityValues = PROPERTIES.FACILITY.DEFAULT.POST;
+    const defaultFacilityAmountTransactionValues = PROPERTIES.FACILITY_AMOUNT_TRANSACTION.DEFAULT;
+
     const acbsEffectiveDate = this.dateStringTransformations.addTimeToDateOnlyString(effectiveDate);
     const acbsNextQuarterEndDate = this.dateStringTransformations.addTimeToDateOnlyString(nextQuarterEndDate);
     const acbsGuaranteeExpiryDate = this.dateStringTransformations.addTimeToDateOnlyString(facilityToUpdate.guaranteeExpiryDate);
@@ -77,13 +80,13 @@ export class UpdateFacilityGenerator extends AbstractGenerator<FacilityValues, G
       DealBorrowerPartyIdentifier: facilityToUpdate.dealBorrowerIdentifier,
       BookingDate: midnightToday,
       FinalAvailableDate: acbsGuaranteeExpiryDate,
-      IsFinalAvailableDateMaximum: defaultValues.isFinalAvailableDateMaximum,
+      IsFinalAvailableDateMaximum: defaultFacilityValues.isFinalAvailableDateMaximum,
       ExpirationDate: acbsGuaranteeExpiryDate,
-      IsExpirationDateMaximum: defaultValues.isExpirationDateMaximum,
+      IsExpirationDateMaximum: defaultFacilityValues.isExpirationDateMaximum,
       LimitAmount: facilityToUpdate.maximumLiability,
       ExternalReferenceIdentifier: facilityToUpdate.exposurePeriod,
       BookingClass: {
-        BookingClassCode: defaultValues.bookingClassCode,
+        BookingClassCode: defaultFacilityValues.bookingClassCode,
       },
       FacilityType: {
         FacilityTypeCode: productTypeId,
@@ -91,19 +94,19 @@ export class UpdateFacilityGenerator extends AbstractGenerator<FacilityValues, G
       TargetClosingDate: acbsEffectiveDate,
       OriginalApprovalDate: acbsEffectiveDate,
       CurrentOfficer: {
-        LineOfficerIdentifier: defaultValues.lineOfficerIdentifier,
+        LineOfficerIdentifier: defaultFacilityValues.lineOfficerIdentifier,
       },
       SecondaryOfficer: {
-        LineOfficerIdentifier: defaultValues.lineOfficerIdentifier,
+        LineOfficerIdentifier: defaultFacilityValues.lineOfficerIdentifier,
       },
       GeneralLedgerUnit: {
-        GeneralLedgerUnitIdentifier: defaultValues.generalLedgerUnitIdentifier,
+        GeneralLedgerUnitIdentifier: defaultFacilityValues.generalLedgerUnitIdentifier,
       },
       ServicingUnit: {
-        ServicingUnitIdentifier: defaultValues.servicingUnitIdentifier,
+        ServicingUnitIdentifier: defaultFacilityValues.servicingUnitIdentifier,
       },
       ServicingUnitSection: {
-        ServicingUnitSectionIdentifier: defaultValues.servicingUnitSectionIdentifier,
+        ServicingUnitSectionIdentifier: defaultFacilityValues.servicingUnitSectionIdentifier,
       },
       AgentBankPartyIdentifier: facilityToUpdate.agentBankIdentifier,
       IndustryClassification: {
@@ -113,63 +116,63 @@ export class UpdateFacilityGenerator extends AbstractGenerator<FacilityValues, G
         CountryCode: facilityToUpdate.riskCountryCode,
       },
       PurposeType: {
-        PurposeTypeCode: defaultValues.purposeTypeCode,
+        PurposeTypeCode: defaultFacilityValues.purposeTypeCode,
       },
       FacilityReviewFrequencyType: {
         FacilityReviewFrequencyTypeCode: facilityToUpdate.premiumFrequencyCode,
       },
       CapitalClass: {
-        CapitalClassCode: defaultValues.capitalClassCode,
+        CapitalClassCode: defaultFacilityValues.capitalClassCode,
       },
       CapitalConversionFactor: {
         CapitalConversionFactorCode: facilityToUpdate.capitalConversionFactorCode,
       },
-      FinancialFXRate: defaultValues.financialFXRate,
-      FinancialFXRateOperand: defaultValues.financialFXRateOperand,
-      FinancialRateFXRateGroup: defaultValues.financialRateFXRateGroup,
-      FinancialFrequencyCode: defaultValues.financialFrequencyCode,
-      FinancialBusinessDayAdjustment: defaultValues.financialBusinessDayAdjustment,
-      FinancialDueMonthEndIndicator: defaultValues.financialDueMonthEndIndicator,
+      FinancialFXRate: defaultFacilityValues.financialFXRate,
+      FinancialFXRateOperand: defaultFacilityValues.financialFXRateOperand,
+      FinancialRateFXRateGroup: defaultFacilityValues.financialRateFXRateGroup,
+      FinancialFrequencyCode: defaultFacilityValues.financialFrequencyCode,
+      FinancialBusinessDayAdjustment: defaultFacilityValues.financialBusinessDayAdjustment,
+      FinancialDueMonthEndIndicator: defaultFacilityValues.financialDueMonthEndIndicator,
       FinancialCalendar: {
-        CalendarIdentifier: defaultValues.calendarIdentifier,
+        CalendarIdentifier: defaultFacilityValues.calendarIdentifier,
       },
-      FinancialLockMTMRateIndicator: defaultValues.financialLockMTMRateIndicator,
-      FinancialNextValuationDate: defaultValues.financialNextValuationDate,
-      CustomerFXRateGroup: defaultValues.customerFXRateGroup,
-      CustomerFrequencyCode: defaultValues.customerFrequencyCode,
-      CustomerBusinessDayAdjustment: defaultValues.customerBusinessDayAdjustment,
-      CustomerDueMonthEndIndicator: defaultValues.customerDueMonthEndIndicator,
+      FinancialLockMTMRateIndicator: defaultFacilityValues.financialLockMTMRateIndicator,
+      FinancialNextValuationDate: defaultFacilityValues.financialNextValuationDate,
+      CustomerFXRateGroup: defaultFacilityValues.customerFXRateGroup,
+      CustomerFrequencyCode: defaultFacilityValues.customerFrequencyCode,
+      CustomerBusinessDayAdjustment: defaultFacilityValues.customerBusinessDayAdjustment,
+      CustomerDueMonthEndIndicator: defaultFacilityValues.customerDueMonthEndIndicator,
       CustomerCalendar: {
-        CalendarIdentifier: defaultValues.calendarIdentifier,
+        CalendarIdentifier: defaultFacilityValues.calendarIdentifier,
       },
-      CustomerLockMTMRateIndicator: defaultValues.customerLockMTMRateIndicator,
-      CustomerNextValuationDate: defaultValues.customerNextValuationDate,
-      LimitRevolvingIndicator: defaultValues.limitRevolvingIndicator,
-      StandardReferenceType: defaultValues.standardReferenceType,
+      CustomerLockMTMRateIndicator: defaultFacilityValues.customerLockMTMRateIndicator,
+      CustomerNextValuationDate: defaultFacilityValues.customerNextValuationDate,
+      LimitRevolvingIndicator: defaultFacilityValues.limitRevolvingIndicator,
+      StandardReferenceType: defaultFacilityValues.standardReferenceType,
       AdministrativeUser: {
-        UserAcbsIdentifier: defaultValues.administrativeUser.userAcbsIdentifier,
-        UserName: defaultValues.administrativeUser.userName,
+        UserAcbsIdentifier: defaultFacilityValues.administrativeUser.userAcbsIdentifier,
+        UserName: defaultFacilityValues.administrativeUser.userName,
       },
       CreditReviewRiskType: {
         CreditReviewRiskTypeCode: facilityToUpdate.riskStatusCode,
       },
-      NextReviewDate: defaultValues.nextReviewDate,
-      IsNextReviewDateZero: defaultValues.isNextReviewDateZero,
+      NextReviewDate: defaultFacilityValues.nextReviewDate,
+      IsNextReviewDateZero: defaultFacilityValues.isNextReviewDateZero,
       OfficerRiskRatingType: {
         OfficerRiskRatingTypeCode: facilityToUpdate.creditRatingCode,
       },
       OfficerRiskDate: midnightToday,
-      IsOfficerRiskDateZero: defaultValues.isOfficerRiskDateZero,
+      IsOfficerRiskDateZero: defaultFacilityValues.isOfficerRiskDateZero,
       CreditReviewRiskDate: midnightToday,
-      IsCreditReviewRiskDateZero: defaultValues.isCreditReviewRiskDateZero,
-      RegulatorRiskDate: defaultValues.regulatorRiskDate,
-      IsRegulatorRiskDateZero: defaultValues.isRegulatorRiskDateZero,
-      MultiCurrencyArrangementIndicator: defaultValues.multiCurrencyArrangementIndicator,
+      IsCreditReviewRiskDateZero: defaultFacilityValues.isCreditReviewRiskDateZero,
+      RegulatorRiskDate: defaultFacilityValues.regulatorRiskDate,
+      IsRegulatorRiskDateZero: defaultFacilityValues.isRegulatorRiskDateZero,
+      MultiCurrencyArrangementIndicator: defaultFacilityValues.multiCurrencyArrangementIndicator,
       FacilityUserDefinedList1: {
         FacilityUserDefinedList1Code: facilityStageCode,
       },
       FacilityUserDefinedList3: {
-        FacilityUserDefinedList3Code: defaultValues.facilityUserDefinedList3Code,
+        FacilityUserDefinedList3Code: defaultFacilityValues.facilityUserDefinedList3Code,
       },
       FacilityUserDefinedList6: {
         FacilityUserDefinedList6Code: facilityToUpdate.delegationType,
@@ -178,38 +181,38 @@ export class UpdateFacilityGenerator extends AbstractGenerator<FacilityValues, G
       IsUserDefinedDate1Zero: false,
       UserDefinedDate2: acbsNextQuarterEndDate,
       IsUserDefinedDate2Zero: false,
-      IsUserDefinedDate3Zero: defaultValues.isUserDefinedDate3Zero,
-      IsUserDefinedDate4Zero: defaultValues.isUserDefinedDate4Zero,
+      IsUserDefinedDate3Zero: defaultFacilityValues.isUserDefinedDate3Zero,
+      IsUserDefinedDate4Zero: defaultFacilityValues.isUserDefinedDate4Zero,
       UserDefinedAmount3: facilityToUpdate.interestOrFeeRate,
       ProbabilityofDefault: facilityToUpdate.probabilityOfDefault,
       DefaultReason: {
-        DefaultReasonCode: defaultValues.defaultReasonCode,
+        DefaultReasonCode: defaultFacilityValues.defaultReasonCode,
       },
-      DoubtfulPercent: defaultValues.doubtfulPercent,
-      DrawUnderTemplateIndicator: defaultValues.drawUnderTemplateIndicator,
+      DoubtfulPercent: defaultFacilityValues.doubtfulPercent,
+      DrawUnderTemplateIndicator: defaultFacilityValues.drawUnderTemplateIndicator,
       FacilityOrigination: {
-        FacilityOriginationCode: defaultValues.facilityOriginationCode,
+        FacilityOriginationCode: defaultFacilityValues.facilityOriginationCode,
       },
       AccountStructure: {
-        AccountStructureCode: defaultValues.accountStructureCode,
+        AccountStructureCode: defaultFacilityValues.accountStructureCode,
       },
       FacilityOverallStatus: {
-        FacilityStatusCode: defaultValues.facilityStatusCode,
+        FacilityStatusCode: defaultFacilityValues.facilityStatusCode,
       },
       LenderType: {
-        LenderTypeCode: defaultValues.lenderTypeCode,
+        LenderTypeCode: defaultFacilityValues.lenderTypeCode,
       },
       BorrowerParty: {
         PartyIdentifier: facilityToUpdate.obligorPartyIdentifier,
       },
       ServicingUser: {
-        UserAcbsIdentifier: defaultValues.servicingUser.userAcbsIdentifier,
-        UserName: defaultValues.servicingUser.userName,
+        UserAcbsIdentifier: defaultFacilityValues.servicingUser.userAcbsIdentifier,
+        UserName: defaultFacilityValues.servicingUser.userName,
       },
       CompBalPctReserve: 100,
       CompBalPctAmount: facilityToUpdate.forecastPercentage,
       RiskMitigation: {
-        RiskMitigationCode: defaultValues.riskMitigationCode,
+        RiskMitigationCode: defaultFacilityValues.riskMitigationCode,
       },
     };
 
@@ -265,7 +268,7 @@ export class UpdateFacilityGenerator extends AbstractGenerator<FacilityValues, G
       UserDefinedDate2: acbsNextQuarterEndDate,
       UserDefinedAmount3: facilityToUpdate.interestOrFeeRate,
       ProbabilityofDefault: facilityToUpdate.probabilityOfDefault,
-      FacilityOverallStatus: { FacilityStatusCode: defaultValues.facilityStatusCode },
+      FacilityOverallStatus: { FacilityStatusCode: defaultFacilityValues.facilityStatusCode },
       BorrowerParty: { PartyIdentifier: facilityToUpdate.obligorPartyIdentifier, PartyName1: facilityToUpdate.obligatorName },
       CompBalPctReserve: 100,
       CompBalPctAmount: facilityToUpdate.forecastPercentage,
@@ -275,10 +278,33 @@ export class UpdateFacilityGenerator extends AbstractGenerator<FacilityValues, G
       AdministrativeUserIdentifier: facilityToUpdate.administrativeUserIdentifier,
     };
 
+    const acbsBundleInformationRequest: AcbsCreateBundleInformationRequestDto<FacilityAmountTransaction> = {
+      PortfolioIdentifier: portfolioIdentifier,
+      InitialBundleStatusCode: defaultFacilityAmountTransactionValues.initialBundleStatusCode,
+      InitiatingUserName: defaultFacilityAmountTransactionValues.initiatingUserName,
+      UseAPIUserIndicator: defaultFacilityAmountTransactionValues.useAPIUserIndicator,
+      BundleMessageList: [
+        {
+          $type: defaultFacilityAmountTransactionValues.bundleMessageList.type,
+          AccountOwnerIdentifier: defaultFacilityAmountTransactionValues.bundleMessageList.accountOwnerIdentifier,
+          EffectiveDate: acbsEffectiveDate,
+          FacilityIdentifier: facilityIdentifier,
+          FacilityTransactionType: { TypeCode: ENUMS.FACILITY_TRANSACTION_TYPE_CODES.MINUS },
+          IsDraftIndicator: defaultFacilityAmountTransactionValues.bundleMessageList.isDraftIndicator,
+          LenderType: { LenderTypeCode: defaultFacilityAmountTransactionValues.bundleMessageList.lenderTypeCode },
+          LimitKeyValue: acbsGetExistingFacilityResponse.BorrowerParty.PartyIdentifier,
+          LimitType: { LimitTypeCode: defaultFacilityAmountTransactionValues.bundleMessageList.limitType.limitTypeCode },
+          SectionIdentifier: defaultFacilityAmountTransactionValues.bundleMessageList.sectionIdentifier,
+          TransactionAmount: 0,
+        },
+      ],
+    };
+
     return {
       acbsUpdateFacilityRequest,
       acbsGetExistingFacilityResponse,
-      updateFacilityRequest: updateFacilityRequest,
+      acbsBundleInformationRequest,
+      updateFacilityRequest,
     };
   }
 }
@@ -312,6 +338,7 @@ interface FacilityValues {
 interface GenerateResult {
   acbsUpdateFacilityRequest: AcbsUpdateFacilityRequest;
   acbsGetExistingFacilityResponse: AcbsGetFacilityResponseDto;
+  acbsBundleInformationRequest: AcbsCreateBundleInformationRequestDto<FacilityAmountTransaction>;
   updateFacilityRequest: UpdateFacilityRequest;
 }
 

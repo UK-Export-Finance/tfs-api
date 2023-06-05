@@ -1,13 +1,21 @@
 import { Injectable } from '@nestjs/common';
+import { PROPERTIES } from '@ukef/constants';
 import { AcbsPartyExternalRatingService } from '@ukef/modules/acbs/acbs-party-external-rating.service';
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
-import { PartyExternalRating } from '@ukef/modules/party-external-rating/party-external-rating.interface';
+import { GetPartyExternalRating } from '@ukef/modules/party-external-rating/get-party-external-rating.interface';
+
+import { DateStringTransformations } from '../date/date-string.transformations';
+import { CreatePartyExternalRating } from './create-party-external-rating.interface';
 
 @Injectable()
 export class PartyExternalRatingService {
-  constructor(private readonly acbsAuthenticationService: AcbsAuthenticationService, private readonly acbsService: AcbsPartyExternalRatingService) {}
+  constructor(
+    private readonly acbsAuthenticationService: AcbsAuthenticationService,
+    private readonly acbsService: AcbsPartyExternalRatingService,
+    private readonly dateStringTransformations: DateStringTransformations,
+  ) {}
 
-  async getExternalRatingsForParty(partyIdentifier: string): Promise<PartyExternalRating[]> {
+  async getExternalRatingsForParty(partyIdentifier: string): Promise<GetPartyExternalRating[]> {
     const idToken = await this.acbsAuthenticationService.getIdToken();
     const externalRatingsInAcbs = await this.acbsService.getExternalRatingsForParty(partyIdentifier, idToken);
     return externalRatingsInAcbs.map((rating) => ({
@@ -27,5 +35,30 @@ export class PartyExternalRatingService {
       externalRatingUserCode1: rating.ExternalRatingUserCode1.UserCode1,
       externalRatingUserCode2: rating.ExternalRatingUserCode2.UserCode2,
     }));
+  }
+
+  async createExternalRatingForParty(partyIdentifier: string, createPartyExternalRatingRequest: CreatePartyExternalRating): Promise<void> {
+    const idToken = await this.acbsAuthenticationService.getIdToken();
+
+    const { assignedRatingCode, ratedDate } = createPartyExternalRatingRequest;
+    const ratedDateTime = this.dateStringTransformations.addTimeToDateOnlyString(ratedDate);
+
+    const acbsCreateExternalRatingRequest = {
+      PartyIdentifier: partyIdentifier,
+      RatingEntity: {
+        RatingEntityCode: PROPERTIES.PARTY_EXTERNAL_RATING.DEFAULT.ratingEntityCode,
+      },
+      AssignedRating: {
+        AssignedRatingCode: assignedRatingCode,
+      },
+      RatedDate: ratedDateTime,
+      ProbabilityofDefault: PROPERTIES.PARTY_EXTERNAL_RATING.DEFAULT.probabilityofDefault,
+      LossGivenDefault: PROPERTIES.PARTY_EXTERNAL_RATING.DEFAULT.lossGivenDefault,
+      RiskWeighting: PROPERTIES.PARTY_EXTERNAL_RATING.DEFAULT.riskWeighting,
+      ExternalRatingNote1: PROPERTIES.PARTY_EXTERNAL_RATING.DEFAULT.externalRatingNote1,
+      ExternalRatingNote2: PROPERTIES.PARTY_EXTERNAL_RATING.DEFAULT.externalRatingNote2,
+    };
+
+    await this.acbsService.createExternalRatingForParty(acbsCreateExternalRatingRequest, idToken);
   }
 }

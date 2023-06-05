@@ -13,7 +13,7 @@ describe('PartyExternalRatingController', () => {
   describe('getExternalRatingsForParty', () => {
     const partyIdentifier = '010';
 
-    const { externalRatings, externalRatingsFromApi: expectedExternalRatings } = new GetPartyExternalRatingGenerator(valueGenerator).generate({
+    const { externalRatings, apiExternalRatings: expectedExternalRatings } = new GetPartyExternalRatingGenerator(valueGenerator).generate({
       partyIdentifier,
       numberToGenerate: 2,
     });
@@ -24,7 +24,7 @@ describe('PartyExternalRatingController', () => {
     let partyExternalRatingServiceGetExternalRatingsForParty: jest.Mock;
 
     beforeEach(() => {
-      partyExternalRatingService = new PartyExternalRatingService(null, null);
+      partyExternalRatingService = new PartyExternalRatingService(null, null, null);
 
       partyExternalRatingServiceGetExternalRatingsForParty = jest.fn();
       partyExternalRatingService.getExternalRatingsForParty = partyExternalRatingServiceGetExternalRatingsForParty;

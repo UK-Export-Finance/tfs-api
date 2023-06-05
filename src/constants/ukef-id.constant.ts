@@ -17,4 +17,7 @@ export const UKEFID = {
     PREFIX: '0000',
     REGEX: /^0{4}\d{6}$/,
   },
+  PARTY_ID: {
+    REGEX: /^\d{8}$/,
+  },
 };

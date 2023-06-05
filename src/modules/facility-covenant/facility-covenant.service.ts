@@ -106,22 +106,22 @@ export class FacilityCovenantService {
   async updateCovenantsForFacility(facilityIdentifier: string, updateCovenantRequest: UpdateFacilityCovenantsRequestDto): Promise<void> {
     const { portfolioIdentifier } = PROPERTIES.GLOBAL;
     const idToken = await this.acbsAuthenticationService.getIdToken();
-
     const covenantsToUpdate = await this.acbsFacilityCovenantService.getCovenantsForFacility(portfolioIdentifier, facilityIdentifier, idToken);
 
-    const { expirationDate, targetAmount } = updateCovenantRequest;
-
-    const fieldsToUpdate = {
-      ...(expirationDate && {
-        ExpirationDate: this.dateStringTransformations.addTimeToDateOnlyString(expirationDate),
-      }),
-      ...(targetAmount && { TargetAmount: targetAmount }),
-    };
-
+    const covenantFieldsToUpdate = this.getCovenantFieldsToUpdate(updateCovenantRequest);
     for (const covenant of covenantsToUpdate) {
-      const updatedCovenant = { ...covenant, ...fieldsToUpdate };
+      const updatedCovenant = { ...covenant, ...covenantFieldsToUpdate };
 
       await this.acbsFacilityCovenantService.replaceCovenantForFacility(portfolioIdentifier, facilityIdentifier, updatedCovenant, idToken);
     }
+  }
+
+  private getCovenantFieldsToUpdate({ expirationDate, targetAmount }: UpdateFacilityCovenantsRequestDto): Partial<AcbsCreateFacilityCovenantRequestDto> {
+    return {
+      ...(expirationDate && {
+        ExpirationDate: this.dateStringTransformations.addTimeToDateOnlyString(expirationDate),
+      }),
+      ...((targetAmount || targetAmount === 0) && { TargetAmount: targetAmount }),
+    };
   }
 }

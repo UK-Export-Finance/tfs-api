@@ -3,24 +3,25 @@ import {
   ApiBadRequestResponse,
   ApiBody,
   ApiCreatedResponse,
+  ApiExtraModels,
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiParam,
+  refs,
 } from '@nestjs/swagger';
 import { ENUMS, EXAMPLES } from '@ukef/constants';
 import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decorator';
-
-import { CreateFacilityRequest, CreateFacilityRequestItem } from './dto/create-facility-request.dto';
-import { CreateFacilityResponse } from './dto/create-facility-response.dto';
-import { GetFacilityByIdentifierParamsDto } from './dto/get-facility-by-identifier-params.dto';
-import { GetFacilityByIdentifierResponseDto } from './dto/get-facility-by-identifier-response.dto';
-import { UpdateFacilityByOperationParamsDto } from './dto/update-facility-by-operation-params.dto';
-import { UpdateFacilityByOperationQueryDto } from './dto/update-facility-by-operation-query.dto';
-import { UpdateFacilityRequest } from './dto/update-facility-request.dto';
-import { UpdateFacilityResponse } from './dto/update-facility-response.dto';
-import { FacilityService } from './facility.service';
+import { CreateFacilityRequest, CreateFacilityRequestItem } from '@ukef/modules/facility/dto/create-facility-request.dto';
+import { CreateFacilityResponse } from '@ukef/modules/facility/dto/create-facility-response.dto';
+import { GetFacilityByIdentifierParamsDto } from '@ukef/modules/facility/dto/get-facility-by-identifier-params.dto';
+import { GetFacilityByIdentifierResponseDto } from '@ukef/modules/facility/dto/get-facility-by-identifier-response.dto';
+import { UpdateFacilityByOperationParamsDto } from '@ukef/modules/facility/dto/update-facility-by-operation-params.dto';
+import { UpdateFacilityByOperationQueryDto } from '@ukef/modules/facility/dto/update-facility-by-operation-query.dto';
+import { UpdateFacilityRequest } from '@ukef/modules/facility/dto/update-facility-request.dto';
+import { UpdateFacilityBundleIdentifierResponse, UpdateFacilityFacilityIdentifierResponse } from '@ukef/modules/facility/dto/update-facility-response.dto';
+import { FacilityService } from '@ukef/modules/facility/facility.service';
 
 @Controller('facilities')
 export class FacilityController {
@@ -114,9 +115,21 @@ export class FacilityController {
     description: 'The identifier of the facility in ACBS.',
     example: EXAMPLES.FACILITY_ID,
   })
+  @ApiExtraModels(UpdateFacilityFacilityIdentifierResponse, UpdateFacilityBundleIdentifierResponse)
   @ApiOkResponse({
-    description: 'The facility has been successfully updated.',
-    type: UpdateFacilityResponse,
+    description:
+      'The facility has been successfully updated.\n\n`issue` and `amendExpiryDate` ops returns `UpdateFacilityFacilityIdentifierResponse`.\n\n`amendAmount` op returns `UpdateFacilityBundleIdentifierResponse',
+    content: {
+      'application/json': {
+        schema: {
+          oneOf: refs(UpdateFacilityFacilityIdentifierResponse, UpdateFacilityBundleIdentifierResponse),
+        },
+        examples: {
+          'issue and amendExpiryDate': { value: { facilityIdentifier: EXAMPLES.ACBS_BUNDLE_ID } },
+          amendAmount: { value: { bundleIdentifier: EXAMPLES.ACBS_BUNDLE_ID } },
+        },
+      },
+    },
   })
   @ApiNotFoundResponse({
     description: 'The specified facility was not found.',
@@ -131,7 +144,7 @@ export class FacilityController {
     @Query() query: UpdateFacilityByOperationQueryDto,
     @Param() params: UpdateFacilityByOperationParamsDto,
     @Body() updateFacilityDto: UpdateFacilityRequest,
-  ): Promise<UpdateFacilityResponse> {
+  ): Promise<UpdateFacilityFacilityIdentifierResponse | UpdateFacilityBundleIdentifierResponse> {
     if (query.op === ENUMS.FACILITY_UPDATE_OPERATIONS.ISSUE) {
       await this.facilityService.issueFacilityByIdentifier(params.facilityIdentifier, updateFacilityDto);
       return { facilityIdentifier: params.facilityIdentifier };
@@ -139,6 +152,9 @@ export class FacilityController {
     if (query.op === ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_EXPIRY_DATE) {
       await this.facilityService.amendFacilityExpiryDateByIdentifier(params.facilityIdentifier, updateFacilityDto);
       return { facilityIdentifier: params.facilityIdentifier };
+    }
+    if (query.op === ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_AMOUNT) {
+      return await this.facilityService.amendFacilityAmountByIdentifier(params.facilityIdentifier, updateFacilityDto);
     }
   }
 }

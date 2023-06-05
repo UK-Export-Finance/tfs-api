@@ -8,6 +8,7 @@ export const ACBSID = {
     REGEX: /^0{4}\d{6}$/,
   },
   LOAN_ID: {
-    REGEX: /^\d{10}$/,
+    REGEX: /^\d{9}$/,
+    LENGTH: 9,
   },
 };
