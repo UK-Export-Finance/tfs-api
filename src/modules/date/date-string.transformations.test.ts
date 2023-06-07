@@ -97,7 +97,7 @@ describe('DateStringTransformations', () => {
   });
 
   describe('getDayFromDateOnlyString', () => {
-    it('returns the day in DD format if the day number is a two digits', () => {
+    it('returns the day in DD format if the day number is two digits', () => {
       const date = '1987-04-23';
 
       expect(dateStringTransformations.getDayFromDateOnlyString(date)).toBe(23);
