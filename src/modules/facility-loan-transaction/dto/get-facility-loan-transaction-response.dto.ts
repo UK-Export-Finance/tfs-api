@@ -144,5 +144,5 @@ export class GetFacilityLoanTransactionResponseDto {
     maxLength: 1,
     example: EXAMPLES.LOAN_BILLING_FREQUENCY_TYPE,
   })
-  readonly loanBillingFrequencyType?: string | null;
+  readonly loanBillingFrequencyType: string | null;
 }
