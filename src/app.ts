@@ -30,14 +30,14 @@ export class App {
 
     app.setGlobalPrefix(globalPrefix);
 
+    app.useGlobalPipes(new InputCharacterValidationPipe());
+
     app.useGlobalPipes(
       new ValidationPipe({
         whitelist: true,
         transform: true,
       }),
     );
-
-    app.useGlobalPipes(new InputCharacterValidationPipe());
 
     // Swagger docs
     SwaggerDocs(app);
