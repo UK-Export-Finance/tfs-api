@@ -107,15 +107,14 @@ export class GetFacilityLoanTransactionResponseDto {
       'The spread rate of the PAC accrual schedule to factor into the all-in rate if a rate calculation method is selected that includes the spread rate in the calculation.',
     example: EXAMPLES.SPREAD_RATE,
   })
-  readonly spreadRate: number;
+  readonly spreadRate: number | null;
 
   @ApiProperty({
     description:
       'The spread rate of the CTL accrual schedule to factor into the all-in rate if a rate calculation method is selected that includes the spread rate in the calculation.',
     example: EXAMPLES.SPREAD_RATE,
-    required: false,
   })
-  readonly spreadRateCTL: number;
+  readonly spreadRateCTL: number | null;
 
   @ApiProperty({
     description: 'A code denoting the year basis for the accrual schedule.',
@@ -123,21 +122,21 @@ export class GetFacilityLoanTransactionResponseDto {
     maxLength: 1,
     example: EXAMPLES.YEAR_BASIS,
   })
-  readonly yearBasis: string;
+  readonly yearBasis: string | null;
 
   @ApiProperty({
     description: 'The date the next payment will be due for the loan repayment schedule.',
     type: Date,
     format: 'date',
   })
-  readonly nextDueDate: DateOnlyString;
+  readonly nextDueDate: DateOnlyString | null;
 
   @ApiProperty({
     description: `A code denoting the index rate change frequency, which is used by ACBS to determine the frequency at which the rate should change when the change timing is set to 'On Anniversary'.`,
     minLength: 0,
     maxLength: 1,
   })
-  readonly indexRateChangeFrequency: string;
+  readonly indexRateChangeFrequency: string | null;
 
   @ApiProperty({
     description: `A code denoting the loan billing frequency type, which is used by ACBS to determine the frequency at which the bills should be generated.`,
@@ -145,5 +144,5 @@ export class GetFacilityLoanTransactionResponseDto {
     maxLength: 1,
     example: EXAMPLES.LOAN_BILLING_FREQUENCY_TYPE,
   })
-  readonly loanBillingFrequencyType: string;
+  readonly loanBillingFrequencyType: string | null;
 }

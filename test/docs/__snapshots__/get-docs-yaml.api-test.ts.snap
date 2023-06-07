@@ -3349,6 +3349,7 @@ components:
         - issueDate
         - expiryDate
         - spreadRate
+        - spreadRateCTL
         - yearBasis
         - nextDueDate
         - indexRateChangeFrequency
