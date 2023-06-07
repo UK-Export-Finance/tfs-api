@@ -28,6 +28,13 @@ export const facilityNotFoundKnownAcbsError = (facilityIdentifier: string): Know
   },
 });
 
+export const loanNotFoundKnownAcbsError = (loanIdentifier: string): KnownError => ({
+  caseInsensitiveSubstringToFind: 'Loan not found',
+  throwError(error) {
+    throw new AcbsResourceNotFoundException(`Loan with identifier ${loanIdentifier} was not found by ACBS.`, error);
+  },
+});
+
 export const postFacilityNotFoundKnownAcbsError = (facilityIdentifier: string): KnownError => ({
   caseInsensitiveSubstringToFind: 'Facility does not exist',
   throwError: (error) => {
