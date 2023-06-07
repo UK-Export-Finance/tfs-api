@@ -90,7 +90,7 @@ export interface NewLoanRequest {
   CustomerUsageNextValuationDate?: DateString;
   FinancialLockMTMRateIndicator?: boolean;
   CustomerUsageLockMTMRateIndicator?: boolean;
-  AccrualScheduleList: Pick<AccrualSchedule, 'AccrualCategory' | 'SpreadRate' | 'YearBasis' | 'IndexRateChangeFrequency'>[];
+  AccrualScheduleList: AccrualSchedule[];
   RepaymentScheduleList: Pick<RepaymentSchedule, 'NextDueDate' | 'LoanBillingFrequencyType'>[];
 }
 

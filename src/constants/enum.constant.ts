@@ -18,7 +18,7 @@ import * as OPERATION_TYPE_CODES from './enums/operation-type-code';
 import * as PORTFOLIO from './enums/portfolio';
 import * as PRODUCT_TYPE_GROUPS from './enums/product-type-group';
 import * as PRODUCT_TYPE_IDS from './enums/product-type-id';
-import * as YEAR_BASIS from './enums/year-basis';
+import * as YEAR_BASIS_CODES from './enums/year-basis-code';
 
 export const ENUMS = {
   BUNDLE_STATUS_CODES: BUNDLE_STATUS_CODES.BundleStatusCodeEnum,
@@ -41,5 +41,5 @@ export const ENUMS = {
   LIMIT_TYPE_CODES: LIMIT_TYPE_CODES.LimitTypeCodeEnum,
   ASSIGNED_RATING_CODES: ASSIGNED_RATING_CODES.AssignedRatingCodeEnum,
   CITIZENSHIP_CLASSES: CITIZENSHIP_CLASSES.CitizenshipClassEnum,
-  YEAR_BASIS: YEAR_BASIS.YearBasisEnum,
+  YEAR_BASIS_CODES: YEAR_BASIS_CODES.YearBasisCodeEnum,
 };

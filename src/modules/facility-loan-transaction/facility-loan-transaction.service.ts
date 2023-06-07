@@ -67,8 +67,8 @@ export class FacilityLoanTransactionService {
 
   private findFirstAccrualMatchingCategoryCode(
     categoryCode: string,
-    accrualScheduleList: Pick<AccrualSchedule, 'AccrualCategory' | 'SpreadRate' | 'YearBasis' | 'IndexRateChangeFrequency'>[],
-  ): Pick<AccrualSchedule, 'AccrualCategory' | 'SpreadRate' | 'YearBasis' | 'IndexRateChangeFrequency'> {
+    accrualScheduleList: AccrualSchedule[],
+  ): AccrualSchedule {
     return accrualScheduleList.find((accrual) => accrual.AccrualCategory.AccrualCategoryCode === categoryCode);
   }
 }

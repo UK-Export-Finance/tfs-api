@@ -5,7 +5,7 @@ import { LOAN_RATE_INDEX } from '@ukef/constants/loan-rate-index.constant';
 import { AcbsBundleId, UkefId } from '@ukef/helpers';
 import { AcbsCreateBundleInformationRequestDto } from '@ukef/modules/acbs/dto/acbs-create-bundle-information-request.dto';
 import { AcbsCreateBundleInformationResponseHeadersDto } from '@ukef/modules/acbs/dto/acbs-create-bundle-information-response.dto';
-import { AccrualSchedule } from '@ukef/modules/acbs/dto/bundle-actions/accrual-schedule.interface';
+import { AccrualScheduleExtended } from '@ukef/modules/acbs/dto/bundle-actions/accrual-schedule.interface';
 import { NewLoanRequest } from '@ukef/modules/acbs/dto/bundle-actions/new-loan-request.bundle-action';
 import { RepaymentSchedule } from '@ukef/modules/acbs/dto/bundle-actions/repayment-schedule.interface';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
@@ -38,7 +38,7 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
       loanBillingFrequencyType: this.valueGenerator.enumValue(ENUMS.FEE_FREQUENCY_TYPES),
       spreadRate: this.valueGenerator.nonnegativeFloat(),
       spreadRateCtl: this.valueGenerator.nonnegativeFloat(),
-      yearBasis: this.valueGenerator.enumValue(ENUMS.YEAR_BASIS),
+      yearBasis: this.valueGenerator.enumValue(ENUMS.YEAR_BASIS_CODES),
       indexRateChangeFrequency: this.valueGenerator.enumValue(ENUMS.FEE_FREQUENCY_TYPES),
     };
   }
@@ -380,11 +380,11 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
     };
   }
 
-  private getBondAndGefAccrualSchedules(facilityLoan: CreateFacilityLoanRequestItem, acbsEffectiveDate: string): AccrualSchedule[] {
+  private getBondAndGefAccrualSchedules(facilityLoan: CreateFacilityLoanRequestItem, acbsEffectiveDate: string): AccrualScheduleExtended[] {
     return [this.getPacAccrualSchedule(facilityLoan, acbsEffectiveDate)];
   }
 
-  private getPacAccrualSchedule(facilityLoan: CreateFacilityLoanRequestItem, acbsEffectiveDate: string): AccrualSchedule {
+  private getPacAccrualSchedule(facilityLoan: CreateFacilityLoanRequestItem, acbsEffectiveDate: string): AccrualScheduleExtended {
     return {
       ...this.getBaseAccrualSchedule(facilityLoan, acbsEffectiveDate),
       ScheduleIdentifier: PROPERTIES.ACCRUAL.PAC.scheduleIdentifier,
@@ -398,7 +398,7 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
     };
   }
 
-  private getEwcsAccrualSchedulesUsd(facilityLoan: CreateFacilityLoanRequestItem, acbsEffectiveDate: string): AccrualSchedule[] {
+  private getEwcsAccrualSchedulesUsd(facilityLoan: CreateFacilityLoanRequestItem, acbsEffectiveDate: string): AccrualScheduleExtended[] {
     return [
       this.getPacAccrualSchedule(facilityLoan, acbsEffectiveDate),
       {
@@ -434,7 +434,7 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
     ];
   }
 
-  private getEwcsAccrualSchedulesGbp(facilityLoan: CreateFacilityLoanRequestItem, acbsEffectiveDate: string, effectiveDate: string): AccrualSchedule[] {
+  private getEwcsAccrualSchedulesGbp(facilityLoan: CreateFacilityLoanRequestItem, acbsEffectiveDate: string, effectiveDate: string): AccrualScheduleExtended[] {
     const nextRatePeriod = this.dateStringTransformations.getDatePlusThreeMonths(effectiveDate);
     return [
       this.getPacAccrualSchedule(facilityLoan, acbsEffectiveDate),
@@ -504,7 +504,7 @@ interface GenerateResult {
   bondRepaymentSchedulesGbp: RepaymentSchedule[];
   ewcsRepaymentSchedulesGbp: RepaymentSchedule[];
   gefRepaymentSchedulesGbp: RepaymentSchedule[];
-  bondAndGefAccrualSchedulesGbp: AccrualSchedule[];
-  ewcsAccrualSchedulesUsd: AccrualSchedule[];
-  ewcsAccrualSchedulesGbp: AccrualSchedule[];
+  bondAndGefAccrualSchedulesGbp: AccrualScheduleExtended[];
+  ewcsAccrualSchedulesUsd: AccrualScheduleExtended[];
+  ewcsAccrualSchedulesGbp: AccrualScheduleExtended[];
 }

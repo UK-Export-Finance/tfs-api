@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { CURRENCIES } from '@ukef/constants/currencies.constant';
 import { LOAN_RATE_INDEX } from '@ukef/constants/loan-rate-index.constant';
-import { AccrualSchedule } from '@ukef/modules/acbs/dto/bundle-actions/accrual-schedule.interface';
+import { AccrualScheduleExtended } from '@ukef/modules/acbs/dto/bundle-actions/accrual-schedule.interface';
 import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 
@@ -12,7 +12,7 @@ import { CreateFacilityLoanRequestItem } from './dto/create-facility-loan-reques
 export class AccrualScheduleBuilder {
   constructor(private readonly dateStringTransformations: DateStringTransformations, private readonly currentDateProvider: CurrentDateProvider) {}
 
-  getAccrualSchedules(facilityLoan: CreateFacilityLoanRequestItem): AccrualSchedule[] {
+  getAccrualSchedules(facilityLoan: CreateFacilityLoanRequestItem): AccrualScheduleExtended[] {
     if (facilityLoan.productTypeGroup === ENUMS.PRODUCT_TYPE_GROUPS.EWCS) {
       if (facilityLoan.currency === CURRENCIES.USD) {
         return [this.getAccrualPac(facilityLoan), this.getAccrualNonRfr(facilityLoan)];
@@ -22,7 +22,7 @@ export class AccrualScheduleBuilder {
     return [this.getAccrualPac(facilityLoan)];
   }
 
-  private getAccrualPac(facilityLoan: CreateFacilityLoanRequestItem): AccrualSchedule {
+  private getAccrualPac(facilityLoan: CreateFacilityLoanRequestItem): AccrualScheduleExtended {
     return {
       ...this.getBaseAccrualSchedule(facilityLoan),
       ScheduleIdentifier: PROPERTIES.ACCRUAL.PAC.scheduleIdentifier,
@@ -36,7 +36,7 @@ export class AccrualScheduleBuilder {
     };
   }
 
-  private getAccrualNonRfr(facilityLoan: CreateFacilityLoanRequestItem): AccrualSchedule {
+  private getAccrualNonRfr(facilityLoan: CreateFacilityLoanRequestItem): AccrualScheduleExtended {
     return {
       ...this.getBaseAccrualSchedule(facilityLoan),
       ScheduleIdentifier: PROPERTIES.ACCRUAL.INT_NON_RFR.scheduleIdentifier,
@@ -69,7 +69,7 @@ export class AccrualScheduleBuilder {
     };
   }
 
-  private getAccrualRfr(facilityLoan: CreateFacilityLoanRequestItem): AccrualSchedule {
+  private getAccrualRfr(facilityLoan: CreateFacilityLoanRequestItem): AccrualScheduleExtended {
     const loanRateIndexCode = this.getLoanRateIndexCode(facilityLoan);
     const issueDatePlusThreeMonths = this.dateStringTransformations.getDatePlusThreeMonths(facilityLoan.issueDate);
     return {

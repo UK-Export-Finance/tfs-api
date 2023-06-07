@@ -97,7 +97,7 @@ describe('DateStringTransformations', () => {
   });
 
   describe('getDayFromDateOnlyString', () => {
-    it('returns the day in DD format', () => {
+    it('returns the day in DD format if the day number is a two digits', () => {
       const date = '1987-04-23';
 
       expect(dateStringTransformations.getDayFromDateOnlyString(date)).toBe(23);
@@ -114,7 +114,7 @@ describe('DateStringTransformations', () => {
     it('returns the parameter as an ISO DateString if parameter is in the past', () => {
       const dateBeforeToday = TEST_DATES.A_PAST_EFFECTIVE_DATE_ONLY;
 
-      expect(dateStringTransformations.getEarliestDateFromTodayAndDateAsString(dateBeforeToday, currentDateProvider)).toBe('2000-01-01T00:00:00Z');
+      expect(dateStringTransformations.getEarliestDateFromTodayAndDateAsString(dateBeforeToday, currentDateProvider)).toBe(TEST_DATES.A_PAST_EFFECTIVE_DATE_STRING);
     });
 
     it('returns todays date as an ISO DateString if parameter is in the future', () => {
@@ -126,28 +126,21 @@ describe('DateStringTransformations', () => {
   });
 
   describe('getDatePlusThreeMonths', () => {
-    it('returns the date in YYYY-MM-DD format', () => {
-      const date = '1987-04-23';
+    it.each([
+      { date: '1987-04-23', expectedDate: '1987-07-23', description: '' },
+      { date: '2000-01-01', expectedDate: '2000-04-01', description: 'when there is a leap year and short months' },
+      { date: '2001-01-01', expectedDate: '2001-04-01', description: 'when DST shift -1 hour' },
+      { date: '2001-09-01', expectedDate: '2001-12-01', description: 'when DST shift +1 hour' },
+      { date: '2001-08-31', expectedDate: '2001-11-30', description: 'when input day is 31 and output month has 30 days' },
+      { date: '2001-11-30', expectedDate: '2002-02-28', description: 'when input is 30th November and it is not a leap year' },
+      { date: '1999-11-30', expectedDate: '2000-02-29', description: 'when input is 30th November and it is a leap year' },
+      { date: '2004-02-29', expectedDate: '2004-05-29', description: 'when input is 29th February and it is a leap year' },
+    ])(
+      'returns the date plus three months in YYYY-MM-DD format $description',
+      ({ date, expectedDate }) => {
 
-      expect(dateStringTransformations.getDatePlusThreeMonths(date)).toBe('1987-07-23');
-    });
-
-    it('returns the date in YYYY-MM-DD format, month is incremented by 3 despite leap year and short months', () => {
-      const date = '2000-01-01';
-
-      expect(dateStringTransformations.getDatePlusThreeMonths(date)).toBe('2000-04-01');
-    });
-
-    it('returns the date in YYYY-MM-DD format, month is incremented by 3 despite DST shift -1 hour', () => {
-      const date = '2001-01-01';
-
-      expect(dateStringTransformations.getDatePlusThreeMonths(date)).toBe('2001-04-01');
-    });
-
-    it('returns the date in YYYY-MM-DD format, month is incremented by 3 despite DST shift +1 hour', () => {
-      const date = '2001-09-01';
-
-      expect(dateStringTransformations.getDatePlusThreeMonths(date)).toBe('2001-12-01');
-    });
+      expect(dateStringTransformations.getDatePlusThreeMonths(date)).toBe(expectedDate);
+      },
+    );
   });
 });

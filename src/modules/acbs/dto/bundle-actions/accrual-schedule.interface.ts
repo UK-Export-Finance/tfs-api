@@ -1,6 +1,19 @@
 import { DateString } from '@ukef/helpers';
 
 export interface AccrualSchedule {
+  AccrualCategory: {
+    AccrualCategoryCode: string;
+  };
+  YearBasis: {
+    YearBasisCode: string;
+  };
+  SpreadRate: number;
+  IndexRateChangeFrequency?: {
+    IndexRateChangeFrequencyCode: string;
+  };
+}
+
+export interface AccrualScheduleExtended extends AccrualSchedule {
   InvolvedParty: {
     PartyIdentifier: string;
   };
@@ -9,9 +22,6 @@ export interface AccrualSchedule {
   LenderType: {
     LenderTypeCode: string;
   };
-  AccrualCategory: {
-    AccrualCategoryCode: string;
-  };
   BusinessDayCalendar?: {
     CalendarIdentifier: string;
   };
@@ -19,18 +29,11 @@ export interface AccrualSchedule {
   RateCalculationMethod: {
     RateCalculationMethodCode: string;
   };
-  YearBasis: {
-    YearBasisCode: string;
-  };
   BaseRate: number;
   ReserveRate: number;
-  SpreadRate: number;
   CostOfFundsRate: number;
   PercentageOfRate: number;
   PercentOfBaseBalance: number;
-  IndexRateChangeFrequency?: {
-    IndexRateChangeFrequencyCode: string;
-  };
   IndexRateChangeTiming?: {
     IndexRateChangeTimingCode: string;
   };

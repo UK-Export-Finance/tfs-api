@@ -2864,7 +2864,9 @@ components:
           minimum: 0
         spreadRateCtl:
           type: number
-          description: The corresponding fee rate. If null interest rate will be used.
+          description: >-
+            The corresponding fee rate. If it is null then the interest rate
+            will be used.
           minimum: 0
         yearBasis:
           type: string

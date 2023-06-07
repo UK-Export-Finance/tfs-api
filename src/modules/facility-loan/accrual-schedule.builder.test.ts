@@ -37,24 +37,17 @@ describe('AccrualScheduleBuilder', () => {
     const [newLoanGbp] = requestBodyToCreateFacilityLoanGbp;
     const [newLoanNonGbp] = requestBodyToCreateFacilityLoanNonGbp;
 
-    it(`generates bond repayment schedules when product type is 'BOND'`, () => {
-      const newLoanWithProductTypeGroupBondCurrencyGbp = {
+    it.each([
+      { productTypeGroup: ENUMS.PRODUCT_TYPE_GROUPS.BOND, expectedResult: bondAndGefAccrualSchedulesGbp },
+      { productTypeGroup: ENUMS.PRODUCT_TYPE_GROUPS.GEF, expectedResult: bondAndGefAccrualSchedulesGbp },
+    ])('generates $productTypeGroup accrual schedule', ({ productTypeGroup, expectedResult }) => {
+      const newLoanWithProductTypeGroup = {
         ...newLoanGbp,
-        productTypeGroup: ENUMS.PRODUCT_TYPE_GROUPS.BOND,
+        productTypeGroup: productTypeGroup,
       };
-      const accrualSchedules = accrualScheduleBuilder.getAccrualSchedules(newLoanWithProductTypeGroupBondCurrencyGbp);
+      const accrualSchedules = accrualScheduleBuilder.getAccrualSchedules(newLoanWithProductTypeGroup);
 
-      expect(accrualSchedules).toEqual(bondAndGefAccrualSchedulesGbp);
-    });
-
-    it(`generates gef repayment schedules when product type is 'GEF'`, () => {
-      const newLoanWithProductTypeGroupBondCurrencyGbp = {
-        ...newLoanGbp,
-        productTypeGroup: ENUMS.PRODUCT_TYPE_GROUPS.GEF,
-      };
-      const accrualSchedules = accrualScheduleBuilder.getAccrualSchedules(newLoanWithProductTypeGroupBondCurrencyGbp);
-
-      expect(accrualSchedules).toEqual(bondAndGefAccrualSchedulesGbp);
+      expect(accrualSchedules).toEqual(expectedResult);
     });
 
     it('uses request issue date if request issue date is in the past', () => {

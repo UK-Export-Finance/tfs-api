@@ -3,7 +3,7 @@ import { FeeFrequencyTypeEnum } from '@ukef/constants/enums/fee-frequency-type';
 import { OperationTypeCodeEnum } from '@ukef/constants/enums/operation-type-code';
 import { ProductTypeGroupEnum } from '@ukef/constants/enums/product-type-group';
 import { ProductTypeIdEnum } from '@ukef/constants/enums/product-type-id';
-import { YearBasisEnum } from '@ukef/constants/enums/year-basis';
+import { YearBasisCodeEnum } from '@ukef/constants/enums/year-basis-code';
 import { ValidatedCurrencyApiProperty } from '@ukef/decorators/validated-currency-api-property-decorator';
 import { ValidatedDateOnlyApiProperty } from '@ukef/decorators/validated-date-only-api-property.decorator';
 import { ValidatedNumberApiProperty } from '@ukef/decorators/validated-number-api-property.decorator';
@@ -92,7 +92,7 @@ export class CreateFacilityLoanRequestItem {
   readonly spreadRate: number;
 
   @ValidatedNumberApiProperty({
-    description: 'The corresponding fee rate. If null interest rate will be used.',
+    description: 'The corresponding fee rate. If it is null then the interest rate will be used.',
     minimum: 0,
     required: false,
   })
@@ -100,10 +100,10 @@ export class CreateFacilityLoanRequestItem {
 
   @ValidatedStringApiProperty({
     description: 'The year basis for the accrual schedule.',
-    enum: ENUMS.YEAR_BASIS,
-    example: ENUMS.YEAR_BASIS.DAY_COUNT_365,
+    enum: ENUMS.YEAR_BASIS_CODES,
+    example: ENUMS.YEAR_BASIS_CODES.DAY_COUNT_365,
   })
-  readonly yearBasis: YearBasisEnum;
+  readonly yearBasis: YearBasisCodeEnum;
 
   @ValidatedStringApiProperty({
     description: 'The frequency which the rate will change.',
