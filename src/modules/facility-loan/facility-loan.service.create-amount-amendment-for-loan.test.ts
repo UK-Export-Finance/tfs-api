@@ -31,9 +31,9 @@ describe('FacilityLoanService', () => {
     const acbsAuthenticationServiceGetIdToken = mockAcbsAuthenticationService.getIdToken;
     when(acbsAuthenticationServiceGetIdToken).calledWith().mockResolvedValueOnce(idToken);
 
-    const acbsService = new AcbsFacilityLoanService(null, null);
+    const acbsFacilityLoanService = new AcbsFacilityLoanService(null, null);
     getFacilityLoansAcbsService = jest.fn();
-    acbsService.getLoansForFacility = getFacilityLoansAcbsService;
+    acbsFacilityLoanService.getLoansForFacility = getFacilityLoansAcbsService;
 
     const acbsBundleService = new AcbsBundleInformationService(null, null);
     createBundleInformation = jest.fn();
@@ -41,10 +41,12 @@ describe('FacilityLoanService', () => {
 
     service = new FacilityLoanService(
       acbsAuthenticationService,
-      acbsService,
+      acbsFacilityLoanService,
       acbsBundleService,
       new DateStringTransformations(),
       new CurrentDateProvider(),
+      null,
+      null,
       null,
     );
   });

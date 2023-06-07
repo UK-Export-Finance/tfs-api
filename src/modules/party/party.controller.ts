@@ -10,19 +10,24 @@ import {
   ApiParam,
 } from '@nestjs/swagger';
 import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decorator';
-import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
+import { AssignedRatingCodeProvider } from '@ukef/modules/party/assigned-rating-code.provider';
 import { Response } from 'express';
 
-import { CreatePartyRequest, CreatePartyRequestItem } from './dto/create-party-request.dto';
+import { PartyExternalRatingService } from '../party-external-rating/party-external-rating.service';
+import { CreatePartyRequestDto, CreatePartyRequestItem } from './dto/create-party-request.dto';
 import { CreatePartyResponse } from './dto/create-party-response.dto';
 import { GetPartiesBySearchTextQuery } from './dto/get-parties-by-search-text-query.dto';
 import { GetPartiesBySearchTextResponse, GetPartiesBySearchTextResponseItem } from './dto/get-parties-by-search-text-response.dto';
-import { GetPartyByIdentifierResponse } from './dto/get-party-by-identifier-response.dto';
+import { GetPartyByIdentifierResponseDto } from './dto/get-party-by-identifier-response.dto';
 import { PartyService } from './party.service';
 
 @Controller('parties')
 export class PartyController {
-  constructor(private readonly acbsAuthenticationService: AcbsAuthenticationService, private readonly partyService: PartyService) {}
+  constructor(
+    private readonly partyService: PartyService,
+    private readonly partyExternalRatingService: PartyExternalRatingService,
+    private readonly assignedRatingCodeProvider: AssignedRatingCodeProvider,
+  ) {}
 
   @Get()
   @ApiOperation({
@@ -64,18 +69,43 @@ export class PartyController {
   })
   async createParty(
     @ValidatedArrayBody({ items: CreatePartyRequestItem })
-    createPartyDto: CreatePartyRequest,
+    createPartyDto: CreatePartyRequestDto,
     @Res({ passthrough: true }) res: Response,
   ): Promise<CreatePartyResponse> {
-    const [newParty] = createPartyDto;
-    const partyIdentifierOfMatchingParty = await this.partyService.getPartyIdentifierBySearchText(newParty.alternateIdentifier);
+    const [partyToCreate] = createPartyDto;
 
-    if (partyIdentifierOfMatchingParty) {
+    const { partyIdentifier, partyWasCreated } = await this.createPartyIfItDoesNotExist(partyToCreate);
+
+    if (!partyWasCreated) {
       res.status(HttpStatus.OK);
-      return partyIdentifierOfMatchingParty;
     }
 
-    return this.partyService.createParty(newParty);
+    const existingExternalRatingsOfParty = await this.partyExternalRatingService.getExternalRatingsForParty(partyIdentifier);
+
+    if (Array.isArray(existingExternalRatingsOfParty) && existingExternalRatingsOfParty.length === 0) {
+      // TODO APIM-336: This is a placeholder function which returns a hard-coded value, and should be replaced when Informatica is ready.
+      const assignedRatingCode = this.assignedRatingCodeProvider.getAssignedRatingCode();
+
+      const { officerRiskDate: ratedDate } = partyToCreate;
+
+      await this.partyExternalRatingService.createExternalRatingForParty(partyIdentifier, { assignedRatingCode, ratedDate });
+    }
+
+    return { partyIdentifier };
+  }
+
+  private async createPartyIfItDoesNotExist(partyToCreate: CreatePartyRequestItem): Promise<{ partyIdentifier: string; partyWasCreated: boolean }> {
+    const { alternateIdentifier } = partyToCreate;
+
+    const getPartyIdBySearchTextResponse = await this.partyService.getPartyIdentifierBySearchText(alternateIdentifier);
+
+    if (!getPartyIdBySearchTextResponse) {
+      const { partyIdentifier } = await this.partyService.createParty(partyToCreate);
+      return { partyIdentifier, partyWasCreated: true };
+    } else {
+      const { partyIdentifier } = getPartyIdBySearchTextResponse;
+      return { partyIdentifier, partyWasCreated: false };
+    }
   }
 
   @Get(':partyIdentifier')
@@ -89,7 +119,7 @@ export class PartyController {
   })
   @ApiOkResponse({
     description: 'The party has been successfully retrieved.',
-    type: GetPartyByIdentifierResponse,
+    type: GetPartyByIdentifierResponseDto,
   })
   @ApiNotFoundResponse({
     description: 'The specified party was not found.',
@@ -97,7 +127,7 @@ export class PartyController {
   @ApiInternalServerErrorResponse({
     description: 'An internal server error has occurred.',
   })
-  async getPartyByIdentifier(@Param('partyIdentifier') partyIdentifier: string): Promise<GetPartyByIdentifierResponse> {
+  async getPartyByIdentifier(@Param('partyIdentifier') partyIdentifier: string): Promise<GetPartyByIdentifierResponseDto> {
     const party = await this.partyService.getPartyByIdentifier(partyIdentifier);
     return {
       alternateIdentifier: party.alternateIdentifier,

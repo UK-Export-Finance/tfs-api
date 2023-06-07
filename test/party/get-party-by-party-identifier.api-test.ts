@@ -15,9 +15,9 @@ describe('GET /parties/{partyIdentifier}', () => {
 
   let api: Api;
 
-  const { partiesInAcbs, partiesFromApi } = new GetPartyGenerator(valueGenerator, dateStringTransformations).generate({ numberToGenerate: 1 });
-  const [partyInAcbs] = partiesInAcbs;
-  const [expectedParty] = partiesFromApi;
+  const { acbsParties, apiParties } = new GetPartyGenerator(valueGenerator, dateStringTransformations).generate({ numberToGenerate: 1 });
+  const [acbsParty] = acbsParties;
+  const [expectedParty] = apiParties;
 
   beforeAll(async () => {
     api = await Api.create();
@@ -33,21 +33,21 @@ describe('GET /parties/{partyIdentifier}', () => {
   });
 
   const { idToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
-    givenRequestWouldOtherwiseSucceed: () => requestToGetParty().reply(200, partyInAcbs),
+    givenRequestWouldOtherwiseSucceed: () => requestToGetParty().reply(200, acbsParty),
     makeRequest: () => api.get(getPartyUrl),
   });
 
   withClientAuthenticationTests({
     givenTheRequestWouldOtherwiseSucceed: () => {
       givenAuthenticationWithTheIdpSucceeds();
-      requestToGetParty().reply(200, partyInAcbs);
+      requestToGetParty().reply(200, acbsParty);
     },
     makeRequestWithoutAuth: (incorrectAuth?: IncorrectAuthArg) => api.getWithoutAuth(getPartyUrl, incorrectAuth?.headerName, incorrectAuth?.headerValue),
   });
 
   it('returns a 200 response with the party if it is returned by ACBS', async () => {
     givenAuthenticationWithTheIdpSucceeds();
-    requestToGetParty().reply(200, partyInAcbs);
+    requestToGetParty().reply(200, acbsParty);
 
     const { status, body } = await api.get(getPartyUrl);
 
@@ -96,7 +96,7 @@ describe('GET /parties/{partyIdentifier}', () => {
 
   it('returns a 500 response if getting the party from ACBS times out', async () => {
     givenAuthenticationWithTheIdpSucceeds();
-    requestToGetParty().delay(TIME_EXCEEDING_ACBS_TIMEOUT).reply(200, partyInAcbs);
+    requestToGetParty().delay(TIME_EXCEEDING_ACBS_TIMEOUT).reply(200, acbsParty);
 
     const { status, body } = await api.get(getPartyUrl);
 

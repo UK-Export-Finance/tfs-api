@@ -4,13 +4,15 @@ import { FacilityCodeValueTransaction } from '@ukef/modules/acbs/dto/bundle-acti
 import { LoanAdvanceTransaction } from '@ukef/modules/acbs/dto/bundle-actions/loan-advance-transaction.bundle-action';
 import { NewLoanRequest } from '@ukef/modules/acbs/dto/bundle-actions/new-loan-request.bundle-action';
 
+import { FacilityFeeAmountTransaction } from './facility-fee-amount-transaction.bundle-action';
+
 export type BundleAction = FacilityCodeValueTransaction | FacilityAmountTransaction | LoanAdvanceTransaction | NewLoanRequest | { $type: string };
 
 export const isFacilityCodeValueTransaction = (action: BundleAction): action is FacilityCodeValueTransaction => {
   return action.$type === ENUMS.BUNDLE_INFORMATION_TYPES.FACILITY_CODE_VALUE_TRANSACTION;
 };
 
-export const isFacilityAmountTransaction = (action: BundleAction): action is FacilityCodeValueTransaction => {
+export const isFacilityAmountTransaction = (action: BundleAction): action is FacilityAmountTransaction => {
   return action.$type === ENUMS.BUNDLE_INFORMATION_TYPES.FACILITY_AMOUNT_TRANSACTION;
 };
 
@@ -20,4 +22,8 @@ export const isLoanAdvanceTransaction = (action: BundleAction): action is LoanAd
 
 export const isNewLoanRequest = (bundleAction: BundleAction): bundleAction is NewLoanRequest => {
   return bundleAction.$type === ENUMS.BUNDLE_INFORMATION_TYPES.NEW_LOAN_REQUEST;
+};
+
+export const isFacilityFeeAmountTransaction = (bundleAction: BundleAction): bundleAction is FacilityFeeAmountTransaction => {
+  return bundleAction.$type === ENUMS.BUNDLE_INFORMATION_TYPES.FACILITY_FEE_AMOUNT_TRANSACTION;
 };

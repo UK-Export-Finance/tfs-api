@@ -157,6 +157,16 @@ export const PROPERTIES = {
       watchListReasonCode: '',
     },
   },
+  PARTY_EXTERNAL_RATING: {
+    DEFAULT: {
+      ratingEntityCode: '150',
+      probabilityofDefault: 0,
+      lossGivenDefault: 0,
+      riskWeighting: 0,
+      externalRatingNote1: '',
+      externalRatingNote2: '',
+    },
+  },
   FACILITY_INVESTOR: {
     DEFAULT: {
       sectionIdentifier: '00',
@@ -268,6 +278,26 @@ export const PROPERTIES = {
         facilityTransactionType: { typeCode: '2340' },
         isDraftIndicator: false,
         limitType: { limitTypeCode: '00' },
+        sectionIdentifier: '00',
+      },
+    },
+  },
+  FACILITY_FEE_AMOUNT_TRANSACTION: {
+    DEFAULT: {
+      initialBundleStatusCode: 3,
+      initiatingUserName: 'APIUKEF',
+      useAPIUserIndicator: false,
+      bundleMessageList: {
+        type: 'FacilityFeeAmountTransaction' as const,
+        facilityFeeTransactionType: {
+          decreaseTypeCode: 2750,
+          increaseTypeCode: 2740,
+        },
+        accountOwnerIdentifier: '00000000',
+        isDraftIndicator: false,
+        limitType: {
+          limitTypeCode: '00',
+        },
         sectionIdentifier: '00',
       },
     },
@@ -495,8 +525,108 @@ export const PROPERTIES = {
         billingScheduleTypeCode: 'B',
       },
       numberOfBillsToPrint: 99999,
-      percentageOfBalance: 100,
+      percentageOfBalance: 0,
       billingSequenceNumber: 1,
+    },
+  },
+  ACCRUAL: {
+    DEFAULT: {
+      involvedParty: {
+        partyIdentifier: '00000000',
+      },
+      accountSequence: '1',
+      lenderType: {
+        lenderTypeCode: '100',
+      },
+      baseRate: 0,
+      reserveRate: 0,
+      costOfFundsRate: 0,
+      percentageOfRate: 100,
+      percentOfBaseBalance: 100,
+      lowBalancePercent: 0,
+      cappedAccrualRate: 0,
+      spreadToInvestorsIndicator: true,
+    },
+    PAC: {
+      scheduleIdentifier: 'PAC1',
+      accrualCategory: {
+        accrualCategoryCode: 'PAC01',
+      },
+      rateCalculationMethod: {
+        rateCalculationMethodCode: 'A',
+      },
+    },
+    INT_RFR: {
+      scheduleIdentifier: 'INT1',
+      accrualCategory: {
+        accrualCategoryCode: 'CTL01',
+      },
+      businessDayCalendar: {
+        calendarIdentifier: 'UK',
+      },
+      rateCalculationMethod: {
+        rateCalculationMethodCode: 'H',
+      },
+      indexRateChangeFrequency: {
+        indexRateChangeFrequencyCode: 'A',
+      },
+      indexRateChangeTiming: {
+        indexRateChangeTimingCode: 'A',
+      },
+      indexedRateIndicator: true,
+      nextDueBusinessDayAdjustmentType: {
+        businessDayAdjustmentTypeCode: 'M',
+      },
+      rateSetLeadDays: '0',
+      accrualScheduleIBORDetails: {
+        isDailyRFR: true,
+        rFRCalculationMethod: {
+          rFRCalculationMethodCode: 2,
+        },
+        compoundingDateType: {
+          compoundingDateTypeCode: 'B',
+        },
+        calculationFeature: {
+          calculationFeatureCode: 1,
+        },
+        rateSetLagDays: 5,
+        lagDaysType: {
+          compoundingDateTypeCode: 'B',
+        },
+        calendar: {
+          calendarIdentifier: 'UK',
+        },
+        nextRatePeriodBusinessDayAdjustment: {
+          nextRatePeriodBusinessDayAdjustmentCode: 'M',
+        },
+        ratePeriodResetFrequency: {
+          ratePeriodResetFrequencyCode: 'E',
+        },
+        frequencyPeriod: 0,
+      },
+    },
+    INT_NON_RFR: {
+      scheduleIdentifier: 'INT1',
+      accrualCategory: {
+        accrualCategoryCode: 'CTL01',
+      },
+      businessDayCalendar: {
+        calendarIdentifier: 'UK',
+      },
+      rateCalculationMethod: {
+        rateCalculationMethodCode: 'A',
+      },
+      indexRateChangeFrequency: {
+        indexRateChangeFrequencyCode: 'A',
+      },
+      indexRateChangeTiming: {
+        indexRateChangeTimingCode: 'L',
+      },
+      indexedRateIndicator: true,
+      nextDueBusinessDayAdjustmentType: {
+        businessDayAdjustmentTypeCode: 'M',
+      },
+      rateSetLeadDays: 0,
     },
   },
 };

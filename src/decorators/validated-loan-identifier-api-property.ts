@@ -9,7 +9,7 @@ interface Options {
 export const ValidatedLoanIdentifierApiProperty = ({ description }: Options) =>
   ValidatedStringApiProperty({
     description,
-    length: 10,
+    length: ACBSID.LOAN_ID.LENGTH,
     pattern: ACBSID.LOAN_ID.REGEX,
     example: EXAMPLES.LOAN_ID,
   });

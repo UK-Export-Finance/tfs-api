@@ -517,6 +517,44 @@ paths:
           description: The facility was not found.
         '500':
           description: An internal server error has occurred.
+  /api/v1/facilities/{facilityIdentifier}/fixed-fees/amendments/amount:
+    post:
+      operationId: FacilityFixedFeeController_createAmountAmendmentForFixedFees
+      summary: Create a fixed fees amount amendment bundle.
+      parameters:
+        - name: facilityIdentifier
+          required: true
+          in: path
+          description: The identifier of the facility in ACBS.
+          example: '0030000322'
+          schema:
+            minLength: 10
+            maxLength: 10
+            pattern: ^00\\d{8}$
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/CreateFixedFeeAmountAmendmentRequestItem'
+      responses:
+        '201':
+          description: >-
+            The fixed fees amount amendment bundle has been successfully
+            created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateFixedFeeAmountAmendmentResponse'
+        '400':
+          description: Bad request.
+        '404':
+          description: The facility was not found.
+        '500':
+          description: An internal server error has occurred.
   /api/v1/facilities/{facilityIdentifier}/guarantees:
     get:
       operationId: FacilityGuaranteeController_getGuaranteesForFacility
@@ -751,6 +789,50 @@ paths:
           description: The facility was not found.
         '500':
           description: An internal server error has occurred.
+  /api/v1/facilities/{facilityIdentifier}/loans/{loanIdentifier}:
+    patch:
+      operationId: FacilityLoanController_updateLoanExpiryDate
+      summary: Update an existing loan's expiry date.
+      parameters:
+        - name: loanIdentifier
+          required: true
+          in: path
+          description: The identifier of the loan in ACBS.
+          example: '000272017'
+          schema:
+            minLength: 9
+            maxLength: 9
+            pattern: ^\\d{9}$
+            type: string
+        - name: facilityIdentifier
+          required: true
+          in: path
+          description: The identifier of the facility in ACBS.
+          example: '0030000322'
+          schema:
+            minLength: 10
+            maxLength: 10
+            pattern: ^00\\d{8}$
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateLoanExpiryDateRequest'
+      responses:
+        '200':
+          description: The loan has been updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateLoanExpiryDateResponse'
+        '400':
+          description: Bad request.
+        '404':
+          description: The loan was not found.
+        '500':
+          description: An internal server error has occurred.
   /api/v1/facilities/{facilityIdentifier}/loans/{loanIdentifier}/amendments/amount:
     post:
       operationId: FacilityLoanController_createAmountAmendmentForLoan
@@ -762,9 +844,9 @@ paths:
           description: The identifier of the loan in ACBS.
           example: '000272017'
           schema:
-            minLength: 10
-            maxLength: 10
-            pattern: ^\\d{10}$
+            minLength: 9
+            maxLength: 9
+            pattern: ^\\d{9}$
             type: string
         - name: facilityIdentifier
           required: true
@@ -904,7 +986,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetPartyByIdentifierResponse'
+                $ref: '#/components/schemas/GetPartyByIdentifierResponseDto'
         '404':
           description: The specified party was not found.
         '500':
@@ -2162,6 +2244,15 @@ components:
           example: 501927.25
           minimum: 0
           maximum: 100000000000000000
+        currentPayoffAmount:
+          type: number
+          description: >-
+            This field is automatically populated and appears only after the fee
+            has been accepted. It displays the amount needed to pay the fee in
+            full as of the current processing date.
+          example: 501927.25
+          minimum: 0
+          maximum: 99999999999.99
         effectiveDate:
           format: date
           type: string
@@ -2228,6 +2319,7 @@ components:
         - facilityIdentifier
         - portfolioIdentifier
         - amount
+        - currentPayoffAmount
         - effectiveDate
         - expirationDate
         - nextDueDate
@@ -2237,6 +2329,60 @@ components:
         - currency
         - lenderTypeCode
         - incomeClassCode
+    CreateFixedFeeAmountAmendmentRequestItem:
+      type: object
+      properties:
+        partyIdentifier:
+          type: string
+          description: ACBS id for Exporter party record.
+          minLength: 8
+          maxLength: 8
+          example: '00001234'
+        period:
+          type: string
+          description: >-
+            Segment identifier from income exposure table. 2 alphanumeric
+            characters.
+          minLength: 2
+          maxLength: 2
+        lenderTypeCode:
+          type: string
+          description: >-
+            Defines the code for the role of the party in the Facility for which
+            the fee is created.
+          minLength: 0
+          enum:
+            - '100'
+            - '500'
+          example: '500'
+        effectiveDate:
+          format: date
+          type: string
+          description: The effective date of this accruing/fixed fee schedule.
+        amountAmendment:
+          type: number
+          description: >-
+            Fee amount amendment. For example: if current Fee amount is 352.10
+            GBP and you want to set Fee to 0, then set amount to -352.10
+          example: -352.1
+          not:
+            enum:
+              - 0
+      required:
+        - partyIdentifier
+        - period
+        - lenderTypeCode
+        - effectiveDate
+        - amountAmendment
+    CreateFixedFeeAmountAmendmentResponse:
+      type: object
+      properties:
+        bundleIdentifier:
+          type: string
+          description: The identifier of the ACBS bundle.
+          example: '0000321000'
+      required:
+        - bundleIdentifier
     CreateFacilityFixedFeeRequestItem:
       type: object
       properties:
@@ -2739,10 +2885,44 @@ components:
         nextDueDate:
           format: date
           type: string
-          description: The next payment due date of the repayment schedule.
+          description: >-
+            The next payment due date of the repayment schedule & date the next
+            rate will be set for accrual schedules.
         loanBillingFrequencyType:
           type: string
           description: The frequency at which loan bills should be generated.
+          minLength: 0
+          enum:
+            - A
+            - B
+            - C
+            - D
+            - E
+            - F
+            - G
+            - H
+          example: A
+        spreadRate:
+          type: number
+          description: The guarantee fee percentage.
+          minimum: 0
+        spreadRateCtl:
+          type: number
+          description: >-
+            The corresponding fee rate. If it is null then the interest rate
+            will be used.
+          minimum: 0
+        yearBasis:
+          type: string
+          description: The year basis for the accrual schedule.
+          minLength: 0
+          enum:
+            - '1'
+            - '5'
+          example: '1'
+        indexRateChangeFrequency:
+          type: string
+          description: The frequency which the rate will change.
           minLength: 0
           enum:
             - A
@@ -2765,6 +2945,8 @@ components:
         - expiryDate
         - nextDueDate
         - loanBillingFrequencyType
+        - spreadRate
+        - yearBasis
     CreateFacilityLoanResponse:
       type: object
       properties:
@@ -2777,6 +2959,27 @@ components:
           example: '0000321000'
       required:
         - bundleIdentifier
+    UpdateLoanExpiryDateRequest:
+      type: object
+      properties:
+        expiryDate:
+          format: date
+          type: string
+          description: The new expiry date of the loan.
+      required:
+        - expiryDate
+    UpdateLoanExpiryDateResponse:
+      type: object
+      properties:
+        loanIdentifier:
+          type: string
+          description: The identifier of the loan in ACBS.
+          minLength: 9
+          maxLength: 9
+          pattern: ^\\d{9}$
+          example: '000272017'
+      required:
+        - loanIdentifier
     CreateLoanAmountAmendmentRequestItem:
       type: object
       properties:
@@ -2919,11 +3122,11 @@ components:
       properties:
         alternateIdentifier:
           type: string
-          description: The UKEF ID for the party. Should contain just digits.
+          description: The UKEF ID for the party.
           minLength: 8
           maxLength: 8
-          example: '00291013'
-          pattern: /^d{8}$/
+          pattern: ^\\d{8}$
+          example: '00345678'
         industryClassification:
           type: string
           description: The primary industry classification code for this customer.
@@ -2939,13 +3142,13 @@ components:
         name2:
           type: string
           description: The secondary customer name.
-          minLength: 1
+          minLength: 0
           maxLength: 35
           example: ACTUAL IMPORT EXPORT
         name3:
           type: string
           description: The tertiary customer name.
-          minLength: 1
+          minLength: 0
           maxLength: 35
           example: ACTUAL IMPORT EXPORT
         smeType:
@@ -2959,18 +3162,23 @@ components:
           description: >-
             A code that identifies the citizenship category of this customer.
             Should be '1' if the domicile country is the UK, otherwise '2'.
+          minLength: 1
+          maxLength: 1
+          enum:
+            - '1'
+            - '2'
           example: '2'
         officerRiskDate:
           format: date
           type: string
-          description: The date of creation in YYYY-MM-DD (ISO 8601) format.
-          example: '2023-03-15'
+          description: The date of creation.
         countryCode:
           type: string
           description: The country code for the party's primary address.
+          minLength: 0
           maxLength: 3
-          default: GBR
           example: GBR
+          default: GBR
       required:
         - alternateIdentifier
         - industryClassification
@@ -2984,7 +3192,7 @@ components:
         partyIdentifier:
           type: string
           readOnly: true
-    GetPartyByIdentifierResponse:
+    GetPartyByIdentifierResponseDto:
       type: object
       properties:
         alternateIdentifier:
@@ -3177,6 +3385,7 @@ components:
         - issueDate
         - expiryDate
         - spreadRate
+        - spreadRateCTL
         - yearBasis
         - nextDueDate
         - indexRateChangeFrequency

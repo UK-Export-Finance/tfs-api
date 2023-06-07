@@ -1,7 +1,11 @@
+import { TEST_DATES } from '@ukef-test/support/constants/test-date.constant';
+
+import { CurrentDateProvider } from './current-date.provider';
 import { DateStringTransformations } from './date-string.transformations';
 
 describe('DateStringTransformations', () => {
   const dateStringTransformations = new DateStringTransformations();
+  const currentDateProvider = new CurrentDateProvider();
 
   describe('addTimeToDateOnlyString', () => {
     it('converts a valid DateOnlyString to an ISO DateString', () => {
@@ -89,6 +93,52 @@ describe('DateStringTransformations', () => {
       const dateTime = new Date('1987-12-03T01:00:00Z');
 
       expect(dateStringTransformations.getDisplayDateFromDate(dateTime)).toBe('03/12/1987');
+    });
+  });
+
+  describe('getDayFromDateOnlyString', () => {
+    it('returns the day in DD format if the day number is two digits', () => {
+      const date = '1987-04-23';
+
+      expect(dateStringTransformations.getDayFromDateOnlyString(date)).toBe(23);
+    });
+
+    it('returns the day in D format if the day number is a single digit', () => {
+      const date = '1987-12-03';
+
+      expect(dateStringTransformations.getDayFromDateOnlyString(date)).toBe(3);
+    });
+  });
+
+  describe('getEarliestDateFromTodayAndDateAsString', () => {
+    it('returns the parameter as an ISO DateString if parameter is in the past', () => {
+      const dateBeforeToday = TEST_DATES.A_PAST_EFFECTIVE_DATE_ONLY;
+
+      expect(dateStringTransformations.getEarliestDateFromTodayAndDateAsString(dateBeforeToday, currentDateProvider)).toBe(
+        TEST_DATES.A_PAST_EFFECTIVE_DATE_STRING,
+      );
+    });
+
+    it('returns todays date as an ISO DateString if parameter is in the future', () => {
+      const dateAfterToday = TEST_DATES.A_FUTURE_EFFECTIVE_DATE_ONLY;
+      const midnightToday = dateStringTransformations.getDateStringFromDate(new Date());
+
+      expect(dateStringTransformations.getEarliestDateFromTodayAndDateAsString(dateAfterToday, currentDateProvider)).toBe(midnightToday);
+    });
+  });
+
+  describe('getDatePlusThreeMonths', () => {
+    it.each([
+      { date: '1987-04-23', expectedDate: '1987-07-23', description: '' },
+      { date: '2000-01-01', expectedDate: '2000-04-01', description: 'when there is a leap year and short months' },
+      { date: '2001-01-01', expectedDate: '2001-04-01', description: 'when DST shift -1 hour' },
+      { date: '2001-09-01', expectedDate: '2001-12-01', description: 'when DST shift +1 hour' },
+      { date: '2001-08-31', expectedDate: '2001-11-30', description: 'when input day is 31 and output month has 30 days' },
+      { date: '2001-11-30', expectedDate: '2002-02-28', description: 'when input is 30th November and it is not a leap year' },
+      { date: '1999-11-30', expectedDate: '2000-02-29', description: 'when input is 30th November and it is a leap year' },
+      { date: '2004-02-29', expectedDate: '2004-05-29', description: 'when input is 29th February and it is a leap year' },
+    ])('returns the date plus three months in YYYY-MM-DD format $description', ({ date, expectedDate }) => {
+      expect(dateStringTransformations.getDatePlusThreeMonths(date)).toBe(expectedDate);
     });
   });
 });

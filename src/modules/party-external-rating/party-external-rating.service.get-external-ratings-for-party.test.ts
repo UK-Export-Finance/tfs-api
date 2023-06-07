@@ -5,6 +5,7 @@ import { GetPartyExternalRatingGenerator } from '@ukef-test/support/generator/ge
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
 
+import { DateStringTransformations } from '../date/date-string.transformations';
 import { PartyExternalRatingService } from './party-external-rating.service';
 
 jest.mock('@ukef/modules/acbs/acbs-party-external-rating.service');
@@ -12,6 +13,7 @@ jest.mock('@ukef/modules/acbs-authentication/acbs-authentication.service');
 
 describe('PartyExternalRatingService', () => {
   const valueGenerator = new RandomValueGenerator();
+  const dateStringTransformations = new DateStringTransformations();
   const authToken = valueGenerator.string();
 
   let acbsAuthenticationService: AcbsAuthenticationService;
@@ -30,18 +32,18 @@ describe('PartyExternalRatingService', () => {
     acbsPartyExternalRatingServiceGetExternalRatingsForParty = jest.fn();
     acbsService.getExternalRatingsForParty = acbsPartyExternalRatingServiceGetExternalRatingsForParty;
 
-    service = new PartyExternalRatingService(acbsAuthenticationService, acbsService);
+    service = new PartyExternalRatingService(acbsAuthenticationService, acbsService, dateStringTransformations);
   });
 
   describe('getExternalRatingsForParty', () => {
     const partyIdentifier = valueGenerator.stringOfNumericCharacters();
 
     it('returns a transformation of the external ratings from ACBS', async () => {
-      const { externalRatingsInAcbs, externalRatings: expectedExternalRatings } = new GetPartyExternalRatingGenerator(valueGenerator).generate({
+      const { acbsExternalRatings, externalRatings: expectedExternalRatings } = new GetPartyExternalRatingGenerator(valueGenerator).generate({
         partyIdentifier,
         numberToGenerate: 2,
       });
-      when(acbsPartyExternalRatingServiceGetExternalRatingsForParty).calledWith(partyIdentifier, authToken).mockResolvedValueOnce(externalRatingsInAcbs);
+      when(acbsPartyExternalRatingServiceGetExternalRatingsForParty).calledWith(partyIdentifier, authToken).mockResolvedValueOnce(acbsExternalRatings);
 
       const externalRatings = await service.getExternalRatingsForParty(partyIdentifier);
 

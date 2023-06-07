@@ -13,7 +13,7 @@ describe('GET /parties?searchText={searchText}', () => {
   const searchText = valueGenerator.stringOfNumericCharacters({ minLength: 3 });
   const getPartiesBySearchTextUrl = `/api/v1/parties?searchText=${searchText}`;
 
-  const { partiesInAcbs, parties } = new GetPartyGenerator(valueGenerator, dateStringTransformations).generate({ numberToGenerate: 2 });
+  const { acbsParties, parties } = new GetPartyGenerator(valueGenerator, dateStringTransformations).generate({ numberToGenerate: 2 });
 
   let api: Api;
 
@@ -31,14 +31,14 @@ describe('GET /parties?searchText={searchText}', () => {
   });
 
   const { idToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
-    givenRequestWouldOtherwiseSucceed: () => requestToGetPartiesBySearchText(searchText).reply(200, partiesInAcbs),
+    givenRequestWouldOtherwiseSucceed: () => requestToGetPartiesBySearchText(searchText).reply(200, acbsParties),
     makeRequest: () => api.get(getPartiesBySearchTextUrl),
   });
 
   withClientAuthenticationTests({
     givenTheRequestWouldOtherwiseSucceed: () => {
       givenAuthenticationWithTheIdpSucceeds();
-      requestToGetPartiesBySearchText(searchText).reply(200, partiesInAcbs);
+      requestToGetPartiesBySearchText(searchText).reply(200, acbsParties);
     },
     makeRequestWithoutAuth: (incorrectAuth?: IncorrectAuthArg) =>
       api.getWithoutAuth(getPartiesBySearchTextUrl, incorrectAuth?.headerName, incorrectAuth?.headerValue),
@@ -46,7 +46,7 @@ describe('GET /parties?searchText={searchText}', () => {
 
   it('returns a 200 response with the matching parties if they are returned by ACBS', async () => {
     givenAuthenticationWithTheIdpSucceeds();
-    requestToGetPartiesBySearchText(searchText).reply(200, partiesInAcbs);
+    requestToGetPartiesBySearchText(searchText).reply(200, acbsParties);
 
     const { status, body } = await api.get(getPartiesBySearchTextUrl);
 
@@ -57,7 +57,7 @@ describe('GET /parties?searchText={searchText}', () => {
   it('returns a 200 response with the matching parties if they are returned by ACBS and the search text has a whitespace in the middle and ends with a non-whitespace', async () => {
     const searchTextWithSpaces = 'Company Name';
     givenAuthenticationWithTheIdpSucceeds();
-    requestToGetPartiesBySearchText('Company%20Name').reply(200, partiesInAcbs);
+    requestToGetPartiesBySearchText('Company%20Name').reply(200, acbsParties);
 
     const { status, body } = await api.get(`/api/v1/parties?searchText=${searchTextWithSpaces}`);
 
@@ -68,7 +68,7 @@ describe('GET /parties?searchText={searchText}', () => {
   it('returns a 200 response with the matching parties if they are returned by ACBS and the search text starts with a whitespace and ends with a non-whitespace', async () => {
     const searchTextWithLeadingSpace = ' endInNonWhitespace';
     givenAuthenticationWithTheIdpSucceeds();
-    requestToGetPartiesBySearchText('%20endInNonWhitespace').reply(200, partiesInAcbs);
+    requestToGetPartiesBySearchText('%20endInNonWhitespace').reply(200, acbsParties);
 
     const { status, body } = await api.get(`/api/v1/parties?searchText=${searchTextWithLeadingSpace}`);
 
@@ -101,7 +101,7 @@ describe('GET /parties?searchText={searchText}', () => {
 
   it('returns a 500 response if getting the parties from ACBS times out', async () => {
     givenAuthenticationWithTheIdpSucceeds();
-    requestToGetPartiesBySearchText(searchText).delay(1500).reply(200, partiesInAcbs);
+    requestToGetPartiesBySearchText(searchText).delay(1500).reply(200, acbsParties);
 
     const { status, body } = await api.get(getPartiesBySearchTextUrl);
 

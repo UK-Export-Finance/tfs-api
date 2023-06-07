@@ -1,6 +1,6 @@
 import { AcbsGetPartyResponseDto } from '@ukef/modules/acbs/dto/acbs-get-party-response.dto';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
-import { GetPartyByIdentifierResponse } from '@ukef/modules/party/dto/get-party-by-identifier-response.dto';
+import { GetPartyByIdentifierResponseDto } from '@ukef/modules/party/dto/get-party-by-identifier-response.dto';
 import { Party } from '@ukef/modules/party/party.interface';
 
 import { AbstractGenerator } from './abstract-generator';
@@ -26,7 +26,7 @@ export class GetPartyGenerator extends AbstractGenerator<PartyValues, GenerateRe
   }
 
   protected transformRawValuesToGeneratedValues(values: PartyValues[], options: GenerateOptions): GenerateResult {
-    const partiesInAcbs = values.map((v, index) => ({
+    const acbsParties = values.map((v, index) => ({
       PartyAlternateIdentifier: this.getPartyAlternateIdentifier(v.alternateIdentifier, index, options.basePartyAlternateIdentifier),
       IndustryClassification: { IndustryClassificationCode: v.industryClassification },
       PartyName1: v.name1,
@@ -50,12 +50,12 @@ export class GetPartyGenerator extends AbstractGenerator<PartyValues, GenerateRe
       countryCode: v.countryCode,
     }));
 
-    const partiesFromApi = parties;
+    const apiParties = parties;
 
     return {
-      partiesInAcbs,
+      acbsParties,
       parties,
-      partiesFromApi,
+      apiParties,
     };
   }
 
@@ -81,9 +81,9 @@ interface PartyValues {
 }
 
 interface GenerateResult {
-  partiesInAcbs: AcbsGetPartyResponseDto[];
+  acbsParties: AcbsGetPartyResponseDto[];
   parties: Party[];
-  partiesFromApi: GetPartyByIdentifierResponse[];
+  apiParties: GetPartyByIdentifierResponseDto[];
 }
 
 interface GenerateOptions {

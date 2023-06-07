@@ -111,7 +111,7 @@ export class RandomValueGenerator {
   }
 
   loanId(): string {
-    return this.stringOfNumericCharacters({ length: 10 });
+    return this.stringOfNumericCharacters({ length: ACBSID.LOAN_ID.LENGTH });
   }
 
   dateTimeString(): DateString {
@@ -122,8 +122,8 @@ export class RandomValueGenerator {
     return this.dateStringTransformations.removeTime(this.dateTimeString());
   }
 
-  enumValue(theEnum: Enum): string {
+  enumValue<T = string>(theEnum: Enum): T {
     const possibleValues = Object.values(theEnum);
-    return possibleValues[this.integer({ min: 0, max: possibleValues.length - 1 })] as string;
+    return possibleValues[this.integer({ min: 0, max: possibleValues.length - 1 })] as T;
   }
 }
