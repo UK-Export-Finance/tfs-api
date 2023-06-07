@@ -47,6 +47,7 @@ describe('FacilityLoanService', () => {
       new CurrentDateProvider(),
       null,
       null,
+      null,
     );
   });
 

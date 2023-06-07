@@ -2885,10 +2885,44 @@ components:
         nextDueDate:
           format: date
           type: string
-          description: The next payment due date of the repayment schedule.
+          description: >-
+            The next payment due date of the repayment schedule & date the next
+            rate will be set for accrual schedules.
         loanBillingFrequencyType:
           type: string
           description: The frequency at which loan bills should be generated.
+          minLength: 0
+          enum:
+            - A
+            - B
+            - C
+            - D
+            - E
+            - F
+            - G
+            - H
+          example: A
+        spreadRate:
+          type: number
+          description: The guarantee fee percentage.
+          minimum: 0
+        spreadRateCtl:
+          type: number
+          description: >-
+            The corresponding fee rate. If it is null then the interest rate
+            will be used.
+          minimum: 0
+        yearBasis:
+          type: string
+          description: The year basis for the accrual schedule.
+          minLength: 0
+          enum:
+            - '1'
+            - '5'
+          example: '1'
+        indexRateChangeFrequency:
+          type: string
+          description: The frequency which the rate will change.
           minLength: 0
           enum:
             - A
@@ -2911,6 +2945,8 @@ components:
         - expiryDate
         - nextDueDate
         - loanBillingFrequencyType
+        - spreadRate
+        - yearBasis
     CreateFacilityLoanResponse:
       type: object
       properties:

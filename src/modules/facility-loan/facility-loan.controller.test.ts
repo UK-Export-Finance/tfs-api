@@ -25,7 +25,7 @@ describe('FacilityLoanController', () => {
   let controller: FacilityLoanController;
 
   beforeEach(() => {
-    const facilityLoanService = new FacilityLoanService(null, null, null, null, null, null, null);
+    const facilityLoanService = new FacilityLoanService(null, null, null, null, null, null, null, null);
     facilityLoanServiceGetLoansForFacility = jest.fn();
     facilityLoanService.getLoansForFacility = facilityLoanServiceGetLoansForFacility;
 

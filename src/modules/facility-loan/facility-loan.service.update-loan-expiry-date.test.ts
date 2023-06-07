@@ -70,6 +70,7 @@ describe('FacilityLoanService', () => {
       new CurrentDateProvider(),
       null,
       acbsLoanService,
+      null,
     );
   });
 

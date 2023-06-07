@@ -1,9 +1,11 @@
 import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { CALENDAR_IDENTIFIERS } from '@ukef/constants/calendar-identifiers.constant';
 import { CURRENCIES } from '@ukef/constants/currencies.constant';
+import { LOAN_RATE_INDEX } from '@ukef/constants/loan-rate-index.constant';
 import { AcbsBundleId, UkefId } from '@ukef/helpers';
 import { AcbsCreateBundleInformationRequestDto } from '@ukef/modules/acbs/dto/acbs-create-bundle-information-request.dto';
 import { AcbsCreateBundleInformationResponseHeadersDto } from '@ukef/modules/acbs/dto/acbs-create-bundle-information-response.dto';
+import { AccrualScheduleExtended } from '@ukef/modules/acbs/dto/bundle-actions/accrual-schedule.interface';
 import { NewLoanRequest } from '@ukef/modules/acbs/dto/bundle-actions/new-loan-request.bundle-action';
 import { RepaymentSchedule } from '@ukef/modules/acbs/dto/bundle-actions/repayment-schedule.interface';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
@@ -21,8 +23,6 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
   }
 
   protected generateValues(): CreateFacilityLoanRequestItem {
-    const possibleOperationTypes = Object.values(ENUMS.OPERATION_TYPE_CODES);
-    const possibleLoanBillingFrequencyTypes = Object.values(ENUMS.LOAN_BILLING_FREQUENCY_TYPES);
     return {
       postingDate: this.valueGenerator.dateOnlyString(),
       borrowerPartyIdentifier: this.valueGenerator.stringOfNumericCharacters({ length: 8 }),
@@ -30,16 +30,23 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
       productTypeGroup: ENUMS.PRODUCT_TYPE_GROUPS.BOND,
       currency: CURRENCIES.GBP,
       dealCustomerUsageRate: 0.123,
-      dealCustomerUsageOperationType: possibleOperationTypes[this.valueGenerator.integer({ min: 0, max: possibleOperationTypes.length - 1 })],
+      dealCustomerUsageOperationType: this.valueGenerator.enumValue(ENUMS.OPERATION_TYPE_CODES),
       amount: 123.45,
       issueDate: this.valueGenerator.dateOnlyString(),
       expiryDate: this.valueGenerator.dateOnlyString(),
       nextDueDate: this.valueGenerator.dateOnlyString(),
-      loanBillingFrequencyType: possibleLoanBillingFrequencyTypes[this.valueGenerator.integer({ min: 0, max: possibleOperationTypes.length - 1 })],
+      loanBillingFrequencyType: this.valueGenerator.enumValue(ENUMS.FEE_FREQUENCY_TYPES),
+      spreadRate: this.valueGenerator.nonnegativeFloat(),
+      spreadRateCtl: this.valueGenerator.nonnegativeFloat(),
+      yearBasis: this.valueGenerator.enumValue(ENUMS.YEAR_BASIS_CODES),
+      indexRateChangeFrequency: this.valueGenerator.enumValue(ENUMS.FEE_FREQUENCY_TYPES),
     };
   }
 
-  protected transformRawValuesToGeneratedValues(values, { facilityIdentifier, bundleIdentifier }: GenerateOptions): GenerateResult {
+  protected transformRawValuesToGeneratedValues(
+    values: CreateFacilityLoanRequestItem[],
+    { facilityIdentifier, bundleIdentifier }: GenerateOptions,
+  ): GenerateResult {
     const [firstFacilityLoan] = values;
 
     const effectiveDate = TEST_DATES.A_PAST_EFFECTIVE_DATE_ONLY;
@@ -80,7 +87,7 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
       BundleMessageList: [bundleMessageNonGbp],
     };
 
-    const requestBodyToCreateFacilityLoanGbp = values.map((value) => ({
+    const requestBodyToCreateFacilityLoanGbp: CreateFacilityLoanRequest = values.map((value) => ({
       postingDate: value.postingDate,
       facilityIdentifier: facilityIdentifier,
       borrowerPartyIdentifier: value.borrowerPartyIdentifier,
@@ -94,6 +101,10 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
       expiryDate: value.expiryDate,
       nextDueDate: value.nextDueDate,
       loanBillingFrequencyType: value.loanBillingFrequencyType,
+      spreadRate: value.spreadRate,
+      spreadRateCtl: value.spreadRateCtl,
+      yearBasis: value.yearBasis,
+      indexRateChangeFrequency: value.indexRateChangeFrequency,
     }));
 
     const requestBodyToCreateFacilityLoanNonGbp = [
@@ -108,6 +119,9 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
     const bondRepaymentSchedulesGbp = this.getBondRepaymentSchedules(firstFacilityLoan);
     const ewcsRepaymentSchedulesGbp = this.getEwcsRepaymentSchedules(firstFacilityLoan);
     const gefRepaymentSchedulesGbp = this.getGefRepaymentSchedules(firstFacilityLoan);
+    const bondAndGefAccrualSchedulesGbp = this.getBondAndGefAccrualSchedules(firstFacilityLoan, acbsEffectiveDate);
+    const ewcsAccrualSchedulesUsd = this.getEwcsAccrualSchedulesUsd(firstFacilityLoan, acbsEffectiveDate);
+    const ewcsAccrualSchedulesGbp = this.getEwcsAccrualSchedulesGbp(firstFacilityLoan, acbsEffectiveDate, effectiveDate);
 
     return {
       acbsRequestBodyToCreateFacilityLoanGbp,
@@ -119,12 +133,16 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
       bondRepaymentSchedulesGbp,
       ewcsRepaymentSchedulesGbp,
       gefRepaymentSchedulesGbp,
+      bondAndGefAccrualSchedulesGbp,
+      ewcsAccrualSchedulesUsd,
+      ewcsAccrualSchedulesGbp,
     };
   }
 
   private getBaseMessage(facilityIdentifier: UkefId, facilityLoan: CreateFacilityLoanRequestItem, acbsEffectiveDate: string): NewLoanRequest {
     const loanInstrumentCode = facilityLoan.productTypeId;
     const repaymentSchedules = this.getBondRepaymentSchedules(facilityLoan);
+    const accrualSchedules = this.getBondAndGefAccrualSchedules(facilityLoan, acbsEffectiveDate);
 
     return {
       $type: PROPERTIES.FACILITY_LOAN.DEFAULT.messageType,
@@ -202,7 +220,7 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
       DealCustomerUsageOperationType: {
         OperationTypeCode: facilityLoan.dealCustomerUsageOperationType,
       },
-      AccrualScheduleList: [],
+      AccrualScheduleList: accrualSchedules,
       RepaymentScheduleList: repaymentSchedules,
     };
   }
@@ -337,6 +355,138 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
       },
     ];
   }
+
+  private getBaseAccrualSchedule(facilityLoan: CreateFacilityLoanRequestItem, acbsEffectiveDate: string) {
+    return {
+      InvolvedParty: {
+        PartyIdentifier: PROPERTIES.ACCRUAL.DEFAULT.involvedParty.partyIdentifier,
+      },
+      AccountSequence: PROPERTIES.ACCRUAL.DEFAULT.accountSequence,
+      LenderType: {
+        LenderTypeCode: PROPERTIES.ACCRUAL.DEFAULT.lenderType.lenderTypeCode,
+      },
+      EffectiveDate: acbsEffectiveDate,
+      YearBasis: {
+        YearBasisCode: facilityLoan.yearBasis,
+      },
+      BaseRate: PROPERTIES.ACCRUAL.DEFAULT.baseRate,
+      ReserveRate: PROPERTIES.ACCRUAL.DEFAULT.reserveRate,
+      CostOfFundsRate: PROPERTIES.ACCRUAL.DEFAULT.costOfFundsRate,
+      PercentageOfRate: PROPERTIES.ACCRUAL.DEFAULT.percentageOfRate,
+      PercentOfBaseBalance: PROPERTIES.ACCRUAL.DEFAULT.percentOfBaseBalance,
+      LowBalancePercent: PROPERTIES.ACCRUAL.DEFAULT.lowBalancePercent,
+      CappedAccrualRate: PROPERTIES.ACCRUAL.DEFAULT.cappedAccrualRate,
+      SpreadToInvestorsIndicator: PROPERTIES.ACCRUAL.DEFAULT.spreadToInvestorsIndicator,
+    };
+  }
+
+  private getBondAndGefAccrualSchedules(facilityLoan: CreateFacilityLoanRequestItem, acbsEffectiveDate: string): AccrualScheduleExtended[] {
+    return [this.getPacAccrualSchedule(facilityLoan, acbsEffectiveDate)];
+  }
+
+  private getPacAccrualSchedule(facilityLoan: CreateFacilityLoanRequestItem, acbsEffectiveDate: string): AccrualScheduleExtended {
+    return {
+      ...this.getBaseAccrualSchedule(facilityLoan, acbsEffectiveDate),
+      ScheduleIdentifier: PROPERTIES.ACCRUAL.PAC.scheduleIdentifier,
+      AccrualCategory: {
+        AccrualCategoryCode: PROPERTIES.ACCRUAL.PAC.accrualCategory.accrualCategoryCode,
+      },
+      RateCalculationMethod: {
+        RateCalculationMethodCode: PROPERTIES.ACCRUAL.PAC.rateCalculationMethod.rateCalculationMethodCode,
+      },
+      SpreadRate: facilityLoan.spreadRate,
+    };
+  }
+
+  private getEwcsAccrualSchedulesUsd(facilityLoan: CreateFacilityLoanRequestItem, acbsEffectiveDate: string): AccrualScheduleExtended[] {
+    return [
+      this.getPacAccrualSchedule(facilityLoan, acbsEffectiveDate),
+      {
+        ...this.getBaseAccrualSchedule(facilityLoan, acbsEffectiveDate),
+        ScheduleIdentifier: PROPERTIES.ACCRUAL.INT_NON_RFR.scheduleIdentifier,
+        AccrualCategory: {
+          AccrualCategoryCode: PROPERTIES.ACCRUAL.INT_NON_RFR.accrualCategory.accrualCategoryCode,
+        },
+        RateCalculationMethod: {
+          RateCalculationMethodCode: PROPERTIES.ACCRUAL.INT_NON_RFR.rateCalculationMethod.rateCalculationMethodCode,
+        },
+        BusinessDayCalendar: {
+          CalendarIdentifier: PROPERTIES.ACCRUAL.INT_NON_RFR.businessDayCalendar.calendarIdentifier,
+        },
+        SpreadRate: facilityLoan.spreadRateCtl,
+        IndexRateChangeFrequency: {
+          IndexRateChangeFrequencyCode: facilityLoan.indexRateChangeFrequency,
+        },
+        IndexRateChangeTiming: {
+          IndexRateChangeTimingCode: PROPERTIES.ACCRUAL.INT_NON_RFR.indexRateChangeTiming.indexRateChangeTimingCode,
+        },
+        LoanRateIndex: {
+          LoanRateIndexCode: LOAN_RATE_INDEX.USD,
+        },
+        IndexedRateIndicator: PROPERTIES.ACCRUAL.INT_NON_RFR.indexedRateIndicator,
+        NextDueBusinessDayAdjustmentType: {
+          BusinessDayAdjustmentTypeCode: PROPERTIES.ACCRUAL.INT_NON_RFR.nextDueBusinessDayAdjustmentType.businessDayAdjustmentTypeCode,
+        },
+        NextRateSetDate: this.dateStringTransformations.addTimeToDateOnlyString(facilityLoan.nextDueDate),
+        RateNextEffectiveDate: this.dateStringTransformations.addTimeToDateOnlyString(facilityLoan.nextDueDate),
+        RateSetLeadDays: PROPERTIES.ACCRUAL.INT_NON_RFR.rateSetLeadDays,
+      },
+    ];
+  }
+
+  private getEwcsAccrualSchedulesGbp(facilityLoan: CreateFacilityLoanRequestItem, acbsEffectiveDate: string, effectiveDate: string): AccrualScheduleExtended[] {
+    const nextRatePeriod = this.dateStringTransformations.getDatePlusThreeMonths(effectiveDate);
+    return [
+      this.getPacAccrualSchedule(facilityLoan, acbsEffectiveDate),
+      {
+        ...this.getBaseAccrualSchedule(facilityLoan, acbsEffectiveDate),
+        ScheduleIdentifier: PROPERTIES.ACCRUAL.INT_RFR.scheduleIdentifier,
+        AccrualCategory: {
+          AccrualCategoryCode: PROPERTIES.ACCRUAL.INT_RFR.accrualCategory.accrualCategoryCode,
+        },
+        RateCalculationMethod: {
+          RateCalculationMethodCode: PROPERTIES.ACCRUAL.INT_RFR.rateCalculationMethod.rateCalculationMethodCode,
+        },
+        SpreadRate: facilityLoan.spreadRateCtl,
+        IndexRateChangeTiming: {
+          IndexRateChangeTimingCode: PROPERTIES.ACCRUAL.INT_RFR.indexRateChangeTiming.indexRateChangeTimingCode,
+        },
+        LoanRateIndex: {
+          LoanRateIndexCode: LOAN_RATE_INDEX.OTHER,
+        },
+        IndexedRateIndicator: PROPERTIES.ACCRUAL.INT_RFR.indexedRateIndicator,
+        AccrualScheduleIBORDetails: {
+          IsDailyRFR: PROPERTIES.ACCRUAL.INT_RFR.accrualScheduleIBORDetails.isDailyRFR,
+          RFRCalculationMethod: {
+            RFRCalculationMethodCode: PROPERTIES.ACCRUAL.INT_RFR.accrualScheduleIBORDetails.rFRCalculationMethod.rFRCalculationMethodCode,
+          },
+          CompoundingDateType: {
+            CompoundingDateTypeCode: PROPERTIES.ACCRUAL.INT_RFR.accrualScheduleIBORDetails.compoundingDateType.compoundingDateTypeCode,
+          },
+          CalculationFeature: {
+            CalculationFeatureCode: PROPERTIES.ACCRUAL.INT_RFR.accrualScheduleIBORDetails.calculationFeature.calculationFeatureCode,
+          },
+          NextRatePeriod: nextRatePeriod,
+          UseObservationShiftIndicator: facilityLoan.currency === CURRENCIES.EUR,
+          RateSetLagDays: PROPERTIES.ACCRUAL.INT_RFR.accrualScheduleIBORDetails.rateSetLagDays,
+          LagDaysType: {
+            CompoundingDateTypeCode: PROPERTIES.ACCRUAL.INT_RFR.accrualScheduleIBORDetails.compoundingDateType.compoundingDateTypeCode,
+          },
+          Calendar: {
+            CalendarIdentifier: PROPERTIES.ACCRUAL.INT_RFR.accrualScheduleIBORDetails.calendar.calendarIdentifier,
+          },
+          NextRatePeriodBusinessDayAdjustment: {
+            NextRatePeriodBusinessDayAdjustmentCode:
+              PROPERTIES.ACCRUAL.INT_RFR.accrualScheduleIBORDetails.nextRatePeriodBusinessDayAdjustment.nextRatePeriodBusinessDayAdjustmentCode,
+          },
+          RatePeriodResetFrequency: {
+            RatePeriodResetFrequencyCode: PROPERTIES.ACCRUAL.INT_RFR.accrualScheduleIBORDetails.ratePeriodResetFrequency.ratePeriodResetFrequencyCode,
+          },
+          FrequencyPeriod: PROPERTIES.ACCRUAL.INT_RFR.accrualScheduleIBORDetails.frequencyPeriod,
+        },
+      },
+    ];
+  }
 }
 
 interface GenerateOptions {
@@ -354,4 +504,7 @@ interface GenerateResult {
   bondRepaymentSchedulesGbp: RepaymentSchedule[];
   ewcsRepaymentSchedulesGbp: RepaymentSchedule[];
   gefRepaymentSchedulesGbp: RepaymentSchedule[];
+  bondAndGefAccrualSchedulesGbp: AccrualScheduleExtended[];
+  ewcsAccrualSchedulesUsd: AccrualScheduleExtended[];
+  ewcsAccrualSchedulesGbp: AccrualScheduleExtended[];
 }

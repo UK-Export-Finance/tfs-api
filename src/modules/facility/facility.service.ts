@@ -154,7 +154,10 @@ export class FacilityService {
       defaultValues.capitalConversionFactorCode[facilityToTranform.productTypeId] ??
       defaultValues.capitalConversionFactorCodeFallback;
 
-    const effectiveDateString = this.getFacilityEffectiveDateToCreateOrUpdate(facilityToTranform.effectiveDate);
+    const effectiveDateString = this.dateStringTransformations.getEarliestDateFromTodayAndDateAsString(
+      facilityToTranform.effectiveDate,
+      this.currentDateProvider,
+    );
 
     return {
       FacilityIdentifier: facilityToTranform.facilityIdentifier,
@@ -403,13 +406,6 @@ export class FacilityService {
 
   private buildFacilityDescriptionToCreate(productTypeName: string, exposurePeriod: string): string {
     return `${productTypeName.substring(0, 13)} : ${exposurePeriod} Months`;
-  }
-
-  private getFacilityEffectiveDateToCreateOrUpdate(effectiveDate: string): DateString {
-    const effectiveDateTime = this.currentDateProvider.getEarliestDateFromTodayAnd(
-      new Date(this.dateStringTransformations.addTimeToDateOnlyString(effectiveDate)),
-    );
-    return this.dateStringTransformations.getDateStringFromDate(effectiveDateTime);
   }
 
   private isFacilityUnissued(facilityStageCode: string) {

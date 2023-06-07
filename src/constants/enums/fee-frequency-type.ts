@@ -1,4 +1,4 @@
-export enum LoanBillingFrequencyTypeEnum {
+export enum FeeFrequencyTypeEnum {
   WEEKLY = 'A',
   BI_WEEKLY = 'B',
   MONTHLY = 'C',
