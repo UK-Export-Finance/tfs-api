@@ -48,7 +48,7 @@
 #
 # NOTE
 # ****
-# 
+#
 # 1. APIM Policy
 # --------------
 # AZ CLI currently do not support APIM policy import natively, recommended solution is via
@@ -68,7 +68,7 @@ on:
 env:
   PRODUCT: apim
   ENVIRONMENT: infrastructure
-  TIMEZONE: "Europe/London"
+  TIMEZONE: 'Europe/London'
   # Deployment environment target i.e., `dev`, `staging`, `prod`
   TARGET: ${{ vars.ENVIRONMENT }}
 
@@ -383,9 +383,9 @@ jobs:
 
       - name: APIM defaults ✨
         run: |
-         echo PRODUCT_STARTER=$(az apim product list --service-name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} --query '[?contains(displayName, `Starter`)].name' -o tsv) >> $GITHUB_ENV
-         echo PRODUCT_UNLIMITED=$(az apim product list --service-name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} --query '[?contains(displayName, `Unlimited`)].name' -o tsv) >> $GITHUB_ENV
-         echo API_ECHO=$(az apim api list --service-name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} --filter-display-name 'Echo API' --top 1 --query [0].name -o tsv) >> $GITHUB_ENV
+          echo PRODUCT_STARTER=$(az apim product list --service-name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} --query '[?contains(displayName, `Starter`)].name' -o tsv) >> $GITHUB_ENV
+          echo PRODUCT_UNLIMITED=$(az apim product list --service-name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} --query '[?contains(displayName, `Unlimited`)].name' -o tsv) >> $GITHUB_ENV
+          echo API_ECHO=$(az apim api list --service-name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} --filter-display-name 'Echo API' --top 1 --query [0].name -o tsv) >> $GITHUB_ENV
 
       - name: IP restriction 🔒️
         uses: Azure/cli@v1.0.7
@@ -403,7 +403,7 @@ jobs:
 
       - name: Delete - Starter product
         uses: Azure/cli@v1.0.7
-        if:  ${{ '' != env.PRODUCT_STARTER }}
+        if: ${{ '' != env.PRODUCT_STARTER }}
         with:
           inlineScript: |
             az apim product delete \
@@ -433,7 +433,6 @@ jobs:
             --service-name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
             --delete-revisions true \
             --yes
-
 
   # 5. APIM configuration
   apim:
@@ -465,7 +464,7 @@ jobs:
 
       - name: APIM defaults ✨
         run: |
-         echo PRODUCT_TFS=$(az apim product list --service-name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} --query '[?contains(displayName, `tfs`)].name' -o tsv) >> $GITHUB_ENV
+          echo PRODUCT_TFS=$(az apim product list --service-name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} --query '[?contains(displayName, `tfs`)].name' -o tsv) >> $GITHUB_ENV
 
       - name: TFS - Product ➕
         uses: Azure/cli@v1.0.7
