@@ -65,10 +65,7 @@ export class FacilityLoanTransactionService {
     };
   }
 
-  private findFirstAccrualMatchingCategoryCode(
-    categoryCode: string,
-    accrualScheduleList: AccrualSchedule[],
-  ): AccrualSchedule {
+  private findFirstAccrualMatchingCategoryCode(categoryCode: string, accrualScheduleList: AccrualSchedule[]): AccrualSchedule {
     return accrualScheduleList.find((accrual) => accrual.AccrualCategory.AccrualCategoryCode === categoryCode);
   }
 }

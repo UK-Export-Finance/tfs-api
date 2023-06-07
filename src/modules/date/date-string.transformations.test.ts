@@ -114,7 +114,9 @@ describe('DateStringTransformations', () => {
     it('returns the parameter as an ISO DateString if parameter is in the past', () => {
       const dateBeforeToday = TEST_DATES.A_PAST_EFFECTIVE_DATE_ONLY;
 
-      expect(dateStringTransformations.getEarliestDateFromTodayAndDateAsString(dateBeforeToday, currentDateProvider)).toBe(TEST_DATES.A_PAST_EFFECTIVE_DATE_STRING);
+      expect(dateStringTransformations.getEarliestDateFromTodayAndDateAsString(dateBeforeToday, currentDateProvider)).toBe(
+        TEST_DATES.A_PAST_EFFECTIVE_DATE_STRING,
+      );
     });
 
     it('returns todays date as an ISO DateString if parameter is in the future', () => {
@@ -135,12 +137,8 @@ describe('DateStringTransformations', () => {
       { date: '2001-11-30', expectedDate: '2002-02-28', description: 'when input is 30th November and it is not a leap year' },
       { date: '1999-11-30', expectedDate: '2000-02-29', description: 'when input is 30th November and it is a leap year' },
       { date: '2004-02-29', expectedDate: '2004-05-29', description: 'when input is 29th February and it is a leap year' },
-    ])(
-      'returns the date plus three months in YYYY-MM-DD format $description',
-      ({ date, expectedDate }) => {
-
+    ])('returns the date plus three months in YYYY-MM-DD format $description', ({ date, expectedDate }) => {
       expect(dateStringTransformations.getDatePlusThreeMonths(date)).toBe(expectedDate);
-      },
-    );
+    });
   });
 });
