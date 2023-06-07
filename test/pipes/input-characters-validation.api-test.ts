@@ -1,15 +1,15 @@
+import { AssignedRatingCodeEnum } from '@ukef/constants/enums/assigned-rating-code';
+import { AcbsCreatePartyExternalRatingRequestDto } from '@ukef/modules/acbs/dto/acbs-create-party-external-rating-request.dto';
 import { AcbsCreatePartyRequest } from '@ukef/modules/acbs/dto/acbs-create-party-request.dto';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
 import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
+import { CreatePartyExternalRatingGenerator } from '@ukef-test/support/generator/create-party-external-rating-generator';
 import { CreatePartyGenerator } from '@ukef-test/support/generator/create-party-generator';
 import { GetPartyGenerator } from '@ukef-test/support/generator/get-party-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import nock from 'nock';
-import { AcbsCreatePartyExternalRatingRequestDto } from '@ukef/modules/acbs/dto/acbs-create-party-external-rating-request.dto';
-import { AssignedRatingCodeEnum } from '@ukef/constants/enums/assigned-rating-code';
-import { CreatePartyExternalRatingGenerator } from '@ukef-test/support/generator/create-party-external-rating-generator';
 
 describe('Test InputCharacterValidationPipe', () => {
   const valueGenerator = new RandomValueGenerator();
