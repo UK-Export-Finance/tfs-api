@@ -8,7 +8,7 @@ export class AcbsHttpService {
   constructor(private readonly config: Pick<ConfigType<typeof AcbsConfig>, 'baseUrl'>, private readonly httpService: HttpService) {}
 
   private getHeaders({ method, idToken }: { method: 'get' | 'post' | 'put'; idToken: string }) {
-    const baseHeaders = { baseURL: this.config.baseUrl, headers: { Authorization: `Bearer ${idToken}` } };
+    const baseHeaders = { baseURL: this.config.baseUrl, headers: { Authorization: `Bearer ${idToken}`, ReturnException: process.env.ACBS_RETURN_EXCEPTION || false } };
     switch (method) {
       case 'get':
         return baseHeaders;
