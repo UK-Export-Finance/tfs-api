@@ -39,7 +39,6 @@ export class App {
       }),
     );
 
-    // Swagger docs
     SwaggerDocs(app);
 
     app.useGlobalGuards(new ApiKeyAuthGuard());
