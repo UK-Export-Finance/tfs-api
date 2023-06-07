@@ -789,6 +789,50 @@ paths:
           description: The facility was not found.
         '500':
           description: An internal server error has occurred.
+  /api/v1/facilities/{facilityIdentifier}/loans/{loanIdentifier}:
+    patch:
+      operationId: FacilityLoanController_updateLoanExpiryDate
+      summary: Update an existing loan's expiry date.
+      parameters:
+        - name: loanIdentifier
+          required: true
+          in: path
+          description: The identifier of the loan in ACBS.
+          example: '000272017'
+          schema:
+            minLength: 9
+            maxLength: 9
+            pattern: ^\\d{9}$
+            type: string
+        - name: facilityIdentifier
+          required: true
+          in: path
+          description: The identifier of the facility in ACBS.
+          example: '0030000322'
+          schema:
+            minLength: 10
+            maxLength: 10
+            pattern: ^00\\d{8}$
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateLoanExpiryDateRequest'
+      responses:
+        '200':
+          description: The loan has been updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateLoanExpiryDateResponse'
+        '400':
+          description: Bad request.
+        '404':
+          description: The loan was not found.
+        '500':
+          description: An internal server error has occurred.
   /api/v1/facilities/{facilityIdentifier}/loans/{loanIdentifier}/amendments/amount:
     post:
       operationId: FacilityLoanController_createAmountAmendmentForLoan
@@ -2915,6 +2959,27 @@ components:
           example: '0000321000'
       required:
         - bundleIdentifier
+    UpdateLoanExpiryDateRequest:
+      type: object
+      properties:
+        expiryDate:
+          format: date
+          type: string
+          description: The new expiry date of the loan.
+      required:
+        - expiryDate
+    UpdateLoanExpiryDateResponse:
+      type: object
+      properties:
+        loanIdentifier:
+          type: string
+          description: The identifier of the loan in ACBS.
+          minLength: 9
+          maxLength: 9
+          pattern: ^\\d{9}$
+          example: '000272017'
+      required:
+        - loanIdentifier
     CreateLoanAmountAmendmentRequestItem:
       type: object
       properties:
@@ -3320,6 +3385,7 @@ components:
         - issueDate
         - expiryDate
         - spreadRate
+        - spreadRateCTL
         - yearBasis
         - nextDueDate
         - indexRateChangeFrequency

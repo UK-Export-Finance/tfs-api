@@ -60,6 +60,7 @@ describe('FacilityLoanService', () => {
       dateStringTransformations,
       currentDateProvider,
       repaymentScheduleBuilder,
+      null,
       accrualScheduleBuilder,
     );
   });

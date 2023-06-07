@@ -4,7 +4,7 @@ export interface BooleanFieldValidationApiTestOptions<RequestBodyItem, RequestBo
   fieldName: RequestBodyItemKey;
   required?: boolean;
   validRequestBody: RequestBodyItem[];
-  makeRequest: (body: unknown[]) => request.Test;
+  makeRequest: ((body: unknown[]) => request.Test) | ((body: unknown) => request.Test);
   givenAnyRequestBodyWouldSucceed: () => void;
 }
 

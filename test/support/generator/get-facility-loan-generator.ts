@@ -1,4 +1,5 @@
-import { ENUMS } from '@ukef/constants';
+import { ProductTypeGroupEnum } from '@ukef/constants/enums/product-type-group';
+import { ProductTypeIdEnum } from '@ukef/constants/enums/product-type-id';
 import { UkefId } from '@ukef/helpers';
 import { AcbsGetFacilityLoanResponseDto, AcbsGetFacilityLoanResponseItem } from '@ukef/modules/acbs/dto/acbs-get-facility-loan-response.dto';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
@@ -14,9 +15,6 @@ export class GetFacilityLoanGenerator extends AbstractGenerator<AcbsGetFacilityL
   }
 
   protected generateValues(): AcbsGetFacilityLoanResponseItem {
-    const possibleProductTypeIds = Object.values(ENUMS.PRODUCT_TYPE_IDS);
-    const possibleProductTypeGroups = Object.values(ENUMS.PRODUCT_TYPE_GROUPS);
-
     return {
       PortfolioIdentifier: this.valueGenerator.string(),
       LoanIdentifier: this.valueGenerator.string({ length: 9 }),
@@ -25,21 +23,23 @@ export class GetFacilityLoanGenerator extends AbstractGenerator<AcbsGetFacilityL
         PartyIdentifier: this.valueGenerator.acbsPartyId(),
       },
       ProductType: {
-        ProductTypeCode: possibleProductTypeIds[this.valueGenerator.integer({ min: 0, max: possibleProductTypeIds.length - 1 })],
+        ProductTypeCode: this.valueGenerator.enumValue(ProductTypeIdEnum),
       },
       ProductGroup: {
-        ProductGroupCode: possibleProductTypeGroups[this.valueGenerator.integer({ min: 0, max: possibleProductTypeGroups.length - 1 })],
+        ProductGroupCode: this.valueGenerator.enumValue(ProductTypeGroupEnum),
       },
       Currency: {
         CurrencyCode: TEST_CURRENCIES.A_TEST_CURRENCY,
       },
-      EffectiveDate: this.valueGenerator.dateOnlyString(),
-      MaturityDate: this.valueGenerator.dateOnlyString(),
+      EffectiveDate: this.valueGenerator.dateTimeString(),
+      MaturityDate: this.valueGenerator.dateTimeString(),
       PrincipalBalance: this.valueGenerator.nonnegativeFloat(),
       InterestBalance: this.valueGenerator.nonnegativeFloat(),
       FeeBalance: this.valueGenerator.nonnegativeFloat(),
       OtherBalance: this.valueGenerator.nonnegativeFloat(),
       DiscountedPrincipal: this.valueGenerator.nonnegativeFloat(),
+      RateMaturityDate: this.valueGenerator.dateTimeString(),
+      IsRateMaturityDateZero: false,
     };
   }
 
@@ -70,6 +70,8 @@ export class GetFacilityLoanGenerator extends AbstractGenerator<AcbsGetFacilityL
       FeeBalance: facilityLoan.FeeBalance,
       OtherBalance: facilityLoan.OtherBalance,
       DiscountedPrincipal: facilityLoan.DiscountedPrincipal,
+      RateMaturityDate: facilityLoan.RateMaturityDate,
+      IsRateMaturityDateZero: facilityLoan.IsRateMaturityDateZero,
     }));
 
     const facilityLoansFromApi = facilityLoans.map((facilityLoan) => ({
