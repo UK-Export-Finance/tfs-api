@@ -111,7 +111,7 @@ describe('Test InputCharacterValidationPipe', () => {
     });
 
     it('returns a 201 response when using characters with ASCII code 32 to 126', async () => {
-      const chars32_160CreatePartyRequest = [
+      const chars32_126CreatePartyRequest = [
         {
           ...createPartyRequest[0],
           name1: ' !"#$%&\'()*+,-./0123456789:;<=>?@A', // cspell:disable-line
@@ -119,27 +119,27 @@ describe('Test InputCharacterValidationPipe', () => {
           name3: 'fghijklmnopqrstuvwxyz{|}~', // cspell:disable-line
         },
       ];
-      const chars32_160AcbsCreatePartyRequest = {
+      const chars32_126AcbsCreatePartyRequest = {
         ...acbsCreatePartyRequest,
-        PartyName1: chars32_160CreatePartyRequest[0].name1,
-        PartyName2: chars32_160CreatePartyRequest[0].name2,
-        PartyName3: chars32_160CreatePartyRequest[0].name3,
-        PartyShortName: chars32_160CreatePartyRequest[0].name1.substring(0, 15),
-        PartySortName: chars32_160CreatePartyRequest[0].name1.substring(0, 20),
+        PartyName1: chars32_126CreatePartyRequest[0].name1,
+        PartyName2: chars32_126CreatePartyRequest[0].name2,
+        PartyName3: chars32_126CreatePartyRequest[0].name3,
+        PartyShortName: chars32_126CreatePartyRequest[0].name1.substring(0, 15),
+        PartySortName: chars32_126CreatePartyRequest[0].name1.substring(0, 20),
       };
 
       givenAuthenticationWithTheIdpSucceeds();
       requestToGetPartiesBySearchText(alternateIdentifier).reply(200, []);
-      requestToCreateParties(chars32_160AcbsCreatePartyRequest).reply(201, undefined, { Location: `/Party/${partyIdentifier}` });
+      requestToCreateParties(chars32_126AcbsCreatePartyRequest).reply(201, undefined, { Location: `/Party/${partyIdentifier}` });
 
-      const { status, body } = await api.post(createPartyUrl, chars32_160CreatePartyRequest);
+      const { status, body } = await api.post(createPartyUrl, chars32_126CreatePartyRequest);
 
       expect(status).toBe(201);
       expect(body).toStrictEqual({ partyIdentifier: partyIdentifier });
     });
 
     it('returns a 201 response when using characters with ASCII code 160 to 255, except 181 µ and 255 ÿ', async () => {
-      const chars32_160CreatePartyRequest = [
+      const chars160_254CreatePartyRequest = [
         {
           ...createPartyRequest[0],
           name1: ' ¡¢£¤¥¦§¨©ª«¬­®¯°±²³´¶·¸¹º»¼½¾¿ÀÁÂÃ', // cspell:disable-line
@@ -147,20 +147,20 @@ describe('Test InputCharacterValidationPipe', () => {
           name3: 'çèéêëìíîïðñòóôõö÷øùúûüýþ', // cspell:disable-line
         },
       ];
-      const chars32_160AcbsCreatePartyRequest = {
+      const chars160_254AcbsCreatePartyRequest = {
         ...acbsCreatePartyRequest,
-        PartyName1: chars32_160CreatePartyRequest[0].name1,
-        PartyName2: chars32_160CreatePartyRequest[0].name2,
-        PartyName3: chars32_160CreatePartyRequest[0].name3,
-        PartyShortName: chars32_160CreatePartyRequest[0].name1.substring(0, 15),
-        PartySortName: chars32_160CreatePartyRequest[0].name1.substring(0, 20),
+        PartyName1: chars160_254CreatePartyRequest[0].name1,
+        PartyName2: chars160_254CreatePartyRequest[0].name2,
+        PartyName3: chars160_254CreatePartyRequest[0].name3,
+        PartyShortName: chars160_254CreatePartyRequest[0].name1.substring(0, 15),
+        PartySortName: chars160_254CreatePartyRequest[0].name1.substring(0, 20),
       };
 
       givenAuthenticationWithTheIdpSucceeds();
       requestToGetPartiesBySearchText(alternateIdentifier).reply(200, []);
-      requestToCreateParties(chars32_160AcbsCreatePartyRequest).reply(201, undefined, { Location: `/Party/${partyIdentifier}` });
+      requestToCreateParties(chars160_254AcbsCreatePartyRequest).reply(201, undefined, { Location: `/Party/${partyIdentifier}` });
 
-      const { status, body } = await api.post(createPartyUrl, chars32_160CreatePartyRequest);
+      const { status, body } = await api.post(createPartyUrl, chars160_254CreatePartyRequest);
 
       expect(status).toBe(201);
       expect(body).toStrictEqual({ partyIdentifier: partyIdentifier });
