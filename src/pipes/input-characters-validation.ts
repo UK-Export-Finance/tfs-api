@@ -32,7 +32,7 @@ export class InputCharacterValidationPipe implements PipeTransform {
       });
     } else if (Array.isArray(value)) {
       value.forEach((value) => this.recursiveCheck(value, findCharactersRegex, errorMessageGenerator));
-    } else if (value.replace(findCharactersRegex, '') !== '') {
+    } else if (typeof value === 'string' && value.replace(findCharactersRegex, '') !== '') {
       const invalidCharacters = value.replace(findCharactersRegex, '');
       throw new BadRequestException('Bad request', errorMessageGenerator(key, invalidCharacters));
     }
