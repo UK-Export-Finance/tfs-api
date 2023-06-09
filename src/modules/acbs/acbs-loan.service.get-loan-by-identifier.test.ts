@@ -15,6 +15,7 @@ describe('AcbsLoanService', () => {
   const dateStringTransformations = new DateStringTransformations();
   const idToken = valueGenerator.string();
   const baseUrl = valueGenerator.httpsUrl();
+  const useReturnExceptionHeader = false;
   const portfolioIdentifier = valueGenerator.portfolioId();
   const facilityIdentifier = valueGenerator.facilityId();
   const loanIdentifier = valueGenerator.loanId();
@@ -44,7 +45,7 @@ describe('AcbsLoanService', () => {
     httpServiceGet = jest.fn();
     httpService.get = httpServiceGet;
 
-    service = new AcbsLoanService({ baseUrl }, httpService);
+    service = new AcbsLoanService({ baseUrl, useReturnExceptionHeader }, httpService);
   });
 
   describe('getLoanByLoanIdentifier', () => {
