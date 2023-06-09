@@ -16,6 +16,7 @@ describe('AcbsPartyExternalRatingService', () => {
   const dateStringTransformations = new DateStringTransformations();
   const idToken = valueGenerator.string();
   const baseUrl = valueGenerator.httpsUrl();
+  const useReturnExceptionHeader = false;
 
   let httpService: HttpService;
   let service: AcbsPartyExternalRatingService;
@@ -44,7 +45,7 @@ describe('AcbsPartyExternalRatingService', () => {
     httpServicePost = jest.fn();
     httpService.post = httpServicePost;
 
-    service = new AcbsPartyExternalRatingService({ baseUrl }, httpService);
+    service = new AcbsPartyExternalRatingService({ baseUrl, useReturnExceptionHeader }, httpService);
   });
 
   describe('createExternalRatingForParty', () => {

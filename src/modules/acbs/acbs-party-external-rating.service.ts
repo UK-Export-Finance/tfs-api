@@ -2,7 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import { Inject, Injectable } from '@nestjs/common';
 import AcbsConfig from '@ukef/config/acbs.config';
 
-import { AcbsConfigBaseUrl } from './acbs-config-base-url.type';
+import { AcbsConfigBaseUrlAndUseReturnExcpetionHeader } from './acbs-config-base-url.type';
 import { AcbsHttpService } from './acbs-http.service';
 import { AcbsCreatePartyExternalRatingRequestDto } from './dto/acbs-create-party-external-rating-request.dto';
 import { AcbsGetPartyExternalRatingsResponseDto } from './dto/acbs-get-party-external-ratings-response.dto';
@@ -15,7 +15,7 @@ export class AcbsPartyExternalRatingService {
 
   constructor(
     @Inject(AcbsConfig.KEY)
-    config: AcbsConfigBaseUrl,
+    config: AcbsConfigBaseUrlAndUseReturnExcpetionHeader,
     httpService: HttpService,
   ) {
     this.acbsHttpService = new AcbsHttpService(config, httpService);

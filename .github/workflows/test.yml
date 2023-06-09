@@ -153,6 +153,7 @@ jobs:
           ACBS_AUTHENTICATION_MAX_NUMBER_OF_RETRIES: ${{ secrets.ACBS_AUTHENTICATION_MAX_NUMBER_OF_RETRIES }}
           API_KEY: ${{ secrets.API_KEY }}
           API_KEY_STRATEGY: ${{ secrets.API_KEY_STRATEGY }}
+          ACBS_USE_RETURN_EXCEPTION_HEADER: ${{ vars.ACBS_USE_RETURN_EXCEPTION_HEADER }}
         run: docker-compose up --build -d
 
       - name: Execute

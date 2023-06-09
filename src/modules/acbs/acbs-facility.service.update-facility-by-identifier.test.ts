@@ -15,6 +15,7 @@ describe('AcbsFacilityService', () => {
   const valueGenerator = new RandomValueGenerator();
   const idToken = valueGenerator.string();
   const baseUrl = valueGenerator.httpsUrl();
+  const useReturnExceptionHeader = false;
   const randomPortfolioIdentifier = valueGenerator.string({ length: 2 });
   const facilityIdentifier = valueGenerator.facilityId();
 
@@ -43,7 +44,7 @@ describe('AcbsFacilityService', () => {
     httpServicePut = jest.fn();
     httpService.put = httpServicePut;
 
-    service = new AcbsFacilityService({ baseUrl }, httpService);
+    service = new AcbsFacilityService({ baseUrl, useReturnExceptionHeader }, httpService);
   });
 
   describe('updateFacility', () => {

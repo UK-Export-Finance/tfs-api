@@ -34,6 +34,7 @@ services:
       ACBS_AUTHENTICATION_PASSWORD:
       ACBS_AUTHENTICATION_RETRY_DELAY_IN_MILLISECONDS:
       ACBS_AUTHENTICATION_TIMEOUT:
+      ACBS_USE_RETURN_EXCEPTION_HEADER:
 
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:${PORT}']

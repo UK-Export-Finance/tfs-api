@@ -1,17 +1,19 @@
 import { HttpService } from '@nestjs/axios';
-import { ConfigType } from '@nestjs/config';
-import AcbsConfig from '@ukef/config/acbs.config';
 import { AxiosResponse } from 'axios';
 import { catchError, lastValueFrom, Observable, ObservableInput } from 'rxjs';
+import { AcbsConfigBaseUrlAndUseReturnExcpetionHeader } from './acbs-config-base-url.type';
 
 export class AcbsHttpService {
-  constructor(private readonly config: Pick<ConfigType<typeof AcbsConfig>, 'baseUrl'>, private readonly httpService: HttpService) {}
+  constructor(private readonly config: AcbsConfigBaseUrlAndUseReturnExcpetionHeader, private readonly httpService: HttpService) {}
 
   private getHeaders({ method, idToken }: { method: 'get' | 'post' | 'put'; idToken: string }) {
     const baseHeaders = {
       baseURL: this.config.baseUrl,
-      headers: { Authorization: `Bearer ${idToken}`, ReturnException: process.env.ACBS_RETURN_EXCEPTION || false },
+      headers: { Authorization: `Bearer ${idToken}` },
     };
+    if (this.config.useReturnExceptionHeader) {
+      baseHeaders.headers['ReturnException'] = this.config.useReturnExceptionHeader;
+    }
     switch (method) {
       case 'get':
         return baseHeaders;

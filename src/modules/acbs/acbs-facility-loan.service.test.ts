@@ -15,6 +15,7 @@ describe('AcbsFacilityLoanService', () => {
   const dateStringTransformations = new DateStringTransformations();
   const idToken = valueGenerator.string();
   const baseUrl = valueGenerator.httpsUrl();
+  const useReturnExceptionHeader = false;
   const portfolioIdentifier = valueGenerator.portfolioId();
   const facilityIdentifier = valueGenerator.facilityId();
 
@@ -37,7 +38,7 @@ describe('AcbsFacilityLoanService', () => {
     httpServiceGet = jest.fn();
     httpService.get = httpServiceGet;
 
-    service = new AcbsFacilityLoanService({ baseUrl }, httpService);
+    service = new AcbsFacilityLoanService({ baseUrl, useReturnExceptionHeader }, httpService);
   });
 
   const { facilityLoansInAcbs } = new GetFacilityLoanGenerator(valueGenerator, dateStringTransformations).generate({

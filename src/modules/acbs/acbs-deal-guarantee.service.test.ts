@@ -15,6 +15,7 @@ describe('AcbsDealGuaranteeService', () => {
   const valueGenerator = new RandomValueGenerator();
   const authToken = valueGenerator.string();
   const baseUrl = valueGenerator.httpsUrl();
+  const useReturnExceptionHeader = false;
   const dealIdentifier = valueGenerator.stringOfNumericCharacters();
   const { portfolioIdentifier } = PROPERTIES.GLOBAL;
 
@@ -29,7 +30,7 @@ describe('AcbsDealGuaranteeService', () => {
     httpServicePost = jest.fn();
     httpService.post = httpServicePost;
 
-    service = new AcbsDealGuaranteeService({ baseUrl }, httpService);
+    service = new AcbsDealGuaranteeService({ baseUrl, useReturnExceptionHeader }, httpService);
   });
 
   describe('createGuaranteeForDeal', () => {

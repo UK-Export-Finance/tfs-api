@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import AcbsConfig from '@ukef/config/acbs.config';
 
 import { AcbsGetPartiesBySearchTextResponseDto } from '../party/dto/acbs-get-parties-by-search-text-response.dto';
-import { AcbsConfigBaseUrl } from './acbs-config-base-url.type';
+import { AcbsConfigBaseUrlAndUseReturnExcpetionHeader } from './acbs-config-base-url.type';
 import { AcbsHttpService } from './acbs-http.service';
 import { AcbsCreatePartyRequest } from './dto/acbs-create-party-request.dto';
 import { AcbsGetPartyResponseDto } from './dto/acbs-get-party-response.dto';
@@ -16,7 +16,7 @@ export class AcbsPartyService {
 
   constructor(
     @Inject(AcbsConfig.KEY)
-    config: AcbsConfigBaseUrl,
+    config: AcbsConfigBaseUrlAndUseReturnExcpetionHeader,
     httpService: HttpService,
   ) {
     this.acbsHttpService = new AcbsHttpService(config, httpService);

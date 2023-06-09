@@ -4,7 +4,7 @@ import AcbsConfig from '@ukef/config/acbs.config';
 import { PROPERTIES } from '@ukef/constants';
 import { UkefId } from '@ukef/helpers';
 
-import { AcbsConfigBaseUrl } from './acbs-config-base-url.type';
+import { AcbsConfigBaseUrlAndUseReturnExcpetionHeader } from './acbs-config-base-url.type';
 import { AcbsHttpService } from './acbs-http.service';
 import { AcbsCreateFacilityPartyDto } from './dto/acbs-create-facility-party.dto';
 import { AcbsGetFacilityPartyResponseDto } from './dto/acbs-get-facility-party-response.dto';
@@ -16,7 +16,7 @@ import { createWrapAcbsHttpPostOrPutErrorCallback } from './wrap-acbs-http-error
 export class AcbsFacilityPartyService {
   private readonly acbsHttpService: AcbsHttpService;
 
-  constructor(@Inject(AcbsConfig.KEY) config: AcbsConfigBaseUrl, httpService: HttpService) {
+  constructor(@Inject(AcbsConfig.KEY) config: AcbsConfigBaseUrlAndUseReturnExcpetionHeader, httpService: HttpService) {
     this.acbsHttpService = new AcbsHttpService(config, httpService);
   }
 
