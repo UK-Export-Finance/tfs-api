@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { CURRENCIES } from '@ukef/constants/currencies.constant';
-import { AcbsBundleId, DateString, UkefId } from '@ukef/helpers';
+import { AcbsBundleId, UkefId } from '@ukef/helpers';
 import { AcbsBundleInformationService } from '@ukef/modules/acbs/acbs-bundle-information.service';
 import { AcbsFacilityLoanService } from '@ukef/modules/acbs/acbs-facility-loan.service';
 import { AcbsCreateBundleInformationRequestDto } from '@ukef/modules/acbs/dto/acbs-create-bundle-information-request.dto';
@@ -10,11 +10,15 @@ import { NewLoanRequest } from '@ukef/modules/acbs/dto/bundle-actions/new-loan-r
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
+import { AccrualScheduleBuilder } from '@ukef/modules/facility-loan/accrual-schedule.builder';
 
+import { AcbsLoanService } from '../acbs/acbs-loan-service';
+import { AcbsUpdateLoanRequest } from '../acbs/dto/acbs-update-loan-request.dto';
 import { CreateFacilityLoanRequestItem } from './dto/create-facility-loan-request.dto';
 import { CreateFacilityLoanResponse } from './dto/create-facility-loan-response.dto';
 import { CreateLoanAmountAmendmentRequestItem } from './dto/create-loan-amount-amendment-request.dto';
 import { GetFacilityLoanResponseDto } from './dto/get-facility-loan-response.dto';
+import { UpdateLoanExpiryDateRequest } from './dto/update-loan-expiry-date-request.dto';
 import { RepaymentScheduleBuilder } from './repayment-schedule.builder';
 
 @Injectable()
@@ -26,6 +30,8 @@ export class FacilityLoanService {
     private readonly dateStringTransformations: DateStringTransformations,
     private readonly currentDateProvider: CurrentDateProvider,
     private readonly repaymentScheduleBuilder: RepaymentScheduleBuilder,
+    private readonly acbsLoanService: AcbsLoanService,
+    private readonly accrualScheduleBuilder: AccrualScheduleBuilder,
   ) {}
 
   async getLoansForFacility(facilityIdentifier: string): Promise<GetFacilityLoanResponseDto> {
@@ -87,6 +93,23 @@ export class FacilityLoanService {
     return BundleIdentifier;
   }
 
+  async updateLoanExpiryDate(loanIdentifier: string, updateLoanExpiryDateRequest: UpdateLoanExpiryDateRequest): Promise<void> {
+    const { portfolioIdentifier } = PROPERTIES.GLOBAL;
+    const { expiryDate } = updateLoanExpiryDateRequest;
+
+    const newExpiryDate = this.dateStringTransformations.addTimeToDateOnlyString(expiryDate);
+    const idToken = await this.getIdToken();
+    const loanInAcbs = await this.acbsLoanService.getLoanByIdentifier(portfolioIdentifier, loanIdentifier, idToken);
+    const acbsUpdateLoanExpiryDateRequest: AcbsUpdateLoanRequest = {
+      ...loanInAcbs,
+      MaturityDate: newExpiryDate,
+      RateMaturityDate: newExpiryDate,
+      ...(loanInAcbs.FinancialNextValuationDate && { FinancialNextValuationDate: newExpiryDate }),
+      ...(loanInAcbs.CustomerUsageNextValuationDate && { CustomerUsageNextValuationDate: newExpiryDate }),
+    };
+    await this.acbsLoanService.updateLoanByIdentifier(portfolioIdentifier, acbsUpdateLoanExpiryDateRequest, idToken);
+  }
+
   private getIdToken(): Promise<string> {
     return this.acbsAuthenticationService.getIdToken();
   }
@@ -94,8 +117,9 @@ export class FacilityLoanService {
   private getBaseMessage(facilityIdentifier: UkefId, newFacilityLoan: CreateFacilityLoanRequestItem) {
     const loanInstrumentCode =
       newFacilityLoan.productTypeId === ENUMS.PRODUCT_TYPE_IDS.GEF_CONTINGENT ? ENUMS.PRODUCT_TYPE_IDS.GEF_CASH : newFacilityLoan.productTypeId;
-    const issueDateString = this.getIssueDateToCreate(newFacilityLoan.issueDate);
+    const issueDateString = this.dateStringTransformations.getEarliestDateFromTodayAndDateAsString(newFacilityLoan.issueDate, this.currentDateProvider);
     const repaymentSchedules = this.repaymentScheduleBuilder.getRepaymentSchedules(newFacilityLoan);
+    const accrualSchedules = this.accrualScheduleBuilder.getAccrualSchedules(newFacilityLoan);
 
     return {
       $type: PROPERTIES.FACILITY_LOAN.DEFAULT.messageType,
@@ -169,7 +193,7 @@ export class FacilityLoanService {
       SecuredType: {
         LoanSecuredTypeCode: PROPERTIES.FACILITY_LOAN.DEFAULT.securedType.loanSecuredTypeCode,
       },
-      AccrualScheduleList: [],
+      AccrualScheduleList: accrualSchedules,
       RepaymentScheduleList: repaymentSchedules,
     };
   }
@@ -204,11 +228,6 @@ export class FacilityLoanService {
           CustomerUsageLockMTMRateIndicator: PROPERTIES.FACILITY_LOAN.DEFAULT.customerUsageLockMTMRateIndicator,
         }
       : {};
-  }
-
-  private getIssueDateToCreate(issueDate: string): DateString {
-    const issueDateTime = this.currentDateProvider.getEarliestDateFromTodayAnd(new Date(this.dateStringTransformations.addTimeToDateOnlyString(issueDate)));
-    return this.dateStringTransformations.getDateStringFromDate(issueDateTime);
   }
 
   private buildLoanAmountAmendmentBundle(

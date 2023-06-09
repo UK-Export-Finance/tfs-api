@@ -8,8 +8,8 @@ export const withLoanIdentifierUrlValidationApiTests = ({
   givenRequestWouldOtherwiseSucceedForLoanId,
   successStatusCode,
 }: {
-  makeRequestWithLoanId: (facilityId: string) => request.Test;
-  givenRequestWouldOtherwiseSucceedForLoanId: (facilityId: string) => void;
+  makeRequestWithLoanId: (loanId: string) => request.Test;
+  givenRequestWouldOtherwiseSucceedForLoanId: (loanId: string) => void;
   successStatusCode?: number;
 }): void => {
   describe('loanIdentifier URL validation', () => {

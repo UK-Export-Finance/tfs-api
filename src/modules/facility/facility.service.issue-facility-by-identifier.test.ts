@@ -64,7 +64,7 @@ describe('FacilityService', () => {
     it('throws an error if the new facility stage code is not issued', async () => {
       const modifiedUpdateFacilityRequest = { ...updateFacilityRequest, facilityStageCode: unissuedFacilityStageCode };
 
-      const responsePromise = service.issueFacilityByIdentifier(facilityIdentifier, modifiedUpdateFacilityRequest);
+      const responsePromise = issueFacility(modifiedUpdateFacilityRequest);
 
       await expect(responsePromise).rejects.toBeInstanceOf(BadRequestException);
       await expect(responsePromise).rejects.toThrow('Bad request');
@@ -76,7 +76,7 @@ describe('FacilityService', () => {
 
       delete modifiedUpdateFacilityRequest.issueDate;
 
-      const responsePromise = service.issueFacilityByIdentifier(facilityIdentifier, modifiedUpdateFacilityRequest);
+      const responsePromise = issueFacility(modifiedUpdateFacilityRequest);
 
       await expect(responsePromise).rejects.toBeInstanceOf(BadRequestException);
       await expect(responsePromise).rejects.toThrow('Bad request');
@@ -88,7 +88,7 @@ describe('FacilityService', () => {
 
       modifiedUpdateFacilityRequest.issueDate = null;
 
-      const responsePromise = service.issueFacilityByIdentifier(facilityIdentifier, modifiedUpdateFacilityRequest);
+      const responsePromise = issueFacility(modifiedUpdateFacilityRequest);
 
       await expect(responsePromise).rejects.toBeInstanceOf(BadRequestException);
       await expect(responsePromise).rejects.toThrow('Bad request');
@@ -100,7 +100,7 @@ describe('FacilityService', () => {
 
       modifiedUpdateFacilityRequest.issueDate = undefined;
 
-      const responsePromise = service.issueFacilityByIdentifier(facilityIdentifier, modifiedUpdateFacilityRequest);
+      const responsePromise = issueFacility(modifiedUpdateFacilityRequest);
 
       await expect(responsePromise).rejects.toBeInstanceOf(BadRequestException);
       await expect(responsePromise).rejects.toThrow('Bad request');
