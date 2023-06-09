@@ -152,7 +152,6 @@ jobs:
           ACBS_AUTHENTICATION_TIMEOUT: ${{ secrets.ACBS_AUTHENTICATION_TIMEOUT }}
           ACBS_AUTHENTICATION_MAX_NUMBER_OF_RETRIES: ${{ secrets.ACBS_AUTHENTICATION_MAX_NUMBER_OF_RETRIES }}
           API_KEY: ${{ secrets.API_KEY }}
-          API_KEY_STRATEGY: ${{ secrets.API_KEY_STRATEGY }}
         run: docker-compose up --build -d
 
       - name: Execute
