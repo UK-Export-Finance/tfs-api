@@ -2,7 +2,7 @@ import { ArgumentMetadata, BadRequestException } from '@nestjs/common';
 
 import { InputCharacterValidationPipe } from './input-characters-validation';
 
-class NoErrorThrownError extends Error { }
+class NoErrorThrownError extends Error {}
 
 describe('InputCharacterValidationPipe', () => {
   const queryMeta: ArgumentMetadata = { type: 'query' };
@@ -218,26 +218,26 @@ describe('InputCharacterValidationPipe', () => {
     });
 
     describe('Validate that known unsupported ASCII characters throw an error', () => {
-      it.each([
-        { characterCode: 181 },
-        { characterCode: 255 },
-      ])('throws an error when Body param dto has ASCII character $characterCode in object properties', ({ characterCode }) => {
-        const bodyToTest = { ...bodyDto, field1: String.fromCharCode(characterCode) };
-        const functionToTest = () => {
-          try {
-            pipe.transform(bodyToTest, bodyMeta);
-            return new NoErrorThrownError();
-          } catch (error) {
-            return error;
-          }
-        };
+      it.each([{ characterCode: 181 }, { characterCode: 255 }])(
+        'throws an error when Body param dto has ASCII character $characterCode in object properties',
+        ({ characterCode }) => {
+          const bodyToTest = { ...bodyDto, field1: String.fromCharCode(characterCode) };
+          const functionToTest = () => {
+            try {
+              pipe.transform(bodyToTest, bodyMeta);
+              return new NoErrorThrownError();
+            } catch (error) {
+              return error;
+            }
+          };
 
-        const error = functionToTest();
+          const error = functionToTest();
 
-        expect(error).not.toBeInstanceOf(NoErrorThrownError);
-        expect(error).toBeInstanceOf(BadRequestException);
-        expect(error).toHaveProperty('response.error', `Field field1 has invalid characters ${String.fromCharCode(characterCode)}.`);
-      });
+          expect(error).not.toBeInstanceOf(NoErrorThrownError);
+          expect(error).toBeInstanceOf(BadRequestException);
+          expect(error).toHaveProperty('response.error', `Field field1 has invalid characters ${String.fromCharCode(characterCode)}.`);
+        },
+      );
     });
   });
 });
