@@ -1,37 +1,41 @@
-import { BadRequestException, InternalServerErrorException } from '@nestjs/common';
+import { ArgumentMetadata, BadRequestException, InternalServerErrorException } from '@nestjs/common';
 
 import { InputCharacterValidationPipe } from './input-characters-validation';
 
+class NoErrorThrownError extends Error { };
+
 describe('InputCharacterValidationPipe', () => {
-  const queryMeta = { type: 'query' };
-  const paramMeta = { type: 'param' };
-  const flatParamMeta = { type: 'param', data: 'field2' };
-  const bodyMeta = { type: 'body' };
-  const unknownMeta = { type: '123' };
-  const urlDto = { field1: 'Test', field2: 'Test &%*?<>#/\\:' };
-  const bodyTextWithUnsupportedCharacters = 'Company ŽİĞİŞ A.Ş';
+  const queryMeta: ArgumentMetadata = { type: 'query' };
+  const paramMeta: ArgumentMetadata = { type: 'param' };
+  const flatParamMeta: ArgumentMetadata = { type: 'param', data: 'field2' };
+  const bodyMeta: ArgumentMetadata = { type: 'body' };
+  const supportedCharacters: string = 'Test';
+  const unsupportedUrlCharacters: string = 'Test &%*?<>#/\\:';
+  const bodyWithUnsupportedCharacters: string = 'Company ŽİĞİŞ A.Ş';
+  const unsupportedBodyCharacters: string = String.fromCharCode(381) + String.fromCharCode(304) + String.fromCharCode(286) + String.fromCharCode(304) + String.fromCharCode(350) + String.fromCharCode(350);
+  const urlDto = { field1: supportedCharacters, field2: unsupportedUrlCharacters };
   const bodyDto = {
-    field1: 'Test',
+    field1: supportedCharacters,
     field2: {
-      field2_1: 'Test',
-      field2_2: 'Test',
+      field2_1: supportedCharacters,
+      field2_2: supportedCharacters,
     },
     field3: {
       field3_1: {
-        field3_1_1: 'Test',
+        field3_1_1: supportedCharacters,
       },
       field3_2: {
-        field3_2_1: 'Test',
-        field3_2_2: 'Test',
+        field3_2_1: supportedCharacters,
+        field3_2_2: supportedCharacters,
       },
       field3_3: [
         {
-          field3_3_1: 'Test',
-          field3_3_2: 'Test',
+          field3_3_1: supportedCharacters,
+          field3_3_2: supportedCharacters,
         },
         {
-          field3_3_1: 'Test',
-          field3_3_2: 'Test',
+          field3_3_1: supportedCharacters,
+          field3_3_2: supportedCharacters,
         },
       ],
     },
@@ -46,80 +50,130 @@ describe('InputCharacterValidationPipe', () => {
   describe('transform', () => {
     it('throws an error if query param dto has unsupported characters', () => {
       const functionToTest = () => {
-        pipe.transform(urlDto, queryMeta);
+        try {
+          pipe.transform(urlDto, queryMeta);
+          return new NoErrorThrownError();
+        } catch (error) {
+          return error;
+        }
       };
 
-      expect(functionToTest).toThrow(BadRequestException);
-      expect(functionToTest).toThrow('Bad request');
+      const error = functionToTest();
+
+      expect(error).not.toBeInstanceOf(NoErrorThrownError);
+      expect(error).toBeInstanceOf(BadRequestException);
+      expect(error).toHaveProperty('response.error', `URL field field2 has invalid characters &%*?<>#/\\:.`);
     });
 
     it('throws an error if URL param dto has unsupported characters', () => {
       const functionToTest = () => {
-        pipe.transform(urlDto, paramMeta);
+        try {
+          pipe.transform(urlDto, paramMeta);
+          return new NoErrorThrownError();
+        } catch (error) {
+          return error;
+        }
       };
 
-      expect(functionToTest).toThrow(BadRequestException);
-      expect(functionToTest).toThrow('Bad request');
+      const error = functionToTest();
+
+      expect(error).not.toBeInstanceOf(NoErrorThrownError);
+      expect(error).toBeInstanceOf(BadRequestException);
+      expect(error).toHaveProperty('response.error', `URL field field2 has invalid characters &%*?<>#/\\:.`);
     });
 
     it('throws an error if URL flat param dto has unsupported characters', () => {
       const functionToTest = () => {
-        pipe.transform(urlDto['field2'], flatParamMeta);
+        try {
+          pipe.transform(urlDto['field2'], flatParamMeta);
+          return new NoErrorThrownError();
+        } catch (error) {
+          return error;
+        }
       };
 
-      expect(functionToTest).toThrow(BadRequestException);
-      expect(functionToTest).toThrow('Bad request');
+      const error = functionToTest();
+
+      expect(error).not.toBeInstanceOf(NoErrorThrownError);
+      expect(error).toBeInstanceOf(BadRequestException);
+      expect(error).toHaveProperty('response.error', `URL field field2 has invalid characters &%*?<>#/\\:.`);
     });
 
-    it('same request works in body dto', () => {
-      const functionToTest = () => {
-        pipe.transform(urlDto, bodyMeta);
-      };
+    it('URL param dto with unsupported characters is returned when metadata type is body', () => {
+      const response = pipe.transform(urlDto, bodyMeta);
 
-      expect(functionToTest).not.toThrow();
+      expect(response).toEqual(urlDto);
     });
 
-    it('throws internal exception for unknown input type', () => {
-      const functionToTest = () => {
-        pipe.transform(urlDto, unknownMeta);
+    it('URL param dto with no unsupported characters is returned when metadata type is param', () => {
+      const supportedUrlDto = {
+        ...urlDto,
+        field2: supportedCharacters,
       };
+      const response = pipe.transform(supportedUrlDto, paramMeta);
 
-      expect(functionToTest).toThrow(InternalServerErrorException);
+      expect(response).toEqual(supportedUrlDto);
     });
 
-    it('no error for simple Body values dto has unsupported characters in object properties', () => {
-      const functionToTest = () => {
-        pipe.transform(bodyDto, bodyMeta);
-      };
+    it('Body dto with no unsupported characters in object properties is returned when metadata type is body', () => {
 
-      expect(functionToTest).not.toThrow();
+      const response = pipe.transform(bodyDto, bodyMeta);
+
+      expect(response).toEqual(bodyDto);
     });
 
     it('throws an error if Body param dto has unsupported characters in object properties', () => {
-      const issueInLevel1 = { ...bodyDto, field1: bodyTextWithUnsupportedCharacters };
+      const issueInLevel1 = { ...bodyDto, field1: bodyWithUnsupportedCharacters };
       const functionToTest = () => {
-        pipe.transform(issueInLevel1, bodyMeta);
+        try {
+          pipe.transform(issueInLevel1, bodyMeta);
+          return new NoErrorThrownError();
+        } catch (error) {
+          return error;
+        }
       };
 
-      expect(functionToTest).toThrow(BadRequestException);
+      const error = functionToTest();
+
+      expect(error).not.toBeInstanceOf(NoErrorThrownError);
+      expect(error).toBeInstanceOf(BadRequestException);
+      expect(error).toHaveProperty('response.error', `Field field1 has invalid characters ${unsupportedBodyCharacters}.`);
     });
 
     it('throws an error if Body param dto has unsupported characters in object child properties', () => {
-      const issueInLevel2 = { ...bodyDto, field2: { field2_2: bodyTextWithUnsupportedCharacters } };
+      const issueInLevel2 = { ...bodyDto, field2: { field2_2: bodyWithUnsupportedCharacters } };
       const functionToTest = () => {
-        pipe.transform(issueInLevel2, bodyMeta);
+        try {
+          pipe.transform(issueInLevel2, bodyMeta);
+          return new NoErrorThrownError();
+        } catch (error) {
+          return error;
+        }
       };
 
-      expect(functionToTest).toThrow(BadRequestException);
+      const error = functionToTest();
+
+      expect(error).not.toBeInstanceOf(NoErrorThrownError);
+      expect(error).toBeInstanceOf(BadRequestException);
+      expect(error).toHaveProperty('response.error', `Field field2_2 has invalid characters ${unsupportedBodyCharacters}.`);
     });
 
     it('throws an error if Body param dto has unsupported characters in object grandchild properties', () => {
-      const issueInLevel3 = { ...bodyDto, field3: { field3_3: { field3_3_2: bodyTextWithUnsupportedCharacters } } };
+      const issueInLevel3 = { ...bodyDto, field3: { field3_3: { field3_3_2: bodyWithUnsupportedCharacters } } };
       const functionToTest = () => {
-        pipe.transform(issueInLevel3, bodyMeta);
+        try {
+          pipe.transform(issueInLevel3, bodyMeta);
+          return new NoErrorThrownError();
+        } catch (error) {
+          return error;
+        }
       };
 
-      expect(functionToTest).toThrow(BadRequestException);
+      const error = functionToTest();
+
+      expect(error).not.toBeInstanceOf(NoErrorThrownError);
+      expect(error).toBeInstanceOf(BadRequestException);
+      expect(error).toHaveProperty('response.error', `Field field3_3_2 has invalid characters ${unsupportedBodyCharacters}.`);
     });
 
     describe('Validate that known ASCII characters pass', () => {
@@ -152,19 +206,37 @@ describe('InputCharacterValidationPipe', () => {
       it('throws an error if Body param dto has ASCII character 181 in object properties', () => {
         const bodyToTest = { ...bodyDto, field1: String.fromCharCode(181) };
         const functionToTest = () => {
-          pipe.transform(bodyToTest, bodyMeta);
+          try {
+            pipe.transform(bodyToTest, bodyMeta);
+            return new NoErrorThrownError();
+          } catch (error) {
+            return error;
+          }
         };
 
-        expect(functionToTest).toThrow(BadRequestException);
+        const error = functionToTest();
+
+        expect(error).not.toBeInstanceOf(NoErrorThrownError);
+        expect(error).toBeInstanceOf(BadRequestException);
+        expect(error).toHaveProperty('response.error', 'Field field1 has invalid characters µ.');
       });
 
       it('throws an error if Body param dto has ASCII character 255 in object properties', () => {
         const bodyToTest = { ...bodyDto, field1: String.fromCharCode(255) };
         const functionToTest = () => {
-          pipe.transform(bodyToTest, bodyMeta);
+          try {
+            pipe.transform(bodyToTest, bodyMeta);
+            return new NoErrorThrownError();
+          } catch (error) {
+            return error;
+          }
         };
 
-        expect(functionToTest).toThrow(BadRequestException);
+        const error = functionToTest();
+
+        expect(error).not.toBeInstanceOf(NoErrorThrownError);
+        expect(error).toBeInstanceOf(BadRequestException);
+        expect(error).toHaveProperty('response.error', 'Field field1 has invalid characters ÿ.');
       });
     });
   });

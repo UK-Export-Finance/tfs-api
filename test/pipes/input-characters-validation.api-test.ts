@@ -90,7 +90,7 @@ describe('Test InputCharacterValidationPipe', () => {
     });
   });
 
-  describe('Patch parameter validation', () => {
+  describe('URL parameter validation', () => {
     it('returns a 200 response with the matching party if they are returned by ACBS', async () => {
       givenAuthenticationWithTheIdpSucceedsById();
       requestToGetParty().reply(200, acbsParties[0]);

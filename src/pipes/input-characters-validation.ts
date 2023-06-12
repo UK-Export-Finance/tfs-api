@@ -1,9 +1,9 @@
-import { BadRequestException, Injectable, InternalServerErrorException, PipeTransform } from '@nestjs/common';
+import { ArgumentMetadata, BadRequestException, HttpExceptionOptions, Injectable, InternalServerErrorException, PipeTransform } from '@nestjs/common';
 import { ACBS } from '@ukef/constants';
 
 @Injectable()
 export class InputCharacterValidationPipe implements PipeTransform {
-  transform(value: any, metadata) {
+  transform(value: any, metadata: ArgumentMetadata): any {
     if (metadata.type === 'query' || metadata.type === 'param') {
       this.recursiveCheck(
         value,
@@ -25,10 +25,15 @@ export class InputCharacterValidationPipe implements PipeTransform {
     return value;
   }
 
-  recursiveCheck(value, findCharactersRegex, errorMessageGenerator, key = null) {
+  private recursiveCheck(
+    value: any,
+    findCharactersRegex: RegExp,
+    errorMessageGenerator: (key: string, invalidCharacters: string) => string | HttpExceptionOptions,
+    key: string = null
+  ) {
     if (typeof value === 'object' && value !== null) {
-      Object.keys(value).forEach((key) => {
-        this.recursiveCheck(value[`${key}`], findCharactersRegex, errorMessageGenerator, key);
+      Object.entries(value).forEach(([k, v]) => {
+        this.recursiveCheck(v, findCharactersRegex, errorMessageGenerator, k);
       });
     } else if (Array.isArray(value)) {
       value.forEach((value) => this.recursiveCheck(value, findCharactersRegex, errorMessageGenerator));

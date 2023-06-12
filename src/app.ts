@@ -30,9 +30,8 @@ export class App {
 
     app.setGlobalPrefix(globalPrefix);
 
-    app.useGlobalPipes(new InputCharacterValidationPipe());
-
     app.useGlobalPipes(
+      new InputCharacterValidationPipe(),
       new ValidationPipe({
         whitelist: true,
         transform: true,
