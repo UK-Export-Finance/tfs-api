@@ -29,7 +29,7 @@ export class InputCharacterValidationPipe implements PipeTransform {
     value: any,
     findCharactersRegex: RegExp,
     errorMessageGenerator: (key: string, invalidCharacters: string) => string | HttpExceptionOptions,
-    key: string = null
+    key: string = null,
   ) {
     if (typeof value === 'object' && value !== null) {
       Object.entries(value).forEach(([k, v]) => {

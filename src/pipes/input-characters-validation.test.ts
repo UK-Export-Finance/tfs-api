@@ -1,18 +1,24 @@
-import { ArgumentMetadata, BadRequestException, InternalServerErrorException } from '@nestjs/common';
+import { ArgumentMetadata, BadRequestException } from '@nestjs/common';
 
 import { InputCharacterValidationPipe } from './input-characters-validation';
 
-class NoErrorThrownError extends Error { };
+class NoErrorThrownError extends Error {}
 
 describe('InputCharacterValidationPipe', () => {
   const queryMeta: ArgumentMetadata = { type: 'query' };
   const paramMeta: ArgumentMetadata = { type: 'param' };
   const flatParamMeta: ArgumentMetadata = { type: 'param', data: 'field2' };
   const bodyMeta: ArgumentMetadata = { type: 'body' };
-  const supportedCharacters: string = 'Test';
-  const unsupportedUrlCharacters: string = 'Test &%*?<>#/\\:';
-  const bodyWithUnsupportedCharacters: string = 'Company ŽİĞİŞ A.Ş';
-  const unsupportedBodyCharacters: string = String.fromCharCode(381) + String.fromCharCode(304) + String.fromCharCode(286) + String.fromCharCode(304) + String.fromCharCode(350) + String.fromCharCode(350);
+  const supportedCharacters = 'Test';
+  const unsupportedUrlCharacters = 'Test &%*?<>#/\\:';
+  const bodyWithUnsupportedCharacters = 'Company ŽİĞİŞ A.Ş';
+  const unsupportedBodyCharacters: string =
+    String.fromCharCode(381) +
+    String.fromCharCode(304) +
+    String.fromCharCode(286) +
+    String.fromCharCode(304) +
+    String.fromCharCode(350) +
+    String.fromCharCode(350);
   const urlDto = { field1: supportedCharacters, field2: unsupportedUrlCharacters };
   const bodyDto = {
     field1: supportedCharacters,
@@ -116,7 +122,6 @@ describe('InputCharacterValidationPipe', () => {
     });
 
     it('Body dto with no unsupported characters in object properties is returned when metadata type is body', () => {
-
       const response = pipe.transform(bodyDto, bodyMeta);
 
       expect(response).toEqual(bodyDto);
