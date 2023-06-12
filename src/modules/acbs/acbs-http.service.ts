@@ -1,26 +1,26 @@
 import { HttpService } from '@nestjs/axios';
-import { AxiosResponse } from 'axios';
+import { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { catchError, lastValueFrom, Observable, ObservableInput } from 'rxjs';
 
-import { AcbsConfigBaseUrlAndUseReturnExcpetionHeader } from './acbs-config-base-url.type';
+import { AcbsConfigBaseUrlAndUseReturnExceptionHeader } from './acbs-config-base-url.type';
 
 export class AcbsHttpService {
-  constructor(private readonly config: AcbsConfigBaseUrlAndUseReturnExcpetionHeader, private readonly httpService: HttpService) {}
+  constructor(private readonly config: AcbsConfigBaseUrlAndUseReturnExceptionHeader, private readonly httpService: HttpService) {}
 
-  private getHeaders({ method, idToken }: { method: 'get' | 'post' | 'put'; idToken: string }) {
-    const baseHeaders = {
+  private getRequestConfig({ method, idToken }: { method: 'get' | 'post' | 'put'; idToken: string }): AxiosRequestConfig {
+    const baseRequestConfig: AxiosRequestConfig = {
       baseURL: this.config.baseUrl,
       headers: { Authorization: `Bearer ${idToken}` },
     };
     if (this.config.useReturnExceptionHeader) {
-      baseHeaders.headers['ReturnException'] = this.config.useReturnExceptionHeader;
+      baseRequestConfig.headers.ReturnException = true;
     }
     switch (method) {
       case 'get':
-        return baseHeaders;
+        return baseRequestConfig;
       default:
-        baseHeaders.headers['Content-Type'] = 'application/json';
-        return baseHeaders;
+        baseRequestConfig.headers['Content-Type'] = 'application/json';
+        return baseRequestConfig;
     }
   }
   private async responseFrom<ResponseBody = never>({
@@ -42,7 +42,7 @@ export class AcbsHttpService {
     idToken: string;
     onError: (error: Error) => ObservableInput<never>;
   }): Promise<AxiosResponse<ResponseBody, unknown>> {
-    return this.responseFrom({ request: this.httpService.get<ResponseBody>(path, this.getHeaders({ method: 'get', idToken })), onError });
+    return this.responseFrom({ request: this.httpService.get<ResponseBody>(path, this.getRequestConfig({ method: 'get', idToken })), onError });
   }
 
   post<RequestBody>({
@@ -56,7 +56,7 @@ export class AcbsHttpService {
     idToken: string;
     onError: (error: Error) => ObservableInput<never>;
   }): Promise<AxiosResponse> {
-    return this.responseFrom({ request: this.httpService.post<never>(path, requestBody, this.getHeaders({ method: 'post', idToken })), onError });
+    return this.responseFrom({ request: this.httpService.post<never>(path, requestBody, this.getRequestConfig({ method: 'post', idToken })), onError });
   }
 
   put<RequestBody, ResponseBody>({
@@ -71,7 +71,7 @@ export class AcbsHttpService {
     onError: (error: Error) => ObservableInput<never>;
   }): Promise<AxiosResponse<ResponseBody, unknown>> {
     return this.responseFrom({
-      request: this.httpService.put<never>(path, requestBody, this.getHeaders({ method: 'put', idToken })),
+      request: this.httpService.put<never>(path, requestBody, this.getRequestConfig({ method: 'put', idToken })),
       onError,
     });
   }

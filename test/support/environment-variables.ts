@@ -25,10 +25,9 @@ export const ENVIRONMENT_VARIABLES = Object.freeze({
   ACBS_BASE_URL: valueGenerator.httpsUrl(),
   ACBS_MAX_REDIRECTS: 0,
   ACBS_TIMEOUT: 1000,
+  ACBS_USE_RETURN_EXCEPTION_HEADER: false,
 
   API_KEY: valueGenerator.string(),
-
-  ACBS_USE_RETURN_EXCEPTION_HEADER: false,
 });
 
 export const getEnvironmentVariablesForProcessEnv = (): NodeJS.ProcessEnv => ({

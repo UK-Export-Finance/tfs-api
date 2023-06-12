@@ -2,7 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import { Inject, Injectable } from '@nestjs/common';
 import AcbsConfig from '@ukef/config/acbs.config';
 
-import { AcbsConfigBaseUrlAndUseReturnExcpetionHeader } from './acbs-config-base-url.type';
+import { AcbsConfigBaseUrlAndUseReturnExceptionHeader } from './acbs-config-base-url.type';
 import { AcbsHttpService } from './acbs-http.service';
 import { AcbsCreateFacilityFixedFeeRequestDto } from './dto/acbs-create-facility-fixed-fee-request.dto';
 import { AcbsGetFacilityFixedFeeResponseDto } from './dto/acbs-get-facility-fixed-fee-response.dto';
@@ -13,7 +13,7 @@ import { createWrapAcbsHttpGetErrorCallback, createWrapAcbsHttpPostOrPutErrorCal
 export class AcbsFacilityFixedFeeService {
   private readonly acbsHttpService: AcbsHttpService;
 
-  constructor(@Inject(AcbsConfig.KEY) config: AcbsConfigBaseUrlAndUseReturnExcpetionHeader, httpService: HttpService) {
+  constructor(@Inject(AcbsConfig.KEY) config: AcbsConfigBaseUrlAndUseReturnExceptionHeader, httpService: HttpService) {
     this.acbsHttpService = new AcbsHttpService(config, httpService);
   }
 

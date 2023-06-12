@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import AcbsConfig from '@ukef/config/acbs.config';
 import { PROPERTIES } from '@ukef/constants';
 
-import { AcbsConfigBaseUrlAndUseReturnExcpetionHeader } from './acbs-config-base-url.type';
+import { AcbsConfigBaseUrlAndUseReturnExceptionHeader } from './acbs-config-base-url.type';
 import { AcbsHttpService } from './acbs-http.service';
 import { AcbsCreateDealInvestorRequest } from './dto/acbs-create-deal-investor-request.dto';
 import { AcbsGetDealPartyResponseDto } from './dto/acbs-get-deal-party-response.dto';
@@ -16,7 +16,7 @@ export class AcbsDealPartyService {
 
   constructor(
     @Inject(AcbsConfig.KEY)
-    config: AcbsConfigBaseUrlAndUseReturnExcpetionHeader,
+    config: AcbsConfigBaseUrlAndUseReturnExceptionHeader,
     httpService: HttpService,
   ) {
     this.acbsHttpService = new AcbsHttpService(config, httpService);

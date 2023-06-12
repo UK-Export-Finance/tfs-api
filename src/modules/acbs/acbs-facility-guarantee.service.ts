@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import AcbsConfig from '@ukef/config/acbs.config';
 import { PROPERTIES } from '@ukef/constants';
 
-import { AcbsConfigBaseUrlAndUseReturnExcpetionHeader } from './acbs-config-base-url.type';
+import { AcbsConfigBaseUrlAndUseReturnExceptionHeader } from './acbs-config-base-url.type';
 import { AcbsHttpService } from './acbs-http.service';
 import { AcbsCreateFacilityGuaranteeDto } from './dto/acbs-create-facility-guarantee.dto';
 import { AcbsGetFacilityGuaranteesResponseDto } from './dto/acbs-get-facility-guarantees-response.dto';
@@ -16,7 +16,7 @@ import { createWrapAcbsHttpGetErrorCallback, createWrapAcbsHttpPostOrPutErrorCal
 export class AcbsFacilityGuaranteeService {
   private readonly acbsHttpService: AcbsHttpService;
 
-  constructor(@Inject(AcbsConfig.KEY) config: AcbsConfigBaseUrlAndUseReturnExcpetionHeader, httpService: HttpService) {
+  constructor(@Inject(AcbsConfig.KEY) config: AcbsConfigBaseUrlAndUseReturnExceptionHeader, httpService: HttpService) {
     this.acbsHttpService = new AcbsHttpService(config, httpService);
   }
 

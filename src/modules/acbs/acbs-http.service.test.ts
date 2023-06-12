@@ -66,7 +66,7 @@ describe('AcbsHttpService', () => {
       },
       { useReturnExceptionHeader: false, expectedHttpServiceArgs: expectedHttpServiceGetArgs, description: 'without the ReturnException header' },
     ])(
-      `when useReturnExceptionHeader is ($useReturnExceptionHeader) sends a GET to ACBS to get a facility ($description)`,
+      `when useReturnExceptionHeader is $useReturnExceptionHeader sends a GET to ACBS to get a facility ($description)`,
       async ({ useReturnExceptionHeader, expectedHttpServiceArgs }) => {
         service = new AcbsHttpService({ baseUrl, useReturnExceptionHeader: useReturnExceptionHeader }, httpService);
 
@@ -133,7 +133,7 @@ describe('AcbsHttpService', () => {
       },
       { useReturnExceptionHeader: false, expectedHttpServiceArgs: expectedHttpServicePostArgs, description: 'without the ReturnException header' },
     ])(
-      `when useReturnExceptionHeader is ($useReturnExceptionHeader) sends a POST to ACBS to update a facility ($description)`,
+      `when useReturnExceptionHeader is $useReturnExceptionHeader sends a POST to ACBS to update a facility ($description)`,
       async ({ useReturnExceptionHeader, expectedHttpServiceArgs }) => {
         service = new AcbsHttpService({ baseUrl, useReturnExceptionHeader: useReturnExceptionHeader }, httpService);
 
@@ -201,7 +201,7 @@ describe('AcbsHttpService', () => {
       },
       { useReturnExceptionHeader: false, expectedHttpServiceArgs: expectedHttpServicePutArgs, description: 'without the ReturnException header' },
     ])(
-      `when useReturnExceptionHeader is ($useReturnExceptionHeader) sends a PUT to ACBS to update a facility ($description)`,
+      `when useReturnExceptionHeader is $useReturnExceptionHeader sends a PUT to ACBS to update a facility ($description)`,
       async ({ useReturnExceptionHeader, expectedHttpServiceArgs }) => {
         service = new AcbsHttpService({ baseUrl, useReturnExceptionHeader: useReturnExceptionHeader }, httpService);
 
