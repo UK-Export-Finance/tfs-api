@@ -88,7 +88,7 @@ describe('GET /facilities/{facilityIdentifier}/loan-transactions/{bundleIdentifi
   it('returns a 200 response with the loan transaction if it is returned by ACBS and OperationTypeCode is null', async () => {
     const loanTransactionInAcbsWithNullOperationTypeCode = JSON.parse(JSON.stringify(acbsFacilityLoanTransaction));
     loanTransactionInAcbsWithNullOperationTypeCode.BundleMessageList[0].DealCustomerUsageOperationType.OperationTypeCode = null;
-    const expectedFacilityLoanTransactionsWithNullValue: GetFacilityLoanTransactionResponseDto = {
+    const expectedLoanTransactionWithNullValue: GetFacilityLoanTransactionResponseDto = {
       ...expectedLoanTransaction,
       dealCustomerUsageOperationType: null,
     };
@@ -99,13 +99,13 @@ describe('GET /facilities/{facilityIdentifier}/loan-transactions/{bundleIdentifi
     const { status, body } = await api.get(getFacilityLoanTransactionUrl);
 
     expect(status).toBe(200);
-    expect(body).toStrictEqual(JSON.parse(JSON.stringify(expectedFacilityLoanTransactionsWithNullValue)));
+    expect(body).toStrictEqual(JSON.parse(JSON.stringify(expectedLoanTransactionWithNullValue)));
   });
 
   it('returns a 200 response with the loan transaction if it is returned by ACBS and OperationTypeCode is empty', async () => {
     const loanTransactionInAcbsWithEmptyOperationTypeCode = JSON.parse(JSON.stringify(acbsFacilityLoanTransaction));
     loanTransactionInAcbsWithEmptyOperationTypeCode.BundleMessageList[0].DealCustomerUsageOperationType.OperationTypeCode = '';
-    const expectedFacilityLoanTransactionsWithNullValue: GetFacilityLoanTransactionResponseDto = {
+    const expectedLoanTransactionWithNullValue: GetFacilityLoanTransactionResponseDto = {
       ...expectedLoanTransaction,
       dealCustomerUsageOperationType: null,
     };
@@ -116,7 +116,7 @@ describe('GET /facilities/{facilityIdentifier}/loan-transactions/{bundleIdentifi
     const { status, body } = await api.get(getFacilityLoanTransactionUrl);
 
     expect(status).toBe(200);
-    expect(body).toStrictEqual(JSON.parse(JSON.stringify(expectedFacilityLoanTransactionsWithNullValue)));
+    expect(body).toStrictEqual(JSON.parse(JSON.stringify(expectedLoanTransactionWithNullValue)));
   });
 
   it(`returns a 200 response with the loan transaction if it is returned by ACBS and it has more than one accrual with the category code 'PAC01'`, async () => {
@@ -133,7 +133,7 @@ describe('GET /facilities/{facilityIdentifier}/loan-transactions/{bundleIdentifi
         IndexRateChangeFrequencyCode: '',
       },
     });
-    const expectedFacilityLoanTransactionsWithAdditionalAccrual: GetFacilityLoanTransactionResponseDto = {
+    const expectedLoanTransactionWithAdditionalAccrual: GetFacilityLoanTransactionResponseDto = {
       ...expectedLoanTransaction,
       spreadRate: 0,
       indexRateChangeFrequency: '',
@@ -145,7 +145,7 @@ describe('GET /facilities/{facilityIdentifier}/loan-transactions/{bundleIdentifi
     const { status, body } = await api.get(getFacilityLoanTransactionUrl);
 
     expect(status).toBe(200);
-    expect(body).toStrictEqual(JSON.parse(JSON.stringify(expectedFacilityLoanTransactionsWithAdditionalAccrual)));
+    expect(body).toStrictEqual(JSON.parse(JSON.stringify(expectedLoanTransactionWithAdditionalAccrual)));
   });
 
   it(`returns a 200 response with the loan transaction if it is returned by ACBS and it has more than one accrual with the category code 'CTL01'`, async () => {
@@ -162,7 +162,7 @@ describe('GET /facilities/{facilityIdentifier}/loan-transactions/{bundleIdentifi
         IndexRateChangeFrequencyCode: '',
       },
     });
-    const expectedFacilityLoanTransactionsWithAdditionalAccrual: GetFacilityLoanTransactionResponseDto = {
+    const expectedLoanTransactionWithAdditionalAccrual: GetFacilityLoanTransactionResponseDto = {
       ...expectedLoanTransaction,
       spreadRateCTL: 0,
     };
@@ -173,7 +173,80 @@ describe('GET /facilities/{facilityIdentifier}/loan-transactions/{bundleIdentifi
     const { status, body } = await api.get(getFacilityLoanTransactionUrl);
 
     expect(status).toBe(200);
-    expect(body).toStrictEqual(JSON.parse(JSON.stringify(expectedFacilityLoanTransactionsWithAdditionalAccrual)));
+    expect(body).toStrictEqual(JSON.parse(JSON.stringify(expectedLoanTransactionWithAdditionalAccrual)));
+  });
+
+  it(`returns a 200 response with the loan transaction if it is returned by ACBS and it has no accruals with the category code 'PAC01'`, async () => {
+    const loanTransactionInAcbsWithNoPacAccruals = JSON.parse(JSON.stringify(acbsFacilityLoanTransaction));
+    loanTransactionInAcbsWithNoPacAccruals.BundleMessageList[0].AccrualScheduleList.splice(1, 1);
+    const expectedLoanTransactionWithNoPacAccruals: GetFacilityLoanTransactionResponseDto = {
+      ...expectedLoanTransaction,
+      spreadRate: null,
+      indexRateChangeFrequency: null,
+    };
+
+    givenAuthenticationWithTheIdpSucceeds();
+    requestToGetFacilityLoanTransaction().reply(200, loanTransactionInAcbsWithNoPacAccruals);
+
+    const { status, body } = await api.get(getFacilityLoanTransactionUrl);
+
+    expect(status).toBe(200);
+    expect(body).toStrictEqual(JSON.parse(JSON.stringify(expectedLoanTransactionWithNoPacAccruals)));
+  });
+
+  it(`returns a 200 response with the loan transaction if it is returned by ACBS and it has no accruals with the category code 'CTL01'`, async () => {
+    const loanTransactionInAcbsWithNoCtlAccruals = JSON.parse(JSON.stringify(acbsFacilityLoanTransaction));
+    loanTransactionInAcbsWithNoCtlAccruals.BundleMessageList[0].AccrualScheduleList.splice(2, 1);
+    const expectedLoanTransactionWithNoCtlAccruals: GetFacilityLoanTransactionResponseDto = {
+      ...expectedLoanTransaction,
+      spreadRateCTL: null,
+    };
+
+    givenAuthenticationWithTheIdpSucceeds();
+    requestToGetFacilityLoanTransaction().reply(200, loanTransactionInAcbsWithNoCtlAccruals);
+
+    const { status, body } = await api.get(getFacilityLoanTransactionUrl);
+
+    expect(status).toBe(200);
+    expect(body).toStrictEqual(JSON.parse(JSON.stringify(expectedLoanTransactionWithNoCtlAccruals)));
+  });
+
+  it(`returns a 200 response with the loan transaction if it is returned by ACBS and it has no accruals`, async () => {
+    const loanTransactionInAcbsWithNoAccruals = JSON.parse(JSON.stringify(acbsFacilityLoanTransaction));
+    loanTransactionInAcbsWithNoAccruals.BundleMessageList[0].AccrualScheduleList = [];
+    const expectedLoanTransactionWithNoAccruals: GetFacilityLoanTransactionResponseDto = {
+      ...expectedLoanTransaction,
+      spreadRate: null,
+      spreadRateCTL: null,
+      yearBasis: null,
+      indexRateChangeFrequency: null,
+    };
+
+    givenAuthenticationWithTheIdpSucceeds();
+    requestToGetFacilityLoanTransaction().reply(200, loanTransactionInAcbsWithNoAccruals);
+
+    const { status, body } = await api.get(getFacilityLoanTransactionUrl);
+
+    expect(status).toBe(200);
+    expect(body).toStrictEqual(JSON.parse(JSON.stringify(expectedLoanTransactionWithNoAccruals)));
+  });
+
+  it(`returns a 200 response with the loan transaction if it is returned by ACBS and it has no repayments`, async () => {
+    const loanTransactionInAcbsWithNoRepayments = JSON.parse(JSON.stringify(acbsFacilityLoanTransaction));
+    loanTransactionInAcbsWithNoRepayments.BundleMessageList[0].RepaymentScheduleList = [];
+    const expectedLoanTransactionWithNoRepayments: GetFacilityLoanTransactionResponseDto = {
+      ...expectedLoanTransaction,
+      nextDueDate: null,
+      loanBillingFrequencyType: null,
+    };
+
+    givenAuthenticationWithTheIdpSucceeds();
+    requestToGetFacilityLoanTransaction().reply(200, loanTransactionInAcbsWithNoRepayments);
+
+    const { status, body } = await api.get(getFacilityLoanTransactionUrl);
+
+    expect(status).toBe(200);
+    expect(body).toStrictEqual(JSON.parse(JSON.stringify(expectedLoanTransactionWithNoRepayments)));
   });
 
   it(`returns a 400 response if the loan transaction is returned by ACBS and the 0th element of BundleMessageList is NOT a 'NewLoanRequest'`, async () => {
