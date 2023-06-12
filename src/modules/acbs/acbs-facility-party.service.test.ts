@@ -15,6 +15,7 @@ describe('AcbsFacilityPartyService', () => {
   const valueGenerator = new RandomValueGenerator();
   const idToken = valueGenerator.string();
   const baseUrl = valueGenerator.httpsUrl();
+  const useReturnExceptionHeader = false;
   const facilityIdentifier = valueGenerator.facilityId();
   const { portfolioIdentifier } = PROPERTIES.GLOBAL;
 
@@ -31,7 +32,7 @@ describe('AcbsFacilityPartyService', () => {
     httpServicePost = jest.fn();
     httpService.post = httpServicePost;
 
-    service = new AcbsFacilityPartyService({ baseUrl }, httpService);
+    service = new AcbsFacilityPartyService({ baseUrl, useReturnExceptionHeader }, httpService);
   });
 
   const expectedHttpServicePostArgs = [

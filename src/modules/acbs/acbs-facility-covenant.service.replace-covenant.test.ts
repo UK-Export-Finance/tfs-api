@@ -17,6 +17,7 @@ describe('AcbsFacilityCovenantService', () => {
   const dateStringTransformations = new DateStringTransformations();
   const authToken = valueGenerator.string();
   const baseUrl = valueGenerator.httpsUrl();
+  const useReturnExceptionHeader = false;
   const facilityIdentifier = valueGenerator.ukefId();
   const facilityTypeCode = valueGenerator.stringOfNumericCharacters();
   const limitKeyValue = valueGenerator.string();
@@ -33,7 +34,7 @@ describe('AcbsFacilityCovenantService', () => {
     httpServicePut = jest.fn();
     httpService.put = httpServicePut;
 
-    service = new AcbsFacilityCovenantService({ baseUrl }, httpService);
+    service = new AcbsFacilityCovenantService({ baseUrl, useReturnExceptionHeader }, httpService);
   });
 
   describe('replaceCovenantForFacility', () => {

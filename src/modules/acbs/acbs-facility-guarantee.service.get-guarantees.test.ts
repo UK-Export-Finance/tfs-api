@@ -14,6 +14,7 @@ describe('AcbsFacilityGuaranteeService', () => {
   const valueGenerator = new RandomValueGenerator();
   const idToken = valueGenerator.string();
   const baseUrl = valueGenerator.httpsUrl();
+  const useReturnExceptionHeader = false;
   const { portfolioIdentifier } = PROPERTIES.GLOBAL;
   const facilityIdentifier = valueGenerator.facilityId();
 
@@ -36,7 +37,7 @@ describe('AcbsFacilityGuaranteeService', () => {
     httpServiceGet = jest.fn();
     httpService.get = httpServiceGet;
 
-    service = new AcbsFacilityGuaranteeService({ baseUrl }, httpService);
+    service = new AcbsFacilityGuaranteeService({ baseUrl, useReturnExceptionHeader }, httpService);
   });
 
   const generateFacilityGuarantee = (): AcbsGetFacilityGuaranteeDto => ({

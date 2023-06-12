@@ -14,6 +14,7 @@ describe('AcbsDealService', () => {
   const valueGenerator = new RandomValueGenerator();
   const idToken = valueGenerator.string();
   const baseUrl = valueGenerator.httpsUrl();
+  const useReturnExceptionHeader = false;
   const portfolioIdentifier = valueGenerator.portfolioId();
   const dealIdentifier = valueGenerator.stringOfNumericCharacters({ length: 10 });
 
@@ -36,7 +37,7 @@ describe('AcbsDealService', () => {
     httpServiceGet = jest.fn();
     httpService.get = httpServiceGet;
 
-    service = new AcbsDealService({ baseUrl }, httpService);
+    service = new AcbsDealService({ baseUrl, useReturnExceptionHeader }, httpService);
   });
 
   const dealInAcbs: AcbsGetDealResponseDto = {

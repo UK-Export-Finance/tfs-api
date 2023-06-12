@@ -16,6 +16,7 @@ describe('AcbsFacilityService', () => {
   const dateStringTransformations = new DateStringTransformations();
   const idToken = valueGenerator.string();
   const baseUrl = valueGenerator.httpsUrl();
+  const useReturnExceptionHeader = false;
 
   let httpService: HttpService;
   let service: AcbsFacilityService;
@@ -28,7 +29,7 @@ describe('AcbsFacilityService', () => {
     httpServiceGet = jest.fn();
     httpService.get = httpServiceGet;
 
-    service = new AcbsFacilityService({ baseUrl }, httpService);
+    service = new AcbsFacilityService({ baseUrl, useReturnExceptionHeader }, httpService);
   });
 
   describe('getFacilityByIdentifier', () => {

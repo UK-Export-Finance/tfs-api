@@ -18,6 +18,7 @@ describe('AcbsFacilityFixedFeeService', () => {
   const valueGenerator = new RandomValueGenerator();
   const idToken = valueGenerator.string();
   const baseUrl = valueGenerator.httpsUrl();
+  const useReturnExceptionHeader = false;
   const portfolioIdentifier = valueGenerator.portfolioId();
   const facilityIdentifier = valueGenerator.facilityId();
   const borrowerPartyIdentifier = valueGenerator.acbsPartyId();
@@ -46,7 +47,7 @@ describe('AcbsFacilityFixedFeeService', () => {
     httpServicePost = jest.fn();
     httpService.post = httpServicePost;
 
-    service = new AcbsFacilityFixedFeeService({ baseUrl }, httpService);
+    service = new AcbsFacilityFixedFeeService({ baseUrl, useReturnExceptionHeader }, httpService);
   });
 
   const { acbsFacilityFixedFees: facilityFixedFeesInAcbs } = new GetFacilityFixedFeeGenerator(valueGenerator, new DateStringTransformations()).generate({

@@ -14,6 +14,7 @@ describe('AcbsDealBorrowingRestrictionService', () => {
   const valueGenerator = new RandomValueGenerator();
   const idToken = valueGenerator.string();
   const baseUrl = valueGenerator.httpsUrl();
+  const useReturnExceptionHeader = false;
   const dealIdentifier = valueGenerator.stringOfNumericCharacters();
   const portfolioIdentifier = valueGenerator.portfolioId();
 
@@ -46,7 +47,7 @@ describe('AcbsDealBorrowingRestrictionService', () => {
     httpServicePut = jest.fn();
     httpService.put = httpServicePut;
 
-    service = new AcbsDealBorrowingRestrictionService({ baseUrl }, httpService);
+    service = new AcbsDealBorrowingRestrictionService({ baseUrl, useReturnExceptionHeader }, httpService);
   });
 
   describe('updateBorrowingRestrictionForDeal', () => {

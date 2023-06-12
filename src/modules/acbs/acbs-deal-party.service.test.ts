@@ -20,6 +20,7 @@ describe('AcbsDealPartyService', () => {
   const valueGenerator = new RandomValueGenerator();
   const authToken = valueGenerator.string();
   const baseUrl = valueGenerator.string();
+  const useReturnExceptionHeader = false;
 
   let httpService: HttpService;
   let service: AcbsDealPartyService;
@@ -35,7 +36,7 @@ describe('AcbsDealPartyService', () => {
     httpServicePost = jest.fn();
     httpService.post = httpServicePost;
 
-    service = new AcbsDealPartyService({ baseUrl }, httpService);
+    service = new AcbsDealPartyService({ baseUrl, useReturnExceptionHeader }, httpService);
   });
 
   describe('getDealPartyForDeal', () => {

@@ -1,8 +1,8 @@
 import { HttpService } from '@nestjs/axios';
 import { Inject, Injectable } from '@nestjs/common';
-import { ConfigType } from '@nestjs/config';
 import AcbsConfig from '@ukef/config/acbs.config';
 
+import { AcbsConfigBaseUrlAndUseReturnExceptionHeader } from './acbs-config-base-url.type';
 import { AcbsHttpService } from './acbs-http.service';
 import { AcbsGetLoanByLoanIdentifierResponseDto } from './dto/acbs-get-loan-by-loan-identifier-response.dto';
 import { AcbsUpdateLoanRequest } from './dto/acbs-update-loan-request.dto';
@@ -13,7 +13,7 @@ import { createWrapAcbsHttpGetErrorCallback, createWrapAcbsHttpPostOrPutErrorCal
 export class AcbsLoanService {
   private readonly acbsHttpService: AcbsHttpService;
 
-  constructor(@Inject(AcbsConfig.KEY) config: Pick<ConfigType<typeof AcbsConfig>, 'baseUrl'>, httpService: HttpService) {
+  constructor(@Inject(AcbsConfig.KEY) config: AcbsConfigBaseUrlAndUseReturnExceptionHeader, httpService: HttpService) {
     this.acbsHttpService = new AcbsHttpService(config, httpService);
   }
 

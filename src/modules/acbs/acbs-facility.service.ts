@@ -1,9 +1,9 @@
 import { HttpService } from '@nestjs/axios';
 import { Inject, Injectable } from '@nestjs/common';
-import { ConfigType } from '@nestjs/config';
 import AcbsConfig from '@ukef/config/acbs.config';
 import { PROPERTIES } from '@ukef/constants';
 
+import { AcbsConfigBaseUrlAndUseReturnExceptionHeader } from './acbs-config-base-url.type';
 import { AcbsHttpService } from './acbs-http.service';
 import { AcbsCreateFacilityRequest } from './dto/acbs-create-facility-request.dto';
 import { AcbsGetFacilityResponseDto } from './dto/acbs-get-facility-response.dto';
@@ -18,7 +18,7 @@ export class AcbsFacilityService {
 
   constructor(
     @Inject(AcbsConfig.KEY)
-    config: Pick<ConfigType<typeof AcbsConfig>, 'baseUrl'>,
+    config: AcbsConfigBaseUrlAndUseReturnExceptionHeader,
     httpService: HttpService,
   ) {
     this.acbsHttpService = new AcbsHttpService(config, httpService);

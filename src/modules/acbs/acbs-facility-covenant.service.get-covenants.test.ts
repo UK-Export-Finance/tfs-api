@@ -14,6 +14,7 @@ describe('AcbsFacilityCovenantService', () => {
   const dateStringTransformations = new DateStringTransformations();
   const idToken = valueGenerator.string();
   const baseUrl = valueGenerator.httpsUrl();
+  const useReturnExceptionHeader = false;
   const portfolioIdentifier = valueGenerator.portfolioId();
   const facilityIdentifier = valueGenerator.facilityId();
 
@@ -36,7 +37,7 @@ describe('AcbsFacilityCovenantService', () => {
     httpServiceGet = jest.fn();
     httpService.get = httpServiceGet;
 
-    service = new AcbsFacilityCovenantService({ baseUrl }, httpService);
+    service = new AcbsFacilityCovenantService({ baseUrl, useReturnExceptionHeader }, httpService);
   });
 
   const { facilityCovenantsInAcbs } = new GetFacilityCovenantGenerator(valueGenerator, dateStringTransformations).generate({
