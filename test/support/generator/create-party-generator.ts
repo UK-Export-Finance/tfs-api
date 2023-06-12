@@ -1,7 +1,7 @@
 import { PROPERTIES } from '@ukef/constants';
 import { DateString } from '@ukef/helpers/date-string.type';
+import { AcbsCreatePartyRequestDto } from '@ukef/modules/acbs/dto/acbs-create-party-request.dto';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
-import { AcbsCreatePartyRequestDto } from '@ukef/modules/party/dto/acbs-create-party-request.dto';
 import { CreatePartyRequestDto } from '@ukef/modules/party/dto/create-party-request.dto';
 
 import { AbstractGenerator } from './abstract-generator';

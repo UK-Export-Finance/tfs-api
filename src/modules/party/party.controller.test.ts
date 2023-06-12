@@ -65,7 +65,7 @@ describe('PartyController', () => {
     it('returns the party from the service', async () => {
       when(partyServiceGetPartyByIdentifier).calledWith(partyIdentifier).mockResolvedValueOnce(partyFromService);
 
-      const party = await controller.getPartyByIdentifier(partyIdentifier);
+      const party = await controller.getPartyByIdentifier({ partyIdentifier });
 
       expect(party).toStrictEqual(expectedParty);
     });
@@ -77,7 +77,7 @@ describe('PartyController', () => {
       };
       when(partyServiceGetPartyByIdentifier).calledWith(partyIdentifier).mockResolvedValueOnce(partyWithUnexpectedKey);
 
-      const party = await controller.getPartyByIdentifier(partyIdentifier);
+      const party = await controller.getPartyByIdentifier({ partyIdentifier });
 
       expect(party).toStrictEqual(expectedParty);
     });

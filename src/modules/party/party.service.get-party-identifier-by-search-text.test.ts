@@ -6,7 +6,7 @@ import { GetPartyGenerator } from '@ukef-test/support/generator/get-party-genera
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
 
-import { AcbsGetPartiesBySearchTextResponseDto } from './dto/acbs-get-parties-by-search-text-response.dto';
+import { AcbsGetPartiesBySearchTextResponseDto } from '../acbs/dto/acbs-get-parties-by-search-text-response.dto';
 import { GetPartiesBySearchTextException } from './exception/get-parties-by-search-text.exception';
 import { PartyService } from './party.service';
 

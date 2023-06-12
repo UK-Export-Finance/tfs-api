@@ -1,6 +1,7 @@
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
+import { withPartyIdentifierUrlValidationApiTests } from '@ukef-test/common-tests/request-url-param-validation-api-tests/party-identifier-url-validation-api-tests';
 import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
 import { GetPartyGenerator } from '@ukef-test/support/generator/get-party-generator';
@@ -10,8 +11,9 @@ import nock from 'nock';
 describe('GET /parties/{partyIdentifier}', () => {
   const valueGenerator = new RandomValueGenerator();
   const dateStringTransformations = new DateStringTransformations();
-  const partyIdentifier = '001';
-  const getPartyUrl = `/api/v1/parties/${partyIdentifier}`;
+  const partyIdentifier = valueGenerator.acbsPartyId();
+  const generateGetPartyUrl = (partyId: string): string => `/api/v1/parties/${partyId}`;
+  const getPartyUrl = generateGetPartyUrl(partyIdentifier);
 
   let api: Api;
 
@@ -107,5 +109,14 @@ describe('GET /parties/{partyIdentifier}', () => {
     });
   });
 
-  const requestToGetParty = () => nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL).get(`/Party/${partyIdentifier}`).matchHeader('authorization', `Bearer ${idToken}`);
+  withPartyIdentifierUrlValidationApiTests({
+    makeRequestWithPartyId: (partyId: string) => api.get(generateGetPartyUrl(partyId)),
+    givenRequestWouldOtherwiseSucceedForPartyId: (partyId) => {
+      givenAuthenticationWithTheIdpSucceeds();
+      requestToGetParty(partyId).reply(200, acbsParty);
+    },
+  });
+
+  const requestToGetParty = (partyId: string = partyIdentifier) =>
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL).get(`/Party/${partyId}`).matchHeader('authorization', `Bearer ${idToken}`);
 });

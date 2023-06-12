@@ -2,10 +2,10 @@ import { HttpService } from '@nestjs/axios';
 import { Inject, Injectable } from '@nestjs/common';
 import AcbsConfig from '@ukef/config/acbs.config';
 
-import { AcbsGetPartiesBySearchTextResponseDto } from '../party/dto/acbs-get-parties-by-search-text-response.dto';
 import { AcbsConfigBaseUrlAndUseReturnExceptionHeader } from './acbs-config-base-url.type';
 import { AcbsHttpService } from './acbs-http.service';
-import { AcbsCreatePartyRequest } from './dto/acbs-create-party-request.dto';
+import { AcbsCreatePartyRequestDto } from './dto/acbs-create-party-request.dto';
+import { AcbsGetPartiesBySearchTextResponseDto } from './dto/acbs-get-parties-by-search-text-response.dto';
 import { AcbsGetPartyResponseDto } from './dto/acbs-get-party-response.dto';
 import { getPartyNotFoundKnownAcbsError } from './known-errors';
 import { createWrapAcbsHttpGetErrorCallback, createWrapAcbsHttpPostOrPutErrorCallback } from './wrap-acbs-http-error-callback';
@@ -46,9 +46,9 @@ export class AcbsPartyService {
     return party;
   }
 
-  async createParty(partyToCreate: AcbsCreatePartyRequest, idToken: string): Promise<{ partyIdentifier: string }> {
+  async createParty(partyToCreate: AcbsCreatePartyRequestDto, idToken: string): Promise<{ partyIdentifier: string }> {
     const response = await this.acbsHttpService
-      .post<AcbsCreatePartyRequest>({
+      .post<AcbsCreatePartyRequestDto>({
         path: `/Party`,
         requestBody: partyToCreate,
         idToken,
