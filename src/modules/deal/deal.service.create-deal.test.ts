@@ -47,7 +47,7 @@ describe('DealService', () => {
     const { portfolioIdentifier } = PROPERTIES.GLOBAL;
     const now = new Date();
     const midnightToday = dateStringTransformations.getDateStringFromDate(now);
-    const todayFormattedForDescription = dateStringTransformations.getDateOnlyStringFromDate(now).split('-').reverse().join('/');
+    const todayFormattedForDescription = dateStringTransformations.getDateOnlyStringFromDate(now).substring(2).split('-').reverse().join('/');
 
     const {
       createDealRequestItem: dealToCreate,
