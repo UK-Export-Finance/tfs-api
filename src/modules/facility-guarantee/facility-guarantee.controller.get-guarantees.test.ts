@@ -36,17 +36,5 @@ describe('FacilityGuaranteeController', () => {
 
       expect(guarantees).toStrictEqual(guaranteesFromService);
     });
-
-    it('does NOT return unexpected keys returned from the service', async () => {
-      const guaranteesWithAnUnexpectedKey = guaranteesFromService.map((guarantee) => ({
-        ...guarantee,
-        unexpectedKey: valueGenerator.string(),
-      }));
-      when(getFacilityGuaranteesService).calledWith(facilityIdentifier).mockResolvedValueOnce(guaranteesWithAnUnexpectedKey);
-
-      const guarantees = await controller.getGuaranteesForFacility({ facilityIdentifier });
-
-      expect(guarantees).toStrictEqual(guaranteesFromService);
-    });
   });
 });

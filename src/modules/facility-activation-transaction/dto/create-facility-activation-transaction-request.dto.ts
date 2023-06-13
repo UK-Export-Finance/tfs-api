@@ -1,17 +1,10 @@
 import { ENUMS } from '@ukef/constants';
-import { ValidatedFacilityIdentifierApiProperty } from '@ukef/decorators/validated-facility-identifier-api-property';
 import { ValidatedNumberApiProperty } from '@ukef/decorators/validated-number-api-property.decorator';
 import { ValidatedStringApiProperty } from '@ukef/decorators/validated-string-api-property.decorator';
-import { UkefId } from '@ukef/helpers';
 
 export type CreateFacilityActivationTransactionRequest = CreateFacilityActivationTransactionRequestItem[];
 
 export class CreateFacilityActivationTransactionRequestItem {
-  @ValidatedFacilityIdentifierApiProperty({
-    description: 'The identifier of the facility to activate.',
-  })
-  readonly facilityIdentifier: UkefId;
-
   @ValidatedNumberApiProperty({
     description: 'In most situations the value should be 3, it means auto approval.',
     example: ENUMS.INITIAL_BUNDLE_STATUS_CODES.SUBMIT_FOR_POSTING,
@@ -27,8 +20,7 @@ export class CreateFacilityActivationTransactionRequestItem {
   })
   readonly lenderTypeCode: string;
 
-  constructor(facilityIdentifier: UkefId, lenderTypeCode: string, initialBundleStatusCode: number) {
-    this.facilityIdentifier = facilityIdentifier;
+  constructor(lenderTypeCode: string, initialBundleStatusCode: number) {
     this.lenderTypeCode = lenderTypeCode;
     this.initialBundleStatusCode = initialBundleStatusCode;
   }

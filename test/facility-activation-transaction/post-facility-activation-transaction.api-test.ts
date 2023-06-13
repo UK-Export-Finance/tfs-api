@@ -5,7 +5,6 @@ import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-aut
 import { withAcbsCreateBundleInformationTests } from '@ukef-test/common-tests/acbs-create-bundle-information-api-tests';
 import { withAcbsGetFacilityServiceCommonTests } from '@ukef-test/common-tests/acbs-get-facility-by-identifier-api-tests';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
-import { withFacilityIdentifierFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/facility-identifier-field-validation-api-tests';
 import { withNumberFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/number-field-validation-api-tests';
 import { withStringFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/string-field-validation-api-tests';
 import { Api } from '@ukef-test/support/api';
@@ -117,13 +116,6 @@ describe('POST /facilities/{facilityIdentifier}/activation-transactions', () => 
       givenRequestToGetFacilityInAcbsSucceeds();
       givenAnyRequestBodyToCreateFacilityActivationTransactionInAcbsSucceeds();
     };
-
-    withFacilityIdentifierFieldValidationApiTests({
-      valueGenerator,
-      validRequestBody: requestBodyToCreateFacilityActivationTransaction,
-      makeRequest,
-      givenAnyRequestBodyWouldSucceed,
-    });
 
     withStringFieldValidationApiTests({
       fieldName: 'lenderTypeCode',

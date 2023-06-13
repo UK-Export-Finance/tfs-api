@@ -61,14 +61,6 @@ describe('DealController', () => {
 
       expect(response).toStrictEqual(new CreateDealResponse(dealIdentifier));
     });
-
-    it('does NOT include unexpected keys from the request body', async () => {
-      const newDealPlusUnexpectedKeys = { ...newDeal, unexpectedKey: 'unexpected value' };
-
-      await controller.createDeal([newDealPlusUnexpectedKeys]);
-
-      expect(dealServiceCreateDeal).toHaveBeenCalledWith(newDeal);
-    });
   });
 
   describe('getDealByIdentifier', () => {
@@ -85,18 +77,6 @@ describe('DealController', () => {
 
     it('returns the deal from the service', async () => {
       when(dealServiceGetDealByIdentifier).calledWith(dealIdentifier).mockResolvedValueOnce(dealFromService);
-
-      const deal = await controller.getDealByIdentifier(dealIdentifier);
-
-      expect(deal).toStrictEqual(dealFromService);
-    });
-
-    it('does NOT return unexpected keys returned from the service', async () => {
-      const dealWithUnexpectedKey = {
-        ...dealFromService,
-        unexpectedKey: valueGenerator.string(),
-      };
-      when(dealServiceGetDealByIdentifier).calledWith(dealIdentifier).mockResolvedValueOnce(dealWithUnexpectedKey);
 
       const deal = await controller.getDealByIdentifier(dealIdentifier);
 

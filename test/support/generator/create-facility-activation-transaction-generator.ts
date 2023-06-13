@@ -27,7 +27,6 @@ export class CreateFacilityActivationTransactionGenerator extends AbstractGenera
     const possibleInitialBundleStatusCodes = Object.values(ENUMS.INITIAL_BUNDLE_STATUS_CODES).filter((value) => !isNaN(Number(value)));
     const possibleLenderTypes = Object.values(ENUMS.LENDER_TYPE_CODES);
     return {
-      facilityIdentifier: this.valueGenerator.ukefId(),
       initialBundleStatusCode: possibleInitialBundleStatusCodes[
         this.valueGenerator.integer({ min: 0, max: possibleInitialBundleStatusCodes.length - 1 })
       ] as number,
@@ -73,7 +72,6 @@ export class CreateFacilityActivationTransactionGenerator extends AbstractGenera
     };
 
     const requestBodyToCreateFacilityActivationTransaction = values.map((value) => ({
-      facilityIdentifier: facilityIdentifier,
       initialBundleStatusCode: value.initialBundleStatusCode,
       lenderTypeCode: value.lenderTypeCode,
     }));

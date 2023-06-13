@@ -8,8 +8,8 @@ import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acb
 import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 
-import { DealGuaranteeToCreate } from './deal-guarantee-to-create.interface';
 import { GetDealGuaranteeResponse, GetDealGuaranteeResponseItem } from './dto/get-deal-guarantee-response.dto';
+import { CreateDealGuaranteeRequestItem } from './dto/create-deal-guarantee-request.dto';
 
 @Injectable()
 export class DealGuaranteeService {
@@ -20,7 +20,7 @@ export class DealGuaranteeService {
     private readonly currentDateProvider: CurrentDateProvider,
   ) {}
 
-  async createGuaranteeForDeal(dealIdentifier: string, newGuarantee: DealGuaranteeToCreate): Promise<void> {
+  async createGuaranteeForDeal(dealIdentifier: string, newGuarantee: CreateDealGuaranteeRequestItem): Promise<void> {
     const idToken = await this.acbsAuthenticationService.getIdToken();
     const effectiveDateTime = this.currentDateProvider.getEarliestDateFromTodayAnd(
       new Date(this.dateStringTransformations.addTimeToDateOnlyString(newGuarantee.effectiveDate)),

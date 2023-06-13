@@ -3,7 +3,6 @@ import { DateStringTransformations } from '@ukef/modules/date/date-string.transf
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
 import { withDateOnlyFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/date-only-field-validation-api-tests';
-import { withFacilityIdentifierFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/facility-identifier-field-validation-api-tests';
 import { withNonNegativeNumberFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/non-negative-number-field-validation-api-tests';
 import { withStringFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/string-field-validation-api-tests';
 import { Api } from '@ukef-test/support/api';
@@ -12,6 +11,7 @@ import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables'
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import nock from 'nock';
 import supertest from 'supertest';
+import { CreateFacilityGuaranteeRequest } from '@ukef/modules/facility-guarantee/dto/create-facility-guarantee-request.dto';
 
 describe('POST /facilities/{facilityIdentifier}/guarantees', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -57,14 +57,13 @@ describe('POST /facilities/{facilityIdentifier}/guarantees', () => {
     GuaranteedPercentage: guaranteedPercentage,
   };
 
-  const requestBodyToCreateFacilityGuarantee = [
+  const requestBodyToCreateFacilityGuarantee: CreateFacilityGuaranteeRequest = [
     {
-      facilityIdentifier,
-      guarantorParty,
-      limitKey,
       effectiveDate: effectiveDateInPast,
+      limitKey,
       guaranteeExpiryDate: guaranteeExpiryDateInFuture,
       maximumLiability,
+      guarantorParty,
       guaranteeTypeCode,
     },
   ];
@@ -163,13 +162,6 @@ describe('POST /facilities/{facilityIdentifier}/guarantees', () => {
     givenAuthenticationWithTheIdpSucceeds();
     givenAnyRequestBodyToCreateFacilityGuaranteeInAcbsSucceeds();
   };
-
-  withFacilityIdentifierFieldValidationApiTests({
-    valueGenerator,
-    validRequestBody: requestBodyToCreateFacilityGuarantee,
-    makeRequest,
-    givenAnyRequestBodyWouldSucceed,
-  });
 
   withStringFieldValidationApiTests({
     fieldName: 'limitKey',

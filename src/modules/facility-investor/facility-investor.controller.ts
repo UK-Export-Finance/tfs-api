@@ -18,7 +18,6 @@ import { CreateFacilityInvestorResponse } from './dto/create-facility-investor-r
 import { GetFacilityInvestorsParamsDto } from './dto/get-facility-investors-params.dto';
 import { GetFacilityInvestorResponseItem, GetFacilityInvestorsResponse } from './dto/get-facility-investors-response.dto';
 import { FacilityInvestorService } from './facility-investor.service';
-import { FacilityInvestorToCreate } from './facility-investor-to-create.interface';
 
 @Controller()
 export class FacilityInvestorController {
@@ -57,15 +56,8 @@ export class FacilityInvestorController {
     @ValidatedArrayBody({ items: CreateFacilityInvestorRequestItem }) newFacilityInvestorRequest: CreateFacilityInvestorRequest,
   ): Promise<CreateFacilityInvestorResponse> {
     const [newFacilityInvestor] = newFacilityInvestorRequest;
-    const facilityInvestorToCreate: FacilityInvestorToCreate = {
-      effectiveDate: newFacilityInvestor.effectiveDate,
-      guaranteeExpiryDate: newFacilityInvestor.guaranteeExpiryDate,
-      currency: newFacilityInvestor.currency,
-      maximumLiability: newFacilityInvestor.maximumLiability,
-      lenderType: newFacilityInvestor.lenderType,
-    };
     const { facilityIdentifier } = params;
-    await this.facilityInvestorService.createInvestorForFacility(facilityIdentifier, facilityInvestorToCreate);
+    await this.facilityInvestorService.createInvestorForFacility(facilityIdentifier, newFacilityInvestor);
     return Promise.resolve(new CreateFacilityInvestorResponse(facilityIdentifier));
   }
 

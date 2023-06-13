@@ -29,7 +29,6 @@ describe('FacilityGuaranteeController', () => {
     const maximumLiability = valueGenerator.nonnegativeFloat();
 
     const newGuarantee = new CreateFacilityGuaranteeRequestItem(
-      facilityIdentifier,
       effectiveDate,
       limitKey,
       guaranteeExpiryDate,
