@@ -13,6 +13,7 @@ describe('AcbsPartyExternalRatingService', () => {
   const valueGenerator = new RandomValueGenerator();
   const authToken = valueGenerator.string();
   const baseUrl = valueGenerator.httpsUrl();
+  const useReturnExceptionHeader = false;
 
   let httpService: HttpService;
   let service: AcbsPartyExternalRatingService;
@@ -25,7 +26,7 @@ describe('AcbsPartyExternalRatingService', () => {
     httpServiceGet = jest.fn();
     httpService.get = httpServiceGet;
 
-    service = new AcbsPartyExternalRatingService({ baseUrl }, httpService);
+    service = new AcbsPartyExternalRatingService({ baseUrl, useReturnExceptionHeader }, httpService);
   });
 
   describe('getExternalRatingsForParty', () => {

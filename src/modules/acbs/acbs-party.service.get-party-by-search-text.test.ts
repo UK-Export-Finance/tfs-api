@@ -14,6 +14,7 @@ describe('AcbsPartyService', () => {
   const dateStringTransformations = new DateStringTransformations();
   const idToken = valueGenerator.string();
   const baseUrl = valueGenerator.httpsUrl();
+  const useReturnExceptionHeader = false;
 
   let httpService: HttpService;
   let service: AcbsPartyService;
@@ -26,7 +27,7 @@ describe('AcbsPartyService', () => {
     httpServiceGet = jest.fn();
     httpService.get = httpServiceGet;
 
-    service = new AcbsPartyService({ baseUrl }, httpService);
+    service = new AcbsPartyService({ baseUrl, useReturnExceptionHeader }, httpService);
   });
 
   describe('getPartyBySearchText', () => {

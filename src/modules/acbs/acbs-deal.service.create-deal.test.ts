@@ -13,6 +13,7 @@ describe('AcbsDealService', () => {
   const valueGenerator = new RandomValueGenerator();
   const idToken = valueGenerator.string();
   const baseUrl = valueGenerator.httpsUrl();
+  const useReturnExceptionHeader = false;
   const randomPortfolioIdentifier = valueGenerator.string({ length: 2 });
   const dealIdentifier = valueGenerator.stringOfNumericCharacters({ length: 10 });
 
@@ -37,7 +38,7 @@ describe('AcbsDealService', () => {
     httpServicePost = jest.fn();
     httpService.post = httpServicePost;
 
-    service = new AcbsDealService({ baseUrl }, httpService);
+    service = new AcbsDealService({ baseUrl, useReturnExceptionHeader }, httpService);
   });
 
   describe('createDeal', () => {

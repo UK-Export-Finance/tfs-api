@@ -19,6 +19,7 @@ describe('AcbsBundleInformationService', () => {
   const valueGenerator = new RandomValueGenerator();
   const idToken = valueGenerator.string();
   const baseUrl = valueGenerator.httpsUrl();
+  const useReturnExceptionHeader = false;
   const { servicingQueueIdentifier } = PROPERTIES.GLOBAL;
   const facilityIdentifier = valueGenerator.ukefId();
   const bundleIdentifier = valueGenerator.acbsBundleId();
@@ -58,7 +59,7 @@ describe('AcbsBundleInformationService', () => {
     httpServicePost = jest.fn();
     httpService.post = httpServicePost;
 
-    service = new AcbsBundleInformationService({ baseUrl }, httpService);
+    service = new AcbsBundleInformationService({ baseUrl, useReturnExceptionHeader }, httpService);
   });
 
   describe('createBundleInformation', () => {

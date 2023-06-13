@@ -15,6 +15,7 @@ describe('AcbsBundleInformationService', () => {
   const dateStringTransformations = new DateStringTransformations();
   const idToken = valueGenerator.string();
   const baseUrl = valueGenerator.httpsUrl();
+  const useReturnExceptionHeader = false;
 
   let httpService: HttpService;
   let service: AcbsBundleInformationService;
@@ -27,7 +28,7 @@ describe('AcbsBundleInformationService', () => {
     httpServiceGet = jest.fn();
     httpService.get = httpServiceGet;
 
-    service = new AcbsBundleInformationService({ baseUrl }, httpService);
+    service = new AcbsBundleInformationService({ baseUrl, useReturnExceptionHeader }, httpService);
   });
 
   describe('getBundleInformationByIdentifier', () => {

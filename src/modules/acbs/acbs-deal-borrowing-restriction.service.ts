@@ -2,7 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import { Inject, Injectable } from '@nestjs/common';
 import AcbsConfig from '@ukef/config/acbs.config';
 
-import { AcbsConfigBaseUrl } from './acbs-config-base-url.type';
+import { AcbsConfigBaseUrlAndUseReturnExceptionHeader } from './acbs-config-base-url.type';
 import { AcbsHttpService } from './acbs-http.service';
 import { AcbsUpdateDealBorrowingRestrictionRequest } from './dto/acbs-update-deal-borrowing-restriction-request.dto';
 import { getDealNotFoundKnownAcbsError } from './known-errors';
@@ -12,7 +12,7 @@ import { createWrapAcbsHttpPostOrPutErrorCallback } from './wrap-acbs-http-error
 export class AcbsDealBorrowingRestrictionService {
   private readonly acbsHttpService: AcbsHttpService;
 
-  constructor(@Inject(AcbsConfig.KEY) config: AcbsConfigBaseUrl, httpService: HttpService) {
+  constructor(@Inject(AcbsConfig.KEY) config: AcbsConfigBaseUrlAndUseReturnExceptionHeader, httpService: HttpService) {
     this.acbsHttpService = new AcbsHttpService(config, httpService);
   }
 
