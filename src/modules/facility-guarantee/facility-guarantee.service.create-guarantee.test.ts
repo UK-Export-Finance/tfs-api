@@ -9,8 +9,8 @@ import { TEST_DATES } from '@ukef-test/support/constants/test-date.constant';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
 
-import { FacilityGuaranteeService } from './facility-guarantee.service';
 import { CreateFacilityGuaranteeRequestItem } from './dto/create-facility-guarantee-request.dto';
+import { FacilityGuaranteeService } from './facility-guarantee.service';
 
 describe('FacilityGuaranteeService', () => {
   const valueGenerator = new RandomValueGenerator();

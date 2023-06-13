@@ -8,8 +8,8 @@ import { TEST_DATES } from '@ukef-test/support/constants/test-date.constant';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
 
-import { FacilityInvestorService } from './facility-investor.service';
 import { CreateFacilityInvestorRequestItem } from './dto/create-facility-investor-request.dto';
+import { FacilityInvestorService } from './facility-investor.service';
 
 describe('FacilityInvestorService', () => {
   const valueGenerator = new RandomValueGenerator();

@@ -19,7 +19,10 @@ export class GetDealInvestorGenerator extends AbstractGenerator<GetDealInvestorR
     };
   }
 
-  protected transformRawValuesToGeneratedValues(values: GetDealInvestorResponseDto[], { dealIdentifier, portfolioIdentifier }: GenerateOptions): GenerateResult {
+  protected transformRawValuesToGeneratedValues(
+    values: GetDealInvestorResponseDto[],
+    { dealIdentifier, portfolioIdentifier }: GenerateOptions,
+  ): GenerateResult {
     const dealInvestorsInAcbs: AcbsGetDealPartyResponseDto[] = values.map((v) => ({
       EffectiveDate: this.dateStringTransformations.addTimeToDateOnlyString(v.effectiveDate),
       ExpirationDate: this.dateStringTransformations.addTimeToDateOnlyString(v.expiryDate),

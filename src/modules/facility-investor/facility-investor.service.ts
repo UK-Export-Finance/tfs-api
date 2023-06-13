@@ -5,8 +5,8 @@ import { AcbsFacilityPartyService } from '@ukef/modules/acbs/acbs-facility-party
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 
-import { GetFacilityInvestorResponseItem, GetFacilityInvestorsResponse } from './dto/get-facility-investors-response.dto';
 import { CreateFacilityInvestorRequestItem } from './dto/create-facility-investor-request.dto';
+import { GetFacilityInvestorResponseItem, GetFacilityInvestorsResponse } from './dto/get-facility-investors-response.dto';
 
 @Injectable()
 export class FacilityInvestorService {

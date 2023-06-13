@@ -1,5 +1,6 @@
 import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
+import { CreateFacilityGuaranteeRequest } from '@ukef/modules/facility-guarantee/dto/create-facility-guarantee-request.dto';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
 import { withDateOnlyFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/date-only-field-validation-api-tests';
@@ -11,7 +12,6 @@ import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables'
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import nock from 'nock';
 import supertest from 'supertest';
-import { CreateFacilityGuaranteeRequest } from '@ukef/modules/facility-guarantee/dto/create-facility-guarantee-request.dto';
 
 describe('POST /facilities/{facilityIdentifier}/guarantees', () => {
   const valueGenerator = new RandomValueGenerator();
