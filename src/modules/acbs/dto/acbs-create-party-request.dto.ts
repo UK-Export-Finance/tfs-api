@@ -1,6 +1,6 @@
-import { DateString } from '@ukef/helpers';
+import { DateString } from '@ukef/helpers/date-string.type';
 
-export interface AcbsCreatePartyRequest {
+export interface AcbsCreatePartyRequestDto {
   PartyAlternateIdentifier: string;
   IndustryClassification: {
     IndustryClassificationCode: string;
@@ -29,7 +29,7 @@ export interface AcbsCreatePartyRequest {
   CitizenshipClass: {
     CitizenshipClassCode: string;
   };
-  OfficerRiskDate: DateString;
+  OfficerRiskDate: DateString | null;
   RiskRating: {
     RiskRatingCode: string;
   };

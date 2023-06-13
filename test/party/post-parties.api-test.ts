@@ -1,9 +1,9 @@
 import { ENUMS, UKEFID } from '@ukef/constants';
 import { AssignedRatingCodeEnum } from '@ukef/constants/enums/assigned-rating-code';
 import { AcbsCreatePartyExternalRatingRequestDto } from '@ukef/modules/acbs/dto/acbs-create-party-external-rating-request.dto';
+import { AcbsCreatePartyRequestDto } from '@ukef/modules/acbs/dto/acbs-create-party-request.dto';
+import { AcbsGetPartiesBySearchTextResponseDto } from '@ukef/modules/acbs/dto/acbs-get-parties-by-search-text-response.dto';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
-import { AcbsCreatePartyRequestDto } from '@ukef/modules/party/dto/acbs-create-party-request.dto';
-import { AcbsGetPartiesBySearchTextResponseDto } from '@ukef/modules/party/dto/acbs-get-parties-by-search-text-response.dto';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
 import { withDateOnlyFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/date-only-field-validation-api-tests';

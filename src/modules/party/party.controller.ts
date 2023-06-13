@@ -11,13 +11,14 @@ import {
 } from '@nestjs/swagger';
 import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decorator';
 import { AssignedRatingCodeProvider } from '@ukef/modules/party/assigned-rating-code.provider';
+import { PartyExternalRatingService } from '@ukef/modules/party-external-rating/party-external-rating.service';
 import { Response } from 'express';
 
-import { PartyExternalRatingService } from '../party-external-rating/party-external-rating.service';
 import { CreatePartyRequestDto, CreatePartyRequestItem } from './dto/create-party-request.dto';
 import { CreatePartyResponse } from './dto/create-party-response.dto';
 import { GetPartiesBySearchTextQuery } from './dto/get-parties-by-search-text-query.dto';
 import { GetPartiesBySearchTextResponse, GetPartiesBySearchTextResponseItem } from './dto/get-parties-by-search-text-response.dto';
+import { GetPartyByIdentifierParamsDto } from './dto/get-party-by-identifier-params.dto';
 import { GetPartyByIdentifierResponseDto } from './dto/get-party-by-identifier-response.dto';
 import { PartyService } from './party.service';
 
@@ -127,7 +128,8 @@ export class PartyController {
   @ApiInternalServerErrorResponse({
     description: 'An internal server error has occurred.',
   })
-  async getPartyByIdentifier(@Param('partyIdentifier') partyIdentifier: string): Promise<GetPartyByIdentifierResponseDto> {
+  async getPartyByIdentifier(@Param() params: GetPartyByIdentifierParamsDto): Promise<GetPartyByIdentifierResponseDto> {
+    const { partyIdentifier } = params;
     const party = await this.partyService.getPartyByIdentifier(partyIdentifier);
     return {
       alternateIdentifier: party.alternateIdentifier,

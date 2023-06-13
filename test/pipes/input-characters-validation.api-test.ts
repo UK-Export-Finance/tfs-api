@@ -1,6 +1,6 @@
 import { AssignedRatingCodeEnum } from '@ukef/constants/enums/assigned-rating-code';
 import { AcbsCreatePartyExternalRatingRequestDto } from '@ukef/modules/acbs/dto/acbs-create-party-external-rating-request.dto';
-import { AcbsCreatePartyRequest } from '@ukef/modules/acbs/dto/acbs-create-party-request.dto';
+import { AcbsCreatePartyRequestDto } from '@ukef/modules/acbs/dto/acbs-create-party-request.dto';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
 import { Api } from '@ukef-test/support/api';
@@ -206,7 +206,7 @@ describe('Test InputCharacterValidationPipe', () => {
 
   const requestToGetParty = () => nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL).get(`/Party/${partyIdentifier}`).matchHeader('authorization', `Bearer ${idToken}`);
 
-  const requestToCreateParties = (request: AcbsCreatePartyRequest): nock.Interceptor =>
+  const requestToCreateParties = (request: AcbsCreatePartyRequestDto): nock.Interceptor =>
     nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
       .post('/Party', JSON.stringify(request))
       .matchHeader('authorization', `Bearer ${idToken}`)
