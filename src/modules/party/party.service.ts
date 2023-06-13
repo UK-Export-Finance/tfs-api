@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { PROPERTIES } from '@ukef/constants';
 import { AcbsPartyService } from '@ukef/modules/acbs/acbs-party.service';
+import { AcbsCreatePartyRequestDto } from '@ukef/modules/acbs/dto/acbs-create-party-request.dto';
+import { AcbsGetPartiesBySearchTextResponseDto } from '@ukef/modules/acbs/dto/acbs-get-parties-by-search-text-response.dto';
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 
-import { AcbsCreatePartyRequestDto } from '../acbs/dto/acbs-create-party-request.dto';
-import { AcbsGetPartiesBySearchTextResponseDto } from '../acbs/dto/acbs-get-parties-by-search-text-response.dto';
-import { DateStringTransformations } from '../date/date-string.transformations';
 import { CreatePartyRequestItem } from './dto/create-party-request.dto';
 import { CreatePartyResponse } from './dto/create-party-response.dto';
 import { GetPartiesBySearchTextResponse } from './dto/get-parties-by-search-text-response.dto';

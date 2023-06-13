@@ -1,5 +1,7 @@
 import { ENUMS } from '@ukef/constants';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { AssignedRatingCodeProvider } from '@ukef/modules/party/assigned-rating-code.provider';
+import { PartyExternalRatingService } from '@ukef/modules/party-external-rating/party-external-rating.service';
 import { CreatePartyGenerator } from '@ukef-test/support/generator/create-party-generator';
 import { GetPartyExternalRatingGenerator } from '@ukef-test/support/generator/get-party-external-rating-generator';
 import { GetPartyGenerator } from '@ukef-test/support/generator/get-party-generator';
@@ -7,8 +9,6 @@ import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-
 import { Response } from 'express';
 import { when } from 'jest-when';
 
-import { DateStringTransformations } from '../date/date-string.transformations';
-import { PartyExternalRatingService } from '../party-external-rating/party-external-rating.service';
 import { PartyController } from './party.controller';
 import { PartyService } from './party.service';
 
