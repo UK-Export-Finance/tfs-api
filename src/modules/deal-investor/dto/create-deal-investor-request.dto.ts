@@ -1,20 +1,11 @@
-import { UKEFID } from '@ukef/constants';
 import { ValidatedCurrencyApiProperty } from '@ukef/decorators/validated-currency-api-property-decorator';
 import { ValidatedDateOnlyApiProperty } from '@ukef/decorators/validated-date-only-api-property.decorator';
 import { ValidatedStringApiProperty } from '@ukef/decorators/validated-string-api-property.decorator';
-import { DateString, UkefId } from '@ukef/helpers';
+import { DateString } from '@ukef/helpers';
 
 export type CreateDealInvestorRequest = CreateDealInvestorRequestItem[];
 
 export class CreateDealInvestorRequestItem {
-  @ValidatedStringApiProperty({
-    description: "'The identifier of the deal to create the investor for. It will be a 10-digit code beginning with either '0020', '0030', or '0040'.",
-    example: '0020900111',
-    length: 10,
-    pattern: UKEFID.MAIN_ID.TEN_DIGIT_REGEX,
-  })
-  readonly dealIdentifier: UkefId;
-
   @ValidatedStringApiProperty({
     description: 'The lender type code for the investor party of the deal.',
     example: '500',

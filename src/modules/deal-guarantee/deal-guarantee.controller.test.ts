@@ -36,15 +36,7 @@ describe('DealGuaranteeController', () => {
     const guaranteeExpiryDate = valueGenerator.dateOnlyString();
     const maximumLiability = valueGenerator.nonnegativeFloat();
 
-    const newGuarantee = new CreateDealGuaranteeRequestItem(
-      dealIdentifier,
-      effectiveDate,
-      limitKey,
-      guaranteeExpiryDate,
-      maximumLiability,
-      guarantorParty,
-      guaranteeTypeCode,
-    );
+    const newGuarantee = new CreateDealGuaranteeRequestItem(effectiveDate, limitKey, guaranteeExpiryDate, maximumLiability, guarantorParty, guaranteeTypeCode);
 
     it('creates a guarantee for the deal with the service from the request body', async () => {
       await controller.createGuaranteeForDeal(dealIdentifier, [newGuarantee]);
@@ -56,14 +48,6 @@ describe('DealGuaranteeController', () => {
       const response = await controller.createGuaranteeForDeal(dealIdentifier, [newGuarantee]);
 
       expect(response).toStrictEqual(new CreateDealGuaranteeResponse(dealIdentifier));
-    });
-
-    it('does NOT include unexpected keys from the request body', async () => {
-      const newGuaranteePlusUnexpectedKeys = { ...newGuarantee, unexpectedKey: 'unexpected value' };
-
-      await controller.createGuaranteeForDeal(dealIdentifier, [newGuaranteePlusUnexpectedKeys]);
-
-      expect(dealGuaranteeServiceCreateGuaranteeForDeal).toHaveBeenCalledWith(dealIdentifier, newGuarantee);
     });
   });
 

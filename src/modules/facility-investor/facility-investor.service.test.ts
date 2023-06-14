@@ -8,8 +8,8 @@ import { TEST_DATES } from '@ukef-test/support/constants/test-date.constant';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
 
+import { CreateFacilityInvestorRequestItem } from './dto/create-facility-investor-request.dto';
 import { FacilityInvestorService } from './facility-investor.service';
-import { FacilityInvestorToCreate } from './facility-investor-to-create.interface';
 
 describe('FacilityInvestorService', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -46,7 +46,7 @@ describe('FacilityInvestorService', () => {
     const currency = TEST_CURRENCIES.A_TEST_CURRENCY;
     const maximumLiability = 12345.6;
 
-    const newFacilityInvestorWithAllFields: FacilityInvestorToCreate = {
+    const newFacilityInvestorWithAllFields: CreateFacilityInvestorRequestItem = {
       effectiveDate: effectiveDate,
       guaranteeExpiryDate: guaranteeExpiryDate,
       lenderType,

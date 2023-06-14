@@ -13,7 +13,6 @@ import { EXAMPLES } from '@ukef/constants';
 import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decorator';
 
 import { DealService } from './deal.service';
-import { DealToCreate } from './deal-to-create.interface';
 import { CreateDealRequest, CreateDealRequestItem } from './dto/create-deal-request.dto';
 import { CreateDealResponse } from './dto/create-deal-response.dto';
 import { GetDealByIdentifierResponse } from './dto/get-deal-by-identifier-response.dto';
@@ -42,17 +41,7 @@ export class DealController {
     description: 'An internal server error has occurred.',
   })
   async getDealByIdentifier(@Param('dealIdentifier') dealIdentifier: string): Promise<GetDealByIdentifierResponse> {
-    const deal = await this.dealService.getDealByIdentifier(dealIdentifier);
-    return {
-      dealIdentifier: deal.dealIdentifier,
-      portfolioIdentifier: deal.portfolioIdentifier,
-      currency: deal.currency,
-      dealValue: deal.dealValue,
-      guaranteeCommencementDate: deal.guaranteeCommencementDate,
-      obligorPartyIdentifier: deal.obligorPartyIdentifier,
-      obligorName: deal.obligorName,
-      obligorIndustryClassification: deal.obligorIndustryClassification,
-    };
+    return await this.dealService.getDealByIdentifier(dealIdentifier);
   }
 
   @Post()
@@ -73,16 +62,7 @@ export class DealController {
   })
   async createDeal(@ValidatedArrayBody({ items: CreateDealRequestItem }) createDealDto: CreateDealRequest): Promise<CreateDealResponse> {
     const [newDeal] = createDealDto;
-    const dealToCreate: DealToCreate = {
-      dealIdentifier: newDeal.dealIdentifier,
-      currency: newDeal.currency,
-      dealValue: newDeal.dealValue,
-      guaranteeCommencementDate: newDeal.guaranteeCommencementDate,
-      obligorPartyIdentifier: newDeal.obligorPartyIdentifier,
-      obligorName: newDeal.obligorName,
-      obligorIndustryClassification: newDeal.obligorIndustryClassification,
-    };
-    await this.dealService.createDeal(dealToCreate);
+    await this.dealService.createDeal(newDeal);
     return new CreateDealResponse(newDeal.dealIdentifier);
   }
 }

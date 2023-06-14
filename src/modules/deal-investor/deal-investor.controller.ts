@@ -72,15 +72,7 @@ export class DealInvestorController {
     @ValidatedArrayBody({ items: CreateDealInvestorRequestItem }) newInvestorRequest: CreateDealInvestorRequest,
   ): Promise<CreateDealInvestorResponse> {
     const [newInvestor] = newInvestorRequest;
-    const investorToCreate: CreateDealInvestorRequestItem = {
-      dealIdentifier: newInvestor.dealIdentifier,
-      lenderType: newInvestor.lenderType,
-      effectiveDate: newInvestor.effectiveDate,
-      expiryDate: newInvestor.expiryDate,
-      dealStatus: newInvestor.dealStatus,
-      currency: newInvestor.currency,
-    };
-    await this.dealInvestorService.createInvestorForDeal(dealIdentifier, investorToCreate);
+    await this.dealInvestorService.createInvestorForDeal(dealIdentifier, newInvestor);
     return new CreateDealInvestorResponse(dealIdentifier);
   }
 }

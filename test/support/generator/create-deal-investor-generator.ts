@@ -20,7 +20,6 @@ export class CreateDealInvestorGenerator extends AbstractGenerator<CreateDealInv
 
   protected generateValues(): CreateDealInvestorRequestItem {
     return {
-      dealIdentifier: this.valueGenerator.ukefId(),
       lenderType: this.valueGenerator.string({ minLength: 0, maxLength: 3 }),
       effectiveDate: TEST_DATES.A_PAST_EFFECTIVE_DATE_ONLY,
       expiryDate: this.valueGenerator.dateOnlyString(),
@@ -29,7 +28,7 @@ export class CreateDealInvestorGenerator extends AbstractGenerator<CreateDealInv
     };
   }
 
-  protected transformRawValuesToGeneratedValues(values: CreateDealInvestorRequest, { dealIdentifier }: GenerateOptions): GenerateResult {
+  protected transformRawValuesToGeneratedValues(values: CreateDealInvestorRequest): GenerateResult {
     const [firstDealInvestor] = values;
 
     const effectiveDateTime = this.currentDateProvider.getEarliestDateFromTodayAnd(
@@ -65,8 +64,7 @@ export class CreateDealInvestorGenerator extends AbstractGenerator<CreateDealInv
       LimitRevolvingIndicator: PROPERTIES.DEAL_INVESTOR.DEFAULT.limitRevolvingIndicator,
     };
 
-    const requestBodyToCreateDealInvestor = values.map((v, index) => ({
-      dealIdentifier: index === 0 ? dealIdentifier : v.dealIdentifier,
+    const requestBodyToCreateDealInvestor = values.map((v) => ({
       lenderType: v.lenderType,
       effectiveDate: v.effectiveDate,
       expiryDate: v.expiryDate,

@@ -43,18 +43,7 @@ export class FacilityGuaranteeController {
     description: 'An internal server error has occurred.',
   })
   async getGuaranteesForFacility(@Param() params: FacilityGuaranteesParamsDto): Promise<GetFacilityGuaranteesResponse> {
-    const guaranteesForFacility = await this.facilityGuaranteeService.getGuaranteesForFacility(params.facilityIdentifier);
-    return guaranteesForFacility.map((guarantee) => ({
-      facilityIdentifier: guarantee.facilityIdentifier,
-      portfolioIdentifier: guarantee.portfolioIdentifier,
-      guaranteeCommencementDate: guarantee.guaranteeCommencementDate,
-      effectiveDate: guarantee.effectiveDate,
-      guarantorParty: guarantee.guarantorParty,
-      limitKey: guarantee.limitKey,
-      guaranteeExpiryDate: guarantee.guaranteeExpiryDate,
-      maximumLiability: guarantee.maximumLiability,
-      guaranteeTypeCode: guarantee.guaranteeTypeCode,
-    }));
+    return await this.facilityGuaranteeService.getGuaranteesForFacility(params.facilityIdentifier);
   }
 
   @Post('facilities/:facilityIdentifier/guarantees')

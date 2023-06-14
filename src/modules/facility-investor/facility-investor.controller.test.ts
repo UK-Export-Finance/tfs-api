@@ -45,13 +45,5 @@ describe('FacilityInvestorController', () => {
 
       expect(response).toStrictEqual(new CreateFacilityInvestorResponse(facilityIdentifier));
     });
-
-    it('does NOT include unexpected keys from the request body', async () => {
-      const newFacilityInvestorPlusUnexpectedKeys = { ...newFacilityInvestor, unexpectedKey: 'unexpected value' };
-
-      await controller.createInvestorForFacility({ facilityIdentifier }, [newFacilityInvestorPlusUnexpectedKeys]);
-
-      expect(facilityInvestorServiceCreateInvestorForFacility).toHaveBeenCalledWith(facilityIdentifier, newFacilityInvestor);
-    });
   });
 });

@@ -2,7 +2,6 @@ import { AcbsPartyId, DateString } from '@ukef/helpers';
 import { AcbsGetFacilityGuaranteesResponseDto } from '@ukef/modules/acbs/dto/acbs-get-facility-guarantees-response.dto';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { GetFacilityGuaranteesResponse } from '@ukef/modules/facility-guarantee/dto/get-facility-guarantees-response.dto';
-import { FacilityGuarantee } from '@ukef/modules/facility-guarantee/facility-guarantee.interface';
 
 import { AbstractGenerator } from './abstract-generator';
 import { RandomValueGenerator } from './random-value-generator';
@@ -48,7 +47,7 @@ export class GetFacilityGuaranteeGenerator extends AbstractGenerator<FacilityGua
       LenderType: { LenderTypeCode: v.lenderTypeCode },
     }));
 
-    const facilityGuarantees: FacilityGuarantee[] = values.map((v) => ({
+    const facilityGuarantees: GetFacilityGuaranteesResponse = values.map((v) => ({
       facilityIdentifier,
       portfolioIdentifier,
       guaranteeCommencementDate: this.dateStringTransformations.removeTime(v.effectiveDateInAcbs),
@@ -90,6 +89,6 @@ interface GenerateOptions {
 
 interface GenerateResult {
   facilityGuaranteesInAcbs: AcbsGetFacilityGuaranteesResponseDto;
-  facilityGuarantees: FacilityGuarantee[];
+  facilityGuarantees: GetFacilityGuaranteesResponse;
   facilityGuaranteesFromApi: GetFacilityGuaranteesResponse;
 }

@@ -7,8 +7,8 @@ import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acb
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 
 import { CurrentDateProvider } from '../date/current-date.provider';
-import { DealInvestor } from './deal-investor.interface';
 import { CreateDealInvestorRequestItem } from './dto/create-deal-investor-request.dto';
+import { GetDealInvestorResponseDto } from './dto/deal-investor-response.dto';
 
 @Injectable()
 export class DealInvestorService {
@@ -19,7 +19,7 @@ export class DealInvestorService {
     private readonly dateStringTransformations: DateStringTransformations,
   ) {}
 
-  async getDealInvestors(dealIdentifier: UkefId): Promise<DealInvestor[]> {
+  async getDealInvestors(dealIdentifier: UkefId): Promise<GetDealInvestorResponseDto[]> {
     const idToken = await this.acbsAuthenticationService.getIdToken();
     const { portfolioIdentifier } = PROPERTIES.GLOBAL;
     const investorsInAcbs = await this.acbsDealPartyService.getDealPartiesForDeal(portfolioIdentifier, dealIdentifier, idToken);

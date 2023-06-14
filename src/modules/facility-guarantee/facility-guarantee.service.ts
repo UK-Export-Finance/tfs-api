@@ -8,9 +8,9 @@ import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 
 import { AcbsUpdateFacilityGuaranteeRequest } from '../acbs/dto/acbs-update-facility-guarantee-request.dto';
+import { CreateFacilityGuaranteeRequestItem } from './dto/create-facility-guarantee-request.dto';
+import { GetFacilityGuaranteesResponse } from './dto/get-facility-guarantees-response.dto';
 import { UpdateFacilityGuaranteesRequestDto } from './dto/update-facility-guarantees-request.dto';
-import { FacilityGuarantee } from './facility-guarantee.interface';
-import { FacilityGuaranteeToCreate } from './facility-guarantee-to-create.interface';
 
 @Injectable()
 export class FacilityGuaranteeService {
@@ -21,7 +21,7 @@ export class FacilityGuaranteeService {
     private readonly currentDateProvider: CurrentDateProvider,
   ) {}
 
-  async getGuaranteesForFacility(facilityIdentifier: string): Promise<FacilityGuarantee[]> {
+  async getGuaranteesForFacility(facilityIdentifier: string): Promise<GetFacilityGuaranteesResponse> {
     const { portfolioIdentifier } = PROPERTIES.GLOBAL;
     const idToken = await this.acbsAuthenticationService.getIdToken();
     const guaranteesInAcbs = await this.acbsFacilityGuaranteeService.getGuaranteesForFacility(portfolioIdentifier, facilityIdentifier, idToken);
@@ -42,7 +42,7 @@ export class FacilityGuaranteeService {
     });
   }
 
-  async createGuaranteeForFacility(facilityIdentifier: string, newGuarantee: FacilityGuaranteeToCreate): Promise<void> {
+  async createGuaranteeForFacility(facilityIdentifier: string, newGuarantee: CreateFacilityGuaranteeRequestItem): Promise<void> {
     const idToken = await this.acbsAuthenticationService.getIdToken();
 
     const effectiveDateTime = this.currentDateProvider.getEarliestDateFromTodayAnd(

@@ -1150,13 +1150,6 @@ components:
     CreateDealGuaranteeRequestItem:
       type: object
       properties:
-        dealIdentifier:
-          type: string
-          description: The identifier of the deal to create the guarantee for.
-          minLength: 10
-          maxLength: 10
-          pattern: ^00\\d{8}$
-          example: '0030000321'
         effectiveDate:
           format: date
           type: string
@@ -1192,7 +1185,6 @@ components:
           maxLength: 3
           default: '450'
       required:
-        - dealIdentifier
         - effectiveDate
         - limitKey
         - guaranteeExpiryDate
@@ -1309,15 +1301,6 @@ components:
     CreateDealInvestorRequestItem:
       type: object
       properties:
-        dealIdentifier:
-          type: string
-          description: >-
-            'The identifier of the deal to create the investor for. It will be a
-            10-digit code beginning with either '0020', '0030', or '0040'.
-          minLength: 10
-          maxLength: 10
-          pattern: ^00\\d{8}$
-          example: '0020900111'
         lenderType:
           type: string
           description: The lender type code for the investor party of the deal.
@@ -1357,19 +1340,11 @@ components:
           maxLength: 3
           example: USD
       required:
-        - dealIdentifier
         - effectiveDate
         - currency
     CreateFacilityActivationTransactionRequestItem:
       type: object
       properties:
-        facilityIdentifier:
-          type: string
-          description: The identifier of the facility to activate.
-          minLength: 10
-          maxLength: 10
-          pattern: ^00\\d{8}$
-          example: '0030000322'
         initialBundleStatusCode:
           type: number
           description: In most situations the value should be 3, it means auto approval.
@@ -1390,7 +1365,6 @@ components:
             - '500'
           example: '100'
       required:
-        - facilityIdentifier
         - initialBundleStatusCode
         - lenderTypeCode
     CreateFacilityActivationTransactionResponse:
@@ -2072,13 +2046,6 @@ components:
     CreateFacilityCovenantRequestItem:
       type: object
       properties:
-        facilityIdentifier:
-          type: string
-          description: The identifier of the facility to create the covenant for in ACBS.
-          minLength: 10
-          maxLength: 10
-          pattern: ^00\\d{8}$
-          example: '0030000322'
         covenantIdentifier:
           type: string
           description: >-
@@ -2128,7 +2095,6 @@ components:
           description: The effective date of the covenant.
           example: '2023-04-19'
       required:
-        - facilityIdentifier
         - covenantIdentifier
         - covenantType
         - maximumLiability
@@ -2539,13 +2505,6 @@ components:
     CreateFacilityGuaranteeRequestItem:
       type: object
       properties:
-        facilityIdentifier:
-          type: string
-          description: The identifier of the facility to create the guarantee for.
-          minLength: 10
-          maxLength: 10
-          pattern: ^00\\d{8}$
-          example: '0030000322'
         effectiveDate:
           format: date
           type: string
@@ -2591,7 +2550,6 @@ components:
             - '321'
           example: '310'
       required:
-        - facilityIdentifier
         - effectiveDate
         - limitKey
         - guaranteeExpiryDate

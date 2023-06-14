@@ -202,19 +202,6 @@ describe('POST /deals/{dealIdentifier}/guarantees', () => {
   });
 
   withStringFieldValidationApiTests({
-    fieldName: 'dealIdentifier',
-    length: 10,
-    required: true,
-    generateFieldValueOfLength: (length: number) => valueGenerator.ukefId(length - 4),
-    validRequestBody: requestBodyToCreateDealGuarantee,
-    makeRequest: (body) => api.post(createDealGuaranteeUrl, body),
-    givenAnyRequestBodyWouldSucceed: () => {
-      givenAuthenticationWithTheIdpSucceeds();
-      givenAnyRequestBodyToCreateDealGuaranteeInAcbsSucceeds();
-    },
-  });
-
-  withStringFieldValidationApiTests({
     fieldName: 'limitKey',
     length: 8,
     required: true,

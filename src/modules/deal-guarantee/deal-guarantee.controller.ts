@@ -14,7 +14,6 @@ import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decora
 import { UkefId } from '@ukef/helpers';
 
 import { DealGuaranteeService } from './deal-guarantee.service';
-import { DealGuaranteeToCreate } from './deal-guarantee-to-create.interface';
 import { CreateDealGuaranteeRequest, CreateDealGuaranteeRequestItem } from './dto/create-deal-guarantee-request.dto';
 import { CreateDealGuaranteeResponse } from './dto/create-deal-guarantee-response.dto';
 import { GetDealsGuaranteesParamsDto } from './dto/get-deal-guarantee-params.dto';
@@ -58,16 +57,7 @@ export class DealGuaranteeController {
     @ValidatedArrayBody({ items: CreateDealGuaranteeRequestItem }) newGuaranteeRequest: CreateDealGuaranteeRequest,
   ): Promise<CreateDealGuaranteeResponse> {
     const [newGuarantee] = newGuaranteeRequest;
-    const guaranteeToCreate: DealGuaranteeToCreate = {
-      dealIdentifier: newGuarantee.dealIdentifier,
-      effectiveDate: newGuarantee.effectiveDate,
-      limitKey: newGuarantee.limitKey,
-      guaranteeExpiryDate: newGuarantee.guaranteeExpiryDate,
-      maximumLiability: newGuarantee.maximumLiability,
-      guarantorParty: newGuarantee.guarantorParty,
-      guaranteeTypeCode: newGuarantee.guaranteeTypeCode,
-    };
-    await this.dealGuaranteeService.createGuaranteeForDeal(dealIdentifier, guaranteeToCreate);
+    await this.dealGuaranteeService.createGuaranteeForDeal(dealIdentifier, newGuarantee);
     return new CreateDealGuaranteeResponse(dealIdentifier);
   }
 

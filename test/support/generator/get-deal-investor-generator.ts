@@ -1,13 +1,13 @@
 import { AcbsGetDealPartyResponseDto } from '@ukef/modules/acbs/dto/acbs-get-deal-party-response.dto';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
-import { DealInvestor } from '@ukef/modules/deal-investor/deal-investor.interface';
+import { GetDealInvestorResponseDto } from '@ukef/modules/deal-investor/dto/deal-investor-response.dto';
 
 import { AbstractGenerator } from './abstract-generator';
 
-export class GetDealInvestorGenerator extends AbstractGenerator<DealInvestor, GenerateResult, GenerateOptions> {
+export class GetDealInvestorGenerator extends AbstractGenerator<GetDealInvestorResponseDto, GenerateResult, GenerateOptions> {
   dateStringTransformations = new DateStringTransformations();
 
-  protected generateValues(): DealInvestor {
+  protected generateValues(): GetDealInvestorResponseDto {
     return {
       dealIdentifier: this.valueGenerator.ukefId(),
       portfolioIdentifier: this.valueGenerator.string(),
@@ -19,7 +19,10 @@ export class GetDealInvestorGenerator extends AbstractGenerator<DealInvestor, Ge
     };
   }
 
-  protected transformRawValuesToGeneratedValues(values: DealInvestor[], { dealIdentifier, portfolioIdentifier }: GenerateOptions): GenerateResult {
+  protected transformRawValuesToGeneratedValues(
+    values: GetDealInvestorResponseDto[],
+    { dealIdentifier, portfolioIdentifier }: GenerateOptions,
+  ): GenerateResult {
     const dealInvestorsInAcbs: AcbsGetDealPartyResponseDto[] = values.map((v) => ({
       EffectiveDate: this.dateStringTransformations.addTimeToDateOnlyString(v.effectiveDate),
       ExpirationDate: this.dateStringTransformations.addTimeToDateOnlyString(v.expiryDate),
@@ -51,5 +54,5 @@ interface GenerateOptions {
 
 interface GenerateResult {
   dealInvestorsInAcbs: AcbsGetDealPartyResponseDto[];
-  dealInvestorsFromService: DealInvestor[];
+  dealInvestorsFromService: GetDealInvestorResponseDto[];
 }
