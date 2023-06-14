@@ -89,6 +89,7 @@ export class AccrualScheduleBuilder {
         LoanRateIndexCode: loanRateIndexCode,
       },
       IndexedRateIndicator: PROPERTIES.ACCRUAL.INT_RFR.indexedRateIndicator,
+      RateSetLeadDays: PROPERTIES.ACCRUAL.INT_RFR.rateSetLeadDays,
       AccrualScheduleIBORDetails: {
         IsDailyRFR: PROPERTIES.ACCRUAL.INT_RFR.accrualScheduleIBORDetails.isDailyRFR,
         RFRCalculationMethod: {
