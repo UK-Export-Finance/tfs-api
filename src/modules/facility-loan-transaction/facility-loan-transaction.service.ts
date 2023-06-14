@@ -60,7 +60,7 @@ export class FacilityLoanTransactionService {
       spreadRateCTL: ctlAccrual?.SpreadRate ?? null,
       yearBasis: firstAccrual?.YearBasis?.YearBasisCode ?? null,
       nextDueDate: this.dateStringTransformations.removeTimeIfExists(firstRepayment?.NextDueDate) ?? null,
-      indexRateChangeFrequency: pacAccrual?.IndexRateChangeFrequency?.IndexRateChangeFrequencyCode ?? null,
+      indexRateChangeFrequency: ctlAccrual?.IndexRateChangeFrequency?.IndexRateChangeFrequencyCode ?? null,
       loanBillingFrequencyType: firstRepayment?.LoanBillingFrequencyType?.LoanBillingFrequencyTypeCode ?? null,
     };
   }
