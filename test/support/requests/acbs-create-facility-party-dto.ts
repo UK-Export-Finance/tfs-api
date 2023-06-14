@@ -1,3 +1,5 @@
+import { ENUMS } from '@ukef/constants';
+import { LenderTypeCodeEnum } from '@ukef/constants/enums/lender-type-code';
 import { AcbsCreateFacilityPartyDto } from '@ukef/modules/acbs/dto/acbs-create-facility-party.dto';
 
 import { TEST_CURRENCIES } from '../constants/test-currency.constant';
@@ -13,7 +15,7 @@ export const generateAcbsCreateFacilityPartyDtoUsing = (valueGenerator: RandomVa
   EffectiveDate: valueGenerator.dateTimeString(),
   ExpirationDate: valueGenerator.dateTimeString(),
   LenderType: {
-    LenderTypeCode: valueGenerator.stringOfNumericCharacters(),
+    LenderTypeCode: valueGenerator.enumValue<LenderTypeCodeEnum>(ENUMS.LENDER_TYPE_CODES),
   },
   SectionIdentifier: valueGenerator.stringOfNumericCharacters({ minLength: 1, maxLength: 2 }),
   Currency: {

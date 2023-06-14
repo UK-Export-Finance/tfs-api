@@ -1,4 +1,5 @@
 import { ENUMS, PROPERTIES } from '@ukef/constants';
+import { LenderTypeCodeEnum } from '@ukef/constants/enums/lender-type-code';
 import { AcbsPartyId } from '@ukef/helpers';
 import { AcbsCreateFacilityFixedFeeRequestDto } from '@ukef/modules/acbs/dto/acbs-create-facility-fixed-fee-request.dto';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
@@ -19,7 +20,7 @@ export class CreateFacilityFixedFeeGenerator extends AbstractGenerator<CreateFac
       amount: this.valueGenerator.nonnegativeFloat({ fixed: 2 }),
       period: this.valueGenerator.string({ length: 2 }),
       effectiveDate: TEST_DATES.A_PAST_EFFECTIVE_DATE_ONLY,
-      lenderTypeCode: ENUMS.LENDER_TYPE_CODES.ECGD,
+      lenderTypeCode: ENUMS.LENDER_TYPE_CODES.FIRST_LEVEL_OBLIGOR,
       expirationDate: this.valueGenerator.dateOnlyString(),
       nextDueDate: this.valueGenerator.dateOnlyString(),
       nextAccrueToDate: this.valueGenerator.dateOnlyString(),
@@ -47,7 +48,7 @@ export class CreateFacilityFixedFeeGenerator extends AbstractGenerator<CreateFac
       },
       LimitKey: borrowerPartyIdentifier,
       InvolvedParty: {
-        PartyIdentifier: defaultValues.involvedParty.partyIdentifier as AcbsPartyId,
+        PartyIdentifier: borrowerPartyIdentifier,
       },
       SegmentIdentifier: firstFacilityFixedFee.period,
       EffectiveDate: this.dateStringTransformations.addTimeToDateOnlyString(firstFacilityFixedFee.effectiveDate),

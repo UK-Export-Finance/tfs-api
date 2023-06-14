@@ -1,3 +1,5 @@
+import { ENUMS } from '@ukef/constants';
+import { LenderTypeCodeEnum } from '@ukef/constants/enums/lender-type-code';
 import { AcbsCreateDealDto } from '@ukef/modules/acbs/dto/acbs-create-deal.dto';
 
 import { RandomValueGenerator } from '../generator/random-value-generator';
@@ -136,7 +138,7 @@ export const generateAcbsCreateDealDtoUsing = (valueGenerator: RandomValueGenera
     AccountStructureCode: valueGenerator.string(),
   },
   LenderType: {
-    LenderTypeCode: valueGenerator.string(),
+    LenderTypeCode: valueGenerator.enumValue<LenderTypeCodeEnum>(ENUMS.LENDER_TYPE_CODES),
   },
   BorrowerParty: {
     PartyIdentifier: valueGenerator.string(),

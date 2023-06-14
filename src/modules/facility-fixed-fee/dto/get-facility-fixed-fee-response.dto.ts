@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ENUMS, EXAMPLES } from '@ukef/constants';
-import { LenderTypeCodeEnum } from '@ukef/constants/enums/lender-type-code';
 import { PortfolioEnum } from '@ukef/constants/enums/portfolio';
 import { ValidatedFacilityIdentifierApiProperty } from '@ukef/decorators/validated-facility-identifier-api-property';
 import { ValidatedStringApiProperty } from '@ukef/decorators/validated-string-api-property.decorator';
@@ -93,8 +92,7 @@ export class GetFacilityFixedFeeResponseItem {
 
   @ApiProperty({
     description: 'Defines the code for the role of the party in the Facility for which the fee is created.',
-    enum: LenderTypeCodeEnum,
-    example: ENUMS.LENDER_TYPE_CODES.ECGD,
+    example: EXAMPLES.LENDER_TYPE_CODE,
     minLength: 0,
     maxLength: 3,
   })

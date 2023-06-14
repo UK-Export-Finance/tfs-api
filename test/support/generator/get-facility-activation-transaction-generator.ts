@@ -1,6 +1,5 @@
 import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { InitialBundleStatusCodeEnum } from '@ukef/constants/enums/initial-bundle-status-code';
-import { LenderTypeCodeEnum } from '@ukef/constants/enums/lender-type-code';
 import { AcbsPartyId, DateOnlyString, UkefId } from '@ukef/helpers';
 import { AcbsGetBundleInformationResponseDto } from '@ukef/modules/acbs/dto/acbs-get-bundle-information-response.dto';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
@@ -17,7 +16,6 @@ export class GetFacilityActivationTransactionGenerator extends AbstractGenerator
   protected generateValues(): FacilityActivationTransactionValues {
     // Numeric enums needs filter to get possible values.
     const possibleInitialBundleStatusCodes = Object.values(ENUMS.INITIAL_BUNDLE_STATUS_CODES).filter((value) => !isNaN(Number(value)));
-    const possibleLenderTypes = Object.values(ENUMS.LENDER_TYPE_CODES);
 
     return {
       initialBundleStatusCode: possibleInitialBundleStatusCodes[
@@ -29,7 +27,7 @@ export class GetFacilityActivationTransactionGenerator extends AbstractGenerator
       accountOwnerIdentifier: this.valueGenerator.acbsPartyId(),
       effectiveDate: this.valueGenerator.dateOnlyString(),
       facilityTransactionCodeValueCode: this.valueGenerator.string({ maxLength: 10 }),
-      lenderTypeCode: possibleLenderTypes[this.valueGenerator.integer({ min: 0, max: possibleLenderTypes.length - 1 })],
+      lenderTypeCode: this.valueGenerator.stringOfNumericCharacters({ length: 3 }),
       facilityTransactionTypeCode: this.valueGenerator.nonnegativeInteger({ max: 9999 }),
       isDraftIndicator: this.valueGenerator.boolean(),
       limitKeyValue: this.valueGenerator.acbsPartyId(),
@@ -115,7 +113,7 @@ interface FacilityActivationTransactionValues {
   accountOwnerIdentifier: AcbsPartyId;
   effectiveDate: DateOnlyString;
   facilityTransactionCodeValueCode: string;
-  lenderTypeCode: LenderTypeCodeEnum;
+  lenderTypeCode: string;
   facilityTransactionTypeCode: number;
   isDraftIndicator: boolean;
   limitKeyValue: AcbsPartyId;

@@ -1,3 +1,5 @@
+import { ENUMS, EXAMPLES, PROPERTIES, UKEFID } from '@ukef/constants';
+import { LenderTypeCodeEnum } from '@ukef/constants/enums/lender-type-code';
 import { ValidatedCurrencyApiProperty } from '@ukef/decorators/validated-currency-api-property-decorator';
 import { ValidatedDateOnlyApiProperty } from '@ukef/decorators/validated-date-only-api-property.decorator';
 import { ValidatedStringApiProperty } from '@ukef/decorators/validated-string-api-property.decorator';
@@ -8,13 +10,12 @@ export type CreateDealInvestorRequest = CreateDealInvestorRequestItem[];
 export class CreateDealInvestorRequestItem {
   @ValidatedStringApiProperty({
     description: 'The lender type code for the investor party of the deal.',
-    example: '500',
-    minLength: 0,
-    maxLength: 3,
+    enum: ENUMS.LENDER_TYPE_CODES,
+    example: EXAMPLES.LENDER_TYPE_CODE,
     required: false,
-    default: '500',
+    default: PROPERTIES.DEAL_INVESTOR.DEFAULT.lenderType.lenderTypeCode,
   })
-  readonly lenderType?: string;
+  readonly lenderType?: LenderTypeCodeEnum;
 
   @ValidatedDateOnlyApiProperty({
     description: "The effective date on the deal investor record. If the date provided is in the future, it will be replaced by today's date.",

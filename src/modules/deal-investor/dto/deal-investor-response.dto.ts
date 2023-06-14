@@ -1,9 +1,9 @@
 import { ApiProperty, ApiResponseProperty } from '@nestjs/swagger';
-import { ENUMS, EXAMPLES, PROPERTIES } from '@ukef/constants';
+import { EXAMPLES, PROPERTIES } from '@ukef/constants';
 import { DateOnlyString } from '@ukef/helpers/date-only-string.type';
 
 class GetDealInvestorDtoLenderType {
-  @ApiProperty({ description: 'Lender type: 100 for Exporter or 500 for UKEF record.', example: ENUMS.LENDER_TYPE_CODES.ECGD })
+  @ApiProperty({ description: 'Lender type: 100 for Exporter or 500 for UKEF record.', example: EXAMPLES.LENDER_TYPE_CODE, minLength: 3, maxLength: 3 })
   LenderTypeCode: string;
 }
 export class GetDealInvestorResponseDto {

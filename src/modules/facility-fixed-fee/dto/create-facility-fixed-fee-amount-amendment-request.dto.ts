@@ -1,4 +1,4 @@
-import { ENUMS } from '@ukef/constants';
+import { ENUMS, EXAMPLES } from '@ukef/constants';
 import { LenderTypeCodeEnum } from '@ukef/constants/enums/lender-type-code';
 import { ValidatedDateOnlyApiProperty } from '@ukef/decorators/validated-date-only-api-property.decorator';
 import { ValidatedNumberApiProperty } from '@ukef/decorators/validated-number-api-property.decorator';
@@ -22,10 +22,10 @@ export class CreateFixedFeeAmountAmendmentRequestItem {
 
   @ValidatedStringApiProperty({
     description: 'Defines the code for the role of the party in the Facility for which the fee is created.',
-    enum: LenderTypeCodeEnum,
-    example: ENUMS.LENDER_TYPE_CODES.ECGD,
+    enum: ENUMS.LENDER_TYPE_CODES,
+    example: EXAMPLES.LENDER_TYPE_CODE,
   })
-  readonly lenderTypeCode: string;
+  readonly lenderTypeCode: LenderTypeCodeEnum;
 
   @ValidatedDateOnlyApiProperty({
     description: 'The effective date of this accruing/fixed fee schedule.',
@@ -39,7 +39,7 @@ export class CreateFixedFeeAmountAmendmentRequestItem {
   })
   readonly amountAmendment: number;
 
-  constructor(partyIdentifier: AcbsPartyId, period: string, lenderTypeCode: string, effectiveDate: DateOnlyString, amountAmendment: number) {
+  constructor(partyIdentifier: AcbsPartyId, period: string, lenderTypeCode: LenderTypeCodeEnum, effectiveDate: DateOnlyString, amountAmendment: number) {
     this.partyIdentifier = partyIdentifier;
     this.period = period;
     this.lenderTypeCode = lenderTypeCode;

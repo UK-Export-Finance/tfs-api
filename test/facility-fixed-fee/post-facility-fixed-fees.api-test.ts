@@ -16,6 +16,7 @@ import { CreateFacilityFixedFeeGenerator } from '@ukef-test/support/generator/cr
 import { GetFacilityGenerator } from '@ukef-test/support/generator/get-facility-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import nock from 'nock';
+import { LenderTypeCodeEnum } from '@ukef/constants/enums/lender-type-code';
 
 describe('POST /facilities/{facilityIdentifier}/fixed-fees', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -374,7 +375,7 @@ describe('POST /facilities/{facilityIdentifier}/fixed-fees', () => {
     withStringFieldValidationApiTests({
       fieldName: 'lenderTypeCode',
       enum: ENUMS.LENDER_TYPE_CODES,
-      generateFieldValueThatDoesNotMatchEnum: () => '123',
+      generateFieldValueThatDoesNotMatchEnum: () => '123' as LenderTypeCodeEnum,
       validRequestBody: requestBodyToCreateFacilityFixedFee,
       makeRequest,
       givenAnyRequestBodyWouldSucceed,

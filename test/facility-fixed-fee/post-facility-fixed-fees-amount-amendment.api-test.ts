@@ -13,6 +13,7 @@ import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/s
 import { CreateFacilityFixedFeesAmountAmendmentGenerator } from '@ukef-test/support/generator/create-facility-fixed-fees-amount-amendment.generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import nock from 'nock';
+import { LenderTypeCodeEnum } from '@ukef/constants/enums/lender-type-code';
 
 describe('POST /facilities/{facilityIdentifier}/fixed-fees/amendments/amount', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -181,7 +182,7 @@ describe('POST /facilities/{facilityIdentifier}/fixed-fees/amendments/amount', (
     withStringFieldValidationApiTests({
       fieldName: 'lenderTypeCode',
       enum: ENUMS.LENDER_TYPE_CODES,
-      generateFieldValueThatDoesNotMatchEnum: () => '123',
+      generateFieldValueThatDoesNotMatchEnum: () => '123' as LenderTypeCodeEnum,
       validRequestBody: increaseAmountRequest,
       makeRequest,
       givenAnyRequestBodyWouldSucceed,

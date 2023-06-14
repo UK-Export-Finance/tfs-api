@@ -1,4 +1,5 @@
-import { PROPERTIES } from '@ukef/constants';
+import { ENUMS, PROPERTIES } from '@ukef/constants';
+import { LenderTypeCodeEnum } from '@ukef/constants/enums/lender-type-code';
 import { UkefId } from '@ukef/helpers';
 import { AcbsCreateDealInvestorRequest } from '@ukef/modules/acbs/dto/acbs-create-deal-investor-request.dto';
 import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
@@ -20,7 +21,7 @@ export class CreateDealInvestorGenerator extends AbstractGenerator<CreateDealInv
 
   protected generateValues(): CreateDealInvestorRequestItem {
     return {
-      lenderType: this.valueGenerator.string({ minLength: 0, maxLength: 3 }),
+      lenderType: this.valueGenerator.enumValue<LenderTypeCodeEnum>(ENUMS.LENDER_TYPE_CODES),
       effectiveDate: TEST_DATES.A_PAST_EFFECTIVE_DATE_ONLY,
       expiryDate: this.valueGenerator.dateOnlyString(),
       dealStatus: this.valueGenerator.string({ minLength: 0, maxLength: 1 }),

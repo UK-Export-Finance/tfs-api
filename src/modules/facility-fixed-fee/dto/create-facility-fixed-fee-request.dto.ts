@@ -50,10 +50,10 @@ export class CreateFacilityFixedFeeRequestItem {
 
   @ValidatedStringApiProperty({
     description: 'Defines the code for the role of the party in the Facility for which the fee is created.',
-    enum: LenderTypeCodeEnum,
-    example: ENUMS.LENDER_TYPE_CODES.ECGD,
+    enum: ENUMS.LENDER_TYPE_CODES,
+    example: EXAMPLES.LENDER_TYPE_CODE,
   })
-  readonly lenderTypeCode: string;
+  readonly lenderTypeCode: LenderTypeCodeEnum;
 
   @ValidatedStringApiProperty({
     description: 'Defines the code for the fee type of this schedule for reporting and GL purposes.',
@@ -78,7 +78,7 @@ export class CreateFacilityFixedFeeRequestItem {
     nextAccrueToDate: DateOnlyString,
     period: string,
     currency: string,
-    lenderTypeCode: string,
+    lenderTypeCode: LenderTypeCodeEnum,
     incomeClassCode: string,
     spreadToInvestorsIndicator: boolean,
   ) {

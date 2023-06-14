@@ -25,7 +25,7 @@ export class GetFacilityFixedFeeGenerator extends AbstractGenerator<FacilityFixe
         currencyCode: this.valueGenerator.string(),
       },
       lenderType: {
-        lenderTypeCode: this.valueGenerator.string(),
+        lenderTypeCode: this.valueGenerator.stringOfNumericCharacters({ length: 3 }),
       },
       incomeClass: {
         incomeClassCode: this.valueGenerator.string({ length: 3 }),

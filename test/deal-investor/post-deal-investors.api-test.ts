@@ -1,4 +1,5 @@
-import { PROPERTIES } from '@ukef/constants';
+import { ENUMS, PROPERTIES } from '@ukef/constants';
+import { LenderTypeCodeEnum } from '@ukef/constants/enums/lender-type-code';
 import { UkefId } from '@ukef/helpers';
 import { AcbsCreateDealInvestorRequest } from '@ukef/modules/acbs/dto/acbs-create-deal-investor-request.dto';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
@@ -159,10 +160,9 @@ describe('POST /deals/{dealIdentifier}/investors', () => {
 
   withStringFieldValidationApiTests({
     fieldName: 'lenderType',
-    minLength: 0,
-    maxLength: 3,
+    enum: ENUMS.LENDER_TYPE_CODES,
     required: false,
-    generateFieldValueOfLength: (length: number) => valueGenerator.string({ length }),
+    generateFieldValueThatDoesNotMatchEnum: () => '123' as LenderTypeCodeEnum,
     validRequestBody: requestBodyToCreateDealInvestor,
     makeRequest: (body) => api.post(createDealInvestorUrl, body),
     givenAnyRequestBodyWouldSucceed: () => {
