@@ -455,6 +455,7 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
           LoanRateIndexCode: LOAN_RATE_INDEX.OTHER,
         },
         IndexedRateIndicator: PROPERTIES.ACCRUAL.INT_RFR.indexedRateIndicator,
+        RateSetLeadDays: PROPERTIES.ACCRUAL.INT_RFR.rateSetLeadDays,
         AccrualScheduleIBORDetails: {
           IsDailyRFR: PROPERTIES.ACCRUAL.INT_RFR.accrualScheduleIBORDetails.isDailyRFR,
           RFRCalculationMethod: {
