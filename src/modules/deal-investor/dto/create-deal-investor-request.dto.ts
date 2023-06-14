@@ -1,4 +1,4 @@
-import { ENUMS, EXAMPLES, PROPERTIES, UKEFID } from '@ukef/constants';
+import { ENUMS, EXAMPLES, PROPERTIES } from '@ukef/constants';
 import { LenderTypeCodeEnum } from '@ukef/constants/enums/lender-type-code';
 import { ValidatedCurrencyApiProperty } from '@ukef/decorators/validated-currency-api-property-decorator';
 import { ValidatedDateOnlyApiProperty } from '@ukef/decorators/validated-date-only-api-property.decorator';
