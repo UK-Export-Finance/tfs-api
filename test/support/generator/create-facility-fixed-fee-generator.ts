@@ -1,5 +1,4 @@
 import { ENUMS, PROPERTIES } from '@ukef/constants';
-import { LenderTypeCodeEnum } from '@ukef/constants/enums/lender-type-code';
 import { AcbsPartyId } from '@ukef/helpers';
 import { AcbsCreateFacilityFixedFeeRequestDto } from '@ukef/modules/acbs/dto/acbs-create-facility-fixed-fee-request.dto';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';

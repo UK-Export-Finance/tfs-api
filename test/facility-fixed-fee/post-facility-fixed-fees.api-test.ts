@@ -1,4 +1,5 @@
 import { ENUMS, PROPERTIES } from '@ukef/constants';
+import { LenderTypeCodeEnum } from '@ukef/constants/enums/lender-type-code';
 import { AcbsPartyId } from '@ukef/helpers';
 import { AcbsCreateFacilityFixedFeeRequestDto } from '@ukef/modules/acbs/dto/acbs-create-facility-fixed-fee-request.dto';
 import { AcbsGetFacilityResponseDto } from '@ukef/modules/acbs/dto/acbs-get-facility-response.dto';
@@ -16,7 +17,6 @@ import { CreateFacilityFixedFeeGenerator } from '@ukef-test/support/generator/cr
 import { GetFacilityGenerator } from '@ukef-test/support/generator/get-facility-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import nock from 'nock';
-import { LenderTypeCodeEnum } from '@ukef/constants/enums/lender-type-code';
 
 describe('POST /facilities/{facilityIdentifier}/fixed-fees', () => {
   const valueGenerator = new RandomValueGenerator();
