@@ -111,7 +111,6 @@ describe('FacilityLoanTransactionService', () => {
       const expectedLoanTransactionWithAdditionalAccrual: GetFacilityLoanTransactionResponseDto = {
         ...expectedLoanTransaction,
         spreadRate: 0,
-        indexRateChangeFrequency: '',
       };
 
       when(getBundleInformationAcbsService).calledWith(bundleIdentifier, idToken).mockResolvedValueOnce(loanTransactionInAcbsWithMoreThanOnePacAccrual);
@@ -123,28 +122,13 @@ describe('FacilityLoanTransactionService', () => {
 
     it(`returns a transformation of the loan transaction from ACBS when it has more than one accrual with the category code 'CTL01'`, async () => {
       const loanTransactionInAcbsWithMoreThanOneCtlAccrual = JSON.parse(JSON.stringify(acbsFacilityLoanTransaction));
-      loanTransactionInAcbsWithMoreThanOneCtlAccrual.BundleMessageList[0].AccrualScheduleList.splice(1, 0, {
-        AccrualCategory: {
-          AccrualCategoryCode: PROPERTIES.FACILITY_LOAN.DEFAULT.accrualScheduleList.accrualCategory.accrualCategoryCode.ctl,
-        },
-        SpreadRate: 0,
-        YearBasis: {
-          YearBasisCode: '',
-        },
-        IndexRateChangeFrequency: {
-          IndexRateChangeFrequencyCode: '',
-        },
-      });
-      const expectedLoanTransactionWithAdditionalAccrual: GetFacilityLoanTransactionResponseDto = {
-        ...expectedLoanTransaction,
-        spreadRateCTL: 0,
-      };
+      loanTransactionInAcbsWithMoreThanOneCtlAccrual.BundleMessageList[0].AccrualScheduleList.splice(1, 0, loanTransactionInAcbsWithMoreThanOneCtlAccrual.BundleMessageList[0].AccrualScheduleList[2]);
 
       when(getBundleInformationAcbsService).calledWith(bundleIdentifier, idToken).mockResolvedValueOnce(loanTransactionInAcbsWithMoreThanOneCtlAccrual);
 
       const loanTransactions = await service.getLoanTransactionsByBundleIdentifier(bundleIdentifier);
 
-      expect(loanTransactions).toStrictEqual(expectedLoanTransactionWithAdditionalAccrual);
+      expect(loanTransactions).toStrictEqual(expectedLoanTransaction);
     });
 
     it(`returns a transformation of the loan transaction from ACBS when it has no accruals with the category code 'PAC01'`, async () => {
@@ -153,7 +137,6 @@ describe('FacilityLoanTransactionService', () => {
       const expectedLoanTransactionWithNoPacAccruals: GetFacilityLoanTransactionResponseDto = {
         ...expectedLoanTransaction,
         spreadRate: null,
-        indexRateChangeFrequency: null,
       };
 
       when(getBundleInformationAcbsService).calledWith(bundleIdentifier, idToken).mockResolvedValueOnce(loanTransactionInAcbsWithNoPacAccruals);
@@ -169,6 +152,7 @@ describe('FacilityLoanTransactionService', () => {
       const expectedLoanTransactionWithNoCtlAccruals: GetFacilityLoanTransactionResponseDto = {
         ...expectedLoanTransaction,
         spreadRateCTL: null,
+        indexRateChangeFrequency: null,
       };
 
       when(getBundleInformationAcbsService).calledWith(bundleIdentifier, idToken).mockResolvedValueOnce(loanTransactionInAcbsWithNoCtlAccruals);
