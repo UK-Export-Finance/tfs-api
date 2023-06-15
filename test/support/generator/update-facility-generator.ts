@@ -66,9 +66,11 @@ export class UpdateFacilityGenerator extends AbstractGenerator<FacilityValues, G
     const acbsNextQuarterEndDate = this.dateStringTransformations.addTimeToDateOnlyString(nextQuarterEndDate);
     const acbsGuaranteeExpiryDate = this.dateStringTransformations.addTimeToDateOnlyString(facilityToUpdate.guaranteeExpiryDate);
 
+    const description = `${productTypeName.substring(0, 13)} : ${facilityToUpdate.exposurePeriod} Months`
+
     const acbsUpdateFacilityRequest: AcbsUpdateFacilityRequest = {
       FacilityIdentifier: facilityIdentifier,
-      Description: facilityToUpdate.description,
+      Description: description,
       FacilityInitialStatus: { FacilityInitialStatusCode: facilityToUpdate.facilityInitialStatusCode },
       Currency: {
         CurrencyCode: facilityToUpdate.currency,
@@ -161,9 +163,9 @@ export class UpdateFacilityGenerator extends AbstractGenerator<FacilityValues, G
       OfficerRiskRatingType: {
         OfficerRiskRatingTypeCode: facilityToUpdate.creditRatingCode,
       },
-      OfficerRiskDate: midnightToday,
+      OfficerRiskDate: acbsEffectiveDate,
       IsOfficerRiskDateZero: defaultFacilityValues.isOfficerRiskDateZero,
-      CreditReviewRiskDate: midnightToday,
+      CreditReviewRiskDate: acbsEffectiveDate,
       IsCreditReviewRiskDateZero: defaultFacilityValues.isCreditReviewRiskDateZero,
       RegulatorRiskDate: defaultFacilityValues.regulatorRiskDate,
       IsRegulatorRiskDateZero: defaultFacilityValues.isRegulatorRiskDateZero,
