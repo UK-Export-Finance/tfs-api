@@ -120,14 +120,20 @@ export class FacilityService {
   private async buildAcbsUpdateFacilityRequest(updateFacilityRequest: UpdateFacilityRequest, facilityIdentifier: string, idToken: string) {
     const updateFacilityRequestWithFacilityIdentifier: UpdateFacilityRequestWithFacilityIdentifier = { ...updateFacilityRequest, facilityIdentifier };
     const acbsUpdateFacilityRequest = this.buildBaseAcbsFacilityRequest(updateFacilityRequestWithFacilityIdentifier);
-    const acbsUpdatedFacilityRequestFieldsForIssueAndAmendExpiryDate = this.updateAcbsFacilityRequestFieldsForIssueAndAmendExpiryDate(updateFacilityRequestWithFacilityIdentifier);
+    const acbsUpdatedFacilityRequestFieldsForIssueAndAmendExpiryDate = this.updateAcbsFacilityRequestFieldsForIssueAndAmendExpiryDate(
+      updateFacilityRequestWithFacilityIdentifier,
+    );
 
     const existingAcbsFacilityData = await this.acbsFacilityService.getFacilityByIdentifier(facilityIdentifier, idToken);
     // Remove AdministrativeUserIdentifier as its a depreciated field and
     // causes issue with old facilities which were manually created using old adminstrative profile.
     delete existingAcbsFacilityData.AdministrativeUserIdentifier;
 
-    const acbsMergedUpdateFacilityRequest: AcbsUpdateFacilityRequest = { ...existingAcbsFacilityData, ...acbsUpdateFacilityRequest, ...acbsUpdatedFacilityRequestFieldsForIssueAndAmendExpiryDate };
+    const acbsMergedUpdateFacilityRequest: AcbsUpdateFacilityRequest = {
+      ...existingAcbsFacilityData,
+      ...acbsUpdateFacilityRequest,
+      ...acbsUpdatedFacilityRequestFieldsForIssueAndAmendExpiryDate,
+    };
     return acbsMergedUpdateFacilityRequest;
   }
 
@@ -313,10 +319,7 @@ export class FacilityService {
     const description = this.buildFacilityDescription(facilityToTransform.productTypeName, facilityToTransform.exposurePeriod);
     const acbsEffectiveDate = this.dateStringTransformations.addTimeToDateOnlyString(facilityToTransform.effectiveDate);
     const acbsIssueDate = facilityToTransform.issueDate ? this.dateStringTransformations.addTimeToDateOnlyString(facilityToTransform.issueDate) : null;
-    const { isUserDefinedDate1Zero } = this.buildFacilityStageDerivedValuesToCreate(
-      facilityToTransform.facilityStageCode,
-      facilityToTransform.issueDate,
-    );
+    const { isUserDefinedDate1Zero } = this.buildFacilityStageDerivedValuesToCreate(facilityToTransform.facilityStageCode, facilityToTransform.issueDate);
     return {
       Description: description,
       OfficerRiskDate: acbsEffectiveDate,

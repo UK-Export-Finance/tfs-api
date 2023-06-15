@@ -66,7 +66,7 @@ export class UpdateFacilityGenerator extends AbstractGenerator<FacilityValues, G
     const acbsNextQuarterEndDate = this.dateStringTransformations.addTimeToDateOnlyString(nextQuarterEndDate);
     const acbsGuaranteeExpiryDate = this.dateStringTransformations.addTimeToDateOnlyString(facilityToUpdate.guaranteeExpiryDate);
 
-    const description = `${productTypeName.substring(0, 13)} : ${facilityToUpdate.exposurePeriod} Months`
+    const description = `${productTypeName.substring(0, 13)} : ${facilityToUpdate.exposurePeriod} Months`;
 
     const acbsUpdateFacilityRequest: AcbsUpdateFacilityRequest = {
       FacilityIdentifier: facilityIdentifier,
