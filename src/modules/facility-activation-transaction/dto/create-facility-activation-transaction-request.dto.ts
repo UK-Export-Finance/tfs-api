@@ -1,4 +1,5 @@
 import { ENUMS } from '@ukef/constants';
+import { LenderTypeCodeEnum } from '@ukef/constants/enums/lender-type-code';
 import { ValidatedNumberApiProperty } from '@ukef/decorators/validated-number-api-property.decorator';
 import { ValidatedStringApiProperty } from '@ukef/decorators/validated-string-api-property.decorator';
 
@@ -15,12 +16,11 @@ export class CreateFacilityActivationTransactionRequestItem {
   @ValidatedStringApiProperty({
     description: 'In most situations the value should be 100, it means first level obligor.',
     example: ENUMS.LENDER_TYPE_CODES.FIRST_LEVEL_OBLIGOR,
-    length: 3,
     enum: ENUMS.LENDER_TYPE_CODES,
   })
-  readonly lenderTypeCode: string;
+  readonly lenderTypeCode: LenderTypeCodeEnum;
 
-  constructor(lenderTypeCode: string, initialBundleStatusCode: number) {
+  constructor(lenderTypeCode: LenderTypeCodeEnum, initialBundleStatusCode: number) {
     this.lenderTypeCode = lenderTypeCode;
     this.initialBundleStatusCode = initialBundleStatusCode;
   }

@@ -22,7 +22,7 @@ export class GetFacilityGuaranteeGenerator extends AbstractGenerator<FacilityGua
       sectionIdentifier: this.valueGenerator.string({ length: 2 }),
       guaranteedPercentage: this.valueGenerator.nonnegativeInteger(),
       limitTypeCode: this.valueGenerator.string({ length: 2 }),
-      lenderTypeCode: this.valueGenerator.string({ length: 3 }),
+      lenderTypeCode: this.valueGenerator.stringOfNumericCharacters({ length: 3 }),
     };
   }
 

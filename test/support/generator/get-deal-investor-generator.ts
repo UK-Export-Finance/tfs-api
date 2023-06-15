@@ -11,7 +11,7 @@ export class GetDealInvestorGenerator extends AbstractGenerator<GetDealInvestorR
     return {
       dealIdentifier: this.valueGenerator.ukefId(),
       portfolioIdentifier: this.valueGenerator.string(),
-      lenderType: { LenderTypeCode: this.valueGenerator.string() },
+      lenderType: { LenderTypeCode: this.valueGenerator.stringOfNumericCharacters({ length: 3 }) },
       effectiveDate: this.valueGenerator.dateOnlyString(),
       expiryDate: this.valueGenerator.dateOnlyString(),
       isExpiryDateMaximum: this.valueGenerator.boolean(),

@@ -1257,6 +1257,8 @@ components:
           type: string
           description: 'Lender type: 100 for Exporter or 500 for UKEF record.'
           example: '500'
+          minLength: 3
+          maxLength: 3
       required:
         - LenderTypeCode
     GetDealInvestorResponseDto:
@@ -1305,7 +1307,9 @@ components:
           type: string
           description: The lender type code for the investor party of the deal.
           minLength: 0
-          maxLength: 3
+          enum:
+            - '100'
+            - '500'
           example: '500'
           default: '500'
         effectiveDate:
@@ -1358,8 +1362,7 @@ components:
           description: >-
             In most situations the value should be 100, it means first level
             obligor.
-          minLength: 3
-          maxLength: 3
+          minLength: 0
           enum:
             - '100'
             - '500'
@@ -1428,9 +1431,6 @@ components:
           example: '100'
           minLength: 3
           maxLength: 3
-          enum:
-            - '100'
-            - '500'
         initialBundleStatusCode:
           type: number
           description: In most situations the value should be 3, it means auto approval.
@@ -2274,9 +2274,6 @@ components:
           description: >-
             Defines the code for the role of the party in the Facility for which
             the fee is created.
-          enum:
-            - '100'
-            - '500'
           example: '500'
           minLength: 0
           maxLength: 3
@@ -2610,8 +2607,11 @@ components:
           description: >-
             The lender type for this investor, Key Value 1 from the T1300 -
             Lender Type Code Table.
-          minLength: 3
-          maxLength: 3
+          minLength: 0
+          enum:
+            - '100'
+            - '500'
+          example: '500'
           default: '500'
       required:
         - effectiveDate

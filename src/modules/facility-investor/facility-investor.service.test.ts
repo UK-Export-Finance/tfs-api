@@ -1,4 +1,5 @@
-import { PROPERTIES } from '@ukef/constants';
+import { ENUMS, PROPERTIES } from '@ukef/constants';
+import { LenderTypeCodeEnum } from '@ukef/constants/enums/lender-type-code';
 import { AcbsFacilityPartyService } from '@ukef/modules/acbs/acbs-facility-party.service';
 import { AcbsCreateFacilityPartyDto } from '@ukef/modules/acbs/dto/acbs-create-facility-party.dto';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
@@ -42,7 +43,7 @@ describe('FacilityInvestorService', () => {
     } = PROPERTIES.FACILITY_INVESTOR.DEFAULT;
     const effectiveDate = TEST_DATES.A_FUTURE_EFFECTIVE_DATE_ONLY;
     const guaranteeExpiryDate = TEST_DATES.A_FUTURE_EXPIRY_DATE_ONLY;
-    const lenderType = valueGenerator.stringOfNumericCharacters();
+    const lenderType = valueGenerator.enumValue<LenderTypeCodeEnum>(ENUMS.LENDER_TYPE_CODES);
     const currency = TEST_CURRENCIES.A_TEST_CURRENCY;
     const maximumLiability = 12345.6;
 

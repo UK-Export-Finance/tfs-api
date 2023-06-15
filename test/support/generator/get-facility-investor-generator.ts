@@ -18,7 +18,7 @@ export class GetFacilityInvestorGenerator extends AbstractGenerator<GetFacilityI
       currency: this.valueGenerator.string({ length: 3 }),
       guaranteeExpiryDate: this.valueGenerator.dateOnlyString(),
       maximumLiability: this.valueGenerator.nonnegativeFloat({ fixed: 2 }),
-      lenderTypeCode: this.valueGenerator.string({ length: 3 }),
+      lenderTypeCode: this.valueGenerator.stringOfNumericCharacters({ length: 3 }),
       involvedParty: this.valueGenerator.stringOfNumericCharacters({ length: 8 }),
     };
   }

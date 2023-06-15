@@ -90,7 +90,7 @@ export class FacilityFixedFeeService {
       LimitKey: borrowerPartyIdentifier,
       InvolvedParty: {
         PartyIdentifier:
-          newCreateFacilityFixedFee.lenderTypeCode == ENUMS.LENDER_TYPE_CODES.ECGD
+          newCreateFacilityFixedFee.lenderTypeCode === ENUMS.LENDER_TYPE_CODES.ECGD
             ? (defaultValues.involvedParty.partyIdentifier as AcbsPartyId)
             : borrowerPartyIdentifier,
       },

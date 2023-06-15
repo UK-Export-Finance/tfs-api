@@ -1,4 +1,5 @@
-import { PROPERTIES } from '@ukef/constants';
+import { ENUMS, EXAMPLES, PROPERTIES } from '@ukef/constants';
+import { LenderTypeCodeEnum } from '@ukef/constants/enums/lender-type-code';
 import { ValidatedCurrencyApiProperty } from '@ukef/decorators/validated-currency-api-property-decorator';
 import { ValidatedDateOnlyApiProperty } from '@ukef/decorators/validated-date-only-api-property.decorator';
 import { ValidatedNumberApiProperty } from '@ukef/decorators/validated-number-api-property.decorator';
@@ -31,14 +32,14 @@ export class CreateFacilityInvestorRequestItem {
 
   @ValidatedStringApiProperty({
     description: 'The lender type for this investor, Key Value 1 from the T1300 - Lender Type Code Table.',
-    default: PROPERTIES.FACILITY_INVESTOR.DEFAULT.lenderType.lenderTypeCode,
-    minLength: 3,
-    maxLength: 3,
+    enum: ENUMS.LENDER_TYPE_CODES,
+    example: EXAMPLES.LENDER_TYPE_CODE,
     required: false,
+    default: PROPERTIES.FACILITY_INVESTOR.DEFAULT.lenderType.lenderTypeCode,
   })
-  readonly lenderType?: string;
+  readonly lenderType?: LenderTypeCodeEnum;
 
-  constructor(effectiveDate: DateOnlyString, guaranteeExpiryDate: DateOnlyString, currency: string, maximumLiability: number, lenderType?: string) {
+  constructor(effectiveDate: DateOnlyString, guaranteeExpiryDate: DateOnlyString, currency: string, maximumLiability: number, lenderType?: LenderTypeCodeEnum) {
     this.effectiveDate = effectiveDate;
     this.guaranteeExpiryDate = guaranteeExpiryDate;
     this.currency = currency;
