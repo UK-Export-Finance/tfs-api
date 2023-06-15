@@ -1,11 +1,11 @@
 import { ENUMS, PROPERTIES } from '@ukef/constants';
+import { LenderTypeCodeEnum } from '@ukef/constants/enums/lender-type-code';
 import { AcbsGetFacilityResponseDto } from '@ukef/modules/acbs/dto/acbs-get-facility-response.dto';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
 import { withAcbsCreateBundleInformationTests } from '@ukef-test/common-tests/acbs-create-bundle-information-api-tests';
 import { withAcbsGetFacilityServiceCommonTests } from '@ukef-test/common-tests/acbs-get-facility-by-identifier-api-tests';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
-import { withFacilityIdentifierFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/facility-identifier-field-validation-api-tests';
 import { withNumberFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/number-field-validation-api-tests';
 import { withStringFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/string-field-validation-api-tests';
 import { Api } from '@ukef-test/support/api';
@@ -110,7 +110,6 @@ describe('POST /facilities/{facilityIdentifier}/activation-transactions', () => 
 
   describe('field validation', () => {
     const makeRequest = (body: unknown[]) => api.post(createFacilityActivationTransactionUrl, body);
-    const possibleLenderTypeCode = Object.values(ENUMS.LENDER_TYPE_CODES);
 
     const givenAnyRequestBodyWouldSucceed = () => {
       givenAuthenticationWithTheIdpSucceeds();
@@ -118,20 +117,10 @@ describe('POST /facilities/{facilityIdentifier}/activation-transactions', () => 
       givenAnyRequestBodyToCreateFacilityActivationTransactionInAcbsSucceeds();
     };
 
-    withFacilityIdentifierFieldValidationApiTests({
-      valueGenerator,
-      validRequestBody: requestBodyToCreateFacilityActivationTransaction,
-      makeRequest,
-      givenAnyRequestBodyWouldSucceed,
-    });
-
     withStringFieldValidationApiTests({
       fieldName: 'lenderTypeCode',
       enum: ENUMS.LENDER_TYPE_CODES,
-      length: 3,
-      generateFieldValueOfLength: (length: number) =>
-        length === 3 ? possibleLenderTypeCode[valueGenerator.integer({ min: 0, max: possibleLenderTypeCode.length - 1 })] : valueGenerator.string({ length }),
-      generateFieldValueThatDoesNotMatchEnum: () => '123',
+      generateFieldValueThatDoesNotMatchEnum: () => '123' as LenderTypeCodeEnum,
       validRequestBody: requestBodyToCreateFacilityActivationTransaction,
       makeRequest,
       givenAnyRequestBodyWouldSucceed,

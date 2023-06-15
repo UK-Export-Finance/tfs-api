@@ -1,4 +1,5 @@
-import { PROPERTIES } from '@ukef/constants';
+import { ENUMS, PROPERTIES } from '@ukef/constants';
+import { LenderTypeCodeEnum } from '@ukef/constants/enums/lender-type-code';
 import { UkefId } from '@ukef/helpers';
 import { AcbsCreateDealInvestorRequest } from '@ukef/modules/acbs/dto/acbs-create-deal-investor-request.dto';
 import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
@@ -20,8 +21,7 @@ export class CreateDealInvestorGenerator extends AbstractGenerator<CreateDealInv
 
   protected generateValues(): CreateDealInvestorRequestItem {
     return {
-      dealIdentifier: this.valueGenerator.ukefId(),
-      lenderType: this.valueGenerator.string({ minLength: 0, maxLength: 3 }),
+      lenderType: this.valueGenerator.enumValue<LenderTypeCodeEnum>(ENUMS.LENDER_TYPE_CODES),
       effectiveDate: TEST_DATES.A_PAST_EFFECTIVE_DATE_ONLY,
       expiryDate: this.valueGenerator.dateOnlyString(),
       dealStatus: this.valueGenerator.string({ minLength: 0, maxLength: 1 }),
@@ -29,7 +29,7 @@ export class CreateDealInvestorGenerator extends AbstractGenerator<CreateDealInv
     };
   }
 
-  protected transformRawValuesToGeneratedValues(values: CreateDealInvestorRequest, { dealIdentifier }: GenerateOptions): GenerateResult {
+  protected transformRawValuesToGeneratedValues(values: CreateDealInvestorRequest): GenerateResult {
     const [firstDealInvestor] = values;
 
     const effectiveDateTime = this.currentDateProvider.getEarliestDateFromTodayAnd(
@@ -65,8 +65,7 @@ export class CreateDealInvestorGenerator extends AbstractGenerator<CreateDealInv
       LimitRevolvingIndicator: PROPERTIES.DEAL_INVESTOR.DEFAULT.limitRevolvingIndicator,
     };
 
-    const requestBodyToCreateDealInvestor = values.map((v, index) => ({
-      dealIdentifier: index === 0 ? dealIdentifier : v.dealIdentifier,
+    const requestBodyToCreateDealInvestor = values.map((v) => ({
       lenderType: v.lenderType,
       effectiveDate: v.effectiveDate,
       expiryDate: v.expiryDate,

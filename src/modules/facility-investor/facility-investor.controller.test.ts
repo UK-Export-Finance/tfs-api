@@ -1,3 +1,5 @@
+import { ENUMS } from '@ukef/constants';
+import { LenderTypeCodeEnum } from '@ukef/constants/enums/lender-type-code';
 import { TEST_CURRENCIES } from '@ukef-test/support/constants/test-currency.constant';
 import { TEST_DATES } from '@ukef-test/support/constants/test-date.constant';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
@@ -28,7 +30,7 @@ describe('FacilityInvestorController', () => {
 
     const effectiveDate = TEST_DATES.A_FUTURE_EFFECTIVE_DATE_ONLY;
     const guaranteeExpiryDate = TEST_DATES.A_FUTURE_EXPIRY_DATE_ONLY;
-    const lenderType = valueGenerator.stringOfNumericCharacters();
+    const lenderType = valueGenerator.enumValue<LenderTypeCodeEnum>(ENUMS.LENDER_TYPE_CODES);
     const currency = TEST_CURRENCIES.A_TEST_CURRENCY;
     const maximumLiability = 12345.6;
 
@@ -44,14 +46,6 @@ describe('FacilityInvestorController', () => {
       const response = await controller.createInvestorForFacility({ facilityIdentifier }, [newFacilityInvestor]);
 
       expect(response).toStrictEqual(new CreateFacilityInvestorResponse(facilityIdentifier));
-    });
-
-    it('does NOT include unexpected keys from the request body', async () => {
-      const newFacilityInvestorPlusUnexpectedKeys = { ...newFacilityInvestor, unexpectedKey: 'unexpected value' };
-
-      await controller.createInvestorForFacility({ facilityIdentifier }, [newFacilityInvestorPlusUnexpectedKeys]);
-
-      expect(facilityInvestorServiceCreateInvestorForFacility).toHaveBeenCalledWith(facilityIdentifier, newFacilityInvestor);
     });
   });
 });

@@ -86,13 +86,13 @@ describe('DateStringTransformations', () => {
     it('returns the date in DD/MM/YYYY format', () => {
       const dateTime = new Date('1987-04-23T01:00:00Z');
 
-      expect(dateStringTransformations.getDisplayDateFromDate(dateTime)).toBe('23/04/1987');
+      expect(dateStringTransformations.getDisplayDateFromDate(dateTime)).toBe('23/04/87');
     });
 
     it('returns the date in DD/MM/YYYY format even if the day number could be a single digit', () => {
       const dateTime = new Date('1987-12-03T01:00:00Z');
 
-      expect(dateStringTransformations.getDisplayDateFromDate(dateTime)).toBe('03/12/1987');
+      expect(dateStringTransformations.getDisplayDateFromDate(dateTime)).toBe('03/12/87');
     });
   });
 

@@ -1,4 +1,5 @@
 import { ENUMS, PROPERTIES } from '@ukef/constants';
+import { LenderTypeCodeEnum } from '@ukef/constants/enums/lender-type-code';
 import { AcbsBundleId, AcbsPartyId, DateOnlyString, UkefId } from '@ukef/helpers';
 import { AcbsCreateBundleInformationRequestDto } from '@ukef/modules/acbs/dto/acbs-create-bundle-information-request.dto';
 import { AcbsCreateBundleInformationResponseHeadersDto } from '@ukef/modules/acbs/dto/acbs-create-bundle-information-response.dto';
@@ -25,13 +26,11 @@ export class CreateFacilityActivationTransactionGenerator extends AbstractGenera
   protected generateValues(): CreateFacilityActivationTransactionRequestItem {
     // Numeric enums needs filter to get possible values.
     const possibleInitialBundleStatusCodes = Object.values(ENUMS.INITIAL_BUNDLE_STATUS_CODES).filter((value) => !isNaN(Number(value)));
-    const possibleLenderTypes = Object.values(ENUMS.LENDER_TYPE_CODES);
     return {
-      facilityIdentifier: this.valueGenerator.ukefId(),
       initialBundleStatusCode: possibleInitialBundleStatusCodes[
         this.valueGenerator.integer({ min: 0, max: possibleInitialBundleStatusCodes.length - 1 })
       ] as number,
-      lenderTypeCode: possibleLenderTypes[this.valueGenerator.integer({ min: 0, max: possibleLenderTypes.length - 1 })],
+      lenderTypeCode: this.valueGenerator.enumValue<LenderTypeCodeEnum>(ENUMS.LENDER_TYPE_CODES),
     };
   }
 
@@ -73,7 +72,6 @@ export class CreateFacilityActivationTransactionGenerator extends AbstractGenera
     };
 
     const requestBodyToCreateFacilityActivationTransaction = values.map((value) => ({
-      facilityIdentifier: facilityIdentifier,
       initialBundleStatusCode: value.initialBundleStatusCode,
       lenderTypeCode: value.lenderTypeCode,
     }));

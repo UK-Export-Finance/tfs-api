@@ -1,21 +1,13 @@
-import { ACBSID, ENUMS, EXAMPLES, UKEFID } from '@ukef/constants';
+import { ACBSID, ENUMS, EXAMPLES } from '@ukef/constants';
 import { ValidatedDateOnlyApiProperty } from '@ukef/decorators/validated-date-only-api-property.decorator';
 import { ValidatedNumberApiProperty } from '@ukef/decorators/validated-number-api-property.decorator';
 import { ValidatedStringApiProperty } from '@ukef/decorators/validated-string-api-property.decorator';
-import { AcbsPartyId, UkefId } from '@ukef/helpers';
+import { AcbsPartyId } from '@ukef/helpers';
 import { DateOnlyString } from '@ukef/helpers/date-only-string.type';
 
 export type CreateFacilityGuaranteeRequest = CreateFacilityGuaranteeRequestItem[];
 
 export class CreateFacilityGuaranteeRequestItem {
-  @ValidatedStringApiProperty({
-    description: 'The identifier of the facility to create the guarantee for.',
-    example: EXAMPLES.FACILITY_ID,
-    length: 10,
-    pattern: UKEFID.MAIN_ID.TEN_DIGIT_REGEX,
-  })
-  readonly facilityIdentifier: UkefId;
-
   @ValidatedDateOnlyApiProperty({
     description: `The date that this guarantee will take effect. This will be replaced by today's date if a date in the future is provided.`,
   })
@@ -57,7 +49,6 @@ export class CreateFacilityGuaranteeRequestItem {
   readonly guaranteeTypeCode: string;
 
   constructor(
-    facilityIdentifier: UkefId,
     effectiveDate: DateOnlyString,
     limitKey: AcbsPartyId,
     guaranteeExpiryDate: DateOnlyString,
@@ -65,7 +56,6 @@ export class CreateFacilityGuaranteeRequestItem {
     guarantorParty: AcbsPartyId,
     guaranteeTypeCode: string,
   ) {
-    this.facilityIdentifier = facilityIdentifier;
     this.effectiveDate = effectiveDate;
     this.limitKey = limitKey;
     this.guaranteeExpiryDate = guaranteeExpiryDate;

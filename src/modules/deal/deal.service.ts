@@ -10,7 +10,7 @@ import { DateStringTransformations } from '@ukef/modules/date/date-string.transf
 
 import { Deal } from './deal.interface';
 import { DealBorrowingRestrictionService } from './deal-borrowing-restriction.service';
-import { DealToCreate } from './deal-to-create.interface';
+import { CreateDealRequestItem } from './dto/create-deal-request.dto';
 
 @Injectable()
 export class DealService {
@@ -39,7 +39,7 @@ export class DealService {
     };
   }
 
-  async createDeal(dealToCreate: DealToCreate): Promise<void> {
+  async createDeal(dealToCreate: CreateDealRequestItem): Promise<void> {
     const { portfolioIdentifier } = PROPERTIES.GLOBAL;
     const idToken = await this.getIdToken();
     const requestBody: AcbsCreateDealDto = this.buildAcbsRequestBodyToCreateDeal(dealToCreate, portfolioIdentifier);
@@ -51,7 +51,7 @@ export class DealService {
     return this.acbsAuthenticationService.getIdToken();
   }
 
-  private buildAcbsRequestBodyToCreateDeal(dealToCreate: DealToCreate, portfolioIdentifier: string): AcbsCreateDealDto {
+  private buildAcbsRequestBodyToCreateDeal(dealToCreate: CreateDealRequestItem, portfolioIdentifier: string): AcbsCreateDealDto {
     const now = new Date();
     const todayAsDateString = this.dateStringTransformations.getDateStringFromDate(now);
 
@@ -85,7 +85,7 @@ export class DealService {
     effectiveDateAsDateString,
     officerRiskDate,
   }: {
-    dealToCreate: DealToCreate;
+    dealToCreate: CreateDealRequestItem;
     portfolioIdentifier: string;
     dealDescription: string;
     limitAmount: number;

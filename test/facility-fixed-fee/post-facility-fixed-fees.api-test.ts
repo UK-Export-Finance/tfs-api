@@ -1,4 +1,5 @@
 import { ENUMS, PROPERTIES } from '@ukef/constants';
+import { LenderTypeCodeEnum } from '@ukef/constants/enums/lender-type-code';
 import { AcbsPartyId } from '@ukef/helpers';
 import { AcbsCreateFacilityFixedFeeRequestDto } from '@ukef/modules/acbs/dto/acbs-create-facility-fixed-fee-request.dto';
 import { AcbsGetFacilityResponseDto } from '@ukef/modules/acbs/dto/acbs-get-facility-response.dto';
@@ -374,7 +375,7 @@ describe('POST /facilities/{facilityIdentifier}/fixed-fees', () => {
     withStringFieldValidationApiTests({
       fieldName: 'lenderTypeCode',
       enum: ENUMS.LENDER_TYPE_CODES,
-      generateFieldValueThatDoesNotMatchEnum: () => '123',
+      generateFieldValueThatDoesNotMatchEnum: () => '123' as LenderTypeCodeEnum,
       validRequestBody: requestBodyToCreateFacilityFixedFee,
       makeRequest,
       givenAnyRequestBodyWouldSucceed,

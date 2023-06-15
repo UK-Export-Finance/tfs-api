@@ -9,8 +9,8 @@ import { TEST_DATES } from '@ukef-test/support/constants/test-date.constant';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
 
+import { CreateFacilityGuaranteeRequestItem } from './dto/create-facility-guarantee-request.dto';
 import { FacilityGuaranteeService } from './facility-guarantee.service';
-import { FacilityGuaranteeToCreate } from './facility-guarantee-to-create.interface';
 
 describe('FacilityGuaranteeService', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -37,8 +37,8 @@ describe('FacilityGuaranteeService', () => {
 
   describe('createGuaranteeForFacility', () => {
     const facilityIdentifier = valueGenerator.facilityId();
-    const limitKey = valueGenerator.stringOfNumericCharacters({ maxLength: 8 });
-    const guarantorParty = valueGenerator.stringOfNumericCharacters({ maxLength: 8 });
+    const limitKey = valueGenerator.acbsPartyId();
+    const guarantorParty = valueGenerator.acbsPartyId();
     const guaranteeTypeCode = valueGenerator.stringOfNumericCharacters({ maxLength: 3 });
     const effectiveDate = TEST_DATES.A_PAST_EFFECTIVE_DATE_ONLY;
     const now = new Date();
@@ -46,13 +46,12 @@ describe('FacilityGuaranteeService', () => {
     const expirationDate = valueGenerator.dateOnlyString();
     const maximumLiabilityWithOneDecimalPlace = Number(valueGenerator.nonnegativeFloat().toFixed(1));
 
-    const newGuaranteeWithAllFields: FacilityGuaranteeToCreate = {
-      facilityIdentifier,
+    const newGuaranteeWithAllFields: CreateFacilityGuaranteeRequestItem = {
       effectiveDate,
-      guarantorParty,
       limitKey,
       guaranteeExpiryDate: expirationDate,
       maximumLiability: maximumLiabilityWithOneDecimalPlace,
+      guarantorParty,
       guaranteeTypeCode,
     };
 

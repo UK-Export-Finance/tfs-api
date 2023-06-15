@@ -1,4 +1,5 @@
 import { ENUMS, PROPERTIES } from '@ukef/constants';
+import { LenderTypeCodeEnum } from '@ukef/constants/enums/lender-type-code';
 import { AcbsPartyId, DateOnlyString, UkefId } from '@ukef/helpers';
 import { AcbsCreateBundleInformationRequestDto } from '@ukef/modules/acbs/dto/acbs-create-bundle-information-request.dto';
 import { FacilityFeeAmountTransaction } from '@ukef/modules/acbs/dto/bundle-actions/facility-fee-amount-transaction.bundle-action';
@@ -20,7 +21,7 @@ export class CreateFacilityFixedFeesAmountAmendmentGenerator extends AbstractGen
     return {
       partyIdentifier: this.valueGenerator.acbsPartyId(),
       period: this.valueGenerator.string({ length: 2 }),
-      lenderTypeCode: this.valueGenerator.enumValue(ENUMS.LENDER_TYPE_CODES),
+      lenderTypeCode: this.valueGenerator.enumValue<LenderTypeCodeEnum>(ENUMS.LENDER_TYPE_CODES),
       effectiveDate: this.valueGenerator.dateOnlyString(),
       amountAmendment: this.valueGenerator.float({ min: 0.01 }),
     };
@@ -85,7 +86,7 @@ export class CreateFacilityFixedFeesAmountAmendmentGenerator extends AbstractGen
 interface GenerateValues {
   partyIdentifier: AcbsPartyId;
   period: string;
-  lenderTypeCode: string;
+  lenderTypeCode: LenderTypeCodeEnum;
   effectiveDate: DateOnlyString;
   amountAmendment: number;
 }

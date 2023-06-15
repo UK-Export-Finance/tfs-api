@@ -108,7 +108,7 @@ export class GetFacilityLoanTransactionGenerator extends AbstractGenerator<Facil
                 YearBasisCode: '',
               },
               IndexRateChangeFrequency: {
-                IndexRateChangeFrequencyCode: firstFacilityLoanTransaction.indexRateChangeFrequencyCode,
+                IndexRateChangeFrequencyCode: '',
               },
             },
             {
@@ -120,7 +120,7 @@ export class GetFacilityLoanTransactionGenerator extends AbstractGenerator<Facil
                 YearBasisCode: '',
               },
               IndexRateChangeFrequency: {
-                IndexRateChangeFrequencyCode: '',
+                IndexRateChangeFrequencyCode: firstFacilityLoanTransaction.indexRateChangeFrequencyCode,
               },
             },
           ],

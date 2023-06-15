@@ -58,7 +58,7 @@ export class GetFacilityInvestorResponseItem {
     description: `Investor record type.`,
     minLength: 3,
     maxLength: 3,
-    example: '500',
+    example: EXAMPLES.LENDER_TYPE_CODE,
   })
   readonly lenderTypeCode: string;
 

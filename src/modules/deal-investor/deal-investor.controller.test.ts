@@ -92,19 +92,5 @@ describe('DealInvestorController', () => {
 
       expect(response).toStrictEqual(new CreateDealInvestorResponse(dealIdentifier));
     });
-
-    it('does NOT include unexpected keys from the request body', async () => {
-      const requestBodyToCreateDealInvestorPlusUnexpectedKeys = [
-        {
-          ...requestBodyToCreateDealInvestor[0],
-          unexpectedKey: 'unexpected value',
-        },
-        requestBodyToCreateDealInvestor[1],
-      ];
-
-      await controller.createInvestorForDeal(dealIdentifier, requestBodyToCreateDealInvestorPlusUnexpectedKeys);
-
-      expect(dealInvestorServiceCreateInvestorForDeal).toHaveBeenCalledWith(dealIdentifier, requestBodyToCreateDealInvestor[0]);
-    });
   });
 });

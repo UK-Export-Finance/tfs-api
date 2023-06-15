@@ -577,7 +577,7 @@ export const PROPERTIES = {
       nextDueBusinessDayAdjustmentType: {
         businessDayAdjustmentTypeCode: 'M',
       },
-      rateSetLeadDays: '0',
+      rateSetLeadDays: 0,
       accrualScheduleIBORDetails: {
         isDailyRFR: true,
         rFRCalculationMethod: {

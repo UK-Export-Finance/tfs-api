@@ -41,7 +41,6 @@ export class GetFacilityActivationTransactionResponseDto {
     example: ENUMS.LENDER_TYPE_CODES.FIRST_LEVEL_OBLIGOR,
     minLength: 3,
     maxLength: 3,
-    enum: ENUMS.LENDER_TYPE_CODES,
   })
   readonly lenderTypeCode: string;
 

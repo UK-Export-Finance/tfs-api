@@ -16,7 +16,6 @@ export class CreateFacilityCovenantGenerator extends AbstractGenerator<CreateFac
     const possibleCovenantTypeCodes = Object.values(ENUMS.COVENANT_TYPE_CODES);
 
     return {
-      facilityIdentifier: this.valueGenerator.ukefId(),
       covenantIdentifier: this.valueGenerator.ukefCovenantId(),
       covenantType: possibleCovenantTypeCodes[this.valueGenerator.integer({ min: 0, max: possibleCovenantTypeCodes.length - 1 })],
       maximumLiability: this.valueGenerator.nonnegativeFloat({ fixed: 2 }),
@@ -28,7 +27,7 @@ export class CreateFacilityCovenantGenerator extends AbstractGenerator<CreateFac
 
   protected transformRawValuesToGeneratedValues(
     values: CreateFacilityCovenantRequestDto,
-    { facilityIdentifier, facilityTypeCode, limitKeyValue }: GenerateOptions,
+    { facilityTypeCode, limitKeyValue }: GenerateOptions,
   ): GenerateResult {
     const [firstFacilityCovenant] = values;
 
@@ -90,7 +89,6 @@ export class CreateFacilityCovenantGenerator extends AbstractGenerator<CreateFac
     };
 
     const requestBodyToCreateFacilityCovenant = values.map((v) => ({
-      facilityIdentifier,
       covenantIdentifier: v.covenantIdentifier,
       covenantType: v.covenantType,
       maximumLiability: v.maximumLiability,

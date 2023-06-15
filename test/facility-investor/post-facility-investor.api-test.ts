@@ -1,4 +1,5 @@
-import { PROPERTIES } from '@ukef/constants';
+import { ENUMS, PROPERTIES } from '@ukef/constants';
+import { LenderTypeCodeEnum } from '@ukef/constants/enums/lender-type-code';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { CreateFacilityInvestorRequest, CreateFacilityInvestorRequestItem } from '@ukef/modules/facility-investor/dto/create-facility-investor-request.dto';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
@@ -30,7 +31,7 @@ describe('POST /facilities/{facilityIdentifier}/investors', () => {
   } = PROPERTIES.FACILITY_INVESTOR.DEFAULT;
   const effectiveDateInFuture = TEST_DATES.A_FUTURE_EFFECTIVE_DATE_ONLY;
   const guaranteeExpiryDateInFuture = TEST_DATES.A_FUTURE_EXPIRY_DATE_ONLY;
-  const lenderType = valueGenerator.stringOfNumericCharacters({ length: 3 });
+  const lenderType = valueGenerator.enumValue<LenderTypeCodeEnum>(ENUMS.LENDER_TYPE_CODES);
   const currency = TEST_CURRENCIES.A_TEST_CURRENCY;
   const maximumLiability = 12345.6;
   const limitTypeCode = valueGenerator.stringOfNumericCharacters({ minLength: 1, maxLength: 2 });
@@ -226,9 +227,9 @@ describe('POST /facilities/{facilityIdentifier}/investors', () => {
 
   withStringFieldValidationApiTests({
     fieldName: 'lenderType',
-    length: 3,
+    enum: ENUMS.LENDER_TYPE_CODES,
     required: false,
-    generateFieldValueOfLength: (length: number) => valueGenerator.stringOfNumericCharacters({ length }),
+    generateFieldValueThatDoesNotMatchEnum: () => '123' as LenderTypeCodeEnum,
     validRequestBody: requestBodyToCreateFacilityInvestor,
     makeRequest: (body) => postForFacilityIdentifier(body),
     givenAnyRequestBodyWouldSucceed: () => {

@@ -9,7 +9,7 @@ import { when } from 'jest-when';
 
 import { DateStringTransformations } from '../date/date-string.transformations';
 import { DealGuaranteeService } from './deal-guarantee.service';
-import { DealGuaranteeToCreate } from './deal-guarantee-to-create.interface';
+import { CreateDealGuaranteeRequestItem } from './dto/create-deal-guarantee-request.dto';
 
 jest.mock('@ukef/modules/acbs/acbs-deal-guarantee.service');
 jest.mock('@ukef/modules/acbs-authentication/acbs-authentication.service');
@@ -48,8 +48,7 @@ describe('DealGuaranteeService', () => {
     const expirationDate = valueGenerator.dateOnlyString();
     const maximumLiabilityWithOneDecimalPlace = Number(valueGenerator.nonnegativeFloat().toFixed(1));
 
-    const newGuaranteeWithAllFields: DealGuaranteeToCreate = {
-      dealIdentifier,
+    const newGuaranteeWithAllFields: CreateDealGuaranteeRequestItem = {
       effectiveDate,
       guarantorParty,
       limitKey,

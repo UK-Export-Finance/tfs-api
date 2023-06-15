@@ -1,4 +1,5 @@
-import { PROPERTIES } from '@ukef/constants';
+import { ENUMS, PROPERTIES } from '@ukef/constants';
+import { LenderTypeCodeEnum } from '@ukef/constants/enums/lender-type-code';
 import { AcbsFacilityPartyService } from '@ukef/modules/acbs/acbs-facility-party.service';
 import { AcbsCreateFacilityPartyDto } from '@ukef/modules/acbs/dto/acbs-create-facility-party.dto';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
@@ -8,8 +9,8 @@ import { TEST_DATES } from '@ukef-test/support/constants/test-date.constant';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
 
+import { CreateFacilityInvestorRequestItem } from './dto/create-facility-investor-request.dto';
 import { FacilityInvestorService } from './facility-investor.service';
-import { FacilityInvestorToCreate } from './facility-investor-to-create.interface';
 
 describe('FacilityInvestorService', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -42,11 +43,11 @@ describe('FacilityInvestorService', () => {
     } = PROPERTIES.FACILITY_INVESTOR.DEFAULT;
     const effectiveDate = TEST_DATES.A_FUTURE_EFFECTIVE_DATE_ONLY;
     const guaranteeExpiryDate = TEST_DATES.A_FUTURE_EXPIRY_DATE_ONLY;
-    const lenderType = valueGenerator.stringOfNumericCharacters();
+    const lenderType = valueGenerator.enumValue<LenderTypeCodeEnum>(ENUMS.LENDER_TYPE_CODES);
     const currency = TEST_CURRENCIES.A_TEST_CURRENCY;
     const maximumLiability = 12345.6;
 
-    const newFacilityInvestorWithAllFields: FacilityInvestorToCreate = {
+    const newFacilityInvestorWithAllFields: CreateFacilityInvestorRequestItem = {
       effectiveDate: effectiveDate,
       guaranteeExpiryDate: guaranteeExpiryDate,
       lenderType,

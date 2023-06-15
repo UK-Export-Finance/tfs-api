@@ -7,7 +7,6 @@ import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-aut
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
 import { withCovenantIdentifierFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/covenant-identifier-field-validation-api-tests';
 import { withDateOnlyFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/date-only-field-validation-api-tests';
-import { withFacilityIdentifierFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/facility-identifier-field-validation-api-tests';
 import { withNonNegativeNumberFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/non-negative-number-field-validation-api-tests';
 import { withStringFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/string-field-validation-api-tests';
 import { withFacilityIdentifierUrlValidationApiTests } from '@ukef-test/common-tests/request-url-param-validation-api-tests/facility-identifier-url-validation-api-tests';
@@ -389,13 +388,6 @@ describe('POST /facilities/{facilityIdentifier}/covenants', () => {
       givenRequestToGetFacilitySucceeds();
       givenAnyRequestBodyToCreateCovenantSucceeds();
     };
-
-    withFacilityIdentifierFieldValidationApiTests({
-      valueGenerator,
-      validRequestBody: requestBodyToCreateFacilityCovenant,
-      makeRequest,
-      givenAnyRequestBodyWouldSucceed,
-    });
 
     withCovenantIdentifierFieldValidationApiTests({
       valueGenerator,

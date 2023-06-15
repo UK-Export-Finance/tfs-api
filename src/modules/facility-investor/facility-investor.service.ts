@@ -5,8 +5,8 @@ import { AcbsFacilityPartyService } from '@ukef/modules/acbs/acbs-facility-party
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 
+import { CreateFacilityInvestorRequestItem } from './dto/create-facility-investor-request.dto';
 import { GetFacilityInvestorResponseItem, GetFacilityInvestorsResponse } from './dto/get-facility-investors-response.dto';
-import { FacilityInvestorToCreate } from './facility-investor-to-create.interface';
 
 @Injectable()
 export class FacilityInvestorService {
@@ -16,7 +16,7 @@ export class FacilityInvestorService {
     private readonly dateStringTransformations: DateStringTransformations,
   ) {}
 
-  async createInvestorForFacility(facilityIdentifier: string, newFacilityInvestor: FacilityInvestorToCreate): Promise<void> {
+  async createInvestorForFacility(facilityIdentifier: string, newFacilityInvestor: CreateFacilityInvestorRequestItem): Promise<void> {
     const idToken = await this.acbsAuthenticationService.getIdToken();
     const facilityPartyToCreateInAcbs = {
       FacilityStatus: {

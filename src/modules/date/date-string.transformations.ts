@@ -43,7 +43,7 @@ export class DateStringTransformations {
   }
 
   getDisplayDateFromDate(date: Date): string {
-    return new Intl.DateTimeFormat('en-GB').format(date);
+    return date.toLocaleDateString('en-GB', { year: '2-digit', month: '2-digit', day: '2-digit' });
   }
 
   getDayFromDateOnlyString(dateOnlyString: DateOnlyString): number {
