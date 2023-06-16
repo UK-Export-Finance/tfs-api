@@ -2416,7 +2416,7 @@ components:
           minLength: 0
           enum:
             - BPM
-            - EMP
+            - EPM
             - FGT
           example: BPM
           default: BPM
