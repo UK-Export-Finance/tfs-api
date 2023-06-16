@@ -321,7 +321,7 @@ export class FacilityService {
     const acbsEffectiveDate = this.dateStringTransformations.addTimeToDateOnlyString(facilityToTransform.effectiveDate);
     return {
       OfficerRiskDate: acbsEffectiveDate,
-      CreditReviewRiskDate: acbsEffectiveDate
+      CreditReviewRiskDate: acbsEffectiveDate,
     };
   }
 
