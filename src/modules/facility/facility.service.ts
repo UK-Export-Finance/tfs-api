@@ -140,13 +140,14 @@ export class FacilityService {
   private buildCreateAcbsFacilityRequest(facilityToCreate: CreateFacilityRequestItem): AcbsCreateFacilityRequest {
     const defaultValues = PROPERTIES.FACILITY.DEFAULT.POST;
     const acbsBaseFacilityRequest = this.buildBaseAcbsFacilityRequest(facilityToCreate);
-    const description = this.buildFacilityDescription(facilityToCreate.productTypeName, facilityToCreate.exposurePeriod);
     const facilityInitialStatus = { FacilityInitialStatusCode: defaultValues.facilityInitialStatusCode };
-    return { ...acbsBaseFacilityRequest, Description: description, FacilityInitialStatus: facilityInitialStatus };
+    return { ...acbsBaseFacilityRequest, FacilityInitialStatus: facilityInitialStatus };
   }
 
   private buildBaseAcbsFacilityRequest(facilityToTransform: BaseFacilityRequestItemWithFacilityIdentifier): AcbsBaseFacilityRequest {
     const defaultValues = PROPERTIES.FACILITY.DEFAULT.POST;
+
+    const description = this.buildFacilityDescription(facilityToTransform.productTypeName, facilityToTransform.exposurePeriod);
 
     const { compBalPctReserve, userDefinedDate1, isUserDefinedDate1Zero } = this.buildFacilityStageDerivedValuesToCreate(
       facilityToTransform.facilityStageCode,
@@ -168,6 +169,7 @@ export class FacilityService {
 
     return {
       FacilityIdentifier: facilityToTransform.facilityIdentifier,
+      Description: description,
       Currency: {
         CurrencyCode: facilityToTransform.currency,
         IsActiveIndicator: true,
@@ -316,16 +318,12 @@ export class FacilityService {
   }
 
   private updateAcbsFacilityRequestFieldsForIssueAndAmendExpiryDate(facilityToTransform: BaseFacilityRequestItemWithFacilityIdentifier) {
-    const description = this.buildFacilityDescription(facilityToTransform.productTypeName, facilityToTransform.exposurePeriod);
     const acbsEffectiveDate = this.dateStringTransformations.addTimeToDateOnlyString(facilityToTransform.effectiveDate);
     const acbsIssueDate = facilityToTransform.issueDate ? this.dateStringTransformations.addTimeToDateOnlyString(facilityToTransform.issueDate) : null;
-    const { isUserDefinedDate1Zero } = this.buildFacilityStageDerivedValuesToCreate(facilityToTransform.facilityStageCode, facilityToTransform.issueDate);
     return {
-      Description: description,
       OfficerRiskDate: acbsEffectiveDate,
       CreditReviewRiskDate: acbsEffectiveDate,
       UserDefinedDate1: acbsIssueDate,
-      IsUserDefinedDate1Zero: isUserDefinedDate1Zero,
     };
   }
 
