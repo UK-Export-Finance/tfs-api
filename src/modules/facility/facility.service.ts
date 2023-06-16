@@ -319,11 +319,9 @@ export class FacilityService {
 
   private updateAcbsFacilityRequestFieldsForIssueAndAmendExpiryDate(facilityToTransform: BaseFacilityRequestItemWithFacilityIdentifier) {
     const acbsEffectiveDate = this.dateStringTransformations.addTimeToDateOnlyString(facilityToTransform.effectiveDate);
-    const acbsIssueDate = facilityToTransform.issueDate ? this.dateStringTransformations.addTimeToDateOnlyString(facilityToTransform.issueDate) : null;
     return {
       OfficerRiskDate: acbsEffectiveDate,
-      CreditReviewRiskDate: acbsEffectiveDate,
-      UserDefinedDate1: acbsIssueDate,
+      CreditReviewRiskDate: acbsEffectiveDate
     };
   }
 
