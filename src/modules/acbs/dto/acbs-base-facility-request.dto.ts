@@ -2,6 +2,7 @@ import { DateString } from '@ukef/helpers';
 
 export interface AcbsBaseFacilityRequest {
   FacilityIdentifier: string;
+  Description: string;
   Currency: {
     CurrencyCode: string;
     IsActiveIndicator: boolean;
