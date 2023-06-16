@@ -22,7 +22,7 @@
     "unit-test": "jest --coverage --selectProjects=Unit"
   },
   "dependencies": {
-    "@nestjs/axios": "^2.0.0",
+    "@nestjs/axios": "^3.0.0",
     "@nestjs/cache-manager": "^1.0.0",
     "@nestjs/common": "^9.4.3",
     "@nestjs/config": "^2.3.4",
