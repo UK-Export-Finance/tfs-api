@@ -38,7 +38,7 @@
     "dotenv": "^16.1.4",
     "express-basic-auth": "^1.2.1",
     "luxon": "^3.3.0",
-    "nestjs-pino": "^3.2.0",
+    "nestjs-pino": "^3.3.0",
     "passport": "^0.6.0",
     "passport-headerapikey": "^1.2.2",
     "pino-http": "^8.3.3",
