@@ -100,8 +100,6 @@ interface NewLoanRequestCashEvent {
   Currency: {
     CurrencyCode: string;
   };
-  SettlementCurrencyCode: string;
-  OriginatingGeneralLedgerUnit: string;
   DDAAccount: string;
   CashDetailAmount: number;
   CashReferenceIdentifier: string;
