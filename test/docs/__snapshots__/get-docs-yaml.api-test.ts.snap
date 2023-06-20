@@ -1178,12 +1178,6 @@ components:
           minLength: 8
           maxLength: 8
           default: '00000141'
-        guaranteeTypeCode:
-          type: string
-          description: The identifier for the type of the guarantee.
-          minLength: 3
-          maxLength: 3
-          default: '450'
       required:
         - effectiveDate
         - limitKey

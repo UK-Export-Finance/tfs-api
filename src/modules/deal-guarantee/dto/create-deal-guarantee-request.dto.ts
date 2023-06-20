@@ -40,28 +40,11 @@ export class CreateDealGuaranteeRequestItem {
   })
   readonly guarantorParty?: string;
 
-  @ValidatedStringApiProperty({
-    description: `The identifier for the type of the guarantee.`,
-    default: PROPERTIES.DEAL_GUARANTEE.DEFAULT.guaranteeTypeCode,
-    required: false,
-    minLength: 3,
-    maxLength: 3,
-  })
-  readonly guaranteeTypeCode?: string;
-
-  constructor(
-    effectiveDate: DateOnlyString,
-    limitKey: string,
-    guaranteeExpiryDate: DateOnlyString,
-    maximumLiability: number,
-    guarantorParty?: string,
-    guaranteeTypeCode?: string,
-  ) {
+  constructor(effectiveDate: DateOnlyString, limitKey: string, guaranteeExpiryDate: DateOnlyString, maximumLiability: number, guarantorParty?: string) {
     this.effectiveDate = effectiveDate;
     this.limitKey = limitKey;
     this.guaranteeExpiryDate = guaranteeExpiryDate;
     this.maximumLiability = maximumLiability;
     this.guarantorParty = guarantorParty;
-    this.guaranteeTypeCode = guaranteeTypeCode;
   }
 }

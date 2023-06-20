@@ -31,12 +31,11 @@ describe('DealGuaranteeController', () => {
     const dealIdentifier = valueGenerator.ukefId();
     const limitKey = valueGenerator.stringOfNumericCharacters({ maxLength: 8 });
     const guarantorParty = valueGenerator.stringOfNumericCharacters({ maxLength: 8 });
-    const guaranteeTypeCode = valueGenerator.stringOfNumericCharacters({ maxLength: 3 });
     const effectiveDate = valueGenerator.dateOnlyString();
     const guaranteeExpiryDate = valueGenerator.dateOnlyString();
     const maximumLiability = valueGenerator.nonnegativeFloat();
 
-    const newGuarantee = new CreateDealGuaranteeRequestItem(effectiveDate, limitKey, guaranteeExpiryDate, maximumLiability, guarantorParty, guaranteeTypeCode);
+    const newGuarantee = new CreateDealGuaranteeRequestItem(effectiveDate, limitKey, guaranteeExpiryDate, maximumLiability, guarantorParty);
 
     it('creates a guarantee for the deal with the service from the request body', async () => {
       await controller.createGuaranteeForDeal(dealIdentifier, [newGuarantee]);
