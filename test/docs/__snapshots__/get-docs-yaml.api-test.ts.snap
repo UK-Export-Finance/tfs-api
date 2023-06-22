@@ -2883,7 +2883,9 @@ components:
           example: '1'
         indexRateChangeFrequency:
           type: string
-          description: The frequency which the rate will change.
+          description: >-
+            The frequency which the rate will change. This is required if
+            productTypeGroup is EW.
           minLength: 0
           enum:
             - A

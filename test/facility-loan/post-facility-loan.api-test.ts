@@ -1,4 +1,5 @@
 import { ENUMS, PROPERTIES } from '@ukef/constants';
+import { ProductTypeGroupEnum } from '@ukef/constants/enums/product-type-group';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
@@ -267,16 +268,47 @@ describe('POST /facilities/{facilityIdentifier}/loans', () => {
       givenAnyRequestBodyWouldSucceed,
     });
 
-    withEnumFieldValidationApiTests({
+    const indexRateChangeFrequencyValidationTestOptions = {
       fieldName: 'indexRateChangeFrequency',
       length: 1,
-      required: false,
       enum: ENUMS.FEE_FREQUENCY_TYPES,
       generateFieldValueOfLength: (length: number) => (length === 1 ? valueGenerator.enumValue(ENUMS.FEE_FREQUENCY_TYPES) : valueGenerator.string({ length })),
       generateFieldValueThatDoesNotMatchEnum: () => '3',
-      validRequestBody: requestBodyToCreateFacilityLoanGbp,
       makeRequest,
       givenAnyRequestBodyWouldSucceed,
+    } as const;
+
+    describe(`for a ${ProductTypeGroupEnum.EWCS} loan`, () => {
+      const requestBodyToCreateEwcsFacilityLoan = [
+        {
+          ...requestBodyToCreateFacilityLoanGbp[0],
+          productTypeGroup: ProductTypeGroupEnum.EWCS,
+        },
+      ];
+
+      withEnumFieldValidationApiTests({
+        ...indexRateChangeFrequencyValidationTestOptions,
+        required: true,
+        validRequestBody: requestBodyToCreateEwcsFacilityLoan,
+      });
+    });
+
+    const nonEwcsProductTypeGroups = Object.values(ProductTypeGroupEnum)
+      .filter((group) => group !== ProductTypeGroupEnum.EWCS)
+      .map((group) => ({ productTypeGroup: group }));
+    describe.each(nonEwcsProductTypeGroups)('for a $productTypeGroup loan', ({ productTypeGroup }) => {
+      const requestBodyToCreateFacilityLoanWithProductTypeGroup = [
+        {
+          ...requestBodyToCreateFacilityLoanGbp[0],
+          productTypeGroup,
+        },
+      ];
+
+      withEnumFieldValidationApiTests({
+        ...indexRateChangeFrequencyValidationTestOptions,
+        required: false,
+        validRequestBody: requestBodyToCreateFacilityLoanWithProductTypeGroup,
+      });
     });
   });
 
