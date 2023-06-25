@@ -153,7 +153,7 @@ export class BaseFacilityRequestItem {
     description:
       'The code of the Capital Conversion Factor for the facility (e.g. 100% Conversion, 80% Conversion, No Conversion) from the T1125 table in ACBS. This field should be specified for GEF. When this field is not specified, a default will be chosen based on the productTypeId.',
     example: '1',
-    required: false,
+    required: ({ productTypeId }) => productTypeId === ENUMS.FACILITY_TYPE_IDS.GEF,
     maxLength: 2,
   })
   readonly capitalConversionFactorCode?: string;
