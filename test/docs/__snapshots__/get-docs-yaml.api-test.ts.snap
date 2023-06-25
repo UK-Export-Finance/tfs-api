@@ -1114,6 +1114,7 @@ components:
             a date earlier than the Facility effective date. Use the earliest
             Effective Date on facilities in Workflow under this Deal, i.e.
             Guarantee Commencement Date.
+          nullable: false
         obligorPartyIdentifier:
           type: string
           description: The obligor party identifier.
@@ -1156,6 +1157,7 @@ components:
           description: >-
             The date that this guarantee will take effect. This will be replaced
             by today's date if a date in the future is provided.
+          nullable: false
         limitKey:
           type: string
           description: An ACBS party identifier.
@@ -1166,6 +1168,7 @@ components:
           format: date
           type: string
           description: The date that this guarantee will expire on.
+          nullable: false
         maximumLiability:
           type: number
           description: The maximum amount the guarantor will guarantee.
@@ -1313,6 +1316,7 @@ components:
             The effective date on the deal investor record. If the date provided
             is in the future, it will be replaced by today's date.
           example: '2023-03-24'
+          nullable: false
         expiryDate:
           format: date
           type: string
@@ -1697,14 +1701,17 @@ components:
           description: >-
             The date from which the borrower can draw funds from the facility.
             If this is a future date then it will be replaced with today's date.
+          nullable: false
         guaranteeExpiryDate:
           format: date
           type: string
           description: The expiration date of the facility.
+          nullable: false
         nextQuarterEndDate:
           format: date
           type: string
           description: The end date of the next quarter.
+          nullable: false
         maximumLiability:
           type: number
           description: The overall limit for the facility.
@@ -1916,14 +1923,17 @@ components:
           description: >-
             The date from which the borrower can draw funds from the facility.
             If this is a future date then it will be replaced with today's date.
+          nullable: false
         guaranteeExpiryDate:
           format: date
           type: string
           description: The expiration date of the facility.
+          nullable: false
         nextQuarterEndDate:
           format: date
           type: string
           description: The end date of the next quarter.
+          nullable: false
         maximumLiability:
           type: number
           description: The overall limit for the facility.
@@ -2083,11 +2093,13 @@ components:
             The expiration date of the covenant. It is called expiration date in
             ACBS.
           example: '2023-04-19'
+          nullable: false
         effectiveDate:
           format: date
           type: string
           description: The effective date of the covenant.
           example: '2023-04-19'
+          nullable: false
       required:
         - covenantIdentifier
         - covenantType
@@ -2324,6 +2336,7 @@ components:
           format: date
           type: string
           description: The effective date of this accruing/fixed fee schedule.
+          nullable: false
         amountAmendment:
           type: number
           description: >-
@@ -2362,20 +2375,24 @@ components:
           format: date
           type: string
           description: The effective date of this accruing/fixed fee schedule.
+          nullable: false
         expirationDate:
           format: date
           type: string
           description: The expiration date of this accruing/fixed fee schedule.
+          nullable: false
         nextDueDate:
           format: date
           type: string
           description: Date the next fee bill is due for this fee schedule.
+          nullable: false
         nextAccrueToDate:
           format: date
           type: string
           description: >-
             End date for the current accrual period. This date can be different
             than the Next Due Date.
+          nullable: false
         period:
           type: string
           description: >-
@@ -2502,6 +2519,7 @@ components:
           description: >-
             The date that this guarantee will take effect. This will be replaced
             by today's date if a date in the future is provided.
+          nullable: false
         limitKey:
           type: string
           description: An ACBS party identifier.
@@ -2513,6 +2531,7 @@ components:
           format: date
           type: string
           description: The date that this guarantee will expire on.
+          nullable: false
         maximumLiability:
           type: number
           description: The maximum amount the guarantor will guarantee.
@@ -2580,10 +2599,12 @@ components:
           format: date
           type: string
           description: The date from which this limit is effective.
+          nullable: false
         guaranteeExpiryDate:
           format: date
           type: string
           description: The date on which this limit will expire.
+          nullable: false
         currency:
           type: string
           description: >-
@@ -2777,6 +2798,7 @@ components:
           format: date
           type: string
           description: The date of the action.
+          nullable: false
         borrowerPartyIdentifier:
           type: string
           description: The customer identifier representing the borrower for the loan.
@@ -2839,16 +2861,19 @@ components:
           format: date
           type: string
           description: The facility issue date.
+          nullable: false
         expiryDate:
           format: date
           type: string
           description: The facility expiry date.
+          nullable: false
         nextDueDate:
           format: date
           type: string
           description: >-
             The next payment due date of the repayment schedule & date the next
             rate will be set for accrual schedules.
+          nullable: false
         loanBillingFrequencyType:
           type: string
           description: The frequency at which loan bills should be generated.
@@ -2929,6 +2954,7 @@ components:
           format: date
           type: string
           description: The new expiry date of the loan.
+          nullable: false
       required:
         - expiryDate
     UpdateLoanExpiryDateResponse:
@@ -2950,6 +2976,7 @@ components:
           format: date
           type: string
           description: The date that this amendment is effective.
+          nullable: false
         amountAmendment:
           type: number
           description: >-
@@ -3135,6 +3162,7 @@ components:
           format: date
           type: string
           description: The date of creation.
+          nullable: false
         countryCode:
           type: string
           description: The country code for the party's primary address.

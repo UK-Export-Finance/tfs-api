@@ -160,8 +160,8 @@ export class BaseFacilityRequestItem {
 
   @ValidatedDateOnlyApiProperty({
     description: 'Issue Date for Bond or Disbursement Date for Loan/EWCS. Not required at commitment stage',
-    required: false,
-    nullable: true,
+    required: ({ facilityStageCode }) => facilityStageCode === ENUMS.FACILITY_STAGES.ISSUED,
+    nullable: ({ facilityStageCode }) => facilityStageCode !== ENUMS.FACILITY_STAGES.ISSUED,
     default: null,
   })
   readonly issueDate?: DateOnlyString | null;

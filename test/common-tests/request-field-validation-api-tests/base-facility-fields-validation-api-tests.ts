@@ -25,13 +25,33 @@ export function withBaseFacilityFieldsValidationApiTests({
   includeIssueDate = true,
 }: withBaseFacilityFieldsValidationApiTestInterface) {
   if (includeIssueDate) {
-    withDateOnlyFieldValidationApiTests({
-      fieldName: 'issueDate',
-      required: false,
-      nullable: true,
-      validRequestBody,
-      makeRequest,
-      givenAnyRequestBodyWouldSucceed,
+    const notIssuedFacilityStageCodes = Object.values(ENUMS.FACILITY_STAGES)
+      .filter((code) => code !== ENUMS.FACILITY_STAGES.ISSUED)
+      .map((code) => ({ notIssuedCode: code }));
+    describe.each(notIssuedFacilityStageCodes)('when facilityStageCode is $notIssuedCode', ({ notIssuedCode }) => {
+      const validRequestBodyWithFacilityStageCode: BaseFacilityRequestItem[] | BaseFacilityRequestItem = Array.isArray(validRequestBody)
+        ? [{ ...validRequestBody[0], facilityStageCode: notIssuedCode }]
+        : { ...validRequestBody, facilityStageCode: notIssuedCode };
+
+      withDateOnlyFieldValidationApiTests<BaseFacilityRequestItem>({
+        fieldName: 'issueDate',
+        required: false,
+        nullable: true,
+        validRequestBody: validRequestBodyWithFacilityStageCode,
+        makeRequest,
+        givenAnyRequestBodyWouldSucceed,
+      });
+    });
+
+    describe(`when facilityStageCode is ${ENUMS.FACILITY_STAGES.ISSUED}`, () => {
+      withDateOnlyFieldValidationApiTests({
+        fieldName: 'issueDate',
+        required: true,
+        nullable: false,
+        validRequestBody,
+        makeRequest,
+        givenAnyRequestBodyWouldSucceed,
+      });
     });
   }
 
