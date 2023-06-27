@@ -35,6 +35,11 @@ services:
       ACBS_AUTHENTICATION_PASSWORD:
       ACBS_AUTHENTICATION_RETRY_DELAY_IN_MILLISECONDS:
       ACBS_AUTHENTICATION_TIMEOUT:
+      APIM_MDM_URL:
+      APIM_MDM_KEY:
+      APIM_MDM_VALUE:
+      APIM_MDM_MAX_REDIRECTS:
+      APIM_MDM_TIMEOUT:
 
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:${PORT}']

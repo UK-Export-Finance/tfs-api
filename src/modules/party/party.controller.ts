@@ -84,8 +84,8 @@ export class PartyController {
     const existingExternalRatingsOfParty = await this.partyExternalRatingService.getExternalRatingsForParty(partyIdentifier);
 
     if (Array.isArray(existingExternalRatingsOfParty) && existingExternalRatingsOfParty.length === 0) {
-      // TODO APIM-336: This is a placeholder function which returns a hard-coded value, and should be replaced when Informatica is ready.
-      const assignedRatingCode = this.assignedRatingCodeProvider.getAssignedRatingCode();
+      const { alternateIdentifier } = partyToCreate;
+      const assignedRatingCode = await this.assignedRatingCodeProvider.getAssignedRatingCodeForPartyAlternateIdentifier(alternateIdentifier);
 
       const { officerRiskDate: ratedDate } = partyToCreate;
 
