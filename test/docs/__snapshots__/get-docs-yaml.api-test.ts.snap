@@ -2909,7 +2909,7 @@ components:
         indexRateChangeFrequency:
           type: string
           description: >-
-            The frequency which the rate will change. This is required if
+            The frequency with which the rate will change. This is required if
             productTypeGroup is EW.
           minLength: 0
           enum:
