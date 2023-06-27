@@ -15,12 +15,10 @@ interface Options {
 }
 
 export const ValidatedDateOnlyApiProperty = ({ description, example, required, default: theDefault, nullable }: Options) => {
-  const { shouldPropertyBeDocumentedAsRequired, shouldPropertyBeDocumentedAsNullable, validationDecoratorsToApplyForRequiredOption } = parseRequiredAndNullable(
-    {
-      required,
-      nullable,
-    },
-  );
+  const { shouldPropertyBeDocumentedAsRequired, shouldPropertyBeDocumentedAsNullable, validationDecoratorsToApply } = parseRequiredAndNullable({
+    required,
+    nullable,
+  });
   const decoratorsToApply = [
     ApiProperty({
       description,
@@ -35,7 +33,7 @@ export const ValidatedDateOnlyApiProperty = ({ description, example, required, d
     Matches(DATE_FORMATS.DATE_ONLY_STRING.regex),
   ];
 
-  decoratorsToApply.push(...validationDecoratorsToApplyForRequiredOption);
+  decoratorsToApply.push(...validationDecoratorsToApply);
 
   return applyDecorators(...decoratorsToApply);
 };

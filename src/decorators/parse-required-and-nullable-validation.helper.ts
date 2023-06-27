@@ -12,7 +12,7 @@ export const parseRequiredAndNullable = ({ required, nullable }: RequiredAndNull
   return {
     shouldPropertyBeDocumentedAsRequired: typeof requiredOrDefault === 'function' ? false : requiredOrDefault,
     shouldPropertyBeDocumentedAsNullable: typeof nullableOrDefault === 'function' ? true : nullableOrDefault,
-    validationDecoratorsToApplyForRequiredOption: [
+    validationDecoratorsToApply: [
       ValidateIf(
         (currentObject, propertyValue) =>
           !getAllowedNullishValuesForProperty(currentObject, { required: requiredOrDefault, nullable: nullableOrDefault }).includes(propertyValue),
@@ -21,12 +21,12 @@ export const parseRequiredAndNullable = ({ required, nullable }: RequiredAndNull
   };
 };
 
-const asFunctionDependingOnCurrentObject = (x: BooleanOrBooleanDependingOnCurrentObject): BooleanDependingOnCurrentObject =>
+const asBooleanDependingOnCurrentObject = (x: BooleanOrBooleanDependingOnCurrentObject): BooleanDependingOnCurrentObject =>
   typeof x === 'function' ? x : () => x;
 
 const getAllowedNullishValuesForProperty = (currentObject: Record<string, unknown>, { required, nullable }: RequiredAndNullable): (undefined | null)[] => {
-  const propertyIsRequiredOnCurrentObject = asFunctionDependingOnCurrentObject(required);
-  const propertyIsNullableOnCurrentObject = asFunctionDependingOnCurrentObject(nullable);
+  const propertyIsRequiredOnCurrentObject = asBooleanDependingOnCurrentObject(required);
+  const propertyIsNullableOnCurrentObject = asBooleanDependingOnCurrentObject(nullable);
   const allowedNullishValues: (undefined | null)[] = [];
 
   if (propertyIsNullableOnCurrentObject(currentObject)) {
@@ -48,5 +48,5 @@ interface RequiredAndNullable<> {
 interface ParsedRequiredAndNullableOptions {
   shouldPropertyBeDocumentedAsRequired: boolean;
   shouldPropertyBeDocumentedAsNullable: boolean;
-  validationDecoratorsToApplyForRequiredOption: PropertyDecorator[];
+  validationDecoratorsToApply: PropertyDecorator[];
 }
