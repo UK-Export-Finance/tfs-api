@@ -2,7 +2,7 @@ import { applyDecorators } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsString, Length, Matches } from 'class-validator';
 
-import { parseRequiredAndNullable } from './parse-required-and-nullable-validation.helper';
+import { parseRequiredAndNullable, RequiredOption } from './parse-required-and-nullable-validation.helper';
 
 interface Options {
   description: string;
@@ -15,8 +15,6 @@ interface Options {
   example?: string;
   default?: string;
 }
-
-type RequiredOption = undefined | boolean | ((currentObject: Record<string, unknown>) => boolean);
 
 export const ValidatedStringApiProperty = ({
   description,
