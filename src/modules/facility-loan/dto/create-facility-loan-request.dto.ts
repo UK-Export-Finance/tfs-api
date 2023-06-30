@@ -106,8 +106,8 @@ export class CreateFacilityLoanRequestItem {
   readonly yearBasis: YearBasisCodeEnum;
 
   @ValidatedStringApiProperty({
-    description: 'The frequency which the rate will change.',
-    required: false,
+    description: `The frequency with which the rate will change. This is required if productTypeGroup is ${ProductTypeGroupEnum.EWCS}.`,
+    required: ({ productTypeGroup }) => productTypeGroup === ProductTypeGroupEnum.EWCS,
     enum: ENUMS.FEE_FREQUENCY_TYPES,
     example: ENUMS.FEE_FREQUENCY_TYPES.WEEKLY,
   })

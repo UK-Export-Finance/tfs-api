@@ -1,13 +1,15 @@
 import { applyDecorators } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsOptional, IsString, Length, Matches } from 'class-validator';
+import { IsEnum, IsString, Length, Matches } from 'class-validator';
+
+import { parseRequiredAndNullable, RequiredOption } from './parse-required-and-nullable-validation.helper';
 
 interface Options {
   description: string;
   length?: number;
   minLength?: number;
   maxLength?: number;
-  required?: boolean;
+  required?: RequiredOption;
   pattern?: RegExp;
   enum?: any;
   example?: string;
@@ -27,13 +29,19 @@ export const ValidatedStringApiProperty = ({
 }: Options) => {
   minLength = length ?? minLength ?? 0;
   maxLength = length ?? maxLength;
+
+  const { shouldPropertyBeDocumentedAsRequired, validationDecoratorsToApply } = parseRequiredAndNullable({
+    required,
+    nullable: typeof required === 'function' ? (...args) => !required(...args) : !(required ?? true),
+  });
+
   const decoratorsToApply = [
     ApiProperty({
       type: 'string',
       description,
       minLength,
       maxLength,
-      required,
+      required: shouldPropertyBeDocumentedAsRequired,
       pattern: pattern?.toString().split('/')[1],
       enum: theEnum,
       example,
@@ -42,11 +50,8 @@ export const ValidatedStringApiProperty = ({
     IsString(),
     Length(minLength, maxLength),
   ];
+  decoratorsToApply.push(...validationDecoratorsToApply);
 
-  const isRequiredProperty = required ?? true;
-  if (!isRequiredProperty) {
-    decoratorsToApply.push(IsOptional());
-  }
   if (pattern) {
     decoratorsToApply.push(Matches(pattern));
   }

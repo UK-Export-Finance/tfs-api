@@ -24,14 +24,37 @@ export function withBaseFacilityFieldsValidationApiTests({
   givenAnyRequestBodyWouldSucceed,
   includeIssueDate = true,
 }: withBaseFacilityFieldsValidationApiTestInterface) {
+  const gefProductTypeId = ENUMS.FACILITY_TYPE_IDS.GEF;
+  const issuedFacilityStageCode = ENUMS.FACILITY_STAGES.ISSUED;
+
   if (includeIssueDate) {
-    withDateOnlyFieldValidationApiTests({
-      fieldName: 'issueDate',
-      required: false,
-      nullable: true,
-      validRequestBody,
-      makeRequest,
-      givenAnyRequestBodyWouldSucceed,
+    const notIssuedFacilityStageCodes = Object.values(ENUMS.FACILITY_STAGES)
+      .filter((code) => code !== issuedFacilityStageCode)
+      .map((code) => ({ notIssuedCode: code }));
+    describe.each(notIssuedFacilityStageCodes)('when facilityStageCode is $notIssuedCode', ({ notIssuedCode }) => {
+      const validRequestBodyWithFacilityStageCode: BaseFacilityRequestItem[] | BaseFacilityRequestItem = Array.isArray(validRequestBody)
+        ? [{ ...validRequestBody[0], facilityStageCode: notIssuedCode }]
+        : { ...validRequestBody, facilityStageCode: notIssuedCode };
+
+      withDateOnlyFieldValidationApiTests<BaseFacilityRequestItem>({
+        fieldName: 'issueDate',
+        required: false,
+        nullable: true,
+        validRequestBody: validRequestBodyWithFacilityStageCode,
+        makeRequest,
+        givenAnyRequestBodyWouldSucceed,
+      });
+    });
+
+    describe(`when facilityStageCode is ${issuedFacilityStageCode}`, () => {
+      withDateOnlyFieldValidationApiTests({
+        fieldName: 'issueDate',
+        required: true,
+        nullable: false,
+        validRequestBody,
+        makeRequest,
+        givenAnyRequestBodyWouldSucceed,
+      });
     });
   }
 
@@ -223,14 +246,38 @@ export function withBaseFacilityFieldsValidationApiTests({
     givenAnyRequestBodyWouldSucceed,
   });
 
-  withStringFieldValidationApiTests({
-    fieldName: 'capitalConversionFactorCode',
-    minLength: 0,
-    maxLength: 2,
-    required: false,
-    generateFieldValueOfLength: (length) => valueGenerator.string({ length }),
-    validRequestBody,
-    makeRequest,
-    givenAnyRequestBodyWouldSucceed,
+  const nonGefFacilityTypeIds = Object.values(ENUMS.FACILITY_TYPE_IDS)
+    .filter((code) => code !== gefProductTypeId)
+    .map((id) => ({ nonGefId: id }));
+  describe.each(nonGefFacilityTypeIds)('when productTypeId is $nonGefId', ({ nonGefId }) => {
+    const validRequestBodyWithProductTypeId: BaseFacilityRequestItem[] | BaseFacilityRequestItem = Array.isArray(validRequestBody)
+      ? [{ ...validRequestBody[0], productTypeId: nonGefId }]
+      : { ...validRequestBody, productTypeId: nonGefId };
+    withStringFieldValidationApiTests({
+      fieldName: 'capitalConversionFactorCode',
+      minLength: 0,
+      maxLength: 2,
+      required: false,
+      generateFieldValueOfLength: (length) => valueGenerator.string({ length }),
+      validRequestBody: validRequestBodyWithProductTypeId,
+      makeRequest,
+      givenAnyRequestBodyWouldSucceed,
+    });
+  });
+
+  describe(`when productTypeId is ${gefProductTypeId}`, () => {
+    const validRequestBodyWithGefProductTypeId: BaseFacilityRequestItem[] | BaseFacilityRequestItem = Array.isArray(validRequestBody)
+      ? [{ ...validRequestBody[0], productTypeId: gefProductTypeId }]
+      : { ...validRequestBody, productTypeId: gefProductTypeId };
+    withStringFieldValidationApiTests({
+      fieldName: 'capitalConversionFactorCode',
+      minLength: 0,
+      maxLength: 2,
+      required: true,
+      generateFieldValueOfLength: (length) => valueGenerator.string({ length }),
+      validRequestBody: validRequestBodyWithGefProductTypeId,
+      makeRequest,
+      givenAnyRequestBodyWouldSucceed,
+    });
   });
 }

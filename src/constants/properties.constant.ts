@@ -394,8 +394,6 @@ export const PROPERTIES = {
       cashEventList: {
         paymentInstructionCode: '',
         cashOffsetTypeCode: '02',
-        settlementCurrencyCode: null,
-        originatingGeneralLedgerUnit: null,
         dDAAccount: '',
         cashReferenceIdentifier: '',
       },
