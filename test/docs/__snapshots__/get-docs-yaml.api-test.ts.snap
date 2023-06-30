@@ -2437,6 +2437,7 @@ components:
             Action indicator to be supplied together with the Fee to control
             propagation of the fee effects to other investors. Not applicable to
             output data.
+          nullable: false
       required:
         - amount
         - effectiveDate
