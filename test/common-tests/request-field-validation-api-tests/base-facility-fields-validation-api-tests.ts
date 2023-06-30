@@ -24,9 +24,12 @@ export function withBaseFacilityFieldsValidationApiTests({
   givenAnyRequestBodyWouldSucceed,
   includeIssueDate = true,
 }: withBaseFacilityFieldsValidationApiTestInterface) {
+  const gefProductTypeId = ENUMS.FACILITY_TYPE_IDS.GEF;
+  const issuedFacilityStageCode = ENUMS.FACILITY_STAGES.ISSUED;
+
   if (includeIssueDate) {
     const notIssuedFacilityStageCodes = Object.values(ENUMS.FACILITY_STAGES)
-      .filter((code) => code !== ENUMS.FACILITY_STAGES.ISSUED)
+      .filter((code) => code !== issuedFacilityStageCode)
       .map((code) => ({ notIssuedCode: code }));
     describe.each(notIssuedFacilityStageCodes)('when facilityStageCode is $notIssuedCode', ({ notIssuedCode }) => {
       const validRequestBodyWithFacilityStageCode: BaseFacilityRequestItem[] | BaseFacilityRequestItem = Array.isArray(validRequestBody)
@@ -43,7 +46,7 @@ export function withBaseFacilityFieldsValidationApiTests({
       });
     });
 
-    describe(`when facilityStageCode is ${ENUMS.FACILITY_STAGES.ISSUED}`, () => {
+    describe(`when facilityStageCode is ${issuedFacilityStageCode}`, () => {
       withDateOnlyFieldValidationApiTests({
         fieldName: 'issueDate',
         required: true,
@@ -243,14 +246,38 @@ export function withBaseFacilityFieldsValidationApiTests({
     givenAnyRequestBodyWouldSucceed,
   });
 
-  withStringFieldValidationApiTests({
-    fieldName: 'capitalConversionFactorCode',
-    minLength: 0,
-    maxLength: 2,
-    required: false,
-    generateFieldValueOfLength: (length) => valueGenerator.string({ length }),
-    validRequestBody,
-    makeRequest,
-    givenAnyRequestBodyWouldSucceed,
+  const nonGefFacilityTypeIds = Object.values(ENUMS.FACILITY_TYPE_IDS)
+    .filter((code) => code !== gefProductTypeId)
+    .map((id) => ({ nonGefId: id }));
+  describe.each(nonGefFacilityTypeIds)('when productTypeId is $nonGefId', ({ nonGefId }) => {
+    const validRequestBodyWithProductTypeId: BaseFacilityRequestItem[] | BaseFacilityRequestItem = Array.isArray(validRequestBody)
+      ? [{ ...validRequestBody[0], productTypeId: nonGefId }]
+      : { ...validRequestBody, productTypeId: nonGefId };
+    withStringFieldValidationApiTests({
+      fieldName: 'capitalConversionFactorCode',
+      minLength: 0,
+      maxLength: 2,
+      required: false,
+      generateFieldValueOfLength: (length) => valueGenerator.string({ length }),
+      validRequestBody: validRequestBodyWithProductTypeId,
+      makeRequest,
+      givenAnyRequestBodyWouldSucceed,
+    });
+  });
+
+  describe(`when productTypeId is ${gefProductTypeId}`, () => {
+    const validRequestBodyWithGefProductTypeId: BaseFacilityRequestItem[] | BaseFacilityRequestItem = Array.isArray(validRequestBody)
+      ? [{ ...validRequestBody[0], productTypeId: gefProductTypeId }]
+      : { ...validRequestBody, productTypeId: gefProductTypeId };
+    withStringFieldValidationApiTests({
+      fieldName: 'capitalConversionFactorCode',
+      minLength: 0,
+      maxLength: 2,
+      required: true,
+      generateFieldValueOfLength: (length) => valueGenerator.string({ length }),
+      validRequestBody: validRequestBodyWithGefProductTypeId,
+      makeRequest,
+      givenAnyRequestBodyWouldSucceed,
+    });
   });
 }
