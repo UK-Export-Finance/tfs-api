@@ -30,7 +30,7 @@ export const ValidatedStringApiProperty = ({
   minLength = length ?? minLength ?? 0;
   maxLength = length ?? maxLength;
 
-  const { shouldPropertyBeDocumentedAsRequired, validationDecoratorsToApplyForRequiredOption } = parseRequiredAndNullable({
+  const { shouldPropertyBeDocumentedAsRequired, validationDecoratorsToApply } = parseRequiredAndNullable({
     required,
     nullable: true,
   });
@@ -50,7 +50,7 @@ export const ValidatedStringApiProperty = ({
     IsString(),
     Length(minLength, maxLength),
   ];
-  decoratorsToApply.push(...validationDecoratorsToApplyForRequiredOption);
+  decoratorsToApply.push(...validationDecoratorsToApply);
 
   if (pattern) {
     decoratorsToApply.push(Matches(pattern));
