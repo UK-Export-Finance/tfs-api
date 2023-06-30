@@ -40,7 +40,7 @@ export class DealGuaranteeService {
         PartyIdentifier: newGuarantee.guarantorParty ?? PROPERTIES.DEAL_GUARANTEE.DEFAULT.guarantorParty,
       },
       GuaranteeType: {
-        GuaranteeTypeCode: newGuarantee.guaranteeTypeCode ?? PROPERTIES.DEAL_GUARANTEE.DEFAULT.guaranteeTypeCode,
+        GuaranteeTypeCode: PROPERTIES.DEAL_GUARANTEE.DEFAULT.guaranteeTypeCode,
       },
       EffectiveDate: this.dateStringTransformations.addTimeToDateOnlyString(effectiveDateOnlyString),
       ExpirationDate: this.dateStringTransformations.addTimeToDateOnlyString(newGuarantee.guaranteeExpiryDate),
