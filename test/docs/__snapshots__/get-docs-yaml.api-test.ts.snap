@@ -1106,6 +1106,7 @@ components:
           type: number
           description: The value of the deal.
           minimum: 0
+          nullable: false
         guaranteeCommencementDate:
           format: date
           type: string
@@ -1173,6 +1174,7 @@ components:
           type: number
           description: The maximum amount the guarantor will guarantee.
           minimum: 0
+          nullable: false
         guarantorParty:
           type: string
           description: >-
@@ -1355,6 +1357,7 @@ components:
             - 1
             - 2
             - 3
+          nullable: false
         lenderTypeCode:
           type: string
           description: >-
@@ -1716,6 +1719,7 @@ components:
           type: number
           description: The overall limit for the facility.
           minimum: 0
+          nullable: false
         agentBankIdentifier:
           type: string
           description: The party identifier of the Agent Bank for this facility.
@@ -1769,6 +1773,7 @@ components:
             Bank Rate, this can be for Bond facility corresponding fee rate or
             for Loan/EWCS interest rate.
           minimum: 0
+          nullable: false
         obligorPartyIdentifier:
           type: string
           description: The party identifier of the obligor.
@@ -1780,12 +1785,14 @@ components:
           type: number
           description: Forecast % Derive from FACILITY:Stage, i.e. Commitment or Issued
           minimum: 0
+          nullable: false
         probabilityOfDefault:
           type: number
           description: >-
             A percentage indicating how likely it is that a default on the
             credit will occur. This should be specified for GEF.
           minimum: 0
+          nullable: false
           default: 0
         capitalConversionFactorCode:
           type: string
@@ -1938,6 +1945,7 @@ components:
           type: number
           description: The overall limit for the facility.
           minimum: 0
+          nullable: false
         agentBankIdentifier:
           type: string
           description: The party identifier of the Agent Bank for this facility.
@@ -1989,6 +1997,7 @@ components:
             Bank Rate, this can be for Bond facility corresponding fee rate or
             for Loan/EWCS interest rate.
           minimum: 0
+          nullable: false
         obligorPartyIdentifier:
           type: string
           description: The party identifier of the obligor.
@@ -2000,12 +2009,14 @@ components:
           type: number
           description: Forecast % Derive from FACILITY:Stage, i.e. Commitment or Issued
           minimum: 0
+          nullable: false
         probabilityOfDefault:
           type: number
           description: >-
             A percentage indicating how likely it is that a default on the
             credit will occur. This should be specified for GEF.
           minimum: 0
+          nullable: false
           default: 0
         capitalConversionFactorCode:
           type: string
@@ -2078,6 +2089,7 @@ components:
             The amount used to determine if the covenant is in compliance or
             not. It is called target amount in ACBS.
           minimum: 0
+          nullable: false
         currency:
           type: string
           description: >-
@@ -2192,6 +2204,7 @@ components:
             not. It is required if expirationDate is not provided.
           minimum: 0
           example: 501927.25
+          nullable: false
         expirationDate:
           format: date
           type: string
@@ -2343,6 +2356,7 @@ components:
             Fee amount amendment. For example: if current Fee amount is 352.10
             GBP and you want to set Fee to 0, then set amount to -352.10
           example: -352.1
+          nullable: false
           not:
             enum:
               - 0
@@ -2371,6 +2385,7 @@ components:
             charged, this field is required.
           minimum: 0
           example: 501927.25
+          nullable: false
         effectiveDate:
           format: date
           type: string
@@ -2537,6 +2552,7 @@ components:
           type: number
           description: The maximum amount the guarantor will guarantee.
           minimum: 0
+          nullable: false
         guarantorParty:
           type: string
           description: >-
@@ -2593,6 +2609,7 @@ components:
             expirationDate is not provided.
           minimum: 0
           example: 501927.25
+          nullable: false
     CreateFacilityInvestorRequestItem:
       type: object
       properties:
@@ -2618,6 +2635,7 @@ components:
           type: number
           description: The investor's share of the current limit amount.
           minimum: 0
+          nullable: false
         lenderType:
           type: string
           description: >-
@@ -2844,6 +2862,7 @@ components:
           description: >-
             The exchange rate between the loan currency and the deal currency.
             Required when loan currency differs from deal currency.
+          nullable: false
         dealCustomerUsageOperationType:
           type: string
           description: >-
@@ -2858,6 +2877,7 @@ components:
           type: number
           description: The amount of the loan.
           minimum: 0
+          nullable: false
         issueDate:
           format: date
           type: string
@@ -2893,12 +2913,14 @@ components:
           type: number
           description: The guarantee fee percentage.
           minimum: 0
+          nullable: false
         spreadRateCtl:
           type: number
           description: >-
             The corresponding fee rate. If it is null then the interest rate
             will be used.
           minimum: 0
+          nullable: false
         yearBasis:
           type: string
           description: The year basis for the accrual schedule.
@@ -2985,6 +3007,7 @@ components:
             the loan amount, a negative number decreases the loan amount. 0 is
             not allowed.
           example: 1000000
+          nullable: false
           not:
             enum:
               - 0
