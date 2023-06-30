@@ -206,8 +206,6 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
           Currency: {
             CurrencyCode: facilityLoan.currency,
           },
-          SettlementCurrencyCode: PROPERTIES.FACILITY_LOAN.DEFAULT.cashEventList.settlementCurrencyCode,
-          OriginatingGeneralLedgerUnit: PROPERTIES.FACILITY_LOAN.DEFAULT.cashEventList.originatingGeneralLedgerUnit,
           DDAAccount: PROPERTIES.FACILITY_LOAN.DEFAULT.cashEventList.dDAAccount,
           CashDetailAmount: facilityLoan.amount,
           CashReferenceIdentifier: PROPERTIES.FACILITY_LOAN.DEFAULT.cashEventList.cashReferenceIdentifier,
