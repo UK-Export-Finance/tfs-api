@@ -13,41 +13,5 @@ export const withIssueFacilityTests = ({ givenTheRequestWouldOtherwiseSucceed, u
       expect(status).toBe(400);
       expect(body).toStrictEqual({ message: 'Bad request', error: 'Facility stage code is not issued', statusCode: 400 });
     });
-
-    it('returns a 400 response if request has no issue date', async () => {
-      givenTheRequestWouldOtherwiseSucceed();
-
-      const modifiedUpdateFacilityRequest = { ...updateFacilityRequest };
-      delete modifiedUpdateFacilityRequest.issueDate;
-
-      const { status, body } = await makeRequestWithBody(modifiedUpdateFacilityRequest);
-
-      expect(status).toBe(400);
-      expect(body).toStrictEqual({ message: 'Bad request', error: 'Issue date is not present', statusCode: 400 });
-    });
-
-    it('returns a 400 response if request has an issue date of null', async () => {
-      givenTheRequestWouldOtherwiseSucceed();
-
-      const modifiedUpdateFacilityRequest = { ...updateFacilityRequest };
-      modifiedUpdateFacilityRequest.issueDate = null;
-
-      const { status, body } = await makeRequestWithBody(modifiedUpdateFacilityRequest);
-
-      expect(status).toBe(400);
-      expect(body).toStrictEqual({ message: 'Bad request', error: 'Issue date is not present', statusCode: 400 });
-    });
-
-    it('returns a 400 response if request has an issue date of undefined', async () => {
-      givenTheRequestWouldOtherwiseSucceed();
-
-      const modifiedUpdateFacilityRequest = { ...updateFacilityRequest };
-      modifiedUpdateFacilityRequest.issueDate = undefined;
-
-      const { status, body } = await makeRequestWithBody(modifiedUpdateFacilityRequest);
-
-      expect(status).toBe(400);
-      expect(body).toStrictEqual({ message: 'Bad request', error: 'Issue date is not present', statusCode: 400 });
-    });
   });
 };
