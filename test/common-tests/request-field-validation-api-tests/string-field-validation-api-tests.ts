@@ -59,41 +59,54 @@ export function withStringFieldValidationApiTests<RequestBodyItem, RequestBodyIt
     });
 
     if (required) {
-      if (theEnum && generateFieldValueThatDoesNotMatchEnum) {
-        it(`returns a 400 response if ${fieldName} is not present`, async () => {
-          const { [fieldNameSymbol]: _removed, ...requestWithoutTheField } = requestBodyItem;
-          const preparedRequestWithoutTheField = prepareModifiedRequest(requestIsAnArray, requestWithoutTheField);
+      const expectedRequiredFieldError =
+        theEnum && generateFieldValueThatDoesNotMatchEnum
+          ? `${fieldName} must be one of the following values: ${Object.values(theEnum).join(', ')}`
+          : `${fieldName} must be longer than or equal to ${minLength} characters`;
 
-          const { status, body } = await makeRequest(preparedRequestWithoutTheField);
+      it(`returns a 400 response if ${fieldName} is not present`, async () => {
+        const { [fieldNameSymbol]: _removed, ...requestWithoutTheField } = requestBodyItem;
+        const preparedRequestWithoutTheField = prepareModifiedRequest(requestIsAnArray, requestWithoutTheField);
 
-          expect(status).toBe(400);
-          expect(body).toMatchObject({
-            error: 'Bad Request',
-            message: expect.arrayContaining([`${fieldName} must be one of the following values: ${Object.values(theEnum).join(', ')}`]),
-            statusCode: 400,
-          });
+        const { status, body } = await makeRequest(preparedRequestWithoutTheField);
+
+        expect(status).toBe(400);
+        expect(body).toMatchObject({
+          error: 'Bad Request',
+          message: expect.arrayContaining([expectedRequiredFieldError]),
+          statusCode: 400,
         });
-      } else {
-        it(`returns a 400 response if ${fieldName} is not present`, async () => {
-          const { [fieldNameSymbol]: _removed, ...requestWithoutTheField } = requestBodyItem;
-          const preparedRequestWithoutField = prepareModifiedRequest(requestIsAnArray, requestWithoutTheField);
+      });
 
-          const { status, body } = await makeRequest(preparedRequestWithoutField);
+      it(`returns a 400 response if ${fieldName} is null`, async () => {
+        const requestWithNullField = { ...requestBodyItem, [fieldNameSymbol]: null };
+        const preparedRequestWithNullField = prepareModifiedRequest(requestIsAnArray, requestWithNullField);
 
-          expect(status).toBe(400);
-          expect(body).toMatchObject({
-            error: 'Bad Request',
-            message: expect.arrayContaining([`${fieldName} must be longer than or equal to ${minLength} characters`]),
-            statusCode: 400,
-          });
+        const { status, body } = await makeRequest(preparedRequestWithNullField);
+
+        expect(status).toBe(400);
+        expect(body).toMatchObject({
+          error: 'Bad Request',
+          message: expect.arrayContaining([expectedRequiredFieldError]),
+          statusCode: 400,
         });
-      }
+      });
     } else {
       it(`returns a 2xx response if ${fieldName} is not present`, async () => {
         const { [fieldNameSymbol]: _removed, ...requestWithField } = requestBodyItem;
         const preparedRequestWithField = prepareModifiedRequest(requestIsAnArray, requestWithField);
 
         const { status } = await makeRequest(preparedRequestWithField);
+
+        expect(status).toBeGreaterThanOrEqual(200);
+        expect(status).toBeLessThan(300);
+      });
+
+      it(`returns a 2xx response if ${fieldName} is null`, async () => {
+        const requestWithNullField = { ...requestBodyItem, [fieldNameSymbol]: null };
+        const preparedRequestWithNullField = prepareModifiedRequest(requestIsAnArray, requestWithNullField);
+
+        const { status } = await makeRequest(preparedRequestWithNullField);
 
         expect(status).toBeGreaterThanOrEqual(200);
         expect(status).toBeLessThan(300);
