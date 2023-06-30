@@ -46,6 +46,8 @@ export function withEnumFieldValidationApiTests<RequestBodyItem, RequestBodyItem
     });
 
     if (required) {
+      const expectedRequiredFieldError = `${fieldName} must be one of the following values: ${Object.values(theEnum).join(', ')}`;
+
       it(`returns a 400 response if ${fieldName} is not present`, async () => {
         const { [fieldNameSymbol]: _removed, ...requestWithoutTheField } = requestBodyItem;
         const preparedRequestWithoutTheField = prepareModifiedRequest(requestIsAnArray, requestWithoutTheField);
@@ -55,7 +57,21 @@ export function withEnumFieldValidationApiTests<RequestBodyItem, RequestBodyItem
         expect(status).toBe(400);
         expect(body).toMatchObject({
           error: 'Bad Request',
-          message: expect.arrayContaining([`${fieldName} must be one of the following values: ${Object.values(theEnum).join(', ')}`]),
+          message: expect.arrayContaining([expectedRequiredFieldError]),
+          statusCode: 400,
+        });
+      });
+
+      it(`returns a 400 response if ${fieldName} is null`, async () => {
+        const requestWithNullField = { ...requestBodyItem, [fieldNameSymbol]: null };
+        const preparedRequestWithNullField = prepareModifiedRequest(requestIsAnArray, requestWithNullField);
+
+        const { status, body } = await makeRequest(preparedRequestWithNullField);
+
+        expect(status).toBe(400);
+        expect(body).toMatchObject({
+          error: 'Bad Request',
+          message: expect.arrayContaining([expectedRequiredFieldError]),
           statusCode: 400,
         });
       });
@@ -65,6 +81,16 @@ export function withEnumFieldValidationApiTests<RequestBodyItem, RequestBodyItem
         const preparedRequestWithField = prepareModifiedRequest(requestIsAnArray, requestWithField);
 
         const { status } = await makeRequest(preparedRequestWithField);
+
+        expect(status).toBeGreaterThanOrEqual(200);
+        expect(status).toBeLessThan(300);
+      });
+
+      it(`returns a 2xx response if ${fieldName} is null`, async () => {
+        const requestWithNullField = { ...requestBodyItem, [fieldNameSymbol]: null };
+        const preparedRequestWithNullField = prepareModifiedRequest(requestIsAnArray, requestWithNullField);
+
+        const { status } = await makeRequest(preparedRequestWithNullField);
 
         expect(status).toBeGreaterThanOrEqual(200);
         expect(status).toBeLessThan(300);

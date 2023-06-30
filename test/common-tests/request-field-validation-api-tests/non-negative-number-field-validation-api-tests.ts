@@ -26,6 +26,7 @@ export function withNonNegativeNumberFieldValidationApiTests<RequestBodyItem>({
 
   const requestIsAnArray = Array.isArray(validRequestBody);
   const requestBodyItem = requestIsAnArray ? validRequestBody[0] : validRequestBody;
+  const expectedNonEmptyFieldError = `${fieldName} should not be empty`;
 
   required = required ?? true;
 
@@ -44,20 +45,7 @@ export function withNonNegativeNumberFieldValidationApiTests<RequestBodyItem>({
         expect(status).toBe(400);
         expect(body).toMatchObject({
           error: 'Bad Request',
-          message: expect.arrayContaining([`${fieldName} should not be empty`]),
-          statusCode: 400,
-        });
-      });
-
-      it(`returns a 400 response if ${fieldName} is null`, async () => {
-        const requestWithNullField = { ...validRequestBody[0], [fieldNameSymbol]: null };
-
-        const { status, body } = await makeRequest([requestWithNullField]);
-
-        expect(status).toBe(400);
-        expect(body).toMatchObject({
-          error: 'Bad Request',
-          message: expect.arrayContaining([`${fieldName} should not be empty`]),
+          message: expect.arrayContaining([expectedNonEmptyFieldError]),
           statusCode: 400,
         });
       });
@@ -72,6 +60,20 @@ export function withNonNegativeNumberFieldValidationApiTests<RequestBodyItem>({
         expect(status).toBeLessThan(300);
       });
     }
+
+    it(`returns a 400 response if ${fieldName} is null`, async () => {
+      const requestWithNullField = { ...validRequestBody[0], [fieldNameSymbol]: null };
+      const preparedRequestWithNullField = prepareModifiedRequest(requestIsAnArray, requestWithNullField);
+
+      const { status, body } = await makeRequest(preparedRequestWithNullField);
+
+      expect(status).toBe(400);
+      expect(body).toMatchObject({
+        error: 'Bad Request',
+        message: expect.arrayContaining([expectedNonEmptyFieldError]),
+        statusCode: 400,
+      });
+    });
 
     it(`returns a 400 response if ${fieldName} is less than 0`, async () => {
       const requestWithNegativeField = { ...requestBodyItem, [fieldNameSymbol]: -0.01 };
