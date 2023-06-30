@@ -32,7 +32,7 @@ export const ValidatedStringApiProperty = ({
 
   const { shouldPropertyBeDocumentedAsRequired, validationDecoratorsToApply } = parseRequiredAndNullable({
     required,
-    nullable: true,
+    nullable: typeof required === 'function' ? (...args) => !required(...args) : !(required ?? true),
   });
 
   const decoratorsToApply = [
