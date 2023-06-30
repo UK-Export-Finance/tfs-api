@@ -15,7 +15,6 @@ export class UpdateFacilityGuaranteesRequestDto {
     description: 'The maximum amount the guarantor will guarantee. It is required if expirationDate is not provided.',
     minimum: 0,
     required: false,
-    nullable: false,
     example: EXAMPLES.DEAL_OR_FACILITY_VALUE,
   })
   readonly guaranteedLimit?: number;

@@ -8,7 +8,6 @@ export class UpdateFacilityCovenantsRequestDto {
     description: 'The amount used to determine if the covenant is in compliance or not. It is required if expirationDate is not provided.',
     minimum: 0,
     required: false,
-    nullable: false,
     example: EXAMPLES.DEAL_OR_FACILITY_VALUE,
   })
   readonly targetAmount?: number;
