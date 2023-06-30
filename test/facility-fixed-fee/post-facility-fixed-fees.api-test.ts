@@ -7,7 +7,7 @@ import { DateStringTransformations } from '@ukef/modules/date/date-string.transf
 import { CreateFacilityFixedFeeRequest } from '@ukef/modules/facility-fixed-fee/dto/create-facility-fixed-fee-request.dto';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
-import { withBooleanFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/boolean-field-validation-api-tests';
+import { withRequiredBooleanFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/boolean-field-validation-api-tests';
 import { withDateOnlyFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/date-only-field-validation-api-tests';
 import { withNonNegativeNumberFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/non-negative-number-field-validation-api-tests';
 import { withStringFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/string-field-validation-api-tests';
@@ -391,9 +391,8 @@ describe('POST /facilities/{facilityIdentifier}/fixed-fees', () => {
       givenAnyRequestBodyWouldSucceed,
     });
 
-    withBooleanFieldValidationApiTests({
+    withRequiredBooleanFieldValidationApiTests({
       fieldName: 'spreadToInvestorsIndicator',
-      required: true,
       validRequestBody: requestBodyToCreateFacilityFixedFee,
       makeRequest,
       givenAnyRequestBodyWouldSucceed,

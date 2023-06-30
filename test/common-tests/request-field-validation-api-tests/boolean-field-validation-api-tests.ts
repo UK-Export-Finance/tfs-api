@@ -1,51 +1,37 @@
 import request from 'supertest';
 
-export interface BooleanFieldValidationApiTestOptions<RequestBodyItem, RequestBodyItemKey extends keyof RequestBodyItem> {
+interface Options<RequestBodyItem, RequestBodyItemKey extends keyof RequestBodyItem> {
   fieldName: RequestBodyItemKey;
-  required?: boolean;
   validRequestBody: RequestBodyItem[];
   makeRequest: ((body: unknown[]) => request.Test) | ((body: unknown) => request.Test);
   givenAnyRequestBodyWouldSucceed: () => void;
 }
 
-export function withBooleanFieldValidationApiTests<RequestBodyItem, RequestBodyItemKey extends keyof RequestBodyItem>({
+export function withRequiredBooleanFieldValidationApiTests<RequestBodyItem, RequestBodyItemKey extends keyof RequestBodyItem>({
   fieldName: fieldNameSymbol,
-  required,
   validRequestBody,
   makeRequest,
   givenAnyRequestBodyWouldSucceed,
-}: BooleanFieldValidationApiTestOptions<RequestBodyItem, RequestBodyItemKey>): void {
+}: Options<RequestBodyItem, RequestBodyItemKey>): void {
   const fieldName = fieldNameSymbol.toString();
-  required = required ?? true;
 
   describe(`${fieldName} validation`, () => {
     beforeEach(() => {
       givenAnyRequestBodyWouldSucceed();
     });
 
-    if (required) {
-      const expectedRequiredFieldError = `${fieldName} should not be empty`;
-      it(`returns a 400 response if ${fieldName} is not present`, async () => {
-        const [{ [fieldNameSymbol]: _removed, ...requestWithoutTheField }] = validRequestBody;
+    it(`returns a 400 response if ${fieldName} is not present`, async () => {
+      const [{ [fieldNameSymbol]: _removed, ...requestWithoutTheField }] = validRequestBody;
 
-        const { status, body } = await makeRequest([requestWithoutTheField]);
+      const { status, body } = await makeRequest([requestWithoutTheField]);
 
-        expect(status).toBe(400);
-        expect(body).toMatchObject({
-          error: 'Bad Request',
-          message: expect.arrayContaining([expectedRequiredFieldError]),
-          statusCode: 400,
-        });
+      expect(status).toBe(400);
+      expect(body).toMatchObject({
+        error: 'Bad Request',
+        message: expect.arrayContaining([`${fieldName} should not be empty`]),
+        statusCode: 400,
       });
-    } else {
-      it(`returns a 201 response if ${fieldName} is not present`, async () => {
-        const [{ [fieldNameSymbol]: _removed, ...requestWithoutField }] = validRequestBody;
-
-        const { status } = await makeRequest([requestWithoutField]);
-
-        expect(status).toBe(201);
-      });
-    }
+    });
 
     it(`returns a 400 response if ${fieldName} is null`, async () => {
       const requestWithNullField = { ...validRequestBody[0], [fieldNameSymbol]: null };

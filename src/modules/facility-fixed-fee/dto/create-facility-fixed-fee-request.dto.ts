@@ -1,6 +1,6 @@
 import { ENUMS, EXAMPLES, PROPERTIES } from '@ukef/constants';
 import { LenderTypeCodeEnum } from '@ukef/constants/enums/lender-type-code';
-import { ValidatedBooleanApiProperty } from '@ukef/decorators/validated-boolean-api-property.decorator';
+import { ValidatedRequiredBooleanApiProperty } from '@ukef/decorators/validated-boolean-api-property.decorator';
 import { ValidatedCurrencyApiProperty } from '@ukef/decorators/validated-currency-api-property-decorator';
 import { ValidatedDateOnlyApiProperty } from '@ukef/decorators/validated-date-only-api-property.decorator';
 import { ValidatedNumberApiProperty } from '@ukef/decorators/validated-number-api-property.decorator';
@@ -64,7 +64,7 @@ export class CreateFacilityFixedFeeRequestItem {
   })
   readonly incomeClassCode?: string;
 
-  @ValidatedBooleanApiProperty({
+  @ValidatedRequiredBooleanApiProperty({
     description:
       'Action indicator to be supplied together with the Fee to control propagation of the fee effects to other investors. Not applicable to output data.',
   })
