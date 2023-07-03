@@ -1,5 +1,50 @@
 # Changelog
 
+## [1.2.0](https://github.com/UK-Export-Finance/tfs-api/compare/v1.1.0...v1.2.0) (2023-07-03)
+
+
+### Features
+
+* **APIM-369:** remove guaranteeTypeCode request field from CreateDealGuaranteeRequest ([500b2f7](https://github.com/UK-Export-Finance/tfs-api/commit/500b2f775f5b7894f688f537ca208fed0881a0fb))
+* **APIM-369:** require capitalConversionCode for GEF facilities ([28919f7](https://github.com/UK-Export-Finance/tfs-api/commit/28919f7f524e12853b21318e096d234e5b263970))
+* **APIM-369:** require issueDate when facilityStageCode is 07 for create and update facility ([b43f874](https://github.com/UK-Export-Finance/tfs-api/commit/b43f874af6c302fd120bd0500f5109581af90410))
+
+
+### Bug Fixes
+
+* **APIM-369:** correct typo in indexRateChangeFrequency description ([6a318af](https://github.com/UK-Export-Finance/tfs-api/commit/6a318afb1fbdb97488b27027a9650ef57674403f))
+* **APIM-369:** fix minor differences compared to TF-EA ([#276](https://github.com/UK-Export-Finance/tfs-api/issues/276)) ([92b8799](https://github.com/UK-Export-Finance/tfs-api/commit/92b87999762dfafb3bf12098ee98e2d349c62056))
+* **APIM-369:** remove null CashEventList values for facility loan creation ([e5f1bfb](https://github.com/UK-Export-Finance/tfs-api/commit/e5f1bfbfeea564534ffdc86195545c6ab474655c))
+* **APIM-369:** remove unnecessary boolean field validation logic ([82a701b](https://github.com/UK-Export-Finance/tfs-api/commit/82a701bf6b93b835f331a5d4113ec6a7a4b360f6))
+* **APIM-369:** require indexRateChangeFrequency when creating EWCS loans ([682501c](https://github.com/UK-Export-Finance/tfs-api/commit/682501caa7461f64804302437d178e742938edef))
+* **APIM-369:** restore original nullable behaviour for string fields ([f6d4e10](https://github.com/UK-Export-Finance/tfs-api/commit/f6d4e10140a86550eabac691967d5b53114eaa18))
+* **APIM-369:** test null values in field validation api tests ([fb4cb18](https://github.com/UK-Export-Finance/tfs-api/commit/fb4cb18bf074167495004dbbebac808a1c38c760))
+* **iac:** added custom dns for vnet ([#267](https://github.com/UK-Export-Finance/tfs-api/issues/267)) ([f70c3eb](https://github.com/UK-Export-Finance/tfs-api/commit/f70c3eb2e953b99dd3c0d188ff6e56d26b300417))
+
+
+### Miscellaneous
+
+* **deps-dev:** bump @commitlint/cli from 17.6.5 to 17.6.6 ([#270](https://github.com/UK-Export-Finance/tfs-api/issues/270)) ([212e56c](https://github.com/UK-Export-Finance/tfs-api/commit/212e56cd276a34df2dacafd4dca3f555d3620fa1))
+* **deps-dev:** bump @commitlint/config-conventional from 17.6.5 to 17.6.6 ([#269](https://github.com/UK-Export-Finance/tfs-api/issues/269)) ([1d4b740](https://github.com/UK-Export-Finance/tfs-api/commit/1d4b74099fc2480499ac3e61f72e98d6d3f15a23))
+* **deps-dev:** bump @nestjs/cli from 10.0.3 to 10.0.5 ([#273](https://github.com/UK-Export-Finance/tfs-api/issues/273)) ([1c24d98](https://github.com/UK-Export-Finance/tfs-api/commit/1c24d98a735d94e526b0c4f85c7bf3dae07bce93))
+* **deps-dev:** bump @nestjs/cli from 10.0.5 to 10.1.0 ([#290](https://github.com/UK-Export-Finance/tfs-api/issues/290)) ([49f3c55](https://github.com/UK-Export-Finance/tfs-api/commit/49f3c554bc0e073bc148fd31a8b34117d68e5bfd))
+* **deps-dev:** bump @tsconfig/node18 from 2.0.1 to 18.2.0 ([#282](https://github.com/UK-Export-Finance/tfs-api/issues/282)) ([5674b19](https://github.com/UK-Export-Finance/tfs-api/commit/5674b190b120d2ef763b60fddb4a8a7f6fab5c64))
+* **deps-dev:** bump @types/node from 20.3.1 to 20.3.2 ([#271](https://github.com/UK-Export-Finance/tfs-api/issues/271)) ([2ad5da2](https://github.com/UK-Export-Finance/tfs-api/commit/2ad5da2f7976356a1cfb62d1cbe3915bbae35f9e))
+* **deps-dev:** bump @types/node from 20.3.2 to 20.3.3 ([#287](https://github.com/UK-Export-Finance/tfs-api/issues/287)) ([b6b0cb8](https://github.com/UK-Export-Finance/tfs-api/commit/b6b0cb89bfc3ff1191a49ec0428243ed9c2c69ad))
+* **deps-dev:** bump @typescript-eslint/eslint-plugin from 5.60.0 to 5.60.1 ([#275](https://github.com/UK-Export-Finance/tfs-api/issues/275)) ([72014e3](https://github.com/UK-Export-Finance/tfs-api/commit/72014e3d922429ef2d71524d54389c3a7da635be))
+* **deps-dev:** bump @typescript-eslint/parser from 5.60.0 to 5.60.1 ([#274](https://github.com/UK-Export-Finance/tfs-api/issues/274)) ([180b310](https://github.com/UK-Export-Finance/tfs-api/commit/180b310b8f11f2b3c14cbc4948013920b604eeeb))
+* **deps-dev:** bump eslint from 8.43.0 to 8.44.0 ([#288](https://github.com/UK-Export-Finance/tfs-api/issues/288)) ([9ccf60f](https://github.com/UK-Export-Finance/tfs-api/commit/9ccf60f08c7a94cfb26146c3e34a71a43f6ddca0))
+* **deps-dev:** bump lint-staged from 13.2.2 to 13.2.3 ([#280](https://github.com/UK-Export-Finance/tfs-api/issues/280)) ([f0e7cf2](https://github.com/UK-Export-Finance/tfs-api/commit/f0e7cf2f4fc0611a0e5d7b6c6a8360d8ca1fb30c))
+* **deps-dev:** bump sort-package-json from 2.4.1 to 2.5.0 ([#291](https://github.com/UK-Export-Finance/tfs-api/issues/291)) ([d4bbb02](https://github.com/UK-Export-Finance/tfs-api/commit/d4bbb0296c9c98fe6798228da0bce92482526bd4))
+* **deps-dev:** bump ts-jest from 29.1.0 to 29.1.1 ([#289](https://github.com/UK-Export-Finance/tfs-api/issues/289)) ([5b32200](https://github.com/UK-Export-Finance/tfs-api/commit/5b32200f224a262731b6bb58159d55a679f581d6))
+* **deps-dev:** bump ts-loader from 9.4.3 to 9.4.4 ([#284](https://github.com/UK-Export-Finance/tfs-api/issues/284)) ([cf9a070](https://github.com/UK-Export-Finance/tfs-api/commit/cf9a0701087f4d4480c5f75013392b27003c6697))
+* **deps:** bump @nestjs/swagger from 7.0.11 to 7.0.12 ([#285](https://github.com/UK-Export-Finance/tfs-api/issues/285)) ([b1e71d6](https://github.com/UK-Export-Finance/tfs-api/commit/b1e71d65747fe6f15d6171874294c424b51544cc))
+* **deps:** bump @nestjs/swagger from 7.0.3 to 7.0.4 ([#266](https://github.com/UK-Export-Finance/tfs-api/issues/266)) ([89f9040](https://github.com/UK-Export-Finance/tfs-api/commit/89f9040058b61ef0a9bb0cfdaea37a07de279f45))
+* **deps:** bump @nestjs/swagger from 7.0.4 to 7.0.6 ([#272](https://github.com/UK-Export-Finance/tfs-api/issues/272)) ([8b5589f](https://github.com/UK-Export-Finance/tfs-api/commit/8b5589f0703b1159acc173a0ffd2e37de8778153))
+* **deps:** bump @nestjs/swagger from 7.0.6 to 7.0.11 ([#283](https://github.com/UK-Export-Finance/tfs-api/issues/283)) ([e65da5a](https://github.com/UK-Export-Finance/tfs-api/commit/e65da5aabe1a5c9d5228551ab929985b8a828224))
+* **deps:** bump tslib from 2.5.3 to 2.6.0 ([#279](https://github.com/UK-Export-Finance/tfs-api/issues/279)) ([2146f2f](https://github.com/UK-Export-Finance/tfs-api/commit/2146f2f522a31578820364e5ff77dd34befb9e9c))
+* **deps:** bump typescript from 5.1.3 to 5.1.6 ([#281](https://github.com/UK-Export-Finance/tfs-api/issues/281)) ([4850f4a](https://github.com/UK-Export-Finance/tfs-api/commit/4850f4a0982deaa4979b8ef4a592cfca40b6ce90))
+
 ## [1.1.0](https://github.com/UK-Export-Finance/tfs-api/compare/v1.0.0...v1.1.0) (2023-06-22)
 
 
