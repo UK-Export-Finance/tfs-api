@@ -6,6 +6,7 @@ import { withAcbsGetFacilityServiceCommonTests } from '@ukef-test/common-tests/a
 import { withAcbsUpdateFacilityByIdentifierServiceTests } from '@ukef-test/common-tests/acbs-update-facility-by-identifier-api-tests';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
 import { withBaseFacilityFieldsValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/base-facility-fields-validation-api-tests';
+import { withDateOnlyFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/date-only-field-validation-api-tests';
 import { withIssueFacilityTests } from '@ukef-test/facility/put-facility-by-facility-identifier.test-parts/issue-facility-api-tests';
 import { withPutFacilityQueryParameterTests } from '@ukef-test/facility/put-facility-by-facility-identifier.test-parts/put-facility-by-facility-query-parameter-api-tests';
 import { Api } from '@ukef-test/support/api';
@@ -122,6 +123,15 @@ describe('PUT /facilities', () => {
         },
         updateFacilityRequest,
         makeRequestWithBody: (body: unknown) => makeRequestWithBody(body),
+      });
+
+      withDateOnlyFieldValidationApiTests({
+        fieldName: 'issueDate',
+        required: true,
+        nullable: false,
+        validRequestBody: updateFacilityRequest,
+        makeRequest: (body: unknown) => makeRequestWithBody(body),
+        givenAnyRequestBodyWouldSucceed: () => givenAnyRequestBodyWouldSucceed(),
       });
     }
 

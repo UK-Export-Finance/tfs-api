@@ -1106,6 +1106,7 @@ components:
           type: number
           description: The value of the deal.
           minimum: 0
+          nullable: false
         guaranteeCommencementDate:
           format: date
           type: string
@@ -1114,6 +1115,7 @@ components:
             a date earlier than the Facility effective date. Use the earliest
             Effective Date on facilities in Workflow under this Deal, i.e.
             Guarantee Commencement Date.
+          nullable: false
         obligorPartyIdentifier:
           type: string
           description: The obligor party identifier.
@@ -1156,6 +1158,7 @@ components:
           description: >-
             The date that this guarantee will take effect. This will be replaced
             by today's date if a date in the future is provided.
+          nullable: false
         limitKey:
           type: string
           description: An ACBS party identifier.
@@ -1166,10 +1169,12 @@ components:
           format: date
           type: string
           description: The date that this guarantee will expire on.
+          nullable: false
         maximumLiability:
           type: number
           description: The maximum amount the guarantor will guarantee.
           minimum: 0
+          nullable: false
         guarantorParty:
           type: string
           description: >-
@@ -1178,12 +1183,6 @@ components:
           minLength: 8
           maxLength: 8
           default: '00000141'
-        guaranteeTypeCode:
-          type: string
-          description: The identifier for the type of the guarantee.
-          minLength: 3
-          maxLength: 3
-          default: '450'
       required:
         - effectiveDate
         - limitKey
@@ -1319,6 +1318,7 @@ components:
             The effective date on the deal investor record. If the date provided
             is in the future, it will be replaced by today's date.
           example: '2023-03-24'
+          nullable: false
         expiryDate:
           format: date
           type: string
@@ -1357,6 +1357,7 @@ components:
             - 1
             - 2
             - 3
+          nullable: false
         lenderTypeCode:
           type: string
           description: >-
@@ -1703,18 +1704,22 @@ components:
           description: >-
             The date from which the borrower can draw funds from the facility.
             If this is a future date then it will be replaced with today's date.
+          nullable: false
         guaranteeExpiryDate:
           format: date
           type: string
           description: The expiration date of the facility.
+          nullable: false
         nextQuarterEndDate:
           format: date
           type: string
           description: The end date of the next quarter.
+          nullable: false
         maximumLiability:
           type: number
           description: The overall limit for the facility.
           minimum: 0
+          nullable: false
         agentBankIdentifier:
           type: string
           description: The party identifier of the Agent Bank for this facility.
@@ -1768,6 +1773,7 @@ components:
             Bank Rate, this can be for Bond facility corresponding fee rate or
             for Loan/EWCS interest rate.
           minimum: 0
+          nullable: false
         obligorPartyIdentifier:
           type: string
           description: The party identifier of the obligor.
@@ -1779,12 +1785,14 @@ components:
           type: number
           description: Forecast % Derive from FACILITY:Stage, i.e. Commitment or Issued
           minimum: 0
+          nullable: false
         probabilityOfDefault:
           type: number
           description: >-
             A percentage indicating how likely it is that a default on the
             credit will occur. This should be specified for GEF.
           minimum: 0
+          nullable: false
           default: 0
         capitalConversionFactorCode:
           type: string
@@ -1922,18 +1930,22 @@ components:
           description: >-
             The date from which the borrower can draw funds from the facility.
             If this is a future date then it will be replaced with today's date.
+          nullable: false
         guaranteeExpiryDate:
           format: date
           type: string
           description: The expiration date of the facility.
+          nullable: false
         nextQuarterEndDate:
           format: date
           type: string
           description: The end date of the next quarter.
+          nullable: false
         maximumLiability:
           type: number
           description: The overall limit for the facility.
           minimum: 0
+          nullable: false
         agentBankIdentifier:
           type: string
           description: The party identifier of the Agent Bank for this facility.
@@ -1985,6 +1997,7 @@ components:
             Bank Rate, this can be for Bond facility corresponding fee rate or
             for Loan/EWCS interest rate.
           minimum: 0
+          nullable: false
         obligorPartyIdentifier:
           type: string
           description: The party identifier of the obligor.
@@ -1996,12 +2009,14 @@ components:
           type: number
           description: Forecast % Derive from FACILITY:Stage, i.e. Commitment or Issued
           minimum: 0
+          nullable: false
         probabilityOfDefault:
           type: number
           description: >-
             A percentage indicating how likely it is that a default on the
             credit will occur. This should be specified for GEF.
           minimum: 0
+          nullable: false
           default: 0
         capitalConversionFactorCode:
           type: string
@@ -2074,6 +2089,7 @@ components:
             The amount used to determine if the covenant is in compliance or
             not. It is called target amount in ACBS.
           minimum: 0
+          nullable: false
         currency:
           type: string
           description: >-
@@ -2089,11 +2105,13 @@ components:
             The expiration date of the covenant. It is called expiration date in
             ACBS.
           example: '2023-04-19'
+          nullable: false
         effectiveDate:
           format: date
           type: string
           description: The effective date of the covenant.
           example: '2023-04-19'
+          nullable: false
       required:
         - covenantIdentifier
         - covenantType
@@ -2186,6 +2204,7 @@ components:
             not. It is required if expirationDate is not provided.
           minimum: 0
           example: 501927.25
+          nullable: false
         expirationDate:
           format: date
           type: string
@@ -2330,12 +2349,14 @@ components:
           format: date
           type: string
           description: The effective date of this accruing/fixed fee schedule.
+          nullable: false
         amountAmendment:
           type: number
           description: >-
             Fee amount amendment. For example: if current Fee amount is 352.10
             GBP and you want to set Fee to 0, then set amount to -352.10
           example: -352.1
+          nullable: false
           not:
             enum:
               - 0
@@ -2364,24 +2385,29 @@ components:
             charged, this field is required.
           minimum: 0
           example: 501927.25
+          nullable: false
         effectiveDate:
           format: date
           type: string
           description: The effective date of this accruing/fixed fee schedule.
+          nullable: false
         expirationDate:
           format: date
           type: string
           description: The expiration date of this accruing/fixed fee schedule.
+          nullable: false
         nextDueDate:
           format: date
           type: string
           description: Date the next fee bill is due for this fee schedule.
+          nullable: false
         nextAccrueToDate:
           format: date
           type: string
           description: >-
             End date for the current accrual period. This date can be different
             than the Next Due Date.
+          nullable: false
         period:
           type: string
           description: >-
@@ -2426,6 +2452,7 @@ components:
             Action indicator to be supplied together with the Fee to control
             propagation of the fee effects to other investors. Not applicable to
             output data.
+          nullable: false
       required:
         - amount
         - effectiveDate
@@ -2508,6 +2535,7 @@ components:
           description: >-
             The date that this guarantee will take effect. This will be replaced
             by today's date if a date in the future is provided.
+          nullable: false
         limitKey:
           type: string
           description: An ACBS party identifier.
@@ -2519,10 +2547,12 @@ components:
           format: date
           type: string
           description: The date that this guarantee will expire on.
+          nullable: false
         maximumLiability:
           type: number
           description: The maximum amount the guarantor will guarantee.
           minimum: 0
+          nullable: false
         guarantorParty:
           type: string
           description: >-
@@ -2579,6 +2609,7 @@ components:
             expirationDate is not provided.
           minimum: 0
           example: 501927.25
+          nullable: false
     CreateFacilityInvestorRequestItem:
       type: object
       properties:
@@ -2586,10 +2617,12 @@ components:
           format: date
           type: string
           description: The date from which this limit is effective.
+          nullable: false
         guaranteeExpiryDate:
           format: date
           type: string
           description: The date on which this limit will expire.
+          nullable: false
         currency:
           type: string
           description: >-
@@ -2602,6 +2635,7 @@ components:
           type: number
           description: The investor's share of the current limit amount.
           minimum: 0
+          nullable: false
         lenderType:
           type: string
           description: >-
@@ -2783,6 +2817,7 @@ components:
           format: date
           type: string
           description: The date of the action.
+          nullable: false
         borrowerPartyIdentifier:
           type: string
           description: The customer identifier representing the borrower for the loan.
@@ -2827,6 +2862,7 @@ components:
           description: >-
             The exchange rate between the loan currency and the deal currency.
             Required when loan currency differs from deal currency.
+          nullable: false
         dealCustomerUsageOperationType:
           type: string
           description: >-
@@ -2841,20 +2877,24 @@ components:
           type: number
           description: The amount of the loan.
           minimum: 0
+          nullable: false
         issueDate:
           format: date
           type: string
           description: The facility issue date.
+          nullable: false
         expiryDate:
           format: date
           type: string
           description: The facility expiry date.
+          nullable: false
         nextDueDate:
           format: date
           type: string
           description: >-
             The next payment due date of the repayment schedule & date the next
             rate will be set for accrual schedules.
+          nullable: false
         loanBillingFrequencyType:
           type: string
           description: The frequency at which loan bills should be generated.
@@ -2873,12 +2913,14 @@ components:
           type: number
           description: The guarantee fee percentage.
           minimum: 0
+          nullable: false
         spreadRateCtl:
           type: number
           description: >-
             The corresponding fee rate. If it is null then the interest rate
             will be used.
           minimum: 0
+          nullable: false
         yearBasis:
           type: string
           description: The year basis for the accrual schedule.
@@ -2889,7 +2931,9 @@ components:
           example: '1'
         indexRateChangeFrequency:
           type: string
-          description: The frequency which the rate will change.
+          description: >-
+            The frequency with which the rate will change. This is required if
+            productTypeGroup is EW.
           minLength: 0
           enum:
             - A
@@ -2933,6 +2977,7 @@ components:
           format: date
           type: string
           description: The new expiry date of the loan.
+          nullable: false
       required:
         - expiryDate
     UpdateLoanExpiryDateResponse:
@@ -2954,6 +2999,7 @@ components:
           format: date
           type: string
           description: The date that this amendment is effective.
+          nullable: false
         amountAmendment:
           type: number
           description: >-
@@ -2961,6 +3007,7 @@ components:
             the loan amount, a negative number decreases the loan amount. 0 is
             not allowed.
           example: 1000000
+          nullable: false
           not:
             enum:
               - 0
@@ -3139,6 +3186,7 @@ components:
           format: date
           type: string
           description: The date of creation.
+          nullable: false
         countryCode:
           type: string
           description: The country code for the party's primary address.

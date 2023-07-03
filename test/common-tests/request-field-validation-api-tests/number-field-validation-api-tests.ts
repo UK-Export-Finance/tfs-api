@@ -28,6 +28,7 @@ export function withNumberFieldValidationApiTests<RequestBodyItem>({
   const valueGenerator = new RandomValueGenerator();
   required = required ?? true;
   const [validRequestItem] = validRequestBody;
+  const expectedNonEmptyFieldError = `${fieldName} should not be empty`;
 
   describe(`${fieldName} validation`, () => {
     beforeEach(() => {
@@ -43,20 +44,7 @@ export function withNumberFieldValidationApiTests<RequestBodyItem>({
         expect(status).toBe(400);
         expect(body).toMatchObject({
           error: 'Bad Request',
-          message: expect.arrayContaining([`${fieldName} should not be empty`]),
-          statusCode: 400,
-        });
-      });
-
-      it(`returns a 400 response if ${fieldName} is null`, async () => {
-        const requestWithNullField = { ...validRequestItem, [fieldNameSymbol]: null };
-
-        const { status, body } = await makeRequest([requestWithNullField]);
-
-        expect(status).toBe(400);
-        expect(body).toMatchObject({
-          error: 'Bad Request',
-          message: expect.arrayContaining([`${fieldName} should not be empty`]),
+          message: expect.arrayContaining([expectedNonEmptyFieldError]),
           statusCode: 400,
         });
       });
@@ -69,6 +57,19 @@ export function withNumberFieldValidationApiTests<RequestBodyItem>({
         expect(status).toBe(201);
       });
     }
+
+    it(`returns a 400 response if ${fieldName} is null`, async () => {
+      const requestWithNullField = { ...validRequestItem, [fieldNameSymbol]: null };
+
+      const { status, body } = await makeRequest([requestWithNullField]);
+
+      expect(status).toBe(400);
+      expect(body).toMatchObject({
+        error: 'Bad Request',
+        message: expect.arrayContaining([expectedNonEmptyFieldError]),
+        statusCode: 400,
+      });
+    });
 
     it(`returns a 400 response if ${fieldName} is string`, async () => {
       const requestWithNullField = { ...validRequestBody[0], [fieldNameSymbol]: 'true' };

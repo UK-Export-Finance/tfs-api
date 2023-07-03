@@ -41,9 +41,8 @@ describe('DealGuaranteeService', () => {
     const dealIdentifier = valueGenerator.stringOfNumericCharacters();
     const limitKey = valueGenerator.stringOfNumericCharacters({ maxLength: 8 });
     const guarantorParty = valueGenerator.stringOfNumericCharacters({ maxLength: 8 });
-    const guaranteeTypeCode = valueGenerator.stringOfNumericCharacters({ maxLength: 3 });
     const effectiveDate = TEST_DATES.A_PAST_EFFECTIVE_DATE_ONLY;
-    const now = new Date();
+    const now = new Date('2023-06-13');
     const todayAsDateOnlyString = dateStringTransformations.removeTime(now.toISOString());
     const expirationDate = valueGenerator.dateOnlyString();
     const maximumLiabilityWithOneDecimalPlace = Number(valueGenerator.nonnegativeFloat().toFixed(1));
@@ -54,7 +53,6 @@ describe('DealGuaranteeService', () => {
       limitKey,
       guaranteeExpiryDate: expirationDate,
       maximumLiability: maximumLiabilityWithOneDecimalPlace,
-      guaranteeTypeCode,
     };
 
     it('creates a guarantee in ACBS with a transformation of the requested new guarantee', async () => {
@@ -71,7 +69,7 @@ describe('DealGuaranteeService', () => {
           PartyIdentifier: guarantorParty,
         },
         GuaranteeType: {
-          GuaranteeTypeCode: guaranteeTypeCode,
+          GuaranteeTypeCode: PROPERTIES.DEAL_GUARANTEE.DEFAULT.guaranteeTypeCode,
         },
         EffectiveDate: dateStringTransformations.addTimeToDateOnlyString(effectiveDate),
         ExpirationDate: dateStringTransformations.addTimeToDateOnlyString(expirationDate),
@@ -92,16 +90,6 @@ describe('DealGuaranteeService', () => {
       const guaranteeCreatedInAcbs = getGuaranteeCreatedInAcbs();
 
       expect(guaranteeCreatedInAcbs.GuarantorParty.PartyIdentifier).toBe(PROPERTIES.DEAL_GUARANTEE.DEFAULT.guarantorParty);
-    });
-
-    it('adds a default value for guaranteeTypeCode before creating the new guarantee if it is not specified', async () => {
-      const { guaranteeTypeCode: _removed, ...newGuaranteeWithoutGuaranteeTypeCode } = newGuaranteeWithAllFields;
-
-      await service.createGuaranteeForDeal(dealIdentifier, newGuaranteeWithoutGuaranteeTypeCode);
-
-      const guaranteeCreatedInAcbs = getGuaranteeCreatedInAcbs();
-
-      expect(guaranteeCreatedInAcbs.GuaranteeType.GuaranteeTypeCode).toBe(PROPERTIES.DEAL_GUARANTEE.DEFAULT.guaranteeTypeCode);
     });
 
     it(`replaces effectiveDate with today's date if effectiveDate is after today`, async () => {

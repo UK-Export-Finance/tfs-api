@@ -1,5 +1,6 @@
 import { PROPERTIES } from '@ukef/constants';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
+import { CreateDealGuaranteeRequestItem } from '@ukef/modules/deal-guarantee/dto/create-deal-guarantee-request.dto';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
 import { withDateOnlyFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/date-only-field-validation-api-tests';
@@ -24,13 +25,13 @@ describe('POST /deals/{dealIdentifier}/guarantees', () => {
     lenderType: { lenderTypeCode },
     limitType: { limitTypeCode },
     sectionIdentifier,
+    guaranteeTypeCode,
   } = PROPERTIES.DEAL_GUARANTEE.DEFAULT;
 
   const guarantorParty = valueGenerator.stringOfNumericCharacters({ length: 8 });
   const limitKey = valueGenerator.stringOfNumericCharacters({ length: 8 });
   const effectiveDateInPast = TEST_DATES.A_PAST_EFFECTIVE_DATE_ONLY;
   const guaranteeExpiryDateInFuture = TEST_DATES.A_FUTURE_EXPIRY_DATE_ONLY;
-  const guaranteeTypeCode = valueGenerator.stringOfNumericCharacters({ length: 3 });
   const maximumLiability = 12345.6;
 
   const acbsRequestBodyToCreateDealGuarantee = {
@@ -54,14 +55,12 @@ describe('POST /deals/{dealIdentifier}/guarantees', () => {
     GuaranteedPercentage: guaranteedPercentage,
   };
 
-  const requestItemToCreateDealGuarantee = {
-    dealIdentifier,
+  const requestItemToCreateDealGuarantee: CreateDealGuaranteeRequestItem = {
     guarantorParty,
     limitKey,
     effectiveDate: effectiveDateInPast,
     guaranteeExpiryDate: guaranteeExpiryDateInFuture,
     maximumLiability,
-    guaranteeTypeCode,
   };
 
   const requestBodyToCreateDealGuarantee = [requestItemToCreateDealGuarantee];
@@ -130,33 +129,6 @@ describe('POST /deals/{dealIdentifier}/guarantees', () => {
     expect(acbsRequestWithDefaultGuarantorParty.isDone()).toBe(true);
   });
 
-  it('sets the default guaranteeTypeCode if it is not specified in the request', async () => {
-    const { guaranteeTypeCode: _removed, ...newDealGuaranteeWithoutGuaranteeTypeCode } = requestItemToCreateDealGuarantee;
-    const requestBodyWithoutGuaranteeTypeCode = [newDealGuaranteeWithoutGuaranteeTypeCode];
-    const acbsRequestBodyWithDefaultGuaranteeTypeCode = {
-      ...acbsRequestBodyToCreateDealGuarantee,
-      GuaranteeType: {
-        GuaranteeTypeCode: PROPERTIES.DEAL_GUARANTEE.DEFAULT.guaranteeTypeCode,
-      },
-    };
-    givenAuthenticationWithTheIdpSucceeds();
-    const acbsRequestWithDefaultGuaranteeTypeCode = requestToCreateDealGuaranteeInAcbsWithBody(acbsRequestBodyWithDefaultGuaranteeTypeCode).reply(
-      201,
-      undefined,
-      {
-        location: `/Portfolio/${portfolioIdentifier}/Deal/${dealIdentifier}/DealGuarantee?accountOwnerIdentifier=00000000&lenderTypeCode=${lenderTypeCode}&sectionIdentifier=${sectionIdentifier}&limitTypeCode=${limitTypeCode}&limitKey=${limitKey}&guarantorPartyIdentifier=${guarantorParty}`,
-      },
-    );
-
-    const { status, body } = await api.post(createDealGuaranteeUrl, requestBodyWithoutGuaranteeTypeCode);
-
-    expect(status).toBe(201);
-    expect(body).toStrictEqual({
-      dealIdentifier,
-    });
-    expect(acbsRequestWithDefaultGuaranteeTypeCode.isDone()).toBe(true);
-  });
-
   it('rounds the maximumLiability to 2dp', async () => {
     const requestBodyWithMaximumLiabilityToRound = [{ ...requestBodyToCreateDealGuarantee[0], maximumLiability: 1.234 }];
     const acbsRequestBodyWithRoundedMaximumLiability = {
@@ -185,7 +157,7 @@ describe('POST /deals/{dealIdentifier}/guarantees', () => {
     const requestBodyWithFutureEffectiveDate = [{ ...requestBodyToCreateDealGuarantee[0], effectiveDate: TEST_DATES.A_FUTURE_EFFECTIVE_DATE_ONLY }];
     const acbsRequestBodyWithTodayEffectiveDate = {
       ...acbsRequestBodyToCreateDealGuarantee,
-      EffectiveDate: new Date().toISOString().split('T')[0] + 'T00:00:00Z',
+      EffectiveDate: new Date('2023-06-13').toISOString().split('T')[0] + 'T00:00:00Z',
     };
     givenAuthenticationWithTheIdpSucceeds();
     const acbsRequestWithTodayEffectiveDate = requestToCreateDealGuaranteeInAcbsWithBody(acbsRequestBodyWithTodayEffectiveDate).reply(201, undefined, {
@@ -247,19 +219,6 @@ describe('POST /deals/{dealIdentifier}/guarantees', () => {
   withStringFieldValidationApiTests({
     fieldName: 'guarantorParty',
     length: 8,
-    required: false,
-    generateFieldValueOfLength: (length: number) => valueGenerator.stringOfNumericCharacters({ length }),
-    validRequestBody: requestBodyToCreateDealGuarantee,
-    makeRequest: (body) => api.post(createDealGuaranteeUrl, body),
-    givenAnyRequestBodyWouldSucceed: () => {
-      givenAuthenticationWithTheIdpSucceeds();
-      givenAnyRequestBodyToCreateDealGuaranteeInAcbsSucceeds();
-    },
-  });
-
-  withStringFieldValidationApiTests({
-    fieldName: 'guaranteeTypeCode',
-    length: 3,
     required: false,
     generateFieldValueOfLength: (length: number) => valueGenerator.stringOfNumericCharacters({ length }),
     validRequestBody: requestBodyToCreateDealGuarantee,
