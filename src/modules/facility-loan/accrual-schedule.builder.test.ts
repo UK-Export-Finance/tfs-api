@@ -67,7 +67,7 @@ describe('AccrualScheduleBuilder', () => {
         ...newLoanGbp,
         issueDate: dateAfterToday,
       };
-      const midnightToday = dateStringTransformations.getDateStringFromDate(new Date());
+      const midnightToday = dateStringTransformations.getDateStringFromDate(new Date('2023-06-13'));
       const accrualSchedulesWithIssueDateAfterToday = [
         {
           ...bondAndGefAccrualSchedulesGbp[0],

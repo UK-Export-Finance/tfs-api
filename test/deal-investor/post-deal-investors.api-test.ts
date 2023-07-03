@@ -144,7 +144,7 @@ describe('POST /deals/{dealIdentifier}/investors', () => {
     const requestBodyWithFutureEffectiveDate = [{ ...requestBodyToCreateDealInvestor[0], effectiveDate: TEST_DATES.A_FUTURE_EFFECTIVE_DATE_ONLY }];
     const acbsRequestBodyWithTodayEffectiveDate = {
       ...acbsRequestBodyToCreateDealInvestor,
-      EffectiveDate: dateStringTransformations.getDateStringFromDate(new Date()),
+      EffectiveDate: dateStringTransformations.getDateStringFromDate(new Date('2023-06-13')),
     };
     givenAuthenticationWithTheIdpSucceeds();
     const acbsRequestWithTodayEffectiveDate = requestToCreateDealInvestorInAcbsWithBody(acbsRequestBodyWithTodayEffectiveDate).reply(201);

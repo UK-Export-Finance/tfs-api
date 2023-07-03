@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class CurrentDateProvider {
   getLatestDateFromTodayAnd(otherDate: Date): Date {
-    const now = new Date();
+    const now = new Date('2023-06-13');
 
     if (otherDate > now) {
       return otherDate;
@@ -13,7 +13,7 @@ export class CurrentDateProvider {
   }
 
   getEarliestDateFromTodayAnd(otherDate: Date): Date {
-    const now = new Date();
+    const now = new Date('2023-06-13');
 
     if (otherDate < now) {
       return otherDate;
