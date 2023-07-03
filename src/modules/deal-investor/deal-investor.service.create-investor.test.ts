@@ -20,7 +20,7 @@ describe('DealInvestorService', () => {
   const currentDateProvider = new CurrentDateProvider();
   const dateStringTransformations = new DateStringTransformations();
   const idToken = valueGenerator.string();
-  const [todayAsDateOnlyString] = new Date().toISOString().split('T');
+  const [todayAsDateOnlyString] = new Date('2023-06-13').toISOString().split('T');
 
   let acbsDealPartyService: AcbsDealPartyService;
   let service: DealInvestorService;

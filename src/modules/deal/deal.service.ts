@@ -52,7 +52,7 @@ export class DealService {
   }
 
   private buildAcbsRequestBodyToCreateDeal(dealToCreate: CreateDealRequestItem, portfolioIdentifier: string): AcbsCreateDealDto {
-    const now = new Date();
+    const now = new Date('2023-06-13');
     const todayAsDateString = this.dateStringTransformations.getDateStringFromDate(now);
 
     const guaranteeCommencementDate = new Date(dealToCreate.guaranteeCommencementDate);
