@@ -129,9 +129,7 @@ export interface AcbsBaseFacilityRequest {
   AccountStructure: {
     AccountStructureCode: string;
   };
-  FacilityOverallStatus: {
-    FacilityStatusCode: string;
-  };
+  // TODO: APIM-492 we might need to put FacilityOverallStatus field back here for Production release.
   LenderType: {
     LenderTypeCode: string;
   };
