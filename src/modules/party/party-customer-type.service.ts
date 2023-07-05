@@ -29,7 +29,6 @@ export class PartyCustomerTypeService {
       return typeOfFirstCustomerFound;
     } catch (error) {
       if (error instanceof MdmResourceNotFoundException) {
-        // TODO APIM-336: Should we check the error message as well to not apply this logic for unexpected 404 errors?
         this.logThatNoCustomersWereFound({ alternateIdentifier, fallbackIfNotFound });
         return fallbackIfNotFound;
       }
