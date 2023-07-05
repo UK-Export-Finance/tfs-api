@@ -34,7 +34,7 @@ describe('PartyController', () => {
   beforeEach(() => {
     partyService = new PartyService(null, null, null);
     partyExternalRatingService = new PartyExternalRatingService(null, null, null);
-    assignedRatingCodeProvider = new AssignedRatingCodeProvider();
+    assignedRatingCodeProvider = new AssignedRatingCodeProvider(null);
 
     partyServiceGetPartyByIdentifier = jest.fn();
     partyService.getPartyByIdentifier = partyServiceGetPartyByIdentifier;
@@ -52,7 +52,7 @@ describe('PartyController', () => {
     partyExternalRatingService.createExternalRatingForParty = partyExternalRatingServiceCreateExternalRatingForParty;
 
     assignedRatingCodeProviderGetAssignedRatingCode = jest.fn();
-    assignedRatingCodeProvider.getAssignedRatingCode = assignedRatingCodeProviderGetAssignedRatingCode;
+    assignedRatingCodeProvider.getAssignedRatingCodeForPartyAlternateIdentifier = assignedRatingCodeProviderGetAssignedRatingCode;
 
     controller = new PartyController(partyService, partyExternalRatingService, assignedRatingCodeProvider);
   });
@@ -89,7 +89,7 @@ describe('PartyController', () => {
       status: jest.fn().mockReturnThis(),
     } as any;
     const [newParty] = apiCreatePartyRequest;
-    const { officerRiskDate: ratedDate } = newParty;
+    const { officerRiskDate: ratedDate, alternateIdentifier: newPartyAlternateIdentifier } = newParty;
     const { externalRatings } = new GetPartyExternalRatingGenerator(valueGenerator).generate({ numberToGenerate: 1, partyIdentifier });
     const { SOVEREIGN, CORPORATE } = ENUMS.ASSIGNED_RATING_CODES;
 
@@ -101,7 +101,7 @@ describe('PartyController', () => {
     });
 
     it('returns the party identifier if the PartyAlternateIdentifier matches an existing party', async () => {
-      when(partyServiceGetPartyIdentifierBySearchText).calledWith(newParty.alternateIdentifier).mockResolvedValueOnce({ partyIdentifier });
+      when(partyServiceGetPartyIdentifierBySearchText).calledWith(newPartyAlternateIdentifier).mockResolvedValueOnce({ partyIdentifier });
 
       const response = await controller.createParty(apiCreatePartyRequest, res);
 
@@ -110,7 +110,7 @@ describe('PartyController', () => {
     });
 
     it('returns the party identifier if creating the party succeeds', async () => {
-      when(partyServiceGetPartyIdentifierBySearchText).calledWith(newParty.alternateIdentifier).mockResolvedValueOnce(undefined);
+      when(partyServiceGetPartyIdentifierBySearchText).calledWith(newPartyAlternateIdentifier).mockResolvedValueOnce(undefined);
       when(partyServiceCreateParty).calledWith(newParty).mockResolvedValueOnce({ partyIdentifier });
 
       const response = await controller.createParty(apiCreatePartyRequest, res);
@@ -119,10 +119,10 @@ describe('PartyController', () => {
     });
 
     it('does not create an external rating for the newly created party if one or more external ratings already exist', async () => {
-      when(partyServiceGetPartyIdentifierBySearchText).calledWith(newParty.alternateIdentifier).mockResolvedValueOnce(undefined);
+      when(partyServiceGetPartyIdentifierBySearchText).calledWith(newPartyAlternateIdentifier).mockResolvedValueOnce(undefined);
       when(partyServiceCreateParty).calledWith(newParty).mockResolvedValueOnce({ partyIdentifier });
       when(partyExternalRatingServiceGetExternalRatingsForParty).calledWith(partyIdentifier).mockResolvedValueOnce(externalRatings);
-      when(assignedRatingCodeProviderGetAssignedRatingCode).calledWith().mockReturnValueOnce(CORPORATE);
+      when(assignedRatingCodeProviderGetAssignedRatingCode).calledWith(newPartyAlternateIdentifier).mockReturnValueOnce(CORPORATE);
 
       await controller.createParty(apiCreatePartyRequest, res);
 
@@ -131,10 +131,10 @@ describe('PartyController', () => {
     });
 
     it(`creates an external rating for the newly created party if it does not already have any, for a sovereign account type`, async () => {
-      when(partyServiceGetPartyIdentifierBySearchText).calledWith(newParty.alternateIdentifier).mockResolvedValueOnce(undefined);
+      when(partyServiceGetPartyIdentifierBySearchText).calledWith(newPartyAlternateIdentifier).mockResolvedValueOnce(undefined);
       when(partyServiceCreateParty).calledWith(newParty).mockResolvedValueOnce({ partyIdentifier });
       when(partyExternalRatingServiceGetExternalRatingsForParty).calledWith(partyIdentifier).mockResolvedValueOnce([]);
-      when(assignedRatingCodeProviderGetAssignedRatingCode).calledWith().mockReturnValueOnce(SOVEREIGN);
+      when(assignedRatingCodeProviderGetAssignedRatingCode).calledWith(newPartyAlternateIdentifier).mockResolvedValueOnce(SOVEREIGN);
 
       await controller.createParty(apiCreatePartyRequest, res);
 
@@ -142,10 +142,10 @@ describe('PartyController', () => {
     });
 
     it(`creates an external rating for the newly created party if it does not already have any, for a corporate account type`, async () => {
-      when(partyServiceGetPartyIdentifierBySearchText).calledWith(newParty.alternateIdentifier).mockResolvedValueOnce(undefined);
+      when(partyServiceGetPartyIdentifierBySearchText).calledWith(newPartyAlternateIdentifier).mockResolvedValueOnce(undefined);
       when(partyServiceCreateParty).calledWith(newParty).mockResolvedValueOnce({ partyIdentifier });
       when(partyExternalRatingServiceGetExternalRatingsForParty).calledWith(partyIdentifier).mockResolvedValueOnce([]);
-      when(assignedRatingCodeProviderGetAssignedRatingCode).calledWith().mockReturnValueOnce(CORPORATE);
+      when(assignedRatingCodeProviderGetAssignedRatingCode).calledWith(newPartyAlternateIdentifier).mockResolvedValueOnce(CORPORATE);
 
       await controller.createParty(apiCreatePartyRequest, res);
 
@@ -153,9 +153,9 @@ describe('PartyController', () => {
     });
 
     it('does not create an external rating for the existing party if one or more external ratings already exist', async () => {
-      when(partyServiceGetPartyIdentifierBySearchText).calledWith(newParty.alternateIdentifier).mockResolvedValueOnce({ partyIdentifier });
+      when(partyServiceGetPartyIdentifierBySearchText).calledWith(newPartyAlternateIdentifier).mockResolvedValueOnce({ partyIdentifier });
       when(partyExternalRatingServiceGetExternalRatingsForParty).calledWith(partyIdentifier).mockResolvedValueOnce(externalRatings);
-      when(assignedRatingCodeProviderGetAssignedRatingCode).calledWith().mockReturnValueOnce(CORPORATE);
+      when(assignedRatingCodeProviderGetAssignedRatingCode).calledWith(newPartyAlternateIdentifier).mockReturnValueOnce(CORPORATE);
 
       await controller.createParty(apiCreatePartyRequest, res);
 
@@ -164,9 +164,9 @@ describe('PartyController', () => {
     });
 
     it(`creates an external rating for the existing party if it does not already have any, for a sovereign account type`, async () => {
-      when(partyServiceGetPartyIdentifierBySearchText).calledWith(newParty.alternateIdentifier).mockResolvedValueOnce({ partyIdentifier });
+      when(partyServiceGetPartyIdentifierBySearchText).calledWith(newPartyAlternateIdentifier).mockResolvedValueOnce({ partyIdentifier });
       when(partyExternalRatingServiceGetExternalRatingsForParty).calledWith(partyIdentifier).mockResolvedValueOnce([]);
-      when(assignedRatingCodeProviderGetAssignedRatingCode).calledWith().mockReturnValueOnce(SOVEREIGN);
+      when(assignedRatingCodeProviderGetAssignedRatingCode).calledWith(newPartyAlternateIdentifier).mockReturnValueOnce(SOVEREIGN);
 
       await controller.createParty(apiCreatePartyRequest, res);
 
@@ -174,9 +174,9 @@ describe('PartyController', () => {
     });
 
     it(`creates an external rating for the existing party if it does not already have any, for a corporate account type`, async () => {
-      when(partyServiceGetPartyIdentifierBySearchText).calledWith(newParty.alternateIdentifier).mockResolvedValueOnce({ partyIdentifier });
+      when(partyServiceGetPartyIdentifierBySearchText).calledWith(newPartyAlternateIdentifier).mockResolvedValueOnce({ partyIdentifier });
       when(partyExternalRatingServiceGetExternalRatingsForParty).calledWith(partyIdentifier).mockResolvedValueOnce([]);
-      when(assignedRatingCodeProviderGetAssignedRatingCode).calledWith().mockReturnValueOnce(CORPORATE);
+      when(assignedRatingCodeProviderGetAssignedRatingCode).calledWith(newPartyAlternateIdentifier).mockReturnValueOnce(CORPORATE);
 
       await controller.createParty(apiCreatePartyRequest, res);
 

@@ -1,5 +1,5 @@
 import { ENUMS, UKEFID } from '@ukef/constants';
-import { AssignedRatingCodeEnum } from '@ukef/constants/enums/assigned-rating-code';
+import { SOVEREIGN_ACCOUNT_TYPES } from '@ukef/constants/sovereign-account-types.constant';
 import { AcbsCreatePartyExternalRatingRequestDto } from '@ukef/modules/acbs/dto/acbs-create-party-external-rating-request.dto';
 import { AcbsCreatePartyRequestDto } from '@ukef/modules/acbs/dto/acbs-create-party-request.dto';
 import { AcbsGetPartiesBySearchTextResponseDto } from '@ukef/modules/acbs/dto/acbs-get-parties-by-search-text-response.dto';
@@ -14,6 +14,7 @@ import { CreatePartyExternalRatingGenerator } from '@ukef-test/support/generator
 import { CreatePartyGenerator } from '@ukef-test/support/generator/create-party-generator';
 import { GetPartyGenerator } from '@ukef-test/support/generator/get-party-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
+import { MockMdmApi } from '@ukef-test/support/mdm-api.mock';
 import nock from 'nock';
 
 describe('POST /parties', () => {
@@ -23,6 +24,7 @@ describe('POST /parties', () => {
   const partyIdentifier = valueGenerator.acbsPartyId();
   const basePartyAlternateIdentifier = valueGenerator.stringOfNumericCharacters({ length: 7 });
   const alternateIdentifier = `${basePartyAlternateIdentifier}0`;
+  const nonSovereignCustomerType = valueGenerator.string();
 
   const createPartyUrl = `/api/v1/parties`;
 
@@ -42,13 +44,17 @@ describe('POST /parties', () => {
   const { acbsExternalRatingToCreate } = new CreatePartyExternalRatingGenerator(valueGenerator, dateStringTransformations).generate({
     numberToGenerate: 1,
     partyIdentifier,
-    assignedRatingCode: '03' as AssignedRatingCodeEnum,
+    assignedRatingCode: ENUMS.ASSIGNED_RATING_CODES.CORPORATE,
     ratedDate,
   });
 
+  const customersWithCorporateType = [{ type: nonSovereignCustomerType }];
+
+  let mdmApi: MockMdmApi;
   let api: Api;
 
   beforeAll(async () => {
+    mdmApi = new MockMdmApi(nock);
     api = await Api.create();
   });
 
@@ -95,6 +101,7 @@ describe('POST /parties', () => {
     it('returns a 200 response with the identifier of the first matching party if ACBS returns one or more matching parties when using the alternate identifier as search text', async () => {
       requestToGetPartiesBySearchText(alternateIdentifier).reply(200, partiesInAcbsWithPartyIdentifiers);
       givenRequestToGetPartyExternalRatingsSucceeds();
+      givenRequestToFindCustomersByPartyUrnSucceeds();
       givenRequestToCreatePartyExternalRatingSucceeds();
 
       const { status, body } = await api.post(createPartyUrl, apiCreatePartyRequest);
@@ -104,9 +111,106 @@ describe('POST /parties', () => {
     });
   });
 
+  describe.each([
+    {
+      description: 'external rating creation success cases when no party already exists with the alternateIdentifier and no external ratings exist',
+      successStatusCode: 201,
+      setUpScenario: () => {
+        givenAuthenticationWithTheIdpSucceeds();
+        givenRequestToGetPartiesBySearchTextSucceeds();
+        givenRequestToCreatePartySucceeds();
+        givenRequestToGetPartyExternalRatingsSucceeds();
+      },
+    },
+    {
+      description: 'external rating creation success cases when a party already exists with the alternateIdentifier and no external ratings exist',
+      successStatusCode: 200,
+      setUpScenario: () => {
+        givenAuthenticationWithTheIdpSucceeds();
+        requestToGetPartiesBySearchText(alternateIdentifier).reply(200, partiesInAcbsWithPartyIdentifiers);
+        givenRequestToGetPartyExternalRatingsSucceeds();
+      },
+    },
+  ])('$description', ({ successStatusCode, setUpScenario }) => {
+    beforeEach(() => {
+      setUpScenario();
+    });
+
+    it.each(SOVEREIGN_ACCOUNT_TYPES)(
+      'creates an external rating for the party with SOVEREIGN assigned rating code if the party customer type in MDM is %s',
+      async (customerType) => {
+        mdmApi.requestToFindCustomersByPartyUrn(alternateIdentifier).respondsWith(200, [{ type: customerType }]);
+        const requestToCreateSovereignExternalRating = givenRequestToCreatePartyExternalRatingWithAssignedRatingCodeSucceeds(
+          ENUMS.ASSIGNED_RATING_CODES.SOVEREIGN,
+        );
+
+        const { status, body } = await api.post(createPartyUrl, apiCreatePartyRequest);
+
+        expect(status).toBe(successStatusCode);
+        expect(body).toStrictEqual({ partyIdentifier });
+        expect(requestToCreateSovereignExternalRating.isDone()).toBe(true);
+      },
+    );
+
+    it('creates an external rating for the party with CORPORATE assigned rating code if the party customer type in MDM is null', async () => {
+      mdmApi.requestToFindCustomersByPartyUrn(alternateIdentifier).respondsWith(200, [{ type: null }]);
+      const requestToCreateCorporateExternalRating = givenRequestToCreatePartyExternalRatingWithAssignedRatingCodeSucceeds(
+        ENUMS.ASSIGNED_RATING_CODES.CORPORATE,
+      );
+
+      const { status, body } = await api.post(createPartyUrl, apiCreatePartyRequest);
+
+      expect(status).toBe(successStatusCode);
+      expect(body).toStrictEqual({ partyIdentifier });
+      expect(requestToCreateCorporateExternalRating.isDone()).toBe(true);
+    });
+
+    it('creates an external rating for the party with CORPORATE assigned rating code if the party customer type in MDM is not a sovereign type', async () => {
+      mdmApi.requestToFindCustomersByPartyUrn(alternateIdentifier).respondsWith(200, [{ type: nonSovereignCustomerType }]);
+      const requestToCreateCorporateExternalRating = givenRequestToCreatePartyExternalRatingWithAssignedRatingCodeSucceeds(
+        ENUMS.ASSIGNED_RATING_CODES.CORPORATE,
+      );
+
+      const { status, body } = await api.post(createPartyUrl, apiCreatePartyRequest);
+
+      expect(status).toBe(successStatusCode);
+      expect(body).toStrictEqual({ partyIdentifier });
+      expect(requestToCreateCorporateExternalRating.isDone()).toBe(true);
+    });
+
+    it('creates an external rating for the party with CORPORATE assigned rating code if no matching customers are found in MDM', async () => {
+      mdmApi.requestToFindCustomersByPartyUrn(alternateIdentifier).respondsWith(200, []);
+      const requestToCreateCorporateExternalRating = givenRequestToCreatePartyExternalRatingWithAssignedRatingCodeSucceeds(
+        ENUMS.ASSIGNED_RATING_CODES.CORPORATE,
+      );
+
+      const { status, body } = await api.post(createPartyUrl, apiCreatePartyRequest);
+
+      expect(status).toBe(successStatusCode);
+      expect(body).toStrictEqual({ partyIdentifier });
+      expect(requestToCreateCorporateExternalRating.isDone()).toBe(true);
+    });
+
+    it('creates an external rating for the party with CORPORATE assigned rating code if finding matching customers for the party in MDM responds with a 404 error', async () => {
+      mdmApi.requestToFindCustomersByPartyUrn(alternateIdentifier).respondsWith(404);
+      const requestToCreateCorporateExternalRating = givenRequestToCreatePartyExternalRatingWithAssignedRatingCodeSucceeds(
+        ENUMS.ASSIGNED_RATING_CODES.CORPORATE,
+      );
+
+      const { status, body } = await api.post(createPartyUrl, apiCreatePartyRequest);
+
+      expect(status).toBe(successStatusCode);
+      expect(body).toStrictEqual({ partyIdentifier });
+      expect(requestToCreateCorporateExternalRating.isDone()).toBe(true);
+    });
+  });
+
   describe('error cases when getting the parties by search text', () => {
-    it('returns a 500 response if ACBS responds with an error code that is NOT 200', async () => {
+    beforeEach(() => {
       givenAuthenticationWithTheIdpSucceeds();
+    });
+
+    it('returns a 500 response if ACBS responds with an error code that is NOT 200', async () => {
       requestToGetPartiesBySearchText(alternateIdentifier).reply(401, 'Unauthorized');
 
       const { status, body } = await api.post(createPartyUrl, apiCreatePartyRequest);
@@ -116,7 +220,6 @@ describe('POST /parties', () => {
     });
 
     it('returns a 500 response if getting the parties from ACBS times out', async () => {
-      givenAuthenticationWithTheIdpSucceeds();
       requestToGetPartiesBySearchText(alternateIdentifier).delay(TIME_EXCEEDING_ACBS_TIMEOUT).reply(200, []);
 
       const { status, body } = await api.post(createPartyUrl, apiCreatePartyRequest);
@@ -130,10 +233,13 @@ describe('POST /parties', () => {
   });
 
   describe('error cases when creating the party', () => {
-    it('returns a 400 response if ACBS responds with a 400 response', async () => {
+    beforeEach(() => {
       givenAuthenticationWithTheIdpSucceeds();
-      const acbsErrorMessage = { Message: 'error message' };
       givenRequestToGetPartiesBySearchTextSucceeds();
+    });
+
+    it('returns a 400 response if ACBS responds with a 400 response', async () => {
+      const acbsErrorMessage = { Message: 'error message' };
       requestToCreateParty(acbsCreatePartyRequest).reply(400, acbsErrorMessage);
 
       const { status, body } = await api.post(createPartyUrl, apiCreatePartyRequest);
@@ -143,8 +249,6 @@ describe('POST /parties', () => {
     });
 
     it('returns a 500 response if ACBS responds with an error code that is not 400', async () => {
-      givenAuthenticationWithTheIdpSucceeds();
-      givenRequestToGetPartiesBySearchTextSucceeds();
       requestToCreateParty(acbsCreatePartyRequest).reply(401, 'Unauthorized');
 
       const { status, body } = await api.post(createPartyUrl, apiCreatePartyRequest);
@@ -154,8 +258,6 @@ describe('POST /parties', () => {
     });
 
     it('returns a 500 response if creating the party in ACBS times out', async () => {
-      givenAuthenticationWithTheIdpSucceeds();
-      givenRequestToGetPartiesBySearchTextSucceeds();
       requestToCreateParty(acbsCreatePartyRequest).delay(TIME_EXCEEDING_ACBS_TIMEOUT).reply(201);
 
       const { status, body } = await api.post(createPartyUrl, apiCreatePartyRequest);
@@ -169,11 +271,14 @@ describe('POST /parties', () => {
   });
 
   describe('error cases when getting the external ratings', () => {
-    it(`returns a 404 response if ACBS responds with a 400 response that is a string containing 'Party not found'`, async () => {
+    beforeEach(() => {
       givenAuthenticationWithTheIdpSucceeds();
-      const acbsErrorMessage = 'Party not found or user does not have access.';
       givenRequestToGetPartiesBySearchTextSucceeds();
       givenRequestToCreatePartySucceeds();
+    });
+
+    it(`returns a 404 response if ACBS responds with a 400 response that is a string containing 'Party not found'`, async () => {
+      const acbsErrorMessage = 'Party not found or user does not have access.';
       requestToGetPartyExternalRatings().reply(400, acbsErrorMessage);
 
       const { status, body } = await api.post(createPartyUrl, apiCreatePartyRequest);
@@ -183,10 +288,7 @@ describe('POST /parties', () => {
     });
 
     it(`returns a 500 response if ACBS responds with a 400 response that is a string that does not contain 'Party not found'`, async () => {
-      givenAuthenticationWithTheIdpSucceeds();
       const acbsErrorMessage = 'ACBS error message';
-      givenRequestToGetPartiesBySearchTextSucceeds();
-      givenRequestToCreatePartySucceeds();
       requestToGetPartyExternalRatings().reply(400, acbsErrorMessage);
 
       const { status, body } = await api.post(createPartyUrl, apiCreatePartyRequest);
@@ -196,10 +298,7 @@ describe('POST /parties', () => {
     });
 
     it(`returns a 500 response if ACBS responds with a 400 response that is not a string`, async () => {
-      givenAuthenticationWithTheIdpSucceeds();
       const acbsErrorMessage = JSON.stringify({ Message: 'error message' });
-      givenRequestToGetPartiesBySearchTextSucceeds();
-      givenRequestToCreatePartySucceeds();
       requestToGetPartyExternalRatings().reply(400, acbsErrorMessage);
 
       const { status, body } = await api.post(createPartyUrl, apiCreatePartyRequest);
@@ -209,9 +308,6 @@ describe('POST /parties', () => {
     });
 
     it('returns a 500 response if ACBS responds with an error code that is not 400', async () => {
-      givenAuthenticationWithTheIdpSucceeds();
-      givenRequestToGetPartiesBySearchTextSucceeds();
-      givenRequestToCreatePartySucceeds();
       requestToGetPartyExternalRatings().reply(401, 'Unauthorized');
 
       const { status, body } = await api.post(createPartyUrl, apiCreatePartyRequest);
@@ -221,9 +317,6 @@ describe('POST /parties', () => {
     });
 
     it('returns a 500 response if getting the external ratings from ACBS times out', async () => {
-      givenAuthenticationWithTheIdpSucceeds();
-      givenRequestToGetPartiesBySearchTextSucceeds();
-      givenRequestToCreatePartySucceeds();
       requestToGetPartyExternalRatings().delay(TIME_EXCEEDING_ACBS_TIMEOUT).reply(200, []);
 
       const { status, body } = await api.post(createPartyUrl, apiCreatePartyRequest);
@@ -236,13 +329,49 @@ describe('POST /parties', () => {
     });
   });
 
-  describe('error cases when creating the external rating', () => {
-    it(`returns a 404 response if ACBS responds with a 400 response that is a string containing 'partyIdentifier is not valid'`, async () => {
+  describe('error cases when searching for the party as a customer in MDM', () => {
+    beforeEach(() => {
       givenAuthenticationWithTheIdpSucceeds();
-      const acbsErrorMessage = 'partyIdentifier is not valid';
+      givenRequestToGetPartiesBySearchTextSucceeds();
+      givenRequestToCreatePartySucceeds();
+    });
+
+    it(`returns a 500 response if MDM responds with an error code that is not 404 when searching for the party as a customer`, async () => {
+      mdmApi.requestToFindCustomersByPartyUrn(alternateIdentifier).respondsWith(401, 'Unauthorized');
+
+      const { status, body } = await api.post(createPartyUrl, apiCreatePartyRequest);
+
+      expect(status).toBe(500);
+      expect(body).toStrictEqual({
+        statusCode: 500,
+        message: 'Internal server error',
+      });
+    });
+
+    it(`returns a 500 response if searching for the party as a customer in MDM times out`, async () => {
+      mdmApi.requestToFindCustomersByPartyUrn(alternateIdentifier).timesOutWith(200, [{ type: valueGenerator.string() }]);
+
+      const { status, body } = await api.post(createPartyUrl, apiCreatePartyRequest);
+
+      expect(status).toBe(500);
+      expect(body).toStrictEqual({
+        statusCode: 500,
+        message: 'Internal server error',
+      });
+    });
+  });
+
+  describe('error cases when creating the external rating', () => {
+    beforeEach(() => {
+      givenAuthenticationWithTheIdpSucceeds();
       givenRequestToGetPartiesBySearchTextSucceeds();
       givenRequestToCreatePartySucceeds();
       givenRequestToGetPartyExternalRatingsSucceeds();
+      givenRequestToFindCustomersByPartyUrnSucceeds();
+    });
+
+    it(`returns a 404 response if ACBS responds with a 400 response that is a string containing 'partyIdentifier is not valid'`, async () => {
+      const acbsErrorMessage = 'partyIdentifier is not valid';
       requestToCreatePartyExternalRating(acbsExternalRatingToCreate).reply(400, acbsErrorMessage);
 
       const { status, body } = await api.post(createPartyUrl, apiCreatePartyRequest);
@@ -252,11 +381,7 @@ describe('POST /parties', () => {
     });
 
     it(`returns a 400 response if ACBS responds with a 400 response that is a string that does not contain 'partyIdentifier is not valid'`, async () => {
-      givenAuthenticationWithTheIdpSucceeds();
       const acbsErrorMessage = 'ACBS error message';
-      givenRequestToGetPartiesBySearchTextSucceeds();
-      givenRequestToCreatePartySucceeds();
-      givenRequestToGetPartyExternalRatingsSucceeds();
       requestToCreatePartyExternalRating(acbsExternalRatingToCreate).reply(400, acbsErrorMessage);
 
       const { status, body } = await api.post(createPartyUrl, apiCreatePartyRequest);
@@ -266,11 +391,7 @@ describe('POST /parties', () => {
     });
 
     it(`returns a 400 response if ACBS responds with a 400 response that is not a string`, async () => {
-      givenAuthenticationWithTheIdpSucceeds();
       const acbsErrorMessage = { Message: 'error message' };
-      givenRequestToGetPartiesBySearchTextSucceeds();
-      givenRequestToCreatePartySucceeds();
-      givenRequestToGetPartyExternalRatingsSucceeds();
       requestToCreatePartyExternalRating(acbsExternalRatingToCreate).reply(400, acbsErrorMessage);
 
       const { status, body } = await api.post(createPartyUrl, apiCreatePartyRequest);
@@ -280,10 +401,6 @@ describe('POST /parties', () => {
     });
 
     it('returns a 500 response if ACBS responds with an error code that is not 400', async () => {
-      givenAuthenticationWithTheIdpSucceeds();
-      givenRequestToGetPartiesBySearchTextSucceeds();
-      givenRequestToCreatePartySucceeds();
-      givenRequestToGetPartyExternalRatingsSucceeds();
       requestToCreatePartyExternalRating(acbsExternalRatingToCreate).reply(401, 'Unauthorized');
 
       const { status, body } = await api.post(createPartyUrl, apiCreatePartyRequest);
@@ -293,10 +410,6 @@ describe('POST /parties', () => {
     });
 
     it('returns a 500 response if creating the external rating in ACBS times out', async () => {
-      givenAuthenticationWithTheIdpSucceeds();
-      givenRequestToGetPartiesBySearchTextSucceeds();
-      givenRequestToCreatePartySucceeds();
-      givenRequestToGetPartyExternalRatingsSucceeds();
       requestToCreatePartyExternalRating(acbsExternalRatingToCreate).delay(TIME_EXCEEDING_ACBS_TIMEOUT).reply(201);
 
       const { status, body } = await api.post(createPartyUrl, apiCreatePartyRequest);
@@ -316,6 +429,7 @@ describe('POST /parties', () => {
       givenAnyRequestToGetPartiesBySearchTextSucceeds();
       givenAnyRequestBodyToCreatePartySucceeds();
       givenRequestToGetPartyExternalRatingsSucceeds();
+      givenRequestToGetFindCustomersByAnyPartyUrnSucceeds();
       givenAnyRequestBodyToCreatePartyExternalRatingSucceeds();
     };
 
@@ -452,6 +566,10 @@ describe('POST /parties', () => {
     return requestToCreatePartyExternalRating(acbsExternalRatingToCreate).reply(201);
   };
 
+  const givenRequestToCreatePartyExternalRatingWithAssignedRatingCodeSucceeds = (assignedRatingCode: string): nock.Scope => {
+    return requestToCreatePartyExternalRating({ ...acbsExternalRatingToCreate, AssignedRating: { AssignedRatingCode: assignedRatingCode } }).reply(201);
+  };
+
   const requestToCreatePartyExternalRating = (request: AcbsCreatePartyExternalRatingRequestDto): nock.Interceptor =>
     nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
       .post(`/Party/${partyIdentifier}/PartyExternalRating`, JSON.stringify(request))
@@ -467,10 +585,19 @@ describe('POST /parties', () => {
       .reply(201);
   };
 
+  const givenRequestToFindCustomersByPartyUrnSucceeds = (): void => {
+    mdmApi.requestToFindCustomersByPartyUrn(alternateIdentifier).respondsWith(200, customersWithCorporateType);
+  };
+
+  const givenRequestToGetFindCustomersByAnyPartyUrnSucceeds = (): void => {
+    mdmApi.requestToFindCustomersByAnyPartyUrn().respondsWith(200, customersWithCorporateType);
+  };
+
   const givenAllRequestsSucceed = (): void => {
     givenRequestToGetPartiesBySearchTextSucceeds();
     givenRequestToCreatePartySucceeds();
     givenRequestToGetPartyExternalRatingsSucceeds();
     givenRequestToCreatePartyExternalRatingSucceeds();
+    givenRequestToFindCustomersByPartyUrnSucceeds();
   };
 });
