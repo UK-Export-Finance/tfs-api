@@ -93,6 +93,10 @@ export class RandomValueGenerator {
     return UKEFID.MAIN_ID.PREFIX.DEV.concat(this.stringOfNumericCharacters({ length: lengthExcludingPrefix ?? 6 })) as UkefId;
   }
 
+  ukefPartyId(): string {
+    return this.stringOfNumericCharacters({ length: 8 }) as UkefId;
+  }
+
   // UKEF Covenant id example 0000123456.
   ukefCovenantId(lengthExcludingPrefix?: number): UkefCovenantId {
     return UKEFID.COVENANT_ID.PREFIX.concat(this.stringOfNumericCharacters({ length: lengthExcludingPrefix ?? 6 })) as UkefCovenantId;

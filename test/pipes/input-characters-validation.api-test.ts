@@ -1,4 +1,4 @@
-import { AssignedRatingCodeEnum } from '@ukef/constants/enums/assigned-rating-code';
+import { ENUMS } from '@ukef/constants';
 import { AcbsCreatePartyExternalRatingRequestDto } from '@ukef/modules/acbs/dto/acbs-create-party-external-rating-request.dto';
 import { AcbsCreatePartyRequestDto } from '@ukef/modules/acbs/dto/acbs-create-party-request.dto';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
@@ -9,6 +9,7 @@ import { CreatePartyExternalRatingGenerator } from '@ukef-test/support/generator
 import { CreatePartyGenerator } from '@ukef-test/support/generator/create-party-generator';
 import { GetPartyGenerator } from '@ukef-test/support/generator/get-party-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
+import { MockMdmApi } from '@ukef-test/support/mdm-api.mock';
 import nock from 'nock';
 
 describe('Test InputCharacterValidationPipe', () => {
@@ -39,13 +40,15 @@ describe('Test InputCharacterValidationPipe', () => {
   const { acbsExternalRatingToCreate } = new CreatePartyExternalRatingGenerator(valueGenerator, dateStringTransformations).generate({
     numberToGenerate: 1,
     partyIdentifier,
-    assignedRatingCode: '03' as AssignedRatingCodeEnum,
+    assignedRatingCode: ENUMS.ASSIGNED_RATING_CODES.CORPORATE,
     ratedDate,
   });
 
+  let mdmApi: MockMdmApi;
   let api: Api;
 
   beforeAll(async () => {
+    mdmApi = new MockMdmApi(nock);
     api = await Api.create();
   });
 
@@ -113,12 +116,15 @@ describe('Test InputCharacterValidationPipe', () => {
   });
 
   describe('Body parameter validation', () => {
-    it('returns a 201 response with the identifier of the new party if ACBS returns a location header containing this', async () => {
+    beforeEach(() => {
       givenAuthenticationWithTheIdpSucceeds();
-      givenRequestToGetPartyExternalRatingsSucceeds();
-      givenRequestToCreatePartyExternalRatingSucceeds();
-
       requestToGetPartiesBySearchText(alternateIdentifier).reply(200, []);
+      givenRequestToGetPartyExternalRatingsSucceeds();
+      givenRequestToFindCustomersByPartyUrnSucceeds();
+      givenRequestToCreatePartyExternalRatingSucceeds();
+    });
+
+    it('returns a 201 response with the identifier of the new party if ACBS returns a location header containing this', async () => {
       requestToCreateParties(acbsCreatePartyRequest).reply(201, undefined, { Location: `/Party/${partyIdentifier}` });
 
       const { status, body } = await api.post(createPartyUrl, apiCreatePartyRequest);
@@ -144,11 +150,6 @@ describe('Test InputCharacterValidationPipe', () => {
         PartyShortName: chars32_126CreatePartyRequest[0].name1.substring(0, 15),
         PartySortName: chars32_126CreatePartyRequest[0].name1.substring(0, 20),
       };
-
-      givenAuthenticationWithTheIdpSucceeds();
-      givenRequestToGetPartyExternalRatingsSucceeds();
-      givenRequestToCreatePartyExternalRatingSucceeds();
-      requestToGetPartiesBySearchText(alternateIdentifier).reply(200, []);
       requestToCreateParties(chars32_126AcbsCreatePartyRequest).reply(201, undefined, { Location: `/Party/${partyIdentifier}` });
 
       const { status, body } = await api.post(createPartyUrl, chars32_126CreatePartyRequest);
@@ -174,11 +175,6 @@ describe('Test InputCharacterValidationPipe', () => {
         PartyShortName: chars160_254CreatePartyRequest[0].name1.substring(0, 15),
         PartySortName: chars160_254CreatePartyRequest[0].name1.substring(0, 20),
       };
-
-      givenAuthenticationWithTheIdpSucceeds();
-      givenRequestToGetPartyExternalRatingsSucceeds();
-      givenRequestToCreatePartyExternalRatingSucceeds();
-      requestToGetPartiesBySearchText(alternateIdentifier).reply(200, []);
       requestToCreateParties(chars160_254AcbsCreatePartyRequest).reply(201, undefined, { Location: `/Party/${partyIdentifier}` });
 
       const { status, body } = await api.post(createPartyUrl, chars160_254CreatePartyRequest);
@@ -227,5 +223,9 @@ describe('Test InputCharacterValidationPipe', () => {
 
   const givenRequestToCreatePartyExternalRatingSucceeds = (): nock.Scope => {
     return requestToCreatePartyExternalRating(acbsExternalRatingToCreate).reply(201);
+  };
+
+  const givenRequestToFindCustomersByPartyUrnSucceeds = (): void => {
+    mdmApi.requestToFindCustomersByPartyUrn(alternateIdentifier).respondsWith(200, [{ type: valueGenerator.string() }]);
   };
 });
