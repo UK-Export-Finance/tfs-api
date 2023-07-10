@@ -1,6 +1,6 @@
 import { applyDecorators } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
-import { regexToSting } from '@ukef/helpers';
+import { regexToString } from '@ukef/helpers';
 import { IsEnum, IsString, Length, Matches } from 'class-validator';
 
 import { parseRequiredAndNullable, RequiredOption } from './parse-required-and-nullable-validation.helper';
@@ -43,7 +43,7 @@ export const ValidatedStringApiProperty = ({
       minLength,
       maxLength,
       required: shouldPropertyBeDocumentedAsRequired,
-      pattern: pattern ? regexToSting(pattern) : undefined,
+      pattern: pattern ? regexToString(pattern) : undefined,
       enum: theEnum,
       example,
       default: theDefault,
