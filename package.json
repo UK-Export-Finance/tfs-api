@@ -52,7 +52,7 @@
   "devDependencies": {
     "@commitlint/cli": "^17.6.6",
     "@commitlint/config-conventional": "^17.6.6",
-    "@nestjs/cli": "^10.1.8",
+    "@nestjs/cli": "^10.1.9",
     "@nestjs/schematics": "^10.0.1",
     "@nestjs/testing": "^9.4.3",
     "@tsconfig/node18": "^18.2.0",
