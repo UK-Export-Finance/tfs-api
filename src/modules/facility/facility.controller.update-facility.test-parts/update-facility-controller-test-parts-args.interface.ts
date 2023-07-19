@@ -1,7 +1,6 @@
 import { UkefId } from '@ukef/helpers';
 import { UpdateFacilityRequest } from '@ukef/modules/facility/dto/update-facility-request.dto';
 import { UpdateFacilityBundleIdentifierResponse, UpdateFacilityFacilityIdentifierResponse } from '@ukef/modules/facility/dto/update-facility-response.dto';
-import { Response } from 'express';
 
 export interface UpdateFacilityControllerTestPartsArgs {
   updateFacilityRequest: UpdateFacilityRequest;
