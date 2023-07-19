@@ -154,6 +154,7 @@ describe('PUT /facilities', () => {
         },
         requestToCreateBundleInformationInAcbs: () => requestToUpdateInAcbs(),
         givenRequestToCreateBundleInformationInAcbsSucceeds: () => givenRequestToUpdateInAcbsSucceeds(),
+        givenRequestToCreateBundleInformationInAcbsSucceedsWithWarningHeader: () => givenRequestToCreateBundleInformationInAcbsSucceedsWithWarningHeader(),
         makeRequest: () => makeRequest(),
         facilityIdentifier,
         expectedResponse: expectedPutResponse,
@@ -206,14 +207,18 @@ describe('PUT /facilities', () => {
             location: `/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}`,
           });
 
-        const givenRequestToCreateBundleInfomationInAcbsSucceeds = () => requestToCreateBundleInfomationInAcbs().reply(201, undefined, { bundleIdentifier });
+        const givenRequestToCreateBundleInfomationInAcbsSucceeds = () =>
+          requestToCreateBundleInfomationInAcbs().reply(201, undefined, { bundleIdentifier, 'processing-warning': '' });
 
         return queryToTest === ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_AMOUNT
           ? givenRequestToCreateBundleInfomationInAcbsSucceeds()
           : givenRequestToUpdateFacilityInAcbsSucceeds();
       };
 
-      const givenAnyRequestBodyToUpdateAcbsInSucceeds = () => {
+      const givenRequestToCreateBundleInformationInAcbsSucceedsWithWarningHeader = () =>
+        requestToCreateBundleInfomationInAcbs().reply(201, undefined, { bundleIdentifier, 'processing-warning': 'error' });
+
+      const givenAnyRequestBodyToUpdateInAcbsSucceeds = () => {
         const givenAnyRequestBodyToUpdateFacilityInAcbsSucceeds = (): nock.Scope => {
           const requestBodyPlaceholder = '*';
           return nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
@@ -241,11 +246,17 @@ describe('PUT /facilities', () => {
       return {
         requestToUpdateInAcbs,
         givenRequestToUpdateInAcbsSucceeds,
-        givenAnyRequestBodyToUpdateInAcbsSucceeds: givenAnyRequestBodyToUpdateAcbsInSucceeds,
+        givenAnyRequestBodyToUpdateInAcbsSucceeds,
+        givenRequestToCreateBundleInformationInAcbsSucceedsWithWarningHeader,
       };
     };
 
-    const { requestToUpdateInAcbs, givenRequestToUpdateInAcbsSucceeds, givenAnyRequestBodyToUpdateInAcbsSucceeds } = getRequestToAcbsConfig();
+    const {
+      requestToUpdateInAcbs,
+      givenRequestToUpdateInAcbsSucceeds,
+      givenAnyRequestBodyToUpdateInAcbsSucceeds,
+      givenRequestToCreateBundleInformationInAcbsSucceedsWithWarningHeader,
+    } = getRequestToAcbsConfig();
 
     const givenAnyRequestBodyWouldSucceed = (): PutFacilityAcbsRequests => {
       const givenAnyRequestToGetFacilityInAcbsSucceeds = (): nock.Scope => {

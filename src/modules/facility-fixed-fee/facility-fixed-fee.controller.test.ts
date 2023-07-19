@@ -7,6 +7,7 @@ import { CreateFacilityFixedFeeGenerator } from '@ukef-test/support/generator/cr
 import { CreateFacilityFixedFeesAmountAmendmentGenerator } from '@ukef-test/support/generator/create-facility-fixed-fees-amount-amendment.generator';
 import { GetFacilityFixedFeeGenerator } from '@ukef-test/support/generator/get-facility-fixed-fee-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
+import { Response } from 'express';
 import { when } from 'jest-when';
 
 describe('FacilityFixedFeeController', () => {
@@ -103,16 +104,30 @@ describe('FacilityFixedFeeController', () => {
       numberToGenerate: 3,
       facilityIdentifier,
     });
+    const res: Response = {
+      header: jest.fn().mockReturnThis(),
+    } as any;
     const expectedBundleIdentifier = valueGenerator.acbsBundleId();
 
     it('returns the bundleIdentifier from creating a loan amount amendment with the service', async () => {
       when(createAmountAmendmentForFixedFeesService)
         .calledWith(facilityIdentifier, increaseAmountRequest)
-        .mockResolvedValueOnce({ bundleIdentifier: expectedBundleIdentifier });
+        .mockResolvedValueOnce({ BundleIdentifier: expectedBundleIdentifier, WarningErrors: '' });
 
-      const bundleIdentifierResponse = await controller.createAmountAmendmentForFixedFees({ facilityIdentifier }, increaseAmountRequest);
+      const bundleIdentifierResponse = await controller.createAmountAmendmentForFixedFees({ facilityIdentifier }, increaseAmountRequest, res);
 
       expect(bundleIdentifierResponse).toStrictEqual({ bundleIdentifier: expectedBundleIdentifier });
+    });
+
+    it(`sets 'processing-warning' header if WarningErrors exists on the service response`, async () => {
+      when(createAmountAmendmentForFixedFeesService)
+        .calledWith(facilityIdentifier, increaseAmountRequest)
+        .mockResolvedValueOnce({ BundleIdentifier: expectedBundleIdentifier, WarningErrors: 'error' });
+
+      await controller.createAmountAmendmentForFixedFees({ facilityIdentifier }, increaseAmountRequest, res);
+
+      expect(res.header).toHaveBeenCalledTimes(1);
+      expect(res.header).toHaveBeenCalledWith('processing-warning', 'error');
     });
   });
 });

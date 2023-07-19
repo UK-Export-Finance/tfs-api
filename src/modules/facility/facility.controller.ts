@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query, Res } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -22,6 +22,7 @@ import { UpdateFacilityByOperationQueryDto } from '@ukef/modules/facility/dto/up
 import { UpdateFacilityRequest } from '@ukef/modules/facility/dto/update-facility-request.dto';
 import { UpdateFacilityBundleIdentifierResponse, UpdateFacilityFacilityIdentifierResponse } from '@ukef/modules/facility/dto/update-facility-response.dto';
 import { FacilityService } from '@ukef/modules/facility/facility.service';
+import { Response } from 'express';
 
 @Controller('facilities')
 export class FacilityController {
@@ -144,6 +145,7 @@ export class FacilityController {
     @Query() query: UpdateFacilityByOperationQueryDto,
     @Param() params: UpdateFacilityByOperationParamsDto,
     @Body() updateFacilityDto: UpdateFacilityRequest,
+    @Res({ passthrough: true }) res: Response,
   ): Promise<UpdateFacilityFacilityIdentifierResponse | UpdateFacilityBundleIdentifierResponse> {
     if (query.op === ENUMS.FACILITY_UPDATE_OPERATIONS.ISSUE) {
       await this.facilityService.issueFacilityByIdentifier(params.facilityIdentifier, updateFacilityDto);
@@ -154,7 +156,11 @@ export class FacilityController {
       return { facilityIdentifier: params.facilityIdentifier };
     }
     if (query.op === ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_AMOUNT) {
-      return await this.facilityService.amendFacilityAmountByIdentifier(params.facilityIdentifier, updateFacilityDto);
+      const { BundleIdentifier, WarningErrors } = await this.facilityService.amendFacilityAmountByIdentifier(params.facilityIdentifier, updateFacilityDto);
+      if (WarningErrors.length) {
+        res.header('processing-warning', WarningErrors);
+      }
+      return { bundleIdentifier: BundleIdentifier };
     }
   }
 }

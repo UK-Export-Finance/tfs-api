@@ -225,65 +225,87 @@ describe('FacilityFixedFeeService', () => {
   describe('createAmountAmendmentForFixedFees', () => {
     const facilityIdentifier = valueGenerator.facilityId();
     const createdBundleIdentifier = valueGenerator.acbsBundleId();
-    const acbsBundleCreatedResponse: AcbsCreateBundleInformationResponseHeadersDto = { BundleIdentifier: createdBundleIdentifier };
+    const acbsBundleCreatedResponse: AcbsCreateBundleInformationResponseHeadersDto = { BundleIdentifier: createdBundleIdentifier, WarningErrors: '' };
     const { facilityFeeTransactionType } = PROPERTIES.FACILITY_FEE_AMOUNT_TRANSACTION.DEFAULT.bundleMessageList;
 
     const { increaseAmountRequest, decreaseAmountRequest, acbsFixedFeesAmendmentForIncrease, acbsFixedFeesAmendmentForDecrease } =
       new CreateFacilityFixedFeesAmountAmendmentGenerator(valueGenerator, dateStringTransformations).generate({ numberToGenerate: 3, facilityIdentifier });
 
     describe('when creating a fixed fees amendment bundle in ACBS that increases the amount', () => {
-      beforeEach(() => {
-        when(createBundleInformation).calledWith(acbsFixedFeesAmendmentForIncrease, idToken).mockResolvedValueOnce(acbsBundleCreatedResponse);
+      describe('with no header error', () => {
+        beforeEach(() => {
+          when(createBundleInformation).calledWith(acbsFixedFeesAmendmentForIncrease, idToken).mockResolvedValueOnce(acbsBundleCreatedResponse);
+        });
+
+        it('returns the BundleIdentifier from creating the fixed fees amendment bundle', async () => {
+          const response = await service.createAmountAmendmentForFixedFees(facilityIdentifier, increaseAmountRequest);
+
+          expect(response.BundleIdentifier).toBe(createdBundleIdentifier);
+        });
+
+        it('uses the increase FacilityFeeTransactionType when creating the fixed fees amendment bundle', async () => {
+          await service.createAmountAmendmentForFixedFees(facilityIdentifier, increaseAmountRequest);
+
+          const createdBundleInAcbs = getBundleCreatedInAcbs();
+
+          expect(createdBundleInAcbs.BundleMessageList[0].FacilityFeeTransactionType.TypeCode).toBe(facilityFeeTransactionType.increaseTypeCode);
+        });
+
+        it('sets the amountAmendment as the TransactionAmount when creating the fixed fees amendment bundle', async () => {
+          await service.createAmountAmendmentForFixedFees(facilityIdentifier, increaseAmountRequest);
+
+          const createdBundleInAcbs = getBundleCreatedInAcbs();
+
+          expect(createdBundleInAcbs.BundleMessageList[0].TransactionAmount).toBe(increaseAmountRequest[0].amountAmendment);
+        });
       });
 
-      it('returns the bundleIdentifier from creating the fixed fees amendment bundle', async () => {
+      it('returns the WarningErrors from creating the fixed fees amendment bundle', async () => {
+        when(createBundleInformation)
+          .calledWith(acbsFixedFeesAmendmentForIncrease, idToken)
+          .mockResolvedValueOnce({ ...acbsBundleCreatedResponse, WarningErrors: 'error' });
         const response = await service.createAmountAmendmentForFixedFees(facilityIdentifier, increaseAmountRequest);
 
-        expect(response.bundleIdentifier).toBe(createdBundleIdentifier);
-      });
-
-      it('uses the increase FacilityFeeTransactionType when creating the fixed fees amendment bundle', async () => {
-        await service.createAmountAmendmentForFixedFees(facilityIdentifier, increaseAmountRequest);
-
-        const createdBundleInAcbs = getBundleCreatedInAcbs();
-
-        expect(createdBundleInAcbs.BundleMessageList[0].FacilityFeeTransactionType.TypeCode).toBe(facilityFeeTransactionType.increaseTypeCode);
-      });
-
-      it('sets the amountAmendment as the TransactionAmount when creating the fixed fees amendment bundle', async () => {
-        await service.createAmountAmendmentForFixedFees(facilityIdentifier, increaseAmountRequest);
-
-        const createdBundleInAcbs = getBundleCreatedInAcbs();
-
-        expect(createdBundleInAcbs.BundleMessageList[0].TransactionAmount).toBe(increaseAmountRequest[0].amountAmendment);
+        expect(response.WarningErrors).toBe('error');
       });
     });
 
     describe('when creating a fixed fees amendment bundle in ACBS that decreases the amount', () => {
-      beforeEach(() => {
-        when(createBundleInformation).calledWith(acbsFixedFeesAmendmentForDecrease, idToken).mockResolvedValueOnce(acbsBundleCreatedResponse);
+      describe('with no header error', () => {
+        beforeEach(() => {
+          when(createBundleInformation).calledWith(acbsFixedFeesAmendmentForDecrease, idToken).mockResolvedValueOnce(acbsBundleCreatedResponse);
+        });
+
+        it('returns the BundleIdentifier from creating the fixed fees amendment bundle', async () => {
+          const response = await service.createAmountAmendmentForFixedFees(facilityIdentifier, decreaseAmountRequest);
+
+          expect(response.BundleIdentifier).toBe(createdBundleIdentifier);
+        });
+
+        it('uses the decrease FacilityFeeTransactionType when creating the fixed fees amendment bundle', async () => {
+          await service.createAmountAmendmentForFixedFees(facilityIdentifier, decreaseAmountRequest);
+
+          const createdBundleInAcbs = getBundleCreatedInAcbs();
+
+          expect(createdBundleInAcbs.BundleMessageList[0].FacilityFeeTransactionType.TypeCode).toBe(facilityFeeTransactionType.decreaseTypeCode);
+        });
+
+        it('sets the absolute value of the amountAmendment as the TransactionAmount when creating the fixed fees amendment bundle', async () => {
+          await service.createAmountAmendmentForFixedFees(facilityIdentifier, decreaseAmountRequest);
+
+          const createdBundleInAcbs = getBundleCreatedInAcbs();
+
+          expect(createdBundleInAcbs.BundleMessageList[0].TransactionAmount).toBe(Math.abs(decreaseAmountRequest[0].amountAmendment));
+        });
       });
 
-      it('returns the bundleIdentifier from creating the fixed fees amendment bundle', async () => {
+      it('returns the WarningErrors from creating the fixed fees amendment bundle', async () => {
+        when(createBundleInformation)
+          .calledWith(acbsFixedFeesAmendmentForDecrease, idToken)
+          .mockResolvedValueOnce({ ...acbsBundleCreatedResponse, WarningErrors: 'error' });
         const response = await service.createAmountAmendmentForFixedFees(facilityIdentifier, decreaseAmountRequest);
 
-        expect(response.bundleIdentifier).toBe(createdBundleIdentifier);
-      });
-
-      it('uses the decrease FacilityFeeTransactionType when creating the fixed fees amendment bundle', async () => {
-        await service.createAmountAmendmentForFixedFees(facilityIdentifier, decreaseAmountRequest);
-
-        const createdBundleInAcbs = getBundleCreatedInAcbs();
-
-        expect(createdBundleInAcbs.BundleMessageList[0].FacilityFeeTransactionType.TypeCode).toBe(facilityFeeTransactionType.decreaseTypeCode);
-      });
-
-      it('sets the absolute value of the amountAmendment as the TransactionAmount when creating the fixed fees amendment bundle', async () => {
-        await service.createAmountAmendmentForFixedFees(facilityIdentifier, decreaseAmountRequest);
-
-        const createdBundleInAcbs = getBundleCreatedInAcbs();
-
-        expect(createdBundleInAcbs.BundleMessageList[0].TransactionAmount).toBe(Math.abs(decreaseAmountRequest[0].amountAmendment));
+        expect(response.WarningErrors).toBe('error');
       });
     });
 

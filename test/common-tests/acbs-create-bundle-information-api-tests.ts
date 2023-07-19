@@ -8,6 +8,7 @@ export const withAcbsCreateBundleInformationTests = ({
   givenTheRequestWouldOtherwiseSucceed,
   requestToCreateBundleInformationInAcbs,
   givenRequestToCreateBundleInformationInAcbsSucceeds,
+  givenRequestToCreateBundleInformationInAcbsSucceedsWithWarningHeader,
   makeRequest,
   facilityIdentifier,
   expectedResponse,
@@ -17,6 +18,7 @@ export const withAcbsCreateBundleInformationTests = ({
   givenTheRequestWouldOtherwiseSucceed: () => void;
   requestToCreateBundleInformationInAcbs: () => nock.Interceptor;
   givenRequestToCreateBundleInformationInAcbsSucceeds: () => nock.Scope;
+  givenRequestToCreateBundleInformationInAcbsSucceedsWithWarningHeader: () => nock.Scope;
   makeRequest: () => supertest.Test;
   facilityIdentifier: UkefId;
   expectedResponse: unknown;
@@ -32,11 +34,22 @@ export const withAcbsCreateBundleInformationTests = ({
       it(`returns a ${expectedResponseCode} response with the bundle identifier if getting the facility succeeds and the bundle information has been successfully created in ACBS`, async () => {
         const acbsRequest = givenRequestToCreateBundleInformationInAcbsSucceeds();
 
-        const { status, body } = await makeRequest();
+        const { status, body, header } = await makeRequest();
 
         expect(status).toBe(expectedResponseCode);
         expect(body).toStrictEqual(expectedResponse);
         expect(acbsRequest.isDone()).toBe(true);
+        expect(header).not.toHaveProperty('processing-warning');
+      });
+
+      it(`returns a ${expectedResponseCode} response with the bundle identifier and 'processing-warning' header is set if getting the facility succeeds and ACBS returns a warning error`, async () => {
+        const acbsRequest = givenRequestToCreateBundleInformationInAcbsSucceedsWithWarningHeader();
+
+        const { status, body, header } = await makeRequest();
+        expect(status).toBe(expectedResponseCode);
+        expect(body).toStrictEqual(expectedResponse);
+        expect(acbsRequest.isDone()).toBe(true);
+        expect(header).toHaveProperty('processing-warning');
       });
 
       it('returns a 400 response if ACBS responds with a 400 response that is not a string when creating the bundle information', async () => {
@@ -111,6 +124,32 @@ export const withAcbsCreateBundleInformationTests = ({
       describe('LoanAdvanceTransaction specific tests', () => {
         it('returns a 404 response if ACBS responds with a 400 response that is a string containing "Loan does not exist" when creating the facility activation transaction', async () => {
           requestToCreateBundleInformationInAcbs().reply(400, `Loan does not exist or user does not have access to it: '${facilityIdentifier}'`);
+
+          const { status, body } = await makeRequest();
+
+          expect(status).toBe(404);
+          expect(body).toStrictEqual({ message: 'Not found', statusCode: 404 });
+        });
+      });
+    }
+
+    if (createBundleInformationType === ENUMS.BUNDLE_INFORMATION_TYPES.FACILITY_FEE_AMOUNT_TRANSACTION) {
+      describe('FacilityFixedFee specific tests', () => {
+        it('returns a 404 response if ACBS responds with a 400 response that is a string containing "Facility does not exist" when creating the facility fixed fees amount amendment', async () => {
+          requestToCreateBundleInformationInAcbs().reply(400, `Facility does not exist or user does not have access to it: '${facilityIdentifier}'`);
+
+          const { status, body } = await makeRequest();
+
+          expect(status).toBe(404);
+          expect(body).toStrictEqual({ message: 'Not found', statusCode: 404 });
+        });
+      });
+    }
+
+    if (createBundleInformationType === ENUMS.BUNDLE_INFORMATION_TYPES.NEW_LOAN_REQUEST) {
+      describe('NewLoanRequest specific tests', () => {
+        it('returns a 404 response if ACBS responds with a 400 response that is a string containing "Facility does not exist" when creating the facility loan', async () => {
+          requestToCreateBundleInformationInAcbs().reply(400, `Facility does not exist or user does not have access to it: '${facilityIdentifier}'`);
 
           const { status, body } = await makeRequest();
 

@@ -80,7 +80,27 @@ describe('AcbsBundleInformationService', () => {
 
       expect(httpServicePost).toHaveBeenCalledTimes(1);
       expect(httpServicePost).toHaveBeenCalledWith(...expectedHttpServicePostArgs);
-      expect(response).toEqual({ BundleIdentifier: bundleIdentifier });
+      expect(response).toEqual({ BundleIdentifier: bundleIdentifier, WarningErrors: '' });
+    });
+
+    it(`returns 'WarningErrors' if ACBS response is successful but contains 'processing-warning' header`, async () => {
+      when(httpServicePost)
+        .calledWith(...expectedHttpServicePostArgs)
+        .mockReturnValueOnce(
+          of({
+            data: '',
+            status: 201,
+            statusText: 'Created',
+            config: undefined,
+            headers: { bundleidentifier: bundleIdentifier, 'processing-warning': 'error' },
+          }),
+        );
+
+      const response = await service.createBundleInformation(acbsRequestBodyToCreateFacilityActivationTransaction, idToken);
+
+      expect(httpServicePost).toHaveBeenCalledTimes(1);
+      expect(httpServicePost).toHaveBeenCalledWith(...expectedHttpServicePostArgs);
+      expect(response).toEqual({ BundleIdentifier: bundleIdentifier, WarningErrors: 'error' });
     });
 
     it('throws an AcbsBadRequestException if ACBS responds with a 400 error', async () => {

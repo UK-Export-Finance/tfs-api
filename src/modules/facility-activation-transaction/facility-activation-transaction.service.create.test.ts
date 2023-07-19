@@ -27,6 +27,7 @@ describe('FacilityActivationTransactionService', () => {
     const acbsBundleInformationService = new AcbsBundleInformationService(null, null);
     acbsBundleInformationServiceCreateBundleInformation = jest.fn(() => ({
       BundleIdentifier: bundleIdentifier,
+      WarningErrors: '',
     }));
     acbsBundleInformationService.createBundleInformation = acbsBundleInformationServiceCreateBundleInformation;
 
@@ -55,7 +56,7 @@ describe('FacilityActivationTransactionService', () => {
       expect(acbsBundleInformationServiceCreateBundleInformation).toHaveBeenCalledWith(acbsRequestBodyToCreateFacilityActivationTransaction, idToken);
     });
 
-    it('returns a bundle identifier from ACBS', async () => {
+    it('returns a bundle identifier and warning errors from ACBS', async () => {
       const response = await service.createActivationTransactionForFacility(
         facilityIdentifier,
         borrowerPartyIdentifier,
@@ -63,7 +64,7 @@ describe('FacilityActivationTransactionService', () => {
         newActivationTransactionWithAllFields,
       );
 
-      expect(response).toEqual({ bundleIdentifier });
+      expect(response).toEqual({ BundleIdentifier: bundleIdentifier, WarningErrors: '' });
     });
   });
 });

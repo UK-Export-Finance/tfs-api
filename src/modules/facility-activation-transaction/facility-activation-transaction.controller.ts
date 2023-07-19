@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post } from '@nestjs/common';
+import { Controller, Get, Param, Post, Res } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -12,6 +12,7 @@ import {
 import { EXAMPLES } from '@ukef/constants';
 import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decorator';
 import { FacilityService } from '@ukef/modules/facility/facility.service';
+import { Response } from 'express';
 
 import {
   CreateFacilityActivationTransactionRequest,
@@ -59,17 +60,23 @@ export class FacilityActivationTransactionController {
     @Param() params: FacilityActivationTransactionParamsDto,
     @ValidatedArrayBody({ items: CreateFacilityActivationTransactionRequestItem })
     newFacilityActivationTransactionRequest: CreateFacilityActivationTransactionRequest,
+    @Res({ passthrough: true }) res: Response,
   ): Promise<CreateFacilityActivationTransactionResponse> {
     const facility = await this.facilityService.getFacilityByIdentifier(params.facilityIdentifier);
 
     const [newFacilityActivationTransaction] = newFacilityActivationTransactionRequest;
 
-    return this.facilityActivationTransactionService.createActivationTransactionForFacility(
+    const bundleResponse = await this.facilityActivationTransactionService.createActivationTransactionForFacility(
       params.facilityIdentifier,
       facility.obligorPartyIdentifier,
       facility.effectiveDate,
       newFacilityActivationTransaction,
     );
+
+    if (bundleResponse.WarningErrors.length) {
+      res.header('processing-warning', bundleResponse.WarningErrors);
+    }
+    return { bundleIdentifier: bundleResponse.BundleIdentifier };
   }
 
   @Get('facilities/:facilityIdentifier/activation-transactions/:bundleIdentifier')

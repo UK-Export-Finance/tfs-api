@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post } from '@nestjs/common';
+import { Controller, Get, Param, Post, Res } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -12,6 +12,7 @@ import {
 import { EXAMPLES } from '@ukef/constants';
 import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decorator';
 import { FacilityService } from '@ukef/modules/facility/facility.service';
+import { Response } from 'express';
 
 import { CreateFixedFeeAmountAmendmentRequest, CreateFixedFeeAmountAmendmentRequestItem } from './dto/create-facility-fixed-fee-amount-amendment-request.dto';
 import { CreateFixedFeeAmountAmendmentResponse } from './dto/create-facility-fixed-fee-amount-amendment-response.dto';
@@ -71,11 +72,16 @@ export class FacilityFixedFeeController {
   @ApiInternalServerErrorResponse({
     description: 'An internal server error has occurred.',
   })
-  createAmountAmendmentForFixedFees(
+  async createAmountAmendmentForFixedFees(
     @Param() params: FacilityFixedFeeParamsDto,
     @ValidatedArrayBody({ items: CreateFixedFeeAmountAmendmentRequestItem }) newFixedFeeAmountAmendmentRequest: CreateFixedFeeAmountAmendmentRequest,
+    @Res({ passthrough: true }) res: Response,
   ): Promise<CreateFixedFeeAmountAmendmentResponse> {
-    return this.facilityFixedFeeService.createAmountAmendmentForFixedFees(params.facilityIdentifier, newFixedFeeAmountAmendmentRequest);
+    const bundleResponse = await this.facilityFixedFeeService.createAmountAmendmentForFixedFees(params.facilityIdentifier, newFixedFeeAmountAmendmentRequest);
+    if (bundleResponse.WarningErrors.length) {
+      res.header('processing-warning', bundleResponse.WarningErrors);
+    }
+    return { bundleIdentifier: bundleResponse.BundleIdentifier };
   }
 
   @Post('facilities/:facilityIdentifier/fixed-fees')

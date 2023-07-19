@@ -4,6 +4,7 @@ import { CreateFacilityLoanGenerator } from '@ukef-test/support/generator/create
 import { GetFacilityLoanGenerator } from '@ukef-test/support/generator/get-facility-loan-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { UpdateLoanGenerator } from '@ukef-test/support/generator/update-loan-generator';
+import { Response } from 'express';
 import { when } from 'jest-when';
 
 import { FacilityLoanController } from './facility-loan.controller';
@@ -68,17 +69,37 @@ describe('FacilityLoanController', () => {
       facilityIdentifier,
       bundleIdentifier,
     });
+    const res: Response = {
+      header: jest.fn().mockReturnThis(),
+    } as any;
 
     it('creates a loan for the facility with the service from the request body', async () => {
-      await controller.createLoanForFacility({ facilityIdentifier }, requestBodyToCreateFacilityLoanGbp);
+      when(facilityLoanServiceCreateLoanForFacility)
+        .calledWith(facilityIdentifier, requestBodyToCreateFacilityLoanGbp[0])
+        .mockResolvedValueOnce({ BundleIdentifier: bundleIdentifier, WarningErrors: '' });
+      await controller.createLoanForFacility({ facilityIdentifier }, requestBodyToCreateFacilityLoanGbp, res);
 
       expect(facilityLoanServiceCreateLoanForFacility).toHaveBeenCalledWith(facilityIdentifier, requestBodyToCreateFacilityLoanGbp[0]);
     });
 
     it('returns the bundle identifier if creating the loan succeeds', async () => {
-      const response = await controller.createLoanForFacility({ facilityIdentifier }, requestBodyToCreateFacilityLoanGbp);
+      when(facilityLoanServiceCreateLoanForFacility)
+        .calledWith(facilityIdentifier, requestBodyToCreateFacilityLoanGbp[0])
+        .mockResolvedValueOnce({ BundleIdentifier: bundleIdentifier, WarningErrors: '' });
+      const response = await controller.createLoanForFacility({ facilityIdentifier }, requestBodyToCreateFacilityLoanGbp, res);
 
       expect(response).toStrictEqual(createFacilityLoanResponseFromService);
+    });
+
+    it(`sets 'processing-warning' header if WarningErrors exists on the service response`, async () => {
+      when(facilityLoanServiceCreateLoanForFacility)
+        .calledWith(facilityIdentifier, requestBodyToCreateFacilityLoanGbp[0])
+        .mockResolvedValueOnce({ BundleIdentifier: bundleIdentifier, WarningErrors: 'error' });
+
+      await controller.createLoanForFacility({ facilityIdentifier }, requestBodyToCreateFacilityLoanGbp, res);
+
+      expect(res.header).toHaveBeenCalledTimes(1);
+      expect(res.header).toHaveBeenCalledWith('processing-warning', 'error');
     });
   });
 
@@ -88,14 +109,30 @@ describe('FacilityLoanController', () => {
       valueGenerator,
       new DateStringTransformations(),
     ).generate({ numberToGenerate: 1, loanIdentifier });
+    const res: Response = {
+      header: jest.fn().mockReturnThis(),
+    } as any;
     const expectedBundleIdentifier = valueGenerator.acbsBundleId();
 
     it('returns the bundleIdentifier from creating a loan amount amendment with the service', async () => {
-      when(createAmountAmendmentForLoanService).calledWith(loanIdentifier, loanAmountAmendmentRequest[0]).mockResolvedValueOnce(expectedBundleIdentifier);
+      when(createAmountAmendmentForLoanService)
+        .calledWith(loanIdentifier, loanAmountAmendmentRequest[0])
+        .mockResolvedValueOnce({ BundleIdentifier: expectedBundleIdentifier, WarningErrors: '' });
 
-      const bundleIdentifierResponse = await controller.createAmountAmendmentForLoan({ loanIdentifier, facilityIdentifier }, loanAmountAmendmentRequest);
+      const bundleIdentifierResponse = await controller.createAmountAmendmentForLoan({ loanIdentifier, facilityIdentifier }, loanAmountAmendmentRequest, res);
 
       expect(bundleIdentifierResponse).toStrictEqual({ bundleIdentifier: expectedBundleIdentifier });
+    });
+
+    it(`sets 'processing-warning' header if WarningErrors exists on the service response`, async () => {
+      when(createAmountAmendmentForLoanService)
+        .calledWith(loanIdentifier, loanAmountAmendmentRequest[0])
+        .mockResolvedValueOnce({ BundleIdentifier: expectedBundleIdentifier, WarningErrors: 'error' });
+
+      await controller.createAmountAmendmentForLoan({ loanIdentifier, facilityIdentifier }, loanAmountAmendmentRequest, res);
+
+      expect(res.header).toHaveBeenCalledTimes(1);
+      expect(res.header).toHaveBeenCalledWith('processing-warning', 'error');
     });
   });
 

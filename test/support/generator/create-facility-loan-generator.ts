@@ -114,7 +114,7 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
       },
     ];
 
-    const createBundleInformationResponseFromAcbs = { BundleIdentifier: bundleIdentifier };
+    const createBundleInformationResponseFromAcbs = { BundleIdentifier: bundleIdentifier, WarningErrors: '' };
     const createFacilityLoanResponseFromService = { bundleIdentifier };
     const bondRepaymentSchedulesGbp = this.getBondRepaymentSchedules(firstFacilityLoan);
     const ewcsRepaymentSchedulesGbp = this.getEwcsRepaymentSchedules(firstFacilityLoan);

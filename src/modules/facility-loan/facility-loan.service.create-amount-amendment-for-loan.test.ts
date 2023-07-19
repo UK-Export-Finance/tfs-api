@@ -54,7 +54,7 @@ describe('FacilityLoanService', () => {
   describe('createAmountAmendmentForLoan', () => {
     const loanIdentifier = valueGenerator.loanId();
     const createdBundleIdentifier = valueGenerator.acbsBundleId();
-    const acbsBundleCreatedResponse: AcbsCreateBundleInformationResponseHeadersDto = { BundleIdentifier: createdBundleIdentifier };
+    const acbsBundleCreatedResponse: AcbsCreateBundleInformationResponseHeadersDto = { BundleIdentifier: createdBundleIdentifier, WarningErrors: '' };
 
     const { increaseAmountRequest, decreaseAmountRequest, acbsLoanAmendmentForIncrease, acbsLoanAmendmentForDecrease } =
       new CreateFacilityLoanAmountAmendmentGenerator(valueGenerator, dateStringTransformations).generate({ numberToGenerate: 1, loanIdentifier });
@@ -64,60 +64,82 @@ describe('FacilityLoanService', () => {
     describe('when creating a loan amendment bundle in ACBS that increases the amount', () => {
       const { transactionTypeCode } = PROPERTIES.LOAN_AMOUNT_AMENDMENT.DEFAULT.bundleMessageList;
 
-      beforeEach(() => {
-        when(createBundleInformation).calledWith(acbsLoanAmendmentForIncrease, idToken).mockResolvedValueOnce(acbsBundleCreatedResponse);
+      describe('with no header error', () => {
+        beforeEach(() => {
+          when(createBundleInformation).calledWith(acbsLoanAmendmentForIncrease, idToken).mockResolvedValueOnce(acbsBundleCreatedResponse);
+        });
+
+        it('returns the BundleIdentifier from creating the loan amendment bundle', async () => {
+          const bundleIdentifier = await service.createAmountAmendmentForLoan(loanIdentifier, increaseAmendment);
+
+          expect(bundleIdentifier).toStrictEqual({ BundleIdentifier: createdBundleIdentifier, WarningErrors: '' });
+        });
+
+        it('uses the increase TransactionTypeCode when creating the loan amendment bundle', async () => {
+          await service.createAmountAmendmentForLoan(loanIdentifier, increaseAmendment);
+
+          const createdBundleInAcbs = getBundleCreatedInAcbs();
+
+          expect(createdBundleInAcbs.BundleMessageList[0].TransactionTypeCode).toBe(transactionTypeCode.increase);
+        });
+
+        it('sets the amountAmendment as the LoanAdvanceAmount when creating the loan amendment bundle', async () => {
+          await service.createAmountAmendmentForLoan(loanIdentifier, increaseAmendment);
+
+          const createdBundleInAcbs = getBundleCreatedInAcbs();
+
+          expect(createdBundleInAcbs.BundleMessageList[0].LoanAdvanceAmount).toBe(increaseAmendment.amountAmendment);
+        });
       });
 
-      it('returns the bundleIdentifier from creating the loan amendment bundle', async () => {
+      it('returns the WarningErrors from creating the loan amendment bundle', async () => {
+        when(createBundleInformation)
+          .calledWith(acbsLoanAmendmentForIncrease, idToken)
+          .mockResolvedValueOnce({ ...acbsBundleCreatedResponse, WarningErrors: 'error' });
         const bundleIdentifier = await service.createAmountAmendmentForLoan(loanIdentifier, increaseAmendment);
 
-        expect(bundleIdentifier).toBe(createdBundleIdentifier);
-      });
-
-      it('uses the increase TransactionTypeCode when creating the loan amendment bundle', async () => {
-        await service.createAmountAmendmentForLoan(loanIdentifier, increaseAmendment);
-
-        const createdBundleInAcbs = getBundleCreatedInAcbs();
-
-        expect(createdBundleInAcbs.BundleMessageList[0].TransactionTypeCode).toBe(transactionTypeCode.increase);
-      });
-
-      it('sets the amountAmendment as the LoanAdvanceAmount when creating the loan amendment bundle', async () => {
-        await service.createAmountAmendmentForLoan(loanIdentifier, increaseAmendment);
-
-        const createdBundleInAcbs = getBundleCreatedInAcbs();
-
-        expect(createdBundleInAcbs.BundleMessageList[0].LoanAdvanceAmount).toBe(increaseAmendment.amountAmendment);
+        expect(bundleIdentifier).toStrictEqual({ BundleIdentifier: createdBundleIdentifier, WarningErrors: 'error' });
       });
     });
 
     describe('when creating a loan amendment bundle in ACBS that decreases the amount', () => {
       const { transactionTypeCode } = PROPERTIES.LOAN_AMOUNT_AMENDMENT.DEFAULT.bundleMessageList;
 
-      beforeEach(() => {
-        when(createBundleInformation).calledWith(acbsLoanAmendmentForDecrease, idToken).mockResolvedValueOnce(acbsBundleCreatedResponse);
+      describe('with no header error', () => {
+        beforeEach(() => {
+          when(createBundleInformation).calledWith(acbsLoanAmendmentForDecrease, idToken).mockResolvedValueOnce(acbsBundleCreatedResponse);
+        });
+
+        it('returns the bundleIdentifier from creating the loan amendment bundle', async () => {
+          const bundleIdentifier = await service.createAmountAmendmentForLoan(loanIdentifier, decreaseAmendment);
+
+          expect(bundleIdentifier).toStrictEqual({ BundleIdentifier: createdBundleIdentifier, WarningErrors: '' });
+        });
+
+        it('uses the decrease TransactionTypeCode when creating the loan amendment bundle', async () => {
+          await service.createAmountAmendmentForLoan(loanIdentifier, decreaseAmendment);
+
+          const createdBundleInAcbs = getBundleCreatedInAcbs();
+
+          expect(createdBundleInAcbs.BundleMessageList[0].TransactionTypeCode).toBe(transactionTypeCode.decrease);
+        });
+
+        it('sets the absolute value of the amountAmendment as the LoanAdvanceAmount when creating the loan amendment bundle', async () => {
+          await service.createAmountAmendmentForLoan(loanIdentifier, decreaseAmendment);
+
+          const createdBundleInAcbs = getBundleCreatedInAcbs();
+
+          expect(createdBundleInAcbs.BundleMessageList[0].LoanAdvanceAmount).toBe(Math.abs(decreaseAmendment.amountAmendment));
+        });
       });
 
-      it('returns the bundleIdentifier from creating the loan amendment bundle', async () => {
+      it('returns the WarningErrors from creating the loan amendment bundle', async () => {
+        when(createBundleInformation)
+          .calledWith(acbsLoanAmendmentForDecrease, idToken)
+          .mockResolvedValueOnce({ ...acbsBundleCreatedResponse, WarningErrors: 'error' });
         const bundleIdentifier = await service.createAmountAmendmentForLoan(loanIdentifier, decreaseAmendment);
 
-        expect(bundleIdentifier).toBe(createdBundleIdentifier);
-      });
-
-      it('uses the decrease TransactionTypeCode when creating the loan amendment bundle', async () => {
-        await service.createAmountAmendmentForLoan(loanIdentifier, decreaseAmendment);
-
-        const createdBundleInAcbs = getBundleCreatedInAcbs();
-
-        expect(createdBundleInAcbs.BundleMessageList[0].TransactionTypeCode).toBe(transactionTypeCode.decrease);
-      });
-
-      it('sets the absolute value of the amountAmendment as the LoanAdvanceAmount when creating the loan amendment bundle', async () => {
-        await service.createAmountAmendmentForLoan(loanIdentifier, decreaseAmendment);
-
-        const createdBundleInAcbs = getBundleCreatedInAcbs();
-
-        expect(createdBundleInAcbs.BundleMessageList[0].LoanAdvanceAmount).toBe(Math.abs(decreaseAmendment.amountAmendment));
+        expect(bundleIdentifier).toStrictEqual({ BundleIdentifier: createdBundleIdentifier, WarningErrors: 'error' });
       });
     });
 

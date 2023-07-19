@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Res } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -11,6 +11,7 @@ import {
 } from '@nestjs/swagger';
 import { EXAMPLES } from '@ukef/constants';
 import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decorator';
+import { Response } from 'express';
 
 import { CreateFacilityLoanRequest, CreateFacilityLoanRequestItem } from './dto/create-facility-loan-request.dto';
 import { CreateFacilityLoanResponse } from './dto/create-facility-loan-response.dto';
@@ -71,14 +72,19 @@ export class FacilityLoanController {
   @ApiInternalServerErrorResponse({
     description: 'An internal server error has occurred.',
   })
-  createLoanForFacility(
+  async createLoanForFacility(
     @Param() params: FacilityLoanParamsDto,
     @ValidatedArrayBody({ items: CreateFacilityLoanRequestItem }) newLoanRequest: CreateFacilityLoanRequest,
+    @Res({ passthrough: true }) res: Response,
   ): Promise<CreateFacilityLoanResponse> {
     const { facilityIdentifier } = params;
     const [newLoan] = newLoanRequest;
 
-    return this.facilityLoanService.createLoanForFacility(facilityIdentifier, newLoan);
+    const { BundleIdentifier, WarningErrors } = await this.facilityLoanService.createLoanForFacility(facilityIdentifier, newLoan);
+    if (WarningErrors.length) {
+      res.header('processing-warning', WarningErrors);
+    }
+    return { bundleIdentifier: BundleIdentifier };
   }
 
   @Patch('facilities/:facilityIdentifier/loans/:loanIdentifier')
@@ -148,9 +154,13 @@ export class FacilityLoanController {
   async createAmountAmendmentForLoan(
     @Param() params: CreateLoanAmountAmendmentParams,
     @ValidatedArrayBody({ items: CreateLoanAmountAmendmentRequestItem }) newLoanAmountAmendmentRequest: CreateLoanAmountAmendmentRequest,
+    @Res({ passthrough: true }) res: Response,
   ): Promise<CreateLoanAmountAmendmentResponse> {
     const [newLoanAmountAmendment] = newLoanAmountAmendmentRequest;
-    const createdBundleIdentifier = await this.facilityLoanService.createAmountAmendmentForLoan(params.loanIdentifier, newLoanAmountAmendment);
-    return { bundleIdentifier: createdBundleIdentifier };
+    const bundleResponse = await this.facilityLoanService.createAmountAmendmentForLoan(params.loanIdentifier, newLoanAmountAmendment);
+    if (bundleResponse.WarningErrors.length) {
+      res.header('processing-warning', bundleResponse.WarningErrors);
+    }
+    return { bundleIdentifier: bundleResponse.BundleIdentifier };
   }
 }

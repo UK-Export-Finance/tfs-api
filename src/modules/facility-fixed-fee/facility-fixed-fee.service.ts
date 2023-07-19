@@ -9,8 +9,8 @@ import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 
 import { AcbsCreateBundleInformationRequestDto } from '../acbs/dto/acbs-create-bundle-information-request.dto';
+import { AcbsCreateBundleInformationResponseHeadersDto } from '../acbs/dto/acbs-create-bundle-information-response.dto';
 import { CreateFixedFeeAmountAmendmentRequest } from './dto/create-facility-fixed-fee-amount-amendment-request.dto';
-import { CreateFixedFeeAmountAmendmentResponse } from './dto/create-facility-fixed-fee-amount-amendment-response.dto';
 import { CreateFacilityFixedFeeRequestItem } from './dto/create-facility-fixed-fee-request.dto';
 import { CreateFacilityFixedFeeResponse } from './dto/create-facility-fixed-fee-response.dto';
 import { GetFacilityFixedFeeResponse } from './dto/get-facility-fixed-fee-response.dto';
@@ -146,7 +146,7 @@ export class FacilityFixedFeeService {
   async createAmountAmendmentForFixedFees(
     facilityIdentifier: UkefId,
     newFixedFeeAmountAmendmentRequest: CreateFixedFeeAmountAmendmentRequest,
-  ): Promise<CreateFixedFeeAmountAmendmentResponse> {
+  ): Promise<AcbsCreateBundleInformationResponseHeadersDto> {
     const idToken = await this.acbsAuthenticationService.getIdToken();
 
     const amountAmendmentMessages = this.buildAmountAmendmentMessages(facilityIdentifier, newFixedFeeAmountAmendmentRequest);
@@ -159,8 +159,7 @@ export class FacilityFixedFeeService {
       BundleMessageList: amountAmendmentMessages,
     };
 
-    const response = await this.acbsBundleInformationService.createBundleInformation(bundleInformationToCreateInAcbs, idToken);
-    return { bundleIdentifier: response.BundleIdentifier };
+    return await this.acbsBundleInformationService.createBundleInformation(bundleInformationToCreateInAcbs, idToken);
   }
 
   private calculateEffectiveDateForCreation(effectiveDate: DateOnlyString): DateString {

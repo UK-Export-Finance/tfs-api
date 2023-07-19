@@ -92,6 +92,8 @@ describe('POST /facilities/{facilityIdentifier}/activation-transactions', () => 
     },
     requestToCreateBundleInformationInAcbs: () => requestToCreateFacilityActivationTransactionInAcbs(),
     givenRequestToCreateBundleInformationInAcbsSucceeds: () => givenRequestToCreateFacilityActivationTransactionInAcbsSucceeds(),
+    givenRequestToCreateBundleInformationInAcbsSucceedsWithWarningHeader: () =>
+      givenRequestToCreateFacilityActivationTransactionInAcbsSucceedsWithWarningHeader(),
     makeRequest: () => api.post(createFacilityActivationTransactionUrl, requestBodyToCreateFacilityActivationTransaction),
     facilityIdentifier,
     expectedResponse: createFacilityActivationTransactionResponseFromService,
@@ -148,7 +150,11 @@ describe('POST /facilities/{facilityIdentifier}/activation-transactions', () => 
       .matchHeader('authorization', `Bearer ${idToken}`);
 
   const givenRequestToCreateFacilityActivationTransactionInAcbsSucceeds = (): nock.Scope => {
-    return requestToCreateFacilityActivationTransactionInAcbs().reply(201, undefined, { bundleidentifier: bundleIdentifier });
+    return requestToCreateFacilityActivationTransactionInAcbs().reply(201, undefined, { bundleIdentifier, 'processing-warning': '' });
+  };
+
+  const givenRequestToCreateFacilityActivationTransactionInAcbsSucceedsWithWarningHeader = (): nock.Scope => {
+    return requestToCreateFacilityActivationTransactionInAcbs().reply(201, undefined, { bundleIdentifier, 'processing-warning': 'error' });
   };
 
   const requestToCreateFacilityActivationTransactionInAcbs = (): nock.Interceptor =>
