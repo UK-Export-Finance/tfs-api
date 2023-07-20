@@ -29,7 +29,7 @@ export class CreateDealGenerator extends AbstractGenerator<DealValues, GenerateR
       guaranteeCommencementDateAsDateOnlyString: this.dateStringTransformations.getDateOnlyStringFromDate(guaranteeCommencementDateAsDate),
       guaranteeCommencementDateAsDateString: this.dateStringTransformations.getDateStringFromDate(guaranteeCommencementDateAsDate),
       guaranteeCommencementDateForDescription: '02/01/19',
-      midnightToday: this.dateStringTransformations.getDateStringFromDate(new Date('2023-06-13')),
+      midnightToday: this.dateStringTransformations.getDateStringFromDate(new Date()),
       obligorPartyIdentifier: this.valueGenerator.stringOfNumericCharacters({ length: 8 }),
       obligorName: this.valueGenerator.string({ maxLength: 19 }),
       obligorIndustryClassification: this.valueGenerator.string({ maxLength: 10 }),

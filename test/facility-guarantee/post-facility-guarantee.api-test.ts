@@ -140,7 +140,7 @@ describe('POST /facilities/{facilityIdentifier}/guarantees', () => {
     const requestBodyWithFutureEffectiveDate = [{ ...requestBodyToCreateFacilityGuarantee[0], effectiveDate: TEST_DATES.A_FUTURE_EXPIRY_DATE_ONLY }];
     const acbsRequestBodyWithTodayEffectiveDate = {
       ...acbsRequestBodyToCreateFacilityGuarantee,
-      EffectiveDate: new Date('2023-06-13').toISOString().split('T')[0] + 'T00:00:00Z',
+      EffectiveDate: new Date().toISOString().split('T')[0] + 'T00:00:00Z',
     };
     givenAuthenticationWithTheIdpSucceeds();
     const acbsRequestWithTodayEffectiveDate = requestToCreateFacilityGuaranteeInAcbsWithBody(acbsRequestBodyWithTodayEffectiveDate).reply(201, undefined, {

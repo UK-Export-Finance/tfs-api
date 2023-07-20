@@ -157,7 +157,7 @@ describe('POST /deals/{dealIdentifier}/guarantees', () => {
     const requestBodyWithFutureEffectiveDate = [{ ...requestBodyToCreateDealGuarantee[0], effectiveDate: TEST_DATES.A_FUTURE_EFFECTIVE_DATE_ONLY }];
     const acbsRequestBodyWithTodayEffectiveDate = {
       ...acbsRequestBodyToCreateDealGuarantee,
-      EffectiveDate: new Date('2023-06-13').toISOString().split('T')[0] + 'T00:00:00Z',
+      EffectiveDate: new Date().toISOString().split('T')[0] + 'T00:00:00Z',
     };
     givenAuthenticationWithTheIdpSucceeds();
     const acbsRequestWithTodayEffectiveDate = requestToCreateDealGuaranteeInAcbsWithBody(acbsRequestBodyWithTodayEffectiveDate).reply(201, undefined, {
