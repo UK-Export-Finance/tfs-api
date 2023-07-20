@@ -47,7 +47,7 @@ export class CreateFacilityGenerator extends AbstractGenerator<FacilityValues, G
     const productTypeName = 'The product';
     const effectiveDate = TEST_DATES.A_PAST_EFFECTIVE_DATE_ONLY;
     const nextQuarterEndDate = TEST_DATES.A_FUTURE_EXPIRY_DATE_ONLY;
-    const midnightToday = this.dateStringTransformations.getDateStringFromDate(new Date('2023-06-13'));
+    const midnightToday = this.dateStringTransformations.getDateStringFromDate(new Date());
 
     const defaultValues = PROPERTIES.FACILITY.DEFAULT.POST;
     const acbsEffectiveDate = this.dateStringTransformations.addTimeToDateOnlyString(effectiveDate);
