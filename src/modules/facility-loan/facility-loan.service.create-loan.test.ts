@@ -121,7 +121,7 @@ describe('FacilityLoanService', () => {
           ...newLoanGbp,
           issueDate: dateAfterToday,
         };
-        const midnightToday = dateStringTransformations.getDateStringFromDate(new Date('2023-06-13'));
+        const midnightToday = dateStringTransformations.getDateStringFromDate(new Date());
         const acbsRequestBodyToCreateFacilityLoanWithIssueDateAfterToday = {
           ...acbsRequestBodyToCreateFacilityLoanGbp,
           BundleMessageList: [
