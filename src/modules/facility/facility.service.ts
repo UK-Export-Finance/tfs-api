@@ -158,7 +158,7 @@ export class FacilityService {
     );
 
     const acbsGuaranteeExpiryDate = this.dateStringTransformations.addTimeToDateOnlyString(facilityToTransform.guaranteeExpiryDate);
-    const midnightToday = this.dateStringTransformations.getDateStringFromDate(new Date('2023-06-13'));
+    const midnightToday = this.dateStringTransformations.getDateStringFromDate(new Date());
 
     const capitalConversionFactorCode =
       facilityToTransform.capitalConversionFactorCode ??
