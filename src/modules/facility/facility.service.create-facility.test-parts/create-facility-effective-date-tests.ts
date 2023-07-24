@@ -37,7 +37,7 @@ export const withCreateFacilityEffectiveDateTests = ({
 
     it.each(effectiveDateTests)('uses today for $affectedKeyInAcbs if effectiveDate is after today', async ({ affectedKeyInAcbs }) => {
       const effectiveDateAfterToday = TEST_DATES.A_FUTURE_EFFECTIVE_DATE_ONLY;
-      const midnightToday = dateStringTransformations.getDateStringFromDate(new Date('2023-06-13'));
+      const midnightToday = dateStringTransformations.getDateStringFromDate(new Date());
       const facilityToCreateWithEffectiveDateAfterToday = { ...facilityToCreate, effectiveDate: effectiveDateAfterToday };
 
       await createFacility(facilityToCreateWithEffectiveDateAfterToday);

@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.3.1](https://github.com/UK-Export-Finance/tfs-api/compare/v1.3.0...v1.3.1) (2023-07-21)
+
+
+### Miscellaneous
+
+* **deps-dev:** bump @commitlint/cli from 17.6.6 to 17.6.7 ([#328](https://github.com/UK-Export-Finance/tfs-api/issues/328)) ([bca46e5](https://github.com/UK-Export-Finance/tfs-api/commit/bca46e5a3a719e61373b0d759daf5e424a991f9d))
+* **deps-dev:** bump @commitlint/config-conventional from 17.6.6 to 17.6.7 ([#330](https://github.com/UK-Export-Finance/tfs-api/issues/330)) ([8ff479f](https://github.com/UK-Export-Finance/tfs-api/commit/8ff479fb5a3b1ebaa0881d664ec7a7d8a1c0d57f))
+* **deps-dev:** bump @nestjs/cli from 10.1.8 to 10.1.9 ([#324](https://github.com/UK-Export-Finance/tfs-api/issues/324)) ([270697b](https://github.com/UK-Export-Finance/tfs-api/commit/270697b4b14ed70386e8a8f725eaf7b82f4a08d4))
+* **deps-dev:** bump @nestjs/cli from 10.1.9 to 10.1.10 ([#329](https://github.com/UK-Export-Finance/tfs-api/issues/329)) ([78f94da](https://github.com/UK-Export-Finance/tfs-api/commit/78f94dade714e082961f236cba87f7cb2e6a4ecd))
+* **deps-dev:** bump @types/luxon from 3.3.0 to 3.3.1 ([#332](https://github.com/UK-Export-Finance/tfs-api/issues/332)) ([6f9c202](https://github.com/UK-Export-Finance/tfs-api/commit/6f9c202bb6f122f78b17001a9419ddb2dd557813))
+* **deps-dev:** bump cspell from 6.31.1 to 6.31.2 ([#321](https://github.com/UK-Export-Finance/tfs-api/issues/321)) ([f98e2e1](https://github.com/UK-Export-Finance/tfs-api/commit/f98e2e16adc822dc18128631acb243ba3d9e2de1))
+* **deps-dev:** bump eslint from 8.44.0 to 8.45.0 ([#320](https://github.com/UK-Export-Finance/tfs-api/issues/320)) ([38ac0f1](https://github.com/UK-Export-Finance/tfs-api/commit/38ac0f1548487d86ec92cce54a940f98aee60bac))
+* **deps:** bump @nestjs/cache-manager from 2.0.1 to 2.1.0 ([#323](https://github.com/UK-Export-Finance/tfs-api/issues/323)) ([05b0929](https://github.com/UK-Export-Finance/tfs-api/commit/05b0929d342f78d63dc8c67a8eff63cd960e8748))
+* **dockerfile:** version updates ([#326](https://github.com/UK-Export-Finance/tfs-api/issues/326)) ([f3705d9](https://github.com/UK-Export-Finance/tfs-api/commit/f3705d90e828e40fac34f5d59af9b8f6fedefd8f))
+
 ## [1.3.0](https://github.com/UK-Export-Finance/tfs-api/compare/v1.2.0...v1.3.0) (2023-07-16)
 
 

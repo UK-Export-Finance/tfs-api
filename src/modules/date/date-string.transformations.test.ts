@@ -121,7 +121,7 @@ describe('DateStringTransformations', () => {
 
     it('returns todays date as an ISO DateString if parameter is in the future', () => {
       const dateAfterToday = TEST_DATES.A_FUTURE_EFFECTIVE_DATE_ONLY;
-      const midnightToday = dateStringTransformations.getDateStringFromDate(new Date('2023-06-13'));
+      const midnightToday = dateStringTransformations.getDateStringFromDate(new Date());
 
       expect(dateStringTransformations.getEarliestDateFromTodayAndDateAsString(dateAfterToday, currentDateProvider)).toBe(midnightToday);
     });
