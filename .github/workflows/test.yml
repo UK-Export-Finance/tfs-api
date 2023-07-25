@@ -11,26 +11,25 @@ run-name: Executing test QA on ${{ github.repository }} 🚀
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [main]
     paths:
-      - '.github/workflows/test.yml'
-      - 'src/**'
-      - 'test/**'
-      - 'Dockerfile'
-      - 'docker-compose.yml'
-      - 'package*'
-      - 'tsconfig*'
-      - 'jest.config.ts'
-      - 'nest.cli.json'
+      - ".github/workflows/test.yml"
+      - "src/**"
+      - "test/**"
+      - "Dockerfile"
+      - "docker-compose.yml"
+      - "package*"
+      - "tsconfig*"
+      - "jest.config.ts"
+      - "nest.cli.json"
 
 env:
-  environment: 'qa'
-  timezone: 'Europe/London'
+  environment: "qa"
+  timezone: "Europe/London"
   node: ${{ vars.NODE_VERSION }}
 
 jobs:
-
-# 1. Setup test infrastructure
+  # 1. Setup test infrastructure
   setup:
     name: Infrastructure setup 🔧
     runs-on: ubuntu-latest
@@ -38,13 +37,13 @@ jobs:
       environment: ${{ env.environment }}
       timezone: ${{ env.timezone }}
     steps:
-    - name: Environment 🧪
-      run: echo "Environment set to ${{ env.environment }}"
-  
-    - name: Timezone 🌐
-      run: echo "Timezone set to ${{ env.timezone }}"
+      - name: Environment 🧪
+        run: echo "Environment set to ${{ env.environment }}"
 
-# 2. Unit tests
+      - name: Timezone 🌐
+        run: echo "Timezone set to ${{ env.timezone }}"
+
+  # 2. Unit tests
   unit-tests:
     name: Unit 👷
     needs: setup
@@ -73,7 +72,7 @@ jobs:
         working-directory: ./
         run: npm run unit-test
 
-# 3. API tests
+  # 3. API tests
   api-tests:
     name: API 👷
     needs: setup
@@ -102,7 +101,7 @@ jobs:
         working-directory: ./
         run: npm run api-test
 
-# 4. E2E tests
+  # 4. E2E tests
   e2e-tests:
     name: E2E 🧑‍💻
     needs: setup
@@ -114,7 +113,7 @@ jobs:
         uses: szenius/set-timezone@v1.2
         with:
           timezoneLinux: ${{ needs.setup.outputs.timezone }}
-      
+
       - name: Repository
         uses: actions/checkout@v3
 
