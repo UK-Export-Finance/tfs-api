@@ -35,7 +35,7 @@
 # *********
 # GHA is only invoked when following conditions are satisfied:
 # 1. Push to the `infrastructure` branch only.
-# 2. Exact file path matches `.github/workflows/infrastructure.yml`.
+# 2. Exact file path matches `.github/workflows/infrastructure.yml` and `package*.json` files.
 #
 # Flow
 # ****
@@ -63,12 +63,15 @@ on:
     branches:
       - infrastructure
 
-    paths: [.github/workflows/infrastructure.yml]
+    paths:
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/infrastructure.yml"
 
 env:
   PRODUCT: apim
   ENVIRONMENT: infrastructure
-  TIMEZONE: 'Europe/London'
+  TIMEZONE: "Europe/London"
   # Deployment environment target i.e., `dev`, `staging`, `production`
   TARGET: ${{ vars.ENVIRONMENT }}
 
