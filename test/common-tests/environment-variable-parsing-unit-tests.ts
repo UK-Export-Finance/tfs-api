@@ -56,7 +56,7 @@ export const withEnvironmentVariableParsingUnitTests = <ConfigUnderTest>({
     describe.each(configParsedBooleanFromEnvironmentVariablesWithDefault)(
       '$configPropertyName',
       ({ configPropertyName, environmentVariableName, defaultConfigValue }) => {
-        it(`is config ${environmentVariableName} set to true if environment variable ${environmentVariableName} is true`, () => {
+        it(`is true if environment variable ${environmentVariableName} is true`, () => {
           const expectedConfigValue = true;
           const environmentVariableValue = expectedConfigValue.toString();
           process.env = {
@@ -68,7 +68,7 @@ export const withEnvironmentVariableParsingUnitTests = <ConfigUnderTest>({
           expect(configPropertyValue).toBe(expectedConfigValue);
         });
 
-        it(`is config ${environmentVariableName} set to false if environment variable ${environmentVariableName} is false`, () => {
+        it(`is false if environment variable ${environmentVariableName} is false`, () => {
           const expectedConfigValue = false;
           const environmentVariableValue = expectedConfigValue.toString();
           process.env = {
