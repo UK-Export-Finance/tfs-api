@@ -1,10 +1,8 @@
-import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
+import { withEnvironmentVariableParsingUnitTests } from '@ukef-test/common-tests/environment-variable-parsing-unit-tests';
 
-import acbsConfig from './acbs.config';
+import acbsConfig, { AcbsConfig } from './acbs.config';
 
 describe('acbsConfig', () => {
-  const valueGenerator = new RandomValueGenerator();
-
   let originalProcessEnv: NodeJS.ProcessEnv;
 
   beforeEach(() => {
@@ -15,57 +13,46 @@ describe('acbsConfig', () => {
     process.env = originalProcessEnv;
   });
 
-  describe('parsing ACBS_USE_RETURN_EXCEPTION_HEADER', () => {
-    it('sets useReturnExceptionHeader to true if ACBS_USE_RETURN_EXCEPTION_HEADER is true', () => {
-      replaceEnvironmentVariables({
-        ACBS_USE_RETURN_EXCEPTION_HEADER: 'true',
-      });
+  const configDirectlyFromEnvironmentVariables: { configPropertyName: keyof AcbsConfig; environmentVariableName: string }[] = [
+    {
+      configPropertyName: 'baseUrl',
+      environmentVariableName: 'ACBS_BASE_URL',
+    },
+  ];
 
-      const config = acbsConfig();
+  const configParsedBooleanFromEnvironmentVariablesWithDefault: {
+    configPropertyName: keyof AcbsConfig;
+    environmentVariableName: string;
+    defaultConfigValue: boolean;
+  }[] = [
+    {
+      configPropertyName: 'useReturnExceptionHeader',
+      environmentVariableName: 'ACBS_USE_RETURN_EXCEPTION_HEADER',
+      defaultConfigValue: false,
+    },
+  ];
 
-      expect(config.useReturnExceptionHeader).toBe(true);
-    });
+  const configParsedAsIntFromEnvironmentVariablesWithDefault: {
+    configPropertyName: keyof AcbsConfig;
+    environmentVariableName: string;
+    defaultConfigValue: number;
+  }[] = [
+    {
+      configPropertyName: 'maxRedirects',
+      environmentVariableName: 'ACBS_MAX_REDIRECTS',
+      defaultConfigValue: 5,
+    },
+    {
+      configPropertyName: 'timeout',
+      environmentVariableName: 'ACBS_TIMEOUT',
+      defaultConfigValue: 30000,
+    },
+  ];
 
-    it('sets useReturnExceptionHeader to false if ACBS_USE_RETURN_EXCEPTION_HEADER is false', () => {
-      replaceEnvironmentVariables({
-        ACBS_USE_RETURN_EXCEPTION_HEADER: 'false',
-      });
-
-      const config = acbsConfig();
-
-      expect(config.useReturnExceptionHeader).toBe(false);
-    });
-
-    it('sets useReturnExceptionHeader to false if ACBS_USE_RETURN_EXCEPTION_HEADER is not specified', () => {
-      replaceEnvironmentVariables({});
-
-      const config = acbsConfig();
-
-      expect(config.useReturnExceptionHeader).toBe(false);
-    });
-
-    it('sets useReturnExceptionHeader to false if ACBS_USE_RETURN_EXCEPTION_HEADER is an empty string', () => {
-      replaceEnvironmentVariables({
-        ACBS_USE_RETURN_EXCEPTION_HEADER: '',
-      });
-
-      const config = acbsConfig();
-
-      expect(config.useReturnExceptionHeader).toBe(false);
-    });
-
-    it('sets useReturnExceptionHeader to false if ACBS_USE_RETURN_EXCEPTION_HEADER is any string other than true or false', () => {
-      replaceEnvironmentVariables({
-        ACBS_USE_RETURN_EXCEPTION_HEADER: valueGenerator.string(),
-      });
-
-      const config = acbsConfig();
-
-      expect(config.useReturnExceptionHeader).toBe(false);
-    });
+  withEnvironmentVariableParsingUnitTests({
+    configDirectlyFromEnvironmentVariables,
+    configParsedBooleanFromEnvironmentVariablesWithDefault,
+    configParsedAsIntFromEnvironmentVariablesWithDefault,
+    getConfig: () => acbsConfig(),
   });
-
-  const replaceEnvironmentVariables = (newEnvVariables: Record<string, string>): void => {
-    process.env = newEnvVariables;
-  };
 });
