@@ -1,5 +1,36 @@
 # Changelog
 
+## [1.3.2](https://github.com/UK-Export-Finance/tfs-api/compare/v1.3.1...v1.3.2) (2023-07-25)
+
+
+### Bug Fixes
+
+* **iac:** ACR ([#338](https://github.com/UK-Export-Finance/tfs-api/issues/338)) ([e263ad5](https://github.com/UK-Export-Finance/tfs-api/commit/e263ad5257fd8c95cf0f9a60f3f3171464166eac))
+* **iac:** IaC ([#341](https://github.com/UK-Export-Finance/tfs-api/issues/341)) ([701fc1c](https://github.com/UK-Export-Finance/tfs-api/commit/701fc1c4365f282590875ed0e84e261605cd59b7))
+
+
+### Miscellaneous
+
+* **deps-dev:** bump @types/node from 20.4.2 to 20.4.4 ([#336](https://github.com/UK-Export-Finance/tfs-api/issues/336)) ([75e0192](https://github.com/UK-Export-Finance/tfs-api/commit/75e0192fe6a071aa3d60a67ccc74b6e39690a1fa))
+* **deps:** bump node from 20.4-alpine3.17 to 20.5-alpine3.17 ([#337](https://github.com/UK-Export-Finance/tfs-api/issues/337)) ([b72d02f](https://github.com/UK-Export-Finance/tfs-api/commit/b72d02f9d3a102f167c25bec37eec4c6f3600f74))
+* **deps:** bump tslib from 2.6.0 to 2.6.1 ([#340](https://github.com/UK-Export-Finance/tfs-api/issues/340)) ([a4e5e96](https://github.com/UK-Export-Finance/tfs-api/commit/a4e5e96657facedb81ab5bd7718ee9aeb48444e3))
+* **deps:** dependencies updates ([#334](https://github.com/UK-Export-Finance/tfs-api/issues/334)) ([7ae6192](https://github.com/UK-Export-Finance/tfs-api/commit/7ae61927377683afbb8ef766480df11c5baf55b7))
+
+## [1.3.2](https://github.com/UK-Export-Finance/tfs-api/compare/v1.3.1...v1.3.2) (2023-07-25)
+
+
+### Bug Fixes
+
+* **iac:** ACR ([#338](https://github.com/UK-Export-Finance/tfs-api/issues/338)) ([e263ad5](https://github.com/UK-Export-Finance/tfs-api/commit/e263ad5257fd8c95cf0f9a60f3f3171464166eac))
+
+
+### Miscellaneous
+
+* **deps-dev:** bump @types/node from 20.4.2 to 20.4.4 ([#336](https://github.com/UK-Export-Finance/tfs-api/issues/336)) ([75e0192](https://github.com/UK-Export-Finance/tfs-api/commit/75e0192fe6a071aa3d60a67ccc74b6e39690a1fa))
+* **deps:** bump node from 20.4-alpine3.17 to 20.5-alpine3.17 ([#337](https://github.com/UK-Export-Finance/tfs-api/issues/337)) ([b72d02f](https://github.com/UK-Export-Finance/tfs-api/commit/b72d02f9d3a102f167c25bec37eec4c6f3600f74))
+* **deps:** bump tslib from 2.6.0 to 2.6.1 ([#340](https://github.com/UK-Export-Finance/tfs-api/issues/340)) ([a4e5e96](https://github.com/UK-Export-Finance/tfs-api/commit/a4e5e96657facedb81ab5bd7718ee9aeb48444e3))
+* **deps:** dependencies updates ([#334](https://github.com/UK-Export-Finance/tfs-api/issues/334)) ([7ae6192](https://github.com/UK-Export-Finance/tfs-api/commit/7ae61927377683afbb8ef766480df11c5baf55b7))
+
 ## [1.3.1](https://github.com/UK-Export-Finance/tfs-api/compare/v1.3.0...v1.3.1) (2023-07-21)
 
 

@@ -1,6 +1,7 @@
+import { withEnvironmentVariableParsingUnitTests } from '@ukef-test/common-tests/environment-variable-parsing-unit-tests';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 
-import appConfig from './app.config';
+import appConfig, { AppConfig } from './app.config';
 import { InvalidConfigException } from './invalid-config.exception';
 
 describe('appConfig', () => {
@@ -129,7 +130,74 @@ describe('appConfig', () => {
     });
   });
 
+  describe('parsing SINGLE_LINE_LOG_FORMAT', () => {
+    it('sets singleLineLogFormat to true if SINGLE_LINE_LOG_FORMAT is true', () => {
+      replaceEnvironmentVariables({
+        SINGLE_LINE_LOG_FORMAT: 'true',
+      });
+
+      const config = appConfig();
+
+      expect(config.singleLineLogFormat).toBe(true);
+    });
+
+    it('sets singleLineLogFormat to false if SINGLE_LINE_LOG_FORMAT is false', () => {
+      replaceEnvironmentVariables({
+        SINGLE_LINE_LOG_FORMAT: 'false',
+      });
+
+      const config = appConfig();
+
+      expect(config.singleLineLogFormat).toBe(false);
+    });
+
+    it('sets singleLineLogFormat to true if SINGLE_LINE_LOG_FORMAT is not specified', () => {
+      replaceEnvironmentVariables({});
+
+      const config = appConfig();
+
+      expect(config.singleLineLogFormat).toBe(true);
+    });
+
+    it('sets singleLineLogFormat to true if SINGLE_LINE_LOG_FORMAT is the empty string', () => {
+      replaceEnvironmentVariables({
+        SINGLE_LINE_LOG_FORMAT: '',
+      });
+
+      const config = appConfig();
+
+      expect(config.singleLineLogFormat).toBe(true);
+    });
+
+    it('sets singleLineLogFormat to true if SINGLE_LINE_LOG_FORMAT is any string other than true or false', () => {
+      replaceEnvironmentVariables({
+        SINGLE_LINE_LOG_FORMAT: valueGenerator.string(),
+      });
+
+      const config = appConfig();
+
+      expect(config.singleLineLogFormat).toBe(true);
+    });
+  });
+
   const replaceEnvironmentVariables = (newEnvVariables: Record<string, string>): void => {
     process.env = newEnvVariables;
   };
+
+  const configParsedAsIntFromEnvironmentVariablesWithDefault: {
+    configPropertyName: keyof AppConfig;
+    environmentVariableName: string;
+    defaultConfigValue: number;
+  }[] = [
+    {
+      configPropertyName: 'port',
+      environmentVariableName: 'HTTP_PORT',
+      defaultConfigValue: 3001,
+    },
+  ];
+
+  withEnvironmentVariableParsingUnitTests({
+    configParsedAsIntFromEnvironmentVariablesWithDefault,
+    getConfig: () => appConfig(),
+  });
 });
