@@ -21,15 +21,12 @@ describe('POST /facilities/{facilityIdentifier}/fixed-fees/amendments/amount', (
   const { servicingQueueIdentifier } = PROPERTIES.GLOBAL;
   const facilityIdentifier = valueGenerator.facilityId();
   const createdBundleIdentifier = valueGenerator.acbsBundleId();
-  const acbsSuccessfulResponse: [number, undefined, { BundleIdentifier: string; 'processing-warning': string }] = [
-    201,
-    undefined,
-    { BundleIdentifier: createdBundleIdentifier, 'processing-warning': '' },
-  ];
+  const errorString = valueGenerator.string();
+  const acbsSuccessfulResponse: [number, undefined, { BundleIdentifier: string }] = [201, undefined, { BundleIdentifier: createdBundleIdentifier }];
   const acbsSuccessfulResponseWithWarningHeader: [number, undefined, { BundleIdentifier: string; 'processing-warning': string }] = [
     201,
     undefined,
-    { BundleIdentifier: createdBundleIdentifier, 'processing-warning': 'error' },
+    { BundleIdentifier: createdBundleIdentifier, 'processing-warning': errorString },
   ];
   const { increaseAmountRequest, decreaseAmountRequest, acbsFixedFeesAmendmentForIncrease, acbsFixedFeesAmendmentForDecrease } =
     new CreateFacilityFixedFeesAmountAmendmentGenerator(valueGenerator, new DateStringTransformations()).generate({ numberToGenerate: 3, facilityIdentifier });
@@ -79,6 +76,7 @@ describe('POST /facilities/{facilityIdentifier}/fixed-fees/amendments/amount', (
       expectedResponse: { bundleIdentifier: createdBundleIdentifier },
       createBundleInformationType: ENUMS.BUNDLE_INFORMATION_TYPES.FACILITY_FEE_AMOUNT_TRANSACTION,
       expectedResponseCode: 201,
+      errorString,
     });
   });
 
@@ -94,6 +92,7 @@ describe('POST /facilities/{facilityIdentifier}/fixed-fees/amendments/amount', (
       expectedResponse: { bundleIdentifier: createdBundleIdentifier },
       createBundleInformationType: ENUMS.BUNDLE_INFORMATION_TYPES.FACILITY_FEE_AMOUNT_TRANSACTION,
       expectedResponseCode: 201,
+      errorString,
     });
   });
 
@@ -175,7 +174,7 @@ describe('POST /facilities/{facilityIdentifier}/fixed-fees/amendments/amount', (
     requestToCreateFixedFeesAdvanceTransactionInAcbsWithBody(JSON.parse(JSON.stringify(acbsFixedFeesAmendmentForDecrease)));
 
   const givenAnyRequestBodyToCreateFixedFeesAmountAmendmentInAcbsSucceeds = (
-    acbsSuccessfulResponse: [number, undefined, { BundleIdentifier: string; 'processing-warning': string }],
+    acbsSuccessfulResponse: [number, undefined, { BundleIdentifier: string }],
   ): nock.Scope => {
     const requestBodyPlaceholder = '*';
     return nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)

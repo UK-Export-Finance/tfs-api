@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, Query, Res } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query, UseInterceptors } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -13,6 +13,7 @@ import {
 } from '@nestjs/swagger';
 import { ENUMS, EXAMPLES } from '@ukef/constants';
 import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decorator';
+import { CreateBundleInformationErrorInterceptor } from '@ukef/interceptors/create-bundle-information-error.interceptor';
 import { CreateFacilityRequest, CreateFacilityRequestItem } from '@ukef/modules/facility/dto/create-facility-request.dto';
 import { CreateFacilityResponse } from '@ukef/modules/facility/dto/create-facility-response.dto';
 import { GetFacilityByIdentifierParamsDto } from '@ukef/modules/facility/dto/get-facility-by-identifier-params.dto';
@@ -22,7 +23,6 @@ import { UpdateFacilityByOperationQueryDto } from '@ukef/modules/facility/dto/up
 import { UpdateFacilityRequest } from '@ukef/modules/facility/dto/update-facility-request.dto';
 import { UpdateFacilityBundleIdentifierResponse, UpdateFacilityFacilityIdentifierResponse } from '@ukef/modules/facility/dto/update-facility-response.dto';
 import { FacilityService } from '@ukef/modules/facility/facility.service';
-import { Response } from 'express';
 
 @Controller('facilities')
 export class FacilityController {
@@ -107,6 +107,7 @@ export class FacilityController {
   }
 
   @Put(':facilityIdentifier')
+  @UseInterceptors(CreateBundleInformationErrorInterceptor)
   @ApiOperation({ summary: 'Update a facility by facility identifier and operation enum query' })
   @ApiBody({ type: UpdateFacilityRequest })
   @ApiParam({
@@ -145,7 +146,6 @@ export class FacilityController {
     @Query() query: UpdateFacilityByOperationQueryDto,
     @Param() params: UpdateFacilityByOperationParamsDto,
     @Body() updateFacilityDto: UpdateFacilityRequest,
-    @Res({ passthrough: true }) res: Response,
   ): Promise<UpdateFacilityFacilityIdentifierResponse | UpdateFacilityBundleIdentifierResponse> {
     if (query.op === ENUMS.FACILITY_UPDATE_OPERATIONS.ISSUE) {
       await this.facilityService.issueFacilityByIdentifier(params.facilityIdentifier, updateFacilityDto);
@@ -156,11 +156,7 @@ export class FacilityController {
       return { facilityIdentifier: params.facilityIdentifier };
     }
     if (query.op === ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_AMOUNT) {
-      const { BundleIdentifier, WarningErrors } = await this.facilityService.amendFacilityAmountByIdentifier(params.facilityIdentifier, updateFacilityDto);
-      if (WarningErrors.length) {
-        res.header('processing-warning', WarningErrors);
-      }
-      return { bundleIdentifier: BundleIdentifier };
+      return await this.facilityService.amendFacilityAmountByIdentifier(params.facilityIdentifier, updateFacilityDto);
     }
   }
 }

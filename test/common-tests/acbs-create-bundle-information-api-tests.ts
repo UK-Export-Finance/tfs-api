@@ -14,6 +14,7 @@ export const withAcbsCreateBundleInformationTests = ({
   expectedResponse,
   createBundleInformationType,
   expectedResponseCode,
+  errorString,
 }: {
   givenTheRequestWouldOtherwiseSucceed: () => void;
   requestToCreateBundleInformationInAcbs: () => nock.Interceptor;
@@ -24,6 +25,7 @@ export const withAcbsCreateBundleInformationTests = ({
   expectedResponse: unknown;
   createBundleInformationType: string;
   expectedResponseCode: number;
+  errorString: string;
 }) => {
   describe('Common ACBS create bundle information tests', () => {
     beforeEach(() => {
@@ -31,18 +33,26 @@ export const withAcbsCreateBundleInformationTests = ({
     });
 
     describe('Shared Acbs create bundle information tests', () => {
-      it(`returns a ${expectedResponseCode} response with the bundle identifier if getting the facility succeeds and the bundle information has been successfully created in ACBS`, async () => {
+      it(`returns a ${expectedResponseCode} response with the bundle identifier if the bundle information has been successfully created in ACBS`, async () => {
         const acbsRequest = givenRequestToCreateBundleInformationInAcbsSucceeds();
 
-        const { status, body, header } = await makeRequest();
+        const { status, body } = await makeRequest();
 
         expect(status).toBe(expectedResponseCode);
         expect(body).toStrictEqual(expectedResponse);
         expect(acbsRequest.isDone()).toBe(true);
+      });
+
+      it(`completes the request and 'processing-warning' header is not set if creating the bundle succeeds and ACBS does not return a warning error`, async () => {
+        const acbsRequest = givenRequestToCreateBundleInformationInAcbsSucceeds();
+
+        const { header } = await makeRequest();
+
+        expect(acbsRequest.isDone()).toBe(true);
         expect(header).not.toHaveProperty('processing-warning');
       });
 
-      it(`returns a ${expectedResponseCode} response with the bundle identifier and 'processing-warning' header is set if getting the facility succeeds and ACBS returns a warning error`, async () => {
+      it(`returns a ${expectedResponseCode} response with the bundle identifier and 'processing-warning' header is set if creating the bundle succeeds and ACBS returns a warning error`, async () => {
         const acbsRequest = givenRequestToCreateBundleInformationInAcbsSucceedsWithWarningHeader();
 
         const { status, body, header } = await makeRequest();
@@ -50,6 +60,7 @@ export const withAcbsCreateBundleInformationTests = ({
         expect(body).toStrictEqual(expectedResponse);
         expect(acbsRequest.isDone()).toBe(true);
         expect(header).toHaveProperty('processing-warning');
+        expect(header['processing-warning']).toStrictEqual(errorString);
       });
 
       it('returns a 400 response if ACBS responds with a 400 response that is not a string when creating the bundle information', async () => {

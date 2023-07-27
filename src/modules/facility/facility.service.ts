@@ -17,7 +17,7 @@ import { CreateFacilityRequestItem } from '@ukef/modules/facility/dto/create-fac
 import { GetFacilityByIdentifierResponseDto } from '@ukef/modules/facility/dto/get-facility-by-identifier-response.dto';
 import { UpdateFacilityRequest, UpdateFacilityRequestWithFacilityIdentifier } from '@ukef/modules/facility/dto/update-facility-request.dto';
 
-import { AcbsCreateBundleInformationResponseHeadersDto } from '../acbs/dto/acbs-create-bundle-information-response.dto';
+import { UpdateFacilityBundleIdentifierResponse } from './dto/update-facility-response.dto';
 
 @Injectable()
 export class FacilityService {
@@ -99,7 +99,7 @@ export class FacilityService {
   async amendFacilityAmountByIdentifier(
     facilityIdentifier: UkefId,
     updateFacilityRequest: UpdateFacilityRequest,
-  ): Promise<AcbsCreateBundleInformationResponseHeadersDto> {
+  ): Promise<UpdateFacilityBundleIdentifierResponse> {
     const idToken = await this.acbsAuthenticationService.getIdToken();
 
     const existingFacilityData = await this.acbsFacilityService.getFacilityByIdentifier(facilityIdentifier, idToken);
@@ -331,11 +331,13 @@ export class FacilityService {
     updateFacilityRequest: UpdateFacilityRequest,
     existingFacilityData: AcbsGetFacilityResponseDto,
     idToken: string,
-  ): Promise<AcbsCreateBundleInformationResponseHeadersDto> {
+  ): Promise<UpdateFacilityBundleIdentifierResponse> {
     const bundleInformationToCreateInAcbs: AcbsCreateBundleInformationRequestDto<FacilityAmountTransaction> =
       this.buildAmendFacilityAmountBundleInformationRequest(updateFacilityRequest, existingFacilityData);
 
-    return await this.acbsBundleInformationService.createBundleInformation(bundleInformationToCreateInAcbs, idToken);
+    const { BundleIdentifier, WarningErrors } = await this.acbsBundleInformationService.createBundleInformation(bundleInformationToCreateInAcbs, idToken);
+
+    return { bundleIdentifier: BundleIdentifier, warningErrors: WarningErrors };
   }
 
   private buildAmendFacilityAmountBundleInformationRequest(

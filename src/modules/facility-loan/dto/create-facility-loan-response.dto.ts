@@ -10,8 +10,10 @@ export class CreateFacilityLoanResponse {
     pattern: UKEFID.BUNDLE_ID.REGEX,
   })
   readonly bundleIdentifier: AcbsBundleId;
+  readonly warningErrors: string;
 
-  constructor(bundleIdentifier: AcbsBundleId) {
+  constructor(bundleIdentifier: AcbsBundleId, warningErrors: string) {
     this.bundleIdentifier = bundleIdentifier;
+    this.warningErrors = warningErrors;
   }
 }

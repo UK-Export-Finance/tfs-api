@@ -7,13 +7,13 @@ import { CreateFacilityFixedFeeGenerator } from '@ukef-test/support/generator/cr
 import { CreateFacilityFixedFeesAmountAmendmentGenerator } from '@ukef-test/support/generator/create-facility-fixed-fees-amount-amendment.generator';
 import { GetFacilityFixedFeeGenerator } from '@ukef-test/support/generator/get-facility-fixed-fee-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { Response } from 'express';
 import { when } from 'jest-when';
 
 describe('FacilityFixedFeeController', () => {
   const valueGenerator = new RandomValueGenerator();
   const portfolioIdentifier = valueGenerator.portfolioId();
   const facilityIdentifier = valueGenerator.facilityId();
+  const errorString = valueGenerator.string();
 
   const { apiFacilityFixedFees: serviceFixedFees } = new GetFacilityFixedFeeGenerator(valueGenerator, new DateStringTransformations()).generate({
     numberToGenerate: 2,
@@ -104,30 +104,26 @@ describe('FacilityFixedFeeController', () => {
       numberToGenerate: 3,
       facilityIdentifier,
     });
-    const res: Response = {
-      header: jest.fn().mockReturnThis(),
-    } as any;
     const expectedBundleIdentifier = valueGenerator.acbsBundleId();
 
-    it('returns the bundleIdentifier from creating a loan amount amendment with the service', async () => {
+    it('returns the bundleIdentifier and warningErrors from creating a loan amount amendment with the service', async () => {
       when(createAmountAmendmentForFixedFeesService)
         .calledWith(facilityIdentifier, increaseAmountRequest)
-        .mockResolvedValueOnce({ BundleIdentifier: expectedBundleIdentifier, WarningErrors: '' });
+        .mockResolvedValueOnce({ bundleIdentifier: expectedBundleIdentifier, warningErrors: errorString });
 
-      const bundleIdentifierResponse = await controller.createAmountAmendmentForFixedFees({ facilityIdentifier }, increaseAmountRequest, res);
+      const bundleIdentifierResponse = await controller.createAmountAmendmentForFixedFees({ facilityIdentifier }, increaseAmountRequest);
 
-      expect(bundleIdentifierResponse).toStrictEqual({ bundleIdentifier: expectedBundleIdentifier });
+      expect(bundleIdentifierResponse).toStrictEqual({ bundleIdentifier: expectedBundleIdentifier, warningErrors: errorString });
     });
 
-    it(`sets 'processing-warning' header if WarningErrors exists on the service response`, async () => {
+    it(`returns undefined warningErrors if warningErrors is undefined on the service response`, async () => {
       when(createAmountAmendmentForFixedFeesService)
         .calledWith(facilityIdentifier, increaseAmountRequest)
-        .mockResolvedValueOnce({ BundleIdentifier: expectedBundleIdentifier, WarningErrors: 'error' });
+        .mockResolvedValueOnce({ bundleIdentifier: expectedBundleIdentifier, warningErrors: undefined });
 
-      await controller.createAmountAmendmentForFixedFees({ facilityIdentifier }, increaseAmountRequest, res);
+      const bundleIdentifierResponse = await controller.createAmountAmendmentForFixedFees({ facilityIdentifier }, increaseAmountRequest);
 
-      expect(res.header).toHaveBeenCalledTimes(1);
-      expect(res.header).toHaveBeenCalledWith('processing-warning', 'error');
+      expect(bundleIdentifierResponse).toStrictEqual({ bundleIdentifier: expectedBundleIdentifier, warningErrors: undefined });
     });
   });
 });

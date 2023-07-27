@@ -24,6 +24,7 @@ describe('POST /facilities/{facilityIdentifier}/activation-transactions', () => 
 
   const { portfolioIdentifier } = PROPERTIES.GLOBAL;
   const bundleIdentifier = valueGenerator.acbsBundleId();
+  const errorString = valueGenerator.string();
 
   const { facilitiesInAcbs } = new GetFacilityGenerator(valueGenerator, dateStringTransformations).generate({
     numberToGenerate: 1,
@@ -37,7 +38,7 @@ describe('POST /facilities/{facilityIdentifier}/activation-transactions', () => 
   const {
     acbsRequestBodyToCreateFacilityActivationTransaction,
     requestBodyToCreateFacilityActivationTransaction,
-    createFacilityActivationTransactionResponseFromService,
+    createFacilityActivationTransactionResponseFromEndpoint,
   } = new CreateFacilityActivationTransactionGenerator(valueGenerator, dateStringTransformations).generate({
     numberToGenerate: 1,
     facilityIdentifier,
@@ -96,9 +97,10 @@ describe('POST /facilities/{facilityIdentifier}/activation-transactions', () => 
       givenRequestToCreateFacilityActivationTransactionInAcbsSucceedsWithWarningHeader(),
     makeRequest: () => api.post(createFacilityActivationTransactionUrl, requestBodyToCreateFacilityActivationTransaction),
     facilityIdentifier,
-    expectedResponse: createFacilityActivationTransactionResponseFromService,
+    expectedResponse: createFacilityActivationTransactionResponseFromEndpoint,
     expectedResponseCode: 201,
     createBundleInformationType: ENUMS.BUNDLE_INFORMATION_TYPES.FACILITY_CODE_VALUE_TRANSACTION,
+    errorString,
   });
 
   withAcbsGetFacilityServiceCommonTests({
@@ -150,11 +152,11 @@ describe('POST /facilities/{facilityIdentifier}/activation-transactions', () => 
       .matchHeader('authorization', `Bearer ${idToken}`);
 
   const givenRequestToCreateFacilityActivationTransactionInAcbsSucceeds = (): nock.Scope => {
-    return requestToCreateFacilityActivationTransactionInAcbs().reply(201, undefined, { bundleIdentifier, 'processing-warning': '' });
+    return requestToCreateFacilityActivationTransactionInAcbs().reply(201, undefined, { bundleIdentifier });
   };
 
   const givenRequestToCreateFacilityActivationTransactionInAcbsSucceedsWithWarningHeader = (): nock.Scope => {
-    return requestToCreateFacilityActivationTransactionInAcbs().reply(201, undefined, { bundleIdentifier, 'processing-warning': 'error' });
+    return requestToCreateFacilityActivationTransactionInAcbs().reply(201, undefined, { bundleIdentifier, 'processing-warning': errorString });
   };
 
   const requestToCreateFacilityActivationTransactionInAcbs = (): nock.Interceptor =>

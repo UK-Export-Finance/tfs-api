@@ -18,6 +18,7 @@ describe('FacilityActivationTransactionService', () => {
   const borrowerPartyIdentifier = valueGenerator.acbsPartyId();
   const effectiveDate = valueGenerator.dateOnlyString();
   const dateStringTransformations = new DateStringTransformations();
+  const errorString = valueGenerator.string();
 
   let service: FacilityActivationTransactionService;
 
@@ -27,7 +28,7 @@ describe('FacilityActivationTransactionService', () => {
     const acbsBundleInformationService = new AcbsBundleInformationService(null, null);
     acbsBundleInformationServiceCreateBundleInformation = jest.fn(() => ({
       BundleIdentifier: bundleIdentifier,
-      WarningErrors: '',
+      WarningErrors: errorString,
     }));
     acbsBundleInformationService.createBundleInformation = acbsBundleInformationServiceCreateBundleInformation;
 
@@ -64,7 +65,7 @@ describe('FacilityActivationTransactionService', () => {
         newActivationTransactionWithAllFields,
       );
 
-      expect(response).toEqual({ BundleIdentifier: bundleIdentifier, WarningErrors: '' });
+      expect(response).toEqual({ bundleIdentifier: bundleIdentifier, warningErrors: errorString });
     });
   });
 });

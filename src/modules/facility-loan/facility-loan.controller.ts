@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, Res } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -11,7 +11,7 @@ import {
 } from '@nestjs/swagger';
 import { EXAMPLES } from '@ukef/constants';
 import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decorator';
-import { Response } from 'express';
+import { CreateBundleInformationErrorInterceptor } from '@ukef/interceptors/create-bundle-information-error.interceptor';
 
 import { CreateFacilityLoanRequest, CreateFacilityLoanRequestItem } from './dto/create-facility-loan-request.dto';
 import { CreateFacilityLoanResponse } from './dto/create-facility-loan-response.dto';
@@ -52,6 +52,7 @@ export class FacilityLoanController {
   }
 
   @Post('facilities/:facilityIdentifier/loans')
+  @UseInterceptors(CreateBundleInformationErrorInterceptor)
   @ApiOperation({
     summary: 'Create a new loan for a facility.',
   })
@@ -75,16 +76,11 @@ export class FacilityLoanController {
   async createLoanForFacility(
     @Param() params: FacilityLoanParamsDto,
     @ValidatedArrayBody({ items: CreateFacilityLoanRequestItem }) newLoanRequest: CreateFacilityLoanRequest,
-    @Res({ passthrough: true }) res: Response,
   ): Promise<CreateFacilityLoanResponse> {
     const { facilityIdentifier } = params;
     const [newLoan] = newLoanRequest;
 
-    const { BundleIdentifier, WarningErrors } = await this.facilityLoanService.createLoanForFacility(facilityIdentifier, newLoan);
-    if (WarningErrors.length) {
-      res.header('processing-warning', WarningErrors);
-    }
-    return { bundleIdentifier: BundleIdentifier };
+    return await this.facilityLoanService.createLoanForFacility(facilityIdentifier, newLoan);
   }
 
   @Patch('facilities/:facilityIdentifier/loans/:loanIdentifier')
@@ -117,6 +113,7 @@ export class FacilityLoanController {
   }
 
   @Post('/facilities/:facilityIdentifier/loans/:loanIdentifier/amendments/amount')
+  @UseInterceptors(CreateBundleInformationErrorInterceptor)
   @ApiOperation({
     summary: 'Create a loan amount amendment bundle.',
   })
@@ -154,13 +151,8 @@ export class FacilityLoanController {
   async createAmountAmendmentForLoan(
     @Param() params: CreateLoanAmountAmendmentParams,
     @ValidatedArrayBody({ items: CreateLoanAmountAmendmentRequestItem }) newLoanAmountAmendmentRequest: CreateLoanAmountAmendmentRequest,
-    @Res({ passthrough: true }) res: Response,
   ): Promise<CreateLoanAmountAmendmentResponse> {
     const [newLoanAmountAmendment] = newLoanAmountAmendmentRequest;
-    const bundleResponse = await this.facilityLoanService.createAmountAmendmentForLoan(params.loanIdentifier, newLoanAmountAmendment);
-    if (bundleResponse.WarningErrors.length) {
-      res.header('processing-warning', bundleResponse.WarningErrors);
-    }
-    return { bundleIdentifier: bundleResponse.BundleIdentifier };
+    return await this.facilityLoanService.createAmountAmendmentForLoan(params.loanIdentifier, newLoanAmountAmendment);
   }
 }

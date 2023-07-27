@@ -18,6 +18,7 @@ describe('FacilityLoanService', () => {
   const valueGenerator = new RandomValueGenerator();
   const idToken = valueGenerator.string();
   const dateStringTransformations = new DateStringTransformations();
+  const errorString = valueGenerator.string();
 
   let acbsAuthenticationService: AcbsAuthenticationService;
   let service: FacilityLoanService;
@@ -54,7 +55,7 @@ describe('FacilityLoanService', () => {
   describe('createAmountAmendmentForLoan', () => {
     const loanIdentifier = valueGenerator.loanId();
     const createdBundleIdentifier = valueGenerator.acbsBundleId();
-    const acbsBundleCreatedResponse: AcbsCreateBundleInformationResponseHeadersDto = { BundleIdentifier: createdBundleIdentifier, WarningErrors: '' };
+    const acbsBundleCreatedResponse: AcbsCreateBundleInformationResponseHeadersDto = { BundleIdentifier: createdBundleIdentifier, WarningErrors: undefined };
 
     const { increaseAmountRequest, decreaseAmountRequest, acbsLoanAmendmentForIncrease, acbsLoanAmendmentForDecrease } =
       new CreateFacilityLoanAmountAmendmentGenerator(valueGenerator, dateStringTransformations).generate({ numberToGenerate: 1, loanIdentifier });
@@ -69,10 +70,10 @@ describe('FacilityLoanService', () => {
           when(createBundleInformation).calledWith(acbsLoanAmendmentForIncrease, idToken).mockResolvedValueOnce(acbsBundleCreatedResponse);
         });
 
-        it('returns the BundleIdentifier from creating the loan amendment bundle', async () => {
+        it('returns the BundleIdentifier and warningErrors from creating the loan amendment bundle', async () => {
           const bundleIdentifier = await service.createAmountAmendmentForLoan(loanIdentifier, increaseAmendment);
 
-          expect(bundleIdentifier).toStrictEqual({ BundleIdentifier: createdBundleIdentifier, WarningErrors: '' });
+          expect(bundleIdentifier).toStrictEqual({ bundleIdentifier: createdBundleIdentifier, warningErrors: undefined });
         });
 
         it('uses the increase TransactionTypeCode when creating the loan amendment bundle', async () => {
@@ -95,10 +96,10 @@ describe('FacilityLoanService', () => {
       it('returns the WarningErrors from creating the loan amendment bundle', async () => {
         when(createBundleInformation)
           .calledWith(acbsLoanAmendmentForIncrease, idToken)
-          .mockResolvedValueOnce({ ...acbsBundleCreatedResponse, WarningErrors: 'error' });
+          .mockResolvedValueOnce({ ...acbsBundleCreatedResponse, WarningErrors: errorString });
         const bundleIdentifier = await service.createAmountAmendmentForLoan(loanIdentifier, increaseAmendment);
 
-        expect(bundleIdentifier).toStrictEqual({ BundleIdentifier: createdBundleIdentifier, WarningErrors: 'error' });
+        expect(bundleIdentifier).toStrictEqual({ bundleIdentifier: createdBundleIdentifier, warningErrors: errorString });
       });
     });
 
@@ -113,7 +114,7 @@ describe('FacilityLoanService', () => {
         it('returns the bundleIdentifier from creating the loan amendment bundle', async () => {
           const bundleIdentifier = await service.createAmountAmendmentForLoan(loanIdentifier, decreaseAmendment);
 
-          expect(bundleIdentifier).toStrictEqual({ BundleIdentifier: createdBundleIdentifier, WarningErrors: '' });
+          expect(bundleIdentifier).toStrictEqual({ bundleIdentifier: createdBundleIdentifier, warningErrors: undefined });
         });
 
         it('uses the decrease TransactionTypeCode when creating the loan amendment bundle', async () => {
@@ -136,10 +137,10 @@ describe('FacilityLoanService', () => {
       it('returns the WarningErrors from creating the loan amendment bundle', async () => {
         when(createBundleInformation)
           .calledWith(acbsLoanAmendmentForDecrease, idToken)
-          .mockResolvedValueOnce({ ...acbsBundleCreatedResponse, WarningErrors: 'error' });
+          .mockResolvedValueOnce({ ...acbsBundleCreatedResponse, WarningErrors: errorString });
         const bundleIdentifier = await service.createAmountAmendmentForLoan(loanIdentifier, decreaseAmendment);
 
-        expect(bundleIdentifier).toStrictEqual({ BundleIdentifier: createdBundleIdentifier, WarningErrors: 'error' });
+        expect(bundleIdentifier).toStrictEqual({ bundleIdentifier: createdBundleIdentifier, warningErrors: errorString });
       });
     });
 

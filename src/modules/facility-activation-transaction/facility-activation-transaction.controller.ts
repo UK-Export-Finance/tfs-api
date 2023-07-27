@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Res } from '@nestjs/common';
+import { Controller, Get, Param, Post, UseInterceptors } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -11,8 +11,8 @@ import {
 } from '@nestjs/swagger';
 import { EXAMPLES } from '@ukef/constants';
 import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decorator';
+import { CreateBundleInformationErrorInterceptor } from '@ukef/interceptors/create-bundle-information-error.interceptor';
 import { FacilityService } from '@ukef/modules/facility/facility.service';
-import { Response } from 'express';
 
 import {
   CreateFacilityActivationTransactionRequest,
@@ -29,6 +29,7 @@ export class FacilityActivationTransactionController {
   constructor(private readonly facilityActivationTransactionService: FacilityActivationTransactionService, private readonly facilityService: FacilityService) {}
 
   @Post('facilities/:facilityIdentifier/activation-transactions')
+  @UseInterceptors(CreateBundleInformationErrorInterceptor)
   @ApiOperation({
     summary: 'Create a new activation transaction for a facility.',
   })
@@ -60,23 +61,17 @@ export class FacilityActivationTransactionController {
     @Param() params: FacilityActivationTransactionParamsDto,
     @ValidatedArrayBody({ items: CreateFacilityActivationTransactionRequestItem })
     newFacilityActivationTransactionRequest: CreateFacilityActivationTransactionRequest,
-    @Res({ passthrough: true }) res: Response,
   ): Promise<CreateFacilityActivationTransactionResponse> {
     const facility = await this.facilityService.getFacilityByIdentifier(params.facilityIdentifier);
 
     const [newFacilityActivationTransaction] = newFacilityActivationTransactionRequest;
 
-    const bundleResponse = await this.facilityActivationTransactionService.createActivationTransactionForFacility(
+    return await this.facilityActivationTransactionService.createActivationTransactionForFacility(
       params.facilityIdentifier,
       facility.obligorPartyIdentifier,
       facility.effectiveDate,
       newFacilityActivationTransaction,
     );
-
-    if (bundleResponse.WarningErrors.length) {
-      res.header('processing-warning', bundleResponse.WarningErrors);
-    }
-    return { bundleIdentifier: bundleResponse.BundleIdentifier };
   }
 
   @Get('facilities/:facilityIdentifier/activation-transactions/:bundleIdentifier')

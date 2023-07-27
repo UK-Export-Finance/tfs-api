@@ -24,6 +24,7 @@ describe('FacilityFixedFeeService', () => {
   const idToken = valueGenerator.string();
   const facilityIdentifier = valueGenerator.facilityId();
   const dateStringTransformations = new DateStringTransformations();
+  const errorString = valueGenerator.string();
 
   const { apiFacilityFixedFees: expectedFacilityFixedFees, acbsFacilityFixedFees } = new GetFacilityFixedFeeGenerator(
     valueGenerator,
@@ -225,7 +226,7 @@ describe('FacilityFixedFeeService', () => {
   describe('createAmountAmendmentForFixedFees', () => {
     const facilityIdentifier = valueGenerator.facilityId();
     const createdBundleIdentifier = valueGenerator.acbsBundleId();
-    const acbsBundleCreatedResponse: AcbsCreateBundleInformationResponseHeadersDto = { BundleIdentifier: createdBundleIdentifier, WarningErrors: '' };
+    const acbsBundleCreatedResponse: AcbsCreateBundleInformationResponseHeadersDto = { BundleIdentifier: createdBundleIdentifier, WarningErrors: undefined };
     const { facilityFeeTransactionType } = PROPERTIES.FACILITY_FEE_AMOUNT_TRANSACTION.DEFAULT.bundleMessageList;
 
     const { increaseAmountRequest, decreaseAmountRequest, acbsFixedFeesAmendmentForIncrease, acbsFixedFeesAmendmentForDecrease } =
@@ -240,7 +241,7 @@ describe('FacilityFixedFeeService', () => {
         it('returns the BundleIdentifier from creating the fixed fees amendment bundle', async () => {
           const response = await service.createAmountAmendmentForFixedFees(facilityIdentifier, increaseAmountRequest);
 
-          expect(response.BundleIdentifier).toBe(createdBundleIdentifier);
+          expect(response.bundleIdentifier).toBe(createdBundleIdentifier);
         });
 
         it('uses the increase FacilityFeeTransactionType when creating the fixed fees amendment bundle', async () => {
@@ -263,10 +264,10 @@ describe('FacilityFixedFeeService', () => {
       it('returns the WarningErrors from creating the fixed fees amendment bundle', async () => {
         when(createBundleInformation)
           .calledWith(acbsFixedFeesAmendmentForIncrease, idToken)
-          .mockResolvedValueOnce({ ...acbsBundleCreatedResponse, WarningErrors: 'error' });
+          .mockResolvedValueOnce({ ...acbsBundleCreatedResponse, WarningErrors: errorString });
         const response = await service.createAmountAmendmentForFixedFees(facilityIdentifier, increaseAmountRequest);
 
-        expect(response.WarningErrors).toBe('error');
+        expect(response.warningErrors).toBe(errorString);
       });
     });
 
@@ -279,7 +280,7 @@ describe('FacilityFixedFeeService', () => {
         it('returns the BundleIdentifier from creating the fixed fees amendment bundle', async () => {
           const response = await service.createAmountAmendmentForFixedFees(facilityIdentifier, decreaseAmountRequest);
 
-          expect(response.BundleIdentifier).toBe(createdBundleIdentifier);
+          expect(response.bundleIdentifier).toBe(createdBundleIdentifier);
         });
 
         it('uses the decrease FacilityFeeTransactionType when creating the fixed fees amendment bundle', async () => {
@@ -302,10 +303,10 @@ describe('FacilityFixedFeeService', () => {
       it('returns the WarningErrors from creating the fixed fees amendment bundle', async () => {
         when(createBundleInformation)
           .calledWith(acbsFixedFeesAmendmentForDecrease, idToken)
-          .mockResolvedValueOnce({ ...acbsBundleCreatedResponse, WarningErrors: 'error' });
+          .mockResolvedValueOnce({ ...acbsBundleCreatedResponse, WarningErrors: errorString });
         const response = await service.createAmountAmendmentForFixedFees(facilityIdentifier, decreaseAmountRequest);
 
-        expect(response.WarningErrors).toBe('error');
+        expect(response.warningErrors).toBe(errorString);
       });
     });
 

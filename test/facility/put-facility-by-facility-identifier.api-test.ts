@@ -37,6 +37,7 @@ describe('PUT /facilities', () => {
   const dateStringTransformations = new DateStringTransformations();
   const { portfolioIdentifier, servicingQueueIdentifier } = PROPERTIES.GLOBAL;
   const facilityIdentifier = valueGenerator.facilityId();
+  const errorString = valueGenerator.string();
 
   const updateFacilityBaseUrl = `/api/v1/facilities/${facilityIdentifier}`;
 
@@ -141,6 +142,11 @@ describe('PUT /facilities', () => {
           givenRequestToGetFacilityInAcbsSucceeds();
           givenAuthenticationWithTheIdpSucceeds();
         },
+        givenTheRequestSucceeds: () => {
+          givenRequestToGetFacilityInAcbsSucceeds();
+          givenAuthenticationWithTheIdpSucceeds();
+          givenRequestToUpdateInAcbsSucceeds();
+        },
         requestToUpdateFacilityInAcbs: () => requestToUpdateInAcbs(),
         makeRequest: () => makeRequest(),
       });
@@ -160,6 +166,7 @@ describe('PUT /facilities', () => {
         expectedResponse: expectedPutResponse,
         expectedResponseCode: 200,
         createBundleInformationType: ENUMS.BUNDLE_INFORMATION_TYPES.FACILITY_AMOUNT_TRANSACTION,
+        errorString,
       });
     }
 
@@ -207,8 +214,7 @@ describe('PUT /facilities', () => {
             location: `/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}`,
           });
 
-        const givenRequestToCreateBundleInfomationInAcbsSucceeds = () =>
-          requestToCreateBundleInfomationInAcbs().reply(201, undefined, { bundleIdentifier, 'processing-warning': '' });
+        const givenRequestToCreateBundleInfomationInAcbsSucceeds = () => requestToCreateBundleInfomationInAcbs().reply(201, undefined, { bundleIdentifier });
 
         return queryToTest === ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_AMOUNT
           ? givenRequestToCreateBundleInfomationInAcbsSucceeds()
@@ -216,7 +222,7 @@ describe('PUT /facilities', () => {
       };
 
       const givenRequestToCreateBundleInformationInAcbsSucceedsWithWarningHeader = () =>
-        requestToCreateBundleInfomationInAcbs().reply(201, undefined, { bundleIdentifier, 'processing-warning': 'error' });
+        requestToCreateBundleInfomationInAcbs().reply(201, undefined, { bundleIdentifier, 'processing-warning': errorString });
 
       const givenAnyRequestBodyToUpdateInAcbsSucceeds = () => {
         const givenAnyRequestBodyToUpdateFacilityInAcbsSucceeds = (): nock.Scope => {

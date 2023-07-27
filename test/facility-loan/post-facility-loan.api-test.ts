@@ -23,15 +23,14 @@ describe('POST /facilities/{facilityIdentifier}/loans', () => {
   const bundleIdentifier = valueGenerator.acbsBundleId();
   const postFacilityLoanUrl = `/api/v1/facilities/${facilityIdentifier}/loans`;
   const { servicingQueueIdentifier } = PROPERTIES.GLOBAL;
+  const errorString = valueGenerator.string();
 
-  const { acbsRequestBodyToCreateFacilityLoanGbp, requestBodyToCreateFacilityLoanGbp, createFacilityLoanResponseFromService } = new CreateFacilityLoanGenerator(
-    valueGenerator,
-    dateStringTransformations,
-  ).generate({
-    numberToGenerate: 1,
-    facilityIdentifier,
-    bundleIdentifier,
-  });
+  const { acbsRequestBodyToCreateFacilityLoanGbp, requestBodyToCreateFacilityLoanGbp, createFacilityLoanResponseFromEndpoint } =
+    new CreateFacilityLoanGenerator(valueGenerator, dateStringTransformations).generate({
+      numberToGenerate: 1,
+      facilityIdentifier,
+      bundleIdentifier,
+    });
 
   let api: Api;
 
@@ -70,9 +69,10 @@ describe('POST /facilities/{facilityIdentifier}/loans', () => {
     givenRequestToCreateBundleInformationInAcbsSucceedsWithWarningHeader: () => givenRequestToCreateFacilityLoanInAcbsSucceedsWithWarningHeader(),
     makeRequest: () => api.post(postFacilityLoanUrl, requestBodyToCreateFacilityLoanGbp),
     facilityIdentifier,
-    expectedResponse: createFacilityLoanResponseFromService,
+    expectedResponse: createFacilityLoanResponseFromEndpoint,
     expectedResponseCode: 201,
     createBundleInformationType: ENUMS.BUNDLE_INFORMATION_TYPES.NEW_LOAN_REQUEST,
+    errorString,
   });
 
   describe('field validation', () => {
@@ -259,11 +259,11 @@ describe('POST /facilities/{facilityIdentifier}/loans', () => {
   });
 
   const givenRequestToCreateFacilityLoanInAcbsSucceeds = (): nock.Scope => {
-    return requestToCreateFacilityLoan().reply(201, undefined, { bundleidentifier: bundleIdentifier, 'processing-warning': '' });
+    return requestToCreateFacilityLoan().reply(201, undefined, { bundleidentifier: bundleIdentifier });
   };
 
   const givenRequestToCreateFacilityLoanInAcbsSucceedsWithWarningHeader = (): nock.Scope => {
-    return requestToCreateFacilityLoan().reply(201, undefined, { bundleidentifier: bundleIdentifier, 'processing-warning': 'error' });
+    return requestToCreateFacilityLoan().reply(201, undefined, { bundleidentifier: bundleIdentifier, 'processing-warning': errorString });
   };
 
   const requestToCreateFacilityLoan = (): nock.Interceptor =>

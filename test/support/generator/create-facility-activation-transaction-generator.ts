@@ -76,14 +76,16 @@ export class CreateFacilityActivationTransactionGenerator extends AbstractGenera
       lenderTypeCode: value.lenderTypeCode,
     }));
 
-    const createBundleInformationResponseFromAcbs = { BundleIdentifier: bundleIdentifier, WarningErrors: '' };
-    const createFacilityActivationTransactionResponseFromService = { bundleIdentifier };
+    const createBundleInformationResponseFromAcbs = { BundleIdentifier: bundleIdentifier, WarningErrors: undefined };
+    const createFacilityActivationTransactionResponseFromService = { bundleIdentifier, warningErrors: undefined };
+    const createFacilityActivationTransactionResponseFromEndpoint = { bundleIdentifier };
 
     return {
       acbsRequestBodyToCreateFacilityActivationTransaction,
       requestBodyToCreateFacilityActivationTransaction,
       createBundleInformationResponseFromAcbs,
       createFacilityActivationTransactionResponseFromService,
+      createFacilityActivationTransactionResponseFromEndpoint,
     };
   }
 }
@@ -100,4 +102,5 @@ interface GenerateResult {
   requestBodyToCreateFacilityActivationTransaction: CreateFacilityActivationTransactionRequest;
   createBundleInformationResponseFromAcbs: AcbsCreateBundleInformationResponseHeadersDto;
   createFacilityActivationTransactionResponseFromService: CreateFacilityActivationTransactionResponse;
+  createFacilityActivationTransactionResponseFromEndpoint: { bundleIdentifier: AcbsBundleId };
 }

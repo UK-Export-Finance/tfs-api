@@ -8,7 +8,6 @@ import { CreateFacilityGenerator } from '@ukef-test/support/generator/create-fac
 import { GetFacilityGenerator } from '@ukef-test/support/generator/get-facility-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { UpdateFacilityGenerator } from '@ukef-test/support/generator/update-facility-generator';
-import { Response } from 'express';
 import { when } from 'jest-when';
 
 jest.mock('./facility.service');
@@ -18,6 +17,7 @@ describe('FacilityController', () => {
   const dateStringTransformations = new DateStringTransformations();
   const { portfolioIdentifier } = PROPERTIES.GLOBAL;
   const facilityIdentifier = valueGenerator.ukefId();
+  const errorString = valueGenerator.string();
 
   let controller: FacilityController;
 
@@ -37,10 +37,6 @@ describe('FacilityController', () => {
 
   const facilityServiceAmendFacilityAmountByIdentifier = jest.fn();
   facilityService.amendFacilityAmountByIdentifier = facilityServiceAmendFacilityAmountByIdentifier;
-
-  const res: Response = {
-    header: jest.fn().mockReturnThis(),
-  } as any;
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -113,7 +109,7 @@ describe('FacilityController', () => {
     ])('$op', ({ op, serviceMethod }) => {
       const query: UpdateFacilityByOperationQueryDto = { op };
 
-      const expectedResponse = op === ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_AMOUNT ? { bundleIdentifier: bundleIdentifier } : { facilityIdentifier };
+      const expectedResponse = op === ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_AMOUNT ? { bundleIdentifier, warningErrors: errorString } : { facilityIdentifier };
 
       withUpdateFacilityControllerGeneralTests({
         updateFacilityRequest,
@@ -121,42 +117,32 @@ describe('FacilityController', () => {
         facilityIdentifier,
         expectedResponse,
         getGivenUpdateRequestWouldOtherwiseSucceed: () => givenUpdateRequestWouldOtherwiseSucceed(),
-        makeRequest: () => controller.updateFacilityByOperation(query, updateFacilityByOperationParams, updateFacilityRequest, res),
+        makeRequest: () => controller.updateFacilityByOperation(query, updateFacilityByOperationParams, updateFacilityRequest),
       });
 
       const givenUpdateRequestWouldOtherwiseSucceed = () => {
         if (op === ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_AMOUNT) {
           return when(serviceMethod)
             .calledWith(facilityIdentifier, updateFacilityRequest)
-            .mockResolvedValueOnce({ BundleIdentifier: bundleIdentifier, WarningErrors: '' });
+            .mockResolvedValueOnce({ bundleIdentifier: bundleIdentifier, warningErrors: errorString });
         }
         return () => {};
       };
     });
 
-    describe.each([{ op: ENUMS.FACILITY_UPDATE_OPERATIONS.ISSUE }, { op: ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_EXPIRY_DATE }])('$op', ({ op }) => {
-      it(`doesn't set header when operation is ${op}`, async () => {
-        await controller.updateFacilityByOperation({ op }, updateFacilityByOperationParams, updateFacilityRequest, res);
-
-        expect(res.header).toHaveBeenCalledTimes(0);
-      });
-    });
-
     describe('amendAmount', () => {
-      it(`sets 'processing-warning' header if WarningErrors exists on the service response`, async () => {
+      it(`warningErrors is undefined if they're undefined on the service response`, async () => {
         when(facilityServiceAmendFacilityAmountByIdentifier)
           .calledWith(facilityIdentifier, updateFacilityRequest)
-          .mockResolvedValueOnce({ BundleIdentifier: bundleIdentifier, WarningErrors: 'error' });
+          .mockResolvedValueOnce({ bundleIdentifier: bundleIdentifier, warningErrors: undefined });
 
-        await controller.updateFacilityByOperation(
+        const response = await controller.updateFacilityByOperation(
           { op: ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_AMOUNT },
           updateFacilityByOperationParams,
           updateFacilityRequest,
-          res,
         );
 
-        expect(res.header).toHaveBeenCalledTimes(1);
-        expect(res.header).toHaveBeenCalledWith('processing-warning', 'error');
+        expect(response).toStrictEqual({ bundleIdentifier: bundleIdentifier, warningErrors: undefined });
       });
     });
   });

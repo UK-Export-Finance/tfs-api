@@ -25,6 +25,7 @@ describe('AcbsBundleInformationService', () => {
   const bundleIdentifier = valueGenerator.acbsBundleId();
   const borrowerPartyIdentifier = valueGenerator.acbsPartyId();
   const effectiveDate = valueGenerator.dateOnlyString();
+  const errorString = valueGenerator.string();
 
   let httpService: HttpService;
   let service: AcbsBundleInformationService;
@@ -80,7 +81,27 @@ describe('AcbsBundleInformationService', () => {
 
       expect(httpServicePost).toHaveBeenCalledTimes(1);
       expect(httpServicePost).toHaveBeenCalledWith(...expectedHttpServicePostArgs);
-      expect(response).toEqual({ BundleIdentifier: bundleIdentifier, WarningErrors: '' });
+      expect(response).toEqual({ BundleIdentifier: bundleIdentifier, WarningErrors: undefined });
+    });
+
+    it(`returns undefined 'WarningErrors' if ACBS response is successful and does not contain 'processing-warning' header`, async () => {
+      when(httpServicePost)
+        .calledWith(...expectedHttpServicePostArgs)
+        .mockReturnValueOnce(
+          of({
+            data: '',
+            status: 201,
+            statusText: 'Created',
+            config: undefined,
+            headers: { bundleidentifier: bundleIdentifier },
+          }),
+        );
+
+      const response = await service.createBundleInformation(acbsRequestBodyToCreateFacilityActivationTransaction, idToken);
+
+      expect(httpServicePost).toHaveBeenCalledTimes(1);
+      expect(httpServicePost).toHaveBeenCalledWith(...expectedHttpServicePostArgs);
+      expect(response).toEqual({ BundleIdentifier: bundleIdentifier, WarningErrors: undefined });
     });
 
     it(`returns 'WarningErrors' if ACBS response is successful but contains 'processing-warning' header`, async () => {
@@ -92,7 +113,7 @@ describe('AcbsBundleInformationService', () => {
             status: 201,
             statusText: 'Created',
             config: undefined,
-            headers: { bundleidentifier: bundleIdentifier, 'processing-warning': 'error' },
+            headers: { bundleidentifier: bundleIdentifier, 'processing-warning': errorString },
           }),
         );
 
@@ -100,12 +121,11 @@ describe('AcbsBundleInformationService', () => {
 
       expect(httpServicePost).toHaveBeenCalledTimes(1);
       expect(httpServicePost).toHaveBeenCalledWith(...expectedHttpServicePostArgs);
-      expect(response).toEqual({ BundleIdentifier: bundleIdentifier, WarningErrors: 'error' });
+      expect(response).toEqual({ BundleIdentifier: bundleIdentifier, WarningErrors: errorString });
     });
 
     it('throws an AcbsBadRequestException if ACBS responds with a 400 error', async () => {
       const axiosError = new AxiosError();
-      const errorString = valueGenerator.string();
       axiosError.response = {
         data: errorString,
         status: 400,
@@ -128,7 +148,7 @@ describe('AcbsBundleInformationService', () => {
 
     it('throws an AcbsUnexpectedException if ACBS responds with an error code that is not 400', async () => {
       const axiosError = new AxiosError();
-      const errorBody = { errorMessage: valueGenerator.string() };
+      const errorBody = { errorMessage: errorString };
       axiosError.response = {
         data: errorBody,
         status: 401,
@@ -172,7 +192,6 @@ describe('AcbsBundleInformationService', () => {
 
       it('throws an AcbsBadRequestException if ACBS responds with a 400 error that is a string that does not contain "Facility does not exist"', async () => {
         const axiosError = new AxiosError();
-        const errorString = valueGenerator.string();
         axiosError.response = {
           data: errorString,
           status: 400,
@@ -195,7 +214,7 @@ describe('AcbsBundleInformationService', () => {
 
       it('throws an AcbsBadRequestException if ACBS responds with a 400 error that is not a string', async () => {
         const axiosError = new AxiosError();
-        const errorBody = { errorMessage: valueGenerator.string() };
+        const errorBody = { errorMessage: errorString };
         axiosError.response = {
           data: errorBody,
           status: 400,
@@ -258,7 +277,6 @@ describe('AcbsBundleInformationService', () => {
 
       it('throws an AcbsBadRequestException if ACBS responds with a 400 error that is a string that does not contain "Loan does not exist"', async () => {
         const axiosError = new AxiosError();
-        const errorString = valueGenerator.string();
         axiosError.response = {
           data: errorString,
           status: 400,
@@ -281,7 +299,7 @@ describe('AcbsBundleInformationService', () => {
 
       it('throws an AcbsBadRequestException if ACBS responds with a 400 error that is not a string', async () => {
         const axiosError = new AxiosError();
-        const errorBody = { errorMessage: valueGenerator.string() };
+        const errorBody = { errorMessage: errorString };
         axiosError.response = {
           data: errorBody,
           status: 400,
@@ -334,7 +352,6 @@ describe('AcbsBundleInformationService', () => {
 
       it('throws an AcbsBadRequestException if ACBS responds with a 400 error that is a string that does not contain "Facility does not exist"', async () => {
         const axiosError = new AxiosError();
-        const errorString = valueGenerator.string();
         axiosError.response = {
           data: errorString,
           status: 400,
@@ -357,7 +374,7 @@ describe('AcbsBundleInformationService', () => {
 
       it('throws an AcbsBadRequestException if ACBS responds with a 400 error that is not a string', async () => {
         const axiosError = new AxiosError();
-        const errorBody = { errorMessage: valueGenerator.string() };
+        const errorBody = { errorMessage: errorString };
         axiosError.response = {
           data: errorBody,
           status: 400,
@@ -412,7 +429,6 @@ describe('AcbsBundleInformationService', () => {
 
       it('throws an AcbsBadRequestException if ACBS responds with a 400 error that is a string that does not contain "Facility does not exist"', async () => {
         const axiosError = new AxiosError();
-        const errorString = valueGenerator.string();
         axiosError.response = {
           data: errorString,
           status: 400,
@@ -435,7 +451,7 @@ describe('AcbsBundleInformationService', () => {
 
       it('throws an AcbsBadRequestException if ACBS responds with a 400 error that is not a string', async () => {
         const axiosError = new AxiosError();
-        const errorBody = { errorMessage: valueGenerator.string() };
+        const errorBody = { errorMessage: errorString };
         axiosError.response = {
           data: errorBody,
           status: 400,

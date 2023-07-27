@@ -7,10 +7,10 @@ import { FacilityCodeValueTransaction } from '@ukef/modules/acbs/dto/bundle-acti
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 
-import { AcbsCreateBundleInformationResponseHeadersDto } from '../acbs/dto/acbs-create-bundle-information-response.dto';
 import { AcbsGetBundleInformationResponseDto } from '../acbs/dto/acbs-get-bundle-information-response.dto';
 import { isFacilityCodeValueTransaction } from '../acbs/dto/bundle-actions/bundle-action.type';
 import { CreateFacilityActivationTransactionRequestItem } from './dto/create-facility-activation-transaction-request.dto';
+import { CreateFacilityActivationTransactionResponse } from './dto/create-facility-activation-transaction-response.dto';
 import { GetFacilityActivationTransactionResponseDto } from './dto/get-facility-activation-transaction-response.dto';
 
 @Injectable()
@@ -26,7 +26,7 @@ export class FacilityActivationTransactionService {
     borrowerPartyIdentifier: AcbsPartyId,
     originalEffectiveDate: DateOnlyString,
     newFacilityActivationTransaction: CreateFacilityActivationTransactionRequestItem,
-  ): Promise<AcbsCreateBundleInformationResponseHeadersDto> {
+  ): Promise<CreateFacilityActivationTransactionResponse> {
     const idToken = await this.acbsAuthenticationService.getIdToken();
 
     const bundleInformationToCreateInAcbs: AcbsCreateBundleInformationRequestDto<FacilityCodeValueTransaction> = {
@@ -60,7 +60,9 @@ export class FacilityActivationTransactionService {
       ],
     };
 
-    return await this.acbsBundleInformationService.createBundleInformation(bundleInformationToCreateInAcbs, idToken);
+    const { BundleIdentifier, WarningErrors } = await this.acbsBundleInformationService.createBundleInformation(bundleInformationToCreateInAcbs, idToken);
+
+    return { bundleIdentifier: BundleIdentifier, warningErrors: WarningErrors };
   }
 
   async getActivationTransactionByBundleIdentifier(bundleIdentifier: string): Promise<GetFacilityActivationTransactionResponseDto> {

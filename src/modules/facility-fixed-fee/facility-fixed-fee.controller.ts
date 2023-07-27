@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Res } from '@nestjs/common';
+import { Controller, Get, Param, Post, UseInterceptors } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -11,8 +11,8 @@ import {
 } from '@nestjs/swagger';
 import { EXAMPLES } from '@ukef/constants';
 import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decorator';
+import { CreateBundleInformationErrorInterceptor } from '@ukef/interceptors/create-bundle-information-error.interceptor';
 import { FacilityService } from '@ukef/modules/facility/facility.service';
-import { Response } from 'express';
 
 import { CreateFixedFeeAmountAmendmentRequest, CreateFixedFeeAmountAmendmentRequestItem } from './dto/create-facility-fixed-fee-amount-amendment-request.dto';
 import { CreateFixedFeeAmountAmendmentResponse } from './dto/create-facility-fixed-fee-amount-amendment-response.dto';
@@ -45,6 +45,7 @@ export class FacilityFixedFeeController {
   }
 
   @Post('/facilities/:facilityIdentifier/fixed-fees/amendments/amount')
+  @UseInterceptors(CreateBundleInformationErrorInterceptor)
   @ApiOperation({
     summary: 'Create a fixed fees amount amendment bundle.',
   })
@@ -75,13 +76,8 @@ export class FacilityFixedFeeController {
   async createAmountAmendmentForFixedFees(
     @Param() params: FacilityFixedFeeParamsDto,
     @ValidatedArrayBody({ items: CreateFixedFeeAmountAmendmentRequestItem }) newFixedFeeAmountAmendmentRequest: CreateFixedFeeAmountAmendmentRequest,
-    @Res({ passthrough: true }) res: Response,
   ): Promise<CreateFixedFeeAmountAmendmentResponse> {
-    const bundleResponse = await this.facilityFixedFeeService.createAmountAmendmentForFixedFees(params.facilityIdentifier, newFixedFeeAmountAmendmentRequest);
-    if (bundleResponse.WarningErrors.length) {
-      res.header('processing-warning', bundleResponse.WarningErrors);
-    }
-    return { bundleIdentifier: bundleResponse.BundleIdentifier };
+    return await this.facilityFixedFeeService.createAmountAmendmentForFixedFees(params.facilityIdentifier, newFixedFeeAmountAmendmentRequest);
   }
 
   @Post('facilities/:facilityIdentifier/fixed-fees')

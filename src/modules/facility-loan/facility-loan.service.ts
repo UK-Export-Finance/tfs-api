@@ -13,10 +13,11 @@ import { DateStringTransformations } from '@ukef/modules/date/date-string.transf
 import { AccrualScheduleBuilder } from '@ukef/modules/facility-loan/accrual-schedule.builder';
 
 import { AcbsLoanService } from '../acbs/acbs-loan-service';
-import { AcbsCreateBundleInformationResponseHeadersDto } from '../acbs/dto/acbs-create-bundle-information-response.dto';
 import { AcbsUpdateLoanRequest } from '../acbs/dto/acbs-update-loan-request.dto';
 import { CreateFacilityLoanRequestItem } from './dto/create-facility-loan-request.dto';
+import { CreateFacilityLoanResponse } from './dto/create-facility-loan-response.dto';
 import { CreateLoanAmountAmendmentRequestItem } from './dto/create-loan-amount-amendment-request.dto';
+import { CreateLoanAmountAmendmentResponse } from './dto/create-loan-amount-amendment-response.dto';
 import { GetFacilityLoanResponseDto } from './dto/get-facility-loan-response.dto';
 import { UpdateLoanExpiryDateRequest } from './dto/update-loan-expiry-date-request.dto';
 import { RepaymentScheduleBuilder } from './repayment-schedule.builder';
@@ -58,10 +59,7 @@ export class FacilityLoanService {
     });
   }
 
-  async createLoanForFacility(
-    facilityIdentifier: UkefId,
-    newFacilityLoan: CreateFacilityLoanRequestItem,
-  ): Promise<AcbsCreateBundleInformationResponseHeadersDto> {
+  async createLoanForFacility(facilityIdentifier: UkefId, newFacilityLoan: CreateFacilityLoanRequestItem): Promise<CreateFacilityLoanResponse> {
     const idToken = await this.getIdToken();
 
     const bundleMessage: NewLoanRequest = {
@@ -85,16 +83,19 @@ export class FacilityLoanService {
       BundleMessageList: [bundleMessage],
     };
 
-    return await this.acbsBundleInformationService.createBundleInformation(bundleInformationToCreateInAcbs, idToken);
+    const { BundleIdentifier, WarningErrors } = await this.acbsBundleInformationService.createBundleInformation(bundleInformationToCreateInAcbs, idToken);
+
+    return { bundleIdentifier: BundleIdentifier, warningErrors: WarningErrors };
   }
 
   async createAmountAmendmentForLoan(
     loanIdentifier: string,
     loanAmountAmendment: CreateLoanAmountAmendmentRequestItem,
-  ): Promise<AcbsCreateBundleInformationResponseHeadersDto> {
+  ): Promise<CreateLoanAmountAmendmentResponse> {
     const idToken = await this.getIdToken();
     const loanAmountAmendmentBundle = this.buildLoanAmountAmendmentBundle(loanIdentifier, loanAmountAmendment);
-    return await this.acbsBundleInformationService.createBundleInformation(loanAmountAmendmentBundle, idToken);
+    const { BundleIdentifier, WarningErrors } = await this.acbsBundleInformationService.createBundleInformation(loanAmountAmendmentBundle, idToken);
+    return { bundleIdentifier: BundleIdentifier, warningErrors: WarningErrors };
   }
 
   async updateLoanExpiryDate(loanIdentifier: string, updateLoanExpiryDateRequest: UpdateLoanExpiryDateRequest): Promise<void> {

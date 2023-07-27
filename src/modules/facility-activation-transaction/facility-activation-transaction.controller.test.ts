@@ -5,7 +5,6 @@ import { FacilityActivationTransactionService } from '@ukef/modules/facility-act
 import { CreateFacilityActivationTransactionGenerator } from '@ukef-test/support/generator/create-facility-activation-transaction-generator';
 import { GetFacilityActivationTransactionGenerator } from '@ukef-test/support/generator/get-facility-activation-transaction-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { Response } from 'express';
 import { when } from 'jest-when';
 
 describe('FacilityActivationTransactionController', () => {
@@ -16,6 +15,7 @@ describe('FacilityActivationTransactionController', () => {
   const borrowerPartyIdentifier = valueGenerator.acbsPartyId();
   const effectiveDate = valueGenerator.dateOnlyString();
   const obligorPartyIdentifier = valueGenerator.acbsPartyId();
+  const errorString = valueGenerator.string();
 
   let facilityActivationTransactionService: FacilityActivationTransactionService;
   let facilityService: FacilityService;
@@ -52,37 +52,32 @@ describe('FacilityActivationTransactionController', () => {
         effectiveDate,
       });
 
-    const res: Response = {
-      header: jest.fn().mockReturnThis(),
-    } as any;
-
-    it('returns the bundle identifier if creating the activation-transaction succeeds', async () => {
+    it('returns the bundle identifier and undefined warningErrors if creating the activation-transaction succeeds', async () => {
       when(facilityServiceGetFacilityByIdentifier).calledWith(facilityIdentifier).mockResolvedValueOnce({
         obligorPartyIdentifier,
         effectiveDate,
       });
       when(facilityActivationTransactionServiceCreateActivationTransactionForFacility)
         .calledWith(facilityIdentifier, obligorPartyIdentifier, effectiveDate, requestBodyToCreateFacilityActivationTransaction[0])
-        .mockResolvedValueOnce({ BundleIdentifier: bundleIdentifier, WarningErrors: '' });
+        .mockResolvedValueOnce({ bundleIdentifier: bundleIdentifier, warningErrors: undefined });
 
-      const response = await controller.createActivationTransactionForFacility({ facilityIdentifier }, requestBodyToCreateFacilityActivationTransaction, res);
+      const response = await controller.createActivationTransactionForFacility({ facilityIdentifier }, requestBodyToCreateFacilityActivationTransaction);
 
       expect(response).toStrictEqual(createFacilityActivationTransactionResponseFromService);
     });
 
-    it(`sets 'processing-warning' header if WarningErrors exists on the service response`, async () => {
+    it(`warningErrors are set if they are set on the service response`, async () => {
       when(facilityServiceGetFacilityByIdentifier).calledWith(facilityIdentifier).mockResolvedValueOnce({
         obligorPartyIdentifier,
         effectiveDate,
       });
       when(facilityActivationTransactionServiceCreateActivationTransactionForFacility)
         .calledWith(facilityIdentifier, obligorPartyIdentifier, effectiveDate, requestBodyToCreateFacilityActivationTransaction[0])
-        .mockResolvedValueOnce({ BundleIdentifier: bundleIdentifier, WarningErrors: 'error' });
+        .mockResolvedValueOnce({ bundleIdentifier: bundleIdentifier, warningErrors: errorString });
 
-      await controller.createActivationTransactionForFacility({ facilityIdentifier }, requestBodyToCreateFacilityActivationTransaction, res);
+      const response = await controller.createActivationTransactionForFacility({ facilityIdentifier }, requestBodyToCreateFacilityActivationTransaction);
 
-      expect(res.header).toHaveBeenCalledTimes(1);
-      expect(res.header).toHaveBeenCalledWith('processing-warning', 'error');
+      expect(response).toStrictEqual({ bundleIdentifier: bundleIdentifier, warningErrors: errorString });
     });
   });
 

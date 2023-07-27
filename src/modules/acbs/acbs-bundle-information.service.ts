@@ -62,10 +62,7 @@ export class AcbsBundleInformationService {
       }),
     });
 
-    let warningErrors = '';
-    if (postResponse.headers['processing-warning']) {
-      warningErrors = postResponse.headers['processing-warning'];
-    }
+    const warningErrors = postResponse.headers['processing-warning'] ?? undefined;
     return {
       BundleIdentifier: postResponse.headers.bundleidentifier,
       WarningErrors: warningErrors,

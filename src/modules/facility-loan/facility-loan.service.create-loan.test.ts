@@ -21,6 +21,7 @@ describe('FacilityLoanService', () => {
   const bundleIdentifier = valueGenerator.acbsBundleId();
   const dateStringTransformations = new DateStringTransformations();
   const currentDateProvider = new CurrentDateProvider();
+  const errorString = valueGenerator.string();
 
   let acbsAuthenticationService: AcbsAuthenticationService;
   let service: FacilityLoanService;
@@ -42,7 +43,7 @@ describe('FacilityLoanService', () => {
     acbsBundleInformationService = new AcbsBundleInformationService(null, null);
     acbsBundleInformationServiceCreateBundleInformation = jest.fn(() => ({
       BundleIdentifier: bundleIdentifier,
-      WarningErrors: 'error',
+      WarningErrors: errorString,
     }));
     acbsBundleInformationService.createBundleInformation = acbsBundleInformationServiceCreateBundleInformation;
 
@@ -247,7 +248,7 @@ describe('FacilityLoanService', () => {
 
       const response = await service.createLoanForFacility(facilityIdentifier, newLoanGbp);
 
-      expect(response).toEqual({ BundleIdentifier: bundleIdentifier, WarningErrors: 'error' });
+      expect(response).toEqual({ bundleIdentifier: bundleIdentifier, warningErrors: errorString });
     });
   });
 });
