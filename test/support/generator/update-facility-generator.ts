@@ -198,7 +198,6 @@ export class UpdateFacilityGenerator extends AbstractGenerator<FacilityValues, G
       AccountStructure: {
         AccountStructureCode: defaultFacilityValues.accountStructureCode,
       },
-      // TODO: APIM-492 we might need to put FacilityOverallStatus field back here for Production release.
       LenderType: {
         LenderTypeCode: defaultFacilityValues.lenderTypeCode,
       },

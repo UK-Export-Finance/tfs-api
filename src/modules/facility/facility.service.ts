@@ -130,7 +130,6 @@ export class FacilityService {
     // causes issue with old facilities which were manually created using old adminstrative profile.
     delete existingAcbsFacilityData.AdministrativeUserIdentifier;
 
-    // TODO: APIM-492 we might need to put FacilityOverallStatus field back here for Production release.
     delete existingAcbsFacilityData.FacilityOverallStatus;
 
     const acbsMergedUpdateFacilityRequest: AcbsUpdateFacilityRequest = {
@@ -300,7 +299,6 @@ export class FacilityService {
       AccountStructure: {
         AccountStructureCode: defaultValues.accountStructureCode,
       },
-      // TODO: APIM-492 we might need to put FacilityOverallStatus field back here for Production release.
       LenderType: {
         LenderTypeCode: defaultValues.lenderTypeCode,
       },
