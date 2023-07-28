@@ -134,6 +134,7 @@ jobs:
           TZ: ${{ secrets.TZ }}
           LOG_LEVEL: ${{ vars.LOG_LEVEL }}
           REDACT_LOGS: ${{ vars.REDACT_LOGS }}
+          SINGLE_LINE_LOG_FORMAT: ${{ vars.SINGLE_LINE_LOG_FORMAT }}
           SWAGGER_USER: ${{ secrets.SWAGGER_USER }}
           SWAGGER_PASSWORD: ${{ secrets.SWAGGER_PASSWORD }}
           ACBS_BASE_URL: ${{ secrets.ACBS_BASE_URL }}
