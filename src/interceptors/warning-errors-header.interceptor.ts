@@ -7,7 +7,7 @@ export class WarningErrorsHeaderInterceptor implements NestInterceptor {
     return next.handle().pipe(
       map((data) => {
         const response = context.switchToHttp().getResponse();
-        if (!data.facilityIdentifier) {
+        if (data.responseBody) {
           if (data.warningErrors) {
             response.setHeader('processing-warning', data.warningErrors);
           }
