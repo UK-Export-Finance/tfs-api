@@ -21,6 +21,7 @@ describe('FacilityLoanService', () => {
   const bundleIdentifier = valueGenerator.acbsBundleId();
   const dateStringTransformations = new DateStringTransformations();
   const currentDateProvider = new CurrentDateProvider();
+  const errorString = valueGenerator.string();
 
   let acbsAuthenticationService: AcbsAuthenticationService;
   let service: FacilityLoanService;
@@ -42,6 +43,7 @@ describe('FacilityLoanService', () => {
     acbsBundleInformationService = new AcbsBundleInformationService(null, null);
     acbsBundleInformationServiceCreateBundleInformation = jest.fn(() => ({
       BundleIdentifier: bundleIdentifier,
+      WarningErrors: errorString,
     }));
     acbsBundleInformationService.createBundleInformation = acbsBundleInformationServiceCreateBundleInformation;
 
@@ -240,13 +242,13 @@ describe('FacilityLoanService', () => {
       });
     });
 
-    it('returns a bundle identifier from ACBS', async () => {
+    it('returns a bundle identifier and warning error from ACBS', async () => {
       when(repaymentScheduleBuilderGetRepaymentSchedules).calledWith(newLoanGbp).mockResolvedValueOnce(bondRepaymentSchedules);
       when(accrualScheduleBuilderGetAccrualSchedules).calledWith(newLoanGbp).mockReturnValueOnce(bondAccrualSchedules);
 
       const response = await service.createLoanForFacility(facilityIdentifier, newLoanGbp);
 
-      expect(response).toEqual({ bundleIdentifier });
+      expect(response).toEqual({ responseBody: { bundleIdentifier: bundleIdentifier }, warningErrors: errorString });
     });
   });
 });

@@ -15,6 +15,7 @@ describe('FacilityActivationTransactionController', () => {
   const borrowerPartyIdentifier = valueGenerator.acbsPartyId();
   const effectiveDate = valueGenerator.dateOnlyString();
   const obligorPartyIdentifier = valueGenerator.acbsPartyId();
+  const errorString = valueGenerator.string();
 
   let facilityActivationTransactionService: FacilityActivationTransactionService;
   let facilityService: FacilityService;
@@ -51,31 +52,32 @@ describe('FacilityActivationTransactionController', () => {
         effectiveDate,
       });
 
-    it('creates a activation-transaction for the facility with the service from the request body', async () => {
+    it('returns the bundle identifier and undefined warningErrors if creating the activation-transaction succeeds', async () => {
       when(facilityServiceGetFacilityByIdentifier).calledWith(facilityIdentifier).mockResolvedValueOnce({
         obligorPartyIdentifier,
         effectiveDate,
       });
-
-      await controller.createActivationTransactionForFacility({ facilityIdentifier }, requestBodyToCreateFacilityActivationTransaction);
-
-      expect(facilityActivationTransactionServiceCreateActivationTransactionForFacility).toHaveBeenCalledWith(
-        facilityIdentifier,
-        obligorPartyIdentifier,
-        effectiveDate,
-        requestBodyToCreateFacilityActivationTransaction[0],
-      );
-    });
-
-    it('returns the bundle identifier if creating the activation-transaction succeeds', async () => {
-      when(facilityServiceGetFacilityByIdentifier).calledWith(facilityIdentifier).mockResolvedValueOnce({
-        obligorPartyIdentifier,
-        effectiveDate,
-      });
+      when(facilityActivationTransactionServiceCreateActivationTransactionForFacility)
+        .calledWith(facilityIdentifier, obligorPartyIdentifier, effectiveDate, requestBodyToCreateFacilityActivationTransaction[0])
+        .mockResolvedValueOnce({ bundleIdentifier: bundleIdentifier, warningErrors: undefined });
 
       const response = await controller.createActivationTransactionForFacility({ facilityIdentifier }, requestBodyToCreateFacilityActivationTransaction);
 
       expect(response).toStrictEqual(createFacilityActivationTransactionResponseFromService);
+    });
+
+    it(`warningErrors are set if they are set on the service response`, async () => {
+      when(facilityServiceGetFacilityByIdentifier).calledWith(facilityIdentifier).mockResolvedValueOnce({
+        obligorPartyIdentifier,
+        effectiveDate,
+      });
+      when(facilityActivationTransactionServiceCreateActivationTransactionForFacility)
+        .calledWith(facilityIdentifier, obligorPartyIdentifier, effectiveDate, requestBodyToCreateFacilityActivationTransaction[0])
+        .mockResolvedValueOnce({ bundleIdentifier: bundleIdentifier, warningErrors: errorString });
+
+      const response = await controller.createActivationTransactionForFacility({ facilityIdentifier }, requestBodyToCreateFacilityActivationTransaction);
+
+      expect(response).toStrictEqual({ bundleIdentifier: bundleIdentifier, warningErrors: errorString });
     });
   });
 

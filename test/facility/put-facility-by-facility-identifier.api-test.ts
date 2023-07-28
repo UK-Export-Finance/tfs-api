@@ -37,6 +37,7 @@ describe('PUT /facilities', () => {
   const dateStringTransformations = new DateStringTransformations();
   const { portfolioIdentifier, servicingQueueIdentifier } = PROPERTIES.GLOBAL;
   const facilityIdentifier = valueGenerator.facilityId();
+  const errorString = valueGenerator.string();
 
   const updateFacilityBaseUrl = `/api/v1/facilities/${facilityIdentifier}`;
 
@@ -141,6 +142,11 @@ describe('PUT /facilities', () => {
           givenRequestToGetFacilityInAcbsSucceeds();
           givenAuthenticationWithTheIdpSucceeds();
         },
+        givenTheRequestSucceeds: () => {
+          givenRequestToGetFacilityInAcbsSucceeds();
+          givenAuthenticationWithTheIdpSucceeds();
+          givenRequestToUpdateInAcbsSucceeds();
+        },
         requestToUpdateFacilityInAcbs: () => requestToUpdateInAcbs(),
         makeRequest: () => makeRequest(),
       });
@@ -154,11 +160,13 @@ describe('PUT /facilities', () => {
         },
         requestToCreateBundleInformationInAcbs: () => requestToUpdateInAcbs(),
         givenRequestToCreateBundleInformationInAcbsSucceeds: () => givenRequestToUpdateInAcbsSucceeds(),
+        givenRequestToCreateBundleInformationInAcbsSucceedsWithWarningHeader: () => givenRequestToCreateBundleInformationInAcbsSucceedsWithWarningHeader(),
         makeRequest: () => makeRequest(),
         facilityIdentifier,
         expectedResponse: expectedPutResponse,
         expectedResponseCode: 200,
         createBundleInformationType: ENUMS.BUNDLE_INFORMATION_TYPES.FACILITY_AMOUNT_TRANSACTION,
+        errorString,
       });
     }
 
@@ -213,7 +221,10 @@ describe('PUT /facilities', () => {
           : givenRequestToUpdateFacilityInAcbsSucceeds();
       };
 
-      const givenAnyRequestBodyToUpdateAcbsInSucceeds = () => {
+      const givenRequestToCreateBundleInformationInAcbsSucceedsWithWarningHeader = () =>
+        requestToCreateBundleInfomationInAcbs().reply(201, undefined, { bundleIdentifier, 'processing-warning': errorString });
+
+      const givenAnyRequestBodyToUpdateInAcbsSucceeds = () => {
         const givenAnyRequestBodyToUpdateFacilityInAcbsSucceeds = (): nock.Scope => {
           const requestBodyPlaceholder = '*';
           return nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
@@ -241,11 +252,17 @@ describe('PUT /facilities', () => {
       return {
         requestToUpdateInAcbs,
         givenRequestToUpdateInAcbsSucceeds,
-        givenAnyRequestBodyToUpdateInAcbsSucceeds: givenAnyRequestBodyToUpdateAcbsInSucceeds,
+        givenAnyRequestBodyToUpdateInAcbsSucceeds,
+        givenRequestToCreateBundleInformationInAcbsSucceedsWithWarningHeader,
       };
     };
 
-    const { requestToUpdateInAcbs, givenRequestToUpdateInAcbsSucceeds, givenAnyRequestBodyToUpdateInAcbsSucceeds } = getRequestToAcbsConfig();
+    const {
+      requestToUpdateInAcbs,
+      givenRequestToUpdateInAcbsSucceeds,
+      givenAnyRequestBodyToUpdateInAcbsSucceeds,
+      givenRequestToCreateBundleInformationInAcbsSucceedsWithWarningHeader,
+    } = getRequestToAcbsConfig();
 
     const givenAnyRequestBodyWouldSucceed = (): PutFacilityAcbsRequests => {
       const givenAnyRequestToGetFacilityInAcbsSucceeds = (): nock.Scope => {

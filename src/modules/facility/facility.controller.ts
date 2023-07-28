@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query, UseInterceptors } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -13,6 +13,8 @@ import {
 } from '@nestjs/swagger';
 import { ENUMS, EXAMPLES } from '@ukef/constants';
 import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decorator';
+import { WithWarningErrors } from '@ukef/helpers';
+import { WarningErrorsHeaderInterceptor } from '@ukef/interceptors/warning-errors-header.interceptor';
 import { CreateFacilityRequest, CreateFacilityRequestItem } from '@ukef/modules/facility/dto/create-facility-request.dto';
 import { CreateFacilityResponse } from '@ukef/modules/facility/dto/create-facility-response.dto';
 import { GetFacilityByIdentifierParamsDto } from '@ukef/modules/facility/dto/get-facility-by-identifier-params.dto';
@@ -106,6 +108,7 @@ export class FacilityController {
   }
 
   @Put(':facilityIdentifier')
+  @UseInterceptors(WarningErrorsHeaderInterceptor)
   @ApiOperation({ summary: 'Update a facility by facility identifier and operation enum query' })
   @ApiBody({ type: UpdateFacilityRequest })
   @ApiParam({
@@ -144,7 +147,7 @@ export class FacilityController {
     @Query() query: UpdateFacilityByOperationQueryDto,
     @Param() params: UpdateFacilityByOperationParamsDto,
     @Body() updateFacilityDto: UpdateFacilityRequest,
-  ): Promise<UpdateFacilityFacilityIdentifierResponse | UpdateFacilityBundleIdentifierResponse> {
+  ): Promise<UpdateFacilityFacilityIdentifierResponse | WithWarningErrors<UpdateFacilityBundleIdentifierResponse>> {
     if (query.op === ENUMS.FACILITY_UPDATE_OPERATIONS.ISSUE) {
       await this.facilityService.issueFacilityByIdentifier(params.facilityIdentifier, updateFacilityDto);
       return { facilityIdentifier: params.facilityIdentifier };
@@ -154,7 +157,7 @@ export class FacilityController {
       return { facilityIdentifier: params.facilityIdentifier };
     }
     if (query.op === ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_AMOUNT) {
-      return await this.facilityService.amendFacilityAmountByIdentifier(params.facilityIdentifier, updateFacilityDto);
+      return this.facilityService.amendFacilityAmountByIdentifier(params.facilityIdentifier, updateFacilityDto);
     }
   }
 }

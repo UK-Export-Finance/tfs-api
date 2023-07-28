@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -11,6 +11,8 @@ import {
 } from '@nestjs/swagger';
 import { EXAMPLES } from '@ukef/constants';
 import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decorator';
+import { WithWarningErrors } from '@ukef/helpers';
+import { WarningErrorsHeaderInterceptor } from '@ukef/interceptors/warning-errors-header.interceptor';
 
 import { CreateFacilityLoanRequest, CreateFacilityLoanRequestItem } from './dto/create-facility-loan-request.dto';
 import { CreateFacilityLoanResponse } from './dto/create-facility-loan-response.dto';
@@ -51,6 +53,7 @@ export class FacilityLoanController {
   }
 
   @Post('facilities/:facilityIdentifier/loans')
+  @UseInterceptors(WarningErrorsHeaderInterceptor)
   @ApiOperation({
     summary: 'Create a new loan for a facility.',
   })
@@ -74,7 +77,7 @@ export class FacilityLoanController {
   createLoanForFacility(
     @Param() params: FacilityLoanParamsDto,
     @ValidatedArrayBody({ items: CreateFacilityLoanRequestItem }) newLoanRequest: CreateFacilityLoanRequest,
-  ): Promise<CreateFacilityLoanResponse> {
+  ): Promise<WithWarningErrors<CreateFacilityLoanResponse>> {
     const { facilityIdentifier } = params;
     const [newLoan] = newLoanRequest;
 
@@ -111,6 +114,7 @@ export class FacilityLoanController {
   }
 
   @Post('/facilities/:facilityIdentifier/loans/:loanIdentifier/amendments/amount')
+  @UseInterceptors(WarningErrorsHeaderInterceptor)
   @ApiOperation({
     summary: 'Create a loan amount amendment bundle.',
   })
@@ -145,12 +149,11 @@ export class FacilityLoanController {
   @ApiInternalServerErrorResponse({
     description: 'An internal server error has occurred.',
   })
-  async createAmountAmendmentForLoan(
+  createAmountAmendmentForLoan(
     @Param() params: CreateLoanAmountAmendmentParams,
     @ValidatedArrayBody({ items: CreateLoanAmountAmendmentRequestItem }) newLoanAmountAmendmentRequest: CreateLoanAmountAmendmentRequest,
-  ): Promise<CreateLoanAmountAmendmentResponse> {
+  ): Promise<WithWarningErrors<CreateLoanAmountAmendmentResponse>> {
     const [newLoanAmountAmendment] = newLoanAmountAmendmentRequest;
-    const createdBundleIdentifier = await this.facilityLoanService.createAmountAmendmentForLoan(params.loanIdentifier, newLoanAmountAmendment);
-    return { bundleIdentifier: createdBundleIdentifier };
+    return this.facilityLoanService.createAmountAmendmentForLoan(params.loanIdentifier, newLoanAmountAmendment);
   }
 }

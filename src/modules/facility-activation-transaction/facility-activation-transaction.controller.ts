@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post } from '@nestjs/common';
+import { Controller, Get, Param, Post, UseInterceptors } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -11,6 +11,8 @@ import {
 } from '@nestjs/swagger';
 import { EXAMPLES } from '@ukef/constants';
 import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decorator';
+import { WithWarningErrors } from '@ukef/helpers/with-warning-errors.type';
+import { WarningErrorsHeaderInterceptor } from '@ukef/interceptors/warning-errors-header.interceptor';
 import { FacilityService } from '@ukef/modules/facility/facility.service';
 
 import {
@@ -28,6 +30,7 @@ export class FacilityActivationTransactionController {
   constructor(private readonly facilityActivationTransactionService: FacilityActivationTransactionService, private readonly facilityService: FacilityService) {}
 
   @Post('facilities/:facilityIdentifier/activation-transactions')
+  @UseInterceptors(WarningErrorsHeaderInterceptor)
   @ApiOperation({
     summary: 'Create a new activation transaction for a facility.',
   })
@@ -59,7 +62,7 @@ export class FacilityActivationTransactionController {
     @Param() params: FacilityActivationTransactionParamsDto,
     @ValidatedArrayBody({ items: CreateFacilityActivationTransactionRequestItem })
     newFacilityActivationTransactionRequest: CreateFacilityActivationTransactionRequest,
-  ): Promise<CreateFacilityActivationTransactionResponse> {
+  ): Promise<WithWarningErrors<CreateFacilityActivationTransactionResponse>> {
     const facility = await this.facilityService.getFacilityByIdentifier(params.facilityIdentifier);
 
     const [newFacilityActivationTransaction] = newFacilityActivationTransactionRequest;

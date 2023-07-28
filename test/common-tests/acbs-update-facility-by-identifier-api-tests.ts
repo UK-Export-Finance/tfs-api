@@ -4,10 +4,12 @@ import supertest from 'supertest';
 
 export const withAcbsUpdateFacilityByIdentifierServiceTests = ({
   givenTheRequestWouldOtherwiseSucceed,
+  givenTheRequestSucceeds,
   requestToUpdateFacilityInAcbs,
   makeRequest,
 }: {
   givenTheRequestWouldOtherwiseSucceed: () => void;
+  givenTheRequestSucceeds: () => void;
   requestToUpdateFacilityInAcbs: () => nock.Interceptor;
   makeRequest: () => supertest.Test;
 }) => {
@@ -68,6 +70,15 @@ export const withAcbsUpdateFacilityByIdentifierServiceTests = ({
         statusCode: 500,
         message: 'Internal server error',
       });
+    });
+
+    it(`returns a 200 response with the expected response and does not have 'processing-warning' header if the facility has been successfully updated in ACBS`, async () => {
+      givenTheRequestSucceeds();
+
+      const { status, header } = await makeRequest();
+
+      expect(status).toBe(200);
+      expect(header).not.toHaveProperty('processing-warning');
     });
   });
 };
