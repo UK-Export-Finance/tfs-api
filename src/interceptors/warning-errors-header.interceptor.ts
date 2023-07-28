@@ -2,7 +2,7 @@ import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nes
 import { map, Observable } from 'rxjs';
 
 @Injectable()
-export class CreateBundleInformationErrorInterceptor implements NestInterceptor {
+export class WarningErrorsHeaderInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(
       map((data) => {

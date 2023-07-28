@@ -12,7 +12,7 @@ import {
 import { EXAMPLES } from '@ukef/constants';
 import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decorator';
 import { WithWarningErrors } from '@ukef/helpers/with-warning-errors.type';
-import { CreateBundleInformationErrorInterceptor } from '@ukef/interceptors/create-bundle-information-error.interceptor';
+import { WarningErrorsHeaderInterceptor } from '@ukef/interceptors/warning-errors-header.interceptor';
 import { FacilityService } from '@ukef/modules/facility/facility.service';
 
 import {
@@ -30,7 +30,7 @@ export class FacilityActivationTransactionController {
   constructor(private readonly facilityActivationTransactionService: FacilityActivationTransactionService, private readonly facilityService: FacilityService) {}
 
   @Post('facilities/:facilityIdentifier/activation-transactions')
-  @UseInterceptors(CreateBundleInformationErrorInterceptor)
+  @UseInterceptors(WarningErrorsHeaderInterceptor)
   @ApiOperation({
     summary: 'Create a new activation transaction for a facility.',
   })

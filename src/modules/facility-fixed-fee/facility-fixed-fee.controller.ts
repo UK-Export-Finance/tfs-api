@@ -12,7 +12,7 @@ import {
 import { EXAMPLES } from '@ukef/constants';
 import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decorator';
 import { WithWarningErrors } from '@ukef/helpers';
-import { CreateBundleInformationErrorInterceptor } from '@ukef/interceptors/create-bundle-information-error.interceptor';
+import { WarningErrorsHeaderInterceptor } from '@ukef/interceptors/warning-errors-header.interceptor';
 import { FacilityService } from '@ukef/modules/facility/facility.service';
 
 import { CreateFixedFeeAmountAmendmentRequest, CreateFixedFeeAmountAmendmentRequestItem } from './dto/create-facility-fixed-fee-amount-amendment-request.dto';
@@ -46,7 +46,7 @@ export class FacilityFixedFeeController {
   }
 
   @Post('/facilities/:facilityIdentifier/fixed-fees/amendments/amount')
-  @UseInterceptors(CreateBundleInformationErrorInterceptor)
+  @UseInterceptors(WarningErrorsHeaderInterceptor)
   @ApiOperation({
     summary: 'Create a fixed fees amount amendment bundle.',
   })

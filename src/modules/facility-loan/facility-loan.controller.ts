@@ -12,7 +12,7 @@ import {
 import { EXAMPLES } from '@ukef/constants';
 import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decorator';
 import { WithWarningErrors } from '@ukef/helpers';
-import { CreateBundleInformationErrorInterceptor } from '@ukef/interceptors/create-bundle-information-error.interceptor';
+import { WarningErrorsHeaderInterceptor } from '@ukef/interceptors/warning-errors-header.interceptor';
 
 import { CreateFacilityLoanRequest, CreateFacilityLoanRequestItem } from './dto/create-facility-loan-request.dto';
 import { CreateFacilityLoanResponse } from './dto/create-facility-loan-response.dto';
@@ -53,7 +53,7 @@ export class FacilityLoanController {
   }
 
   @Post('facilities/:facilityIdentifier/loans')
-  @UseInterceptors(CreateBundleInformationErrorInterceptor)
+  @UseInterceptors(WarningErrorsHeaderInterceptor)
   @ApiOperation({
     summary: 'Create a new loan for a facility.',
   })
@@ -114,7 +114,7 @@ export class FacilityLoanController {
   }
 
   @Post('/facilities/:facilityIdentifier/loans/:loanIdentifier/amendments/amount')
-  @UseInterceptors(CreateBundleInformationErrorInterceptor)
+  @UseInterceptors(WarningErrorsHeaderInterceptor)
   @ApiOperation({
     summary: 'Create a loan amount amendment bundle.',
   })

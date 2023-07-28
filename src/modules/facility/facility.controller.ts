@@ -14,7 +14,7 @@ import {
 import { ENUMS, EXAMPLES } from '@ukef/constants';
 import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decorator';
 import { WithWarningErrors } from '@ukef/helpers';
-import { CreateBundleInformationErrorInterceptor } from '@ukef/interceptors/create-bundle-information-error.interceptor';
+import { WarningErrorsHeaderInterceptor } from '@ukef/interceptors/warning-errors-header.interceptor';
 import { CreateFacilityRequest, CreateFacilityRequestItem } from '@ukef/modules/facility/dto/create-facility-request.dto';
 import { CreateFacilityResponse } from '@ukef/modules/facility/dto/create-facility-response.dto';
 import { GetFacilityByIdentifierParamsDto } from '@ukef/modules/facility/dto/get-facility-by-identifier-params.dto';
@@ -108,7 +108,7 @@ export class FacilityController {
   }
 
   @Put(':facilityIdentifier')
-  @UseInterceptors(CreateBundleInformationErrorInterceptor)
+  @UseInterceptors(WarningErrorsHeaderInterceptor)
   @ApiOperation({ summary: 'Update a facility by facility identifier and operation enum query' })
   @ApiBody({ type: UpdateFacilityRequest })
   @ApiParam({
