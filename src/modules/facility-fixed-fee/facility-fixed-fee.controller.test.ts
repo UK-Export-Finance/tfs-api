@@ -13,6 +13,7 @@ describe('FacilityFixedFeeController', () => {
   const valueGenerator = new RandomValueGenerator();
   const portfolioIdentifier = valueGenerator.portfolioId();
   const facilityIdentifier = valueGenerator.facilityId();
+  const errorString = valueGenerator.string();
 
   const { apiFacilityFixedFees: serviceFixedFees } = new GetFacilityFixedFeeGenerator(valueGenerator, new DateStringTransformations()).generate({
     numberToGenerate: 2,
@@ -105,14 +106,24 @@ describe('FacilityFixedFeeController', () => {
     });
     const expectedBundleIdentifier = valueGenerator.acbsBundleId();
 
-    it('returns the bundleIdentifier from creating a loan amount amendment with the service', async () => {
+    it('returns the bundleIdentifier and warningErrors from creating a loan amount amendment with the service', async () => {
       when(createAmountAmendmentForFixedFeesService)
         .calledWith(facilityIdentifier, increaseAmountRequest)
-        .mockResolvedValueOnce({ bundleIdentifier: expectedBundleIdentifier });
+        .mockResolvedValueOnce({ bundleIdentifier: expectedBundleIdentifier, warningErrors: errorString });
 
       const bundleIdentifierResponse = await controller.createAmountAmendmentForFixedFees({ facilityIdentifier }, increaseAmountRequest);
 
-      expect(bundleIdentifierResponse).toStrictEqual({ bundleIdentifier: expectedBundleIdentifier });
+      expect(bundleIdentifierResponse).toStrictEqual({ bundleIdentifier: expectedBundleIdentifier, warningErrors: errorString });
+    });
+
+    it(`returns undefined warningErrors if warningErrors is undefined on the service response`, async () => {
+      when(createAmountAmendmentForFixedFeesService)
+        .calledWith(facilityIdentifier, increaseAmountRequest)
+        .mockResolvedValueOnce({ bundleIdentifier: expectedBundleIdentifier, warningErrors: undefined });
+
+      const bundleIdentifierResponse = await controller.createAmountAmendmentForFixedFees({ facilityIdentifier }, increaseAmountRequest);
+
+      expect(bundleIdentifierResponse).toStrictEqual({ bundleIdentifier: expectedBundleIdentifier, warningErrors: undefined });
     });
   });
 });

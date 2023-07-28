@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ENUMS, PROPERTIES } from '@ukef/constants';
-import { DateString, UkefId } from '@ukef/helpers';
+import { DateString, UkefId, WithWarningErrors } from '@ukef/helpers';
 import { AcbsBundleInformationService } from '@ukef/modules/acbs/acbs-bundle-information.service';
 import { AcbsFacilityService } from '@ukef/modules/acbs/acbs-facility.service';
 import { AcbsBaseFacilityRequest } from '@ukef/modules/acbs/dto/acbs-base-facility-request.dto';
@@ -16,7 +16,8 @@ import { BaseFacilityRequestItemWithFacilityIdentifier } from '@ukef/modules/fac
 import { CreateFacilityRequestItem } from '@ukef/modules/facility/dto/create-facility-request.dto';
 import { GetFacilityByIdentifierResponseDto } from '@ukef/modules/facility/dto/get-facility-by-identifier-response.dto';
 import { UpdateFacilityRequest, UpdateFacilityRequestWithFacilityIdentifier } from '@ukef/modules/facility/dto/update-facility-request.dto';
-import { UpdateFacilityBundleIdentifierResponse } from '@ukef/modules/facility/dto/update-facility-response.dto';
+
+import { UpdateFacilityBundleIdentifierResponse } from './dto/update-facility-response.dto';
 
 @Injectable()
 export class FacilityService {
@@ -98,12 +99,12 @@ export class FacilityService {
   async amendFacilityAmountByIdentifier(
     facilityIdentifier: UkefId,
     updateFacilityRequest: UpdateFacilityRequest,
-  ): Promise<UpdateFacilityBundleIdentifierResponse> {
+  ): Promise<WithWarningErrors<UpdateFacilityBundleIdentifierResponse>> {
     const idToken = await this.acbsAuthenticationService.getIdToken();
 
     const existingFacilityData = await this.acbsFacilityService.getFacilityByIdentifier(facilityIdentifier, idToken);
 
-    return await this.buildAmendFacilityAmountBundleInformationRequestAndCreateBundleInformation(updateFacilityRequest, existingFacilityData, idToken);
+    return this.buildAmendFacilityAmountBundleInformationRequestAndCreateBundleInformation(updateFacilityRequest, existingFacilityData, idToken);
   }
 
   private async buildRequestAndUpdateFacility(
@@ -129,7 +130,6 @@ export class FacilityService {
     // causes issue with old facilities which were manually created using old adminstrative profile.
     delete existingAcbsFacilityData.AdministrativeUserIdentifier;
 
-    // TODO: APIM-492 we might need to put FacilityOverallStatus field back here for Production release.
     delete existingAcbsFacilityData.FacilityOverallStatus;
 
     const acbsMergedUpdateFacilityRequest: AcbsUpdateFacilityRequest = {
@@ -299,7 +299,6 @@ export class FacilityService {
       AccountStructure: {
         AccountStructureCode: defaultValues.accountStructureCode,
       },
-      // TODO: APIM-492 we might need to put FacilityOverallStatus field back here for Production release.
       LenderType: {
         LenderTypeCode: defaultValues.lenderTypeCode,
       },
@@ -330,13 +329,16 @@ export class FacilityService {
     updateFacilityRequest: UpdateFacilityRequest,
     existingFacilityData: AcbsGetFacilityResponseDto,
     idToken: string,
-  ): Promise<UpdateFacilityBundleIdentifierResponse> {
+  ): Promise<WithWarningErrors<UpdateFacilityBundleIdentifierResponse>> {
     const bundleInformationToCreateInAcbs: AcbsCreateBundleInformationRequestDto<FacilityAmountTransaction> =
       this.buildAmendFacilityAmountBundleInformationRequest(updateFacilityRequest, existingFacilityData);
 
-    const { BundleIdentifier } = await this.acbsBundleInformationService.createBundleInformation(bundleInformationToCreateInAcbs, idToken);
+    const { BundleIdentifier, WarningErrors } = await this.acbsBundleInformationService.createBundleInformation(bundleInformationToCreateInAcbs, idToken);
 
-    return { bundleIdentifier: BundleIdentifier };
+    return {
+      responseBody: { bundleIdentifier: BundleIdentifier },
+      warningErrors: WarningErrors,
+    };
   }
 
   private buildAmendFacilityAmountBundleInformationRequest(

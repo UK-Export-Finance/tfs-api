@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post } from '@nestjs/common';
+import { Controller, Get, Param, Post, UseInterceptors } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -11,6 +11,8 @@ import {
 } from '@nestjs/swagger';
 import { EXAMPLES } from '@ukef/constants';
 import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decorator';
+import { WithWarningErrors } from '@ukef/helpers';
+import { WarningErrorsHeaderInterceptor } from '@ukef/interceptors/warning-errors-header.interceptor';
 import { FacilityService } from '@ukef/modules/facility/facility.service';
 
 import { CreateFixedFeeAmountAmendmentRequest, CreateFixedFeeAmountAmendmentRequestItem } from './dto/create-facility-fixed-fee-amount-amendment-request.dto';
@@ -44,6 +46,7 @@ export class FacilityFixedFeeController {
   }
 
   @Post('/facilities/:facilityIdentifier/fixed-fees/amendments/amount')
+  @UseInterceptors(WarningErrorsHeaderInterceptor)
   @ApiOperation({
     summary: 'Create a fixed fees amount amendment bundle.',
   })
@@ -74,7 +77,7 @@ export class FacilityFixedFeeController {
   createAmountAmendmentForFixedFees(
     @Param() params: FacilityFixedFeeParamsDto,
     @ValidatedArrayBody({ items: CreateFixedFeeAmountAmendmentRequestItem }) newFixedFeeAmountAmendmentRequest: CreateFixedFeeAmountAmendmentRequest,
-  ): Promise<CreateFixedFeeAmountAmendmentResponse> {
+  ): Promise<WithWarningErrors<CreateFixedFeeAmountAmendmentResponse>> {
     return this.facilityFixedFeeService.createAmountAmendmentForFixedFees(params.facilityIdentifier, newFixedFeeAmountAmendmentRequest);
   }
 

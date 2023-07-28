@@ -17,6 +17,7 @@ describe('FacilityController', () => {
   const dateStringTransformations = new DateStringTransformations();
   const { portfolioIdentifier } = PROPERTIES.GLOBAL;
   const facilityIdentifier = valueGenerator.ukefId();
+  const errorString = valueGenerator.string();
 
   let controller: FacilityController;
 
@@ -38,11 +39,7 @@ describe('FacilityController', () => {
   facilityService.amendFacilityAmountByIdentifier = facilityServiceAmendFacilityAmountByIdentifier;
 
   beforeEach(() => {
-    facilityServiceGetFacilityByIdentifier.mockReset();
-    facilityServiceCreateFacility.mockReset();
-    facilityServiceIssueFacilityByIdentifier.mockReset();
-    facilityServiceAmendFacilityExpiryDateByIdentifier.mockReset();
-    facilityServiceAmendFacilityAmountByIdentifier.mockReset();
+    jest.resetAllMocks();
 
     controller = new FacilityController(facilityService);
   });
@@ -96,37 +93,57 @@ describe('FacilityController', () => {
     });
   });
 
-  describe.each([
-    { op: ENUMS.FACILITY_UPDATE_OPERATIONS.ISSUE, serviceMethod: facilityServiceIssueFacilityByIdentifier },
-    { op: ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_EXPIRY_DATE, serviceMethod: facilityServiceAmendFacilityExpiryDateByIdentifier },
-    { op: ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_AMOUNT, serviceMethod: facilityServiceAmendFacilityAmountByIdentifier },
-  ])('updateFacility $op', ({ op, serviceMethod }) => {
+  describe('updateFacility', () => {
     const { updateFacilityRequest } = new UpdateFacilityGenerator(valueGenerator, dateStringTransformations).generate({
       numberToGenerate: 1,
       facilityIdentifier,
     });
 
-    const query: UpdateFacilityByOperationQueryDto = { op };
-
     const updateFacilityByOperationParams = { facilityIdentifier };
+    const bundleIdentifier = valueGenerator.acbsBundleId();
 
-    const expectedResponse =
-      op === ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_AMOUNT ? { bundleIdentifier: valueGenerator.acbsBundleId() } : { facilityIdentifier };
+    describe.each([
+      { op: ENUMS.FACILITY_UPDATE_OPERATIONS.ISSUE, serviceMethod: facilityServiceIssueFacilityByIdentifier },
+      { op: ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_EXPIRY_DATE, serviceMethod: facilityServiceAmendFacilityExpiryDateByIdentifier },
+      { op: ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_AMOUNT, serviceMethod: facilityServiceAmendFacilityAmountByIdentifier },
+    ])('$op', ({ op, serviceMethod }) => {
+      const query: UpdateFacilityByOperationQueryDto = { op };
 
-    withUpdateFacilityControllerGeneralTests({
-      updateFacilityRequest,
-      serviceMethod,
-      facilityIdentifier,
-      expectedResponse,
-      getGivenUpdateRequestWouldOtherwiseSucceed: () => givenUpdateRequestWouldOtherwiseSucceed(),
-      makeRequest: () => controller.updateFacilityByOperation(query, updateFacilityByOperationParams, updateFacilityRequest),
+      const expectedResponse = op === ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_AMOUNT ? { bundleIdentifier, warningErrors: errorString } : { facilityIdentifier };
+
+      withUpdateFacilityControllerGeneralTests({
+        updateFacilityRequest,
+        serviceMethod,
+        facilityIdentifier,
+        expectedResponse,
+        getGivenUpdateRequestWouldOtherwiseSucceed: () => givenUpdateRequestWouldOtherwiseSucceed(),
+        makeRequest: () => controller.updateFacilityByOperation(query, updateFacilityByOperationParams, updateFacilityRequest),
+      });
+
+      const givenUpdateRequestWouldOtherwiseSucceed = () => {
+        if (op === ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_AMOUNT) {
+          return when(serviceMethod)
+            .calledWith(facilityIdentifier, updateFacilityRequest)
+            .mockResolvedValueOnce({ bundleIdentifier: bundleIdentifier, warningErrors: errorString });
+        }
+        return () => {};
+      };
     });
 
-    const givenUpdateRequestWouldOtherwiseSucceed = () => {
-      if (op === ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_AMOUNT) {
-        return when(serviceMethod).calledWith(facilityIdentifier, updateFacilityRequest).mockResolvedValueOnce(expectedResponse);
-      }
-      return () => {};
-    };
+    describe('amendAmount', () => {
+      it(`warningErrors is undefined if they're undefined on the service response`, async () => {
+        when(facilityServiceAmendFacilityAmountByIdentifier)
+          .calledWith(facilityIdentifier, updateFacilityRequest)
+          .mockResolvedValueOnce({ bundleIdentifier: bundleIdentifier, warningErrors: undefined });
+
+        const response = await controller.updateFacilityByOperation(
+          { op: ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_AMOUNT },
+          updateFacilityByOperationParams,
+          updateFacilityRequest,
+        );
+
+        expect(response).toStrictEqual({ bundleIdentifier: bundleIdentifier, warningErrors: undefined });
+      });
+    });
   });
 });

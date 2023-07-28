@@ -61,8 +61,12 @@ export class AcbsBundleInformationService {
         knownErrors: this.getKnownErrorsForAction(action),
       }),
     });
-    // TODO APIM-308: ACBS might create bundle but fail to process it. In this case it will return header "Processing-Warning" and we should handle it.
-    return { BundleIdentifier: postResponse.headers.bundleidentifier };
+
+    const warningErrors = postResponse.headers['processing-warning'] ?? undefined;
+    return {
+      BundleIdentifier: postResponse.headers.bundleidentifier,
+      WarningErrors: warningErrors,
+    };
   }
 
   private getKnownErrorsForAction(action: BundleAction): KnownErrors {

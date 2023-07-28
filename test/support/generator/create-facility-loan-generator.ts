@@ -114,8 +114,9 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
       },
     ];
 
-    const createBundleInformationResponseFromAcbs = { BundleIdentifier: bundleIdentifier };
-    const createFacilityLoanResponseFromService = { bundleIdentifier };
+    const createBundleInformationResponseFromAcbs = { BundleIdentifier: bundleIdentifier, WarningErrors: undefined };
+    const createFacilityLoanResponseFromService = { bundleIdentifier, warningErrors: undefined };
+    const createFacilityLoanResponseFromEndpoint = { bundleIdentifier };
     const bondRepaymentSchedulesGbp = this.getBondRepaymentSchedules(firstFacilityLoan);
     const ewcsRepaymentSchedulesGbp = this.getEwcsRepaymentSchedules(firstFacilityLoan);
     const gefRepaymentSchedulesGbp = this.getGefRepaymentSchedules(firstFacilityLoan);
@@ -130,6 +131,7 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
       requestBodyToCreateFacilityLoanNonGbp,
       createBundleInformationResponseFromAcbs,
       createFacilityLoanResponseFromService,
+      createFacilityLoanResponseFromEndpoint,
       bondRepaymentSchedulesGbp,
       ewcsRepaymentSchedulesGbp,
       gefRepaymentSchedulesGbp,
@@ -500,6 +502,7 @@ interface GenerateResult {
   requestBodyToCreateFacilityLoanNonGbp: CreateFacilityLoanRequest;
   createBundleInformationResponseFromAcbs: AcbsCreateBundleInformationResponseHeadersDto;
   createFacilityLoanResponseFromService: CreateFacilityLoanResponse;
+  createFacilityLoanResponseFromEndpoint: { bundleIdentifier: string };
   bondRepaymentSchedulesGbp: RepaymentSchedule[];
   ewcsRepaymentSchedulesGbp: RepaymentSchedule[];
   gefRepaymentSchedulesGbp: RepaymentSchedule[];

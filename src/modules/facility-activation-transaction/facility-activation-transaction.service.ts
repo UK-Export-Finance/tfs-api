@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PROPERTIES } from '@ukef/constants';
 import { AcbsPartyId, DateOnlyString, UkefId } from '@ukef/helpers';
+import { WithWarningErrors } from '@ukef/helpers/with-warning-errors.type';
 import { AcbsBundleInformationService } from '@ukef/modules/acbs/acbs-bundle-information.service';
 import { AcbsCreateBundleInformationRequestDto } from '@ukef/modules/acbs/dto/acbs-create-bundle-information-request.dto';
 import { FacilityCodeValueTransaction } from '@ukef/modules/acbs/dto/bundle-actions/facility-code-value-transaction.bundle-action';
@@ -26,7 +27,7 @@ export class FacilityActivationTransactionService {
     borrowerPartyIdentifier: AcbsPartyId,
     originalEffectiveDate: DateOnlyString,
     newFacilityActivationTransaction: CreateFacilityActivationTransactionRequestItem,
-  ): Promise<CreateFacilityActivationTransactionResponse> {
+  ): Promise<WithWarningErrors<CreateFacilityActivationTransactionResponse>> {
     const idToken = await this.acbsAuthenticationService.getIdToken();
 
     const bundleInformationToCreateInAcbs: AcbsCreateBundleInformationRequestDto<FacilityCodeValueTransaction> = {
@@ -60,8 +61,12 @@ export class FacilityActivationTransactionService {
       ],
     };
 
-    const response = await this.acbsBundleInformationService.createBundleInformation(bundleInformationToCreateInAcbs, idToken);
-    return { bundleIdentifier: response.BundleIdentifier };
+    const { BundleIdentifier, WarningErrors } = await this.acbsBundleInformationService.createBundleInformation(bundleInformationToCreateInAcbs, idToken);
+
+    return {
+      responseBody: { bundleIdentifier: BundleIdentifier },
+      warningErrors: WarningErrors,
+    };
   }
 
   async getActivationTransactionByBundleIdentifier(bundleIdentifier: string): Promise<GetFacilityActivationTransactionResponseDto> {

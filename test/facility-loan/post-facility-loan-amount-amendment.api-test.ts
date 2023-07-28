@@ -19,7 +19,13 @@ describe('POST /facilities/{facilityIdentifier}/loans/{loanIdentifier}/amendment
   const facilityIdentifier = valueGenerator.facilityId();
   const loanIdentifier = valueGenerator.loanId();
   const createdBundleIdentifier = valueGenerator.acbsBundleId();
+  const errorString = valueGenerator.string();
   const acbsSuccessfulResponse: [number, undefined, { BundleIdentifier: string }] = [201, undefined, { BundleIdentifier: createdBundleIdentifier }];
+  const acbsSuccessfulResponseWithWarningHeader: [number, undefined, { BundleIdentifier: string; 'processing-warning': string }] = [
+    201,
+    undefined,
+    { BundleIdentifier: createdBundleIdentifier, 'processing-warning': errorString },
+  ];
   const { increaseAmountRequest, decreaseAmountRequest, acbsLoanAmendmentForIncrease, acbsLoanAmendmentForDecrease } =
     new CreateFacilityLoanAmountAmendmentGenerator(valueGenerator, new DateStringTransformations()).generate({ loanIdentifier, numberToGenerate: 1 });
 
@@ -61,12 +67,15 @@ describe('POST /facilities/{facilityIdentifier}/loans/{loanIdentifier}/amendment
     withAcbsCreateBundleInformationTests({
       givenTheRequestWouldOtherwiseSucceed: () => givenAuthenticationWithTheIdpSucceeds(),
       requestToCreateBundleInformationInAcbs: () => requestToCreateIncreaseLoanAdvanceTransactionInAcbs(),
-      givenRequestToCreateBundleInformationInAcbsSucceeds: () => givenAnyRequestBodyToCreateLoanAmountAmendmentInAcbsSucceeds(),
+      givenRequestToCreateBundleInformationInAcbsSucceeds: () => givenAnyRequestBodyToCreateLoanAmountAmendmentInAcbsSucceeds(acbsSuccessfulResponse),
+      givenRequestToCreateBundleInformationInAcbsSucceedsWithWarningHeader: () =>
+        givenAnyRequestBodyToCreateLoanAmountAmendmentInAcbsSucceeds(acbsSuccessfulResponseWithWarningHeader),
       makeRequest: () => api.post(createLoanAmountAmendmentUrl(), increaseAmountRequest),
       facilityIdentifier,
       expectedResponse: { bundleIdentifier: createdBundleIdentifier },
       createBundleInformationType: ENUMS.BUNDLE_INFORMATION_TYPES.LOAN_ADVANCE_TRANSACTION,
       expectedResponseCode: 201,
+      errorString,
     });
   });
 
@@ -74,12 +83,15 @@ describe('POST /facilities/{facilityIdentifier}/loans/{loanIdentifier}/amendment
     withAcbsCreateBundleInformationTests({
       givenTheRequestWouldOtherwiseSucceed: () => givenAuthenticationWithTheIdpSucceeds(),
       requestToCreateBundleInformationInAcbs: () => requestToCreateDecreaseLoanAdvanceTransactionInAcbs(),
-      givenRequestToCreateBundleInformationInAcbsSucceeds: () => givenAnyRequestBodyToCreateLoanAmountAmendmentInAcbsSucceeds(),
+      givenRequestToCreateBundleInformationInAcbsSucceeds: () => givenAnyRequestBodyToCreateLoanAmountAmendmentInAcbsSucceeds(acbsSuccessfulResponse),
+      givenRequestToCreateBundleInformationInAcbsSucceedsWithWarningHeader: () =>
+        givenAnyRequestBodyToCreateLoanAmountAmendmentInAcbsSucceeds(acbsSuccessfulResponseWithWarningHeader),
       makeRequest: () => api.post(createLoanAmountAmendmentUrl(), decreaseAmountRequest),
       facilityIdentifier,
       expectedResponse: { bundleIdentifier: createdBundleIdentifier },
       createBundleInformationType: ENUMS.BUNDLE_INFORMATION_TYPES.LOAN_ADVANCE_TRANSACTION,
       expectedResponseCode: 201,
+      errorString,
     });
   });
 
@@ -90,7 +102,7 @@ describe('POST /facilities/{facilityIdentifier}/loans/{loanIdentifier}/amendment
       makeRequest: (body) => api.post(createLoanAmountAmendmentUrl(), body),
       givenAnyRequestBodyWouldSucceed: () => {
         givenAuthenticationWithTheIdpSucceeds();
-        givenAnyRequestBodyToCreateLoanAmountAmendmentInAcbsSucceeds();
+        givenAnyRequestBodyToCreateLoanAmountAmendmentInAcbsSucceeds(acbsSuccessfulResponse);
       },
     });
 
@@ -100,7 +112,7 @@ describe('POST /facilities/{facilityIdentifier}/loans/{loanIdentifier}/amendment
       makeRequest: (body) => api.post(createLoanAmountAmendmentUrl(), body),
       givenAnyRequestBodyWouldSucceed: () => {
         givenAuthenticationWithTheIdpSucceeds();
-        givenAnyRequestBodyToCreateLoanAmountAmendmentInAcbsSucceeds();
+        givenAnyRequestBodyToCreateLoanAmountAmendmentInAcbsSucceeds(acbsSuccessfulResponse);
       },
       forbidZero: true,
     });
@@ -111,7 +123,7 @@ describe('POST /facilities/{facilityIdentifier}/loans/{loanIdentifier}/amendment
       makeRequestWithFacilityId: (facilityId: string) => api.post(createLoanAmountAmendmentUrl({ facilityId, loanId: loanIdentifier }), increaseAmountRequest),
       givenRequestWouldOtherwiseSucceedForFacilityId: () => {
         givenAuthenticationWithTheIdpSucceeds();
-        givenAnyRequestBodyToCreateLoanAmountAmendmentInAcbsSucceeds();
+        givenAnyRequestBodyToCreateLoanAmountAmendmentInAcbsSucceeds(acbsSuccessfulResponse);
       },
       successStatusCode: 201,
     });
@@ -120,7 +132,7 @@ describe('POST /facilities/{facilityIdentifier}/loans/{loanIdentifier}/amendment
       makeRequestWithLoanId: (loanId: string) => api.post(createLoanAmountAmendmentUrl({ loanId, facilityId: facilityIdentifier }), increaseAmountRequest),
       givenRequestWouldOtherwiseSucceedForLoanId: () => {
         givenAuthenticationWithTheIdpSucceeds();
-        givenAnyRequestBodyToCreateLoanAmountAmendmentInAcbsSucceeds();
+        givenAnyRequestBodyToCreateLoanAmountAmendmentInAcbsSucceeds(acbsSuccessfulResponse);
       },
       successStatusCode: 201,
     });
@@ -132,7 +144,9 @@ describe('POST /facilities/{facilityIdentifier}/loans/{loanIdentifier}/amendment
   const requestToCreateDecreaseLoanAdvanceTransactionInAcbs = (): nock.Interceptor =>
     requestToCreateLoanAdvanceTransactionInAcbsWithBody(JSON.parse(JSON.stringify(acbsLoanAmendmentForDecrease)));
 
-  const givenAnyRequestBodyToCreateLoanAmountAmendmentInAcbsSucceeds = (): nock.Scope => {
+  const givenAnyRequestBodyToCreateLoanAmountAmendmentInAcbsSucceeds = (
+    acbsSuccessfulResponse: [number, undefined, { BundleIdentifier: string }],
+  ): nock.Scope => {
     const requestBodyPlaceholder = '*';
     return nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
       .filteringRequestBody(() => requestBodyPlaceholder)
