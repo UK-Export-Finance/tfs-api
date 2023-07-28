@@ -32,7 +32,7 @@ import {
           transport: {
             target: 'pino-pretty',
             options: {
-              singleLine: true,
+              singleLine: config.get<boolean>('app.singleLineLogFormat'),
             },
           },
           redact: logKeysToRedact({
