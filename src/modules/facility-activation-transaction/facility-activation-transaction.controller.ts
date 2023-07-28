@@ -11,6 +11,7 @@ import {
 } from '@nestjs/swagger';
 import { EXAMPLES } from '@ukef/constants';
 import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decorator';
+import { WithWarningErrors } from '@ukef/helpers/with-warning-errors.type';
 import { CreateBundleInformationErrorInterceptor } from '@ukef/interceptors/create-bundle-information-error.interceptor';
 import { FacilityService } from '@ukef/modules/facility/facility.service';
 
@@ -61,12 +62,12 @@ export class FacilityActivationTransactionController {
     @Param() params: FacilityActivationTransactionParamsDto,
     @ValidatedArrayBody({ items: CreateFacilityActivationTransactionRequestItem })
     newFacilityActivationTransactionRequest: CreateFacilityActivationTransactionRequest,
-  ): Promise<CreateFacilityActivationTransactionResponse> {
+  ): Promise<WithWarningErrors<CreateFacilityActivationTransactionResponse>> {
     const facility = await this.facilityService.getFacilityByIdentifier(params.facilityIdentifier);
 
     const [newFacilityActivationTransaction] = newFacilityActivationTransactionRequest;
 
-    return await this.facilityActivationTransactionService.createActivationTransactionForFacility(
+    return this.facilityActivationTransactionService.createActivationTransactionForFacility(
       params.facilityIdentifier,
       facility.obligorPartyIdentifier,
       facility.effectiveDate,

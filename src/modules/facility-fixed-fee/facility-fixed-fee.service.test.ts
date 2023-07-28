@@ -241,7 +241,7 @@ describe('FacilityFixedFeeService', () => {
         it('returns the BundleIdentifier from creating the fixed fees amendment bundle', async () => {
           const response = await service.createAmountAmendmentForFixedFees(facilityIdentifier, increaseAmountRequest);
 
-          expect(response.bundleIdentifier).toBe(createdBundleIdentifier);
+          expect(response.responseBody.bundleIdentifier).toBe(createdBundleIdentifier);
         });
 
         it('uses the increase FacilityFeeTransactionType when creating the fixed fees amendment bundle', async () => {
@@ -280,7 +280,7 @@ describe('FacilityFixedFeeService', () => {
         it('returns the BundleIdentifier from creating the fixed fees amendment bundle', async () => {
           const response = await service.createAmountAmendmentForFixedFees(facilityIdentifier, decreaseAmountRequest);
 
-          expect(response.bundleIdentifier).toBe(createdBundleIdentifier);
+          expect(response.responseBody.bundleIdentifier).toBe(createdBundleIdentifier);
         });
 
         it('uses the decrease FacilityFeeTransactionType when creating the fixed fees amendment bundle', async () => {

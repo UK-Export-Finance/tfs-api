@@ -8,5 +8,4 @@ export class CreateLoanAmountAmendmentResponse {
     example: EXAMPLES.ACBS_BUNDLE_ID,
   })
   readonly bundleIdentifier: AcbsBundleId;
-  readonly warningErrors: string;
 }

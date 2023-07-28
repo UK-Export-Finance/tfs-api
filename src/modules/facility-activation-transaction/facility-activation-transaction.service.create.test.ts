@@ -65,7 +65,7 @@ describe('FacilityActivationTransactionService', () => {
         newActivationTransactionWithAllFields,
       );
 
-      expect(response).toEqual({ bundleIdentifier: bundleIdentifier, warningErrors: errorString });
+      expect(response).toEqual({ responseBody: { bundleIdentifier: bundleIdentifier }, warningErrors: errorString });
     });
   });
 });

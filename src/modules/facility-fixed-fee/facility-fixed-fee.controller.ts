@@ -11,6 +11,7 @@ import {
 } from '@nestjs/swagger';
 import { EXAMPLES } from '@ukef/constants';
 import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decorator';
+import { WithWarningErrors } from '@ukef/helpers';
 import { CreateBundleInformationErrorInterceptor } from '@ukef/interceptors/create-bundle-information-error.interceptor';
 import { FacilityService } from '@ukef/modules/facility/facility.service';
 
@@ -73,11 +74,11 @@ export class FacilityFixedFeeController {
   @ApiInternalServerErrorResponse({
     description: 'An internal server error has occurred.',
   })
-  async createAmountAmendmentForFixedFees(
+  createAmountAmendmentForFixedFees(
     @Param() params: FacilityFixedFeeParamsDto,
     @ValidatedArrayBody({ items: CreateFixedFeeAmountAmendmentRequestItem }) newFixedFeeAmountAmendmentRequest: CreateFixedFeeAmountAmendmentRequest,
-  ): Promise<CreateFixedFeeAmountAmendmentResponse> {
-    return await this.facilityFixedFeeService.createAmountAmendmentForFixedFees(params.facilityIdentifier, newFixedFeeAmountAmendmentRequest);
+  ): Promise<WithWarningErrors<CreateFixedFeeAmountAmendmentResponse>> {
+    return this.facilityFixedFeeService.createAmountAmendmentForFixedFees(params.facilityIdentifier, newFixedFeeAmountAmendmentRequest);
   }
 
   @Post('facilities/:facilityIdentifier/fixed-fees')

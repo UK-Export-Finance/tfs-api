@@ -1,4 +1,5 @@
 import { ENUMS } from '@ukef/constants';
+import { WithWarningErrors } from '@ukef/helpers';
 import { AcbsBundleInformationService } from '@ukef/modules/acbs/acbs-bundle-information.service';
 import { AcbsFacilityService } from '@ukef/modules/acbs/acbs-facility.service';
 import { AcbsCreateBundleInformationRequestDto } from '@ukef/modules/acbs/dto/acbs-create-bundle-information-request.dto';
@@ -24,9 +25,9 @@ describe('FacilityService', () => {
   const bundleIdentifier = valueGenerator.acbsBundleId();
   const errorString = valueGenerator.string();
 
-  const expectedResult = { bundleIdentifier, warningErrors: errorString };
+  const expectedResult = { responseBody: { bundleIdentifier }, warningErrors: errorString };
 
-  const amendAmountByIdentifier = (updateFacilityRequest: UpdateFacilityRequest): Promise<UpdateFacilityBundleIdentifierResponse> =>
+  const amendAmountByIdentifier = (updateFacilityRequest: UpdateFacilityRequest): Promise<WithWarningErrors<UpdateFacilityBundleIdentifierResponse>> =>
     service.amendFacilityAmountByIdentifier(facilityIdentifier, updateFacilityRequest);
 
   let acbsBundleInformationServiceCreateBundleInformation: jest.Mock;

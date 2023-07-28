@@ -11,6 +11,7 @@ import {
 } from '@nestjs/swagger';
 import { EXAMPLES } from '@ukef/constants';
 import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decorator';
+import { WithWarningErrors } from '@ukef/helpers';
 import { CreateBundleInformationErrorInterceptor } from '@ukef/interceptors/create-bundle-information-error.interceptor';
 
 import { CreateFacilityLoanRequest, CreateFacilityLoanRequestItem } from './dto/create-facility-loan-request.dto';
@@ -73,14 +74,14 @@ export class FacilityLoanController {
   @ApiInternalServerErrorResponse({
     description: 'An internal server error has occurred.',
   })
-  async createLoanForFacility(
+  createLoanForFacility(
     @Param() params: FacilityLoanParamsDto,
     @ValidatedArrayBody({ items: CreateFacilityLoanRequestItem }) newLoanRequest: CreateFacilityLoanRequest,
-  ): Promise<CreateFacilityLoanResponse> {
+  ): Promise<WithWarningErrors<CreateFacilityLoanResponse>> {
     const { facilityIdentifier } = params;
     const [newLoan] = newLoanRequest;
 
-    return await this.facilityLoanService.createLoanForFacility(facilityIdentifier, newLoan);
+    return this.facilityLoanService.createLoanForFacility(facilityIdentifier, newLoan);
   }
 
   @Patch('facilities/:facilityIdentifier/loans/:loanIdentifier')
@@ -148,11 +149,11 @@ export class FacilityLoanController {
   @ApiInternalServerErrorResponse({
     description: 'An internal server error has occurred.',
   })
-  async createAmountAmendmentForLoan(
+  createAmountAmendmentForLoan(
     @Param() params: CreateLoanAmountAmendmentParams,
     @ValidatedArrayBody({ items: CreateLoanAmountAmendmentRequestItem }) newLoanAmountAmendmentRequest: CreateLoanAmountAmendmentRequest,
-  ): Promise<CreateLoanAmountAmendmentResponse> {
+  ): Promise<WithWarningErrors<CreateLoanAmountAmendmentResponse>> {
     const [newLoanAmountAmendment] = newLoanAmountAmendmentRequest;
-    return await this.facilityLoanService.createAmountAmendmentForLoan(params.loanIdentifier, newLoanAmountAmendment);
+    return this.facilityLoanService.createAmountAmendmentForLoan(params.loanIdentifier, newLoanAmountAmendment);
   }
 }

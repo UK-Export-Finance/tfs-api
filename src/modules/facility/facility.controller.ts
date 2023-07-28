@@ -13,6 +13,7 @@ import {
 } from '@nestjs/swagger';
 import { ENUMS, EXAMPLES } from '@ukef/constants';
 import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decorator';
+import { WithWarningErrors } from '@ukef/helpers';
 import { CreateBundleInformationErrorInterceptor } from '@ukef/interceptors/create-bundle-information-error.interceptor';
 import { CreateFacilityRequest, CreateFacilityRequestItem } from '@ukef/modules/facility/dto/create-facility-request.dto';
 import { CreateFacilityResponse } from '@ukef/modules/facility/dto/create-facility-response.dto';
@@ -146,7 +147,7 @@ export class FacilityController {
     @Query() query: UpdateFacilityByOperationQueryDto,
     @Param() params: UpdateFacilityByOperationParamsDto,
     @Body() updateFacilityDto: UpdateFacilityRequest,
-  ): Promise<UpdateFacilityFacilityIdentifierResponse | UpdateFacilityBundleIdentifierResponse> {
+  ): Promise<UpdateFacilityFacilityIdentifierResponse | WithWarningErrors<UpdateFacilityBundleIdentifierResponse>> {
     if (query.op === ENUMS.FACILITY_UPDATE_OPERATIONS.ISSUE) {
       await this.facilityService.issueFacilityByIdentifier(params.facilityIdentifier, updateFacilityDto);
       return { facilityIdentifier: params.facilityIdentifier };
@@ -156,7 +157,7 @@ export class FacilityController {
       return { facilityIdentifier: params.facilityIdentifier };
     }
     if (query.op === ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_AMOUNT) {
-      return await this.facilityService.amendFacilityAmountByIdentifier(params.facilityIdentifier, updateFacilityDto);
+      return this.facilityService.amendFacilityAmountByIdentifier(params.facilityIdentifier, updateFacilityDto);
     }
   }
 }

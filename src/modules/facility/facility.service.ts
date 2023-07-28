@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ENUMS, PROPERTIES } from '@ukef/constants';
-import { DateString, UkefId } from '@ukef/helpers';
+import { DateString, UkefId, WithWarningErrors } from '@ukef/helpers';
 import { AcbsBundleInformationService } from '@ukef/modules/acbs/acbs-bundle-information.service';
 import { AcbsFacilityService } from '@ukef/modules/acbs/acbs-facility.service';
 import { AcbsBaseFacilityRequest } from '@ukef/modules/acbs/dto/acbs-base-facility-request.dto';
@@ -99,12 +99,12 @@ export class FacilityService {
   async amendFacilityAmountByIdentifier(
     facilityIdentifier: UkefId,
     updateFacilityRequest: UpdateFacilityRequest,
-  ): Promise<UpdateFacilityBundleIdentifierResponse> {
+  ): Promise<WithWarningErrors<UpdateFacilityBundleIdentifierResponse>> {
     const idToken = await this.acbsAuthenticationService.getIdToken();
 
     const existingFacilityData = await this.acbsFacilityService.getFacilityByIdentifier(facilityIdentifier, idToken);
 
-    return await this.buildAmendFacilityAmountBundleInformationRequestAndCreateBundleInformation(updateFacilityRequest, existingFacilityData, idToken);
+    return this.buildAmendFacilityAmountBundleInformationRequestAndCreateBundleInformation(updateFacilityRequest, existingFacilityData, idToken);
   }
 
   private async buildRequestAndUpdateFacility(
@@ -331,13 +331,16 @@ export class FacilityService {
     updateFacilityRequest: UpdateFacilityRequest,
     existingFacilityData: AcbsGetFacilityResponseDto,
     idToken: string,
-  ): Promise<UpdateFacilityBundleIdentifierResponse> {
+  ): Promise<WithWarningErrors<UpdateFacilityBundleIdentifierResponse>> {
     const bundleInformationToCreateInAcbs: AcbsCreateBundleInformationRequestDto<FacilityAmountTransaction> =
       this.buildAmendFacilityAmountBundleInformationRequest(updateFacilityRequest, existingFacilityData);
 
     const { BundleIdentifier, WarningErrors } = await this.acbsBundleInformationService.createBundleInformation(bundleInformationToCreateInAcbs, idToken);
 
-    return { bundleIdentifier: BundleIdentifier, warningErrors: WarningErrors };
+    return {
+      responseBody: { bundleIdentifier: BundleIdentifier },
+      warningErrors: WarningErrors,
+    };
   }
 
   private buildAmendFacilityAmountBundleInformationRequest(

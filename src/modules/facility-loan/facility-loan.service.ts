@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { CURRENCIES } from '@ukef/constants/currencies.constant';
-import { UkefId } from '@ukef/helpers';
+import { UkefId, WithWarningErrors } from '@ukef/helpers';
 import { AcbsBundleInformationService } from '@ukef/modules/acbs/acbs-bundle-information.service';
 import { AcbsFacilityLoanService } from '@ukef/modules/acbs/acbs-facility-loan.service';
 import { AcbsCreateBundleInformationRequestDto } from '@ukef/modules/acbs/dto/acbs-create-bundle-information-request.dto';
@@ -59,7 +59,10 @@ export class FacilityLoanService {
     });
   }
 
-  async createLoanForFacility(facilityIdentifier: UkefId, newFacilityLoan: CreateFacilityLoanRequestItem): Promise<CreateFacilityLoanResponse> {
+  async createLoanForFacility(
+    facilityIdentifier: UkefId,
+    newFacilityLoan: CreateFacilityLoanRequestItem,
+  ): Promise<WithWarningErrors<CreateFacilityLoanResponse>> {
     const idToken = await this.getIdToken();
 
     const bundleMessage: NewLoanRequest = {
@@ -85,17 +88,23 @@ export class FacilityLoanService {
 
     const { BundleIdentifier, WarningErrors } = await this.acbsBundleInformationService.createBundleInformation(bundleInformationToCreateInAcbs, idToken);
 
-    return { bundleIdentifier: BundleIdentifier, warningErrors: WarningErrors };
+    return {
+      responseBody: { bundleIdentifier: BundleIdentifier },
+      warningErrors: WarningErrors,
+    };
   }
 
   async createAmountAmendmentForLoan(
     loanIdentifier: string,
     loanAmountAmendment: CreateLoanAmountAmendmentRequestItem,
-  ): Promise<CreateLoanAmountAmendmentResponse> {
+  ): Promise<WithWarningErrors<CreateLoanAmountAmendmentResponse>> {
     const idToken = await this.getIdToken();
     const loanAmountAmendmentBundle = this.buildLoanAmountAmendmentBundle(loanIdentifier, loanAmountAmendment);
     const { BundleIdentifier, WarningErrors } = await this.acbsBundleInformationService.createBundleInformation(loanAmountAmendmentBundle, idToken);
-    return { bundleIdentifier: BundleIdentifier, warningErrors: WarningErrors };
+    return {
+      responseBody: { bundleIdentifier: BundleIdentifier },
+      warningErrors: WarningErrors,
+    };
   }
 
   async updateLoanExpiryDate(loanIdentifier: string, updateLoanExpiryDateRequest: UpdateLoanExpiryDateRequest): Promise<void> {

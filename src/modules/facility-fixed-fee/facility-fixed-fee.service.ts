@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ENUMS, PROPERTIES } from '@ukef/constants';
-import { AcbsPartyId, DateOnlyString, DateString, UkefId } from '@ukef/helpers';
+import { AcbsPartyId, DateOnlyString, DateString, UkefId, WithWarningErrors } from '@ukef/helpers';
 import { AcbsBundleInformationService } from '@ukef/modules/acbs/acbs-bundle-information.service';
 import { AcbsFacilityFixedFeeService } from '@ukef/modules/acbs/acbs-facility-fixed-fee.service';
 import { FacilityFeeAmountTransaction } from '@ukef/modules/acbs/dto/bundle-actions/facility-fee-amount-transaction.bundle-action';
@@ -146,7 +146,7 @@ export class FacilityFixedFeeService {
   async createAmountAmendmentForFixedFees(
     facilityIdentifier: UkefId,
     newFixedFeeAmountAmendmentRequest: CreateFixedFeeAmountAmendmentRequest,
-  ): Promise<CreateFixedFeeAmountAmendmentResponse> {
+  ): Promise<WithWarningErrors<CreateFixedFeeAmountAmendmentResponse>> {
     const idToken = await this.acbsAuthenticationService.getIdToken();
 
     const amountAmendmentMessages = this.buildAmountAmendmentMessages(facilityIdentifier, newFixedFeeAmountAmendmentRequest);
@@ -161,7 +161,10 @@ export class FacilityFixedFeeService {
 
     const { BundleIdentifier, WarningErrors } = await this.acbsBundleInformationService.createBundleInformation(bundleInformationToCreateInAcbs, idToken);
 
-    return { bundleIdentifier: BundleIdentifier, warningErrors: WarningErrors };
+    return {
+      responseBody: { bundleIdentifier: BundleIdentifier },
+      warningErrors: WarningErrors,
+    };
   }
 
   private calculateEffectiveDateForCreation(effectiveDate: DateOnlyString): DateString {

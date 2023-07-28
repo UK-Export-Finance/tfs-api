@@ -11,7 +11,7 @@ export class CreateBundleInformationErrorInterceptor implements NestInterceptor 
           if (data.warningErrors) {
             response.setHeader('processing-warning', data.warningErrors);
           }
-          delete data.warningErrors;
+          return data.responseBody;
         }
         return data;
       }),
