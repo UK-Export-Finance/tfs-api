@@ -17,6 +17,7 @@ services:
       TZ:
       LOG_LEVEL:
       REDACT_LOGS:
+      SINGLE_LINE_LOG_FORMAT:
       SWAGGER_USER:
       SWAGGER_PASSWORD:
       API_KEY:
