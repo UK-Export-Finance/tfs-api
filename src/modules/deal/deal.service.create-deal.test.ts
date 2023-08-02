@@ -85,9 +85,33 @@ describe('DealService', () => {
         expect(dealCreatedInAcbs.Description).toBe(descriptionWithTruncatedObligorName);
       });
 
-      it('rounds the dealValue to 2dp for the LimitAmount', async () => {
+      it('rounds the dealValue (1.234) to 2dp for the LimitAmount', async () => {
         const dealValueWithMoreThan2dp = 1.234;
         const dealValueRoundedTo2dp = 1.23;
+        const dealWithDealValueWithMoreThan2dp = { ...dealToCreate, dealValue: dealValueWithMoreThan2dp };
+
+        await service.createDeal(dealWithDealValueWithMoreThan2dp);
+
+        const dealCreatedInAcbs = getDealCreatedInAcbs();
+
+        expect(dealCreatedInAcbs.LimitAmount).toBe(dealValueRoundedTo2dp);
+      });
+
+      it('rounds the dealValue (1.235) to 2dp for the LimitAmount', async () => {
+        const dealValueWithMoreThan2dp = 1.235;
+        const dealValueRoundedTo2dp = 1.24;
+        const dealWithDealValueWithMoreThan2dp = { ...dealToCreate, dealValue: dealValueWithMoreThan2dp };
+
+        await service.createDeal(dealWithDealValueWithMoreThan2dp);
+
+        const dealCreatedInAcbs = getDealCreatedInAcbs();
+
+        expect(dealCreatedInAcbs.LimitAmount).toBe(dealValueRoundedTo2dp);
+      });
+
+      it('rounds the dealValue (1.005) to 2dp for the LimitAmount', async () => {
+        const dealValueWithMoreThan2dp = 1.005;
+        const dealValueRoundedTo2dp = 1.01;
         const dealWithDealValueWithMoreThan2dp = { ...dealToCreate, dealValue: dealValueWithMoreThan2dp };
 
         await service.createDeal(dealWithDealValueWithMoreThan2dp);
