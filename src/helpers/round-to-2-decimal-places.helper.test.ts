@@ -28,6 +28,10 @@ describe('roundTo2DecimalPlaces', () => {
     { numberToRound: 1.0049999999999999, expectedResult: 1.01 },
     { numberToRound: 1.004999999999999, expectedResult: 1.0 },
     { numberToRound: 1.004999999999998, expectedResult: 1.0 },
+    // eslint-disable-next-line @typescript-eslint/no-loss-of-precision
+    { numberToRound: 1.0049999999999998, expectedResult: 1.01 },
+    // eslint-disable-next-line @typescript-eslint/no-loss-of-precision
+    { numberToRound: 1.00499999999999999999999, expectedResult: 1.01 },
     { numberToRound: 1.0049999999999988, expectedResult: 1.0 },
     { numberToRound: 10.004999999999999, expectedResult: 10.0 }, // rounding depends on binary form of float number
     { numberToRound: 19.004999999999999, expectedResult: 19.01 }, // rounding depends on binary form of float number
