@@ -1,6 +1,8 @@
 import { round as lodashRound } from 'lodash';
-//import Decimal from 'decimal.js-light';
-
+/**
+import Decimal from 'decimal.js-light';
+import { round as mathJsRound } from 'mathjs';
+*/
 // Lodash
 export const roundTo2DecimalPlaces = (numberToRound: number): number => lodashRound(numberToRound, 2);
 
