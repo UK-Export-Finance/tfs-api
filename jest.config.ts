@@ -42,6 +42,7 @@ const config: JestConfigWithTsJest = {
       ...defaultSettings,
     },
   ],
+  reporters: [['default', { summaryThreshold: 1 }]],
 };
 
 export default config;
