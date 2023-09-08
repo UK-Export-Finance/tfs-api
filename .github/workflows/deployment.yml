@@ -72,7 +72,7 @@ jobs:
     runs-on: [self-hosted, APIM, deployment]
     steps:
       - name: Repository 🗃️
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Azure 🔐
         uses: azure/login@v1
@@ -80,7 +80,7 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Defaults ✨
-        uses: Azure/cli@v1.0.7
+        uses: Azure/cli@v1.0.8
         with:
           inlineScript: |
             # Basic
@@ -111,7 +111,7 @@ jobs:
           docker push ${{ env.ACR }}/${{ env.NAME }}:${{ env.FROM }}
 
       - name: Revisions 🔀
-        uses: Azure/cli@v1.0.7
+        uses: Azure/cli@v1.0.8
         with:
           inlineScript: |
             az containerapp update \
@@ -152,7 +152,7 @@ jobs:
 
       - name: Import ⬇️
         if: ${{ '' != env.API_ID }}
-        uses: Azure/cli@v1.0.7
+        uses: Azure/cli@v1.0.8
         with:
           inlineScript: |
             # API specification import
