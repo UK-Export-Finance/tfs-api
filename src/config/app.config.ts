@@ -19,6 +19,7 @@ export interface AppConfig {
   port: number;
   apiKey: string;
   logLevel: string;
+  singleLineLogFormat: boolean;
   usePinoPrettyLogFormatter: boolean;
   redactLogs: boolean;
 }
