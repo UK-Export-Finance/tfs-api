@@ -24,51 +24,56 @@ import {
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
-        pinoHttp: [
-          {
-            customProps: () => ({
-              context: 'HTTP',
-            }),
-            level: config.get<string>('app.logLevel'),
+        pinoHttp: {
+          customProps: () => ({
+            context: 'HTTP',
+          }),
+          level: config.get<string>('app.logLevel'),
+          ...(config.get<boolean>('app.usePinoPrettyLogFormatter') && {
             transport: {
               target: 'pino-pretty',
               options: {
                 singleLine: config.get<boolean>('app.singleLineLogFormat'),
               },
             },
-            redact: logKeysToRedact({
-              redactLogs: config.get<boolean>('app.redactLogs'),
-              clientRequest: {
-                logKey: 'req',
-                headersLogKey: 'headers',
-              },
-              outgoingRequest: {
-                logKey: OUTGOING_REQUEST_LOG_KEY,
-                headersLogKey: HEADERS_LOG_KEY,
-                bodyLogKey: BODY_LOG_KEY,
-                sensitiveBodyFields: SENSITIVE_REQUEST_FIELD_NAMES,
-              },
-              incomingResponse: {
-                logKey: INCOMING_RESPONSE_LOG_KEY,
-                headersLogKey: HEADERS_LOG_KEY,
-                sensitiveHeaders: SENSITIVE_RESPONSE_HEADER_NAMES,
-                bodyLogKey: BODY_LOG_KEY,
-                sensitiveBodyFields: SENSITIVE_RESPONSE_FIELD_NAMES,
-              },
-              error: {
-                logKey: 'err',
-                sensitiveChildKeys: [
-                  // The `config` key is sensitive if the error is an AxiosError as it contains the request body
-                  // as a JSON string, and so can contain any secret request field. For example, it can contain
-                  // our secret authentication credentials if the error occurs during the authentication process
-                  // with FIS IdP.
-                  'config',
-                ],
-              },
-            }),
-          },
-          process.stdout,
-        ],
+          }),
+          // Allow changing destination for testing, pino-pretty transport also needs to be disabled.
+          ...(config.get<boolean>('app.usePinoPrettyLogFormatter') === false && global.logTestStream && { stream: global.logTestStream }),
+          redact: logKeysToRedact({
+            redactLogs: config.get<boolean>('app.redactLogs'),
+            clientRequest: {
+              logKey: 'req',
+              headersLogKey: 'headers',
+            },
+            outgoingRequest: {
+              logKey: OUTGOING_REQUEST_LOG_KEY,
+              headersLogKey: HEADERS_LOG_KEY,
+              bodyLogKey: BODY_LOG_KEY,
+              sensitiveBodyFields: SENSITIVE_REQUEST_FIELD_NAMES,
+            },
+            incomingResponse: {
+              logKey: INCOMING_RESPONSE_LOG_KEY,
+              headersLogKey: HEADERS_LOG_KEY,
+              sensitiveHeaders: SENSITIVE_RESPONSE_HEADER_NAMES,
+              bodyLogKey: BODY_LOG_KEY,
+              sensitiveBodyFields: SENSITIVE_RESPONSE_FIELD_NAMES,
+            },
+            error: {
+              logKey: 'err',
+              sensitiveChildKeys: [
+                // The `config` key is sensitive if the error is an AxiosError as it contains the request body
+                // as a JSON string, and so can contain any secret request field. For example, it can contain
+                // our secret authentication credentials if the error occurs during the authentication process
+                // with FIS IdP.
+                'config',
+              ],
+            },
+          }),
+        },
+        //DestinationStream
+        //process.stdout,
+        //fs.createWriteStream(path.join(process.cwd(), './logs/pino.log')),
+        //],
       }),
     }),
     TfsModule,

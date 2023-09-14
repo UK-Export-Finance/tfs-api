@@ -19,6 +19,7 @@ export interface AppConfig {
   port: number;
   apiKey: string;
   logLevel: string;
+  usePinoPrettyLogFormatter: boolean;
   redactLogs: boolean;
 }
 
@@ -42,6 +43,7 @@ export default registerAs('app', (): Record<string, any> => {
     port: getIntConfig(process.env.HTTP_PORT, 3001),
     apiKey: process.env.API_KEY,
     logLevel: process.env.LOG_LEVEL || 'info',
+    usePinoPrettyLogFormatter: process.env.USE_PINO_PRETTY_LOG_FORMATER === 'true',
     redactLogs: process.env.REDACT_LOGS !== 'false',
     singleLineLogFormat: process.env.SINGLE_LINE_LOG_FORMAT !== 'false',
   };
