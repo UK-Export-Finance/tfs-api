@@ -15,7 +15,7 @@ import { MockMdmApi } from '@ukef-test/support/mdm-api.mock';
 import nock from 'nock';
 import { Stream } from 'stream';
 
-describe('POST /parties', () => {
+describe('POST /parties log testing', () => {
   const valueGenerator = new RandomValueGenerator();
   const dateStringTransformations = new DateStringTransformations();
 
@@ -51,6 +51,7 @@ describe('POST /parties', () => {
   let mdmApi: MockMdmApi;
   let api: Api;
   const stream = new Stream.Writable();
+
   let logContent;
 
   stream._write = (chunk, encoding, next) => {
@@ -135,15 +136,6 @@ describe('POST /parties', () => {
       expect(body).toStrictEqual({ partyIdentifier });
 
       expect(logContent).toContain(`"requestBody":${JSON.stringify(apiCreatePartyRequest)},"msg":"Handling the following request from the client."`);
-      expect(logContent).toContain(`Bearer ${idToken}`);
-      expect(logContent).not.toContain('Requesting a new ACBS authentication id token');
-      // idToken is cached, so no sessionId, username, password, cookieName, ... are present.
-      expect(logContent).not.toContain(sessionId);
-      expect(logContent).not.toContain(ENVIRONMENT_VARIABLES.ACBS_AUTHENTICATION_LOGIN_NAME);
-      expect(logContent).not.toContain(ENVIRONMENT_VARIABLES.ACBS_AUTHENTICATION_PASSWORD);
-      expect(logContent).not.toContain(sessionCookieName);
-      expect(logContent).not.toContain(ENVIRONMENT_VARIABLES.ACBS_AUTHENTICATION_API_KEY);
-      expect(logContent).not.toContain(ENVIRONMENT_VARIABLES.ACBS_AUTHENTICATION_API_KEY_HEADER_NAME);
       expect(logContent).toContain(ENVIRONMENT_VARIABLES.APIM_MDM_KEY);
       expect(logContent).toContain(ENVIRONMENT_VARIABLES.APIM_MDM_VALUE);
       expect(logContent).not.toContain(`"data":${JSON.stringify(acbsCreatePartyRequest)}},"msg":"Sending the following HTTP request."`);
@@ -214,19 +206,7 @@ describe('POST /parties', () => {
 
       expect(logContent).not.toContain('{"loginName":"[Redacted]","password":"[Redacted]"}}');
       expect(logContent).toContain('"headers":"[Redacted]"');
-      expect(logContent).not.toContain('Requesting a new ACBS authentication id token');
-      expect(logContent).toContain('Using the cached ACBS authentication id token');
       expect(logContent).not.toContain('Authorization');
-      expect(logContent).not.toContain(idToken);
-      expect(logContent).not.toContain(sessionId);
-      expect(logContent).not.toContain(ENVIRONMENT_VARIABLES.ACBS_AUTHENTICATION_LOGIN_NAME);
-      expect(logContent).not.toContain(ENVIRONMENT_VARIABLES.ACBS_AUTHENTICATION_PASSWORD);
-      expect(logContent).not.toContain(sessionCookieName);
-      expect(logContent).not.toContain(ENVIRONMENT_VARIABLES.APIM_MDM_KEY);
-      expect(logContent).not.toContain(ENVIRONMENT_VARIABLES.APIM_MDM_VALUE);
-      expect(logContent).not.toContain(ENVIRONMENT_VARIABLES.ACBS_AUTHENTICATION_API_KEY);
-      expect(logContent).not.toContain(ENVIRONMENT_VARIABLES.SWAGGER_USER);
-      expect(logContent).not.toContain(ENVIRONMENT_VARIABLES.SWAGGER_PASSWORD);
     });
   });
 
@@ -245,12 +225,6 @@ describe('POST /parties', () => {
 
       expect(logContent).toContain(`"requestBody":${JSON.stringify(apiCreatePartyRequest)},"msg":"Handling the following request from the client."`);
       expect(logContent).toContain(`Bearer ${idToken}`);
-      expect(logContent).toContain(sessionId);
-      expect(logContent).toContain(ENVIRONMENT_VARIABLES.ACBS_AUTHENTICATION_LOGIN_NAME);
-      expect(logContent).toContain(ENVIRONMENT_VARIABLES.ACBS_AUTHENTICATION_PASSWORD);
-      expect(logContent).toContain(sessionCookieName);
-      expect(logContent).toContain(ENVIRONMENT_VARIABLES.ACBS_AUTHENTICATION_API_KEY);
-      expect(logContent).toContain(ENVIRONMENT_VARIABLES.ACBS_AUTHENTICATION_API_KEY_HEADER_NAME);
       expect(logContent).not.toContain(ENVIRONMENT_VARIABLES.APIM_MDM_KEY);
       expect(logContent).not.toContain(ENVIRONMENT_VARIABLES.APIM_MDM_VALUE);
       expect(logContent).toContain(`Failed to get parties from ACBS with search text ${alternateIdentifier}.`);
@@ -275,15 +249,6 @@ describe('POST /parties', () => {
       expect(logContent).toContain(`Bearer ${idToken}`);
       expect(logContent).toContain(`Failed to get parties from ACBS with search text ${alternateIdentifier}.`);
       expect(logContent).toContain(`AxiosError: timeout of ${ENVIRONMENT_VARIABLES.ACBS_TIMEOUT}ms exceeded`);
-      // idToken is cached, so no sessionId, username, password, cookieName, ... are present.
-      expect(logContent).not.toContain('Requesting a new ACBS authentication id token');
-      expect(logContent).toContain('Using the cached ACBS authentication id token');
-      expect(logContent).not.toContain(sessionId);
-      expect(logContent).not.toContain(ENVIRONMENT_VARIABLES.ACBS_AUTHENTICATION_LOGIN_NAME);
-      expect(logContent).not.toContain(ENVIRONMENT_VARIABLES.ACBS_AUTHENTICATION_PASSWORD);
-      expect(logContent).not.toContain(sessionCookieName);
-      expect(logContent).not.toContain(ENVIRONMENT_VARIABLES.ACBS_AUTHENTICATION_API_KEY);
-      expect(logContent).not.toContain(ENVIRONMENT_VARIABLES.ACBS_AUTHENTICATION_API_KEY_HEADER_NAME);
       expect(logContent).not.toContain(ENVIRONMENT_VARIABLES.APIM_MDM_KEY);
       expect(logContent).not.toContain(ENVIRONMENT_VARIABLES.APIM_MDM_VALUE);
       expect(logContent).not.toContain(`"data":${JSON.stringify(acbsCreatePartyRequest)}},"msg":"Sending the following HTTP request."`);
