@@ -130,8 +130,8 @@ describe('LoggingInterceptor', () => {
           getRequest: <T>() =>
             ({
               body: requestBody,
-            }) as T,
-        }) as HttpArgumentsHost,
+            } as T),
+        } as HttpArgumentsHost),
     } as ExecutionContext;
     try {
       const interceptObservable = interceptor.intercept(context, next);
