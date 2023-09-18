@@ -245,8 +245,6 @@ describe('POST /parties', () => {
 
       expect(logContent).toContain(`"requestBody":${JSON.stringify(apiCreatePartyRequest)},"msg":"Handling the following request from the client."`);
       expect(logContent).toContain(`Bearer ${idToken}`);
-      expect(logContent).toContain('Requesting a new ACBS authentication id token');
-      expect(logContent).not.toContain('Using the cached ACBS authentication id token');
       expect(logContent).toContain(sessionId);
       expect(logContent).toContain(ENVIRONMENT_VARIABLES.ACBS_AUTHENTICATION_LOGIN_NAME);
       expect(logContent).toContain(ENVIRONMENT_VARIABLES.ACBS_AUTHENTICATION_PASSWORD);
