@@ -572,8 +572,6 @@ describe('POST /parties', () => {
   });
 
   describe('field validation', () => {
-    //const makeRequest = (body: unknown[]) => api.post(createPartyUrl, body);
-
     it(`returns a 400 if request contains field that doesn't match validation rules`, async () => {
       const emptyRequest = [{}];
       const { status, body } = await api.post(createPartyUrl, emptyRequest);
@@ -581,7 +579,7 @@ describe('POST /parties', () => {
       expect(status).toBe(400);
       expect(body.message).toContain('alternateIdentifier must be a string');
 
-      expect(logContent).toContain('"error":"Bad Request","statusCode":400');
+      expect(logContent).toMatch(/"response":{"statusCode":400,"message":\[.*],"error":"Bad Request"/);
       expect(logContent).toContain('"stack":"BadRequestException: Bad Request Exception\\n    at ValidationPipe.exceptionFactory');
     });
   });
