@@ -37,7 +37,7 @@ import {
               },
             },
           }),
-          // Allow changing destination for testing, pino-pretty transport also needs to be disabled.
+          // Allow changing destination stream for testing, pino-pretty transport also needs to be disabled.
           ...(config.get<boolean>('app.usePinoPrettyLogFormatter') === false && global.logTestStream && { stream: global.logTestStream }),
           redact: logKeysToRedact({
             redactLogs: config.get<boolean>('app.redactLogs'),
@@ -70,10 +70,6 @@ import {
             },
           }),
         },
-        //DestinationStream
-        //process.stdout,
-        //fs.createWriteStream(path.join(process.cwd(), './logs/pino.log')),
-        //],
       }),
     }),
     TfsModule,
