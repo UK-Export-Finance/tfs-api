@@ -10,6 +10,12 @@ npm install
 
 On first setup you will need to create a `.env ` file in the route of the project, refer to `.env.sample` for the required variables. A member of the team should send an encrypted copy of the `.env` file.
 
+Environment variable tips:
+
+* USE_PINO_PRETTY_LOG_FORMATER - Pino pretty should be enabled just in Dev laptop, as pino-pretty is development
+* ACBS_USE_RETURN_EXCEPTION_HEADER - When true an additional request header 'ReturnException' is sent to ACBS. The 'ApiResult' and 'ErrorResult' response headers can be used for debugging.
+* ACBS_AUTHENTICATION_ID_TOKEN_CACHE_TTL_IN_MILLISECONDS - A value of 0 will cache the first id token PERMANENTLY but ACBS accepts tokens just for 30 minutes.
+
 ## Compilation / Build
 
 ### tsconfig.build.json
@@ -51,7 +57,7 @@ $ docker compose up --build
 $ npm run start:dev
 ```
 
-To view the Swagger API documentation visit [localhost:{PORT}/docs](http://localhost:3001/docs). You will be prompted for a username & password, these are the Swagger credentials in your `.env`. 
+To view the Swagger API documentation visit [localhost:{PORT}/docs](http://localhost:3001/docs). You will be prompted for a username & password, these are the Swagger credentials in your `.env`.
 
 To view the API documentation in YAML format visit [localhost:{PORT}/openapi/yaml](http://localhost:3001/openapi/yaml).
 
