@@ -9,17 +9,24 @@
     "api-test": "jest --coverage --selectProjects=API",
     "build": "nest build -p tsconfig.build.json",
     "e2e-test": "jest --passWithNoTests --coverage --selectProjects=E2E",
+    "housekeeping": "npm update --save --legacy-peer-deps && npm i --legacy-peer-deps && npm audit --fix && npm run spellcheck",
     "postinstall": "husky install",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
+    "spellcheck": "cspell lint --gitignore --no-must-find-files --unique --no-progress --show-suggestions --color '**/*'",
     "start": "nest start",
     "start:debug": "nest start --debug --watch",
     "start:dev": "nest start --tsc --watch",
     "start:prod": "node dist/src/main",
-    "test:cov": "jest --coverage",
-    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:watch": "jest --watch",
     "unit-test": "jest --coverage --selectProjects=Unit"
+  },
+  "lint-staged": {
+    "**/package.json": "sort-package-json",
+    "**/*.js": "eslint --fix",
+    "**/*.ts": "eslint --fix",
+    "**/*": [
+      "cspell lint --gitignore --no-must-find-files --unique --no-progress --show-suggestions --color"
+    ]
   },
   "dependencies": {
     "@nestjs/axios": "^3.0.0",
@@ -66,7 +73,7 @@
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
     "chance": "^1.1.11",
-    "cspell": "^7.3.6",
+    "cspell": "^7.3.7",
     "eslint": "^8.50.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-airbnb-typescript": "^17.1.0",
