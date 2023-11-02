@@ -29,7 +29,7 @@
     ]
   },
   "dependencies": {
-    "@nestjs/axios": "^3.0.0",
+    "@nestjs/axios": "^3.0.1",
     "@nestjs/cache-manager": "^2.1.0",
     "@nestjs/common": "^9.4.3",
     "@nestjs/config": "^3.1.1",
@@ -58,7 +58,7 @@
   "devDependencies": {
     "@commitlint/cli": "^18.2.0",
     "@commitlint/config-conventional": "^18.1.0",
-    "@nestjs/cli": "^10.2.0",
+    "@nestjs/cli": "^10.2.1",
     "@nestjs/schematics": "^10.0.2",
     "@nestjs/testing": "^9.4.3",
     "@tsconfig/node18": "^18.2.2",
@@ -96,7 +96,7 @@
     "jest": "29.7.0",
     "jest-when": "^3.6.0",
     "lint-staged": "^15.0.2",
-    "nock": "^13.3.6",
+    "nock": "^13.3.7",
     "pino-pretty": "^10.2.3",
     "prettier": "^2.8.8",
     "sort-package-json": "^2.6.0",
