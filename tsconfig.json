@@ -30,7 +30,6 @@
       "@ukef/*": ["src/*"],
       "@ukef/constants/*": ["src/constants/*"],
       "@ukef/config/*": ["src/config/*"],
-      "@ukef/database/*": ["src/modules/database/*"],
       "@ukef/helpers/*": ["src/helpers/*"],
       "@ukef/modules/*": ["src/modules/*"],
       "@ukef/auth/*": ["src/modules/auth/*"],
