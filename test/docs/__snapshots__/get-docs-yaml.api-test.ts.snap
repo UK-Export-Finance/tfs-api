@@ -1669,7 +1669,7 @@ components:
           type: string
           description: The facility type, e.g. '250' for BOND.
           minLength: 0
-          enum: &ref_0
+          enum:
             - '250'
             - '260'
             - '280'
@@ -1757,7 +1757,7 @@ components:
           description: Case Stage this can be 06 Commitment and 07 Issued
           minLength: 0
           maxLength: 2
-          enum: &ref_1
+          enum:
             - '06'
             - '07'
           example: '07'
@@ -1898,7 +1898,10 @@ components:
           type: string
           description: The facility type, e.g. '250' for BOND.
           minLength: 0
-          enum: *ref_0
+          enum:
+            - '250'
+            - '260'
+            - '280'
           example: '250'
         productTypeName:
           type: string
@@ -1983,7 +1986,9 @@ components:
           description: Case Stage this can be 06 Commitment and 07 Issued
           minLength: 0
           maxLength: 2
-          enum: *ref_1
+          enum:
+            - '06'
+            - '07'
           example: '07'
         delegationType:
           type: string
