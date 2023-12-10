@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.5.0](https://github.com/UK-Export-Finance/tfs-api/compare/v1.4.0...v1.5.0) (2023-12-10)
+
+
+### Features
+
+* **APIM-318:** api tests of logging, move pino-pretty from prod to dev dependencies ([#449](https://github.com/UK-Export-Finance/tfs-api/issues/449)) ([1ed28b7](https://github.com/UK-Export-Finance/tfs-api/commit/1ed28b7821fdc88c2945fc93217b97dd8b68c721))
+* **template:** pull request template ([#558](https://github.com/UK-Export-Finance/tfs-api/issues/558)) ([48d43c1](https://github.com/UK-Export-Finance/tfs-api/commit/48d43c102bed6e602cf3d6d0a5c94064b76f45de))
+
+
+### Bug Fixes
+
+* **release:** release version manager ([#481](https://github.com/UK-Export-Finance/tfs-api/issues/481)) ([299a5f6](https://github.com/UK-Export-Finance/tfs-api/commit/299a5f6ebb7a3037c11cf8cccc2cb77f78a86228))
+* **spellcheck:** added spellcheck to the pipeline ([#466](https://github.com/UK-Export-Finance/tfs-api/issues/466)) ([3c5677a](https://github.com/UK-Export-Finance/tfs-api/commit/3c5677ac3299291c9d0178439c53bdaadb446cd1))
+
 ## [1.4.0](https://github.com/UK-Export-Finance/tfs-api/compare/v1.3.2...v1.4.0) (2023-09-13)
 
 
