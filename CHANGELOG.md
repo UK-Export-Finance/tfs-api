@@ -14,7 +14,6 @@
 * **release:** release version manager ([#481](https://github.com/UK-Export-Finance/tfs-api/issues/481)) ([299a5f6](https://github.com/UK-Export-Finance/tfs-api/commit/299a5f6ebb7a3037c11cf8cccc2cb77f78a86228))
 * **spellcheck:** added spellcheck to the pipeline ([#466](https://github.com/UK-Export-Finance/tfs-api/issues/466)) ([3c5677a](https://github.com/UK-Export-Finance/tfs-api/commit/3c5677ac3299291c9d0178439c53bdaadb446cd1))
 
-
 ### Miscellaneous
 
 * **deps-dev:** bump @babel/traverse from 7.23.0 to 7.23.2 ([#497](https://github.com/UK-Export-Finance/tfs-api/issues/497)) ([d102025](https://github.com/UK-Export-Finance/tfs-api/commit/d102025744a1ffc321aafadd0acd5720b4e0cfae))
@@ -121,6 +120,7 @@
 * **deps:** bump node from 21.1.0-alpine3.17 to 21.2.0-alpine3.17 ([#548](https://github.com/UK-Export-Finance/tfs-api/issues/548)) ([59e90cc](https://github.com/UK-Export-Finance/tfs-api/commit/59e90cc1302c6da132906b50d97604e7c09af571))
 * **deps:** bump node from 21.2.0-alpine3.17 to 21.4.0-alpine3.17 ([#576](https://github.com/UK-Export-Finance/tfs-api/issues/576)) ([1d177a8](https://github.com/UK-Export-Finance/tfs-api/commit/1d177a87c0eed0687960740bcf107c58f5f6217e))
 * **deps:** bump pino-http from 8.5.0 to 8.5.1 ([#523](https://github.com/UK-Export-Finance/tfs-api/issues/523)) ([e088c48](https://github.com/UK-Export-Finance/tfs-api/commit/e088c48605431e66148d2a2bb9b29998e3ed2471))
+
 
 ## [1.4.0](https://github.com/UK-Export-Finance/tfs-api/compare/v1.3.2...v1.4.0) (2023-09-13)
 
