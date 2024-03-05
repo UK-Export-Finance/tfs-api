@@ -113,7 +113,7 @@ jobs:
           'Team=development' >> $GITHUB_ENV
 
       - name: Login 🔐
-        uses: azure/login@v1
+        uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
@@ -174,7 +174,7 @@ jobs:
             --tags ${{ env.TAGS }}
 
       - name: Login 🔐
-        uses: azure/login@v1
+        uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS_AMI }}
 
@@ -237,7 +237,7 @@ jobs:
             --query peeringState)"
 
       - name: Login 🔐
-        uses: azure/login@v1
+        uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS_VPN }}
 
@@ -270,7 +270,7 @@ jobs:
             --query peeringState)"
 
       - name: Login 🔐
-        uses: azure/login@v1
+        uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
@@ -350,7 +350,7 @@ jobs:
         run: echo "TYPE=Production" >> $GITHUB_ENV
 
       - name: Login 🔐
-        uses: azure/login@v1
+        uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
@@ -388,7 +388,7 @@ jobs:
         run: echo "TYPE=Production" >> $GITHUB_ENV
 
       - name: Login 🔐
-        uses: azure/login@v1
+        uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
@@ -472,7 +472,7 @@ jobs:
         run: echo "TYPE=Production" >> $GITHUB_ENV
 
       - name: Login 🔐
-        uses: azure/login@v1
+        uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
