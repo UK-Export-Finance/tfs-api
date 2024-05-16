@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       environment: ${{ env.environment }}
-      timezone: ${{ env.timezone }}
+      timezone: ${{ env.TIMEZONE }}
     steps:
       - name: Environment 🧪
         run: echo "Environment set to ${{ env.environment }}"
