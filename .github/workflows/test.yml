@@ -62,7 +62,7 @@ jobs:
       - name: Node
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.node }}
+          node-version: ${{ vars.NODE_VERSION }}
 
       - name: Dependencies
         working-directory: ./
@@ -91,7 +91,7 @@ jobs:
       - name: Node
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.node }}
+          node-version: ${{ vars.NODE_VERSION }}
 
       - name: Dependencies
         working-directory: ./
@@ -120,7 +120,7 @@ jobs:
       - name: Node
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.node }}
+          node-version: ${{ vars.NODE_VERSION }}
 
       - name: Dependencies
         working-directory: ./

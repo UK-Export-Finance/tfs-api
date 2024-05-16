@@ -1,21 +1,15 @@
-# TFS-API Git Hub Actions
-#####################################
-# This GHA is responsible for initiating linting checks
-
-name: Quality Assurance - Lint
-run-name: Executing lint QA on ${{ github.repository }} 🚀
+name: GitHub
+run-name: 🔬Pull request inspection on ${{ github.event.number }}
 
 on:
   pull_request:
-    branches: [main]
-    paths:
-      - "src/**"
-      - "test/**"
+    branches:
+      - main
+      - "release-*"
 
 env:
-  environment: "qa"
-  timezone: "Europe/London"
-  node: ${{ vars.NODE_VERSION }}
+  environment: dev
+  timezone: ${{ vars.TIMEZONE }}
 
 jobs:
   # 1. Setup test infrastructure
@@ -32,9 +26,9 @@ jobs:
       - name: Timezone 🌐
         run: echo "Timezone set to ${{ env.timezone }}"
 
-  # 2. Lint
-  lint:
-    name: Scanning 🎨
+  # 2. Pull request
+  pullrequest:
+    name: Pull request ⬇️
     environment:
       name: ${{ needs.setup.outputs.environment }}
     runs-on: ubuntu-latest
@@ -48,7 +42,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ vars.NODE_VERSION }}
 
@@ -56,6 +50,17 @@ jobs:
         working-directory: ./
         run: npm ci --legacy-peer-deps
 
-      - name: Linting
-        working-directory: ./
-        run: npm run lint
+      - name: Title
+        run: echo "${{ github.event.pull_request.title }}" | npx commitlint --color --verbose $1
+
+      - name: Body
+        if: ${{ github.event.pull_request.body == '' }}
+        run: exit 1
+
+      - name: Label
+        if: ${{ github.event.pull_request.labels == '[]' }}
+        run: exit 1
+
+      - name: Assignee
+        if: ${{ github.event.pull_request.assignee == '[]' }}
+        run: exit 1
