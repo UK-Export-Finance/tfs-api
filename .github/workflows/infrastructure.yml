@@ -82,7 +82,7 @@ jobs:
     runs-on: [self-hosted, APIM, infrastructure]
     outputs:
       environment: ${{ env.ENVIRONMENT }}
-      timezone: ${{ env.TIMEZONE }}
+      timezone: ${{ env.timezone }}
     steps:
       - name: Environment 🧪
         run: echo "Environment set to ${{ env.ENVIRONMENT }}"
