@@ -1,4 +1,4 @@
-# MDM Git Hub Actions
+# TFS Git Hub Actions
 #####################################
 # This GHA is responsible for creating automated
 # GitHub release based PRs. Once the PR is merged,

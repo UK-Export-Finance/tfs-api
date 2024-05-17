@@ -1,4 +1,4 @@
-# MDM-API Git Hub Actions
+# TFS Git Hub Actions
 #####################################
 # This GHA performs SCA amongst following remits:
 # 1. Code quality
