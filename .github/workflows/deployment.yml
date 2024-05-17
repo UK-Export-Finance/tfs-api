@@ -40,7 +40,7 @@ on:
 env:
   PRODUCT: apim
   ENVIRONMENT: ${{ github.ref_name }}
-  TIMEZONE: ${{ vars.TIMEZONE }}
+  timezone: ${{ vars.TIMEZONE }}
   # Base artifact
   FROM: latest
 

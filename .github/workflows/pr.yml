@@ -7,13 +7,13 @@
 #
 
 name: PR
-run-name: 🔎 pull request analysis on ${{ github.event.number }}
+run-name: 🔎 Pull request analysis on ${{ github.event.number }}
 
 on:
   schedule:
     - cron: "00 00 * * *"
 env:
-  environment: dev
+  environment: "qa"
   timezone: ${{ vars.TIMEZONE }}
 
 jobs:
@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       environment: ${{ env.environment }}
-      timezone: ${{ env.TIMEZONE }}
+      timezone: ${{ env.timezone }}
     steps:
       - name: Environment 🧪
         run: echo "Environment set to ${{ env.environment }}"

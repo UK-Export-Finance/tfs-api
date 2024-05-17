@@ -1,4 +1,4 @@
-# TFS-API Git Hub Actions
+# MDM-API Git Hub Actions
 #####################################
 # This GHA performs SCA amongst following remits:
 # 1. Code quality
@@ -15,7 +15,7 @@ on:
 
 env:
   environment: "qa"
-  TIMEZONE: ${{ vars.TIMEZONE }}
+  timezone: ${{ vars.TIMEZONE }}
 
 jobs:
   # 1. Setup test infrastructure
@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       environment: ${{ env.environment }}
-      timezone: ${{ env.TIMEZONE }}
+      timezone: ${{ env.timezone }}
     steps:
       - name: Environment 🧪
         run: echo "Environment set to ${{ env.environment }}"
@@ -69,7 +69,7 @@ jobs:
         working-directory: ./
         run: npm run spellcheck
 
-  # 3. Licensing - SCA
+  # 4. Licensing - SCA
   license:
     name: Licensing ✏️
     needs: setup
