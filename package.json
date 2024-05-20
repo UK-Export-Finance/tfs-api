@@ -97,7 +97,7 @@
     "jest-when": "^3.6.0",
     "lint-staged": "^15.2.0",
     "nock": "^13.5.0",
-    "pino-pretty": "^10.3.1",
+    "pino-pretty": "^11.0.0",
     "prettier": "^3.2.4",
     "sort-package-json": "^2.6.0",
     "source-map-support": "^0.5.21",
