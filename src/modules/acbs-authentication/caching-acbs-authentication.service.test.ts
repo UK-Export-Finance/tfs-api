@@ -41,9 +41,7 @@ describe('CachingAcbsAuthenticationService', () => {
       reset: jest.fn(),
       wrap: jest.fn(),
       store: null,
-      on: function (event: 'error', handler: (error: Error) => void): void {
-        throw new Error('Function not implemented.');
-      }
+      on: null,
     };
 
     const logger = new PinoLogger({});

@@ -7,7 +7,10 @@ import { AbstractGenerator } from './abstract-generator';
 import { RandomValueGenerator } from './random-value-generator';
 
 export class GetFacilityGenerator extends AbstractGenerator<AcbsGetFacilityResponseDto, GenerateResult, GenerateOptions> {
-  constructor(protected readonly valueGenerator: RandomValueGenerator, protected readonly dateStringTransformations: DateStringTransformations) {
+  constructor(
+    protected readonly valueGenerator: RandomValueGenerator,
+    protected readonly dateStringTransformations: DateStringTransformations,
+  ) {
     super(valueGenerator);
   }
 

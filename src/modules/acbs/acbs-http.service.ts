@@ -5,7 +5,10 @@ import { catchError, lastValueFrom, Observable, ObservableInput } from 'rxjs';
 import { AcbsConfigBaseUrlAndUseReturnExceptionHeader } from './acbs-config-base-url.type';
 
 export class AcbsHttpService {
-  constructor(private readonly config: AcbsConfigBaseUrlAndUseReturnExceptionHeader, private readonly httpService: HttpService) {}
+  constructor(
+    private readonly config: AcbsConfigBaseUrlAndUseReturnExceptionHeader,
+    private readonly httpService: HttpService,
+  ) {}
 
   private getRequestConfig({ method, idToken }: { method: 'get' | 'post' | 'put'; idToken: string }): AxiosRequestConfig {
     const baseRequestConfig: AxiosRequestConfig = {

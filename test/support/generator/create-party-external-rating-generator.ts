@@ -9,7 +9,10 @@ import { AbstractGenerator } from './abstract-generator';
 import { RandomValueGenerator } from './random-value-generator';
 
 export class CreatePartyExternalRatingGenerator extends AbstractGenerator<PartyExternalRatingValues, GenerateResult, GenerateOptions> {
-  constructor(protected readonly valueGenerator: RandomValueGenerator, protected readonly dateStringTransformations: DateStringTransformations) {
+  constructor(
+    protected readonly valueGenerator: RandomValueGenerator,
+    protected readonly dateStringTransformations: DateStringTransformations,
+  ) {
     super(valueGenerator);
   }
 
