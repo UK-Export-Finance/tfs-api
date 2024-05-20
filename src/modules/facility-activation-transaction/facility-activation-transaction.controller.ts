@@ -27,7 +27,10 @@ import { FacilityActivationTransactionService } from './facility-activation-tran
 
 @Controller()
 export class FacilityActivationTransactionController {
-  constructor(private readonly facilityActivationTransactionService: FacilityActivationTransactionService, private readonly facilityService: FacilityService) {}
+  constructor(
+    private readonly facilityActivationTransactionService: FacilityActivationTransactionService,
+    private readonly facilityService: FacilityService,
+  ) {}
 
   @Post('facilities/:facilityIdentifier/activation-transactions')
   @UseInterceptors(WarningErrorsHeaderInterceptor)

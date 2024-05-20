@@ -71,7 +71,7 @@ on:
 env:
   PRODUCT: apim
   ENVIRONMENT: infrastructure
-  TIMEZONE: "Europe/London"
+  timezone: ${{ vars.TIMEZONE }}
   # Deployment environment target i.e., `dev`, `staging`, `production`
   TARGET: ${{ vars.ENVIRONMENT }}
 
@@ -82,7 +82,7 @@ jobs:
     runs-on: [self-hosted, APIM, infrastructure]
     outputs:
       environment: ${{ env.ENVIRONMENT }}
-      timezone: ${{ env.TIMEZONE }}
+      timezone: ${{ env.timezone }}
     steps:
       - name: Environment 🧪
         run: echo "Environment set to ${{ env.ENVIRONMENT }}"

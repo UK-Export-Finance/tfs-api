@@ -40,7 +40,7 @@ on:
 env:
   PRODUCT: apim
   ENVIRONMENT: ${{ github.ref_name }}
-  TIMEZONE: "Europe/London"
+  timezone: ${{ vars.TIMEZONE }}
   # Base artifact
   FROM: latest
 
@@ -52,7 +52,7 @@ jobs:
     outputs:
       product: ${{ env.PRODUCT }}
       environment: ${{ env.ENVIRONMENT }}
-      timezone: ${{ env.TIMEZONE }}
+      timezone: ${{ env.timezone }}
     steps:
       - name: Environment 🧪
         run: echo "Environment set to ${{ env.ENVIRONMENT }}"

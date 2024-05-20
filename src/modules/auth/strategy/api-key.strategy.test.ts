@@ -143,5 +143,5 @@ describe('ApiKeyStrategy', () => {
     });
   });
 
-  const createRequestWithHeaders = (headers: Record<string, string>): Request => ({ headers } as unknown as Request);
+  const createRequestWithHeaders = (headers: Record<string, string>): Request => ({ headers }) as unknown as Request;
 });

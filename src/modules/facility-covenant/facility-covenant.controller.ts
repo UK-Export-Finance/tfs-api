@@ -23,7 +23,10 @@ import { FacilityCovenantService } from './facility-covenant.service';
 
 @Controller()
 export class FacilityCovenantController {
-  constructor(private readonly facilityCovenantService: FacilityCovenantService, private readonly facilityService: FacilityService) {}
+  constructor(
+    private readonly facilityCovenantService: FacilityCovenantService,
+    private readonly facilityService: FacilityService,
+  ) {}
 
   @Post('facilities/:facilityIdentifier/covenants')
   @ApiOperation({

@@ -15,14 +15,14 @@
     "plugin:eslint-comments/recommended",
     "plugin:optimize-regex/recommended",
     "plugin:switch-case/recommended",
-    "plugin:security/recommended",
+    "plugin:security/recommended-legacy",
     "plugin:import/recommended",
     "plugin:import/typescript",
     "prettier"
   ],
   "parserOptions": {
     "project": "tsconfig.json",
-    "ecmaVersion": 2020,
+    "ecmaVersion": "latest",
     "sourceType": "module"
   },
   "env": {
