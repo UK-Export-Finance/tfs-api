@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.6.0](https://github.com/UK-Export-Finance/tfs-api/compare/v1.5.0...v1.6.0) (2024-05-22)
+
+
+### Features
+
+* **github-actions:** enable various imperative github actions ([#715](https://github.com/UK-Export-Finance/tfs-api/issues/715)) ([a9d1048](https://github.com/UK-Export-Finance/tfs-api/commit/a9d1048e1a73b79409d0c0b42f77963be2845070))
+
+
+### Bug Fixes
+
+* **release-please:** updated to github plugin ([#733](https://github.com/UK-Export-Finance/tfs-api/issues/733)) ([b31f653](https://github.com/UK-Export-Finance/tfs-api/commit/b31f653b13209efbe6ee3f47a6da9306c1520f87))
+
 ## [1.5.0](https://github.com/UK-Export-Finance/tfs-api/compare/v1.4.0...v1.5.0) (2023-12-10)
 
 
