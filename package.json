@@ -56,7 +56,7 @@
     "rxjs": "^7.8.1",
     "tsconfig-paths": "^4.2.0",
     "tslib": "^2.6.3",
-    "typescript": "^5.5.3"
+    "typescript": "^5.5.4"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.3.0",
