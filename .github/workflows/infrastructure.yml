@@ -64,9 +64,9 @@ on:
       - infrastructure
 
     paths:
-      - "package.json"
-      - "package-lock.json"
-      - ".github/workflows/infrastructure.yml"
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/infrastructure.yml'
 
 env:
   PRODUCT: apim
@@ -138,6 +138,7 @@ jobs:
 
       - name: Log analytics workspace 📝
         uses: Azure/cli@v1.0.9
+        if: ${{ '1' == vars.NEW }}
         with:
           inlineScript: |
             az monitor log-analytics workspace create \
@@ -152,6 +153,7 @@ jobs:
 
       - name: Container registry 📦️
         uses: Azure/cli@v1.0.9
+        if: ${{ '1' == vars.NEW }}
         with:
           inlineScript: |
             az acr create \
@@ -163,6 +165,7 @@ jobs:
 
       - name: Virtual network 🧵
         uses: Azure/cli@v1.0.9
+        if: ${{ '1' == vars.NEW }}
         with:
           inlineScript: |
             az network vnet create \
@@ -173,13 +176,8 @@ jobs:
             --dns-servers ${{ secrets.CUSTOM_DNS_SERVER }} \
             --tags ${{ env.TAGS }}
 
-      - name: Login 🔐
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS_AMI }}
-
       - name: AMI Pre-production 🔀
-        if: contains('["dev", "staging"]', env.TARGET)
+        if: ${{ contains('["dev", "staging"]', env.TARGET) && ('1' == vars.NEW) }}
         uses: Azure/cli@v1.0.9
         with:
           inlineScript: |
@@ -208,7 +206,7 @@ jobs:
             --query peeringState)"
 
       - name: AMI Production 🔀
-        if: ${{ 'production' == env.TARGET }}
+        if: ${{ ('production' == env.TARGET) && ('1' == vars.NEW) }}
         uses: Azure/cli@v1.0.9
         with:
           inlineScript: |
@@ -236,13 +234,9 @@ jobs:
             --name vnet-peer-ami-${{ env.TARGET }}-${{ env.PRODUCT }}-${{ vars.VERSION }} \
             --query peeringState)"
 
-      - name: Login 🔐
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS_VPN }}
-
       - name: VNET Peer - VPN 🔀
         uses: Azure/cli@v1.0.9
+        if: ${{ '1' == vars.NEW }}
         with:
           inlineScript: |
             # VPN VNET peering
@@ -269,13 +263,9 @@ jobs:
             --name vnet-peer-vpn-${{ env.TARGET }}-${{ env.PRODUCT }}-${{ vars.VERSION }} \
             --query peeringState)"
 
-      - name: Login 🔐
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
       - name: Route table 🌐
         uses: Azure/cli@v1.0.9
+        if: ${{ '1' == vars.NEW }}
         with:
           inlineScript: |
             az network route-table create \
@@ -293,6 +283,7 @@ jobs:
 
       - name: Container app environment 🗃️
         uses: Azure/cli@v1.0.9
+        if: ${{ '1' == vars.NEW }}
         with:
           inlineScript: |
             az containerapp env create \
@@ -323,6 +314,7 @@ jobs:
 
       - name: API management ⚡️
         uses: Azure/cli@v1.0.9
+        if: ${{ '1' == vars.NEW }}
         with:
           inlineScript: |
             az apim create \
