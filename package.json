@@ -32,7 +32,7 @@
     ]
   },
   "dependencies": {
-    "@nestjs/axios": "^3.0.2",
+    "@nestjs/axios": "^3.0.3",
     "@nestjs/cache-manager": "^2.2.2",
     "@nestjs/common": "^9.4.3",
     "@nestjs/config": "^3.2.3",
