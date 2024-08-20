@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.6.1](https://github.com/UK-Export-Finance/tfs-api/compare/v1.6.0...v1.6.1) (2024-08-20)
+
+
+### Bug Fixes
+
+* **iac:** conditional deployment ([#810](https://github.com/UK-Export-Finance/tfs-api/issues/810)) ([4106ada](https://github.com/UK-Export-Finance/tfs-api/commit/4106ada15746c76e262e4b84aef158929a48ac82))
+* **iac:** docker deployment command updated ([#819](https://github.com/UK-Export-Finance/tfs-api/issues/819)) ([5c96f65](https://github.com/UK-Export-Finance/tfs-api/commit/5c96f65ed79c7b873809d79d9a763c25b2f1e4b5))
+
 ## [1.6.0](https://github.com/UK-Export-Finance/tfs-api/compare/v1.5.0...v1.6.0) (2024-05-22)
 
 
