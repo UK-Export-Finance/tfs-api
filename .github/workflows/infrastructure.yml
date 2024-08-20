@@ -511,6 +511,10 @@ jobs:
             --subscription-required true \
             --specification-url https://$(az containerapp show --name ca-${{ env.PRODUCT }}-tfs-${{ env.TARGET }}-${{ vars.VERSION }} --query properties.latestRevisionFqdn -o tsv)/openapi/json
 
+      - name: APIM defaults ✨
+        run: |
+          echo API_TFS=$(az apim api list --service-name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} --filter-display-name ${{ env.NAME_UPPERCASE }} --top 1 --query [0].name -o tsv) >> $GITHUB_ENV
+
       - name: TFS - Product + API 🧱
         uses: Azure/cli@v1.0.9
         if: ${{ '' != env.API_TFS }}
