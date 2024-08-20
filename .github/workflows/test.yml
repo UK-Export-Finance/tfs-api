@@ -157,7 +157,7 @@ jobs:
           APIM_MDM_VALUE: ${{ secrets.APIM_MDM_VALUE }}
           APIM_MDM_MAX_REDIRECTS: ${{ secrets.APIM_MDM_MAX_REDIRECTS }}
           APIM_MDM_TIMEOUT: ${{ secrets.APIM_MDM_TIMEOUT }}
-        run: docker-compose up --build -d
+        run: docker compose up --build -d
 
       - name: Execute
         working-directory: ./
