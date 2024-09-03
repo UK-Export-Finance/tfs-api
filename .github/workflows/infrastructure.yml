@@ -118,7 +118,7 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Azure defaults ✨
-        uses: Azure/cli@v1.0.9
+        uses: Azure/cli@v2.1.0
         with:
           inlineScript: |
             # Basic
@@ -129,7 +129,7 @@ jobs:
             az extension add --name containerapp --upgrade
 
       - name: Resource group 🏗️
-        uses: Azure/cli@v1.0.9
+        uses: Azure/cli@v2.1.0
         with:
           inlineScript: |
             az group create \
@@ -137,7 +137,7 @@ jobs:
             --tags ${{ env.TAGS }}
 
       - name: Log analytics workspace 📝
-        uses: Azure/cli@v1.0.9
+        uses: Azure/cli@v2.1.0
         if: ${{ '1' == vars.NEW }}
         with:
           inlineScript: |
@@ -152,7 +152,7 @@ jobs:
             --tags ${{ env.TAGS }}
 
       - name: Container registry 📦️
-        uses: Azure/cli@v1.0.9
+        uses: Azure/cli@v2.1.0
         if: ${{ '1' == vars.NEW }}
         with:
           inlineScript: |
@@ -164,7 +164,7 @@ jobs:
             --tags ${{ env.TAGS }}
 
       - name: Virtual network 🧵
-        uses: Azure/cli@v1.0.9
+        uses: Azure/cli@v2.1.0
         if: ${{ '1' == vars.NEW }}
         with:
           inlineScript: |
@@ -178,7 +178,7 @@ jobs:
 
       - name: AMI Pre-production 🔀
         if: ${{ contains('["dev", "staging"]', env.TARGET) && ('1' == vars.NEW) }}
-        uses: Azure/cli@v1.0.9
+        uses: Azure/cli@v2.1.0
         with:
           inlineScript: |
             # Azure Managed Instance (AMI) SQL DB non-production VNET peering
@@ -207,7 +207,7 @@ jobs:
 
       - name: AMI Production 🔀
         if: ${{ ('production' == env.TARGET) && ('1' == vars.NEW) }}
-        uses: Azure/cli@v1.0.9
+        uses: Azure/cli@v2.1.0
         with:
           inlineScript: |
             # Azure Managed Instance (AMI) SQL DB production VNET peering
@@ -235,7 +235,7 @@ jobs:
             --query peeringState)"
 
       - name: VNET Peer - VPN 🔀
-        uses: Azure/cli@v1.0.9
+        uses: Azure/cli@v2.1.0
         if: ${{ '1' == vars.NEW }}
         with:
           inlineScript: |
@@ -264,7 +264,7 @@ jobs:
             --query peeringState)"
 
       - name: Route table 🌐
-        uses: Azure/cli@v1.0.9
+        uses: Azure/cli@v2.1.0
         if: ${{ '1' == vars.NEW }}
         with:
           inlineScript: |
@@ -282,7 +282,7 @@ jobs:
             --next-hop-type VirtualAppliance
 
       - name: Container app environment 🗃️
-        uses: Azure/cli@v1.0.9
+        uses: Azure/cli@v2.1.0
         if: ${{ '1' == vars.NEW }}
         with:
           inlineScript: |
@@ -294,7 +294,7 @@ jobs:
             --tags ${{ env.TAGS }}
 
       - name: Container app - TFS 📄
-        uses: Azure/cli@v1.0.9
+        uses: Azure/cli@v2.1.0
         with:
           inlineScript: |
             az containerapp create \
@@ -313,7 +313,7 @@ jobs:
             --tags ${{ env.TAGS }}
 
       - name: API management ⚡️
-        uses: Azure/cli@v1.0.9
+        uses: Azure/cli@v2.1.0
         if: ${{ '1' == vars.NEW }}
         with:
           inlineScript: |
@@ -347,7 +347,7 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Azure defaults ✨
-        uses: Azure/cli@v1.0.9
+        uses: Azure/cli@v2.1.0
         with:
           inlineScript: |
             # Basic
@@ -355,7 +355,7 @@ jobs:
             az configure --defaults group=rg-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }}
 
       - name: Subnet routing table 🌐
-        uses: Azure/cli@v1.0.9
+        uses: Azure/cli@v2.1.0
         with:
           inlineScript: |
             # Associate VPN route table to default subnet
@@ -385,7 +385,7 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Azure defaults ✨
-        uses: Azure/cli@v1.0.9
+        uses: Azure/cli@v2.1.0
         with:
           inlineScript: |
             # Basic
@@ -399,7 +399,7 @@ jobs:
           echo API_ECHO=$(az apim api list --service-name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} --filter-display-name 'Echo API' --top 1 --query [0].name -o tsv) >> $GITHUB_ENV
 
       - name: IP restriction 🔒️
-        uses: Azure/cli@v1.0.9
+        uses: Azure/cli@v2.1.0
         with:
           inlineScript: |
             # Add APIM public IP
@@ -413,7 +413,7 @@ jobs:
             --description 'Allow APIM public IP address'
 
       - name: Delete - Starter product
-        uses: Azure/cli@v1.0.9
+        uses: Azure/cli@v2.1.0
         if: ${{ '' != env.PRODUCT_STARTER }}
         with:
           inlineScript: |
@@ -424,7 +424,7 @@ jobs:
             --yes
 
       - name: Delete - Unlimited product
-        uses: Azure/cli@v1.0.9
+        uses: Azure/cli@v2.1.0
         if: ${{ '' != env.PRODUCT_UNLIMITED }}
         with:
           inlineScript: |
@@ -435,7 +435,7 @@ jobs:
             --yes
 
       - name: Delete - Echo API
-        uses: Azure/cli@v1.0.9
+        uses: Azure/cli@v2.1.0
         if: ${{ '' != env.API_ECHO }}
         with:
           inlineScript: |
@@ -469,7 +469,7 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Azure defaults ✨
-        uses: Azure/cli@v1.0.9
+        uses: Azure/cli@v2.1.0
         with:
           inlineScript: |
             # Basic
@@ -482,7 +482,7 @@ jobs:
           echo API_TFS=$(az apim api list --service-name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} --filter-display-name ${{ env.NAME_UPPERCASE }} --top 1 --query [0].name -o tsv) >> $GITHUB_ENV
 
       - name: TFS - Product ➕
-        uses: Azure/cli@v1.0.9
+        uses: Azure/cli@v2.1.0
         if: ${{ '' == env.PRODUCT_TFS }}
         with:
           inlineScript: |
@@ -495,7 +495,7 @@ jobs:
             --subscription-required true
 
       - name: TFS - API import ⬇️
-        uses: Azure/cli@v1.0.9
+        uses: Azure/cli@v2.1.0
         if: ${{ '' == env.API_TFS }}
         with:
           inlineScript: |
@@ -516,7 +516,7 @@ jobs:
           echo API_TFS=$(az apim api list --service-name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} --filter-display-name ${{ env.NAME_UPPERCASE }} --top 1 --query [0].name -o tsv) >> $GITHUB_ENV
 
       - name: TFS - Product + API 🧱
-        uses: Azure/cli@v1.0.9
+        uses: Azure/cli@v2.1.0
         if: ${{ '' != env.API_TFS }}
         with:
           inlineScript: |
@@ -526,7 +526,7 @@ jobs:
             --product-id $(az apim product list --service-name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} --query '[?contains(displayName, `apim-${{ env.PRODUCT }}-tfs`)].name' -o tsv)
 
       - name: TFS - Policy 🚧
-        uses: Azure/cli@v1.0.9
+        uses: Azure/cli@v2.1.0
         if: ${{ '' != env.API_TFS }}
         with:
           inlineScript: |
