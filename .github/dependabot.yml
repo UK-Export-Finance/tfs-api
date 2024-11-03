@@ -1,6 +1,6 @@
 # TFS Git Hub Actions
 #####################################
-# Automatic daily dependencies updates
+# Automatic weekly dependencies updates
 # for the following services:
 # 1. NPM
 # 2. Docker
@@ -12,7 +12,7 @@ updates:
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
     labels:
       - "chore"
 
@@ -20,7 +20,7 @@ updates:
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
     labels:
       - "chore"
 
@@ -30,6 +30,6 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
     labels:
       - "chore"
