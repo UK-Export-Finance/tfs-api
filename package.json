@@ -34,7 +34,7 @@
   "dependencies": {
     "@nestjs/axios": "^3.1.2",
     "@nestjs/cache-manager": "^2.3.0",
-    "@nestjs/common": "^9.4.3",
+    "@nestjs/common": "^10.4.12",
     "@nestjs/config": "^3.3.0",
     "@nestjs/core": "^9.4.3",
     "@nestjs/passport": "^10.0.3",
