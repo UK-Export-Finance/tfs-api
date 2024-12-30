@@ -542,8 +542,9 @@ describe('POST /parties log testing', () => {
       expect(status).toBe(400);
       expect(body.message).toContain('alternateIdentifier must be a string');
 
-      expect(logContent).toMatch(/"response":{"statusCode":400,"message":\[.*],"error":"Bad Request"/);
-      expect(logContent).toContain('"stack":"BadRequestException: Bad Request Exception\\n    at ValidationPipe.exceptionFactory');
+      expect(logContent).toContain(
+        '{"message":["alternateIdentifier must be a string","alternateIdentifier must be longer than or equal to 8 characters","alternateIdentifier must match /^\\\\d{8}$/ regular expression","industryClassification must be a string","industryClassification must be longer than or equal to 1 characters","name1 must be a string","name1 must be longer than or equal to 1 characters","smeType must be a string","smeType must be longer than or equal to 1 characters","citizenshipClass must be a string","citizenshipClass must be longer than or equal to 1 characters","citizenshipClass must be one of the following values: 1, 2","officerRiskDate must be a valid ISO 8601 date string","officerRiskDate must match /^\\\\d{4}-\\\\d{2}-\\\\d{2}$/ regular expression"],"error":"Bad Request","statusCode":400}',
+      );
     });
   });
 
