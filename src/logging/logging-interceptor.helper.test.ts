@@ -136,6 +136,8 @@ describe('LoggingInterceptor', () => {
     try {
       const interceptObservable = interceptor.intercept(context, next);
       return lastValueFrom(interceptObservable);
-    } catch (err) {}
+    } catch (error) {
+      console.error(error);
+    }
   };
 });
