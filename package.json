@@ -7,6 +7,7 @@
   "author": "UKEF",
   "scripts": {
     "api-test": "jest --coverage --selectProjects=API",
+    "audit:fix": "npm audit --fix",
     "build": "nest build -p tsconfig.build.json",
     "e2e-test": "jest --passWithNoTests --coverage --selectProjects=E2E",
     "housekeeping": "npm update --save --legacy-peer-deps && npm i --legacy-peer-deps && npm run type-check && npm run prettier:fix && npm run lint:fix && npm run validate:yml && npm run audit:fix && npm run spellcheck",
@@ -49,7 +50,7 @@
     "@nestjs/core": "^10.4.15",
     "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-express": "^10.4.15",
-    "@nestjs/swagger": "^8.1.0",
+    "@nestjs/swagger": "^7.4.2",
     "axios": "^1.7.9",
     "cache-manager": "^5.7.6",
     "class-transformer": "^0.5.1",
