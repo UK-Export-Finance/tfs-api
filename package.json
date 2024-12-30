@@ -7,25 +7,36 @@
   "author": "UKEF",
   "scripts": {
     "api-test": "jest --coverage --selectProjects=API",
+    "audit:fix": "npm audit --fix",
     "build": "nest build -p tsconfig.build.json",
     "e2e-test": "jest --passWithNoTests --coverage --selectProjects=E2E",
-    "housekeeping": "npm update --save --legacy-peer-deps && npm i --legacy-peer-deps && npm audit --fix && npm run spellcheck",
-    "postinstall": "husky install",
-    "lint": "eslint . --ext .ts",
-    "lint:fix": "eslint . --ext .ts --fix",
+    "housekeeping": "npm update --save --legacy-peer-deps && npm i --legacy-peer-deps && npm run type-check && npm run prettier:fix && npm run lint:fix && npm run validate:yml && npm run audit:fix && npm run spellcheck",
+    "lint": "eslint . --ext .js,.ts",
+    "lint:fix": "eslint . --ext .js,.ts --fix",
     "prettier": "prettier --no-error-on-unmatched-pattern --check **/*.{ts,js}",
+    "prettier:fix": "prettier --write **/*.{ts,js}",
     "spellcheck": "cspell lint --gitignore --no-must-find-files --unique --no-progress --show-suggestions --color '**/*'",
     "start": "nest start",
     "start:debug": "nest start --debug --watch",
     "start:dev": "nest start --tsc --watch",
     "start:prod": "node dist/src/main",
-    "unit-test": "jest --coverage --selectProjects=Unit"
+    "type-check": "tsc --noEmit --pretty",
+    "unit-test": "jest --selectProjects=Unit",
+    "unit-test-dev": "jest --verbose --config=jest.config.ts",
+    "validate:all": "npm run lint:fix && npm run prettier:fix && npm run type-check && npm run validate:yml",
+    "validate:yml": "npx yaml-lint **/*.yml --ignore=**/node_modules"
   },
   "lint-staged": {
     "**/package.json": "sort-package-json",
     "**/*.{js,ts}": [
-      "eslint --fix",
+      "npm run lint:fix",
+      "npm run prettier:fix"
+    ],
+    "**/*.md": [
       "prettier --write"
+    ],
+    "**/*.yml": [
+      "npm run validate:yml"
     ],
     "**/*": [
       "cspell lint --gitignore --no-must-find-files --unique --no-progress --show-suggestions --color"

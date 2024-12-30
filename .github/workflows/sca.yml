@@ -1,4 +1,4 @@
-# TFS Git Hub Actions
+# TFS-API Git Hub Actions
 #####################################
 # This GHA performs SCA amongst following remits:
 # 1. Code quality
@@ -14,8 +14,8 @@ on:
     branches: [main]
 
 env:
-  environment: "qa"
-  timezone: ${{ vars.TIMEZONE }}
+  environment: 'qa'
+  TIMEZONE: ${{ vars.TIMEZONE }}
 
 jobs:
   # 1. Setup test infrastructure
