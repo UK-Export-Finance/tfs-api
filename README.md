@@ -1,6 +1,23 @@
 # Trade Finance Services 🚀
 TFS micro-service provides endpoints for internal trade finance manager systems responsible for reading and writing to external centralised banking system namely ACBS (Advanced Commerical Banking System).
 
+**Status** 🚦
+
+[![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white)](https://conventionalcommits.org)
+
+**CI** 💫
+
+![Lint](https://github.com/UK-Export-Finance/tfs-api/actions/workflows/lint.yml/badge.svg)
+![SCA](https://github.com/UK-Export-Finance/tfs-api/actions/workflows/sca.yml/badge.svg)
+![QA](https://github.com/UK-Export-Finance/tfs-api/actions/workflows/test.yml/badge.svg)
+![Release](https://github.com/UK-Export-Finance/tfs-api/actions/workflows/publish.yml/badge.svg)
+
+**CD** 🚀
+
+![Release](https://github.com/UK-Export-Finance/tfs-api/actions/workflows/deployment.yml/badge.svg?branch=dev)
+![Release](https://github.com/UK-Export-Finance/tfs-api/actions/workflows/deployment.yml/badge.svg?branch=staging)
+![Release](https://github.com/UK-Export-Finance/tfs-api/actions/workflows/deployment.yml/badge.svg?branch=production)
+
 ## Install 💻
 
 ```bash
@@ -9,6 +26,12 @@ npm install
 ## Environment Variables 👨🏼‍💻
 
 On first setup you will need to create a `.env ` file in the route of the project, refer to `.env.sample` for the required variables. A member of the team should send an encrypted copy of the `.env` file.
+
+Environment variable tips:
+
+* USE_PINO_PRETTY_LOG_FORMATER - Pino pretty should be enabled just in Dev laptop, as pino-pretty is development
+* ACBS_USE_RETURN_EXCEPTION_HEADER - When true an additional request header 'ReturnException' is sent to ACBS. The 'ApiResult' and 'ErrorResult' response headers can be used for debugging.
+* ACBS_AUTHENTICATION_ID_TOKEN_CACHE_TTL_IN_MILLISECONDS - A value of 0 will cache the first id token PERMANENTLY but ACBS accepts tokens just for 30 minutes.
 
 ## Compilation / Build
 
@@ -51,7 +74,7 @@ $ docker compose up --build
 $ npm run start:dev
 ```
 
-To view the Swagger API documentation visit [localhost:{PORT}/docs](http://localhost:3001/docs). You will be prompted for a username & password, these are the Swagger credentials in your `.env`. 
+To view the Swagger API documentation visit [localhost:{PORT}/docs](http://localhost:3001/docs). You will be prompted for a username & password, these are the Swagger credentials in your `.env`.
 
 To view the API documentation in YAML format visit [localhost:{PORT}/openapi/yaml](http://localhost:3001/openapi/yaml).
 

@@ -1,6 +1,11 @@
-# TFS-API Git Hub Actions
+# Git Hub Actions
 #####################################
-# This GHA is responsible for release version updates.
+# This GHA is responsible for creating automated
+# GitHub release based PR. Once the PR is merged
+# Google release please will update the `CHANGELOG.md`
+# `README.md` and `package.json` files.
+# Followed by tagging the commit with the appropriate version
+# number (as per SemVer) and create a GitHub release on the tag.
 
 name: Automated release
 run-name: Executing release on ${{ github.repository }} 🚀
@@ -9,24 +14,39 @@ on:
   push:
     branches: [main]
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
-  # 1. `package.json`, `README.md` and `CHANGELOG.md` updates
-  release:
-    name: Release setup 🔧
+  # 1. Setup test infrastructure
+  setup:
+    name: Infrastructure setup 🔧
     runs-on: ubuntu-latest
+    outputs:
+      environment: ${{ env.environment }}
+      timezone: ${{ env.timezone }}
     steps:
-      - name: New release ⚡️
-        uses: google-github-actions/release-please-action@v3
-        id: release
+      - name: Environment 🧪
+        run: echo "Environment set to ${{ env.environment }}"
+
+      - name: Timezone 🌐
+        run: echo "Timezone set to ${{ env.timezone }}"
+
+  # 2. Update files
+  release:
+    name: Release ✨
+    needs: setup
+    environment:
+      name: ${{ needs.setup.outputs.environment }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Repository
+        uses: actions/checkout@v4
+
+      - name: Create
+        uses: googleapis/release-please-action@v4
         with:
+          token: ${{ secrets.RELEASE_TOKEN }}
           release-type: node
-          package-name: uk-export-finance/tfs-api
-          changelog-types: '[
-            { "type": "feat", "section": "Features", "hidden": false},
-            { "type": "fix", "section": "Bug Fixes", "hidden": false},
-            { "type": "chore", "section": "Miscellaneous", "hidden": false},
-            { "type": "docs", "section": "Documentation", "hidden": false}
-            ]'
-          extra-files: |
-            README.md
-            CHANGELOG.md

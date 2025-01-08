@@ -13,6 +13,8 @@ interface AcbsAuthenticationErrorCasesTestOptions {
 
 interface AcbsAuthenticationTestHooks {
   idToken: string;
+  sessionCookieName: string;
+  sessionId: string;
   givenAuthenticationWithTheIdpSucceeds: () => void;
 }
 
@@ -154,6 +156,8 @@ export const withAcbsAuthenticationApiTests = ({
 
   return {
     idToken,
+    sessionCookieName: ACBS.AUTHENTICATION.SESSION_ID_COOKIE_NAME,
+    sessionId,
     givenAuthenticationWithTheIdpSucceeds,
   };
 };
