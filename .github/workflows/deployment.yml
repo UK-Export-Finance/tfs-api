@@ -40,7 +40,7 @@ on:
 env:
   PRODUCT: apim
   ENVIRONMENT: ${{ github.ref_name }}
-  TIMEZONE: "Europe/London"
+  timezone: ${{ vars.TIMEZONE }}
   # Base artifact
   FROM: latest
 
@@ -52,7 +52,7 @@ jobs:
     outputs:
       product: ${{ env.PRODUCT }}
       environment: ${{ env.ENVIRONMENT }}
-      timezone: ${{ env.TIMEZONE }}
+      timezone: ${{ env.timezone }}
     steps:
       - name: Environment 🧪
         run: echo "Environment set to ${{ env.ENVIRONMENT }}"
@@ -72,7 +72,7 @@ jobs:
     runs-on: [self-hosted, APIM, deployment]
     steps:
       - name: Repository 🗃️
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Azure 🔐
         uses: azure/login@v1
@@ -80,7 +80,7 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Defaults ✨
-        uses: Azure/cli@v1.0.7
+        uses: Azure/cli@v2.1.0
         with:
           inlineScript: |
             # Basic
@@ -96,7 +96,7 @@ jobs:
           echo API_ID=$(az apim api list --service-name $(az resource list --resource-type 'Microsoft.ApiManagement/service' --query '[0].name' -o tsv) --query '[?contains(displayName, `${{ env.NAME_UPPERCASE }}`)].name' -o tsv) >> $GITHUB_ENV
 
       - name: ACR 🔐
-        uses: azure/docker-login@v1
+        uses: azure/docker-login@v2
         with:
           login-server: ${{ env.ACR }}
           username: ${{ env.ACR_USER }}
@@ -111,7 +111,7 @@ jobs:
           docker push ${{ env.ACR }}/${{ env.NAME }}:${{ env.FROM }}
 
       - name: Revisions 🔀
-        uses: Azure/cli@v1.0.7
+        uses: Azure/cli@v2.1.0
         with:
           inlineScript: |
             az containerapp update \
@@ -152,7 +152,7 @@ jobs:
 
       - name: Import ⬇️
         if: ${{ '' != env.API_ID }}
-        uses: Azure/cli@v1.0.7
+        uses: Azure/cli@v2.1.0
         with:
           inlineScript: |
             # API specification import

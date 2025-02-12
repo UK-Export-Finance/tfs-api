@@ -11,7 +11,10 @@ import { AbstractGenerator } from '@ukef-test/support/generator/abstract-generat
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 
 export class GetFacilityLoanTransactionGenerator extends AbstractGenerator<FacilityLoanTransactionValues, GenerateResult, GenerateOptions> {
-  constructor(protected readonly valueGenerator: RandomValueGenerator, protected readonly dateStringTransformations: DateStringTransformations) {
+  constructor(
+    protected readonly valueGenerator: RandomValueGenerator,
+    protected readonly dateStringTransformations: DateStringTransformations,
+  ) {
     super(valueGenerator);
   }
 

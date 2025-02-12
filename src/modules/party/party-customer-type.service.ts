@@ -8,7 +8,10 @@ type CustomerType = string | null;
 
 @Injectable()
 export class PartyCustomerTypeService {
-  constructor(private readonly mdmService: MdmService, private readonly logger: PinoLogger) {}
+  constructor(
+    private readonly mdmService: MdmService,
+    private readonly logger: PinoLogger,
+  ) {}
 
   async getCustomerTypeForPartyFromAlternateIdentifier({
     alternateIdentifier,

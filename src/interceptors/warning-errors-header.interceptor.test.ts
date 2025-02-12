@@ -21,8 +21,8 @@ describe('WarningErrorsInterceptor', () => {
           getResponse: <T>() =>
             ({
               setHeader: setResponseHeaders,
-            } as T),
-        } as HttpArgumentsHost),
+            }) as T,
+        }) as HttpArgumentsHost,
     } as ExecutionContext;
     interceptor = new WarningErrorsHeaderInterceptor();
   });

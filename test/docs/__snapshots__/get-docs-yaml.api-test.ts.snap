@@ -12,8 +12,8 @@ paths:
           required: true
           in: path
           description: The identifier of the deal in ACBS.
-          example: '0030000321'
           schema:
+            example: '0030000321'
             type: string
       responses:
         '200':
@@ -59,8 +59,8 @@ paths:
           required: true
           in: path
           description: The identifier of the deal in ACBS.
-          example: '0030000321'
           schema:
+            example: '0030000321'
             type: string
       requestBody:
         required: true
@@ -91,8 +91,8 @@ paths:
           required: true
           in: path
           description: The identifier of the deal in ACBS
-          example: '0030000321'
           schema:
+            example: '0030000321'
             type: string
       responses:
         '200':
@@ -118,8 +118,8 @@ paths:
           required: true
           in: path
           description: UKEF id for deal
-          example: '0030000321'
           schema:
+            example: '0030000321'
             type: string
       responses:
         '200':
@@ -142,8 +142,8 @@ paths:
           required: true
           in: path
           description: The identifier of the deal in ACBS.
-          example: '0020900111'
           schema:
+            example: '0020900111'
             type: string
       requestBody:
         required: true
@@ -172,11 +172,11 @@ paths:
           required: true
           in: path
           description: The identifier of the facility in ACBS.
-          example: '0030000322'
           schema:
             minLength: 10
             maxLength: 10
             pattern: ^00\\d{8}$
+            example: '0030000322'
             type: string
       requestBody:
         required: true
@@ -211,21 +211,21 @@ paths:
           required: true
           in: path
           description: The identifier of the facility in ACBS.
-          example: '0030000322'
           schema:
             minLength: 10
             maxLength: 10
             pattern: ^00\\d{8}$
+            example: '0030000322'
             type: string
         - name: bundleIdentifier
           required: true
           in: path
           description: The bundle identifier of the activation transaction in ACBS.
-          example: '0000321000'
           schema:
             minLength: 10
             maxLength: 10
             pattern: ^0{4}\\d{6}$
+            example: '0000321000'
             type: string
       responses:
         '200':
@@ -248,11 +248,11 @@ paths:
           required: true
           in: path
           description: The identifier of the facility in ACBS.
-          example: '0030000322'
           schema:
             minLength: 10
             maxLength: 10
             pattern: ^\\d{10}$
+            example: '0030000322'
             type: string
       responses:
         '200':
@@ -273,8 +273,8 @@ paths:
           required: true
           in: query
           description: Update operation
-          example: issue
           schema:
+            example: issue
             enum:
               - issue
               - amendExpiryDate
@@ -284,11 +284,11 @@ paths:
           required: true
           in: path
           description: The identifier of the facility in ACBS.
-          example: '0030000322'
           schema:
             minLength: 10
             maxLength: 10
             pattern: ^00\\d{8}$
+            example: '0030000322'
             type: string
       requestBody:
         required: true
@@ -361,11 +361,11 @@ paths:
           required: true
           in: path
           description: The identifier of the facility in ACBS.
-          example: '0030000322'
           schema:
             minLength: 10
             maxLength: 10
             pattern: ^00\\d{8}$
+            example: '0030000322'
             type: string
       requestBody:
         required: true
@@ -397,11 +397,11 @@ paths:
           required: true
           in: path
           description: The identifier of the facility in ACBS.
-          example: '0030000322'
           schema:
             minLength: 10
             maxLength: 10
             pattern: ^00\\d{8}$
+            example: '0030000322'
             type: string
       responses:
         '200':
@@ -427,11 +427,11 @@ paths:
           required: true
           in: path
           description: The identifier of the facility in ACBS.
-          example: '0030000322'
           schema:
             minLength: 10
             maxLength: 10
             pattern: ^00\\d{8}$
+            example: '0030000322'
             type: string
       requestBody:
         required: true
@@ -463,11 +463,11 @@ paths:
           required: true
           in: path
           description: The identifier of the facility in ACBS.
-          example: '0030000322'
           schema:
             minLength: 10
             maxLength: 10
             pattern: ^00\\d{8}$
+            example: '0030000322'
             type: string
       responses:
         '200':
@@ -490,11 +490,11 @@ paths:
           required: true
           in: path
           description: The identifier of the facility in ACBS.
-          example: '0030000322'
           schema:
             minLength: 10
             maxLength: 10
             pattern: ^00\\d{8}$
+            example: '0030000322'
             type: string
       requestBody:
         required: true
@@ -526,11 +526,11 @@ paths:
           required: true
           in: path
           description: The identifier of the facility in ACBS.
-          example: '0030000322'
           schema:
             minLength: 10
             maxLength: 10
             pattern: ^00\\d{8}$
+            example: '0030000322'
             type: string
       requestBody:
         required: true
@@ -564,11 +564,11 @@ paths:
           required: true
           in: path
           description: The identifier of the facility in ACBS.
-          example: '0030000322'
           schema:
             minLength: 10
             maxLength: 10
             pattern: ^00\\d{8}$
+            example: '0030000322'
             type: string
       responses:
         '200':
@@ -596,11 +596,11 @@ paths:
           required: true
           in: path
           description: The identifier of the facility in ACBS.
-          example: '0030000322'
           schema:
             minLength: 10
             maxLength: 10
             pattern: ^00\\d{8}$
+            example: '0030000322'
             type: string
       requestBody:
         required: true
@@ -631,11 +631,11 @@ paths:
           required: true
           in: path
           description: The identifier of the facility in ACBS.
-          example: '0030000322'
           schema:
             minLength: 10
             maxLength: 10
             pattern: ^00\\d{8}$
+            example: '0030000322'
             type: string
       requestBody:
         required: true
@@ -668,11 +668,11 @@ paths:
           required: true
           in: path
           description: The identifier of the facility in ACBS.
-          example: '0030000322'
           schema:
             minLength: 10
             maxLength: 10
             pattern: ^00\\d{8}$
+            example: '0030000322'
             type: string
       requestBody:
         required: true
@@ -703,11 +703,11 @@ paths:
           required: true
           in: path
           description: The identifier of the facility in ACBS.
-          example: '0030000322'
           schema:
             minLength: 10
             maxLength: 10
             pattern: ^00\\d{8}$
+            example: '0030000322'
             type: string
       responses:
         '200':
@@ -733,11 +733,11 @@ paths:
           required: true
           in: path
           description: The identifier of the facility in ACBS.
-          example: '0030000322'
           schema:
             minLength: 10
             maxLength: 10
             pattern: ^00\\d{8}$
+            example: '0030000322'
             type: string
       responses:
         '200':
@@ -762,11 +762,11 @@ paths:
           required: true
           in: path
           description: The identifier of the facility in ACBS.
-          example: '0030000322'
           schema:
             minLength: 10
             maxLength: 10
             pattern: ^00\\d{8}$
+            example: '0030000322'
             type: string
       requestBody:
         required: true
@@ -798,21 +798,21 @@ paths:
           required: true
           in: path
           description: The identifier of the loan in ACBS.
-          example: '000272017'
           schema:
             minLength: 9
             maxLength: 9
             pattern: ^\\d{9}$
+            example: '000272017'
             type: string
         - name: facilityIdentifier
           required: true
           in: path
           description: The identifier of the facility in ACBS.
-          example: '0030000322'
           schema:
             minLength: 10
             maxLength: 10
             pattern: ^00\\d{8}$
+            example: '0030000322'
             type: string
       requestBody:
         required: true
@@ -842,11 +842,11 @@ paths:
           required: true
           in: path
           description: The identifier of the loan in ACBS.
-          example: '000272017'
           schema:
             minLength: 9
             maxLength: 9
             pattern: ^\\d{9}$
+            example: '000272017'
             type: string
         - name: facilityIdentifier
           required: true
@@ -854,11 +854,11 @@ paths:
           description: >-
             The identifier of the facility in ACBS. Note that this endpoint does
             not check that the loan belongs to this facility.
-          example: '0030000322'
           schema:
             minLength: 10
             maxLength: 10
             pattern: ^00\\d{8}$
+            example: '0030000322'
             type: string
       requestBody:
         required: true
@@ -890,8 +890,8 @@ paths:
           required: true
           in: path
           description: The identifier of the party in ACBS.
-          example: '00000001'
           schema:
+            example: '00000001'
             type: string
       responses:
         '200':
@@ -977,11 +977,11 @@ paths:
           required: true
           in: path
           description: The identifier of the party in ACBS.
-          example: '00000001'
           schema:
             minLength: 8
             maxLength: 8
             pattern: ^\\d{8}$
+            example: '00000001'
             type: string
       responses:
         '200':
@@ -1003,21 +1003,21 @@ paths:
           required: true
           in: path
           description: The identifier of the facility in ACBS.
-          example: '0030000322'
           schema:
             minLength: 10
             maxLength: 10
             pattern: ^00\\d{8}$
+            example: '0030000322'
             type: string
         - name: bundleIdentifier
           required: true
           in: path
           description: The bundle identifier of the loan transaction in ACBS.
-          example: '0000321000'
           schema:
             minLength: 10
             maxLength: 10
             pattern: ^0{4}\\d{6}$
+            example: '0000321000'
             type: string
       responses:
         '200':
@@ -1669,7 +1669,7 @@ components:
           type: string
           description: The facility type, e.g. '250' for BOND.
           minLength: 0
-          enum: &ref_0
+          enum:
             - '250'
             - '260'
             - '280'
@@ -1757,7 +1757,7 @@ components:
           description: Case Stage this can be 06 Commitment and 07 Issued
           minLength: 0
           maxLength: 2
-          enum: &ref_1
+          enum:
             - '06'
             - '07'
           example: '07'
@@ -1898,7 +1898,10 @@ components:
           type: string
           description: The facility type, e.g. '250' for BOND.
           minLength: 0
-          enum: *ref_0
+          enum:
+            - '250'
+            - '260'
+            - '280'
           example: '250'
         productTypeName:
           type: string
@@ -1983,7 +1986,9 @@ components:
           description: Case Stage this can be 06 Commitment and 07 Issued
           minLength: 0
           maxLength: 2
-          enum: *ref_1
+          enum:
+            - '06'
+            - '07'
           example: '07'
         delegationType:
           type: string

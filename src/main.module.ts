@@ -29,12 +29,16 @@ import {
             context: 'HTTP',
           }),
           level: config.get<string>('app.logLevel'),
-          transport: {
-            target: 'pino-pretty',
-            options: {
-              singleLine: config.get<boolean>('app.singleLineLogFormat'),
+          ...(config.get<boolean>('app.usePinoPrettyLogFormatter') && {
+            transport: {
+              target: 'pino-pretty',
+              options: {
+                singleLine: config.get<boolean>('app.singleLineLogFormat'),
+              },
             },
-          },
+          }),
+          // Allow changing destination stream for testing, pino-pretty transport also needs to be disabled.
+          ...(config.get<boolean>('app.usePinoPrettyLogFormatter') === false && global.logTestStream && { stream: global.logTestStream }),
           redact: logKeysToRedact({
             redactLogs: config.get<boolean>('app.redactLogs'),
             clientRequest: {

@@ -334,6 +334,8 @@ describe('POST /parties', () => {
       givenAuthenticationWithTheIdpSucceeds();
       givenRequestToGetPartiesBySearchTextSucceeds();
       givenRequestToCreatePartySucceeds();
+      givenRequestToGetPartyExternalRatingsSucceeds();
+      givenRequestToCreatePartyExternalRatingSucceeds();
     });
 
     it(`returns a 500 response if MDM responds with an error code that is not 404 when searching for the party as a customer`, async () => {
