@@ -36,6 +36,10 @@ export const ENVIRONMENT_VARIABLES = Object.freeze({
   APIM_MDM_VALUE: valueGenerator.string(),
   APIM_MDM_MAX_REDIRECTS: 0,
   APIM_MDM_TIMEOUT: 1000,
+
+  GIFT_URL: valueGenerator.string(),
+  GIFT_API_KEY: valueGenerator.string(),
+  GIFT_API_KEY_HEADER_NAME: valueGenerator.string(),
 });
 
 export const getEnvironmentVariablesForProcessEnv = (): NodeJS.ProcessEnv => ({
