@@ -46,7 +46,7 @@
     "@nestjs/axios": "^4.0.0",
     "@nestjs/cache-manager": "^2.3.0",
     "@nestjs/common": "^11.0.11",
-    "@nestjs/config": "^4.0.0",
+    "@nestjs/config": "^4.0.1",
     "@nestjs/core": "^11.0.11",
     "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-express": "^11.0.10",
