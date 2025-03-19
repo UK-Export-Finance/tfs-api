@@ -106,7 +106,7 @@ $ DEBUG=nock.* npm run api-test
 ```
 
 ### API test snapshots ⚠️
-The API tests currently contains a snapshot test regarding Open API YAML documentation.
+The API tests currently contain a snapshot test regarding the automatically generated Open API YAML documentation.
 
 This test will correctly fail if endpoints are added or changed.
 
