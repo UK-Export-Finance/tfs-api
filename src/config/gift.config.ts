@@ -1,15 +1,12 @@
 import { registerAs } from '@nestjs/config';
 import { getIntConfig } from '@ukef/helpers/get-int-config';
+import { ExternalServiceConfig } from '@ukef/types';
 
 export const KEY = 'gift';
 
-// TODO: DRY - see  acbs.config, mdm.config
-export interface GiftConfig {
-  baseUrl: string;
+export interface GiftConfig extends ExternalServiceConfig {
   apiKeyHeaderName: string;
   apiKeyHeaderValue: string;
-  maxRedirects: number;
-  timeout: number;
 }
 
 export default registerAs(
