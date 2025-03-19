@@ -98,7 +98,7 @@ describe('appConfig', () => {
       const expected = {
         enable: false,
         prefix: 'v',
-        version: '2',
+        version: '1',
       };
 
       expect(config.versioning).toEqual(expected);

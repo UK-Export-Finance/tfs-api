@@ -38,7 +38,7 @@ export default registerAs('app', (): Record<string, any> => {
     versioning: {
       enable: process.env.HTTP_VERSIONING_ENABLE === 'true',
       prefix: 'v',
-      version: process.env.HTTP_VERSION || '2',
+      version: process.env.HTTP_VERSION || '1',
     },
 
     globalPrefix: '/api',
