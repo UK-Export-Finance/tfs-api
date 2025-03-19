@@ -10,6 +10,11 @@ export class GiftService {
     this.giftHttpService = giftHttpService;
   }
 
+  /**
+   * Get a GIFT facility by ID
+   * @param {String} facilityId
+   * @returns {Promise<AxiosResponse>}
+   */
   async getFacility(facilityId: string): Promise<AxiosResponse> {
     const response = await this.giftHttpService.get<GiftFacilityDto>({
       path: `/facility/${facilityId}`,
