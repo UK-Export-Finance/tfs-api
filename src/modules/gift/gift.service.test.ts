@@ -51,9 +51,7 @@ describe('GiftService', () => {
     });
 
     it('should return the response of giftHttpService.get', () => {
-      const expected = mockGetResponse;
-
-      expect(response).toEqual(expected);
+      expect(response).toEqual(mockGetResponse);
     });
   });
 });

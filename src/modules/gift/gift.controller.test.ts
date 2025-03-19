@@ -86,16 +86,14 @@ describe('GiftController', () => {
       expect(mockResStatus).toHaveBeenCalledWith(mockGetFacilityResponse.status);
     });
 
-    it('should call res.status.send with data', () => {
+    it('should call res.status.send with data obtained from the service call', () => {
       expect(mockResSend).toHaveBeenCalledTimes(1);
 
       expect(mockResSend).toHaveBeenCalledWith(mockGetFacilityResponse.data);
     });
 
     it('should return data from giftService.getFacility', () => {
-      const expected = mockGetFacilityResponse.data;
-
-      expect(response).toEqual(expected);
+      expect(response).toEqual(mockGetFacilityResponse.data);
     });
   });
 });
