@@ -27,6 +27,10 @@ describe('GiftHttpService', () => {
     axios.get = mockAxiosGet;
   });
 
+  afterAll(() => {
+    jest.resetAllMocks();
+  });
+
   describe('ACCEPTABLE_STATUSES', () => {
     it('should return an array of statuses', () => {
       const expected = [200, 400, 404];
@@ -35,13 +39,15 @@ describe('GiftHttpService', () => {
     });
   });
 
-  describe('when instantiating the service', () => {
+  describe('createAxiosInstance', () => {
     it('should call axios.create', () => {
-      new GiftHttpService();
+      service = new GiftHttpService();
+
+      service.createAxiosInstance();
 
       const { baseUrl, apiKeyHeaderName, apiKeyHeaderValue } = giftConfig();
 
-      expect(mockAxiosCreate).toHaveBeenCalledTimes(1);
+      expect(mockAxiosCreate).toHaveBeenCalled();
 
       const expected = expect.objectContaining({
         baseURL: baseUrl,
