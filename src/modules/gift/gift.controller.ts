@@ -1,5 +1,13 @@
 import { Controller, Get, Param, Res } from '@nestjs/common';
-import { ApiOkResponse, ApiOperation, ApiParam } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiInternalServerErrorResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiParam,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 import { EXAMPLES } from '@ukef/constants';
 import { Response } from 'express';
 
@@ -16,12 +24,24 @@ export class GiftController {
     name: 'facilityId',
     required: true,
     type: 'string',
-    description: 'The facility ID.',
+    description: 'The facility ID',
     example: EXAMPLES.GIFT.FACILITY_ID,
   })
   @ApiOkResponse({
-    description: '',
+    description: 'The facility',
     type: GiftFacilityDto,
+  })
+  @ApiNotFoundResponse({
+    description: 'The facility was not found',
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad request',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized',
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'An internal server error has occurred',
   })
   async get(@Param('facilityId') facilityId: string, @Res({ passthrough: true }) res: Response): Promise<GiftFacilityDto | Error> {
     const { status, data } = await this.giftService.getFacility(facilityId);
