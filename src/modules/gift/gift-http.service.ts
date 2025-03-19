@@ -8,6 +8,10 @@ import axios, { AxiosInstance, AxiosResponse } from 'axios';
  */
 export const ACCEPTABLE_STATUSES = [200, 400, 404];
 
+/**
+ * GIFT HTTP service.
+ * This is responsible for all CRUD calls made to the external GIFT API.
+ */
 @Injectable()
 export class GiftHttpService {
   private axiosInstance: AxiosInstance;
