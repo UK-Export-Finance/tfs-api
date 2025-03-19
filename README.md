@@ -104,6 +104,14 @@ $ npm run api-test
 # api tests with nock debugging (very useful if tests are failing)
 $ DEBUG=nock.* npm run api-test
 ```
+
+### API test snapshots ⚠️
+The API tests currently contains a snapshot test regarding Open API YAML documentation.
+
+This test will correctly fail if endpoints are added or changed.
+
+To regenerate the snapshot, simply delete the snapshot and re-run the tests. Jest will generate a new snapshot.
+
 ## Docker 📦
 ### 1. Dockerfile
 Dockerfile is used to build and run a Node.js application in a containerized environment.

@@ -881,33 +881,69 @@ paths:
           description: The loan was not found.
         '500':
           description: An internal server error has occurred.
-  /api/v1/parties/{partyIdentifier}/external-ratings:
+  /api/v1/facilities/{facilityIdentifier}/loan-transactions/{bundleIdentifier}:
     get:
-      operationId: PartyExternalRatingController_getExternalRatingsForParty
-      summary: Get all external ratings for a party.
+      operationId: FacilityLoanTransactionController_getLoanTransactionByBundleIdentifier
+      summary: Get the loan transaction matching the specified bundle identifier.
       parameters:
-        - name: partyIdentifier
+        - name: facilityIdentifier
           required: true
           in: path
-          description: The identifier of the party in ACBS.
+          description: The identifier of the facility in ACBS.
           schema:
-            example: '00000001'
+            minLength: 10
+            maxLength: 10
+            pattern: ^00\\d{8}$
+            example: '0030000322'
+            type: string
+        - name: bundleIdentifier
+          required: true
+          in: path
+          description: The bundle identifier of the loan transaction in ACBS.
+          schema:
+            minLength: 10
+            maxLength: 10
+            pattern: ^0{4}\\d{6}$
+            example: '0000321000'
             type: string
       responses:
         '200':
-          description: The external ratings for the party have been successfully retrieved.
+          description: The loan transaction has been successfully retrieved.
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/GetPartyExternalRatingsResponseItem'
+                $ref: '#/components/schemas/GetFacilityLoanTransactionResponseDto'
         '404':
-          description: >-
-            The specified party, or the external ratings for that party, were
-            not found.
+          description: The specified loan transaction was not found.
         '500':
           description: An internal server error has occurred.
+  /api/v1/gift/facility/{facilityId}:
+    get:
+      operationId: GiftController_get
+      summary: Get a GIFT facility by ID
+      parameters:
+        - name: facilityId
+          required: true
+          in: path
+          description: The facility ID
+          schema:
+            example: '0030000322'
+            type: string
+      responses:
+        '200':
+          description: The facility
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GiftFacilityDto'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: The facility was not found
+        '500':
+          description: An internal server error has occurred
   /api/v1/parties:
     get:
       operationId: PartyController_getPartiesBySearchText
@@ -994,40 +1030,31 @@ paths:
           description: The specified party was not found.
         '500':
           description: An internal server error has occurred.
-  /api/v1/facilities/{facilityIdentifier}/loan-transactions/{bundleIdentifier}:
+  /api/v1/parties/{partyIdentifier}/external-ratings:
     get:
-      operationId: FacilityLoanTransactionController_getLoanTransactionByBundleIdentifier
-      summary: Get the loan transaction matching the specified bundle identifier.
+      operationId: PartyExternalRatingController_getExternalRatingsForParty
+      summary: Get all external ratings for a party.
       parameters:
-        - name: facilityIdentifier
+        - name: partyIdentifier
           required: true
           in: path
-          description: The identifier of the facility in ACBS.
+          description: The identifier of the party in ACBS.
           schema:
-            minLength: 10
-            maxLength: 10
-            pattern: ^00\\d{8}$
-            example: '0030000322'
-            type: string
-        - name: bundleIdentifier
-          required: true
-          in: path
-          description: The bundle identifier of the loan transaction in ACBS.
-          schema:
-            minLength: 10
-            maxLength: 10
-            pattern: ^0{4}\\d{6}$
-            example: '0000321000'
+            example: '00000001'
             type: string
       responses:
         '200':
-          description: The loan transaction has been successfully retrieved.
+          description: The external ratings for the party have been successfully retrieved.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetFacilityLoanTransactionResponseDto'
+                type: array
+                items:
+                  $ref: '#/components/schemas/GetPartyExternalRatingsResponseItem'
         '404':
-          description: The specified loan transaction was not found.
+          description: >-
+            The specified party, or the external ratings for that party, were
+            not found.
         '500':
           description: An internal server error has occurred.
 info:
@@ -3028,74 +3055,230 @@ components:
           example: '0000321000'
       required:
         - bundleIdentifier
-    GetPartyExternalRatingResponseRatingEntity:
+    GetFacilityLoanTransactionResponseDto:
       type: object
       properties:
-        ratingEntityCode:
+        portfolioIdentifier:
+          type: string
+          description: The identifier of the portfolio in ACBS. The UKEF portfolio is E1.
+          minLength: 0
+          maxLength: 2
+          example: E1
+        bundleStatusCode:
+          type: string
+          description: A numeric code denoting the status of the bundle.
+          minLength: 0
+          maxLength: 2
+          example: '10'
+        bundleStatusDesc:
+          type: string
+          description: >-
+            A description of the status of the bundle corresponding to the
+            bundle status code.
+          minLength: 0
+          maxLength: 20
+          example: Pending Input With Drafts
+        postingDate:
+          format: date
+          type: string
+          description: >-
+            The date when the bundle will be posted. It cannot be before the
+            current processing date.
+        facilityIdentifier:
+          type: string
+          description: The identifier of the facility in ACBS.
+          minLength: 10
+          maxLength: 10
+          example: '0030000322'
+        borrowerPartyIdentifier:
+          type: string
+          description: The identifier of the loan borrower in ACBS.
+          minLength: 8
+          maxLength: 8
+          example: '00001234'
+        productTypeId:
+          type: string
+          description: >-
+            The product type identifier for the loan: 250 for BSS, 260 for EWCS,
+            280 for GEF-Cash, 281 for GEF-Contingent. It is called the product
+            type code in ACBS.
+          example: '250'
+        productTypeGroup:
+          type: string
+          description: >-
+            The product type group identifier for the loan: EW for EWCS, BS for
+            Bond, GM for GEF. It is called the product group code in ACBS.
+          example: EW
+        currency:
+          type: string
+          description: The currency code for the loan.
+          minLength: 3
+          maxLength: 3
+          example: USD
+        dealCustomerUsageRate:
+          type: number
+          description: >-
+            The exchange rate between the loan currency and the deal currency.
+            It is only applicable when the loan currency differs from the
+            facility currency.
+          example: 1
+        dealCustomerUsageOperationType:
+          type: string
+          description: >-
+            This represents the operand (M for multiply or D for divide) used to
+            convert the amounts. It is only applicable when the loan currency
+            differs from the facility currency.
+          minLength: 0
+          maxLength: 1
+          example: 1
+        amount:
+          type: number
+          description: The amount of the loan. It is called loan amount in ACBS.
+          example: 1110
+        issueDate:
+          format: date
+          type: string
+          description: >-
+            The issue date for the loan. It is called the effective date in
+            ACBS.
+        expiryDate:
+          format: date
+          type: string
+          description: >-
+            The expiry date for the loan. It is called the maturity date in
+            ACBS.
+        spreadRate:
+          type: number
+          description: >-
+            The spread rate of the PAC accrual schedule to factor into the
+            all-in rate if a rate calculation method is selected that includes
+            the spread rate in the calculation.
+          example: 80.000051
+        spreadRateCTL:
+          type: number
+          description: >-
+            The spread rate of the CTL accrual schedule to factor into the
+            all-in rate if a rate calculation method is selected that includes
+            the spread rate in the calculation.
+          example: 80.000051
+        yearBasis:
+          type: string
+          description: A code denoting the year basis for the accrual schedule.
+          minLength: 0
+          maxLength: 1
+          example: '1'
+        nextDueDate:
+          format: date
+          type: string
+          description: >-
+            The date the next payment will be due for the loan repayment
+            schedule.
+        indexRateChangeFrequency:
+          type: string
+          description: >-
+            A code denoting the index rate change frequency, which is used by
+            ACBS to determine the frequency at which the rate should change when
+            the change timing is set to 'On Anniversary'.
+          minLength: 0
+          maxLength: 1
+        loanBillingFrequencyType:
+          type: string
+          description: >-
+            A code denoting the loan billing frequency type, which is used by
+            ACBS to determine the frequency at which the bills should be
+            generated.
+          minLength: 0
+          maxLength: 1
+          example: C
+      required:
+        - portfolioIdentifier
+        - bundleStatusCode
+        - bundleStatusDesc
+        - postingDate
+        - facilityIdentifier
+        - borrowerPartyIdentifier
+        - productTypeId
+        - productTypeGroup
+        - currency
+        - dealCustomerUsageRate
+        - dealCustomerUsageOperationType
+        - amount
+        - issueDate
+        - expiryDate
+        - spreadRate
+        - spreadRateCTL
+        - yearBasis
+        - nextDueDate
+        - indexRateChangeFrequency
+        - loanBillingFrequencyType
+    GiftFacilityDto:
+      type: object
+      properties:
+        facilityId:
+          type: string
+          readOnly: true
+        streamId:
+          type: string
+          readOnly: true
+        streamVersion:
+          type: number
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+        obligorUrn:
+          type: string
+          readOnly: true
+        currency:
+          type: string
+          readOnly: true
+        facilityAmount:
+          type: number
+          readOnly: true
+        drawnAmount:
+          type: number
+          readOnly: true
+        availableAmount:
+          type: number
+          readOnly: true
+        effectiveDate:
+          type: string
+          readOnly: true
+        expiryDate:
+          type: string
+          readOnly: true
+        endOfCoverDate:
+          type: string
+          readOnly: true
+        dealId:
+          type: string
+          readOnly: true
+        isRevolving:
+          type: boolean
+          readOnly: true
+        isDraft:
+          type: boolean
+          readOnly: true
+        createdDatetime:
           type: string
           readOnly: true
       required:
-        - ratingEntityCode
-    GetPartyExternalRatingResponseAssignedRating:
-      type: object
-      properties:
-        assignedRatingCode:
-          type: string
-          readOnly: true
-      required:
-        - assignedRatingCode
-    GetPartyExternalRatingsResponseItem:
-      type: object
-      properties:
-        partyIdentifier:
-          type: string
-          readOnly: true
-        ratingEntity:
-          readOnly: true
-          allOf:
-            - $ref: '#/components/schemas/GetPartyExternalRatingResponseRatingEntity'
-        assignedRating:
-          readOnly: true
-          allOf:
-            - $ref: >-
-                #/components/schemas/GetPartyExternalRatingResponseAssignedRating
-        ratedDate:
-          format: date-time
-          type: string
-          readOnly: true
-        probabilityofDefault:
-          type: number
-          readOnly: true
-        lossGivenDefault:
-          type: number
-          readOnly: true
-        riskWeighting:
-          type: number
-          readOnly: true
-        externalRatingNote1:
-          type: string
-          readOnly: true
-        externalRatingNote2:
-          type: string
-          readOnly: true
-        externalRatingUserCode1:
-          type: string
-          readOnly: true
-        externalRatingUserCode2:
-          type: string
-          readOnly: true
-      required:
-        - partyIdentifier
-        - ratingEntity
-        - assignedRating
-        - ratedDate
-        - probabilityofDefault
-        - lossGivenDefault
-        - riskWeighting
-        - externalRatingNote1
-        - externalRatingNote2
-        - externalRatingUserCode1
-        - externalRatingUserCode2
+        - facilityId
+        - streamId
+        - streamVersion
+        - name
+        - obligorUrn
+        - currency
+        - facilityAmount
+        - drawnAmount
+        - availableAmount
+        - effectiveDate
+        - expiryDate
+        - endOfCoverDate
+        - dealId
+        - isRevolving
+        - isDraft
+        - createdDatetime
     GetPartiesBySearchTextResponseItem:
       type: object
       properties:
@@ -3254,162 +3437,74 @@ components:
         - citizenshipClass
         - officerRiskDate
         - countryCode
-    GetFacilityLoanTransactionResponseDto:
+    GetPartyExternalRatingResponseRatingEntity:
       type: object
       properties:
-        portfolioIdentifier:
+        ratingEntityCode:
           type: string
-          description: The identifier of the portfolio in ACBS. The UKEF portfolio is E1.
-          minLength: 0
-          maxLength: 2
-          example: E1
-        bundleStatusCode:
-          type: string
-          description: A numeric code denoting the status of the bundle.
-          minLength: 0
-          maxLength: 2
-          example: '10'
-        bundleStatusDesc:
-          type: string
-          description: >-
-            A description of the status of the bundle corresponding to the
-            bundle status code.
-          minLength: 0
-          maxLength: 20
-          example: Pending Input With Drafts
-        postingDate:
-          format: date
-          type: string
-          description: >-
-            The date when the bundle will be posted. It cannot be before the
-            current processing date.
-        facilityIdentifier:
-          type: string
-          description: The identifier of the facility in ACBS.
-          minLength: 10
-          maxLength: 10
-          example: '0030000322'
-        borrowerPartyIdentifier:
-          type: string
-          description: The identifier of the loan borrower in ACBS.
-          minLength: 8
-          maxLength: 8
-          example: '00001234'
-        productTypeId:
-          type: string
-          description: >-
-            The product type identifier for the loan: 250 for BSS, 260 for EWCS,
-            280 for GEF-Cash, 281 for GEF-Contingent. It is called the product
-            type code in ACBS.
-          example: '250'
-        productTypeGroup:
-          type: string
-          description: >-
-            The product type group identifier for the loan: EW for EWCS, BS for
-            Bond, GM for GEF. It is called the product group code in ACBS.
-          example: EW
-        currency:
-          type: string
-          description: The currency code for the loan.
-          minLength: 3
-          maxLength: 3
-          example: USD
-        dealCustomerUsageRate:
-          type: number
-          description: >-
-            The exchange rate between the loan currency and the deal currency.
-            It is only applicable when the loan currency differs from the
-            facility currency.
-          example: 1
-        dealCustomerUsageOperationType:
-          type: string
-          description: >-
-            This represents the operand (M for multiply or D for divide) used to
-            convert the amounts. It is only applicable when the loan currency
-            differs from the facility currency.
-          minLength: 0
-          maxLength: 1
-          example: 1
-        amount:
-          type: number
-          description: The amount of the loan. It is called loan amount in ACBS.
-          example: 1110
-        issueDate:
-          format: date
-          type: string
-          description: >-
-            The issue date for the loan. It is called the effective date in
-            ACBS.
-        expiryDate:
-          format: date
-          type: string
-          description: >-
-            The expiry date for the loan. It is called the maturity date in
-            ACBS.
-        spreadRate:
-          type: number
-          description: >-
-            The spread rate of the PAC accrual schedule to factor into the
-            all-in rate if a rate calculation method is selected that includes
-            the spread rate in the calculation.
-          example: 80.000051
-        spreadRateCTL:
-          type: number
-          description: >-
-            The spread rate of the CTL accrual schedule to factor into the
-            all-in rate if a rate calculation method is selected that includes
-            the spread rate in the calculation.
-          example: 80.000051
-        yearBasis:
-          type: string
-          description: A code denoting the year basis for the accrual schedule.
-          minLength: 0
-          maxLength: 1
-          example: '1'
-        nextDueDate:
-          format: date
-          type: string
-          description: >-
-            The date the next payment will be due for the loan repayment
-            schedule.
-        indexRateChangeFrequency:
-          type: string
-          description: >-
-            A code denoting the index rate change frequency, which is used by
-            ACBS to determine the frequency at which the rate should change when
-            the change timing is set to 'On Anniversary'.
-          minLength: 0
-          maxLength: 1
-        loanBillingFrequencyType:
-          type: string
-          description: >-
-            A code denoting the loan billing frequency type, which is used by
-            ACBS to determine the frequency at which the bills should be
-            generated.
-          minLength: 0
-          maxLength: 1
-          example: C
+          readOnly: true
       required:
-        - portfolioIdentifier
-        - bundleStatusCode
-        - bundleStatusDesc
-        - postingDate
-        - facilityIdentifier
-        - borrowerPartyIdentifier
-        - productTypeId
-        - productTypeGroup
-        - currency
-        - dealCustomerUsageRate
-        - dealCustomerUsageOperationType
-        - amount
-        - issueDate
-        - expiryDate
-        - spreadRate
-        - spreadRateCTL
-        - yearBasis
-        - nextDueDate
-        - indexRateChangeFrequency
-        - loanBillingFrequencyType
+        - ratingEntityCode
+    GetPartyExternalRatingResponseAssignedRating:
+      type: object
+      properties:
+        assignedRatingCode:
+          type: string
+          readOnly: true
+      required:
+        - assignedRatingCode
+    GetPartyExternalRatingsResponseItem:
+      type: object
+      properties:
+        partyIdentifier:
+          type: string
+          readOnly: true
+        ratingEntity:
+          readOnly: true
+          allOf:
+            - $ref: '#/components/schemas/GetPartyExternalRatingResponseRatingEntity'
+        assignedRating:
+          readOnly: true
+          allOf:
+            - $ref: >-
+                #/components/schemas/GetPartyExternalRatingResponseAssignedRating
+        ratedDate:
+          format: date-time
+          type: string
+          readOnly: true
+        probabilityofDefault:
+          type: number
+          readOnly: true
+        lossGivenDefault:
+          type: number
+          readOnly: true
+        riskWeighting:
+          type: number
+          readOnly: true
+        externalRatingNote1:
+          type: string
+          readOnly: true
+        externalRatingNote2:
+          type: string
+          readOnly: true
+        externalRatingUserCode1:
+          type: string
+          readOnly: true
+        externalRatingUserCode2:
+          type: string
+          readOnly: true
+      required:
+        - partyIdentifier
+        - ratingEntity
+        - assignedRating
+        - ratedDate
+        - probabilityofDefault
+        - lossGivenDefault
+        - riskWeighting
+        - externalRatingNote1
+        - externalRatingNote2
+        - externalRatingUserCode1
+        - externalRatingUserCode2
 security:
   - ApiKeyHeader: []
 "

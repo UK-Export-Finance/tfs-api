@@ -13,11 +13,13 @@ describe('GET /openapi/yaml', () => {
 
   it('returns a 200 OK response', async () => {
     const { status } = await api.get('/openapi/yaml');
+
     expect(status).toBe(200);
   });
 
   it('matches the snapshot', async () => {
     const { text } = await api.get('/openapi/yaml');
+
     expect(text).toMatchSnapshot();
   });
 });
