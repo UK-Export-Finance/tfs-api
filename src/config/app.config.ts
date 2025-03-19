@@ -26,6 +26,7 @@ export interface AppConfig {
 
 export default registerAs('app', (): Record<string, any> => {
   const logLevel = process.env.LOG_LEVEL || 'info';
+
   if (!validLogLevels.includes(logLevel)) {
     throw new InvalidConfigException(`LOG_LEVEL must be one of ${validLogLevels} or not specified.`);
   }
@@ -37,7 +38,7 @@ export default registerAs('app', (): Record<string, any> => {
     versioning: {
       enable: process.env.HTTP_VERSIONING_ENABLE === 'true',
       prefix: 'v',
-      version: process.env.HTTP_VERSION || '1',
+      version: process.env.HTTP_VERSION || '2',
     },
 
     globalPrefix: '/api',
