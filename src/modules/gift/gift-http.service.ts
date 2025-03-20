@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import giftConfig, { GiftConfig } from '@ukef/config/gift.config';
+import { HEADERS } from '@ukef/constants';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
+
+const { CONTENT_TYPE } = HEADERS;
 
 /**
  * Array of acceptable statuses to consume from a GIFT API response
@@ -32,7 +35,7 @@ export class GiftHttpService {
       baseURL: this.config.baseUrl,
       headers: {
         [this.config.apiKeyHeaderName]: this.config.apiKeyHeaderValue,
-        'Content-Type': 'application/json',
+        [CONTENT_TYPE.KEY]: [CONTENT_TYPE.VALUES.JSON],
       },
       validateStatus: (status) => GIFT_API_ACCEPTABLE_STATUSES.includes(status),
     });

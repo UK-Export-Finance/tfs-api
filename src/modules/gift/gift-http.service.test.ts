@@ -1,10 +1,13 @@
 import giftConfig from '@ukef/config/gift.config';
+import { HEADERS } from '@ukef/constants';
 import axios from 'axios';
 import * as dotenv from 'dotenv';
 
 import { GIFT_API_ACCEPTABLE_STATUSES, GiftHttpService } from './gift-http.service';
 
 dotenv.config();
+
+const { CONTENT_TYPE } = HEADERS;
 
 jest.mock('axios');
 
@@ -53,7 +56,7 @@ describe('GiftHttpService', () => {
         baseURL: baseUrl,
         headers: {
           [apiKeyHeaderName]: apiKeyHeaderValue,
-          'Content-Type': 'application/json',
+          [CONTENT_TYPE.KEY]: [CONTENT_TYPE.VALUES.JSON],
         },
       });
 
