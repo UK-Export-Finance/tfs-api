@@ -1,4 +1,4 @@
-apiKeyHeaderName/**
+/**
  * Represents the constant headers used in the application.
  */
 export const HEADERS = {
