@@ -5,25 +5,29 @@ import { GiftController } from './gift.controller';
 import { GiftService } from './gift.service';
 import { GiftHttpService } from './gift-http.service';
 
-const mockFacilityId = EXAMPLES.GIFT.FACILITY_ID;
+const {
+  GIFT: { FACILITY },
+} = EXAMPLES;
+
+const mockFacilityId = FACILITY.FACILITY_ID;
 
 const mockGiftFacility: GiftFacilityDto = {
   facilityId: mockFacilityId,
-  streamId: '7d915bfa-0069-4aaa-92c5-013925f019a1',
-  streamVersion: 1,
-  name: 'Mock facility name',
-  obligorUrn: '01234567',
-  currency: 'GBP',
-  facilityAmount: 0,
-  drawnAmount: 0,
-  availableAmount: 0,
-  effectiveDate: '2025-01-01',
-  expiryDate: '2025-02-01',
-  endOfCoverDate: '2025-03-01',
-  dealId: '9988776655',
-  isRevolving: true,
-  isDraft: true,
-  createdDatetime: '2025-01-01T13:03:54.123Z',
+  streamId: FACILITY.STREAM_ID,
+  streamVersion: FACILITY.STREAM_VERSION,
+  name: FACILITY.FACILITY_NAME,
+  obligorUrn: FACILITY.OBLIGOR_URN,
+  currency: FACILITY.CURRENCY,
+  facilityAmount: FACILITY.FACILITY_AMOUNT,
+  drawnAmount: FACILITY.DRAWN_AMOUNT,
+  availableAmount: FACILITY.AVAILABLE_AMOUNT,
+  effectiveDate: FACILITY.EFFECTIVE_DATE,
+  expiryDate: FACILITY.EXPIRY_DATE,
+  endOfCoverDate: FACILITY.END_OF_COVER_DATE,
+  dealId: FACILITY.DEAL_ID,
+  isRevolving: FACILITY.IS_REVOLVING,
+  isDraft: FACILITY.IS_DRAFT,
+  createdDatetime: FACILITY.CREATED_DATE_TIME,
 };
 
 const mockGetFacilityResponse = {
