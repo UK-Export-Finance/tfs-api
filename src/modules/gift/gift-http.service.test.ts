@@ -2,7 +2,7 @@ import giftConfig from '@ukef/config/gift.config';
 import axios from 'axios';
 import * as dotenv from 'dotenv';
 
-import { ACCEPTABLE_STATUSES, GiftHttpService } from './gift-http.service';
+import { GIFT_API_ACCEPTABLE_STATUSES, GiftHttpService } from './gift-http.service';
 
 dotenv.config();
 
@@ -31,11 +31,11 @@ describe('GiftHttpService', () => {
     jest.resetAllMocks();
   });
 
-  describe('ACCEPTABLE_STATUSES', () => {
+  describe('GIFT_API_ACCEPTABLE_STATUSES', () => {
     it('should return an array of statuses', () => {
       const expected = [200, 400, 404];
 
-      expect(ACCEPTABLE_STATUSES).toEqual(expected);
+      expect(GIFT_API_ACCEPTABLE_STATUSES).toEqual(expected);
     });
   });
 

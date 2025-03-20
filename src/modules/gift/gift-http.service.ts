@@ -6,7 +6,7 @@ import axios, { AxiosInstance, AxiosResponse } from 'axios';
  * Array of acceptable statuses to consume from a GIFT API response
  * @returns {Array<number>}
  */
-export const ACCEPTABLE_STATUSES = [200, 400, 404];
+export const GIFT_API_ACCEPTABLE_STATUSES = [200, 400, 404];
 
 /**
  * GIFT HTTP service.
@@ -34,7 +34,7 @@ export class GiftHttpService {
         [this.config.apiKeyHeaderName]: this.config.apiKeyHeaderValue,
         'Content-Type': 'application/json',
       },
-      validateStatus: (status) => ACCEPTABLE_STATUSES.includes(status),
+      validateStatus: (status) => GIFT_API_ACCEPTABLE_STATUSES.includes(status),
     });
 
     return instance;
