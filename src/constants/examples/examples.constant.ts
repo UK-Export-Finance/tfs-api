@@ -1,3 +1,5 @@
+import { GIFT_EXAMPLES } from './gift.examples.constant';
+
 export const EXAMPLES = {
   ACBS_BUNDLE_ID: '0000321000',
   DEAL_ID: '0030000321',
@@ -26,24 +28,5 @@ export const EXAMPLES = {
   CITIZENSHIP_CLASS: '2',
   PARTY_ALTERNATE_ID: '00345678',
   LENDER_TYPE_CODE: '500',
-  GIFT: {
-    FACILITY: {
-      AVAILABLE_AMOUNT: 3000000,
-      CREATED_DATE_TIME: '2023-04-01T13:03:54.123Z',
-      CURRENCY: 'USD',
-      DEAL_ID: '9988776655',
-      DRAWN_AMOUNT: 2000000,
-      EFFECTIVE_DATE: '2025-01-01',
-      END_OF_COVER_DATE: '2025-03-01',
-      EXPIRY_DATE: '2025-02-01',
-      FACILITY_AMOUNT: 1000000,
-      FACILITY_ID: '0030000322',
-      FACILITY_NAME: 'Amazing facility',
-      IS_REVOLVING: true,
-      IS_DRAFT: false,
-      OBLIGOR_URN: '01234567',
-      STREAM_ID: '7d915bfa-0069-4aaa-92c5-013925f019a1',
-      STREAM_VERSION: 1,
-    },
-  },
+  GIFT: GIFT_EXAMPLES,
 };
