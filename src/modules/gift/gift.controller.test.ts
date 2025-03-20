@@ -9,10 +9,8 @@ const {
   GIFT: { FACILITY },
 } = EXAMPLES;
 
-const mockFacilityId = FACILITY.FACILITY_ID;
-
 const mockGiftFacility: GiftFacilityDto = {
-  facilityId: mockFacilityId,
+  facilityId: FACILITY.FACILITY_ID,
   streamId: FACILITY.STREAM_ID,
   streamVersion: FACILITY.STREAM_VERSION,
   name: FACILITY.FACILITY_NAME,
@@ -29,6 +27,8 @@ const mockGiftFacility: GiftFacilityDto = {
   isDraft: FACILITY.IS_DRAFT,
   createdDatetime: FACILITY.CREATED_DATE_TIME,
 };
+
+const { facilityId } = mockGiftFacility;
 
 const mockGetFacilityResponse = {
   status: 200,
@@ -73,13 +73,13 @@ describe('GiftController', () => {
 
   describe('GET :facilityId', () => {
     beforeEach(async () => {
-      await controller.get({ facilityId: mockFacilityId }, mockRes);
+      await controller.get({ facilityId }, mockRes);
     });
 
     it('should call giftService.getFacility', () => {
       expect(mockServiceGetFacility).toHaveBeenCalledTimes(1);
 
-      expect(mockServiceGetFacility).toHaveBeenCalledWith(mockFacilityId);
+      expect(mockServiceGetFacility).toHaveBeenCalledWith(facilityId);
     });
 
     it('should call res.status with a status', () => {

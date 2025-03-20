@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { EXAMPLES } from '@ukef/constants';
+import { UkefId } from '@ukef/helpers';
 
 const {
   GIFT: { FACILITY },
@@ -11,7 +12,7 @@ export class GiftFacilityDto {
     minLength: 10,
     maxLength: 10,
   })
-  facilityId: string;
+  facilityId: UkefId;
 
   @ApiProperty({
     example: FACILITY.STREAM_ID,
@@ -71,7 +72,7 @@ export class GiftFacilityDto {
   @ApiProperty({
     example: FACILITY.DEAL_ID,
   })
-  dealId: string;
+  dealId: UkefId;
 
   @ApiProperty({
     example: FACILITY.IS_REVOLVING,
