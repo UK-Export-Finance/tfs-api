@@ -1,3 +1,4 @@
+import { HEADERS } from '@ukef/constants';
 import { withEnvironmentVariableParsingUnitTests } from '@ukef-test/common-tests/environment-variable-parsing-unit-tests';
 
 import giftConfig, { GiftConfig } from './gift.config';
@@ -7,10 +8,6 @@ describe('giftConfig', () => {
     {
       configPropertyName: 'baseUrl',
       environmentVariableName: 'GIFT_API_URL',
-    },
-    {
-      configPropertyName: 'apiKeyHeaderName',
-      environmentVariableName: 'GIFT_API_KEY_HEADER_NAME',
     },
     {
       configPropertyName: 'apiKeyHeaderValue',
@@ -39,5 +36,9 @@ describe('giftConfig', () => {
     configDirectlyFromEnvironmentVariables,
     configParsedAsIntFromEnvironmentVariablesWithDefault,
     getConfig: () => giftConfig(),
+  });
+
+  it('should have an apiKeyHeaderName defined', () => {
+    expect(giftConfig().apiKeyHeaderName).toBe(HEADERS.X_API_KEY);
   });
 });

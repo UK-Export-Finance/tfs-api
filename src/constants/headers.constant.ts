@@ -12,7 +12,10 @@ export const HEADERS = {
      */
     VALUES: {
       JSON: 'application/json',
-      // Add more possible values here if needed
     },
   },
+  /**
+   * Represents the x-api-key header key.
+   */
+  X_API_KEY: 'x-api-key',
 } as const;

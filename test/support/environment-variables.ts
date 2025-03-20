@@ -39,7 +39,6 @@ export const ENVIRONMENT_VARIABLES = Object.freeze({
 
   GIFT_API_URL: valueGenerator.httpsUrl(),
   GIFT_API_KEY: valueGenerator.string(),
-  GIFT_API_KEY_HEADER_NAME: valueGenerator.word(),
   GIFT_API_MAX_REDIRECTS: 0,
   GIFT_API_TIMEOUT: 1000,
 });
