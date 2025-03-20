@@ -11,7 +11,7 @@ import {
 import { EXAMPLES } from '@ukef/constants';
 import { Response } from 'express';
 
-import { GiftFacilityDto } from './dto';
+import { GetFacilityOperationParamsDto, GiftFacilityDto } from './dto';
 import { GiftService } from './gift.service';
 
 @Controller('gift/facility')
@@ -43,7 +43,7 @@ export class GiftController {
   @ApiInternalServerErrorResponse({
     description: 'An internal server error has occurred',
   })
-  async get(@Param('facilityId') facilityId: string, @Res({ passthrough: true }) res: Response) {
+  async get(@Param() { facilityId }: GetFacilityOperationParamsDto, @Res({ passthrough: true }) res: Response) {
     const { status, data } = await this.giftService.getFacility(facilityId);
 
     res.status(status).send(data);

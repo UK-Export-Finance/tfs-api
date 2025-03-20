@@ -1,15 +1,20 @@
+import { UkefId } from '@ukef/helpers';
+
+const DEAL_ID: UkefId = '0030000123';
+const FACILITY_ID: UkefId = '0030000321';
+
 export const GIFT_EXAMPLES = {
   FACILITY: {
     AVAILABLE_AMOUNT: 3000000,
     CREATED_DATE_TIME: '2023-04-01T13:03:54.123Z',
     CURRENCY: 'USD',
-    DEAL_ID: '9988776655',
+    DEAL_ID,
     DRAWN_AMOUNT: 2000000,
     EFFECTIVE_DATE: '2025-01-01',
     END_OF_COVER_DATE: '2025-03-01',
     EXPIRY_DATE: '2025-02-01',
     FACILITY_AMOUNT: 1000000,
-    FACILITY_ID: '0030000322',
+    FACILITY_ID,
     FACILITY_NAME: 'Amazing facility',
     IS_REVOLVING: true,
     IS_DRAFT: false,

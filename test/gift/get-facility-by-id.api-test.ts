@@ -1,15 +1,23 @@
-import { Api } from '@ukef-test/support/api';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
+import { withFacilityIdentifierUrlValidationApiTests } from '@ukef-test/common-tests/request-url-param-validation-api-tests/facility-identifier-url-validation-api-tests';
+import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
+import { GIFT } from '@ukef/constants';
 import nock from 'nock';
+
+const {
+  PATH: { FACILITY },
+} = GIFT;
+
+const { GIFT_API_URL } = ENVIRONMENT_VARIABLES;
 
 describe('GET /gift/facility/{facilityId}', () => {
   const valueGenerator = new RandomValueGenerator();
 
   const mockFacilityId = valueGenerator.ukefId();
 
-  const url = `/api/v1/gift/facility/${mockFacilityId}`;
+  const url = `/api/v1/gift${FACILITY}${mockFacilityId}`;
 
   let api: Api;
 
@@ -31,6 +39,16 @@ describe('GET /gift/facility/{facilityId}', () => {
     makeRequestWithoutAuth: (incorrectAuth?: IncorrectAuthArg) => api.getWithoutAuth(url, incorrectAuth?.headerName, incorrectAuth?.headerValue),
   });
 
+  describe('validation', () => {
+    withFacilityIdentifierUrlValidationApiTests({
+      givenRequestWouldOtherwiseSucceedForFacilityId: (facilityId) => {
+        nock(GIFT_API_URL).get(`${FACILITY}${facilityId}`).reply(200);
+      },
+      makeRequestWithFacilityId: (facilityId) => api.get(`/api/v1/gift${FACILITY}${facilityId}`),
+      idName: 'facilityId',
+    });
+  });
+
   describe('when a 200 response is returned by GIFT', () => {
     it('should return a 200 response with the received data', async () => {
       const mockResponse = {
@@ -38,7 +56,7 @@ describe('GET /gift/facility/{facilityId}', () => {
         aMockFacility: true,
       };
 
-      nock(ENVIRONMENT_VARIABLES.GIFT_API_URL).get(`/facility/${mockFacilityId}`).reply(200, mockResponse);
+      nock(GIFT_API_URL).get(`${FACILITY}${mockFacilityId}`).reply(200, mockResponse);
 
       const { status, body } = await api.get(url);
 
@@ -61,7 +79,7 @@ describe('GET /gift/facility/{facilityId}', () => {
         ],
       };
 
-      nock(ENVIRONMENT_VARIABLES.GIFT_API_URL).get(`/facility/${mockFacilityId}`).reply(400, mockResponse);
+      nock(GIFT_API_URL).get(`${FACILITY}${mockFacilityId}`).reply(400, mockResponse);
 
       const { status, body } = await api.get(url);
 
@@ -78,7 +96,7 @@ describe('GET /gift/facility/{facilityId}', () => {
         message: 'No Facility was found',
       };
 
-      nock(ENVIRONMENT_VARIABLES.GIFT_API_URL).get(`/facility/${mockFacilityId}`).reply(404, mockResponse);
+      nock(GIFT_API_URL).get(`${FACILITY}${mockFacilityId}`).reply(404, mockResponse);
 
       const { status, body } = await api.get(url);
 
@@ -90,7 +108,7 @@ describe('GET /gift/facility/{facilityId}', () => {
 
   describe('when a 401 response is returned by GIFT', () => {
     it('should return a 500 response', async () => {
-      nock(ENVIRONMENT_VARIABLES.GIFT_API_URL).get(`/facility/${mockFacilityId}`).reply(401);
+      nock(GIFT_API_URL).get(`${FACILITY}${mockFacilityId}`).reply(401);
 
       const { status } = await api.get(url);
 
@@ -100,7 +118,7 @@ describe('GET /gift/facility/{facilityId}', () => {
 
   describe('when a 500 response is returned by GIFT', () => {
     it('should return a 500 response', async () => {
-      nock(ENVIRONMENT_VARIABLES.GIFT_API_URL).get(`/facility/${mockFacilityId}`).reply(500);
+      nock(GIFT_API_URL).get(`${FACILITY}${mockFacilityId}`).reply(500);
 
       const { status } = await api.get(url);
 

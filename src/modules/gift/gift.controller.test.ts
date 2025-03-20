@@ -73,7 +73,7 @@ describe('GiftController', () => {
 
   describe('GET :facilityId', () => {
     beforeEach(async () => {
-      await controller.get(mockFacilityId, mockRes);
+      await controller.get({ facilityId: mockFacilityId }, mockRes);
     });
 
     it('should call giftService.getFacility', () => {
