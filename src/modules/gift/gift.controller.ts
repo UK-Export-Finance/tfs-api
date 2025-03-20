@@ -25,7 +25,7 @@ export class GiftController {
     required: true,
     type: 'string',
     description: 'The facility ID',
-    example: EXAMPLES.GIFT.FACILITY_ID,
+    example: EXAMPLES.GIFT.FACILITY.FACILITY_ID,
   })
   @ApiOkResponse({
     description: 'The facility',
@@ -43,11 +43,9 @@ export class GiftController {
   @ApiInternalServerErrorResponse({
     description: 'An internal server error has occurred',
   })
-  async get(@Param('facilityId') facilityId: string, @Res({ passthrough: true }) res: Response): Promise<GiftFacilityDto | Error> {
+  async get(@Param('facilityId') facilityId: string, @Res({ passthrough: true }) res: Response) {
     const { status, data } = await this.giftService.getFacility(facilityId);
 
     res.status(status).send(data);
-
-    return data;
   }
 }

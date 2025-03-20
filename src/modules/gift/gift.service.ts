@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { GIFT } from '@ukef/constants';
 import { AxiosResponse } from 'axios';
 
 import { GiftFacilityDto } from './dto';
@@ -21,7 +22,7 @@ export class GiftService {
    */
   async getFacility(facilityId: string): Promise<AxiosResponse> {
     const response = await this.giftHttpService.get<GiftFacilityDto>({
-      path: `/facility/${facilityId}`,
+      path: `${GIFT.PATH.FACILITY}${facilityId}`,
     });
 
     return response;

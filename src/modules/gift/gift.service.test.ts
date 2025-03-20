@@ -1,9 +1,9 @@
 import { HttpService } from '@nestjs/axios';
-import { EXAMPLES } from '@ukef/constants';
+import { EXAMPLES, GIFT } from '@ukef/constants';
 
 import { GiftService } from './gift.service';
 
-const mockFacilityId = EXAMPLES.GIFT.FACILITY_ID;
+const mockFacilityId = EXAMPLES.GIFT.FACILITY.FACILITY_ID;
 
 const mockGetResponse = {
   status: 200,
@@ -46,7 +46,7 @@ describe('GiftService', () => {
       expect(mockHttpServiceGet).toHaveBeenCalledTimes(1);
 
       expect(mockHttpServiceGet).toHaveBeenCalledWith({
-        path: `/facility/${mockFacilityId}`,
+        path: `${GIFT.PATH.FACILITY}${mockFacilityId}`,
       });
     });
 

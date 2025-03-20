@@ -45,9 +45,7 @@ export class GiftHttpService {
    * @param {String} path
    * @returns {Promise<AxiosResponse<T>>}
    */
-  async get<T>({ path }: { path: string }): Promise<AxiosResponse<T>> {
-    const response = await this.axiosInstance.get(path);
-
-    return response;
+  get<T>({ path }: { path: string }): Promise<AxiosResponse<T>> {
+    return this.axiosInstance.get(path);
   }
 }

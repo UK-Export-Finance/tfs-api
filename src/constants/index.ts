@@ -10,6 +10,7 @@
  * 6. PROPERTIES
  * 7. EXAMPLES
  * 8. ACBSID
+ * 9. GIFT
  */
 
 export * from './acbs.constant';
@@ -19,5 +20,6 @@ export * from './auth.constant';
 export * from './date-formats.constant';
 export * from './enum.constant';
 export * from './examples.constant';
+export * from './gift.constant';
 export * from './properties.constant';
 export * from './ukef-id.constant';

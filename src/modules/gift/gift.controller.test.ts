@@ -72,10 +72,8 @@ describe('GiftController', () => {
   });
 
   describe('GET :facilityId', () => {
-    let response;
-
     beforeEach(async () => {
-      response = await controller.get(mockFacilityId, mockRes);
+      await controller.get(mockFacilityId, mockRes);
     });
 
     it('should call giftService.getFacility', () => {
@@ -94,10 +92,6 @@ describe('GiftController', () => {
       expect(mockResSend).toHaveBeenCalledTimes(1);
 
       expect(mockResSend).toHaveBeenCalledWith(mockGetFacilityResponse.data);
-    });
-
-    it('should return data from giftService.getFacility', () => {
-      expect(response).toEqual(mockGetFacilityResponse.data);
     });
   });
 });
