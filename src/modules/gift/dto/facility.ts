@@ -1,4 +1,4 @@
-import { ApiResponseProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { EXAMPLES } from '@ukef/constants';
 
 const {
@@ -6,82 +6,84 @@ const {
 } = EXAMPLES;
 
 export class GiftFacilityDto {
-  @ApiResponseProperty({
+  @ApiProperty({
     example: FACILITY.FACILITY_ID,
+    minLength: 10,
+    maxLength: 10,
   })
   facilityId: string;
 
-  @ApiResponseProperty({
+  @ApiProperty({
     example: FACILITY.STREAM_ID,
   })
   streamId: string;
 
-  @ApiResponseProperty({
+  @ApiProperty({
     example: FACILITY.STREAM_VERSION,
   })
   streamVersion: number;
 
-  @ApiResponseProperty({
+  @ApiProperty({
     example: FACILITY.FACILITY_NAME,
   })
   name: string;
 
-  @ApiResponseProperty({
+  @ApiProperty({
     example: FACILITY.OBLIGOR_URN,
   })
   obligorUrn: string;
 
-  @ApiResponseProperty({
+  @ApiProperty({
     example: FACILITY.CURRENCY,
   })
   currency: string;
 
-  @ApiResponseProperty({
+  @ApiProperty({
     example: FACILITY.FACILITY_AMOUNT,
   })
   facilityAmount: number;
 
-  @ApiResponseProperty({
+  @ApiProperty({
     example: FACILITY.DRAWN_AMOUNT,
   })
   drawnAmount: number;
 
-  @ApiResponseProperty({
+  @ApiProperty({
     example: FACILITY.AVAILABLE_AMOUNT,
   })
   availableAmount: number;
 
-  @ApiResponseProperty({
+  @ApiProperty({
     example: FACILITY.EFFECTIVE_DATE,
   })
   effectiveDate: string;
 
-  @ApiResponseProperty({
+  @ApiProperty({
     example: FACILITY.EXPIRY_DATE,
   })
   expiryDate: string;
 
-  @ApiResponseProperty({
+  @ApiProperty({
     example: FACILITY.END_OF_COVER_DATE,
   })
   endOfCoverDate: string;
 
-  @ApiResponseProperty({
+  @ApiProperty({
     example: FACILITY.DEAL_ID,
   })
   dealId: string;
 
-  @ApiResponseProperty({
+  @ApiProperty({
     example: FACILITY.IS_REVOLVING,
   })
   isRevolving: boolean;
 
-  @ApiResponseProperty({
+  @ApiProperty({
     example: FACILITY.IS_DRAFT,
   })
   isDraft: boolean;
 
-  @ApiResponseProperty({
+  @ApiProperty({
     example: FACILITY.CREATED_DATE_TIME,
   })
   createdDatetime: string;
