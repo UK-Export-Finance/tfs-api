@@ -1,5 +1,5 @@
-import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
 import { Api } from '@ukef-test/support/api';
+import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import nock from 'nock';
@@ -49,7 +49,7 @@ describe('GET /gift/facility/{facilityId}', () => {
   });
 
   describe('when a 400 response is returned by GIFT', () => {
-    it('should return a 404 response with the facility', async () => {
+    it('should return a 400 response with the facility', async () => {
       const mockResponse = {
         statusCode: 400,
         message: 'Validation error',
@@ -61,11 +61,11 @@ describe('GET /gift/facility/{facilityId}', () => {
         ],
       };
 
-      nock(ENVIRONMENT_VARIABLES.GIFT_API_URL).get(`/facility/${mockFacilityId}`).reply(404, mockResponse);
+      nock(ENVIRONMENT_VARIABLES.GIFT_API_URL).get(`/facility/${mockFacilityId}`).reply(400, mockResponse);
 
       const { status, body } = await api.get(url);
 
-      expect(status).toBe(404);
+      expect(status).toBe(400);
 
       expect(body).toStrictEqual(mockResponse);
     });
