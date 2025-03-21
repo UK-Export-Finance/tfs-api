@@ -1,4 +1,5 @@
-import { HttpService } from '@nestjs/axios'; import { EXAMPLES, GIFT } from '@ukef/constants';
+import { HttpService } from '@nestjs/axios';
+import { EXAMPLES, GIFT } from '@ukef/constants';
 
 import { GiftService } from './gift.service';
 
@@ -35,13 +36,9 @@ describe('GiftService', () => {
   });
 
   describe('getFacility', () => {
-    let response;
+    it('should call giftHttpService.get', async () => {
+      await service.getFacility(mockFacilityId);
 
-    beforeEach(async () => {
-      response = await service.getFacility(mockFacilityId);
-    });
-
-    it('should call giftHttpService.get', () => {
       expect(mockHttpServiceGet).toHaveBeenCalledTimes(1);
 
       expect(mockHttpServiceGet).toHaveBeenCalledWith({
@@ -49,7 +46,9 @@ describe('GiftService', () => {
       });
     });
 
-    it('should return the response of giftHttpService.get', () => {
+    it('should return the response of giftHttpService.get', async () => {
+      const response = await service.getFacility(mockFacilityId);
+
       expect(response).toEqual(mockGetResponse);
     });
   });

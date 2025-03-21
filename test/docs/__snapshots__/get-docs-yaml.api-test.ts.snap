@@ -927,7 +927,10 @@ paths:
           in: path
           description: The facility ID
           schema:
-            example: '0030000322'
+            minLength: 10
+            maxLength: 10
+            pattern: ^00\\d{8}$
+            example: '0030000321'
             type: string
       responses:
         '200':
@@ -3216,52 +3219,55 @@ components:
       properties:
         facilityId:
           type: string
-          readOnly: true
+          example: '0030000321'
+          minLength: 10
+          maxLength: 10
         streamId:
           type: string
-          readOnly: true
+          example: 7d915bfa-0069-4aaa-92c5-013925f019a1
         streamVersion:
           type: number
-          readOnly: true
+          example: 1
         name:
           type: string
-          readOnly: true
+          example: Amazing facility
         obligorUrn:
           type: string
-          readOnly: true
+          example: '01234567'
         currency:
           type: string
-          readOnly: true
+          example: USD
         facilityAmount:
           type: number
-          readOnly: true
+          example: 1000000
         drawnAmount:
           type: number
-          readOnly: true
+          example: 2000000
         availableAmount:
           type: number
-          readOnly: true
+          example: 3000000
         effectiveDate:
           type: string
-          readOnly: true
+          example: '2025-01-01'
         expiryDate:
           type: string
-          readOnly: true
+          example: '2025-02-01'
         endOfCoverDate:
           type: string
-          readOnly: true
+          example: '2025-03-01'
         dealId:
           type: string
-          readOnly: true
+          example: '0030000123'
         isRevolving:
           type: boolean
-          readOnly: true
+          example: true
         isDraft:
           type: boolean
-          readOnly: true
+          example: false
         createdDatetime:
+          format: date-time
           type: string
-          readOnly: true
+          example: '2023-04-01T13:03:54.123Z'
       required:
         - facilityId
         - streamId

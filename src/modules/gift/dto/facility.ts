@@ -87,5 +87,5 @@ export class GiftFacilityDto {
   @ApiProperty({
     example: FACILITY.CREATED_DATE_TIME,
   })
-  createdDatetime: string;
+  createdDatetime: Date;
 }

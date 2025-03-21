@@ -65,8 +65,6 @@ describe('GiftHttpService', () => {
   });
 
   describe('get', () => {
-    let response;
-
     const mockPath = '/mock-path';
 
     const mockGetResponse = {
@@ -74,14 +72,12 @@ describe('GiftHttpService', () => {
       data: {},
     };
 
-    beforeEach(async () => {
+    beforeEach(() => {
       axios.create = mockAxiosCreate;
 
       mockAxiosGet = jest.fn().mockResolvedValue(mockGetResponse);
 
       service = new GiftHttpService();
-
-      response = await service.get({ path: mockPath });
     });
 
     it('should call axios.get', () => {
@@ -90,7 +86,9 @@ describe('GiftHttpService', () => {
       expect(mockAxiosGet).toHaveBeenCalledWith(mockPath);
     });
 
-    it('should return the result of axios.get', () => {
+    it('should return the result of axios.get', async () => {
+      const response = await service.get({ path: mockPath });
+
       expect(response).toEqual(mockGetResponse);
     });
   });

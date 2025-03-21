@@ -72,23 +72,25 @@ describe('GiftController', () => {
   });
 
   describe('GET :facilityId', () => {
-    beforeEach(async () => {
+    it('should call giftService.getFacility', async () => {
       await controller.get({ facilityId }, mockRes);
-    });
 
-    it('should call giftService.getFacility', () => {
       expect(mockServiceGetFacility).toHaveBeenCalledTimes(1);
 
       expect(mockServiceGetFacility).toHaveBeenCalledWith(facilityId);
     });
 
-    it('should call res.status with a status', () => {
+    it('should call res.status with a status', async () => {
+      await controller.get({ facilityId }, mockRes);
+
       expect(mockResStatus).toHaveBeenCalledTimes(1);
 
       expect(mockResStatus).toHaveBeenCalledWith(mockGetFacilityResponse.status);
     });
 
-    it('should call res.status.send with data obtained from the service call', () => {
+    it('should call res.status.send with data obtained from the service call', async () => {
+      await controller.get({ facilityId }, mockRes);
+
       expect(mockResSend).toHaveBeenCalledTimes(1);
 
       expect(mockResSend).toHaveBeenCalledWith(mockGetFacilityResponse.data);
