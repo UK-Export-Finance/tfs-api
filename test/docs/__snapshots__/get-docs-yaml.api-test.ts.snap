@@ -3265,9 +3265,8 @@ components:
           type: boolean
           example: false
         createdDatetime:
-          format: date-time
           type: string
-          example: '2023-04-01T13:03:54.123Z'
+          example: '2025-03-21T09:58:21.115Z'
       required:
         - facilityId
         - streamId
