@@ -80,7 +80,9 @@ describe('GiftHttpService', () => {
       service = new GiftHttpService();
     });
 
-    it('should call axios.get', () => {
+    it('should call axios.get', async () => {
+      await service.get({ path: mockPath });
+
       expect(mockAxiosGet).toHaveBeenCalledTimes(1);
 
       expect(mockAxiosGet).toHaveBeenCalledWith(mockPath);
