@@ -36,6 +36,11 @@ export const ENVIRONMENT_VARIABLES = Object.freeze({
   APIM_MDM_VALUE: valueGenerator.string(),
   APIM_MDM_MAX_REDIRECTS: 0,
   APIM_MDM_TIMEOUT: 1000,
+
+  GIFT_API_URL: valueGenerator.httpsUrl(),
+  GIFT_API_KEY: valueGenerator.string(),
+  GIFT_API_MAX_REDIRECTS: 0,
+  GIFT_API_TIMEOUT: 1000,
 });
 
 export const getEnvironmentVariablesForProcessEnv = (): NodeJS.ProcessEnv => ({
@@ -53,6 +58,8 @@ export const getEnvironmentVariablesForProcessEnv = (): NodeJS.ProcessEnv => ({
   ACBS_USE_RETURN_EXCEPTION_HEADER: ENVIRONMENT_VARIABLES.ACBS_USE_RETURN_EXCEPTION_HEADER.toString(),
   APIM_MDM_MAX_REDIRECTS: ENVIRONMENT_VARIABLES.APIM_MDM_MAX_REDIRECTS.toString(),
   APIM_MDM_TIMEOUT: ENVIRONMENT_VARIABLES.APIM_MDM_TIMEOUT.toString(),
+  GIFT_API_MAX_REDIRECTS: ENVIRONMENT_VARIABLES.GIFT_API_MAX_REDIRECTS.toString(),
+  GIFT_API_TIMEOUT: ENVIRONMENT_VARIABLES.GIFT_API_TIMEOUT.toString(),
 });
 
 const delayToExceedTimeoutOrTtlByInMilliseconds = 1;

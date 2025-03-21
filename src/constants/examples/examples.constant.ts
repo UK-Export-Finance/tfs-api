@@ -1,3 +1,5 @@
+import { GIFT_EXAMPLES } from './gift.examples.constant';
+
 export const EXAMPLES = {
   ACBS_BUNDLE_ID: '0000321000',
   DEAL_ID: '0030000321',
@@ -26,4 +28,5 @@ export const EXAMPLES = {
   CITIZENSHIP_CLASS: '2',
   PARTY_ALTERNATE_ID: '00345678',
   LENDER_TYPE_CODE: '500',
+  GIFT: GIFT_EXAMPLES,
 };
