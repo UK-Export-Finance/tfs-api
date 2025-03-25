@@ -54,7 +54,6 @@ const FACILITY_CREATION_PAYLOAD: GiftFacilityCreationDto = {
    * NOTE: the below properties are purely for example purposes.
    * These will be populated in upcoming PRs.
    */
-  // NOTGE: 
   counterParties: [],
   fees: [],
   obligations: [],
