@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { EXAMPLES } from '@ukef/constants';
 import { UkefId } from '@ukef/helpers';
-import { IsBoolean, IsDefined, IsNumber, IsNumberString, IsOptional, IsString, ValidateIf } from 'class-validator';
+import { IsBoolean, IsNumber, IsNumberString, IsString } from 'class-validator';
 
 const {
   GIFT: { FACILITY },

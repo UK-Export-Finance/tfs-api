@@ -1,5 +1,6 @@
 import giftConfig from '@ukef/config/gift.config';
 import { HEADERS } from '@ukef/constants';
+import { mockResponse200, mockResponse201 } from '@ukef-test/http-response';
 import axios from 'axios';
 import * as dotenv from 'dotenv';
 
@@ -22,16 +23,6 @@ mockAxiosCreate = jest.fn(() => ({
   get: mockAxiosGet,
   post: mockAxiosPost,
 }));
-
-const mockGetResponse = {
-  status: 200,
-  data: {},
-};
-
-const mockPostResponse = {
-  status: 201,
-  data: {},
-};
 
 describe('GiftHttpService', () => {
   let service: GiftHttpService;
@@ -82,7 +73,7 @@ describe('GiftHttpService', () => {
     beforeEach(() => {
       axios.create = mockAxiosCreate;
 
-      mockAxiosGet = jest.fn().mockResolvedValue(mockGetResponse);
+      mockAxiosGet = jest.fn().mockResolvedValue(mockResponse200);
 
       service = new GiftHttpService();
     });
@@ -98,7 +89,7 @@ describe('GiftHttpService', () => {
     it('should return the result of axios.get', async () => {
       const response = await service.get({ path: mockGetPath });
 
-      expect(response).toEqual(mockGetResponse);
+      expect(response).toEqual(mockResponse200);
     });
   });
 
@@ -110,7 +101,7 @@ describe('GiftHttpService', () => {
     beforeEach(() => {
       axios.create = mockAxiosCreate;
 
-      mockAxiosPost = jest.fn().mockResolvedValue(mockPostResponse);
+      mockAxiosPost = jest.fn().mockResolvedValue(mockResponse201);
 
       service = new GiftHttpService();
     });
@@ -126,7 +117,7 @@ describe('GiftHttpService', () => {
     it('should return the result of axios.post', async () => {
       const response = await service.post({ path: mockPostPath, payload: mockPayload });
 
-      expect(response).toEqual(mockPostResponse);
+      expect(response).toEqual(mockResponse201);
     });
   });
 });
