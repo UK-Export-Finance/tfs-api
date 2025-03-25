@@ -29,7 +29,7 @@ export class GiftService {
 
   /**
    * Create a GIFT facility
-   * @param {GiftFacilityCreationDto} data: Facility data
+   * @param {GiftFacilityCreationDto} data: Facility creation data
    * @returns {Promise<AxiosResponse>}
    */
   createFacility(data: GiftFacilityCreationDto): Promise<AxiosResponse> {

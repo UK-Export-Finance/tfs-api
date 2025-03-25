@@ -24,7 +24,7 @@ export class GiftFacilityCreationDto {
   overview: GiftFacilityDto;
 
   /**
-   * NOTE: the below properties are purely for example purposes.
+   * NOTE: the below properties are purely for example/context purposes.
    * These will be populated in upcoming PRs.
    */
   counterParties: [];
