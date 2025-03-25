@@ -1,5 +1,5 @@
 import { UkefId } from '@ukef/helpers';
-import { GiftFacilityCreationDto, GiftFacilityDto } from '@ukef/modules/gift/dto';
+import { GiftFacilityCreationDto, GiftFacilityResponseDto } from '@ukef/modules/gift/dto';
 
 const DEAL_ID: UkefId = '0030000123';
 const FACILITY_ID: UkefId = '0030000321';
@@ -64,12 +64,15 @@ const FACILITY_CREATION_PAYLOAD: GiftFacilityCreationDto = {
  * FACILITY_RESPONSE_DATA
  * Facility data in the shape that GIFT returns.
  */
-const FACILITY_RESPONSE_DATA: GiftFacilityDto = {
+const FACILITY_RESPONSE_DATA: GiftFacilityResponseDto = {
   facilityId: FACILITY.FACILITY_ID,
   ...FACILITY_OVERVIEW_DATA,
+  drawnAmount: FACILITY.DRAWN_AMOUNT,
+  availableAmount: FACILITY.AVAILABLE_AMOUNT,
 };
 
 export const GIFT_EXAMPLES = {
+  DEAL_ID,
   FACILITY,
   FACILITY_CREATION_PAYLOAD,
   FACILITY_ID,

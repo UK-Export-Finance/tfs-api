@@ -9,6 +9,10 @@ const {
   GIFT: { FACILITY_CREATION_PAYLOAD },
 } = EXAMPLES;
 
+/**
+ * GIFT facility creation DTO.
+ * These fields are required for APIM to create a facility in GIFT.
+ */
 export class GiftFacilityCreationDto {
   @ApiProperty({
     example: FACILITY_CREATION_PAYLOAD,

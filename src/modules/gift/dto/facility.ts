@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { EXAMPLES } from '@ukef/constants';
+import { ValidatedFacilityIdentifierApiProperty } from '@ukef/decorators/validated-facility-identifier-api-property';
 import { UkefId } from '@ukef/helpers';
 import { IsBoolean, IsNumber, IsNumberString, IsString } from 'class-validator';
 
@@ -7,8 +8,14 @@ const {
   GIFT: { FACILITY },
 } = EXAMPLES;
 
+/**
+ * GIFT facility DTO.
+ * This is a generic/base DTO for a GIFT facility.
+ */
 export class GiftFacilityDto {
-  @IsString()
+  @ValidatedFacilityIdentifierApiProperty({
+    description: 'The facility ID',
+  })
   @ApiProperty({
     example: FACILITY.FACILITY_ID,
     minLength: 10,
@@ -16,19 +23,11 @@ export class GiftFacilityDto {
   })
   facilityId: UkefId;
 
-  // TODO(?) this is NOT required for creation
-  // @IsString()
+  @IsString()
   @ApiProperty({
-    example: FACILITY.STREAM_ID,
+    example: 'Export Insurance Policy (EXIP)',
   })
-  streamId: string;
-
-  // TODO(?) this is NOT required for creation
-  // @IsNumber()
-  @ApiProperty({
-    example: FACILITY.STREAM_VERSION,
-  })
-  streamVersion: number;
+  productType: string;
 
   @IsString()
   @ApiProperty({
@@ -54,18 +53,6 @@ export class GiftFacilityDto {
   })
   facilityAmount: number;
 
-  // @IsNumber()
-  // @ApiProperty({
-  //   example: FACILITY.DRAWN_AMOUNT,
-  // })
-  // drawnAmount: number;
-
-  // @IsNumber()
-  // @ApiProperty({
-  //   example: FACILITY.AVAILABLE_AMOUNT,
-  // })
-  // availableAmount: number;
-
   @IsString()
   @ApiProperty({
     example: FACILITY.EFFECTIVE_DATE,
@@ -84,12 +71,9 @@ export class GiftFacilityDto {
   })
   endOfCoverDate: string;
 
-  // TODO:
-  // @ValidateIf((o) => o.dealId isNotNullOrUndefined) ... 
-  // or maybe https://stackoverflow.com/a/76738269
-
-  // TODO: SHOULD dealId be required? optional in the UI.
-  @IsString()
+  @ValidatedFacilityIdentifierApiProperty({
+    description: 'The deal ID',
+  })
   @ApiProperty({
     example: FACILITY.DEAL_ID,
   })
@@ -100,36 +84,4 @@ export class GiftFacilityDto {
     example: FACILITY.IS_REVOLVING,
   })
   isRevolving: boolean;
-
-  // TODO(?) is this required for creation
-  // @IsBoolean()
-  @ApiProperty({
-    example: FACILITY.IS_DRAFT,
-  })
-  isDraft: boolean;
-
-  // TODO(?) is this required for creation
-  // @IsString()
-  @ApiProperty({
-    example: FACILITY.CREATED_DATE_TIME,
-  })
-  createdDatetime: string;
-
-
-
-  // TODO
-  // TODO
-  // productType validation - handle / hard coded in APIM for MVP?
-  @IsString()
-  @ApiProperty({
-    example: 'Export Insurance Policy (EXIP)',
-  })
-  productType: string;
-
-  // TODO
-  // TODO
-  // facility creation - missing from GIFT swagger docs (?)
-  // drawnAmount
-  // availableAmount
-  // isDraft
 }
