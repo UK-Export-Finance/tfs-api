@@ -9,6 +9,7 @@ const {
   GIFT: { FACILITY },
 } = EXAMPLES;
 
+// TODO: DRY test mocks
 const mockGiftFacility: GiftFacilityDto = {
   facilityId: FACILITY.FACILITY_ID,
   streamId: FACILITY.STREAM_ID,
@@ -17,8 +18,8 @@ const mockGiftFacility: GiftFacilityDto = {
   obligorUrn: FACILITY.OBLIGOR_URN,
   currency: FACILITY.CURRENCY,
   facilityAmount: FACILITY.FACILITY_AMOUNT,
-  drawnAmount: FACILITY.DRAWN_AMOUNT,
-  availableAmount: FACILITY.AVAILABLE_AMOUNT,
+  // drawnAmount: FACILITY.DRAWN_AMOUNT,
+  // availableAmount: FACILITY.AVAILABLE_AMOUNT,
   effectiveDate: FACILITY.EFFECTIVE_DATE,
   expiryDate: FACILITY.EXPIRY_DATE,
   endOfCoverDate: FACILITY.END_OF_COVER_DATE,
@@ -26,12 +27,18 @@ const mockGiftFacility: GiftFacilityDto = {
   isRevolving: FACILITY.IS_REVOLVING,
   isDraft: FACILITY.IS_DRAFT,
   createdDatetime: FACILITY.CREATED_DATE_TIME,
+  productType: 'MOCK',
 };
 
 const { facilityId } = mockGiftFacility;
 
 const mockGetFacilityResponse = {
   status: 200,
+  data: mockGiftFacility,
+};
+
+const mockCreateFacilityResponse = {
+  status: 201,
   data: mockGiftFacility,
 };
 
@@ -45,6 +52,7 @@ describe('GiftController', () => {
   let mockResSend;
 
   let mockServiceGetFacility;
+  let mockServiceCreateFacility;
 
   beforeEach(() => {
     giftHttpService = new GiftHttpService();
@@ -61,8 +69,10 @@ describe('GiftController', () => {
     mockRes.status = mockResStatus;
 
     mockServiceGetFacility = jest.fn().mockResolvedValueOnce(mockGetFacilityResponse);
+    mockServiceCreateFacility = jest.fn().mockResolvedValueOnce(mockCreateFacilityResponse);
 
     giftService.getFacility = mockServiceGetFacility;
+    giftService.createFacility = mockServiceCreateFacility;
 
     controller = new GiftController(giftService);
   });
@@ -94,6 +104,32 @@ describe('GiftController', () => {
       expect(mockResSend).toHaveBeenCalledTimes(1);
 
       expect(mockResSend).toHaveBeenCalledWith(mockGetFacilityResponse.data);
+    });
+  });
+
+  describe('POST', () => {
+    it('should call giftService.createFacility', async () => {
+      await controller.get({ facilityId }, mockRes);
+
+      expect(mockServiceCreateFacility).toHaveBeenCalledTimes(1);
+
+      expect(mockServiceCreateFacility).toHaveBeenCalledWith(facilityId);
+    });
+
+    it('should call res.status with a status', async () => {
+      await controller.get({ facilityId }, mockRes);
+
+      expect(mockResStatus).toHaveBeenCalledTimes(1);
+
+      expect(mockResStatus).toHaveBeenCalledWith(mockCreateFacilityResponse.status);
+    });
+
+    it('should call res.status.send with data obtained from the service call', async () => {
+      await controller.get({ facilityId }, mockRes);
+
+      expect(mockResSend).toHaveBeenCalledTimes(1);
+
+      expect(mockResSend).toHaveBeenCalledWith(mockCreateFacilityResponse.data);
     });
   });
 });

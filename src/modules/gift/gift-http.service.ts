@@ -9,7 +9,7 @@ const { CONTENT_TYPE } = HEADERS;
  * Array of acceptable statuses to consume from a GIFT API response
  * @returns {Array<number>}
  */
-export const GIFT_API_ACCEPTABLE_STATUSES = [200, 400, 404];
+export const GIFT_API_ACCEPTABLE_STATUSES = [200, 201, 400, 404];
 
 /**
  * GIFT HTTP service.
@@ -50,5 +50,15 @@ export class GiftHttpService {
    */
   get<T>({ path }: { path: string }): Promise<AxiosResponse<T>> {
     return this.axiosInstance.get(path);
+  }
+
+  /**
+   * Execute a POST axios/HTTP request
+   * @param {String} path
+   * @param {Object} paylaad
+   * @returns {Promise<AxiosResponse<T>>}
+   */
+  post<T>({ path, payload }: { path: string; payload: object }): Promise<AxiosResponse<T>> {
+    return this.axiosInstance.post(path, payload);
   }
 }
