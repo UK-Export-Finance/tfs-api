@@ -23,7 +23,7 @@ export class GiftService {
    */
   getFacility(facilityId: UkefId): Promise<AxiosResponse> {
     return this.giftHttpService.get<GiftFacilityDto>({
-      path: `${GIFT.PATH.FACILITY}${facilityId}`,
+      path: `${GIFT.PATH.FACILITY}/${facilityId}`,
     });
   }
 

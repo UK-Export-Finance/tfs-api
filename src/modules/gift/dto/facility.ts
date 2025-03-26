@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { EXAMPLES } from '@ukef/constants';
 import { ValidatedFacilityIdentifierApiProperty } from '@ukef/decorators/validated-facility-identifier-api-property';
 import { UkefId } from '@ukef/helpers';
-import { IsBoolean, IsNumber, IsNumberString, IsString } from 'class-validator';
+import { IsBoolean, IsNumberString, IsString, Min } from 'class-validator';
 
 const {
   GIFT: { FACILITY },
@@ -47,7 +47,7 @@ export class GiftFacilityDto {
   })
   currency: string;
 
-  @IsNumber()
+  @Min(0)
   @ApiProperty({
     example: FACILITY.FACILITY_AMOUNT,
   })

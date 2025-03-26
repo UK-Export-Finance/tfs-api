@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Req, Res, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Res, ValidationPipe } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
