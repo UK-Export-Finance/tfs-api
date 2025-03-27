@@ -3,7 +3,7 @@ import { GIFT_EXAMPLES } from '@ukef/constants/examples/gift.examples.constant';
 import { Api } from '@ukef-test/support/api';
 import nock from 'nock';
 
-import { booleanValidation, numberStringValidation, numberValidation, stringValidation } from './assertions';
+import { booleanValidation, numberStringValidation, numberValidation, stringValidation, ukefIdValidation } from './assertions';
 
 const {
   PATH: { FACILITY },
@@ -79,10 +79,6 @@ describe('POST /gift/facility - validation', () => {
     });
   });
 
-  // TODO: deal ID conditions
-
-  // TODO: facility ID conditions
-
   const baseParams = {
     parentFieldName: 'overview',
     initialPayload: GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD,
@@ -93,6 +89,12 @@ describe('POST /gift/facility - validation', () => {
     ...baseParams,
     fieldPath: 'overview.currency',
     fieldName: 'currency',
+  });
+
+  ukefIdValidation({
+    ...baseParams,
+    fieldPath: 'overview.dealId',
+    fieldName: 'dealId',
   });
 
   stringValidation({
@@ -119,6 +121,12 @@ describe('POST /gift/facility - validation', () => {
     ...baseParams,
     fieldPath: 'overview.facilityAmount',
     fieldName: 'facilityAmount',
+  });
+
+  ukefIdValidation({
+    ...baseParams,
+    fieldPath: 'overview.facilityId',
+    fieldName: 'facilityId',
   });
 
   booleanValidation({

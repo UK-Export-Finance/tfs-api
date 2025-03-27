@@ -40,7 +40,7 @@ describe('POST /gift/facility', () => {
       api.postWithoutAuth(url, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD, incorrectAuth?.headerName, incorrectAuth?.headerValue),
   });
 
-  describe('when a 201 response is returned by GIFT', () => {
+  describe('when the payload is valid and a 201 response is returned by GIFT', () => {
     it('should return a 201 response with the received data', async () => {
       const mockResponse = {
         facilityId: mockFacilityId,
@@ -58,7 +58,7 @@ describe('POST /gift/facility', () => {
   });
 
   describe('when a 400 response is returned by GIFT', () => {
-    it('should return a 400 response with the facility', async () => {
+    it('should return a 400 response with the received response', async () => {
       const mockResponse = {
         statusCode: 400,
         message: 'Validation error',
