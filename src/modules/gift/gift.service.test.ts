@@ -5,9 +5,10 @@ import { mockResponse200, mockResponse201 } from '@ukef-test/http-response';
 import { GiftService } from './gift.service';
 
 const {
-  GIFT: { FACILITY_CREATION_PAYLOAD: mockPayload, FACILITY_ID: mockFacilityId },
+  GIFT: { FACILITY_RESPONSE_DATA, FACILITY_CREATION_PAYLOAD: mockPayload, FACILITY_ID: mockFacilityId },
 } = EXAMPLES;
 
+const mockResponseGet = mockResponse200(FACILITY_RESPONSE_DATA);
 const mockResponsePost = mockResponse201(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA);
 
 describe('GiftService', () => {
@@ -21,7 +22,7 @@ describe('GiftService', () => {
   beforeEach(() => {
     httpService = new HttpService();
 
-    mockHttpServiceGet = jest.fn().mockResolvedValueOnce(mockResponse200);
+    mockHttpServiceGet = jest.fn().mockResolvedValueOnce(mockResponseGet);
     mockHttpServicePost = jest.fn().mockResolvedValueOnce(mockResponsePost);
 
     httpService.get = mockHttpServiceGet;
@@ -53,7 +54,7 @@ describe('GiftService', () => {
     it('should return the response of giftHttpService.get', async () => {
       const response = await service.getFacility(mockFacilityId);
 
-      expect(response).toEqual(mockResponse200());
+      expect(response).toEqual(mockResponseGet);
     });
   });
 
@@ -65,14 +66,14 @@ describe('GiftService', () => {
 
       expect(mockHttpServicePost).toHaveBeenCalledWith({
         path: GIFT.PATH.FACILITY,
-        payload: mockPayload,
+        payload: mockPayload.overview,
       });
     });
 
     it('should return the response of giftHttpService.post', async () => {
       const response = await service.createFacility(mockPayload);
 
-      expect(response).toEqual(mockResponse200(mockPayload));
+      expect(response).toEqual(mockResponsePost);
     });
   });
 });

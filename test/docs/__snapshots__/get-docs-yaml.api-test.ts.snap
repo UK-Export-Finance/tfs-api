@@ -949,7 +949,7 @@ paths:
           description: An internal server error has occurred
   /api/v1/gift/facility:
     post:
-      operationId: GiftController_create
+      operationId: GiftController_post
       summary: Create a GIFT facility
       parameters: []
       requestBody:
