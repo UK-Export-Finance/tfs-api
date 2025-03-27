@@ -947,6 +947,30 @@ paths:
           description: The facility was not found
         '500':
           description: An internal server error has occurred
+  /api/v1/gift/facility:
+    post:
+      operationId: GiftController_create
+      summary: Create a GIFT facility
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GiftFacilityCreationDto'
+      responses:
+        '201':
+          description: The created facility
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GiftFacilityDto'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '500':
+          description: An internal server error has occurred
   /api/v1/parties:
     get:
       operationId: PartyController_getPartiesBySearchText
@@ -3217,73 +3241,88 @@ components:
     GiftFacilityDto:
       type: object
       properties:
-        facilityId:
+        currency:
           type: string
-          example: '0030000321'
+          example: USD
+        dealId:
+          type: string
+          example: '0030000322'
+          description: The deal ID
           minLength: 10
           maxLength: 10
-        streamId:
+          pattern: ^00\\d{8}$
+        effectiveDate:
           type: string
-          example: 7d915bfa-0069-4aaa-92c5-013925f019a1
-        streamVersion:
+          example: '2025-01-01'
+        endOfCoverDate:
+          type: string
+          example: '2025-03-01'
+        expiryDate:
+          type: string
+          example: '2025-02-01'
+        facilityAmount:
           type: number
-          example: 1
+          example: 1000000
+        facilityId:
+          type: string
+          example: '0030000322'
+          minLength: 10
+          maxLength: 10
+          description: The facility ID
+          pattern: ^00\\d{8}$
+        isRevolving:
+          type: boolean
+          example: true
         name:
           type: string
           example: Amazing facility
         obligorUrn:
           type: string
           example: '01234567'
-        currency:
+        productType:
           type: string
-          example: USD
-        facilityAmount:
-          type: number
-          example: 1000000
-        drawnAmount:
-          type: number
-          example: 2000000
-        availableAmount:
-          type: number
-          example: 3000000
-        effectiveDate:
-          type: string
-          example: '2025-01-01'
-        expiryDate:
-          type: string
-          example: '2025-02-01'
-        endOfCoverDate:
-          type: string
-          example: '2025-03-01'
-        dealId:
-          type: string
-          example: '0030000123'
-        isRevolving:
-          type: boolean
-          example: true
-        isDraft:
-          type: boolean
-          example: false
-        createdDatetime:
-          type: string
-          example: '2025-03-21T09:58:21.115Z'
+          example: Export Insurance Policy (EXIP)
       required:
+        - currency
+        - dealId
+        - effectiveDate
+        - endOfCoverDate
+        - expiryDate
+        - facilityAmount
         - facilityId
-        - streamId
-        - streamVersion
+        - isRevolving
         - name
         - obligorUrn
-        - currency
-        - facilityAmount
-        - drawnAmount
-        - availableAmount
-        - effectiveDate
-        - expiryDate
-        - endOfCoverDate
-        - dealId
-        - isRevolving
-        - isDraft
-        - createdDatetime
+        - productType
+    GiftFacilityCreationDto:
+      type: object
+      properties:
+        overview:
+          example:
+            overview:
+              facilityId: '0030000321'
+              streamId: 7d915bfa-0069-4aaa-92c5-013925f019a1
+              streamVersion: 1
+              name: Amazing facility
+              obligorUrn: '01234567'
+              currency: USD
+              facilityAmount: 1000000
+              effectiveDate: '2025-01-01'
+              expiryDate: '2025-02-01'
+              endOfCoverDate: '2025-03-01'
+              dealId: '0030000123'
+              isRevolving: true
+              isDraft: false
+              createdDatetime: '2025-03-21T09:58:21.115Z'
+              productType: MOCK
+            counterParties: []
+            fees: []
+            obligations: []
+            repaymentProfiles: []
+          allOf:
+            - $ref: '#/components/schemas/GiftFacilityDto'
+      required:
+        - overview
     GetPartiesBySearchTextResponseItem:
       type: object
       properties:
