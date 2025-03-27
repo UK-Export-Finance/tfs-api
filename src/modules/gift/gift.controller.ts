@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Res, Version } from '@nestjs/common';
+import { Controller, Get, Param, Res } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiInternalServerErrorResponse,
