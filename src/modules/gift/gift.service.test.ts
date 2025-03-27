@@ -1,14 +1,15 @@
 import { HttpService } from '@nestjs/axios';
 import { EXAMPLES, GIFT } from '@ukef/constants';
+import { mockResponse200, mockResponse201 } from '@ukef-test/http-response';
 
 import { GiftService } from './gift.service';
 
-const mockFacilityId = EXAMPLES.GIFT.FACILITY.FACILITY_ID;
+const {
+  GIFT: { FACILITY_RESPONSE_DATA, FACILITY_CREATION_PAYLOAD: mockPayload, FACILITY_ID: mockFacilityId },
+} = EXAMPLES;
 
-const mockGetResponse = {
-  status: 200,
-  data: {},
-};
+const mockResponseGet = mockResponse200(FACILITY_RESPONSE_DATA);
+const mockResponsePost = mockResponse201(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA);
 
 describe('GiftService', () => {
   let httpService: HttpService;
@@ -16,16 +17,20 @@ describe('GiftService', () => {
 
   let giftHttpService;
   let mockHttpServiceGet: jest.Mock;
+  let mockHttpServicePost: jest.Mock;
 
   beforeEach(() => {
     httpService = new HttpService();
 
-    mockHttpServiceGet = jest.fn().mockResolvedValueOnce(mockGetResponse);
+    mockHttpServiceGet = jest.fn().mockResolvedValueOnce(mockResponseGet);
+    mockHttpServicePost = jest.fn().mockResolvedValueOnce(mockResponsePost);
 
     httpService.get = mockHttpServiceGet;
+    httpService.post = mockHttpServicePost;
 
     giftHttpService = {
       get: mockHttpServiceGet,
+      post: mockHttpServicePost,
     };
 
     service = new GiftService(giftHttpService);
@@ -42,14 +47,33 @@ describe('GiftService', () => {
       expect(mockHttpServiceGet).toHaveBeenCalledTimes(1);
 
       expect(mockHttpServiceGet).toHaveBeenCalledWith({
-        path: `${GIFT.PATH.FACILITY}${mockFacilityId}`,
+        path: `${GIFT.PATH.FACILITY}/${mockFacilityId}`,
       });
     });
 
     it('should return the response of giftHttpService.get', async () => {
       const response = await service.getFacility(mockFacilityId);
 
-      expect(response).toEqual(mockGetResponse);
+      expect(response).toEqual(mockResponseGet);
+    });
+  });
+
+  describe('createFacility', () => {
+    it('should call giftHttpService.post', async () => {
+      await service.createFacility(mockPayload);
+
+      expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
+
+      expect(mockHttpServicePost).toHaveBeenCalledWith({
+        path: GIFT.PATH.FACILITY,
+        payload: mockPayload.overview,
+      });
+    });
+
+    it('should return the response of giftHttpService.post', async () => {
+      const response = await service.createFacility(mockPayload);
+
+      expect(response).toEqual(mockResponsePost);
     });
   });
 });

@@ -1,39 +1,16 @@
 import { EXAMPLES } from '@ukef/constants';
+import { mockResponse200, mockResponse201 } from '@ukef-test/http-response';
 
-import { GiftFacilityDto } from './dto';
 import { GiftController } from './gift.controller';
 import { GiftService } from './gift.service';
 import { GiftHttpService } from './gift-http.service';
 
 const {
-  GIFT: { FACILITY },
+  GIFT: { FACILITY_ID: mockFacilityId, FACILITY_CREATION_PAYLOAD },
 } = EXAMPLES;
 
-const mockGiftFacility: GiftFacilityDto = {
-  facilityId: FACILITY.FACILITY_ID,
-  streamId: FACILITY.STREAM_ID,
-  streamVersion: FACILITY.STREAM_VERSION,
-  name: FACILITY.FACILITY_NAME,
-  obligorUrn: FACILITY.OBLIGOR_URN,
-  currency: FACILITY.CURRENCY,
-  facilityAmount: FACILITY.FACILITY_AMOUNT,
-  drawnAmount: FACILITY.DRAWN_AMOUNT,
-  availableAmount: FACILITY.AVAILABLE_AMOUNT,
-  effectiveDate: FACILITY.EFFECTIVE_DATE,
-  expiryDate: FACILITY.EXPIRY_DATE,
-  endOfCoverDate: FACILITY.END_OF_COVER_DATE,
-  dealId: FACILITY.DEAL_ID,
-  isRevolving: FACILITY.IS_REVOLVING,
-  isDraft: FACILITY.IS_DRAFT,
-  createdDatetime: FACILITY.CREATED_DATE_TIME,
-};
-
-const { facilityId } = mockGiftFacility;
-
-const mockGetFacilityResponse = {
-  status: 200,
-  data: mockGiftFacility,
-};
+const mockResponseGet = mockResponse200(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA);
+const mockResponsePost = mockResponse201(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA);
 
 describe('GiftController', () => {
   let giftHttpService: GiftHttpService;
@@ -45,6 +22,7 @@ describe('GiftController', () => {
   let mockResSend;
 
   let mockServiceGetFacility;
+  let mockServiceCreateFacility;
 
   beforeEach(() => {
     giftHttpService = new GiftHttpService();
@@ -60,9 +38,11 @@ describe('GiftController', () => {
 
     mockRes.status = mockResStatus;
 
-    mockServiceGetFacility = jest.fn().mockResolvedValueOnce(mockGetFacilityResponse);
+    mockServiceGetFacility = jest.fn().mockResolvedValueOnce(mockResponseGet);
+    mockServiceCreateFacility = jest.fn().mockResolvedValueOnce(mockResponsePost);
 
     giftService.getFacility = mockServiceGetFacility;
+    giftService.createFacility = mockServiceCreateFacility;
 
     controller = new GiftController(giftService);
   });
@@ -73,27 +53,53 @@ describe('GiftController', () => {
 
   describe('GET :facilityId', () => {
     it('should call giftService.getFacility', async () => {
-      await controller.get({ facilityId }, mockRes);
+      await controller.get({ facilityId: mockFacilityId }, mockRes);
 
       expect(mockServiceGetFacility).toHaveBeenCalledTimes(1);
 
-      expect(mockServiceGetFacility).toHaveBeenCalledWith(facilityId);
+      expect(mockServiceGetFacility).toHaveBeenCalledWith(mockFacilityId);
     });
 
     it('should call res.status with a status', async () => {
-      await controller.get({ facilityId }, mockRes);
+      await controller.get({ facilityId: mockFacilityId }, mockRes);
 
       expect(mockResStatus).toHaveBeenCalledTimes(1);
 
-      expect(mockResStatus).toHaveBeenCalledWith(mockGetFacilityResponse.status);
+      expect(mockResStatus).toHaveBeenCalledWith(mockResponseGet.status);
     });
 
     it('should call res.status.send with data obtained from the service call', async () => {
-      await controller.get({ facilityId }, mockRes);
+      await controller.get({ facilityId: mockFacilityId }, mockRes);
 
       expect(mockResSend).toHaveBeenCalledTimes(1);
 
-      expect(mockResSend).toHaveBeenCalledWith(mockGetFacilityResponse.data);
+      expect(mockResSend).toHaveBeenCalledWith(mockResponseGet.data);
+    });
+  });
+
+  describe('POST', () => {
+    it('should call giftService.createFacility', async () => {
+      await controller.post(FACILITY_CREATION_PAYLOAD, mockRes);
+
+      expect(mockServiceCreateFacility).toHaveBeenCalledTimes(1);
+
+      expect(mockServiceCreateFacility).toHaveBeenCalledWith(FACILITY_CREATION_PAYLOAD);
+    });
+
+    it('should call res.status with a status', async () => {
+      await controller.post(FACILITY_CREATION_PAYLOAD, mockRes);
+
+      expect(mockResStatus).toHaveBeenCalledTimes(1);
+
+      expect(mockResStatus).toHaveBeenCalledWith(mockResponsePost.status);
+    });
+
+    it('should call res.status.send with data obtained from the service call', async () => {
+      await controller.post(FACILITY_CREATION_PAYLOAD, mockRes);
+
+      expect(mockResSend).toHaveBeenCalledTimes(1);
+
+      expect(mockResSend).toHaveBeenCalledWith(mockResponsePost.data);
     });
   });
 });
