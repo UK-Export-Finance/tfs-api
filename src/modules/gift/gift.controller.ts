@@ -70,7 +70,7 @@ export class GiftController {
   @ApiInternalServerErrorResponse({
     description: 'An internal server error has occurred',
   })
-  async create(@Body(new ValidationPipe({ transform: true })) facilityData: GiftFacilityCreationDto, @Res({ passthrough: true }) res: Response) {
+  async post(@Body(new ValidationPipe({ transform: true })) facilityData: GiftFacilityCreationDto, @Res({ passthrough: true }) res: Response) {
     const { status, data } = await this.giftService.createFacility(facilityData);
 
     res.status(status).send(data);

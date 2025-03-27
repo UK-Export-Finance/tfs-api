@@ -46,14 +46,14 @@ describe('GiftService', () => {
       expect(mockHttpServiceGet).toHaveBeenCalledTimes(1);
 
       expect(mockHttpServiceGet).toHaveBeenCalledWith({
-        path: `${GIFT.PATH.FACILITY}${mockFacilityId}`,
+        path: `${GIFT.PATH.FACILITY}/${mockFacilityId}`,
       });
     });
 
     it('should return the response of giftHttpService.get', async () => {
       const response = await service.getFacility(mockFacilityId);
 
-      expect(response).toEqual(mockResponse200);
+      expect(response).toEqual(mockResponse200());
     });
   });
 
@@ -72,7 +72,7 @@ describe('GiftService', () => {
     it('should return the response of giftHttpService.post', async () => {
       const response = await service.createFacility(mockPayload);
 
-      expect(response).toEqual(mockResponse200);
+      expect(response).toEqual(mockResponse200(mockPayload));
     });
   });
 });

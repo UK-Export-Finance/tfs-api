@@ -111,7 +111,7 @@ describe('GiftHttpService', () => {
 
       expect(mockAxiosPost).toHaveBeenCalledTimes(1);
 
-      expect(mockAxiosPost).toHaveBeenCalledWith(mockPostPath);
+      expect(mockAxiosPost).toHaveBeenCalledWith(mockPostPath, mockPayload);
     });
 
     it('should return the result of axios.post', async () => {
