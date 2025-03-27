@@ -56,21 +56,21 @@ describe('POST /gift/facility - validation', () => {
       const expected = {
         error: 'Bad Request',
         message: [
-          'overview.facilityId must be a string',
-          'overview.facilityId must be longer than or equal to 10 characters',
-          'overview.facilityId must match /^00\\d{8}$/ regular expression',
-          'overview.productType must be a string',
-          'overview.name must be a string',
-          'overview.obligorUrn must be a number string',
           'overview.currency must be a string',
-          'overview.facilityAmount must not be less than 0',
-          'overview.effectiveDate must be a string',
-          'overview.expiryDate must be a string',
-          'overview.endOfCoverDate must be a string',
           'overview.dealId must be a string',
           'overview.dealId must be longer than or equal to 10 characters',
           'overview.dealId must match /^00\\d{8}$/ regular expression',
+          'overview.effectiveDate must be a string',
+          'overview.endOfCoverDate must be a string',
+          'overview.expiryDate must be a string',
+          'overview.facilityAmount must not be less than 0',
+          'overview.facilityId must be a string',
+          'overview.facilityId must be longer than or equal to 10 characters',
+          'overview.facilityId must match /^00\\d{8}$/ regular expression',
           'overview.isRevolving must be a boolean value',
+          'overview.name must be a string',
+          'overview.obligorUrn must be a number string',
+          'overview.productType must be a string',
         ],
         statusCode: 400,
       };
@@ -85,71 +85,25 @@ describe('POST /gift/facility - validation', () => {
     url,
   };
 
-  stringValidation({
-    ...baseParams,
-    fieldPath: 'overview.currency',
-    fieldName: 'currency',
-  });
+  stringValidation({ ...baseParams, fieldName: 'currency' });
 
-  ukefIdValidation({
-    ...baseParams,
-    fieldPath: 'overview.dealId',
-    fieldName: 'dealId',
-  });
+  ukefIdValidation({ ...baseParams, fieldName: 'dealId' });
 
-  stringValidation({
-    ...baseParams,
-    fieldPath: 'overview.effectiveDate',
-    fieldName: 'effectiveDate',
-    url,
-  });
+  stringValidation({ ...baseParams, fieldName: 'effectiveDate' });
 
-  stringValidation({
-    ...baseParams,
-    fieldPath: 'overview.endOfCoverDate',
-    fieldName: 'endOfCoverDate',
-    url,
-  });
+  stringValidation({ ...baseParams, fieldName: 'endOfCoverDate' });
 
-  stringValidation({
-    ...baseParams,
-    fieldPath: 'overview.expiryDate',
-    fieldName: 'expiryDate',
-  });
+  stringValidation({ ...baseParams, fieldName: 'expiryDate' });
 
-  numberValidation({
-    ...baseParams,
-    fieldPath: 'overview.facilityAmount',
-    fieldName: 'facilityAmount',
-  });
+  numberValidation({ ...baseParams, fieldName: 'facilityAmount' });
 
-  ukefIdValidation({
-    ...baseParams,
-    fieldPath: 'overview.facilityId',
-    fieldName: 'facilityId',
-  });
+  ukefIdValidation({ ...baseParams, fieldName: 'facilityId' });
 
-  booleanValidation({
-    ...baseParams,
-    fieldPath: 'overview.isRevolving',
-    fieldName: 'isRevolving',
-  });
+  booleanValidation({ ...baseParams, fieldName: 'isRevolving' });
 
-  stringValidation({
-    ...baseParams,
-    fieldPath: 'overview.name',
-    fieldName: 'name',
-  });
+  stringValidation({ ...baseParams, fieldName: 'name' });
 
-  numberStringValidation({
-    ...baseParams,
-    fieldPath: 'overview.obligorUrn',
-    fieldName: 'obligorUrn',
-  });
+  numberStringValidation({ ...baseParams, fieldName: 'obligorUrn' });
 
-  stringValidation({
-    ...baseParams,
-    fieldPath: 'overview.productType',
-    fieldName: 'productType',
-  });
+  stringValidation({ ...baseParams, fieldName: 'productType' });
 });
