@@ -58,6 +58,7 @@ export default registerAs('app', (): Record<string, any> => {
    */
 
   const giftVersion = `${Number(version) + 1}`
+
   const giftVersioning = {
     enable: enableVersioning,
     prefix: versionPrefix,
