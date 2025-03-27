@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Res } from '@nestjs/common';
+import { Controller, Get, Param, Res, Version } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiInternalServerErrorResponse,
@@ -9,12 +9,19 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { EXAMPLES } from '@ukef/constants';
+import AppConfig from '@ukef/config/app.config';
 import { Response } from 'express';
 
 import { GetFacilityOperationParamsDto, GiftFacilityDto } from './dto';
 import { GiftService } from './gift.service';
 
-@Controller('gift/facility')
+const { giftVersioning } = AppConfig();
+
+@Controller({
+  path: 'gift/facility',
+  version: giftVersioning.version,
+})
+
 export class GiftController {
   constructor(private readonly giftService: GiftService) {}
 

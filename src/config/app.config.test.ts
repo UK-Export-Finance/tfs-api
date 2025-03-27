@@ -118,15 +118,63 @@ describe('appConfig', () => {
 
     describe('when HTTP_VERSION is specified', () => {
       it('should return `version` as HTTP_VERSION', () => {
-        const mockVersion = '100200';
+        const mockHttpVersion = '100200';
 
         replaceEnvironmentVariables({
-          HTTP_VERSION: mockVersion,
+          HTTP_VERSION: mockHttpVersion,
         });
 
         const config = appConfig();
 
-        expect(config.versioning.version).toBe(mockVersion);
+        expect(config.versioning.version).toBe(mockHttpVersion);
+      });
+    });
+  });
+
+  describe('giftVersioning', () => {
+    it('should return an object with default properties', () => {
+      replaceEnvironmentVariables({
+        HTTP_VERSIONING_ENABLE: undefined,
+        HTTP_VERSION: undefined,
+      });
+
+      const config = appConfig();
+
+      const expected = {
+        enable: false,
+        prefix: 'v',
+        prefixAndVersion: 'v2',
+        version: '2',
+      };
+
+      expect(config.giftVersioning).toEqual(expected);
+    });
+
+    describe('when HTTP_VERSIONING_ENABLE is specified', () => {
+      it('should return `enable` as true', () => {
+        replaceEnvironmentVariables({
+          HTTP_VERSIONING_ENABLE: 'true',
+        });
+
+        const config = appConfig();
+
+        expect(config.giftVersioning.enable).toBe(true);
+      });
+    });
+
+    describe('when HTTP_VERSION is specified', () => {
+      it('should return `version` as an incremented HTTP_VERSION', () => {
+        const mockHttpVersion = '100200';
+
+        replaceEnvironmentVariables({
+          HTTP_VERSION: mockHttpVersion,
+        });
+
+        const config = appConfig();
+
+        const expected = '100201';
+
+        expect(config.giftVersioning.version).toBe(expected);
       });
     });
   });
