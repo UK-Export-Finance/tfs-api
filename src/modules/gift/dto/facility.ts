@@ -13,6 +13,44 @@ const {
  * This is a generic/base DTO for a GIFT facility.
  */
 export class GiftFacilityDto {
+  @IsString()
+  @ApiProperty({
+    example: FACILITY.CURRENCY,
+  })
+  currency: string;
+
+  @ValidatedFacilityIdentifierApiProperty({
+    description: 'The deal ID',
+  })
+  @ApiProperty({
+    example: FACILITY.DEAL_ID,
+  })
+  dealId: UkefId;
+
+  @IsString()
+  @ApiProperty({
+    example: FACILITY.EFFECTIVE_DATE,
+  })
+  effectiveDate: string;
+
+  @IsString()
+  @ApiProperty({
+    example: FACILITY.END_OF_COVER_DATE,
+  })
+  endOfCoverDate: string;
+
+  @IsString()
+  @ApiProperty({
+    example: FACILITY.EXPIRY_DATE,
+  })
+  expiryDate: string;
+
+  @Min(0)
+  @ApiProperty({
+    example: FACILITY.FACILITY_AMOUNT,
+  })
+  facilityAmount: number;
+
   @ValidatedFacilityIdentifierApiProperty({
     description: 'The facility ID',
   })
@@ -23,11 +61,11 @@ export class GiftFacilityDto {
   })
   facilityId: UkefId;
 
-  @IsString()
+  @IsBoolean()
   @ApiProperty({
-    example: 'Export Insurance Policy (EXIP)',
+    example: FACILITY.IS_REVOLVING,
   })
-  productType: string;
+  isRevolving: boolean;
 
   @IsString()
   @ApiProperty({
@@ -43,45 +81,7 @@ export class GiftFacilityDto {
 
   @IsString()
   @ApiProperty({
-    example: FACILITY.CURRENCY,
+    example: 'Export Insurance Policy (EXIP)',
   })
-  currency: string;
-
-  @Min(0)
-  @ApiProperty({
-    example: FACILITY.FACILITY_AMOUNT,
-  })
-  facilityAmount: number;
-
-  @IsString()
-  @ApiProperty({
-    example: FACILITY.EFFECTIVE_DATE,
-  })
-  effectiveDate: string;
-
-  @IsString()
-  @ApiProperty({
-    example: FACILITY.EXPIRY_DATE,
-  })
-  expiryDate: string;
-
-  @IsString()
-  @ApiProperty({
-    example: FACILITY.END_OF_COVER_DATE,
-  })
-  endOfCoverDate: string;
-
-  @ValidatedFacilityIdentifierApiProperty({
-    description: 'The deal ID',
-  })
-  @ApiProperty({
-    example: FACILITY.DEAL_ID,
-  })
-  dealId: UkefId;
-
-  @IsBoolean()
-  @ApiProperty({
-    example: FACILITY.IS_REVOLVING,
-  })
-  isRevolving: boolean;
+  productType: string;
 }

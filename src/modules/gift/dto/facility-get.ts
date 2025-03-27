@@ -15,26 +15,26 @@ const {
 export class GiftFacilityResponseDto extends GiftFacilityDto {
   @IsNumber()
   @ApiProperty({
-    example: FACILITY.DRAWN_AMOUNT,
-  })
-  drawnAmount: number;
-
-  @IsNumber()
-  @ApiProperty({
     example: FACILITY.AVAILABLE_AMOUNT,
   })
   availableAmount: number;
+
+  @ApiProperty({
+    example: FACILITY.CREATED_DATE_TIME,
+  })
+  createdDatetime: string;
+
+  @IsNumber()
+  @ApiProperty({
+    example: FACILITY.DRAWN_AMOUNT,
+  })
+  drawnAmount: number;
 
   @IsBoolean()
   @ApiProperty({
     example: FACILITY.IS_DRAFT,
   })
   isDraft: boolean;
-
-  @ApiProperty({
-    example: FACILITY.CREATED_DATE_TIME,
-  })
-  createdDatetime: string;
 
   @IsString()
   @ApiProperty({
