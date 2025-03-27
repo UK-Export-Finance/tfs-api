@@ -10,7 +10,7 @@ import { INVALID_UKEF_IDS } from './values';
  * @param {String} parentFieldName: The name of a parent field. E.g parentObject
  * @param {String} url: The URL the tests will call.
  */
-export const ukefIdValidation = ({  fieldName, initialPayload, parentFieldName, url }) =>
+export const ukefIdValidation = ({ fieldName, initialPayload, parentFieldName, url }) =>
   executeFieldValidationAssertion({
     expectedMessage: `must match ${UKEFID.MAIN_ID.TEN_DIGIT_REGEX} regular expression`,
     fieldName,
