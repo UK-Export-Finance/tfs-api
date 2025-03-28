@@ -917,7 +917,7 @@ paths:
           description: The specified loan transaction was not found.
         '500':
           description: An internal server error has occurred.
-  /api/v1/gift/facility/{facilityId}:
+  /api/v2/gift/facility/{facilityId}:
     get:
       operationId: GiftController_get
       summary: Get a GIFT facility by ID
