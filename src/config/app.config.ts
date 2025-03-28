@@ -54,7 +54,7 @@ export default registerAs('app', (): Record<string, any> => {
   /**
    * APIM TFS versioning for GIFT endpoints
    * NOTE: This is versioning for our APIM TFS GIFT endpoints,
-   * as apposed to the external GIFT API endpoints.
+   * as opposed to the external GIFT API endpoints.
    */
 
   const giftVersion = `${Number(version) + 1}`
