@@ -43,16 +43,16 @@ export default registerAs('app', (): Record<string, any> => {
   const enableVersioning = process.env.HTTP_VERSIONING_ENABLE === 'true';
 
   /**
-   * APIM TFS versioning
+   * APIM TFS versioning for ACBS endpoints
    */
-  const versioning = {
+  const acbsVersioning = {
     enable: enableVersioning,
     prefix: versionPrefix,
     version,
   };
 
   /**
-   * GIFT versioning
+   * APIM TFS versioning for GIFT endpoints
    * NOTE: This is versioning for our APIM TFS GIFT endpoints,
    * as apposed to the external GIFT API endpoints.
    */
@@ -77,6 +77,6 @@ export default registerAs('app', (): Record<string, any> => {
     redactLogs: process.env.REDACT_LOGS !== 'false',
     singleLineLogFormat: process.env.SINGLE_LINE_LOG_FORMAT !== 'false',
     usePinoPrettyLogFormatter: process.env.USE_PINO_PRETTY_LOG_FORMATER === 'true',
-    versioning,
+    versioning: acbsVersioning,
   };
 });
