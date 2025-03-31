@@ -54,9 +54,9 @@ export class GiftHttpService {
 
       return response;
     } catch (error) {
-      console.error(`Error calling GET with path %s ${path} %o`, error);
+      console.error('Error calling GET with path %s %o', path, error);
 
-      throw new Error(`Error calling GET with path %s ${path}`, error);
+      throw new Error(`Error calling GET with path ${path}`, error);
     }
   }
 
@@ -72,9 +72,9 @@ export class GiftHttpService {
 
       return response;
     } catch (error) {
-      console.error(`Error calling POST with path %s ${path} %o`, error);
+      console.error('Error calling POST with path %s %o', path, error);
 
-      throw new Error(`Error calling POST with path %s ${path}`, error);
+      throw new Error(`Error calling POST with path ${path}`, error);
     }
   }
 }
