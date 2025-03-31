@@ -1,13 +1,15 @@
 import { UkefId } from '@ukef/helpers';
 import { GiftFacilityCreationDto, GiftFacilityResponseDto } from '@ukef/modules/gift/dto';
 
+import { CURRENCIES } from '../currencies.constant';
+
 const DEAL_ID: UkefId = '0030000123';
 const FACILITY_ID: UkefId = '0030000321';
 
 const FACILITY = {
   AVAILABLE_AMOUNT: 3000000,
   CREATED_DATE_TIME: '2025-03-21T09:58:21.115Z',
-  CURRENCY: 'USD',
+  CURRENCY: CURRENCIES.USD,
   DEAL_ID,
   DRAWN_AMOUNT: 2000000,
   EFFECTIVE_DATE: '2025-01-01',

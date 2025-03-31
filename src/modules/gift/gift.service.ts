@@ -21,10 +21,18 @@ export class GiftService {
    * @param {String} facilityId
    * @returns {Promise<AxiosResponse>}
    */
-  getFacility(facilityId: UkefId): Promise<AxiosResponse> {
-    return this.giftHttpService.get<GiftFacilityDto>({
-      path: `${GIFT.PATH.FACILITY}/${facilityId}`,
-    });
+  async getFacility(facilityId: UkefId): Promise<AxiosResponse> {
+    try {
+      const response = await this.giftHttpService.get<GiftFacilityDto>({
+        path: `${GIFT.PATH.FACILITY}/${facilityId}`,
+      });
+
+      return response;
+    } catch (error) {
+      console.error('Error calling GIFT HTTP service GET method %o', error);
+
+      throw new Error('Error calling GIFT HTTP service GET method', error);
+    }
   }
 
   /**
@@ -32,10 +40,18 @@ export class GiftService {
    * @param {GiftFacilityCreationDto} data: Facility creation data
    * @returns {Promise<AxiosResponse>}
    */
-  createFacility(data: GiftFacilityCreationDto): Promise<AxiosResponse> {
-    return this.giftHttpService.post<GiftFacilityCreationDto>({
-      path: GIFT.PATH.FACILITY,
-      payload: data.overview,
-    });
+  async createFacility(data: GiftFacilityCreationDto): Promise<AxiosResponse> {
+    try {
+      const response = await this.giftHttpService.post<GiftFacilityCreationDto>({
+        path: GIFT.PATH.FACILITY,
+        payload: data.overview,
+      });
+
+      return response;
+    } catch (error) {
+      console.error('Error calling GIFT HTTP service POST method %o', error);
+
+      throw new Error('Error calling GIFT HTTP service POST method', error);
+    }
   }
 }

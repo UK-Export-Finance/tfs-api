@@ -1,6 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { EXAMPLES, GIFT } from '@ukef/constants';
-import { mockResponse200, mockResponse201 } from '@ukef-test/http-response';
+import { mockResponse200, mockResponse201, mockResponse500 } from '@ukef-test/http-response';
 
 import { GiftService } from './gift.service';
 
@@ -51,10 +51,32 @@ describe('GiftService', () => {
       });
     });
 
-    it('should return the response of giftHttpService.get', async () => {
-      const response = await service.getFacility(mockFacilityId);
+    describe('when giftHttpService.get is successful', () => {
+      it('should return the response of giftHttpService.get', async () => {
+        const response = await service.getFacility(mockFacilityId);
 
-      expect(response).toEqual(mockResponseGet);
+        expect(response).toEqual(mockResponseGet);
+      });
+    });
+
+    describe('when giftHttpService.get returns an error', () => {
+      beforeEach(() => {
+        mockHttpServiceGet = jest.fn().mockRejectedValueOnce(mockResponse500());
+
+        httpService.get = mockHttpServiceGet;
+
+        giftHttpService.get = mockHttpServiceGet;
+
+        service = new GiftService(giftHttpService);
+      });
+
+      it('should thrown an error', async () => {
+        const promise = service.getFacility(mockFacilityId);
+
+        const expected = 'Error calling GIFT HTTP service GET method';
+
+        await expect(promise).rejects.toThrow(expected);
+      });
     });
   });
 
@@ -70,10 +92,32 @@ describe('GiftService', () => {
       });
     });
 
-    it('should return the response of giftHttpService.post', async () => {
-      const response = await service.createFacility(mockPayload);
+    describe('when giftHttpService.post is successful', () => {
+      it('should return the response of giftHttpService.post', async () => {
+        const response = await service.createFacility(mockPayload);
 
-      expect(response).toEqual(mockResponsePost);
+        expect(response).toEqual(mockResponsePost);
+      });
+    });
+
+    describe('when giftHttpService.post returns an error', () => {
+      beforeEach(() => {
+        mockHttpServicePost = jest.fn().mockRejectedValueOnce(mockResponse500());
+
+        httpService.post = mockHttpServicePost;
+
+        giftHttpService.post = mockHttpServicePost;
+
+        service = new GiftService(giftHttpService);
+      });
+
+      it('should thrown an error', async () => {
+        const promise = service.createFacility(mockPayload);
+
+        const expected = 'Error calling GIFT HTTP service POST method';
+
+        await expect(promise).rejects.toThrow(expected);
+      });
     });
   });
 });

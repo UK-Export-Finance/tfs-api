@@ -39,7 +39,7 @@ describe('GiftHttpService', () => {
 
   describe('GIFT_API_ACCEPTABLE_STATUSES', () => {
     it('should return an array of statuses', () => {
-      const expected = [200, 201, 400, 404];
+      const expected = [200, 201, 400, 401, 404];
 
       expect(GIFT_API_ACCEPTABLE_STATUSES).toEqual(expected);
     });
@@ -73,7 +73,7 @@ describe('GiftHttpService', () => {
     beforeEach(() => {
       axios.create = mockAxiosCreate;
 
-      mockAxiosGet = jest.fn().mockResolvedValue(mockResponse200);
+      mockAxiosGet = jest.fn().mockResolvedValue(mockResponse200());
 
       service = new GiftHttpService();
     });
@@ -89,7 +89,7 @@ describe('GiftHttpService', () => {
     it('should return the result of axios.get', async () => {
       const response = await service.get({ path: mockGetPath });
 
-      expect(response).toEqual(mockResponse200);
+      expect(response).toEqual(mockResponse200());
     });
   });
 
@@ -101,7 +101,7 @@ describe('GiftHttpService', () => {
     beforeEach(() => {
       axios.create = mockAxiosCreate;
 
-      mockAxiosPost = jest.fn().mockResolvedValue(mockResponse201);
+      mockAxiosPost = jest.fn().mockResolvedValue(mockResponse201());
 
       service = new GiftHttpService();
     });
@@ -117,7 +117,7 @@ describe('GiftHttpService', () => {
     it('should return the result of axios.post', async () => {
       const response = await service.post({ path: mockPostPath, payload: mockPayload });
 
-      expect(response).toEqual(mockResponse201);
+      expect(response).toEqual(mockResponse201());
     });
   });
 });

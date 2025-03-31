@@ -81,8 +81,25 @@ describe('POST /gift/facility', () => {
   });
 
   describe('when a 401 response is returned by GIFT', () => {
+    it('should return a 400 response with the received response', async () => {
+      const mockResponse = {
+        statusCode: 401,
+        message: 'Unauthorized',
+      };
+
+      nock(GIFT_API_URL).post(FACILITY).reply(401);
+
+      const { status, body } = await api.post(url, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
+
+      expect(status).toBe(401);
+
+      expect(body).toStrictEqual(mockResponse);
+    });
+  });
+
+  describe('when an unacceptable status is returned by GIFT', () => {
     it('should return a 500 response', async () => {
-      nock(GIFT_API_URL).post(FACILITY).reply(500);
+      nock(GIFT_API_URL).post(FACILITY).reply(418);
 
       const { status } = await api.post(url, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 

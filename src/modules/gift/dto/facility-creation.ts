@@ -25,7 +25,11 @@ export class GiftFacilityCreationDto {
 
   /**
    * NOTE: the below properties are purely for example/context purposes.
-   * These will be populated in upcoming PRs.
+   * These will be populated in upcoming PRs:
+   * GIFT-10023
+   * GIFT-10024
+   * GIFT-10025
+   * GIFT-10026
    */
   counterParties: [];
   fees: [];

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import giftConfig, { GiftConfig } from '@ukef/config/gift.config';
 import { HEADERS } from '@ukef/constants';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
@@ -7,9 +7,9 @@ const { CONTENT_TYPE } = HEADERS;
 
 /**
  * Array of acceptable statuses to consume from a GIFT API response
- * @returns {Array<number>}
+ * @returns {Array<HttpStatus>}
  */
-export const GIFT_API_ACCEPTABLE_STATUSES = [200, 201, 400, 404];
+export const GIFT_API_ACCEPTABLE_STATUSES = [HttpStatus.OK, HttpStatus.CREATED, HttpStatus.BAD_REQUEST, HttpStatus.UNAUTHORIZED, HttpStatus.NOT_FOUND];
 
 /**
  * GIFT HTTP service.
@@ -48,8 +48,16 @@ export class GiftHttpService {
    * @param {String} path
    * @returns {Promise<AxiosResponse<T>>}
    */
-  get<T>({ path }: { path: string }): Promise<AxiosResponse<T>> {
-    return this.axiosInstance.get(path);
+  async get<T>({ path }: { path: string }): Promise<AxiosResponse<T>> {
+    try {
+      const response = await this.axiosInstance.get(path);
+
+      return response;
+    } catch (error) {
+      console.error(`Error calling GET with path %s ${path} %o`, error);
+
+      throw new Error(`Error calling GET with path %s ${path}`, error);
+    }
   }
 
   /**
@@ -58,7 +66,15 @@ export class GiftHttpService {
    * @param {Object} payload
    * @returns {Promise<AxiosResponse<T>>}
    */
-  post<T>({ path, payload }: { path: string; payload: object }): Promise<AxiosResponse<T>> {
-    return this.axiosInstance.post(path, payload);
+  async post<T>({ path, payload }: { path: string; payload: object }): Promise<AxiosResponse<T>> {
+    try {
+      const response = await this.axiosInstance.post(path, payload);
+
+      return response;
+    } catch (error) {
+      console.error(`Error calling POST with path %s ${path} %o`, error);
+
+      throw new Error(`Error calling POST with path %s ${path}`, error);
+    }
   }
 }
