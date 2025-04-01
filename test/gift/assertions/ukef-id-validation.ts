@@ -11,10 +11,11 @@ const INVALID_UKEF_IDS = ['0123456789', '0123456700', '1123456789', '8765432100'
  * @param {String} fieldName: The name of a field. E.g, email
  * @param {Object} initialPayload: The payload to use before adding a field value
  * @param {Number} min: The minimium length
+ * @param {Number} max: The maximum length
  * @param {String} parentFieldName: The name of a parent field. E.g parentObject
  * @param {String} url: The URL the tests will call.
  */
-export const ukefIdValidation = ({ fieldName, initialPayload, min, parentFieldName, url }) => {
+export const ukefIdValidation = ({ fieldName, initialPayload, min, max, parentFieldName, url }) => {
   let api: Api;
 
   beforeAll(async () => {
@@ -93,6 +94,52 @@ export const ukefIdValidation = ({ fieldName, initialPayload, min, parentFieldNa
 
       const expected = [
         `${fieldPath} must be longer than or equal to ${min} characters`,
+        `${fieldPath} must match ${UKEFID.MAIN_ID.TEN_DIGIT_REGEX} regular expression`,
+      ];
+
+      expect(body.message).toStrictEqual(expected);
+    });
+  });
+
+  describe(`when ${fieldName} is below the minimum`, () => {
+    beforeAll(() => {
+      mockPayload[`${parentFieldName}`][`${fieldName}`] = 'a'.repeat(min - 1);
+    });
+
+    it('should return a 400 response', async () => {
+      const response = await api.post(url, mockPayload);
+
+      assert400Response(response);
+    });
+
+    it('should return the correct error messages', async () => {
+      const { body } = await api.post(url, mockPayload);
+
+      const expected = [
+        `${fieldPath} must be longer than or equal to ${min} characters`,
+        `${fieldPath} must match ${UKEFID.MAIN_ID.TEN_DIGIT_REGEX} regular expression`,
+      ];
+
+      expect(body.message).toStrictEqual(expected);
+    });
+  });
+
+  describe(`when ${fieldName} is above the maximum`, () => {
+    beforeAll(() => {
+      mockPayload[`${parentFieldName}`][`${fieldName}`] = 'a'.repeat(max + 1);
+    });
+
+    it('should return a 400 response', async () => {
+      const response = await api.post(url, mockPayload);
+
+      assert400Response(response);
+    });
+
+    it('should return the correct error messages', async () => {
+      const { body } = await api.post(url, mockPayload);
+
+      const expected = [
+        `${fieldPath} must be shorter than or equal to ${max} characters`,
         `${fieldPath} must match ${UKEFID.MAIN_ID.TEN_DIGIT_REGEX} regular expression`,
       ];
 
