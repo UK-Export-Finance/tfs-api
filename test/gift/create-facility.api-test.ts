@@ -81,13 +81,13 @@ describe('POST /gift/facility', () => {
   });
 
   describe('when a 401 response is returned by GIFT', () => {
-    it('should return a 400 response with the received response', async () => {
+    it('should return a 401 response with the received response', async () => {
       const mockResponse = {
         statusCode: 401,
         message: 'Unauthorized',
       };
 
-      nock(GIFT_API_URL).post(FACILITY).reply(401);
+      nock(GIFT_API_URL).post(FACILITY).reply(401, mockResponse);
 
       const { status, body } = await api.post(url, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 

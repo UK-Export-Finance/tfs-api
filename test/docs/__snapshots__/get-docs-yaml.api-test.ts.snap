@@ -3247,9 +3247,9 @@ components:
         dealId:
           type: string
           example: '0030000322'
-          description: The deal ID
           minLength: 10
           maxLength: 10
+          description: The deal ID
           pattern: ^00\\d{8}$
         effectiveDate:
           type: string
@@ -3299,26 +3299,21 @@ components:
       properties:
         overview:
           example:
-            overview:
-              facilityId: '0030000321'
-              streamId: 7d915bfa-0069-4aaa-92c5-013925f019a1
-              streamVersion: 1
-              name: Amazing facility
-              obligorUrn: '01234567'
-              currency: USD
-              facilityAmount: 1000000
-              effectiveDate: '2025-01-01'
-              expiryDate: '2025-02-01'
-              endOfCoverDate: '2025-03-01'
-              dealId: '0030000123'
-              isRevolving: true
-              isDraft: false
-              createdDatetime: '2025-03-21T09:58:21.115Z'
-              productType: MOCK
-            counterParties: []
-            fees: []
-            obligations: []
-            repaymentProfiles: []
+            facilityId: '0030000321'
+            streamId: 7d915bfa-0069-4aaa-92c5-013925f019a1
+            streamVersion: 1
+            name: Amazing facility
+            obligorUrn: '01234567'
+            currency: USD
+            facilityAmount: 1000000
+            effectiveDate: '2025-01-01'
+            expiryDate: '2025-02-01'
+            endOfCoverDate: '2025-03-01'
+            dealId: '0030000123'
+            isRevolving: true
+            isDraft: false
+            createdDatetime: '2025-03-21T09:58:21.115Z'
+            productType: MOCK
           allOf:
             - $ref: '#/components/schemas/GiftFacilityDto'
       required:

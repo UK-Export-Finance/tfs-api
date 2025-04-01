@@ -46,7 +46,7 @@ export class GiftService {
         path: GIFT.PATH.FACILITY,
         payload: data.overview,
       });
-
+ 
       return response;
     } catch (error) {
       console.error('Error calling GIFT HTTP service POST method %o', error);

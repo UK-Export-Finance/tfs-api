@@ -107,12 +107,12 @@ describe('GET /gift/facility/{facilityId}', () => {
   });
 
   describe('when a 401 response is returned by GIFT', () => {
-    it('should return a 500 response', async () => {
+    it('should return a 401 response', async () => {
       nock(GIFT_API_URL).get(`${FACILITY}/${mockFacilityId}`).reply(401);
 
       const { status } = await api.get(url);
 
-      expect(status).toBe(500);
+      expect(status).toBe(401);
     });
   });
 
