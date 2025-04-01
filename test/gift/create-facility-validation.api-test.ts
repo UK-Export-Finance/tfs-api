@@ -1,12 +1,12 @@
-import { GIFT } from '@ukef/constants';
-import { GIFT_EXAMPLES } from '@ukef/constants/examples/gift.examples.constant';
+import { EXAMPLES, GIFT } from '@ukef/constants';
 import { Api } from '@ukef-test/support/api';
 import nock from 'nock';
 
-import { booleanValidation, numberStringValidation, numberValidation, stringValidation, ukefIdValidation } from './assertions';
+import { booleanValidation, numberValidation, stringValidation, ukefIdValidation } from './assertions';
 
 const {
   PATH: { FACILITY },
+  VALIDATION,
 } = GIFT;
 
 describe('POST /gift/facility - validation', () => {
@@ -56,20 +56,36 @@ describe('POST /gift/facility - validation', () => {
       const expected = {
         error: 'Bad Request',
         message: [
+          'overview.currency should not be null or undefined',
+          `overview.currency must be longer than or equal to ${VALIDATION.CURRENCY.MIN} characters`,
           'overview.currency must be a string',
           'overview.dealId must be a string',
-          'overview.dealId must be longer than or equal to 10 characters',
+          `overview.dealId must be longer than or equal to ${VALIDATION.DEAL_ID.MIN} characters`,
           'overview.dealId must match /^00\\d{8}$/ regular expression',
+          'overview.effectiveDate should not be null or undefined',
+          `overview.effectiveDate must be longer than or equal to ${VALIDATION.EFFECTIVE_DATE.MIN} characters`,
           'overview.effectiveDate must be a string',
+          'overview.endOfCoverDate should not be null or undefined',
+          `overview.endOfCoverDate must be longer than or equal to ${VALIDATION.END_OF_COVER_DATE.MIN} characters`,
           'overview.endOfCoverDate must be a string',
+          'overview.expiryDate should not be null or undefined',
+          `overview.expiryDate must be longer than or equal to ${VALIDATION.EXPIRY_DATE.MIN} characters`,
           'overview.expiryDate must be a string',
-          'overview.facilityAmount must not be less than 0',
+          'overview.facilityAmount should not be null or undefined',
+          `overview.facilityAmount must not be less than ${VALIDATION.FACILITY_AMOUNT.MIN}`,
+          'overview.facilityAmount must be a number conforming to the specified constraints',
           'overview.facilityId must be a string',
-          'overview.facilityId must be longer than or equal to 10 characters',
+          `overview.facilityId must be longer than or equal to ${VALIDATION.FACILITY_ID.MIN} characters`,
           'overview.facilityId must match /^00\\d{8}$/ regular expression',
+          'overview.isRevolving should not be null or undefined',
           'overview.isRevolving must be a boolean value',
+          'overview.name should not be null or undefined',
+          `overview.name must be longer than or equal to ${VALIDATION.FACILITY_NAME.MIN} characters`,
           'overview.name must be a string',
+          'overview.obligorUrn should not be null or undefined',
           'overview.obligorUrn must be a number string',
+          'overview.productType should not be null or undefined',
+          `overview.productType must be longer than or equal to ${VALIDATION.PRODUCT_TYPE.MIN} characters`,
           'overview.productType must be a string',
         ],
         statusCode: 400,
@@ -81,29 +97,91 @@ describe('POST /gift/facility - validation', () => {
 
   const baseParams = {
     parentFieldName: 'overview',
-    initialPayload: GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD,
+    initialPayload: EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD,
     url,
   };
 
-  stringValidation({ ...baseParams, fieldName: 'currency' });
+  describe('overview.currency', () => {
+    stringValidation({
+      ...baseParams,
+      fieldName: 'currency',
+      min: VALIDATION.CURRENCY.MIN,
+      max: VALIDATION.CURRENCY.MAX,
+    });
+  });
 
-  ukefIdValidation({ ...baseParams, fieldName: 'dealId' });
+  describe('overview.dealId', () => {
+    ukefIdValidation({
+      ...baseParams,
+      fieldName: 'dealId',
+      min: VALIDATION.DEAL_ID.MIN,
+      max: VALIDATION.DEAL_ID.MAX,
+    });
+  });
 
-  stringValidation({ ...baseParams, fieldName: 'effectiveDate' });
+  describe('overview.effectiveDate', () => {
+    stringValidation({
+      ...baseParams,
+      fieldName: 'effectiveDate',
+      min: VALIDATION.EFFECTIVE_DATE.MIN,
+      max: VALIDATION.EFFECTIVE_DATE.MAX,
+    });
+  });
 
-  stringValidation({ ...baseParams, fieldName: 'endOfCoverDate' });
+  describe('overview.endOfCoverDate', () => {
+    stringValidation({
+      ...baseParams,
+      fieldName: 'endOfCoverDate',
+      min: VALIDATION.END_OF_COVER_DATE.MIN,
+      max: VALIDATION.END_OF_COVER_DATE.MAX,
+    });
+  });
 
-  stringValidation({ ...baseParams, fieldName: 'expiryDate' });
+  describe('overview.expiryDate', () => {
+    stringValidation({
+      ...baseParams,
+      fieldName: 'expiryDate',
+      min: VALIDATION.EXPIRY_DATE.MIN,
+      max: VALIDATION.EXPIRY_DATE.MAX,
+    });
+  });
 
-  numberValidation({ ...baseParams, fieldName: 'facilityAmount' });
+  describe('overview.facilityAmount', () => {
+    numberValidation({
+      ...baseParams,
+      fieldName: 'facilityAmount',
+      min: VALIDATION.FACILITY_AMOUNT.MIN,
+    });
+  });
 
-  ukefIdValidation({ ...baseParams, fieldName: 'facilityId' });
+  describe('overview.facilityId', () => {
+    ukefIdValidation({
+      ...baseParams,
+      fieldName: 'facilityId',
+      min: VALIDATION.FACILITY_ID.MIN,
+      max: VALIDATION.FACILITY_ID.MAX,
+    });
+  });
 
-  booleanValidation({ ...baseParams, fieldName: 'isRevolving' });
+  describe('overview.isRevolving', () => {
+    booleanValidation({ ...baseParams, fieldName: 'isRevolving' });
+  });
 
-  stringValidation({ ...baseParams, fieldName: 'name' });
+  describe('overview.name', () => {
+    stringValidation({
+      ...baseParams,
+      fieldName: 'name',
+      min: VALIDATION.FACILITY_NAME.MIN,
+      max: VALIDATION.FACILITY_NAME.MAX,
+    });
+  });
 
-  numberStringValidation({ ...baseParams, fieldName: 'obligorUrn' });
-
-  stringValidation({ ...baseParams, fieldName: 'productType' });
+  describe('overview.productType', () => {
+    stringValidation({
+      ...baseParams,
+      fieldName: 'productType',
+      min: VALIDATION.PRODUCT_TYPE.MIN,
+      max: VALIDATION.PRODUCT_TYPE.MAX,
+    });
+  });
 });

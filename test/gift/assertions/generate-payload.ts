@@ -7,10 +7,10 @@
  * @param {Object} initialPayload: The payload to use before adding a field value
  * @param {String} fieldName: The name of a field. E.g, email
  * @param {String} parentFieldName: The name of a parent field. E.g parentObject
- * @param {String} value: The value to assign to fieldName.
+ * @param {any} value: The value to assign to fieldName.
  * @returns {Object} payload for testing purposes
  */
-export const generatePayload = ({ initialPayload, fieldName, parentFieldName = '', value }) => {
+export const generatePayload = ({ initialPayload, fieldName, parentFieldName = '', value = null }) => {
   if (parentFieldName) {
     return {
       ...initialPayload,

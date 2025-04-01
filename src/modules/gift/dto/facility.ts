@@ -1,21 +1,25 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { EXAMPLES } from '@ukef/constants';
+import { EXAMPLES, GIFT } from '@ukef/constants';
 import { ValidatedFacilityIdentifierApiProperty } from '@ukef/decorators/validated-facility-identifier-api-property';
 import { UkefId } from '@ukef/helpers';
-import { IsBoolean, IsNumberString, IsString, Min } from 'class-validator';
+import { IsBoolean, IsDefined, IsNumber, IsNumberString, IsString, Length, Min } from 'class-validator';
 
 const {
-  GIFT: { FACILITY },
+  GIFT: { FACILITY: EXAMPLE },
 } = EXAMPLES;
+
+const { VALIDATION } = GIFT;
 
 /**
  * GIFT facility DTO.
  * This is a generic/base DTO for a GIFT facility.
  */
 export class GiftFacilityDto {
+  @IsDefined()
   @IsString()
+  @Length(VALIDATION.CURRENCY.MIN, VALIDATION.CURRENCY.MAX)
   @ApiProperty({
-    example: FACILITY.CURRENCY,
+    example: EXAMPLE.CURRENCY,
   })
   currency: string;
 
@@ -23,31 +27,46 @@ export class GiftFacilityDto {
     description: 'The deal ID',
   })
   @ApiProperty({
-    example: FACILITY.DEAL_ID,
+    example: EXAMPLE.DEAL_ID,
+    minLength: VALIDATION.DEAL_ID.MIN,
+    maxLength: VALIDATION.DEAL_ID.MAX,
   })
   dealId: UkefId;
 
+  // TODO
+  // TODO
+  // TODO
+  // for all.
+  // add to ApiProperty minlength/ min? Check swagger docs.
+  @IsDefined()
   @IsString()
+  @Length(VALIDATION.EFFECTIVE_DATE.MIN, VALIDATION.EFFECTIVE_DATE.MAX)
   @ApiProperty({
-    example: FACILITY.EFFECTIVE_DATE,
+    example: EXAMPLE.EFFECTIVE_DATE,
   })
   effectiveDate: string;
 
+  @IsDefined()
   @IsString()
+  @Length(VALIDATION.END_OF_COVER_DATE.MIN, VALIDATION.END_OF_COVER_DATE.MAX)
   @ApiProperty({
-    example: FACILITY.END_OF_COVER_DATE,
+    example: EXAMPLE.END_OF_COVER_DATE,
   })
   endOfCoverDate: string;
 
+  @IsDefined()
   @IsString()
+  @Length(VALIDATION.EXPIRY_DATE.MIN, VALIDATION.EXPIRY_DATE.MAX)
   @ApiProperty({
-    example: FACILITY.EXPIRY_DATE,
+    example: EXAMPLE.EXPIRY_DATE,
   })
   expiryDate: string;
 
-  @Min(0)
+  @IsDefined()
+  @IsNumber()
+  @Min(VALIDATION.FACILITY_AMOUNT.MIN)
   @ApiProperty({
-    example: FACILITY.FACILITY_AMOUNT,
+    example: EXAMPLE.FACILITY_AMOUNT,
   })
   facilityAmount: number;
 
@@ -55,31 +74,37 @@ export class GiftFacilityDto {
     description: 'The facility ID',
   })
   @ApiProperty({
-    example: FACILITY.FACILITY_ID,
-    minLength: 10,
-    maxLength: 10,
+    example: EXAMPLE.FACILITY_ID,
+    minLength: VALIDATION.FACILITY_ID.MIN,
+    maxLength: VALIDATION.FACILITY_ID.MAX,
   })
   facilityId: UkefId;
 
+  @IsDefined()
   @IsBoolean()
   @ApiProperty({
-    example: FACILITY.IS_REVOLVING,
+    example: EXAMPLE.IS_REVOLVING,
   })
   isRevolving: boolean;
 
+  @IsDefined()
   @IsString()
+  @Length(VALIDATION.FACILITY_NAME.MIN, VALIDATION.FACILITY_NAME.MAX)
   @ApiProperty({
-    example: FACILITY.FACILITY_NAME,
+    example: EXAMPLE.FACILITY_NAME,
   })
   name: string;
 
+  @IsDefined()
   @IsNumberString()
   @ApiProperty({
-    example: FACILITY.OBLIGOR_URN,
+    example: EXAMPLE.OBLIGOR_URN,
   })
   obligorUrn: string;
 
+  @IsDefined()
   @IsString()
+  @Length(VALIDATION.PRODUCT_TYPE.MIN, VALIDATION.PRODUCT_TYPE.MAX)
   @ApiProperty({
     example: 'Export Insurance Policy (EXIP)',
   })
