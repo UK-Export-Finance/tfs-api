@@ -8,8 +8,8 @@ import {
   ApiParam,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { EXAMPLES } from '@ukef/constants';
 import AppConfig from '@ukef/config/app.config';
+import { EXAMPLES } from '@ukef/constants';
 import { Response } from 'express';
 
 import { GetFacilityOperationParamsDto, GiftFacilityDto } from './dto';
