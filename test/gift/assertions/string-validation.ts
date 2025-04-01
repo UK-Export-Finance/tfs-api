@@ -7,7 +7,7 @@ import { assert400Response } from './response-assertion';
  * Validation tests for a string field with invalid values
  * @param {String} fieldName: The name of a field. E.g, email
  * @param {Object} initialPayload: The payload to use before adding a field value
- * @param {Number} min: The minimium length
+ * @param {Number} min: The minimum length
  * @param {Number} max: The maximum length
  * @param {String} parentFieldName: The name of a parent field. E.g parentObject
  * @param {String} url: The URL the tests will call.

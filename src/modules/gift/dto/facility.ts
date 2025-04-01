@@ -33,11 +33,6 @@ export class GiftFacilityDto {
   })
   dealId: UkefId;
 
-  // TODO
-  // TODO
-  // TODO
-  // for all.
-  // add to ApiProperty minlength/ min? Check swagger docs.
   @IsDefined()
   @IsString()
   @Length(VALIDATION.EFFECTIVE_DATE.MIN, VALIDATION.EFFECTIVE_DATE.MAX)
