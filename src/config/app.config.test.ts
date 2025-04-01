@@ -2,6 +2,7 @@ import { withEnvironmentVariableParsingUnitTests } from '@ukef-test/common-tests
 
 import appConfig, { AppConfig } from './app.config';
 import { InvalidConfigException } from './invalid-config.exception';
+import { APPLICATION } from '@ukef/constants';
 
 describe('appConfig', () => {
   let originalProcessEnv: NodeJS.ProcessEnv;
@@ -97,7 +98,7 @@ describe('appConfig', () => {
 
       const expected = {
         enable: false,
-        prefix: 'v',
+        prefix: APPLICATION.VERSION_PREFIX,
         version: '1',
       };
 
@@ -134,32 +135,18 @@ describe('appConfig', () => {
   describe('giftVersioning', () => {
     it('should return an object with default properties', () => {
       replaceEnvironmentVariables({
-        HTTP_VERSIONING_ENABLE: undefined,
         HTTP_VERSION: undefined,
       });
 
       const config = appConfig();
 
       const expected = {
-        enable: false,
-        prefix: 'v',
+        prefix: APPLICATION.VERSION_PREFIX,
         prefixAndVersion: 'v2',
         version: '2',
       };
 
       expect(config.giftVersioning).toEqual(expected);
-    });
-
-    describe('when HTTP_VERSIONING_ENABLE is specified', () => {
-      it('should return `enable` as true', () => {
-        replaceEnvironmentVariables({
-          HTTP_VERSIONING_ENABLE: 'true',
-        });
-
-        const config = appConfig();
-
-        expect(config.giftVersioning.enable).toBe(true);
-      });
     });
 
     describe('when HTTP_VERSION is specified', () => {
