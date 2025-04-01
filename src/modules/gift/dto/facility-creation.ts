@@ -6,7 +6,7 @@ import { IsDefined, IsNotEmptyObject, ValidateNested } from 'class-validator';
 import { GiftFacilityDto } from './facility';
 
 const {
-  GIFT: { FACILITY_CREATION_PAYLOAD },
+  GIFT: { FACILITY_OVERVIEW_DATA },
 } = EXAMPLES;
 
 /**
@@ -15,7 +15,7 @@ const {
  */
 export class GiftFacilityCreationDto {
   @ApiProperty({
-    example: FACILITY_CREATION_PAYLOAD,
+    example: FACILITY_OVERVIEW_DATA,
   })
   @IsNotEmptyObject()
   @IsDefined()
