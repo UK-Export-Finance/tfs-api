@@ -947,7 +947,7 @@ paths:
           description: The facility was not found
         '500':
           description: An internal server error has occurred
-  /api/v1/gift/facility:
+  /api/v2/gift/facility:
     post:
       operationId: GiftController_post
       summary: Create a GIFT facility

@@ -22,7 +22,7 @@ describe('GET /gift/facility/{facilityId}', () => {
 
   const mockFacilityId = valueGenerator.ukefId();
 
-  const url = `/api/${prefixAndVersion}/gift${FACILITY}${mockFacilityId}`;
+  const url = `/api/${prefixAndVersion}/gift${FACILITY}/${mockFacilityId}`;
 
   let api: Api;
 
@@ -49,7 +49,7 @@ describe('GET /gift/facility/{facilityId}', () => {
       givenRequestWouldOtherwiseSucceedForFacilityId: (facilityId) => {
         nock(GIFT_API_URL).get(`${FACILITY}/${facilityId}`).reply(200);
       },
-      makeRequestWithFacilityId: (facilityId) => api.get(`/api/${prefixAndVersion}/gift${FACILITY}${facilityId}`),
+      makeRequestWithFacilityId: (facilityId) => api.get(`/api/${prefixAndVersion}/gift${FACILITY}/${facilityId}`),
       idName: 'facilityId',
     });
   });

@@ -1,3 +1,4 @@
+import AppConfig from '@ukef/config/app.config';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { Api } from '@ukef-test/support/api';
 import nock from 'nock';
@@ -5,12 +6,16 @@ import nock from 'nock';
 import { booleanValidation, numberValidation, stringValidation, ukefIdValidation } from './assertions';
 
 const {
+  giftVersioning: { prefixAndVersion },
+} = AppConfig();
+
+const {
   PATH: { FACILITY },
   VALIDATION,
 } = GIFT;
 
 describe('POST /gift/facility - validation', () => {
-  const url = `/api/v1/gift${FACILITY}`;
+  const url = `/api/${prefixAndVersion}/gift${FACILITY}`;
 
   let api: Api;
 

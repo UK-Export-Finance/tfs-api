@@ -1,3 +1,4 @@
+import AppConfig from '@ukef/config/app.config';
 import { GIFT } from '@ukef/constants';
 import { GIFT_EXAMPLES } from '@ukef/constants/examples/gift.examples.constant';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
@@ -5,6 +6,10 @@ import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import nock from 'nock';
+
+const {
+  giftVersioning: { prefixAndVersion },
+} = AppConfig();
 
 const {
   PATH: { FACILITY },
@@ -17,7 +22,7 @@ describe('POST /gift/facility', () => {
 
   const mockFacilityId = valueGenerator.ukefId();
 
-  const url = `/api/v1/gift${FACILITY}`;
+  const url = `/api/${prefixAndVersion}/gift${FACILITY}`;
 
   let api: Api;
 
