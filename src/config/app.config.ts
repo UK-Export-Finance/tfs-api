@@ -6,7 +6,7 @@ import { getIntConfig } from '@ukef/helpers/get-int-config';
 
 import { InvalidConfigException } from './invalid-config.exception';
 
-const { API_KEY, APP_NAME, NODE_ENV } = process.env;
+const { APP_NAME, NODE_ENV } = process.env;
 
 const { VERSION_PREFIX } = APPLICATION;
 
@@ -42,15 +42,13 @@ export default registerAs('app', (): Record<string, any> => {
     throw new InvalidConfigException(`LOG_LEVEL must be one of ${validLogLevels} or not specified.`);
   }
 
-  const version = process.env.HTTP_VERSION || '1';
-
   /**
    * APIM TFS versioning for ACBS endpoints
    */
   const acbsVersioning = {
     enable: process.env.HTTP_VERSIONING_ENABLE === 'true',
     prefix: VERSION_PREFIX,
-    version,
+    version: process.env.HTTP_VERSION || '1',
   };
 
   /**
@@ -67,7 +65,7 @@ export default registerAs('app', (): Record<string, any> => {
   };
 
   return {
-    apiKey: API_KEY,
+    apiKey: process.env.API_KEY,
     env: NODE_ENV || 'development',
     giftVersioning,
     globalPrefix: '/api',
