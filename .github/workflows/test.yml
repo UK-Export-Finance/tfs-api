@@ -98,6 +98,8 @@ jobs:
 
       - name: Execute
         working-directory: ./
+        env:
+          GIFT_HTTP_VERSION: ${{ vars.GIFT_HTTP_VERSION }}
         run: npm run api-test
 
   # 4. E2E tests
@@ -161,6 +163,7 @@ jobs:
           GIFT_API_KEY: ${{ secrets.GIFT_API_KEY }}
           GIFT_API_MAX_REDIRECTS: ${{ secrets.GIFT_API_MAX_REDIRECTS }}
           GIFT_API_TIMEOUT: ${{ secrets.GIFT_API_TIMEOUT }}
+          GIFT_HTTP_VERSION: ${{ secrets.GIFT_HTTP_VERSION }}
         run: docker compose up --build -d
 
       - name: Execute

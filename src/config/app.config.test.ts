@@ -1,7 +1,10 @@
+import { APPLICATION } from '@ukef/constants';
 import { withEnvironmentVariableParsingUnitTests } from '@ukef-test/common-tests/environment-variable-parsing-unit-tests';
 
 import appConfig, { AppConfig } from './app.config';
 import { InvalidConfigException } from './invalid-config.exception';
+
+const { VERSION_PREFIX } = APPLICATION;
 
 describe('appConfig', () => {
   let originalProcessEnv: NodeJS.ProcessEnv;
@@ -97,7 +100,7 @@ describe('appConfig', () => {
 
       const expected = {
         enable: false,
-        prefix: 'v',
+        prefix: VERSION_PREFIX,
         version: '1',
       };
 
@@ -118,16 +121,36 @@ describe('appConfig', () => {
 
     describe('when HTTP_VERSION is specified', () => {
       it('should return `version` as HTTP_VERSION', () => {
-        const mockVersion = '100200';
+        const mockHttpVersion = '100200';
 
         replaceEnvironmentVariables({
-          HTTP_VERSION: mockVersion,
+          HTTP_VERSION: mockHttpVersion,
         });
 
         const config = appConfig();
 
-        expect(config.versioning.version).toBe(mockVersion);
+        expect(config.versioning.version).toBe(mockHttpVersion);
       });
+    });
+  });
+
+  describe('giftVersioning', () => {
+    it('should return an object', () => {
+      const mockHttpVersion = '100200';
+
+      replaceEnvironmentVariables({
+        GIFT_HTTP_VERSION: mockHttpVersion,
+      });
+
+      const config = appConfig();
+
+      const expected = {
+        prefix: VERSION_PREFIX,
+        prefixAndVersion: `${VERSION_PREFIX}${mockHttpVersion}`,
+        version: mockHttpVersion,
+      };
+
+      expect(config.giftVersioning).toEqual(expected);
     });
   });
 
