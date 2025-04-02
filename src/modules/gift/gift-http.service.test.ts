@@ -1,3 +1,4 @@
+import { HttpStatus } from '@nestjs/common';
 import giftConfig from '@ukef/config/gift.config';
 import { HEADERS } from '@ukef/constants';
 import { mockResponse200, mockResponse201 } from '@ukef-test/http-response';
@@ -39,7 +40,7 @@ describe('GiftHttpService', () => {
 
   describe('GIFT_API_ACCEPTABLE_STATUSES', () => {
     it('should return an array of statuses', () => {
-      const expected = [200, 201, 400, 401, 404];
+      const expected = [HttpStatus.OK, HttpStatus.CREATED, HttpStatus.BAD_REQUEST, HttpStatus.UNAUTHORIZED, HttpStatus.NOT_FOUND];
 
       expect(GIFT_API_ACCEPTABLE_STATUSES).toEqual(expected);
     });
