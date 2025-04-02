@@ -45,6 +45,7 @@ services:
       GIFT_API_KEY:
       GIFT_API_MAX_REDIRECTS:
       GIFT_API_TIMEOUT:
+      GIFT_HTTP_VERSION:
 
 
     healthcheck:

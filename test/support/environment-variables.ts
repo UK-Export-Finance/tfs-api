@@ -41,6 +41,7 @@ export const ENVIRONMENT_VARIABLES = Object.freeze({
   GIFT_API_KEY: valueGenerator.string(),
   GIFT_API_MAX_REDIRECTS: 0,
   GIFT_API_TIMEOUT: 1000,
+  GIFT_HTTP_VERSION: valueGenerator.string(),
 });
 
 export const getEnvironmentVariablesForProcessEnv = (): NodeJS.ProcessEnv => ({
