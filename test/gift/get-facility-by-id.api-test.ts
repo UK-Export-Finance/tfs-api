@@ -1,10 +1,15 @@
+import AppConfig from '@ukef/config/app.config';
+import { GIFT } from '@ukef/constants';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
 import { withFacilityIdentifierUrlValidationApiTests } from '@ukef-test/common-tests/request-url-param-validation-api-tests/facility-identifier-url-validation-api-tests';
 import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { GIFT } from '@ukef/constants';
 import nock from 'nock';
+
+const {
+  giftVersioning: { prefixAndVersion },
+} = AppConfig();
 
 const {
   PATH: { FACILITY },
@@ -17,7 +22,7 @@ describe('GET /gift/facility/{facilityId}', () => {
 
   const mockFacilityId = valueGenerator.ukefId();
 
-  const url = `/api/v1/gift${FACILITY}${mockFacilityId}`;
+  const url = `/api/${prefixAndVersion}/gift${FACILITY}${mockFacilityId}`;
 
   let api: Api;
 
@@ -44,7 +49,7 @@ describe('GET /gift/facility/{facilityId}', () => {
       givenRequestWouldOtherwiseSucceedForFacilityId: (facilityId) => {
         nock(GIFT_API_URL).get(`${FACILITY}${facilityId}`).reply(200);
       },
-      makeRequestWithFacilityId: (facilityId) => api.get(`/api/v1/gift${FACILITY}${facilityId}`),
+      makeRequestWithFacilityId: (facilityId) => api.get(`/api/${prefixAndVersion}/gift${FACILITY}${facilityId}`),
       idName: 'facilityId',
     });
   });
