@@ -1,7 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 import giftConfig from '@ukef/config/gift.config';
 import { HEADERS } from '@ukef/constants';
-import { mockResponse200, mockResponse201 } from '@ukef-test/http-response';
+import { mockResponse200, mockResponse201, mockResponse500 } from '@ukef-test/http-response';
 import axios from 'axios';
 import * as dotenv from 'dotenv';
 
@@ -92,6 +92,20 @@ describe('GiftHttpService', () => {
 
       expect(response).toEqual(mockResponse200());
     });
+
+    describe('when the axios call fails', () => {
+      beforeEach(() => {
+        mockAxiosGet = jest.fn().mockRejectedValueOnce(mockResponse500());
+
+        service = new GiftHttpService();
+      });
+
+      it('should throw an error', async () => {
+        const serviceCall = service.get({ path: mockGetPath });
+
+        await expect(serviceCall).rejects.toThrow(`Error calling GET with path ${mockGetPath}`);
+      });
+    });
   });
 
   describe('post', () => {
@@ -119,6 +133,20 @@ describe('GiftHttpService', () => {
       const response = await service.post({ path: mockPostPath, payload: mockPayload });
 
       expect(response).toEqual(mockResponse201());
+    });
+
+    describe('when the axios call fails', () => {
+      beforeEach(() => {
+        mockAxiosPost = jest.fn().mockRejectedValueOnce(mockResponse500());
+
+        service = new GiftHttpService();
+      });
+
+      it('should throw an error', async () => {
+        const serviceCall = service.post({ path: mockPostPath, payload: mockPayload });
+
+        await expect(serviceCall).rejects.toThrow(`Error calling POST with path ${mockPostPath}`);
+      });
     });
   });
 });
