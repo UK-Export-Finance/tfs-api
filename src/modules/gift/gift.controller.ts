@@ -1,6 +1,8 @@
-import { Controller, Get, Param, Res } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Res, ValidationPipe } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
+  ApiBody,
+  ApiCreatedResponse,
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -12,7 +14,7 @@ import AppConfig from '@ukef/config/app.config';
 import { EXAMPLES } from '@ukef/constants';
 import { Response } from 'express';
 
-import { GetFacilityOperationParamsDto, GiftFacilityDto } from './dto';
+import { GetFacilityOperationParamsDto, GiftFacilityCreationDto, GiftFacilityDto } from './dto';
 import { GiftService } from './gift.service';
 
 const { giftVersioning } = AppConfig();
@@ -21,7 +23,6 @@ const { giftVersioning } = AppConfig();
   path: 'gift/facility',
   version: giftVersioning.version,
 })
-
 export class GiftController {
   constructor(private readonly giftService: GiftService) {}
 
@@ -52,6 +53,31 @@ export class GiftController {
   })
   async get(@Param() { facilityId }: GetFacilityOperationParamsDto, @Res({ passthrough: true }) res: Response) {
     const { status, data } = await this.giftService.getFacility(facilityId);
+
+    res.status(status).send(data);
+  }
+
+  @Post()
+  @ApiOperation({ summary: 'Create a GIFT facility' })
+  @ApiBody({
+    type: GiftFacilityCreationDto,
+    required: true,
+  })
+  @ApiCreatedResponse({
+    description: 'The created facility',
+    type: GiftFacilityDto,
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad request',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized',
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'An internal server error has occurred',
+  })
+  async post(@Body(new ValidationPipe({ transform: true })) facilityData: GiftFacilityCreationDto, @Res({ passthrough: true }) res: Response) {
+    const { status, data } = await this.giftService.createFacility(facilityData);
 
     res.status(status).send(data);
   }

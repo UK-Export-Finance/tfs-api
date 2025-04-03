@@ -20,4 +20,5 @@ export const UKEFID = {
   PARTY_ID: {
     REGEX: /^\d{8}$/,
   },
+  VALIDATION: { MIN: 10, MAX: 10 },
 };

@@ -1,3 +1,5 @@
+import { COUNTRIES } from '../countries.constant';
+import { CURRENCIES } from '../currencies.constant';
 import { GIFT_EXAMPLES } from './gift.examples.constant';
 
 export const EXAMPLES = {
@@ -7,9 +9,9 @@ export const EXAMPLES = {
   PARTY_ID: '00001234',
   BUNDLE_ID: '0000233092',
   LOAN_ID: '000272017',
-  CURRENCY: 'USD',
+  CURRENCY: CURRENCIES.USD,
   DEAL_OR_FACILITY_VALUE: 501927.25,
-  COUNTRY_CODE: 'GBR',
+  COUNTRY_CODE: COUNTRIES.GBR,
   BUNDLE_STATUS_CODE: '10',
   BUNDLE_STATUS_DESC: 'Pending Input With Drafts',
   PRODUCT_TYPE_ID: '250',

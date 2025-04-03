@@ -1,4 +1,5 @@
 import { BundleInformationType } from '@ukef/constants/enums/bundle-information-type';
+import { COUNTRIES } from './countries.constant';
 
 export const PROPERTIES = {
   GLOBAL: {
@@ -62,7 +63,7 @@ export const PROPERTIES = {
       servicingUnitIdentifier: 'ACBS',
       servicingUnitSectionIdentifier: 'ACBS',
       agentBankPartyIdentifier: '00000000',
-      riskCountryCode: 'GBR',
+      riskCountryCode: COUNTRIES.GBR,
       purposeTypeCode: '   ',
       capitalClassCode: 'A',
       capitalConversionFactorCode: ' ',
@@ -142,7 +143,7 @@ export const PROPERTIES = {
         addressIdentifier: 'PRM',
         addressName1: 'PRV',
         addressTypeCode: '01',
-        countryCode: 'GBR',
+        countryCode: COUNTRIES.GBR,
       },
       generalLedgerUnitIdentifier: 'ECGD',
       riskRatingCode: '14',
