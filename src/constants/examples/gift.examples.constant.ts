@@ -6,6 +6,22 @@ import { CURRENCIES } from '../currencies.constant';
 const DEAL_ID: UkefId = '0030000123';
 const FACILITY_ID: UkefId = '0030000321';
 
+const COUNTERPARTY = {
+  COUNTERPARTY_URN: '01234567',
+  EXIT_DATE: '2025-08-10',
+  ROLE_ID: 'buyer',
+  SHARE_PERCENTAGE: 25,
+  START_DATE: '2025-04-10',
+};
+
+const COUNTERPARTY_DATA = {
+  counterpartyUrn: COUNTERPARTY.COUNTERPARTY_URN,
+  exitDate: COUNTERPARTY.EXIT_DATE,
+  roleId: COUNTERPARTY.ROLE_ID,
+  sharePercentage: COUNTERPARTY.SHARE_PERCENTAGE,
+  startDate: COUNTERPARTY.START_DATE,
+};
+
 const FACILITY = {
   AVAILABLE_AMOUNT: 3000000,
   CREATED_DATE_TIME: '2025-03-21T09:58:21.115Z',
@@ -23,6 +39,7 @@ const FACILITY = {
   OBLIGOR_URN: '01234567',
   STREAM_ID: '7d915bfa-0069-4aaa-92c5-013925f019a1',
   STREAM_VERSION: 1,
+  WORK_PACKAGE_ID: 123,
 };
 
 const FACILITY_OVERVIEW_DATA = {
@@ -54,7 +71,7 @@ const FACILITY_CREATION_PAYLOAD: GiftFacilityCreationDto = {
    * NOTE: the below properties are purely for example purposes.
    * These will be populated in upcoming PRs.
    */
-  counterParties: [],
+  counterparties: [COUNTERPARTY_DATA, COUNTERPARTY_DATA],
   fees: [],
   obligations: [],
   repaymentProfiles: [],
@@ -69,9 +86,12 @@ const FACILITY_RESPONSE_DATA: GiftFacilityResponseDto = {
   ...FACILITY_OVERVIEW_DATA,
   drawnAmount: FACILITY.DRAWN_AMOUNT,
   availableAmount: FACILITY.AVAILABLE_AMOUNT,
+  workPackageId: FACILITY.WORK_PACKAGE_ID,
 };
 
 export const GIFT_EXAMPLES = {
+  COUNTERPARTY,
+  COUNTERPARTY_DATA,
   DEAL_ID,
   FACILITY,
   FACILITY_CREATION_PAYLOAD,

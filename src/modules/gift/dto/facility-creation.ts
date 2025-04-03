@@ -1,12 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { EXAMPLES } from '@ukef/constants';
 import { Type } from 'class-transformer';
-import { IsDefined, IsNotEmptyObject, ValidateNested } from 'class-validator';
+import { ArrayNotEmpty, IsArray, IsDefined, IsNotEmptyObject, ValidateNested } from 'class-validator';
 
 import { GiftFacilityDto } from './facility';
+import { GiftFacilityCounterpartyDto } from './facility-counterparty';
 
 const {
-  GIFT: { FACILITY_OVERVIEW_DATA },
+  GIFT: { FACILITY_COUNTERPARTY_DATA, FACILITY_OVERVIEW_DATA },
 } = EXAMPLES;
 
 /**
@@ -23,6 +24,16 @@ export class GiftFacilityCreationDto {
   @ValidateNested()
   overview: GiftFacilityDto;
 
+  @ApiProperty({
+    example: FACILITY_COUNTERPARTY_DATA,
+  })
+  @IsArray()
+  @ArrayNotEmpty()
+  @IsDefined()
+  @Type(() => GiftFacilityCounterpartyDto)
+  @ValidateNested()
+  counterparties: GiftFacilityCounterpartyDto[];
+
   /**
    * NOTE: the below properties are purely for example/context purposes.
    * These will be populated in upcoming PRs:
@@ -31,7 +42,6 @@ export class GiftFacilityCreationDto {
    * GIFT-10025
    * GIFT-10026
    */
-  counterParties: [];
   fees: [];
   obligations: [];
   repaymentProfiles: [];

@@ -47,4 +47,10 @@ export class GiftFacilityResponseDto extends GiftFacilityDto {
     example: FACILITY.STREAM_VERSION,
   })
   streamVersion: number;
+
+  @IsNumber()
+  @ApiProperty({
+    example: FACILITY.WORK_PACKAGE_ID,
+  })
+  workPackageId: number;
 }
