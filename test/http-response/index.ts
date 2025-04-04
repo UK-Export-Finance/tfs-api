@@ -13,10 +13,10 @@ export const mockResponse200 = (data: object = {}) => ({
 
 /**
  * Mock 201 response
- * @param {Object} data
+ * @param {Object | Array<any>} data
  * @returns {Object}
  */
-export const mockResponse201 = (data: object = {}) => ({
+export const mockResponse201 = (data: object | Array<any> = {}) => ({
   status: HttpStatus.CREATED,
   data,
 });

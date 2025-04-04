@@ -3,26 +3,32 @@ import { GIFT } from '@ukef/constants';
 import { UkefId } from '@ukef/helpers';
 import { AxiosResponse } from 'axios';
 
-import { GiftFacilityCounterpartyDto, GiftFacilityCreationDto, GiftFacilityDto } from './dto';
+import { GiftFacilityCreationDto, GiftFacilityDto } from './dto';
+import { GiftCounterpartyService } from './gift.counterparty.service';
 import { GiftHttpService } from './gift-http.service';
 import { mapResponsesData, mapValidationErrorResponses } from './helpers';
 
 const { PATH } = GIFT;
+
 /**
  * GIFT service.
  * This is responsible for all operations that call the GIFT API.
  */
 @Injectable()
 export class GiftService {
-  constructor(private readonly giftHttpService: GiftHttpService) {
+  constructor(
+    private readonly giftHttpService: GiftHttpService,
+    private readonly giftCounterpartyService: GiftCounterpartyService,
+  ) {
     this.giftHttpService = giftHttpService;
+    this.giftCounterpartyService = giftCounterpartyService;
   }
 
   // TODO: documentation
   async getFacility(facilityId: UkefId): Promise<AxiosResponse> {
     try {
       const response = await this.giftHttpService.get<GiftFacilityDto>({
-        path: `${GIFT.PATH.FACILITY}/${facilityId}`,
+        path: `${PATH.FACILITY}/${facilityId}`,
       });
 
       return response;
@@ -34,34 +40,6 @@ export class GiftService {
   }
 
   /**
-   * Create a GIFT counterparty
-   * @param {GiftFacilityCounterpartyDto} payload: Counterparty data
-   * @returns {Promise<AxiosResponse>}
-   */
-  createCounterparty(payload: GiftFacilityCounterpartyDto, workPackageId: number): Promise<AxiosResponse> {
-    return this.giftHttpService.post<GiftFacilityCounterpartyDto>({
-      path: `${PATH.WORK_PACKAGE}/${workPackageId}${PATH.COUNTERPARTY}${PATH.CREATION_EVENT}`,
-      payload,
-    });
-  }
-
-  /**
-   * Create multiple GIFT counterparties
-   * @param {Array<GiftFacilityCounterpartyDto>} counterpartiesData: Counterparties data
-   * @returns {Promise<Array<AxiosResponse>>}
-   * @throws {Error}
-   */
-  createCounterparties(counterpartiesData: GiftFacilityCounterpartyDto[], workPackageId: number): Promise<Array<AxiosResponse>> {
-    try {
-      return Promise.all(counterpartiesData.map((counterParty) => this.createCounterparty(counterParty, workPackageId)));
-    } catch (error) {
-      console.error('Error creating counterparties %o', error);
-
-      throw new Error('Error creating counterparties', error);
-    }
-  }
-
-  /**
    * Create a GIFT facility - initial/overview data
    * @param {GiftFacilityDto} payload: Facility overview data
    * @returns {Promise<AxiosResponse>}
@@ -69,7 +47,7 @@ export class GiftService {
   async createInitialFacility(payload: GiftFacilityDto): Promise<AxiosResponse> {
     try {
       const response = await this.giftHttpService.post<GiftFacilityCreationDto>({
-        path: GIFT.PATH.FACILITY,
+        path: PATH.FACILITY,
         payload,
       });
 
@@ -108,7 +86,7 @@ export class GiftService {
         } as AxiosResponse;
       }
 
-      // // @ts-ignore
+      // @ts-ignore
       // counterpartiesPayload[0].exitDate = 123;
 
       // // @ts-ignore
@@ -117,7 +95,7 @@ export class GiftService {
       // // @ts-ignore
       // counterpartiesPayload[1].roleId = 11111;
 
-      const counterparties = await this.createCounterparties(counterpartiesPayload, facility.workPackageId);
+      const counterparties = await this.giftCounterpartyService.createMany(counterpartiesPayload, facility.workPackageId);
 
       const validationErrors = mapValidationErrorResponses({
         // TODO: constant

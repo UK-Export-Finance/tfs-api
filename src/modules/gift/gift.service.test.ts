@@ -4,12 +4,15 @@ import { EXAMPLES, GIFT } from '@ukef/constants';
 import { mockAxiosError, mockResponse200, mockResponse201, mockResponse500 } from '@ukef-test/http-response';
 import { AxiosResponse } from 'axios';
 
+import { GiftCounterpartyService } from './gift.counterparty.service';
 import { GiftService } from './gift.service';
 import { mapValidationErrorResponses } from './helpers';
 
 const {
   GIFT: { COUNTERPARTY_DATA, FACILITY_RESPONSE_DATA, FACILITY_CREATION_PAYLOAD: mockPayload, FACILITY_ID: mockFacilityId },
 } = EXAMPLES;
+
+const { PATH } = GIFT;
 
 const mockResponseGet = mockResponse200(FACILITY_RESPONSE_DATA);
 const mockResponsePost = mockResponse201(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA);
@@ -18,11 +21,13 @@ const mockCreateCounterpartiesResponse = [mockResponse201(COUNTERPARTY_DATA), mo
 
 describe('GiftService', () => {
   let httpService: HttpService;
+  let counterpartyService: GiftCounterpartyService;
   let service: GiftService;
 
   let giftHttpService;
   let mockHttpServiceGet: jest.Mock;
   let mockHttpServicePost: jest.Mock;
+  let mockCreateCounterparties: jest.Mock;
 
   beforeEach(() => {
     httpService = new HttpService();
@@ -38,7 +43,13 @@ describe('GiftService', () => {
       post: mockHttpServicePost,
     };
 
-    service = new GiftService(giftHttpService);
+    counterpartyService = new GiftCounterpartyService(giftHttpService);
+
+    mockCreateCounterparties = jest.fn().mockResolvedValueOnce(mockCreateCounterpartiesResponse);
+
+    counterpartyService.createMany = mockCreateCounterparties;
+
+    service = new GiftService(giftHttpService, counterpartyService);
   });
 
   afterAll(() => {
@@ -52,7 +63,7 @@ describe('GiftService', () => {
       expect(mockHttpServiceGet).toHaveBeenCalledTimes(1);
 
       expect(mockHttpServiceGet).toHaveBeenCalledWith({
-        path: `${GIFT.PATH.FACILITY}/${mockFacilityId}`,
+        path: `${PATH.FACILITY}/${mockFacilityId}`,
       });
     });
 
@@ -72,7 +83,7 @@ describe('GiftService', () => {
 
         giftHttpService.get = mockHttpServiceGet;
 
-        service = new GiftService(giftHttpService);
+        service = new GiftService(giftHttpService, counterpartyService);
       });
 
       it('should thrown an error', async () => {
@@ -92,7 +103,7 @@ describe('GiftService', () => {
       expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
 
       expect(mockHttpServicePost).toHaveBeenCalledWith({
-        path: GIFT.PATH.FACILITY,
+        path: PATH.FACILITY,
         payload: mockPayload.overview,
       });
     });
@@ -113,7 +124,7 @@ describe('GiftService', () => {
 
         giftHttpService.post = mockHttpServicePost;
 
-        service = new GiftService(giftHttpService);
+        service = new GiftService(giftHttpService, counterpartyService);
       });
 
       it('should thrown an error', async () => {
@@ -136,10 +147,11 @@ describe('GiftService', () => {
       createInitialFacilitySpy = jest.fn().mockResolvedValueOnce(mockResponse201(FACILITY_RESPONSE_DATA));
       createCounterpartiesSpy = jest.fn().mockResolvedValueOnce(mockCreateCounterpartiesResponse);
 
-      service = new GiftService(giftHttpService);
+      counterpartyService.createMany = createCounterpartiesSpy;
+
+      service = new GiftService(giftHttpService, counterpartyService);
 
       service.createInitialFacility = createInitialFacilitySpy;
-      service.createCounterparties = createCounterpartiesSpy;
     });
 
     it('should call service.createInitialFacility', async () => {
@@ -150,7 +162,7 @@ describe('GiftService', () => {
       expect(createInitialFacilitySpy).toHaveBeenCalledWith(mockPayload.overview);
     });
 
-    it('should call service.createCounterparties', async () => {
+    it('should call counterpartyService.createMany', async () => {
       await service.createFacility(mockPayload);
 
       expect(createCounterpartiesSpy).toHaveBeenCalledTimes(1);
@@ -174,7 +186,7 @@ describe('GiftService', () => {
       });
     });
 
-    describe('when service.createInitialFacility throws an error', () => {
+    describe('when countrpartyService.createInitialFacility throws an error', () => {
       const mockAxiosErrorStatus = HttpStatus.BAD_REQUEST;
 
       const mockAxiosErrorData = {
@@ -184,7 +196,7 @@ describe('GiftService', () => {
       beforeEach(() => {
         createInitialFacilitySpy = jest.fn().mockRejectedValueOnce(mockAxiosError({ data: mockAxiosErrorData, status: mockAxiosErrorStatus }));
 
-        service = new GiftService(giftHttpService);
+        service = new GiftService(giftHttpService, counterpartyService);
 
         service.createInitialFacility = createInitialFacilitySpy;
       });
@@ -198,7 +210,7 @@ describe('GiftService', () => {
       });
     });
 
-    describe(`when service.createCounterparties returns a response that does not have a  ${HttpStatus.CREATED} status`, () => {
+    describe(`when counterpartyService.createMany returns a response that does not have a  ${HttpStatus.CREATED} status`, () => {
       const mockCounterpartiesResponse = [
         {
           status: HttpStatus.CREATED,
@@ -215,7 +227,7 @@ describe('GiftService', () => {
       beforeEach(() => {
         createCounterpartiesSpy = jest.fn().mockResolvedValueOnce(mockCounterpartiesResponse);
 
-        service.createCounterparties = createCounterpartiesSpy;
+        counterpartyService.createMany = createCounterpartiesSpy;
       });
 
       it('should return an object with mapped errors', async () => {
@@ -239,7 +251,7 @@ describe('GiftService', () => {
       });
     });
 
-    describe('when service.createCounterparties throws an error', () => {
+    describe('when counterpartyService.createMany throws an error', () => {
       const mockAxiosErrorStatus = HttpStatus.BAD_REQUEST;
 
       const mockAxiosErrorData = {
@@ -249,11 +261,11 @@ describe('GiftService', () => {
       beforeEach(() => {
         createCounterpartiesSpy = jest.fn().mockRejectedValueOnce(mockAxiosError({ data: mockAxiosErrorData, status: mockAxiosErrorStatus }));
 
-        service = new GiftService(giftHttpService);
+        counterpartyService.createMany = createCounterpartiesSpy;
+
+        service = new GiftService(giftHttpService, counterpartyService);
 
         service.createInitialFacility = jest.fn().mockResolvedValueOnce(mockResponse201(FACILITY_RESPONSE_DATA));
-
-        service.createCounterparties = createCounterpartiesSpy;
       });
 
       it('should throw an error', async () => {
