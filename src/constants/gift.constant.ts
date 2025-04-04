@@ -9,6 +9,15 @@ const DATE_STRING_VALIDATION = {
 };
 
 export const GIFT = {
+  API_RESPONSE_MESSAGES: {
+    FACILITY_VALIDATION_ERRORS: 'Validation errors with facility entity(s)',
+  },
+  API_RESPONSE_TYPES: {
+    ERROR: 'api-error-response',
+  },
+  ENTITY_NAMES: {
+    COUNTERPARTY: 'Counterparty',
+  },
   PATH: {
     FACILITY: '/facility',
     WORK_PACKAGE: '/work-package',

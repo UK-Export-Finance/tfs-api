@@ -8,7 +8,7 @@ import { GiftCounterpartyService } from './gift.counterparty.service';
 import { GiftHttpService } from './gift-http.service';
 import { mapResponsesData, mapValidationErrorResponses } from './helpers';
 
-const { PATH } = GIFT;
+const { API_RESPONSE_MESSAGES, ENTITY_NAMES, PATH } = GIFT;
 
 /**
  * GIFT service.
@@ -69,9 +69,7 @@ export class GiftService {
     try {
       const { overview, counterparties: counterpartiesPayload } = data;
 
-      const facilityResponse = await this.createInitialFacility(overview);
-
-      const { data: facility, status } = facilityResponse;
+      const { data: facility, status } = await this.createInitialFacility(overview);
 
       /**
        * NOTE: IF the initial facility creation fails, we should surface only this error and prevent subsequent calls.
@@ -98,8 +96,7 @@ export class GiftService {
       const counterparties = await this.giftCounterpartyService.createMany(counterpartiesPayload, facility.workPackageId);
 
       const validationErrors = mapValidationErrorResponses({
-        // TODO: constant
-        entity: 'counterparty',
+        entityName: ENTITY_NAMES.COUNTERPARTY,
         responses: counterparties,
       });
 
@@ -108,17 +105,19 @@ export class GiftService {
           status: HttpStatus.BAD_REQUEST,
           data: {
             statusCode: HttpStatus.BAD_REQUEST,
-            message: 'Validation errors with facility entity(s)',
+            message: API_RESPONSE_MESSAGES.FACILITY_VALIDATION_ERRORS,
             validationErrors,
           },
         } as AxiosResponse;
       }
 
+      const mappedCounterparties = mapResponsesData(counterparties);
+
       return {
         status: HttpStatus.CREATED,
         data: {
           ...facility,
-          counterparties: mapResponsesData(counterparties),
+          counterparties: mappedCounterparties,
         },
       } as AxiosResponse;
     } catch (error) {

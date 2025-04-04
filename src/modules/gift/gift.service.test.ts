@@ -12,7 +12,7 @@ const {
   GIFT: { COUNTERPARTY_DATA, FACILITY_RESPONSE_DATA, FACILITY_CREATION_PAYLOAD: mockPayload, FACILITY_ID: mockFacilityId },
 } = EXAMPLES;
 
-const { PATH } = GIFT;
+const { API_RESPONSE_MESSAGES, ENTITY_NAMES, PATH } = GIFT;
 
 const mockResponseGet = mockResponse200(FACILITY_RESPONSE_DATA);
 const mockResponsePost = mockResponse201(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA);
@@ -234,7 +234,7 @@ describe('GiftService', () => {
         const response = await service.createFacility(mockPayload);
 
         const expectedValidationErrors = mapValidationErrorResponses({
-          entity: 'counterparty',
+          entityName: ENTITY_NAMES.COUNTERPARTY,
           responses: mockCounterpartiesResponse,
         });
 
@@ -242,7 +242,7 @@ describe('GiftService', () => {
           status: HttpStatus.BAD_REQUEST,
           data: {
             statusCode: HttpStatus.BAD_REQUEST,
-            message: 'Validation errors with facility entity(s)',
+            message: API_RESPONSE_MESSAGES.FACILITY_VALIDATION_ERRORS,
             validationErrors: expectedValidationErrors,
           },
         };

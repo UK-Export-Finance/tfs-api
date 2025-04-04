@@ -1,9 +1,12 @@
 import { HttpStatus } from '@nestjs/common';
+import { GIFT } from '@ukef/constants';
 import { AxiosResponse } from 'axios';
 
 import { mapValidationErrorResponses } from '.';
 
-const mockEntity = 'counterparty';
+const { ENTITY_NAMES, API_RESPONSE_TYPES } = GIFT;
+
+const mockEntityName = ENTITY_NAMES.COUNTERPARTY;
 
 const mockValidationErrors = [
   {
@@ -20,12 +23,12 @@ describe('modules/gift/helpers/map-validation-error-responses', () => {
         { status: HttpStatus.BAD_REQUEST, data: { validationErrors: mockValidationErrors } },
       ] as AxiosResponse[];
 
-      const result = mapValidationErrorResponses({ entity: mockEntity, responses: mockResponses });
+      const result = mapValidationErrorResponses({ entityName: mockEntityName, responses: mockResponses });
 
       const expected = [
         {
-          type: 'api-error-response',
-          entity: mockEntity,
+          type: API_RESPONSE_TYPES.ERROR,
+          entityName: mockEntityName,
           index: 1,
           messages: mockResponses[1].data.validationErrors,
         },
@@ -44,24 +47,24 @@ describe('modules/gift/helpers/map-validation-error-responses', () => {
         { status: HttpStatus.I_AM_A_TEAPOT, data: { validationErrors: mockValidationErrors } },
       ] as AxiosResponse[];
 
-      const result = mapValidationErrorResponses({ entity: mockEntity, responses: mockResponses });
+      const result = mapValidationErrorResponses({ entityName: mockEntityName, responses: mockResponses });
 
       const expected = [
         {
-          type: 'api-error-response',
-          entity: mockEntity,
+          type: API_RESPONSE_TYPES.ERROR,
+          entityName: mockEntityName,
           index: 0,
           messages: mockResponses[0].data.validationErrors,
         },
         {
-          type: 'api-error-response',
-          entity: mockEntity,
+          type: API_RESPONSE_TYPES.ERROR,
+          entityName: mockEntityName,
           index: 2,
           messages: mockResponses[2].data.validationErrors,
         },
         {
-          type: 'api-error-response',
-          entity: mockEntity,
+          type: API_RESPONSE_TYPES.ERROR,
+          entityName: mockEntityName,
           index: 3,
           messages: mockResponses[3].data.validationErrors,
         },
@@ -75,7 +78,7 @@ describe('modules/gift/helpers/map-validation-error-responses', () => {
     it('should return an empty array', () => {
       const mockResponses = [{ status: HttpStatus.CREATED }, { status: HttpStatus.CREATED }, { status: HttpStatus.CREATED }] as AxiosResponse[];
 
-      const result = mapValidationErrorResponses({ entity: mockEntity, responses: mockResponses });
+      const result = mapValidationErrorResponses({ entityName: mockEntityName, responses: mockResponses });
 
       expect(result).toEqual([]);
     });
@@ -83,7 +86,7 @@ describe('modules/gift/helpers/map-validation-error-responses', () => {
 
   describe('when responses is an empty array', () => {
     it('should return an empty array', () => {
-      const result = mapValidationErrorResponses({ entity: mockEntity, responses: [] });
+      const result = mapValidationErrorResponses({ entityName: mockEntityName, responses: [] });
 
       expect(result).toEqual([]);
     });

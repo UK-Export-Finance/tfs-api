@@ -1,13 +1,16 @@
 import { HttpStatus } from '@nestjs/common';
+import { GIFT } from '@ukef/constants';
 import { AxiosResponse } from 'axios';
 
+const { API_RESPONSE_TYPES } = GIFT;
+
 interface FilterResponsesWithInvalidStatusParams {
-  entity: string;
+  entityName: string;
   responses: AxiosResponse[];
 }
 
 interface ExtendedAxiosResponse extends AxiosResponse {
-  entity: string;
+  entityName: string;
   index: number;
 }
 
@@ -17,14 +20,14 @@ interface ExtendedAxiosResponse extends AxiosResponse {
  * @param {FilterResponsesWithInvalidStatusParams}
  * @returns {ExtendedAxiosResponse[]} Mapped responses that do not match an expected status
  */
-export const mapValidationErrorResponses = ({ responses, entity }: FilterResponsesWithInvalidStatusParams): ExtendedAxiosResponse[] => {
+export const mapValidationErrorResponses = ({ responses, entityName }: FilterResponsesWithInvalidStatusParams): ExtendedAxiosResponse[] => {
   const mappedAndFiltered = [];
 
   responses.forEach(({ data, status }, index) => {
     if (status !== HttpStatus.CREATED) {
       mappedAndFiltered.push({
-        type: 'api-error-response',
-        entity,
+        type: API_RESPONSE_TYPES.ERROR,
+        entityName,
         index,
         messages: data.validationErrors,
       });
