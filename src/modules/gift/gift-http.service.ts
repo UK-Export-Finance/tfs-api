@@ -9,7 +9,7 @@ const { CONTENT_TYPE } = HEADERS;
  * Array of acceptable statuses to consume from a GIFT API response
  * @returns {Array<HttpStatus>}
  */
-export const GIFT_API_ACCEPTABLE_STATUSES = [HttpStatus.CREATED];
+export const GIFT_API_ACCEPTABLE_STATUSES = [HttpStatus.OK, HttpStatus.CREATED, HttpStatus.BAD_REQUEST, HttpStatus.UNAUTHORIZED, HttpStatus.NOT_FOUND];
 
 /**
  * GIFT HTTP service.

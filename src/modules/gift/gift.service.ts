@@ -1,11 +1,11 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { GIFT } from '@ukef/constants';
 import { UkefId } from '@ukef/helpers';
-import { AxiosError, AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 
 import { GiftFacilityCounterpartyDto, GiftFacilityCreationDto, GiftFacilityDto } from './dto';
 import { GiftHttpService } from './gift-http.service';
-import { createBadRequestObject, filterResponsesWithInvalidStatus, mapResponsesData } from './helpers';
+import { mapResponsesData, mapValidationErrorResponses } from './helpers';
 
 const { PATH } = GIFT;
 /**
@@ -18,6 +18,7 @@ export class GiftService {
     this.giftHttpService = giftHttpService;
   }
 
+  // TODO: documentation
   async getFacility(facilityId: UkefId): Promise<AxiosResponse> {
     try {
       const response = await this.giftHttpService.get<GiftFacilityDto>({
@@ -50,25 +51,14 @@ export class GiftService {
    * @returns {Promise<Array<AxiosResponse>>}
    * @throws {Error}
    */
-  async createCounterparties(counterpartiesData: GiftFacilityCounterpartyDto[], workPackageId: number): Promise<Array<AxiosResponse> | AxiosResponse> {
-    const responses = await Promise.all(counterpartiesData.map((counterParty) => this.createCounterparty(counterParty, workPackageId)));
+  createCounterparties(counterpartiesData: GiftFacilityCounterpartyDto[], workPackageId: number): Promise<Array<AxiosResponse>> {
+    try {
+      return Promise.all(counterpartiesData.map((counterParty) => this.createCounterparty(counterParty, workPackageId)));
+    } catch (error) {
+      console.error('Error creating counterparties %o', error);
 
-    /**
-     * If any of the counterparty API calls has an invalid status,
-     * create a single object with an array of all counterparty validation errors
-     * and throw an error.
-     * This allows a single response to be returned with all validation errors.
-     * Without this, a consumer will receive a very large response with unnecessary nested datA.
-     */
-    const errors = filterResponsesWithInvalidStatus({ responses, expectedStatus: HttpStatus.CREATED });
-
-    if (errors.length) {
-      const badRequestObject = createBadRequestObject(errors);
-
-      throw new Error('Error creating counterparties', { cause: badRequestObject });
+      throw new Error('Error creating counterparties', error);
     }
-
-    return mapResponsesData(responses);
   }
 
   /**
@@ -85,9 +75,9 @@ export class GiftService {
 
       return response;
     } catch (error) {
-      console.error('Error calling GIFT HTTP service POST method %o', error);
+      console.error('Error creating initial GIFT facility %o', error);
 
-      throw new Error('Error calling GIFT HTTP service POST method', error);
+      throw new Error('Error creating initial GIFT facility', error);
     }
   }
 
@@ -101,31 +91,60 @@ export class GiftService {
     try {
       const { overview, counterparties: counterpartiesPayload } = data;
 
-      const { data: facility } = await this.createInitialFacility(overview);
+      const facilityResponse = await this.createInitialFacility(overview);
+
+      const { data: facility, status } = facilityResponse;
+
+      /**
+       * NOTE: IF the initial facility creation fails, we should surface only this error and prevent subsequent calls.
+       * Otherwise, subsequent calls will fail with errors unrelated to what is in the payload - could cause confusion.
+       * E.g, a work package ID is required for counterparty creation - this ID comes from the initial facility creation.
+       * If the initial facility creation fails and we attempt to create a counterparty, a work package ID error will be returned.
+       */
+      if (status !== HttpStatus.CREATED) {
+        return {
+          status,
+          data: facility,
+        } as AxiosResponse;
+      }
+
+      // // @ts-ignore
+      // counterpartiesPayload[0].exitDate = 123;
+
+      // // @ts-ignore
+      // counterpartiesPayload[1].startDate = 321;
+
+      // // @ts-ignore
+      // counterpartiesPayload[1].roleId = 11111;
 
       const counterparties = await this.createCounterparties(counterpartiesPayload, facility.workPackageId);
+
+      const validationErrors = mapValidationErrorResponses({
+        // TODO: constant
+        entity: 'counterparty',
+        responses: counterparties,
+      });
+
+      if (validationErrors.length) {
+        return {
+          status: HttpStatus.BAD_REQUEST,
+          data: {
+            statusCode: HttpStatus.BAD_REQUEST,
+            message: 'Validation errors with facility entity(s)',
+            validationErrors,
+          },
+        } as AxiosResponse;
+      }
 
       return {
         status: HttpStatus.CREATED,
         data: {
           ...facility,
-          counterparties,
+          counterparties: mapResponsesData(counterparties),
         },
       } as AxiosResponse;
     } catch (error) {
       console.error('Error creating GIFT facility %o', error);
-
-      /**
-       * If the error is an Axios error (as opposed to e.g, service unavailable),
-       * Instead of throwing an error - surface the error.
-       * This allows consumers to receive validation errors.
-       */
-      if (error instanceof AxiosError) {
-        return {
-          status: error.status,
-          data: error.response?.data,
-        } as AxiosResponse;
-      }
 
       throw new Error('Error creating GIFT facility', error);
     }

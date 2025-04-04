@@ -7,7 +7,7 @@ import { GiftFacilityDto } from './facility';
 import { GiftFacilityCounterpartyDto } from './facility-counterparty';
 
 const {
-  GIFT: { FACILITY_COUNTERPARTY_DATA, FACILITY_OVERVIEW_DATA },
+  GIFT: { COUNTERPARTY_DATA, FACILITY_OVERVIEW_DATA },
 } = EXAMPLES;
 
 /**
@@ -25,7 +25,7 @@ export class GiftFacilityCreationDto {
   overview: GiftFacilityDto;
 
   @ApiProperty({
-    example: FACILITY_COUNTERPARTY_DATA,
+    example: COUNTERPARTY_DATA,
   })
   @IsArray()
   @ArrayNotEmpty()

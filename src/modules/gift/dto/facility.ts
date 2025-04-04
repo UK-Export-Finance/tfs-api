@@ -8,7 +8,11 @@ const {
   GIFT: { FACILITY: EXAMPLE },
 } = EXAMPLES;
 
-const { VALIDATION } = GIFT;
+const {
+  VALIDATION: {
+    FACILITY: { OVERVIEW: VALIDATION },
+  },
+} = GIFT;
 
 /**
  * GIFT facility DTO.
