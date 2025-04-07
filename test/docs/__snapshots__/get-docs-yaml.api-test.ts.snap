@@ -3316,8 +3316,19 @@ components:
             productType: MOCK
           allOf:
             - $ref: '#/components/schemas/GiftFacilityDto'
+        counterparties:
+          example:
+            counterpartyUrn: '01234567'
+            exitDate: '2025-08-10'
+            roleId: buyer
+            sharePercentage: 25
+            startDate: '2025-04-10'
+          type: array
+          items:
+            type: string
       required:
         - overview
+        - counterparties
     GetPartiesBySearchTextResponseItem:
       type: object
       properties:
