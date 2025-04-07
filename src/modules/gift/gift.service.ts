@@ -24,7 +24,11 @@ export class GiftService {
     this.giftCounterpartyService = giftCounterpartyService;
   }
 
-  // TODO: documentation
+  /**
+   * Get a GIFT facility by ID
+   * @param {String} facilityId
+   * @returns {Promise<AxiosResponse>}
+   */
   async getFacility(facilityId: UkefId): Promise<AxiosResponse> {
     try {
       const response = await this.giftHttpService.get<GiftFacilityDto>({
