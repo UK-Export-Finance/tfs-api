@@ -68,7 +68,7 @@ const FACILITY_OVERVIEW_DATA = {
  */
 const FACILITY_CREATION_PAYLOAD: GiftFacilityCreationDto = {
   overview: FACILITY_OVERVIEW_DATA,
-  counterparties: [COUNTERPARTY_DATA, COUNTERPARTY_DATA, COUNTERPARTY_DATA],
+  counterparties: [COUNTERPARTY_DATA, COUNTERPARTY_DATA],
 
   /**
    * NOTE: the below properties are purely for example purposes.

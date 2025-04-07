@@ -29,7 +29,7 @@ export class GiftFacilityCounterpartyDto {
 
   @IsDefined()
   @IsString()
-  @Length(1)
+  @Length(1, 50)
   @ApiProperty({
     example: COUNTERPARTY.ROLE_ID,
   })
