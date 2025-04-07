@@ -84,15 +84,6 @@ export class GiftService {
         } as AxiosResponse;
       }
 
-      // @ts-ignore
-      // counterpartiesPayload[0].exitDate = 123;
-
-      // // @ts-ignore
-      // counterpartiesPayload[1].startDate = 321;
-
-      // // @ts-ignore
-      // counterpartiesPayload[1].roleId = 11111;
-
       const counterparties = await this.giftCounterpartyService.createMany(counterpartiesPayload, facility.workPackageId);
 
       const validationErrors = mapValidationErrorResponses({
