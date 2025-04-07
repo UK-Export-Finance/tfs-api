@@ -1,10 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { EXAMPLES } from '@ukef/constants';
+import { EXAMPLES, GIFT } from '@ukef/constants';
 import { IsDefined, IsNumber, IsString, Length, Max, Min } from 'class-validator';
 
 const {
   GIFT: { COUNTERPARTY },
 } = EXAMPLES;
+
+const {
+  VALIDATION: { COUNTERPARTY: VALIDATION },
+} = GIFT;
 
 /**
  * GIFT facility counterparty DTO.
@@ -13,7 +17,7 @@ const {
 export class GiftFacilityCounterpartyDto {
   @IsDefined()
   @IsString()
-  @Length(8, 8)
+  @Length(VALIDATION.COUNTERPARTY_URN.MIN, VALIDATION.COUNTERPARTY_URN.MAX)
   @ApiProperty({
     example: COUNTERPARTY.COUNTERPARTY_URN,
   })
@@ -21,7 +25,7 @@ export class GiftFacilityCounterpartyDto {
 
   @IsDefined()
   @IsString()
-  @Length(10, 10)
+  @Length(VALIDATION.EXIT_DATE.MIN, VALIDATION.EXIT_DATE.MAX)
   @ApiProperty({
     example: COUNTERPARTY.EXIT_DATE,
   })
@@ -29,7 +33,7 @@ export class GiftFacilityCounterpartyDto {
 
   @IsDefined()
   @IsString()
-  @Length(1, 50)
+  @Length(VALIDATION.ROLE_ID.MIN, VALIDATION.ROLE_ID.MAX)
   @ApiProperty({
     example: COUNTERPARTY.ROLE_ID,
   })
@@ -37,8 +41,8 @@ export class GiftFacilityCounterpartyDto {
 
   @IsDefined()
   @IsNumber()
-  @Min(1)
-  @Max(100)
+  @Min(VALIDATION.SHARE_PERCENTAGE.MIN)
+  @Max(VALIDATION.SHARE_PERCENTAGE.MAX)
   @ApiProperty({
     example: COUNTERPARTY.SHARE_PERCENTAGE,
   })
@@ -46,7 +50,7 @@ export class GiftFacilityCounterpartyDto {
 
   @IsDefined()
   @IsString()
-  @Length(10, 10)
+  @Length(VALIDATION.START_DATE.MIN, VALIDATION.START_DATE.MAX)
   @ApiProperty({
     example: COUNTERPARTY.START_DATE,
   })

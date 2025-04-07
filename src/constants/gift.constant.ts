@@ -41,7 +41,7 @@ export const GIFT = {
     COUNTERPARTY: {
       COUNTERPARTY_URN: { MIN: 8, MAX: 8 },
       EXIT_DATE: DATE_STRING_VALIDATION,
-      ROLE_ID: { MIN: 1 },
+      ROLE_ID: { MIN: 1, MAX: 50 },
       SHARE_PERCENTAGE: { MIN: 1, MAX: 100 },
       START_DATE: DATE_STRING_VALIDATION,
     },
