@@ -27,10 +27,12 @@ describe('modules/gift/helpers/map-validation-error-responses', () => {
 
       const expected = [
         {
-          type: API_RESPONSE_TYPES.ERROR,
           entityName: mockEntityName,
           index: 1,
-          messages: mockResponses[1].data.validationErrors,
+          message: mockResponses[1].data.message,
+          status: mockResponses[1].status,
+          type: API_RESPONSE_TYPES.ERROR,
+          validationErrors: mockResponses[1].data.validationErrors,
         },
       ];
 
@@ -51,22 +53,28 @@ describe('modules/gift/helpers/map-validation-error-responses', () => {
 
       const expected = [
         {
-          type: API_RESPONSE_TYPES.ERROR,
           entityName: mockEntityName,
           index: 0,
-          messages: mockResponses[0].data.validationErrors,
+          message: mockResponses[0].data.message,
+          status: mockResponses[0].status,
+          type: API_RESPONSE_TYPES.ERROR,
+          validationErrors: mockResponses[0].data.validationErrors,
         },
         {
-          type: API_RESPONSE_TYPES.ERROR,
           entityName: mockEntityName,
           index: 2,
-          messages: mockResponses[2].data.validationErrors,
+          message: mockResponses[2].data.message,
+          status: mockResponses[2].status,
+          type: API_RESPONSE_TYPES.ERROR,
+          validationErrors: mockResponses[2].data.validationErrors,
         },
         {
-          type: API_RESPONSE_TYPES.ERROR,
           entityName: mockEntityName,
           index: 3,
-          messages: mockResponses[3].data.validationErrors,
+          message: mockResponses[3].data.message,
+          status: mockResponses[3].status,
+          type: API_RESPONSE_TYPES.ERROR,
+          validationErrors: mockResponses[3].data.validationErrors,
         },
       ];
 

@@ -2,6 +2,7 @@ import { EXAMPLES } from '@ukef/constants';
 import { mockResponse200, mockResponse201 } from '@ukef-test/http-response';
 
 import { GiftController } from './gift.controller';
+import { GiftCounterpartyService } from './gift.counterparty.service';
 import { GiftService } from './gift.service';
 import { GiftHttpService } from './gift-http.service';
 
@@ -14,6 +15,7 @@ const mockResponsePost = mockResponse201(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA);
 
 describe('GiftController', () => {
   let giftHttpService: GiftHttpService;
+  let counterpartyService: GiftCounterpartyService;
   let giftService: GiftService;
   let controller: GiftController;
 
@@ -26,7 +28,9 @@ describe('GiftController', () => {
 
   beforeEach(() => {
     giftHttpService = new GiftHttpService();
-    giftService = new GiftService(giftHttpService);
+
+    counterpartyService = new GiftCounterpartyService(giftHttpService);
+    giftService = new GiftService(giftHttpService, counterpartyService);
 
     mockResSend = jest.fn();
 

@@ -72,7 +72,7 @@ export class GiftService {
       const { data: facility, status } = await this.createInitialFacility(overview);
 
       /**
-       * NOTE: IF the initial facility creation fails, we should surface only this error and prevent subsequent calls.
+       * NOTE: If the initial facility creation fails, we should surface only this error and prevent subsequent calls.
        * Otherwise, subsequent calls will fail with errors unrelated to what is in the payload - could cause confusion.
        * E.g, a work package ID is required for counterparty creation - this ID comes from the initial facility creation.
        * If the initial facility creation fails and we attempt to create a counterparty, a work package ID error will be returned.
@@ -84,6 +84,15 @@ export class GiftService {
         } as AxiosResponse;
       }
 
+      // @ts-ignore
+      // counterpartiesPayload[0].exitDate = 123;
+
+      // // @ts-ignore
+      // counterpartiesPayload[1].startDate = 321;
+
+      // // @ts-ignore
+      // counterpartiesPayload[1].roleId = 11111;
+
       const counterparties = await this.giftCounterpartyService.createMany(counterpartiesPayload, facility.workPackageId);
 
       const validationErrors = mapValidationErrorResponses({
@@ -92,11 +101,26 @@ export class GiftService {
       });
 
       if (validationErrors.length) {
+        const [firstError] = validationErrors;
+
+        /**
+         * NOTE: Individual counterparty calls could return different statuses.
+         * We can only return one status.
+         * Therefore, we return the status and message of the first counterparty response.
+         */
+        const { status, message: firstMessage } = firstError;
+
+        let message = firstMessage;
+
+        if (status === HttpStatus.BAD_REQUEST) {
+          message = API_RESPONSE_MESSAGES.FACILITY_VALIDATION_ERRORS;
+        }
+
         return {
-          status: HttpStatus.BAD_REQUEST,
+          status,
           data: {
-            statusCode: HttpStatus.BAD_REQUEST,
-            message: API_RESPONSE_MESSAGES.FACILITY_VALIDATION_ERRORS,
+            statusCode: status,
+            message,
             validationErrors,
           },
         } as AxiosResponse;

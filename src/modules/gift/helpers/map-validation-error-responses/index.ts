@@ -12,6 +12,7 @@ interface FilterResponsesWithInvalidStatusParams {
 interface ExtendedAxiosResponse extends AxiosResponse {
   entityName: string;
   index: number;
+  message: string;
 }
 
 /**
@@ -25,11 +26,15 @@ export const mapValidationErrorResponses = ({ responses, entityName }: FilterRes
 
   responses.forEach(({ data, status }, index) => {
     if (status !== HttpStatus.CREATED) {
+      const { message, validationErrors } = data;
+
       mappedAndFiltered.push({
-        type: API_RESPONSE_TYPES.ERROR,
         entityName,
         index,
-        messages: data.validationErrors,
+        message,
+        status,
+        type: API_RESPONSE_TYPES.ERROR,
+        validationErrors,
       });
     }
   });
