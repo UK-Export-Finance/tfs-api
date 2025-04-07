@@ -99,7 +99,7 @@ describe('GiftService.createFacility', () => {
     });
   });
 
-  describe('when countrpartyService.createInitialFacility throws an error', () => {
+  describe('when counterpartyService.createInitialFacility throws an error', () => {
     const mockAxiosErrorStatus = HttpStatus.BAD_REQUEST;
 
     const mockAxiosErrorData = {

@@ -8,7 +8,7 @@ import { GiftHttpService } from './gift-http.service';
 const { PATH } = GIFT;
 
 /**
- * GIFT counterpary service.
+ * GIFT counterparty service.
  * This is responsible for all counterparty operations that call the GIFT API.
  */
 @Injectable()
