@@ -56,7 +56,9 @@
     "venv",
     "vnet",
     "CICD",
-    "ŽİĞİŞ"
+    "ŽİĞİŞ",
+    "crapimdev",
+    "crapimstaging"
   ],
   "dictionaries": [
     "en-gb",
