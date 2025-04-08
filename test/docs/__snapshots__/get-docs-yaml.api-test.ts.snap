@@ -3278,7 +3278,7 @@ components:
           example: Amazing facility
         obligorUrn:
           type: string
-          example: '01234567'
+          example: '12345678'
         productType:
           type: string
           example: Export Insurance Policy (EXIP)
@@ -3303,7 +3303,7 @@ components:
             streamId: 7d915bfa-0069-4aaa-92c5-013925f019a1
             streamVersion: 1
             name: Amazing facility
-            obligorUrn: '01234567'
+            obligorUrn: '12345678'
             currency: USD
             facilityAmount: 1000000
             effectiveDate: '2025-01-01'
