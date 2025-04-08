@@ -3,7 +3,7 @@ import { EXAMPLES, GIFT } from '@ukef/constants';
 import { Api } from '@ukef-test/support/api';
 import nock from 'nock';
 
-import { booleanValidation, numberValidation, stringValidation, ukefIdValidation } from './assertions';
+import { booleanValidation, numberStringValidation, numberValidation, stringValidation, ukefIdValidation } from './assertions';
 
 const {
   giftVersioning: { prefixAndVersion },
@@ -88,6 +88,7 @@ describe('POST /gift/facility - validation', () => {
           `overview.name must be longer than or equal to ${VALIDATION.FACILITY_NAME.MIN} characters`,
           'overview.name must be a string',
           'overview.obligorUrn should not be null or undefined',
+          `overview.obligorUrn must be longer than or equal to ${VALIDATION.OBLIGOR_URN.MIN} characters`,
           'overview.obligorUrn must be a number string',
           'overview.productType should not be null or undefined',
           `overview.productType must be longer than or equal to ${VALIDATION.PRODUCT_TYPE.MIN} characters`,
@@ -178,6 +179,15 @@ describe('POST /gift/facility - validation', () => {
       fieldName: 'name',
       min: VALIDATION.FACILITY_NAME.MIN,
       max: VALIDATION.FACILITY_NAME.MAX,
+    });
+  });
+
+  describe('overview.obligorUrn', () => {
+    numberStringValidation({
+      ...baseParams,
+      fieldName: 'obligorUrn',
+      min: VALIDATION.OBLIGOR_URN.MIN,
+      max: VALIDATION.OBLIGOR_URN.MAX,
     });
   });
 

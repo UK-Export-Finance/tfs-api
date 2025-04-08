@@ -21,6 +21,7 @@ export const GIFT = {
     FACILITY_AMOUNT: { MIN: 1 },
     FACILITY_ID: UKEFID.VALIDATION,
     FACILITY_NAME: { MIN: 1, MAX: 35 },
+    OBLIGOR_URN: { MIN: 8, MAX: 8 },
     PRODUCT_TYPE: { MIN: 3, MAX: 30 },
   },
 };
