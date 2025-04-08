@@ -21,7 +21,7 @@ const {
 export class GiftFacilityDto {
   @IsDefined()
   @IsString()
-  @Length(VALIDATION.CURRENCY.MIN, VALIDATION.CURRENCY.MAX)
+  @Length(VALIDATION.CURRENCY.MIN_LENGTH, VALIDATION.CURRENCY.MAX_LENGTH)
   @ApiProperty({
     example: EXAMPLE.CURRENCY,
   })
@@ -39,7 +39,7 @@ export class GiftFacilityDto {
 
   @IsDefined()
   @IsString()
-  @Length(VALIDATION.EFFECTIVE_DATE.MIN, VALIDATION.EFFECTIVE_DATE.MAX)
+  @Length(VALIDATION.EFFECTIVE_DATE.MIN_LENGTH, VALIDATION.EFFECTIVE_DATE.MAX_LENGTH)
   @ApiProperty({
     example: EXAMPLE.EFFECTIVE_DATE,
   })
@@ -47,7 +47,7 @@ export class GiftFacilityDto {
 
   @IsDefined()
   @IsString()
-  @Length(VALIDATION.END_OF_COVER_DATE.MIN, VALIDATION.END_OF_COVER_DATE.MAX)
+  @Length(VALIDATION.END_OF_COVER_DATE.MIN_LENGTH, VALIDATION.END_OF_COVER_DATE.MAX_LENGTH)
   @ApiProperty({
     example: EXAMPLE.END_OF_COVER_DATE,
   })
@@ -55,7 +55,7 @@ export class GiftFacilityDto {
 
   @IsDefined()
   @IsString()
-  @Length(VALIDATION.EXPIRY_DATE.MIN, VALIDATION.EXPIRY_DATE.MAX)
+  @Length(VALIDATION.EXPIRY_DATE.MIN_LENGTH, VALIDATION.EXPIRY_DATE.MAX_LENGTH)
   @ApiProperty({
     example: EXAMPLE.EXPIRY_DATE,
   })
@@ -88,7 +88,7 @@ export class GiftFacilityDto {
 
   @IsDefined()
   @IsString()
-  @Length(VALIDATION.FACILITY_NAME.MIN, VALIDATION.FACILITY_NAME.MAX)
+  @Length(VALIDATION.FACILITY_NAME.MIN_LENGTH, VALIDATION.FACILITY_NAME.MAX_LENGTH)
   @ApiProperty({
     example: EXAMPLE.FACILITY_NAME,
   })
@@ -103,7 +103,7 @@ export class GiftFacilityDto {
 
   @IsDefined()
   @IsString()
-  @Length(VALIDATION.PRODUCT_TYPE.MIN, VALIDATION.PRODUCT_TYPE.MAX)
+  @Length(VALIDATION.PRODUCT_TYPE.MIN_LENGTH, VALIDATION.PRODUCT_TYPE.MAX_LENGTH)
   @ApiProperty({
     example: 'Export Insurance Policy (EXIP)',
   })

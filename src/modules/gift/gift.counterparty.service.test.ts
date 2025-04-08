@@ -83,11 +83,11 @@ describe('GiftCounterpartyService', () => {
   describe('createMany', () => {
     const counterpartiesLength = 3;
 
-    const mockCounterParties = Array(counterpartiesLength).fill(COUNTERPARTY_DATA);
+    const mockCounterparties = Array(counterpartiesLength).fill(COUNTERPARTY_DATA);
 
-    const mockPayload = mockCounterParties;
+    const mockPayload = mockCounterparties;
 
-    let mockCreateOne = jest.fn().mockResolvedValue(mockResponse201(mockCounterParties));
+    let mockCreateOne = jest.fn().mockResolvedValue(mockResponse201(mockCounterparties));
 
     beforeEach(() => {
       mockCreateOneResponse = mockResponse201([COUNTERPARTY_DATA, COUNTERPARTY_DATA, COUNTERPARTY_DATA]);

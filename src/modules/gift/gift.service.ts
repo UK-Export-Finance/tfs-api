@@ -10,6 +10,11 @@ import { mapResponsesData, mapValidationErrorResponses } from './helpers';
 
 const { API_RESPONSE_MESSAGES, ENTITY_NAMES, PATH } = GIFT;
 
+interface CreateFacilityResponse {
+  status: AxiosResponse['status'];
+  data: AxiosResponse['data'];
+}
+
 /**
  * GIFT service.
  * This is responsible for all operations that call the GIFT API.
@@ -69,7 +74,7 @@ export class GiftService {
    * @returns {Promise<AxiosResponse>}
    * @throws {AxiosError | Error}
    */
-  async createFacility(data: GiftFacilityCreationDto): Promise<AxiosResponse> {
+  async createFacility(data: GiftFacilityCreationDto): Promise<CreateFacilityResponse> {
     try {
       const { overview, counterparties: counterpartiesPayload } = data;
 
@@ -85,7 +90,7 @@ export class GiftService {
         return {
           status,
           data: facility,
-        } as AxiosResponse;
+        };
       }
 
       const counterparties = await this.giftCounterpartyService.createMany(counterpartiesPayload, facility.workPackageId);
@@ -99,7 +104,7 @@ export class GiftService {
         const [firstError] = validationErrors;
 
         /**
-         * NOTE: Individual counterparty calls could return different statuses.
+         * NOTE: Individual calls to GIFT could return different statuses.
          * We can only return one status.
          * Therefore, we return the status and message of the first counterparty response.
          */
@@ -118,7 +123,7 @@ export class GiftService {
             message,
             validationErrors,
           },
-        } as AxiosResponse;
+        };
       }
 
       const mappedCounterparties = mapResponsesData(counterparties);
@@ -129,7 +134,7 @@ export class GiftService {
           ...facility,
           counterparties: mappedCounterparties,
         },
-      } as AxiosResponse;
+      };
     } catch (error) {
       console.error('Error creating GIFT facility %o', error);
 

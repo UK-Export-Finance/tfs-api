@@ -17,7 +17,7 @@ const {
 export class GiftFacilityCounterpartyDto {
   @IsDefined()
   @IsString()
-  @Length(VALIDATION.COUNTERPARTY_URN.MIN, VALIDATION.COUNTERPARTY_URN.MAX)
+  @Length(VALIDATION.COUNTERPARTY_URN.MIN_LENGTH, VALIDATION.COUNTERPARTY_URN.MAX_LENGTH)
   @ApiProperty({
     example: COUNTERPARTY.COUNTERPARTY_URN,
   })
@@ -25,7 +25,7 @@ export class GiftFacilityCounterpartyDto {
 
   @IsDefined()
   @IsString()
-  @Length(VALIDATION.EXIT_DATE.MIN, VALIDATION.EXIT_DATE.MAX)
+  @Length(VALIDATION.EXIT_DATE.MIN_LENGTH, VALIDATION.EXIT_DATE.MAX_LENGTH)
   @ApiProperty({
     example: COUNTERPARTY.EXIT_DATE,
   })
@@ -33,7 +33,7 @@ export class GiftFacilityCounterpartyDto {
 
   @IsDefined()
   @IsString()
-  @Length(VALIDATION.ROLE_ID.MIN, VALIDATION.ROLE_ID.MAX)
+  @Length(VALIDATION.ROLE_ID.MIN_LENGTH, VALIDATION.ROLE_ID.MAX_LENGTH)
   @ApiProperty({
     example: COUNTERPARTY.ROLE_ID,
   })
@@ -50,7 +50,7 @@ export class GiftFacilityCounterpartyDto {
 
   @IsDefined()
   @IsString()
-  @Length(VALIDATION.START_DATE.MIN, VALIDATION.START_DATE.MAX)
+  @Length(VALIDATION.START_DATE.MIN_LENGTH, VALIDATION.START_DATE.MAX_LENGTH)
   @ApiProperty({
     example: COUNTERPARTY.START_DATE,
   })
