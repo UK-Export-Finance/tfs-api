@@ -96,7 +96,7 @@ export class GiftFacilityDto {
 
   @IsDefined()
   @IsNumberString()
-  @Length(VALIDATION.OBLIGOR_URN.MIN, VALIDATION.OBLIGOR_URN.MAX)
+  @Length(VALIDATION.OBLIGOR_URN.MIN_LENGTH, VALIDATION.OBLIGOR_URN.MAX_LENGTH)
   @ApiProperty({
     example: EXAMPLE.obligorUrn,
   })

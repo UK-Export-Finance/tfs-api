@@ -96,7 +96,7 @@ describe('POST /gift/facility - validation', () => {
           `overview.name must be longer than or equal to ${OVERVIEW_VALIDATION.FACILITY_NAME.MIN_LENGTH} characters`,
           'overview.name must be a string',
           'overview.obligorUrn should not be null or undefined',
-          `overview.obligorUrn must be longer than or equal to ${VALIDATION.OBLIGOR_URN.MIN} characters`,
+          `overview.obligorUrn must be longer than or equal to ${OVERVIEW_VALIDATION.OBLIGOR_URN.MIN_LENGTH} characters`,
           'overview.obligorUrn must be a number string',
           'overview.productType should not be null or undefined',
           `overview.productType must be longer than or equal to ${OVERVIEW_VALIDATION.PRODUCT_TYPE.MIN_LENGTH} characters`,
@@ -195,8 +195,8 @@ describe('POST /gift/facility - validation', () => {
     numberStringValidation({
       ...baseParams,
       fieldName: 'obligorUrn',
-      min: VALIDATION.OBLIGOR_URN.MIN,
-      max: VALIDATION.OBLIGOR_URN.MAX,
+      min: OVERVIEW_VALIDATION.OBLIGOR_URN.MIN_LENGTH,
+      max: OVERVIEW_VALIDATION.OBLIGOR_URN.MAX_LENGTH,
     });
   });
 
