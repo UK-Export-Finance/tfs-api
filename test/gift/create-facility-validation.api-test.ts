@@ -73,7 +73,7 @@ describe('POST /gift/facility - validation', () => {
           `overview.currency must be longer than or equal to ${OVERVIEW_VALIDATION.CURRENCY.MIN_LENGTH} characters`,
           'overview.currency must be a string',
           'overview.dealId must be a string',
-          `overview.dealId must be longer than or equal to ${OVERVIEW_VALIDATION.DEAL_ID.MIN} characters`,
+          `overview.dealId must be longer than or equal to ${OVERVIEW_VALIDATION.DEAL_ID.MIN_LENGTH} characters`,
           'overview.dealId must match /^00\\d{8}$/ regular expression',
           'overview.effectiveDate should not be null or undefined',
           `overview.effectiveDate must be longer than or equal to ${OVERVIEW_VALIDATION.EFFECTIVE_DATE.MIN_LENGTH} characters`,

@@ -5,7 +5,7 @@ import { UkefId } from '@ukef/helpers';
 import { IsBoolean, IsDefined, IsNumber, IsNumberString, IsString, Length, Min } from 'class-validator';
 
 const {
-  GIFT: { FACILITY: EXAMPLE },
+  GIFT: { DEAL_ID, FACILITY_ID, FACILITY_OVERVIEW_DATA: EXAMPLE },
 } = EXAMPLES;
 
 const {
@@ -23,7 +23,7 @@ export class GiftFacilityDto {
   @IsString()
   @Length(VALIDATION.CURRENCY.MIN_LENGTH, VALIDATION.CURRENCY.MAX_LENGTH)
   @ApiProperty({
-    example: EXAMPLE.CURRENCY,
+    example: EXAMPLE.currency,
   })
   currency: string;
 
@@ -31,7 +31,7 @@ export class GiftFacilityDto {
     description: 'The deal ID',
   })
   @ApiProperty({
-    example: EXAMPLE.DEAL_ID,
+    example: DEAL_ID,
     minLength: VALIDATION.DEAL_ID.MIN_LENGTH,
     maxLength: VALIDATION.DEAL_ID.MAX_LENGTH,
   })
@@ -41,7 +41,7 @@ export class GiftFacilityDto {
   @IsString()
   @Length(VALIDATION.EFFECTIVE_DATE.MIN_LENGTH, VALIDATION.EFFECTIVE_DATE.MAX_LENGTH)
   @ApiProperty({
-    example: EXAMPLE.EFFECTIVE_DATE,
+    example: EXAMPLE.effectiveDate,
   })
   effectiveDate: string;
 
@@ -49,7 +49,7 @@ export class GiftFacilityDto {
   @IsString()
   @Length(VALIDATION.END_OF_COVER_DATE.MIN_LENGTH, VALIDATION.END_OF_COVER_DATE.MAX_LENGTH)
   @ApiProperty({
-    example: EXAMPLE.END_OF_COVER_DATE,
+    example: EXAMPLE.endOfCoverDate,
   })
   endOfCoverDate: string;
 
@@ -57,7 +57,7 @@ export class GiftFacilityDto {
   @IsString()
   @Length(VALIDATION.EXPIRY_DATE.MIN_LENGTH, VALIDATION.EXPIRY_DATE.MAX_LENGTH)
   @ApiProperty({
-    example: EXAMPLE.EXPIRY_DATE,
+    example: EXAMPLE.expiryDate,
   })
   expiryDate: string;
 
@@ -65,7 +65,7 @@ export class GiftFacilityDto {
   @IsNumber()
   @Min(VALIDATION.FACILITY_AMOUNT.MIN)
   @ApiProperty({
-    example: EXAMPLE.FACILITY_AMOUNT,
+    example: EXAMPLE.facilityAmount,
   })
   facilityAmount: number;
 
@@ -73,7 +73,7 @@ export class GiftFacilityDto {
     description: 'The facility ID',
   })
   @ApiProperty({
-    example: EXAMPLE.FACILITY_ID,
+    example: FACILITY_ID,
     minLength: VALIDATION.FACILITY_ID.MIN_LENGTH,
     maxLength: VALIDATION.FACILITY_ID.MAX_LENGTH,
   })
@@ -82,7 +82,7 @@ export class GiftFacilityDto {
   @IsDefined()
   @IsBoolean()
   @ApiProperty({
-    example: EXAMPLE.IS_REVOLVING,
+    example: EXAMPLE.isRevolving,
   })
   isRevolving: boolean;
 
@@ -90,14 +90,14 @@ export class GiftFacilityDto {
   @IsString()
   @Length(VALIDATION.FACILITY_NAME.MIN_LENGTH, VALIDATION.FACILITY_NAME.MAX_LENGTH)
   @ApiProperty({
-    example: EXAMPLE.FACILITY_NAME,
+    example: EXAMPLE.name,
   })
   name: string;
 
   @IsDefined()
   @IsNumberString()
   @ApiProperty({
-    example: EXAMPLE.OBLIGOR_URN,
+    example: EXAMPLE.obligorUrn,
   })
   obligorUrn: string;
 
@@ -105,7 +105,7 @@ export class GiftFacilityDto {
   @IsString()
   @Length(VALIDATION.PRODUCT_TYPE.MIN_LENGTH, VALIDATION.PRODUCT_TYPE.MAX_LENGTH)
   @ApiProperty({
-    example: 'Export Insurance Policy (EXIP)',
+    example: EXAMPLE.productType,
   })
   productType: string;
 }
