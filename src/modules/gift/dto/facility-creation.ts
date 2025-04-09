@@ -17,6 +17,8 @@ const {
 export class GiftFacilityCreationDto {
   @ApiProperty({
     example: FACILITY_OVERVIEW,
+    required: true,
+    type: GiftFacilityDto,
   })
   @IsNotEmptyObject()
   @IsDefined()
@@ -25,7 +27,10 @@ export class GiftFacilityCreationDto {
   overview: GiftFacilityDto;
 
   @ApiProperty({
+    isArray: true,
     example: [COUNTERPARTY(), COUNTERPARTY()],
+    required: true,
+    type: GiftFacilityCounterpartyDto,
   })
   @IsArray()
   @ArrayNotEmpty()
