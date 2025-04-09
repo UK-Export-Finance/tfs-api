@@ -106,7 +106,7 @@ export class GiftService {
         /**
          * NOTE: Individual calls to GIFT could return different statuses.
          * We can only return one status.
-         * Therefore, we return the status and message of the first counterparty response.
+         * Therefore, we return the status and message of the first entity response.
          */
         const { status, message: firstMessage } = firstError;
 
