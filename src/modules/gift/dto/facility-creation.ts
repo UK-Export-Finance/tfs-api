@@ -25,7 +25,7 @@ export class GiftFacilityCreationDto {
   overview: GiftFacilityDto;
 
   @ApiProperty({
-    example: COUNTERPARTY_DATA,
+    example: [COUNTERPARTY_DATA(), COUNTERPARTY_DATA()],
   })
   @IsArray()
   @ArrayNotEmpty()
