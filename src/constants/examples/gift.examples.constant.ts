@@ -1,7 +1,13 @@
 import { UkefId } from '@ukef/helpers';
 import { GiftFacilityCreationDto, GiftFacilityResponseDto } from '@ukef/modules/gift/dto';
+import { Chance } from 'chance';
 
 import { CURRENCIES } from '../currencies.constant';
+import { GIFT } from '../gift.constant';
+
+const { VALIDATION } = GIFT;
+
+const chance = new Chance();
 
 const DEAL_ID: UkefId = '0030000123';
 const FACILITY_ID: UkefId = '0030000321';
@@ -16,13 +22,13 @@ const COUNTERPARTY = {
   START_DATE: '2025-04-10',
 };
 
-const COUNTERPARTY_DATA = {
-  counterpartyUrn: COUNTERPARTY.COUNTERPARTY_URN,
+const COUNTERPARTY_DATA = () => ({
+  counterpartyUrn: chance.string({ length: VALIDATION.COUNTERPARTY.COUNTERPARTY_URN.MAX_LENGTH, numeric: true }),
   exitDate: COUNTERPARTY.EXIT_DATE,
   roleId: COUNTERPARTY.ROLE_ID,
   sharePercentage: COUNTERPARTY.SHARE_PERCENTAGE,
   startDate: COUNTERPARTY.START_DATE,
-};
+});
 
 const FACILITY = {
   AVAILABLE_AMOUNT: 3000000,
@@ -68,7 +74,7 @@ const FACILITY_OVERVIEW_DATA = {
  */
 const FACILITY_CREATION_PAYLOAD: GiftFacilityCreationDto = {
   overview: FACILITY_OVERVIEW_DATA,
-  counterparties: [COUNTERPARTY_DATA, COUNTERPARTY_DATA],
+  counterparties: [COUNTERPARTY_DATA(), COUNTERPARTY_DATA()],
 
   /**
    * NOTE: the below properties are purely for example purposes.
@@ -93,7 +99,7 @@ const FACILITY_RESPONSE_DATA: GiftFacilityResponseDto = {
 
 export const GIFT_EXAMPLES = {
   COUNTERPARTY,
-  COUNTERPARTY_DATA,
+  COUNTERPARTY_DATA, 
   DEAL_ID,
   FACILITY,
   FACILITY_CREATION_PAYLOAD,

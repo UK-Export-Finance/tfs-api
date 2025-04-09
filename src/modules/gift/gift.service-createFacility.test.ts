@@ -16,7 +16,7 @@ const { API_RESPONSE_MESSAGES, ENTITY_NAMES } = GIFT;
 
 const mockResponsePost = mockResponse201(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA);
 
-const mockCreateCounterpartiesResponse = [mockResponse201(COUNTERPARTY_DATA), mockResponse201(COUNTERPARTY_DATA), mockResponse201(COUNTERPARTY_DATA)];
+const mockCreateCounterpartiesResponse = [mockResponse201(COUNTERPARTY_DATA()), mockResponse201(COUNTERPARTY_DATA()), mockResponse201(COUNTERPARTY_DATA)];
 
 describe('GiftService.createFacility', () => {
   let httpService: HttpService;
@@ -91,7 +91,7 @@ describe('GiftService.createFacility', () => {
         status: HttpStatus.CREATED,
         data: {
           ...FACILITY_RESPONSE_DATA,
-          counterparties: [COUNTERPARTY_DATA, COUNTERPARTY_DATA, COUNTERPARTY_DATA],
+          counterparties: [COUNTERPARTY_DATA(), COUNTERPARTY_DATA(), COUNTERPARTY_DATA()],
         },
       };
 
