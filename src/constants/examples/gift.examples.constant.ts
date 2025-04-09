@@ -20,7 +20,7 @@ const FACILITY = {
   FACILITY_NAME: 'Amazing facility',
   IS_REVOLVING: true,
   IS_DRAFT: false,
-  OBLIGOR_URN: '01234567',
+  OBLIGOR_URN: '12345678',
   STREAM_ID: '7d915bfa-0069-4aaa-92c5-013925f019a1',
   STREAM_VERSION: 1,
 };
