@@ -45,10 +45,13 @@ export default registerAs('app', (): Record<string, any> => {
   /**
    * APIM TFS versioning for ACBS endpoints
    */
+  const acbsVersion = process.env.HTTP_VERSION || '1';
+
   const acbsVersioning = {
     enable: process.env.HTTP_VERSIONING_ENABLE === 'true',
     prefix: VERSION_PREFIX,
-    version: process.env.HTTP_VERSION || '1',
+    prefixAndVersion: `${VERSION_PREFIX}${acbsVersion}`,
+    version: acbsVersion,
   };
 
   /**

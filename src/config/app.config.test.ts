@@ -91,9 +91,11 @@ describe('appConfig', () => {
 
   describe('versioning', () => {
     it('should return an object with default properties', () => {
+      const mockHttpVersion = undefined;
+
       replaceEnvironmentVariables({
         HTTP_VERSIONING_ENABLE: undefined,
-        HTTP_VERSION: undefined,
+        HTTP_VERSION: mockHttpVersion,
       });
 
       const config = appConfig();
@@ -101,6 +103,7 @@ describe('appConfig', () => {
       const expected = {
         enable: false,
         prefix: VERSION_PREFIX,
+        prefixAndVersion: `${VERSION_PREFIX}1`,
         version: '1',
       };
 
@@ -120,9 +123,9 @@ describe('appConfig', () => {
     });
 
     describe('when HTTP_VERSION is specified', () => {
-      it('should return `version` as HTTP_VERSION', () => {
-        const mockHttpVersion = '100200';
+      const mockHttpVersion = '100200';
 
+      it('should return `version` with the provided HTTP_VERSION', () => {
         replaceEnvironmentVariables({
           HTTP_VERSION: mockHttpVersion,
         });
@@ -130,6 +133,18 @@ describe('appConfig', () => {
         const config = appConfig();
 
         expect(config.versioning.version).toBe(mockHttpVersion);
+      });
+
+      it('should return `prefixAndVersion` with the provided HTTP_VERSION', () => {
+        replaceEnvironmentVariables({
+          HTTP_VERSION: mockHttpVersion,
+        });
+
+        const config = appConfig();
+
+        const expected = `${VERSION_PREFIX}${mockHttpVersion}`;
+
+        expect(config.versioning.prefixAndVersion).toBe(expected);
       });
     });
   });
