@@ -4,7 +4,7 @@ import { mockResponse201, mockResponse500 } from '@ukef-test/http-response';
 
 import { GiftCounterpartyService } from './gift.counterparty.service';
 const {
-  GIFT: { COUNTERPARTY_DATA, WORK_PACKAGE_ID: mockWorkPackageId },
+  GIFT: { COUNTERPARTY, WORK_PACKAGE_ID: mockWorkPackageId },
 } = EXAMPLES;
 
 const { PATH } = GIFT;
@@ -22,7 +22,7 @@ describe('GiftCounterpartyService', () => {
   beforeEach(() => {
     httpService = new HttpService();
 
-    mockCreateOneResponse = mockResponse201(COUNTERPARTY_DATA());
+    mockCreateOneResponse = mockResponse201(COUNTERPARTY());
 
     mockHttpServicePost = jest.fn().mockResolvedValueOnce(mockCreateOneResponse);
 
@@ -40,7 +40,7 @@ describe('GiftCounterpartyService', () => {
   });
 
   describe('createOne', () => {
-    const mockPayload = COUNTERPARTY_DATA();
+    const mockPayload = COUNTERPARTY();
 
     it('should call giftHttpService.post', async () => {
       await service.createOne(mockPayload, mockWorkPackageId);
@@ -83,14 +83,14 @@ describe('GiftCounterpartyService', () => {
   describe('createMany', () => {
     const counterpartiesLength = 3;
 
-    const mockCounterparties = Array(counterpartiesLength).fill(COUNTERPARTY_DATA());
+    const mockCounterparties = Array(counterpartiesLength).fill(COUNTERPARTY());
 
     const mockPayload = mockCounterparties;
 
     let mockCreateOne = jest.fn().mockResolvedValue(mockResponse201(mockCounterparties));
 
     beforeEach(() => {
-      mockCreateOneResponse = mockResponse201([COUNTERPARTY_DATA(), COUNTERPARTY_DATA(), COUNTERPARTY_DATA()]);
+      mockCreateOneResponse = mockResponse201([COUNTERPARTY(), COUNTERPARTY(), COUNTERPARTY()]);
 
       giftHttpService.post = jest.fn().mockResolvedValueOnce(mockCreateOneResponse);
 

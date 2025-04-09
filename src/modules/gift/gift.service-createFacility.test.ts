@@ -9,14 +9,14 @@ import { GiftService } from './gift.service';
 import { mapValidationErrorResponses } from './helpers';
 
 const {
-  GIFT: { COUNTERPARTY_DATA, FACILITY_RESPONSE_DATA, FACILITY_CREATION_PAYLOAD: mockPayload },
+  GIFT: { COUNTERPARTY, FACILITY_RESPONSE_DATA, FACILITY_CREATION_PAYLOAD: mockPayload },
 } = EXAMPLES;
 
 const { API_RESPONSE_MESSAGES, ENTITY_NAMES } = GIFT;
 
 const mockResponsePost = mockResponse201(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA);
 
-const mockCreateCounterpartiesResponse = [mockResponse201(COUNTERPARTY_DATA()), mockResponse201(COUNTERPARTY_DATA()), mockResponse201(COUNTERPARTY_DATA)];
+const mockCreateCounterpartiesResponse = [mockResponse201(COUNTERPARTY()), mockResponse201(COUNTERPARTY()), mockResponse201(COUNTERPARTY())];
 
 describe('GiftService.createFacility', () => {
   let httpService: HttpService;
@@ -91,7 +91,7 @@ describe('GiftService.createFacility', () => {
         status: HttpStatus.CREATED,
         data: {
           ...FACILITY_RESPONSE_DATA,
-          counterparties: [COUNTERPARTY_DATA(), COUNTERPARTY_DATA(), COUNTERPARTY_DATA()],
+          counterparties: [COUNTERPARTY(), COUNTERPARTY(), COUNTERPARTY()],
         },
       };
 
