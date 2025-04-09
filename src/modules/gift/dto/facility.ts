@@ -32,8 +32,8 @@ export class GiftFacilityDto {
   })
   @ApiProperty({
     example: EXAMPLE.DEAL_ID,
-    minLength: VALIDATION.DEAL_ID.MIN,
-    maxLength: VALIDATION.DEAL_ID.MAX,
+    minLength: VALIDATION.DEAL_ID.MIN_LENGTH,
+    maxLength: VALIDATION.DEAL_ID.MAX_LENGTH,
   })
   dealId: UkefId;
 
@@ -74,8 +74,8 @@ export class GiftFacilityDto {
   })
   @ApiProperty({
     example: EXAMPLE.FACILITY_ID,
-    minLength: VALIDATION.FACILITY_ID.MIN,
-    maxLength: VALIDATION.FACILITY_ID.MAX,
+    minLength: VALIDATION.FACILITY_ID.MIN_LENGTH,
+    maxLength: VALIDATION.FACILITY_ID.MAX_LENGTH,
   })
   facilityId: UkefId;
 
