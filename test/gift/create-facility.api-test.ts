@@ -126,7 +126,7 @@ describe('POST /gift/facility', () => {
 
       const { status, body } = await api.post(facilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
-      expect(status).toBe(500);
+      expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
 
       expect(body).toStrictEqual(mockResponses.internalServerError);
     });
@@ -138,7 +138,7 @@ describe('POST /gift/facility', () => {
 
       const { status, body } = await api.post(facilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
-      expect(status).toBe(500);
+      expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
 
       expect(body).toStrictEqual(mockResponses.internalServerError);
     });

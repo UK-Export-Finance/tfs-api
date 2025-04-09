@@ -12,9 +12,6 @@ const chance = new Chance();
 const DEAL_ID: UkefId = '0030000123';
 const FACILITY_ID: UkefId = '0030000321';
 
-// NOTE: this URN is used for a DTO example and snapshot testing purposes only.
-const COUNTERPARTY_URN = '12345678';
-
 const WORK_PACKAGE_ID = 123;
 
 const COUNTERPARTY = () => ({
@@ -76,7 +73,6 @@ const FACILITY_RESPONSE_DATA: GiftFacilityResponseDto = {
 
 export const GIFT_EXAMPLES = {
   COUNTERPARTY,
-  COUNTERPARTY_URN,
   DEAL_ID,
   FACILITY_CREATION_PAYLOAD,
   FACILITY_ID,

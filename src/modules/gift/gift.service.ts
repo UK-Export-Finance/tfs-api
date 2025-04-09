@@ -71,7 +71,7 @@ export class GiftService {
   /**
    * Create a GIFT facility
    * @param {GiftFacilityCreationDto} data: Facility data
-   * @returns {Promise<AxiosResponse>}
+   * @returns {Promise<CreateFacilityResponse>}
    * @throws {AxiosError | Error}
    */
   async createFacility(data: GiftFacilityCreationDto): Promise<CreateFacilityResponse> {

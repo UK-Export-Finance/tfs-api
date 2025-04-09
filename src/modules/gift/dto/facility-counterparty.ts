@@ -3,7 +3,7 @@ import { EXAMPLES, GIFT } from '@ukef/constants';
 import { IsDefined, IsNumber, IsString, Length, Max, Min } from 'class-validator';
 
 const {
-  GIFT: { COUNTERPARTY, COUNTERPARTY_URN },
+  GIFT: { COUNTERPARTY },
 } = EXAMPLES;
 
 const {
@@ -19,7 +19,7 @@ export class GiftFacilityCounterpartyDto {
   @IsString()
   @Length(VALIDATION.COUNTERPARTY_URN.MIN_LENGTH, VALIDATION.COUNTERPARTY_URN.MAX_LENGTH)
   @ApiProperty({
-    example: COUNTERPARTY_URN,
+    example: COUNTERPARTY().counterpartyUrn,
   })
   counterpartyUrn: string;
 
