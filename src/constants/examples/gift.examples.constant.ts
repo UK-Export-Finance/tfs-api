@@ -12,7 +12,7 @@ const chance = new Chance();
 const DEAL_ID: UkefId = '0030000123';
 const FACILITY_ID: UkefId = '0030000321';
 
-// NOTE: this URN is used for a DTO exmaple and snapshot testing purposes only.
+// NOTE: this URN is used for a DTO example and snapshot testing purposes only.
 const COUNTERPARTY_URN = '12345678';
 
 const WORK_PACKAGE_ID = 123;

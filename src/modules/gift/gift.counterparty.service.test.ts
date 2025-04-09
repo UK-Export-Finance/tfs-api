@@ -90,9 +90,13 @@ describe('GiftCounterpartyService', () => {
     let mockCreateOne = jest.fn().mockResolvedValue(mockResponse201(mockCounterparties));
 
     beforeEach(() => {
-      mockCreateOneResponse = mockResponse201([COUNTERPARTY(), COUNTERPARTY(), COUNTERPARTY()]);
+      mockCreateOneResponse = mockResponse201(mockCounterparties);
 
-      giftHttpService.post = jest.fn().mockResolvedValueOnce(mockCreateOneResponse);
+      giftHttpService.post = jest
+        .fn()
+        .mockResolvedValueOnce(mockResponse201(mockCounterparties[0]))
+        .mockResolvedValueOnce(mockResponse201(mockCounterparties[1]))
+        .mockResolvedValueOnce(mockResponse201(mockCounterparties[2]));
 
       service = new GiftCounterpartyService(giftHttpService);
 
