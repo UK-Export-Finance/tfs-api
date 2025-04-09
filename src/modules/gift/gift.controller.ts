@@ -33,7 +33,7 @@ export class GiftController {
     required: true,
     type: 'string',
     description: 'The facility ID',
-    example: EXAMPLES.GIFT.FACILITY.FACILITY_ID,
+    example: EXAMPLES.GIFT.FACILITY_ID,
   })
   @ApiOkResponse({
     description: 'The facility',

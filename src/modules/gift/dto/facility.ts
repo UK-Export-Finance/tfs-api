@@ -5,7 +5,7 @@ import { UkefId } from '@ukef/helpers';
 import { IsBoolean, IsDefined, IsNumber, IsNumberString, IsString, Length, Min } from 'class-validator';
 
 const {
-  GIFT: { DEAL_ID, FACILITY_ID, FACILITY_OVERVIEW_DATA: EXAMPLE },
+  GIFT: { DEAL_ID, FACILITY_ID, FACILITY_OVERVIEW: EXAMPLE },
 } = EXAMPLES;
 
 const {

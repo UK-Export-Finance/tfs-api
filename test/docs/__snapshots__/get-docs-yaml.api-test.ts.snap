@@ -3281,7 +3281,7 @@ components:
           example: '01234567'
         productType:
           type: string
-          example: Export Insurance Policy (EXIP)
+          example: Mock product type
       required:
         - currency
         - dealId
@@ -3311,18 +3311,23 @@ components:
             endOfCoverDate: '2025-03-01'
             dealId: '0030000123'
             isRevolving: true
-            isDraft: false
+            isDraft: true
             createdDatetime: '2025-03-21T09:58:21.115Z'
-            productType: MOCK
+            productType: Mock product type
           allOf:
             - $ref: '#/components/schemas/GiftFacilityDto'
         counterparties:
           example:
-            counterpartyUrn: '01234567'
-            exitDate: '2025-08-10'
-            roleId: buyer
-            sharePercentage: 25
-            startDate: '2025-04-10'
+            - counterpartyUrn: '29458578'
+              exitDate: '2025-08-10'
+              roleId: buyer
+              sharePercentage: 25
+              startDate: '2025-04-10'
+            - counterpartyUrn: '04647735'
+              exitDate: '2025-08-10'
+              roleId: buyer
+              sharePercentage: 25
+              startDate: '2025-04-10'
           type: array
           items:
             type: string
