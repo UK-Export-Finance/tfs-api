@@ -25,6 +25,16 @@ const COUNTERPARTY = () => ({
   startDate: '2025-04-10',
 });
 
+const REPAYMENT_PROFILE_ALLOCATION = {
+  amount: 150000,
+  dueDate: '2025-01-02',
+};
+
+const REPAYMENT_PROFILE = {
+  name: 'Mock repayment profile',
+  allocations: [REPAYMENT_PROFILE_ALLOCATION, REPAYMENT_PROFILE_ALLOCATION],
+};
+
 const FACILITY_OVERVIEW = {
   facilityId: FACILITY_ID,
   streamId: '7d915bfa-0069-4aaa-92c5-013925f019a1',
@@ -50,6 +60,7 @@ const FACILITY_OVERVIEW = {
 const FACILITY_CREATION_PAYLOAD: GiftFacilityCreationDto = {
   overview: FACILITY_OVERVIEW,
   counterparties: [COUNTERPARTY(), COUNTERPARTY()],
+  repaymentProfiles: [REPAYMENT_PROFILE, REPAYMENT_PROFILE],
 
   /**
    * NOTE: the below properties are purely for example purposes.
@@ -57,7 +68,6 @@ const FACILITY_CREATION_PAYLOAD: GiftFacilityCreationDto = {
    */
   fees: [],
   obligations: [],
-  repaymentProfiles: [],
 };
 
 /**
@@ -78,5 +88,7 @@ export const GIFT_EXAMPLES = {
   FACILITY_ID,
   FACILITY_OVERVIEW,
   FACILITY_RESPONSE_DATA,
+  REPAYMENT_PROFILE,
+  REPAYMENT_PROFILE_ALLOCATION,
   WORK_PACKAGE_ID,
 };
