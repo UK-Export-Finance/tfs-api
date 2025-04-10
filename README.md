@@ -24,8 +24,14 @@ This TFS micro-service provides endpoints for internal trade finance manager sys
 ## Install 💻
 
 ```bash
-npm install
+npm ci
 ```
+
+When commiting changes - If the pre-commit hook does not run, execute the following:
+```bash
+npx husky
+```
+
 ## Environment Variables 👨🏼‍💻
 
 On first setup you will need to create a `.env ` file in the route of the project, refer to `.env.sample` for the required variables. A member of the team should send an encrypted copy of the `.env` file.
