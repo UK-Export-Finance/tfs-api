@@ -1,4 +1,5 @@
 import { BundleInformationType } from '@ukef/constants/enums/bundle-information-type';
+
 import { COUNTRIES } from './countries.constant';
 
 export const PROPERTIES = {

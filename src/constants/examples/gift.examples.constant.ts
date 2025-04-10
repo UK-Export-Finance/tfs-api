@@ -1,46 +1,46 @@
 import { UkefId } from '@ukef/helpers';
-import { GiftFacilityCreationDto, GiftFacilityResponseDto } from '@ukef/modules/gift/dto';
+import { GiftFacilityCreationDto, GiftFacilityPostResponseDto } from '@ukef/modules/gift/dto';
+import { Chance } from 'chance';
 
 import { CURRENCIES } from '../currencies.constant';
+import { GIFT } from '../gift.constant';
+
+const { VALIDATION } = GIFT;
+
+const chance = new Chance();
 
 const DEAL_ID: UkefId = '0030000123';
 const FACILITY_ID: UkefId = '0030000321';
 
-const FACILITY = {
-  AVAILABLE_AMOUNT: 3000000,
-  CREATED_DATE_TIME: '2025-03-21T09:58:21.115Z',
-  CURRENCY: CURRENCIES.USD,
-  DEAL_ID,
-  DRAWN_AMOUNT: 2000000,
-  EFFECTIVE_DATE: '2025-01-01',
-  END_OF_COVER_DATE: '2025-03-01',
-  EXPIRY_DATE: '2025-02-01',
-  FACILITY_AMOUNT: 1000000,
-  FACILITY_ID,
-  FACILITY_NAME: 'Amazing facility',
-  IS_REVOLVING: true,
-  IS_DRAFT: false,
-  OBLIGOR_URN: '12345678',
-  STREAM_ID: '7d915bfa-0069-4aaa-92c5-013925f019a1',
-  STREAM_VERSION: 1,
-};
+const WORK_PACKAGE_ID = 123;
 
-const FACILITY_OVERVIEW_DATA = {
-  facilityId: FACILITY.FACILITY_ID,
-  streamId: FACILITY.STREAM_ID,
-  streamVersion: FACILITY.STREAM_VERSION,
-  name: FACILITY.FACILITY_NAME,
-  obligorUrn: FACILITY.OBLIGOR_URN,
-  currency: FACILITY.CURRENCY,
-  facilityAmount: FACILITY.FACILITY_AMOUNT,
-  effectiveDate: FACILITY.EFFECTIVE_DATE,
-  expiryDate: FACILITY.EXPIRY_DATE,
-  endOfCoverDate: FACILITY.END_OF_COVER_DATE,
-  dealId: FACILITY.DEAL_ID,
-  isRevolving: FACILITY.IS_REVOLVING,
-  isDraft: FACILITY.IS_DRAFT,
-  createdDatetime: FACILITY.CREATED_DATE_TIME,
-  productType: 'MOCK',
+const COUNTERPARTY = () => ({
+  counterpartyUrn: chance.string({
+    length: VALIDATION.COUNTERPARTY.COUNTERPARTY_URN.MAX_LENGTH,
+    numeric: true,
+  }),
+  exitDate: '2025-08-10',
+  roleId: 'buyer',
+  sharePercentage: 25,
+  startDate: '2025-04-10',
+});
+
+const FACILITY_OVERVIEW = {
+  facilityId: FACILITY_ID,
+  streamId: '7d915bfa-0069-4aaa-92c5-013925f019a1',
+  streamVersion: 1,
+  name: 'Amazing facility',
+  obligorUrn: '01234567',
+  currency: CURRENCIES.USD,
+  facilityAmount: 1000000,
+  effectiveDate: '2025-01-01',
+  expiryDate: '2025-02-01',
+  endOfCoverDate: '2025-03-01',
+  dealId: DEAL_ID,
+  isRevolving: true,
+  isDraft: true,
+  createdDatetime: '2025-03-21T09:58:21.115Z',
+  productType: 'Mock product type',
 };
 
 /**
@@ -48,13 +48,13 @@ const FACILITY_OVERVIEW_DATA = {
  * Facility creation data in the shape that APIM TFS requires.
  */
 const FACILITY_CREATION_PAYLOAD: GiftFacilityCreationDto = {
-  overview: FACILITY_OVERVIEW_DATA,
+  overview: FACILITY_OVERVIEW,
+  counterparties: [COUNTERPARTY(), COUNTERPARTY()],
 
   /**
    * NOTE: the below properties are purely for example purposes.
    * These will be populated in upcoming PRs.
    */
-  counterParties: [],
   fees: [],
   obligations: [],
   repaymentProfiles: [],
@@ -64,18 +64,19 @@ const FACILITY_CREATION_PAYLOAD: GiftFacilityCreationDto = {
  * FACILITY_RESPONSE_DATA
  * Facility data in the shape that GIFT returns.
  */
-const FACILITY_RESPONSE_DATA: GiftFacilityResponseDto = {
-  facilityId: FACILITY.FACILITY_ID,
-  ...FACILITY_OVERVIEW_DATA,
-  drawnAmount: FACILITY.DRAWN_AMOUNT,
-  availableAmount: FACILITY.AVAILABLE_AMOUNT,
+const FACILITY_RESPONSE_DATA: GiftFacilityPostResponseDto = {
+  ...FACILITY_OVERVIEW,
+  drawnAmount: 2000000,
+  availableAmount: 3000000,
+  workPackageId: WORK_PACKAGE_ID,
 };
 
 export const GIFT_EXAMPLES = {
+  COUNTERPARTY,
   DEAL_ID,
-  FACILITY,
   FACILITY_CREATION_PAYLOAD,
   FACILITY_ID,
-  FACILITY_OVERVIEW_DATA,
+  FACILITY_OVERVIEW,
   FACILITY_RESPONSE_DATA,
+  WORK_PACKAGE_ID,
 };

@@ -11,7 +11,9 @@ const {
 
 const {
   PATH: { FACILITY },
-  VALIDATION,
+  VALIDATION: {
+    FACILITY: { OVERVIEW: OVERVIEW_VALIDATION },
+  },
 } = GIFT;
 
 describe('POST /gift/facility - validation', () => {
@@ -32,7 +34,7 @@ describe('POST /gift/facility - validation', () => {
     nock.cleanAll();
   });
 
-  describe('when no overview object is provided', () => {
+  describe('when an empty object provided', () => {
     it('should return a 400 response with a validation error', async () => {
       const mockPayload = {};
 
@@ -42,7 +44,13 @@ describe('POST /gift/facility - validation', () => {
 
       const expected = {
         error: 'Bad Request',
-        message: ['overview should not be null or undefined', 'overview must be a non-empty object'],
+        message: [
+          'overview should not be null or undefined',
+          'overview must be a non-empty object',
+          'counterparties should not be null or undefined',
+          'counterparties should not be empty',
+          'counterparties must be an array',
+        ],
         statusCode: 400,
       };
 
@@ -50,9 +58,9 @@ describe('POST /gift/facility - validation', () => {
     });
   });
 
-  describe('when an empty overview object is provided', () => {
+  describe('when an unpopulated object is provided', () => {
     it('should return a 400 response with validation errors for all required fields', async () => {
-      const mockPayload = { overview: {} };
+      const mockPayload = { overview: {}, counterparties: [] };
 
       const { status, body } = await api.post(url, mockPayload);
 
@@ -62,37 +70,38 @@ describe('POST /gift/facility - validation', () => {
         error: 'Bad Request',
         message: [
           'overview.currency should not be null or undefined',
-          `overview.currency must be longer than or equal to ${VALIDATION.CURRENCY.MIN} characters`,
+          `overview.currency must be longer than or equal to ${OVERVIEW_VALIDATION.CURRENCY.MIN_LENGTH} characters`,
           'overview.currency must be a string',
           'overview.dealId must be a string',
-          `overview.dealId must be longer than or equal to ${VALIDATION.DEAL_ID.MIN} characters`,
+          `overview.dealId must be longer than or equal to ${OVERVIEW_VALIDATION.DEAL_ID.MIN_LENGTH} characters`,
           'overview.dealId must match /^00\\d{8}$/ regular expression',
           'overview.effectiveDate should not be null or undefined',
-          `overview.effectiveDate must be longer than or equal to ${VALIDATION.EFFECTIVE_DATE.MIN} characters`,
+          `overview.effectiveDate must be longer than or equal to ${OVERVIEW_VALIDATION.EFFECTIVE_DATE.MIN_LENGTH} characters`,
           'overview.effectiveDate must be a string',
           'overview.endOfCoverDate should not be null or undefined',
-          `overview.endOfCoverDate must be longer than or equal to ${VALIDATION.END_OF_COVER_DATE.MIN} characters`,
+          `overview.endOfCoverDate must be longer than or equal to ${OVERVIEW_VALIDATION.END_OF_COVER_DATE.MIN_LENGTH} characters`,
           'overview.endOfCoverDate must be a string',
           'overview.expiryDate should not be null or undefined',
-          `overview.expiryDate must be longer than or equal to ${VALIDATION.EXPIRY_DATE.MIN} characters`,
+          `overview.expiryDate must be longer than or equal to ${OVERVIEW_VALIDATION.EXPIRY_DATE.MIN_LENGTH} characters`,
           'overview.expiryDate must be a string',
           'overview.facilityAmount should not be null or undefined',
-          `overview.facilityAmount must not be less than ${VALIDATION.FACILITY_AMOUNT.MIN}`,
+          `overview.facilityAmount must not be less than ${OVERVIEW_VALIDATION.FACILITY_AMOUNT.MIN}`,
           'overview.facilityAmount must be a number conforming to the specified constraints',
           'overview.facilityId must be a string',
-          `overview.facilityId must be longer than or equal to ${VALIDATION.FACILITY_ID.MIN} characters`,
+          `overview.facilityId must be longer than or equal to ${OVERVIEW_VALIDATION.FACILITY_ID.MIN_LENGTH} characters`,
           'overview.facilityId must match /^00\\d{8}$/ regular expression',
           'overview.isRevolving should not be null or undefined',
           'overview.isRevolving must be a boolean value',
           'overview.name should not be null or undefined',
-          `overview.name must be longer than or equal to ${VALIDATION.FACILITY_NAME.MIN} characters`,
+          `overview.name must be longer than or equal to ${OVERVIEW_VALIDATION.FACILITY_NAME.MIN_LENGTH} characters`,
           'overview.name must be a string',
           'overview.obligorUrn should not be null or undefined',
-          `overview.obligorUrn must be longer than or equal to ${VALIDATION.OBLIGOR_URN.MIN} characters`,
+          `overview.obligorUrn must be longer than or equal to ${OVERVIEW_VALIDATION.OBLIGOR_URN.MIN_LENGTH} characters`,
           'overview.obligorUrn must be a number string',
           'overview.productType should not be null or undefined',
-          `overview.productType must be longer than or equal to ${VALIDATION.PRODUCT_TYPE.MIN} characters`,
+          `overview.productType must be longer than or equal to ${OVERVIEW_VALIDATION.PRODUCT_TYPE.MIN_LENGTH} characters`,
           'overview.productType must be a string',
+          'counterparties should not be empty',
         ],
         statusCode: 400,
       };
@@ -111,8 +120,8 @@ describe('POST /gift/facility - validation', () => {
     stringValidation({
       ...baseParams,
       fieldName: 'currency',
-      min: VALIDATION.CURRENCY.MIN,
-      max: VALIDATION.CURRENCY.MAX,
+      min: OVERVIEW_VALIDATION.CURRENCY.MIN_LENGTH,
+      max: OVERVIEW_VALIDATION.CURRENCY.MAX_LENGTH,
     });
   });
 
@@ -120,8 +129,8 @@ describe('POST /gift/facility - validation', () => {
     ukefIdValidation({
       ...baseParams,
       fieldName: 'dealId',
-      min: VALIDATION.DEAL_ID.MIN,
-      max: VALIDATION.DEAL_ID.MAX,
+      min: OVERVIEW_VALIDATION.DEAL_ID.MIN_LENGTH,
+      max: OVERVIEW_VALIDATION.DEAL_ID.MAX_LENGTH,
     });
   });
 
@@ -129,8 +138,8 @@ describe('POST /gift/facility - validation', () => {
     stringValidation({
       ...baseParams,
       fieldName: 'effectiveDate',
-      min: VALIDATION.EFFECTIVE_DATE.MIN,
-      max: VALIDATION.EFFECTIVE_DATE.MAX,
+      min: OVERVIEW_VALIDATION.EFFECTIVE_DATE.MIN_LENGTH,
+      max: OVERVIEW_VALIDATION.EFFECTIVE_DATE.MAX_LENGTH,
     });
   });
 
@@ -138,8 +147,8 @@ describe('POST /gift/facility - validation', () => {
     stringValidation({
       ...baseParams,
       fieldName: 'endOfCoverDate',
-      min: VALIDATION.END_OF_COVER_DATE.MIN,
-      max: VALIDATION.END_OF_COVER_DATE.MAX,
+      min: OVERVIEW_VALIDATION.END_OF_COVER_DATE.MIN_LENGTH,
+      max: OVERVIEW_VALIDATION.END_OF_COVER_DATE.MAX_LENGTH,
     });
   });
 
@@ -147,8 +156,8 @@ describe('POST /gift/facility - validation', () => {
     stringValidation({
       ...baseParams,
       fieldName: 'expiryDate',
-      min: VALIDATION.EXPIRY_DATE.MIN,
-      max: VALIDATION.EXPIRY_DATE.MAX,
+      min: OVERVIEW_VALIDATION.EXPIRY_DATE.MIN_LENGTH,
+      max: OVERVIEW_VALIDATION.EXPIRY_DATE.MAX_LENGTH,
     });
   });
 
@@ -156,7 +165,7 @@ describe('POST /gift/facility - validation', () => {
     numberValidation({
       ...baseParams,
       fieldName: 'facilityAmount',
-      min: VALIDATION.FACILITY_AMOUNT.MIN,
+      min: OVERVIEW_VALIDATION.FACILITY_AMOUNT.MIN,
     });
   });
 
@@ -164,8 +173,8 @@ describe('POST /gift/facility - validation', () => {
     ukefIdValidation({
       ...baseParams,
       fieldName: 'facilityId',
-      min: VALIDATION.FACILITY_ID.MIN,
-      max: VALIDATION.FACILITY_ID.MAX,
+      min: OVERVIEW_VALIDATION.FACILITY_ID.MIN_LENGTH,
+      max: OVERVIEW_VALIDATION.FACILITY_ID.MAX_LENGTH,
     });
   });
 
@@ -177,8 +186,8 @@ describe('POST /gift/facility - validation', () => {
     stringValidation({
       ...baseParams,
       fieldName: 'name',
-      min: VALIDATION.FACILITY_NAME.MIN,
-      max: VALIDATION.FACILITY_NAME.MAX,
+      min: OVERVIEW_VALIDATION.FACILITY_NAME.MIN_LENGTH,
+      max: OVERVIEW_VALIDATION.FACILITY_NAME.MAX_LENGTH,
     });
   });
 
@@ -186,8 +195,8 @@ describe('POST /gift/facility - validation', () => {
     numberStringValidation({
       ...baseParams,
       fieldName: 'obligorUrn',
-      min: VALIDATION.OBLIGOR_URN.MIN,
-      max: VALIDATION.OBLIGOR_URN.MAX,
+      min: OVERVIEW_VALIDATION.OBLIGOR_URN.MIN_LENGTH,
+      max: OVERVIEW_VALIDATION.OBLIGOR_URN.MAX_LENGTH,
     });
   });
 
@@ -195,8 +204,8 @@ describe('POST /gift/facility - validation', () => {
     stringValidation({
       ...baseParams,
       fieldName: 'productType',
-      min: VALIDATION.PRODUCT_TYPE.MIN,
-      max: VALIDATION.PRODUCT_TYPE.MAX,
+      min: OVERVIEW_VALIDATION.PRODUCT_TYPE.MIN_LENGTH,
+      max: OVERVIEW_VALIDATION.PRODUCT_TYPE.MAX_LENGTH,
     });
   });
 });

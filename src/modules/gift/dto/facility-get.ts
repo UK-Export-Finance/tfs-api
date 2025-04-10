@@ -5,46 +5,46 @@ import { IsBoolean, IsNumber, IsString } from 'class-validator';
 import { GiftFacilityDto } from './facility';
 
 const {
-  GIFT: { FACILITY },
+  GIFT: { FACILITY_RESPONSE_DATA: EXAMPLE },
 } = EXAMPLES;
 
 /**
  * GIFT facility response DTO.
- * These fields are returned from GIFT when getting or creating a facility.
+ * These fields are returned from GIFT when getting a facility.
  */
-export class GiftFacilityResponseDto extends GiftFacilityDto {
+export class GiftFacilityGetResponseDto extends GiftFacilityDto {
   @IsNumber()
   @ApiProperty({
-    example: FACILITY.AVAILABLE_AMOUNT,
+    example: EXAMPLE.availableAmount,
   })
   availableAmount: number;
 
   @ApiProperty({
-    example: FACILITY.CREATED_DATE_TIME,
+    example: EXAMPLE.createdDatetime,
   })
   createdDatetime: string;
 
   @IsNumber()
   @ApiProperty({
-    example: FACILITY.DRAWN_AMOUNT,
+    example: EXAMPLE.drawnAmount,
   })
   drawnAmount: number;
 
   @IsBoolean()
   @ApiProperty({
-    example: FACILITY.IS_DRAFT,
+    example: EXAMPLE.isDraft,
   })
   isDraft: boolean;
 
   @IsString()
   @ApiProperty({
-    example: FACILITY.STREAM_ID,
+    example: EXAMPLE.streamId,
   })
   streamId: string;
 
   @IsNumber()
   @ApiProperty({
-    example: FACILITY.STREAM_VERSION,
+    example: EXAMPLE.streamVersion,
   })
   streamVersion: number;
 }

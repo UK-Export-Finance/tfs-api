@@ -26,3 +26,21 @@ export const generatePayload = ({ initialPayload, fieldName, parentFieldName = '
     [fieldName]: value,
   };
 };
+
+/**
+ * Generate a payload for an array of objects, for field validation assertion in each object.
+ * This function generates a payload object with an array of objects,
+ * with a value being assigned to the provided field name, for each object in the array.
+ * @param {Object} initialPayload: The payload to use before adding a field value
+ * @param {String} fieldName: The name of a field. E.g, email
+ * @param {String} parentFieldName: The name of a parent field. E.g parentObject
+ * @param {any} value: The value to assign to fieldName.
+ * @returns {Object} payload for testing purposes
+ */
+export const generatePayloadArrayOfObjects = ({ initialPayload, fieldName, parentFieldName = '', value }) => ({
+  ...initialPayload,
+  [`${parentFieldName}`]: initialPayload[`${parentFieldName}`].map((item: object) => ({
+    ...item,
+    [`${fieldName}`]: value,
+  })),
+});

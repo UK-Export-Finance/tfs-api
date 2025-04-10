@@ -4,7 +4,7 @@ import { Api } from '@ukef-test/support/api';
 
 const { versioning: acbsVersioning, giftVersioning } = AppConfig();
 
-describe('GET /openapi/yaml', () => {
+describe('GET /openapi/json', () => {
   let api: Api;
 
   beforeAll(async () => {
@@ -16,13 +16,13 @@ describe('GET /openapi/yaml', () => {
   });
 
   it('should return a 200 OK response', async () => {
-    const { status } = await api.get('/openapi/yaml');
+    const { status } = await api.get('/openapi/json');
 
     expect(status).toBe(HttpStatus.OK);
   });
 
-  it('should contain some auto genearted YML documentation', async () => {
-    const { text } = await api.get('/openapi/yaml');
+  it('should contain some auto genearted JSON documentation', async () => {
+    const { text } = await api.get('/openapi/json');
 
     expect(text.includes('openapi')).toBeTruthy();
 

@@ -1,12 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { EXAMPLES } from '@ukef/constants';
 import { Type } from 'class-transformer';
-import { IsDefined, IsNotEmptyObject, ValidateNested } from 'class-validator';
+import { ArrayNotEmpty, IsArray, IsDefined, IsNotEmptyObject, ValidateNested } from 'class-validator';
 
 import { GiftFacilityDto } from './facility';
+import { GiftFacilityCounterpartyDto } from './facility-counterparty';
 
 const {
-  GIFT: { FACILITY_OVERVIEW_DATA },
+  GIFT: { COUNTERPARTY, FACILITY_OVERVIEW },
 } = EXAMPLES;
 
 /**
@@ -15,7 +16,9 @@ const {
  */
 export class GiftFacilityCreationDto {
   @ApiProperty({
-    example: FACILITY_OVERVIEW_DATA,
+    example: FACILITY_OVERVIEW,
+    required: true,
+    type: GiftFacilityDto,
   })
   @IsNotEmptyObject()
   @IsDefined()
@@ -23,15 +26,26 @@ export class GiftFacilityCreationDto {
   @ValidateNested()
   overview: GiftFacilityDto;
 
+  @ApiProperty({
+    isArray: true,
+    example: [COUNTERPARTY(), COUNTERPARTY()],
+    required: true,
+    type: GiftFacilityCounterpartyDto,
+  })
+  @IsArray()
+  @ArrayNotEmpty()
+  @IsDefined()
+  @Type(() => GiftFacilityCounterpartyDto)
+  @ValidateNested()
+  counterparties: GiftFacilityCounterpartyDto[];
+
   /**
    * NOTE: the below properties are purely for example/context purposes.
    * These will be populated in upcoming PRs:
    * GIFT-10023
-   * GIFT-10024
    * GIFT-10025
    * GIFT-10026
    */
-  counterParties: [];
   fees: [];
   obligations: [];
   repaymentProfiles: [];

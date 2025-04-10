@@ -1,3 +1,5 @@
+export * from './array-of-objects-number-validation';
+export * from './array-of-objects-string-validation';
 export * from './boolean-validation';
 export * from './number-string-validation';
 export * from './number-validation';

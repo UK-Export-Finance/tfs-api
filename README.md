@@ -24,8 +24,14 @@ This TFS micro-service provides endpoints for internal trade finance manager sys
 ## Install 💻
 
 ```bash
-npm install
+npm ci
 ```
+
+When commiting changes - If the pre-commit hook does not run, execute the following:
+```bash
+npx husky
+```
+
 ## Environment Variables 👨🏼‍💻
 
 On first setup you will need to create a `.env ` file in the route of the project, refer to `.env.sample` for the required variables. A member of the team should send an encrypted copy of the `.env` file.
@@ -104,13 +110,6 @@ $ npm run api-test
 # api tests with nock debugging (very useful if tests are failing)
 $ DEBUG=nock.* npm run api-test
 ```
-
-### API test snapshots ⚠️
-The API tests currently contain a snapshot test regarding the automatically generated Open API YAML documentation.
-
-This test will correctly fail if endpoints are added or changed.
-
-To regenerate the snapshot, simply delete the snapshot and re-run the tests. Jest will generate a new snapshot.
 
 ## Docker 📦
 ### 1. Dockerfile
