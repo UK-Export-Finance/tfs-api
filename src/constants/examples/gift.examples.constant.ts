@@ -1,5 +1,5 @@
 import { UkefId } from '@ukef/helpers';
-import { GiftFacilityCreationDto, GiftFacilityResponseDto } from '@ukef/modules/gift/dto';
+import { GiftFacilityCreationDto, GiftFacilityPostResponseDto } from '@ukef/modules/gift/dto';
 import { Chance } from 'chance';
 
 import { CURRENCIES } from '../currencies.constant';
@@ -64,7 +64,7 @@ const FACILITY_CREATION_PAYLOAD: GiftFacilityCreationDto = {
  * FACILITY_RESPONSE_DATA
  * Facility data in the shape that GIFT returns.
  */
-const FACILITY_RESPONSE_DATA: GiftFacilityResponseDto = {
+const FACILITY_RESPONSE_DATA: GiftFacilityPostResponseDto = {
   ...FACILITY_OVERVIEW,
   drawnAmount: 2000000,
   availableAmount: 3000000,

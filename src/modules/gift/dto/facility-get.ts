@@ -10,9 +10,9 @@ const {
 
 /**
  * GIFT facility response DTO.
- * These fields are returned from GIFT when getting or creating a facility.
+ * These fields are returned from GIFT when getting a facility.
  */
-export class GiftFacilityResponseDto extends GiftFacilityDto {
+export class GiftFacilityGetResponseDto extends GiftFacilityDto {
   @IsNumber()
   @ApiProperty({
     example: EXAMPLE.availableAmount,
