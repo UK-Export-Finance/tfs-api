@@ -42,7 +42,7 @@ export class GiftFacilityCreationDto {
 
   @ApiProperty({
     isArray: true,
-    example: [REPAYMENT_PROFILE, REPAYMENT_PROFILE],
+    example: [REPAYMENT_PROFILE(), REPAYMENT_PROFILE()],
     required: true,
   })
   @IsArray()

@@ -30,10 +30,10 @@ const REPAYMENT_PROFILE_ALLOCATION = {
   dueDate: '2025-01-02',
 };
 
-const REPAYMENT_PROFILE = {
-  name: 'Mock repayment profile',
+const REPAYMENT_PROFILE = () => ({
+  name: chance.string(),
   allocations: [REPAYMENT_PROFILE_ALLOCATION, REPAYMENT_PROFILE_ALLOCATION],
-};
+});
 
 const FACILITY_OVERVIEW = {
   facilityId: FACILITY_ID,
@@ -60,7 +60,7 @@ const FACILITY_OVERVIEW = {
 const FACILITY_CREATION_PAYLOAD: GiftFacilityCreationDto = {
   overview: FACILITY_OVERVIEW,
   counterparties: [COUNTERPARTY(), COUNTERPARTY()],
-  repaymentProfiles: [REPAYMENT_PROFILE, REPAYMENT_PROFILE],
+  repaymentProfiles: [REPAYMENT_PROFILE(), REPAYMENT_PROFILE()],
 
   /**
    * NOTE: the below properties are purely for example purposes.

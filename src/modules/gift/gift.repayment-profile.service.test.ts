@@ -22,7 +22,7 @@ describe('GiftRepaymentProfileService', () => {
   beforeEach(() => {
     httpService = new HttpService();
 
-    mockCreateOneResponse = mockResponse201(REPAYMENT_PROFILE);
+    mockCreateOneResponse = mockResponse201(REPAYMENT_PROFILE());
 
     mockHttpServicePost = jest.fn().mockResolvedValueOnce(mockCreateOneResponse);
 
@@ -40,7 +40,7 @@ describe('GiftRepaymentProfileService', () => {
   });
 
   describe('createOne', () => {
-    const mockPayload = REPAYMENT_PROFILE;
+    const mockPayload = REPAYMENT_PROFILE();
 
     it('should call giftHttpService.post', async () => {
       await service.createOne(mockPayload, mockWorkPackageId);
@@ -83,7 +83,7 @@ describe('GiftRepaymentProfileService', () => {
   describe('createMany', () => {
     const repaymentProfilesLength = 3;
 
-    const mockRepaymentProfiles = Array(repaymentProfilesLength).fill(REPAYMENT_PROFILE);
+    const mockRepaymentProfiles = Array(repaymentProfilesLength).fill(REPAYMENT_PROFILE());
 
     const mockPayload = mockRepaymentProfiles;
 
