@@ -12,8 +12,14 @@ const chance = new Chance();
 const DEAL_ID: UkefId = '0030000123';
 const FACILITY_ID: UkefId = '0030000321';
 
+const FACILITY_AMOUNT = 1000000;
+
 const WORK_PACKAGE_ID = 123;
 
+/**
+ * Example counterparty.
+ * NOTE: Each counterparty URN is unique.
+ */
 const COUNTERPARTY = () => ({
   counterpartyUrn: chance.string({
     length: VALIDATION.COUNTERPARTY.COUNTERPARTY_URN.MAX_LENGTH,
@@ -25,14 +31,29 @@ const COUNTERPARTY = () => ({
   startDate: '2025-04-10',
 });
 
-const REPAYMENT_PROFILE_ALLOCATION = {
-  amount: 1000,
-  dueDate: '2025-01-02', // TODO: unique/dynamic
+/**
+ * Repayment profile allocation example.
+ * NOTE: The total of all amounts should not be greater than the facility amount.
+ * NOTE: Each due date is unique.
+ */
+const REPAYMENT_PROFILE_ALLOCATION = (index: number = 0) => {
+  const today = new Date();
+
+  const day = today.getDate();
+  const month = today.getMonth();
+  const year = today.getFullYear() + index;
+
+  const dueDate = `${day}-${month}-${year}`;
+
+  return {
+    amount: FACILITY_AMOUNT / 4,
+    dueDate,
+  };
 };
 
 const REPAYMENT_PROFILE = () => ({
   name: chance.string(),
-  allocations: [REPAYMENT_PROFILE_ALLOCATION, REPAYMENT_PROFILE_ALLOCATION],
+  allocations: [REPAYMENT_PROFILE_ALLOCATION(0), REPAYMENT_PROFILE_ALLOCATION(1)],
 });
 
 const FACILITY_OVERVIEW = {
@@ -42,7 +63,7 @@ const FACILITY_OVERVIEW = {
   name: 'Amazing facility',
   obligorUrn: '01234567',
   currency: CURRENCIES.USD,
-  facilityAmount: 1000000,
+  facilityAmount: FACILITY_AMOUNT,
   effectiveDate: '2025-01-01',
   expiryDate: '2025-02-01',
   endOfCoverDate: '2025-03-01',

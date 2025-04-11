@@ -21,7 +21,7 @@ export class GiftRepaymentProfileAllocationDto {
   @IsNumber()
   @Min(VALIDATION.AMOUNT.MIN)
   @ApiProperty({
-    example: REPAYMENT_PROFILE_ALLOCATION.amount,
+    example: REPAYMENT_PROFILE_ALLOCATION().amount,
   })
   amount: number;
 
@@ -29,7 +29,7 @@ export class GiftRepaymentProfileAllocationDto {
   @IsString()
   @Length(VALIDATION.DUE_DATE.MIN_LENGTH, VALIDATION.DUE_DATE.MAX_LENGTH)
   @ApiProperty({
-    example: REPAYMENT_PROFILE_ALLOCATION.dueDate,
+    example: REPAYMENT_PROFILE_ALLOCATION().dueDate,
   })
   dueDate: string;
 }

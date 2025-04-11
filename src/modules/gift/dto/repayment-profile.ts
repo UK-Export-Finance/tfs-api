@@ -33,7 +33,7 @@ export class GiftRepaymentProfileDto {
   @Type(() => GiftRepaymentProfileAllocationDto)
   @ApiProperty({
     isArray: true,
-    example: [REPAYMENT_PROFILE_ALLOCATION, REPAYMENT_PROFILE_ALLOCATION],
+    example: [REPAYMENT_PROFILE_ALLOCATION(), REPAYMENT_PROFILE_ALLOCATION()],
     required: true,
     type: GiftRepaymentProfileAllocationDto,
   })

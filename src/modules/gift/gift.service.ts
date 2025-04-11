@@ -107,8 +107,6 @@ export class GiftService {
         repaymentProfiles,
       });
 
-      // TODO: repayment profile allocation - can we validate that each dueDate is unique?
-
       if (validationErrors.length) {
         const [firstError] = validationErrors;
 
