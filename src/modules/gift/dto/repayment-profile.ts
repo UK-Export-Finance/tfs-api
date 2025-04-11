@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { Type } from 'class-transformer';
-import { ArrayNotEmpty, IsArray, IsDefined, IsString, Length } from 'class-validator';
+import { ArrayNotEmpty, IsArray, IsDefined, IsString, Length, ValidateNested } from 'class-validator';
 
 import { GiftRepaymentProfileAllocationDto } from './repayment-profile-allocation';
 
@@ -31,6 +31,7 @@ export class GiftRepaymentProfileDto {
   @ArrayNotEmpty()
   @IsDefined()
   @Type(() => GiftRepaymentProfileAllocationDto)
+  @ValidateNested()
   @ApiProperty({
     isArray: true,
     example: [REPAYMENT_PROFILE_ALLOCATION(), REPAYMENT_PROFILE_ALLOCATION()],
