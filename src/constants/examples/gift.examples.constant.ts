@@ -26,8 +26,8 @@ const COUNTERPARTY = () => ({
 });
 
 const REPAYMENT_PROFILE_ALLOCATION = {
-  amount: 150000,
-  dueDate: '2025-01-02',
+  amount: 1000,
+  dueDate: '2025-01-02', // TODO: unique/dynamic
 };
 
 const REPAYMENT_PROFILE = () => ({
