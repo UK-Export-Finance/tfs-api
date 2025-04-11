@@ -54,7 +54,6 @@ export const GIFT = {
       NAME: { MIN_LENGTH: 0, MAX_LENGTH: 120 },
       ALLOCATION: {
         DUE_DATE: DATE_STRING_VALIDATION,
-        // TODO: does amount have a maximum?
         AMOUNT: { MIN: 0 },
       },
     },
