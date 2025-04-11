@@ -1,7 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { HttpStatus } from '@nestjs/common';
 import { EXAMPLES } from '@ukef/constants';
-import { mockResponse201 } from '@ukef-test/http-response';
+import { mockAxiosError, mockResponse201 } from '@ukef-test/http-response';
 
 import { GiftCounterpartyService } from './gift.counterparty.service';
 import { GiftRepaymentProfileService } from './gift.repayment-profile.service';
@@ -14,13 +14,13 @@ const {
 const mockResponsePost = mockResponse201(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA);
 
 const mockCounterparties = [COUNTERPARTY(), COUNTERPARTY(), COUNTERPARTY()];
-const mockRepaymentProfiles = [REPAYMENT_PROFILE, REPAYMENT_PROFILE, REPAYMENT_PROFILE];
+const mockRepaymentProfiles = [REPAYMENT_PROFILE(), REPAYMENT_PROFILE(), REPAYMENT_PROFILE()];
 
 const mockCreateCounterpartiesResponse = mockCounterparties.map((counterparty) => mockResponse201(counterparty));
 
 const mockRepaymentProfilesResponse = mockRepaymentProfiles.map((repaymentProfile) => mockResponse201(repaymentProfile));
 
-describe('GiftService.createFacility', () => {
+describe('GiftService.createFacility - error handling', () => {
   let httpService: HttpService;
   let counterpartyService: GiftCounterpartyService;
   let repaymentProfileService: GiftRepaymentProfileService;
@@ -51,7 +51,6 @@ describe('GiftService.createFacility', () => {
     createRepaymentProfilesSpy = jest.fn().mockResolvedValueOnce(mockRepaymentProfilesResponse);
 
     counterpartyService.createMany = createCounterpartiesSpy;
-
     repaymentProfileService.createMany = createRepaymentProfilesSpy;
 
     service = new GiftService(giftHttpService, counterpartyService, repaymentProfileService);
@@ -63,44 +62,53 @@ describe('GiftService.createFacility', () => {
     jest.resetAllMocks();
   });
 
-  it('should call service.createInitialFacility', async () => {
-    await service.createFacility(mockPayload);
+  describe('when counterpartyService.createInitialFacility throws an error', () => {
+    const mockAxiosErrorStatus = HttpStatus.BAD_REQUEST;
 
-    expect(createInitialFacilitySpy).toHaveBeenCalledTimes(1);
+    const mockAxiosErrorData = {
+      validationErrors: [{ mock: true }],
+    };
 
-    expect(createInitialFacilitySpy).toHaveBeenCalledWith(mockPayload.overview);
+    beforeEach(() => {
+      createInitialFacilitySpy = jest.fn().mockRejectedValueOnce(mockAxiosError({ data: mockAxiosErrorData, status: mockAxiosErrorStatus }));
+
+      service = new GiftService(giftHttpService, counterpartyService, repaymentProfileService);
+
+      service.createInitialFacility = createInitialFacilitySpy;
+    });
+
+    it('should throw an error', async () => {
+      const response = service.createFacility(mockPayload);
+
+      const expected = 'Error creating GIFT facility';
+
+      await expect(response).rejects.toThrow(expected);
+    });
   });
 
-  it('should call counterpartyService.createMany', async () => {
-    await service.createFacility(mockPayload);
+  describe('when counterpartyService.createMany throws an error', () => {
+    const mockAxiosErrorStatus = HttpStatus.BAD_REQUEST;
 
-    expect(createCounterpartiesSpy).toHaveBeenCalledTimes(1);
+    const mockAxiosErrorData = {
+      validationErrors: [{ mock: true }],
+    };
 
-    expect(createCounterpartiesSpy).toHaveBeenCalledWith(mockPayload.counterparties, FACILITY_RESPONSE_DATA.workPackageId);
-  });
+    beforeEach(() => {
+      createCounterpartiesSpy = jest.fn().mockRejectedValueOnce(mockAxiosError({ data: mockAxiosErrorData, status: mockAxiosErrorStatus }));
 
-  it('should call giftRepaymentProfileService.createMany', async () => {
-    await service.createFacility(mockPayload);
+      counterpartyService.createMany = createCounterpartiesSpy;
 
-    expect(createRepaymentProfilesSpy).toHaveBeenCalledTimes(1);
+      service = new GiftService(giftHttpService, counterpartyService, repaymentProfileService);
 
-    expect(createRepaymentProfilesSpy).toHaveBeenCalledWith(mockPayload.repaymentProfiles, FACILITY_RESPONSE_DATA.workPackageId);
-  });
+      service.createInitialFacility = jest.fn().mockResolvedValueOnce(mockResponse201(FACILITY_RESPONSE_DATA));
+    });
 
-  describe('when all calls are successful', () => {
-    it('should return a response object', async () => {
-      const response = await service.createFacility(mockPayload);
+    it('should throw an error', async () => {
+      const response = service.createFacility(mockPayload);
 
-      const expected = {
-        status: HttpStatus.CREATED,
-        data: {
-          ...FACILITY_RESPONSE_DATA,
-          counterparties: mockCounterparties,
-          repaymentProfiles: mockRepaymentProfiles,
-        },
-      };
+      const expected = 'Error creating GIFT facility';
 
-      expect(response).toEqual(expected);
+      await expect(response).rejects.toThrow(expected);
     });
   });
 });

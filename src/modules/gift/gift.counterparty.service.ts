@@ -20,6 +20,7 @@ export class GiftCounterpartyService {
   /**
    * Create a GIFT counterparty
    * @param {GiftFacilityCounterpartyDto} payload: Counterparty data
+   * @param {Number} workPackageId: Facility work package ID
    * @returns {Promise<AxiosResponse>}
    * @throws {Error}
    */
@@ -41,6 +42,7 @@ export class GiftCounterpartyService {
   /**
    * Create multiple GIFT counterparties
    * @param {Array<GiftFacilityCounterpartyDto>} counterpartiesData: Counterparties data
+   * @param {Number} workPackageId: Facility work package ID
    * @returns {Promise<Array<AxiosResponse>>}
    * @throws {Error}
    */
