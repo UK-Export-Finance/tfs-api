@@ -1,3 +1,4 @@
+import { HttpStatus } from '@nestjs/common';
 import AppConfig from '@ukef/config/app.config';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { Api } from '@ukef-test/support/api';
@@ -41,7 +42,7 @@ describe('POST /gift/facility - validation - counterparties', () => {
   };
 
   describe('when an empty counterparty object is provided', () => {
-    it('should return a 400 response with validation errors for all required fields', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response with validation errors for all required fields`, async () => {
       const mockPayload = {
         ...EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD,
         counterparties: [{}],
@@ -49,7 +50,7 @@ describe('POST /gift/facility - validation - counterparties', () => {
 
       const { status, body } = await api.post(url, mockPayload);
 
-      expect(status).toBe(400);
+      expect(status).toBe(HttpStatus.BAD_REQUEST);
 
       const expected = {
         error: 'Bad Request',
@@ -71,7 +72,7 @@ describe('POST /gift/facility - validation - counterparties', () => {
           `counterparties.0.startDate must be longer than or equal to ${COUNTERPARTY_VALIDATION.START_DATE.MIN_LENGTH} characters`,
           `counterparties.0.startDate must be a string`,
         ],
-        statusCode: 400,
+        statusCode: HttpStatus.BAD_REQUEST,
       };
 
       expect(body).toStrictEqual(expected);

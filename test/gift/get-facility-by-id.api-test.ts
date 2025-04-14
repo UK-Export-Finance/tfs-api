@@ -1,3 +1,4 @@
+import { HttpStatus } from '@nestjs/common';
 import AppConfig from '@ukef/config/app.config';
 import { GIFT } from '@ukef/constants';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
@@ -54,8 +55,8 @@ describe('GET /gift/facility/{facilityId}', () => {
     });
   });
 
-  describe('when a 200 response is returned by GIFT', () => {
-    it('should return a 200 response with the received data', async () => {
+  describe(`when a ${HttpStatus.OK} response is returned by GIFT`, () => {
+    it(`should return a ${HttpStatus.OK} response with the received data`, async () => {
       const mockResponse = {
         facilityId: mockFacilityId,
         aMockFacility: true,
@@ -65,16 +66,16 @@ describe('GET /gift/facility/{facilityId}', () => {
 
       const { status, body } = await api.get(url);
 
-      expect(status).toBe(200);
+      expect(status).toBe(HttpStatus.OK);
 
       expect(body).toStrictEqual(mockResponse);
     });
   });
 
-  describe('when a 400 response is returned by GIFT', () => {
-    it('should return a 400 response with the facility', async () => {
+  describe(`when a ${HttpStatus.BAD_REQUEST} response is returned by GIFT`, () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response with the facility`, async () => {
       const mockResponse = {
-        statusCode: 400,
+        statusCode: HttpStatus.BAD_REQUEST,
         message: 'Validation error',
         validationErrors: [
           {
@@ -88,16 +89,16 @@ describe('GET /gift/facility/{facilityId}', () => {
 
       const { status, body } = await api.get(url);
 
-      expect(status).toBe(400);
+      expect(status).toBe(HttpStatus.BAD_REQUEST);
 
       expect(body).toStrictEqual(mockResponse);
     });
   });
 
-  describe('when a 404 response is returned by GIFT', () => {
-    it('should return a 404 response with the facility', async () => {
+  describe(`when a ${HttpStatus.NOT_FOUND} response is returned by GIFT`, () => {
+    it(`should return a ${HttpStatus.NOT_FOUND} response with the facility`, async () => {
       const mockResponse = {
-        statusCode: 404,
+        statusCode: HttpStatus.NOT_FOUND,
         message: 'No Facility was found',
       };
 
@@ -105,29 +106,29 @@ describe('GET /gift/facility/{facilityId}', () => {
 
       const { status, body } = await api.get(url);
 
-      expect(status).toBe(404);
+      expect(status).toBe(HttpStatus.NOT_FOUND);
 
       expect(body).toStrictEqual(mockResponse);
     });
   });
 
-  describe('when a 401 response is returned by GIFT', () => {
-    it('should return a 401 response', async () => {
-      nock(GIFT_API_URL).get(`${FACILITY}/${mockFacilityId}`).reply(401);
+  describe(`when a ${HttpStatus.UNAUTHORIZED} response is returned by GIFT`, () => {
+    it(`should return a ${HttpStatus.UNAUTHORIZED} response`, async () => {
+      nock(GIFT_API_URL).get(`${FACILITY}/${mockFacilityId}`).reply(HttpStatus.UNAUTHORIZED);
 
       const { status } = await api.get(url);
 
-      expect(status).toBe(401);
+      expect(status).toBe(HttpStatus.UNAUTHORIZED);
     });
   });
 
-  describe('when a 500 response is returned by GIFT', () => {
-    it('should return a 500 response', async () => {
-      nock(GIFT_API_URL).get(`${FACILITY}/${mockFacilityId}`).reply(500);
+  describe(`when a ${HttpStatus.INTERNAL_SERVER_ERROR} response is returned by GIFT`, () => {
+    it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
+      nock(GIFT_API_URL).get(`${FACILITY}/${mockFacilityId}`).reply(HttpStatus.INTERNAL_SERVER_ERROR);
 
       const { status } = await api.get(url);
 
-      expect(status).toBe(500);
+      expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
     });
   });
 });

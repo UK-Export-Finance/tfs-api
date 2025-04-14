@@ -1,3 +1,4 @@
+import { HttpStatus } from '@nestjs/common';
 import AppConfig from '@ukef/config/app.config';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { Api } from '@ukef-test/support/api';
@@ -35,12 +36,12 @@ describe('POST /gift/facility - validation', () => {
   });
 
   describe('when an empty object provided', () => {
-    it('should return a 400 response with a validation error', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response with a validation error`, async () => {
       const mockPayload = {};
 
       const { status, body } = await api.post(url, mockPayload);
 
-      expect(status).toBe(400);
+      expect(status).toBe(HttpStatus.BAD_REQUEST);
 
       const expected = {
         error: 'Bad Request',
@@ -54,7 +55,7 @@ describe('POST /gift/facility - validation', () => {
           'repaymentProfiles should not be empty',
           'repaymentProfiles must be an array',
         ],
-        statusCode: 400,
+        statusCode: HttpStatus.BAD_REQUEST,
       };
 
       expect(body).toStrictEqual(expected);
@@ -62,12 +63,12 @@ describe('POST /gift/facility - validation', () => {
   });
 
   describe('when an unpopulated object is provided', () => {
-    it('should return a 400 response with validation errors for all required fields', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response with validation errors for all required fields`, async () => {
       const mockPayload = { overview: {}, counterparties: [], repaymentProfiles: [] };
 
       const { status, body } = await api.post(url, mockPayload);
 
-      expect(status).toBe(400);
+      expect(status).toBe(HttpStatus.BAD_REQUEST);
 
       const expected = {
         error: 'Bad Request',
@@ -107,7 +108,7 @@ describe('POST /gift/facility - validation', () => {
           'counterparties should not be empty',
           'repaymentProfiles should not be empty',
         ],
-        statusCode: 400,
+        statusCode: HttpStatus.BAD_REQUEST,
       };
 
       expect(body).toStrictEqual(expected);
