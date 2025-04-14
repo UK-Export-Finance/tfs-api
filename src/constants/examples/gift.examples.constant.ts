@@ -39,8 +39,8 @@ const COUNTERPARTY = () => ({
 const REPAYMENT_PROFILE_ALLOCATION = (index: number = 0) => {
   const today = new Date();
 
-  const day = today.getDate();
-  const month = today.getMonth();
+  const day = '01';
+  const month = '02';
   const year = today.getFullYear() + index;
 
   const dueDate = `${day}-${month}-${year}`;
