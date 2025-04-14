@@ -14,7 +14,7 @@ const {
 const mockResponsePost = mockResponse201(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA);
 
 const mockCounterparties = [COUNTERPARTY(), COUNTERPARTY(), COUNTERPARTY()];
-const mockRepaymentProfiles = [REPAYMENT_PROFILE, REPAYMENT_PROFILE, REPAYMENT_PROFILE];
+const mockRepaymentProfiles = [REPAYMENT_PROFILE(), REPAYMENT_PROFILE(), REPAYMENT_PROFILE()];
 
 const mockCreateCounterpartiesResponse = mockCounterparties.map((counterparty) => mockResponse201(counterparty));
 

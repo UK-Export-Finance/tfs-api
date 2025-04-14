@@ -12,8 +12,6 @@ const chance = new Chance();
 const DEAL_ID: UkefId = '0030000123';
 const FACILITY_ID: UkefId = '0030000321';
 
-const FACILITY_AMOUNT = 1000000;
-
 const WORK_PACKAGE_ID = 123;
 
 /**
@@ -46,7 +44,7 @@ const REPAYMENT_PROFILE_ALLOCATION = (index: number = 0) => {
   const dueDate = `${day}-${month}-${year}`;
 
   return {
-    amount: FACILITY_AMOUNT / 4,
+    amount: 5000,
     dueDate,
   };
 };
@@ -63,7 +61,7 @@ const FACILITY_OVERVIEW = {
   name: 'Amazing facility',
   obligorUrn: '01234567',
   currency: CURRENCIES.USD,
-  facilityAmount: FACILITY_AMOUNT,
+  facilityAmount: 10000,
   effectiveDate: '2025-01-01',
   expiryDate: '2025-02-01',
   endOfCoverDate: '2025-03-01',

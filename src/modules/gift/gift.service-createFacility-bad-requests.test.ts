@@ -15,7 +15,7 @@ const {
 
 const { API_RESPONSE_MESSAGES, ENTITY_NAMES } = GIFT;
 
-const mockResponsePost = mockResponse201(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA);
+const mockResponsePost = mockResponse201(FACILITY_RESPONSE_DATA);
 
 const mockCounterparties = [COUNTERPARTY(), COUNTERPARTY(), COUNTERPARTY()];
 const mockRepaymentProfiles = [REPAYMENT_PROFILE(), REPAYMENT_PROFILE(), REPAYMENT_PROFILE()];
@@ -50,7 +50,7 @@ describe('GiftService.createFacility - bad requests', () => {
     counterpartyService = new GiftCounterpartyService(giftHttpService);
     repaymentProfileService = new GiftRepaymentProfileService(giftHttpService);
 
-    createInitialFacilitySpy = jest.fn().mockResolvedValueOnce(mockResponse201(FACILITY_RESPONSE_DATA));
+    createInitialFacilitySpy = jest.fn().mockResolvedValueOnce(mockResponsePost);
     createCounterpartiesSpy = jest.fn().mockResolvedValueOnce(mockCreateCounterpartiesResponse);
     createRepaymentProfilesSpy = jest.fn().mockResolvedValueOnce(mockRepaymentProfilesResponse);
 

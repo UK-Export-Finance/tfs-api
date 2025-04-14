@@ -23,7 +23,7 @@ export class GiftRepaymentProfileDto {
   @Length(VALIDATION.NAME.MIN_LENGTH, VALIDATION.NAME.MAX_LENGTH)
   @ApiProperty({
     required: true,
-    example: REPAYMENT_PROFILE.name,
+    example: REPAYMENT_PROFILE().name,
   })
   name: string;
 
