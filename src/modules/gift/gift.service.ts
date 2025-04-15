@@ -5,10 +5,11 @@ import { AxiosResponse } from 'axios';
 
 import { GiftFacilityCreationDto, GiftFacilityDto } from './dto';
 import { GiftCounterpartyService } from './gift.counterparty.service';
+import { GiftRepaymentProfileService } from './gift.repayment-profile.service';
 import { GiftHttpService } from './gift-http.service';
-import { mapResponsesData, mapValidationErrorResponses } from './helpers';
+import { mapAllValidationErrorResponses, mapResponsesData } from './helpers';
 
-const { API_RESPONSE_MESSAGES, ENTITY_NAMES, PATH } = GIFT;
+const { API_RESPONSE_MESSAGES, PATH } = GIFT;
 
 interface CreateFacilityResponse {
   status: AxiosResponse['status'];
@@ -24,9 +25,11 @@ export class GiftService {
   constructor(
     private readonly giftHttpService: GiftHttpService,
     private readonly giftCounterpartyService: GiftCounterpartyService,
+    private readonly giftRepaymentProfileService: GiftRepaymentProfileService,
   ) {
     this.giftHttpService = giftHttpService;
     this.giftCounterpartyService = giftCounterpartyService;
+    this.giftRepaymentProfileService = giftRepaymentProfileService;
   }
 
   /**
@@ -76,7 +79,7 @@ export class GiftService {
    */
   async createFacility(data: GiftFacilityCreationDto): Promise<CreateFacilityResponse> {
     try {
-      const { overview, counterparties: counterpartiesPayload } = data;
+      const { overview, counterparties: counterpartiesPayload, repaymentProfiles: repaymentProfilesPayload } = data;
 
       const { data: facility, status } = await this.createInitialFacility(overview);
 
@@ -93,11 +96,15 @@ export class GiftService {
         };
       }
 
-      const counterparties = await this.giftCounterpartyService.createMany(counterpartiesPayload, facility.workPackageId);
+      const { workPackageId } = facility;
 
-      const validationErrors = mapValidationErrorResponses({
-        entityName: ENTITY_NAMES.COUNTERPARTY,
-        responses: counterparties,
+      const counterparties = await this.giftCounterpartyService.createMany(counterpartiesPayload, workPackageId);
+
+      const repaymentProfiles = await this.giftRepaymentProfileService.createMany(repaymentProfilesPayload, workPackageId);
+
+      const validationErrors = mapAllValidationErrorResponses({
+        counterparties,
+        repaymentProfiles,
       });
 
       if (validationErrors.length) {
@@ -126,13 +133,12 @@ export class GiftService {
         };
       }
 
-      const mappedCounterparties = mapResponsesData(counterparties);
-
       return {
         status: HttpStatus.CREATED,
         data: {
           ...facility,
-          counterparties: mappedCounterparties,
+          counterparties: mapResponsesData(counterparties),
+          repaymentProfiles: mapResponsesData(repaymentProfiles),
         },
       };
     } catch (error) {

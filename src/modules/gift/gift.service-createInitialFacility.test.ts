@@ -3,6 +3,7 @@ import { EXAMPLES, GIFT } from '@ukef/constants';
 import { mockResponse201, mockResponse500 } from '@ukef-test/http-response';
 
 import { GiftCounterpartyService } from './gift.counterparty.service';
+import { GiftRepaymentProfileService } from './gift.repayment-profile.service';
 import { GiftService } from './gift.service';
 
 const {
@@ -16,6 +17,7 @@ const mockResponsePost = mockResponse201(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA);
 describe('GiftService.createInitialFacility', () => {
   let httpService: HttpService;
   let counterpartyService: GiftCounterpartyService;
+  let repaymentProfileService: GiftRepaymentProfileService;
   let service: GiftService;
 
   let giftHttpService;
@@ -33,8 +35,9 @@ describe('GiftService.createInitialFacility', () => {
     };
 
     counterpartyService = new GiftCounterpartyService(giftHttpService);
+    repaymentProfileService = new GiftRepaymentProfileService(giftHttpService);
 
-    service = new GiftService(giftHttpService, counterpartyService);
+    service = new GiftService(giftHttpService, counterpartyService, repaymentProfileService);
   });
 
   afterAll(() => {
@@ -68,7 +71,7 @@ describe('GiftService.createInitialFacility', () => {
 
       giftHttpService.post = mockHttpServicePost;
 
-      service = new GiftService(giftHttpService, counterpartyService);
+      service = new GiftService(giftHttpService, counterpartyService, repaymentProfileService);
     });
 
     it('should thrown an error', async () => {

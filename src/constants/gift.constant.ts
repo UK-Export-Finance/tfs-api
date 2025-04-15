@@ -18,12 +18,15 @@ export const GIFT = {
   },
   ENTITY_NAMES: {
     COUNTERPARTY: 'Counterparty',
+    REPAYMENT_PROFILE: 'Repayment profile',
   },
   PATH: {
     FACILITY: '/facility',
-    WORK_PACKAGE: '/work-package',
     COUNTERPARTY: '/counterparty',
     CREATION_EVENT: '/creation-event',
+    MANUAL: '/manual',
+    REPAYMENT_PROFILE: '/repayment-profile',
+    WORK_PACKAGE: '/work-package',
   },
   VALIDATION: {
     FACILITY: {
@@ -46,6 +49,13 @@ export const GIFT = {
       ROLE_ID: { MIN_LENGTH: 1, MAX_LENGTH: 50 },
       SHARE_PERCENTAGE: { MIN: 0.1, MAX: 100 },
       START_DATE: DATE_STRING_VALIDATION,
+    },
+    REPAYMENT_PROFILE: {
+      NAME: { MIN_LENGTH: 0, MAX_LENGTH: 120 },
+      ALLOCATION: {
+        DUE_DATE: DATE_STRING_VALIDATION,
+        AMOUNT: { MIN: 0 },
+      },
     },
   },
 };

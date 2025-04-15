@@ -3,6 +3,7 @@ import { EXAMPLES, GIFT } from '@ukef/constants';
 import { mockResponse200, mockResponse500 } from '@ukef-test/http-response';
 
 import { GiftCounterpartyService } from './gift.counterparty.service';
+import { GiftRepaymentProfileService } from './gift.repayment-profile.service';
 import { GiftService } from './gift.service';
 
 const {
@@ -16,6 +17,7 @@ const mockResponseGet = mockResponse200(FACILITY_RESPONSE_DATA);
 describe('GiftService.getFacility', () => {
   let httpService: HttpService;
   let counterpartyService: GiftCounterpartyService;
+  let repaymentProfileService: GiftRepaymentProfileService;
   let service: GiftService;
 
   let giftHttpService;
@@ -33,8 +35,9 @@ describe('GiftService.getFacility', () => {
     };
 
     counterpartyService = new GiftCounterpartyService(giftHttpService);
+    repaymentProfileService = new GiftRepaymentProfileService(giftHttpService);
 
-    service = new GiftService(giftHttpService, counterpartyService);
+    service = new GiftService(giftHttpService, counterpartyService, repaymentProfileService);
   });
 
   afterAll(() => {
@@ -67,7 +70,7 @@ describe('GiftService.getFacility', () => {
 
       giftHttpService.get = mockHttpServiceGet;
 
-      service = new GiftService(giftHttpService, counterpartyService);
+      service = new GiftService(giftHttpService, counterpartyService, repaymentProfileService);
     });
 
     it('should thrown an error', async () => {

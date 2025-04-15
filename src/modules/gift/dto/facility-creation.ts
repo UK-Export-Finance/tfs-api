@@ -5,9 +5,10 @@ import { ArrayNotEmpty, IsArray, IsDefined, IsNotEmptyObject, ValidateNested } f
 
 import { GiftFacilityDto } from './facility';
 import { GiftFacilityCounterpartyDto } from './facility-counterparty';
+import { GiftRepaymentProfileDto } from './repayment-profile';
 
 const {
-  GIFT: { COUNTERPARTY, FACILITY_OVERVIEW },
+  GIFT: { COUNTERPARTY, FACILITY_OVERVIEW, REPAYMENT_PROFILE },
 } = EXAMPLES;
 
 /**
@@ -39,14 +40,24 @@ export class GiftFacilityCreationDto {
   @ValidateNested()
   counterparties: GiftFacilityCounterpartyDto[];
 
+  @ApiProperty({
+    isArray: true,
+    example: [REPAYMENT_PROFILE(), REPAYMENT_PROFILE()],
+    required: true,
+  })
+  @IsArray()
+  @ArrayNotEmpty()
+  @IsDefined()
+  @Type(() => GiftRepaymentProfileDto)
+  @ValidateNested()
+  repaymentProfiles: GiftRepaymentProfileDto[];
+
   /**
    * NOTE: the below properties are purely for example/context purposes.
    * These will be populated in upcoming PRs:
-   * GIFT-10023
    * GIFT-10025
    * GIFT-10026
    */
   fees: [];
   obligations: [];
-  repaymentProfiles: [];
 }

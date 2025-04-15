@@ -1,3 +1,4 @@
+import { HttpStatus } from '@nestjs/common';
 import AppConfig from '@ukef/config/app.config';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { Api } from '@ukef-test/support/api';
@@ -35,12 +36,12 @@ describe('POST /gift/facility - validation', () => {
   });
 
   describe('when an empty object provided', () => {
-    it('should return a 400 response with a validation error', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response with a validation error`, async () => {
       const mockPayload = {};
 
       const { status, body } = await api.post(url, mockPayload);
 
-      expect(status).toBe(400);
+      expect(status).toBe(HttpStatus.BAD_REQUEST);
 
       const expected = {
         error: 'Bad Request',
@@ -50,8 +51,11 @@ describe('POST /gift/facility - validation', () => {
           'counterparties should not be null or undefined',
           'counterparties should not be empty',
           'counterparties must be an array',
+          'repaymentProfiles should not be null or undefined',
+          'repaymentProfiles should not be empty',
+          'repaymentProfiles must be an array',
         ],
-        statusCode: 400,
+        statusCode: HttpStatus.BAD_REQUEST,
       };
 
       expect(body).toStrictEqual(expected);
@@ -59,12 +63,12 @@ describe('POST /gift/facility - validation', () => {
   });
 
   describe('when an unpopulated object is provided', () => {
-    it('should return a 400 response with validation errors for all required fields', async () => {
-      const mockPayload = { overview: {}, counterparties: [] };
+    it(`should return a ${HttpStatus.BAD_REQUEST} response with validation errors for all required fields`, async () => {
+      const mockPayload = { overview: {}, counterparties: [], repaymentProfiles: [] };
 
       const { status, body } = await api.post(url, mockPayload);
 
-      expect(status).toBe(400);
+      expect(status).toBe(HttpStatus.BAD_REQUEST);
 
       const expected = {
         error: 'Bad Request',
@@ -102,8 +106,9 @@ describe('POST /gift/facility - validation', () => {
           `overview.productType must be longer than or equal to ${OVERVIEW_VALIDATION.PRODUCT_TYPE.MIN_LENGTH} characters`,
           'overview.productType must be a string',
           'counterparties should not be empty',
+          'repaymentProfiles should not be empty',
         ],
-        statusCode: 400,
+        statusCode: HttpStatus.BAD_REQUEST,
       };
 
       expect(body).toStrictEqual(expected);
