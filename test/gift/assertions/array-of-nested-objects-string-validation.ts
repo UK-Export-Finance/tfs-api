@@ -13,7 +13,7 @@ import { assert400Response } from './response-assertion';
  * @param {Number} max: The maximum length
  * @param {String} url: The URL the tests will call.
  */
-export const arrayOfNestedObjectsStringValidation = ({ fieldName, grandParentFieldName = '', parentFieldName, initialPayload, min, max, url }) => {
+export const arrayOfNestedObjectsStringValidation = ({ fieldName, grandParentFieldName, parentFieldName, initialPayload, min, max, url }) => {
   let api: Api;
 
   const payloadParams = { initialPayload, fieldName, grandParentFieldName, parentFieldName };

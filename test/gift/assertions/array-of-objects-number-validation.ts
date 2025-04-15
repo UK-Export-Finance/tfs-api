@@ -7,16 +7,15 @@ import { assert400Response } from './response-assertion';
  * Validation tests for an array of objects - number field with invalid values
  * @param {String} fieldName: The name of a field. E.g, amount
  * @param {String} parentFieldName: The name of a parent field. E.g parentObject
- * @param {String} grandParentFieldName: The name of a parent field. E.g grandParentObject
  * @param {Object} initialPayload: The payload to use before adding a field value
  * @param {Number} min: The minimum length
  * @param {Number} max: The maximum length
  * @param {String} url: The URL the tests will call.
  */
-export const arrayOfObjectsNumberValidation = ({ fieldName, grandParentFieldName = '', parentFieldName, initialPayload, min, max, url }) => {
+export const arrayOfObjectsNumberValidation = ({ fieldName, parentFieldName, initialPayload, min, max, url }) => {
   let api: Api;
 
-  const payloadParams = { initialPayload, fieldName, grandParentFieldName, parentFieldName };
+  const payloadParams = { initialPayload, fieldName, parentFieldName };
 
   beforeAll(async () => {
     api = await Api.create();
