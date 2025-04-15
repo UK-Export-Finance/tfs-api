@@ -106,6 +106,8 @@ describe('POST /gift/facility - validation', () => {
           `overview.productType must be longer than or equal to ${OVERVIEW_VALIDATION.PRODUCT_TYPE.MIN_LENGTH} characters`,
           'overview.productType must be a string',
           'counterparties should not be empty',
+          `repaymentProfile[].allocation[] dueDate's must be unique`,
+          `repaymentProfile[] name's must be unique`,
           'repaymentProfiles should not be empty',
         ],
         statusCode: HttpStatus.BAD_REQUEST,
