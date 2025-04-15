@@ -1,7 +1,7 @@
 import { registerDecorator, ValidationOptions } from 'class-validator';
 
 import { GiftRepaymentProfileDto } from '../dto';
-import { getRepaymentProfileNames } from '../helpers';
+import { arrayHasUniqueStrings, getRepaymentProfileNames } from '../helpers';
 
 export function UniqueRepaymentProfileNames(validationOptions?: ValidationOptions) {
   return function (object: object, propertyName: string) {
@@ -12,11 +12,9 @@ export function UniqueRepaymentProfileNames(validationOptions?: ValidationOption
       options: validationOptions,
       validator: {
         validate(repaymentProfiles: GiftRepaymentProfileDto[]) {
-          const allValues = getRepaymentProfileNames(repaymentProfiles);
+          const profileNames = getRepaymentProfileNames(repaymentProfiles);
 
-          const uniqueValues = [...new Set(allValues)];
-
-          return uniqueValues.length === allValues.length;
+          return arrayHasUniqueStrings(profileNames);
         },
         defaultMessage() {
           return `repaymentProfile[] name's must be unique`;

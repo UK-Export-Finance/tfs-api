@@ -1,7 +1,7 @@
 import { registerDecorator, ValidationOptions } from 'class-validator';
 
 import { GiftRepaymentProfileDto } from '../dto';
-import { getRepaymentProfileAllocationDates } from '../helpers';
+import { arrayHasUniqueStrings, getRepaymentProfileAllocationDates } from '../helpers';
 
 export function UniqueRepaymentProfileAllocationDates(validationOptions?: ValidationOptions) {
   return function (object: object, propertyName: string) {
@@ -12,11 +12,9 @@ export function UniqueRepaymentProfileAllocationDates(validationOptions?: Valida
       options: validationOptions,
       validator: {
         validate(repaymentProfiles: GiftRepaymentProfileDto[]) {
-          const allValues = getRepaymentProfileAllocationDates(repaymentProfiles);
+          const allocationDates = getRepaymentProfileAllocationDates(repaymentProfiles);
 
-          const uniqueValues = [...new Set(allValues)];
-
-          return uniqueValues.length === allValues.length;
+          return arrayHasUniqueStrings(allocationDates);
         },
         defaultMessage() {
           return `repaymentProfile[].allocation[] dueDate's must be unique`;
