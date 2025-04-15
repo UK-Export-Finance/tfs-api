@@ -12,7 +12,7 @@ const {
   PATH: { FACILITY },
 } = GIFT;
 
-const [firstRepaymentProfile] = EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD.repaymentProfiles;
+const [firstRepaymentProfile, secondRepaymentProfile] = EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD.repaymentProfiles;
 
 const [firstAllocation, secondAllocation] = firstRepaymentProfile.allocations;
 
@@ -36,14 +36,15 @@ describe('POST /gift/facility - validation - repayment profiles', () => {
     nock.cleanAll();
   });
 
-  describe(`when a single repayment profile's allocation dueDate is NOT unique`, () => {
+  describe(`when a repayment profile name is NOT unique`, () => {
     it(`should return a ${HttpStatus.BAD_REQUEST} response with a validation error`, async () => {
       const mockPayload = {
         ...EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD,
         repaymentProfiles: [
+          firstRepaymentProfile,
           {
-            ...EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD.repaymentProfiles[0],
-            allocations: [firstAllocation, { ...secondAllocation, dueDate: firstAllocation.dueDate }],
+            ...secondRepaymentProfile,
+            name: firstRepaymentProfile.name,
           },
         ],
       };
@@ -54,7 +55,7 @@ describe('POST /gift/facility - validation - repayment profiles', () => {
 
       const expected = {
         error: 'Bad Request',
-        message: [`repaymentProfile[].allocation[] dueDate's must be unique`],
+        message: [`repaymentProfile[] name's must be unique`],
         statusCode: HttpStatus.BAD_REQUEST,
       };
 
@@ -62,17 +63,13 @@ describe('POST /gift/facility - validation - repayment profiles', () => {
     });
   });
 
-  describe(`when multiple repayment profile's allocation dueDate's are NOT unique`, () => {
+  describe(`when a repayment profile's allocation dueDate is NOT unique`, () => {
     it(`should return a ${HttpStatus.BAD_REQUEST} response with a validation error`, async () => {
       const mockPayload = {
         ...EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD,
         repaymentProfiles: [
           {
-            ...EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD.repaymentProfiles[0],
-            allocations: [firstAllocation, { ...secondAllocation, dueDate: firstAllocation.dueDate }],
-          },
-          {
-            ...EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD.repaymentProfiles[1],
+            ...firstRepaymentProfile,
             allocations: [firstAllocation, { ...secondAllocation, dueDate: firstAllocation.dueDate }],
           },
         ],

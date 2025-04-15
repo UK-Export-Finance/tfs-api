@@ -3,7 +3,7 @@ import { EXAMPLES } from '@ukef/constants';
 import { Type } from 'class-transformer';
 import { ArrayNotEmpty, IsArray, IsDefined, IsNotEmptyObject, ValidateNested } from 'class-validator';
 
-import { UniqueRepaymentProfileDates } from '../custom-decorators';
+import { UniqueRepaymentProfileAllocationDates, UniqueRepaymentProfileNames } from '../custom-decorators';
 import { GiftFacilityDto } from './facility';
 import { GiftFacilityCounterpartyDto } from './facility-counterparty';
 import { GiftRepaymentProfileDto } from './repayment-profile';
@@ -49,7 +49,8 @@ export class GiftFacilityCreationDto {
   @IsArray()
   @ArrayNotEmpty()
   @IsDefined()
-  @UniqueRepaymentProfileDates()
+  @UniqueRepaymentProfileNames()
+  @UniqueRepaymentProfileAllocationDates()
   @Type(() => GiftRepaymentProfileDto)
   @ValidateNested()
   repaymentProfiles: GiftRepaymentProfileDto[];

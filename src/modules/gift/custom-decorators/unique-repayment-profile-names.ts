@@ -1,25 +1,25 @@
 import { registerDecorator, ValidationOptions } from 'class-validator';
 
 import { GiftRepaymentProfileDto } from '../dto';
-import { getRepaymentProfileAllocationDates } from '../helpers/get-repayment-profile-allocation-field-values';
+import { getRepaymentProfileNames } from '../helpers';
 
-export function UniqueRepaymentProfileDates(validationOptions?: ValidationOptions) {
+export function UniqueRepaymentProfileNames(validationOptions?: ValidationOptions) {
   return function (object: object, propertyName: string) {
     registerDecorator({
-      name: 'uniqueRepaymentProfileDates',
+      name: 'UniqueRepaymentProfileNames',
       target: object.constructor,
       propertyName: propertyName,
       options: validationOptions,
       validator: {
         validate(repaymentProfiles: GiftRepaymentProfileDto[]) {
-          const allValues = getRepaymentProfileAllocationDates(repaymentProfiles);
+          const allValues = getRepaymentProfileNames(repaymentProfiles);
 
           const uniqueValues = [...new Set(allValues)];
 
           return uniqueValues.length === allValues.length;
         },
         defaultMessage() {
-          return `repaymentProfile[].allocation[] dueDate's must be unique`;
+          return `repaymentProfile[] name's must be unique`;
         },
       },
     });
