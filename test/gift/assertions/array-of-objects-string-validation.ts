@@ -15,6 +15,8 @@ import { assert400Response } from './response-assertion';
 export const arrayOfObjectsStringValidation = ({ fieldName, initialPayload, min, max, parentFieldName, url }) => {
   let api: Api;
 
+  const payloadParams = { initialPayload, fieldName, parentFieldName };
+
   beforeAll(async () => {
     api = await Api.create();
   });
@@ -24,7 +26,11 @@ export const arrayOfObjectsStringValidation = ({ fieldName, initialPayload, min,
   });
 
   describe(`when ${fieldName} is null`, () => {
-    const mockPayload = generatePayloadArrayOfObjects({ initialPayload, fieldName, parentFieldName, value: null });
+    let mockPayload;
+
+    beforeAll(() => {
+      mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value: null });
+    });
 
     it('should return a 400 response', async () => {
       const response = await api.post(url, mockPayload);
@@ -49,7 +55,11 @@ export const arrayOfObjectsStringValidation = ({ fieldName, initialPayload, min,
   });
 
   describe(`when ${fieldName} is undefined`, () => {
-    const mockPayload = generatePayloadArrayOfObjects({ initialPayload, fieldName, parentFieldName, value: undefined });
+    let mockPayload;
+
+    beforeAll(() => {
+      mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value: undefined });
+    });
 
     it('should return a 400 response', async () => {
       const response = await api.post(url, mockPayload);
@@ -74,7 +84,11 @@ export const arrayOfObjectsStringValidation = ({ fieldName, initialPayload, min,
   });
 
   describe(`when ${fieldName} is an empty array`, () => {
-    const mockPayload = generatePayloadArrayOfObjects({ initialPayload, fieldName, parentFieldName, value: [] });
+    let mockPayload;
+
+    beforeAll(() => {
+      mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value: [] });
+    });
 
     it('should return a 400 response', async () => {
       const response = await api.post(url, mockPayload);
@@ -97,7 +111,11 @@ export const arrayOfObjectsStringValidation = ({ fieldName, initialPayload, min,
   });
 
   describe(`when ${fieldName} is a boolean, true`, () => {
-    const mockPayload = generatePayloadArrayOfObjects({ initialPayload, fieldName, parentFieldName, value: true });
+    let mockPayload;
+
+    beforeAll(() => {
+      mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value: true });
+    });
 
     it('should return a 400 response', async () => {
       const response = await api.post(url, mockPayload);
@@ -120,7 +138,11 @@ export const arrayOfObjectsStringValidation = ({ fieldName, initialPayload, min,
   });
 
   describe(`when ${fieldName} is a boolean, false`, () => {
-    const mockPayload = generatePayloadArrayOfObjects({ initialPayload, fieldName, parentFieldName, value: false });
+    let mockPayload;
+
+    beforeAll(() => {
+      mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value: false });
+    });
 
     it('should return a 400 response', async () => {
       const response = await api.post(url, mockPayload);
@@ -143,7 +165,11 @@ export const arrayOfObjectsStringValidation = ({ fieldName, initialPayload, min,
   });
 
   describe(`when ${fieldName} is a number, 0`, () => {
-    const mockPayload = generatePayloadArrayOfObjects({ initialPayload, fieldName, parentFieldName, value: 0 });
+    let mockPayload;
+
+    beforeAll(() => {
+      mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value: 0 });
+    });
 
     it('should return a 400 response', async () => {
       const response = await api.post(url, mockPayload);
@@ -166,7 +192,11 @@ export const arrayOfObjectsStringValidation = ({ fieldName, initialPayload, min,
   });
 
   describe(`when ${fieldName} is a number, 1`, () => {
-    const mockPayload = generatePayloadArrayOfObjects({ initialPayload, fieldName, parentFieldName, value: 1 });
+    let mockPayload;
+
+    beforeAll(() => {
+      mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value: 1 });
+    });
 
     it('should return a 400 response', async () => {
       const response = await api.post(url, mockPayload);
@@ -189,7 +219,11 @@ export const arrayOfObjectsStringValidation = ({ fieldName, initialPayload, min,
   });
 
   describe(`when ${fieldName} is an empty string`, () => {
-    const mockPayload = generatePayloadArrayOfObjects({ initialPayload, fieldName, parentFieldName, value: '' });
+    let mockPayload;
+
+    beforeAll(() => {
+      mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value: '' });
+    });
 
     it('should return a 400 response', async () => {
       const response = await api.post(url, mockPayload);
@@ -210,9 +244,13 @@ export const arrayOfObjectsStringValidation = ({ fieldName, initialPayload, min,
   });
 
   describe(`when ${fieldName} is below the minimum`, () => {
+    let mockPayload;
+
     const value = 'a'.repeat(min - 1);
 
-    const mockPayload = generatePayloadArrayOfObjects({ initialPayload, fieldName, parentFieldName, value });
+    beforeAll(() => {
+      mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value });
+    });
 
     it('should return a 400 response', async () => {
       const response = await api.post(url, mockPayload);
@@ -233,9 +271,13 @@ export const arrayOfObjectsStringValidation = ({ fieldName, initialPayload, min,
   });
 
   describe(`when ${fieldName} is above the maximum`, () => {
+    let mockPayload;
+
     const value = 'a'.repeat(max + 1);
 
-    const mockPayload = generatePayloadArrayOfObjects({ initialPayload, fieldName, parentFieldName, value });
+    beforeAll(() => {
+      mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value });
+    });
 
     it('should return a 400 response', async () => {
       const response = await api.post(url, mockPayload);
