@@ -11,6 +11,16 @@ describe('modules/gift/helpers/array-has-unique-strings', () => {
     });
   });
 
+  describe('when an array has unique strings - alternative unicode strings', () => {
+    it('should return true', () => {
+      const mockArr = ['$', '£', '@', 'à', 'á', 'a'];
+
+      const result = arrayHasUniqueStrings(mockArr);
+
+      expect(result).toBe(true);
+    });
+  });
+
   describe('when an array does NOT have unique strings', () => {
     it('should return false', () => {
       const mockArr = ['a', 'a', 'c'];

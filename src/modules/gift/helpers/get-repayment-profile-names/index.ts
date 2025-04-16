@@ -5,8 +5,5 @@ import { GiftRepaymentProfileDto } from '../../dto';
  * @param {GiftRepaymentProfileDto[]} repaymentProfiles: All repayment profiles
  * @returns {string[]} All repayment profile's name values
  */
-export const getRepaymentProfileNames = (repaymentProfiles: GiftRepaymentProfileDto[]): string[] => {
-  const names = Object.values(repaymentProfiles).map((repaymentProfile) => repaymentProfile.name);
-
-  return names;
-};
+export const getRepaymentProfileNames = (repaymentProfiles: GiftRepaymentProfileDto[]): string[] =>
+  Object.values(repaymentProfiles).map((repaymentProfile) => repaymentProfile.name);
