@@ -10,11 +10,21 @@ const {
 const mockRepaymentProfiles: GiftRepaymentProfileDto[] = [REPAYMENT_PROFILE(), REPAYMENT_PROFILE(), REPAYMENT_PROFILE()];
 
 describe('modules/gift/helpers/get-repayment-profile-names', () => {
-  it('should return an array of all repayment profile name values', () => {
-    const result = getRepaymentProfileNames(mockRepaymentProfiles);
+  describe('when repayment profiles are provided', () => {
+    it('should return an array of all repayment profile name values', () => {
+      const result = getRepaymentProfileNames(mockRepaymentProfiles);
 
-    const expected = [mockRepaymentProfiles[0].name, mockRepaymentProfiles[1].name, mockRepaymentProfiles[2].name];
+      const expected = [mockRepaymentProfiles[0].name, mockRepaymentProfiles[1].name, mockRepaymentProfiles[2].name];
 
-    expect(result).toStrictEqual(expected);
+      expect(result).toStrictEqual(expected);
+    });
+  });
+
+  describe('when repayment profiles are NOT provided', () => {
+    it('should return an empty array', () => {
+      const result = getRepaymentProfileNames(mockRepaymentProfiles);
+
+      expect(result).toStrictEqual([]);
+    });
   });
 });

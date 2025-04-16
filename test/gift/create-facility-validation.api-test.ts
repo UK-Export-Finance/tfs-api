@@ -35,7 +35,7 @@ describe('POST /gift/facility - validation', () => {
     nock.cleanAll();
   });
 
-  describe('when an empty object provided', () => {
+  describe('when an empty object is provided', () => {
     it(`should return a ${HttpStatus.BAD_REQUEST} response with a validation error`, async () => {
       const mockPayload = {};
 
@@ -52,6 +52,8 @@ describe('POST /gift/facility - validation', () => {
           'counterparties should not be empty',
           'counterparties must be an array',
           'repaymentProfiles should not be null or undefined',
+          `repaymentProfile[].allocation[] dueDate's must be unique`,
+          `repaymentProfile[] name's must be unique`,
           'repaymentProfiles should not be empty',
           'repaymentProfiles must be an array',
         ],
