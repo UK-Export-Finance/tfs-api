@@ -1,3 +1,4 @@
+import { HttpStatus } from '@nestjs/common';
 import { Api } from '@ukef-test/support/api';
 
 import { generatePayloadArrayOfObjects } from './generate-payload';
@@ -33,7 +34,7 @@ export const arrayOfNestedObjectsNumberValidation = ({ fieldName, grandParentFie
       mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value: null });
     });
 
-    it('should return a 400 response', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       const response = await api.post(url, mockPayload);
 
       assert400Response(response);
@@ -68,7 +69,7 @@ export const arrayOfNestedObjectsNumberValidation = ({ fieldName, grandParentFie
       mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value: undefined });
     });
 
-    it('should return a 400 response', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       const response = await api.post(url, mockPayload);
 
       assert400Response(response);
@@ -103,7 +104,7 @@ export const arrayOfNestedObjectsNumberValidation = ({ fieldName, grandParentFie
       mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value: '' });
     });
 
-    it('should return a 400 response', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       const response = await api.post(url, mockPayload);
 
       assert400Response(response);
@@ -136,7 +137,7 @@ export const arrayOfNestedObjectsNumberValidation = ({ fieldName, grandParentFie
       mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value });
     });
 
-    it('should return a 400 response', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       const response = await api.post(url, mockPayload);
 
       assert400Response(response);
@@ -166,7 +167,7 @@ export const arrayOfNestedObjectsNumberValidation = ({ fieldName, grandParentFie
         mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value });
       });
 
-      it('should return a 400 response', async () => {
+      it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
         const response = await api.post(url, mockPayload);
 
         assert400Response(response);
