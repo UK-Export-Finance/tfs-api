@@ -21,11 +21,15 @@ describe('modules/gift/helpers/map-all-validation-error-responses', () => {
       { status: HttpStatus.BAD_REQUEST, data: { validationErrors: mockValidationErrors } },
     ] as AxiosResponse[];
 
-    const result = mapAllValidationErrorResponses({ counterparties: mockResponses, repaymentProfiles: mockResponses });
+    const result = mapAllValidationErrorResponses({ counterparties: mockResponses, obligations: mockResponses, repaymentProfiles: mockResponses });
 
     const expected = [
       ...mapValidationErrorResponses({
         entityName: ENTITY_NAMES.COUNTERPARTY,
+        responses: mockResponses,
+      }),
+      ...mapValidationErrorResponses({
+        entityName: ENTITY_NAMES.OBLIGATION,
         responses: mockResponses,
       }),
       ...mapValidationErrorResponses({

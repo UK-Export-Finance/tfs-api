@@ -1,5 +1,10 @@
 import { UKEFID } from './ukef-id.constant';
 
+const CURRENCY_VALIDATION = {
+  MIN_LENGTH: 3,
+  MAX_LENGTH: 3,
+};
+
 /**
  * Date string validation
  * E.g: 2025-01-02
@@ -18,6 +23,7 @@ export const GIFT = {
   },
   ENTITY_NAMES: {
     COUNTERPARTY: 'Counterparty',
+    OBLIGATION: 'Obligation',
     REPAYMENT_PROFILE: 'Repayment profile',
   },
   PATH: {
@@ -25,13 +31,14 @@ export const GIFT = {
     COUNTERPARTY: '/counterparty',
     CREATION_EVENT: '/creation-event',
     MANUAL: '/manual',
+    OBLIGATION: '/obligation',
     REPAYMENT_PROFILE: '/repayment-profile',
     WORK_PACKAGE: '/work-package',
   },
   VALIDATION: {
     FACILITY: {
       OVERVIEW: {
-        CURRENCY: { MIN_LENGTH: 3, MAX_LENGTH: 3 },
+        CURRENCY: CURRENCY_VALIDATION,
         DEAL_ID: UKEFID.VALIDATION,
         EFFECTIVE_DATE: DATE_STRING_VALIDATION,
         END_OF_COVER_DATE: DATE_STRING_VALIDATION,
@@ -49,6 +56,13 @@ export const GIFT = {
       ROLE_ID: { MIN_LENGTH: 1, MAX_LENGTH: 50 },
       SHARE_PERCENTAGE: { MIN: 0.1, MAX: 100 },
       START_DATE: DATE_STRING_VALIDATION,
+    },
+    OBLIGATION: {
+      CURRENCY: CURRENCY_VALIDATION,
+      EFFECTIVE_DATE: DATE_STRING_VALIDATION,
+      MATURITY_DATE: DATE_STRING_VALIDATION,
+      OBLIGATION_AMOUNT: { MIN: 1 },
+      PRODUCT_SUBTYPE: { MIN_LENGTH: 1 },
     },
     REPAYMENT_PROFILE: {
       NAME: { MIN_LENGTH: 0, MAX_LENGTH: 120 },

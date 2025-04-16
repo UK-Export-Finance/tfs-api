@@ -29,6 +29,14 @@ const COUNTERPARTY = () => ({
   startDate: '2025-04-10',
 });
 
+const OBLIGATION = () => ({
+  effectiveDate: '2024-03-01',
+  maturityDate: '2024-04-01',
+  currency: CURRENCIES.USD,
+  obligationAmount: 2500,
+  productSubtype: 'Mock product subtype',
+});
+
 /**
  * Repayment profile allocation example.
  * NOTE: The total of all amounts should not be greater than the facility amount.
@@ -79,6 +87,7 @@ const FACILITY_OVERVIEW = {
 const FACILITY_CREATION_PAYLOAD: GiftFacilityCreationDto = {
   overview: FACILITY_OVERVIEW,
   counterparties: [COUNTERPARTY(), COUNTERPARTY()],
+  obligations: [OBLIGATION(), OBLIGATION()],
   repaymentProfiles: [REPAYMENT_PROFILE(), REPAYMENT_PROFILE()],
 
   /**
@@ -86,7 +95,6 @@ const FACILITY_CREATION_PAYLOAD: GiftFacilityCreationDto = {
    * These will be populated in upcoming PRs.
    */
   fees: [],
-  obligations: [],
 };
 
 /**
@@ -107,6 +115,7 @@ export const GIFT_EXAMPLES = {
   FACILITY_ID,
   FACILITY_OVERVIEW,
   FACILITY_RESPONSE_DATA,
+  OBLIGATION,
   REPAYMENT_PROFILE,
   REPAYMENT_PROFILE_ALLOCATION,
   WORK_PACKAGE_ID,
