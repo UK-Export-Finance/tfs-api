@@ -51,7 +51,7 @@ export const GIFT = {
       START_DATE: DATE_STRING_VALIDATION,
     },
     REPAYMENT_PROFILE: {
-      NAME: { MIN_LENGTH: 0, MAX_LENGTH: 120 },
+      NAME: { MIN_LENGTH: 1, MAX_LENGTH: 120 },
       ALLOCATION: {
         DUE_DATE: DATE_STRING_VALIDATION,
         AMOUNT: { MIN: 0 },
