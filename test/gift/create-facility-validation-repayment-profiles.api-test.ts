@@ -58,7 +58,6 @@ describe('POST /gift/facility - validation - repayment profiles', () => {
       const expected = {
         error: 'Bad Request',
         message: [
-          `repaymentProfile[] name's must be unique`,
           'repaymentProfiles.0.name should not be null or undefined',
           `repaymentProfiles.0.name must be longer than or equal to ${REPAYMENT_PROFILE_VALIDATION.NAME.MIN_LENGTH} characters`,
           'repaymentProfiles.0.name must be a string',
