@@ -50,6 +50,8 @@ describe('POST /gift/facility - validation', () => {
           'counterparties should not be empty',
           'counterparties must be an array',
           'repaymentProfiles should not be null or undefined',
+          `repaymentProfile[].allocation[] dueDate's must be unique`,
+          `repaymentProfile[] name's must be unique`,
           'repaymentProfiles should not be empty',
           'repaymentProfiles must be an array',
         ],
@@ -77,6 +79,8 @@ describe('POST /gift/facility - validation', () => {
           'counterparties should not be empty',
           'counterparties must be an array',
           'repaymentProfiles should not be null or undefined',
+          `repaymentProfile[].allocation[] dueDate's must be unique`,
+          `repaymentProfile[] name's must be unique`,
           'repaymentProfiles should not be empty',
           'repaymentProfiles must be an array',
         ],
@@ -97,7 +101,13 @@ describe('POST /gift/facility - validation', () => {
 
       const expected = {
         error: 'Bad Request',
-        message: ['overview must be a non-empty object', 'counterparties should not be empty', 'repaymentProfiles should not be empty'],
+        message: [
+          'overview must be a non-empty object',
+          'counterparties should not be empty',
+          `repaymentProfile[].allocation[] dueDate's must be unique`,
+          `repaymentProfile[] name's must be unique`,
+          'repaymentProfiles should not be empty',
+        ],
         statusCode: HttpStatus.BAD_REQUEST,
       };
 
@@ -124,6 +134,8 @@ describe('POST /gift/facility - validation', () => {
           'counterparties must be an array',
           'nested property counterparties must be either object or array',
           'repaymentProfiles should not be null or undefined',
+          `repaymentProfile[].allocation[] dueDate's must be unique`,
+          `repaymentProfile[] name's must be unique`,
           'repaymentProfiles should not be empty',
           'repaymentProfiles must be an array',
           'nested property repaymentProfiles must be either object or array',
@@ -152,6 +164,8 @@ describe('POST /gift/facility - validation', () => {
           'counterparties should not be empty',
           'counterparties must be an array',
           'repaymentProfiles should not be null or undefined',
+          `repaymentProfile[].allocation[] dueDate's must be unique`,
+          `repaymentProfile[] name's must be unique`,
           'repaymentProfiles should not be empty',
           'repaymentProfiles must be an array',
         ],

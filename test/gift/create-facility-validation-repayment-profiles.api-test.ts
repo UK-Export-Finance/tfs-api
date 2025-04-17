@@ -15,6 +15,10 @@ const {
   VALIDATION: { REPAYMENT_PROFILE: REPAYMENT_PROFILE_VALIDATION },
 } = GIFT;
 
+const [firstRepaymentProfile, secondRepaymentProfile] = EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD.repaymentProfiles;
+
+const [firstAllocation, secondAllocation] = firstRepaymentProfile.allocations;
+
 describe('POST /gift/facility - validation - repayment profiles', () => {
   const url = `/api/${prefixAndVersion}/gift${FACILITY}`;
 
@@ -41,7 +45,7 @@ describe('POST /gift/facility - validation - repayment profiles', () => {
   };
 
   describe('when an empty repayment profile object is provided', () => {
-    it(`should return a ${HttpStatus.BAD_REQUEST} response with validation errors for all required fields`, async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response with a validation error`, async () => {
       const mockPayload = {
         ...EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD,
         repaymentProfiles: [{}],
@@ -61,6 +65,59 @@ describe('POST /gift/facility - validation - repayment profiles', () => {
           'repaymentProfiles.0.allocations should not be empty',
           'repaymentProfiles.0.allocations must be an array',
         ],
+        statusCode: HttpStatus.BAD_REQUEST,
+      };
+
+      expect(body).toStrictEqual(expected);
+    });
+  });
+
+  describe(`when a repayment profile name is NOT unique`, () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response with a validation error`, async () => {
+      const mockPayload = {
+        ...EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD,
+        repaymentProfiles: [
+          firstRepaymentProfile,
+          {
+            ...secondRepaymentProfile,
+            name: firstRepaymentProfile.name,
+          },
+        ],
+      };
+
+      const { status, body } = await api.post(url, mockPayload);
+
+      expect(status).toBe(HttpStatus.BAD_REQUEST);
+
+      const expected = {
+        error: 'Bad Request',
+        message: [`repaymentProfile[] name's must be unique`],
+        statusCode: HttpStatus.BAD_REQUEST,
+      };
+
+      expect(body).toStrictEqual(expected);
+    });
+  });
+
+  describe(`when a repayment profile's allocation dueDate is NOT unique`, () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response with a validation error`, async () => {
+      const mockPayload = {
+        ...EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD,
+        repaymentProfiles: [
+          {
+            ...firstRepaymentProfile,
+            allocations: [firstAllocation, { ...secondAllocation, dueDate: firstAllocation.dueDate }],
+          },
+        ],
+      };
+
+      const { status, body } = await api.post(url, mockPayload);
+
+      expect(status).toBe(HttpStatus.BAD_REQUEST);
+
+      const expected = {
+        error: 'Bad Request',
+        message: [`repaymentProfile[].allocation[] dueDate's must be unique`],
         statusCode: HttpStatus.BAD_REQUEST,
       };
 
@@ -104,7 +161,7 @@ describe('POST /gift/facility - validation - repayment profiles', () => {
     });
   });
 
-  describe('when a repayment has allocations as sn empty object', () => {
+  describe('when a repayment has allocations with an empty object', () => {
     it(`should return a ${HttpStatus.BAD_REQUEST} response with validation errors for all required fields`, async () => {
       const mockPayload = {
         ...EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD,
