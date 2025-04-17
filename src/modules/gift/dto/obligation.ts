@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { EXAMPLES, GIFT } from '@ukef/constants';
-import { IsDefined, IsNumber, IsString, Length, Min } from 'class-validator';
+import { IsDefined, IsNumber, IsString, Length, Max, Min } from 'class-validator';
 
 const {
   GIFT: { OBLIGATION },
@@ -45,6 +45,7 @@ export class GiftObligationDto {
   @IsDefined()
   @IsNumber()
   @Min(VALIDATION.OBLIGATION_AMOUNT.MIN)
+  @Max(VALIDATION.OBLIGATION_AMOUNT.MAX)
   @ApiProperty({
     example: OBLIGATION().obligationAmount,
     required: true,
@@ -53,8 +54,7 @@ export class GiftObligationDto {
 
   @IsDefined()
   @IsString()
-  // @Length(VALIDATION.PRODUCT_SUBTYPE.MIN_LENGTH, VALIDATION.PRODUCT_SUBTYPE.MAX_LENGTH)
-  @Length(VALIDATION.PRODUCT_SUBTYPE.MIN_LENGTH)
+  @Length(VALIDATION.PRODUCT_SUBTYPE.MIN_LENGTH, VALIDATION.PRODUCT_SUBTYPE.MAX_LENGTH)
   @ApiProperty({
     example: OBLIGATION().productSubtype,
     required: true,
