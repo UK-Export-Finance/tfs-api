@@ -88,7 +88,10 @@ const FACILITY_CREATION_PAYLOAD: GiftFacilityCreationDto = {
   overview: FACILITY_OVERVIEW,
   counterparties: [COUNTERPARTY(), COUNTERPARTY()],
   obligations: [OBLIGATION(), OBLIGATION()],
-  repaymentProfiles: [REPAYMENT_PROFILE(), REPAYMENT_PROFILE()],
+  repaymentProfiles: [
+    { ...REPAYMENT_PROFILE(), allocations: [REPAYMENT_PROFILE_ALLOCATION(0), REPAYMENT_PROFILE_ALLOCATION(1)] },
+    { ...REPAYMENT_PROFILE(), allocations: [REPAYMENT_PROFILE_ALLOCATION(2), REPAYMENT_PROFILE_ALLOCATION(3)] },
+  ],
 
   /**
    * NOTE: the below properties are purely for example purposes.
