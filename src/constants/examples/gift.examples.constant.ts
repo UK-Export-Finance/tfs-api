@@ -3,7 +3,7 @@ import { GiftFacilityCreationDto, GiftFacilityPostResponseDto } from '@ukef/modu
 import { Chance } from 'chance';
 
 import { CURRENCIES } from '../currencies.constant';
-import { GIFT } from '../gift.constant';
+import { GIFT } from '../gift/gift.constant';
 
 const { VALIDATION } = GIFT;
 
