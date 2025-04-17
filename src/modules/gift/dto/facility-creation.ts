@@ -58,6 +58,7 @@ export class GiftFacilityCreationDto {
     isArray: true,
     example: [REPAYMENT_PROFILE(), REPAYMENT_PROFILE()],
     required: true,
+    type: GiftRepaymentProfileDto,
   })
   @IsArray()
   @ArrayNotEmpty()
