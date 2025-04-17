@@ -8,6 +8,7 @@ const { ENTITY_NAMES } = GIFT;
 
 interface MapAllValidationErrorResponsesParams {
   counterparties: AxiosResponse[];
+  obligations: AxiosResponse[];
   repaymentProfiles: AxiosResponse[];
 }
 
@@ -16,10 +17,18 @@ interface MapAllValidationErrorResponsesParams {
  * @param {MapAllValidationErrorResponsesParams}
  * @returns {ValidationErrorResponse[]} Mapped validation error responses.
  */
-export const mapAllValidationErrorResponses = ({ counterparties, repaymentProfiles }: MapAllValidationErrorResponsesParams): ValidationErrorResponse[] => [
+export const mapAllValidationErrorResponses = ({
+  counterparties,
+  obligations,
+  repaymentProfiles,
+}: MapAllValidationErrorResponsesParams): ValidationErrorResponse[] => [
   ...mapValidationErrorResponses({
     entityName: ENTITY_NAMES.COUNTERPARTY,
     responses: counterparties,
+  }),
+  ...mapValidationErrorResponses({
+    entityName: ENTITY_NAMES.OBLIGATION,
+    responses: obligations,
   }),
   ...mapValidationErrorResponses({
     entityName: ENTITY_NAMES.REPAYMENT_PROFILE,

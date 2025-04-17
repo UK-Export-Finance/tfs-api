@@ -21,7 +21,7 @@ export * from './auth.constant';
 export * from './date-formats.constant';
 export * from './enum.constant';
 export * from './examples/examples.constant';
-export * from './gift.constant';
+export * from './gift/gift.constant';
 export * from './headers.constant';
 export * from './properties.constant';
 export * from './ukef-id.constant';

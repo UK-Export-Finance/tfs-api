@@ -4,12 +4,13 @@ import { mockResponse201 } from '@ukef-test/http-response';
 import { AxiosResponse } from 'axios';
 
 import { GiftCounterpartyService } from './gift.counterparty.service';
+import { GiftObligationService } from './gift.obligation.service';
 import { GiftRepaymentProfileService } from './gift.repayment-profile.service';
 import { GiftService } from './gift.service';
 import { mapAllValidationErrorResponses, mapValidationErrorResponses } from './helpers';
 
 const {
-  GIFT: { COUNTERPARTY, FACILITY_RESPONSE_DATA, FACILITY_CREATION_PAYLOAD: mockPayload, REPAYMENT_PROFILE },
+  GIFT: { COUNTERPARTY, FACILITY_RESPONSE_DATA, FACILITY_CREATION_PAYLOAD: mockPayload, OBLIGATION, REPAYMENT_PROFILE },
 } = EXAMPLES;
 
 const { API_RESPONSE_MESSAGES, ENTITY_NAMES } = GIFT;
@@ -17,34 +18,40 @@ const { API_RESPONSE_MESSAGES, ENTITY_NAMES } = GIFT;
 const mockCreateInitialFacilityResponse = mockResponse201(FACILITY_RESPONSE_DATA);
 
 const mockCounterparties = [COUNTERPARTY(), COUNTERPARTY(), COUNTERPARTY()];
+const mockObligations = [OBLIGATION(), OBLIGATION(), OBLIGATION()];
 const mockRepaymentProfiles = [REPAYMENT_PROFILE(), REPAYMENT_PROFILE(), REPAYMENT_PROFILE()];
 
 const mockCreateCounterpartiesResponse = mockCounterparties.map((counterparty) => mockResponse201(counterparty));
-
+const mockCreateObligationsResponse = mockObligations.map((counterparty) => mockResponse201(counterparty));
 const mockRepaymentProfilesResponse = mockRepaymentProfiles.map((repaymentProfile) => mockResponse201(repaymentProfile));
 
 describe('GiftService.createFacility - bad requests', () => {
   let counterpartyService: GiftCounterpartyService;
+  let obligationService: GiftObligationService;
   let repaymentProfileService: GiftRepaymentProfileService;
   let service: GiftService;
 
   let giftHttpService;
   let createInitialFacilitySpy: jest.Mock;
   let createCounterpartiesSpy: jest.Mock;
+  let createObligationsSpy: jest.Mock;
   let createRepaymentProfilesSpy: jest.Mock;
 
   beforeEach(() => {
     counterpartyService = new GiftCounterpartyService(giftHttpService);
+    obligationService = new GiftObligationService(giftHttpService);
     repaymentProfileService = new GiftRepaymentProfileService(giftHttpService);
 
     createInitialFacilitySpy = jest.fn().mockResolvedValueOnce(mockCreateInitialFacilityResponse);
     createCounterpartiesSpy = jest.fn().mockResolvedValueOnce(mockCreateCounterpartiesResponse);
+    createObligationsSpy = jest.fn().mockResolvedValueOnce(mockCreateObligationsResponse);
     createRepaymentProfilesSpy = jest.fn().mockResolvedValueOnce(mockRepaymentProfilesResponse);
 
     counterpartyService.createMany = createCounterpartiesSpy;
+    obligationService.createMany = createObligationsSpy;
     repaymentProfileService.createMany = createRepaymentProfilesSpy;
 
-    service = new GiftService(giftHttpService, counterpartyService, repaymentProfileService);
+    service = new GiftService(giftHttpService, counterpartyService, obligationService, repaymentProfileService);
 
     service.createInitialFacility = createInitialFacilitySpy;
   });
@@ -95,7 +102,35 @@ describe('GiftService.createFacility - bad requests', () => {
       });
     });
 
-    describe('repaymentProfiles.createMany', () => {
+    describe('obligationService.createMany', () => {
+      beforeEach(() => {
+        createObligationsSpy = jest.fn().mockResolvedValueOnce(mockResponse);
+
+        obligationService.createMany = createObligationsSpy;
+      });
+
+      it('should return an object with mapped counterparty errors', async () => {
+        const response = await service.createFacility(mockPayload);
+
+        const expectedValidationErrors = mapValidationErrorResponses({
+          entityName: ENTITY_NAMES.OBLIGATION,
+          responses: mockResponse,
+        });
+
+        const expected = {
+          status: HttpStatus.BAD_REQUEST,
+          data: {
+            statusCode: HttpStatus.BAD_REQUEST,
+            message: API_RESPONSE_MESSAGES.FACILITY_VALIDATION_ERRORS,
+            validationErrors: expectedValidationErrors,
+          },
+        };
+
+        expect(response).toEqual(expected);
+      });
+    });
+
+    describe('repaymentProfileService.createMany', () => {
       beforeEach(() => {
         createRepaymentProfilesSpy = jest.fn().mockResolvedValueOnce(mockResponse);
 
@@ -125,26 +160,22 @@ describe('GiftService.createFacility - bad requests', () => {
   });
 
   describe(`when multiple services return items with ${HttpStatus.BAD_REQUEST} statuses`, () => {
-    const mockResponse = [
-      {
-        status: HttpStatus.BAD_REQUEST,
-        data: {
-          validationErrors: [{ message: 'mock validation error' }],
-        },
+    const mockBadRequest = {
+      status: HttpStatus.BAD_REQUEST,
+      data: {
+        validationErrors: [{ message: 'mock validation error' }],
       },
-      {
-        status: HttpStatus.BAD_REQUEST,
-        data: {
-          validationErrors: [{ message: 'mock validation error' }],
-        },
-      },
-    ] as AxiosResponse[];
+    };
+
+    const mockResponse = [mockBadRequest, mockBadRequest, mockBadRequest] as AxiosResponse[];
 
     beforeEach(() => {
       createCounterpartiesSpy = jest.fn().mockResolvedValueOnce(mockResponse);
+      createObligationsSpy = jest.fn().mockResolvedValueOnce(mockResponse);
       createRepaymentProfilesSpy = jest.fn().mockResolvedValueOnce(mockResponse);
 
       counterpartyService.createMany = createCounterpartiesSpy;
+      obligationService.createMany = createObligationsSpy;
       repaymentProfileService.createMany = createRepaymentProfilesSpy;
     });
 
@@ -153,6 +184,7 @@ describe('GiftService.createFacility - bad requests', () => {
 
       const expectedValidationErrors = mapAllValidationErrorResponses({
         counterparties: mockResponse,
+        obligations: mockResponse,
         repaymentProfiles: mockResponse,
       });
 
@@ -207,7 +239,35 @@ describe('GiftService.createFacility - bad requests', () => {
       });
     });
 
-    describe('repaymentProfiles.createMany', () => {
+    describe('obligationService.createMany', () => {
+      beforeEach(() => {
+        createObligationsSpy = jest.fn().mockResolvedValueOnce(mockResponse);
+
+        obligationService.createMany = createObligationsSpy;
+      });
+
+      it('should return an object with mapped obligation errors', async () => {
+        const response = await service.createFacility(mockPayload);
+
+        const expectedValidationErrors = mapValidationErrorResponses({
+          entityName: ENTITY_NAMES.OBLIGATION,
+          responses: mockResponse,
+        });
+
+        const expected = {
+          status: HttpStatus.BAD_REQUEST,
+          data: {
+            statusCode: HttpStatus.BAD_REQUEST,
+            message: API_RESPONSE_MESSAGES.FACILITY_VALIDATION_ERRORS,
+            validationErrors: expectedValidationErrors,
+          },
+        };
+
+        expect(response).toEqual(expected);
+      });
+    });
+
+    describe('repaymentProfileService.createMany', () => {
       beforeEach(() => {
         createRepaymentProfilesSpy = jest.fn().mockResolvedValueOnce(mockResponse);
 
@@ -274,14 +334,42 @@ describe('GiftService.createFacility - bad requests', () => {
       });
     });
 
-    describe('repaymentProfiles.createMany', () => {
+    describe('obligationService.createMany', () => {
+      beforeEach(() => {
+        createObligationsSpy = jest.fn().mockResolvedValueOnce(mockResponse);
+
+        obligationService.createMany = createObligationsSpy;
+      });
+
+      it("should return an object with the first obligation's status and message", async () => {
+        const response = await service.createFacility(mockPayload);
+
+        const expectedValidationErrors = mapValidationErrorResponses({
+          entityName: ENTITY_NAMES.OBLIGATION,
+          responses: mockResponse,
+        });
+
+        const expected = {
+          status: HttpStatus.SERVICE_UNAVAILABLE,
+          data: {
+            statusCode: HttpStatus.SERVICE_UNAVAILABLE,
+            message: mockMessage,
+            validationErrors: expectedValidationErrors,
+          },
+        };
+
+        expect(response).toEqual(expected);
+      });
+    });
+
+    describe('repaymentProfileService.createMany', () => {
       beforeEach(() => {
         createRepaymentProfilesSpy = jest.fn().mockResolvedValueOnce(mockResponse);
 
         repaymentProfileService.createMany = createRepaymentProfilesSpy;
       });
 
-      it("should return an object with the first repayment profille's status and message", async () => {
+      it("should return an object with the first repayment profile's status and message", async () => {
         const response = await service.createFacility(mockPayload);
 
         const expectedValidationErrors = mapValidationErrorResponses({
