@@ -29,6 +29,7 @@ describe('GiftController', () => {
   let mockServiceCreateFacility;
 
   beforeEach(() => {
+    // Arrange
     giftHttpService = new GiftHttpService();
 
     counterpartyService = new GiftCounterpartyService(giftHttpService);
@@ -61,24 +62,30 @@ describe('GiftController', () => {
 
   describe('GET :facilityId', () => {
     it('should call giftService.getFacility', async () => {
+      // Act
       await controller.get({ facilityId: mockFacilityId }, mockRes);
 
+      // Assert
       expect(mockServiceGetFacility).toHaveBeenCalledTimes(1);
 
       expect(mockServiceGetFacility).toHaveBeenCalledWith(mockFacilityId);
     });
 
     it('should call res.status with a status', async () => {
+      // Act
       await controller.get({ facilityId: mockFacilityId }, mockRes);
 
+      // Assert
       expect(mockResStatus).toHaveBeenCalledTimes(1);
 
       expect(mockResStatus).toHaveBeenCalledWith(mockResponseGet.status);
     });
 
     it('should call res.status.send with data obtained from the service call', async () => {
+      // Act
       await controller.get({ facilityId: mockFacilityId }, mockRes);
 
+      // Assert
       expect(mockResSend).toHaveBeenCalledTimes(1);
 
       expect(mockResSend).toHaveBeenCalledWith(mockResponseGet.data);
@@ -87,24 +94,30 @@ describe('GiftController', () => {
 
   describe('POST', () => {
     it('should call giftService.createFacility', async () => {
+      // Act
       await controller.post(FACILITY_CREATION_PAYLOAD, mockRes);
 
+      // Assert
       expect(mockServiceCreateFacility).toHaveBeenCalledTimes(1);
 
       expect(mockServiceCreateFacility).toHaveBeenCalledWith(FACILITY_CREATION_PAYLOAD);
     });
 
     it('should call res.status with a status', async () => {
+      // Act
       await controller.post(FACILITY_CREATION_PAYLOAD, mockRes);
 
+      // Assert
       expect(mockResStatus).toHaveBeenCalledTimes(1);
 
       expect(mockResStatus).toHaveBeenCalledWith(mockResponsePost.status);
     });
 
     it('should call res.status.send with data obtained from the service call', async () => {
+      // Act
       await controller.post(FACILITY_CREATION_PAYLOAD, mockRes);
 
+      // Assert
       expect(mockResSend).toHaveBeenCalledTimes(1);
 
       expect(mockResSend).toHaveBeenCalledWith(mockResponsePost.data);

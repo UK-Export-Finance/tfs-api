@@ -20,6 +20,7 @@ describe('GiftRepaymentProfileService', () => {
   let mockHttpServicePost: jest.Mock;
 
   beforeEach(() => {
+    // Arrange
     httpService = new HttpService();
 
     mockCreateOneResponse = mockResponse201(REPAYMENT_PROFILE());
@@ -43,8 +44,10 @@ describe('GiftRepaymentProfileService', () => {
     const mockPayload = REPAYMENT_PROFILE();
 
     it('should call giftHttpService.post', async () => {
+      // Arrange
       await service.createOne(mockPayload, mockWorkPackageId);
 
+      // Assert
       expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
 
       expect(mockHttpServicePost).toHaveBeenCalledWith({
@@ -55,14 +58,17 @@ describe('GiftRepaymentProfileService', () => {
 
     describe('when giftHttpService.post is successful', () => {
       it('should return the response of giftHttpService.post', async () => {
+        // Arrange
         const response = await service.createOne(mockPayload, mockWorkPackageId);
 
+        // Assert
         expect(response).toEqual(mockCreateOneResponse);
       });
     });
 
     describe('when giftHttpService.post returns an error', () => {
       beforeEach(() => {
+        // Arrange
         mockHttpServicePost = jest.fn().mockRejectedValueOnce(mockResponse500());
 
         giftHttpService.post = mockHttpServicePost;
@@ -71,8 +77,10 @@ describe('GiftRepaymentProfileService', () => {
       });
 
       it('should thrown an error', async () => {
+        // Act
         const promise = service.createOne(mockPayload, mockWorkPackageId);
 
+        // Assert
         const expected = 'Error creating repayment profile';
 
         await expect(promise).rejects.toThrow(expected);
@@ -90,6 +98,7 @@ describe('GiftRepaymentProfileService', () => {
     let mockCreateOne = jest.fn().mockResolvedValue(mockResponse201(mockRepaymentProfiles));
 
     beforeEach(() => {
+      // Arrange
       mockCreateOneResponse = mockResponse201(mockRepaymentProfiles);
 
       giftHttpService.post = jest
@@ -104,8 +113,10 @@ describe('GiftRepaymentProfileService', () => {
     });
 
     it('should call service.createOne for each provided repayment profile', async () => {
+      // Act
       await service.createMany(mockPayload, mockWorkPackageId);
 
+      // Assert
       expect(mockCreateOne).toHaveBeenCalledTimes(repaymentProfilesLength);
 
       expect(mockCreateOne).toHaveBeenCalledWith(mockPayload[0], mockWorkPackageId);
@@ -115,8 +126,10 @@ describe('GiftRepaymentProfileService', () => {
 
     describe('when service.createOne is successful', () => {
       it('should return the response of multiple calls to service.createOne', async () => {
+        // Act
         const response = await service.createMany(mockPayload, mockWorkPackageId);
 
+        // Assert
         const expected = [mockCreateOneResponse, mockCreateOneResponse, mockCreateOneResponse];
 
         expect(response).toEqual(expected);
@@ -125,6 +138,7 @@ describe('GiftRepaymentProfileService', () => {
 
     describe('when service.createOne returns an error', () => {
       beforeEach(() => {
+        // Arrange
         mockCreateOne = jest.fn().mockRejectedValueOnce(mockResponse500());
 
         service = new GiftRepaymentProfileService(giftHttpService);
@@ -133,8 +147,10 @@ describe('GiftRepaymentProfileService', () => {
       });
 
       it('should thrown an error', async () => {
+        // Act
         const promise = service.createMany(mockPayload, mockWorkPackageId);
 
+        // Assert
         const expected = 'Error creating repayment profiles';
 
         await expect(promise).rejects.toThrow(expected);

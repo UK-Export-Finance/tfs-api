@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/UK-Export-Finance/tfs-api/compare/v1.6.1...v1.7.0) (2025-04-08)
+
+
+### Features
+
+* **acr:** acr purge workflow ([#966](https://github.com/UK-Export-Finance/tfs-api/issues/966)) ([1180001](https://github.com/UK-Export-Finance/tfs-api/commit/118000120217906b05baa7c6040f940efd1af4a3))
+
 ## [1.6.1](https://github.com/UK-Export-Finance/tfs-api/compare/v1.6.0...v1.6.1) (2024-08-20)
 
 
