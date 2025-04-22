@@ -26,6 +26,7 @@ describe('GiftService.createInitialFacility', () => {
   let mockHttpServicePost: jest.Mock;
 
   beforeEach(() => {
+    // Arrange
     httpService = new HttpService();
 
     mockHttpServicePost = jest.fn().mockResolvedValueOnce(mockResponsePost);
@@ -48,8 +49,10 @@ describe('GiftService.createInitialFacility', () => {
   });
 
   it('should call giftHttpService.post', async () => {
+    // Act
     await service.createInitialFacility(mockPayload.overview);
 
+    // Assert
     expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
 
     expect(mockHttpServicePost).toHaveBeenCalledWith({
@@ -60,14 +63,17 @@ describe('GiftService.createInitialFacility', () => {
 
   describe('when giftHttpService.post is successful', () => {
     it('should return the response of giftHttpService.post', async () => {
+      // Act
       const response = await service.createInitialFacility(mockPayload.overview);
 
+      // Assert
       expect(response).toEqual(mockResponsePost);
     });
   });
 
   describe('when giftHttpService.post returns an error', () => {
     beforeEach(() => {
+      // Arrange
       mockHttpServicePost = jest.fn().mockRejectedValueOnce(mockResponse500());
 
       httpService.post = mockHttpServicePost;
@@ -78,8 +84,10 @@ describe('GiftService.createInitialFacility', () => {
     });
 
     it('should thrown an error', async () => {
+      // Act
       const promise = service.createInitialFacility(mockPayload.overview);
 
+      // Assert
       const expected = new Error('Error creating initial GIFT facility');
 
       await expect(promise).rejects.toThrow(expected);

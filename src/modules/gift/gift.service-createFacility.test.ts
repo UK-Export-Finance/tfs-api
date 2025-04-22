@@ -37,6 +37,7 @@ describe('GiftService.createFacility', () => {
   let createRepaymentProfilesSpy: jest.Mock;
 
   beforeEach(() => {
+    // Arrange
     httpService = new HttpService();
 
     mockHttpServicePost = jest.fn().mockResolvedValueOnce(mockResponsePost);
@@ -70,16 +71,20 @@ describe('GiftService.createFacility', () => {
   });
 
   it('should call service.createInitialFacility', async () => {
+    // Act
     await service.createFacility(mockPayload);
 
+    // Assert
     expect(createInitialFacilitySpy).toHaveBeenCalledTimes(1);
 
     expect(createInitialFacilitySpy).toHaveBeenCalledWith(mockPayload.overview);
   });
 
   it('should call counterpartyService.createMany', async () => {
+    // Act
     await service.createFacility(mockPayload);
 
+    // Assert
     expect(createCounterpartiesSpy).toHaveBeenCalledTimes(1);
 
     expect(createCounterpartiesSpy).toHaveBeenCalledWith(mockPayload.counterparties, FACILITY_RESPONSE_DATA.workPackageId);
@@ -94,8 +99,10 @@ describe('GiftService.createFacility', () => {
   });
 
   it('should call giftRepaymentProfileService.createMany', async () => {
+    // Act
     await service.createFacility(mockPayload);
 
+    // Assert
     expect(createRepaymentProfilesSpy).toHaveBeenCalledTimes(1);
 
     expect(createRepaymentProfilesSpy).toHaveBeenCalledWith(mockPayload.repaymentProfiles, FACILITY_RESPONSE_DATA.workPackageId);
@@ -103,8 +110,10 @@ describe('GiftService.createFacility', () => {
 
   describe('when all calls are successful', () => {
     it('should return a response object', async () => {
+      // Act
       const response = await service.createFacility(mockPayload);
 
+      // Assert
       const expected = {
         status: HttpStatus.CREATED,
         data: {

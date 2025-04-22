@@ -40,6 +40,7 @@ describe('GiftHttpService', () => {
 
   describe('GIFT_API_ACCEPTABLE_STATUSES', () => {
     it('should return an array of statuses', () => {
+      // Act & Assert
       const expected = [HttpStatus.OK, HttpStatus.CREATED, HttpStatus.BAD_REQUEST, HttpStatus.UNAUTHORIZED, HttpStatus.NOT_FOUND];
 
       expect(GIFT_API_ACCEPTABLE_STATUSES).toEqual(expected);
@@ -48,10 +49,10 @@ describe('GiftHttpService', () => {
 
   describe('createAxiosInstance', () => {
     it('should call axios.create', () => {
-      service = new GiftHttpService();
+      // Act
+      new GiftHttpService().createAxiosInstance();
 
-      service.createAxiosInstance();
-
+      // Assert
       const { baseUrl, apiKeyHeaderName, apiKeyHeaderValue } = giftConfig();
 
       expect(mockAxiosCreate).toHaveBeenCalled();
@@ -72,6 +73,7 @@ describe('GiftHttpService', () => {
     const mockGetPath = '/mock-get-path';
 
     beforeEach(() => {
+      // Arrange
       axios.create = mockAxiosCreate;
 
       mockAxiosGet = jest.fn().mockResolvedValue(mockResponse200());
@@ -80,29 +82,36 @@ describe('GiftHttpService', () => {
     });
 
     it('should call axios.get', async () => {
+      // Act
       await service.get({ path: mockGetPath });
 
+      // Assert
       expect(mockAxiosGet).toHaveBeenCalledTimes(1);
 
       expect(mockAxiosGet).toHaveBeenCalledWith(mockGetPath);
     });
 
     it('should return the result of axios.get', async () => {
+      // Act
       const response = await service.get({ path: mockGetPath });
 
+      // Assert
       expect(response).toEqual(mockResponse200());
     });
 
     describe('when the axios call fails', () => {
       beforeEach(() => {
+        // Arrange
         mockAxiosGet = jest.fn().mockRejectedValueOnce(mockResponse500());
 
         service = new GiftHttpService();
       });
 
       it('should throw an error', async () => {
+        // Act
         const serviceCall = service.get({ path: mockGetPath });
 
+        // Assert
         await expect(serviceCall).rejects.toThrow(`Error calling GET with path ${mockGetPath}`);
       });
     });
@@ -114,6 +123,7 @@ describe('GiftHttpService', () => {
     const mockPayload = { mock: true };
 
     beforeEach(() => {
+      // Arrange
       axios.create = mockAxiosCreate;
 
       mockAxiosPost = jest.fn().mockResolvedValue(mockResponse201());
@@ -122,29 +132,36 @@ describe('GiftHttpService', () => {
     });
 
     it('should call axios.post', async () => {
+      // Act
       await service.post({ path: mockPostPath, payload: mockPayload });
 
+      // Assert
       expect(mockAxiosPost).toHaveBeenCalledTimes(1);
 
       expect(mockAxiosPost).toHaveBeenCalledWith(mockPostPath, mockPayload);
     });
 
     it('should return the result of axios.post', async () => {
+      // Act
       const response = await service.post({ path: mockPostPath, payload: mockPayload });
 
+      // Assert
       expect(response).toEqual(mockResponse201());
     });
 
     describe('when the axios call fails', () => {
       beforeEach(() => {
+        // Arrange
         mockAxiosPost = jest.fn().mockRejectedValueOnce(mockResponse500());
 
         service = new GiftHttpService();
       });
 
       it('should throw an error', async () => {
+        // Act
         const serviceCall = service.post({ path: mockPostPath, payload: mockPayload });
 
+        // Assert
         await expect(serviceCall).rejects.toThrow(`Error calling POST with path ${mockPostPath}`);
       });
     });

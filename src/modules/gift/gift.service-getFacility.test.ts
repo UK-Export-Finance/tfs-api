@@ -26,6 +26,7 @@ describe('GiftService.getFacility', () => {
   let mockHttpServiceGet: jest.Mock;
 
   beforeEach(() => {
+    // Arrange
     httpService = new HttpService();
 
     mockHttpServiceGet = jest.fn().mockResolvedValueOnce(mockResponseGet);
@@ -48,8 +49,10 @@ describe('GiftService.getFacility', () => {
   });
 
   it('should call giftHttpService.get', async () => {
+    // Act
     await service.getFacility(mockFacilityId);
 
+    // Assert
     expect(mockHttpServiceGet).toHaveBeenCalledTimes(1);
 
     expect(mockHttpServiceGet).toHaveBeenCalledWith({
@@ -59,14 +62,17 @@ describe('GiftService.getFacility', () => {
 
   describe('when giftHttpService.get is successful', () => {
     it('should return the response of giftHttpService.get', async () => {
+      // Act
       const response = await service.getFacility(mockFacilityId);
 
+      // Assert
       expect(response).toEqual(mockResponseGet);
     });
   });
 
   describe('when giftHttpService.get returns an error', () => {
     beforeEach(() => {
+      // Arrange
       mockHttpServiceGet = jest.fn().mockRejectedValueOnce(mockResponse500());
 
       httpService.get = mockHttpServiceGet;
@@ -77,8 +83,10 @@ describe('GiftService.getFacility', () => {
     });
 
     it('should thrown an error', async () => {
+      // Act
       const promise = service.getFacility(mockFacilityId);
 
+      // Assert
       const expected = new Error('Error calling GIFT HTTP service GET method');
 
       await expect(promise).rejects.toThrow(expected);
