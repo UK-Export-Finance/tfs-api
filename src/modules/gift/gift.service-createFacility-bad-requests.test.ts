@@ -108,14 +108,17 @@ describe('GiftService.createFacility - bad requests', () => {
 
     describe('obligationService.createMany', () => {
       beforeEach(() => {
+        // Arrange
         createObligationsSpy = jest.fn().mockResolvedValueOnce(mockResponse);
 
         obligationService.createMany = createObligationsSpy;
       });
 
       it('should return an object with mapped counterparty errors', async () => {
+        // Act
         const response = await service.createFacility(mockPayload);
 
+        // Assert
         const expectedValidationErrors = mapValidationErrorResponses({
           entityName: ENTITY_NAMES.OBLIGATION,
           responses: mockResponse,
@@ -254,14 +257,17 @@ describe('GiftService.createFacility - bad requests', () => {
 
     describe('obligationService.createMany', () => {
       beforeEach(() => {
+        // Arrange
         createObligationsSpy = jest.fn().mockResolvedValueOnce(mockResponse);
 
         obligationService.createMany = createObligationsSpy;
       });
 
       it('should return an object with mapped obligation errors', async () => {
+        // Act
         const response = await service.createFacility(mockPayload);
 
+        // Assert
         const expectedValidationErrors = mapValidationErrorResponses({
           entityName: ENTITY_NAMES.OBLIGATION,
           responses: mockResponse,

@@ -43,13 +43,16 @@ describe('POST /gift/facility - validation - obligations', () => {
 
   describe('when an empty obligations object is provided', () => {
     it(`should return a ${HttpStatus.BAD_REQUEST} response with validation errors for all required fields`, async () => {
+      // Arrange
       const mockPayload = {
         ...EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD,
         obligations: [{}],
       };
 
+      // Act
       const { status, body } = await api.post(url, mockPayload);
 
+      // Assert
       expect(status).toBe(HttpStatus.BAD_REQUEST);
 
       const expected = {

@@ -91,8 +91,10 @@ describe('GiftService.createFacility', () => {
   });
 
   it('should call obligationService.createMany', async () => {
+    // Act
     await service.createFacility(mockPayload);
 
+    // Assert
     expect(createObligationsSpy).toHaveBeenCalledTimes(1);
 
     expect(createObligationsSpy).toHaveBeenCalledWith(mockPayload.obligations, FACILITY_RESPONSE_DATA.workPackageId);

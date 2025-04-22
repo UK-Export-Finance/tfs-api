@@ -44,7 +44,7 @@ describe('GiftRepaymentProfileService', () => {
     const mockPayload = REPAYMENT_PROFILE();
 
     it('should call giftHttpService.post', async () => {
-      // Arrange
+      // Act
       await service.createOne(mockPayload, mockWorkPackageId);
 
       // Assert
@@ -58,7 +58,7 @@ describe('GiftRepaymentProfileService', () => {
 
     describe('when giftHttpService.post is successful', () => {
       it('should return the response of giftHttpService.post', async () => {
-        // Arrange
+        // Act
         const response = await service.createOne(mockPayload, mockWorkPackageId);
 
         // Assert
