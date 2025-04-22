@@ -46,13 +46,16 @@ describe('POST /gift/facility - validation - repayment profiles', () => {
 
   describe('when an empty repayment profile object is provided', () => {
     it(`should return a ${HttpStatus.BAD_REQUEST} response with a validation error`, async () => {
+      // Arrange
       const mockPayload = {
         ...EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD,
         repaymentProfiles: [{}],
       };
 
+      // Act
       const { status, body } = await api.post(url, mockPayload);
 
+      // Assert
       expect(status).toBe(HttpStatus.BAD_REQUEST);
 
       const expected = {
@@ -74,6 +77,7 @@ describe('POST /gift/facility - validation - repayment profiles', () => {
 
   describe(`when a repayment profile name is NOT unique`, () => {
     it(`should return a ${HttpStatus.BAD_REQUEST} response with a validation error`, async () => {
+      // Arrange
       const mockPayload = {
         ...EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD,
         repaymentProfiles: [
@@ -85,8 +89,10 @@ describe('POST /gift/facility - validation - repayment profiles', () => {
         ],
       };
 
+      // Act
       const { status, body } = await api.post(url, mockPayload);
 
+      // Assert
       expect(status).toBe(HttpStatus.BAD_REQUEST);
 
       const expected = {
@@ -101,6 +107,7 @@ describe('POST /gift/facility - validation - repayment profiles', () => {
 
   describe(`when a repayment profile's allocation dueDate is NOT unique`, () => {
     it(`should return a ${HttpStatus.BAD_REQUEST} response with a validation error`, async () => {
+      // Arrange
       const mockPayload = {
         ...EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD,
         repaymentProfiles: [
@@ -111,8 +118,10 @@ describe('POST /gift/facility - validation - repayment profiles', () => {
         ],
       };
 
+      // Act
       const { status, body } = await api.post(url, mockPayload);
 
+      // Assert
       expect(status).toBe(HttpStatus.BAD_REQUEST);
 
       const expected = {
@@ -137,6 +146,7 @@ describe('POST /gift/facility - validation - repayment profiles', () => {
 
   describe('when a repayment has allocations as an empty array', () => {
     it(`should return a ${HttpStatus.BAD_REQUEST} response with validation errors for all required fields`, async () => {
+      // Arrange
       const mockPayload = {
         ...EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD,
         repaymentProfiles: [
@@ -147,8 +157,10 @@ describe('POST /gift/facility - validation - repayment profiles', () => {
         ],
       };
 
+      // Act
       const { status, body } = await api.post(url, mockPayload);
 
+      // Assert
       expect(status).toBe(HttpStatus.BAD_REQUEST);
 
       const expected = {
@@ -163,6 +175,7 @@ describe('POST /gift/facility - validation - repayment profiles', () => {
 
   describe('when a repayment has allocations with an empty object', () => {
     it(`should return a ${HttpStatus.BAD_REQUEST} response with validation errors for all required fields`, async () => {
+      // Arrange
       const mockPayload = {
         ...EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD,
         repaymentProfiles: [
@@ -173,8 +186,10 @@ describe('POST /gift/facility - validation - repayment profiles', () => {
         ],
       };
 
+      // Act
       const { status, body } = await api.post(url, mockPayload);
 
+      // Assert
       expect(status).toBe(HttpStatus.BAD_REQUEST);
 
       const expected = {

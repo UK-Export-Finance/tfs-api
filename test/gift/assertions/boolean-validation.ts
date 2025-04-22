@@ -27,18 +27,23 @@ export const booleanValidation = ({ fieldName, initialPayload, parentFieldName, 
 
   describe(`when ${fieldName} is null`, () => {
     beforeAll(() => {
+      // Arrange
       mockPayload[`${parentFieldName}`][`${fieldName}`] = null;
     });
 
     it('should return a 400 response', async () => {
+      // Act
       const response = await api.post(url, mockPayload);
 
+      // Assert
       assert400Response(response);
     });
 
     it('should return the correct error messages', async () => {
+      // Act
       const { body } = await api.post(url, mockPayload);
 
+      // Assert
       const expected = [`${fieldPath} should not be null or undefined`, `${fieldPath} must be a boolean value`];
 
       expect(body.message).toStrictEqual(expected);
@@ -47,18 +52,23 @@ export const booleanValidation = ({ fieldName, initialPayload, parentFieldName, 
 
   describe(`when ${fieldName} is undefined`, () => {
     beforeAll(() => {
+      // Arrange
       mockPayload[`${parentFieldName}`][`${fieldName}`] = undefined;
     });
 
     it('should return a 400 response', async () => {
+      // Act
       const response = await api.post(url, mockPayload);
 
+      // Assert
       assert400Response(response);
     });
 
     it('should return the correct error messages', async () => {
+      // Act
       const { body } = await api.post(url, mockPayload);
 
+      // Assert
       const expected = [`${fieldPath} should not be null or undefined`, `${fieldPath} must be a boolean value`];
 
       expect(body.message).toStrictEqual(expected);
@@ -67,18 +77,23 @@ export const booleanValidation = ({ fieldName, initialPayload, parentFieldName, 
 
   describe(`when ${fieldName} is an empty array`, () => {
     beforeAll(() => {
+      // Arrange
       mockPayload[`${parentFieldName}`][`${fieldName}`] = [];
     });
 
     it('should return a 400 response', async () => {
+      // Act
       const response = await api.post(url, mockPayload);
 
+      // Assert
       assert400Response(response);
     });
 
     it('should return the correct error messages', async () => {
+      // Act
       const { body } = await api.post(url, mockPayload);
 
+      // Assert
       const expected = [`${fieldPath} must be a boolean value`];
 
       expect(body.message).toStrictEqual(expected);
@@ -87,18 +102,23 @@ export const booleanValidation = ({ fieldName, initialPayload, parentFieldName, 
 
   describe(`when ${fieldName} is a string`, () => {
     beforeAll(() => {
+      // Arrange
       mockPayload[`${parentFieldName}`][`${fieldName}`] = '';
     });
 
     it('should return a 400 response', async () => {
+      // Act
       const response = await api.post(url, mockPayload);
 
+      // Assert
       assert400Response(response);
     });
 
     it('should return the correct error messages', async () => {
+      // Act
       const { body } = await api.post(url, mockPayload);
 
+      // Assert
       const expected = [`${fieldPath} must be a boolean value`];
 
       expect(body.message).toStrictEqual(expected);
@@ -107,18 +127,23 @@ export const booleanValidation = ({ fieldName, initialPayload, parentFieldName, 
 
   describe(`when ${fieldName} is a number`, () => {
     beforeAll(() => {
+      // Arrange
       mockPayload[`${parentFieldName}`][`${fieldName}`] = 1;
     });
 
     it('should return a 400 response', async () => {
+      // Act
       const response = await api.post(url, mockPayload);
 
+      // Assert
       assert400Response(response);
     });
 
     it('should return the correct error messages', async () => {
+      // Act
       const { body } = await api.post(url, mockPayload);
 
+      // Assert
       const expected = [`${fieldPath} must be a boolean value`];
 
       expect(body.message).toStrictEqual(expected);

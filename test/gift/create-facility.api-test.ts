@@ -80,14 +80,17 @@ describe('POST /gift/facility', () => {
 
   describe(`when the payload is valid and a ${HttpStatus.CREATED} response is returned by GIFT`, () => {
     it(`should return a ${HttpStatus.CREATED}} response with a facility, counterparties and repayment profiles`, async () => {
+      // Arrange
       nock(GIFT_API_URL).post(PATH.FACILITY).reply(HttpStatus.CREATED, mockResponses.facility);
 
       nock(GIFT_API_URL).persist().post(counterPartyUrl).reply(HttpStatus.CREATED, mockResponses.counterparty);
 
       nock(GIFT_API_URL).persist().post(repaymentProfileUrl).reply(HttpStatus.CREATED, mockResponses.repaymentProfile);
 
+      // Act
       const { status, body } = await api.post(facilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
+      // Assert
       expect(status).toBe(HttpStatus.CREATED);
 
       const expected = {
@@ -102,10 +105,13 @@ describe('POST /gift/facility', () => {
 
   describe(`when a ${HttpStatus.BAD_REQUEST} response is returned by the GIFT facility endpoint`, () => {
     it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
+      // Arrange
       nock(GIFT_API_URL).post(PATH.FACILITY).reply(HttpStatus.BAD_REQUEST, mockResponses.badRequest);
 
+      // Act
       const { status, body } = await api.post(facilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
+      // Assert
       expect(status).toBe(HttpStatus.BAD_REQUEST);
 
       const expected = mockResponses.badRequest;
@@ -116,10 +122,13 @@ describe('POST /gift/facility', () => {
 
   describe(`when a ${HttpStatus.UNAUTHORIZED} response is returned by the GIFT facility endpoint`, () => {
     it(`should return a ${HttpStatus.UNAUTHORIZED} response`, async () => {
+      // Arrange
       nock(GIFT_API_URL).post(PATH.FACILITY).reply(HttpStatus.UNAUTHORIZED, mockResponses.unauthorized);
 
+      // Act
       const { status, body } = await api.post(facilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
+      // Assert
       expect(status).toBe(HttpStatus.UNAUTHORIZED);
 
       expect(body).toStrictEqual(mockResponses.unauthorized);
@@ -128,10 +137,13 @@ describe('POST /gift/facility', () => {
 
   describe('when an unacceptable status is returned by the GIFT facility endpoint', () => {
     it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
+      // Arrange
       nock(GIFT_API_URL).post(PATH.FACILITY).reply(HttpStatus.I_AM_A_TEAPOT);
 
+      // Act
       const { status, body } = await api.post(facilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
+      // Assert
       expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
 
       expect(body).toStrictEqual(mockResponses.internalServerError);
@@ -140,10 +152,13 @@ describe('POST /gift/facility', () => {
 
   describe(`when a ${HttpStatus.INTERNAL_SERVER_ERROR} status is returned by the GIFT facility endpoint`, () => {
     it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
+      // Arrange
       nock(GIFT_API_URL).post(PATH.FACILITY).reply(HttpStatus.INTERNAL_SERVER_ERROR);
 
+      // Act
       const { status, body } = await api.post(facilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
+      // Assert
       expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
 
       expect(body).toStrictEqual(mockResponses.internalServerError);
@@ -152,14 +167,17 @@ describe('POST /gift/facility', () => {
 
   describe(`when a ${HttpStatus.BAD_REQUEST} response is returned by the GIFT counterparty endpoint`, () => {
     it(`should return a ${HttpStatus.BAD_REQUEST} response with a mapped body/validation errors`, async () => {
+      // Arrange
       nock(GIFT_API_URL).post(PATH.FACILITY).reply(HttpStatus.CREATED, mockResponses.facility);
 
       nock(GIFT_API_URL).persist().post(counterPartyUrl).reply(HttpStatus.BAD_REQUEST, mockResponses.badRequest);
 
       nock(GIFT_API_URL).persist().post(repaymentProfileUrl).reply(HttpStatus.CREATED, mockResponses.repaymentProfile);
 
+      // Act
       const { status, body } = await api.post(facilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
+      // Assert
       expect(status).toBe(HttpStatus.BAD_REQUEST);
 
       const expectedValidationErrors = payloadCounterparties.map((counterparty, index) => ({
@@ -183,14 +201,17 @@ describe('POST /gift/facility', () => {
 
   describe(`when a ${HttpStatus.UNAUTHORIZED} response is returned by the GIFT counterparty endpoint`, () => {
     it(`should return a ${HttpStatus.UNAUTHORIZED} response`, async () => {
+      // Arrange
       nock(GIFT_API_URL).post(PATH.FACILITY).reply(HttpStatus.CREATED, mockResponses.facility);
 
       nock(GIFT_API_URL).persist().post(counterPartyUrl).reply(HttpStatus.UNAUTHORIZED, mockResponses.unauthorized);
 
       nock(GIFT_API_URL).persist().post(repaymentProfileUrl).reply(HttpStatus.CREATED, mockResponses.repaymentProfile);
 
+      // Act
       const { status, body } = await api.post(facilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
+      // Assert
       expect(status).toBe(HttpStatus.UNAUTHORIZED);
 
       const expectedValidationErrors = payloadCounterparties.map((counterparty, index) => ({
@@ -212,12 +233,15 @@ describe('POST /gift/facility', () => {
 
   describe(`when a ${HttpStatus.INTERNAL_SERVER_ERROR} status is returned by the GIFT counterparty endpoint`, () => {
     it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
+      // Arrange
       nock(GIFT_API_URL).post(PATH.FACILITY).reply(HttpStatus.CREATED, mockResponses.facility);
 
       nock(GIFT_API_URL).persist().post(counterPartyUrl).reply(HttpStatus.INTERNAL_SERVER_ERROR, mockResponses.badRequest);
 
+      // Act
       const { status, body } = await api.post(facilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
+      // Assert
       expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
 
       expect(body).toStrictEqual(mockResponses.internalServerError);
@@ -226,12 +250,15 @@ describe('POST /gift/facility', () => {
 
   describe('when an unacceptable response is returned by the GIFT counterparty endpoint', () => {
     it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
+      // Arrange
       nock(GIFT_API_URL).post(PATH.FACILITY).reply(HttpStatus.CREATED, mockResponses.facility);
 
       nock(GIFT_API_URL).persist().post(counterPartyUrl).reply(HttpStatus.I_AM_A_TEAPOT);
 
+      // Act
       const { status, body } = await api.post(facilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
+      // Assert
       expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
 
       expect(body).toStrictEqual(mockResponses.internalServerError);
@@ -240,14 +267,17 @@ describe('POST /gift/facility', () => {
 
   describe(`when a ${HttpStatus.BAD_REQUEST} response is returned by the GIFT repayment profile endpoint`, () => {
     it(`should return a ${HttpStatus.BAD_REQUEST} response with a mapped body/validation errors`, async () => {
+      // Arrange
       nock(GIFT_API_URL).post(PATH.FACILITY).reply(HttpStatus.CREATED, mockResponses.facility);
 
       nock(GIFT_API_URL).persist().post(counterPartyUrl).reply(HttpStatus.CREATED, mockResponses.counterparty);
 
       nock(GIFT_API_URL).persist().post(repaymentProfileUrl).reply(HttpStatus.BAD_REQUEST, mockResponses.badRequest);
 
+      // Act
       const { status, body } = await api.post(facilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
+      // Assert
       expect(status).toBe(HttpStatus.BAD_REQUEST);
 
       const expectedValidationErrors = payloadCounterparties.map((counterparty, index) => ({
@@ -271,14 +301,17 @@ describe('POST /gift/facility', () => {
 
   describe(`when a ${HttpStatus.UNAUTHORIZED} response is returned by the GIFT repayment profile endpoint`, () => {
     it(`should return a ${HttpStatus.UNAUTHORIZED} response`, async () => {
+      // Arrange
       nock(GIFT_API_URL).post(PATH.FACILITY).reply(HttpStatus.CREATED, mockResponses.facility);
 
       nock(GIFT_API_URL).persist().post(counterPartyUrl).reply(HttpStatus.CREATED, mockResponses.counterparty);
 
       nock(GIFT_API_URL).persist().post(repaymentProfileUrl).reply(HttpStatus.UNAUTHORIZED, mockResponses.unauthorized);
 
+      // Act
       const { status, body } = await api.post(facilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
+      // Assert
       expect(status).toBe(HttpStatus.UNAUTHORIZED);
 
       const expectedValidationErrors = payloadCounterparties.map((counterparty, index) => ({
@@ -300,14 +333,17 @@ describe('POST /gift/facility', () => {
 
   describe(`when a ${HttpStatus.INTERNAL_SERVER_ERROR} status is returned by the GIFT repayment profile endpoint`, () => {
     it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
+      // Arrange
       nock(GIFT_API_URL).post(PATH.FACILITY).reply(HttpStatus.CREATED, mockResponses.facility);
 
       nock(GIFT_API_URL).persist().post(counterPartyUrl).reply(HttpStatus.CREATED, mockResponses.badRequest);
 
       nock(GIFT_API_URL).persist().post(repaymentProfileUrl).reply(HttpStatus.INTERNAL_SERVER_ERROR, mockResponses.badRequest);
 
+      // Act
       const { status, body } = await api.post(facilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
+      // Assert
       expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
 
       expect(body).toStrictEqual(mockResponses.internalServerError);
@@ -316,14 +352,17 @@ describe('POST /gift/facility', () => {
 
   describe(`when an unacceptable response is returned by the GIFT repayment profile endpoint`, () => {
     it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
+      // Arrange
       nock(GIFT_API_URL).post(PATH.FACILITY).reply(HttpStatus.CREATED, mockResponses.facility);
 
       nock(GIFT_API_URL).persist().post(counterPartyUrl).reply(HttpStatus.CREATED);
 
       nock(GIFT_API_URL).persist().post(repaymentProfileUrl).reply(HttpStatus.I_AM_A_TEAPOT);
 
+      // Act
       const { status, body } = await api.post(facilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
+      // Assert
       expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
 
       expect(body).toStrictEqual(mockResponses.internalServerError);

@@ -29,18 +29,23 @@ export const arrayOfObjectsNumberValidation = ({ fieldName, parentFieldName, ini
     let mockPayload;
 
     beforeAll(() => {
+      // Arrange
       mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value: null });
     });
 
     it('should return a 400 response', async () => {
+      // Act
       const response = await api.post(url, mockPayload);
 
+      // Assert
       assert400Response(response);
     });
 
     it('should return the correct error messages', async () => {
+      // Act
       const { body } = await api.post(url, mockPayload);
 
+      // Assert
       const expected = [
         `${parentFieldName}.0.${fieldName} should not be null or undefined`,
         `${parentFieldName}.0.${fieldName} must not be greater than ${max}`,
@@ -60,18 +65,23 @@ export const arrayOfObjectsNumberValidation = ({ fieldName, parentFieldName, ini
     let mockPayload;
 
     beforeAll(() => {
+      // Arrange
       mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value: undefined });
     });
 
     it('should return a 400 response', async () => {
+      // Act
       const response = await api.post(url, mockPayload);
 
+      // Assert
       assert400Response(response);
     });
 
     it('should return the correct error messages', async () => {
+      // Act
       const { body } = await api.post(url, mockPayload);
 
+      // Assert
       const expected = [
         `${parentFieldName}.0.${fieldName} should not be null or undefined`,
         `${parentFieldName}.0.${fieldName} must not be greater than ${max}`,
@@ -91,18 +101,23 @@ export const arrayOfObjectsNumberValidation = ({ fieldName, parentFieldName, ini
     let mockPayload;
 
     beforeAll(() => {
+      // Arrange
       mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value: [] });
     });
 
     it('should return a 400 response', async () => {
+      // Act
       const response = await api.post(url, mockPayload);
 
+      // Assert
       assert400Response(response);
     });
 
     it('should return the correct error messages', async () => {
+      // Act
       const { body } = await api.post(url, mockPayload);
 
+      // Assert
       const expected = [
         `${parentFieldName}.0.${fieldName} must not be greater than ${max}`,
         `${parentFieldName}.0.${fieldName} must not be less than ${min}`,
@@ -120,18 +135,23 @@ export const arrayOfObjectsNumberValidation = ({ fieldName, parentFieldName, ini
     let mockPayload;
 
     beforeAll(() => {
+      // Arrange
       mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value: true });
     });
 
     it('should return a 400 response', async () => {
+      // Act
       const response = await api.post(url, mockPayload);
 
+      // Assert
       assert400Response(response);
     });
 
     it('should return the correct error messages', async () => {
+      // Act
       const { body } = await api.post(url, mockPayload);
 
+      // Assert
       const expected = [
         `${parentFieldName}.0.${fieldName} must not be greater than ${max}`,
         `${parentFieldName}.0.${fieldName} must not be less than ${min}`,
@@ -149,18 +169,23 @@ export const arrayOfObjectsNumberValidation = ({ fieldName, parentFieldName, ini
     let mockPayload;
 
     beforeAll(() => {
+      // Arrange
       mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value: false });
     });
 
     it('should return a 400 response', async () => {
+      // Act
       const response = await api.post(url, mockPayload);
 
+      // Assert
       assert400Response(response);
     });
 
     it('should return the correct error messages', async () => {
+      // Act
       const { body } = await api.post(url, mockPayload);
 
+      // Assert
       const expected = [
         `${parentFieldName}.0.${fieldName} must not be greater than ${max}`,
         `${parentFieldName}.0.${fieldName} must not be less than ${min}`,
@@ -178,18 +203,23 @@ export const arrayOfObjectsNumberValidation = ({ fieldName, parentFieldName, ini
     let mockPayload;
 
     beforeAll(() => {
+      // Arrange
       mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value: '' });
     });
 
     it('should return a 400 response', async () => {
+      // Act
       const response = await api.post(url, mockPayload);
 
+      // Assert
       assert400Response(response);
     });
 
     it('should return the correct error messages', async () => {
+      // Act
       const { body } = await api.post(url, mockPayload);
 
+      // Assert
       const expected = [
         `${parentFieldName}.0.${fieldName} must not be greater than ${max}`,
         `${parentFieldName}.0.${fieldName} must not be less than ${min}`,
@@ -209,18 +239,23 @@ export const arrayOfObjectsNumberValidation = ({ fieldName, parentFieldName, ini
     const value = min - 1;
 
     beforeAll(() => {
+      // Arrange
       mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value });
     });
 
     it('should return a 400 response', async () => {
+      // Act
       const response = await api.post(url, mockPayload);
 
+      // Assert
       assert400Response(response);
     });
 
     it('should return the correct error messages', async () => {
+      // Act
       const { body } = await api.post(url, mockPayload);
 
+      // Assert
       const expected = [`${parentFieldName}.0.${fieldName} must not be less than ${min}`, `${parentFieldName}.1.${fieldName} must not be less than ${min}`];
 
       expect(body.message).toStrictEqual(expected);
@@ -233,18 +268,23 @@ export const arrayOfObjectsNumberValidation = ({ fieldName, parentFieldName, ini
     const value = max + 1;
 
     beforeAll(() => {
+      // Arrange
       mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value });
     });
 
     it('should return a 400 response', async () => {
+      // Act
       const response = await api.post(url, mockPayload);
 
+      // Assert
       assert400Response(response);
     });
 
     it('should return the correct error messages', async () => {
+      // Act
       const { body } = await api.post(url, mockPayload);
 
+      // Assert
       const expected = [
         `${parentFieldName}.0.${fieldName} must not be greater than ${max}`,
         `${parentFieldName}.1.${fieldName} must not be greater than ${max}`,
