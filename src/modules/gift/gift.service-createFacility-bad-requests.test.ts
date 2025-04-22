@@ -34,6 +34,7 @@ describe('GiftService.createFacility - bad requests', () => {
   let createRepaymentProfilesSpy: jest.Mock;
 
   beforeEach(() => {
+    // Arrange
     counterpartyService = new GiftCounterpartyService(giftHttpService);
     repaymentProfileService = new GiftRepaymentProfileService(giftHttpService);
 
@@ -69,14 +70,17 @@ describe('GiftService.createFacility - bad requests', () => {
 
     describe('counterpartyService.createMany', () => {
       beforeEach(() => {
+        // Arrange
         createCounterpartiesSpy = jest.fn().mockResolvedValueOnce(mockResponse);
 
         counterpartyService.createMany = createCounterpartiesSpy;
       });
 
       it('should return an object with mapped counterparty errors', async () => {
+        // Act
         const response = await service.createFacility(mockPayload);
 
+        // Assert
         const expectedValidationErrors = mapValidationErrorResponses({
           entityName: ENTITY_NAMES.COUNTERPARTY,
           responses: mockResponse,
@@ -97,14 +101,17 @@ describe('GiftService.createFacility - bad requests', () => {
 
     describe('repaymentProfiles.createMany', () => {
       beforeEach(() => {
+        // Arrange
         createRepaymentProfilesSpy = jest.fn().mockResolvedValueOnce(mockResponse);
 
         repaymentProfileService.createMany = createRepaymentProfilesSpy;
       });
 
       it('should return an object with mapped counterparty errors', async () => {
+        // Act
         const response = await service.createFacility(mockPayload);
 
+        // Assert
         const expectedValidationErrors = mapValidationErrorResponses({
           entityName: ENTITY_NAMES.REPAYMENT_PROFILE,
           responses: mockResponse,
@@ -141,6 +148,7 @@ describe('GiftService.createFacility - bad requests', () => {
     ] as AxiosResponse[];
 
     beforeEach(() => {
+      // Arrange
       createCounterpartiesSpy = jest.fn().mockResolvedValueOnce(mockResponse);
       createRepaymentProfilesSpy = jest.fn().mockResolvedValueOnce(mockResponse);
 
@@ -149,8 +157,10 @@ describe('GiftService.createFacility - bad requests', () => {
     });
 
     it('should return an object with mapped errors for all service responses', async () => {
+      // Act
       const response = await service.createFacility(mockPayload);
 
+      // Assert
       const expectedValidationErrors = mapAllValidationErrorResponses({
         counterparties: mockResponse,
         repaymentProfiles: mockResponse,
@@ -181,14 +191,17 @@ describe('GiftService.createFacility - bad requests', () => {
 
     describe('counterpartyService.createMany', () => {
       beforeEach(() => {
+        // Arrange
         createCounterpartiesSpy = jest.fn().mockResolvedValueOnce(mockResponse);
 
         counterpartyService.createMany = createCounterpartiesSpy;
       });
 
       it('should return an object with mapped counterparty errors', async () => {
+        // Act
         const response = await service.createFacility(mockPayload);
 
+        // Assert
         const expectedValidationErrors = mapValidationErrorResponses({
           entityName: ENTITY_NAMES.COUNTERPARTY,
           responses: mockResponse,
@@ -209,14 +222,17 @@ describe('GiftService.createFacility - bad requests', () => {
 
     describe('repaymentProfiles.createMany', () => {
       beforeEach(() => {
+        // Arrange
         createRepaymentProfilesSpy = jest.fn().mockResolvedValueOnce(mockResponse);
 
         repaymentProfileService.createMany = createRepaymentProfilesSpy;
       });
 
       it('should return an object with mapped repayment profile errors', async () => {
+        // Act
         const response = await service.createFacility(mockPayload);
 
+        // Assert
         const expectedValidationErrors = mapValidationErrorResponses({
           entityName: ENTITY_NAMES.REPAYMENT_PROFILE,
           responses: mockResponse,
@@ -248,14 +264,17 @@ describe('GiftService.createFacility - bad requests', () => {
 
     describe('counterpartyService.createMany', () => {
       beforeEach(() => {
+        // Arrange
         createCounterpartiesSpy = jest.fn().mockResolvedValueOnce(mockResponse);
 
         counterpartyService.createMany = createCounterpartiesSpy;
       });
 
       it("should return an object with the first counterparty's status and message", async () => {
+        // Act
         const response = await service.createFacility(mockPayload);
 
+        // Assert
         const expectedValidationErrors = mapValidationErrorResponses({
           entityName: ENTITY_NAMES.COUNTERPARTY,
           responses: mockResponse,
@@ -276,14 +295,17 @@ describe('GiftService.createFacility - bad requests', () => {
 
     describe('repaymentProfiles.createMany', () => {
       beforeEach(() => {
+        // Arrange
         createRepaymentProfilesSpy = jest.fn().mockResolvedValueOnce(mockResponse);
 
         repaymentProfileService.createMany = createRepaymentProfilesSpy;
       });
 
       it("should return an object with the first repayment profille's status and message", async () => {
+        // Act
         const response = await service.createFacility(mockPayload);
 
+        // Assert
         const expectedValidationErrors = mapValidationErrorResponses({
           entityName: ENTITY_NAMES.REPAYMENT_PROFILE,
           responses: mockResponse,
