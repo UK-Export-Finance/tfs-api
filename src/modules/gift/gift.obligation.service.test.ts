@@ -73,7 +73,7 @@ describe('GiftObligationService', () => {
       it('should thrown an error', async () => {
         const promise = service.createOne(mockPayload, mockWorkPackageId);
 
-        const expected = 'Error creating obligation';
+        const expected = new Error('Error creating obligation');
 
         await expect(promise).rejects.toThrow(expected);
       });
@@ -135,7 +135,7 @@ describe('GiftObligationService', () => {
       it('should thrown an error', async () => {
         const promise = service.createMany(mockPayload, mockWorkPackageId);
 
-        const expected = 'Error creating obligations';
+        const expected = new Error('Error creating obligations');
 
         await expect(promise).rejects.toThrow(expected);
       });

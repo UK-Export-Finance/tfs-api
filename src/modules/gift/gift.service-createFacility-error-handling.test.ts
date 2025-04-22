@@ -87,7 +87,7 @@ describe('GiftService.createFacility - error handling', () => {
     it('should throw an error', async () => {
       const response = service.createFacility(mockPayload);
 
-      const expected = 'Error creating GIFT facility';
+      const expected = new Error('Error creating GIFT facility');
 
       await expect(response).rejects.toThrow(expected);
     });
@@ -107,7 +107,7 @@ describe('GiftService.createFacility - error handling', () => {
     it('should throw an error', async () => {
       const response = service.createFacility(mockPayload);
 
-      const expected = 'Error creating GIFT facility';
+      const expected = new Error('Error creating GIFT facility');
 
       await expect(response).rejects.toThrow(expected);
     });
@@ -127,7 +127,7 @@ describe('GiftService.createFacility - error handling', () => {
     it('should throw an error', async () => {
       const response = service.createFacility(mockPayload);
 
-      const expected = 'Error creating GIFT facility';
+      const expected = new Error('Error creating GIFT facility');
 
       await expect(response).rejects.toThrow(expected);
     });
@@ -147,7 +147,7 @@ describe('GiftService.createFacility - error handling', () => {
     it('should throw an error', async () => {
       const response = service.createFacility(mockPayload);
 
-      const expected = 'Error creating GIFT facility';
+      const expected = new Error('Error creating GIFT facility');
 
       await expect(response).rejects.toThrow(expected);
     });

@@ -73,7 +73,7 @@ describe('GiftRepaymentProfileService', () => {
       it('should thrown an error', async () => {
         const promise = service.createOne(mockPayload, mockWorkPackageId);
 
-        const expected = 'Error creating repayment profile';
+        const expected = new Error('Error creating repayment profile');
 
         await expect(promise).rejects.toThrow(expected);
       });
@@ -135,7 +135,7 @@ describe('GiftRepaymentProfileService', () => {
       it('should thrown an error', async () => {
         const promise = service.createMany(mockPayload, mockWorkPackageId);
 
-        const expected = 'Error creating repayment profiles';
+        const expected = new Error('Error creating repayment profiles');
 
         await expect(promise).rejects.toThrow(expected);
       });

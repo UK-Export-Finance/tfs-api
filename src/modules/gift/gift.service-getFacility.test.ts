@@ -79,7 +79,7 @@ describe('GiftService.getFacility', () => {
     it('should thrown an error', async () => {
       const promise = service.getFacility(mockFacilityId);
 
-      const expected = 'Error calling GIFT HTTP service GET method';
+      const expected = new Error('Error calling GIFT HTTP service GET method');
 
       await expect(promise).rejects.toThrow(expected);
     });

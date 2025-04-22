@@ -80,7 +80,7 @@ describe('GiftService.createInitialFacility', () => {
     it('should thrown an error', async () => {
       const promise = service.createInitialFacility(mockPayload.overview);
 
-      const expected = 'Error creating initial GIFT facility';
+      const expected = new Error('Error creating initial GIFT facility');
 
       await expect(promise).rejects.toThrow(expected);
     });
