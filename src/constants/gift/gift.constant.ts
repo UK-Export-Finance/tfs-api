@@ -17,6 +17,7 @@ export const GIFT = {
     FACILITY: '/facility',
     COUNTERPARTY: '/counterparty',
     CREATION_EVENT: '/creation-event',
+    FIXED_FEE: '/fixed-fee',
     MANUAL: '/manual',
     OBLIGATION: '/obligation',
     REPAYMENT_PROFILE: '/repayment-profile',
