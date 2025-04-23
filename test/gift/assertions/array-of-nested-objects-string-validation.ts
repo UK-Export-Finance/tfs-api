@@ -31,18 +31,23 @@ export const arrayOfNestedObjectsStringValidation = ({ fieldName, grandParentFie
     let mockPayload;
 
     beforeAll(() => {
+      // Arrange
       mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value: null });
     });
 
     it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
+      // Act
       const response = await api.post(url, mockPayload);
 
+      // Assert
       assert400Response(response);
     });
 
     it('should return the correct error messages', async () => {
+      // Act
       const { body } = await api.post(url, mockPayload);
 
+      // Assert
       const expected = [
         `${grandParentFieldName}.0.${parentFieldName}.0.${fieldName} should not be null or undefined`,
         `${grandParentFieldName}.0.${parentFieldName}.0.${fieldName} must be longer than or equal to ${min} characters`,
@@ -66,18 +71,23 @@ export const arrayOfNestedObjectsStringValidation = ({ fieldName, grandParentFie
     let mockPayload;
 
     beforeAll(() => {
+      // Arrange
       mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value: undefined });
     });
 
     it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
+      // Act
       const response = await api.post(url, mockPayload);
 
+      // Assert
       assert400Response(response);
     });
 
     it('should return the correct error messages', async () => {
+      // Act
       const { body } = await api.post(url, mockPayload);
 
+      // Assert
       const expected = [
         `${grandParentFieldName}.0.${parentFieldName}.0.${fieldName} should not be null or undefined`,
         `${grandParentFieldName}.0.${parentFieldName}.0.${fieldName} must be longer than or equal to ${min} characters`,
@@ -101,18 +111,23 @@ export const arrayOfNestedObjectsStringValidation = ({ fieldName, grandParentFie
     let mockPayload;
 
     beforeAll(() => {
+      // Arrange
       mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value: [] });
     });
 
     it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
+      // Act
       const response = await api.post(url, mockPayload);
 
+      // Assert
       assert400Response(response);
     });
 
     it('should return the correct error messages', async () => {
+      // Act
       const { body } = await api.post(url, mockPayload);
 
+      // Assert
       const expected = [
         `${grandParentFieldName}.0.${parentFieldName}.0.${fieldName} must be longer than or equal to ${max} characters`,
         `${grandParentFieldName}.0.${parentFieldName}.0.${fieldName} must be a string`,
@@ -132,18 +147,23 @@ export const arrayOfNestedObjectsStringValidation = ({ fieldName, grandParentFie
     let mockPayload;
 
     beforeAll(() => {
+      // Arrange
       mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value: 1 });
     });
 
     it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
+      // Act
       const response = await api.post(url, mockPayload);
 
+      // Assert
       assert400Response(response);
     });
 
     it('should return the correct error messages', async () => {
+      // Act
       const { body } = await api.post(url, mockPayload);
 
+      // Assert
       const expected = [
         `${grandParentFieldName}.0.${parentFieldName}.0.${fieldName} must be longer than or equal to ${min} and shorter than or equal to ${max} characters`,
         `${grandParentFieldName}.0.${parentFieldName}.0.${fieldName} must be a string`,
@@ -163,18 +183,23 @@ export const arrayOfNestedObjectsStringValidation = ({ fieldName, grandParentFie
     let mockPayload;
 
     beforeAll(() => {
+      // Arrange
       mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value: '' });
     });
 
     it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
+      // Act
       const response = await api.post(url, mockPayload);
 
+      // Assert
       assert400Response(response);
     });
 
     it('should return the correct error messages', async () => {
+      // Act
       const { body } = await api.post(url, mockPayload);
 
+      // Assert
       const expected = [
         `${grandParentFieldName}.0.${parentFieldName}.0.${fieldName} must be longer than or equal to ${min} characters`,
         `${grandParentFieldName}.0.${parentFieldName}.1.${fieldName} must be longer than or equal to ${min} characters`,
@@ -192,18 +217,23 @@ export const arrayOfNestedObjectsStringValidation = ({ fieldName, grandParentFie
     const value = 'a'.repeat(min - 1);
 
     beforeAll(() => {
+      // Arrange
       mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value });
     });
 
     it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
+      // Act
       const response = await api.post(url, mockPayload);
 
+      // Assert
       assert400Response(response);
     });
 
     it('should return the correct error messages', async () => {
+      // Act
       const { body } = await api.post(url, mockPayload);
 
+      // Assert
       const expected = [
         `${grandParentFieldName}.0.${parentFieldName}.0.${fieldName} must be longer than or equal to ${min} characters`,
         `${grandParentFieldName}.0.${parentFieldName}.1.${fieldName} must be longer than or equal to ${min} characters`,
@@ -221,18 +251,23 @@ export const arrayOfNestedObjectsStringValidation = ({ fieldName, grandParentFie
     const value = 'a'.repeat(max + 1);
 
     beforeAll(() => {
+      // Arrange
       mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value });
     });
 
     it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
+      // Act
       const response = await api.post(url, mockPayload);
 
+      // Assert
       assert400Response(response);
     });
 
     it('should return the correct error messages', async () => {
+      // Act
       const { body } = await api.post(url, mockPayload);
 
+      // Assert
       const expected = [
         `${grandParentFieldName}.0.${parentFieldName}.0.${fieldName} must be shorter than or equal to ${max} characters`,
         `${grandParentFieldName}.0.${parentFieldName}.1.${fieldName} must be shorter than or equal to ${max} characters`,

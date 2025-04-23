@@ -32,18 +32,23 @@ export const ukefIdValidation = ({ fieldName, initialPayload, min, max, parentFi
 
   describe(`when ${fieldName} is null`, () => {
     beforeAll(() => {
+      // Arrange
       mockPayload[`${parentFieldName}`][`${fieldName}`] = null;
     });
 
     it('should return a 400 response', async () => {
+      // Act
       const response = await api.post(url, mockPayload);
 
+      // Assert
       assert400Response(response);
     });
 
     it('should return the correct error messages', async () => {
+      // Act
       const { body } = await api.post(url, mockPayload);
 
+      // Arrange
       const expected = [
         `${fieldPath} must be a string`,
         `${fieldPath} must be longer than or equal to ${min} characters`,
@@ -56,18 +61,23 @@ export const ukefIdValidation = ({ fieldName, initialPayload, min, max, parentFi
 
   describe(`when ${fieldName} is undefined`, () => {
     beforeAll(() => {
+      // Arrange
       mockPayload[`${parentFieldName}`][`${fieldName}`] = undefined;
     });
 
     it('should return a 400 response', async () => {
+      // Act
       const response = await api.post(url, mockPayload);
 
+      // Assert
       assert400Response(response);
     });
 
     it('should return the correct error messages', async () => {
+      // Act
       const { body } = await api.post(url, mockPayload);
 
+      // Arrange
       const expected = [
         `${fieldPath} must be a string`,
         `${fieldPath} must be longer than or equal to ${min} characters`,
@@ -80,18 +90,23 @@ export const ukefIdValidation = ({ fieldName, initialPayload, min, max, parentFi
 
   describe(`when ${fieldName} is an empty string`, () => {
     beforeAll(() => {
+      // Arrange
       mockPayload[`${parentFieldName}`][`${fieldName}`] = '';
     });
 
     it('should return a 400 response', async () => {
+      // Act
       const response = await api.post(url, mockPayload);
 
+      // Assert
       assert400Response(response);
     });
 
     it('should return the correct error messages', async () => {
+      // Act
       const { body } = await api.post(url, mockPayload);
 
+      // Arrange
       const expected = [
         `${fieldPath} must be longer than or equal to ${min} characters`,
         `${fieldPath} must match ${UKEFID.MAIN_ID.TEN_DIGIT_REGEX} regular expression`,
@@ -103,18 +118,23 @@ export const ukefIdValidation = ({ fieldName, initialPayload, min, max, parentFi
 
   describe(`when ${fieldName} is below the minimum`, () => {
     beforeAll(() => {
+      // Arrange
       mockPayload[`${parentFieldName}`][`${fieldName}`] = 'a'.repeat(min - 1);
     });
 
     it('should return a 400 response', async () => {
+      // Act
       const response = await api.post(url, mockPayload);
 
+      // Assert
       assert400Response(response);
     });
 
     it('should return the correct error messages', async () => {
+      // Act
       const { body } = await api.post(url, mockPayload);
 
+      // Arrange
       const expected = [
         `${fieldPath} must be longer than or equal to ${min} characters`,
         `${fieldPath} must match ${UKEFID.MAIN_ID.TEN_DIGIT_REGEX} regular expression`,
@@ -126,18 +146,23 @@ export const ukefIdValidation = ({ fieldName, initialPayload, min, max, parentFi
 
   describe(`when ${fieldName} is above the maximum`, () => {
     beforeAll(() => {
+      // Arrange
       mockPayload[`${parentFieldName}`][`${fieldName}`] = 'a'.repeat(max + 1);
     });
 
     it('should return a 400 response', async () => {
+      // Act
       const response = await api.post(url, mockPayload);
 
+      // Assert
       assert400Response(response);
     });
 
     it('should return the correct error messages', async () => {
+      // Act
       const { body } = await api.post(url, mockPayload);
 
+      // Arrange
       const expected = [
         `${fieldPath} must be shorter than or equal to ${max} characters`,
         `${fieldPath} must match ${UKEFID.MAIN_ID.TEN_DIGIT_REGEX} regular expression`,
@@ -150,18 +175,23 @@ export const ukefIdValidation = ({ fieldName, initialPayload, min, max, parentFi
   describe.each(INVALID_UKEF_IDS)('', (value) => {
     describe(`when ${fieldName} is ${value}`, () => {
       beforeAll(() => {
+        // Arrange
         mockPayload[`${parentFieldName}`][`${fieldName}`] = value;
       });
 
       it('should return a 400 response', async () => {
+        // Act
         const response = await api.post(url, mockPayload);
 
+        // Assert
         assert400Response(response);
       });
 
       it('should return the correct error messages', async () => {
+        // Act
         const { body } = await api.post(url, mockPayload);
 
+        // Arrange
         const expected = [`${fieldPath} must match ${UKEFID.MAIN_ID.TEN_DIGIT_REGEX} regular expression`];
 
         expect(body.message).toStrictEqual(expected);
