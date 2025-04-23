@@ -9,6 +9,7 @@ export const GIFT = {
   },
   ENTITY_NAMES: {
     COUNTERPARTY: 'Counterparty',
+    FIXED_FEE: 'Fixed fee',
     OBLIGATION: 'Obligation',
     REPAYMENT_PROFILE: 'Repayment profile',
   },

@@ -29,6 +29,14 @@ const COUNTERPARTY = () => ({
   startDate: '2025-04-10',
 });
 
+const FIXED_FEE = () => ({
+  feeTypeCode: 'PLA', // TODO: are there specific codes or is any string allowed?
+  description: 'Mock fee description',
+  dueDate: '2025-09-11',
+  currency: CURRENCIES.USD,
+  amountDue: 5000,
+});
+
 const OBLIGATION = () => ({
   effectiveDate: '2024-03-01',
   maturityDate: '2024-04-01',
@@ -118,6 +126,7 @@ export const GIFT_EXAMPLES = {
   FACILITY_ID,
   FACILITY_OVERVIEW,
   FACILITY_RESPONSE_DATA,
+  FIXED_FEE,
   OBLIGATION,
   REPAYMENT_PROFILE,
   REPAYMENT_PROFILE_ALLOCATION,
