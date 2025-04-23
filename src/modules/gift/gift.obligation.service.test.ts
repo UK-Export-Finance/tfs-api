@@ -2,18 +2,18 @@ import { HttpService } from '@nestjs/axios';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { mockResponse201, mockResponse500 } from '@ukef-test/http-response';
 
-import { GiftRepaymentProfileService } from './gift.repayment-profile.service';
+import { GiftObligationService } from './gift.obligation.service';
 const {
-  GIFT: { REPAYMENT_PROFILE, WORK_PACKAGE_ID: mockWorkPackageId },
+  GIFT: { OBLIGATION, WORK_PACKAGE_ID: mockWorkPackageId },
 } = EXAMPLES;
 
 const { PATH } = GIFT;
 
-const expectedPath = `${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.REPAYMENT_PROFILE}${PATH.MANUAL}${PATH.CREATION_EVENT}`;
+const expectedPath = `${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.OBLIGATION}${PATH.CREATION_EVENT}`;
 
-describe('GiftRepaymentProfileService', () => {
+describe('GiftObligationService', () => {
   let httpService: HttpService;
-  let service: GiftRepaymentProfileService;
+  let service: GiftObligationService;
 
   let giftHttpService;
   let mockCreateOneResponse;
@@ -23,7 +23,7 @@ describe('GiftRepaymentProfileService', () => {
     // Arrange
     httpService = new HttpService();
 
-    mockCreateOneResponse = mockResponse201(REPAYMENT_PROFILE());
+    mockCreateOneResponse = mockResponse201(OBLIGATION());
 
     mockHttpServicePost = jest.fn().mockResolvedValueOnce(mockCreateOneResponse);
 
@@ -33,7 +33,7 @@ describe('GiftRepaymentProfileService', () => {
       post: mockHttpServicePost,
     };
 
-    service = new GiftRepaymentProfileService(giftHttpService);
+    service = new GiftObligationService(giftHttpService);
   });
 
   afterAll(() => {
@@ -41,7 +41,7 @@ describe('GiftRepaymentProfileService', () => {
   });
 
   describe('createOne', () => {
-    const mockPayload = REPAYMENT_PROFILE();
+    const mockPayload = OBLIGATION();
 
     it('should call giftHttpService.post', async () => {
       // Act
@@ -73,7 +73,7 @@ describe('GiftRepaymentProfileService', () => {
 
         giftHttpService.post = mockHttpServicePost;
 
-        service = new GiftRepaymentProfileService(giftHttpService);
+        service = new GiftObligationService(giftHttpService);
       });
 
       it('should thrown an error', async () => {
@@ -81,7 +81,7 @@ describe('GiftRepaymentProfileService', () => {
         const promise = service.createOne(mockPayload, mockWorkPackageId);
 
         // Assert
-        const expected = new Error('Error creating repayment profile');
+        const expected = new Error('Error creating obligation');
 
         await expect(promise).rejects.toThrow(expected);
       });
@@ -89,35 +89,35 @@ describe('GiftRepaymentProfileService', () => {
   });
 
   describe('createMany', () => {
-    const repaymentProfilesLength = 3;
+    const obligationsLength = 3;
 
-    const mockRepaymentProfiles = Array(repaymentProfilesLength).fill(REPAYMENT_PROFILE());
+    const mockObligations = Array(obligationsLength).fill(OBLIGATION());
 
-    const mockPayload = mockRepaymentProfiles;
+    const mockPayload = mockObligations;
 
-    let mockCreateOne = jest.fn().mockResolvedValue(mockResponse201(mockRepaymentProfiles));
+    let mockCreateOne = jest.fn().mockResolvedValue(mockResponse201(mockObligations));
 
     beforeEach(() => {
       // Arrange
-      mockCreateOneResponse = mockResponse201(mockRepaymentProfiles);
+      mockCreateOneResponse = mockResponse201(mockObligations);
 
       giftHttpService.post = jest
         .fn()
-        .mockResolvedValueOnce(mockResponse201(mockRepaymentProfiles[0]))
-        .mockResolvedValueOnce(mockResponse201(mockRepaymentProfiles[1]))
-        .mockResolvedValueOnce(mockResponse201(mockRepaymentProfiles[2]));
+        .mockResolvedValueOnce(mockResponse201(mockObligations[0]))
+        .mockResolvedValueOnce(mockResponse201(mockObligations[1]))
+        .mockResolvedValueOnce(mockResponse201(mockObligations[2]));
 
-      service = new GiftRepaymentProfileService(giftHttpService);
+      service = new GiftObligationService(giftHttpService);
 
       service.createOne = mockCreateOne;
     });
 
-    it('should call service.createOne for each provided repayment profile', async () => {
+    it('should call service.createOne for each provided obligation', async () => {
       // Act
       await service.createMany(mockPayload, mockWorkPackageId);
 
       // Assert
-      expect(mockCreateOne).toHaveBeenCalledTimes(repaymentProfilesLength);
+      expect(mockCreateOne).toHaveBeenCalledTimes(obligationsLength);
 
       expect(mockCreateOne).toHaveBeenCalledWith(mockPayload[0], mockWorkPackageId);
       expect(mockCreateOne).toHaveBeenCalledWith(mockPayload[1], mockWorkPackageId);
@@ -141,7 +141,7 @@ describe('GiftRepaymentProfileService', () => {
         // Arrange
         mockCreateOne = jest.fn().mockRejectedValueOnce(mockResponse500());
 
-        service = new GiftRepaymentProfileService(giftHttpService);
+        service = new GiftObligationService(giftHttpService);
 
         service.createOne = mockCreateOne;
       });
@@ -151,7 +151,7 @@ describe('GiftRepaymentProfileService', () => {
         const promise = service.createMany(mockPayload, mockWorkPackageId);
 
         // Assert
-        const expected = new Error('Error creating repayment profiles');
+        const expected = new Error('Error creating obligations');
 
         await expect(promise).rejects.toThrow(expected);
       });

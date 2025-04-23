@@ -5,6 +5,7 @@ import { AxiosResponse } from 'axios';
 
 import { GiftFacilityCreationDto, GiftFacilityDto } from './dto';
 import { GiftCounterpartyService } from './gift.counterparty.service';
+import { GiftObligationService } from './gift.obligation.service';
 import { GiftRepaymentProfileService } from './gift.repayment-profile.service';
 import { GiftHttpService } from './gift-http.service';
 import { mapAllValidationErrorResponses, mapResponsesData } from './helpers';
@@ -25,10 +26,12 @@ export class GiftService {
   constructor(
     private readonly giftHttpService: GiftHttpService,
     private readonly giftCounterpartyService: GiftCounterpartyService,
+    private readonly giftObligationService: GiftObligationService,
     private readonly giftRepaymentProfileService: GiftRepaymentProfileService,
   ) {
     this.giftHttpService = giftHttpService;
     this.giftCounterpartyService = giftCounterpartyService;
+    this.giftObligationService = giftObligationService;
     this.giftRepaymentProfileService = giftRepaymentProfileService;
   }
 
@@ -79,7 +82,7 @@ export class GiftService {
    */
   async createFacility(data: GiftFacilityCreationDto): Promise<CreateFacilityResponse> {
     try {
-      const { overview, counterparties: counterpartiesPayload, repaymentProfiles: repaymentProfilesPayload } = data;
+      const { overview, counterparties: counterpartiesPayload, obligations: obligationsPayload, repaymentProfiles: repaymentProfilesPayload } = data;
 
       const { data: facility, status } = await this.createInitialFacility(overview);
 
@@ -100,10 +103,13 @@ export class GiftService {
 
       const counterparties = await this.giftCounterpartyService.createMany(counterpartiesPayload, workPackageId);
 
+      const obligations = await this.giftObligationService.createMany(obligationsPayload, workPackageId);
+
       const repaymentProfiles = await this.giftRepaymentProfileService.createMany(repaymentProfilesPayload, workPackageId);
 
       const validationErrors = mapAllValidationErrorResponses({
         counterparties,
+        obligations,
         repaymentProfiles,
       });
 
@@ -138,6 +144,7 @@ export class GiftService {
         data: {
           ...facility,
           counterparties: mapResponsesData(counterparties),
+          obligations: mapResponsesData(obligations),
           repaymentProfiles: mapResponsesData(repaymentProfiles),
         },
       };
