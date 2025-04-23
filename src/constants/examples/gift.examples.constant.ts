@@ -3,7 +3,7 @@ import { GiftFacilityCreationDto, GiftFacilityPostResponseDto } from '@ukef/modu
 import { Chance } from 'chance';
 
 import { CURRENCIES } from '../currencies.constant';
-import { GIFT } from '../gift.constant';
+import { GIFT } from '../gift/gift.constant';
 
 const { VALIDATION } = GIFT;
 
@@ -27,6 +27,14 @@ const COUNTERPARTY = () => ({
   roleId: 'buyer',
   sharePercentage: 25,
   startDate: '2025-04-10',
+});
+
+const OBLIGATION = () => ({
+  effectiveDate: '2024-03-01',
+  maturityDate: '2024-04-01',
+  currency: CURRENCIES.USD,
+  obligationAmount: 2500,
+  productSubtype: 'Mock product subtype',
 });
 
 /**
@@ -79,6 +87,7 @@ const FACILITY_OVERVIEW = {
 const FACILITY_CREATION_PAYLOAD: GiftFacilityCreationDto = {
   overview: FACILITY_OVERVIEW,
   counterparties: [COUNTERPARTY(), COUNTERPARTY()],
+  obligations: [OBLIGATION(), OBLIGATION()],
   repaymentProfiles: [
     { ...REPAYMENT_PROFILE(), allocations: [REPAYMENT_PROFILE_ALLOCATION(0), REPAYMENT_PROFILE_ALLOCATION(1)] },
     { ...REPAYMENT_PROFILE(), allocations: [REPAYMENT_PROFILE_ALLOCATION(2), REPAYMENT_PROFILE_ALLOCATION(3)] },
@@ -89,7 +98,6 @@ const FACILITY_CREATION_PAYLOAD: GiftFacilityCreationDto = {
    * These will be populated in upcoming PRs.
    */
   fees: [],
-  obligations: [],
 };
 
 /**
@@ -110,6 +118,7 @@ export const GIFT_EXAMPLES = {
   FACILITY_ID,
   FACILITY_OVERVIEW,
   FACILITY_RESPONSE_DATA,
+  OBLIGATION,
   REPAYMENT_PROFILE,
   REPAYMENT_PROFILE_ALLOCATION,
   WORK_PACKAGE_ID,

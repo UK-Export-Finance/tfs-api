@@ -18,13 +18,16 @@ const mockValidationErrors = [
 describe('modules/gift/helpers/map-validation-error-responses', () => {
   describe('when a response contains an invalid status', () => {
     it('should return an array with the invalid response', () => {
+      // Arrange
       const mockResponses = [
         { status: HttpStatus.CREATED },
         { status: HttpStatus.BAD_REQUEST, data: { validationErrors: mockValidationErrors } },
       ] as AxiosResponse[];
 
+      // Act
       const result = mapValidationErrorResponses({ entityName: mockEntityName, responses: mockResponses });
 
+      // Assert
       const expected = [
         {
           entityName: mockEntityName,
@@ -42,6 +45,7 @@ describe('modules/gift/helpers/map-validation-error-responses', () => {
 
   describe('when multiple responses contain an invalid statuses', () => {
     it('should return an array with mapped invalid responses', () => {
+      // Arrange
       const mockResponses = [
         { status: HttpStatus.BAD_REQUEST, data: { validationErrors: mockValidationErrors } },
         { status: HttpStatus.CREATED },
@@ -49,8 +53,10 @@ describe('modules/gift/helpers/map-validation-error-responses', () => {
         { status: HttpStatus.I_AM_A_TEAPOT, data: { validationErrors: mockValidationErrors } },
       ] as AxiosResponse[];
 
+      // Act
       const result = mapValidationErrorResponses({ entityName: mockEntityName, responses: mockResponses });
 
+      // Assert
       const expected = [
         {
           entityName: mockEntityName,
@@ -84,18 +90,23 @@ describe('modules/gift/helpers/map-validation-error-responses', () => {
 
   describe('when all responses have a valid status', () => {
     it('should return an empty array', () => {
+      // Arrange
       const mockResponses = [{ status: HttpStatus.CREATED }, { status: HttpStatus.CREATED }, { status: HttpStatus.CREATED }] as AxiosResponse[];
 
+      // Act
       const result = mapValidationErrorResponses({ entityName: mockEntityName, responses: mockResponses });
 
+      // Assert
       expect(result).toEqual([]);
     });
   });
 
   describe('when responses is an empty array', () => {
     it('should return an empty array', () => {
+      // Act
       const result = mapValidationErrorResponses({ entityName: mockEntityName, responses: [] });
 
+      // Assert
       expect(result).toEqual([]);
     });
   });

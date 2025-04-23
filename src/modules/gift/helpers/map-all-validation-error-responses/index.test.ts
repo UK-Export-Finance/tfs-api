@@ -16,16 +16,23 @@ const mockValidationErrors = [
 
 describe('modules/gift/helpers/map-all-validation-error-responses', () => {
   it('should return multiple mapValidationErrorResponses results', () => {
+    // Arrange
     const mockResponses = [
       { status: HttpStatus.CREATED },
       { status: HttpStatus.BAD_REQUEST, data: { validationErrors: mockValidationErrors } },
     ] as AxiosResponse[];
 
-    const result = mapAllValidationErrorResponses({ counterparties: mockResponses, repaymentProfiles: mockResponses });
+    // Act
+    const result = mapAllValidationErrorResponses({ counterparties: mockResponses, obligations: mockResponses, repaymentProfiles: mockResponses });
 
+    // Assert
     const expected = [
       ...mapValidationErrorResponses({
         entityName: ENTITY_NAMES.COUNTERPARTY,
+        responses: mockResponses,
+      }),
+      ...mapValidationErrorResponses({
+        entityName: ENTITY_NAMES.OBLIGATION,
         responses: mockResponses,
       }),
       ...mapValidationErrorResponses({

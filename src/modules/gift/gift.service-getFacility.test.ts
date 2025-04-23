@@ -3,6 +3,7 @@ import { EXAMPLES, GIFT } from '@ukef/constants';
 import { mockResponse200, mockResponse500 } from '@ukef-test/http-response';
 
 import { GiftCounterpartyService } from './gift.counterparty.service';
+import { GiftObligationService } from './gift.obligation.service';
 import { GiftRepaymentProfileService } from './gift.repayment-profile.service';
 import { GiftService } from './gift.service';
 
@@ -17,6 +18,7 @@ const mockResponseGet = mockResponse200(FACILITY_RESPONSE_DATA);
 describe('GiftService.getFacility', () => {
   let httpService: HttpService;
   let counterpartyService: GiftCounterpartyService;
+  let obligationService: GiftObligationService;
   let repaymentProfileService: GiftRepaymentProfileService;
   let service: GiftService;
 
@@ -24,6 +26,7 @@ describe('GiftService.getFacility', () => {
   let mockHttpServiceGet: jest.Mock;
 
   beforeEach(() => {
+    // Arrange
     httpService = new HttpService();
 
     mockHttpServiceGet = jest.fn().mockResolvedValueOnce(mockResponseGet);
@@ -35,9 +38,10 @@ describe('GiftService.getFacility', () => {
     };
 
     counterpartyService = new GiftCounterpartyService(giftHttpService);
+    obligationService = new GiftObligationService(giftHttpService);
     repaymentProfileService = new GiftRepaymentProfileService(giftHttpService);
 
-    service = new GiftService(giftHttpService, counterpartyService, repaymentProfileService);
+    service = new GiftService(giftHttpService, counterpartyService, obligationService, repaymentProfileService);
   });
 
   afterAll(() => {
@@ -45,8 +49,10 @@ describe('GiftService.getFacility', () => {
   });
 
   it('should call giftHttpService.get', async () => {
+    // Act
     await service.getFacility(mockFacilityId);
 
+    // Assert
     expect(mockHttpServiceGet).toHaveBeenCalledTimes(1);
 
     expect(mockHttpServiceGet).toHaveBeenCalledWith({
@@ -56,27 +62,32 @@ describe('GiftService.getFacility', () => {
 
   describe('when giftHttpService.get is successful', () => {
     it('should return the response of giftHttpService.get', async () => {
+      // Act
       const response = await service.getFacility(mockFacilityId);
 
+      // Assert
       expect(response).toEqual(mockResponseGet);
     });
   });
 
   describe('when giftHttpService.get returns an error', () => {
     beforeEach(() => {
+      // Arrange
       mockHttpServiceGet = jest.fn().mockRejectedValueOnce(mockResponse500());
 
       httpService.get = mockHttpServiceGet;
 
       giftHttpService.get = mockHttpServiceGet;
 
-      service = new GiftService(giftHttpService, counterpartyService, repaymentProfileService);
+      service = new GiftService(giftHttpService, counterpartyService, obligationService, repaymentProfileService);
     });
 
     it('should thrown an error', async () => {
+      // Act
       const promise = service.getFacility(mockFacilityId);
 
-      const expected = 'Error calling GIFT HTTP service GET method';
+      // Assert
+      const expected = new Error('Error calling GIFT HTTP service GET method');
 
       await expect(promise).rejects.toThrow(expected);
     });

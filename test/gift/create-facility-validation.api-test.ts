@@ -52,6 +52,9 @@ describe('POST /gift/facility - validation', () => {
           'counterparties should not be null or undefined',
           'counterparties should not be empty',
           'counterparties must be an array',
+          'obligations should not be null or undefined',
+          'obligations should not be empty',
+          'obligations must be an array',
           'repaymentProfiles should not be null or undefined',
           `repaymentProfile[].allocation[] dueDate's must be unique`,
           `repaymentProfile[] name's must be unique`,
@@ -84,6 +87,9 @@ describe('POST /gift/facility - validation', () => {
           'counterparties should not be null or undefined',
           'counterparties should not be empty',
           'counterparties must be an array',
+          'obligations should not be null or undefined',
+          'obligations should not be empty',
+          'obligations must be an array',
           'repaymentProfiles should not be null or undefined',
           `repaymentProfile[].allocation[] dueDate's must be unique`,
           `repaymentProfile[] name's must be unique`,
@@ -100,7 +106,7 @@ describe('POST /gift/facility - validation', () => {
   describe('when empty entity arrays are provided', () => {
     it(`should return a ${HttpStatus.BAD_REQUEST} response with validation errors for all required fields`, async () => {
       // Arrange
-      const mockPayload = { overview: [], counterparties: [], repaymentProfiles: [] };
+      const mockPayload = { overview: [], counterparties: [], obligations: [], repaymentProfiles: [] };
 
       // Act
       const { status, body } = await api.post(url, mockPayload);
@@ -113,6 +119,7 @@ describe('POST /gift/facility - validation', () => {
         message: [
           'overview must be a non-empty object',
           'counterparties should not be empty',
+          'obligations should not be empty',
           `repaymentProfile[].allocation[] dueDate's must be unique`,
           `repaymentProfile[] name's must be unique`,
           'repaymentProfiles should not be empty',
@@ -127,7 +134,7 @@ describe('POST /gift/facility - validation', () => {
   describe('when null entities are provided', () => {
     it(`should return a ${HttpStatus.BAD_REQUEST} response with validation errors for all required fields`, async () => {
       // Arrange
-      const mockPayload = { overview: null, counterparties: null, repaymentProfiles: null };
+      const mockPayload = { overview: null, counterparties: null, obligations: null, repaymentProfiles: null };
 
       // Act
       const { status, body } = await api.post(url, mockPayload);
@@ -145,6 +152,10 @@ describe('POST /gift/facility - validation', () => {
           'counterparties should not be empty',
           'counterparties must be an array',
           'nested property counterparties must be either object or array',
+          'obligations should not be null or undefined',
+          'obligations should not be empty',
+          'obligations must be an array',
+          'nested property obligations must be either object or array',
           'repaymentProfiles should not be null or undefined',
           `repaymentProfile[].allocation[] dueDate's must be unique`,
           `repaymentProfile[] name's must be unique`,
@@ -162,7 +173,7 @@ describe('POST /gift/facility - validation', () => {
   describe('when undefined entities are provided', () => {
     it(`should return a ${HttpStatus.BAD_REQUEST} response with validation errors for all required fields`, async () => {
       // Arrange
-      const mockPayload = { overview: undefined, counterparties: undefined, repaymentProfiles: undefined };
+      const mockPayload = { overview: undefined, counterparties: undefined, obligations: undefined, repaymentProfiles: undefined };
 
       // Act
       const { status, body } = await api.post(url, mockPayload);
@@ -178,6 +189,9 @@ describe('POST /gift/facility - validation', () => {
           'counterparties should not be null or undefined',
           'counterparties should not be empty',
           'counterparties must be an array',
+          'obligations should not be null or undefined',
+          'obligations should not be empty',
+          'obligations must be an array',
           'repaymentProfiles should not be null or undefined',
           `repaymentProfile[].allocation[] dueDate's must be unique`,
           `repaymentProfile[] name's must be unique`,
@@ -194,7 +208,7 @@ describe('POST /gift/facility - validation', () => {
   describe('when empty entity objects are provided', () => {
     it(`should return a ${HttpStatus.BAD_REQUEST} response with validation errors for all required fields`, async () => {
       // Arrange
-      const mockPayload = { overview: {}, counterparties: {}, repaymentProfiles: {} };
+      const mockPayload = { overview: {}, counterparties: {}, obligations: {}, repaymentProfiles: {} };
 
       // Act
       const { status, body } = await api.post(url, mockPayload);
@@ -253,6 +267,22 @@ describe('POST /gift/facility - validation', () => {
           `counterparties.startDate should not be null or undefined`,
           `counterparties.startDate must be longer than or equal to ${VALIDATION.COUNTERPARTY.START_DATE.MIN_LENGTH} characters`,
           `counterparties.startDate must be a string`,
+          'obligations.currency should not be null or undefined',
+          `obligations.currency must be longer than or equal to ${VALIDATION.OBLIGATION.CURRENCY.MIN_LENGTH} characters`,
+          'obligations.currency must be a string',
+          'obligations.effectiveDate should not be null or undefined',
+          `obligations.effectiveDate must be longer than or equal to ${VALIDATION.OBLIGATION.EFFECTIVE_DATE.MIN_LENGTH} characters`,
+          'obligations.effectiveDate must be a string',
+          'obligations.maturityDate should not be null or undefined',
+          `obligations.maturityDate must be longer than or equal to ${VALIDATION.OBLIGATION.MATURITY_DATE.MIN_LENGTH} characters`,
+          'obligations.maturityDate must be a string',
+          'obligations.obligationAmount should not be null or undefined',
+          'obligations.obligationAmount must not be greater than 999999999999',
+          `obligations.obligationAmount must not be less than ${VALIDATION.OBLIGATION.OBLIGATION_AMOUNT.MIN}`,
+          'obligations.obligationAmount must be a number conforming to the specified constraints',
+          'obligations.productSubtype should not be null or undefined',
+          `obligations.productSubtype must be longer than or equal to ${VALIDATION.OBLIGATION.PRODUCT_SUBTYPE.MIN_LENGTH} characters`,
+          'obligations.productSubtype must be a string',
           'repaymentProfiles.name should not be null or undefined',
           `repaymentProfiles.name must be longer than or equal to ${VALIDATION.REPAYMENT_PROFILE.NAME.MIN_LENGTH} characters`,
           'repaymentProfiles.name must be a string',

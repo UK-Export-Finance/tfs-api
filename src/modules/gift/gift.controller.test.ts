@@ -3,6 +3,7 @@ import { mockResponse200, mockResponse201 } from '@ukef-test/http-response';
 
 import { GiftController } from './gift.controller';
 import { GiftCounterpartyService } from './gift.counterparty.service';
+import { GiftObligationService } from './gift.obligation.service';
 import { GiftRepaymentProfileService } from './gift.repayment-profile.service';
 import { GiftService } from './gift.service';
 import { GiftHttpService } from './gift-http.service';
@@ -17,6 +18,7 @@ const mockResponsePost = mockResponse201(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA);
 describe('GiftController', () => {
   let giftHttpService: GiftHttpService;
   let counterpartyService: GiftCounterpartyService;
+  let obligationService: GiftObligationService;
   let repaymentProfileService: GiftRepaymentProfileService;
   let giftService: GiftService;
   let controller: GiftController;
@@ -29,12 +31,14 @@ describe('GiftController', () => {
   let mockServiceCreateFacility;
 
   beforeEach(() => {
+    // Arrange
     giftHttpService = new GiftHttpService();
 
     counterpartyService = new GiftCounterpartyService(giftHttpService);
+    obligationService = new GiftObligationService(giftHttpService);
     repaymentProfileService = new GiftRepaymentProfileService(giftHttpService);
 
-    giftService = new GiftService(giftHttpService, counterpartyService, repaymentProfileService);
+    giftService = new GiftService(giftHttpService, counterpartyService, obligationService, repaymentProfileService);
 
     mockResSend = jest.fn();
 
@@ -61,24 +65,30 @@ describe('GiftController', () => {
 
   describe('GET :facilityId', () => {
     it('should call giftService.getFacility', async () => {
+      // Act
       await controller.get({ facilityId: mockFacilityId }, mockRes);
 
+      // Assert
       expect(mockServiceGetFacility).toHaveBeenCalledTimes(1);
 
       expect(mockServiceGetFacility).toHaveBeenCalledWith(mockFacilityId);
     });
 
     it('should call res.status with a status', async () => {
+      // Act
       await controller.get({ facilityId: mockFacilityId }, mockRes);
 
+      // Assert
       expect(mockResStatus).toHaveBeenCalledTimes(1);
 
       expect(mockResStatus).toHaveBeenCalledWith(mockResponseGet.status);
     });
 
     it('should call res.status.send with data obtained from the service call', async () => {
+      // Act
       await controller.get({ facilityId: mockFacilityId }, mockRes);
 
+      // Assert
       expect(mockResSend).toHaveBeenCalledTimes(1);
 
       expect(mockResSend).toHaveBeenCalledWith(mockResponseGet.data);
@@ -87,24 +97,30 @@ describe('GiftController', () => {
 
   describe('POST', () => {
     it('should call giftService.createFacility', async () => {
+      // Act
       await controller.post(FACILITY_CREATION_PAYLOAD, mockRes);
 
+      // Assert
       expect(mockServiceCreateFacility).toHaveBeenCalledTimes(1);
 
       expect(mockServiceCreateFacility).toHaveBeenCalledWith(FACILITY_CREATION_PAYLOAD);
     });
 
     it('should call res.status with a status', async () => {
+      // Act
       await controller.post(FACILITY_CREATION_PAYLOAD, mockRes);
 
+      // Assert
       expect(mockResStatus).toHaveBeenCalledTimes(1);
 
       expect(mockResStatus).toHaveBeenCalledWith(mockResponsePost.status);
     });
 
     it('should call res.status.send with data obtained from the service call', async () => {
+      // Act
       await controller.post(FACILITY_CREATION_PAYLOAD, mockRes);
 
+      // Assert
       expect(mockResSend).toHaveBeenCalledTimes(1);
 
       expect(mockResSend).toHaveBeenCalledWith(mockResponsePost.data);

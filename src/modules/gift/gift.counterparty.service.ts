@@ -48,9 +48,7 @@ export class GiftCounterpartyService {
    */
   async createMany(counterpartiesData: GiftFacilityCounterpartyDto[], workPackageId: number): Promise<Array<AxiosResponse>> {
     try {
-      const responses = await Promise.all(counterpartiesData.map((counterParty) => this.createOne(counterParty, workPackageId)));
-
-      return responses;
+      return await Promise.all(counterpartiesData.map((counterParty) => this.createOne(counterParty, workPackageId)));
     } catch (error) {
       console.error('Error creating counterparties %o', error);
 

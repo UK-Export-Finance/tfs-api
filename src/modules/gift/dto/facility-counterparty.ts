@@ -20,6 +20,7 @@ export class GiftFacilityCounterpartyDto {
   @Length(VALIDATION.COUNTERPARTY_URN.MIN_LENGTH, VALIDATION.COUNTERPARTY_URN.MAX_LENGTH)
   @ApiProperty({
     example: COUNTERPARTY().counterpartyUrn,
+    required: true,
   })
   counterpartyUrn: string;
 
@@ -28,6 +29,7 @@ export class GiftFacilityCounterpartyDto {
   @Length(VALIDATION.EXIT_DATE.MIN_LENGTH, VALIDATION.EXIT_DATE.MAX_LENGTH)
   @ApiProperty({
     example: COUNTERPARTY().exitDate,
+    required: true,
   })
   exitDate: string;
 
@@ -36,6 +38,7 @@ export class GiftFacilityCounterpartyDto {
   @Length(VALIDATION.ROLE_ID.MIN_LENGTH, VALIDATION.ROLE_ID.MAX_LENGTH)
   @ApiProperty({
     example: COUNTERPARTY().roleId,
+    required: true,
   })
   roleId: string;
 
@@ -45,6 +48,7 @@ export class GiftFacilityCounterpartyDto {
   @Max(VALIDATION.SHARE_PERCENTAGE.MAX)
   @ApiProperty({
     example: COUNTERPARTY().sharePercentage,
+    required: true,
   })
   sharePercentage: number;
 
@@ -53,6 +57,7 @@ export class GiftFacilityCounterpartyDto {
   @Length(VALIDATION.START_DATE.MIN_LENGTH, VALIDATION.START_DATE.MAX_LENGTH)
   @ApiProperty({
     example: COUNTERPARTY().startDate,
+    required: true,
   })
   startDate: string;
 }

@@ -3,6 +3,7 @@ import { EXAMPLES, GIFT } from '@ukef/constants';
 import { mockResponse201, mockResponse500 } from '@ukef-test/http-response';
 
 import { GiftCounterpartyService } from './gift.counterparty.service';
+import { GiftObligationService } from './gift.obligation.service';
 import { GiftRepaymentProfileService } from './gift.repayment-profile.service';
 import { GiftService } from './gift.service';
 
@@ -17,6 +18,7 @@ const mockResponsePost = mockResponse201(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA);
 describe('GiftService.createInitialFacility', () => {
   let httpService: HttpService;
   let counterpartyService: GiftCounterpartyService;
+  let obligationService: GiftObligationService;
   let repaymentProfileService: GiftRepaymentProfileService;
   let service: GiftService;
 
@@ -24,6 +26,7 @@ describe('GiftService.createInitialFacility', () => {
   let mockHttpServicePost: jest.Mock;
 
   beforeEach(() => {
+    // Arrange
     httpService = new HttpService();
 
     mockHttpServicePost = jest.fn().mockResolvedValueOnce(mockResponsePost);
@@ -35,9 +38,10 @@ describe('GiftService.createInitialFacility', () => {
     };
 
     counterpartyService = new GiftCounterpartyService(giftHttpService);
+    obligationService = new GiftObligationService(giftHttpService);
     repaymentProfileService = new GiftRepaymentProfileService(giftHttpService);
 
-    service = new GiftService(giftHttpService, counterpartyService, repaymentProfileService);
+    service = new GiftService(giftHttpService, counterpartyService, obligationService, repaymentProfileService);
   });
 
   afterAll(() => {
@@ -45,8 +49,10 @@ describe('GiftService.createInitialFacility', () => {
   });
 
   it('should call giftHttpService.post', async () => {
+    // Act
     await service.createInitialFacility(mockPayload.overview);
 
+    // Assert
     expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
 
     expect(mockHttpServicePost).toHaveBeenCalledWith({
@@ -57,27 +63,32 @@ describe('GiftService.createInitialFacility', () => {
 
   describe('when giftHttpService.post is successful', () => {
     it('should return the response of giftHttpService.post', async () => {
+      // Act
       const response = await service.createInitialFacility(mockPayload.overview);
 
+      // Assert
       expect(response).toEqual(mockResponsePost);
     });
   });
 
   describe('when giftHttpService.post returns an error', () => {
     beforeEach(() => {
+      // Arrange
       mockHttpServicePost = jest.fn().mockRejectedValueOnce(mockResponse500());
 
       httpService.post = mockHttpServicePost;
 
       giftHttpService.post = mockHttpServicePost;
 
-      service = new GiftService(giftHttpService, counterpartyService, repaymentProfileService);
+      service = new GiftService(giftHttpService, counterpartyService, obligationService, repaymentProfileService);
     });
 
     it('should thrown an error', async () => {
+      // Act
       const promise = service.createInitialFacility(mockPayload.overview);
 
-      const expected = 'Error creating initial GIFT facility';
+      // Assert
+      const expected = new Error('Error creating initial GIFT facility');
 
       await expect(promise).rejects.toThrow(expected);
     });
