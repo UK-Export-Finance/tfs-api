@@ -35,10 +35,13 @@ describe('POST /gift/facility - validation', () => {
 
   describe('when an empty object is provided', () => {
     it(`should return a ${HttpStatus.BAD_REQUEST} response with a validation error`, async () => {
+      // Arrange
       const mockPayload = {};
 
+      // Act
       const { status, body } = await api.post(url, mockPayload);
 
+      // Assert
       expect(status).toBe(HttpStatus.BAD_REQUEST);
 
       const expected = {
@@ -67,10 +70,13 @@ describe('POST /gift/facility - validation', () => {
 
   describe('when an empty array is provided', () => {
     it(`should return a ${HttpStatus.BAD_REQUEST} response with a validation error`, async () => {
+      // Arrange
       const mockPayload = [];
 
+      // Act
       const { status, body } = await api.post(url, mockPayload);
 
+      // Assert
       expect(status).toBe(HttpStatus.BAD_REQUEST);
 
       const expected = {
@@ -99,10 +105,13 @@ describe('POST /gift/facility - validation', () => {
 
   describe('when empty entity arrays are provided', () => {
     it(`should return a ${HttpStatus.BAD_REQUEST} response with validation errors for all required fields`, async () => {
+      // Arrange
       const mockPayload = { overview: [], counterparties: [], obligations: [], repaymentProfiles: [] };
 
+      // Act
       const { status, body } = await api.post(url, mockPayload);
 
+      // Assert
       expect(status).toBe(HttpStatus.BAD_REQUEST);
 
       const expected = {
@@ -124,10 +133,13 @@ describe('POST /gift/facility - validation', () => {
 
   describe('when null entities are provided', () => {
     it(`should return a ${HttpStatus.BAD_REQUEST} response with validation errors for all required fields`, async () => {
+      // Arrange
       const mockPayload = { overview: null, counterparties: null, obligations: null, repaymentProfiles: null };
 
+      // Act
       const { status, body } = await api.post(url, mockPayload);
 
+      // Assert
       expect(status).toBe(HttpStatus.BAD_REQUEST);
 
       const expected = {
@@ -160,10 +172,13 @@ describe('POST /gift/facility - validation', () => {
 
   describe('when undefined entities are provided', () => {
     it(`should return a ${HttpStatus.BAD_REQUEST} response with validation errors for all required fields`, async () => {
+      // Arrange
       const mockPayload = { overview: undefined, counterparties: undefined, obligations: undefined, repaymentProfiles: undefined };
 
+      // Act
       const { status, body } = await api.post(url, mockPayload);
 
+      // Assert
       expect(status).toBe(HttpStatus.BAD_REQUEST);
 
       const expected = {
@@ -192,10 +207,13 @@ describe('POST /gift/facility - validation', () => {
 
   describe('when empty entity objects are provided', () => {
     it(`should return a ${HttpStatus.BAD_REQUEST} response with validation errors for all required fields`, async () => {
+      // Arrange
       const mockPayload = { overview: {}, counterparties: {}, obligations: {}, repaymentProfiles: {} };
 
+      // Act
       const { status, body } = await api.post(url, mockPayload);
 
+      // Assert
       expect(status).toBe(HttpStatus.BAD_REQUEST);
 
       const expected = {
