@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { EXAMPLES, GIFT } from '@ukef/constants';
-import { IsDefined, IsNumber, IsString, Length, Min } from 'class-validator';
+import { IsDefined, IsNumber, IsString, Length, Max, Min } from 'class-validator';
 
 const {
   GIFT: { FIXED_FEE },
@@ -18,6 +18,7 @@ export class GiftFixedFeeDto {
   @IsDefined()
   @IsNumber()
   @Min(VALIDATION.AMOUNT_DUE.MIN)
+  @Max(VALIDATION.AMOUNT_DUE.MAX)
   @ApiProperty({
     example: FIXED_FEE().amountDue,
   })

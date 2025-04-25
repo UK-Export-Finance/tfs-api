@@ -52,6 +52,9 @@ describe('POST /gift/facility - validation', () => {
           'counterparties should not be null or undefined',
           'counterparties should not be empty',
           'counterparties must be an array',
+          'fixedFees should not be null or undefined',
+          'fixedFees should not be empty',
+          'fixedFees must be an array',
           'obligations should not be null or undefined',
           'obligations should not be empty',
           'obligations must be an array',
@@ -87,6 +90,9 @@ describe('POST /gift/facility - validation', () => {
           'counterparties should not be null or undefined',
           'counterparties should not be empty',
           'counterparties must be an array',
+          'fixedFees should not be null or undefined',
+          'fixedFees should not be empty',
+          'fixedFees must be an array',
           'obligations should not be null or undefined',
           'obligations should not be empty',
           'obligations must be an array',
@@ -106,7 +112,7 @@ describe('POST /gift/facility - validation', () => {
   describe('when empty entity arrays are provided', () => {
     it(`should return a ${HttpStatus.BAD_REQUEST} response with validation errors for all required fields`, async () => {
       // Arrange
-      const mockPayload = { overview: [], counterparties: [], obligations: [], repaymentProfiles: [] };
+      const mockPayload = { overview: [], counterparties: [], fixedFees: [], obligations: [], repaymentProfiles: [] };
 
       // Act
       const { status, body } = await api.post(url, mockPayload);
@@ -119,6 +125,7 @@ describe('POST /gift/facility - validation', () => {
         message: [
           'overview must be a non-empty object',
           'counterparties should not be empty',
+          'fixedFees should not be empty',
           'obligations should not be empty',
           `repaymentProfile[].allocation[] dueDate's must be unique`,
           `repaymentProfile[] name's must be unique`,
@@ -134,7 +141,7 @@ describe('POST /gift/facility - validation', () => {
   describe('when null entities are provided', () => {
     it(`should return a ${HttpStatus.BAD_REQUEST} response with validation errors for all required fields`, async () => {
       // Arrange
-      const mockPayload = { overview: null, counterparties: null, obligations: null, repaymentProfiles: null };
+      const mockPayload = { overview: null, counterparties: null, fixedFees: null, obligations: null, repaymentProfiles: null };
 
       // Act
       const { status, body } = await api.post(url, mockPayload);
@@ -152,6 +159,10 @@ describe('POST /gift/facility - validation', () => {
           'counterparties should not be empty',
           'counterparties must be an array',
           'nested property counterparties must be either object or array',
+          'fixedFees should not be null or undefined',
+          'fixedFees should not be empty',
+          'fixedFees must be an array',
+          'nested property fixedFees must be either object or array',
           'obligations should not be null or undefined',
           'obligations should not be empty',
           'obligations must be an array',
@@ -173,7 +184,7 @@ describe('POST /gift/facility - validation', () => {
   describe('when undefined entities are provided', () => {
     it(`should return a ${HttpStatus.BAD_REQUEST} response with validation errors for all required fields`, async () => {
       // Arrange
-      const mockPayload = { overview: undefined, counterparties: undefined, obligations: undefined, repaymentProfiles: undefined };
+      const mockPayload = { overview: undefined, counterparties: undefined, fixedFees: undefined, obligations: undefined, repaymentProfiles: undefined };
 
       // Act
       const { status, body } = await api.post(url, mockPayload);
@@ -189,6 +200,9 @@ describe('POST /gift/facility - validation', () => {
           'counterparties should not be null or undefined',
           'counterparties should not be empty',
           'counterparties must be an array',
+          'fixedFees should not be null or undefined',
+          'fixedFees should not be empty',
+          'fixedFees must be an array',
           'obligations should not be null or undefined',
           'obligations should not be empty',
           'obligations must be an array',
@@ -208,7 +222,7 @@ describe('POST /gift/facility - validation', () => {
   describe('when empty entity objects are provided', () => {
     it(`should return a ${HttpStatus.BAD_REQUEST} response with validation errors for all required fields`, async () => {
       // Arrange
-      const mockPayload = { overview: {}, counterparties: {}, obligations: {}, repaymentProfiles: {} };
+      const mockPayload = { overview: {}, counterparties: {}, fixedFees: {}, obligations: {}, repaymentProfiles: {} };
 
       // Act
       const { status, body } = await api.post(url, mockPayload);
@@ -267,6 +281,22 @@ describe('POST /gift/facility - validation', () => {
           `counterparties.startDate should not be null or undefined`,
           `counterparties.startDate must be longer than or equal to ${VALIDATION.COUNTERPARTY.START_DATE.MIN_LENGTH} characters`,
           `counterparties.startDate must be a string`,
+          'fixedFees.amountDue should not be null or undefined',
+          `fixedFees.amountDue must not be greater than ${VALIDATION.FIXED_FEE.AMOUNT_DUE.MAX}`,
+          `fixedFees.amountDue must not be less than ${VALIDATION.FIXED_FEE.AMOUNT_DUE.MIN}`,
+          'fixedFees.amountDue must be a number conforming to the specified constraints',
+          'fixedFees.currency should not be null or undefined',
+          `fixedFees.currency must be longer than or equal to ${VALIDATION.FIXED_FEE.CURRENCY.MIN_LENGTH} characters`,
+          'fixedFees.currency must be a string',
+          'fixedFees.description should not be null or undefined',
+          `fixedFees.description must be longer than or equal to ${VALIDATION.FIXED_FEE.DESCRIPTION.MIN_LENGTH} characters`,
+          'fixedFees.description must be a string',
+          'fixedFees.dueDate should not be null or undefined',
+          `fixedFees.dueDate must be longer than or equal to ${VALIDATION.FIXED_FEE.DUE_DATE.MIN_LENGTH} characters`,
+          'fixedFees.dueDate must be a string',
+          'fixedFees.feeTypeCode should not be null or undefined',
+          `fixedFees.feeTypeCode must be longer than or equal to ${VALIDATION.FIXED_FEE.FEE_TYPE_CODE.MIN_LENGTH} characters`,
+          'fixedFees.feeTypeCode must be a string',
           'obligations.currency should not be null or undefined',
           `obligations.currency must be longer than or equal to ${VALIDATION.OBLIGATION.CURRENCY.MIN_LENGTH} characters`,
           'obligations.currency must be a string',
