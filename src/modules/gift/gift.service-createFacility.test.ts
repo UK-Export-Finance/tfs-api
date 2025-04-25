@@ -4,27 +4,31 @@ import { EXAMPLES } from '@ukef/constants';
 import { mockResponse201 } from '@ukef-test/http-response';
 
 import { GiftCounterpartyService } from './gift.counterparty.service';
+import { GiftFixedFeeService } from './gift.fixed-fee.service';
 import { GiftObligationService } from './gift.obligation.service';
 import { GiftRepaymentProfileService } from './gift.repayment-profile.service';
 import { GiftService } from './gift.service';
 
 const {
-  GIFT: { COUNTERPARTY, FACILITY_RESPONSE_DATA, FACILITY_CREATION_PAYLOAD: mockPayload, OBLIGATION, REPAYMENT_PROFILE },
+  GIFT: { COUNTERPARTY, FACILITY_RESPONSE_DATA, FACILITY_CREATION_PAYLOAD: mockPayload, FIXED_FEE, OBLIGATION, REPAYMENT_PROFILE },
 } = EXAMPLES;
 
 const mockResponsePost = mockResponse201(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA);
 
 const mockCounterparties = [COUNTERPARTY(), COUNTERPARTY(), COUNTERPARTY()];
+const mockFixedFees = [FIXED_FEE(), FIXED_FEE()];
 const mockObligations = [OBLIGATION(), OBLIGATION(), OBLIGATION()];
 const mockRepaymentProfiles = [REPAYMENT_PROFILE(), REPAYMENT_PROFILE(), REPAYMENT_PROFILE()];
 
 const mockCreateCounterpartiesResponse = mockCounterparties.map((counterparty) => mockResponse201(counterparty));
+const mockCreateFixedFeesResponse = mockFixedFees.map((fixedFee) => mockResponse201(fixedFee));
 const mockCreateObligationsResponse = mockObligations.map((counterparty) => mockResponse201(counterparty));
 const mockRepaymentProfilesResponse = mockRepaymentProfiles.map((repaymentProfile) => mockResponse201(repaymentProfile));
 
 describe('GiftService.createFacility', () => {
   let httpService: HttpService;
   let counterpartyService: GiftCounterpartyService;
+  let fixedFeeService: GiftFixedFeeService;
   let obligationService: GiftObligationService;
   let repaymentProfileService: GiftRepaymentProfileService;
   let service: GiftService;
@@ -32,8 +36,9 @@ describe('GiftService.createFacility', () => {
   let giftHttpService;
   let mockHttpServicePost: jest.Mock;
   let createInitialFacilitySpy: jest.Mock;
-  let createObligationsSpy: jest.Mock;
   let createCounterpartiesSpy: jest.Mock;
+  let createFixedFeesSpy: jest.Mock;
+  let createObligationsSpy: jest.Mock;
   let createRepaymentProfilesSpy: jest.Mock;
 
   beforeEach(() => {
@@ -49,19 +54,22 @@ describe('GiftService.createFacility', () => {
     };
 
     counterpartyService = new GiftCounterpartyService(giftHttpService);
+    fixedFeeService = new GiftFixedFeeService(giftHttpService);
     obligationService = new GiftObligationService(giftHttpService);
     repaymentProfileService = new GiftRepaymentProfileService(giftHttpService);
 
     createInitialFacilitySpy = jest.fn().mockResolvedValueOnce(mockResponse201(FACILITY_RESPONSE_DATA));
     createCounterpartiesSpy = jest.fn().mockResolvedValueOnce(mockCreateCounterpartiesResponse);
+    createFixedFeesSpy = jest.fn().mockResolvedValueOnce(mockCreateFixedFeesResponse);
     createObligationsSpy = jest.fn().mockResolvedValueOnce(mockCreateObligationsResponse);
     createRepaymentProfilesSpy = jest.fn().mockResolvedValueOnce(mockRepaymentProfilesResponse);
 
     counterpartyService.createMany = createCounterpartiesSpy;
+    fixedFeeService.createMany = createFixedFeesSpy;
     obligationService.createMany = createObligationsSpy;
     repaymentProfileService.createMany = createRepaymentProfilesSpy;
 
-    service = new GiftService(giftHttpService, counterpartyService, obligationService, repaymentProfileService);
+    service = new GiftService(giftHttpService, counterpartyService, fixedFeeService, obligationService, repaymentProfileService);
 
     service.createInitialFacility = createInitialFacilitySpy;
   });
@@ -88,6 +96,16 @@ describe('GiftService.createFacility', () => {
     expect(createCounterpartiesSpy).toHaveBeenCalledTimes(1);
 
     expect(createCounterpartiesSpy).toHaveBeenCalledWith(mockPayload.counterparties, FACILITY_RESPONSE_DATA.workPackageId);
+  });
+
+  it('should call fixedFeeService.createMany', async () => {
+    // Act
+    await service.createFacility(mockPayload);
+
+    // Assert
+    expect(createFixedFeesSpy).toHaveBeenCalledTimes(1);
+
+    expect(createFixedFeesSpy).toHaveBeenCalledWith(mockPayload.obligations, FACILITY_RESPONSE_DATA.workPackageId);
   });
 
   it('should call obligationService.createMany', async () => {
