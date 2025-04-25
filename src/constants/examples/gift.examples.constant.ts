@@ -23,23 +23,23 @@ const COUNTERPARTY = () => ({
     length: VALIDATION.COUNTERPARTY.COUNTERPARTY_URN.MAX_LENGTH,
     numeric: true,
   }),
-  exitDate: '2025-08-10',
+  exitDate: '2025-01-16',
   roleId: 'buyer',
   sharePercentage: 25,
-  startDate: '2025-04-10',
+  startDate: '2025-01-13',
 });
 
 const FIXED_FEE = () => ({
   feeTypeCode: 'PLA', // TODO: are there specific codes or is any string allowed?
   description: 'Mock fee description',
-  dueDate: '2025-09-11',
+  dueDate: '2025-01-15',
   currency: CURRENCIES.USD,
   amountDue: 5000,
 });
 
 const OBLIGATION = () => ({
-  effectiveDate: '2024-03-01',
-  maturityDate: '2024-04-01',
+  effectiveDate: '2025-01-13',
+  maturityDate: '2025-01-15',
   currency: CURRENCIES.USD,
   obligationAmount: 2500,
   productSubtype: 'Mock product subtype',
@@ -57,7 +57,7 @@ const REPAYMENT_PROFILE_ALLOCATION = (index: number = 0) => {
   const month = '02';
   const year = today.getFullYear() + index;
 
-  const dueDate = `${day}-${month}-${year}`;
+  const dueDate = `${year}-${month}-${day}`;
 
   return {
     amount: 5000,
@@ -79,12 +79,12 @@ const FACILITY_OVERVIEW = {
   currency: CURRENCIES.USD,
   facilityAmount: 10000,
   effectiveDate: '2025-01-01',
-  expiryDate: '2025-02-01',
-  endOfCoverDate: '2025-03-01',
+  expiryDate: '2027-02-01',
+  endOfCoverDate: '2027-02-01',
   dealId: DEAL_ID,
   isRevolving: true,
   isDraft: true,
-  createdDatetime: '2025-03-21T09:58:21.115Z',
+  createdDatetime: '2025-01-21T09:58:21.115Z',
   productType: 'Mock product type',
 };
 
