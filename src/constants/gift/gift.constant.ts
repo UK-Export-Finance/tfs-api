@@ -13,6 +13,12 @@ export const GIFT = {
     OBLIGATION: 'Obligation',
     REPAYMENT_PROFILE: 'Repayment profile',
   },
+  FIXED_FEE: {
+    FEE_TYPE_CODES: {
+      BEX: 'BEX',
+      PLA: 'PLA',
+    },
+  },
   PATH: {
     FACILITY: '/facility',
     COUNTERPARTY: '/counterparty',

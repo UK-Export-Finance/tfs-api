@@ -5,7 +5,10 @@ import { Chance } from 'chance';
 import { CURRENCIES } from '../currencies.constant';
 import { GIFT } from '../gift/gift.constant';
 
-const { VALIDATION } = GIFT;
+const {
+  FIXED_FEE: { FEE_TYPE_CODES },
+  VALIDATION,
+} = GIFT;
 
 const chance = new Chance();
 
@@ -30,7 +33,7 @@ const COUNTERPARTY = () => ({
 });
 
 const FIXED_FEE = () => ({
-  feeTypeCode: 'PLA', // TODO: are there specific codes or is any string allowed?
+  feeTypeCode: FEE_TYPE_CODES.PLA,
   description: 'Mock fee description',
   dueDate: '2025-01-15',
   currency: CURRENCIES.USD,

@@ -55,7 +55,7 @@ export class GiftFixedFeeDto {
   @Length(VALIDATION.FEE_TYPE_CODE.MIN_LENGTH, VALIDATION.FEE_TYPE_CODE.MAX_LENGTH)
   @ApiProperty({
     required: true,
-    example: FIXED_FEE().feeTypeCode, // TODO: only BEX and PLA are valid fee type codes
+    example: FIXED_FEE().feeTypeCode,
   })
   feeTypeCode: string;
 }
