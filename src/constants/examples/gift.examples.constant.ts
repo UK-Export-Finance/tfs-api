@@ -27,7 +27,7 @@ const COUNTERPARTY = () => ({
     numeric: true,
   }),
   exitDate: '2025-01-16',
-  roleId: 'buyer',
+  roleId: 'Guarantor',
   sharePercentage: 25,
   startDate: '2025-01-13',
 });
@@ -87,8 +87,8 @@ const FACILITY_OVERVIEW = {
   dealId: DEAL_ID,
   isRevolving: true,
   isDraft: true,
-  createdDatetime: '2025-01-21T09:58:21.115Z',
-  productType: 'Mock product type',
+  createdDatetime: '2025-03-21T09:58:21.115Z',
+  productTypeCode: GIFT.PRODUCT_TYPE_CODES.BIP,
 };
 
 /**

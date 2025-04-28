@@ -5,7 +5,7 @@ import { AxiosResponse } from 'axios';
 import { GiftObligationDto } from './dto';
 import { GiftHttpService } from './gift-http.service';
 
-const { PATH } = GIFT;
+const { EVENT_TYPES, PATH } = GIFT;
 
 /**
  * GIFT obligation service.
@@ -19,16 +19,20 @@ export class GiftObligationService {
 
   /**
    * Create a GIFT obligation
-   * @param {GiftObligationDto} payload: Repayment profile data
+   * @param {GiftObligationDto} obligationData: Repayment profile data
+   * @param {String} facilityId: Facility ID
    * @param {Number} workPackageId: Facility work package ID
    * @returns {Promise<AxiosResponse>}
    * @throws {Error}
    */
-  async createOne(payload: GiftObligationDto, workPackageId: number): Promise<AxiosResponse> {
+  async createOne(obligationData: GiftObligationDto, facilityId: string, workPackageId: number): Promise<AxiosResponse> {
     try {
       const response = await this.giftHttpService.post<GiftObligationDto>({
-        path: `${PATH.WORK_PACKAGE}/${workPackageId}${PATH.OBLIGATION}${PATH.CREATION_EVENT}`,
-        payload,
+        path: `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}`,
+        payload: {
+          eventType: EVENT_TYPES.CREATE_OBLIGATION,
+          eventData: obligationData,
+        },
       });
 
       return response;
@@ -42,13 +46,14 @@ export class GiftObligationService {
   /**
    * Create multiple GIFT obligations
    * @param {Array<GiftObligationDto>} obligations: Obligations data
+   * @param {String} facilityId: Facility ID
    * @param {Number} workPackageId: Facility work package ID
    * @returns {Promise<Array<AxiosResponse>>}
    * @throws {Error}
    */
-  async createMany(obligations: GiftObligationDto[], workPackageId: number): Promise<Array<AxiosResponse>> {
+  async createMany(obligations: GiftObligationDto[], facilityId: string, workPackageId: number): Promise<Array<AxiosResponse>> {
     try {
-      return await Promise.all(obligations.map((repaymentProfile) => this.createOne(repaymentProfile, workPackageId)));
+      return await Promise.all(obligations.map((repaymentProfile) => this.createOne(repaymentProfile, facilityId, workPackageId)));
     } catch (error) {
       console.error('Error creating obligations %o', error);
 

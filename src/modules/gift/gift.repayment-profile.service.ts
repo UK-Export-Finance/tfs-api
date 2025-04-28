@@ -5,7 +5,7 @@ import { AxiosResponse } from 'axios';
 import { GiftRepaymentProfileDto } from './dto';
 import { GiftHttpService } from './gift-http.service';
 
-const { PATH } = GIFT;
+const { EVENT_TYPES, PATH } = GIFT;
 
 /**
  * GIFT repayment profile service.
@@ -19,16 +19,20 @@ export class GiftRepaymentProfileService {
 
   /**
    * Create a GIFT repayment profile
-   * @param {GiftRepaymentProfileDto} payload: Repayment profile data
+   * @param {GiftRepaymentProfileDto} repaymentProfileData: Repayment profile data
+   * @param {String} facilityId: Facility ID
    * @param {Number} workPackageId: Facility work package ID
    * @returns {Promise<AxiosResponse>}
    * @throws {Error}
    */
-  async createOne(payload: GiftRepaymentProfileDto, workPackageId: number): Promise<AxiosResponse> {
+  async createOne(repaymentProfileData: GiftRepaymentProfileDto, facilityId: string, workPackageId: number): Promise<AxiosResponse> {
     try {
       const response = await this.giftHttpService.post<GiftRepaymentProfileDto>({
-        path: `${PATH.WORK_PACKAGE}/${workPackageId}${PATH.REPAYMENT_PROFILE}${PATH.MANUAL}${PATH.CREATION_EVENT}`,
-        payload,
+        path: `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}`,
+        payload: {
+          eventType: EVENT_TYPES.ADD_MANUAL_REPAYMENT_PROFILE,
+          eventData: repaymentProfileData,
+        },
       });
 
       return response;
@@ -42,13 +46,14 @@ export class GiftRepaymentProfileService {
   /**
    * Create multiple GIFT repayment profiles
    * @param {Array<GiftRepaymentProfileDto>} repaymentProfilesData: Repayment profiles data
+   * @param {String} facilityId: Facility ID
    * @param {Number} workPackageId: Facility work package ID
    * @returns {Promise<Array<AxiosResponse>>}
    * @throws {Error}
    */
-  async createMany(repaymentProfilesData: GiftRepaymentProfileDto[], workPackageId: number): Promise<Array<AxiosResponse>> {
+  async createMany(repaymentProfilesData: GiftRepaymentProfileDto[], facilityId: string, workPackageId: number): Promise<Array<AxiosResponse>> {
     try {
-      return await Promise.all(repaymentProfilesData.map((repaymentProfile) => this.createOne(repaymentProfile, workPackageId)));
+      return await Promise.all(repaymentProfilesData.map((repaymentProfile) => this.createOne(repaymentProfile, facilityId, workPackageId)));
     } catch (error) {
       console.error('Error creating repayment profiles %o', error);
 

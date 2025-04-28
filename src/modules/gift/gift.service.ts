@@ -59,14 +59,17 @@ export class GiftService {
 
   /**
    * Create a GIFT facility - initial/overview data
-   * @param {GiftFacilityDto} payload: Facility overview data
+   * @param {GiftFacilityDto} overviewData: Facility overview data
    * @returns {Promise<AxiosResponse>}
    */
-  async createInitialFacility(payload: GiftFacilityDto): Promise<AxiosResponse> {
+  async createInitialFacility(overviewData: GiftFacilityDto): Promise<AxiosResponse> {
     try {
       const response = await this.giftHttpService.post<GiftFacilityCreationDto>({
-        path: PATH.FACILITY,
-        payload,
+        path: PATH.CREATE_FACILITY,
+        payload: {
+          eventType: 'CreateFacility',
+          eventData: overviewData,
+        },
       });
 
       return response;
@@ -95,6 +98,8 @@ export class GiftService {
 
       const { data: facility, status } = await this.createInitialFacility(overview);
 
+      const { facilityId } = overview;
+
       /**
        * NOTE: If the initial facility creation fails, we should surface only this error and prevent subsequent calls.
        * Otherwise, subsequent calls will fail with errors unrelated to what is in the payload - could cause confusion.
@@ -110,13 +115,13 @@ export class GiftService {
 
       const { workPackageId } = facility;
 
-      const counterparties = await this.giftCounterpartyService.createMany(counterpartiesPayload, workPackageId);
+      const counterparties = await this.giftCounterpartyService.createMany(counterpartiesPayload, facilityId, workPackageId);
 
-      const fixedFees = await this.giftFixedFeeService.createMany(fixedFeesPayload, workPackageId);
+      const fixedFees = await this.giftFixedFeeService.createMany(fixedFeesPayload, facilityId, workPackageId);
 
-      const obligations = await this.giftObligationService.createMany(obligationsPayload, workPackageId);
+      const obligations = await this.giftObligationService.createMany(obligationsPayload, facilityId, workPackageId);
 
-      const repaymentProfiles = await this.giftRepaymentProfileService.createMany(repaymentProfilesPayload, workPackageId);
+      const repaymentProfiles = await this.giftRepaymentProfileService.createMany(repaymentProfilesPayload, facilityId, workPackageId);
 
       const validationErrors = mapAllValidationErrorResponses({
         counterparties,
@@ -154,7 +159,7 @@ export class GiftService {
       return {
         status: HttpStatus.CREATED,
         data: {
-          ...facility,
+          ...facility.configurationEvent.eventData,
           counterparties: mapResponsesData(counterparties),
           fixedFees: mapResponsesData(fixedFees),
           obligations: mapResponsesData(obligations),

@@ -4,12 +4,10 @@ import { mockResponse201, mockResponse500 } from '@ukef-test/http-response';
 
 import { GiftObligationService } from './gift.obligation.service';
 const {
-  GIFT: { OBLIGATION, WORK_PACKAGE_ID: mockWorkPackageId },
+  GIFT: { OBLIGATION, FACILITY_ID: mockFacilityId, WORK_PACKAGE_ID: mockWorkPackageId },
 } = EXAMPLES;
 
 const { PATH } = GIFT;
-
-const expectedPath = `${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.OBLIGATION}${PATH.CREATION_EVENT}`;
 
 describe('GiftObligationService', () => {
   let httpService: HttpService;
@@ -45,13 +43,13 @@ describe('GiftObligationService', () => {
 
     it('should call giftHttpService.post', async () => {
       // Act
-      await service.createOne(mockPayload, mockWorkPackageId);
+      await service.createOne(mockPayload, mockFacilityId, mockWorkPackageId);
 
       // Assert
       expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
 
       expect(mockHttpServicePost).toHaveBeenCalledWith({
-        path: expectedPath,
+        path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}`,
         payload: mockPayload,
       });
     });
@@ -59,7 +57,7 @@ describe('GiftObligationService', () => {
     describe('when giftHttpService.post is successful', () => {
       it('should return the response of giftHttpService.post', async () => {
         // Act
-        const response = await service.createOne(mockPayload, mockWorkPackageId);
+        const response = await service.createOne(mockPayload, mockFacilityId, mockWorkPackageId);
 
         // Assert
         expect(response).toEqual(mockCreateOneResponse);
@@ -78,7 +76,7 @@ describe('GiftObligationService', () => {
 
       it('should thrown an error', async () => {
         // Act
-        const promise = service.createOne(mockPayload, mockWorkPackageId);
+        const promise = service.createOne(mockPayload, mockFacilityId, mockWorkPackageId);
 
         // Assert
         const expected = new Error('Error creating obligation');

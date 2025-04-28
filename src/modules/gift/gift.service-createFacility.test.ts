@@ -10,7 +10,7 @@ import { GiftRepaymentProfileService } from './gift.repayment-profile.service';
 import { GiftService } from './gift.service';
 
 const {
-  GIFT: { COUNTERPARTY, FACILITY_RESPONSE_DATA, FACILITY_CREATION_PAYLOAD: mockPayload, FIXED_FEE, OBLIGATION, REPAYMENT_PROFILE },
+  GIFT: { COUNTERPARTY, FACILITY_ID: mockFacilityId, FACILITY_RESPONSE_DATA, FACILITY_CREATION_PAYLOAD: mockPayload, FIXED_FEE, OBLIGATION, REPAYMENT_PROFILE },
 } = EXAMPLES;
 
 const mockResponsePost = mockResponse201(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA);
@@ -95,7 +95,7 @@ describe('GiftService.createFacility', () => {
     // Assert
     expect(createCounterpartiesSpy).toHaveBeenCalledTimes(1);
 
-    expect(createCounterpartiesSpy).toHaveBeenCalledWith(mockPayload.counterparties, FACILITY_RESPONSE_DATA.workPackageId);
+    expect(createCounterpartiesSpy).toHaveBeenCalledWith(mockPayload.counterparties, mockFacilityId, FACILITY_RESPONSE_DATA.workPackageId);
   });
 
   it('should call fixedFeeService.createMany', async () => {
@@ -105,7 +105,7 @@ describe('GiftService.createFacility', () => {
     // Assert
     expect(createFixedFeesSpy).toHaveBeenCalledTimes(1);
 
-    expect(createFixedFeesSpy).toHaveBeenCalledWith(mockPayload.fixedFees, FACILITY_RESPONSE_DATA.workPackageId);
+    expect(createFixedFeesSpy).toHaveBeenCalledWith(mockPayload.fixedFees, mockFacilityId, FACILITY_RESPONSE_DATA.workPackageId);
   });
 
   it('should call obligationService.createMany', async () => {
@@ -115,7 +115,7 @@ describe('GiftService.createFacility', () => {
     // Assert
     expect(createObligationsSpy).toHaveBeenCalledTimes(1);
 
-    expect(createObligationsSpy).toHaveBeenCalledWith(mockPayload.obligations, FACILITY_RESPONSE_DATA.workPackageId);
+    expect(createObligationsSpy).toHaveBeenCalledWith(mockPayload.obligations, mockFacilityId, FACILITY_RESPONSE_DATA.workPackageId);
   });
 
   it('should call giftRepaymentProfileService.createMany', async () => {
@@ -125,7 +125,7 @@ describe('GiftService.createFacility', () => {
     // Assert
     expect(createRepaymentProfilesSpy).toHaveBeenCalledTimes(1);
 
-    expect(createRepaymentProfilesSpy).toHaveBeenCalledWith(mockPayload.repaymentProfiles, FACILITY_RESPONSE_DATA.workPackageId);
+    expect(createRepaymentProfilesSpy).toHaveBeenCalledWith(mockPayload.repaymentProfiles, mockFacilityId, FACILITY_RESPONSE_DATA.workPackageId);
   });
 
   describe('when all calls are successful', () => {
