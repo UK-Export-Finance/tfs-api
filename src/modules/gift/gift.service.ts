@@ -11,7 +11,7 @@ import { GiftRepaymentProfileService } from './gift.repayment-profile.service';
 import { GiftHttpService } from './gift-http.service';
 import { mapAllValidationErrorResponses, mapResponsesData } from './helpers';
 
-const { API_RESPONSE_MESSAGES, PATH } = GIFT;
+const { API_RESPONSE_MESSAGES, EVENT_TYPES, PATH } = GIFT;
 
 interface CreateFacilityResponse {
   status: AxiosResponse['status'];
@@ -67,7 +67,7 @@ export class GiftService {
       const response = await this.giftHttpService.post<GiftFacilityCreationDto>({
         path: PATH.CREATE_FACILITY,
         payload: {
-          eventType: 'CreateFacility',
+          eventType: EVENT_TYPES.CREATE_FACILITY,
           eventData: overviewData,
         },
       });
