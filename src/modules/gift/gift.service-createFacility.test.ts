@@ -105,7 +105,7 @@ describe('GiftService.createFacility', () => {
     // Assert
     expect(createFixedFeesSpy).toHaveBeenCalledTimes(1);
 
-    expect(createFixedFeesSpy).toHaveBeenCalledWith(mockPayload.obligations, FACILITY_RESPONSE_DATA.workPackageId);
+    expect(createFixedFeesSpy).toHaveBeenCalledWith(mockPayload.fixedFees, FACILITY_RESPONSE_DATA.workPackageId);
   });
 
   it('should call obligationService.createMany', async () => {
@@ -139,6 +139,7 @@ describe('GiftService.createFacility', () => {
         data: {
           ...FACILITY_RESPONSE_DATA,
           counterparties: mockCounterparties,
+          fixedFees: mockFixedFees,
           obligations: mockObligations,
           repaymentProfiles: mockRepaymentProfiles,
         },
