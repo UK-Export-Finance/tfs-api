@@ -2,7 +2,6 @@ import { HttpStatus } from '@nestjs/common';
 import AppConfig from '@ukef/config/app.config';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { Api } from '@ukef-test/support/api';
-import nock from 'nock';
 
 import { booleanValidation, numberStringValidation, numberValidation, stringValidation, ukefIdValidation } from './assertions';
 
@@ -29,8 +28,7 @@ describe('POST /gift/facility - validation', () => {
   });
 
   afterEach(() => {
-    nock.abortPendingRequests();
-    nock.cleanAll();
+    jest.resetAllMocks();
   });
 
   describe('when an empty object is provided', () => {
