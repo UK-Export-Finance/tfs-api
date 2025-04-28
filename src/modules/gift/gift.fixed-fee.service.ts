@@ -53,7 +53,9 @@ export class GiftFixedFeeService {
    */
   async createMany(fixedFeesData: GiftFixedFeeDto[], facilityId: string, workPackageId: number): Promise<Array<AxiosResponse>> {
     try {
-      return await Promise.all(fixedFeesData.map((fixedFee) => this.createOne(fixedFee, facilityId, workPackageId)));
+      const responses = await Promise.all(fixedFeesData.map((fixedFee) => this.createOne(fixedFee, facilityId, workPackageId)));
+
+      return responses;
     } catch (error) {
       console.error('Error creating fixed fees %o', error);
 

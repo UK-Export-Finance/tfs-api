@@ -53,7 +53,9 @@ export class GiftRepaymentProfileService {
    */
   async createMany(repaymentProfilesData: GiftRepaymentProfileDto[], facilityId: string, workPackageId: number): Promise<Array<AxiosResponse>> {
     try {
-      return await Promise.all(repaymentProfilesData.map((repaymentProfile) => this.createOne(repaymentProfile, facilityId, workPackageId)));
+      const responses = await Promise.all(repaymentProfilesData.map((repaymentProfile) => this.createOne(repaymentProfile, facilityId, workPackageId)));
+
+      return responses;
     } catch (error) {
       console.error('Error creating repayment profiles %o', error);
 
