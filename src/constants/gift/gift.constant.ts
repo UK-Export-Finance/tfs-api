@@ -9,13 +9,21 @@ export const GIFT = {
   },
   ENTITY_NAMES: {
     COUNTERPARTY: 'Counterparty',
+    FIXED_FEE: 'Fixed fee',
     OBLIGATION: 'Obligation',
     REPAYMENT_PROFILE: 'Repayment profile',
+  },
+  FIXED_FEE: {
+    FEE_TYPE_CODES: {
+      BEX: 'BEX',
+      PLA: 'PLA',
+    },
   },
   PATH: {
     FACILITY: '/facility',
     COUNTERPARTY: '/counterparty',
     CREATION_EVENT: '/creation-event',
+    FIXED_FEE: '/fixed-fee',
     MANUAL: '/manual',
     OBLIGATION: '/obligation',
     REPAYMENT_PROFILE: '/repayment-profile',

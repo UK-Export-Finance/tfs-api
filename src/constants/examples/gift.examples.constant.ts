@@ -5,7 +5,10 @@ import { Chance } from 'chance';
 import { CURRENCIES } from '../currencies.constant';
 import { GIFT } from '../gift/gift.constant';
 
-const { VALIDATION } = GIFT;
+const {
+  FIXED_FEE: { FEE_TYPE_CODES },
+  VALIDATION,
+} = GIFT;
 
 const chance = new Chance();
 
@@ -23,15 +26,23 @@ const COUNTERPARTY = () => ({
     length: VALIDATION.COUNTERPARTY.COUNTERPARTY_URN.MAX_LENGTH,
     numeric: true,
   }),
-  exitDate: '2025-08-10',
+  exitDate: '2025-01-16',
   roleId: 'buyer',
   sharePercentage: 25,
-  startDate: '2025-04-10',
+  startDate: '2025-01-13',
+});
+
+const FIXED_FEE = () => ({
+  feeTypeCode: FEE_TYPE_CODES.PLA,
+  description: 'Mock fee description',
+  dueDate: '2025-01-15',
+  currency: CURRENCIES.USD,
+  amountDue: 5000,
 });
 
 const OBLIGATION = () => ({
-  effectiveDate: '2024-03-01',
-  maturityDate: '2024-04-01',
+  effectiveDate: '2025-01-13',
+  maturityDate: '2025-01-15',
   currency: CURRENCIES.USD,
   obligationAmount: 2500,
   productSubtype: 'Mock product subtype',
@@ -49,7 +60,7 @@ const REPAYMENT_PROFILE_ALLOCATION = (index: number = 0) => {
   const month = '02';
   const year = today.getFullYear() + index;
 
-  const dueDate = `${day}-${month}-${year}`;
+  const dueDate = `${year}-${month}-${day}`;
 
   return {
     amount: 5000,
@@ -71,12 +82,12 @@ const FACILITY_OVERVIEW = {
   currency: CURRENCIES.USD,
   facilityAmount: 10000,
   effectiveDate: '2025-01-01',
-  expiryDate: '2025-02-01',
-  endOfCoverDate: '2025-03-01',
+  expiryDate: '2027-02-01',
+  endOfCoverDate: '2027-02-01',
   dealId: DEAL_ID,
   isRevolving: true,
   isDraft: true,
-  createdDatetime: '2025-03-21T09:58:21.115Z',
+  createdDatetime: '2025-01-21T09:58:21.115Z',
   productType: 'Mock product type',
 };
 
@@ -87,17 +98,12 @@ const FACILITY_OVERVIEW = {
 const FACILITY_CREATION_PAYLOAD: GiftFacilityCreationDto = {
   overview: FACILITY_OVERVIEW,
   counterparties: [COUNTERPARTY(), COUNTERPARTY()],
+  fixedFees: [FIXED_FEE(), FIXED_FEE()],
   obligations: [OBLIGATION(), OBLIGATION()],
   repaymentProfiles: [
     { ...REPAYMENT_PROFILE(), allocations: [REPAYMENT_PROFILE_ALLOCATION(0), REPAYMENT_PROFILE_ALLOCATION(1)] },
     { ...REPAYMENT_PROFILE(), allocations: [REPAYMENT_PROFILE_ALLOCATION(2), REPAYMENT_PROFILE_ALLOCATION(3)] },
   ],
-
-  /**
-   * NOTE: the below properties are purely for example purposes.
-   * These will be populated in upcoming PRs.
-   */
-  fees: [],
 };
 
 /**
@@ -118,6 +124,7 @@ export const GIFT_EXAMPLES = {
   FACILITY_ID,
   FACILITY_OVERVIEW,
   FACILITY_RESPONSE_DATA,
+  FIXED_FEE,
   OBLIGATION,
   REPAYMENT_PROFILE,
   REPAYMENT_PROFILE_ALLOCATION,

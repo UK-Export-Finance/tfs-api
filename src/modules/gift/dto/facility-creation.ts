@@ -6,11 +6,12 @@ import { ArrayNotEmpty, IsArray, IsDefined, IsNotEmptyObject, ValidateNested } f
 import { UniqueRepaymentProfileAllocationDates, UniqueRepaymentProfileNames } from '../custom-decorators';
 import { GiftFacilityDto } from './facility';
 import { GiftFacilityCounterpartyDto } from './facility-counterparty';
+import { GiftFixedFeeDto } from './fixed-fee';
 import { GiftObligationDto } from './obligation';
 import { GiftRepaymentProfileDto } from './repayment-profile';
 
 const {
-  GIFT: { COUNTERPARTY, FACILITY_OVERVIEW, OBLIGATION, REPAYMENT_PROFILE },
+  GIFT: { COUNTERPARTY, FACILITY_OVERVIEW, FIXED_FEE, OBLIGATION, REPAYMENT_PROFILE },
 } = EXAMPLES;
 
 /**
@@ -44,6 +45,19 @@ export class GiftFacilityCreationDto {
 
   @ApiProperty({
     isArray: true,
+    example: [FIXED_FEE(), FIXED_FEE()],
+    required: true,
+    type: GiftFixedFeeDto,
+  })
+  @IsArray()
+  @ArrayNotEmpty()
+  @IsDefined()
+  @Type(() => GiftFixedFeeDto)
+  @ValidateNested()
+  fixedFees: GiftFixedFeeDto[];
+
+  @ApiProperty({
+    isArray: true,
     example: [OBLIGATION(), OBLIGATION()],
     required: true,
     type: GiftObligationDto,
@@ -57,7 +71,7 @@ export class GiftFacilityCreationDto {
 
   @ApiProperty({
     isArray: true,
-    example: [REPAYMENT_PROFILE(), REPAYMENT_PROFILE()],
+    example: [REPAYMENT_PROFILE()],
     required: true,
     type: GiftRepaymentProfileDto,
   })
@@ -69,11 +83,4 @@ export class GiftFacilityCreationDto {
   @Type(() => GiftRepaymentProfileDto)
   @ValidateNested()
   repaymentProfiles: GiftRepaymentProfileDto[];
-
-  /**
-   * NOTE: the below properties are purely for example/context purposes.
-   * These will be populated in upcoming PRs:
-   * GIFT-10026
-   */
-  fees: [];
 }

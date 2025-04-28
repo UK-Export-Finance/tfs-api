@@ -23,12 +23,21 @@ describe('modules/gift/helpers/map-all-validation-error-responses', () => {
     ] as AxiosResponse[];
 
     // Act
-    const result = mapAllValidationErrorResponses({ counterparties: mockResponses, obligations: mockResponses, repaymentProfiles: mockResponses });
+    const result = mapAllValidationErrorResponses({
+      counterparties: mockResponses,
+      fixedFees: mockResponses,
+      obligations: mockResponses,
+      repaymentProfiles: mockResponses,
+    });
 
     // Assert
     const expected = [
       ...mapValidationErrorResponses({
         entityName: ENTITY_NAMES.COUNTERPARTY,
+        responses: mockResponses,
+      }),
+      ...mapValidationErrorResponses({
+        entityName: ENTITY_NAMES.FIXED_FEE,
         responses: mockResponses,
       }),
       ...mapValidationErrorResponses({

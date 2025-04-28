@@ -3,6 +3,7 @@ import { mockResponse200, mockResponse201 } from '@ukef-test/http-response';
 
 import { GiftController } from './gift.controller';
 import { GiftCounterpartyService } from './gift.counterparty.service';
+import { GiftFixedFeeService } from './gift.fixed-fee.service';
 import { GiftObligationService } from './gift.obligation.service';
 import { GiftRepaymentProfileService } from './gift.repayment-profile.service';
 import { GiftService } from './gift.service';
@@ -18,6 +19,7 @@ const mockResponsePost = mockResponse201(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA);
 describe('GiftController', () => {
   let giftHttpService: GiftHttpService;
   let counterpartyService: GiftCounterpartyService;
+  let fixedFeeService: GiftFixedFeeService;
   let obligationService: GiftObligationService;
   let repaymentProfileService: GiftRepaymentProfileService;
   let giftService: GiftService;
@@ -35,10 +37,11 @@ describe('GiftController', () => {
     giftHttpService = new GiftHttpService();
 
     counterpartyService = new GiftCounterpartyService(giftHttpService);
+    fixedFeeService = new GiftFixedFeeService(giftHttpService);
     obligationService = new GiftObligationService(giftHttpService);
     repaymentProfileService = new GiftRepaymentProfileService(giftHttpService);
 
-    giftService = new GiftService(giftHttpService, counterpartyService, obligationService, repaymentProfileService);
+    giftService = new GiftService(giftHttpService, counterpartyService, fixedFeeService, obligationService, repaymentProfileService);
 
     mockResSend = jest.fn();
 
