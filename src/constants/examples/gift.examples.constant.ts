@@ -87,7 +87,7 @@ const FACILITY_OVERVIEW = {
   dealId: DEAL_ID,
   isRevolving: true,
   isDraft: true,
-  createdDatetime: '2025-03-21T09:58:21.115Z',
+  createdDatetime: '2025-01-21T09:58:21.115Z',
   productTypeCode: GIFT.PRODUCT_TYPE_CODES.BIP,
 };
 

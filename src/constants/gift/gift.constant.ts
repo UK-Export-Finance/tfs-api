@@ -28,13 +28,7 @@ export const GIFT = {
   PATH: {
     FACILITY: '/facility',
     CONFIGURATION_EVENT: '/configuration-event',
-    COUNTERPARTY: '/counterparty',
     CREATE_FACILITY: '/work-package/create-facility',
-    CREATION_EVENT: '/creation-event',
-    FIXED_FEE: '/fixed-fee',
-    MANUAL: '/manual',
-    OBLIGATION: '/obligation',
-    REPAYMENT_PROFILE: '/repayment-profile',
     WORK_PACKAGE: '/work-package',
   },
   PRODUCT_TYPE_CODES: {
