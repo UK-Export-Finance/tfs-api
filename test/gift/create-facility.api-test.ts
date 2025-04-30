@@ -5,7 +5,6 @@ import { GIFT_EXAMPLES } from '@ukef/constants/examples/gift.examples.constant';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
 import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
-import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import nock from 'nock';
 
 const {
@@ -36,10 +35,8 @@ const getExpectedValidationErrors = (payload, expectedResponse, entityName) => {
 };
 
 describe('POST /gift/facility', () => {
-  const valueGenerator = new RandomValueGenerator();
-
-  const mockFacilityId = valueGenerator.ukefId();
-  const mockWorkPackageId = valueGenerator.workPackageId();
+  const mockFacilityId = GIFT_EXAMPLES.FACILITY_ID;
+  const mockWorkPackageId = GIFT_EXAMPLES.WORK_PACKAGE_ID;
 
   const mockResponses = {
     badRequest: {
@@ -57,9 +54,9 @@ describe('POST /gift/facility', () => {
     obligation: { anObligation: true },
     repaymentProfile: { aRepaymentProfile: true },
     facility: {
+      aMockFacility: true,
       facilityId: mockFacilityId,
       workPackageId: mockWorkPackageId,
-      aMockFacility: true,
     },
     internalServerError: {
       statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
@@ -77,7 +74,8 @@ describe('POST /gift/facility', () => {
   const payloadRepaymentProfiles = Object.keys(GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD.repaymentProfiles);
 
   const facilityUrl = `/api/${prefixAndVersion}/gift${PATH.FACILITY}`;
-  const counterPartyUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}`;
+  const facilityCreationUrl = PATH.CREATE_FACILITY;
+  const counterpartyUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}`;
   const fixedFeeUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}`;
   const obligationUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}`;
   const repaymentProfileUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}`;
@@ -106,9 +104,9 @@ describe('POST /gift/facility', () => {
   describe(`when the payload is valid and a ${HttpStatus.CREATED} response is returned by all GIFT endpoints`, () => {
     it(`should return a ${HttpStatus.CREATED}} response with a facility, counterparties and repayment profiles`, async () => {
       // Arrange
-      nock(GIFT_API_URL).post(PATH.FACILITY).reply(HttpStatus.CREATED, mockResponses.facility);
+      nock(GIFT_API_URL).persist().post(facilityCreationUrl).reply(HttpStatus.CREATED, mockResponses.facility);
 
-      nock(GIFT_API_URL).persist().post(counterPartyUrl).reply(HttpStatus.CREATED, mockResponses.counterparty);
+      nock(GIFT_API_URL).persist().post(counterpartyUrl).reply(HttpStatus.CREATED, mockResponses.counterparty);
 
       nock(GIFT_API_URL).persist().post(fixedFeeUrl).reply(HttpStatus.CREATED, mockResponses.fixedFee);
 
@@ -138,7 +136,7 @@ describe('POST /gift/facility', () => {
     describe(`when a ${HttpStatus.BAD_REQUEST} response is returned by the GIFT facility endpoint`, () => {
       it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
         // Arrange
-        nock(GIFT_API_URL).post(PATH.FACILITY).reply(HttpStatus.BAD_REQUEST, mockResponses.badRequest);
+        nock(GIFT_API_URL).post(PATH.CREATE_FACILITY).reply(HttpStatus.BAD_REQUEST, mockResponses.badRequest);
 
         // Act
         const { status, body } = await api.post(facilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
@@ -154,7 +152,7 @@ describe('POST /gift/facility', () => {
 
     describe(`when a ${HttpStatus.UNAUTHORIZED} response is returned by the GIFT facility endpoint`, () => {
       it(`should return a ${HttpStatus.UNAUTHORIZED} response`, async () => {
-        nock(GIFT_API_URL).post(PATH.FACILITY).reply(HttpStatus.UNAUTHORIZED, mockResponses.unauthorized);
+        nock(GIFT_API_URL).post(PATH.CREATE_FACILITY).reply(HttpStatus.UNAUTHORIZED, mockResponses.unauthorized);
 
         const { status, body } = await api.post(facilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
@@ -166,7 +164,7 @@ describe('POST /gift/facility', () => {
 
     describe('when an unacceptable status is returned by the GIFT facility endpoint', () => {
       it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
-        nock(GIFT_API_URL).post(PATH.FACILITY).reply(HttpStatus.I_AM_A_TEAPOT);
+        nock(GIFT_API_URL).post(PATH.CREATE_FACILITY).reply(HttpStatus.I_AM_A_TEAPOT);
 
         const { status, body } = await api.post(facilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
@@ -178,7 +176,7 @@ describe('POST /gift/facility', () => {
 
     describe(`when a ${HttpStatus.INTERNAL_SERVER_ERROR} status is returned by the GIFT facility endpoint`, () => {
       it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
-        nock(GIFT_API_URL).post(PATH.FACILITY).reply(HttpStatus.INTERNAL_SERVER_ERROR);
+        nock(GIFT_API_URL).post(PATH.CREATE_FACILITY).reply(HttpStatus.INTERNAL_SERVER_ERROR);
 
         const { status, body } = await api.post(facilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
@@ -193,9 +191,9 @@ describe('POST /gift/facility', () => {
     describe(`when a ${HttpStatus.BAD_REQUEST} response is returned by the GIFT counterparty endpoint`, () => {
       it(`should return a ${HttpStatus.BAD_REQUEST} response with a mapped body/validation errors`, async () => {
         // Arrange
-        nock(GIFT_API_URL).post(PATH.FACILITY).reply(HttpStatus.CREATED, mockResponses.facility);
+        nock(GIFT_API_URL).post(PATH.CREATE_FACILITY).reply(HttpStatus.CREATED, mockResponses.facility);
 
-        nock(GIFT_API_URL).persist().post(counterPartyUrl).reply(HttpStatus.BAD_REQUEST, mockResponses.badRequest);
+        nock(GIFT_API_URL).persist().post(counterpartyUrl).reply(HttpStatus.BAD_REQUEST, mockResponses.badRequest);
 
         nock(GIFT_API_URL).persist().post(fixedFeeUrl).reply(HttpStatus.CREATED, mockResponses.fixedFee);
 
@@ -222,9 +220,9 @@ describe('POST /gift/facility', () => {
     describe(`when a ${HttpStatus.UNAUTHORIZED} response is returned by the GIFT counterparty endpoint`, () => {
       it(`should return a ${HttpStatus.UNAUTHORIZED} response`, async () => {
         // Arrange
-        nock(GIFT_API_URL).post(PATH.FACILITY).reply(HttpStatus.CREATED, mockResponses.facility);
+        nock(GIFT_API_URL).post(PATH.CREATE_FACILITY).reply(HttpStatus.CREATED, mockResponses.facility);
 
-        nock(GIFT_API_URL).persist().post(counterPartyUrl).reply(HttpStatus.UNAUTHORIZED, mockResponses.unauthorized);
+        nock(GIFT_API_URL).persist().post(counterpartyUrl).reply(HttpStatus.UNAUTHORIZED, mockResponses.unauthorized);
 
         nock(GIFT_API_URL).persist().post(fixedFeeUrl).reply(HttpStatus.CREATED, mockResponses.fixedFee);
 
@@ -250,9 +248,9 @@ describe('POST /gift/facility', () => {
     describe(`when a ${HttpStatus.INTERNAL_SERVER_ERROR} status is returned by the GIFT counterparty endpoint`, () => {
       it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
         // Arrange
-        nock(GIFT_API_URL).post(PATH.FACILITY).reply(HttpStatus.CREATED, mockResponses.facility);
+        nock(GIFT_API_URL).post(PATH.CREATE_FACILITY).reply(HttpStatus.CREATED, mockResponses.facility);
 
-        nock(GIFT_API_URL).persist().post(counterPartyUrl).reply(HttpStatus.INTERNAL_SERVER_ERROR, mockResponses.badRequest);
+        nock(GIFT_API_URL).persist().post(counterpartyUrl).reply(HttpStatus.INTERNAL_SERVER_ERROR, mockResponses.badRequest);
 
         nock(GIFT_API_URL).persist().post(fixedFeeUrl).reply(HttpStatus.CREATED, mockResponses.fixedFee);
 
@@ -273,9 +271,9 @@ describe('POST /gift/facility', () => {
     describe('when an unacceptable response is returned by the GIFT counterparty endpoint', () => {
       it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
         // Arrange
-        nock(GIFT_API_URL).post(PATH.FACILITY).reply(HttpStatus.CREATED, mockResponses.facility);
+        nock(GIFT_API_URL).post(PATH.CREATE_FACILITY).reply(HttpStatus.CREATED, mockResponses.facility);
 
-        nock(GIFT_API_URL).persist().post(counterPartyUrl).reply(HttpStatus.I_AM_A_TEAPOT);
+        nock(GIFT_API_URL).persist().post(counterpartyUrl).reply(HttpStatus.I_AM_A_TEAPOT);
 
         nock(GIFT_API_URL).persist().post(fixedFeeUrl).reply(HttpStatus.CREATED, mockResponses.fixedFee);
 
@@ -298,9 +296,9 @@ describe('POST /gift/facility', () => {
     describe(`when a ${HttpStatus.BAD_REQUEST} response is returned by the GIFT fixed fee endpoint`, () => {
       it(`should return a ${HttpStatus.BAD_REQUEST} response with a mapped body/validation errors`, async () => {
         // Arrange
-        nock(GIFT_API_URL).post(PATH.FACILITY).reply(HttpStatus.CREATED, mockResponses.facility);
+        nock(GIFT_API_URL).post(PATH.CREATE_FACILITY).reply(HttpStatus.CREATED, mockResponses.facility);
 
-        nock(GIFT_API_URL).persist().post(counterPartyUrl).reply(HttpStatus.CREATED, mockResponses.counterparty);
+        nock(GIFT_API_URL).persist().post(counterpartyUrl).reply(HttpStatus.CREATED, mockResponses.counterparty);
 
         nock(GIFT_API_URL).persist().post(fixedFeeUrl).reply(HttpStatus.BAD_REQUEST, mockResponses.badRequest);
 
@@ -327,9 +325,9 @@ describe('POST /gift/facility', () => {
     describe(`when a ${HttpStatus.UNAUTHORIZED} response is returned by the GIFT fixed fee endpoint`, () => {
       it(`should return a ${HttpStatus.UNAUTHORIZED} response`, async () => {
         // Arrange
-        nock(GIFT_API_URL).post(PATH.FACILITY).reply(HttpStatus.CREATED, mockResponses.facility);
+        nock(GIFT_API_URL).post(PATH.CREATE_FACILITY).reply(HttpStatus.CREATED, mockResponses.facility);
 
-        nock(GIFT_API_URL).persist().post(counterPartyUrl).reply(HttpStatus.CREATED, mockResponses.unauthorized);
+        nock(GIFT_API_URL).persist().post(counterpartyUrl).reply(HttpStatus.CREATED, mockResponses.unauthorized);
 
         nock(GIFT_API_URL).persist().post(fixedFeeUrl).reply(HttpStatus.UNAUTHORIZED, mockResponses.unauthorized);
 
@@ -355,9 +353,9 @@ describe('POST /gift/facility', () => {
     describe(`when a ${HttpStatus.INTERNAL_SERVER_ERROR} status is returned by the GIFT fixed fee endpoint`, () => {
       it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
         // Arrange
-        nock(GIFT_API_URL).post(PATH.FACILITY).reply(HttpStatus.CREATED, mockResponses.facility);
+        nock(GIFT_API_URL).post(PATH.CREATE_FACILITY).reply(HttpStatus.CREATED, mockResponses.facility);
 
-        nock(GIFT_API_URL).persist().post(counterPartyUrl).reply(HttpStatus.CREATED, mockResponses.counterparty);
+        nock(GIFT_API_URL).persist().post(counterpartyUrl).reply(HttpStatus.CREATED, mockResponses.counterparty);
 
         nock(GIFT_API_URL).persist().post(fixedFeeUrl).reply(HttpStatus.INTERNAL_SERVER_ERROR, mockResponses.badRequest);
 
@@ -378,9 +376,9 @@ describe('POST /gift/facility', () => {
     describe('when an unacceptable response is returned by the GIFT fixed fee endpoint', () => {
       it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
         // Arrange
-        nock(GIFT_API_URL).post(PATH.FACILITY).reply(HttpStatus.CREATED, mockResponses.facility);
+        nock(GIFT_API_URL).post(PATH.CREATE_FACILITY).reply(HttpStatus.CREATED, mockResponses.facility);
 
-        nock(GIFT_API_URL).persist().post(counterPartyUrl).reply(HttpStatus.CREATED, mockResponses.counterparty);
+        nock(GIFT_API_URL).persist().post(counterpartyUrl).reply(HttpStatus.CREATED, mockResponses.counterparty);
 
         nock(GIFT_API_URL).persist().post(fixedFeeUrl).reply(HttpStatus.I_AM_A_TEAPOT);
 
@@ -403,9 +401,9 @@ describe('POST /gift/facility', () => {
     describe(`when a ${HttpStatus.BAD_REQUEST} response is returned by the GIFT obligation endpoint`, () => {
       it(`should return a ${HttpStatus.BAD_REQUEST} response with a mapped body/validation errors`, async () => {
         // Arrange
-        nock(GIFT_API_URL).post(PATH.FACILITY).reply(HttpStatus.CREATED, mockResponses.facility);
+        nock(GIFT_API_URL).post(PATH.CREATE_FACILITY).reply(HttpStatus.CREATED, mockResponses.facility);
 
-        nock(GIFT_API_URL).persist().post(counterPartyUrl).reply(HttpStatus.CREATED, mockResponses.counterparty);
+        nock(GIFT_API_URL).persist().post(counterpartyUrl).reply(HttpStatus.CREATED, mockResponses.counterparty);
 
         nock(GIFT_API_URL).persist().post(fixedFeeUrl).reply(HttpStatus.CREATED, mockResponses.fixedFee);
 
@@ -432,9 +430,9 @@ describe('POST /gift/facility', () => {
     describe(`when a ${HttpStatus.UNAUTHORIZED} response is returned by the GIFT obligation endpoint`, () => {
       it(`should return a ${HttpStatus.UNAUTHORIZED} response`, async () => {
         // Arrange
-        nock(GIFT_API_URL).post(PATH.FACILITY).reply(HttpStatus.CREATED, mockResponses.facility);
+        nock(GIFT_API_URL).post(PATH.CREATE_FACILITY).reply(HttpStatus.CREATED, mockResponses.facility);
 
-        nock(GIFT_API_URL).persist().post(counterPartyUrl).reply(HttpStatus.CREATED, mockResponses.counterparty);
+        nock(GIFT_API_URL).persist().post(counterpartyUrl).reply(HttpStatus.CREATED, mockResponses.counterparty);
 
         nock(GIFT_API_URL).persist().post(fixedFeeUrl).reply(HttpStatus.CREATED, mockResponses.fixedFee);
 
@@ -460,9 +458,9 @@ describe('POST /gift/facility', () => {
     describe(`when a ${HttpStatus.INTERNAL_SERVER_ERROR} status is returned by the GIFT obligation endpoint`, () => {
       it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
         // Arrange
-        nock(GIFT_API_URL).post(PATH.FACILITY).reply(HttpStatus.CREATED, mockResponses.facility);
+        nock(GIFT_API_URL).post(PATH.CREATE_FACILITY).reply(HttpStatus.CREATED, mockResponses.facility);
 
-        nock(GIFT_API_URL).persist().post(counterPartyUrl).reply(HttpStatus.CREATED, mockResponses.counterparty);
+        nock(GIFT_API_URL).persist().post(counterpartyUrl).reply(HttpStatus.CREATED, mockResponses.counterparty);
 
         nock(GIFT_API_URL).persist().post(fixedFeeUrl).reply(HttpStatus.CREATED, mockResponses.fixedFee);
 
@@ -483,9 +481,9 @@ describe('POST /gift/facility', () => {
     describe('when an unacceptable response is returned by the GIFT obligation endpoint', () => {
       it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
         // Arrange
-        nock(GIFT_API_URL).post(PATH.FACILITY).reply(HttpStatus.CREATED, mockResponses.facility);
+        nock(GIFT_API_URL).post(PATH.CREATE_FACILITY).reply(HttpStatus.CREATED, mockResponses.facility);
 
-        nock(GIFT_API_URL).persist().post(counterPartyUrl).reply(HttpStatus.CREATED, mockResponses.counterparty);
+        nock(GIFT_API_URL).persist().post(counterpartyUrl).reply(HttpStatus.CREATED, mockResponses.counterparty);
 
         nock(GIFT_API_URL).persist().post(fixedFeeUrl).reply(HttpStatus.CREATED, mockResponses.fixedFee);
 
@@ -508,9 +506,9 @@ describe('POST /gift/facility', () => {
     describe(`when a ${HttpStatus.BAD_REQUEST} response is returned by the GIFT repayment profile endpoint`, () => {
       it(`should return a ${HttpStatus.BAD_REQUEST} response with a mapped body/validation errors`, async () => {
         // Arrange
-        nock(GIFT_API_URL).post(PATH.FACILITY).reply(HttpStatus.CREATED, mockResponses.facility);
+        nock(GIFT_API_URL).post(PATH.CREATE_FACILITY).reply(HttpStatus.CREATED, mockResponses.facility);
 
-        nock(GIFT_API_URL).persist().post(counterPartyUrl).reply(HttpStatus.CREATED, mockResponses.counterparty);
+        nock(GIFT_API_URL).persist().post(counterpartyUrl).reply(HttpStatus.CREATED, mockResponses.counterparty);
 
         nock(GIFT_API_URL).persist().post(fixedFeeUrl).reply(HttpStatus.CREATED, mockResponses.fixedFee);
 
@@ -537,9 +535,9 @@ describe('POST /gift/facility', () => {
     describe(`when a ${HttpStatus.UNAUTHORIZED} response is returned by the GIFT repayment profile endpoint`, () => {
       it(`should return a ${HttpStatus.UNAUTHORIZED} response`, async () => {
         // Arrange
-        nock(GIFT_API_URL).post(PATH.FACILITY).reply(HttpStatus.CREATED, mockResponses.facility);
+        nock(GIFT_API_URL).post(PATH.CREATE_FACILITY).reply(HttpStatus.CREATED, mockResponses.facility);
 
-        nock(GIFT_API_URL).persist().post(counterPartyUrl).reply(HttpStatus.CREATED, mockResponses.counterparty);
+        nock(GIFT_API_URL).persist().post(counterpartyUrl).reply(HttpStatus.CREATED, mockResponses.counterparty);
 
         nock(GIFT_API_URL).persist().post(fixedFeeUrl).reply(HttpStatus.CREATED, mockResponses.fixedFee);
 
@@ -565,9 +563,9 @@ describe('POST /gift/facility', () => {
     describe(`when a ${HttpStatus.INTERNAL_SERVER_ERROR} status is returned by the GIFT repayment profile endpoint`, () => {
       it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
         // Arrange
-        nock(GIFT_API_URL).post(PATH.FACILITY).reply(HttpStatus.CREATED, mockResponses.facility);
+        nock(GIFT_API_URL).post(PATH.CREATE_FACILITY).reply(HttpStatus.CREATED, mockResponses.facility);
 
-        nock(GIFT_API_URL).persist().post(counterPartyUrl).reply(HttpStatus.CREATED, mockResponses.badRequest);
+        nock(GIFT_API_URL).persist().post(counterpartyUrl).reply(HttpStatus.CREATED, mockResponses.badRequest);
 
         nock(GIFT_API_URL).persist().post(fixedFeeUrl).reply(HttpStatus.CREATED, mockResponses.fixedFee);
 
@@ -588,9 +586,9 @@ describe('POST /gift/facility', () => {
     describe(`when an unacceptable response is returned by the GIFT repayment profile endpoint`, () => {
       it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
         // Arrange
-        nock(GIFT_API_URL).post(PATH.FACILITY).reply(HttpStatus.CREATED, mockResponses.facility);
+        nock(GIFT_API_URL).post(PATH.CREATE_FACILITY).reply(HttpStatus.CREATED, mockResponses.facility);
 
-        nock(GIFT_API_URL).persist().post(counterPartyUrl).reply(HttpStatus.CREATED);
+        nock(GIFT_API_URL).persist().post(counterpartyUrl).reply(HttpStatus.CREATED);
 
         nock(GIFT_API_URL).persist().post(fixedFeeUrl).reply(HttpStatus.CREATED, mockResponses.fixedFee);
 

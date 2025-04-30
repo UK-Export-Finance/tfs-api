@@ -261,7 +261,7 @@ describe('POST /gift/facility - validation', () => {
           `overview.obligorUrn must be longer than or equal to ${VALIDATION.FACILITY.OVERVIEW.OBLIGOR_URN.MIN_LENGTH} characters`,
           'overview.obligorUrn must be a number string',
           'overview.productType should not be null or undefined',
-          `overview.productType must be longer than or equal to ${VALIDATION.FACILITY.OVERVIEW.PRODUCT_TYPE.MIN_LENGTH} characters`,
+          `overview.productType must be longer than or equal to ${VALIDATION.FACILITY.OVERVIEW.PRODUCT_TYPE_CODE.MIN_LENGTH} characters`,
           'overview.productType must be a string',
           `counterparties.counterpartyUrn should not be null or undefined`,
           `counterparties.counterpartyUrn must be longer than or equal to ${VALIDATION.COUNTERPARTY.COUNTERPARTY_URN.MIN_LENGTH} characters`,
@@ -419,8 +419,8 @@ describe('POST /gift/facility - validation', () => {
     stringValidation({
       ...baseParams,
       fieldName: 'productType',
-      min: VALIDATION.FACILITY.OVERVIEW.PRODUCT_TYPE.MIN_LENGTH,
-      max: VALIDATION.FACILITY.OVERVIEW.PRODUCT_TYPE.MAX_LENGTH,
+      min: VALIDATION.FACILITY.OVERVIEW.PRODUCT_TYPE_CODE.MIN_LENGTH,
+      max: VALIDATION.FACILITY.OVERVIEW.PRODUCT_TYPE_CODE.MAX_LENGTH,
     });
   });
 });
