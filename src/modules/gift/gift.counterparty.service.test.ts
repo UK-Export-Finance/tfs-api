@@ -118,9 +118,9 @@ describe('GiftCounterpartyService', () => {
       // Assert
       expect(mockCreateOne).toHaveBeenCalledTimes(counterpartiesLength);
 
-      expect(mockCreateOne).toHaveBeenCalledWith(mockCounterparties[0], mockWorkPackageId);
-      expect(mockCreateOne).toHaveBeenCalledWith(mockCounterparties[1], mockWorkPackageId);
-      expect(mockCreateOne).toHaveBeenCalledWith(mockCounterparties[2], mockWorkPackageId);
+      expect(mockCreateOne).toHaveBeenCalledWith(mockCounterparties[0], mockFacilityId, mockWorkPackageId);
+      expect(mockCreateOne).toHaveBeenCalledWith(mockCounterparties[1], mockFacilityId, mockWorkPackageId);
+      expect(mockCreateOne).toHaveBeenCalledWith(mockCounterparties[2], mockFacilityId, mockWorkPackageId);
     });
 
     describe('when service.createOne is successful', () => {

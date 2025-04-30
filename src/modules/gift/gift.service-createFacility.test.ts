@@ -20,10 +20,10 @@ const mockFixedFees = [FIXED_FEE(), FIXED_FEE()];
 const mockObligations = [OBLIGATION(), OBLIGATION(), OBLIGATION()];
 const mockRepaymentProfiles = [REPAYMENT_PROFILE(), REPAYMENT_PROFILE(), REPAYMENT_PROFILE()];
 
-const mockCreateCounterpartiesResponse = mockCounterparties.map((counterparty) => mockResponse201(counterparty));
-const mockCreateFixedFeesResponse = mockFixedFees.map((fixedFee) => mockResponse201(fixedFee));
-const mockCreateObligationsResponse = mockObligations.map((counterparty) => mockResponse201(counterparty));
-const mockRepaymentProfilesResponse = mockRepaymentProfiles.map((repaymentProfile) => mockResponse201(repaymentProfile));
+const mockCreateCounterpartiesResponse = mockCounterparties.map((counterparty) => mockResponse201({ eventData: counterparty }));
+const mockCreateFixedFeesResponse = mockFixedFees.map((fixedFee) => mockResponse201({ eventData: fixedFee }));
+const mockCreateObligationsResponse = mockObligations.map((obligation) => mockResponse201({ eventData: obligation }));
+const mockRepaymentProfilesResponse = mockRepaymentProfiles.map((repaymentProfile) => mockResponse201({ eventData: repaymentProfile }));
 
 describe('GiftService.createFacility', () => {
   let httpService: HttpService;
@@ -137,7 +137,7 @@ describe('GiftService.createFacility', () => {
       const expected = {
         status: HttpStatus.CREATED,
         data: {
-          ...FACILITY_RESPONSE_DATA,
+          ...FACILITY_RESPONSE_DATA.configurationEvent.eventData,
           counterparties: mockCounterparties,
           fixedFees: mockFixedFees,
           obligations: mockObligations,

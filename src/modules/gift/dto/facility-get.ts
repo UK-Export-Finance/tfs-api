@@ -12,39 +12,39 @@ const {
  * GIFT facility response DTO.
  * These fields are returned from GIFT when getting a facility.
  */
-export class GiftFacilityGetResponseDto extends GiftFacilityDto {
+export class GiftFacilityResponseDto extends GiftFacilityDto {
   @IsNumber()
   @ApiProperty({
-    example: EXAMPLE.availableAmount,
+    example: EXAMPLE.configurationEvent.eventData.availableAmount,
   })
   availableAmount: number;
 
   @ApiProperty({
-    example: EXAMPLE.createdDatetime,
+    example: EXAMPLE.configurationEvent.eventData.createdDatetime,
   })
   createdDatetime: string;
 
   @IsNumber()
   @ApiProperty({
-    example: EXAMPLE.drawnAmount,
+    example: EXAMPLE.configurationEvent.eventData.drawnAmount,
   })
   drawnAmount: number;
 
   @IsBoolean()
   @ApiProperty({
-    example: EXAMPLE.isDraft,
+    example: EXAMPLE.configurationEvent.eventData.isDraft,
   })
   isDraft: boolean;
 
   @IsString()
   @ApiProperty({
-    example: EXAMPLE.streamId,
+    example: EXAMPLE.configurationEvent.eventData.streamId,
   })
   streamId: string;
 
   @IsNumber()
   @ApiProperty({
-    example: EXAMPLE.streamVersion,
+    example: EXAMPLE.configurationEvent.eventData.streamVersion,
   })
   streamVersion: number;
 }

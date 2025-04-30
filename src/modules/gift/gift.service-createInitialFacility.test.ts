@@ -59,7 +59,7 @@ describe('GiftService.createInitialFacility', () => {
     expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
 
     expect(mockHttpServicePost).toHaveBeenCalledWith({
-      path: PATH.FACILITY,
+      path: PATH.CREATE_FACILITY,
       payload: {
         eventType: EVENT_TYPES.CREATE_FACILITY,
         eventData: mockPayload.overview,

@@ -1,8 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { EXAMPLES } from '@ukef/constants';
-import { IsNumber } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsNumber, IsObject } from 'class-validator';
 
-import { GiftFacilityGetResponseDto } from './facility-get';
+import { GiftFacilityConfigPostResponseDto } from './facility-post-gift-config-response-event';
 
 const {
   GIFT: { FACILITY_RESPONSE_DATA: EXAMPLE },
@@ -12,7 +13,16 @@ const {
  * GIFT facility response DTO.
  * These fields are returned from GIFT when creating a facility.
  */
-export class GiftFacilityPostResponseDto extends GiftFacilityGetResponseDto {
+export class GiftFacilityPostResponseDto {
+  @IsObject()
+  @ApiProperty({
+    example: EXAMPLE.configurationEvent,
+    required: true,
+    type: GiftFacilityConfigPostResponseDto,
+  })
+  @Type(() => GiftFacilityConfigPostResponseDto)
+  configurationEvent: GiftFacilityConfigPostResponseDto;
+
   @IsNumber()
   @ApiProperty({
     example: EXAMPLE.workPackageId,

@@ -51,7 +51,7 @@ describe('GiftFixedFeeService', () => {
       expect(mockHttpServicePost).toHaveBeenCalledWith({
         path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}`,
         payload: {
-          eventType: EVENT_TYPES.ADD_COUNTERPARTY,
+          eventType: EVENT_TYPES.CREATE_FIXED_FEE,
           eventData: mockFixedFee,
         },
       });
@@ -118,9 +118,9 @@ describe('GiftFixedFeeService', () => {
       // Assert
       expect(mockCreateOne).toHaveBeenCalledTimes(fixedFeesLength);
 
-      expect(mockCreateOne).toHaveBeenCalledWith(mockFixedFees[0], mockWorkPackageId);
-      expect(mockCreateOne).toHaveBeenCalledWith(mockFixedFees[1], mockWorkPackageId);
-      expect(mockCreateOne).toHaveBeenCalledWith(mockFixedFees[2], mockWorkPackageId);
+      expect(mockCreateOne).toHaveBeenCalledWith(mockFixedFees[0], mockFacilityId, mockWorkPackageId);
+      expect(mockCreateOne).toHaveBeenCalledWith(mockFixedFees[1], mockFacilityId, mockWorkPackageId);
+      expect(mockCreateOne).toHaveBeenCalledWith(mockFixedFees[2], mockFacilityId, mockWorkPackageId);
     });
 
     describe('when service.createOne is successful', () => {

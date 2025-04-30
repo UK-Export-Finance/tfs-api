@@ -7,7 +7,7 @@ const {
   GIFT: { REPAYMENT_PROFILE, FACILITY_ID: mockFacilityId, WORK_PACKAGE_ID: mockWorkPackageId },
 } = EXAMPLES;
 
-const { PATH } = GIFT;
+const { EVENT_TYPES, PATH } = GIFT;
 
 describe('GiftRepaymentProfileService', () => {
   let httpService: HttpService;
@@ -39,25 +39,28 @@ describe('GiftRepaymentProfileService', () => {
   });
 
   describe('createOne', () => {
-    const mockPayload = REPAYMENT_PROFILE();
+    const mockRepaymentProfile = REPAYMENT_PROFILE();
 
     it('should call giftHttpService.post', async () => {
       // Act
-      await service.createOne(mockPayload, mockFacilityId, mockWorkPackageId);
+      await service.createOne(mockRepaymentProfile, mockFacilityId, mockWorkPackageId);
 
       // Assert
       expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
 
       expect(mockHttpServicePost).toHaveBeenCalledWith({
         path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}`,
-        payload: mockPayload,
+        payload: {
+          eventType: EVENT_TYPES.ADD_MANUAL_REPAYMENT_PROFILE,
+          eventData: mockRepaymentProfile,
+        },
       });
     });
 
     describe('when giftHttpService.post is successful', () => {
       it('should return the response of giftHttpService.post', async () => {
         // Act
-        const response = await service.createOne(mockPayload, mockFacilityId, mockWorkPackageId);
+        const response = await service.createOne(mockRepaymentProfile, mockFacilityId, mockWorkPackageId);
 
         // Assert
         expect(response).toEqual(mockCreateOneResponse);
@@ -76,7 +79,7 @@ describe('GiftRepaymentProfileService', () => {
 
       it('should thrown an error', async () => {
         // Act
-        const promise = service.createOne(mockPayload, mockFacilityId, mockWorkPackageId);
+        const promise = service.createOne(mockRepaymentProfile, mockFacilityId, mockWorkPackageId);
 
         // Assert
         const expected = new Error('Error creating repayment profile');
@@ -112,20 +115,20 @@ describe('GiftRepaymentProfileService', () => {
 
     it('should call service.createOne for each provided repayment profile', async () => {
       // Act
-      await service.createMany(mockPayload, mockWorkPackageId);
+      await service.createMany(mockPayload, mockFacilityId, mockWorkPackageId);
 
       // Assert
       expect(mockCreateOne).toHaveBeenCalledTimes(repaymentProfilesLength);
 
-      expect(mockCreateOne).toHaveBeenCalledWith(mockPayload[0], mockWorkPackageId);
-      expect(mockCreateOne).toHaveBeenCalledWith(mockPayload[1], mockWorkPackageId);
-      expect(mockCreateOne).toHaveBeenCalledWith(mockPayload[2], mockWorkPackageId);
+      expect(mockCreateOne).toHaveBeenCalledWith(mockPayload[0], mockFacilityId, mockWorkPackageId);
+      expect(mockCreateOne).toHaveBeenCalledWith(mockPayload[1], mockFacilityId, mockWorkPackageId);
+      expect(mockCreateOne).toHaveBeenCalledWith(mockPayload[2], mockFacilityId, mockWorkPackageId);
     });
 
     describe('when service.createOne is successful', () => {
       it('should return the response of multiple calls to service.createOne', async () => {
         // Act
-        const response = await service.createMany(mockPayload, mockWorkPackageId);
+        const response = await service.createMany(mockPayload, mockFacilityId, mockWorkPackageId);
 
         // Assert
         const expected = [mockCreateOneResponse, mockCreateOneResponse, mockCreateOneResponse];
@@ -146,7 +149,7 @@ describe('GiftRepaymentProfileService', () => {
 
       it('should thrown an error', async () => {
         // Act
-        const promise = service.createMany(mockPayload, mockWorkPackageId);
+        const promise = service.createMany(mockPayload, mockFacilityId, mockWorkPackageId);
 
         // Assert
         const expected = new Error('Error creating repayment profiles');

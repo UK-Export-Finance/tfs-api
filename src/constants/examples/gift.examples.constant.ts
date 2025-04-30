@@ -111,9 +111,13 @@ const FACILITY_CREATION_PAYLOAD: GiftFacilityCreationDto = {
  * Facility data in the shape that GIFT returns.
  */
 const FACILITY_RESPONSE_DATA: GiftFacilityPostResponseDto = {
-  ...FACILITY_OVERVIEW,
-  drawnAmount: 2000000,
-  availableAmount: 3000000,
+  configurationEvent: {
+    eventData: {
+      ...FACILITY_OVERVIEW,
+      drawnAmount: 2000000,
+      availableAmount: 3000000,
+    },
+  },
   workPackageId: WORK_PACKAGE_ID,
 };
 
