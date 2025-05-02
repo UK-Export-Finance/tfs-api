@@ -1,8 +1,8 @@
 import { EXAMPLES } from '@ukef/constants';
 import { mockResponse200, mockResponse201 } from '@ukef-test/http-response';
 
-import { GiftController } from './gift.controller';
 import { GiftCounterpartyService } from './gift.counterparty.service';
+import { GiftFacilityController } from './gift.facility.controller';
 import { GiftFixedFeeService } from './gift.fixed-fee.service';
 import { GiftObligationService } from './gift.obligation.service';
 import { GiftRepaymentProfileService } from './gift.repayment-profile.service';
@@ -16,14 +16,14 @@ const {
 const mockResponseGet = mockResponse200(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA);
 const mockResponsePost = mockResponse201(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA);
 
-describe('GiftController', () => {
+describe('GiftFacilityController', () => {
   let giftHttpService: GiftHttpService;
   let counterpartyService: GiftCounterpartyService;
   let fixedFeeService: GiftFixedFeeService;
   let obligationService: GiftObligationService;
   let repaymentProfileService: GiftRepaymentProfileService;
   let giftService: GiftService;
-  let controller: GiftController;
+  let controller: GiftFacilityController;
 
   let mockRes;
   let mockResStatus;
@@ -59,7 +59,7 @@ describe('GiftController', () => {
     giftService.getFacility = mockServiceGetFacility;
     giftService.createFacility = mockServiceCreateFacility;
 
-    controller = new GiftController(giftService);
+    controller = new GiftFacilityController(giftService);
   });
 
   afterAll(() => {
