@@ -1,13 +1,10 @@
 import { HttpService } from '@nestjs/axios';
-import { GIFT } from '@ukef/constants';
-import { CURRENCIES } from '@ukef/constants/currencies.constant';
+import { EXAMPLES, GIFT } from '@ukef/constants';
 import { mockResponse201, mockResponse500 } from '@ukef-test/http-response';
 
 import { GiftCurrencyService } from './gift.currency.service';
 
 const { PATH } = GIFT;
-
-const mockCurrencies = [CURRENCIES.EUR, CURRENCIES.GBP];
 
 describe('GiftCurrencyService', () => {
   let httpService: HttpService;
@@ -21,7 +18,7 @@ describe('GiftCurrencyService', () => {
     // Arrange
     httpService = new HttpService();
 
-    mockGetResponse = mockResponse201(mockCurrencies);
+    mockGetResponse = mockResponse201(EXAMPLES.GIFT.CURRENCIES);
 
     mockHttpServiceGet = jest.fn().mockResolvedValueOnce(mockGetResponse);
 
