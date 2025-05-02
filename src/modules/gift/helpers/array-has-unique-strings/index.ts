@@ -1,6 +1,6 @@
 /**
  * Check if an array has unique string values
- * @param {string[]} arr: Array of strings
+ * @param {String[]} arr: Array of strings
  * @returns {Boolean}
  */
 export const arrayHasUniqueStrings = (arr: string[]) => {

@@ -4,6 +4,8 @@ import { ValidatedFacilityIdentifierApiProperty } from '@ukef/decorators/validat
 import { UkefId } from '@ukef/helpers';
 import { IsBoolean, IsDefined, IsNumber, IsNumberString, IsString, Length, Min } from 'class-validator';
 
+import { IsSupportedCurrency } from '../custom-decorators';
+
 const {
   GIFT: { DEAL_ID, FACILITY_ID, FACILITY_OVERVIEW: EXAMPLE },
 } = EXAMPLES;
@@ -22,6 +24,7 @@ export class GiftFacilityDto {
   @IsDefined()
   @IsString()
   @Length(VALIDATION.CURRENCY.MIN_LENGTH, VALIDATION.CURRENCY.MAX_LENGTH)
+  @IsSupportedCurrency()
   @ApiProperty({
     example: EXAMPLE.currency,
     required: true,
