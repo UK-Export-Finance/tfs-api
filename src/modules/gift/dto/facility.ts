@@ -24,6 +24,7 @@ export class GiftFacilityDto {
   @Length(VALIDATION.CURRENCY.MIN_LENGTH, VALIDATION.CURRENCY.MAX_LENGTH)
   @ApiProperty({
     example: EXAMPLE.currency,
+    required: true,
   })
   currency: string;
 
@@ -34,6 +35,7 @@ export class GiftFacilityDto {
     example: DEAL_ID,
     minLength: VALIDATION.DEAL_ID.MIN_LENGTH,
     maxLength: VALIDATION.DEAL_ID.MAX_LENGTH,
+    required: true,
   })
   dealId: UkefId;
 
@@ -42,6 +44,7 @@ export class GiftFacilityDto {
   @Length(VALIDATION.EFFECTIVE_DATE.MIN_LENGTH, VALIDATION.EFFECTIVE_DATE.MAX_LENGTH)
   @ApiProperty({
     example: EXAMPLE.effectiveDate,
+    required: true,
   })
   effectiveDate: string;
 
@@ -50,6 +53,7 @@ export class GiftFacilityDto {
   @Length(VALIDATION.END_OF_COVER_DATE.MIN_LENGTH, VALIDATION.END_OF_COVER_DATE.MAX_LENGTH)
   @ApiProperty({
     example: EXAMPLE.endOfCoverDate,
+    required: true,
   })
   endOfCoverDate: string;
 
@@ -58,6 +62,7 @@ export class GiftFacilityDto {
   @Length(VALIDATION.EXPIRY_DATE.MIN_LENGTH, VALIDATION.EXPIRY_DATE.MAX_LENGTH)
   @ApiProperty({
     example: EXAMPLE.expiryDate,
+    required: true,
   })
   expiryDate: string;
 
@@ -66,6 +71,7 @@ export class GiftFacilityDto {
   @Min(VALIDATION.FACILITY_AMOUNT.MIN)
   @ApiProperty({
     example: EXAMPLE.facilityAmount,
+    required: true,
   })
   facilityAmount: number;
 
@@ -76,6 +82,7 @@ export class GiftFacilityDto {
     example: FACILITY_ID,
     minLength: VALIDATION.FACILITY_ID.MIN_LENGTH,
     maxLength: VALIDATION.FACILITY_ID.MAX_LENGTH,
+    required: true,
   })
   facilityId: UkefId;
 
@@ -83,6 +90,7 @@ export class GiftFacilityDto {
   @IsBoolean()
   @ApiProperty({
     example: EXAMPLE.isRevolving,
+    required: true,
   })
   isRevolving: boolean;
 
@@ -91,6 +99,7 @@ export class GiftFacilityDto {
   @Length(VALIDATION.FACILITY_NAME.MIN_LENGTH, VALIDATION.FACILITY_NAME.MAX_LENGTH)
   @ApiProperty({
     example: EXAMPLE.name,
+    required: true,
   })
   name: string;
 
@@ -99,6 +108,7 @@ export class GiftFacilityDto {
   @Length(VALIDATION.OBLIGOR_URN.MIN_LENGTH, VALIDATION.OBLIGOR_URN.MAX_LENGTH)
   @ApiProperty({
     example: EXAMPLE.obligorUrn,
+    required: true,
   })
   obligorUrn: string;
 
@@ -107,6 +117,7 @@ export class GiftFacilityDto {
   @Length(VALIDATION.PRODUCT_TYPE.MIN_LENGTH, VALIDATION.PRODUCT_TYPE.MAX_LENGTH)
   @ApiProperty({
     example: EXAMPLE.productType,
+    required: true,
   })
   productType: string;
 }
