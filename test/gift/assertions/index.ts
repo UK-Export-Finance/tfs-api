@@ -3,6 +3,7 @@ export * from './array-of-nested-objects-string-validation';
 export * from './array-of-objects-number-validation';
 export * from './array-of-objects-string-validation';
 export * from './boolean-validation';
+export * from './currency-string-validation';
 export * from './number-string-validation';
 export * from './number-validation';
 export * from './string-validation';

@@ -5,7 +5,7 @@ import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import nock from 'nock';
 
-import { arrayOfObjectsNumberValidation, arrayOfObjectsStringValidation } from './assertions';
+import { arrayOfObjectsNumberValidation, arrayOfObjectsStringValidation, currencyStringValidation } from './assertions';
 
 const {
   giftVersioning: { prefixAndVersion },
@@ -99,12 +99,7 @@ describe('POST /gift/facility - validation - fixed fees', () => {
   });
 
   describe('currency', () => {
-    arrayOfObjectsStringValidation({
-      ...baseParams,
-      fieldName: 'currency',
-      min: FIXED_FEE_VALIDATION.CURRENCY.MIN_LENGTH,
-      max: FIXED_FEE_VALIDATION.CURRENCY.MAX_LENGTH,
-    });
+    currencyStringValidation(baseParams);
   });
 
   describe('description', () => {

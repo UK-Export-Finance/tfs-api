@@ -5,7 +5,7 @@ import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import nock from 'nock';
 
-import { booleanValidation, numberStringValidation, numberValidation, stringValidation, ukefIdValidation } from './assertions';
+import { booleanValidation, currencyStringValidation, numberStringValidation, numberValidation, stringValidation, ukefIdValidation } from './assertions';
 
 const {
   giftVersioning: { prefixAndVersion },
@@ -341,12 +341,7 @@ describe('POST /gift/facility - validation', () => {
   };
 
   describe('overview.currency', () => {
-    stringValidation({
-      ...baseParams,
-      fieldName: 'currency',
-      min: VALIDATION.FACILITY.OVERVIEW.CURRENCY.MIN_LENGTH,
-      max: VALIDATION.FACILITY.OVERVIEW.CURRENCY.MAX_LENGTH,
-    });
+    currencyStringValidation(baseParams);
   });
 
   describe('overview.dealId', () => {
