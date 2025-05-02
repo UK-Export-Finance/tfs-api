@@ -1,3 +1,4 @@
+import { VALIDATION } from '@ukef/constants/gift/validation.constant';
 import { registerDecorator, ValidationArguments, ValidationOptions } from 'class-validator';
 
 import { GiftCurrencyService } from '../gift.currency.service';
@@ -21,7 +22,14 @@ export function IsSupportedCurrency(options?: ValidationOptions) {
       options,
       validator: {
         async validate(providedCurrency) {
-          if (providedCurrency) {
+          /**
+           * Only validate if a currency with the correct length is provided. By doing this we ensure that:
+           * 1) A consumer of the API receives only relevant validation errors, e.g "must be provided/X length" OR "currency is unsupported", not both.
+           * 2) We only call the GIFT currency endpoint, if we have a correctly formatted currency.
+           */
+          const shouldValidate = typeof providedCurrency === 'string' && providedCurrency.length === VALIDATION.CURRENCY.MIN_LENGTH;
+
+          if (shouldValidate) {
             const httpService = new GiftHttpService();
             const currencyService = new GiftCurrencyService(httpService);
 
