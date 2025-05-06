@@ -4,10 +4,10 @@ describe('modules/gift/helpers/array-contains-strings', () => {
   describe('when an array contains the provided string', () => {
     it('should return true', () => {
       // Arrange
-      const mockArr = ['a', 'b', 'c'];
+      const mockArray = ['a', 'b', 'c'];
 
       // Act
-      const result = arrayContainsString(mockArr, 'b');
+      const result = arrayContainsString(mockArray, 'b');
 
       // Asset
       expect(result).toBe(true);
@@ -17,10 +17,10 @@ describe('modules/gift/helpers/array-contains-strings', () => {
   describe('when an array contains the provided string - alternative unicode strings', () => {
     it('should return true', () => {
       // Arrange
-      const mockArr = ['$', '£', '@', 'à', 'á', 'a'];
+      const mockArray = ['$', '£', '@', 'à', 'á', 'a'];
 
       // Act
-      const result = arrayContainsString(mockArr, '@');
+      const result = arrayContainsString(mockArray, '@');
 
       // Assert
       expect(result).toBe(true);
@@ -30,10 +30,10 @@ describe('modules/gift/helpers/array-contains-strings', () => {
   describe('when an array does NOT contain the provided string', () => {
     it('should return false', () => {
       // Arrange
-      const mockArr = ['a', 'b', 'c'];
+      const mockArray = ['a', 'b', 'c'];
 
       // Act
-      const result = arrayContainsString(mockArr, 'x');
+      const result = arrayContainsString(mockArray, 'x');
 
       // Assert
       expect(result).toBe(false);
@@ -43,10 +43,10 @@ describe('modules/gift/helpers/array-contains-strings', () => {
   describe('when an array is empty', () => {
     it('should return false', () => {
       // Arrange
-      const mockArr = [];
+      const mockArray = [];
 
       // Act
-      const result = arrayContainsString(mockArr, 'a');
+      const result = arrayContainsString(mockArray, 'a');
 
       // Assert
       expect(result).toBe(false);

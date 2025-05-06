@@ -1,13 +1,7 @@
 /**
  * Check if an array contains a string value
- * @param {String[]} arr: Array of strings
- * @param {String} str: String to check
+ * @param {String[]} array: Array of strings
+ * @param {String} search: String to search for
  * @returns {Boolean}
  */
-export const arrayContainsString = (arr: string[], str: string) => {
-  if (arr.length) {
-    return arr.includes(str);
-  }
-
-  return false;
-};
+export const arrayContainsString = (array: string[], search: string) => (array.length ? array.includes(search) : false);

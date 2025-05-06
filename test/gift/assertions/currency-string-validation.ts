@@ -49,13 +49,13 @@ export const currencyStringValidation = ({ initialPayload, parentFieldName, url 
       const { body } = await api.post(url, mockPayload);
 
       // Assert
-      const expected = [`${parentFieldName}.${fieldName} is unsupported (${INVALID_CURRENCY})`];
+      const expected = [`${parentFieldName}.${fieldName} is not supported (${INVALID_CURRENCY})`];
 
       expect(body.message).toStrictEqual(expected);
     });
   });
 
-  describe('when the provided currency is unsupported', () => {
+  describe('when the provided currency is not supported', () => {
     beforeAll(() => {
       // Arrange
       mockPayload[`${parentFieldName}`][`${fieldName}`] = UNSUPPORTED_CURRENCY;
@@ -74,7 +74,7 @@ export const currencyStringValidation = ({ initialPayload, parentFieldName, url 
       const { body } = await api.post(url, mockPayload);
 
       // Assert
-      const expected = [`${parentFieldName}.${fieldName} is unsupported (${UNSUPPORTED_CURRENCY})`];
+      const expected = [`${parentFieldName}.${fieldName} is not supported (${UNSUPPORTED_CURRENCY})`];
 
       expect(body.message).toStrictEqual(expected);
     });

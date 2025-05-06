@@ -32,7 +32,7 @@ export class GiftCurrencyController {
   @ApiInternalServerErrorResponse({
     description: 'An internal server error has occurred',
   })
-  async get(@Res({ passthrough: true }) res: Response) {
+  async get(@Res() res: Response) {
     const { status, data } = await this.giftCurrencyService.getSupportedCurrencies();
 
     res.status(status).send(data);

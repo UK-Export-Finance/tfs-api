@@ -18,13 +18,13 @@ export function IsSupportedCurrency(options?: ValidationOptions) {
     registerDecorator({
       name: 'IsSupportedCurrency',
       target: object.constructor,
-      propertyName: propertyName,
+      propertyName,
       options,
       validator: {
         async validate(providedCurrency) {
           /**
            * Only validate if a currency with the correct length is provided. By doing this we ensure that:
-           * 1) A consumer of the API receives only relevant validation errors, e.g "must be provided/X length" OR "currency is unsupported", not both.
+           * 1) A consumer of the API receives only relevant validation errors, e.g "must be provided/X length" OR "currency is not supported", not both.
            * 2) We only call the GIFT currency endpoint, if we have a correctly formatted currency.
            */
           const shouldValidate = typeof providedCurrency === 'string' && providedCurrency.length === VALIDATION.CURRENCY.MIN_LENGTH;
@@ -38,12 +38,16 @@ export function IsSupportedCurrency(options?: ValidationOptions) {
             return arrayContainsString(supportedCurrencies.data, providedCurrency);
           }
 
+          /**
+           * An invalid currency format has been provided - other validation errors from the controller will be surfaced.
+           * Therefore, no need to call GIFT to check if the (incorrectly formatted) currency is supported.
+           */
           return true;
         },
         defaultMessage(args: CurrencyValidationArguments) {
           const { currency: providedCurrency } = args.object;
 
-          return `currency is unsupported (${providedCurrency})`;
+          return `currency is not supported (${providedCurrency})`;
         },
       },
     });
