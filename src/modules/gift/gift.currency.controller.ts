@@ -32,7 +32,12 @@ export class GiftCurrencyController {
   @ApiInternalServerErrorResponse({
     description: 'An internal server error has occurred',
   })
-  async get(@Res() res: Response) {
+  /**
+   * NOTE: Because we need to return custom responses (instead of NestJS doing this for us), we lose some response handling that NestJS provides by default.
+   * Therefore, we use passthrough: true to ensure that NestJS provides some additional response handling.
+   * Further information: https://docs.nestjs.com/controllers#library-specific-approach
+   */
+  async get(@Res({ passthrough: true }) res: Response) {
     const { status, data } = await this.giftCurrencyService.getSupportedCurrencies();
 
     res.status(status).send(data);
