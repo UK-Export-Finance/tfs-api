@@ -1,5 +1,5 @@
 import { GIFT } from '@ukef/constants';
-import { CURRENCIES } from '@ukef/constants/currencies.constant';
+import { AUD } from '@ukef/constants/currencies.constant';
 import { Api } from '@ukef-test/support/api';
 
 import { generatePayload } from './generate-payload';
@@ -7,7 +7,7 @@ import { assert400Response } from './response-assertion';
 import { stringValidation } from './string-validation';
 
 const INVALID_CURRENCY = 'ABC';
-const UNSUPPORTED_CURRENCY = CURRENCIES.AUD;
+const UNSUPPORTED_CURRENCY = AUD;
 
 /**
  * Validation tests for a currency string field with an unsupported currency and invalid values

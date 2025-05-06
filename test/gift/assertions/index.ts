@@ -1,5 +1,6 @@
 export * from './array-of-nested-objects-number-validation';
 export * from './array-of-nested-objects-string-validation';
+export * from './array-of-objects-currency-string-validation';
 export * from './array-of-objects-number-validation';
 export * from './array-of-objects-string-validation';
 export * from './boolean-validation';

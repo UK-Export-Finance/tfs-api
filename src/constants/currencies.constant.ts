@@ -1,7 +1,12 @@
+export const AUD = 'AUD';
+export const GBP = 'GBP';
+export const EUR = 'EUR';
+export const USD = 'USD';
+export const JPY = 'JPY';
+
 export const CURRENCIES = {
-  AUD: 'AUD',
-  GBP: 'GBP',
-  EUR: 'EUR',
-  USD: 'USD',
-  JPY: 'JPY',
+  GBP,
+  EUR,
+  USD,
+  JPY,
 };
