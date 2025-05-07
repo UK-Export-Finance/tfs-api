@@ -55,7 +55,7 @@ export class GiftHttpService {
 
       return response;
     } catch (error) {
-      console.error('Error calling GET with path %s %o', path, error);
+      this.logger.error('Error calling GET with path %s %o', path, error);
 
       throw new Error(`Error calling GET with path ${path}`, error);
     }
