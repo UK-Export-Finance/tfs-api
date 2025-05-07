@@ -49,11 +49,8 @@ describe('GiftFixedFeeService', () => {
       expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
 
       expect(mockHttpServicePost).toHaveBeenCalledWith({
-        path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}`,
-        payload: {
-          eventType: EVENT_TYPES.CREATE_FIXED_FEE,
-          eventData: mockFixedFee,
-        },
+        path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.CREATE_FIXED_FEE}`,
+        payload: mockFixedFee,
       });
     });
 

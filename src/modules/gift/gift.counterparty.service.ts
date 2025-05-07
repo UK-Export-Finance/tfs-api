@@ -28,11 +28,8 @@ export class GiftCounterpartyService {
   async createOne(counterpartyData: GiftFacilityCounterpartyDto, facilityId: string, workPackageId: number): Promise<AxiosResponse> {
     try {
       const response = await this.giftHttpService.post<GiftFacilityCounterpartyDto>({
-        path: `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}`,
-        payload: {
-          eventType: EVENT_TYPES.ADD_COUNTERPARTY,
-          eventData: counterpartyData,
-        },
+        path: `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_COUNTERPARTY}`,
+        payload: counterpartyData,
       });
 
       return response;

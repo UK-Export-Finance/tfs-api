@@ -15,36 +15,36 @@ const {
 export class GiftFacilityResponseDto extends GiftFacilityDto {
   @IsNumber()
   @ApiProperty({
-    example: EXAMPLE.configurationEvent.eventData.availableAmount,
+    example: EXAMPLE.configurationEvent.data.availableAmount,
   })
   availableAmount: number;
 
   @ApiProperty({
-    example: EXAMPLE.configurationEvent.eventData.createdDatetime,
+    example: EXAMPLE.configurationEvent.data.createdDatetime,
   })
   createdDatetime: string;
 
   @IsNumber()
   @ApiProperty({
-    example: EXAMPLE.configurationEvent.eventData.drawnAmount,
+    example: EXAMPLE.configurationEvent.data.drawnAmount,
   })
   drawnAmount: number;
 
   @IsBoolean()
   @ApiProperty({
-    example: EXAMPLE.configurationEvent.eventData.isDraft,
+    example: EXAMPLE.configurationEvent.data.isDraft,
   })
   isDraft: boolean;
 
   @IsString()
   @ApiProperty({
-    example: EXAMPLE.configurationEvent.eventData.streamId,
+    example: EXAMPLE.configurationEvent.data.streamId,
   })
   streamId: string;
 
   @IsNumber()
   @ApiProperty({
-    example: EXAMPLE.configurationEvent.eventData.streamVersion,
+    example: EXAMPLE.configurationEvent.data.streamVersion,
   })
   streamVersion: number;
 }

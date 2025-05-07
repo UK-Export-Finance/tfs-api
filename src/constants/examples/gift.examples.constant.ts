@@ -35,7 +35,7 @@ const COUNTERPARTY = () => ({
 const FIXED_FEE = () => ({
   feeTypeCode: FEE_TYPE_CODES.PLA,
   description: 'Mock fee description',
-  dueDate: '2025-01-15',
+  effectiveDate: '2025-01-15',
   currency: CURRENCIES.USD,
   amountDue: 5000,
 });
@@ -112,7 +112,7 @@ const FACILITY_CREATION_PAYLOAD: GiftFacilityCreationDto = {
  */
 const FACILITY_RESPONSE_DATA: GiftFacilityPostResponseDto = {
   configurationEvent: {
-    eventData: {
+    data: {
       ...FACILITY_OVERVIEW,
       drawnAmount: 2000000,
       availableAmount: 3000000,

@@ -28,7 +28,7 @@ export const GIFT = {
   },
   PATH: {
     FACILITY: '/facility',
-    CONFIGURATION_EVENT: '/configuration-event',
+    CONFIGURATION_EVENT: '/configuration-event/type',
     CREATE_FACILITY: '/work-package/create-facility',
     WORK_PACKAGE: '/work-package',
   },

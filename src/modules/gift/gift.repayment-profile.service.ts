@@ -28,11 +28,8 @@ export class GiftRepaymentProfileService {
   async createOne(repaymentProfileData: GiftRepaymentProfileDto, facilityId: string, workPackageId: number): Promise<AxiosResponse> {
     try {
       const response = await this.giftHttpService.post<GiftRepaymentProfileDto>({
-        path: `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}`,
-        payload: {
-          eventType: EVENT_TYPES.ADD_MANUAL_REPAYMENT_PROFILE,
-          eventData: repaymentProfileData,
-        },
+        path: `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_MANUAL_REPAYMENT_PROFILE}`,
+        payload: repaymentProfileData,
       });
 
       return response;

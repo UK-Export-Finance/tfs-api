@@ -12,7 +12,7 @@ const {
   GIFT: { FACILITY_CREATION_PAYLOAD: mockPayload },
 } = EXAMPLES;
 
-const { EVENT_TYPES, PATH } = GIFT;
+const { PATH } = GIFT;
 
 const mockResponsePost = mockResponse201(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA);
 
@@ -60,10 +60,7 @@ describe('GiftService.createInitialFacility', () => {
 
     expect(mockHttpServicePost).toHaveBeenCalledWith({
       path: PATH.CREATE_FACILITY,
-      payload: {
-        eventType: EVENT_TYPES.CREATE_FACILITY,
-        eventData: mockPayload.overview,
-      },
+      payload: mockPayload.overview,
     });
   });
 

@@ -28,11 +28,8 @@ export class GiftObligationService {
   async createOne(obligationData: GiftObligationDto, facilityId: string, workPackageId: number): Promise<AxiosResponse> {
     try {
       const response = await this.giftHttpService.post<GiftObligationDto>({
-        path: `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}`,
-        payload: {
-          eventType: EVENT_TYPES.CREATE_OBLIGATION,
-          eventData: obligationData,
-        },
+        path: `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.CREATE_OBLIGATION}`,
+        payload: obligationData,
       });
 
       return response;

@@ -28,11 +28,8 @@ export class GiftFixedFeeService {
   async createOne(fixedFeeData: GiftFixedFeeDto, facilityId: string, workPackageId: number): Promise<AxiosResponse> {
     try {
       const response = await this.giftHttpService.post<GiftFixedFeeDto>({
-        path: `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}`,
-        payload: {
-          eventType: EVENT_TYPES.CREATE_FIXED_FEE,
-          eventData: fixedFeeData,
-        },
+        path: `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.CREATE_FIXED_FEE}`,
+        payload: fixedFeeData,
       });
 
       return response;

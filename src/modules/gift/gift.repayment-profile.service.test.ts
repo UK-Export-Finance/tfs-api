@@ -49,11 +49,8 @@ describe('GiftRepaymentProfileService', () => {
       expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
 
       expect(mockHttpServicePost).toHaveBeenCalledWith({
-        path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}`,
-        payload: {
-          eventType: EVENT_TYPES.ADD_MANUAL_REPAYMENT_PROFILE,
-          eventData: mockRepaymentProfile,
-        },
+        path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_MANUAL_REPAYMENT_PROFILE}`,
+        payload: mockRepaymentProfile,
       });
     });
 

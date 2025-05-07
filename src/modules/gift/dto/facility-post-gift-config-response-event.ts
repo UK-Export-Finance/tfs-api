@@ -16,10 +16,10 @@ const {
 export class GiftFacilityConfigPostResponseDto {
   @IsObject()
   @ApiProperty({
-    example: EXAMPLE.configurationEvent.eventData,
+    example: EXAMPLE.configurationEvent.data,
     required: true,
     type: GiftFacilityResponseDto,
   })
   @Type(() => GiftFacilityResponseDto)
-  eventData: GiftFacilityResponseDto;
+  data: GiftFacilityResponseDto;
 }

@@ -11,7 +11,7 @@ const {
   giftVersioning: { prefixAndVersion },
 } = AppConfig();
 
-const { API_RESPONSE_MESSAGES, API_RESPONSE_TYPES, ENTITY_NAMES, PATH } = GIFT;
+const { API_RESPONSE_MESSAGES, API_RESPONSE_TYPES, ENTITY_NAMES, EVENT_TYPES, PATH } = GIFT;
 
 const { GIFT_API_URL } = ENVIRONMENT_VARIABLES;
 
@@ -49,14 +49,18 @@ describe('POST /gift/facility', () => {
         },
       ],
     },
-    counterparty: { aCounterparty: true },
-    fixedFee: { aFixedFee: true },
-    obligation: { anObligation: true },
-    repaymentProfile: { aRepaymentProfile: true },
+    counterparty: { data: { aCounterparty: true } },
+    fixedFee: { data: { aFixedFee: true } },
+    obligation: { data: { anObligation: true } },
+    repaymentProfile: { data: { aRepaymentProfile: true } },
     facility: {
-      aMockFacility: true,
-      facilityId: mockFacilityId,
       workPackageId: mockWorkPackageId,
+      configurationEvent: {
+        data: {
+          aMockFacility: true,
+          facilityId: mockFacilityId,
+        },
+      },
     },
     internalServerError: {
       statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
@@ -75,10 +79,10 @@ describe('POST /gift/facility', () => {
 
   const facilityUrl = `/api/${prefixAndVersion}/gift${PATH.FACILITY}`;
   const facilityCreationUrl = PATH.CREATE_FACILITY;
-  const counterpartyUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}`;
-  const fixedFeeUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}`;
-  const obligationUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}`;
-  const repaymentProfileUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}`;
+  const counterpartyUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_COUNTERPARTY}`;
+  const fixedFeeUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.CREATE_FIXED_FEE}`;
+  const obligationUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.CREATE_OBLIGATION}`;
+  const repaymentProfileUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_MANUAL_REPAYMENT_PROFILE}`;
 
   let api: Api;
 
@@ -102,7 +106,7 @@ describe('POST /gift/facility', () => {
   });
 
   describe(`when the payload is valid and a ${HttpStatus.CREATED} response is returned by all GIFT endpoints`, () => {
-    it(`should return a ${HttpStatus.CREATED}} response with a facility, counterparties and repayment profiles`, async () => {
+    it(`should return a ${HttpStatus.CREATED}} response with a facility and all created entities`, async () => {
       // Arrange
       nock(GIFT_API_URL).persist().post(facilityCreationUrl).reply(HttpStatus.CREATED, mockResponses.facility);
 
@@ -121,11 +125,11 @@ describe('POST /gift/facility', () => {
       expect(status).toBe(HttpStatus.CREATED);
 
       const expected = {
-        ...mockResponses.facility,
-        counterparties: Array(payloadCounterparties.length).fill(mockResponses.counterparty),
-        fixedFees: Array(payloadCounterparties.length).fill(mockResponses.fixedFee),
-        obligations: Array(payloadObligations.length).fill(mockResponses.obligation),
-        repaymentProfiles: Array(payloadRepaymentProfiles.length).fill(mockResponses.repaymentProfile),
+        ...mockResponses.facility.configurationEvent.data,
+        counterparties: Array(payloadCounterparties.length).fill(mockResponses.counterparty.data),
+        fixedFees: Array(payloadCounterparties.length).fill(mockResponses.fixedFee.data),
+        obligations: Array(payloadObligations.length).fill(mockResponses.obligation.data),
+        repaymentProfiles: Array(payloadRepaymentProfiles.length).fill(mockResponses.repaymentProfile.data),
       };
 
       expect(body).toStrictEqual(expected);

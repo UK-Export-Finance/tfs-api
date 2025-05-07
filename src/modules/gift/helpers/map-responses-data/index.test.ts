@@ -12,7 +12,7 @@ describe('modules/gift/helpers/map-responses-data', () => {
         data: {
           id: 1,
           eventType: 'Mock event type',
-          eventData: { mockEventData: true },
+          data: { mockEventData: true },
         },
       },
       {
@@ -20,7 +20,7 @@ describe('modules/gift/helpers/map-responses-data', () => {
         data: {
           id: 2,
           eventType: 'Mock event type',
-          eventData: { mockEventData: true },
+          data: { mockEventData: true },
         },
       },
       {
@@ -28,7 +28,7 @@ describe('modules/gift/helpers/map-responses-data', () => {
         data: {
           id: 3,
           eventType: 'Mock event type',
-          eventData: { mockEventData: true },
+          data: { mockEventData: true },
         },
       },
     ] as AxiosResponse[];
@@ -37,7 +37,7 @@ describe('modules/gift/helpers/map-responses-data', () => {
     const result = mapResponsesData(mockResponses);
 
     // Assert
-    const expected = [mockResponses[0].data.eventData, mockResponses[1].data.eventData, mockResponses[2].data.eventData];
+    const expected = [mockResponses[0].data.data, mockResponses[1].data.data, mockResponses[2].data.data];
 
     expect(result).toStrictEqual(expected);
   });
