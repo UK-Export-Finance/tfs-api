@@ -4,6 +4,6 @@ import { AxiosResponse } from 'axios';
  * Map responses into an array of objects,
  * with each object containing only information from data.data.
  * @param {Array<AxiosResponse>} responses
- * @returns {Array<object>}k
+ * @returns {Array<object>}
  */
 export const mapResponsesData = (responses: AxiosResponse[]) => responses.map((response: AxiosResponse) => response.data?.data);
