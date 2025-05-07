@@ -2,6 +2,7 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import giftConfig, { GiftConfig } from '@ukef/config/gift.config';
 import { HEADERS } from '@ukef/constants';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
+import { PinoLogger } from 'nestjs-pino';
 
 const { CONTENT_TYPE } = HEADERS;
 
@@ -20,7 +21,7 @@ export class GiftHttpService {
   private axiosInstance: AxiosInstance;
   private readonly config: GiftConfig;
 
-  constructor() {
+  constructor(private readonly logger: PinoLogger) {
     this.config = giftConfig();
 
     this.axiosInstance = this.createAxiosInstance();
@@ -72,7 +73,7 @@ export class GiftHttpService {
 
       return response;
     } catch (error) {
-      console.error('Error calling POST with path %s %o', path, error);
+      this.logger.error('Error calling POST with path %s %o', path, error);
 
       throw new Error(`Error calling POST with path ${path}`, error);
     }

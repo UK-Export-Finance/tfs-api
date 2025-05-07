@@ -2,6 +2,7 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { GIFT } from '@ukef/constants';
 import { UkefId } from '@ukef/helpers';
 import { AxiosResponse } from 'axios';
+import { PinoLogger } from 'nestjs-pino';
 
 import { GiftFacilityCreationDto, GiftFacilityDto } from './dto';
 import { GiftCounterpartyService } from './gift.counterparty.service';
@@ -26,6 +27,7 @@ interface CreateFacilityResponse {
 export class GiftService {
   constructor(
     private readonly giftHttpService: GiftHttpService,
+    private readonly logger: PinoLogger,
     private readonly giftCounterpartyService: GiftCounterpartyService,
     private readonly giftFixedFeeService: GiftFixedFeeService,
     private readonly giftObligationService: GiftObligationService,
@@ -51,7 +53,7 @@ export class GiftService {
 
       return response;
     } catch (error) {
-      console.error('Error calling GIFT HTTP service GET method %o', error);
+      this.logger.error('Error calling GIFT HTTP service GET method %o', error);
 
       throw new Error('Error calling GIFT HTTP service GET method', error);
     }
@@ -71,7 +73,7 @@ export class GiftService {
 
       return response;
     } catch (error) {
-      console.error('Error creating initial GIFT facility %o', error);
+      this.logger.error('Error creating initial GIFT facility %o', error);
 
       throw new Error('Error creating initial GIFT facility', error);
     }
@@ -162,7 +164,7 @@ export class GiftService {
         },
       };
     } catch (error) {
-      console.error('Error creating GIFT facility %o', error);
+      this.logger.error('Error creating GIFT facility %o', error);
 
       throw new Error('Error creating GIFT facility', error);
     }

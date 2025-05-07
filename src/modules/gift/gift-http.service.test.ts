@@ -4,6 +4,7 @@ import { HEADERS } from '@ukef/constants';
 import { mockResponse200, mockResponse201, mockResponse500 } from '@ukef-test/http-response';
 import axios from 'axios';
 import * as dotenv from 'dotenv';
+import { PinoLogger } from 'nestjs-pino';
 
 import { GIFT_API_ACCEPTABLE_STATUSES, GiftHttpService } from './gift-http.service';
 
@@ -18,6 +19,8 @@ const mockAxios = jest.createMockFromModule<typeof axios>('axios');
 let mockAxiosCreate = jest.fn();
 let mockAxiosGet = jest.fn();
 let mockAxiosPost = jest.fn();
+
+const mockLogger = new PinoLogger({});
 
 mockAxiosCreate = jest.fn(() => ({
   ...mockAxios,
@@ -50,7 +53,7 @@ describe('GiftHttpService', () => {
   describe('createAxiosInstance', () => {
     it('should call axios.create', () => {
       // Act
-      new GiftHttpService().createAxiosInstance();
+      new GiftHttpService(mockLogger).createAxiosInstance();
 
       // Assert
       const { baseUrl, apiKeyHeaderName, apiKeyHeaderValue } = giftConfig();
@@ -78,7 +81,7 @@ describe('GiftHttpService', () => {
 
       mockAxiosGet = jest.fn().mockResolvedValue(mockResponse200());
 
-      service = new GiftHttpService();
+      service = new GiftHttpService(mockLogger);
     });
 
     it('should call axios.get', async () => {
@@ -104,7 +107,7 @@ describe('GiftHttpService', () => {
         // Arrange
         mockAxiosGet = jest.fn().mockRejectedValueOnce(mockResponse500());
 
-        service = new GiftHttpService();
+        service = new GiftHttpService(mockLogger);
       });
 
       it('should throw an error', async () => {
@@ -128,7 +131,7 @@ describe('GiftHttpService', () => {
 
       mockAxiosPost = jest.fn().mockResolvedValue(mockResponse201());
 
-      service = new GiftHttpService();
+      service = new GiftHttpService(mockLogger);
     });
 
     it('should call axios.post', async () => {
@@ -154,7 +157,7 @@ describe('GiftHttpService', () => {
         // Arrange
         mockAxiosPost = jest.fn().mockRejectedValueOnce(mockResponse500());
 
-        service = new GiftHttpService();
+        service = new GiftHttpService(mockLogger);
       });
 
       it('should throw an error', async () => {
