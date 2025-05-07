@@ -20,7 +20,7 @@ let mockAxiosCreate = jest.fn();
 let mockAxiosGet = jest.fn();
 let mockAxiosPost = jest.fn();
 
-const mockLogger = new PinoLogger({});
+const logger = new PinoLogger({});
 
 mockAxiosCreate = jest.fn(() => ({
   ...mockAxios,
@@ -53,7 +53,7 @@ describe('GiftHttpService', () => {
   describe('createAxiosInstance', () => {
     it('should call axios.create', () => {
       // Act
-      new GiftHttpService(mockLogger).createAxiosInstance();
+      new GiftHttpService(logger).createAxiosInstance();
 
       // Assert
       const { baseUrl, apiKeyHeaderName, apiKeyHeaderValue } = giftConfig();
@@ -81,7 +81,7 @@ describe('GiftHttpService', () => {
 
       mockAxiosGet = jest.fn().mockResolvedValue(mockResponse200());
 
-      service = new GiftHttpService(mockLogger);
+      service = new GiftHttpService(logger);
     });
 
     it('should call axios.get', async () => {
@@ -107,7 +107,7 @@ describe('GiftHttpService', () => {
         // Arrange
         mockAxiosGet = jest.fn().mockRejectedValueOnce(mockResponse500());
 
-        service = new GiftHttpService(mockLogger);
+        service = new GiftHttpService(logger);
       });
 
       it('should throw an error', async () => {
@@ -131,7 +131,7 @@ describe('GiftHttpService', () => {
 
       mockAxiosPost = jest.fn().mockResolvedValue(mockResponse201());
 
-      service = new GiftHttpService(mockLogger);
+      service = new GiftHttpService(logger);
     });
 
     it('should call axios.post', async () => {
@@ -157,7 +157,7 @@ describe('GiftHttpService', () => {
         // Arrange
         mockAxiosPost = jest.fn().mockRejectedValueOnce(mockResponse500());
 
-        service = new GiftHttpService(mockLogger);
+        service = new GiftHttpService(logger);
       });
 
       it('should throw an error', async () => {
