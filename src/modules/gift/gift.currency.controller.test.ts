@@ -1,5 +1,6 @@
 import { GIFT_EXAMPLES } from '@ukef/constants/examples/gift.examples.constant';
 import { mockResponse200 } from '@ukef-test/http-response';
+import { PinoLogger } from 'nestjs-pino';
 
 import { GiftCurrencyController } from './gift.currency.controller';
 import { GiftCurrencyService } from './gift.currency.service';
@@ -8,6 +9,8 @@ import { GiftHttpService } from './gift-http.service';
 const mockResponseGet = mockResponse200(GIFT_EXAMPLES.CURRENCIES);
 
 describe('GiftCurrencyController', () => {
+  const logger = new PinoLogger({});
+
   let giftHttpService: GiftHttpService;
   let currencyService: GiftCurrencyService;
   let controller: GiftCurrencyController;
@@ -20,9 +23,9 @@ describe('GiftCurrencyController', () => {
 
   beforeEach(() => {
     // Arrange
-    giftHttpService = new GiftHttpService();
+    giftHttpService = new GiftHttpService(logger);
 
-    currencyService = new GiftCurrencyService(giftHttpService);
+    currencyService = new GiftCurrencyService(giftHttpService, logger);
 
     mockResSend = jest.fn();
 
