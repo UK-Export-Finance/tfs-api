@@ -1,5 +1,8 @@
 # Trade Finance Services 🚀
-TFS micro-service provides endpoints for internal trade finance manager systems responsible for reading and writing to external centralised banking system namely ACBS (Advanced Commerical Banking System).
+This TFS micro-service provides endpoints for internal trade finance manager systems that are responsible for reading and writing to following financial product tracking systems:
+
+- ACBS (Advanced Commerical Banking System).
+- GIFT (Guarantee, Insurance, & Financing Tracker). Replaces ACBS.
 
 **Status** 🚦
 
@@ -21,8 +24,14 @@ TFS micro-service provides endpoints for internal trade finance manager systems 
 ## Install 💻
 
 ```bash
-npm install
+npm ci
 ```
+
+When commiting changes - If the pre-commit hook does not run, execute the following:
+```bash
+npx husky
+```
+
 ## Environment Variables 👨🏼‍💻
 
 On first setup you will need to create a `.env ` file in the route of the project, refer to `.env.sample` for the required variables. A member of the team should send an encrypted copy of the `.env` file.
@@ -101,6 +110,7 @@ $ npm run api-test
 # api tests with nock debugging (very useful if tests are failing)
 $ DEBUG=nock.* npm run api-test
 ```
+
 ## Docker 📦
 ### 1. Dockerfile
 Dockerfile is used to build and run a Node.js application in a containerized environment.

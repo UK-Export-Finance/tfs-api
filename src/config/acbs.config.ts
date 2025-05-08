@@ -2,11 +2,9 @@ import './load-dotenv';
 
 import { registerAs } from '@nestjs/config';
 import { getIntConfig } from '@ukef/helpers/get-int-config';
+import { ExternalServiceConfig } from '@ukef/types';
 
-export interface AcbsConfig {
-  baseUrl: string;
-  maxRedirects: number;
-  timeout: number;
+export interface AcbsConfig extends ExternalServiceConfig {
   useReturnExceptionHeader: boolean;
 }
 

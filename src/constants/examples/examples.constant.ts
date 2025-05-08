@@ -1,3 +1,7 @@
+import { COUNTRIES } from '../countries.constant';
+import { CURRENCIES } from '../currencies.constant';
+import { GIFT_EXAMPLES } from './gift.examples.constant';
+
 export const EXAMPLES = {
   ACBS_BUNDLE_ID: '0000321000',
   DEAL_ID: '0030000321',
@@ -5,9 +9,9 @@ export const EXAMPLES = {
   PARTY_ID: '00001234',
   BUNDLE_ID: '0000233092',
   LOAN_ID: '000272017',
-  CURRENCY: 'USD',
+  CURRENCY: CURRENCIES.USD,
   DEAL_OR_FACILITY_VALUE: 501927.25,
-  COUNTRY_CODE: 'GBR',
+  COUNTRY_CODE: COUNTRIES.GBR,
   BUNDLE_STATUS_CODE: '10',
   BUNDLE_STATUS_DESC: 'Pending Input With Drafts',
   PRODUCT_TYPE_ID: '250',
@@ -26,4 +30,5 @@ export const EXAMPLES = {
   CITIZENSHIP_CLASS: '2',
   PARTY_ALTERNATE_ID: '00345678',
   LENDER_TYPE_CODE: '500',
+  GIFT: GIFT_EXAMPLES,
 };
