@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { GIFT } from '@ukef/constants';
 import { AxiosResponse } from 'axios';
+import { PinoLogger } from 'nestjs-pino';
 
 import { GiftObligationDto } from './dto';
 import { GiftHttpService } from './gift-http.service';
@@ -13,7 +14,10 @@ const { EVENT_TYPES, PATH } = GIFT;
  */
 @Injectable()
 export class GiftObligationService {
-  constructor(private readonly giftHttpService: GiftHttpService) {
+  constructor(
+    private readonly giftHttpService: GiftHttpService,
+    private readonly logger: PinoLogger,
+  ) {
     this.giftHttpService = giftHttpService;
   }
 
@@ -34,7 +38,7 @@ export class GiftObligationService {
 
       return response;
     } catch (error) {
-      console.error('Error creating obligation %o', error);
+      this.logger.error('Error creating obligation %o', error);
 
       throw new Error('Error creating obligation', error);
     }
@@ -54,7 +58,7 @@ export class GiftObligationService {
 
       return responses;
     } catch (error) {
-      console.error('Error creating obligations %o', error);
+      this.logger.error('Error creating obligations %o', error);
 
       throw new Error('Error creating obligations', error);
     }

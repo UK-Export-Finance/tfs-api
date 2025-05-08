@@ -1,6 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { mockResponse201, mockResponse500 } from '@ukef-test/http-response';
+import { PinoLogger } from 'nestjs-pino';
 
 import { GiftObligationService } from './gift.obligation.service';
 const {
@@ -10,6 +11,8 @@ const {
 const { EVENT_TYPES, PATH } = GIFT;
 
 describe('GiftObligationService', () => {
+  const logger = new PinoLogger({});
+
   let httpService: HttpService;
   let service: GiftObligationService;
 
@@ -31,7 +34,7 @@ describe('GiftObligationService', () => {
       post: mockHttpServicePost,
     };
 
-    service = new GiftObligationService(giftHttpService);
+    service = new GiftObligationService(giftHttpService, logger);
   });
 
   afterAll(() => {
@@ -71,7 +74,7 @@ describe('GiftObligationService', () => {
 
         giftHttpService.post = mockHttpServicePost;
 
-        service = new GiftObligationService(giftHttpService);
+        service = new GiftObligationService(giftHttpService, logger);
       });
 
       it('should thrown an error', async () => {
@@ -105,7 +108,7 @@ describe('GiftObligationService', () => {
         .mockResolvedValueOnce(mockResponse201(mockObligations[1]))
         .mockResolvedValueOnce(mockResponse201(mockObligations[2]));
 
-      service = new GiftObligationService(giftHttpService);
+      service = new GiftObligationService(giftHttpService, logger);
 
       service.createOne = mockCreateOne;
     });
@@ -139,7 +142,7 @@ describe('GiftObligationService', () => {
         // Arrange
         mockCreateOne = jest.fn().mockRejectedValueOnce(mockResponse500());
 
-        service = new GiftObligationService(giftHttpService);
+        service = new GiftObligationService(giftHttpService, logger);
 
         service.createOne = mockCreateOne;
       });

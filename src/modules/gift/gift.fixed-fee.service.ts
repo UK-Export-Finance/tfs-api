@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { GIFT } from '@ukef/constants';
 import { AxiosResponse } from 'axios';
+import { PinoLogger } from 'nestjs-pino';
 
 import { GiftFixedFeeDto } from './dto';
 import { GiftHttpService } from './gift-http.service';
@@ -13,7 +14,10 @@ const { EVENT_TYPES, PATH } = GIFT;
  */
 @Injectable()
 export class GiftFixedFeeService {
-  constructor(private readonly giftHttpService: GiftHttpService) {
+  constructor(
+    private readonly giftHttpService: GiftHttpService,
+    private readonly logger: PinoLogger,
+  ) {
     this.giftHttpService = giftHttpService;
   }
 
@@ -34,7 +38,7 @@ export class GiftFixedFeeService {
 
       return response;
     } catch (error) {
-      console.error('Error creating fixed fee %o', error);
+      this.logger.error('Error creating fixed fee %o', error);
 
       throw new Error('Error creating fixed fee', error);
     }
@@ -54,7 +58,7 @@ export class GiftFixedFeeService {
 
       return responses;
     } catch (error) {
-      console.error('Error creating fixed fees %o', error);
+      this.logger.error('Error creating fixed fees %o', error);
 
       throw new Error('Error creating fixed fees', error);
     }

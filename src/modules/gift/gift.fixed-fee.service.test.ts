@@ -1,6 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { mockResponse201, mockResponse500 } from '@ukef-test/http-response';
+import { PinoLogger } from 'nestjs-pino';
 
 import { GiftFixedFeeService } from './gift.fixed-fee.service';
 const {
@@ -10,6 +11,8 @@ const {
 const { EVENT_TYPES, PATH } = GIFT;
 
 describe('GiftFixedFeeService', () => {
+  const logger = new PinoLogger({});
+
   let httpService: HttpService;
   let service: GiftFixedFeeService;
 
@@ -31,7 +34,7 @@ describe('GiftFixedFeeService', () => {
       post: mockHttpServicePost,
     };
 
-    service = new GiftFixedFeeService(giftHttpService);
+    service = new GiftFixedFeeService(giftHttpService, logger);
   });
 
   afterAll(() => {
@@ -71,7 +74,7 @@ describe('GiftFixedFeeService', () => {
 
         giftHttpService.post = mockHttpServicePost;
 
-        service = new GiftFixedFeeService(giftHttpService);
+        service = new GiftFixedFeeService(giftHttpService, logger);
       });
 
       it('should thrown an error', async () => {
@@ -103,7 +106,7 @@ describe('GiftFixedFeeService', () => {
         .mockResolvedValueOnce(mockResponse201(mockFixedFees[1]))
         .mockResolvedValueOnce(mockResponse201(mockFixedFees[2]));
 
-      service = new GiftFixedFeeService(giftHttpService);
+      service = new GiftFixedFeeService(giftHttpService, logger);
 
       service.createOne = mockCreateOne;
     });
@@ -137,7 +140,7 @@ describe('GiftFixedFeeService', () => {
         // Arrange
         mockCreateOne = jest.fn().mockRejectedValueOnce(mockResponse500());
 
-        service = new GiftFixedFeeService(giftHttpService);
+        service = new GiftFixedFeeService(giftHttpService, logger);
 
         service.createOne = mockCreateOne;
       });

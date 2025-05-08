@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { GIFT } from '@ukef/constants';
 import { AxiosResponse } from 'axios';
+import { PinoLogger } from 'nestjs-pino';
 
 import { GiftRepaymentProfileDto } from './dto';
 import { GiftHttpService } from './gift-http.service';
@@ -13,7 +14,10 @@ const { EVENT_TYPES, PATH } = GIFT;
  */
 @Injectable()
 export class GiftRepaymentProfileService {
-  constructor(private readonly giftHttpService: GiftHttpService) {
+  constructor(
+    private readonly giftHttpService: GiftHttpService,
+    private readonly logger: PinoLogger,
+  ) {
     this.giftHttpService = giftHttpService;
   }
 
@@ -34,7 +38,7 @@ export class GiftRepaymentProfileService {
 
       return response;
     } catch (error) {
-      console.error('Error creating repayment profile %o', error);
+      this.logger.error('Error creating repayment profile %o', error);
 
       throw new Error('Error creating repayment profile', error);
     }
@@ -54,7 +58,7 @@ export class GiftRepaymentProfileService {
 
       return responses;
     } catch (error) {
-      console.error('Error creating repayment profiles %o', error);
+      this.logger.error('Error creating repayment profiles %o', error);
 
       throw new Error('Error creating repayment profiles', error);
     }
