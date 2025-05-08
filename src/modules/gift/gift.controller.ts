@@ -11,7 +11,7 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import AppConfig from '@ukef/config/app.config';
-import { EXAMPLES } from '@ukef/constants';
+import { EXAMPLES, GIFT } from '@ukef/constants';
 import { Response } from 'express';
 
 import { GetFacilityOperationParamsDto, GiftFacilityCreationDto, GiftFacilityDto } from './dto';
@@ -19,8 +19,10 @@ import { GiftService } from './gift.service';
 
 const { giftVersioning } = AppConfig();
 
+const { PATH } = GIFT;
+
 @Controller({
-  path: 'gift/facility',
+  path: `gift/${PATH.FACILITY}`,
   version: giftVersioning.version,
 })
 export class GiftController {
