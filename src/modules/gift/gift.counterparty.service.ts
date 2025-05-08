@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { GIFT } from '@ukef/constants';
 import { AxiosResponse } from 'axios';
+import { PinoLogger } from 'nestjs-pino';
 
 import { GiftFacilityCounterpartyDto } from './dto';
 import { GiftHttpService } from './gift-http.service';
@@ -13,7 +14,10 @@ const { PATH } = GIFT;
  */
 @Injectable()
 export class GiftCounterpartyService {
-  constructor(private readonly giftHttpService: GiftHttpService) {
+  constructor(
+    private readonly giftHttpService: GiftHttpService,
+    private readonly logger: PinoLogger,
+  ) {
     this.giftHttpService = giftHttpService;
   }
 
@@ -33,7 +37,7 @@ export class GiftCounterpartyService {
 
       return response;
     } catch (error) {
-      console.error('Error creating counterparty %o', error);
+      this.logger.error('Error creating counterparty %o', error);
 
       throw new Error('Error creating counterparty', error);
     }
@@ -50,7 +54,7 @@ export class GiftCounterpartyService {
     try {
       return await Promise.all(counterpartiesData.map((counterParty) => this.createOne(counterParty, workPackageId)));
     } catch (error) {
-      console.error('Error creating counterparties %o', error);
+      this.logger.error('Error creating counterparties %o', error);
 
       throw new Error('Error creating counterparties', error);
     }

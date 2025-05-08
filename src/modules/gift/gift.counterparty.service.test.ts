@@ -1,6 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { mockResponse201, mockResponse500 } from '@ukef-test/http-response';
+import { PinoLogger } from 'nestjs-pino';
 
 import { GiftCounterpartyService } from './gift.counterparty.service';
 const {
@@ -12,6 +13,8 @@ const { PATH } = GIFT;
 const expectedPath = `${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.COUNTERPARTY}${PATH.CREATION_EVENT}`;
 
 describe('GiftCounterpartyService', () => {
+  const logger = new PinoLogger({});
+
   let httpService: HttpService;
   let service: GiftCounterpartyService;
 
@@ -33,7 +36,7 @@ describe('GiftCounterpartyService', () => {
       post: mockHttpServicePost,
     };
 
-    service = new GiftCounterpartyService(giftHttpService);
+    service = new GiftCounterpartyService(giftHttpService, logger);
   });
 
   afterAll(() => {
@@ -73,7 +76,7 @@ describe('GiftCounterpartyService', () => {
 
         giftHttpService.post = mockHttpServicePost;
 
-        service = new GiftCounterpartyService(giftHttpService);
+        service = new GiftCounterpartyService(giftHttpService, logger);
       });
 
       it('should thrown an error', async () => {
@@ -107,7 +110,7 @@ describe('GiftCounterpartyService', () => {
         .mockResolvedValueOnce(mockResponse201(mockCounterparties[1]))
         .mockResolvedValueOnce(mockResponse201(mockCounterparties[2]));
 
-      service = new GiftCounterpartyService(giftHttpService);
+      service = new GiftCounterpartyService(giftHttpService, logger);
 
       service.createOne = mockCreateOne;
     });
@@ -141,7 +144,7 @@ describe('GiftCounterpartyService', () => {
         // Arrange
         mockCreateOne = jest.fn().mockRejectedValueOnce(mockResponse500());
 
-        service = new GiftCounterpartyService(giftHttpService);
+        service = new GiftCounterpartyService(giftHttpService, logger);
 
         service.createOne = mockCreateOne;
       });

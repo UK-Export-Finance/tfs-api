@@ -1,6 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { mockResponse201, mockResponse500 } from '@ukef-test/http-response';
+import { PinoLogger } from 'nestjs-pino';
 
 import { GiftRepaymentProfileService } from './gift.repayment-profile.service';
 const {
@@ -12,6 +13,8 @@ const { PATH } = GIFT;
 const expectedPath = `${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.REPAYMENT_PROFILE}${PATH.MANUAL}${PATH.CREATION_EVENT}`;
 
 describe('GiftRepaymentProfileService', () => {
+  const logger = new PinoLogger({});
+
   let httpService: HttpService;
   let service: GiftRepaymentProfileService;
 
@@ -33,7 +36,7 @@ describe('GiftRepaymentProfileService', () => {
       post: mockHttpServicePost,
     };
 
-    service = new GiftRepaymentProfileService(giftHttpService);
+    service = new GiftRepaymentProfileService(giftHttpService, logger);
   });
 
   afterAll(() => {
@@ -73,7 +76,7 @@ describe('GiftRepaymentProfileService', () => {
 
         giftHttpService.post = mockHttpServicePost;
 
-        service = new GiftRepaymentProfileService(giftHttpService);
+        service = new GiftRepaymentProfileService(giftHttpService, logger);
       });
 
       it('should thrown an error', async () => {
@@ -107,7 +110,7 @@ describe('GiftRepaymentProfileService', () => {
         .mockResolvedValueOnce(mockResponse201(mockRepaymentProfiles[1]))
         .mockResolvedValueOnce(mockResponse201(mockRepaymentProfiles[2]));
 
-      service = new GiftRepaymentProfileService(giftHttpService);
+      service = new GiftRepaymentProfileService(giftHttpService, logger);
 
       service.createOne = mockCreateOne;
     });
@@ -141,7 +144,7 @@ describe('GiftRepaymentProfileService', () => {
         // Arrange
         mockCreateOne = jest.fn().mockRejectedValueOnce(mockResponse500());
 
-        service = new GiftRepaymentProfileService(giftHttpService);
+        service = new GiftRepaymentProfileService(giftHttpService, logger);
 
         service.createOne = mockCreateOne;
       });
