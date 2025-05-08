@@ -1,5 +1,6 @@
 import { EXAMPLES } from '@ukef/constants';
 import { mockResponse200, mockResponse201 } from '@ukef-test/http-response';
+import { PinoLogger } from 'nestjs-pino';
 
 import { GiftCounterpartyService } from './gift.counterparty.service';
 import { GiftFacilityController } from './gift.facility.controller';
@@ -17,6 +18,8 @@ const mockResponseGet = mockResponse200(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA);
 const mockResponsePost = mockResponse201(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA);
 
 describe('GiftFacilityController', () => {
+  const logger = new PinoLogger({});
+
   let giftHttpService: GiftHttpService;
   let counterpartyService: GiftCounterpartyService;
   let fixedFeeService: GiftFixedFeeService;
@@ -34,14 +37,14 @@ describe('GiftFacilityController', () => {
 
   beforeEach(() => {
     // Arrange
-    giftHttpService = new GiftHttpService();
+    giftHttpService = new GiftHttpService(logger);
 
-    counterpartyService = new GiftCounterpartyService(giftHttpService);
-    fixedFeeService = new GiftFixedFeeService(giftHttpService);
-    obligationService = new GiftObligationService(giftHttpService);
-    repaymentProfileService = new GiftRepaymentProfileService(giftHttpService);
+    counterpartyService = new GiftCounterpartyService(giftHttpService, logger);
+    fixedFeeService = new GiftFixedFeeService(giftHttpService, logger);
+    obligationService = new GiftObligationService(giftHttpService, logger);
+    repaymentProfileService = new GiftRepaymentProfileService(giftHttpService, logger);
 
-    giftService = new GiftService(giftHttpService, counterpartyService, fixedFeeService, obligationService, repaymentProfileService);
+    giftService = new GiftService(giftHttpService, logger, counterpartyService, fixedFeeService, obligationService, repaymentProfileService);
 
     mockResSend = jest.fn();
 

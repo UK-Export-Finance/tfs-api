@@ -1,6 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { mockResponse201, mockResponse500 } from '@ukef-test/http-response';
+import { PinoLogger } from 'nestjs-pino';
 
 import { GiftCounterpartyService } from './gift.counterparty.service';
 import { GiftFixedFeeService } from './gift.fixed-fee.service';
@@ -17,6 +18,8 @@ const { PATH } = GIFT;
 const mockResponsePost = mockResponse201(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA);
 
 describe('GiftService.createInitialFacility', () => {
+  const logger = new PinoLogger({});
+
   let httpService: HttpService;
   let counterpartyService: GiftCounterpartyService;
   let fixedFeeService: GiftFixedFeeService;
@@ -39,12 +42,12 @@ describe('GiftService.createInitialFacility', () => {
       post: mockHttpServicePost,
     };
 
-    counterpartyService = new GiftCounterpartyService(giftHttpService);
-    fixedFeeService = new GiftFixedFeeService(giftHttpService);
-    obligationService = new GiftObligationService(giftHttpService);
-    repaymentProfileService = new GiftRepaymentProfileService(giftHttpService);
+    counterpartyService = new GiftCounterpartyService(giftHttpService, logger);
+    fixedFeeService = new GiftFixedFeeService(giftHttpService, logger);
+    obligationService = new GiftObligationService(giftHttpService, logger);
+    repaymentProfileService = new GiftRepaymentProfileService(giftHttpService, logger);
 
-    service = new GiftService(giftHttpService, counterpartyService, fixedFeeService, obligationService, repaymentProfileService);
+    service = new GiftService(giftHttpService, logger, counterpartyService, fixedFeeService, obligationService, repaymentProfileService);
   });
 
   afterAll(() => {
@@ -83,7 +86,7 @@ describe('GiftService.createInitialFacility', () => {
 
       giftHttpService.post = mockHttpServicePost;
 
-      service = new GiftService(giftHttpService, counterpartyService, fixedFeeService, obligationService, repaymentProfileService);
+      service = new GiftService(giftHttpService, logger, counterpartyService, fixedFeeService, obligationService, repaymentProfileService);
     });
 
     it('should thrown an error', async () => {

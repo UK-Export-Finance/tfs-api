@@ -2,6 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import { HttpStatus } from '@nestjs/common';
 import { EXAMPLES } from '@ukef/constants';
 import { mockResponse201 } from '@ukef-test/http-response';
+import { PinoLogger } from 'nestjs-pino';
 
 import { GiftCounterpartyService } from './gift.counterparty.service';
 import { GiftFixedFeeService } from './gift.fixed-fee.service';
@@ -26,6 +27,8 @@ const mockCreateObligationsResponse = mockObligations.map((counterparty) => mock
 const mockRepaymentProfilesResponse = mockRepaymentProfiles.map((repaymentProfile) => mockResponse201(repaymentProfile));
 
 describe('GiftService.createFacility', () => {
+  const logger = new PinoLogger({});
+
   let httpService: HttpService;
   let counterpartyService: GiftCounterpartyService;
   let fixedFeeService: GiftFixedFeeService;
@@ -53,10 +56,10 @@ describe('GiftService.createFacility', () => {
       post: mockHttpServicePost,
     };
 
-    counterpartyService = new GiftCounterpartyService(giftHttpService);
-    fixedFeeService = new GiftFixedFeeService(giftHttpService);
-    obligationService = new GiftObligationService(giftHttpService);
-    repaymentProfileService = new GiftRepaymentProfileService(giftHttpService);
+    counterpartyService = new GiftCounterpartyService(giftHttpService, logger);
+    fixedFeeService = new GiftFixedFeeService(giftHttpService, logger);
+    obligationService = new GiftObligationService(giftHttpService, logger);
+    repaymentProfileService = new GiftRepaymentProfileService(giftHttpService, logger);
 
     createInitialFacilitySpy = jest.fn().mockResolvedValueOnce(mockResponse201(FACILITY_RESPONSE_DATA));
     createCounterpartiesSpy = jest.fn().mockResolvedValueOnce(mockCreateCounterpartiesResponse);
@@ -69,7 +72,7 @@ describe('GiftService.createFacility', () => {
     obligationService.createMany = createObligationsSpy;
     repaymentProfileService.createMany = createRepaymentProfilesSpy;
 
-    service = new GiftService(giftHttpService, counterpartyService, fixedFeeService, obligationService, repaymentProfileService);
+    service = new GiftService(giftHttpService, logger, counterpartyService, fixedFeeService, obligationService, repaymentProfileService);
 
     service.createInitialFacility = createInitialFacilitySpy;
   });
