@@ -1,5 +1,6 @@
 import { VALIDATION } from '@ukef/constants/gift/validation.constant';
 import { registerDecorator, ValidationArguments, ValidationOptions } from 'class-validator';
+import { PinoLogger } from 'nestjs-pino';
 
 import { GiftCurrencyService } from '../gift.currency.service';
 import { GiftHttpService } from '../gift-http.service';
@@ -23,19 +24,24 @@ export function IsSupportedCurrency(options?: ValidationOptions) {
       validator: {
         async validate(providedCurrency) {
           /**
-           * Only validate if a currency with the correct length is provided. By doing this we ensure that:
-           * 1) A consumer of the API receives only relevant validation errors, e.g "must be provided/X length" OR "currency is not supported", not both.
-           * 2) We only call the GIFT currency endpoint, if we have a correctly formatted currency.
+           * Only check if a currency is supported, if a string with the correct length is provided.
+           * Otherwise, we know that the provided value, is not in the correct format and will therefore not be supported.
+           * By doing this we ensure that:
+           * 1) We only call the GIFT API's currency endpoint, if we have a correctly formatted currency.
+           * 2) A consumer of this API receives only relevant validation errors, e.g "must be provided/X length" OR "currency is not supported", not both.
            */
-          const shouldValidate = typeof providedCurrency === 'string' && providedCurrency.length === VALIDATION.CURRENCY.MIN_LENGTH;
+          const isValidCurrencyFormat = typeof providedCurrency === 'string' && providedCurrency.length === VALIDATION.CURRENCY.MIN_LENGTH;
 
-          if (shouldValidate) {
-            const httpService = new GiftHttpService();
-            const currencyService = new GiftCurrencyService(httpService);
+          if (isValidCurrencyFormat) {
+            const logger = new PinoLogger({});
+            const httpService = new GiftHttpService(logger);
+            const currencyService = new GiftCurrencyService(httpService, logger);
 
             const supportedCurrencies = await currencyService.getSupportedCurrencies();
 
-            return arrayContainsString(supportedCurrencies.data, providedCurrency);
+            const isSupportedCurrency = arrayContainsString(supportedCurrencies.data, providedCurrency);
+
+            return isSupportedCurrency;
           }
 
           /**

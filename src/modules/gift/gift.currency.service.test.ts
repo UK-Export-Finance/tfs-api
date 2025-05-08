@@ -1,12 +1,15 @@
 import { HttpService } from '@nestjs/axios';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { mockResponse201, mockResponse500 } from '@ukef-test/http-response';
+import { PinoLogger } from 'nestjs-pino';
 
 import { GiftCurrencyService } from './gift.currency.service';
 
 const { PATH } = GIFT;
 
 describe('GiftCurrencyService', () => {
+  const logger = new PinoLogger({});
+
   let httpService: HttpService;
   let service: GiftCurrencyService;
 
@@ -28,7 +31,7 @@ describe('GiftCurrencyService', () => {
       get: mockHttpServiceGet,
     };
 
-    service = new GiftCurrencyService(giftHttpService);
+    service = new GiftCurrencyService(giftHttpService, logger);
   });
 
   afterAll(() => {
@@ -63,7 +66,7 @@ describe('GiftCurrencyService', () => {
 
         giftHttpService.get = mockHttpServiceGet;
 
-        service = new GiftCurrencyService(giftHttpService);
+        service = new GiftCurrencyService(giftHttpService, logger);
       });
 
       it('should thrown an error', async () => {

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { GIFT } from '@ukef/constants';
 import { AxiosResponse } from 'axios';
+import { PinoLogger } from 'nestjs-pino';
 
 import { GiftHttpService } from './gift-http.service';
 
@@ -12,7 +13,10 @@ const { PATH } = GIFT;
  */
 @Injectable()
 export class GiftCurrencyService {
-  constructor(private readonly giftHttpService: GiftHttpService) {
+  constructor(
+    private readonly giftHttpService: GiftHttpService,
+    private readonly logger: PinoLogger,
+  ) {
     this.giftHttpService = giftHttpService;
   }
 
@@ -29,7 +33,7 @@ export class GiftCurrencyService {
 
       return response;
     } catch (error) {
-      console.error('Error getting supported currencies %o', error);
+      this.logger.error('Error getting supported currencies %o', error);
 
       throw new Error('Error getting supported currencies', error);
     }
