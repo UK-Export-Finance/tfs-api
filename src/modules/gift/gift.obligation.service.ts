@@ -19,7 +19,7 @@ export class GiftObligationService {
 
   /**
    * Create a GIFT obligation
-   * @param {GiftObligationDto} obligationData: Repayment profile data
+   * @param {GiftObligationDto} obligationData: Obligation data
    * @param {String} facilityId: Facility ID
    * @param {Number} workPackageId: Facility work package ID
    * @returns {Promise<AxiosResponse>}

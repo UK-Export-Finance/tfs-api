@@ -14,7 +14,7 @@ export const GIFT = {
     REPAYMENT_PROFILE: 'Repayment profile',
   },
   EVENT_TYPES: {
-    ADD_COUNTERPARTY: 'AddCounterparty',
+    ADD_COUNTERPARTY: 'AddFacilityCounterparty',
     ADD_MANUAL_REPAYMENT_PROFILE: 'AddManualRepaymentProfile',
     CREATE_FACILITY: 'CreateFacility',
     CREATE_FIXED_FEE: 'CreateFixedFee',

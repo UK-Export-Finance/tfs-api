@@ -56,8 +56,8 @@ export class GiftObligationDto {
   @IsString()
   @Length(VALIDATION.PRODUCT_SUBTYPE.MIN_LENGTH, VALIDATION.PRODUCT_SUBTYPE.MAX_LENGTH)
   @ApiProperty({
-    example: OBLIGATION().productSubtype,
+    example: OBLIGATION().obligationSubtype,
     required: true,
   })
-  productSubtype: string;
+  obligationSubtype: string;
 }
