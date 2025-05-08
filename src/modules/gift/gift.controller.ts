@@ -22,7 +22,7 @@ const { giftVersioning } = AppConfig();
 const { PATH } = GIFT;
 
 @Controller({
-  path: `gift/${PATH.FACILITY}`,
+  path: `gift${PATH.FACILITY}`,
   version: giftVersioning.version,
 })
 export class GiftController {
