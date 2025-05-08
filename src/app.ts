@@ -20,8 +20,11 @@ export class App {
     process.env.NODE_ENV = env;
 
     const globalPrefix: string = this.getConfig<string>('app.globalPrefix');
+
     const version: string = this.getConfig<string>('app.versioning.version');
+
     const versioningPrefix: string = this.getConfig<string>('app.versioning.prefix');
+
     app.enableVersioning({
       type: VersioningType.URI,
       defaultVersion: version,

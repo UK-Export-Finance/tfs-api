@@ -41,6 +41,7 @@ export const withEnvironmentVariableParsingUnitTests = <ConfigUnderTest>({
     describe.each(configDirectlyFromEnvironmentVariables)('$configPropertyName', ({ configPropertyName, environmentVariableName }) => {
       it(`is the env variable ${environmentVariableName}`, () => {
         const environmentVariableValue = valueGenerator.string();
+
         process.env = {
           [environmentVariableName]: environmentVariableValue,
         };
@@ -58,7 +59,9 @@ export const withEnvironmentVariableParsingUnitTests = <ConfigUnderTest>({
       ({ configPropertyName, environmentVariableName, defaultConfigValue }) => {
         it(`is true if environment variable ${environmentVariableName} is true`, () => {
           const expectedConfigValue = true;
+
           const environmentVariableValue = expectedConfigValue.toString();
+
           process.env = {
             [environmentVariableName]: environmentVariableValue,
           };
@@ -70,7 +73,9 @@ export const withEnvironmentVariableParsingUnitTests = <ConfigUnderTest>({
 
         it(`is false if environment variable ${environmentVariableName} is false`, () => {
           const expectedConfigValue = false;
+
           const environmentVariableValue = expectedConfigValue.toString();
+
           process.env = {
             [environmentVariableName]: environmentVariableValue,
           };
@@ -116,7 +121,9 @@ export const withEnvironmentVariableParsingUnitTests = <ConfigUnderTest>({
     ({ configPropertyName, environmentVariableName, defaultConfigValue }) => {
       it(`is the env variable ${environmentVariableName} parsed as a number if ${environmentVariableName} is specified`, () => {
         const expectedConfigValue = valueGenerator.nonnegativeInteger();
+
         const environmentVariableValue = expectedConfigValue.toString();
+
         process.env = {
           [environmentVariableName]: environmentVariableValue,
         };
@@ -136,6 +143,7 @@ export const withEnvironmentVariableParsingUnitTests = <ConfigUnderTest>({
 
       it(`throws InvalidConfigException if ${environmentVariableName} is not parseable as an integer`, () => {
         const environmentVariableValue = 'abc';
+
         process.env = {
           [environmentVariableName]: environmentVariableValue,
         };
@@ -148,6 +156,7 @@ export const withEnvironmentVariableParsingUnitTests = <ConfigUnderTest>({
 
       it(`throws InvalidConfigException if ${environmentVariableName} is float number`, () => {
         const environmentVariableValue = valueGenerator.nonnegativeFloat().toString();
+
         process.env = {
           [environmentVariableName]: environmentVariableValue,
         };
@@ -160,6 +169,7 @@ export const withEnvironmentVariableParsingUnitTests = <ConfigUnderTest>({
 
       it(`throws InvalidConfigException if ${environmentVariableName} is hex number`, () => {
         const environmentVariableValue = '0xFF';
+
         process.env = {
           [environmentVariableName]: environmentVariableValue,
         };
@@ -172,6 +182,7 @@ export const withEnvironmentVariableParsingUnitTests = <ConfigUnderTest>({
 
       it(`throws InvalidConfigException if ${environmentVariableName} is binary number`, () => {
         const environmentVariableValue = '0b101';
+
         process.env = {
           [environmentVariableName]: environmentVariableValue,
         };

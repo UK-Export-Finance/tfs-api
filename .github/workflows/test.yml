@@ -11,7 +11,7 @@ run-name: Executing test QA on ${{ github.repository }} 🚀
 
 on:
   pull_request:
-    branches: [main]
+    branches: [main, main-*]
     paths:
       - ".github/workflows/test.yml"
       - "src/**"
@@ -98,6 +98,8 @@ jobs:
 
       - name: Execute
         working-directory: ./
+        env:
+          GIFT_HTTP_VERSION: ${{ vars.GIFT_HTTP_VERSION }}
         run: npm run api-test
 
   # 4. E2E tests
@@ -157,6 +159,11 @@ jobs:
           APIM_MDM_VALUE: ${{ secrets.APIM_MDM_VALUE }}
           APIM_MDM_MAX_REDIRECTS: ${{ secrets.APIM_MDM_MAX_REDIRECTS }}
           APIM_MDM_TIMEOUT: ${{ secrets.APIM_MDM_TIMEOUT }}
+          GIFT_API_URL: ${{ secrets.GIFT_API_URL }}
+          GIFT_API_KEY: ${{ secrets.GIFT_API_KEY }}
+          GIFT_API_MAX_REDIRECTS: ${{ secrets.GIFT_API_MAX_REDIRECTS }}
+          GIFT_API_TIMEOUT: ${{ secrets.GIFT_API_TIMEOUT }}
+          GIFT_HTTP_VERSION: ${{ secrets.GIFT_HTTP_VERSION }}
         run: docker compose up --build -d
 
       - name: Execute

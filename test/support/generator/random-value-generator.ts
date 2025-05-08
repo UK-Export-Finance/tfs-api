@@ -130,4 +130,8 @@ export class RandomValueGenerator {
     const possibleValues = Object.values(theEnum);
     return possibleValues[this.integer({ min: 0, max: possibleValues.length - 1 })] as T;
   }
+
+  workPackageId(): number {
+    return this.chance.integer();
+  }
 }
