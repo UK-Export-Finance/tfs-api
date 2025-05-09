@@ -2,15 +2,19 @@ import { HttpStatus } from '@nestjs/common';
 import AppConfig from '@ukef/config/app.config';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { Api } from '@ukef-test/support/api';
+import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
+import nock from 'nock';
 
-import { booleanValidation, numberStringValidation, numberValidation, stringValidation, ukefIdValidation } from './assertions';
+import { booleanValidation, currencyStringValidation, numberStringValidation, numberValidation, stringValidation, ukefIdValidation } from './assertions';
 
 const {
   giftVersioning: { prefixAndVersion },
 } = AppConfig();
 
+const { GIFT_API_URL } = ENVIRONMENT_VARIABLES;
+
 const {
-  PATH: { FACILITY },
+  PATH: { CURRENCY, FACILITY },
   VALIDATION,
 } = GIFT;
 
@@ -21,6 +25,10 @@ describe('POST /gift/facility - validation', () => {
 
   beforeAll(async () => {
     api = await Api.create();
+  });
+
+  beforeEach(() => {
+    nock(GIFT_API_URL).persist().get(CURRENCY).reply(HttpStatus.OK, EXAMPLES.GIFT.CURRENCIES);
   });
 
   afterAll(async () => {
@@ -332,12 +340,7 @@ describe('POST /gift/facility - validation', () => {
   };
 
   describe('overview.currency', () => {
-    stringValidation({
-      ...baseParams,
-      fieldName: 'currency',
-      min: VALIDATION.FACILITY.OVERVIEW.CURRENCY.MIN_LENGTH,
-      max: VALIDATION.FACILITY.OVERVIEW.CURRENCY.MAX_LENGTH,
-    });
+    currencyStringValidation(baseParams);
   });
 
   describe('overview.dealId', () => {

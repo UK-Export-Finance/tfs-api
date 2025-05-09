@@ -27,9 +27,10 @@ export const GIFT = {
     },
   },
   PATH: {
-    FACILITY: '/facility',
+    CURRENCY: '/currency',
     CONFIGURATION_EVENT: '/configuration-event/type',
     CREATE_FACILITY: '/work-package/create-facility',
+    FACILITY: '/facility',
     WORK_PACKAGE: '/work-package',
   },
   PRODUCT_TYPE_CODES: {

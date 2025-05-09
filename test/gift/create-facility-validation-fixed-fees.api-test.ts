@@ -2,15 +2,19 @@ import { HttpStatus } from '@nestjs/common';
 import AppConfig from '@ukef/config/app.config';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { Api } from '@ukef-test/support/api';
+import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
+import nock from 'nock';
 
-import { arrayOfObjectsNumberValidation, arrayOfObjectsStringValidation } from './assertions';
+import { arrayOfObjectsCurrencyStringValidation, arrayOfObjectsNumberValidation, arrayOfObjectsStringValidation } from './assertions';
 
 const {
   giftVersioning: { prefixAndVersion },
 } = AppConfig();
 
+const { GIFT_API_URL } = ENVIRONMENT_VARIABLES;
+
 const {
-  PATH: { FACILITY },
+  PATH: { CURRENCY, FACILITY },
   VALIDATION: { FIXED_FEE: FIXED_FEE_VALIDATION },
 } = GIFT;
 
@@ -21,6 +25,10 @@ describe('POST /gift/facility - validation - fixed fees', () => {
 
   beforeAll(async () => {
     api = await Api.create();
+  });
+
+  beforeEach(() => {
+    nock(GIFT_API_URL).persist().get(CURRENCY).reply(HttpStatus.OK, EXAMPLES.GIFT.CURRENCIES);
   });
 
   afterAll(async () => {
@@ -88,12 +96,7 @@ describe('POST /gift/facility - validation - fixed fees', () => {
   });
 
   describe('currency', () => {
-    arrayOfObjectsStringValidation({
-      ...baseParams,
-      fieldName: 'currency',
-      min: FIXED_FEE_VALIDATION.CURRENCY.MIN_LENGTH,
-      max: FIXED_FEE_VALIDATION.CURRENCY.MAX_LENGTH,
-    });
+    arrayOfObjectsCurrencyStringValidation(baseParams);
   });
 
   describe('description', () => {

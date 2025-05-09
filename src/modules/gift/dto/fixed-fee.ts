@@ -2,6 +2,8 @@ import { ApiProperty } from '@nestjs/swagger';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { IsDefined, IsNumber, IsString, Length, Max, Min } from 'class-validator';
 
+import { IsSupportedCurrency } from '../custom-decorators';
+
 const {
   GIFT: { FIXED_FEE },
 } = EXAMPLES;
@@ -27,6 +29,7 @@ export class GiftFixedFeeDto {
   @IsDefined()
   @IsString()
   @Length(VALIDATION.CURRENCY.MIN_LENGTH, VALIDATION.CURRENCY.MAX_LENGTH)
+  @IsSupportedCurrency()
   @ApiProperty({
     required: true,
     example: FIXED_FEE().currency,
