@@ -47,11 +47,11 @@ export class GiftFixedFeeDto {
 
   @IsDefined()
   @IsString()
-  @Length(VALIDATION.DUE_DATE.MIN_LENGTH, VALIDATION.DUE_DATE.MAX_LENGTH)
+  @Length(VALIDATION.EFFECTIVE_DATE.MIN_LENGTH, VALIDATION.EFFECTIVE_DATE.MAX_LENGTH)
   @ApiProperty({
-    example: FIXED_FEE().dueDate,
+    example: FIXED_FEE().effectiveDate,
   })
-  dueDate: string;
+  effectiveDate: string;
 
   @IsDefined()
   @IsString()

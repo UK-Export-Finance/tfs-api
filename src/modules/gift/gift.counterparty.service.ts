@@ -6,7 +6,7 @@ import { PinoLogger } from 'nestjs-pino';
 import { GiftFacilityCounterpartyDto } from './dto';
 import { GiftHttpService } from './gift-http.service';
 
-const { PATH } = GIFT;
+const { EVENT_TYPES, PATH } = GIFT;
 
 /**
  * GIFT counterparty service.
@@ -23,16 +23,17 @@ export class GiftCounterpartyService {
 
   /**
    * Create a GIFT counterparty
-   * @param {GiftFacilityCounterpartyDto} payload: Counterparty data
+   * @param {GiftFacilityCounterpartyDto} counterpartyData: Counterparty data
+   * @param {String} facilityId: Facility ID
    * @param {Number} workPackageId: Facility work package ID
    * @returns {Promise<AxiosResponse>}
    * @throws {Error}
    */
-  async createOne(payload: GiftFacilityCounterpartyDto, workPackageId: number): Promise<AxiosResponse> {
+  async createOne(counterpartyData: GiftFacilityCounterpartyDto, facilityId: string, workPackageId: number): Promise<AxiosResponse> {
     try {
       const response = await this.giftHttpService.post<GiftFacilityCounterpartyDto>({
-        path: `${PATH.WORK_PACKAGE}/${workPackageId}${PATH.COUNTERPARTY}${PATH.CREATION_EVENT}`,
-        payload,
+        path: `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_COUNTERPARTY}`,
+        payload: counterpartyData,
       });
 
       return response;
@@ -46,13 +47,16 @@ export class GiftCounterpartyService {
   /**
    * Create multiple GIFT counterparties
    * @param {Array<GiftFacilityCounterpartyDto>} counterpartiesData: Counterparties data
+   * @param {String} facilityId: Facility ID
    * @param {Number} workPackageId: Facility work package ID
    * @returns {Promise<Array<AxiosResponse>>}
    * @throws {Error}
    */
-  async createMany(counterpartiesData: GiftFacilityCounterpartyDto[], workPackageId: number): Promise<Array<AxiosResponse>> {
+  async createMany(counterpartiesData: GiftFacilityCounterpartyDto[], facilityId: string, workPackageId: number): Promise<Array<AxiosResponse>> {
     try {
-      return await Promise.all(counterpartiesData.map((counterParty) => this.createOne(counterParty, workPackageId)));
+      const responses = await Promise.all(counterpartiesData.map((counterParty) => this.createOne(counterParty, facilityId, workPackageId)));
+
+      return responses;
     } catch (error) {
       this.logger.error('Error creating counterparties %o', error);
 

@@ -27,7 +27,7 @@ const COUNTERPARTY = () => ({
     numeric: true,
   }),
   exitDate: '2025-01-16',
-  roleId: 'buyer',
+  roleId: 'Guarantor',
   sharePercentage: 25,
   startDate: '2025-01-13',
 });
@@ -35,7 +35,7 @@ const COUNTERPARTY = () => ({
 const FIXED_FEE = () => ({
   feeTypeCode: FEE_TYPE_CODES.PLA,
   description: 'Mock fee description',
-  dueDate: '2025-01-15',
+  effectiveDate: '2025-01-15',
   currency: CURRENCIES.USD,
   amountDue: 5000,
 });
@@ -45,7 +45,7 @@ const OBLIGATION = () => ({
   maturityDate: '2025-01-15',
   currency: CURRENCIES.USD,
   obligationAmount: 2500,
-  productSubtype: 'Mock product subtype',
+  obligationSubtype: 'Mock obligation subtype',
 });
 
 /**
@@ -88,7 +88,7 @@ const FACILITY_OVERVIEW = {
   isRevolving: true,
   isDraft: true,
   createdDatetime: '2025-01-21T09:58:21.115Z',
-  productType: 'Mock product type',
+  productTypeCode: GIFT.PRODUCT_TYPE_CODES.BIP,
 };
 
 /**
@@ -111,9 +111,13 @@ const FACILITY_CREATION_PAYLOAD: GiftFacilityCreationDto = {
  * Facility data in the shape that GIFT returns.
  */
 const FACILITY_RESPONSE_DATA: GiftFacilityPostResponseDto = {
-  ...FACILITY_OVERVIEW,
-  drawnAmount: 2000000,
-  availableAmount: 3000000,
+  configurationEvent: {
+    data: {
+      ...FACILITY_OVERVIEW,
+      drawnAmount: 2000000,
+      availableAmount: 3000000,
+    },
+  },
   workPackageId: WORK_PACKAGE_ID,
 };
 

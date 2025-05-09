@@ -41,9 +41,6 @@ describe('POST /gift/facility - validation - repayment profiles', () => {
 
   afterEach(() => {
     jest.resetAllMocks();
-
-    nock.abortPendingRequests();
-    nock.cleanAll();
   });
 
   const baseParams = {
