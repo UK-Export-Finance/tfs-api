@@ -104,9 +104,9 @@ export class GiftFacilityDto {
 
   @IsDefined()
   @IsString()
-  @Length(VALIDATION.PRODUCT_TYPE.MIN_LENGTH, VALIDATION.PRODUCT_TYPE.MAX_LENGTH)
+  @Length(VALIDATION.PRODUCT_TYPE_CODE.MIN_LENGTH, VALIDATION.PRODUCT_TYPE_CODE.MAX_LENGTH)
   @ApiProperty({
-    example: EXAMPLE.productType,
+    example: EXAMPLE.productTypeCode,
   })
-  productType: string;
+  productTypeCode: string;
 }

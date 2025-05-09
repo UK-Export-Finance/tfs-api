@@ -2,7 +2,6 @@ import { HttpStatus } from '@nestjs/common';
 import AppConfig from '@ukef/config/app.config';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { Api } from '@ukef-test/support/api';
-import nock from 'nock';
 
 import { arrayOfObjectsNumberValidation, arrayOfObjectsStringValidation } from './assertions';
 
@@ -30,9 +29,6 @@ describe('POST /gift/facility - validation - obligations', () => {
 
   afterEach(() => {
     jest.resetAllMocks();
-
-    nock.abortPendingRequests();
-    nock.cleanAll();
   });
 
   const baseParams = {
@@ -71,9 +67,9 @@ describe('POST /gift/facility - validation - obligations', () => {
           `obligations.0.obligationAmount must not be greater than ${OBLIGATION_VALIDATION.OBLIGATION_AMOUNT.MAX}`,
           'obligations.0.obligationAmount must not be less than 1',
           'obligations.0.obligationAmount must be a number conforming to the specified constraints',
-          'obligations.0.productSubtype should not be null or undefined',
-          `obligations.0.productSubtype must be longer than or equal to ${OBLIGATION_VALIDATION.PRODUCT_SUBTYPE.MIN_LENGTH} characters`,
-          'obligations.0.productSubtype must be a string',
+          'obligations.0.obligationSubtype should not be null or undefined',
+          `obligations.0.obligationSubtype must be longer than or equal to ${OBLIGATION_VALIDATION.OBLIGATION_SUB_TYPE.MIN_LENGTH} characters`,
+          'obligations.0.obligationSubtype must be a string',
         ],
         statusCode: HttpStatus.BAD_REQUEST,
       };
@@ -118,12 +114,12 @@ describe('POST /gift/facility - validation - obligations', () => {
     });
   });
 
-  describe('productSubtype', () => {
+  describe('obligationSubtype', () => {
     arrayOfObjectsStringValidation({
       ...baseParams,
-      fieldName: 'productSubtype',
-      min: OBLIGATION_VALIDATION.PRODUCT_SUBTYPE.MIN_LENGTH,
-      max: OBLIGATION_VALIDATION.PRODUCT_SUBTYPE.MAX_LENGTH,
+      fieldName: 'obligationSubtype',
+      min: OBLIGATION_VALIDATION.OBLIGATION_SUB_TYPE.MIN_LENGTH,
+      max: OBLIGATION_VALIDATION.OBLIGATION_SUB_TYPE.MAX_LENGTH,
     });
   });
 });

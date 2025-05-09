@@ -6,7 +6,7 @@ import { PinoLogger } from 'nestjs-pino';
 import { GiftFixedFeeDto } from './dto';
 import { GiftHttpService } from './gift-http.service';
 
-const { PATH } = GIFT;
+const { EVENT_TYPES, PATH } = GIFT;
 
 /**
  * GIFT fixed fee service.
@@ -24,15 +24,16 @@ export class GiftFixedFeeService {
   /**
    * Create a GIFT fixed fee
    * @param {GiftFixedFeeDto} payload: Fixed fee data
+   * @param {String} facilityId: Facility ID
    * @param {Number} workPackageId: Facility work package ID
    * @returns {Promise<AxiosResponse>}
    * @throws {Error}
    */
-  async createOne(payload: GiftFixedFeeDto, workPackageId: number): Promise<AxiosResponse> {
+  async createOne(fixedFeeData: GiftFixedFeeDto, facilityId: string, workPackageId: number): Promise<AxiosResponse> {
     try {
       const response = await this.giftHttpService.post<GiftFixedFeeDto>({
-        path: `${PATH.WORK_PACKAGE}/${workPackageId}${PATH.FIXED_FEE}${PATH.CREATION_EVENT}`,
-        payload,
+        path: `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.CREATE_FIXED_FEE}`,
+        payload: fixedFeeData,
       });
 
       return response;
@@ -46,13 +47,16 @@ export class GiftFixedFeeService {
   /**
    * Create multiple GIFT fixed fees
    * @param {Array<GiftFixedFeeDto>} fixedFeesData: Fixed fees data
+   * @param {String} facilityId: Facility ID
    * @param {Number} workPackageId: Facility work package ID
    * @returns {Promise<Array<AxiosResponse>>}
    * @throws {Error}
    */
-  async createMany(fixedFeesData: GiftFixedFeeDto[], workPackageId: number): Promise<Array<AxiosResponse>> {
+  async createMany(fixedFeesData: GiftFixedFeeDto[], facilityId: string, workPackageId: number): Promise<Array<AxiosResponse>> {
     try {
-      return await Promise.all(fixedFeesData.map((fixedFee) => this.createOne(fixedFee, workPackageId)));
+      const responses = await Promise.all(fixedFeesData.map((fixedFee) => this.createOne(fixedFee, facilityId, workPackageId)));
+
+      return responses;
     } catch (error) {
       this.logger.error('Error creating fixed fees %o', error);
 

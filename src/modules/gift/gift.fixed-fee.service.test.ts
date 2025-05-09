@@ -5,12 +5,10 @@ import { PinoLogger } from 'nestjs-pino';
 
 import { GiftFixedFeeService } from './gift.fixed-fee.service';
 const {
-  GIFT: { FIXED_FEE, WORK_PACKAGE_ID: mockWorkPackageId },
+  GIFT: { FIXED_FEE, FACILITY_ID: mockFacilityId, WORK_PACKAGE_ID: mockWorkPackageId },
 } = EXAMPLES;
 
-const { PATH } = GIFT;
-
-const expectedPath = `${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.FIXED_FEE}${PATH.CREATION_EVENT}`;
+const { EVENT_TYPES, PATH } = GIFT;
 
 describe('GiftFixedFeeService', () => {
   const logger = new PinoLogger({});
@@ -44,25 +42,25 @@ describe('GiftFixedFeeService', () => {
   });
 
   describe('createOne', () => {
-    const mockPayload = FIXED_FEE();
+    const mockFixedFee = FIXED_FEE();
 
     it('should call giftHttpService.post', async () => {
       // Act
-      await service.createOne(mockPayload, mockWorkPackageId);
+      await service.createOne(mockFixedFee, mockFacilityId, mockWorkPackageId);
 
       // Assert
       expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
 
       expect(mockHttpServicePost).toHaveBeenCalledWith({
-        path: expectedPath,
-        payload: mockPayload,
+        path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.CREATE_FIXED_FEE}`,
+        payload: mockFixedFee,
       });
     });
 
     describe('when giftHttpService.post is successful', () => {
       it('should return the response of giftHttpService.post', async () => {
         // Act
-        const response = await service.createOne(mockPayload, mockWorkPackageId);
+        const response = await service.createOne(mockFixedFee, mockFacilityId, mockWorkPackageId);
 
         // Assert
         expect(response).toEqual(mockCreateOneResponse);
@@ -81,7 +79,7 @@ describe('GiftFixedFeeService', () => {
 
       it('should thrown an error', async () => {
         // Act
-        const promise = service.createOne(mockPayload, mockWorkPackageId);
+        const promise = service.createOne(mockFixedFee, mockFacilityId, mockWorkPackageId);
 
         // Assert
         const expected = new Error('Error creating fixed fee');
@@ -95,8 +93,6 @@ describe('GiftFixedFeeService', () => {
     const fixedFeesLength = 3;
 
     const mockFixedFees = Array(fixedFeesLength).fill(FIXED_FEE());
-
-    const mockPayload = mockFixedFees;
 
     let mockCreateOne = jest.fn().mockResolvedValue(mockResponse201(mockFixedFees));
 
@@ -117,20 +113,20 @@ describe('GiftFixedFeeService', () => {
 
     it('should call service.createOne for each provided fixed fee', async () => {
       // Act
-      await service.createMany(mockPayload, mockWorkPackageId);
+      await service.createMany(mockFixedFees, mockFacilityId, mockWorkPackageId);
 
       // Assert
       expect(mockCreateOne).toHaveBeenCalledTimes(fixedFeesLength);
 
-      expect(mockCreateOne).toHaveBeenCalledWith(mockPayload[0], mockWorkPackageId);
-      expect(mockCreateOne).toHaveBeenCalledWith(mockPayload[1], mockWorkPackageId);
-      expect(mockCreateOne).toHaveBeenCalledWith(mockPayload[2], mockWorkPackageId);
+      expect(mockCreateOne).toHaveBeenCalledWith(mockFixedFees[0], mockFacilityId, mockWorkPackageId);
+      expect(mockCreateOne).toHaveBeenCalledWith(mockFixedFees[1], mockFacilityId, mockWorkPackageId);
+      expect(mockCreateOne).toHaveBeenCalledWith(mockFixedFees[2], mockFacilityId, mockWorkPackageId);
     });
 
     describe('when service.createOne is successful', () => {
       it('should return the response of multiple calls to service.createOne', async () => {
         // Act
-        const response = await service.createMany(mockPayload, mockWorkPackageId);
+        const response = await service.createMany(mockFixedFees, mockFacilityId, mockWorkPackageId);
 
         // Assert
         const expected = [mockCreateOneResponse, mockCreateOneResponse, mockCreateOneResponse];
@@ -151,7 +147,7 @@ describe('GiftFixedFeeService', () => {
 
       it('should thrown an error', async () => {
         // Act
-        const promise = service.createMany(mockPayload, mockWorkPackageId);
+        const promise = service.createMany(mockFixedFees, mockFacilityId, mockWorkPackageId);
 
         // Assert
         const expected = new Error('Error creating fixed fees');

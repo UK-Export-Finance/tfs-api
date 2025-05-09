@@ -13,6 +13,13 @@ export const GIFT = {
     OBLIGATION: 'Obligation',
     REPAYMENT_PROFILE: 'Repayment profile',
   },
+  EVENT_TYPES: {
+    ADD_COUNTERPARTY: 'AddFacilityCounterparty',
+    ADD_MANUAL_REPAYMENT_PROFILE: 'AddManualRepaymentProfile',
+    CREATE_FACILITY: 'CreateFacility',
+    CREATE_FIXED_FEE: 'CreateFixedFee',
+    CREATE_OBLIGATION: 'CreateObligation',
+  },
   FIXED_FEE: {
     FEE_TYPE_CODES: {
       BEX: 'BEX',
@@ -21,13 +28,13 @@ export const GIFT = {
   },
   PATH: {
     FACILITY: '/facility',
-    COUNTERPARTY: '/counterparty',
-    CREATION_EVENT: '/creation-event',
-    FIXED_FEE: '/fixed-fee',
-    MANUAL: '/manual',
-    OBLIGATION: '/obligation',
-    REPAYMENT_PROFILE: '/repayment-profile',
+    CONFIGURATION_EVENT: '/configuration-event/type',
+    CREATE_FACILITY: '/work-package/create-facility',
     WORK_PACKAGE: '/work-package',
+  },
+  PRODUCT_TYPE_CODES: {
+    BIP: 'BIP',
+    EXIP: 'EXIP',
   },
   VALIDATION,
 };

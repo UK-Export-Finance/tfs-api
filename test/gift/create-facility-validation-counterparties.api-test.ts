@@ -2,7 +2,6 @@ import { HttpStatus } from '@nestjs/common';
 import AppConfig from '@ukef/config/app.config';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { Api } from '@ukef-test/support/api';
-import nock from 'nock';
 
 import { arrayOfObjectsNumberValidation, arrayOfObjectsStringValidation } from './assertions';
 
@@ -30,9 +29,6 @@ describe('POST /gift/facility - validation - counterparties', () => {
 
   afterEach(() => {
     jest.resetAllMocks();
-
-    nock.abortPendingRequests();
-    nock.cleanAll();
   });
 
   const baseParams = {

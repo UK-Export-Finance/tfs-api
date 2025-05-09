@@ -2,7 +2,6 @@ import { HttpStatus } from '@nestjs/common';
 import AppConfig from '@ukef/config/app.config';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { Api } from '@ukef-test/support/api';
-import nock from 'nock';
 
 import { booleanValidation, numberStringValidation, numberValidation, stringValidation, ukefIdValidation } from './assertions';
 
@@ -29,8 +28,7 @@ describe('POST /gift/facility - validation', () => {
   });
 
   afterEach(() => {
-    nock.abortPendingRequests();
-    nock.cleanAll();
+    jest.resetAllMocks();
   });
 
   describe('when an empty object is provided', () => {
@@ -262,9 +260,9 @@ describe('POST /gift/facility - validation', () => {
           'overview.obligorUrn should not be null or undefined',
           `overview.obligorUrn must be longer than or equal to ${VALIDATION.FACILITY.OVERVIEW.OBLIGOR_URN.MIN_LENGTH} characters`,
           'overview.obligorUrn must be a number string',
-          'overview.productType should not be null or undefined',
-          `overview.productType must be longer than or equal to ${VALIDATION.FACILITY.OVERVIEW.PRODUCT_TYPE.MIN_LENGTH} characters`,
-          'overview.productType must be a string',
+          'overview.productTypeCode should not be null or undefined',
+          `overview.productTypeCode must be longer than or equal to ${VALIDATION.FACILITY.OVERVIEW.PRODUCT_TYPE_CODE.MIN_LENGTH} characters`,
+          'overview.productTypeCode must be a string',
           `counterparties.counterpartyUrn should not be null or undefined`,
           `counterparties.counterpartyUrn must be longer than or equal to ${VALIDATION.COUNTERPARTY.COUNTERPARTY_URN.MIN_LENGTH} characters`,
           `counterparties.counterpartyUrn must be a string`,
@@ -291,9 +289,9 @@ describe('POST /gift/facility - validation', () => {
           'fixedFees.description should not be null or undefined',
           `fixedFees.description must be longer than or equal to ${VALIDATION.FIXED_FEE.DESCRIPTION.MIN_LENGTH} characters`,
           'fixedFees.description must be a string',
-          'fixedFees.dueDate should not be null or undefined',
-          `fixedFees.dueDate must be longer than or equal to ${VALIDATION.FIXED_FEE.DUE_DATE.MIN_LENGTH} characters`,
-          'fixedFees.dueDate must be a string',
+          'fixedFees.effectiveDate should not be null or undefined',
+          `fixedFees.effectiveDate must be longer than or equal to ${VALIDATION.FIXED_FEE.EFFECTIVE_DATE.MIN_LENGTH} characters`,
+          'fixedFees.effectiveDate must be a string',
           'fixedFees.feeTypeCode should not be null or undefined',
           `fixedFees.feeTypeCode must be longer than or equal to ${VALIDATION.FIXED_FEE.FEE_TYPE_CODE.MIN_LENGTH} characters`,
           'fixedFees.feeTypeCode must be a string',
@@ -310,9 +308,9 @@ describe('POST /gift/facility - validation', () => {
           'obligations.obligationAmount must not be greater than 999999999999',
           `obligations.obligationAmount must not be less than ${VALIDATION.OBLIGATION.OBLIGATION_AMOUNT.MIN}`,
           'obligations.obligationAmount must be a number conforming to the specified constraints',
-          'obligations.productSubtype should not be null or undefined',
-          `obligations.productSubtype must be longer than or equal to ${VALIDATION.OBLIGATION.PRODUCT_SUBTYPE.MIN_LENGTH} characters`,
-          'obligations.productSubtype must be a string',
+          'obligations.obligationSubtype should not be null or undefined',
+          `obligations.obligationSubtype must be longer than or equal to ${VALIDATION.OBLIGATION.OBLIGATION_SUB_TYPE.MIN_LENGTH} characters`,
+          'obligations.obligationSubtype must be a string',
           'repaymentProfiles.name should not be null or undefined',
           `repaymentProfiles.name must be longer than or equal to ${VALIDATION.REPAYMENT_PROFILE.NAME.MIN_LENGTH} characters`,
           'repaymentProfiles.name must be a string',
@@ -417,12 +415,12 @@ describe('POST /gift/facility - validation', () => {
     });
   });
 
-  describe('overview.productType', () => {
+  describe('overview.productTypeCode', () => {
     stringValidation({
       ...baseParams,
-      fieldName: 'productType',
-      min: VALIDATION.FACILITY.OVERVIEW.PRODUCT_TYPE.MIN_LENGTH,
-      max: VALIDATION.FACILITY.OVERVIEW.PRODUCT_TYPE.MAX_LENGTH,
+      fieldName: 'productTypeCode',
+      min: VALIDATION.FACILITY.OVERVIEW.PRODUCT_TYPE_CODE.MIN_LENGTH,
+      max: VALIDATION.FACILITY.OVERVIEW.PRODUCT_TYPE_CODE.MAX_LENGTH,
     });
   });
 });
