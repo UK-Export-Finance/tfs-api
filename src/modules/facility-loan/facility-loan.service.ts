@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ENUMS, PROPERTIES } from '@ukef/constants';
-import { CURRENCIES } from '@ukef/constants/currencies.constant';
+import { SUPPORTED_CURRENCIES } from '@ukef/constants/currencies.constant';
 import { UkefId, WithWarningErrors } from '@ukef/helpers';
 import { AcbsBundleInformationService } from '@ukef/modules/acbs/acbs-bundle-information.service';
 import { AcbsFacilityLoanService } from '@ukef/modules/acbs/acbs-facility-loan.service';
@@ -211,7 +211,7 @@ export class FacilityLoanService {
   }
 
   private getFieldsThatDependOnGbp(newFacilityLoan: CreateFacilityLoanRequestItem) {
-    const isNotGbp = newFacilityLoan.currency !== CURRENCIES.GBP;
+    const isNotGbp = newFacilityLoan.currency !== SUPPORTED_CURRENCIES.GBP;
     return isNotGbp
       ? {
           FinancialRateGroup: PROPERTIES.FACILITY_LOAN.DEFAULT.financialRateGroup,

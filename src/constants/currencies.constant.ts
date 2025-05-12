@@ -4,7 +4,12 @@ export const EUR = 'EUR';
 export const USD = 'USD';
 export const JPY = 'JPY';
 
-export const CURRENCIES = {
+/**
+ * Array of some currencies.
+ * NOTE: This is for testing and example purposes only.
+ * Checks for currency support are handled by other systems.
+ */
+export const SUPPORTED_CURRENCIES = {
   GBP,
   EUR,
   USD,

@@ -2,7 +2,7 @@ import { UkefId } from '@ukef/helpers';
 import { GiftFacilityCreationDto, GiftFacilityPostResponseDto } from '@ukef/modules/gift/dto';
 import { Chance } from 'chance';
 
-import { CURRENCIES } from '../currencies.constant';
+import { SUPPORTED_CURRENCIES } from '../currencies.constant';
 import { GIFT } from '../gift/gift.constant';
 
 const {
@@ -36,14 +36,14 @@ const FIXED_FEE = () => ({
   feeTypeCode: FEE_TYPE_CODES.PLA,
   description: 'Mock fee description',
   effectiveDate: '2025-01-15',
-  currency: CURRENCIES.USD,
+  currency: SUPPORTED_CURRENCIES.USD,
   amountDue: 5000,
 });
 
 const OBLIGATION = () => ({
   effectiveDate: '2025-01-13',
   maturityDate: '2025-01-15',
-  currency: CURRENCIES.USD,
+  currency: SUPPORTED_CURRENCIES.USD,
   obligationAmount: 2500,
   obligationSubtype: 'Mock obligation subtype',
 });
@@ -79,7 +79,7 @@ const FACILITY_OVERVIEW = {
   streamVersion: 1,
   name: 'Amazing facility',
   obligorUrn: '01234567',
-  currency: CURRENCIES.USD,
+  currency: SUPPORTED_CURRENCIES.USD,
   facilityAmount: 10000,
   effectiveDate: '2025-01-01',
   expiryDate: '2027-02-01',
@@ -123,7 +123,7 @@ const FACILITY_RESPONSE_DATA: GiftFacilityPostResponseDto = {
 
 export const GIFT_EXAMPLES = {
   COUNTERPARTY,
-  CURRENCIES: Object.values(CURRENCIES),
+  CURRENCIES: Object.values(SUPPORTED_CURRENCIES),
   DEAL_ID,
   FACILITY_CREATION_PAYLOAD,
   FACILITY_ID,

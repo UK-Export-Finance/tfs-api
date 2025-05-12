@@ -2,7 +2,7 @@ import { Controller, Get, Res } from '@nestjs/common';
 import { ApiInternalServerErrorResponse, ApiOkResponse, ApiOperation, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import AppConfig from '@ukef/config/app.config';
 import { GIFT } from '@ukef/constants';
-import { CURRENCIES } from '@ukef/constants/currencies.constant';
+import { SUPPORTED_CURRENCIES } from '@ukef/constants/currencies.constant';
 import { Response } from 'express';
 
 import { GiftCurrencyService } from './gift.currency.service';
@@ -22,7 +22,7 @@ export class GiftCurrencyController {
   @ApiOperation({ summary: 'Get all supported GIFT currencies' })
   @ApiOkResponse({
     description: 'The supported currencies',
-    example: [CURRENCIES.EUR, CURRENCIES.GBP],
+    example: [SUPPORTED_CURRENCIES.EUR, SUPPORTED_CURRENCIES.GBP],
     isArray: true,
     type: String,
   })
