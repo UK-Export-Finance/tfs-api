@@ -127,7 +127,7 @@ export class FacilityService {
 
     const existingAcbsFacilityData = await this.acbsFacilityService.getFacilityByIdentifier(facilityIdentifier, idToken);
     // Remove AdministrativeUserIdentifier as its a depreciated field and
-    // causes issue with old facilities which were manually created using old adminstrative profile.
+    // causes issue with old facilities which were manually created using old administrative profile.
     delete existingAcbsFacilityData.AdministrativeUserIdentifier;
 
     delete existingAcbsFacilityData.FacilityOverallStatus;
