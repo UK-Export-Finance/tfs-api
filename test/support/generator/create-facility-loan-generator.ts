@@ -1,6 +1,6 @@
 import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { CALENDAR_IDENTIFIERS } from '@ukef/constants/calendar-identifiers.constant';
-import { CURRENCIES } from '@ukef/constants/currencies.constant';
+import { SUPPORTED_CURRENCIES } from '@ukef/constants/currencies.constant';
 import { LOAN_RATE_INDEX } from '@ukef/constants/loan-rate-index.constant';
 import { AcbsBundleId, UkefId } from '@ukef/helpers';
 import { AcbsCreateBundleInformationRequestDto } from '@ukef/modules/acbs/dto/acbs-create-bundle-information-request.dto';
@@ -31,7 +31,7 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
       borrowerPartyIdentifier: this.valueGenerator.stringOfNumericCharacters({ length: 8 }),
       productTypeId: ENUMS.PRODUCT_TYPE_IDS.BSS,
       productTypeGroup: ENUMS.PRODUCT_TYPE_GROUPS.BOND,
-      currency: CURRENCIES.GBP,
+      currency: SUPPORTED_CURRENCIES.GBP,
       dealCustomerUsageRate: 0.123,
       dealCustomerUsageOperationType: this.valueGenerator.enumValue(ENUMS.OPERATION_TYPE_CODES),
       amount: 123.45,
@@ -471,7 +471,7 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
             CalculationFeatureCode: PROPERTIES.ACCRUAL.INT_RFR.accrualScheduleIBORDetails.calculationFeature.calculationFeatureCode,
           },
           NextRatePeriod: nextRatePeriod,
-          UseObservationShiftIndicator: facilityLoan.currency === CURRENCIES.EUR,
+          UseObservationShiftIndicator: facilityLoan.currency === SUPPORTED_CURRENCIES.EUR,
           RateSetLagDays: PROPERTIES.ACCRUAL.INT_RFR.accrualScheduleIBORDetails.rateSetLagDays,
           LagDaysType: {
             CompoundingDateTypeCode: PROPERTIES.ACCRUAL.INT_RFR.accrualScheduleIBORDetails.compoundingDateType.compoundingDateTypeCode,

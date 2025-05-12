@@ -3,7 +3,7 @@ import { GiftRepaymentProfileDto } from '../../dto';
 /**
  * Get all allocation dates from GIFT repayment profile allocations
  * @param {GiftRepaymentProfileDto[]} repaymentProfiles: All repayment profiles
- * @returns {string[]} All allocation's dueDate values
+ * @returns {String[]} All allocation's dueDate values
  */
 export const getRepaymentProfileAllocationDates = (repaymentProfiles?: GiftRepaymentProfileDto[]): string[] => {
   if (repaymentProfiles && Array.isArray(repaymentProfiles)) {
