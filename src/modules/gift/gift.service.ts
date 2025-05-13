@@ -158,7 +158,17 @@ export class GiftService {
         };
       }
 
-      const approvedResponse = await this.giftStatusService.approved(facilityId, workPackageId);
+      const approvedStatusResponse = await this.giftStatusService.approved(facilityId, workPackageId);
+
+      if (approvedStatusResponse.status !== HttpStatus.OK) {
+        return {
+          status: approvedStatusResponse.status,
+          data: {
+            statusCode: approvedStatusResponse.status,
+            message: API_RESPONSE_MESSAGES.APPROVED_STATUS_ERROR_MESSAGE,
+          },
+        };
+      }
 
       return {
         status: HttpStatus.CREATED,
@@ -167,7 +177,7 @@ export class GiftService {
           // TODO
           // TODO
           // TODO: update DTO
-          state: approvedResponse.data.state,
+          state: approvedStatusResponse.data.state,
           counterparties: mapResponsesData(counterparties),
           fixedFees: mapResponsesData(fixedFees),
           obligations: mapResponsesData(obligations),

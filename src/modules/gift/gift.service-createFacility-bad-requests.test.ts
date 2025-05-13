@@ -9,6 +9,7 @@ import { GiftFixedFeeService } from './gift.fixed-fee.service';
 import { GiftObligationService } from './gift.obligation.service';
 import { GiftRepaymentProfileService } from './gift.repayment-profile.service';
 import { GiftService } from './gift.service';
+import { GiftStatusService } from './gift.status.service';
 import { mapAllValidationErrorResponses, mapValidationErrorResponses } from './helpers';
 
 const {
@@ -36,6 +37,7 @@ describe('GiftService.createFacility - bad requests', () => {
   let fixedFeeService: GiftFixedFeeService;
   let obligationService: GiftObligationService;
   let repaymentProfileService: GiftRepaymentProfileService;
+  let statusService: GiftStatusService;
   let service: GiftService;
 
   let giftHttpService;
@@ -51,6 +53,7 @@ describe('GiftService.createFacility - bad requests', () => {
     fixedFeeService = new GiftFixedFeeService(giftHttpService, logger);
     obligationService = new GiftObligationService(giftHttpService, logger);
     repaymentProfileService = new GiftRepaymentProfileService(giftHttpService, logger);
+    statusService = new GiftStatusService(giftHttpService, logger);
 
     createInitialFacilitySpy = jest.fn().mockResolvedValueOnce(mockCreateInitialFacilityResponse);
     createCounterpartiesSpy = jest.fn().mockResolvedValueOnce(mockCreateCounterpartiesResponse);
@@ -63,7 +66,7 @@ describe('GiftService.createFacility - bad requests', () => {
     obligationService.createMany = createObligationsSpy;
     repaymentProfileService.createMany = createRepaymentProfilesSpy;
 
-    service = new GiftService(giftHttpService, logger, counterpartyService, fixedFeeService, obligationService, repaymentProfileService);
+    service = new GiftService(giftHttpService, logger, counterpartyService, fixedFeeService, obligationService, repaymentProfileService, statusService);
 
     service.createInitialFacility = createInitialFacilitySpy;
   });
