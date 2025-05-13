@@ -121,6 +121,22 @@ const FACILITY_RESPONSE_DATA: GiftFacilityPostResponseDto = {
   workPackageId: WORK_PACKAGE_ID,
 };
 
+const WORK_PACKAGE_APPROVE_RESPONSE = {
+  configurationEvent: {
+    data: {
+      id: WORK_PACKAGE_ID,
+      name: 'New facility',
+      isFacilityCreation: true,
+      createdDatetime: '2025-05-13T09:59:01.896Z',
+      currency: 'EUR',
+      streamId: '4b9c09c9-9e63-4ebb-9ed9-a5905d24c9d0',
+      state: 'APPROVED',
+      configurationEvents: [],
+      users: [],
+    },
+  },
+};
+
 export const GIFT_EXAMPLES = {
   COUNTERPARTY,
   DEAL_ID,
@@ -132,5 +148,6 @@ export const GIFT_EXAMPLES = {
   OBLIGATION,
   REPAYMENT_PROFILE,
   REPAYMENT_PROFILE_ALLOCATION,
+  WORK_PACKAGE_APPROVE_RESPONSE,
   WORK_PACKAGE_ID,
 };

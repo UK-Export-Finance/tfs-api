@@ -5,10 +5,10 @@ import { PinoLogger } from 'nestjs-pino';
 import { GiftController } from './gift.controller';
 import { GiftCounterpartyService } from './gift.counterparty.service';
 import { GiftFixedFeeService } from './gift.fixed-fee.service';
+import { GiftHttpService } from './gift.http.service';
 import { GiftObligationService } from './gift.obligation.service';
 import { GiftRepaymentProfileService } from './gift.repayment-profile.service';
 import { GiftService } from './gift.service';
-import { GiftHttpService } from './gift-http.service';
 
 const {
   GIFT: { FACILITY_ID: mockFacilityId, FACILITY_CREATION_PAYLOAD },

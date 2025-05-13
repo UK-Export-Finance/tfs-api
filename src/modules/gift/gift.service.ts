@@ -7,9 +7,10 @@ import { PinoLogger } from 'nestjs-pino';
 import { GiftFacilityCreationDto, GiftFacilityDto } from './dto';
 import { GiftCounterpartyService } from './gift.counterparty.service';
 import { GiftFixedFeeService } from './gift.fixed-fee.service';
+import { GiftHttpService } from './gift.http.service';
 import { GiftObligationService } from './gift.obligation.service';
 import { GiftRepaymentProfileService } from './gift.repayment-profile.service';
-import { GiftHttpService } from './gift-http.service';
+import { GiftStatusService } from './gift.status.service';
 import { mapAllValidationErrorResponses, mapResponsesData } from './helpers';
 
 const { API_RESPONSE_MESSAGES, PATH } = GIFT;
@@ -32,12 +33,14 @@ export class GiftService {
     private readonly giftFixedFeeService: GiftFixedFeeService,
     private readonly giftObligationService: GiftObligationService,
     private readonly giftRepaymentProfileService: GiftRepaymentProfileService,
+    private readonly giftStatusService: GiftStatusService,
   ) {
     this.giftHttpService = giftHttpService;
     this.giftCounterpartyService = giftCounterpartyService;
     this.giftFixedFeeService = giftFixedFeeService;
     this.giftObligationService = giftObligationService;
     this.giftRepaymentProfileService = giftRepaymentProfileService;
+    this.giftStatusService = giftStatusService;
   }
 
   /**
@@ -155,10 +158,16 @@ export class GiftService {
         };
       }
 
+      const approvedResponse = await this.giftStatusService.approved(facilityId, workPackageId);
+
       return {
         status: HttpStatus.CREATED,
         data: {
           ...facility.configurationEvent.data,
+          // TODO
+          // TODO
+          // TODO: update DTO
+          state: approvedResponse.data.state,
           counterparties: mapResponsesData(counterparties),
           fixedFees: mapResponsesData(fixedFees),
           obligations: mapResponsesData(obligations),

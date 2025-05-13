@@ -67,7 +67,7 @@ export class GiftHttpService {
    * @param {Object} payload
    * @returns {Promise<AxiosResponse<T>>}
    */
-  async post<T>({ path, payload }: { path: string; payload: object }): Promise<AxiosResponse<T>> {
+  async post<T>({ path, payload }: { path: string; payload?: object }): Promise<AxiosResponse<T>> {
     try {
       const response = await this.axiosInstance.post(path, payload);
 
