@@ -127,10 +127,10 @@ const FACILITY_RESPONSE_DATA: GiftFacilityPostResponseDto = {
  */
 const WORK_PACKAGE_APPROVE_RESPONSE_DATA = {
   id: WORK_PACKAGE_ID,
-  name: 'New facility',
+  name: FACILITY_OVERVIEW.name,
   isFacilityCreation: true,
   createdDatetime: '2025-05-13T09:59:01.896Z',
-  currency: 'EUR',
+  currency: SUPPORTED_CURRENCIES.USD,
   streamId: '4b9c09c9-9e63-4ebb-9ed9-a5905d24c9d0',
   state: 'APPROVED',
   configurationEvents: [],
