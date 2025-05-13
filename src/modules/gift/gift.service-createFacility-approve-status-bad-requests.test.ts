@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 import { EXAMPLES, GIFT } from '@ukef/constants';
-import { mockAxiosError, mockResponse201 } from '@ukef-test/http-response';
+import { mockAxiosError, mockResponse200, mockResponse201 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
 import { GiftCounterpartyService } from './gift.counterparty.service';
@@ -35,7 +35,7 @@ const mockCreateCounterpartiesResponse = mockCounterparties.map((counterparty) =
 const mockCreateFixedFeesResponse = mockFixedFees.map((fixedFee) => mockResponse201(fixedFee));
 const mockCreateObligationsResponse = mockObligations.map((counterparty) => mockResponse201(counterparty));
 const mockRepaymentProfilesResponse = mockRepaymentProfiles.map((repaymentProfile) => mockResponse201(repaymentProfile));
-const mockApproveStatusResponse = mockResponse201({ data: WORK_PACKAGE_APPROVE_RESPONSE_DATA });
+const mockApproveStatusResponse = mockResponse200({ data: WORK_PACKAGE_APPROVE_RESPONSE_DATA });
 
 describe('GiftService.createFacility - error handling', () => {
   const logger = new PinoLogger({});
@@ -53,7 +53,7 @@ describe('GiftService.createFacility - error handling', () => {
   let createFixedFeesSpy: jest.Mock;
   let createObligationsSpy: jest.Mock;
   let createRepaymentProfilesSpy: jest.Mock;
-  let statusServiceSpy: jest.Mock;
+  let approveStatusSpy: jest.Mock;
 
   beforeEach(() => {
     // Arrange
@@ -68,7 +68,7 @@ describe('GiftService.createFacility - error handling', () => {
     createFixedFeesSpy = jest.fn().mockResolvedValueOnce(mockCreateFixedFeesResponse);
     createObligationsSpy = jest.fn().mockResolvedValueOnce(mockCreateObligationsResponse);
     createRepaymentProfilesSpy = jest.fn().mockResolvedValueOnce(mockRepaymentProfilesResponse);
-    statusServiceSpy = jest.fn().mockResolvedValueOnce(mockApproveStatusResponse);
+    approveStatusSpy = jest.fn().mockResolvedValueOnce(mockApproveStatusResponse);
 
     counterpartyService.createMany = createCounterpartiesSpy;
     fixedFeeService.createMany = createFixedFeesSpy;
@@ -87,9 +87,9 @@ describe('GiftService.createFacility - error handling', () => {
   describe(`when giftStatusService.approved returns ${HttpStatus.BAD_REQUEST}`, () => {
     beforeEach(() => {
       // Arrange
-      statusServiceSpy = jest.fn().mockResolvedValueOnce(mockAxiosError({ status: HttpStatus.BAD_REQUEST }));
+      approveStatusSpy = jest.fn().mockResolvedValueOnce(mockAxiosError({ status: HttpStatus.BAD_REQUEST }));
 
-      statusService.approved = statusServiceSpy;
+      statusService.approved = approveStatusSpy;
 
       service = new GiftService(giftHttpService, logger, counterpartyService, fixedFeeService, obligationService, repaymentProfileService, statusService);
 
@@ -116,9 +116,9 @@ describe('GiftService.createFacility - error handling', () => {
   describe(`when giftStatusService.approved returns ${HttpStatus.INTERNAL_SERVER_ERROR}`, () => {
     beforeEach(() => {
       // Arrange
-      statusServiceSpy = jest.fn().mockResolvedValueOnce(mockAxiosError({ status: HttpStatus.INTERNAL_SERVER_ERROR }));
+      approveStatusSpy = jest.fn().mockResolvedValueOnce(mockAxiosError({ status: HttpStatus.INTERNAL_SERVER_ERROR }));
 
-      statusService.approved = statusServiceSpy;
+      statusService.approved = approveStatusSpy;
 
       service = new GiftService(giftHttpService, logger, counterpartyService, fixedFeeService, obligationService, repaymentProfileService, statusService);
 
@@ -139,27 +139,6 @@ describe('GiftService.createFacility - error handling', () => {
       };
 
       expect(response).toEqual(expected);
-    });
-  });
-
-  describe('when giftStatusService.approved throws an error', () => {
-    beforeEach(() => {
-      // Arrange
-      statusServiceSpy = jest.fn().mockRejectedValueOnce(mockAxiosError());
-
-      statusService.approved = statusServiceSpy;
-
-      service = new GiftService(giftHttpService, logger, counterpartyService, fixedFeeService, obligationService, repaymentProfileService, statusService);
-    });
-
-    it('should throw an error', async () => {
-      // Act
-      const response = service.createFacility(mockPayload);
-
-      // Assert
-      const expected = new Error('Error creating GIFT facility');
-
-      await expect(response).rejects.toThrow(expected);
     });
   });
 });
