@@ -121,9 +121,11 @@ const FACILITY_RESPONSE_DATA: GiftFacilityPostResponseDto = {
   workPackageId: WORK_PACKAGE_ID,
 };
 
+/**
+ * WORK_PACKAGE_APPROVE_RESPONSE_DATA
+ * "Work package approve" data in the shape that GIFT returns.
+ */
 const WORK_PACKAGE_APPROVE_RESPONSE_DATA = {
-  // configurationEvent: {
-  // data: {
   id: WORK_PACKAGE_ID,
   name: 'New facility',
   isFacilityCreation: true,
@@ -133,7 +135,6 @@ const WORK_PACKAGE_APPROVE_RESPONSE_DATA = {
   state: 'APPROVED',
   configurationEvents: [],
   users: [],
-  // },
 };
 
 export const GIFT_EXAMPLES = {

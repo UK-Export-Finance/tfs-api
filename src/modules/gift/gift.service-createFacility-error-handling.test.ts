@@ -12,7 +12,15 @@ import { GiftService } from './gift.service';
 import { GiftStatusService } from './gift.status.service';
 
 const {
-  GIFT: { COUNTERPARTY, FACILITY_RESPONSE_DATA, FACILITY_CREATION_PAYLOAD: mockPayload, FIXED_FEE, OBLIGATION, REPAYMENT_PROFILE },
+  GIFT: {
+    COUNTERPARTY,
+    FACILITY_RESPONSE_DATA,
+    FACILITY_CREATION_PAYLOAD: mockPayload,
+    FIXED_FEE,
+    OBLIGATION,
+    REPAYMENT_PROFILE,
+    WORK_PACKAGE_APPROVE_RESPONSE_DATA,
+  },
 } = EXAMPLES;
 
 const mockResponsePost = mockResponse201(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA);
@@ -26,7 +34,7 @@ const mockCreateCounterpartiesResponse = mockCounterparties.map((counterparty) =
 const mockCreateFixedFeesResponse = mockFixedFees.map((fixedFee) => mockResponse201(fixedFee));
 const mockCreateObligationsResponse = mockObligations.map((counterparty) => mockResponse201(counterparty));
 const mockRepaymentProfilesResponse = mockRepaymentProfiles.map((repaymentProfile) => mockResponse201(repaymentProfile));
-const mockApproveStatusResponse = mockResponse201({ data: EXAMPLES.GIFT.WORK_PACKAGE_APPROVE_RESPONSE });
+const mockApproveStatusResponse = mockResponse201({ data: WORK_PACKAGE_APPROVE_RESPONSE_DATA });
 
 describe('GiftService.createFacility - error handling', () => {
   const logger = new PinoLogger({});
