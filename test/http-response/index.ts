@@ -45,7 +45,7 @@ export const mockAxiosError = ({ status = HttpStatus.CREATED, data = {} } = {}):
     headers,
   };
 
-  return new AxiosError('Mock message', 'Mock code', config, request, {
+  return new AxiosError('Mock error message', 'Mock error code', config, request, {
     status,
     data,
     statusText: 'OK',

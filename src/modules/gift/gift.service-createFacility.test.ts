@@ -1,7 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { HttpStatus } from '@nestjs/common';
 import { EXAMPLES } from '@ukef/constants';
-import { mockResponse201 } from '@ukef-test/http-response';
+import { mockResponse200, mockResponse201 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
 import { GiftCounterpartyService } from './gift.counterparty.service';
@@ -12,7 +12,16 @@ import { GiftService } from './gift.service';
 import { GiftStatusService } from './gift.status.service';
 
 const {
-  GIFT: { COUNTERPARTY, FACILITY_ID: mockFacilityId, FACILITY_RESPONSE_DATA, FACILITY_CREATION_PAYLOAD: mockPayload, FIXED_FEE, OBLIGATION, REPAYMENT_PROFILE },
+  GIFT: {
+    COUNTERPARTY,
+    FACILITY_ID: mockFacilityId,
+    FACILITY_RESPONSE_DATA,
+    FACILITY_CREATION_PAYLOAD: mockPayload,
+    FIXED_FEE,
+    OBLIGATION,
+    REPAYMENT_PROFILE,
+    WORK_PACKAGE_APPROVE_RESPONSE_DATA,
+  },
 } = EXAMPLES;
 
 const mockResponsePost = mockResponse201(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA);
@@ -26,7 +35,6 @@ const mockCreateCounterpartiesResponse = mockCounterparties.map((counterparty) =
 const mockCreateFixedFeesResponse = mockFixedFees.map((fixedFee) => mockResponse201({ data: fixedFee }));
 const mockCreateObligationsResponse = mockObligations.map((obligation) => mockResponse201({ data: obligation }));
 const mockRepaymentProfilesResponse = mockRepaymentProfiles.map((repaymentProfile) => mockResponse201({ data: repaymentProfile }));
-const mockApproveStatusResponse = mockResponse201({ data: EXAMPLES.GIFT.WORK_PACKAGE_APPROVE_RESPONSE });
 
 describe('GiftService.createFacility', () => {
   const logger = new PinoLogger({});
@@ -71,7 +79,7 @@ describe('GiftService.createFacility', () => {
     createFixedFeesSpy = jest.fn().mockResolvedValueOnce(mockCreateFixedFeesResponse);
     createObligationsSpy = jest.fn().mockResolvedValueOnce(mockCreateObligationsResponse);
     createRepaymentProfilesSpy = jest.fn().mockResolvedValueOnce(mockRepaymentProfilesResponse);
-    approveStatusSpy = jest.fn().mockResolvedValueOnce(mockApproveStatusResponse);
+    approveStatusSpy = jest.fn().mockResolvedValueOnce(mockResponse200(WORK_PACKAGE_APPROVE_RESPONSE_DATA));
 
     counterpartyService.createMany = createCounterpartiesSpy;
     fixedFeeService.createMany = createFixedFeesSpy;
@@ -158,6 +166,7 @@ describe('GiftService.createFacility', () => {
         status: HttpStatus.CREATED,
         data: {
           ...FACILITY_RESPONSE_DATA.configurationEvent.data,
+          state: WORK_PACKAGE_APPROVE_RESPONSE_DATA.state,
           counterparties: mockCounterparties,
           fixedFees: mockFixedFees,
           obligations: mockObligations,
