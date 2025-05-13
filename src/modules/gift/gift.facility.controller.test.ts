@@ -2,8 +2,8 @@ import { EXAMPLES } from '@ukef/constants';
 import { mockResponse200, mockResponse201 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
-import { GiftController } from './gift.controller';
 import { GiftCounterpartyService } from './gift.counterparty.service';
+import { GiftFacilityController } from './gift.facility.controller';
 import { GiftFixedFeeService } from './gift.fixed-fee.service';
 import { GiftHttpService } from './gift.http.service';
 import { GiftObligationService } from './gift.obligation.service';
@@ -18,7 +18,7 @@ const {
 const mockResponseGet = mockResponse200(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA);
 const mockResponsePost = mockResponse201(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA);
 
-describe('GiftController', () => {
+describe('GiftFacilityController', () => {
   const logger = new PinoLogger({});
 
   let giftHttpService: GiftHttpService;
@@ -28,7 +28,7 @@ describe('GiftController', () => {
   let repaymentProfileService: GiftRepaymentProfileService;
   let statusService: GiftStatusService;
   let giftService: GiftService;
-  let controller: GiftController;
+  let controller: GiftFacilityController;
 
   let mockRes;
   let mockResStatus;
@@ -65,7 +65,7 @@ describe('GiftController', () => {
     giftService.getFacility = mockServiceGetFacility;
     giftService.createFacility = mockServiceCreateFacility;
 
-    controller = new GiftController(giftService);
+    controller = new GiftFacilityController(giftService);
   });
 
   afterAll(() => {

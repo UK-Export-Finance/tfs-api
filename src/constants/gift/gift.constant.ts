@@ -29,10 +29,11 @@ export const GIFT = {
   },
   PATH: {
     APPROVE: '/approve',
+    CURRENCY: '/currency',
     CONFIGURATION_EVENT: '/configuration-event/type',
     CREATE_FACILITY: '/work-package/create-facility',
-    CURRENCY: '/currency',
     FACILITY: '/facility',
+    SUPPORTED: '/supported',
     WORK_PACKAGE: '/work-package',
   },
   PRODUCT_TYPE_CODES: {

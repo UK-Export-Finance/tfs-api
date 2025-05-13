@@ -17,15 +17,15 @@ import { Response } from 'express';
 import { GetFacilityOperationParamsDto, GiftFacilityCreationDto, GiftFacilityDto } from './dto';
 import { GiftService } from './gift.service';
 
-const { giftVersioning } = AppConfig();
-
 const { PATH } = GIFT;
+
+const { giftVersioning } = AppConfig();
 
 @Controller({
   path: `gift${PATH.FACILITY}`,
   version: giftVersioning.version,
 })
-export class GiftController {
+export class GiftFacilityController {
   constructor(private readonly giftService: GiftService) {}
 
   @Get(':facilityId')
@@ -53,6 +53,11 @@ export class GiftController {
   @ApiInternalServerErrorResponse({
     description: 'An internal server error has occurred',
   })
+  /**
+   * NOTE: Because we need to return custom responses (instead of NestJS doing this for us), we lose some response handling that NestJS provides by default.
+   * Therefore, we use passthrough: true to ensure that NestJS provides some additional response handling.
+   * Further information: https://docs.nestjs.com/controllers#library-specific-approach
+   */
   async get(@Param() { facilityId }: GetFacilityOperationParamsDto, @Res({ passthrough: true }) res: Response) {
     const { status, data } = await this.giftService.getFacility(facilityId);
 
@@ -78,6 +83,11 @@ export class GiftController {
   @ApiInternalServerErrorResponse({
     description: 'An internal server error has occurred',
   })
+  /**
+   * NOTE: Because we need to return custom responses (instead of NestJS doing this for us), we lose some response handling that NestJS provides by default.
+   * Therefore, we use passthrough: true to ensure that NestJS provides some additional response handling.
+   * Further information: https://docs.nestjs.com/controllers#library-specific-approach
+   */
   async post(@Body(new ValidationPipe({ transform: true })) facilityData: GiftFacilityCreationDto, @Res({ passthrough: true }) res: Response) {
     const { status, data } = await this.giftService.createFacility(facilityData);
 

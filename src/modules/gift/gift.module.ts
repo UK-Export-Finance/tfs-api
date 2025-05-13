@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
 
-import { GiftController } from './gift.controller';
 import { GiftCounterpartyService } from './gift.counterparty.service';
+import { GiftCurrencyController } from './gift.currency.controller';
+import { GiftCurrencyService } from './gift.currency.service';
+import { GiftFacilityController } from './gift.facility.controller';
 import { GiftFixedFeeService } from './gift.fixed-fee.service';
 import { GiftHttpService } from './gift.http.service';
 import { GiftObligationService } from './gift.obligation.service';
@@ -12,7 +14,7 @@ import { GiftStatusService } from './gift.status.service';
 @Module({
   providers: [
     GiftHttpService,
-    GiftService,
+    GiftCurrencyService,
     GiftCounterpartyService,
     GiftFixedFeeService,
     GiftObligationService,
@@ -20,6 +22,6 @@ import { GiftStatusService } from './gift.status.service';
     GiftService,
     GiftStatusService,
   ],
-  controllers: [GiftController],
+  controllers: [GiftCurrencyController, GiftFacilityController],
 })
 export class GiftModule {}
