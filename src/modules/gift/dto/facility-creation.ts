@@ -17,7 +17,6 @@ const {
 /**
  * GIFT facility creation DTO.
  * These fields are required for APIM to create a fully populated facility in GIFT.
- * With the only exception being "state", which is an additional property returned after creation.
  */
 export class GiftFacilityCreationDto {
   @ApiProperty({
