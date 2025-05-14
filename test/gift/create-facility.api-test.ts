@@ -702,8 +702,10 @@ describe('POST /gift/facility', () => {
 
   describe('GIFT approve status endpoint error handling', () => {
     describe(`when a ${HttpStatus.BAD_REQUEST} response is returned by the GIFT approve status endpoint`, () => {
-      it(`should return a ${HttpStatus.BAD_REQUEST} response with a mapped body/validation errors`, async () => {
+      it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
         // Arrange
+        nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
+
         nock(GIFT_API_URL).post(PATH.CREATE_FACILITY).reply(HttpStatus.CREATED, mockResponses.facility);
 
         nock(GIFT_API_URL).persist().post(counterpartyUrl).reply(HttpStatus.CREATED, mockResponses.counterparty);
@@ -734,6 +736,8 @@ describe('POST /gift/facility', () => {
     describe(`when a ${HttpStatus.UNAUTHORIZED} response is returned by the GIFT approve status endpoint`, () => {
       it(`should return a ${HttpStatus.UNAUTHORIZED} response`, async () => {
         // Arrange
+        nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
+
         nock(GIFT_API_URL).post(PATH.CREATE_FACILITY).reply(HttpStatus.CREATED, mockResponses.facility);
 
         nock(GIFT_API_URL).persist().post(counterpartyUrl).reply(HttpStatus.CREATED, mockResponses.counterparty);
