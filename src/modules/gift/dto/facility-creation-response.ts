@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { EXAMPLES } from '@ukef/constants';
 import { IsString } from 'class-validator';
 
 import { GiftFacilityCreationDto } from './facility-creation';
@@ -11,7 +12,7 @@ import { GiftFacilityCreationDto } from './facility-creation';
 export class GiftFacilityCreationResponseDto extends GiftFacilityCreationDto {
   @IsString()
   @ApiProperty({
-    example: 'APPROVED',
+    example: EXAMPLES.GIFT.STATES.APPROVED,
   })
   state: string;
 }
