@@ -4,7 +4,7 @@ import { UkefId } from '@ukef/helpers';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 
-import { GiftFacilityCreationDto, GiftFacilityDto } from './dto';
+import { GiftFacilityCreationDto, GiftFacilityOverviewDto } from './dto';
 import { GiftCounterpartyService } from './gift.counterparty.service';
 import { GiftFixedFeeService } from './gift.fixed-fee.service';
 import { GiftHttpService } from './gift.http.service';
@@ -50,7 +50,7 @@ export class GiftService {
    */
   async getFacility(facilityId: UkefId): Promise<AxiosResponse> {
     try {
-      const response = await this.giftHttpService.get<GiftFacilityDto>({
+      const response = await this.giftHttpService.get<GiftFacilityOverviewDto>({
         path: `${PATH.FACILITY}/${facilityId}`,
       });
 
@@ -64,10 +64,10 @@ export class GiftService {
 
   /**
    * Create a GIFT facility - initial/overview data
-   * @param {GiftFacilityDto} overviewData: Facility overview data
+   * @param {GiftFacilityOverviewDto} overviewData: Facility overview data
    * @returns {Promise<AxiosResponse>}
    */
-  async createInitialFacility(overviewData: GiftFacilityDto): Promise<AxiosResponse> {
+  async createInitialFacility(overviewData: GiftFacilityOverviewDto): Promise<AxiosResponse> {
     try {
       const response = await this.giftHttpService.post<GiftFacilityCreationDto>({
         path: PATH.CREATE_FACILITY,
@@ -174,9 +174,6 @@ export class GiftService {
         status: HttpStatus.CREATED,
         data: {
           ...facility.configurationEvent.data,
-          // TODO
-          // TODO
-          // TODO: update DTO
           state: approvedStatusResponse.data.state,
           counterparties: mapResponsesData(counterparties),
           fixedFees: mapResponsesData(fixedFees),
