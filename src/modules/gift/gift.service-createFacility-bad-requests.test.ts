@@ -37,7 +37,7 @@ const mockCreateCounterpartiesResponse = mockCounterparties.map((counterparty) =
 const mockCreateFixedFeesResponse = mockFixedFees.map((fixedFee) => mockResponse201(fixedFee));
 const mockCreateObligationsResponse = mockObligations.map((counterparty) => mockResponse201(counterparty));
 const mockRepaymentProfilesResponse = mockRepaymentProfiles.map((repaymentProfile) => mockResponse201(repaymentProfile));
-const mockApproveStatusResponse = mockResponse201({ data: WORK_PACKAGE_APPROVE_RESPONSE_DATA });
+const mockApprovedStatusResponse = mockResponse201({ data: WORK_PACKAGE_APPROVE_RESPONSE_DATA });
 
 describe('GiftService.createFacility - bad requests', () => {
   const logger = new PinoLogger({});
@@ -55,7 +55,7 @@ describe('GiftService.createFacility - bad requests', () => {
   let createFixedFeesSpy: jest.Mock;
   let createObligationsSpy: jest.Mock;
   let createRepaymentProfilesSpy: jest.Mock;
-  let approveStatusSpy: jest.Mock;
+  let approvedStatusSpy: jest.Mock;
 
   beforeEach(() => {
     // Arrange
@@ -70,13 +70,13 @@ describe('GiftService.createFacility - bad requests', () => {
     createFixedFeesSpy = jest.fn().mockResolvedValueOnce(mockCreateFixedFeesResponse);
     createObligationsSpy = jest.fn().mockResolvedValueOnce(mockCreateObligationsResponse);
     createRepaymentProfilesSpy = jest.fn().mockResolvedValueOnce(mockRepaymentProfilesResponse);
-    approveStatusSpy = jest.fn().mockResolvedValueOnce(mockApproveStatusResponse);
+    approvedStatusSpy = jest.fn().mockResolvedValueOnce(mockApprovedStatusResponse);
 
     counterpartyService.createMany = createCounterpartiesSpy;
     fixedFeeService.createMany = createFixedFeesSpy;
     obligationService.createMany = createObligationsSpy;
     repaymentProfileService.createMany = createRepaymentProfilesSpy;
-    statusService.approved = approveStatusSpy;
+    statusService.approved = approvedStatusSpy;
 
     service = new GiftService(giftHttpService, logger, counterpartyService, fixedFeeService, obligationService, repaymentProfileService, statusService);
 
@@ -136,7 +136,7 @@ describe('GiftService.createFacility - bad requests', () => {
         await service.createFacility(mockPayload);
 
         // Assert
-        expect(approveStatusSpy).toHaveBeenCalledTimes(0);
+        expect(approvedStatusSpy).toHaveBeenCalledTimes(0);
       });
     });
 
@@ -175,7 +175,7 @@ describe('GiftService.createFacility - bad requests', () => {
         await service.createFacility(mockPayload);
 
         // Assert
-        expect(approveStatusSpy).toHaveBeenCalledTimes(0);
+        expect(approvedStatusSpy).toHaveBeenCalledTimes(0);
       });
     });
 
@@ -214,7 +214,7 @@ describe('GiftService.createFacility - bad requests', () => {
         await service.createFacility(mockPayload);
 
         // Assert
-        expect(approveStatusSpy).toHaveBeenCalledTimes(0);
+        expect(approvedStatusSpy).toHaveBeenCalledTimes(0);
       });
     });
 
@@ -253,7 +253,7 @@ describe('GiftService.createFacility - bad requests', () => {
         await service.createFacility(mockPayload);
 
         // Assert
-        expect(approveStatusSpy).toHaveBeenCalledTimes(0);
+        expect(approvedStatusSpy).toHaveBeenCalledTimes(0);
       });
     });
   });
@@ -310,7 +310,7 @@ describe('GiftService.createFacility - bad requests', () => {
       await service.createFacility(mockPayload);
 
       // Assert
-      expect(approveStatusSpy).toHaveBeenCalledTimes(0);
+      expect(approvedStatusSpy).toHaveBeenCalledTimes(0);
     });
   });
 
@@ -359,7 +359,7 @@ describe('GiftService.createFacility - bad requests', () => {
         await service.createFacility(mockPayload);
 
         // Assert
-        expect(approveStatusSpy).toHaveBeenCalledTimes(0);
+        expect(approvedStatusSpy).toHaveBeenCalledTimes(0);
       });
     });
 
@@ -398,7 +398,7 @@ describe('GiftService.createFacility - bad requests', () => {
         await service.createFacility(mockPayload);
 
         // Assert
-        expect(approveStatusSpy).toHaveBeenCalledTimes(0);
+        expect(approvedStatusSpy).toHaveBeenCalledTimes(0);
       });
     });
 
@@ -437,7 +437,7 @@ describe('GiftService.createFacility - bad requests', () => {
         await service.createFacility(mockPayload);
 
         // Assert
-        expect(approveStatusSpy).toHaveBeenCalledTimes(0);
+        expect(approvedStatusSpy).toHaveBeenCalledTimes(0);
       });
     });
 
@@ -476,7 +476,7 @@ describe('GiftService.createFacility - bad requests', () => {
         await service.createFacility(mockPayload);
 
         // Assert
-        expect(approveStatusSpy).toHaveBeenCalledTimes(0);
+        expect(approvedStatusSpy).toHaveBeenCalledTimes(0);
       });
     });
   });
@@ -526,7 +526,7 @@ describe('GiftService.createFacility - bad requests', () => {
         await service.createFacility(mockPayload);
 
         // Assert
-        expect(approveStatusSpy).toHaveBeenCalledTimes(0);
+        expect(approvedStatusSpy).toHaveBeenCalledTimes(0);
       });
     });
 
@@ -565,7 +565,7 @@ describe('GiftService.createFacility - bad requests', () => {
         await service.createFacility(mockPayload);
 
         // Assert
-        expect(approveStatusSpy).toHaveBeenCalledTimes(0);
+        expect(approvedStatusSpy).toHaveBeenCalledTimes(0);
       });
     });
 
@@ -604,7 +604,7 @@ describe('GiftService.createFacility - bad requests', () => {
         await service.createFacility(mockPayload);
 
         // Assert
-        expect(approveStatusSpy).toHaveBeenCalledTimes(0);
+        expect(approvedStatusSpy).toHaveBeenCalledTimes(0);
       });
     });
 
@@ -643,7 +643,7 @@ describe('GiftService.createFacility - bad requests', () => {
         await service.createFacility(mockPayload);
 
         // Assert
-        expect(approveStatusSpy).toHaveBeenCalledTimes(0);
+        expect(approvedStatusSpy).toHaveBeenCalledTimes(0);
       });
     });
   });

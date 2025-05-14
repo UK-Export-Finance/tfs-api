@@ -54,7 +54,7 @@ describe('GiftService.createFacility', () => {
   let createFixedFeesSpy: jest.Mock;
   let createObligationsSpy: jest.Mock;
   let createRepaymentProfilesSpy: jest.Mock;
-  let approveStatusSpy: jest.Mock;
+  let approvedStatusSpy: jest.Mock;
 
   beforeEach(() => {
     // Arrange
@@ -79,13 +79,13 @@ describe('GiftService.createFacility', () => {
     createFixedFeesSpy = jest.fn().mockResolvedValueOnce(mockCreateFixedFeesResponse);
     createObligationsSpy = jest.fn().mockResolvedValueOnce(mockCreateObligationsResponse);
     createRepaymentProfilesSpy = jest.fn().mockResolvedValueOnce(mockRepaymentProfilesResponse);
-    approveStatusSpy = jest.fn().mockResolvedValueOnce(mockResponse200(WORK_PACKAGE_APPROVE_RESPONSE_DATA));
+    approvedStatusSpy = jest.fn().mockResolvedValueOnce(mockResponse200(WORK_PACKAGE_APPROVE_RESPONSE_DATA));
 
     counterpartyService.createMany = createCounterpartiesSpy;
     fixedFeeService.createMany = createFixedFeesSpy;
     obligationService.createMany = createObligationsSpy;
     repaymentProfileService.createMany = createRepaymentProfilesSpy;
-    statusService.approved = approveStatusSpy;
+    statusService.approved = approvedStatusSpy;
 
     service = new GiftService(giftHttpService, logger, counterpartyService, fixedFeeService, obligationService, repaymentProfileService, statusService);
 
@@ -151,9 +151,9 @@ describe('GiftService.createFacility', () => {
     await service.createFacility(mockPayload);
 
     // Assert
-    expect(approveStatusSpy).toHaveBeenCalledTimes(1);
+    expect(approvedStatusSpy).toHaveBeenCalledTimes(1);
 
-    expect(approveStatusSpy).toHaveBeenCalledWith(mockFacilityId, FACILITY_RESPONSE_DATA.workPackageId);
+    expect(approvedStatusSpy).toHaveBeenCalledWith(mockFacilityId, FACILITY_RESPONSE_DATA.workPackageId);
   });
 
   describe('when all calls are successful', () => {
