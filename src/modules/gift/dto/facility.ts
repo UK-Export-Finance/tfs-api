@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { ValidatedFacilityIdentifierApiProperty } from '@ukef/decorators/validated-facility-identifier-api-property';
 import { UkefId } from '@ukef/helpers';
-import { IsBoolean, IsDefined, IsNumber, IsNumberString, IsString, Length, Min } from 'class-validator';
+import { IsBoolean, IsDefined, IsNumber, IsNumberString, IsString, Length, Max, Min } from 'class-validator';
 
 import { IsSupportedCurrency } from '../custom-decorators';
 
@@ -72,6 +72,7 @@ export class GiftFacilityDto {
   @IsDefined()
   @IsNumber()
   @Min(VALIDATION.FACILITY_AMOUNT.MIN)
+  @Max(VALIDATION.FACILITY_AMOUNT.MAX)
   @ApiProperty({
     example: EXAMPLE.facilityAmount,
     required: true,

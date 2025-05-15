@@ -1,4 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
+import { VALIDATION } from '@ukef/constants/gift/validation.constant';
 import { Api } from '@ukef-test/support/api';
 
 import { generatePayloadArrayOfObjects } from './generate-payload';
@@ -10,8 +11,8 @@ import { assert400Response } from './response-assertion';
  * @param {String} parentFieldName: The name of a parent field. E.g parentObject
  * @param {String} grandParentFieldName: The name of a parent field. E.g grandParentObject
  * @param {Object} initialPayload: The payload to use before adding a field value
- * @param {Number} min: The minimum length
- * @param {Number} max: The maximum length
+ * @param {Number} min: The minimum
+ * @param {Number} max: The maximum
  * @param {String} url: The URL the tests will call.
  */
 export const arrayOfNestedObjectsNumberValidation = ({ fieldName, grandParentFieldName, parentFieldName, initialPayload, min, max, url }) => {
@@ -50,15 +51,19 @@ export const arrayOfNestedObjectsNumberValidation = ({ fieldName, grandParentFie
       // Assert
       const expected = [
         `${grandParentFieldName}.0.${parentFieldName}.0.${fieldName} should not be null or undefined`,
+        `${grandParentFieldName}.0.${parentFieldName}.0.${fieldName} must not be greater than ${max}`,
         `${grandParentFieldName}.0.${parentFieldName}.0.${fieldName} must not be less than ${min}`,
         `${grandParentFieldName}.0.${parentFieldName}.0.${fieldName} must be a number conforming to the specified constraints`,
         `${grandParentFieldName}.0.${parentFieldName}.1.${fieldName} should not be null or undefined`,
+        `${grandParentFieldName}.0.${parentFieldName}.1.${fieldName} must not be greater than ${max}`,
         `${grandParentFieldName}.0.${parentFieldName}.1.${fieldName} must not be less than ${min}`,
         `${grandParentFieldName}.0.${parentFieldName}.1.${fieldName} must be a number conforming to the specified constraints`,
         `${grandParentFieldName}.1.${parentFieldName}.0.${fieldName} should not be null or undefined`,
+        `${grandParentFieldName}.1.${parentFieldName}.0.${fieldName} must not be greater than ${max}`,
         `${grandParentFieldName}.1.${parentFieldName}.0.${fieldName} must not be less than ${min}`,
         `${grandParentFieldName}.1.${parentFieldName}.0.${fieldName} must be a number conforming to the specified constraints`,
         `${grandParentFieldName}.1.${parentFieldName}.1.${fieldName} should not be null or undefined`,
+        `${grandParentFieldName}.1.${parentFieldName}.1.${fieldName} must not be greater than ${max}`,
         `${grandParentFieldName}.1.${parentFieldName}.1.${fieldName} must not be less than ${min}`,
         `${grandParentFieldName}.1.${parentFieldName}.1.${fieldName} must be a number conforming to the specified constraints`,
       ];
@@ -90,15 +95,19 @@ export const arrayOfNestedObjectsNumberValidation = ({ fieldName, grandParentFie
       // Assert
       const expected = [
         `${grandParentFieldName}.0.${parentFieldName}.0.${fieldName} should not be null or undefined`,
+        `${grandParentFieldName}.0.${parentFieldName}.0.${fieldName} must not be greater than ${max}`,
         `${grandParentFieldName}.0.${parentFieldName}.0.${fieldName} must not be less than ${min}`,
         `${grandParentFieldName}.0.${parentFieldName}.0.${fieldName} must be a number conforming to the specified constraints`,
         `${grandParentFieldName}.0.${parentFieldName}.1.${fieldName} should not be null or undefined`,
+        `${grandParentFieldName}.0.${parentFieldName}.1.${fieldName} must not be greater than ${max}`,
         `${grandParentFieldName}.0.${parentFieldName}.1.${fieldName} must not be less than ${min}`,
         `${grandParentFieldName}.0.${parentFieldName}.1.${fieldName} must be a number conforming to the specified constraints`,
         `${grandParentFieldName}.1.${parentFieldName}.0.${fieldName} should not be null or undefined`,
+        `${grandParentFieldName}.1.${parentFieldName}.0.${fieldName} must not be greater than ${max}`,
         `${grandParentFieldName}.1.${parentFieldName}.0.${fieldName} must not be less than ${min}`,
         `${grandParentFieldName}.1.${parentFieldName}.0.${fieldName} must be a number conforming to the specified constraints`,
         `${grandParentFieldName}.1.${parentFieldName}.1.${fieldName} should not be null or undefined`,
+        `${grandParentFieldName}.1.${parentFieldName}.1.${fieldName} must not be greater than ${max}`,
         `${grandParentFieldName}.1.${parentFieldName}.1.${fieldName} must not be less than ${min}`,
         `${grandParentFieldName}.1.${parentFieldName}.1.${fieldName} must be a number conforming to the specified constraints`,
       ];
@@ -129,12 +138,16 @@ export const arrayOfNestedObjectsNumberValidation = ({ fieldName, grandParentFie
 
       // Assert
       const expected = [
+        `${grandParentFieldName}.0.${parentFieldName}.0.${fieldName} must not be greater than ${max}`,
         `${grandParentFieldName}.0.${parentFieldName}.0.${fieldName} must not be less than ${min}`,
         `${grandParentFieldName}.0.${parentFieldName}.0.${fieldName} must be a number conforming to the specified constraints`,
+        `${grandParentFieldName}.0.${parentFieldName}.1.${fieldName} must not be greater than ${max}`,
         `${grandParentFieldName}.0.${parentFieldName}.1.${fieldName} must not be less than ${min}`,
         `${grandParentFieldName}.0.${parentFieldName}.1.${fieldName} must be a number conforming to the specified constraints`,
+        `${grandParentFieldName}.1.${parentFieldName}.0.${fieldName} must not be greater than ${max}`,
         `${grandParentFieldName}.1.${parentFieldName}.0.${fieldName} must not be less than ${min}`,
         `${grandParentFieldName}.1.${parentFieldName}.0.${fieldName} must be a number conforming to the specified constraints`,
+        `${grandParentFieldName}.1.${parentFieldName}.1.${fieldName} must not be greater than ${max}`,
         `${grandParentFieldName}.1.${parentFieldName}.1.${fieldName} must not be less than ${min}`,
         `${grandParentFieldName}.1.${parentFieldName}.1.${fieldName} must be a number conforming to the specified constraints`,
       ];
@@ -177,37 +190,41 @@ export const arrayOfNestedObjectsNumberValidation = ({ fieldName, grandParentFie
     });
   });
 
-  if (max) {
-    describe(`when ${fieldName} is above the maximum`, () => {
-      let mockPayload;
+  describe(`when ${fieldName} is above the maximum`, () => {
+    let mockPayload;
 
-      const value = max + 1;
+    beforeAll(() => {
+      // Arrange
+      let value = max + 1;
 
-      beforeAll(() => {
-        // Arrange
-        mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value });
-      });
+      if (max === VALIDATION.MAX_MONETARY_AMOUNT) {
+        value = max + 2;
+      }
 
-      it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
-        // Act
-        const response = await api.post(url, mockPayload);
-
-        // Assert
-        assert400Response(response);
-      });
-
-      it('should return the correct error messages', async () => {
-        // Act
-        const { body } = await api.post(url, mockPayload);
-
-        // Assert
-        const expected = [
-          `${parentFieldName}.0.${fieldName} must not be greater than ${max}`,
-          `${parentFieldName}.1.${fieldName} must not be greater than ${max}`,
-        ];
-
-        expect(body.message).toStrictEqual(expected);
-      });
+      mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value });
     });
-  }
+
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
+      // Act
+      const response = await api.post(url, mockPayload);
+
+      // Assert
+      assert400Response(response);
+    });
+
+    it('should return the correct error messages', async () => {
+      // Act
+      const { body } = await api.post(url, mockPayload);
+
+      // Assert
+      const expected = [
+        `${grandParentFieldName}.0.${parentFieldName}.0.${fieldName} must not be greater than ${max}`,
+        `${grandParentFieldName}.0.${parentFieldName}.1.${fieldName} must not be greater than ${max}`,
+        `${grandParentFieldName}.1.${parentFieldName}.0.${fieldName} must not be greater than ${max}`,
+        `${grandParentFieldName}.1.${parentFieldName}.1.${fieldName} must not be greater than ${max}`,
+      ];
+
+      expect(body.message).toStrictEqual(expected);
+    });
+  });
 };
