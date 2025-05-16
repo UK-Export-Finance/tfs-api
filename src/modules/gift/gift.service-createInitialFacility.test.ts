@@ -8,6 +8,7 @@ import { GiftFixedFeeService } from './gift.fixed-fee.service';
 import { GiftObligationService } from './gift.obligation.service';
 import { GiftRepaymentProfileService } from './gift.repayment-profile.service';
 import { GiftService } from './gift.service';
+import { GiftStatusService } from './gift.status.service';
 
 const {
   GIFT: { FACILITY_CREATION_PAYLOAD: mockPayload },
@@ -25,6 +26,7 @@ describe('GiftService.createInitialFacility', () => {
   let fixedFeeService: GiftFixedFeeService;
   let obligationService: GiftObligationService;
   let repaymentProfileService: GiftRepaymentProfileService;
+  let statusService: GiftStatusService;
   let service: GiftService;
 
   let giftHttpService;
@@ -46,8 +48,9 @@ describe('GiftService.createInitialFacility', () => {
     fixedFeeService = new GiftFixedFeeService(giftHttpService, logger);
     obligationService = new GiftObligationService(giftHttpService, logger);
     repaymentProfileService = new GiftRepaymentProfileService(giftHttpService, logger);
+    statusService = new GiftStatusService(giftHttpService, logger);
 
-    service = new GiftService(giftHttpService, logger, counterpartyService, fixedFeeService, obligationService, repaymentProfileService);
+    service = new GiftService(giftHttpService, logger, counterpartyService, fixedFeeService, obligationService, repaymentProfileService, statusService);
   });
 
   afterAll(() => {
@@ -86,7 +89,7 @@ describe('GiftService.createInitialFacility', () => {
 
       giftHttpService.post = mockHttpServicePost;
 
-      service = new GiftService(giftHttpService, logger, counterpartyService, fixedFeeService, obligationService, repaymentProfileService);
+      service = new GiftService(giftHttpService, logger, counterpartyService, fixedFeeService, obligationService, repaymentProfileService, statusService);
     });
 
     it('should thrown an error', async () => {

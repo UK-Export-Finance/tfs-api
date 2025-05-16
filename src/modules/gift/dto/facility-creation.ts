@@ -4,8 +4,8 @@ import { Type } from 'class-transformer';
 import { ArrayNotEmpty, IsArray, IsDefined, IsNotEmptyObject, ValidateNested } from 'class-validator';
 
 import { UniqueRepaymentProfileAllocationDates, UniqueRepaymentProfileNames } from '../custom-decorators';
-import { GiftFacilityDto } from './facility';
 import { GiftFacilityCounterpartyDto } from './facility-counterparty';
+import { GiftFacilityOverviewDto } from './facility-overview';
 import { GiftFixedFeeDto } from './fixed-fee';
 import { GiftObligationDto } from './obligation';
 import { GiftRepaymentProfileDto } from './repayment-profile';
@@ -22,13 +22,13 @@ export class GiftFacilityCreationDto {
   @ApiProperty({
     example: FACILITY_OVERVIEW,
     required: true,
-    type: GiftFacilityDto,
+    type: GiftFacilityOverviewDto,
   })
   @IsNotEmptyObject()
   @IsDefined()
-  @Type(() => GiftFacilityDto)
+  @Type(() => GiftFacilityOverviewDto)
   @ValidateNested()
-  overview: GiftFacilityDto;
+  overview: GiftFacilityOverviewDto;
 
   @ApiProperty({
     isArray: true,

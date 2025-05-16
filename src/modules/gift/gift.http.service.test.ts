@@ -6,7 +6,7 @@ import axios from 'axios';
 import * as dotenv from 'dotenv';
 import { PinoLogger } from 'nestjs-pino';
 
-import { GIFT_API_ACCEPTABLE_STATUSES, GiftHttpService } from './gift-http.service';
+import { GIFT_API_ACCEPTABLE_STATUSES, GiftHttpService } from './gift.http.service';
 
 dotenv.config();
 

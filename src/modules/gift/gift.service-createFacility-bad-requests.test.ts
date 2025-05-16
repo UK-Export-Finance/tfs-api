@@ -9,10 +9,19 @@ import { GiftFixedFeeService } from './gift.fixed-fee.service';
 import { GiftObligationService } from './gift.obligation.service';
 import { GiftRepaymentProfileService } from './gift.repayment-profile.service';
 import { GiftService } from './gift.service';
+import { GiftStatusService } from './gift.status.service';
 import { mapAllValidationErrorResponses, mapValidationErrorResponses } from './helpers';
 
 const {
-  GIFT: { COUNTERPARTY, FACILITY_RESPONSE_DATA, FACILITY_CREATION_PAYLOAD: mockPayload, FIXED_FEE, OBLIGATION, REPAYMENT_PROFILE },
+  GIFT: {
+    COUNTERPARTY,
+    FACILITY_RESPONSE_DATA,
+    FACILITY_CREATION_PAYLOAD: mockPayload,
+    FIXED_FEE,
+    OBLIGATION,
+    REPAYMENT_PROFILE,
+    WORK_PACKAGE_APPROVE_RESPONSE_DATA,
+  },
 } = EXAMPLES;
 
 const { API_RESPONSE_MESSAGES, ENTITY_NAMES } = GIFT;
@@ -28,6 +37,7 @@ const mockCreateCounterpartiesResponse = mockCounterparties.map((counterparty) =
 const mockCreateFixedFeesResponse = mockFixedFees.map((fixedFee) => mockResponse201(fixedFee));
 const mockCreateObligationsResponse = mockObligations.map((counterparty) => mockResponse201(counterparty));
 const mockRepaymentProfilesResponse = mockRepaymentProfiles.map((repaymentProfile) => mockResponse201(repaymentProfile));
+const mockApprovedStatusResponse = mockResponse201({ data: WORK_PACKAGE_APPROVE_RESPONSE_DATA });
 
 describe('GiftService.createFacility - bad requests', () => {
   const logger = new PinoLogger({});
@@ -36,6 +46,7 @@ describe('GiftService.createFacility - bad requests', () => {
   let fixedFeeService: GiftFixedFeeService;
   let obligationService: GiftObligationService;
   let repaymentProfileService: GiftRepaymentProfileService;
+  let statusService: GiftStatusService;
   let service: GiftService;
 
   let giftHttpService;
@@ -44,6 +55,7 @@ describe('GiftService.createFacility - bad requests', () => {
   let createFixedFeesSpy: jest.Mock;
   let createObligationsSpy: jest.Mock;
   let createRepaymentProfilesSpy: jest.Mock;
+  let approvedStatusSpy: jest.Mock;
 
   beforeEach(() => {
     // Arrange
@@ -51,19 +63,22 @@ describe('GiftService.createFacility - bad requests', () => {
     fixedFeeService = new GiftFixedFeeService(giftHttpService, logger);
     obligationService = new GiftObligationService(giftHttpService, logger);
     repaymentProfileService = new GiftRepaymentProfileService(giftHttpService, logger);
+    statusService = new GiftStatusService(giftHttpService, logger);
 
     createInitialFacilitySpy = jest.fn().mockResolvedValueOnce(mockCreateInitialFacilityResponse);
     createCounterpartiesSpy = jest.fn().mockResolvedValueOnce(mockCreateCounterpartiesResponse);
     createFixedFeesSpy = jest.fn().mockResolvedValueOnce(mockCreateFixedFeesResponse);
     createObligationsSpy = jest.fn().mockResolvedValueOnce(mockCreateObligationsResponse);
     createRepaymentProfilesSpy = jest.fn().mockResolvedValueOnce(mockRepaymentProfilesResponse);
+    approvedStatusSpy = jest.fn().mockResolvedValueOnce(mockApprovedStatusResponse);
 
     counterpartyService.createMany = createCounterpartiesSpy;
     fixedFeeService.createMany = createFixedFeesSpy;
     obligationService.createMany = createObligationsSpy;
     repaymentProfileService.createMany = createRepaymentProfilesSpy;
+    statusService.approved = approvedStatusSpy;
 
-    service = new GiftService(giftHttpService, logger, counterpartyService, fixedFeeService, obligationService, repaymentProfileService);
+    service = new GiftService(giftHttpService, logger, counterpartyService, fixedFeeService, obligationService, repaymentProfileService, statusService);
 
     service.createInitialFacility = createInitialFacilitySpy;
   });
@@ -115,6 +130,14 @@ describe('GiftService.createFacility - bad requests', () => {
 
         expect(response).toEqual(expected);
       });
+
+      it('should NOT call giftStatusService.approved', async () => {
+        // Act
+        await service.createFacility(mockPayload);
+
+        // Assert
+        expect(approvedStatusSpy).toHaveBeenCalledTimes(0);
+      });
     });
 
     describe('fixedFeeService.createMany', () => {
@@ -145,6 +168,14 @@ describe('GiftService.createFacility - bad requests', () => {
         };
 
         expect(response).toEqual(expected);
+      });
+
+      it('should NOT call giftStatusService.approved', async () => {
+        // Act
+        await service.createFacility(mockPayload);
+
+        // Assert
+        expect(approvedStatusSpy).toHaveBeenCalledTimes(0);
       });
     });
 
@@ -177,6 +208,14 @@ describe('GiftService.createFacility - bad requests', () => {
 
         expect(response).toEqual(expected);
       });
+
+      it('should NOT call giftStatusService.approved', async () => {
+        // Act
+        await service.createFacility(mockPayload);
+
+        // Assert
+        expect(approvedStatusSpy).toHaveBeenCalledTimes(0);
+      });
     });
 
     describe('repaymentProfileService.createMany', () => {
@@ -207,6 +246,14 @@ describe('GiftService.createFacility - bad requests', () => {
         };
 
         expect(response).toEqual(expected);
+      });
+
+      it('should NOT call giftStatusService.approved', async () => {
+        // Act
+        await service.createFacility(mockPayload);
+
+        // Assert
+        expect(approvedStatusSpy).toHaveBeenCalledTimes(0);
       });
     });
   });
@@ -257,6 +304,14 @@ describe('GiftService.createFacility - bad requests', () => {
 
       expect(response).toEqual(expected);
     });
+
+    it('should NOT call giftStatusService.approved', async () => {
+      // Act
+      await service.createFacility(mockPayload);
+
+      // Assert
+      expect(approvedStatusSpy).toHaveBeenCalledTimes(0);
+    });
   });
 
   describe(`when a service returns a first item with a status that is ${HttpStatus.BAD_REQUEST}`, () => {
@@ -298,6 +353,14 @@ describe('GiftService.createFacility - bad requests', () => {
 
         expect(response).toEqual(expected);
       });
+
+      it('should NOT call giftStatusService.approved', async () => {
+        // Act
+        await service.createFacility(mockPayload);
+
+        // Assert
+        expect(approvedStatusSpy).toHaveBeenCalledTimes(0);
+      });
     });
 
     describe('fixedFeeService.createMany', () => {
@@ -328,6 +391,14 @@ describe('GiftService.createFacility - bad requests', () => {
         };
 
         expect(response).toEqual(expected);
+      });
+
+      it('should NOT call giftStatusService.approved', async () => {
+        // Act
+        await service.createFacility(mockPayload);
+
+        // Assert
+        expect(approvedStatusSpy).toHaveBeenCalledTimes(0);
       });
     });
 
@@ -360,6 +431,14 @@ describe('GiftService.createFacility - bad requests', () => {
 
         expect(response).toEqual(expected);
       });
+
+      it('should NOT call giftStatusService.approved', async () => {
+        // Act
+        await service.createFacility(mockPayload);
+
+        // Assert
+        expect(approvedStatusSpy).toHaveBeenCalledTimes(0);
+      });
     });
 
     describe('repaymentProfileService.createMany', () => {
@@ -390,6 +469,14 @@ describe('GiftService.createFacility - bad requests', () => {
         };
 
         expect(response).toEqual(expected);
+      });
+
+      it('should NOT call giftStatusService.approved', async () => {
+        // Act
+        await service.createFacility(mockPayload);
+
+        // Assert
+        expect(approvedStatusSpy).toHaveBeenCalledTimes(0);
       });
     });
   });
@@ -433,6 +520,14 @@ describe('GiftService.createFacility - bad requests', () => {
 
         expect(response).toEqual(expected);
       });
+
+      it('should NOT call giftStatusService.approved', async () => {
+        // Act
+        await service.createFacility(mockPayload);
+
+        // Assert
+        expect(approvedStatusSpy).toHaveBeenCalledTimes(0);
+      });
     });
 
     describe('fixedFeeService.createMany', () => {
@@ -463,6 +558,14 @@ describe('GiftService.createFacility - bad requests', () => {
         };
 
         expect(response).toEqual(expected);
+      });
+
+      it('should NOT call giftStatusService.approved', async () => {
+        // Act
+        await service.createFacility(mockPayload);
+
+        // Assert
+        expect(approvedStatusSpy).toHaveBeenCalledTimes(0);
       });
     });
 
@@ -495,6 +598,14 @@ describe('GiftService.createFacility - bad requests', () => {
 
         expect(response).toEqual(expected);
       });
+
+      it('should NOT call giftStatusService.approved', async () => {
+        // Act
+        await service.createFacility(mockPayload);
+
+        // Assert
+        expect(approvedStatusSpy).toHaveBeenCalledTimes(0);
+      });
     });
 
     describe('repaymentProfileService.createMany', () => {
@@ -525,6 +636,14 @@ describe('GiftService.createFacility - bad requests', () => {
         };
 
         expect(response).toEqual(expected);
+      });
+
+      it('should NOT call giftStatusService.approved', async () => {
+        // Act
+        await service.createFacility(mockPayload);
+
+        // Assert
+        expect(approvedStatusSpy).toHaveBeenCalledTimes(0);
       });
     });
   });

@@ -17,10 +17,10 @@ const {
 } = GIFT;
 
 /**
- * GIFT facility DTO.
- * This is a generic/base DTO for a GIFT facility.
+ * GIFT facility overview DTO.
+ * This is the "overview" data of a GIFT facility.
  */
-export class GiftFacilityDto {
+export class GiftFacilityOverviewDto {
   @IsDefined()
   @IsString()
   @Length(VALIDATION.CURRENCY.MIN_LENGTH, VALIDATION.CURRENCY.MAX_LENGTH)

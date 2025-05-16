@@ -4,7 +4,7 @@ import { PinoLogger } from 'nestjs-pino';
 
 import { GiftCurrencyController } from './gift.currency.controller';
 import { GiftCurrencyService } from './gift.currency.service';
-import { GiftHttpService } from './gift-http.service';
+import { GiftHttpService } from './gift.http.service';
 
 const mockResponseGet = mockResponse200(GIFT_EXAMPLES.CURRENCIES);
 
