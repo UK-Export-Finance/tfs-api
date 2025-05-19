@@ -5,10 +5,7 @@ import { Chance } from 'chance';
 import { SUPPORTED_CURRENCIES } from '../currencies.constant';
 import { GIFT } from '../gift/gift.constant';
 
-const {
-  FIXED_FEE: { FEE_TYPE_CODES },
-  VALIDATION,
-} = GIFT;
+const { FEE_TYPE_CODES, FEE_TYPE_DESCRIPTIONS, VALIDATION } = GIFT;
 
 const chance = new Chance();
 
@@ -31,6 +28,24 @@ const COUNTERPARTY = () => ({
   sharePercentage: 25,
   startDate: '2025-01-13',
 });
+
+/**
+ * Example fee types.
+ */
+const FEE_TYPES_RESPONSE_DATA = [
+  {
+    feeTypes: [
+      {
+        code: FEE_TYPE_CODES.BEX,
+        description: FEE_TYPE_DESCRIPTIONS.BEX,
+      },
+      {
+        code: FEE_TYPE_CODES.PLA,
+        description: FEE_TYPE_DESCRIPTIONS.PLA,
+      },
+    ],
+  },
+];
 
 const FIXED_FEE = () => ({
   feeTypeCode: FEE_TYPE_CODES.PLA,
@@ -129,6 +144,7 @@ export const GIFT_EXAMPLES = {
   FACILITY_ID,
   FACILITY_OVERVIEW,
   FACILITY_RESPONSE_DATA,
+  FEE_TYPES_RESPONSE_DATA,
   FIXED_FEE,
   OBLIGATION,
   REPAYMENT_PROFILE,
