@@ -14,6 +14,11 @@ interface FeeTypeValidationArguments extends ValidationArguments {
   object: ObjectWithFeeTypeCode;
 }
 
+/**
+ * Custom decorator to check if a provided fee type, is a supported fee type in GIFT.
+ * @param {ValidationOptions} options: Class validator's validation options
+ * @returns {Boolean | string}
+ */
 export function IsSupportedFeeType(options?: ValidationOptions) {
   return function (object: object, propertyName: string) {
     registerDecorator({
@@ -39,7 +44,7 @@ export function IsSupportedFeeType(options?: ValidationOptions) {
 
             const supportedFeeTypes = await feeTypeService.getSupportedFeeTypes();
 
-            const isSupportedFeeType = arrayOfObjectsHasValue(supportedFeeTypes.data.feeTypes, 'code', providedFeeType);
+            const isSupportedFeeType = arrayOfObjectsHasValue(supportedFeeTypes.data?.feeTypes, 'code', providedFeeType);
 
             return isSupportedFeeType;
           }
