@@ -4,7 +4,7 @@ import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 
 import { GiftObligationDto } from './dto';
-import { GiftHttpService } from './gift-http.service';
+import { GiftHttpService } from './gift.http.service';
 
 const { EVENT_TYPES, PATH } = GIFT;
 

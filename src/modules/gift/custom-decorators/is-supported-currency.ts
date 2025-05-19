@@ -3,7 +3,7 @@ import { registerDecorator, ValidationArguments, ValidationOptions } from 'class
 import { PinoLogger } from 'nestjs-pino';
 
 import { GiftCurrencyService } from '../gift.currency.service';
-import { GiftHttpService } from '../gift-http.service';
+import { GiftHttpService } from '../gift.http.service';
 import { arrayContainsString } from '../helpers';
 
 interface ObjectWithCurrency {

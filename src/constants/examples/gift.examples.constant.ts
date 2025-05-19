@@ -134,6 +134,26 @@ const FACILITY_RESPONSE_DATA: GiftFacilityPostResponseDto = {
   workPackageId: WORK_PACKAGE_ID,
 };
 
+const STATES = {
+  APPROVED: 'APPROVED',
+};
+
+/**
+ * WORK_PACKAGE_APPROVE_RESPONSE_DATA
+ * "Work package approve" data in the shape that GIFT returns.
+ */
+const WORK_PACKAGE_APPROVE_RESPONSE_DATA = {
+  id: WORK_PACKAGE_ID,
+  name: FACILITY_OVERVIEW.name,
+  isFacilityCreation: true,
+  createdDatetime: '2025-05-13T09:59:01.896Z',
+  currency: SUPPORTED_CURRENCIES.USD,
+  streamId: '4b9c09c9-9e63-4ebb-9ed9-a5905d24c9d0',
+  state: STATES.APPROVED,
+  configurationEvents: [],
+  users: [],
+};
+
 export const GIFT_EXAMPLES = {
   COUNTERPARTY,
   CURRENCIES: Object.values(SUPPORTED_CURRENCIES),
@@ -147,5 +167,7 @@ export const GIFT_EXAMPLES = {
   OBLIGATION,
   REPAYMENT_PROFILE,
   REPAYMENT_PROFILE_ALLOCATION,
+  STATES,
+  WORK_PACKAGE_APPROVE_RESPONSE_DATA,
   WORK_PACKAGE_ID,
 };

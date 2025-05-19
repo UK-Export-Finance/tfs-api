@@ -3,6 +3,7 @@ import { VALIDATION } from './validation.constant';
 export const GIFT = {
   API_RESPONSE_MESSAGES: {
     FACILITY_VALIDATION_ERRORS: 'Validation errors with facility entity(s)',
+    APPROVED_STATUS_ERROR_MESSAGE: 'Error updating GIFT work package status to approved',
   },
   API_RESPONSE_TYPES: {
     ERROR: 'api-error-response',
@@ -31,6 +32,7 @@ export const GIFT = {
     PLA: 'PREMIUM LESS ADMIN',
   },
   PATH: {
+    APPROVE: '/approve',
     CURRENCY: '/currency',
     CONFIGURATION_EVENT: '/configuration-event/type',
     CREATE_FACILITY: '/work-package/create-facility',
