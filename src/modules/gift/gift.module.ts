@@ -5,10 +5,11 @@ import { GiftCurrencyController } from './gift.currency.controller';
 import { GiftCurrencyService } from './gift.currency.service';
 import { GiftFacilityController } from './gift.facility.controller';
 import { GiftFixedFeeService } from './gift.fixed-fee.service';
+import { GiftHttpService } from './gift.http.service';
 import { GiftObligationService } from './gift.obligation.service';
 import { GiftRepaymentProfileService } from './gift.repayment-profile.service';
 import { GiftService } from './gift.service';
-import { GiftHttpService } from './gift-http.service';
+import { GiftStatusService } from './gift.status.service';
 
 @Module({
   providers: [
@@ -19,6 +20,7 @@ import { GiftHttpService } from './gift-http.service';
     GiftObligationService,
     GiftRepaymentProfileService,
     GiftService,
+    GiftStatusService,
   ],
   controllers: [GiftCurrencyController, GiftFacilityController],
 })

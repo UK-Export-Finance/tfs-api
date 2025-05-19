@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { EXAMPLES } from '@ukef/constants';
 import { IsBoolean, IsNumber, IsString } from 'class-validator';
 
-import { GiftFacilityDto } from './facility';
+import { GiftFacilityOverviewDto } from './facility-overview';
 
 const {
   GIFT: { FACILITY_RESPONSE_DATA: EXAMPLE },
@@ -12,7 +12,7 @@ const {
  * GIFT facility response DTO.
  * These fields are returned from GIFT when getting a facility.
  */
-export class GiftFacilityResponseDto extends GiftFacilityDto {
+export class GiftFacilityResponseDto extends GiftFacilityOverviewDto {
   @IsNumber()
   @ApiProperty({
     example: EXAMPLE.configurationEvent.data.availableAmount,

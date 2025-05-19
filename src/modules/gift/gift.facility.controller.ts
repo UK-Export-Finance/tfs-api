@@ -14,7 +14,7 @@ import AppConfig from '@ukef/config/app.config';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { Response } from 'express';
 
-import { GetFacilityOperationParamsDto, GiftFacilityCreationDto, GiftFacilityDto } from './dto';
+import { GetFacilityOperationParamsDto, GiftFacilityCreationDto, GiftFacilityCreationResponseDto, GiftFacilityOverviewDto } from './dto';
 import { GiftService } from './gift.service';
 
 const { PATH } = GIFT;
@@ -39,7 +39,7 @@ export class GiftFacilityController {
   })
   @ApiOkResponse({
     description: 'The facility',
-    type: GiftFacilityDto,
+    type: GiftFacilityOverviewDto,
   })
   @ApiNotFoundResponse({
     description: 'The facility was not found',
@@ -72,7 +72,7 @@ export class GiftFacilityController {
   })
   @ApiCreatedResponse({
     description: 'The created facility',
-    type: GiftFacilityDto,
+    type: GiftFacilityCreationResponseDto,
   })
   @ApiBadRequestResponse({
     description: 'Bad request',

@@ -4,12 +4,13 @@ import { UkefId } from '@ukef/helpers';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 
-import { GiftFacilityCreationDto, GiftFacilityDto } from './dto';
+import { GiftFacilityCreationDto, GiftFacilityOverviewDto } from './dto';
 import { GiftCounterpartyService } from './gift.counterparty.service';
 import { GiftFixedFeeService } from './gift.fixed-fee.service';
+import { GiftHttpService } from './gift.http.service';
 import { GiftObligationService } from './gift.obligation.service';
 import { GiftRepaymentProfileService } from './gift.repayment-profile.service';
-import { GiftHttpService } from './gift-http.service';
+import { GiftStatusService } from './gift.status.service';
 import { mapAllValidationErrorResponses, mapResponsesData } from './helpers';
 
 const { API_RESPONSE_MESSAGES, PATH } = GIFT;
@@ -32,12 +33,14 @@ export class GiftService {
     private readonly giftFixedFeeService: GiftFixedFeeService,
     private readonly giftObligationService: GiftObligationService,
     private readonly giftRepaymentProfileService: GiftRepaymentProfileService,
+    private readonly giftStatusService: GiftStatusService,
   ) {
     this.giftHttpService = giftHttpService;
     this.giftCounterpartyService = giftCounterpartyService;
     this.giftFixedFeeService = giftFixedFeeService;
     this.giftObligationService = giftObligationService;
     this.giftRepaymentProfileService = giftRepaymentProfileService;
+    this.giftStatusService = giftStatusService;
   }
 
   /**
@@ -47,7 +50,7 @@ export class GiftService {
    */
   async getFacility(facilityId: UkefId): Promise<AxiosResponse> {
     try {
-      const response = await this.giftHttpService.get<GiftFacilityDto>({
+      const response = await this.giftHttpService.get<GiftFacilityOverviewDto>({
         path: `${PATH.FACILITY}/${facilityId}`,
       });
 
@@ -61,10 +64,10 @@ export class GiftService {
 
   /**
    * Create a GIFT facility - initial/overview data
-   * @param {GiftFacilityDto} overviewData: Facility overview data
+   * @param {GiftFacilityOverviewDto} overviewData: Facility overview data
    * @returns {Promise<AxiosResponse>}
    */
-  async createInitialFacility(overviewData: GiftFacilityDto): Promise<AxiosResponse> {
+  async createInitialFacility(overviewData: GiftFacilityOverviewDto): Promise<AxiosResponse> {
     try {
       const response = await this.giftHttpService.post<GiftFacilityCreationDto>({
         path: PATH.CREATE_FACILITY,
@@ -155,10 +158,23 @@ export class GiftService {
         };
       }
 
+      const approvedStatusResponse = await this.giftStatusService.approved(facilityId, workPackageId);
+
+      if (approvedStatusResponse.status !== HttpStatus.OK) {
+        return {
+          status: approvedStatusResponse.status,
+          data: {
+            statusCode: approvedStatusResponse.status,
+            message: API_RESPONSE_MESSAGES.APPROVED_STATUS_ERROR_MESSAGE,
+          },
+        };
+      }
+
       return {
         status: HttpStatus.CREATED,
         data: {
           ...facility.configurationEvent.data,
+          state: approvedStatusResponse.data.state,
           counterparties: mapResponsesData(counterparties),
           fixedFees: mapResponsesData(fixedFees),
           obligations: mapResponsesData(obligations),
