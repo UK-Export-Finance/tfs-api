@@ -32,24 +32,22 @@ const COUNTERPARTY = () => ({
 /**
  * Example fee types.
  */
-const FEE_TYPES_RESPONSE_DATA = [
-  {
-    feeTypes: [
-      {
-        code: FEE_TYPE_CODES.BEX,
-        description: FEE_TYPE_DESCRIPTIONS.BEX,
-      },
-      {
-        code: FEE_TYPE_CODES.PLA,
-        description: FEE_TYPE_DESCRIPTIONS.PLA,
-      },
-    ],
-  },
-];
+const FEE_TYPES_RESPONSE_DATA = {
+  feeTypes: [
+    {
+      code: FEE_TYPE_CODES.BEX,
+      description: FEE_TYPE_DESCRIPTIONS.BEX,
+    },
+    {
+      code: FEE_TYPE_CODES.PLA,
+      description: FEE_TYPE_DESCRIPTIONS.PLA,
+    },
+  ],
+};
 
 const FIXED_FEE = () => ({
   feeTypeCode: FEE_TYPE_CODES.PLA,
-  description: 'Mock fee description',
+  description: 'Mock fixed fee description',
   effectiveDate: '2025-01-15',
   currency: SUPPORTED_CURRENCIES.USD,
   amountDue: 5000,

@@ -5,7 +5,12 @@ import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import nock from 'nock';
 
-import { arrayOfObjectsCurrencyStringValidation, arrayOfObjectsNumberValidation, arrayOfObjectsStringValidation } from './assertions';
+import {
+  arrayOfObjectsCurrencyStringValidation,
+  arrayOfObjectsFeeTypeCodeStringValidation,
+  arrayOfObjectsNumberValidation,
+  arrayOfObjectsStringValidation,
+} from './assertions';
 
 const {
   giftVersioning: { prefixAndVersion },
@@ -14,7 +19,7 @@ const {
 const { GIFT_API_URL } = ENVIRONMENT_VARIABLES;
 
 const {
-  PATH: { CURRENCY, FACILITY },
+  PATH: { CURRENCY, FACILITY, FEE_TYPE },
   VALIDATION: { FIXED_FEE: FIXED_FEE_VALIDATION },
 } = GIFT;
 
@@ -29,6 +34,8 @@ describe('POST /gift/facility - validation - fixed fees', () => {
 
   beforeEach(() => {
     nock(GIFT_API_URL).persist().get(CURRENCY).reply(HttpStatus.OK, EXAMPLES.GIFT.CURRENCIES);
+
+    nock(GIFT_API_URL).persist().get(FEE_TYPE).reply(HttpStatus.OK, EXAMPLES.GIFT.FEE_TYPES_RESPONSE_DATA);
   });
 
   afterAll(async () => {
@@ -118,11 +125,6 @@ describe('POST /gift/facility - validation - fixed fees', () => {
   });
 
   describe('feeTypeCode', () => {
-    arrayOfObjectsStringValidation({
-      ...baseParams,
-      fieldName: 'feeTypeCode',
-      min: FIXED_FEE_VALIDATION.FEE_TYPE_CODE.MIN_LENGTH,
-      max: FIXED_FEE_VALIDATION.FEE_TYPE_CODE.MAX_LENGTH,
-    });
+    arrayOfObjectsFeeTypeCodeStringValidation(baseParams);
   });
 });

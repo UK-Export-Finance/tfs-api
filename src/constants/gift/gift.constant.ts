@@ -22,10 +22,12 @@ export const GIFT = {
   },
   FEE_TYPE_CODES: {
     BEX: 'BEX',
+    CMF: 'CMF',
     PLA: 'PLA',
   },
   FEE_TYPE_DESCRIPTIONS: {
     BEX: 'BROKERAGE EXPENSE',
+    CMF: 'COMMITMENT FEES',
     PLA: 'PREMIUM LESS ADMIN',
   },
   PATH: {
