@@ -18,7 +18,7 @@ describe('modules/gift/helpers/array-of-objects-has-value', () => {
   });
 
   describe('when an array contains an object with the provided field name, but not the value', () => {
-    it('should return true', () => {
+    it('should return false', () => {
       // Arrange
       const mockFieldName = 'a';
       const mockFieldValue = 'Mock value';
@@ -29,7 +29,7 @@ describe('modules/gift/helpers/array-of-objects-has-value', () => {
       const result = arrayOfObjectsHasValue(mockArray, mockFieldName, `${mockFieldValue}-a`);
 
       // Assert
-      expect(result).toBe(true);
+      expect(result).toBe(false);
     });
   });
 
