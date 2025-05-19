@@ -5,7 +5,7 @@ import { PinoLogger } from 'nestjs-pino';
 
 import { GiftFeeTypeController } from './gift.fee-type.controller';
 import { GiftFeeTypeService } from './gift.fee-type.service';
-import { GiftHttpService } from './gift-http.service';
+import { GiftHttpService } from './gift.http.service';
 
 const { PATH } = GIFT;
 
