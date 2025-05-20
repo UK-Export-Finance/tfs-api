@@ -18,7 +18,7 @@ const DATE_STRING_VALIDATION = {
  * Maximum monetary amount.
  * This is used for any monetary "amount" field.
  */
-const MAX_MONETARY_AMOUNT = 10000000000000000;
+const MAX_MONETARY_AMOUNT = Number.MAX_SAFE_INTEGER;
 
 export const VALIDATION = {
   CURRENCY: CURRENCY_VALIDATION,

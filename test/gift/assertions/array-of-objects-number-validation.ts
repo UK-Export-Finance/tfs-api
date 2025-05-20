@@ -1,4 +1,3 @@
-import { VALIDATION } from '@ukef/constants/gift/validation.constant';
 import { Api } from '@ukef-test/support/api';
 
 import { generatePayloadArrayOfObjects } from './generate-payload';
@@ -266,11 +265,7 @@ export const arrayOfObjectsNumberValidation = ({ fieldName, parentFieldName, ini
   describe(`when ${fieldName} is above the maximum`, () => {
     let mockPayload;
 
-    let value = max + 1;
-
-    if (max === VALIDATION.MAX_MONETARY_AMOUNT) {
-      value = max + 2;
-    }
+    const value = max + 1;
 
     beforeAll(() => {
       // Arrange

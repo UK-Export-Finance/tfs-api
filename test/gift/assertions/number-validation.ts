@@ -1,4 +1,3 @@
-import { VALIDATION } from '@ukef/constants/gift/validation.constant';
 import { Api } from '@ukef-test/support/api';
 
 import { generatePayload } from './generate-payload';
@@ -233,11 +232,7 @@ export const numberValidation = ({ fieldName, initialPayload, min, max, parentFi
     beforeAll(() => {
       // Arrange
 
-      let value = max + 1;
-
-      if (max === VALIDATION.MAX_MONETARY_AMOUNT) {
-        value = max + 2;
-      }
+      const value = max + 1;
 
       mockPayload[`${parentFieldName}`][`${fieldName}`] = value;
     });
