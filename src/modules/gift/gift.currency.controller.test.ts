@@ -49,7 +49,7 @@ describe('GiftCurrencyController', () => {
   });
 
   describe('GET :facilityId', () => {
-    it('should call giftService.getFacility', async () => {
+    it('should call giftFacilityService.getFacility', async () => {
       // Act
       await controller.get(mockRes);
 

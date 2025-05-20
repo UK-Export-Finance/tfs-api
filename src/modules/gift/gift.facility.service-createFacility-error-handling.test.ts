@@ -5,10 +5,10 @@ import { mockAxiosError, mockResponse201 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
 import { GiftCounterpartyService } from './gift.counterparty.service';
+import { GiftFacilityService } from './gift.facility.service';
 import { GiftFixedFeeService } from './gift.fixed-fee.service';
 import { GiftObligationService } from './gift.obligation.service';
 import { GiftRepaymentProfileService } from './gift.repayment-profile.service';
-import { GiftService } from './gift.service';
 import { GiftStatusService } from './gift.status.service';
 
 const {
@@ -36,7 +36,7 @@ const mockCreateObligationsResponse = mockObligations.map((counterparty) => mock
 const mockRepaymentProfilesResponse = mockRepaymentProfiles.map((repaymentProfile) => mockResponse201(repaymentProfile));
 const mockApprovedStatusResponse = mockResponse201({ data: WORK_PACKAGE_APPROVE_RESPONSE_DATA });
 
-describe('GiftService.createFacility - error handling', () => {
+describe('GiftFacilityService.create - error handling', () => {
   const logger = new PinoLogger({});
 
   let httpService: HttpService;
@@ -45,7 +45,7 @@ describe('GiftService.createFacility - error handling', () => {
   let obligationService: GiftObligationService;
   let repaymentProfileService: GiftRepaymentProfileService;
   let statusService: GiftStatusService;
-  let service: GiftService;
+  let service: GiftFacilityService;
 
   let giftHttpService;
   let mockHttpServicePost: jest.Mock;
@@ -93,7 +93,7 @@ describe('GiftService.createFacility - error handling', () => {
     repaymentProfileService.createMany = createRepaymentProfilesSpy;
     statusService.approved = approvedStatusSpy;
 
-    service = new GiftService(giftHttpService, logger, counterpartyService, fixedFeeService, obligationService, repaymentProfileService, statusService);
+    service = new GiftFacilityService(giftHttpService, logger, counterpartyService, fixedFeeService, obligationService, repaymentProfileService, statusService);
 
     service.createInitialFacility = createInitialFacilitySpy;
   });
@@ -102,12 +102,20 @@ describe('GiftService.createFacility - error handling', () => {
     jest.resetAllMocks();
   });
 
-  describe('when giftService.createInitialFacility throws an error', () => {
+  describe('when giftFacilityService.createInitialFacility throws an error', () => {
     beforeEach(() => {
       // Arrange
       createInitialFacilitySpy = jest.fn().mockRejectedValueOnce(mockAxiosError({ data: mockAxiosErrorData, status: HttpStatus.BAD_REQUEST }));
 
-      service = new GiftService(giftHttpService, logger, counterpartyService, fixedFeeService, obligationService, repaymentProfileService, statusService);
+      service = new GiftFacilityService(
+        giftHttpService,
+        logger,
+        counterpartyService,
+        fixedFeeService,
+        obligationService,
+        repaymentProfileService,
+        statusService,
+      );
 
       service.createInitialFacility = createInitialFacilitySpy;
     });
@@ -130,7 +138,15 @@ describe('GiftService.createFacility - error handling', () => {
 
       counterpartyService.createMany = createCounterpartiesSpy;
 
-      service = new GiftService(giftHttpService, logger, counterpartyService, fixedFeeService, obligationService, repaymentProfileService, statusService);
+      service = new GiftFacilityService(
+        giftHttpService,
+        logger,
+        counterpartyService,
+        fixedFeeService,
+        obligationService,
+        repaymentProfileService,
+        statusService,
+      );
 
       service.createInitialFacility = jest.fn().mockResolvedValueOnce(mockResponse201(FACILITY_RESPONSE_DATA));
     });
@@ -153,7 +169,15 @@ describe('GiftService.createFacility - error handling', () => {
 
       counterpartyService.createMany = createFixedFeesSpy;
 
-      service = new GiftService(giftHttpService, logger, counterpartyService, fixedFeeService, obligationService, repaymentProfileService, statusService);
+      service = new GiftFacilityService(
+        giftHttpService,
+        logger,
+        counterpartyService,
+        fixedFeeService,
+        obligationService,
+        repaymentProfileService,
+        statusService,
+      );
 
       service.createInitialFacility = jest.fn().mockResolvedValueOnce(mockResponse201(FACILITY_RESPONSE_DATA));
     });
@@ -176,7 +200,15 @@ describe('GiftService.createFacility - error handling', () => {
 
       obligationService.createMany = createObligationsSpy;
 
-      service = new GiftService(giftHttpService, logger, counterpartyService, fixedFeeService, obligationService, repaymentProfileService, statusService);
+      service = new GiftFacilityService(
+        giftHttpService,
+        logger,
+        counterpartyService,
+        fixedFeeService,
+        obligationService,
+        repaymentProfileService,
+        statusService,
+      );
 
       service.createInitialFacility = jest.fn().mockResolvedValueOnce(mockResponse201(FACILITY_RESPONSE_DATA));
     });
@@ -199,7 +231,15 @@ describe('GiftService.createFacility - error handling', () => {
 
       repaymentProfileService.createMany = createRepaymentProfilesSpy;
 
-      service = new GiftService(giftHttpService, logger, counterpartyService, fixedFeeService, obligationService, repaymentProfileService, statusService);
+      service = new GiftFacilityService(
+        giftHttpService,
+        logger,
+        counterpartyService,
+        fixedFeeService,
+        obligationService,
+        repaymentProfileService,
+        statusService,
+      );
 
       service.createInitialFacility = jest.fn().mockResolvedValueOnce(mockResponse201(FACILITY_RESPONSE_DATA));
     });
@@ -222,7 +262,15 @@ describe('GiftService.createFacility - error handling', () => {
 
       statusService.approved = approvedStatusSpy;
 
-      service = new GiftService(giftHttpService, logger, counterpartyService, fixedFeeService, obligationService, repaymentProfileService, statusService);
+      service = new GiftFacilityService(
+        giftHttpService,
+        logger,
+        counterpartyService,
+        fixedFeeService,
+        obligationService,
+        repaymentProfileService,
+        statusService,
+      );
 
       service.createInitialFacility = jest.fn().mockResolvedValueOnce(mockResponse201(FACILITY_RESPONSE_DATA));
     });

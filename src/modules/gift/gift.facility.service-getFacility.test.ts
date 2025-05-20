@@ -4,10 +4,10 @@ import { mockResponse200, mockResponse500 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
 import { GiftCounterpartyService } from './gift.counterparty.service';
+import { GiftFacilityService } from './gift.facility.service';
 import { GiftFixedFeeService } from './gift.fixed-fee.service';
 import { GiftObligationService } from './gift.obligation.service';
 import { GiftRepaymentProfileService } from './gift.repayment-profile.service';
-import { GiftService } from './gift.service';
 import { GiftStatusService } from './gift.status.service';
 
 const {
@@ -18,7 +18,7 @@ const { PATH } = GIFT;
 
 const mockResponseGet = mockResponse200(FACILITY_RESPONSE_DATA);
 
-describe('GiftService.getFacility', () => {
+describe('GiftFacilityService.get', () => {
   const logger = new PinoLogger({});
 
   let httpService: HttpService;
@@ -27,7 +27,7 @@ describe('GiftService.getFacility', () => {
   let obligationService: GiftObligationService;
   let repaymentProfileService: GiftRepaymentProfileService;
   let statusService: GiftStatusService;
-  let service: GiftService;
+  let service: GiftFacilityService;
 
   let giftHttpService;
   let mockHttpServiceGet: jest.Mock;
@@ -50,7 +50,7 @@ describe('GiftService.getFacility', () => {
     repaymentProfileService = new GiftRepaymentProfileService(giftHttpService, logger);
     statusService = new GiftStatusService(giftHttpService, logger);
 
-    service = new GiftService(giftHttpService, logger, counterpartyService, fixedFeeService, obligationService, repaymentProfileService, statusService);
+    service = new GiftFacilityService(giftHttpService, logger, counterpartyService, fixedFeeService, obligationService, repaymentProfileService, statusService);
   });
 
   afterAll(() => {
@@ -88,7 +88,15 @@ describe('GiftService.getFacility', () => {
 
       giftHttpService.get = mockHttpServiceGet;
 
-      service = new GiftService(giftHttpService, logger, counterpartyService, fixedFeeService, obligationService, repaymentProfileService, statusService);
+      service = new GiftFacilityService(
+        giftHttpService,
+        logger,
+        counterpartyService,
+        fixedFeeService,
+        obligationService,
+        repaymentProfileService,
+        statusService,
+      );
     });
 
     it('should thrown an error', async () => {

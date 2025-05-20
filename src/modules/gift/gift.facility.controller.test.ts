@@ -4,11 +4,11 @@ import { PinoLogger } from 'nestjs-pino';
 
 import { GiftCounterpartyService } from './gift.counterparty.service';
 import { GiftFacilityController } from './gift.facility.controller';
+import { GiftFacilityService } from './gift.facility.service';
 import { GiftFixedFeeService } from './gift.fixed-fee.service';
 import { GiftHttpService } from './gift.http.service';
 import { GiftObligationService } from './gift.obligation.service';
 import { GiftRepaymentProfileService } from './gift.repayment-profile.service';
-import { GiftService } from './gift.service';
 import { GiftStatusService } from './gift.status.service';
 
 const {
@@ -27,7 +27,7 @@ describe('GiftFacilityController', () => {
   let obligationService: GiftObligationService;
   let repaymentProfileService: GiftRepaymentProfileService;
   let statusService: GiftStatusService;
-  let giftService: GiftService;
+  let giftFacilityService: GiftFacilityService;
   let controller: GiftFacilityController;
 
   let mockRes;
@@ -47,7 +47,15 @@ describe('GiftFacilityController', () => {
     repaymentProfileService = new GiftRepaymentProfileService(giftHttpService, logger);
     statusService = new GiftStatusService(giftHttpService, logger);
 
-    giftService = new GiftService(giftHttpService, logger, counterpartyService, fixedFeeService, obligationService, repaymentProfileService, statusService);
+    giftFacilityService = new GiftFacilityService(
+      giftHttpService,
+      logger,
+      counterpartyService,
+      fixedFeeService,
+      obligationService,
+      repaymentProfileService,
+      statusService,
+    );
 
     mockResSend = jest.fn();
 
@@ -62,10 +70,10 @@ describe('GiftFacilityController', () => {
     mockServiceGetFacility = jest.fn().mockResolvedValueOnce(mockResponseGet);
     mockServiceCreateFacility = jest.fn().mockResolvedValueOnce(mockResponsePost);
 
-    giftService.getFacility = mockServiceGetFacility;
-    giftService.createFacility = mockServiceCreateFacility;
+    giftFacilityService.getFacility = mockServiceGetFacility;
+    giftFacilityService.create = mockServiceCreateFacility;
 
-    controller = new GiftFacilityController(giftService);
+    controller = new GiftFacilityController(giftFacilityService);
   });
 
   afterAll(() => {
@@ -73,7 +81,7 @@ describe('GiftFacilityController', () => {
   });
 
   describe('GET :facilityId', () => {
-    it('should call giftService.getFacility', async () => {
+    it('should call giftFacilityService.getFacility', async () => {
       // Act
       await controller.get({ facilityId: mockFacilityId }, mockRes);
 
@@ -105,7 +113,7 @@ describe('GiftFacilityController', () => {
   });
 
   describe('POST', () => {
-    it('should call giftService.createFacility', async () => {
+    it('should call giftFacilityService.create', async () => {
       // Act
       await controller.post(FACILITY_CREATION_PAYLOAD, mockRes);
 

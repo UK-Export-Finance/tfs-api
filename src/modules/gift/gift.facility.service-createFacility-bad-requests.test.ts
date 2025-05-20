@@ -5,10 +5,10 @@ import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 
 import { GiftCounterpartyService } from './gift.counterparty.service';
+import { GiftFacilityService } from './gift.facility.service';
 import { GiftFixedFeeService } from './gift.fixed-fee.service';
 import { GiftObligationService } from './gift.obligation.service';
 import { GiftRepaymentProfileService } from './gift.repayment-profile.service';
-import { GiftService } from './gift.service';
 import { GiftStatusService } from './gift.status.service';
 import { mapAllValidationErrorResponses, mapValidationErrorResponses } from './helpers';
 
@@ -39,7 +39,7 @@ const mockCreateObligationsResponse = mockObligations.map((counterparty) => mock
 const mockRepaymentProfilesResponse = mockRepaymentProfiles.map((repaymentProfile) => mockResponse201(repaymentProfile));
 const mockApprovedStatusResponse = mockResponse201({ data: WORK_PACKAGE_APPROVE_RESPONSE_DATA });
 
-describe('GiftService.createFacility - bad requests', () => {
+describe('GiftFacilityService.create - bad requests', () => {
   const logger = new PinoLogger({});
 
   let counterpartyService: GiftCounterpartyService;
@@ -47,7 +47,7 @@ describe('GiftService.createFacility - bad requests', () => {
   let obligationService: GiftObligationService;
   let repaymentProfileService: GiftRepaymentProfileService;
   let statusService: GiftStatusService;
-  let service: GiftService;
+  let service: GiftFacilityService;
 
   let giftHttpService;
   let createInitialFacilitySpy: jest.Mock;
@@ -78,7 +78,7 @@ describe('GiftService.createFacility - bad requests', () => {
     repaymentProfileService.createMany = createRepaymentProfilesSpy;
     statusService.approved = approvedStatusSpy;
 
-    service = new GiftService(giftHttpService, logger, counterpartyService, fixedFeeService, obligationService, repaymentProfileService, statusService);
+    service = new GiftFacilityService(giftHttpService, logger, counterpartyService, fixedFeeService, obligationService, repaymentProfileService, statusService);
 
     service.createInitialFacility = createInitialFacilitySpy;
   });
