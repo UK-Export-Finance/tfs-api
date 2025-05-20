@@ -79,7 +79,7 @@ describe('POST /gift/facility', () => {
   const payloadObligations = Object.keys(GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD.obligations);
   const payloadRepaymentProfiles = Object.keys(GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD.repaymentProfiles);
 
-  const facilityUrl = `/api/${prefixAndVersion}/gift${PATH.FACILITY}`;
+  const apimFacilityUrl = `/api/${prefixAndVersion}/gift${PATH.FACILITY}`;
   const facilityCreationUrl = PATH.CREATE_FACILITY;
   const currencyUrl = PATH.CURRENCY;
   const counterpartyUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_COUNTERPARTY}`;
@@ -106,7 +106,7 @@ describe('POST /gift/facility', () => {
   withClientAuthenticationTests({
     givenTheRequestWouldOtherwiseSucceed: () => {},
     makeRequestWithoutAuth: (incorrectAuth?: IncorrectAuthArg) =>
-      api.postWithoutAuth(facilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD, incorrectAuth?.headerName, incorrectAuth?.headerValue),
+      api.postWithoutAuth(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD, incorrectAuth?.headerName, incorrectAuth?.headerValue),
   });
 
   describe(`when the payload is valid and a ${HttpStatus.CREATED} response is returned by all GIFT endpoints`, () => {
@@ -127,7 +127,7 @@ describe('POST /gift/facility', () => {
       nock(GIFT_API_URL).persist().post(approveStatusUrl).reply(HttpStatus.OK, mockResponses.approveStatus);
 
       // Act
-      const { status, body } = await api.post(facilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
+      const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
       // Assert
       expect(status).toBe(HttpStatus.CREATED);
@@ -153,7 +153,7 @@ describe('POST /gift/facility', () => {
         nock(GIFT_API_URL).post(facilityCreationUrl).reply(HttpStatus.BAD_REQUEST, mockResponses.badRequest);
 
         // Act
-        const { status, body } = await api.post(facilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
+        const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
         // Assert
         expect(status).toBe(HttpStatus.BAD_REQUEST);
@@ -172,7 +172,7 @@ describe('POST /gift/facility', () => {
         nock(GIFT_API_URL).post(facilityCreationUrl).reply(HttpStatus.UNAUTHORIZED, mockResponses.unauthorized);
 
         // Act
-        const { status, body } = await api.post(facilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
+        const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
         // Assert
         expect(status).toBe(HttpStatus.UNAUTHORIZED);
@@ -189,7 +189,7 @@ describe('POST /gift/facility', () => {
         nock(GIFT_API_URL).post(facilityCreationUrl).reply(HttpStatus.I_AM_A_TEAPOT);
 
         // Act
-        const { status, body } = await api.post(facilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
+        const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
         // Assert
         expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -206,7 +206,7 @@ describe('POST /gift/facility', () => {
         nock(GIFT_API_URL).post(facilityCreationUrl).reply(HttpStatus.INTERNAL_SERVER_ERROR);
 
         // Act
-        const { status, body } = await api.post(facilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
+        const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
         // Assert
         expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -235,7 +235,7 @@ describe('POST /gift/facility', () => {
         nock(GIFT_API_URL).persist().post(approveStatusUrl).reply(HttpStatus.OK, mockResponses.approveStatus);
 
         // Act
-        const { status, body } = await api.post(facilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
+        const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
         // Assert
         expect(status).toBe(HttpStatus.BAD_REQUEST);
@@ -268,7 +268,7 @@ describe('POST /gift/facility', () => {
         nock(GIFT_API_URL).persist().post(approveStatusUrl).reply(HttpStatus.OK, mockResponses.approveStatus);
 
         // Act
-        const { status, body } = await api.post(facilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
+        const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
         // Assert
         expect(status).toBe(HttpStatus.UNAUTHORIZED);
@@ -300,7 +300,7 @@ describe('POST /gift/facility', () => {
         nock(GIFT_API_URL).persist().post(approveStatusUrl).reply(HttpStatus.OK, mockResponses.approveStatus);
 
         // Act
-        const { status, body } = await api.post(facilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
+        const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
         // Assert
         expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -327,7 +327,7 @@ describe('POST /gift/facility', () => {
         nock(GIFT_API_URL).persist().post(approveStatusUrl).reply(HttpStatus.OK, mockResponses.approveStatus);
 
         // Act
-        const { status, body } = await api.post(facilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
+        const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
         // Assert
         expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -356,7 +356,7 @@ describe('POST /gift/facility', () => {
         nock(GIFT_API_URL).persist().post(approveStatusUrl).reply(HttpStatus.OK, mockResponses.approveStatus);
 
         // Act
-        const { status, body } = await api.post(facilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
+        const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
         // Assert
         expect(status).toBe(HttpStatus.BAD_REQUEST);
@@ -389,7 +389,7 @@ describe('POST /gift/facility', () => {
         nock(GIFT_API_URL).persist().post(approveStatusUrl).reply(HttpStatus.OK, mockResponses.approveStatus);
 
         // Act
-        const { status, body } = await api.post(facilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
+        const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
         // Assert
         expect(status).toBe(HttpStatus.UNAUTHORIZED);
@@ -421,7 +421,7 @@ describe('POST /gift/facility', () => {
         nock(GIFT_API_URL).persist().post(approveStatusUrl).reply(HttpStatus.OK, mockResponses.approveStatus);
 
         // Act
-        const { status, body } = await api.post(facilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
+        const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
         // Assert
         expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -448,7 +448,7 @@ describe('POST /gift/facility', () => {
         nock(GIFT_API_URL).persist().post(approveStatusUrl).reply(HttpStatus.OK, mockResponses.approveStatus);
 
         // Act
-        const { status, body } = await api.post(facilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
+        const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
         // Assert
         expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -477,7 +477,7 @@ describe('POST /gift/facility', () => {
         nock(GIFT_API_URL).persist().post(approveStatusUrl).reply(HttpStatus.OK, mockResponses.approveStatus);
 
         // Act
-        const { status, body } = await api.post(facilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
+        const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
         // Assert
         expect(status).toBe(HttpStatus.BAD_REQUEST);
@@ -510,7 +510,7 @@ describe('POST /gift/facility', () => {
         nock(GIFT_API_URL).persist().post(approveStatusUrl).reply(HttpStatus.OK, mockResponses.approveStatus);
 
         // Act
-        const { status, body } = await api.post(facilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
+        const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
         // Assert
         expect(status).toBe(HttpStatus.UNAUTHORIZED);
@@ -542,7 +542,7 @@ describe('POST /gift/facility', () => {
         nock(GIFT_API_URL).persist().post(approveStatusUrl).reply(HttpStatus.OK, mockResponses.approveStatus);
 
         // Act
-        const { status, body } = await api.post(facilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
+        const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
         // Assert
         expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -569,7 +569,7 @@ describe('POST /gift/facility', () => {
         nock(GIFT_API_URL).persist().post(approveStatusUrl).reply(HttpStatus.OK, mockResponses.approveStatus);
 
         // Act
-        const { status, body } = await api.post(facilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
+        const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
         // Assert
         expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -598,7 +598,7 @@ describe('POST /gift/facility', () => {
         nock(GIFT_API_URL).persist().post(approveStatusUrl).reply(HttpStatus.OK, mockResponses.approveStatus);
 
         // Act
-        const { status, body } = await api.post(facilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
+        const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
         // Assert
         expect(status).toBe(HttpStatus.BAD_REQUEST);
@@ -631,7 +631,7 @@ describe('POST /gift/facility', () => {
         nock(GIFT_API_URL).persist().post(approveStatusUrl).reply(HttpStatus.OK, mockResponses.approveStatus);
 
         // Act
-        const { status, body } = await api.post(facilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
+        const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
         // Assert
         expect(status).toBe(HttpStatus.UNAUTHORIZED);
@@ -663,7 +663,7 @@ describe('POST /gift/facility', () => {
         nock(GIFT_API_URL).persist().post(approveStatusUrl).reply(HttpStatus.OK, mockResponses.approveStatus);
 
         // Act
-        const { status, body } = await api.post(facilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
+        const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
         // Assert
         expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -690,7 +690,7 @@ describe('POST /gift/facility', () => {
         nock(GIFT_API_URL).persist().post(approveStatusUrl).reply(HttpStatus.OK, mockResponses.approveStatus);
 
         // Act
-        const { status, body } = await api.post(facilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
+        const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
         // Assert
         expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -719,7 +719,7 @@ describe('POST /gift/facility', () => {
         nock(GIFT_API_URL).persist().post(approveStatusUrl).reply(HttpStatus.BAD_REQUEST, mockResponses.approveStatus);
 
         // Act
-        const { status, body } = await api.post(facilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
+        const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
         // Assert
         expect(status).toBe(HttpStatus.BAD_REQUEST);
@@ -751,7 +751,7 @@ describe('POST /gift/facility', () => {
         nock(GIFT_API_URL).persist().post(approveStatusUrl).reply(HttpStatus.UNAUTHORIZED, mockResponses.approveStatus);
 
         // Act
-        const { status, body } = await api.post(facilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
+        const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
         // Assert
         expect(status).toBe(HttpStatus.UNAUTHORIZED);
@@ -781,7 +781,7 @@ describe('POST /gift/facility', () => {
         nock(GIFT_API_URL).persist().post(approveStatusUrl).reply(HttpStatus.INTERNAL_SERVER_ERROR, mockResponses.approveStatus);
 
         // Act
-        const { status, body } = await api.post(facilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
+        const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
         // Assert
         expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -806,7 +806,7 @@ describe('POST /gift/facility', () => {
         nock(GIFT_API_URL).persist().post(approveStatusUrl).reply(HttpStatus.I_AM_A_TEAPOT, mockResponses.approveStatus);
 
         // Act
-        const { status, body } = await api.post(facilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
+        const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
         // Assert
         expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
