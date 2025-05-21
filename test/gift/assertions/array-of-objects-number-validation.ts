@@ -8,8 +8,8 @@ import { assert400Response } from './response-assertion';
  * @param {String} fieldName: The name of a field. E.g, amount
  * @param {String} parentFieldName: The name of a parent field. E.g parentObject
  * @param {Object} initialPayload: The payload to use before adding a field value
- * @param {Number} min: The minimum length
- * @param {Number} max: The maximum length
+ * @param {Number} min: The minimum
+ * @param {Number} max: The maximum
  * @param {String} url: The URL the tests will call.
  */
 export const arrayOfObjectsNumberValidation = ({ fieldName, parentFieldName, initialPayload, min, max, url }) => {

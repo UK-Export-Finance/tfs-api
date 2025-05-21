@@ -257,6 +257,7 @@ describe('POST /gift/facility - validation', () => {
           `overview.expiryDate must be longer than or equal to ${VALIDATION.FACILITY.OVERVIEW.EXPIRY_DATE.MIN_LENGTH} characters`,
           'overview.expiryDate must be a string',
           'overview.facilityAmount should not be null or undefined',
+          `overview.facilityAmount must not be greater than ${VALIDATION.FACILITY.OVERVIEW.FACILITY_AMOUNT.MAX}`,
           `overview.facilityAmount must not be less than ${VALIDATION.FACILITY.OVERVIEW.FACILITY_AMOUNT.MIN}`,
           'overview.facilityAmount must be a number conforming to the specified constraints',
           'overview.facilityId must be a string',
@@ -315,7 +316,7 @@ describe('POST /gift/facility - validation', () => {
           `obligations.maturityDate must be longer than or equal to ${VALIDATION.OBLIGATION.MATURITY_DATE.MIN_LENGTH} characters`,
           'obligations.maturityDate must be a string',
           'obligations.obligationAmount should not be null or undefined',
-          'obligations.obligationAmount must not be greater than 999999999999',
+          `obligations.obligationAmount must not be greater than ${VALIDATION.OBLIGATION.OBLIGATION_AMOUNT.MAX}`,
           `obligations.obligationAmount must not be less than ${VALIDATION.OBLIGATION.OBLIGATION_AMOUNT.MIN}`,
           'obligations.obligationAmount must be a number conforming to the specified constraints',
           'obligations.obligationSubtype should not be null or undefined',
@@ -386,6 +387,7 @@ describe('POST /gift/facility - validation', () => {
       ...baseParams,
       fieldName: 'facilityAmount',
       min: VALIDATION.FACILITY.OVERVIEW.FACILITY_AMOUNT.MIN,
+      max: VALIDATION.FACILITY.OVERVIEW.FACILITY_AMOUNT.MAX,
     });
   });
 

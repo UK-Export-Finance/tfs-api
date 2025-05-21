@@ -202,6 +202,7 @@ describe('POST /gift/facility - validation - repayment profiles', () => {
         error: 'Bad Request',
         message: [
           'repaymentProfiles.0.allocations.0.amount should not be null or undefined',
+          `repaymentProfiles.0.allocations.0.amount must not be greater than ${REPAYMENT_PROFILE_VALIDATION.ALLOCATION.AMOUNT.MAX}`,
           `repaymentProfiles.0.allocations.0.amount must not be less than ${REPAYMENT_PROFILE_VALIDATION.ALLOCATION.AMOUNT.MIN}`,
           'repaymentProfiles.0.allocations.0.amount must be a number conforming to the specified constraints',
           'repaymentProfiles.0.allocations.0.dueDate should not be null or undefined',
@@ -222,7 +223,7 @@ describe('POST /gift/facility - validation - repayment profiles', () => {
       parentFieldName: 'allocations',
       fieldName: 'amount',
       min: REPAYMENT_PROFILE_VALIDATION.ALLOCATION.AMOUNT.MIN,
-      max: null,
+      max: REPAYMENT_PROFILE_VALIDATION.ALLOCATION.AMOUNT.MAX,
     });
   });
 

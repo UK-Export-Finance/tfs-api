@@ -22,6 +22,7 @@ export class GiftFixedFeeDto {
   @Min(VALIDATION.AMOUNT_DUE.MIN)
   @Max(VALIDATION.AMOUNT_DUE.MAX)
   @ApiProperty({
+    required: true,
     example: FIXED_FEE().amountDue,
   })
   amountDue: number;
@@ -49,6 +50,7 @@ export class GiftFixedFeeDto {
   @IsString()
   @Length(VALIDATION.EFFECTIVE_DATE.MIN_LENGTH, VALIDATION.EFFECTIVE_DATE.MAX_LENGTH)
   @ApiProperty({
+    required: true,
     example: FIXED_FEE().effectiveDate,
   })
   effectiveDate: string;
