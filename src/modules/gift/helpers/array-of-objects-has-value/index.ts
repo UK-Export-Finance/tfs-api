@@ -7,9 +7,7 @@
  */
 export const arrayOfObjectsHasValue = (array: object[], fieldName: string, fieldValue: string) => {
   if (array.length) {
-    if (array.find((object) => object[`${fieldName}`] === fieldValue)) {
-      return true;
-    }
+    return array.find((object) => (object[`${fieldName}`] === fieldValue ? true : false));
   }
 
   return false;
