@@ -7,11 +7,12 @@ import { assert400Response } from './response-assertion';
  * Validation tests for a number field with invalid values
  * @param {String} fieldName: The name of a field. E.g, amount
  * @param {Object} initialPayload: The payload to use before adding a field value
- * @param {Number} min: The minimum length
+ * @param {Number} min: The minimum
+ * @param {Number} max: The maximum
  * @param {String} parentFieldName: The name of a parent field. E.g parentObject
  * @param {String} url: The URL the tests will call.
  */
-export const numberValidation = ({ fieldName, initialPayload, min, parentFieldName, url }) => {
+export const numberValidation = ({ fieldName, initialPayload, min, max, parentFieldName, url }) => {
   let api: Api;
 
   beforeAll(async () => {
@@ -47,6 +48,7 @@ export const numberValidation = ({ fieldName, initialPayload, min, parentFieldNa
       // Assert
       const expected = [
         `${fieldPath} should not be null or undefined`,
+        `${fieldPath} must not be greater than ${max}`,
         `${fieldPath} must not be less than ${min}`,
         `${fieldPath} must be a number conforming to the specified constraints`,
       ];
@@ -76,6 +78,7 @@ export const numberValidation = ({ fieldName, initialPayload, min, parentFieldNa
       // Assert
       const expected = [
         `${fieldPath} should not be null or undefined`,
+        `${fieldPath} must not be greater than ${max}`,
         `${fieldPath} must not be less than ${min}`,
         `${fieldPath} must be a number conforming to the specified constraints`,
       ];
@@ -103,7 +106,11 @@ export const numberValidation = ({ fieldName, initialPayload, min, parentFieldNa
       const { body } = await api.post(url, mockPayload);
 
       // Assert
-      const expected = [`${fieldPath} must not be less than ${min}`, `${fieldPath} must be a number conforming to the specified constraints`];
+      const expected = [
+        `${fieldPath} must not be greater than ${max}`,
+        `${fieldPath} must not be less than ${min}`,
+        `${fieldPath} must be a number conforming to the specified constraints`,
+      ];
 
       expect(body.message).toStrictEqual(expected);
     });
@@ -128,7 +135,11 @@ export const numberValidation = ({ fieldName, initialPayload, min, parentFieldNa
       const { body } = await api.post(url, mockPayload);
 
       // Assert
-      const expected = [`${fieldPath} must not be less than ${min}`, `${fieldPath} must be a number conforming to the specified constraints`];
+      const expected = [
+        `${fieldPath} must not be greater than ${max}`,
+        `${fieldPath} must not be less than ${min}`,
+        `${fieldPath} must be a number conforming to the specified constraints`,
+      ];
 
       expect(body.message).toStrictEqual(expected);
     });
@@ -153,7 +164,11 @@ export const numberValidation = ({ fieldName, initialPayload, min, parentFieldNa
       const { body } = await api.post(url, mockPayload);
 
       // Assert
-      const expected = [`${fieldPath} must not be less than ${min}`, `${fieldPath} must be a number conforming to the specified constraints`];
+      const expected = [
+        `${fieldPath} must not be greater than ${max}`,
+        `${fieldPath} must not be less than ${min}`,
+        `${fieldPath} must be a number conforming to the specified constraints`,
+      ];
 
       expect(body.message).toStrictEqual(expected);
     });
@@ -178,7 +193,11 @@ export const numberValidation = ({ fieldName, initialPayload, min, parentFieldNa
       const { body } = await api.post(url, mockPayload);
 
       // Assert
-      const expected = [`${fieldPath} must not be less than ${min}`, `${fieldPath} must be a number conforming to the specified constraints`];
+      const expected = [
+        `${fieldPath} must not be greater than ${max}`,
+        `${fieldPath} must not be less than ${min}`,
+        `${fieldPath} must be a number conforming to the specified constraints`,
+      ];
 
       expect(body.message).toStrictEqual(expected);
     });
@@ -187,7 +206,7 @@ export const numberValidation = ({ fieldName, initialPayload, min, parentFieldNa
   describe(`when ${fieldName} is below the minimum`, () => {
     beforeAll(() => {
       // Arrange
-      mockPayload[`${parentFieldName}`][`${fieldName}`] = 'a'.repeat(min - 1);
+      mockPayload[`${parentFieldName}`][`${fieldName}`] = min - 1;
     });
 
     it('should return a 400 response', async () => {
@@ -203,7 +222,35 @@ export const numberValidation = ({ fieldName, initialPayload, min, parentFieldNa
       const { body } = await api.post(url, mockPayload);
 
       // Assert
-      const expected = [`${fieldPath} must not be less than ${min}`, `${fieldPath} must be a number conforming to the specified constraints`];
+      const expected = [`${fieldPath} must not be less than ${min}`];
+
+      expect(body.message).toStrictEqual(expected);
+    });
+  });
+
+  describe(`when ${fieldName} is above the maximum`, () => {
+    beforeAll(() => {
+      // Arrange
+
+      const value = max + 1;
+
+      mockPayload[`${parentFieldName}`][`${fieldName}`] = value;
+    });
+
+    it('should return a 400 response', async () => {
+      // Act
+      const response = await api.post(url, mockPayload);
+
+      // Assert
+      assert400Response(response);
+    });
+
+    it('should return the correct error messages', async () => {
+      // Act
+      const { body } = await api.post(url, mockPayload);
+
+      // Assert
+      const expected = [`${fieldPath} must not be greater than ${max}`];
 
       expect(body.message).toStrictEqual(expected);
     });
