@@ -14,7 +14,7 @@ const {
 const { GIFT_API_URL } = ENVIRONMENT_VARIABLES;
 
 const {
-  PATH: { CURRENCY, FACILITY },
+  PATH: { CURRENCY, FACILITY, FEE_TYPE },
   VALIDATION: { COUNTERPARTY: COUNTERPARTY_VALIDATION },
 } = GIFT;
 
@@ -29,6 +29,8 @@ describe('POST /gift/facility - validation - counterparties', () => {
 
   beforeEach(() => {
     nock(GIFT_API_URL).persist().get(CURRENCY).reply(HttpStatus.OK, EXAMPLES.GIFT.CURRENCIES);
+
+    nock(GIFT_API_URL).persist().get(FEE_TYPE).reply(HttpStatus.OK, EXAMPLES.GIFT.FEE_TYPES_RESPONSE_DATA);
   });
 
   afterAll(async () => {

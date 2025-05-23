@@ -14,6 +14,11 @@ interface CurrencyValidationArguments extends ValidationArguments {
   object: ObjectWithCurrency;
 }
 
+/**
+ * Custom decorator to check if a provided currency, is a supported currency in GIFT.
+ * @param {ValidationOptions} options: Class validator's validation options
+ * @returns {Boolean | string}
+ */
 export function IsSupportedCurrency(options?: ValidationOptions) {
   return function (object: object, propertyName: string) {
     registerDecorator({

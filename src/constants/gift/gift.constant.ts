@@ -21,11 +21,15 @@ export const GIFT = {
     CREATE_FIXED_FEE: 'CreateFixedFee',
     CREATE_OBLIGATION: 'CreateObligation',
   },
-  FIXED_FEE: {
-    FEE_TYPE_CODES: {
-      BEX: 'BEX',
-      PLA: 'PLA',
-    },
+  FEE_TYPE_CODES: {
+    BEX: 'BEX',
+    CMF: 'CMF',
+    PLA: 'PLA',
+  },
+  FEE_TYPE_DESCRIPTIONS: {
+    BEX: 'BROKERAGE EXPENSE',
+    CMF: 'COMMITMENT FEES',
+    PLA: 'PREMIUM LESS ADMIN',
   },
   PATH: {
     APPROVE: '/approve',
@@ -33,6 +37,7 @@ export const GIFT = {
     CONFIGURATION_EVENT: '/configuration-event/type',
     CREATE_FACILITY: '/work-package/create-facility',
     FACILITY: '/facility',
+    FEE_TYPE: '/fee-type',
     SUPPORTED: '/supported',
     WORK_PACKAGE: '/work-package',
   },

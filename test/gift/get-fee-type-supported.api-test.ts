@@ -12,13 +12,13 @@ const {
 } = AppConfig();
 
 const {
-  PATH: { CURRENCY, SUPPORTED },
+  PATH: { FEE_TYPE, SUPPORTED },
 } = GIFT;
 
 const { GIFT_API_URL } = ENVIRONMENT_VARIABLES;
 
-describe('GET /gift/currency/supported', () => {
-  const url = `/api/${prefixAndVersion}/gift${CURRENCY}${SUPPORTED}`;
+describe('GET /gift/fee-type/supported', () => {
+  const url = `/api/${prefixAndVersion}/gift${FEE_TYPE}${SUPPORTED}`;
 
   let api: Api;
 
@@ -43,9 +43,9 @@ describe('GET /gift/currency/supported', () => {
   describe(`when a ${HttpStatus.OK} response is returned by GIFT`, () => {
     it(`should return a ${HttpStatus.OK} response with the received data`, async () => {
       // Arrange
-      const mockResponse = [GIFT_EXAMPLES.CURRENCIES];
+      const mockResponse = [GIFT_EXAMPLES.FEE_TYPES_RESPONSE_DATA];
 
-      nock(GIFT_API_URL).get(CURRENCY).reply(200, mockResponse);
+      nock(GIFT_API_URL).get(FEE_TYPE).reply(200, mockResponse);
 
       // Act
       const { status, body } = await api.get(url);
@@ -65,7 +65,7 @@ describe('GET /gift/currency/supported', () => {
         message: 'Route not found',
       };
 
-      nock(GIFT_API_URL).get(CURRENCY).reply(404, mockResponse);
+      nock(GIFT_API_URL).get(FEE_TYPE).reply(404, mockResponse);
 
       // Act
       const { status, body } = await api.get(url);
@@ -80,7 +80,7 @@ describe('GET /gift/currency/supported', () => {
   describe(`when a ${HttpStatus.UNAUTHORIZED} response is returned by GIFT`, () => {
     it(`should return a ${HttpStatus.UNAUTHORIZED} response`, async () => {
       // Arrange
-      nock(GIFT_API_URL).get(CURRENCY).reply(HttpStatus.UNAUTHORIZED);
+      nock(GIFT_API_URL).get(FEE_TYPE).reply(HttpStatus.UNAUTHORIZED);
 
       // Act
       const { status } = await api.get(url);
@@ -93,7 +93,7 @@ describe('GET /gift/currency/supported', () => {
   describe(`when a ${HttpStatus.INTERNAL_SERVER_ERROR} response is returned by GIFT`, () => {
     it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
       // Arrange
-      nock(GIFT_API_URL).get(CURRENCY).reply(HttpStatus.INTERNAL_SERVER_ERROR);
+      nock(GIFT_API_URL).get(FEE_TYPE).reply(HttpStatus.INTERNAL_SERVER_ERROR);
 
       // Act
       const { status } = await api.get(url);
