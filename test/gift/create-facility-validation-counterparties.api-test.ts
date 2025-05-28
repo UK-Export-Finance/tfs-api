@@ -18,6 +18,8 @@ const {
   VALIDATION: { COUNTERPARTY: COUNTERPARTY_VALIDATION },
 } = GIFT;
 
+const [firstCounterparty, secondCounterparty] = EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD.counterparties;
+
 describe('POST /gift/facility - validation - counterparties', () => {
   const url = `/api/${prefixAndVersion}/gift${FACILITY}`;
 
@@ -81,6 +83,36 @@ describe('POST /gift/facility - validation - counterparties', () => {
           `counterparties.0.startDate must be longer than or equal to ${COUNTERPARTY_VALIDATION.START_DATE.MIN_LENGTH} characters`,
           `counterparties.0.startDate must be a string`,
         ],
+        statusCode: HttpStatus.BAD_REQUEST,
+      };
+
+      expect(body).toStrictEqual(expected);
+    });
+  });
+
+  describe(`when a counterparty URN is NOT unique`, () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response with a validation error`, async () => {
+      // Arrange
+      const mockPayload = {
+        ...EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD,
+        counterparties: [
+          firstCounterparty,
+          {
+            ...secondCounterparty,
+            counterpartyUrn: firstCounterparty.counterpartyUrn,
+          },
+        ],
+      };
+
+      // Act
+      const { status, body } = await api.post(url, mockPayload);
+
+      // Assert
+      expect(status).toBe(HttpStatus.BAD_REQUEST);
+
+      const expected = {
+        error: 'Bad Request',
+        message: [`counterparty[] URN's must be unique`],
         statusCode: HttpStatus.BAD_REQUEST,
       };
 
