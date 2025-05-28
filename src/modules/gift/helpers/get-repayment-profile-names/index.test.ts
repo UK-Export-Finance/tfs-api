@@ -11,7 +11,7 @@ const mockRepaymentProfiles: GiftRepaymentProfileDto[] = [REPAYMENT_PROFILE(), R
 
 describe('modules/gift/helpers/get-repayment-profile-names', () => {
   describe('when repayment profiles are provided', () => {
-    it('should return an array of all repayment profile name values', () => {
+    it('should return an array of all repayment profile names', () => {
       // Act
       const result = getRepaymentProfileNames(mockRepaymentProfiles);
 
