@@ -6,7 +6,7 @@ import { GiftRepaymentProfileDto } from '../../dto';
  * @returns {String[]} All allocation's dueDate values
  */
 export const getRepaymentProfileAllocationDates = (repaymentProfiles?: GiftRepaymentProfileDto[]): string[] => {
-  if (repaymentProfiles && Array.isArray(repaymentProfiles)) {
+  if (Array.isArray(repaymentProfiles)) {
     return repaymentProfiles
       .map((profile: GiftRepaymentProfileDto) => {
         if (Array.isArray(profile.allocations)) {

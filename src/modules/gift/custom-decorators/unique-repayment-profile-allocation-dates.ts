@@ -3,6 +3,11 @@ import { registerDecorator, ValidationOptions } from 'class-validator';
 import { GiftRepaymentProfileDto } from '../dto';
 import { arrayHasUniqueStrings, getRepaymentProfileAllocationDates } from '../helpers';
 
+/**
+ * Custom decorator to check if a provided repayment profile's allocation date is unique.
+ * @param {ValidationOptions} options: Class validator's validation options
+ * @returns {Boolean | string}
+ */
 export function UniqueRepaymentProfileAllocationDates(validationOptions?: ValidationOptions) {
   return function (object: object, propertyName: string) {
     registerDecorator({
