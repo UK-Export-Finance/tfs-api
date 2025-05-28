@@ -51,6 +51,7 @@ describe('POST /gift/facility', () => {
     },
     counterparty: { data: { aCounterparty: true } },
     currencies: GIFT_EXAMPLES.CURRENCIES,
+    feeTypes: GIFT_EXAMPLES.FEE_TYPES_RESPONSE_DATA,
     fixedFee: { data: { aFixedFee: true } },
     obligation: { data: { anObligation: true } },
     repaymentProfile: { data: { aRepaymentProfile: true } },
@@ -82,6 +83,7 @@ describe('POST /gift/facility', () => {
   const facilityUrl = `/api/${prefixAndVersion}/gift${PATH.FACILITY}`;
   const facilityCreationUrl = PATH.CREATE_FACILITY;
   const currencyUrl = PATH.CURRENCY;
+  const feeTypeUrl = PATH.FEE_TYPE;
   const counterpartyUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_COUNTERPARTY}`;
   const fixedFeeUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.CREATE_FIXED_FEE}`;
   const obligationUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.CREATE_OBLIGATION}`;
@@ -113,6 +115,8 @@ describe('POST /gift/facility', () => {
     it(`should return a ${HttpStatus.CREATED}} response with a facility and all created entities`, async () => {
       // Arrange
       nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
+
+      nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
 
       nock(GIFT_API_URL).persist().post(facilityCreationUrl).reply(HttpStatus.CREATED, mockResponses.facility);
 
@@ -150,6 +154,8 @@ describe('POST /gift/facility', () => {
         // Arrange
         nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
 
+        nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
+
         nock(GIFT_API_URL).post(facilityCreationUrl).reply(HttpStatus.BAD_REQUEST, mockResponses.badRequest);
 
         // Act
@@ -169,6 +175,8 @@ describe('POST /gift/facility', () => {
         // Arrange
         nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
 
+        nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
+
         nock(GIFT_API_URL).post(facilityCreationUrl).reply(HttpStatus.UNAUTHORIZED, mockResponses.unauthorized);
 
         // Act
@@ -186,6 +194,8 @@ describe('POST /gift/facility', () => {
         // Arrange
         nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
 
+        nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
+
         nock(GIFT_API_URL).post(facilityCreationUrl).reply(HttpStatus.I_AM_A_TEAPOT);
 
         // Act
@@ -202,6 +212,8 @@ describe('POST /gift/facility', () => {
       it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
         // Arrange
         nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
+
+        nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
 
         nock(GIFT_API_URL).post(facilityCreationUrl).reply(HttpStatus.INTERNAL_SERVER_ERROR);
 
@@ -221,6 +233,8 @@ describe('POST /gift/facility', () => {
       it(`should return a ${HttpStatus.BAD_REQUEST} response with a mapped body/validation errors`, async () => {
         // Arrange
         nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
+
+        nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
 
         nock(GIFT_API_URL).post(facilityCreationUrl).reply(HttpStatus.CREATED, mockResponses.facility);
 
@@ -255,6 +269,8 @@ describe('POST /gift/facility', () => {
         // Arrange
         nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
 
+        nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
+
         nock(GIFT_API_URL).post(facilityCreationUrl).reply(HttpStatus.CREATED, mockResponses.facility);
 
         nock(GIFT_API_URL).persist().post(counterpartyUrl).reply(HttpStatus.UNAUTHORIZED, mockResponses.unauthorized);
@@ -287,6 +303,8 @@ describe('POST /gift/facility', () => {
         // Arrange
         nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
 
+        nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
+
         nock(GIFT_API_URL).post(facilityCreationUrl).reply(HttpStatus.CREATED, mockResponses.facility);
 
         nock(GIFT_API_URL).persist().post(counterpartyUrl).reply(HttpStatus.INTERNAL_SERVER_ERROR, mockResponses.badRequest);
@@ -313,6 +331,8 @@ describe('POST /gift/facility', () => {
       it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
         // Arrange
         nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
+
+        nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
 
         nock(GIFT_API_URL).post(facilityCreationUrl).reply(HttpStatus.CREATED, mockResponses.facility);
 
@@ -342,6 +362,8 @@ describe('POST /gift/facility', () => {
       it(`should return a ${HttpStatus.BAD_REQUEST} response with a mapped body/validation errors`, async () => {
         // Arrange
         nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
+
+        nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
 
         nock(GIFT_API_URL).post(facilityCreationUrl).reply(HttpStatus.CREATED, mockResponses.facility);
 
@@ -376,6 +398,8 @@ describe('POST /gift/facility', () => {
         // Arrange
         nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
 
+        nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
+
         nock(GIFT_API_URL).post(facilityCreationUrl).reply(HttpStatus.CREATED, mockResponses.facility);
 
         nock(GIFT_API_URL).persist().post(counterpartyUrl).reply(HttpStatus.CREATED, mockResponses.unauthorized);
@@ -408,6 +432,8 @@ describe('POST /gift/facility', () => {
         // Arrange
         nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
 
+        nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
+
         nock(GIFT_API_URL).post(facilityCreationUrl).reply(HttpStatus.CREATED, mockResponses.facility);
 
         nock(GIFT_API_URL).persist().post(counterpartyUrl).reply(HttpStatus.CREATED, mockResponses.counterparty);
@@ -434,6 +460,8 @@ describe('POST /gift/facility', () => {
       it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
         // Arrange
         nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
+
+        nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
 
         nock(GIFT_API_URL).post(facilityCreationUrl).reply(HttpStatus.CREATED, mockResponses.facility);
 
@@ -463,6 +491,8 @@ describe('POST /gift/facility', () => {
       it(`should return a ${HttpStatus.BAD_REQUEST} response with a mapped body/validation errors`, async () => {
         // Arrange
         nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
+
+        nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
 
         nock(GIFT_API_URL).post(facilityCreationUrl).reply(HttpStatus.CREATED, mockResponses.facility);
 
@@ -497,6 +527,8 @@ describe('POST /gift/facility', () => {
         // Arrange
         nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
 
+        nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
+
         nock(GIFT_API_URL).post(facilityCreationUrl).reply(HttpStatus.CREATED, mockResponses.facility);
 
         nock(GIFT_API_URL).persist().post(counterpartyUrl).reply(HttpStatus.CREATED, mockResponses.counterparty);
@@ -529,6 +561,8 @@ describe('POST /gift/facility', () => {
         // Arrange
         nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
 
+        nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
+
         nock(GIFT_API_URL).post(facilityCreationUrl).reply(HttpStatus.CREATED, mockResponses.facility);
 
         nock(GIFT_API_URL).persist().post(counterpartyUrl).reply(HttpStatus.CREATED, mockResponses.counterparty);
@@ -555,6 +589,8 @@ describe('POST /gift/facility', () => {
       it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
         // Arrange
         nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
+
+        nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
 
         nock(GIFT_API_URL).post(facilityCreationUrl).reply(HttpStatus.CREATED, mockResponses.facility);
 
@@ -584,6 +620,8 @@ describe('POST /gift/facility', () => {
       it(`should return a ${HttpStatus.BAD_REQUEST} response with a mapped body/validation errors`, async () => {
         // Arrange
         nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
+
+        nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
 
         nock(GIFT_API_URL).post(facilityCreationUrl).reply(HttpStatus.CREATED, mockResponses.facility);
 
@@ -618,6 +656,8 @@ describe('POST /gift/facility', () => {
         // Arrange
         nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
 
+        nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
+
         nock(GIFT_API_URL).post(facilityCreationUrl).reply(HttpStatus.CREATED, mockResponses.facility);
 
         nock(GIFT_API_URL).persist().post(counterpartyUrl).reply(HttpStatus.CREATED, mockResponses.counterparty);
@@ -650,6 +690,8 @@ describe('POST /gift/facility', () => {
         // Arrange
         nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
 
+        nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
+
         nock(GIFT_API_URL).post(facilityCreationUrl).reply(HttpStatus.CREATED, mockResponses.facility);
 
         nock(GIFT_API_URL).persist().post(counterpartyUrl).reply(HttpStatus.CREATED, mockResponses.badRequest);
@@ -676,6 +718,8 @@ describe('POST /gift/facility', () => {
       it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
         // Arrange
         nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
+
+        nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
 
         nock(GIFT_API_URL).post(facilityCreationUrl).reply(HttpStatus.CREATED, mockResponses.facility);
 
@@ -705,6 +749,8 @@ describe('POST /gift/facility', () => {
       it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
         // Arrange
         nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
+
+        nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
 
         nock(GIFT_API_URL).post(PATH.CREATE_FACILITY).reply(HttpStatus.CREATED, mockResponses.facility);
 
@@ -737,6 +783,8 @@ describe('POST /gift/facility', () => {
       it(`should return a ${HttpStatus.UNAUTHORIZED} response`, async () => {
         // Arrange
         nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
+
+        nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
 
         nock(GIFT_API_URL).post(PATH.CREATE_FACILITY).reply(HttpStatus.CREATED, mockResponses.facility);
 
