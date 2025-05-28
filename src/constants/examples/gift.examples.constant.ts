@@ -5,10 +5,7 @@ import { Chance } from 'chance';
 import { SUPPORTED_CURRENCIES } from '../currencies.constant';
 import { GIFT } from '../gift/gift.constant';
 
-const {
-  FIXED_FEE: { FEE_TYPE_CODES },
-  VALIDATION,
-} = GIFT;
+const { FEE_TYPE_CODES, FEE_TYPE_DESCRIPTIONS, VALIDATION } = GIFT;
 
 const chance = new Chance();
 
@@ -32,9 +29,25 @@ const COUNTERPARTY = () => ({
   startDate: '2025-01-13',
 });
 
+/**
+ * Example fee types.
+ */
+const FEE_TYPES_RESPONSE_DATA = {
+  feeTypes: [
+    {
+      code: FEE_TYPE_CODES.BEX,
+      description: FEE_TYPE_DESCRIPTIONS.BEX,
+    },
+    {
+      code: FEE_TYPE_CODES.PLA,
+      description: FEE_TYPE_DESCRIPTIONS.PLA,
+    },
+  ],
+};
+
 const FIXED_FEE = () => ({
   feeTypeCode: FEE_TYPE_CODES.PLA,
-  description: 'Mock fee description',
+  description: 'Mock fixed fee description',
   effectiveDate: '2025-01-15',
   currency: SUPPORTED_CURRENCIES.USD,
   amountDue: 5000,
@@ -44,7 +57,7 @@ const OBLIGATION = () => ({
   effectiveDate: '2025-01-13',
   maturityDate: '2025-01-15',
   currency: SUPPORTED_CURRENCIES.USD,
-  obligationAmount: 2500,
+  amount: 2500,
   obligationSubtype: 'Mock obligation subtype',
 });
 
@@ -149,6 +162,7 @@ export const GIFT_EXAMPLES = {
   FACILITY_ID,
   FACILITY_OVERVIEW,
   FACILITY_RESPONSE_DATA,
+  FEE_TYPES_RESPONSE_DATA,
   FIXED_FEE,
   OBLIGATION,
   REPAYMENT_PROFILE,

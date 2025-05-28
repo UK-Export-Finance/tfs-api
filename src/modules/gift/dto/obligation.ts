@@ -50,10 +50,10 @@ export class GiftObligationDto {
   @Min(VALIDATION.OBLIGATION_AMOUNT.MIN)
   @Max(VALIDATION.OBLIGATION_AMOUNT.MAX)
   @ApiProperty({
-    example: OBLIGATION().obligationAmount,
+    example: OBLIGATION().amount,
     required: true,
   })
-  obligationAmount: number;
+  amount: number;
 
   @IsDefined()
   @IsString()

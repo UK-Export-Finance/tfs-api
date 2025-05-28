@@ -14,7 +14,7 @@ const {
 const { GIFT_API_URL } = ENVIRONMENT_VARIABLES;
 
 const {
-  PATH: { CURRENCY, FACILITY },
+  PATH: { CURRENCY, FACILITY, FEE_TYPE },
   VALIDATION,
 } = GIFT;
 
@@ -29,6 +29,8 @@ describe('POST /gift/facility - validation', () => {
 
   beforeEach(() => {
     nock(GIFT_API_URL).persist().get(CURRENCY).reply(HttpStatus.OK, EXAMPLES.GIFT.CURRENCIES);
+
+    nock(GIFT_API_URL).persist().get(FEE_TYPE).reply(HttpStatus.OK, EXAMPLES.GIFT.FEE_TYPES_RESPONSE_DATA);
   });
 
   afterAll(async () => {
@@ -56,6 +58,7 @@ describe('POST /gift/facility - validation', () => {
           'overview should not be null or undefined',
           'overview must be a non-empty object',
           'counterparties should not be null or undefined',
+          "counterparty[] URN's must be unique",
           'counterparties should not be empty',
           'counterparties must be an array',
           'fixedFees should not be null or undefined',
@@ -94,6 +97,7 @@ describe('POST /gift/facility - validation', () => {
           'overview should not be null or undefined',
           'overview must be a non-empty object',
           'counterparties should not be null or undefined',
+          "counterparty[] URN's must be unique",
           'counterparties should not be empty',
           'counterparties must be an array',
           'fixedFees should not be null or undefined',
@@ -130,6 +134,7 @@ describe('POST /gift/facility - validation', () => {
         error: 'Bad Request',
         message: [
           'overview must be a non-empty object',
+          "counterparty[] URN's must be unique",
           'counterparties should not be empty',
           'fixedFees should not be empty',
           'obligations should not be empty',
@@ -162,6 +167,7 @@ describe('POST /gift/facility - validation', () => {
           'overview must be a non-empty object',
           'nested property overview must be either object or array',
           'counterparties should not be null or undefined',
+          "counterparty[] URN's must be unique",
           'counterparties should not be empty',
           'counterparties must be an array',
           'nested property counterparties must be either object or array',
@@ -204,6 +210,7 @@ describe('POST /gift/facility - validation', () => {
           'overview should not be null or undefined',
           'overview must be a non-empty object',
           'counterparties should not be null or undefined',
+          "counterparty[] URN's must be unique",
           'counterparties should not be empty',
           'counterparties must be an array',
           'fixedFees should not be null or undefined',
@@ -313,10 +320,10 @@ describe('POST /gift/facility - validation', () => {
           'obligations.maturityDate should not be null or undefined',
           `obligations.maturityDate must be longer than or equal to ${VALIDATION.OBLIGATION.MATURITY_DATE.MIN_LENGTH} characters`,
           'obligations.maturityDate must be a string',
-          'obligations.obligationAmount should not be null or undefined',
-          `obligations.obligationAmount must not be greater than ${VALIDATION.OBLIGATION.OBLIGATION_AMOUNT.MAX}`,
-          `obligations.obligationAmount must not be less than ${VALIDATION.OBLIGATION.OBLIGATION_AMOUNT.MIN}`,
-          'obligations.obligationAmount must be a number conforming to the specified constraints',
+          'obligations.amount should not be null or undefined',
+          `obligations.amount must not be greater than ${VALIDATION.OBLIGATION.OBLIGATION_AMOUNT.MAX}`,
+          `obligations.amount must not be less than ${VALIDATION.OBLIGATION.OBLIGATION_AMOUNT.MIN}`,
+          'obligations.amount must be a number conforming to the specified constraints',
           'obligations.obligationSubtype should not be null or undefined',
           `obligations.obligationSubtype must be longer than or equal to ${VALIDATION.OBLIGATION.OBLIGATION_SUB_TYPE.MIN_LENGTH} characters`,
           'obligations.obligationSubtype must be a string',

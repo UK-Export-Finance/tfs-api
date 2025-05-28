@@ -14,9 +14,11 @@ const {
 const { GIFT_API_URL } = ENVIRONMENT_VARIABLES;
 
 const {
-  PATH: { CURRENCY, FACILITY },
+  PATH: { CURRENCY, FACILITY, FEE_TYPE },
   VALIDATION: { COUNTERPARTY: COUNTERPARTY_VALIDATION },
 } = GIFT;
+
+const [firstCounterparty, secondCounterparty] = EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD.counterparties;
 
 describe('POST /gift/facility - validation - counterparties', () => {
   const url = `/api/${prefixAndVersion}/gift${FACILITY}`;
@@ -29,6 +31,8 @@ describe('POST /gift/facility - validation - counterparties', () => {
 
   beforeEach(() => {
     nock(GIFT_API_URL).persist().get(CURRENCY).reply(HttpStatus.OK, EXAMPLES.GIFT.CURRENCIES);
+
+    nock(GIFT_API_URL).persist().get(FEE_TYPE).reply(HttpStatus.OK, EXAMPLES.GIFT.FEE_TYPES_RESPONSE_DATA);
   });
 
   afterAll(async () => {
@@ -79,6 +83,36 @@ describe('POST /gift/facility - validation - counterparties', () => {
           `counterparties.0.startDate must be longer than or equal to ${COUNTERPARTY_VALIDATION.START_DATE.MIN_LENGTH} characters`,
           `counterparties.0.startDate must be a string`,
         ],
+        statusCode: HttpStatus.BAD_REQUEST,
+      };
+
+      expect(body).toStrictEqual(expected);
+    });
+  });
+
+  describe(`when a counterparty URN is NOT unique`, () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response with a validation error`, async () => {
+      // Arrange
+      const mockPayload = {
+        ...EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD,
+        counterparties: [
+          firstCounterparty,
+          {
+            ...secondCounterparty,
+            counterpartyUrn: firstCounterparty.counterpartyUrn,
+          },
+        ],
+      };
+
+      // Act
+      const { status, body } = await api.post(url, mockPayload);
+
+      // Assert
+      expect(status).toBe(HttpStatus.BAD_REQUEST);
+
+      const expected = {
+        error: 'Bad Request',
+        message: [`counterparty[] URN's must be unique`],
         statusCode: HttpStatus.BAD_REQUEST,
       };
 

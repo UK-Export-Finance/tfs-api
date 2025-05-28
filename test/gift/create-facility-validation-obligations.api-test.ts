@@ -14,7 +14,7 @@ const {
 const { GIFT_API_URL } = ENVIRONMENT_VARIABLES;
 
 const {
-  PATH: { CURRENCY, FACILITY },
+  PATH: { CURRENCY, FACILITY, FEE_TYPE },
   VALIDATION: { OBLIGATION: OBLIGATION_VALIDATION },
 } = GIFT;
 
@@ -29,6 +29,8 @@ describe('POST /gift/facility - validation - obligations', () => {
 
   beforeEach(() => {
     nock(GIFT_API_URL).persist().get(CURRENCY).reply(HttpStatus.OK, EXAMPLES.GIFT.CURRENCIES);
+
+    nock(GIFT_API_URL).persist().get(FEE_TYPE).reply(HttpStatus.OK, EXAMPLES.GIFT.FEE_TYPES_RESPONSE_DATA);
   });
 
   afterAll(async () => {
@@ -71,10 +73,10 @@ describe('POST /gift/facility - validation - obligations', () => {
           'obligations.0.maturityDate should not be null or undefined',
           `obligations.0.maturityDate must be longer than or equal to ${OBLIGATION_VALIDATION.MATURITY_DATE.MIN_LENGTH} characters`,
           'obligations.0.maturityDate must be a string',
-          'obligations.0.obligationAmount should not be null or undefined',
-          `obligations.0.obligationAmount must not be greater than ${OBLIGATION_VALIDATION.OBLIGATION_AMOUNT.MAX}`,
-          'obligations.0.obligationAmount must not be less than 1',
-          'obligations.0.obligationAmount must be a number conforming to the specified constraints',
+          'obligations.0.amount should not be null or undefined',
+          `obligations.0.amount must not be greater than ${OBLIGATION_VALIDATION.OBLIGATION_AMOUNT.MAX}`,
+          'obligations.0.amount must not be less than 1',
+          'obligations.0.amount must be a number conforming to the specified constraints',
           'obligations.0.obligationSubtype should not be null or undefined',
           `obligations.0.obligationSubtype must be longer than or equal to ${OBLIGATION_VALIDATION.OBLIGATION_SUB_TYPE.MIN_LENGTH} characters`,
           'obligations.0.obligationSubtype must be a string',
@@ -108,10 +110,10 @@ describe('POST /gift/facility - validation - obligations', () => {
     });
   });
 
-  describe('obligationAmount', () => {
+  describe('amount', () => {
     arrayOfObjectsNumberValidation({
       ...baseParams,
-      fieldName: 'obligationAmount',
+      fieldName: 'amount',
       min: OBLIGATION_VALIDATION.OBLIGATION_AMOUNT.MIN,
       max: OBLIGATION_VALIDATION.OBLIGATION_AMOUNT.MAX,
     });

@@ -5,6 +5,8 @@ import { GiftCurrencyController } from './gift.currency.controller';
 import { GiftCurrencyService } from './gift.currency.service';
 import { GiftFacilityController } from './gift.facility.controller';
 import { GiftFacilityService } from './gift.facility.service';
+import { GiftFeeTypeController } from './gift.fee-type.controller';
+import { GiftFeeTypeService } from './gift.fee-type.service';
 import { GiftFixedFeeService } from './gift.fixed-fee.service';
 import { GiftHttpService } from './gift.http.service';
 import { GiftObligationService } from './gift.obligation.service';
@@ -17,11 +19,12 @@ import { GiftStatusService } from './gift.status.service';
     GiftCurrencyService,
     GiftCounterpartyService,
     GiftFixedFeeService,
+    GiftFeeTypeService,
     GiftObligationService,
     GiftRepaymentProfileService,
     GiftFacilityService,
     GiftStatusService,
   ],
-  controllers: [GiftCurrencyController, GiftFacilityController],
+  controllers: [GiftCurrencyController, GiftFacilityController, GiftFeeTypeController],
 })
 export class GiftModule {}

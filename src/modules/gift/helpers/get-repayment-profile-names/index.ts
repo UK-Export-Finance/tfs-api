@@ -3,10 +3,10 @@ import { GiftRepaymentProfileDto } from '../../dto';
 /**
  * Get all names from GIFT repayment profiles
  * @param {GiftRepaymentProfileDto[]} repaymentProfiles: All repayment profiles
- * @returns {string[]} All repayment profile's name values
+ * @returns {string[]} All repayment profile's names
  */
 export const getRepaymentProfileNames = (repaymentProfiles?: GiftRepaymentProfileDto[]): string[] => {
-  if (repaymentProfiles && Array.isArray(repaymentProfiles)) {
+  if (Array.isArray(repaymentProfiles)) {
     return Object.values(repaymentProfiles).map((repaymentProfile) => repaymentProfile.name);
   }
 
