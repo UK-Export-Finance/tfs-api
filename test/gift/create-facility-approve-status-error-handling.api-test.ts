@@ -1,69 +1,27 @@
 import { HttpStatus } from '@nestjs/common';
-import AppConfig from '@ukef/config/app.config';
 import { GIFT } from '@ukef/constants';
 import { GIFT_EXAMPLES } from '@ukef/constants/examples/gift.examples.constant';
 import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import nock from 'nock';
 
-const {
-  giftVersioning: { prefixAndVersion },
-} = AppConfig();
+import {
+  apimFacilityUrl,
+  approveStatusUrl,
+  counterpartyUrl,
+  currencyUrl,
+  feeTypeUrl,
+  fixedFeeUrl,
+  mockResponses,
+  obligationUrl,
+  repaymentProfileUrl,
+} from './test-helpers';
 
-const { API_RESPONSE_MESSAGES, EVENT_TYPES, PATH } = GIFT;
+const { API_RESPONSE_MESSAGES, PATH } = GIFT;
 
 const { GIFT_API_URL } = ENVIRONMENT_VARIABLES;
 
 describe('POST /gift/facility - approve status error handling', () => {
-  const mockFacilityId = GIFT_EXAMPLES.FACILITY_ID;
-  const mockWorkPackageId = GIFT_EXAMPLES.WORK_PACKAGE_ID;
-
-  const mockResponses = {
-    badRequest: {
-      statusCode: HttpStatus.BAD_REQUEST,
-      message: 'Validation error',
-      validationErrors: [
-        {
-          path: ['fieldX'],
-          message: 'Invalid fieldX',
-        },
-      ],
-    },
-    counterparty: { data: { aCounterparty: true } },
-    currencies: GIFT_EXAMPLES.CURRENCIES,
-    feeTypes: GIFT_EXAMPLES.FEE_TYPES_RESPONSE_DATA,
-    fixedFee: { data: { aFixedFee: true } },
-    obligation: { data: { anObligation: true } },
-    repaymentProfile: { data: { aRepaymentProfile: true } },
-    facility: {
-      workPackageId: mockWorkPackageId,
-      configurationEvent: {
-        data: {
-          aMockFacility: true,
-          facilityId: mockFacilityId,
-        },
-      },
-    },
-    approveStatus: { data: { aStatusUpdate: true } },
-    internalServerError: {
-      statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-      message: 'Internal server error',
-    },
-    unauthorized: {
-      statusCode: HttpStatus.UNAUTHORIZED,
-      message: 'Unauthorized',
-    },
-  };
-
-  const apimFacilityUrl = `/api/${prefixAndVersion}/gift${PATH.FACILITY}`;
-  const currencyUrl = PATH.CURRENCY;
-  const feeTypeUrl = PATH.FEE_TYPE;
-  const counterpartyUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_COUNTERPARTY}`;
-  const fixedFeeUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.CREATE_FIXED_FEE}`;
-  const obligationUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.CREATE_OBLIGATION}`;
-  const repaymentProfileUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_MANUAL_REPAYMENT_PROFILE}`;
-  const approveStatusUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.APPROVE}`;
-
   let api: Api;
 
   beforeAll(async () => {

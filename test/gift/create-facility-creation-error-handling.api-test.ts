@@ -1,65 +1,14 @@
 import { HttpStatus } from '@nestjs/common';
-import AppConfig from '@ukef/config/app.config';
-import { GIFT } from '@ukef/constants';
 import { GIFT_EXAMPLES } from '@ukef/constants/examples/gift.examples.constant';
 import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import nock from 'nock';
 
-const {
-  giftVersioning: { prefixAndVersion },
-} = AppConfig();
-
-const { PATH } = GIFT;
+import { apimFacilityUrl, currencyUrl, facilityCreationUrl, feeTypeUrl, mockResponses } from './test-helpers';
 
 const { GIFT_API_URL } = ENVIRONMENT_VARIABLES;
 
 describe('POST /gift/facility - facility creation error handling', () => {
-  const mockFacilityId = GIFT_EXAMPLES.FACILITY_ID;
-  const mockWorkPackageId = GIFT_EXAMPLES.WORK_PACKAGE_ID;
-
-  const mockResponses = {
-    badRequest: {
-      statusCode: HttpStatus.BAD_REQUEST,
-      message: 'Validation error',
-      validationErrors: [
-        {
-          path: ['fieldX'],
-          message: 'Invalid fieldX',
-        },
-      ],
-    },
-    counterparty: { data: { aCounterparty: true } },
-    currencies: GIFT_EXAMPLES.CURRENCIES,
-    feeTypes: GIFT_EXAMPLES.FEE_TYPES_RESPONSE_DATA,
-    fixedFee: { data: { aFixedFee: true } },
-    obligation: { data: { anObligation: true } },
-    repaymentProfile: { data: { aRepaymentProfile: true } },
-    facility: {
-      workPackageId: mockWorkPackageId,
-      configurationEvent: {
-        data: {
-          aMockFacility: true,
-          facilityId: mockFacilityId,
-        },
-      },
-    },
-    approveStatus: { data: { aStatusUpdate: true } },
-    internalServerError: {
-      statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-      message: 'Internal server error',
-    },
-    unauthorized: {
-      statusCode: HttpStatus.UNAUTHORIZED,
-      message: 'Unauthorized',
-    },
-  };
-
-  const apimFacilityUrl = `/api/${prefixAndVersion}/gift${PATH.FACILITY}`;
-  const facilityCreationUrl = PATH.CREATE_FACILITY;
-  const currencyUrl = PATH.CURRENCY;
-  const feeTypeUrl = PATH.FEE_TYPE;
-
   let api: Api;
 
   beforeAll(async () => {
