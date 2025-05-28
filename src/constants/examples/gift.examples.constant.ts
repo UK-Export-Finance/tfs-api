@@ -44,7 +44,7 @@ const OBLIGATION = () => ({
   effectiveDate: '2025-01-13',
   maturityDate: '2025-01-15',
   currency: SUPPORTED_CURRENCIES.USD,
-  obligationAmount: 2500,
+  amount: 2500,
   obligationSubtype: 'Mock obligation subtype',
 });
 
