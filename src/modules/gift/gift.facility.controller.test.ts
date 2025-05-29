@@ -70,7 +70,7 @@ describe('GiftFacilityController', () => {
     mockServiceGetFacility = jest.fn().mockResolvedValueOnce(mockResponseGet);
     mockServiceCreateFacility = jest.fn().mockResolvedValueOnce(mockResponsePost);
 
-    giftFacilityService.getFacility = mockServiceGetFacility;
+    giftFacilityService.get = mockServiceGetFacility;
     giftFacilityService.create = mockServiceCreateFacility;
 
     controller = new GiftFacilityController(giftFacilityService);

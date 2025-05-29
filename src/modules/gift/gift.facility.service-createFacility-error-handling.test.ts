@@ -122,7 +122,7 @@ describe('GiftFacilityService.create - error handling', () => {
 
     it('should throw an error', async () => {
       // Act
-      const response = service.createFacility(mockPayload);
+      const response = service.create(mockPayload);
 
       // Assert
       const expected = new Error('Error creating GIFT facility');
@@ -153,7 +153,7 @@ describe('GiftFacilityService.create - error handling', () => {
 
     it('should throw an error', async () => {
       // Act
-      const response = service.createFacility(mockPayload);
+      const response = service.create(mockPayload);
 
       // Assert
       const expected = new Error('Error creating GIFT facility');
@@ -184,7 +184,7 @@ describe('GiftFacilityService.create - error handling', () => {
 
     it('should throw an error', async () => {
       // Act
-      const response = service.createFacility(mockPayload);
+      const response = service.create(mockPayload);
 
       // Assert
       const expected = new Error('Error creating GIFT facility');
@@ -215,7 +215,7 @@ describe('GiftFacilityService.create - error handling', () => {
 
     it('should throw an error', async () => {
       // Act
-      const response = service.createFacility(mockPayload);
+      const response = service.create(mockPayload);
 
       // Assert
       const expected = new Error('Error creating GIFT facility');
@@ -246,7 +246,7 @@ describe('GiftFacilityService.create - error handling', () => {
 
     it('should throw an error', async () => {
       // Act
-      const response = service.createFacility(mockPayload);
+      const response = service.create(mockPayload);
 
       // Assert
       const expected = new Error('Error creating GIFT facility');
@@ -277,7 +277,7 @@ describe('GiftFacilityService.create - error handling', () => {
 
     it('should throw an error', async () => {
       // Act
-      const response = service.createFacility(mockPayload);
+      const response = service.create(mockPayload);
 
       // Assert
       const expected = new Error('Error creating GIFT facility');

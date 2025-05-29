@@ -59,7 +59,7 @@ describe('GiftFacilityService.get', () => {
 
   it('should call giftHttpService.get', async () => {
     // Act
-    await service.getFacility(mockFacilityId);
+    await service.get(mockFacilityId);
 
     // Assert
     expect(mockHttpServiceGet).toHaveBeenCalledTimes(1);
@@ -72,7 +72,7 @@ describe('GiftFacilityService.get', () => {
   describe('when giftHttpService.get is successful', () => {
     it('should return the response of giftHttpService.get', async () => {
       // Act
-      const response = await service.getFacility(mockFacilityId);
+      const response = await service.get(mockFacilityId);
 
       // Assert
       expect(response).toEqual(mockResponseGet);
@@ -101,10 +101,10 @@ describe('GiftFacilityService.get', () => {
 
     it('should thrown an error', async () => {
       // Act
-      const promise = service.getFacility(mockFacilityId);
+      const promise = service.get(mockFacilityId);
 
       // Assert
-      const expected = new Error('Error calling GIFT HTTP service GET method');
+      const expected = new Error('Error getting GIFT facility');
 
       await expect(promise).rejects.toThrow(expected);
     });

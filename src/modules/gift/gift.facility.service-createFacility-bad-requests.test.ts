@@ -111,7 +111,7 @@ describe('GiftFacilityService.create - bad requests', () => {
 
       it('should return an object with mapped counterparty errors', async () => {
         // Act
-        const response = await service.createFacility(mockPayload);
+        const response = await service.create(mockPayload);
 
         // Assert
         const expectedValidationErrors = mapValidationErrorResponses({
@@ -133,7 +133,7 @@ describe('GiftFacilityService.create - bad requests', () => {
 
       it('should NOT call giftStatusService.approved', async () => {
         // Act
-        await service.createFacility(mockPayload);
+        await service.create(mockPayload);
 
         // Assert
         expect(approvedStatusSpy).toHaveBeenCalledTimes(0);
@@ -150,7 +150,7 @@ describe('GiftFacilityService.create - bad requests', () => {
 
       it('should return an object with mapped counterparty errors', async () => {
         // Act
-        const response = await service.createFacility(mockPayload);
+        const response = await service.create(mockPayload);
 
         // Assert
         const expectedValidationErrors = mapValidationErrorResponses({
@@ -172,7 +172,7 @@ describe('GiftFacilityService.create - bad requests', () => {
 
       it('should NOT call giftStatusService.approved', async () => {
         // Act
-        await service.createFacility(mockPayload);
+        await service.create(mockPayload);
 
         // Assert
         expect(approvedStatusSpy).toHaveBeenCalledTimes(0);
@@ -189,7 +189,7 @@ describe('GiftFacilityService.create - bad requests', () => {
 
       it('should return an object with mapped counterparty errors', async () => {
         // Act
-        const response = await service.createFacility(mockPayload);
+        const response = await service.create(mockPayload);
 
         // Assert
         const expectedValidationErrors = mapValidationErrorResponses({
@@ -211,7 +211,7 @@ describe('GiftFacilityService.create - bad requests', () => {
 
       it('should NOT call giftStatusService.approved', async () => {
         // Act
-        await service.createFacility(mockPayload);
+        await service.create(mockPayload);
 
         // Assert
         expect(approvedStatusSpy).toHaveBeenCalledTimes(0);
@@ -228,7 +228,7 @@ describe('GiftFacilityService.create - bad requests', () => {
 
       it('should return an object with mapped counterparty errors', async () => {
         // Act
-        const response = await service.createFacility(mockPayload);
+        const response = await service.create(mockPayload);
 
         // Assert
         const expectedValidationErrors = mapValidationErrorResponses({
@@ -250,7 +250,7 @@ describe('GiftFacilityService.create - bad requests', () => {
 
       it('should NOT call giftStatusService.approved', async () => {
         // Act
-        await service.createFacility(mockPayload);
+        await service.create(mockPayload);
 
         // Assert
         expect(approvedStatusSpy).toHaveBeenCalledTimes(0);
@@ -283,7 +283,7 @@ describe('GiftFacilityService.create - bad requests', () => {
 
     it('should return an object with mapped errors for all service responses', async () => {
       // Act
-      const response = await service.createFacility(mockPayload);
+      const response = await service.create(mockPayload);
 
       // Assert
       const expectedValidationErrors = mapAllValidationErrorResponses({
@@ -307,7 +307,7 @@ describe('GiftFacilityService.create - bad requests', () => {
 
     it('should NOT call giftStatusService.approved', async () => {
       // Act
-      await service.createFacility(mockPayload);
+      await service.create(mockPayload);
 
       // Assert
       expect(approvedStatusSpy).toHaveBeenCalledTimes(0);
@@ -334,7 +334,7 @@ describe('GiftFacilityService.create - bad requests', () => {
 
       it('should return an object with mapped counterparty errors', async () => {
         // Act
-        const response = await service.createFacility(mockPayload);
+        const response = await service.create(mockPayload);
 
         // Assert
         const expectedValidationErrors = mapValidationErrorResponses({
@@ -356,7 +356,7 @@ describe('GiftFacilityService.create - bad requests', () => {
 
       it('should NOT call giftStatusService.approved', async () => {
         // Act
-        await service.createFacility(mockPayload);
+        await service.create(mockPayload);
 
         // Assert
         expect(approvedStatusSpy).toHaveBeenCalledTimes(0);
@@ -373,7 +373,7 @@ describe('GiftFacilityService.create - bad requests', () => {
 
       it('should return an object with mapped fixed fee errors', async () => {
         // Act
-        const response = await service.createFacility(mockPayload);
+        const response = await service.create(mockPayload);
 
         // Assert
         const expectedValidationErrors = mapValidationErrorResponses({
@@ -395,7 +395,7 @@ describe('GiftFacilityService.create - bad requests', () => {
 
       it('should NOT call giftStatusService.approved', async () => {
         // Act
-        await service.createFacility(mockPayload);
+        await service.create(mockPayload);
 
         // Assert
         expect(approvedStatusSpy).toHaveBeenCalledTimes(0);
@@ -412,7 +412,7 @@ describe('GiftFacilityService.create - bad requests', () => {
 
       it('should return an object with mapped obligation errors', async () => {
         // Act
-        const response = await service.createFacility(mockPayload);
+        const response = await service.create(mockPayload);
 
         // Assert
         const expectedValidationErrors = mapValidationErrorResponses({
@@ -434,7 +434,7 @@ describe('GiftFacilityService.create - bad requests', () => {
 
       it('should NOT call giftStatusService.approved', async () => {
         // Act
-        await service.createFacility(mockPayload);
+        await service.create(mockPayload);
 
         // Assert
         expect(approvedStatusSpy).toHaveBeenCalledTimes(0);
@@ -451,7 +451,7 @@ describe('GiftFacilityService.create - bad requests', () => {
 
       it('should return an object with mapped repayment profile errors', async () => {
         // Act
-        const response = await service.createFacility(mockPayload);
+        const response = await service.create(mockPayload);
 
         // Assert
         const expectedValidationErrors = mapValidationErrorResponses({
@@ -473,7 +473,7 @@ describe('GiftFacilityService.create - bad requests', () => {
 
       it('should NOT call giftStatusService.approved', async () => {
         // Act
-        await service.createFacility(mockPayload);
+        await service.create(mockPayload);
 
         // Assert
         expect(approvedStatusSpy).toHaveBeenCalledTimes(0);
@@ -501,7 +501,7 @@ describe('GiftFacilityService.create - bad requests', () => {
 
       it("should return an object with the first counterparty's status and message", async () => {
         // Act
-        const response = await service.createFacility(mockPayload);
+        const response = await service.create(mockPayload);
 
         // Assert
         const expectedValidationErrors = mapValidationErrorResponses({
@@ -523,7 +523,7 @@ describe('GiftFacilityService.create - bad requests', () => {
 
       it('should NOT call giftStatusService.approved', async () => {
         // Act
-        await service.createFacility(mockPayload);
+        await service.create(mockPayload);
 
         // Assert
         expect(approvedStatusSpy).toHaveBeenCalledTimes(0);
@@ -540,7 +540,7 @@ describe('GiftFacilityService.create - bad requests', () => {
 
       it("should return an object with the first fixed fee's status and message", async () => {
         // Act
-        const response = await service.createFacility(mockPayload);
+        const response = await service.create(mockPayload);
 
         // Assert
         const expectedValidationErrors = mapValidationErrorResponses({
@@ -562,7 +562,7 @@ describe('GiftFacilityService.create - bad requests', () => {
 
       it('should NOT call giftStatusService.approved', async () => {
         // Act
-        await service.createFacility(mockPayload);
+        await service.create(mockPayload);
 
         // Assert
         expect(approvedStatusSpy).toHaveBeenCalledTimes(0);
@@ -579,7 +579,7 @@ describe('GiftFacilityService.create - bad requests', () => {
 
       it("should return an object with the first obligation's status and message", async () => {
         // Act
-        const response = await service.createFacility(mockPayload);
+        const response = await service.create(mockPayload);
 
         // Assert
         const expectedValidationErrors = mapValidationErrorResponses({
@@ -601,7 +601,7 @@ describe('GiftFacilityService.create - bad requests', () => {
 
       it('should NOT call giftStatusService.approved', async () => {
         // Act
-        await service.createFacility(mockPayload);
+        await service.create(mockPayload);
 
         // Assert
         expect(approvedStatusSpy).toHaveBeenCalledTimes(0);
@@ -618,7 +618,7 @@ describe('GiftFacilityService.create - bad requests', () => {
 
       it("should return an object with the first repayment profile's status and message", async () => {
         // Act
-        const response = await service.createFacility(mockPayload);
+        const response = await service.create(mockPayload);
 
         // Assert
         const expectedValidationErrors = mapValidationErrorResponses({
@@ -640,7 +640,7 @@ describe('GiftFacilityService.create - bad requests', () => {
 
       it('should NOT call giftStatusService.approved', async () => {
         // Act
-        await service.createFacility(mockPayload);
+        await service.create(mockPayload);
 
         // Assert
         expect(approvedStatusSpy).toHaveBeenCalledTimes(0);

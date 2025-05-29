@@ -98,7 +98,7 @@ describe('GiftFacilityService.create', () => {
 
   it('should call service.createInitialFacility', async () => {
     // Act
-    await service.createFacility(mockPayload);
+    await service.create(mockPayload);
 
     // Assert
     expect(createInitialFacilitySpy).toHaveBeenCalledTimes(1);
@@ -108,7 +108,7 @@ describe('GiftFacilityService.create', () => {
 
   it('should call counterpartyService.createMany', async () => {
     // Act
-    await service.createFacility(mockPayload);
+    await service.create(mockPayload);
 
     // Assert
     expect(createCounterpartiesSpy).toHaveBeenCalledTimes(1);
@@ -118,7 +118,7 @@ describe('GiftFacilityService.create', () => {
 
   it('should call fixedFeeService.createMany', async () => {
     // Act
-    await service.createFacility(mockPayload);
+    await service.create(mockPayload);
 
     // Assert
     expect(createFixedFeesSpy).toHaveBeenCalledTimes(1);
@@ -128,7 +128,7 @@ describe('GiftFacilityService.create', () => {
 
   it('should call obligationService.createMany', async () => {
     // Act
-    await service.createFacility(mockPayload);
+    await service.create(mockPayload);
 
     // Assert
     expect(createObligationsSpy).toHaveBeenCalledTimes(1);
@@ -138,7 +138,7 @@ describe('GiftFacilityService.create', () => {
 
   it('should call giftRepaymentProfileService.createMany', async () => {
     // Act
-    await service.createFacility(mockPayload);
+    await service.create(mockPayload);
 
     // Assert
     expect(createRepaymentProfilesSpy).toHaveBeenCalledTimes(1);
@@ -148,7 +148,7 @@ describe('GiftFacilityService.create', () => {
 
   it('should call giftStatusService.approved', async () => {
     // Act
-    await service.createFacility(mockPayload);
+    await service.create(mockPayload);
 
     // Assert
     expect(approvedStatusSpy).toHaveBeenCalledTimes(1);
@@ -159,7 +159,7 @@ describe('GiftFacilityService.create', () => {
   describe('when all calls are successful', () => {
     it('should return a response object', async () => {
       // Act
-      const response = await service.createFacility(mockPayload);
+      const response = await service.create(mockPayload);
 
       // Assert
       const expected = {

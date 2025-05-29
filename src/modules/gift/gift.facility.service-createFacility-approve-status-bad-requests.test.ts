@@ -106,7 +106,7 @@ describe('GiftFacilityService.create - error handling', () => {
 
     it('should return an object with the giftStatusService.approved data and status', async () => {
       // Act
-      const response = await service.createFacility(mockPayload);
+      const response = await service.create(mockPayload);
 
       // Assert
       const expected = {
@@ -143,7 +143,7 @@ describe('GiftFacilityService.create - error handling', () => {
 
     it('should return an object with the giftStatusService.approved data and status', async () => {
       // Act
-      const response = await service.createFacility(mockPayload);
+      const response = await service.create(mockPayload);
 
       // Assert
       const expected = {
