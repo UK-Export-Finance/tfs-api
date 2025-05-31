@@ -1,0 +1,169 @@
+import { HttpStatus } from '@nestjs/common';
+import { GIFT } from '@ukef/constants';
+import { GIFT_EXAMPLES } from '@ukef/constants/examples/gift.examples.constant';
+import { Api } from '@ukef-test/support/api';
+import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
+import nock from 'nock';
+
+import {
+  apimFacilityUrl,
+  approveStatusUrl,
+  counterpartyUrl,
+  currencyUrl,
+  facilityCreationUrl,
+  feeTypeUrl,
+  fixedFeeUrl,
+  getExpectedValidationErrors,
+  mockResponses,
+  obligationUrl,
+  payloadFixedFees,
+  repaymentProfileUrl,
+} from './test-helpers';
+
+const { API_RESPONSE_MESSAGES, ENTITY_NAMES } = GIFT;
+
+const { GIFT_API_URL } = ENVIRONMENT_VARIABLES;
+
+describe('POST /gift/facility - fixed fee error handling', () => {
+  let api: Api;
+
+  beforeAll(async () => {
+    api = await Api.create();
+  });
+
+  afterAll(async () => {
+    await api.destroy();
+  });
+
+  afterEach(() => {
+    nock.abortPendingRequests();
+    nock.cleanAll();
+  });
+
+  describe(`when a ${HttpStatus.BAD_REQUEST} response is returned by the GIFT fixed fee endpoint`, () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response with a mapped body/validation errors`, async () => {
+      // Arrange
+      nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
+
+      nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
+
+      nock(GIFT_API_URL).post(facilityCreationUrl).reply(HttpStatus.CREATED, mockResponses.facility);
+
+      nock(GIFT_API_URL).persist().post(counterpartyUrl).reply(HttpStatus.CREATED, mockResponses.counterparty);
+
+      nock(GIFT_API_URL).persist().post(fixedFeeUrl).reply(HttpStatus.BAD_REQUEST, mockResponses.badRequest);
+
+      nock(GIFT_API_URL).persist().post(obligationUrl).reply(HttpStatus.CREATED, mockResponses.obligation);
+
+      nock(GIFT_API_URL).persist().post(repaymentProfileUrl).reply(HttpStatus.CREATED, mockResponses.repaymentProfile);
+
+      nock(GIFT_API_URL).persist().post(approveStatusUrl).reply(HttpStatus.OK, mockResponses.approveStatus);
+
+      // Act
+      const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
+
+      // Assert
+      expect(status).toBe(HttpStatus.BAD_REQUEST);
+
+      const expected = {
+        ...mockResponses.badRequest,
+        message: API_RESPONSE_MESSAGES.FACILITY_VALIDATION_ERRORS,
+        validationErrors: getExpectedValidationErrors(payloadFixedFees, mockResponses.badRequest, ENTITY_NAMES.FIXED_FEE),
+      };
+
+      expect(body).toStrictEqual(expected);
+    });
+  });
+
+  describe(`when a ${HttpStatus.UNAUTHORIZED} response is returned by the GIFT fixed fee endpoint`, () => {
+    it(`should return a ${HttpStatus.UNAUTHORIZED} response`, async () => {
+      // Arrange
+      nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
+
+      nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
+
+      nock(GIFT_API_URL).post(facilityCreationUrl).reply(HttpStatus.CREATED, mockResponses.facility);
+
+      nock(GIFT_API_URL).persist().post(counterpartyUrl).reply(HttpStatus.CREATED, mockResponses.unauthorized);
+
+      nock(GIFT_API_URL).persist().post(fixedFeeUrl).reply(HttpStatus.UNAUTHORIZED, mockResponses.unauthorized);
+
+      nock(GIFT_API_URL).persist().post(obligationUrl).reply(HttpStatus.CREATED, mockResponses.obligation);
+
+      nock(GIFT_API_URL).persist().post(repaymentProfileUrl).reply(HttpStatus.CREATED, mockResponses.repaymentProfile);
+
+      nock(GIFT_API_URL).persist().post(approveStatusUrl).reply(HttpStatus.OK, mockResponses.approveStatus);
+
+      // Act
+      const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
+
+      // Assert
+      expect(status).toBe(HttpStatus.UNAUTHORIZED);
+
+      const expected = {
+        ...mockResponses.unauthorized,
+        validationErrors: getExpectedValidationErrors(payloadFixedFees, mockResponses.unauthorized, ENTITY_NAMES.FIXED_FEE),
+      };
+
+      expect(body).toStrictEqual(expected);
+    });
+  });
+
+  describe(`when a ${HttpStatus.INTERNAL_SERVER_ERROR} status is returned by the GIFT fixed fee endpoint`, () => {
+    it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
+      // Arrange
+      nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
+
+      nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
+
+      nock(GIFT_API_URL).post(facilityCreationUrl).reply(HttpStatus.CREATED, mockResponses.facility);
+
+      nock(GIFT_API_URL).persist().post(counterpartyUrl).reply(HttpStatus.CREATED, mockResponses.counterparty);
+
+      nock(GIFT_API_URL).persist().post(fixedFeeUrl).reply(HttpStatus.INTERNAL_SERVER_ERROR, mockResponses.badRequest);
+
+      nock(GIFT_API_URL).persist().post(obligationUrl).reply(HttpStatus.CREATED, mockResponses.obligation);
+
+      nock(GIFT_API_URL).persist().post(repaymentProfileUrl).reply(HttpStatus.CREATED, mockResponses.repaymentProfile);
+
+      nock(GIFT_API_URL).persist().post(approveStatusUrl).reply(HttpStatus.OK, mockResponses.approveStatus);
+
+      // Act
+      const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
+
+      // Assert
+      expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
+
+      expect(body).toStrictEqual(mockResponses.internalServerError);
+    });
+  });
+
+  describe('when an unacceptable response is returned by the GIFT fixed fee endpoint', () => {
+    it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
+      // Arrange
+      nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
+
+      nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
+
+      nock(GIFT_API_URL).post(facilityCreationUrl).reply(HttpStatus.CREATED, mockResponses.facility);
+
+      nock(GIFT_API_URL).persist().post(counterpartyUrl).reply(HttpStatus.CREATED, mockResponses.counterparty);
+
+      nock(GIFT_API_URL).persist().post(fixedFeeUrl).reply(HttpStatus.I_AM_A_TEAPOT);
+
+      nock(GIFT_API_URL).persist().post(obligationUrl).reply(HttpStatus.CREATED, mockResponses.obligation);
+
+      nock(GIFT_API_URL).persist().post(repaymentProfileUrl).reply(HttpStatus.CREATED, mockResponses.repaymentProfile);
+
+      nock(GIFT_API_URL).persist().post(approveStatusUrl).reply(HttpStatus.OK, mockResponses.approveStatus);
+
+      // Act
+      const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
+
+      // Assert
+      expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
+
+      expect(body).toStrictEqual(mockResponses.internalServerError);
+    });
+  });
+});

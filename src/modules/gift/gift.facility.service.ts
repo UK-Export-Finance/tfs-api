@@ -21,11 +21,11 @@ interface CreateFacilityResponse {
 }
 
 /**
- * GIFT service.
- * This is responsible for all operations that call the GIFT API.
+ * GIFT facility service.
+ * This is responsible for all facility operations that call the GIFT API.
  */
 @Injectable()
-export class GiftService {
+export class GiftFacilityService {
   constructor(
     private readonly giftHttpService: GiftHttpService,
     private readonly logger: PinoLogger,
@@ -48,7 +48,7 @@ export class GiftService {
    * @param {String} facilityId
    * @returns {Promise<AxiosResponse>}
    */
-  async getFacility(facilityId: UkefId): Promise<AxiosResponse> {
+  async get(facilityId: UkefId): Promise<AxiosResponse> {
     try {
       const response = await this.giftHttpService.get<GiftFacilityOverviewDto>({
         path: `${PATH.FACILITY}/${facilityId}`,
@@ -56,9 +56,9 @@ export class GiftService {
 
       return response;
     } catch (error) {
-      this.logger.error('Error calling GIFT HTTP service GET method %o', error);
+      this.logger.error('Error getting GIFT facility %o', error);
 
-      throw new Error('Error calling GIFT HTTP service GET method', error);
+      throw new Error('Error getting GIFT facility', error);
     }
   }
 
@@ -88,7 +88,7 @@ export class GiftService {
    * @returns {Promise<CreateFacilityResponse>}
    * @throws {AxiosError | Error}
    */
-  async createFacility(data: GiftFacilityCreationDto): Promise<CreateFacilityResponse> {
+  async create(data: GiftFacilityCreationDto): Promise<CreateFacilityResponse> {
     try {
       const {
         overview,

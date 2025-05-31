@@ -15,7 +15,7 @@ import { EXAMPLES, GIFT } from '@ukef/constants';
 import { Response } from 'express';
 
 import { GetFacilityOperationParamsDto, GiftFacilityCreationDto, GiftFacilityCreationResponseDto, GiftFacilityOverviewDto } from './dto';
-import { GiftService } from './gift.service';
+import { GiftFacilityService } from './gift.facility.service';
 
 const { PATH } = GIFT;
 
@@ -26,7 +26,7 @@ const { giftVersioning } = AppConfig();
   version: giftVersioning.version,
 })
 export class GiftFacilityController {
-  constructor(private readonly giftService: GiftService) {}
+  constructor(private readonly giftFacilityService: GiftFacilityService) {}
 
   @Get(':facilityId')
   @ApiOperation({ summary: 'Get a GIFT facility by ID' })
@@ -59,7 +59,7 @@ export class GiftFacilityController {
    * Further information: https://docs.nestjs.com/controllers#library-specific-approach
    */
   async get(@Param() { facilityId }: GetFacilityOperationParamsDto, @Res({ passthrough: true }) res: Response) {
-    const { status, data } = await this.giftService.getFacility(facilityId);
+    const { status, data } = await this.giftFacilityService.get(facilityId);
 
     res.status(status).send(data);
   }
@@ -89,7 +89,7 @@ export class GiftFacilityController {
    * Further information: https://docs.nestjs.com/controllers#library-specific-approach
    */
   async post(@Body(new ValidationPipe({ transform: true })) facilityData: GiftFacilityCreationDto, @Res({ passthrough: true }) res: Response) {
-    const { status, data } = await this.giftService.createFacility(facilityData);
+    const { status, data } = await this.giftFacilityService.create(facilityData);
 
     res.status(status).send(data);
   }

@@ -5,10 +5,10 @@ import { mockResponse200, mockResponse201 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
 import { GiftCounterpartyService } from './gift.counterparty.service';
+import { GiftFacilityService } from './gift.facility.service';
 import { GiftFixedFeeService } from './gift.fixed-fee.service';
 import { GiftObligationService } from './gift.obligation.service';
 import { GiftRepaymentProfileService } from './gift.repayment-profile.service';
-import { GiftService } from './gift.service';
 import { GiftStatusService } from './gift.status.service';
 
 const {
@@ -36,7 +36,7 @@ const mockCreateFixedFeesResponse = mockFixedFees.map((fixedFee) => mockResponse
 const mockCreateObligationsResponse = mockObligations.map((obligation) => mockResponse201({ data: obligation }));
 const mockRepaymentProfilesResponse = mockRepaymentProfiles.map((repaymentProfile) => mockResponse201({ data: repaymentProfile }));
 
-describe('GiftService.createFacility', () => {
+describe('GiftFacilityService.create', () => {
   const logger = new PinoLogger({});
 
   let httpService: HttpService;
@@ -45,7 +45,7 @@ describe('GiftService.createFacility', () => {
   let obligationService: GiftObligationService;
   let repaymentProfileService: GiftRepaymentProfileService;
   let statusService: GiftStatusService;
-  let service: GiftService;
+  let service: GiftFacilityService;
 
   let giftHttpService;
   let mockHttpServicePost: jest.Mock;
@@ -87,7 +87,7 @@ describe('GiftService.createFacility', () => {
     repaymentProfileService.createMany = createRepaymentProfilesSpy;
     statusService.approved = approvedStatusSpy;
 
-    service = new GiftService(giftHttpService, logger, counterpartyService, fixedFeeService, obligationService, repaymentProfileService, statusService);
+    service = new GiftFacilityService(giftHttpService, logger, counterpartyService, fixedFeeService, obligationService, repaymentProfileService, statusService);
 
     service.createInitialFacility = createInitialFacilitySpy;
   });
@@ -98,7 +98,7 @@ describe('GiftService.createFacility', () => {
 
   it('should call service.createInitialFacility', async () => {
     // Act
-    await service.createFacility(mockPayload);
+    await service.create(mockPayload);
 
     // Assert
     expect(createInitialFacilitySpy).toHaveBeenCalledTimes(1);
@@ -108,7 +108,7 @@ describe('GiftService.createFacility', () => {
 
   it('should call counterpartyService.createMany', async () => {
     // Act
-    await service.createFacility(mockPayload);
+    await service.create(mockPayload);
 
     // Assert
     expect(createCounterpartiesSpy).toHaveBeenCalledTimes(1);
@@ -118,7 +118,7 @@ describe('GiftService.createFacility', () => {
 
   it('should call fixedFeeService.createMany', async () => {
     // Act
-    await service.createFacility(mockPayload);
+    await service.create(mockPayload);
 
     // Assert
     expect(createFixedFeesSpy).toHaveBeenCalledTimes(1);
@@ -128,7 +128,7 @@ describe('GiftService.createFacility', () => {
 
   it('should call obligationService.createMany', async () => {
     // Act
-    await service.createFacility(mockPayload);
+    await service.create(mockPayload);
 
     // Assert
     expect(createObligationsSpy).toHaveBeenCalledTimes(1);
@@ -138,7 +138,7 @@ describe('GiftService.createFacility', () => {
 
   it('should call giftRepaymentProfileService.createMany', async () => {
     // Act
-    await service.createFacility(mockPayload);
+    await service.create(mockPayload);
 
     // Assert
     expect(createRepaymentProfilesSpy).toHaveBeenCalledTimes(1);
@@ -148,7 +148,7 @@ describe('GiftService.createFacility', () => {
 
   it('should call giftStatusService.approved', async () => {
     // Act
-    await service.createFacility(mockPayload);
+    await service.create(mockPayload);
 
     // Assert
     expect(approvedStatusSpy).toHaveBeenCalledTimes(1);
@@ -159,7 +159,7 @@ describe('GiftService.createFacility', () => {
   describe('when all calls are successful', () => {
     it('should return a response object', async () => {
       // Act
-      const response = await service.createFacility(mockPayload);
+      const response = await service.create(mockPayload);
 
       // Assert
       const expected = {
