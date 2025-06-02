@@ -43,6 +43,10 @@ export const mockResponses = {
     statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
     message: 'Internal server error',
   },
+  forbidden: {
+    statusCode: HttpStatus.FORBIDDEN,
+    message: 'Forbidden',
+  },
   unauthorized: {
     statusCode: HttpStatus.UNAUTHORIZED,
     message: 'Unauthorized',

@@ -45,6 +45,25 @@ describe('POST /gift/facility - facility creation error handling', () => {
     });
   });
 
+  describe(`when a ${HttpStatus.FORBIDDEN} response is returned by the GIFT facility endpoint`, () => {
+    it(`should return a ${HttpStatus.FORBIDDEN} response`, async () => {
+      // Arrange
+      nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
+
+      nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
+
+      nock(GIFT_API_URL).post(facilityCreationUrl).reply(HttpStatus.FORBIDDEN, mockResponses.forbidden);
+
+      // Act
+      const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
+
+      // Assert
+      expect(status).toBe(HttpStatus.FORBIDDEN);
+
+      expect(body).toStrictEqual(mockResponses.forbidden);
+    });
+  });
+
   describe(`when a ${HttpStatus.UNAUTHORIZED} response is returned by the GIFT facility endpoint`, () => {
     it(`should return a ${HttpStatus.UNAUTHORIZED} response`, async () => {
       // Arrange

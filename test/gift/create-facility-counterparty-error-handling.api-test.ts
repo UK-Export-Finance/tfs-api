@@ -75,6 +75,40 @@ describe('POST /gift/facility - counterparty error handling', () => {
     });
   });
 
+  describe(`when a ${HttpStatus.FORBIDDEN} response is returned by the GIFT counterparty endpoint`, () => {
+    it(`should return a ${HttpStatus.FORBIDDEN} response`, async () => {
+      // Arrange
+      nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
+
+      nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
+
+      nock(GIFT_API_URL).post(facilityCreationUrl).reply(HttpStatus.CREATED, mockResponses.facility);
+
+      nock(GIFT_API_URL).persist().post(counterpartyUrl).reply(HttpStatus.FORBIDDEN, mockResponses.forbidden);
+
+      nock(GIFT_API_URL).persist().post(fixedFeeUrl).reply(HttpStatus.CREATED, mockResponses.fixedFee);
+
+      nock(GIFT_API_URL).persist().post(obligationUrl).reply(HttpStatus.CREATED, mockResponses.obligation);
+
+      nock(GIFT_API_URL).persist().post(repaymentProfileUrl).reply(HttpStatus.CREATED, mockResponses.repaymentProfile);
+
+      nock(GIFT_API_URL).persist().post(approveStatusUrl).reply(HttpStatus.OK, mockResponses.approveStatus);
+
+      // Act
+      const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
+
+      // Assert
+      expect(status).toBe(HttpStatus.FORBIDDEN);
+
+      const expected = {
+        ...mockResponses.forbidden,
+        validationErrors: getExpectedValidationErrors(payloadCounterparties, mockResponses.forbidden, ENTITY_NAMES.COUNTERPARTY),
+      };
+
+      expect(body).toStrictEqual(expected);
+    });
+  });
+
   describe(`when a ${HttpStatus.UNAUTHORIZED} response is returned by the GIFT counterparty endpoint`, () => {
     it(`should return a ${HttpStatus.UNAUTHORIZED} response`, async () => {
       // Arrange
