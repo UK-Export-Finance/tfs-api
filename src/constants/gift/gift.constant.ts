@@ -31,6 +31,10 @@ export const GIFT = {
     CMF: 'COMMITMENT FEES',
     PLA: 'PREMIUM LESS ADMIN',
   },
+  OBLIGATION_SUBTYPE_CODES: {
+    EXP01: 'EXP01',
+    EXP02: 'EXP02',
+  },
   PATH: {
     APPROVE: '/approve',
     CURRENCY: '/currency',

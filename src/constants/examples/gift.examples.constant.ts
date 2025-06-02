@@ -5,7 +5,7 @@ import { Chance } from 'chance';
 import { SUPPORTED_CURRENCIES } from '../currencies.constant';
 import { GIFT } from '../gift/gift.constant';
 
-const { FEE_TYPE_CODES, FEE_TYPE_DESCRIPTIONS, VALIDATION } = GIFT;
+const { FEE_TYPE_CODES, FEE_TYPE_DESCRIPTIONS, OBLIGATION_SUBTYPE_CODES, VALIDATION } = GIFT;
 
 const chance = new Chance();
 
@@ -58,7 +58,7 @@ const OBLIGATION = () => ({
   maturityDate: '2025-01-15',
   currency: SUPPORTED_CURRENCIES.USD,
   amount: 2500,
-  obligationSubtype: 'Mock obligation subtype',
+  subtypeCode: OBLIGATION_SUBTYPE_CODES.EXP01,
 });
 
 /**
