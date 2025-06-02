@@ -2,11 +2,24 @@ import { HttpStatus } from '@nestjs/common';
 import { GIFT_EXAMPLES } from '@ukef/constants/examples/gift.examples.constant';
 import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
+import { MockGiftResponse } from '@ukef-test/support/interfaces/mock-gift-response.interface';
 import nock from 'nock';
 
 import { apimFacilityUrl, currencyUrl, facilityCreationUrl, feeTypeUrl, mockResponses } from './test-helpers';
 
 const { GIFT_API_URL } = ENVIRONMENT_VARIABLES;
+
+/**
+ * Setup mocks for all endpoints.
+ * @param {MockGiftResponse} Mock "facility createion" response
+ */
+const setupMocks = (facilityCreationResponse: MockGiftResponse) => {
+  nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
+
+  nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
+
+  nock(GIFT_API_URL).post(facilityCreationUrl).reply(facilityCreationResponse.statusCode, facilityCreationResponse);
+};
 
 describe('POST /gift/facility - facility creation error handling', () => {
   let api: Api;
@@ -27,11 +40,7 @@ describe('POST /gift/facility - facility creation error handling', () => {
   describe(`when a ${HttpStatus.BAD_REQUEST} response is returned by the GIFT facility endpoint`, () => {
     it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       // Arrange
-      nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
-
-      nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
-
-      nock(GIFT_API_URL).post(facilityCreationUrl).reply(HttpStatus.BAD_REQUEST, mockResponses.badRequest);
+      setupMocks(mockResponses.badRequest);
 
       // Act
       const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
@@ -48,11 +57,7 @@ describe('POST /gift/facility - facility creation error handling', () => {
   describe(`when a ${HttpStatus.FORBIDDEN} response is returned by the GIFT facility endpoint`, () => {
     it(`should return a ${HttpStatus.FORBIDDEN} response`, async () => {
       // Arrange
-      nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
-
-      nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
-
-      nock(GIFT_API_URL).post(facilityCreationUrl).reply(HttpStatus.FORBIDDEN, mockResponses.forbidden);
+      setupMocks(mockResponses.forbidden);
 
       // Act
       const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
@@ -67,11 +72,7 @@ describe('POST /gift/facility - facility creation error handling', () => {
   describe(`when a ${HttpStatus.UNAUTHORIZED} response is returned by the GIFT facility endpoint`, () => {
     it(`should return a ${HttpStatus.UNAUTHORIZED} response`, async () => {
       // Arrange
-      nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
-
-      nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
-
-      nock(GIFT_API_URL).post(facilityCreationUrl).reply(HttpStatus.UNAUTHORIZED, mockResponses.unauthorized);
+      setupMocks(mockResponses.unauthorized);
 
       // Act
       const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
@@ -86,11 +87,7 @@ describe('POST /gift/facility - facility creation error handling', () => {
   describe('when an unacceptable status is returned by the GIFT facility endpoint', () => {
     it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
       // Arrange
-      nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
-
-      nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
-
-      nock(GIFT_API_URL).post(facilityCreationUrl).reply(HttpStatus.I_AM_A_TEAPOT);
+      setupMocks(mockResponses.iAmATeapot);
 
       // Act
       const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
@@ -105,11 +102,7 @@ describe('POST /gift/facility - facility creation error handling', () => {
   describe(`when a ${HttpStatus.INTERNAL_SERVER_ERROR} status is returned by the GIFT facility endpoint`, () => {
     it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
       // Arrange
-      nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
-
-      nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
-
-      nock(GIFT_API_URL).post(facilityCreationUrl).reply(HttpStatus.INTERNAL_SERVER_ERROR);
+      setupMocks(mockResponses.internalServerError);
 
       // Act
       const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);

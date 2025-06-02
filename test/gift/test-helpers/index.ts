@@ -2,6 +2,7 @@ import { HttpStatus } from '@nestjs/common';
 import AppConfig from '@ukef/config/app.config';
 import { GIFT } from '@ukef/constants';
 import { GIFT_EXAMPLES } from '@ukef/constants/examples/gift.examples.constant';
+import { MockGiftResponse } from '@ukef-test/support/interfaces/mock-gift-response.interface';
 
 const {
   giftVersioning: { prefixAndVersion },
@@ -12,17 +13,39 @@ const { EVENT_TYPES, PATH, API_RESPONSE_TYPES } = GIFT;
 export const mockFacilityId = GIFT_EXAMPLES.FACILITY_ID;
 export const mockWorkPackageId = GIFT_EXAMPLES.WORK_PACKAGE_ID;
 
+const badRequest: MockGiftResponse = {
+  statusCode: HttpStatus.BAD_REQUEST,
+  message: 'Validation error',
+  validationErrors: [
+    {
+      path: ['fieldX'],
+      message: 'Invalid fieldX',
+    },
+  ],
+};
+
+const internalServerError: MockGiftResponse = {
+  statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+  message: 'Internal server error',
+};
+
+const forbidden: MockGiftResponse = {
+  statusCode: HttpStatus.FORBIDDEN,
+  message: 'Forbidden',
+};
+
+const unauthorized: MockGiftResponse = {
+  statusCode: HttpStatus.UNAUTHORIZED,
+  message: 'Unauthorized',
+};
+
+const iAmATeapot: MockGiftResponse = {
+  statusCode: HttpStatus.I_AM_A_TEAPOT,
+  message: 'Teapot',
+};
+
 export const mockResponses = {
-  badRequest: {
-    statusCode: HttpStatus.BAD_REQUEST,
-    message: 'Validation error',
-    validationErrors: [
-      {
-        path: ['fieldX'],
-        message: 'Invalid fieldX',
-      },
-    ],
-  },
+  badRequest,
   counterparty: { data: { aCounterparty: true } },
   currencies: GIFT_EXAMPLES.CURRENCIES,
   feeTypes: GIFT_EXAMPLES.FEE_TYPES_RESPONSE_DATA,
@@ -39,18 +62,10 @@ export const mockResponses = {
     },
   },
   approveStatus: { data: { aStatusUpdate: true } },
-  internalServerError: {
-    statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-    message: 'Internal server error',
-  },
-  forbidden: {
-    statusCode: HttpStatus.FORBIDDEN,
-    message: 'Forbidden',
-  },
-  unauthorized: {
-    statusCode: HttpStatus.UNAUTHORIZED,
-    message: 'Unauthorized',
-  },
+  internalServerError,
+  forbidden,
+  unauthorized,
+  iAmATeapot,
 };
 
 export const apimFacilityUrl = `/api/${prefixAndVersion}/gift${PATH.FACILITY}`;
