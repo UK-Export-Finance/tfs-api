@@ -78,7 +78,7 @@ describe('POST /gift/facility - validation - obligations', () => {
           'obligations.0.amount must not be less than 1',
           'obligations.0.amount must be a number conforming to the specified constraints',
           'obligations.0.subtypeCode should not be null or undefined',
-          `obligations.0.subtypeCode must be longer than or equal to ${OBLIGATION_VALIDATION.OBLIGATION_SUB_TYPE.MIN_LENGTH} characters`,
+          `obligations.0.subtypeCode must be longer than or equal to ${OBLIGATION_VALIDATION.OBLIGATION_SUBTYPE_CODE.MIN_LENGTH} characters`,
           'obligations.0.subtypeCode must be a string',
         ],
         statusCode: HttpStatus.BAD_REQUEST,
@@ -123,8 +123,8 @@ describe('POST /gift/facility - validation - obligations', () => {
     arrayOfObjectsStringValidation({
       ...baseParams,
       fieldName: 'subtypeCode',
-      min: OBLIGATION_VALIDATION.OBLIGATION_SUB_TYPE.MIN_LENGTH,
-      max: OBLIGATION_VALIDATION.OBLIGATION_SUB_TYPE.MAX_LENGTH,
+      min: OBLIGATION_VALIDATION.OBLIGATION_SUBTYPE_CODE.MIN_LENGTH,
+      max: OBLIGATION_VALIDATION.OBLIGATION_SUBTYPE_CODE.MAX_LENGTH,
     });
   });
 });

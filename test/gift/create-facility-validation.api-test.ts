@@ -325,7 +325,7 @@ describe('POST /gift/facility - validation', () => {
           `obligations.amount must not be less than ${VALIDATION.OBLIGATION.OBLIGATION_AMOUNT.MIN}`,
           'obligations.amount must be a number conforming to the specified constraints',
           'obligations.subtypeCode should not be null or undefined',
-          `obligations.subtypeCode must be longer than or equal to ${VALIDATION.OBLIGATION.OBLIGATION_SUB_TYPE.MIN_LENGTH} characters`,
+          `obligations.subtypeCode must be longer than or equal to ${VALIDATION.OBLIGATION.OBLIGATION_SUBTYPE_CODE.MIN_LENGTH} characters`,
           'obligations.subtypeCode must be a string',
           'repaymentProfiles.name should not be null or undefined',
           `repaymentProfiles.name must be longer than or equal to ${VALIDATION.REPAYMENT_PROFILE.NAME.MIN_LENGTH} characters`,
