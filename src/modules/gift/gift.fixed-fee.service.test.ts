@@ -82,7 +82,7 @@ describe('GiftFixedFeeService', () => {
         const promise = service.createOne(mockFixedFee, mockFacilityId, mockWorkPackageId);
 
         // Assert
-        const expected = new Error(`Error creating a fixed fee for facility ${mockFacilityId}`);
+        const expected = new Error(`Error creating a fixed fee with description ${mockFixedFee.description} for facility ${mockFacilityId}`);
 
         await expect(promise).rejects.toThrow(expected);
       });
