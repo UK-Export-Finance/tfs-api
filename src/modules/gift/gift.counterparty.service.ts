@@ -56,7 +56,7 @@ export class GiftCounterpartyService {
    */
   async createMany(counterpartiesData: GiftFacilityCounterpartyDto[], facilityId: string, workPackageId: number): Promise<Array<AxiosResponse>> {
     try {
-      this.logger.info('Creating conterparties for facility %s', facilityId);
+      this.logger.info('Creating counterparties for facility %s', facilityId);
 
       const responses = await Promise.all(counterpartiesData.map((counterParty) => this.createOne(counterParty, facilityId, workPackageId)));
 
