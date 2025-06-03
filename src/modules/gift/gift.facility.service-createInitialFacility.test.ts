@@ -11,7 +11,7 @@ import { GiftRepaymentProfileService } from './gift.repayment-profile.service';
 import { GiftStatusService } from './gift.status.service';
 
 const {
-  GIFT: { FACILITY_CREATION_PAYLOAD: mockPayload },
+  GIFT: { FACILITY_CREATION_PAYLOAD: mockPayload, FACILITY_ID: mockFacilityId },
 } = EXAMPLES;
 
 const { PATH } = GIFT;
@@ -105,7 +105,7 @@ describe('GiftFacilityService.createInitialFacility', () => {
       const promise = service.createInitialFacility(mockPayload.overview);
 
       // Assert
-      const expected = new Error(`Error creating an initial GIFT facility ${mockPayload.overview.facilityId}`);
+      const expected = new Error(`Error creating an initial GIFT facility ${mockFacilityId}`);
 
       await expect(promise).rejects.toThrow(expected);
     });

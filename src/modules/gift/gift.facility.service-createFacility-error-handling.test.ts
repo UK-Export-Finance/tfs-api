@@ -126,7 +126,7 @@ describe('GiftFacilityService.create - error handling', () => {
       const response = service.create(mockPayload, mockFacilityId);
 
       // Assert
-      const expected = new Error(`Error creating a GIFT facility ${mockPayload.overview.facilityId}`);
+      const expected = new Error(`Error creating a GIFT facility ${mockFacilityId}`);
 
       await expect(response).rejects.toThrow(expected);
     });
@@ -157,7 +157,7 @@ describe('GiftFacilityService.create - error handling', () => {
       const response = service.create(mockPayload, mockFacilityId);
 
       // Assert
-      const expected = new Error(`Error creating a GIFT facility ${mockPayload.overview.facilityId}`);
+      const expected = new Error(`Error creating a GIFT facility ${mockFacilityId}`);
 
       await expect(response).rejects.toThrow(expected);
     });
@@ -188,7 +188,7 @@ describe('GiftFacilityService.create - error handling', () => {
       const response = service.create(mockPayload, mockFacilityId);
 
       // Assert
-      const expected = new Error(`Error creating a GIFT facility ${mockPayload.overview.facilityId}`);
+      const expected = new Error(`Error creating a GIFT facility ${mockFacilityId}`);
 
       await expect(response).rejects.toThrow(expected);
     });
@@ -219,7 +219,7 @@ describe('GiftFacilityService.create - error handling', () => {
       const response = service.create(mockPayload, mockFacilityId);
 
       // Assert
-      const expected = new Error(`Error creating a GIFT facility ${mockPayload.overview.facilityId}`);
+      const expected = new Error(`Error creating a GIFT facility ${mockFacilityId}`);
 
       await expect(response).rejects.toThrow(expected);
     });
@@ -250,7 +250,7 @@ describe('GiftFacilityService.create - error handling', () => {
       const response = service.create(mockPayload, mockFacilityId);
 
       // Assert
-      const expected = new Error(`Error creating a GIFT facility ${mockPayload.overview.facilityId}`);
+      const expected = new Error(`Error creating a GIFT facility ${mockFacilityId}`);
 
       await expect(response).rejects.toThrow(expected);
     });
@@ -281,7 +281,7 @@ describe('GiftFacilityService.create - error handling', () => {
       const response = service.create(mockPayload, mockFacilityId);
 
       // Assert
-      const expected = new Error(`Error creating a GIFT facility ${mockPayload.overview.facilityId}`);
+      const expected = new Error(`Error creating a GIFT facility ${mockFacilityId}`);
 
       await expect(response).rejects.toThrow(expected);
     });
