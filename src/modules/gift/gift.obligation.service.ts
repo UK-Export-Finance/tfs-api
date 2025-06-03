@@ -31,6 +31,8 @@ export class GiftObligationService {
    */
   async createOne(obligationData: GiftObligationDto, facilityId: string, workPackageId: number): Promise<AxiosResponse> {
     try {
+      this.logger.info('Creating an obligation with amount %s for facility %s', obligationData.amount, facilityId);
+
       const response = await this.giftHttpService.post<GiftObligationDto>({
         path: `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.CREATE_OBLIGATION}`,
         payload: obligationData,
@@ -38,9 +40,9 @@ export class GiftObligationService {
 
       return response;
     } catch (error) {
-      this.logger.error('Error creating an obligation for facility %s %o', facilityId, error);
+      this.logger.error('Error creating an obligation with amount %s for facility %s %o', obligationData.amount, facilityId, error);
 
-      throw new Error(`Error creating an obligation for facility ${facilityId}`, error);
+      throw new Error(`Error creating an obligation with amount ${obligationData.amount} for facility ${facilityId}`, error);
     }
   }
 
@@ -54,6 +56,8 @@ export class GiftObligationService {
    */
   async createMany(obligations: GiftObligationDto[], facilityId: string, workPackageId: number): Promise<Array<AxiosResponse>> {
     try {
+      this.logger.info('Creating obligations for facility %s', facilityId);
+
       const responses = await Promise.all(obligations.map((repaymentProfile) => this.createOne(repaymentProfile, facilityId, workPackageId)));
 
       return responses;

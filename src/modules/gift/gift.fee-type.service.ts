@@ -27,6 +27,8 @@ export class GiftFeeTypeService {
    */
   async getSupportedFeeTypes(): Promise<AxiosResponse> {
     try {
+      this.logger.info('Getting supported fee types');
+
       const response = await this.giftHttpService.get<string>({
         path: PATH.FEE_TYPE,
       });

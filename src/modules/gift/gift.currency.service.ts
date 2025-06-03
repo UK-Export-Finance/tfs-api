@@ -27,6 +27,8 @@ export class GiftCurrencyService {
    */
   async getSupportedCurrencies(): Promise<AxiosResponse> {
     try {
+      this.logger.info('Getting supported currencies');
+
       const response = await this.giftHttpService.get<string>({
         path: PATH.CURRENCY,
       });

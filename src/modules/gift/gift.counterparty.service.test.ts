@@ -82,7 +82,7 @@ describe('GiftCounterpartyService', () => {
         const promise = service.createOne(mockCounterparty, mockFacilityId, mockWorkPackageId);
 
         // Assert
-        const expected = new Error(`Error creating a counterparty for facility ${mockFacilityId}`);
+        const expected = new Error(`Error creating a counterparty with URN ${mockCounterparty.counterpartyUrn} for facility ${mockFacilityId}`);
 
         await expect(promise).rejects.toThrow(expected);
       });

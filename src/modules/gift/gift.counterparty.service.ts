@@ -31,6 +31,8 @@ export class GiftCounterpartyService {
    */
   async createOne(counterpartyData: GiftFacilityCounterpartyDto, facilityId: string, workPackageId: number): Promise<AxiosResponse> {
     try {
+      this.logger.info('Creating a counterparty with URN %s for facility %s', counterpartyData.counterpartyUrn, facilityId);
+
       const response = await this.giftHttpService.post<GiftFacilityCounterpartyDto>({
         path: `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_COUNTERPARTY}`,
         payload: counterpartyData,
@@ -38,12 +40,9 @@ export class GiftCounterpartyService {
 
       return response;
     } catch (error) {
-      // TODO
+      this.logger.error('Error creating a counterparty with URN %s for facility %s %o', counterpartyData.counterpartyUrn, facilityId, error);
 
-      // TODO: and initial logs at the top of method
-      this.logger.error('Error creating a counterparty for facility %s %o', facilityId, error);
-
-      throw new Error(`Error creating a counterparty for facility ${facilityId}`, error);
+      throw new Error(`Error creating a counterparty with URN ${counterpartyData.counterpartyUrn} for facility ${facilityId}`, error);
     }
   }
 
@@ -57,6 +56,8 @@ export class GiftCounterpartyService {
    */
   async createMany(counterpartiesData: GiftFacilityCounterpartyDto[], facilityId: string, workPackageId: number): Promise<Array<AxiosResponse>> {
     try {
+      this.logger.info('Creating conterparties for facility %s', facilityId);
+
       const responses = await Promise.all(counterpartiesData.map((counterParty) => this.createOne(counterParty, facilityId, workPackageId)));
 
       return responses;

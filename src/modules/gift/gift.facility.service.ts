@@ -69,6 +69,8 @@ export class GiftFacilityService {
    */
   async createInitialFacility(overviewData: GiftFacilityOverviewDto): Promise<AxiosResponse> {
     try {
+      this.logger.info('Creating an initial GIFT facility %s', overviewData.facilityId);
+
       const response = await this.giftHttpService.post<GiftFacilityCreationDto>({
         path: PATH.CREATE_FACILITY,
         payload: overviewData,
@@ -91,6 +93,8 @@ export class GiftFacilityService {
    */
   async create(data: GiftFacilityCreationDto, facilityId: string): Promise<CreateFacilityResponse> {
     try {
+      this.logger.info('Creating a GIFT facility %s', facilityId);
+
       const {
         overview,
         counterparties: counterpartiesPayload,
@@ -108,6 +112,8 @@ export class GiftFacilityService {
        * If the initial facility creation fails and we attempt to create a counterparty, a work package ID error will be returned.
        */
       if (status !== HttpStatus.CREATED) {
+        this.logger.info('Creating a GIFT facility - initial creation failed %s', facilityId);
+
         return {
           status,
           data: facility,
@@ -132,6 +138,8 @@ export class GiftFacilityService {
       });
 
       if (validationErrors.length) {
+        this.logger.info('Creating a GIFT facility - returning validation errors %s', facilityId);
+
         const [firstError] = validationErrors;
 
         /**
@@ -160,6 +168,8 @@ export class GiftFacilityService {
       const approvedStatusResponse = await this.giftStatusService.approved(facilityId, workPackageId);
 
       if (approvedStatusResponse.status !== HttpStatus.OK) {
+        this.logger.info('Creating a GIFT facility - approved status update failed %s', facilityId);
+
         return {
           status: approvedStatusResponse.status,
           data: {
@@ -168,6 +178,8 @@ export class GiftFacilityService {
           },
         };
       }
+
+      this.logger.info('Creating a GIFT facility - success %s', facilityId);
 
       return {
         status: HttpStatus.CREATED,
