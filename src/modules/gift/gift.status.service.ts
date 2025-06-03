@@ -36,9 +36,9 @@ export class GiftStatusService {
 
       return response;
     } catch (error) {
-      this.logger.error('Error updating facility work package status to approved %o', error);
+      this.logger.error('Error updating facility work package status to approved for facility %s %o', facilityId, error);
 
-      throw new Error('Error updating facility work package status to approved', error);
+      throw new Error(`Error updating facility work package status to approved for facility ${facilityId}`, error);
     }
   }
 }

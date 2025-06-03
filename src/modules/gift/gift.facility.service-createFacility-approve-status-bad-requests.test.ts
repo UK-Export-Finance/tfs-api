@@ -13,6 +13,7 @@ import { GiftStatusService } from './gift.status.service';
 const {
   GIFT: {
     COUNTERPARTY,
+    FACILITY_ID: mockFacilityId,
     FACILITY_RESPONSE_DATA,
     FACILITY_CREATION_PAYLOAD: mockPayload,
     FIXED_FEE,
@@ -106,7 +107,7 @@ describe('GiftFacilityService.create - error handling', () => {
 
     it('should return an object with the giftStatusService.approved data and status', async () => {
       // Act
-      const response = await service.create(mockPayload);
+      const response = await service.create(mockPayload, mockFacilityId);
 
       // Assert
       const expected = {
@@ -143,7 +144,7 @@ describe('GiftFacilityService.create - error handling', () => {
 
     it('should return an object with the giftStatusService.approved data and status', async () => {
       // Act
-      const response = await service.create(mockPayload);
+      const response = await service.create(mockPayload, mockFacilityId);
 
       // Assert
       const expected = {

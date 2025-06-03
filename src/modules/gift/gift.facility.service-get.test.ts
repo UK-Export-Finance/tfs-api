@@ -104,7 +104,7 @@ describe('GiftFacilityService.get', () => {
       const promise = service.get(mockFacilityId);
 
       // Assert
-      const expected = new Error('Error getting GIFT facility');
+      const expected = new Error(`Error getting GIFT facility ${mockFacilityId}`);
 
       await expect(promise).rejects.toThrow(expected);
     });

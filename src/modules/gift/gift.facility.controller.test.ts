@@ -120,7 +120,7 @@ describe('GiftFacilityController', () => {
       // Assert
       expect(mockServiceCreateFacility).toHaveBeenCalledTimes(1);
 
-      expect(mockServiceCreateFacility).toHaveBeenCalledWith(FACILITY_CREATION_PAYLOAD);
+      expect(mockServiceCreateFacility).toHaveBeenCalledWith(FACILITY_CREATION_PAYLOAD, FACILITY_CREATION_PAYLOAD.overview.facilityId);
     });
 
     it('should call res.status with a status', async () => {

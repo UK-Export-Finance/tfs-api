@@ -56,9 +56,9 @@ export class GiftFacilityService {
 
       return response;
     } catch (error) {
-      this.logger.error('Error getting GIFT facility %o', error);
+      this.logger.error('Error getting GIFT facility %s %o', facilityId, error);
 
-      throw new Error('Error getting GIFT facility', error);
+      throw new Error(`Error getting GIFT facility ${facilityId}`, error);
     }
   }
 
@@ -76,19 +76,20 @@ export class GiftFacilityService {
 
       return response;
     } catch (error) {
-      this.logger.error('Error creating initial GIFT facility %o', error);
+      this.logger.error('Error creating initial GIFT facility %s %o', overviewData.facilityId, error);
 
-      throw new Error('Error creating initial GIFT facility', error);
+      throw new Error(`Error creating initial GIFT facility ${overviewData.facilityId}`, error);
     }
   }
 
   /**
    * Create a GIFT facility
    * @param {GiftFacilityCreationDto} data: Facility data
+   * @param {String} facilityId: Facility ID
    * @returns {Promise<CreateFacilityResponse>}
    * @throws {AxiosError | Error}
    */
-  async create(data: GiftFacilityCreationDto): Promise<CreateFacilityResponse> {
+  async create(data: GiftFacilityCreationDto, facilityId: string): Promise<CreateFacilityResponse> {
     try {
       const {
         overview,
@@ -99,8 +100,6 @@ export class GiftFacilityService {
       } = data;
 
       const { data: facility, status } = await this.createInitialFacility(overview);
-
-      const { facilityId } = overview;
 
       /**
        * NOTE: If the initial facility creation fails, we should surface only this error and prevent subsequent calls.
@@ -182,9 +181,9 @@ export class GiftFacilityService {
         },
       };
     } catch (error) {
-      this.logger.error('Error creating GIFT facility %o', error);
+      this.logger.error('Error creating GIFT facility %s %o', facilityId, error);
 
-      throw new Error('Error creating GIFT facility', error);
+      throw new Error(`Error creating GIFT facility ${facilityId}`, error);
     }
   }
 }
