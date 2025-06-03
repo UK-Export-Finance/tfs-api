@@ -44,7 +44,7 @@ describe('GiftHttpService', () => {
   describe('GIFT_API_ACCEPTABLE_STATUSES', () => {
     it('should return an array of statuses', () => {
       // Act & Assert
-      const expected = [HttpStatus.OK, HttpStatus.CREATED, HttpStatus.BAD_REQUEST, HttpStatus.UNAUTHORIZED, HttpStatus.NOT_FOUND];
+      const expected = [HttpStatus.OK, HttpStatus.CREATED, HttpStatus.BAD_REQUEST, HttpStatus.FORBIDDEN, HttpStatus.UNAUTHORIZED, HttpStatus.NOT_FOUND];
 
       expect(GIFT_API_ACCEPTABLE_STATUSES).toEqual(expected);
     });
