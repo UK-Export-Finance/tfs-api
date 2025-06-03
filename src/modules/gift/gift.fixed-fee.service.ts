@@ -31,6 +31,8 @@ export class GiftFixedFeeService {
    */
   async createOne(fixedFeeData: GiftFixedFeeDto, facilityId: string, workPackageId: number): Promise<AxiosResponse> {
     try {
+      this.logger.info('Creating a fixed fee with description %s for facility %s', fixedFeeData.description, facilityId);
+
       const response = await this.giftHttpService.post<GiftFixedFeeDto>({
         path: `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.CREATE_FIXED_FEE}`,
         payload: fixedFeeData,
@@ -38,9 +40,9 @@ export class GiftFixedFeeService {
 
       return response;
     } catch (error) {
-      this.logger.error('Error creating fixed fee %o', error);
+      this.logger.error('Error creating a fixed fee with description %s for facility %s %o', fixedFeeData.description, facilityId, error);
 
-      throw new Error('Error creating fixed fee', error);
+      throw new Error(`Error creating a fixed fee with description ${fixedFeeData.description} for facility ${facilityId}`, error);
     }
   }
 
@@ -54,13 +56,15 @@ export class GiftFixedFeeService {
    */
   async createMany(fixedFeesData: GiftFixedFeeDto[], facilityId: string, workPackageId: number): Promise<Array<AxiosResponse>> {
     try {
+      this.logger.info('Creating fixed fees for facility %s', facilityId);
+
       const responses = await Promise.all(fixedFeesData.map((fixedFee) => this.createOne(fixedFee, facilityId, workPackageId)));
 
       return responses;
     } catch (error) {
-      this.logger.error('Error creating fixed fees %o', error);
+      this.logger.error('Error creating fixed fees for facility %s %o', facilityId, error);
 
-      throw new Error('Error creating fixed fees', error);
+      throw new Error(`Error creating fixed fees for facility ${facilityId}`, error);
     }
   }
 }

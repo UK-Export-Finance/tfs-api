@@ -89,7 +89,11 @@ export class GiftFacilityController {
    * Further information: https://docs.nestjs.com/controllers#library-specific-approach
    */
   async post(@Body(new ValidationPipe({ transform: true })) facilityData: GiftFacilityCreationDto, @Res({ passthrough: true }) res: Response) {
-    const { status, data } = await this.giftFacilityService.create(facilityData);
+    const {
+      overview: { facilityId },
+    } = facilityData;
+
+    const { status, data } = await this.giftFacilityService.create(facilityData, facilityId);
 
     res.status(status).send(data);
   }

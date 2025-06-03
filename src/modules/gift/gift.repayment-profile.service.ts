@@ -31,6 +31,8 @@ export class GiftRepaymentProfileService {
    */
   async createOne(repaymentProfileData: GiftRepaymentProfileDto, facilityId: string, workPackageId: number): Promise<AxiosResponse> {
     try {
+      this.logger.info('Creating a repayment profile with name %s for facility %s', repaymentProfileData.name, facilityId);
+
       const response = await this.giftHttpService.post<GiftRepaymentProfileDto>({
         path: `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_MANUAL_REPAYMENT_PROFILE}`,
         payload: repaymentProfileData,
@@ -38,9 +40,9 @@ export class GiftRepaymentProfileService {
 
       return response;
     } catch (error) {
-      this.logger.error('Error creating repayment profile %o', error);
+      this.logger.error('Error creating a repayment profile with name %s for facility %s %o', repaymentProfileData.name, facilityId, error);
 
-      throw new Error('Error creating repayment profile', error);
+      throw new Error(`Error creating a repayment profile with name ${repaymentProfileData.name} for facility ${facilityId}`, error);
     }
   }
 
@@ -54,13 +56,15 @@ export class GiftRepaymentProfileService {
    */
   async createMany(repaymentProfilesData: GiftRepaymentProfileDto[], facilityId: string, workPackageId: number): Promise<Array<AxiosResponse>> {
     try {
+      this.logger.info('Creating repayment profiles for facility %s', facilityId);
+
       const responses = await Promise.all(repaymentProfilesData.map((repaymentProfile) => this.createOne(repaymentProfile, facilityId, workPackageId)));
 
       return responses;
     } catch (error) {
-      this.logger.error('Error creating repayment profiles %o', error);
+      this.logger.error('Error creating repayment profiles for facility %s %o', facilityId, error);
 
-      throw new Error('Error creating repayment profiles', error);
+      throw new Error(`Error creating repayment profiles for facility ${facilityId}`, error);
     }
   }
 }

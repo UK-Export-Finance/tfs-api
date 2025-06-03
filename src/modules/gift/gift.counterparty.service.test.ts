@@ -82,7 +82,7 @@ describe('GiftCounterpartyService', () => {
         const promise = service.createOne(mockCounterparty, mockFacilityId, mockWorkPackageId);
 
         // Assert
-        const expected = new Error('Error creating counterparty');
+        const expected = new Error(`Error creating a counterparty with URN ${mockCounterparty.counterpartyUrn} for facility ${mockFacilityId}`);
 
         await expect(promise).rejects.toThrow(expected);
       });
@@ -150,7 +150,7 @@ describe('GiftCounterpartyService', () => {
         const promise = service.createMany(mockCounterparties, mockFacilityId, mockWorkPackageId);
 
         // Assert
-        const expected = new Error('Error creating counterparties');
+        const expected = new Error(`Error creating counterparties for facility ${mockFacilityId}`);
 
         await expect(promise).rejects.toThrow(expected);
       });

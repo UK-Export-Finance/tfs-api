@@ -82,7 +82,7 @@ describe('GiftRepaymentProfileService', () => {
         const promise = service.createOne(mockRepaymentProfile, mockFacilityId, mockWorkPackageId);
 
         // Assert
-        const expected = new Error('Error creating repayment profile');
+        const expected = new Error(`Error creating a repayment profile with name ${mockRepaymentProfile.name} for facility ${mockFacilityId}`);
 
         await expect(promise).rejects.toThrow(expected);
       });
@@ -152,7 +152,7 @@ describe('GiftRepaymentProfileService', () => {
         const promise = service.createMany(mockPayload, mockFacilityId, mockWorkPackageId);
 
         // Assert
-        const expected = new Error('Error creating repayment profiles');
+        const expected = new Error(`Error creating repayment profiles for facility ${mockFacilityId}`);
 
         await expect(promise).rejects.toThrow(expected);
       });
