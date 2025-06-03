@@ -38,9 +38,9 @@ export class GiftObligationService {
 
       return response;
     } catch (error) {
-      this.logger.error('Error creating obligation for facility %s %o', facilityId, error);
+      this.logger.error('Error creating an obligation for facility %s %o', facilityId, error);
 
-      throw new Error(`Error creating obligation for facility ${facilityId}`, error);
+      throw new Error(`Error creating an obligation for facility ${facilityId}`, error);
     }
   }
 

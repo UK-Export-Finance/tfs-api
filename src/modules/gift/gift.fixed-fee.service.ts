@@ -38,9 +38,9 @@ export class GiftFixedFeeService {
 
       return response;
     } catch (error) {
-      this.logger.error('Error creating fixed fee for facility %s %o', facilityId, error);
+      this.logger.error('Error creating a fixed fee for facility %s %o', facilityId, error);
 
-      throw new Error(`Error creating fixed fee for facility ${facilityId}`, error);
+      throw new Error(`Error creating a fixed fee for facility ${facilityId}`, error);
     }
   }
 

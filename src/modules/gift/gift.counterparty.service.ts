@@ -38,14 +38,12 @@ export class GiftCounterpartyService {
 
       return response;
     } catch (error) {
-      // TODO: add "createing A/an"
-      // TODO
       // TODO
 
       // TODO: and initial logs at the top of method
-      this.logger.error('Error creating counterparty for facility %s %o', facilityId, error);
+      this.logger.error('Error creating a counterparty for facility %s %o', facilityId, error);
 
-      throw new Error(`Error creating counterparty for facility ${facilityId}`, error);
+      throw new Error(`Error creating a counterparty for facility ${facilityId}`, error);
     }
   }
 

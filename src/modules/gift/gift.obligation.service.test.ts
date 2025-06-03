@@ -82,7 +82,7 @@ describe('GiftObligationService', () => {
         const promise = service.createOne(mockObligation, mockFacilityId, mockWorkPackageId);
 
         // Assert
-        const expected = new Error(`Error creating obligation for facility ${mockFacilityId}`);
+        const expected = new Error(`Error creating an obligation for facility ${mockFacilityId}`);
 
         await expect(promise).rejects.toThrow(expected);
       });

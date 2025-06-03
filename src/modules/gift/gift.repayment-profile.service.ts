@@ -38,9 +38,9 @@ export class GiftRepaymentProfileService {
 
       return response;
     } catch (error) {
-      this.logger.error('Error creating repayment profile for facility %s %o', facilityId, error);
+      this.logger.error('Error creating a repayment profile for facility %s %o', facilityId, error);
 
-      throw new Error(`Error creating repayment profile for facility ${facilityId}`, error);
+      throw new Error(`Error creating a repayment profile for facility ${facilityId}`, error);
     }
   }
 
