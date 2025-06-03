@@ -90,6 +90,19 @@ describe('GET /gift/fee-type/supported', () => {
     });
   });
 
+  describe(`when a ${HttpStatus.FORBIDDEN} response is returned by GIFT`, () => {
+    it(`should return a ${HttpStatus.FORBIDDEN} response`, async () => {
+      // Arrange
+      nock(GIFT_API_URL).get(FEE_TYPE).reply(HttpStatus.FORBIDDEN);
+
+      // Act
+      const { status } = await api.get(url);
+
+      // Assert
+      expect(status).toBe(HttpStatus.FORBIDDEN);
+    });
+  });
+
   describe(`when a ${HttpStatus.INTERNAL_SERVER_ERROR} response is returned by GIFT`, () => {
     it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
       // Arrange
