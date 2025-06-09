@@ -9,8 +9,10 @@ import nock from 'nock';
 import {
   apimFacilityUrl,
   approveStatusUrl,
+  counterpartyRolesUrl,
   counterpartyUrl,
   currencyUrl,
+  facilityCreationUrl,
   feeTypeUrl,
   fixedFeeUrl,
   mockResponses,
@@ -18,7 +20,7 @@ import {
   repaymentProfileUrl,
 } from './test-helpers';
 
-const { API_RESPONSE_MESSAGES, PATH } = GIFT;
+const { API_RESPONSE_MESSAGES } = GIFT;
 
 const { GIFT_API_URL } = ENVIRONMENT_VARIABLES;
 
@@ -31,7 +33,9 @@ const setupMocks = (approveStatusResponse: MockGiftResponse) => {
 
   nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
 
-  nock(GIFT_API_URL).post(PATH.CREATE_FACILITY).reply(HttpStatus.CREATED, mockResponses.facility);
+  nock(GIFT_API_URL).persist().get(counterpartyRolesUrl).reply(HttpStatus.OK, mockResponses.counterpartyRoles);
+
+  nock(GIFT_API_URL).post(facilityCreationUrl).reply(HttpStatus.CREATED, mockResponses.facility);
 
   nock(GIFT_API_URL).persist().post(counterpartyUrl).reply(HttpStatus.CREATED, mockResponses.counterparty);
 

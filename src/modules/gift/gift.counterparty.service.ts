@@ -3,7 +3,7 @@ import { GIFT } from '@ukef/constants';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 
-import { GiftFacilityCounterpartyDto } from './dto';
+import { GiftFacilityCounterpartyDto, GiftFacilityCounterpartyRoleDto } from './dto';
 import { GiftHttpService } from './gift.http.service';
 
 const { EVENT_TYPES, PATH } = GIFT;
@@ -65,6 +65,27 @@ export class GiftCounterpartyService {
       this.logger.error('Error creating counterparties for facility %s %o', facilityId, error);
 
       throw new Error(`Error creating counterparties for facility ${facilityId}`, error);
+    }
+  }
+
+  /**
+   * Get all GIFT counterparty roles
+   * @returns {Promise<Array<AxiosResponse>>}
+   * @throws {Error}
+   */
+  async getAllRoles(): Promise<AxiosResponse> {
+    try {
+      this.logger.info('Getting all counterparty roles');
+
+      const response = await this.giftHttpService.get<GiftFacilityCounterpartyRoleDto[]>({
+        path: PATH.COUNTERPARTY_ROLES,
+      });
+
+      return response;
+    } catch (error) {
+      this.logger.error('Error getting all counterparty roles %o', error);
+
+      throw new Error('Error getting all counterparty roles', error);
     }
   }
 }

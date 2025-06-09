@@ -9,6 +9,7 @@ import nock from 'nock';
 import {
   apimFacilityUrl,
   approveStatusUrl,
+  counterpartyRolesUrl,
   counterpartyUrl,
   currencyUrl,
   facilityCreationUrl,
@@ -33,6 +34,8 @@ const setupMocks = (obligationResponse: MockGiftResponse) => {
   nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
 
   nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
+
+  nock(GIFT_API_URL).persist().get(counterpartyRolesUrl).reply(HttpStatus.OK, mockResponses.counterpartyRoles);
 
   nock(GIFT_API_URL).post(facilityCreationUrl).reply(HttpStatus.CREATED, mockResponses.facility);
 
