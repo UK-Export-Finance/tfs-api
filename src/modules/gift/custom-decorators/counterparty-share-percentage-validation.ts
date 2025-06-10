@@ -23,16 +23,14 @@ interface RoleIdValidationArguments extends ValidationArguments {
   object: ObjectWithRoleId;
 }
 
-// NOTE
-// TODO
-// we cannot use IsOptional - ignores all validators.
-// we cannot use ValidateIf - doesn't allow for async calls.
-// the only way to have conditional async validation is to create ALL validation in a custom decorator:
-// https://github.com/typestack/class-validator/issues/733
-
 /**
- * Custom decorator to check if a provided counterparty share percentage is required,
- * based on the counterparty role obtained from GIFT.
+ * Custom decorator to conditionally validate a counterparty sharePercentage,
+ * If the provided counterparty role (roleId) requires a sharePercentage.
+ * NOTE: This validation has to be in a custom decorator due to class-validator limitations:
+ * 1) IsOptional cannot be used - this ignores all other validators.
+ * 2) ValidateIf cannot be used - this does not allow for async calls:
+ * Therefore, the only way to achieve conditional async validation, is to have our own custom decorator.
+ * https://github.com/typestack/class-validator/issues/733
  * @param {ValidationOptions} options: Class validator's validation options
  * @returns {Boolean | string}
  */

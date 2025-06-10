@@ -48,7 +48,6 @@ export class GiftFacilityCounterpartyDto {
   @CounterpartySharePercentageValidation()
   @ApiProperty({
     example: COUNTERPARTY().sharePercentage,
-    // required: true,
   })
   sharePercentage: number;
 
