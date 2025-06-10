@@ -177,12 +177,12 @@ describe('GiftCounterpartyService', () => {
     });
 
     describe('when giftHttpService.get is successful', () => {
-      it('should return the response of giftHttpService.post', async () => {
+      it('should return the response of giftHttpService.get', async () => {
         // Act
         const response = await service.getAllRoles();
 
         // Assert
-        expect(response).toEqual(mockCreateOneResponse);
+        expect(response).toEqual(mockGetResponse);
       });
     });
 

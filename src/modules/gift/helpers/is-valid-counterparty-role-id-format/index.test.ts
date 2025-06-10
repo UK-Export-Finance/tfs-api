@@ -48,7 +48,7 @@ describe('modules/gift/helpers/is-valid-counterparty-role-id-format', () => {
   describe(`when a role ID is greater than ${MAX_LENGTH}`, () => {
     it('should return false', () => {
       // Arrange
-      const mockRoleId = 'a'.repeat(MAX_LENGTH - 1);
+      const mockRoleId = 'a'.repeat(MAX_LENGTH + 1);
 
       // Act
       const result = isValidCounterpartyRoleIdFormat(mockRoleId);
@@ -67,7 +67,7 @@ describe('modules/gift/helpers/is-valid-counterparty-role-id-format', () => {
       const result = isValidCounterpartyRoleIdFormat(mockRoleId);
 
       // Asset
-      expect(result).toBe(false);
+      expect(result).toBe(true);
     });
   });
 });
