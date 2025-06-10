@@ -61,10 +61,21 @@ export function CounterpartySharePercentageValidation(options?: ValidationOption
 
             const { data: roles } = await counterpartyService.getAllRoles();
 
+            // TODO
+            // TODO: move below into a helper?
+
             const role = roles.find((role: GiftFacilityCounterpartyRoleDto) => role.id === providedRoleId);
 
             /**
-             * The role does not required a share.
+             * No role has been found.
+             * Therefore, the role does not require a sharePercentage.
+             */
+            if (!role) {
+              return true;
+            }
+
+            /**
+             * The role does not require a share.
              * Therefore, no need to validate further.
              */
             if (!role.hasShare) {
