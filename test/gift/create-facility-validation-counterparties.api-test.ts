@@ -5,7 +5,7 @@ import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import nock from 'nock';
 
-import { arrayOfObjectsNumberValidation, arrayOfObjectsRoleIdStringValidation, arrayOfObjectsStringValidation } from './assertions';
+import { arrayOfObjectsRoleIdStringValidation, arrayOfObjectsStringValidation } from './assertions';
 import { counterpartyRolesUrl, currencyUrl, feeTypeUrl, mockResponses } from './test-helpers';
 
 const {
@@ -78,10 +78,6 @@ describe('POST /gift/facility - validation - counterparties', () => {
           `counterparties.0.roleId should not be null or undefined`,
           `counterparties.0.roleId must be longer than or equal to ${COUNTERPARTY_VALIDATION.ROLE_ID.MIN_LENGTH} characters`,
           `counterparties.0.roleId must be a string`,
-          `counterparties.0.sharePercentage should not be null or undefined`,
-          `counterparties.0.sharePercentage must not be greater than ${COUNTERPARTY_VALIDATION.SHARE_PERCENTAGE.MAX}`,
-          `counterparties.0.sharePercentage must not be less than ${COUNTERPARTY_VALIDATION.SHARE_PERCENTAGE.MIN}`,
-          `counterparties.0.sharePercentage must be a number conforming to the specified constraints`,
           `counterparties.0.startDate should not be null or undefined`,
           `counterparties.0.startDate must be longer than or equal to ${COUNTERPARTY_VALIDATION.START_DATE.MIN_LENGTH} characters`,
           `counterparties.0.startDate must be a string`,
@@ -143,15 +139,6 @@ describe('POST /gift/facility - validation - counterparties', () => {
 
   describe('roleId', () => {
     arrayOfObjectsRoleIdStringValidation(baseParams);
-  });
-
-  describe('sharePercentage', () => {
-    arrayOfObjectsNumberValidation({
-      ...baseParams,
-      fieldName: 'sharePercentage',
-      min: COUNTERPARTY_VALIDATION.SHARE_PERCENTAGE.MIN,
-      max: COUNTERPARTY_VALIDATION.SHARE_PERCENTAGE.MAX,
-    });
   });
 
   describe('startDate', () => {

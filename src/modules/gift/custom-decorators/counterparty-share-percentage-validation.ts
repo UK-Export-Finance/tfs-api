@@ -98,7 +98,7 @@ export function CounterpartySharePercentageValidation(options?: ValidationOption
           return true;
         },
         defaultMessage() {
-          return `sharePercentage must be a provided number, at least ${MIN} and not greater than ${MAX}`;
+          return `sharePercentage must be a provided as a number, at least ${MIN} and not greater than ${MAX}`;
         },
       },
     });
