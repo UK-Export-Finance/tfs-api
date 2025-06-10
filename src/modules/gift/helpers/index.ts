@@ -8,3 +8,4 @@ export * from './is-valid-counterparty-role-id-format';
 export * from './map-all-validation-error-responses';
 export * from './map-responses-data';
 export * from './map-validation-error-responses';
+export * from './validate-counterparty-share-percentage';

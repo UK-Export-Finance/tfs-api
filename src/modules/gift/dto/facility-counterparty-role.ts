@@ -30,5 +30,5 @@ export class GiftFacilityCounterpartyRoleDto {
     example: COUNTERPARTY_ROLE.LEAD_ECA.hasShare,
     required: true,
   })
-  hasShare: string;
+  hasShare: boolean;
 }

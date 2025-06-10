@@ -2,10 +2,9 @@ import { GIFT } from '@ukef/constants';
 import { registerDecorator, ValidationArguments, ValidationOptions } from 'class-validator';
 import { PinoLogger } from 'nestjs-pino';
 
-import { GiftFacilityCounterpartyRoleDto } from '../dto';
 import { GiftCounterpartyService } from '../gift.counterparty.service';
 import { GiftHttpService } from '../gift.http.service';
-import { isValidCounterpartyRoleIdFormat } from '../helpers';
+import { isValidCounterpartyRoleIdFormat, validateCounterpartySharePercentage } from '../helpers';
 
 const {
   VALIDATION: {
@@ -46,9 +45,7 @@ export function CounterpartySharePercentageValidation(options?: ValidationOption
           /**
            * Only check counterparty sharePercentage validation, if a counterparty roleId is provided.
            * Otherwise, we know that there will be no matching role and therefore a sharePercentage cannot be required.
-           * By doing this we ensure that:
-           * 1) We only call the GIFT API's counterparty roles endpoint, if we have a correctly formatted roleId.
-           * 2) A consumer of this API receives only relevant validation errors, e.g "must be provided/X length" OR "roleId is not supported", not both.
+           * By doing this we ensure that we only call the GIFT API's counterparty roles endpoint, if we have a correctly formatted roleId.
            */
           const { roleId: providedRoleId } = args.object;
 
@@ -59,34 +56,11 @@ export function CounterpartySharePercentageValidation(options?: ValidationOption
 
             const { data: roles } = await counterpartyService.getAllRoles();
 
-            // TODO
-            // TODO: move below into a helper?
-
-            const role = roles.find((role: GiftFacilityCounterpartyRoleDto) => role.id === providedRoleId);
-
-            /**
-             * No role has been found.
-             * Therefore, the role does not require a sharePercentage.
-             */
-            if (!role) {
-              return true;
-            }
-
-            /**
-             * The role does not require a share.
-             * Therefore, no need to validate further.
-             */
-            if (!role.hasShare) {
-              return true;
-            }
-
-            /**
-             * The role requires a share.
-             * Therefore, validate the provided sharePercentage.
-             */
-            if (typeof providedSharePercentage !== 'number' || providedSharePercentage < MIN || providedSharePercentage > MAX) {
-              return false;
-            }
+            return validateCounterpartySharePercentage({
+              roles,
+              roleId: providedRoleId,
+              sharePercentage: providedSharePercentage,
+            });
           }
 
           /**
