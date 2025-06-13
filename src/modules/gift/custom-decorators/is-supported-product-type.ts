@@ -1,9 +1,9 @@
-import { VALIDATION } from '@ukef/constants/gift/validation.constant';
 import { registerDecorator, ValidationArguments, ValidationOptions } from 'class-validator';
 import { PinoLogger } from 'nestjs-pino';
 
 import { GiftHttpService } from '../gift.http.service';
 import { GiftProductTypeService } from '../gift.product-type.service';
+import { isValidProductTypeCodeFormat } from './../helpers';
 
 interface ObjectWithProductTypeCode {
   productTypeCode: string;
@@ -34,10 +34,7 @@ export function IsSupportedProductType(options?: ValidationOptions) {
            * 1) We only call the GIFT API's product type endpoint, if we have a correctly formatted product type code.
            * 2) A consumer of this API receives only relevant validation errors, e.g "must be provided" OR "productTypeCode is not supported", not both.
            */
-          const isValidProductTypeCodeFormat =
-            typeof productTypeCode === 'string' && productTypeCode.length >= VALIDATION.FACILITY.OVERVIEW.PRODUCT_TYPE_CODE.MIN_LENGTH;
-
-          if (isValidProductTypeCodeFormat) {
+          if (isValidProductTypeCodeFormat(productTypeCode)) {
             const logger = new PinoLogger({});
             const httpService = new GiftHttpService(logger);
             const feeTypeService = new GiftProductTypeService(httpService, logger);
