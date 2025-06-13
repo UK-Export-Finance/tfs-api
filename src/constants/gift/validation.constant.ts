@@ -19,6 +19,11 @@ const FEE_TYPE_CODE = {
   MAX_LENGTH: 3,
 };
 
+const ROLE_ID = {
+  MIN_LENGTH: 1,
+  MAX_LENGTH: 50,
+};
+
 /**
  * Maximum monetary amount.
  * This is used for any monetary "amount" field.
@@ -44,7 +49,7 @@ export const VALIDATION = {
   COUNTERPARTY: {
     COUNTERPARTY_URN: { MIN_LENGTH: 8, MAX_LENGTH: 8 },
     EXIT_DATE: DATE_STRING_VALIDATION,
-    ROLE_ID: { MIN_LENGTH: 1, MAX_LENGTH: 50 },
+    ROLE_ID,
     SHARE_PERCENTAGE: { MIN: 0.1, MAX: 100 },
     START_DATE: DATE_STRING_VALIDATION,
   },

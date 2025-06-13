@@ -14,7 +14,7 @@ import {
   stringValidation,
   ukefIdValidation,
 } from './assertions';
-import { currencyUrl, feeTypeUrl, mockResponses, productTypeUrl } from './test-helpers';
+import { counterpartyRolesUrl, currencyUrl, feeTypeUrl, mockResponses, productTypeUrl } from './test-helpers';
 
 const {
   giftVersioning: { prefixAndVersion },
@@ -44,6 +44,8 @@ describe('POST /gift/facility - validation', () => {
     nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
 
     nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
+
+    nock(GIFT_API_URL).persist().get(counterpartyRolesUrl).reply(HttpStatus.OK, mockResponses.counterpartyRoles);
   });
 
   afterAll(async () => {
@@ -301,10 +303,6 @@ describe('POST /gift/facility - validation', () => {
           `counterparties.roleId should not be null or undefined`,
           `counterparties.roleId must be longer than or equal to ${VALIDATION.COUNTERPARTY.ROLE_ID.MIN_LENGTH} characters`,
           `counterparties.roleId must be a string`,
-          `counterparties.sharePercentage should not be null or undefined`,
-          `counterparties.sharePercentage must not be greater than ${VALIDATION.COUNTERPARTY.SHARE_PERCENTAGE.MAX}`,
-          `counterparties.sharePercentage must not be less than ${VALIDATION.COUNTERPARTY.SHARE_PERCENTAGE.MIN}`,
-          `counterparties.sharePercentage must be a number conforming to the specified constraints`,
           `counterparties.startDate should not be null or undefined`,
           `counterparties.startDate must be longer than or equal to ${VALIDATION.COUNTERPARTY.START_DATE.MIN_LENGTH} characters`,
           `counterparties.startDate must be a string`,

@@ -52,6 +52,7 @@ const iAmATeapot: MockGiftResponse = {
 export const mockResponses = {
   badRequest,
   counterparty: { data: { aCounterparty: true } },
+  counterpartyRoles: Object.values(GIFT_EXAMPLES.COUNTERPARTY_ROLE),
   currencies: GIFT_EXAMPLES.CURRENCIES,
   feeTypes: GIFT_EXAMPLES.FEE_TYPES_RESPONSE_DATA,
   fixedFee: { data: { aFixedFee: true } },
@@ -76,8 +77,9 @@ export const mockResponses = {
 };
 
 export const apimFacilityUrl = `/api/${prefixAndVersion}/gift${PATH.FACILITY}`;
-export const facilityCreationUrl = PATH.CREATE_FACILITY;
 export const currencyUrl = PATH.CURRENCY;
+export const counterpartyRolesUrl = PATH.COUNTERPARTY_ROLES;
+export const facilityCreationUrl = PATH.CREATE_FACILITY;
 export const feeTypeUrl = PATH.FEE_TYPE;
 export const productTypeUrl = `${PATH.PRODUCT_TYPE}/${PRODUCT_TYPE_CODES.EXIP}`;
 export const counterpartyUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_COUNTERPARTY}`;

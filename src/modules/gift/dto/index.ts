@@ -1,4 +1,5 @@
 export * from './facility-counterparty';
+export * from './facility-counterparty-role';
 export * from './facility-creation';
 export * from './facility-creation-response';
 export * from './facility-get';

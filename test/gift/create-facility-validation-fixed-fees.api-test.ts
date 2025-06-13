@@ -11,7 +11,7 @@ import {
   arrayOfObjectsNumberValidation,
   arrayOfObjectsStringValidation,
 } from './assertions';
-import { currencyUrl, feeTypeUrl, mockResponses, productTypeUrl } from './test-helpers';
+import { counterpartyRolesUrl, currencyUrl, feeTypeUrl, mockResponses, productTypeUrl } from './test-helpers';
 
 const {
   giftVersioning: { prefixAndVersion },
@@ -39,6 +39,8 @@ describe('POST /gift/facility - validation - fixed fees', () => {
     nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
 
     nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
+
+    nock(GIFT_API_URL).persist().get(counterpartyRolesUrl).reply(HttpStatus.OK, mockResponses.counterpartyRoles);
   });
 
   afterAll(async () => {
