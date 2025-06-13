@@ -27,15 +27,15 @@ export function IsSupportedFeeType(options?: ValidationOptions) {
       propertyName,
       options,
       validator: {
-        async validate(providedFeeType) {
+        async validate(feeTypeCode) {
           /**
            * Only check if a fee type is supported, if a string with the correct length is provided.
            * Otherwise, we know that the provided value, is not in the correct format and will therefore not be supported.
            * By doing this we ensure that:
-           * 1) We only call the GIFT API's currency endpoint, if we have a correctly formatted fee type.
+           * 1) We only call the GIFT API's fee type endpoint, if we have a correctly formatted fee type.
            * 2) A consumer of this API receives only relevant validation errors, e.g "must be provided/X length" OR "feeTypeCode is not supported", not both.
            */
-          const isValidFeeTypeFormat = typeof providedFeeType === 'string' && providedFeeType.length === VALIDATION.FEE_TYPE_CODE.MIN_LENGTH;
+          const isValidFeeTypeFormat = typeof feeTypeCode === 'string' && feeTypeCode.length === VALIDATION.FEE_TYPE_CODE.MIN_LENGTH;
 
           if (isValidFeeTypeFormat) {
             const logger = new PinoLogger({});
@@ -44,7 +44,7 @@ export function IsSupportedFeeType(options?: ValidationOptions) {
 
             const supportedFeeTypes = await feeTypeService.getSupportedFeeTypes();
 
-            const isSupportedFeeType = arrayOfObjectsHasValue(supportedFeeTypes.data?.feeTypes, 'code', providedFeeType);
+            const isSupportedFeeType = arrayOfObjectsHasValue(supportedFeeTypes.data?.feeTypes, 'code', feeTypeCode);
 
             return isSupportedFeeType;
           }
@@ -56,9 +56,9 @@ export function IsSupportedFeeType(options?: ValidationOptions) {
           return true;
         },
         defaultMessage(args: FeeTypeValidationArguments) {
-          const { feeTypeCode: providedFeeType } = args.object;
+          const { feeTypeCode } = args.object;
 
-          return `feeTypeCode is not supported (${providedFeeType})`;
+          return `feeTypeCode is not supported (${feeTypeCode})`;
         },
       },
     });
