@@ -22,6 +22,14 @@ export const mockResponse201 = (data: object | Array<any> = {}) => ({
 });
 
 /**
+ * Mock 404 response
+ * @returns {Object}
+ */
+export const mockResponse404 = () => ({
+  status: HttpStatus.NOT_FOUND,
+});
+
+/**
  * Mock 500 response
  * @returns {Object}
  */
