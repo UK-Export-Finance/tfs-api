@@ -5,7 +5,7 @@ import { Chance } from 'chance';
 import { SUPPORTED_CURRENCIES } from '../currencies.constant';
 import { GIFT } from '../gift/gift.constant';
 
-const { FEE_TYPE_CODES, FEE_TYPE_DESCRIPTIONS, OBLIGATION_SUBTYPE_CODES, VALIDATION } = GIFT;
+const { FEE_TYPE_CODES, FEE_TYPE_DESCRIPTIONS, OBLIGATION_SUBTYPE_CODES, COUNTERPARTY_ROLE_IDS, VALIDATION } = GIFT;
 
 const chance = new Chance();
 
@@ -13,6 +13,22 @@ const DEAL_ID: UkefId = '0030000123';
 const FACILITY_ID: UkefId = '0030000321';
 
 const WORK_PACKAGE_ID = 123;
+
+/**
+ * Example counterparty roles.
+ */
+const COUNTERPARTY_ROLE = {
+  LEAD_ECA: {
+    displayText: 'Lead ECA',
+    hasShare: false,
+    id: COUNTERPARTY_ROLE_IDS.LEAD_ECA,
+  },
+  GUARANTOR: {
+    displayText: 'Guarantor',
+    hasShare: true,
+    id: COUNTERPARTY_ROLE_IDS.GUARANTOR,
+  },
+};
 
 /**
  * Example counterparty.
@@ -24,7 +40,7 @@ const COUNTERPARTY = () => ({
     numeric: true,
   }),
   exitDate: '2025-01-16',
-  roleId: 'Guarantor',
+  roleId: COUNTERPARTY_ROLE.GUARANTOR.id,
   sharePercentage: 25,
   startDate: '2025-01-13',
 });
@@ -156,6 +172,7 @@ const WORK_PACKAGE_APPROVE_RESPONSE_DATA = {
 
 export const GIFT_EXAMPLES = {
   COUNTERPARTY,
+  COUNTERPARTY_ROLE,
   CURRENCIES: Object.values(SUPPORTED_CURRENCIES),
   DEAL_ID,
   FACILITY_CREATION_PAYLOAD,

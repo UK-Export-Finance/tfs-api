@@ -6,6 +6,7 @@ import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables'
 import nock from 'nock';
 
 import { arrayOfObjectsCurrencyStringValidation, arrayOfObjectsNumberValidation, arrayOfObjectsStringValidation } from './assertions';
+import { counterpartyRolesUrl, currencyUrl, feeTypeUrl, mockResponses } from './test-helpers';
 
 const {
   giftVersioning: { prefixAndVersion },
@@ -14,7 +15,7 @@ const {
 const { GIFT_API_URL } = ENVIRONMENT_VARIABLES;
 
 const {
-  PATH: { CURRENCY, FACILITY, FEE_TYPE },
+  PATH: { FACILITY },
   VALIDATION: { OBLIGATION: OBLIGATION_VALIDATION },
 } = GIFT;
 
@@ -28,9 +29,11 @@ describe('POST /gift/facility - validation - obligations', () => {
   });
 
   beforeEach(() => {
-    nock(GIFT_API_URL).persist().get(CURRENCY).reply(HttpStatus.OK, EXAMPLES.GIFT.CURRENCIES);
+    nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
 
-    nock(GIFT_API_URL).persist().get(FEE_TYPE).reply(HttpStatus.OK, EXAMPLES.GIFT.FEE_TYPES_RESPONSE_DATA);
+    nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
+
+    nock(GIFT_API_URL).persist().get(counterpartyRolesUrl).reply(HttpStatus.OK, mockResponses.counterpartyRoles);
   });
 
   afterAll(async () => {

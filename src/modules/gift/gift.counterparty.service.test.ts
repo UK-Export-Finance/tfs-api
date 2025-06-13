@@ -1,11 +1,11 @@
 import { HttpService } from '@nestjs/axios';
 import { EXAMPLES, GIFT } from '@ukef/constants';
-import { mockResponse201, mockResponse500 } from '@ukef-test/http-response';
+import { mockResponse200, mockResponse201, mockResponse500 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
 import { GiftCounterpartyService } from './gift.counterparty.service';
 const {
-  GIFT: { COUNTERPARTY, FACILITY_ID: mockFacilityId, WORK_PACKAGE_ID: mockWorkPackageId },
+  GIFT: { COUNTERPARTY, COUNTERPARTY_ROLE, FACILITY_ID: mockFacilityId, WORK_PACKAGE_ID: mockWorkPackageId },
 } = EXAMPLES;
 
 const { EVENT_TYPES, PATH } = GIFT;
@@ -17,20 +17,26 @@ describe('GiftCounterpartyService', () => {
   let service: GiftCounterpartyService;
 
   let giftHttpService;
+  let mockGetResponse;
   let mockCreateOneResponse;
+  let mockHttpServiceGet: jest.Mock;
   let mockHttpServicePost: jest.Mock;
 
   beforeEach(() => {
     // Arrange
     httpService = new HttpService();
 
+    mockGetResponse = mockResponse200([COUNTERPARTY_ROLE, COUNTERPARTY_ROLE]);
     mockCreateOneResponse = mockResponse201(COUNTERPARTY());
 
+    mockHttpServiceGet = jest.fn().mockResolvedValueOnce(mockGetResponse);
     mockHttpServicePost = jest.fn().mockResolvedValueOnce(mockCreateOneResponse);
 
+    httpService.get = mockHttpServiceGet;
     httpService.post = mockHttpServicePost;
 
     giftHttpService = {
+      get: mockHttpServiceGet,
       post: mockHttpServicePost,
     };
 
@@ -151,6 +157,51 @@ describe('GiftCounterpartyService', () => {
 
         // Assert
         const expected = new Error(`Error creating counterparties for facility ${mockFacilityId}`);
+
+        await expect(promise).rejects.toThrow(expected);
+      });
+    });
+  });
+
+  describe('getAllRoles', () => {
+    it('should call giftHttpService.get', async () => {
+      // Act
+      await service.getAllRoles();
+
+      // Assert
+      expect(mockHttpServiceGet).toHaveBeenCalledTimes(1);
+
+      expect(mockHttpServiceGet).toHaveBeenCalledWith({
+        path: PATH.COUNTERPARTY_ROLES,
+      });
+    });
+
+    describe('when giftHttpService.get is successful', () => {
+      it('should return the response of giftHttpService.get', async () => {
+        // Act
+        const response = await service.getAllRoles();
+
+        // Assert
+        expect(response).toEqual(mockGetResponse);
+      });
+    });
+
+    describe('when giftHttpService.get returns an error', () => {
+      beforeEach(() => {
+        // Arrange
+        mockHttpServiceGet = jest.fn().mockRejectedValueOnce(mockResponse500());
+
+        giftHttpService.get = mockHttpServiceGet;
+
+        service = new GiftCounterpartyService(giftHttpService, logger);
+      });
+
+      it('should thrown an error', async () => {
+        // Act
+        const promise = service.getAllRoles();
+
+        // Assert
+        const expected = new Error('Error getting all counterparty roles');
 
         await expect(promise).rejects.toThrow(expected);
       });

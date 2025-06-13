@@ -3,6 +3,8 @@ export * from './array-of-nested-objects-string-validation';
 export * from './array-of-objects-currency-string-validation';
 export * from './array-of-objects-fee-type-code-string-validation';
 export * from './array-of-objects-number-validation';
+export * from './array-of-objects-role-id-string-validation';
+export * from './array-of-objects-share-percentage-validation';
 export * from './array-of-objects-string-validation';
 export * from './boolean-validation';
 export * from './currency-string-validation';
