@@ -8,7 +8,7 @@ const {
   giftVersioning: { prefixAndVersion },
 } = AppConfig();
 
-const { EVENT_TYPES, PATH, API_RESPONSE_TYPES } = GIFT;
+const { EVENT_TYPES, PATH, PRODUCT_TYPE_CODES, API_RESPONSE_TYPES } = GIFT;
 
 export const mockFacilityId = GIFT_EXAMPLES.FACILITY_ID;
 export const mockWorkPackageId = GIFT_EXAMPLES.WORK_PACKAGE_ID;
@@ -32,6 +32,11 @@ const internalServerError: MockGiftResponse = {
 const forbidden: MockGiftResponse = {
   statusCode: HttpStatus.FORBIDDEN,
   message: 'Forbidden',
+};
+
+const notFound: MockGiftResponse = {
+  statusCode: HttpStatus.NOT_FOUND,
+  message: 'Not found',
 };
 
 const unauthorized: MockGiftResponse = {
@@ -65,6 +70,7 @@ export const mockResponses = {
   approveStatus: { data: { aStatusUpdate: true } },
   internalServerError,
   forbidden,
+  notFound,
   unauthorized,
   iAmATeapot,
 };
@@ -73,7 +79,7 @@ export const apimFacilityUrl = `/api/${prefixAndVersion}/gift${PATH.FACILITY}`;
 export const facilityCreationUrl = PATH.CREATE_FACILITY;
 export const currencyUrl = PATH.CURRENCY;
 export const feeTypeUrl = PATH.FEE_TYPE;
-export const productTypeUrl = PATH.PRODUCT_TYPE;
+export const productTypeUrl = `${PATH.PRODUCT_TYPE}/${PRODUCT_TYPE_CODES.EXIP}`;
 export const counterpartyUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_COUNTERPARTY}`;
 export const fixedFeeUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.CREATE_FIXED_FEE}`;
 export const obligationUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.CREATE_OBLIGATION}`;

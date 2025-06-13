@@ -37,9 +37,9 @@ export function IsSupportedProductType(options?: ValidationOptions) {
           if (isValidProductTypeCodeFormat(productTypeCode)) {
             const logger = new PinoLogger({});
             const httpService = new GiftHttpService(logger);
-            const feeTypeService = new GiftProductTypeService(httpService, logger);
+            const productTypeService = new GiftProductTypeService(httpService, logger);
 
-            const isSupported = await feeTypeService.isSupported(productTypeCode);
+            const isSupported = await productTypeService.isSupported(productTypeCode);
 
             return isSupported;
           }

@@ -6,6 +6,7 @@ import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables'
 import nock from 'nock';
 
 import { arrayOfNestedObjectsNumberValidation, arrayOfNestedObjectsStringValidation, arrayOfObjectsStringValidation } from './assertions';
+import { currencyUrl, feeTypeUrl, mockResponses, productTypeUrl } from './test-helpers';
 
 const {
   giftVersioning: { prefixAndVersion },
@@ -14,7 +15,7 @@ const {
 const { GIFT_API_URL } = ENVIRONMENT_VARIABLES;
 
 const {
-  PATH: { CURRENCY, FACILITY, FEE_TYPE },
+  PATH: { FACILITY },
   VALIDATION: { REPAYMENT_PROFILE: REPAYMENT_PROFILE_VALIDATION },
 } = GIFT;
 
@@ -32,9 +33,11 @@ describe('POST /gift/facility - validation - repayment profiles', () => {
   });
 
   beforeEach(() => {
-    nock(GIFT_API_URL).persist().get(CURRENCY).reply(HttpStatus.OK, EXAMPLES.GIFT.CURRENCIES);
+    nock(GIFT_API_URL).persist().get(productTypeUrl).reply(HttpStatus.OK, mockResponses.productType);
 
-    nock(GIFT_API_URL).persist().get(FEE_TYPE).reply(HttpStatus.OK, EXAMPLES.GIFT.FEE_TYPES_RESPONSE_DATA);
+    nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
+
+    nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
   });
 
   afterAll(async () => {
