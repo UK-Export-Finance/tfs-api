@@ -51,6 +51,7 @@ export const mockResponses = {
   feeTypes: GIFT_EXAMPLES.FEE_TYPES_RESPONSE_DATA,
   fixedFee: { data: { aFixedFee: true } },
   obligation: { data: { anObligation: true } },
+  productType: { data: { aProductType: true } },
   repaymentProfile: { data: { aRepaymentProfile: true } },
   facility: {
     workPackageId: mockWorkPackageId,
@@ -72,6 +73,7 @@ export const apimFacilityUrl = `/api/${prefixAndVersion}/gift${PATH.FACILITY}`;
 export const facilityCreationUrl = PATH.CREATE_FACILITY;
 export const currencyUrl = PATH.CURRENCY;
 export const feeTypeUrl = PATH.FEE_TYPE;
+export const productTypeUrl = PATH.PRODUCT_TYPE;
 export const counterpartyUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_COUNTERPARTY}`;
 export const fixedFeeUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.CREATE_FIXED_FEE}`;
 export const obligationUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.CREATE_OBLIGATION}`;

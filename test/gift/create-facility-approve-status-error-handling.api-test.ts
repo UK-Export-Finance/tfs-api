@@ -15,6 +15,7 @@ import {
   fixedFeeUrl,
   mockResponses,
   obligationUrl,
+  productTypeUrl,
   repaymentProfileUrl,
 } from './test-helpers';
 
@@ -27,6 +28,8 @@ const { GIFT_API_URL } = ENVIRONMENT_VARIABLES;
  * @param {MockGiftResponse} Mock "approve status" response
  */
 const setupMocks = (approveStatusResponse: MockGiftResponse) => {
+  nock(GIFT_API_URL).persist().get(productTypeUrl).reply(HttpStatus.OK, mockResponses.productType);
+
   nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
 
   nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
