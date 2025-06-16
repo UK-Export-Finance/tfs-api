@@ -5,7 +5,7 @@ import { Chance } from 'chance';
 import { SUPPORTED_CURRENCIES } from '../currencies.constant';
 import { GIFT } from '../gift/gift.constant';
 
-const { FEE_TYPE_CODES, FEE_TYPE_DESCRIPTIONS, OBLIGATION_SUBTYPE_CODES, COUNTERPARTY_ROLE_IDS, VALIDATION } = GIFT;
+const { FEE_TYPE_CODES, FEE_TYPE_DESCRIPTIONS, OBLIGATION_SUBTYPES, COUNTERPARTY_ROLE_IDS, VALIDATION } = GIFT;
 
 const chance = new Chance();
 
@@ -74,8 +74,12 @@ const OBLIGATION = () => ({
   maturityDate: '2025-01-15',
   currency: SUPPORTED_CURRENCIES.USD,
   amount: 2500,
-  subtypeCode: OBLIGATION_SUBTYPE_CODES.EXP01,
+  subtypeCode: OBLIGATION_SUBTYPES.EXP01.code,
 });
+
+const OBLIGATION_SUBTYPES_RESPONSE_DATA = {
+  obligationSubtypes: Object.values(OBLIGATION_SUBTYPES),
+};
 
 /**
  * Repayment profile allocation example.
@@ -182,6 +186,7 @@ export const GIFT_EXAMPLES = {
   FEE_TYPES_RESPONSE_DATA,
   FIXED_FEE,
   OBLIGATION,
+  OBLIGATION_SUBTYPES_RESPONSE_DATA,
   REPAYMENT_PROFILE,
   REPAYMENT_PROFILE_ALLOCATION,
   STATES,
