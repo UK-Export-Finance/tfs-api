@@ -66,8 +66,10 @@ export function ObligationSubtypeCodeAreSupported(options?: ValidationOptions) {
            */
           return true;
         },
-        defaultMessage() {
-          return 'obligations contain a subtypeCode that is not supported';
+        defaultMessage(args: ObligationSubtypeValidationArguments) {
+          const { productTypeCode } = args.object?.overview;
+
+          return `obligations contain a subtypeCode that is not supported for the provided productTypeCode (${productTypeCode})`;
         },
       },
     });
