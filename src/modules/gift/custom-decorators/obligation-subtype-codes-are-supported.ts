@@ -31,8 +31,8 @@ export function ObligationSubtypeCodeAreSupported(options?: ValidationOptions) {
           let facilityId: string;
           let productTypeCode: string;
 
-          if (args.object?.overview) {
-            const { facilityId: id, productTypeCode: productCode } = args.object?.overview;
+          if (args?.object?.overview) {
+            const { facilityId: id, productTypeCode: productCode } = args?.object?.overview;
 
             facilityId = id;
             productTypeCode = productCode;
@@ -67,7 +67,7 @@ export function ObligationSubtypeCodeAreSupported(options?: ValidationOptions) {
           return true;
         },
         defaultMessage(args: ObligationSubtypeValidationArguments) {
-          const { productTypeCode } = args.object?.overview;
+          const { productTypeCode } = args?.object?.overview;
 
           return `obligations contain a subtypeCode that is not supported for the provided productTypeCode (${productTypeCode})`;
         },
