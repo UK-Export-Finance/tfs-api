@@ -7,7 +7,7 @@ interface GetUnsupportedObligationSubtypesParams {
 
 /**
  * Given an array of obligations and supported sub types,
- * Return an array of any obligation subtype codes that are not supported.
+ * Return an array of any obligation subtype codes that are NOT supported.
  * @param {GetUnsupportedObligationSubtypesParams} obligations, supportedSubtypes
  * @returns {string[]} Array of subtype codes that are not supported
  */
