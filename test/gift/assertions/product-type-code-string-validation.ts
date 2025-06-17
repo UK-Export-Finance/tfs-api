@@ -1,9 +1,17 @@
+import { HttpStatus } from '@nestjs/common';
 import { GIFT } from '@ukef/constants';
 import { Api } from '@ukef-test/support/api';
+import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
+import nock from 'nock';
 
+import { mockResponses } from '../test-helpers';
 import { generatePayload } from './generate-payload';
 import { assert400Response } from './response-assertion';
 import { stringValidation } from './string-validation';
+
+const { PATH } = GIFT;
+
+const { GIFT_API_URL } = ENVIRONMENT_VARIABLES;
 
 const UNSUPPORTED_PRODUCT_TYPE_CODE = 'ABC';
 
@@ -31,6 +39,9 @@ export const productTypeCodeStringValidation = ({ initialPayload, parentFieldNam
   describe('when the provided product type code is not supported', () => {
     beforeAll(() => {
       // Arrange
+
+      nock(GIFT_API_URL).persist().get(`${PATH.PRODUCT_TYPE}/${UNSUPPORTED_PRODUCT_TYPE_CODE}`).reply(HttpStatus.NOT_FOUND, mockResponses.productType);
+
       mockPayload[`${parentFieldName}`][`${fieldName}`] = UNSUPPORTED_PRODUCT_TYPE_CODE;
     });
 
