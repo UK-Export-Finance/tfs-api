@@ -28,15 +28,15 @@ export function ObligationSubtypeCodeAreSupported(options?: ValidationOptions) {
       options,
       validator: {
         async validate(obligations, args: ObligationSubtypeValidationArguments) {
-          let facilityId: string;
-          let productTypeCode: string;
-
-          if (args?.object?.overview) {
-            const { facilityId: id, productTypeCode: productCode } = args?.object?.overview;
-
-            facilityId = id;
-            productTypeCode = productCode;
+          if (!args?.object?.overview) {
+            /**
+             * An invalid payload has been provided - other validation errors from the controller will be surfaced.
+             * Therefore, no need to call GIFT to check if the (incorrectly formatted) subtype code is supported.
+             */
+            return true;
           }
+
+          const { facilityId, productTypeCode } = args.object.overview;
 
           /**
            * Only check if a subtype codes are supported, if a product type code is provided and the subtype codes are strings with the correct length.
@@ -67,9 +67,9 @@ export function ObligationSubtypeCodeAreSupported(options?: ValidationOptions) {
           return true;
         },
         defaultMessage(args: ObligationSubtypeValidationArguments) {
-          const { productTypeCode } = args?.object?.overview;
+          const productCode = args?.object?.overview?.productTypeCode;
 
-          return `obligations contain a subtypeCode that is not supported for the provided productTypeCode (${productTypeCode})`;
+          return `obligations contain a subtypeCode that is not supported for the provided productTypeCode (${productCode})`;
         },
       },
     });
