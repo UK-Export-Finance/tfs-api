@@ -1,5 +1,5 @@
 import { UkefId } from '@ukef/helpers';
-import { GiftFacilityCreationDto, GiftFacilityPostResponseDto } from '@ukef/modules/gift/dto';
+import { GiftFacilityCreationDto, GiftFacilityPostResponseDto, GiftObligationDto } from '@ukef/modules/gift/dto';
 import { Chance } from 'chance';
 
 import { SUPPORTED_CURRENCIES } from '../currencies.constant';
@@ -69,12 +69,17 @@ const FIXED_FEE = () => ({
   amountDue: 5000,
 });
 
-const OBLIGATION = () => ({
+/**
+ * Obligation example
+ * @param {String} subtypeCode: Obligation subtype code
+ * @returns {GiftObligationDto}
+ */
+const OBLIGATION = ({ subtypeCode = OBLIGATION_SUBTYPES.EXP01.code } = {}): GiftObligationDto => ({
   effectiveDate: '2025-01-13',
   maturityDate: '2025-01-15',
   currency: SUPPORTED_CURRENCIES.USD,
   amount: 2500,
-  subtypeCode: OBLIGATION_SUBTYPES.EXP01.code,
+  subtypeCode,
 });
 
 const OBLIGATION_SUBTYPES_RESPONSE_DATA = {

@@ -1,12 +1,19 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { GIFT } from '@ukef/constants';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 
-import { GiftObligationSubtypeDto } from './dto';
+import { GiftObligationDto, GiftObligationSubtypeDto } from './dto';
 import { GiftHttpService } from './gift.http.service';
+import { getUnsupportedObligationSubtypeCodes } from './helpers';
 
 const { PATH } = GIFT;
+
+interface IsSupportedParams {
+  facilityId: string;
+  obligations: GiftObligationDto[];
+  productTypeCode: string;
+}
 
 /**
  * GIFT obligation subtype service.
@@ -22,49 +29,81 @@ export class GiftObligationSubtypeService {
   }
 
   /**
-   * Get a GIFT obligation subtype
-   * @param {String} subtypeCode: Obligation subtype code
+   * Get all GIFT obligation subtypes
    * @returns {Promise<Array<AxiosResponse>>}
    * @throws {Error}
    */
-  async getOne(subtypeCode: string): Promise<AxiosResponse> {
+  async getAll(): Promise<AxiosResponse> {
     try {
-      this.logger.info('Getting obligation subtype %s', subtypeCode);
+      this.logger.info('Getting obligation subtypes');
 
       const response = await this.giftHttpService.get<GiftObligationSubtypeDto[]>({
-        path: `${PATH.OBLIGATION_SUBTYPE}/${subtypeCode}`,
+        path: PATH.OBLIGATION_SUBTYPE,
       });
 
       return response;
     } catch (error) {
-      this.logger.error('Error getting obligation subtype $s %o', subtypeCode, error);
+      this.logger.error('Error getting obligation subtypes %o', error);
 
-      throw new Error(`Error getting obligation subtype ${subtypeCode}`, error);
+      throw new Error('Error getting obligation subtypes', error);
     }
   }
 
   /**
-   * Check if a GIFT obligation subtype is supported
+   * Get all GIFT obligation subtypes by product type
    * @param {String} productTypeCode: Product type code
-   * @param {String} subtypeCode: Obligation subtype code
-   * @returns {Promise<Boolean>}
+   * @returns {Promise<Array<GiftObligationSubtypeDto>>}
    * @throws {Error}
    */
-  async isSupported(productTypeCode: string, subtypeCode: string): Promise<boolean> {
+  async getAllByProductType(productTypeCode: string): Promise<GiftObligationSubtypeDto[]> {
     try {
-      this.logger.info('Checking if obligation subtype code %s is supported for product type %s', subtypeCode, productTypeCode);
+      this.logger.info('Getting obligation subtypes by product type %s', productTypeCode);
 
-      const response = await this.getOne(subtypeCode);
+      const allSubtypes = await this.getAll();
 
-      if (response.status === HttpStatus.OK && response.data?.productTypeCode === productTypeCode) {
-        return true;
+      const filtered = allSubtypes.data?.obligationSubtypes?.filter((subtype: GiftObligationSubtypeDto) => subtype.productTypeCode === productTypeCode);
+
+      return filtered;
+    } catch (error) {
+      this.logger.error('Error getting obligation subtypes by product type %s %o', productTypeCode, error);
+
+      throw new Error(`Error getting obligation subtypes by product type ${productTypeCode}`, error);
+    }
+  }
+
+  /**
+   * Check if multiple obligation subtypes are supported by a product type.
+   * @param {IsSupportedParams} facility ID, obligations, product type code
+   * @returns {promise<Boolean>}
+   * @throws {Error}
+   */
+  async isSupported({ facilityId, obligations, productTypeCode }: IsSupportedParams): Promise<boolean> {
+    try {
+      this.logger.info('Checking if multiple obligation subtypes are supported by product type %s for facility %s', productTypeCode, facilityId);
+
+      const productSubtypes = await this.getAllByProductType(productTypeCode);
+
+      const unsupportedSubtypeCodes = getUnsupportedObligationSubtypeCodes({
+        obligations,
+        supportedSubtypes: productSubtypes,
+      });
+
+      if (unsupportedSubtypeCodes.length) {
+        this.logger.info(
+          '%d Obligation subtypes are not supported by product type %s for facility %s',
+          unsupportedSubtypeCodes.length,
+          productTypeCode,
+          facilityId,
+        );
+
+        return false;
       }
 
-      return false;
+      return true;
     } catch (error) {
-      this.logger.error('Error checking if obligation subtype code %s is supported for product type %s %o', productTypeCode, error);
+      this.logger.error('Error checking if multiple obligation subtypes are supported for product type for facility %s %o', productTypeCode, facilityId, error);
 
-      throw new Error(`Error checking if obligation subtype code ${subtypeCode} is supported for product type ${productTypeCode}`, error);
+      throw new Error(`Error checking if multiple obligation subtypes are supported for product type ${productTypeCode} for facility ${facilityId}`, error);
     }
   }
 }

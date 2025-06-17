@@ -1,17 +1,17 @@
 import { HttpService } from '@nestjs/axios';
-import { HttpStatus } from '@nestjs/common';
-import { GIFT } from '@ukef/constants';
-import { mockResponse200, mockResponse404, mockResponse500 } from '@ukef-test/http-response';
+import { EXAMPLES, GIFT } from '@ukef/constants';
+import { mockResponse200, mockResponse500 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
 import { GiftObligationSubtypeService } from './gift.obligation-subtype.service';
 
-const { OBLIGATION_SUBTYPES, PRODUCT_TYPE_CODES } = GIFT;
+const { OBLIGATION_SUBTYPES, PATH, PRODUCT_TYPE_CODES } = GIFT;
 
-const { PATH } = GIFT;
+const {
+  GIFT: { FACILITY_ID: mockFacilityId, OBLIGATION },
+} = EXAMPLES;
 
 const mockProductCode = PRODUCT_TYPE_CODES.EXIP;
-const mockSubtypeCode = OBLIGATION_SUBTYPES.EXP01.code;
 
 describe('GiftObligationSubtypeService', () => {
   const logger = new PinoLogger({});
@@ -20,17 +20,18 @@ describe('GiftObligationSubtypeService', () => {
   let service: GiftObligationSubtypeService;
 
   let giftHttpService;
-  let mockGetOneResponse;
+  let mockGetAllResponse;
   let mockHttpServiceGet: jest.Mock;
-  let mockGetOne: jest.Mock;
+  let mockGetAll: jest.Mock;
+  let mockGetAllByProductType: jest.Mock;
 
   beforeEach(() => {
     // Arrange
     httpService = new HttpService();
 
-    mockGetOneResponse = mockResponse200(OBLIGATION_SUBTYPES.EXP01);
+    mockGetAllResponse = mockResponse200({ obligationSubtypes: Object.values(OBLIGATION_SUBTYPES) });
 
-    mockHttpServiceGet = jest.fn().mockResolvedValueOnce(mockGetOneResponse);
+    mockHttpServiceGet = jest.fn().mockResolvedValueOnce(mockGetAllResponse);
 
     httpService.get = mockHttpServiceGet;
 
@@ -45,26 +46,34 @@ describe('GiftObligationSubtypeService', () => {
     jest.resetAllMocks();
   });
 
-  describe('createOne', () => {
+  describe('getAll', () => {
     it('should call giftHttpService.get', async () => {
       // Act
-      await service.getOne(mockSubtypeCode);
+      await service.getAll();
 
       // Assert
       expect(mockHttpServiceGet).toHaveBeenCalledTimes(1);
 
       expect(mockHttpServiceGet).toHaveBeenCalledWith({
-        path: `${PATH.OBLIGATION_SUBTYPE}/${mockSubtypeCode}`,
+        path: PATH.OBLIGATION_SUBTYPE,
       });
+    });
+
+    it('should return the response of giftHttpService.get', async () => {
+      // Act
+      const response = await service.getAll();
+
+      // Assert
+      expect(response).toEqual(mockGetAllResponse);
     });
 
     describe('when giftHttpService.get is successful', () => {
       it('should return the response of giftHttpService.get', async () => {
         // Act
-        const response = await service.getOne(mockSubtypeCode);
+        const response = await service.getAll();
 
         // Assert
-        expect(response).toEqual(mockGetOneResponse);
+        expect(response).toEqual(mockGetAllResponse);
       });
     });
 
@@ -80,10 +89,60 @@ describe('GiftObligationSubtypeService', () => {
 
       it('should thrown an error', async () => {
         // Act
-        const promise = service.getOne(mockSubtypeCode);
+        const promise = service.getAll();
 
         // Assert
-        const expected = new Error(`Error getting obligation subtype ${mockSubtypeCode}`);
+        const expected = new Error('Error getting obligation subtypes');
+
+        await expect(promise).rejects.toThrow(expected);
+      });
+    });
+  });
+
+  describe('getAllByProductType', () => {
+    beforeEach(() => {
+      // Arrange
+      service = new GiftObligationSubtypeService(giftHttpService, logger);
+
+      mockGetAll = jest.fn().mockResolvedValueOnce(mockGetAllResponse);
+
+      service.getAll = mockGetAll;
+    });
+
+    it('should call service.getAll', async () => {
+      // Act
+      await service.getAllByProductType(mockProductCode);
+
+      // Assert
+      expect(mockGetAll).toHaveBeenCalledTimes(1);
+    });
+
+    it('should return an array of subtypes filtered by the provided product type code', async () => {
+      // Act
+      const response = await service.getAllByProductType(mockProductCode);
+
+      // Assert
+      const expected = [OBLIGATION_SUBTYPES.EXP01, OBLIGATION_SUBTYPES.EXP02];
+
+      expect(response).toStrictEqual(expected);
+    });
+
+    describe('when service.getAll returns an error', () => {
+      beforeEach(() => {
+        // Arrange
+        mockGetAll = jest.fn().mockRejectedValueOnce(mockResponse500());
+
+        service = new GiftObligationSubtypeService(giftHttpService, logger);
+
+        service.getAll = mockGetAll;
+      });
+
+      it('should thrown an error', async () => {
+        // Act
+        const promise = service.getAllByProductType(mockProductCode);
+
+        // Assert
+        const expected = new Error(`Error getting obligation subtypes by product type ${mockProductCode}`);
 
         await expect(promise).rejects.toThrow(expected);
       });
@@ -95,79 +154,80 @@ describe('GiftObligationSubtypeService', () => {
       // Arrange
       service = new GiftObligationSubtypeService(giftHttpService, logger);
 
-      mockGetOne = jest.fn().mockResolvedValueOnce(mockResponse200(OBLIGATION_SUBTYPES.EXP01));
+      mockGetAllByProductType = jest.fn().mockResolvedValueOnce([OBLIGATION_SUBTYPES.EXP01]);
 
-      service.getOne = mockGetOne;
+      service.getAllByProductType = mockGetAllByProductType;
     });
 
-    it('should call service.getOne', async () => {
+    it('should call service.getAllByProductType', async () => {
       // Act
-      await service.isSupported(mockProductCode, mockSubtypeCode);
+      await service.isSupported({
+        facilityId: mockFacilityId,
+        obligations: [OBLIGATION()],
+        productTypeCode: mockProductCode,
+      });
 
       // Assert
-      expect(mockGetOne).toHaveBeenCalledTimes(1);
+      expect(mockGetAllByProductType).toHaveBeenCalledTimes(1);
 
-      expect(mockGetOne).toHaveBeenCalledWith(mockSubtypeCode);
+      expect(mockGetAllByProductType).toHaveBeenCalledWith(mockProductCode);
     });
 
-    describe(`when service.getOne returns ${HttpStatus.OK} and the response contains the provided product code`, () => {
+    describe('when the provided subtype codes are supported', () => {
       it('should return true', async () => {
         // Act
-        const response = await service.isSupported(mockProductCode, mockSubtypeCode);
+        const response = await service.isSupported({
+          facilityId: mockFacilityId,
+          obligations: [OBLIGATION()],
+          productTypeCode: mockProductCode,
+        });
 
         // Assert
         expect(response).toBe(true);
       });
     });
 
-    describe(`when service.getOne returns ${HttpStatus.OK} and the response does NOT contain the provided product code`, () => {
+    describe('when the provided subtype codes are NOT supported', () => {
       it('should return false', async () => {
         // Arrange
-        mockGetOne = jest.fn().mockResolvedValueOnce(mockResponse200(OBLIGATION_SUBTYPES.BIP02));
+        mockGetAllByProductType = jest.fn().mockResolvedValueOnce([OBLIGATION_SUBTYPES.BIP02]);
 
-        service.getOne = mockGetOne;
+        service.getAllByProductType = mockGetAllByProductType;
 
         // Act
-        const response = await service.isSupported(mockProductCode, OBLIGATION_SUBTYPES.EXP01.code);
+        const response = await service.isSupported({
+          facilityId: mockFacilityId,
+          obligations: [OBLIGATION()],
+          productTypeCode: mockProductCode,
+        });
 
         // Assert
         expect(response).toBe(false);
       });
     });
 
-    describe(`when service.getOne does NOT return ${HttpStatus.OK}`, () => {
-      it('should return false', async () => {
-        // Arrange
-        mockGetOne = jest.fn().mockResolvedValueOnce(mockResponse404());
-
-        service = new GiftObligationSubtypeService(giftHttpService, logger);
-
-        service.getOne = mockGetOne;
-
-        // Act
-        const response = await service.isSupported(mockProductCode, mockSubtypeCode);
-
-        // Assert
-        expect(response).toBe(false);
-      });
-    });
-
-    describe('when service.getOne returns an error', () => {
+    describe('when service.getAllByProductType returns an error', () => {
       beforeEach(() => {
         // Arrange
-        mockGetOne = jest.fn().mockRejectedValueOnce(mockResponse500());
+        mockGetAllByProductType = jest.fn().mockRejectedValueOnce(new Error());
 
         service = new GiftObligationSubtypeService(giftHttpService, logger);
 
-        service.getOne = mockGetOne;
+        service.getAllByProductType = mockGetAllByProductType;
       });
 
       it('should thrown an error', async () => {
         // Act
-        const promise = service.isSupported(mockProductCode, mockSubtypeCode);
+        const promise = service.isSupported({
+          facilityId: mockFacilityId,
+          obligations: [OBLIGATION()],
+          productTypeCode: mockProductCode,
+        });
 
         // Assert
-        const expected = new Error(`Error checking if obligation subtype code ${mockSubtypeCode} is supported for product type ${mockProductCode}`);
+        const expected = new Error(
+          `Error checking if multiple obligation subtypes are supported for product type ${mockProductCode} for facility ${mockFacilityId}`,
+        );
 
         await expect(promise).rejects.toThrow(expected);
       });
