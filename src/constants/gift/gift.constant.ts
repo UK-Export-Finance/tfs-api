@@ -41,15 +41,15 @@ export const GIFT = {
       productTypeCode: 'BIP',
       name: 'Advanced Payment Bond',
     },
-    EXP02: {
-      code: 'EXP02',
-      productTypeCode: 'EXIP',
-      name: 'Consecutive',
-    },
     EXP01: {
       code: 'EXP01',
       productTypeCode: 'EXIP',
       name: 'EXIP Cash',
+    },
+    EXP02: {
+      code: 'EXP02',
+      productTypeCode: 'EXIP',
+      name: 'Consecutive',
     },
   },
   PATH: {
