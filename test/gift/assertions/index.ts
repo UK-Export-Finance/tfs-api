@@ -8,6 +8,7 @@ export * from './array-of-objects-share-percentage-validation';
 export * from './array-of-objects-string-validation';
 export * from './boolean-validation';
 export * from './currency-string-validation';
+export * from './generate-payload';
 export * from './number-string-validation';
 export * from './number-validation';
 export * from './product-type-code-string-validation';
