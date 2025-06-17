@@ -28,7 +28,7 @@ export const hasValidFormat = (obligation?: GiftObligationDto) => {
 };
 
 /**
- * Check if an array of obligations have any invalid subtype code formats.
+ * Check if an array of obligations have valid subtype code formats.
  * @param {GiftObligationDto[]} obligations: Array of obligations
  * @returns {Boolean}
  */

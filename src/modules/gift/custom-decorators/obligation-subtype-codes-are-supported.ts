@@ -4,7 +4,7 @@ import { PinoLogger } from 'nestjs-pino';
 import { GiftFacilityCreationDto } from '../dto';
 import { GiftHttpService } from '../gift.http.service';
 import { GiftObligationSubtypeService } from '../gift.obligation-subtype.service';
-import { hasValidObligationSubtypeCodeFormats } from '../helpers';
+import { hasValidObligationSubtypeCodeFormats, isValidProductTypeCodeFormat } from '../helpers';
 
 interface ObligationSubtypeValidationArguments extends ValidationArguments {
   object: GiftFacilityCreationDto;
@@ -28,16 +28,25 @@ export function ObligationSubtypeCodeAreSupported(options?: ValidationOptions) {
       options,
       validator: {
         async validate(obligations, args: ObligationSubtypeValidationArguments) {
-          const { facilityId, productTypeCode } = args.object.overview;
+          let facilityId: string;
+          let productTypeCode: string;
+
+          if (args.object?.overview) {
+            const { facilityId: id, productTypeCode: productCode } = args.object?.overview;
+
+            facilityId = id;
+            productTypeCode = productCode;
+          }
 
           /**
-           * Only check if the subtype codes are supported, if they are strings with the correct length.
-           * Otherwise, we know that the provided value, is not in the correct format and will therefore not be supported.
+           * Only check if a subtype codes are supported, if a product type code is provided and the subtype codes are strings with the correct length.
+           * Otherwise, we know that the provided value, is not in the correct format. Or that the product type code has no subtypes.
+           * In both cases - any provided subtype codes will not be supported.
            * By doing this we ensure that:
-           * 1) We only call the GIFT API's obligation subtype endpoint, if we have a correctly formatted subtype code.
+           * 1) We only call the GIFT API's obligation subtype endpoint, if we have a valid payload.
            * 2) A consumer of this API receives only relevant validation errors, e.g "must be provided" OR "subtypeCode is not supported", not both.
            */
-          if (hasValidObligationSubtypeCodeFormats(obligations)) {
+          if (isValidProductTypeCodeFormat(productTypeCode) && hasValidObligationSubtypeCodeFormats(obligations)) {
             const logger = new PinoLogger({});
             const httpService = new GiftHttpService(logger);
             const obligationSubtypeService = new GiftObligationSubtypeService(httpService, logger);

@@ -126,7 +126,7 @@ const FACILITY_OVERVIEW = {
   isRevolving: true,
   isDraft: true,
   createdDatetime: '2025-01-21T09:58:21.115Z',
-  productTypeCode: GIFT.PRODUCT_TYPE_CODES.BIP,
+  productTypeCode: GIFT.PRODUCT_TYPE_CODES.EXIP,
 };
 
 /**
