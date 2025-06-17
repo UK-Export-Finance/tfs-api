@@ -5,7 +5,7 @@ import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables'
 import { MockGiftResponse } from '@ukef-test/support/interfaces/mock-gift-response.interface';
 import nock from 'nock';
 
-import { apimFacilityUrl, counterpartyRolesUrl, currencyUrl, facilityCreationUrl, feeTypeUrl, mockResponses } from './test-helpers';
+import { apimFacilityUrl, counterpartyRolesUrl, currencyUrl, facilityCreationUrl, feeTypeUrl, mockResponses, productTypeUrl } from './test-helpers';
 
 const { GIFT_API_URL } = ENVIRONMENT_VARIABLES;
 
@@ -14,6 +14,8 @@ const { GIFT_API_URL } = ENVIRONMENT_VARIABLES;
  * @param {MockGiftResponse} Mock "facility createion" response
  */
 const setupMocks = (facilityCreationResponse: MockGiftResponse) => {
+  nock(GIFT_API_URL).persist().get(productTypeUrl).reply(HttpStatus.OK, mockResponses.productType);
+
   nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
 
   nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
