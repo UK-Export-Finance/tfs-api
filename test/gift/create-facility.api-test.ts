@@ -21,6 +21,7 @@ import {
   payloadFixedFees,
   payloadObligations,
   payloadRepaymentProfiles,
+  productTypeUrl,
   repaymentProfileUrl,
 } from './test-helpers';
 
@@ -51,6 +52,8 @@ describe('POST /gift/facility', () => {
   describe(`when the payload is valid and a ${HttpStatus.CREATED} response is returned by all GIFT endpoints`, () => {
     it(`should return a ${HttpStatus.CREATED} response with a facility and all created entities`, async () => {
       // Arrange
+      nock(GIFT_API_URL).persist().get(productTypeUrl).reply(HttpStatus.OK, mockResponses.productType);
+
       nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
 
       nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);

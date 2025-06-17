@@ -5,7 +5,7 @@ import { Chance } from 'chance';
 import { SUPPORTED_CURRENCIES } from '../currencies.constant';
 import { GIFT } from '../gift/gift.constant';
 
-const { FEE_TYPE_CODES, FEE_TYPE_DESCRIPTIONS, OBLIGATION_SUBTYPES, COUNTERPARTY_ROLE_IDS, VALIDATION } = GIFT;
+const { COUNTERPARTY_ROLE_IDS, FEE_TYPE_CODES, FEE_TYPE_DESCRIPTIONS, OBLIGATION_SUBTYPES, PRODUCT_TYPE_CODES, PRODUCT_TYPE_NAMES, VALIDATION } = GIFT;
 
 const chance = new Chance();
 
@@ -86,6 +86,11 @@ const OBLIGATION_SUBTYPES_RESPONSE_DATA = {
   obligationSubtypes: Object.values(OBLIGATION_SUBTYPES),
 };
 
+const PRODUCT_TYPE_RESPONSE_DATA = {
+  code: PRODUCT_TYPE_CODES.EXIP,
+  name: PRODUCT_TYPE_NAMES.EXIP,
+};
+
 /**
  * Repayment profile allocation example.
  * NOTE: The total of all amounts should not be greater than the facility amount.
@@ -126,7 +131,7 @@ const FACILITY_OVERVIEW = {
   isRevolving: true,
   isDraft: true,
   createdDatetime: '2025-01-21T09:58:21.115Z',
-  productTypeCode: GIFT.PRODUCT_TYPE_CODES.EXIP,
+  productTypeCode: PRODUCT_TYPE_CODES.EXIP,
 };
 
 /**
@@ -192,6 +197,7 @@ export const GIFT_EXAMPLES = {
   FIXED_FEE,
   OBLIGATION,
   OBLIGATION_SUBTYPES_RESPONSE_DATA,
+  PRODUCT_TYPE_RESPONSE_DATA,
   REPAYMENT_PROFILE,
   REPAYMENT_PROFILE_ALLOCATION,
   STATES,

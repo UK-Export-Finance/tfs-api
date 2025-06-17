@@ -61,12 +61,17 @@ export const GIFT = {
     FACILITY: '/facility',
     FEE_TYPE: '/fee-type',
     OBLIGATION_SUBTYPE: '/obligation-subtype',
+    PRODUCT_TYPE: '/product-type',
     SUPPORTED: '/supported',
     WORK_PACKAGE: '/work-package',
   },
   PRODUCT_TYPE_CODES: {
     BIP: 'BIP',
     EXIP: 'EXIP',
+  },
+  PRODUCT_TYPE_NAMES: {
+    BIP: 'Bond Insurance Policy (BIP)',
+    EXIP: 'Export Insurance Policy (EXIP)',
   },
   VALIDATION,
 };

@@ -14,7 +14,7 @@ import {
   stringValidation,
   ukefIdValidation,
 } from './assertions';
-import { counterpartyRolesUrl, currencyUrl, feeTypeUrl, mockResponses, obligationSubtypeUrl } from './test-helpers';
+import { counterpartyRolesUrl, currencyUrl, feeTypeUrl, mockResponses, obligationSubtypeUrl, productTypeUrl } from './test-helpers';
 
 const {
   giftVersioning: { prefixAndVersion },
@@ -37,6 +37,8 @@ describe('POST /gift/facility - validation', () => {
   });
 
   beforeEach(() => {
+    nock(GIFT_API_URL).persist().get(productTypeUrl).reply(HttpStatus.OK, mockResponses.productType);
+
     nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
 
     nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);

@@ -8,7 +8,7 @@ const {
   giftVersioning: { prefixAndVersion },
 } = AppConfig();
 
-const { EVENT_TYPES, PATH, API_RESPONSE_TYPES } = GIFT;
+const { EVENT_TYPES, PATH, PRODUCT_TYPE_CODES, API_RESPONSE_TYPES } = GIFT;
 
 export const mockFacilityId = GIFT_EXAMPLES.FACILITY_ID;
 export const mockWorkPackageId = GIFT_EXAMPLES.WORK_PACKAGE_ID;
@@ -34,6 +34,11 @@ const forbidden: MockGiftResponse = {
   message: 'Forbidden',
 };
 
+const notFound: MockGiftResponse = {
+  statusCode: HttpStatus.NOT_FOUND,
+  message: 'Not found',
+};
+
 const unauthorized: MockGiftResponse = {
   statusCode: HttpStatus.UNAUTHORIZED,
   message: 'Unauthorized',
@@ -53,6 +58,7 @@ export const mockResponses = {
   fixedFee: { data: { aFixedFee: true } },
   obligation: { data: { anObligation: true } },
   obligationSubtype: GIFT_EXAMPLES.OBLIGATION_SUBTYPES_RESPONSE_DATA,
+  productType: { data: { aProductType: true } },
   repaymentProfile: { data: { aRepaymentProfile: true } },
   facility: {
     workPackageId: mockWorkPackageId,
@@ -66,6 +72,7 @@ export const mockResponses = {
   approveStatus: { data: { aStatusUpdate: true } },
   internalServerError,
   forbidden,
+  notFound,
   unauthorized,
   iAmATeapot,
 };
@@ -76,6 +83,7 @@ export const counterpartyRolesUrl = PATH.COUNTERPARTY_ROLES;
 export const facilityCreationUrl = PATH.CREATE_FACILITY;
 export const feeTypeUrl = PATH.FEE_TYPE;
 export const obligationSubtypeUrl = PATH.OBLIGATION_SUBTYPE;
+export const productTypeUrl = `${PATH.PRODUCT_TYPE}/${PRODUCT_TYPE_CODES.EXIP}`;
 export const counterpartyUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_COUNTERPARTY}`;
 export const fixedFeeUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.CREATE_FIXED_FEE}`;
 export const obligationUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.CREATE_OBLIGATION}`;

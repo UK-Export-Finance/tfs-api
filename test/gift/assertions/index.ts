@@ -11,5 +11,6 @@ export * from './currency-string-validation';
 export * from './number-string-validation';
 export * from './number-validation';
 export * from './product-type-code-string-validation';
+export * from './response-assertion';
 export * from './string-validation';
 export * from './ukef-id-validation';
