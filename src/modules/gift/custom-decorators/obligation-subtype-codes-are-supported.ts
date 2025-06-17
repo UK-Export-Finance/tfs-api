@@ -12,6 +12,10 @@ interface ObligationSubtypeValidationArguments extends ValidationArguments {
 
 /**
  * Custom decorator to check if all provided obligation subtype codes are supported for the product type in GIFT.
+ * NOTE: This validation has to be placed at the top level of facility validation,
+ * as apposed to being placed on individual obligations.
+ * This is because, these checks require productTypeCode, which is at the top level.
+ * Unfortunately, custom NestJS validation decorators are only able to obtain data from the level at which it's placed.
  * @param {ValidationOptions} options: Class validator's validation options
  * @returns {Boolean | string}
  */
