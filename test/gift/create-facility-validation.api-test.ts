@@ -5,8 +5,16 @@ import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import nock from 'nock';
 
-import { booleanValidation, currencyStringValidation, numberStringValidation, numberValidation, stringValidation, ukefIdValidation } from './assertions';
-import { counterpartyRolesUrl, currencyUrl, feeTypeUrl, mockResponses } from './test-helpers';
+import {
+  booleanValidation,
+  currencyStringValidation,
+  numberStringValidation,
+  numberValidation,
+  productTypeCodeStringValidation,
+  stringValidation,
+  ukefIdValidation,
+} from './assertions';
+import { counterpartyRolesUrl, currencyUrl, feeTypeUrl, mockResponses, obligationSubtypeUrl } from './test-helpers';
 
 const {
   giftVersioning: { prefixAndVersion },
@@ -34,6 +42,8 @@ describe('POST /gift/facility - validation', () => {
     nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
 
     nock(GIFT_API_URL).persist().get(counterpartyRolesUrl).reply(HttpStatus.OK, mockResponses.counterpartyRoles);
+
+    nock(GIFT_API_URL).persist().get(obligationSubtypeUrl).reply(HttpStatus.OK, mockResponses.obligationSubtype);
   });
 
   afterAll(async () => {
@@ -427,11 +437,6 @@ describe('POST /gift/facility - validation', () => {
   });
 
   describe('overview.productTypeCode', () => {
-    stringValidation({
-      ...baseParams,
-      fieldName: 'productTypeCode',
-      min: VALIDATION.FACILITY.OVERVIEW.PRODUCT_TYPE_CODE.MIN_LENGTH,
-      max: VALIDATION.FACILITY.OVERVIEW.PRODUCT_TYPE_CODE.MAX_LENGTH,
-    });
+    productTypeCodeStringValidation(baseParams);
   });
 });
