@@ -15,17 +15,17 @@ const mockRoles: GiftFacilityCounterpartyRoleDto[] = [
   {
     id: '1',
     name: 'Role 1',
-    hasShare: false,
+    hasSharePercentage: false,
   },
   {
     id: '2',
     name: 'Role 2',
-    hasShare: true,
+    hasSharePercentage: true,
   },
   {
     id: '3',
     name: 'Role 3',
-    hasShare: false,
+    hasSharePercentage: false,
   },
 ];
 
@@ -46,7 +46,7 @@ describe('modules/gift/helpers/validate-counterparty-share-percentage', () => {
     });
   });
 
-  describe('when a role is found and does NOT have hasShare', () => {
+  describe('when a role is found and does NOT have hasSharePercentage', () => {
     it('should return true', () => {
       // Arrange
       const mockRoleId = '3';
@@ -62,7 +62,7 @@ describe('modules/gift/helpers/validate-counterparty-share-percentage', () => {
     });
   });
 
-  describe('when a role is found and does have hasShare', () => {
+  describe('when a role is found and does have hasSharePercentage', () => {
     describe('when the provided sharePercentage is NOT a number', () => {
       it.each(['10', null, undefined, true, false, {}, []])('should return false', (sharePercentage) => {
         // Arrange

@@ -39,7 +39,7 @@ export const validateCounterpartySharePercentage = ({ roles, roleCode, sharePerc
    * The role does not require a share.
    * Therefore, no need to validate further.
    */
-  if (!role.hasShare) {
+  if (!role.hasSharePercentage) {
     return true;
   }
 

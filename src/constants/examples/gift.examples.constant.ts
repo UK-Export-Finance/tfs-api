@@ -20,12 +20,12 @@ const WORK_PACKAGE_ID = 123;
 const COUNTERPARTY_ROLE = {
   LEAD_ECA: {
     name: 'Lead ECA',
-    hasShare: false,
+    hasSharePercentage: false,
     id: COUNTERPARTY_ROLE_CODES.LEAD_ECA,
   },
   GUARANTOR: {
     name: 'Guarantor',
-    hasShare: true,
+    hasSharePercentage: true,
     id: COUNTERPARTY_ROLE_CODES.GUARANTOR,
   },
 };

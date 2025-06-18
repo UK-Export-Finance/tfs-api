@@ -48,7 +48,7 @@ export class GiftFacilityCounterpartyDto {
   @CounterpartySharePercentageValidation()
   @ApiProperty({
     example: COUNTERPARTY().sharePercentage,
-    description: "Required if a counterparty's role has a true hasShare property",
+    description: "Required if a counterparty's role has a true hasSharePercentage property",
   })
   sharePercentage: number;
 

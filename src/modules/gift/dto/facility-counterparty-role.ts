@@ -27,8 +27,8 @@ export class GiftFacilityCounterpartyRoleDto {
 
   @IsBoolean()
   @ApiProperty({
-    example: COUNTERPARTY_ROLE.LEAD_ECA.hasShare,
+    example: COUNTERPARTY_ROLE.LEAD_ECA.hasSharePercentage,
     required: true,
   })
-  hasShare: boolean;
+  hasSharePercentage: boolean;
 }
