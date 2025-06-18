@@ -161,7 +161,7 @@ describe('POST /gift/facility - validation - obligations', () => {
         });
       });
 
-      it('should return a 400 response', async () => {
+      it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
         // Act
         const response = await api.post(url, mockPayload);
 

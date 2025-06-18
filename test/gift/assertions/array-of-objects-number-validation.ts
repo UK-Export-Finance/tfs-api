@@ -33,7 +33,7 @@ export const arrayOfObjectsNumberValidation = ({ fieldName, parentFieldName, ini
       mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value: null });
     });
 
-    it('should return a 400 response', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       // Act
       const response = await api.post(url, mockPayload);
 
@@ -69,7 +69,7 @@ export const arrayOfObjectsNumberValidation = ({ fieldName, parentFieldName, ini
       mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value: undefined });
     });
 
-    it('should return a 400 response', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       // Act
       const response = await api.post(url, mockPayload);
 
@@ -105,7 +105,7 @@ export const arrayOfObjectsNumberValidation = ({ fieldName, parentFieldName, ini
       mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value: [] });
     });
 
-    it('should return a 400 response', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       // Act
       const response = await api.post(url, mockPayload);
 
@@ -139,7 +139,7 @@ export const arrayOfObjectsNumberValidation = ({ fieldName, parentFieldName, ini
       mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value: true });
     });
 
-    it('should return a 400 response', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       // Act
       const response = await api.post(url, mockPayload);
 
@@ -173,7 +173,7 @@ export const arrayOfObjectsNumberValidation = ({ fieldName, parentFieldName, ini
       mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value: false });
     });
 
-    it('should return a 400 response', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       // Act
       const response = await api.post(url, mockPayload);
 
@@ -207,7 +207,7 @@ export const arrayOfObjectsNumberValidation = ({ fieldName, parentFieldName, ini
       mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value: '' });
     });
 
-    it('should return a 400 response', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       // Act
       const response = await api.post(url, mockPayload);
 
@@ -243,7 +243,7 @@ export const arrayOfObjectsNumberValidation = ({ fieldName, parentFieldName, ini
       mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value });
     });
 
-    it('should return a 400 response', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       // Act
       const response = await api.post(url, mockPayload);
 
@@ -272,7 +272,7 @@ export const arrayOfObjectsNumberValidation = ({ fieldName, parentFieldName, ini
       mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value });
     });
 
-    it('should return a 400 response', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       // Act
       const response = await api.post(url, mockPayload);
 

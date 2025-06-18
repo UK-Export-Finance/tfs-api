@@ -33,7 +33,7 @@ export const numberStringValidation = ({ fieldName, initialPayload, min, max, pa
       mockPayload[`${parentFieldName}`][`${fieldName}`] = null;
     });
 
-    it('should return a 400 response', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       // Act
       const response = await api.post(url, mockPayload);
 
@@ -62,7 +62,7 @@ export const numberStringValidation = ({ fieldName, initialPayload, min, max, pa
       mockPayload[`${parentFieldName}`][`${fieldName}`] = undefined;
     });
 
-    it('should return a 400 response', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       // Act
       const response = await api.post(url, mockPayload);
 
@@ -91,7 +91,7 @@ export const numberStringValidation = ({ fieldName, initialPayload, min, max, pa
       mockPayload[`${parentFieldName}`][`${fieldName}`] = [];
     });
 
-    it('should return a 400 response', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       // Act
       const response = await api.post(url, mockPayload);
 
@@ -116,7 +116,7 @@ export const numberStringValidation = ({ fieldName, initialPayload, min, max, pa
       mockPayload[`${parentFieldName}`][`${fieldName}`] = true;
     });
 
-    it('should return a 400 response', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       // Act
       const response = await api.post(url, mockPayload);
 
@@ -144,7 +144,7 @@ export const numberStringValidation = ({ fieldName, initialPayload, min, max, pa
       mockPayload[`${parentFieldName}`][`${fieldName}`] = false;
     });
 
-    it('should return a 400 response', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       // Act
       const response = await api.post(url, mockPayload);
 
@@ -169,7 +169,7 @@ export const numberStringValidation = ({ fieldName, initialPayload, min, max, pa
       mockPayload[`${parentFieldName}`][`${fieldName}`] = 1;
     });
 
-    it('should return a 400 response', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       // Act
       const response = await api.post(url, mockPayload);
 
@@ -197,7 +197,7 @@ export const numberStringValidation = ({ fieldName, initialPayload, min, max, pa
       mockPayload[`${parentFieldName}`][`${fieldName}`] = '';
     });
 
-    it('should return a 400 response', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       // Act
       const response = await api.post(url, mockPayload);
 
@@ -222,7 +222,7 @@ export const numberStringValidation = ({ fieldName, initialPayload, min, max, pa
       mockPayload[`${parentFieldName}`][`${fieldName}`] = 'not a number';
     });
 
-    it('should return a 400 response', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       // Act
       const response = await api.post(url, mockPayload);
 
@@ -247,7 +247,7 @@ export const numberStringValidation = ({ fieldName, initialPayload, min, max, pa
       mockPayload[`${parentFieldName}`][`${fieldName}`] = '1'.repeat(min - 1);
     });
 
-    it('should return a 400 response', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       // Act
       const response = await api.post(url, mockPayload);
 
@@ -272,7 +272,7 @@ export const numberStringValidation = ({ fieldName, initialPayload, min, max, pa
       mockPayload[`${parentFieldName}`][`${fieldName}`] = '1'.repeat(max + 1);
     });
 
-    it('should return a 400 response', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       // Act
       const response = await api.post(url, mockPayload);
 
