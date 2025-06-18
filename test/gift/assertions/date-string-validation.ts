@@ -1,3 +1,4 @@
+import { HttpStatus } from '@nestjs/common';
 import { GIFT } from '@ukef/constants';
 import { Api } from '@ukef-test/support/api';
 
@@ -35,7 +36,7 @@ export const dateStringValidation = ({ fieldName, initialPayload, parentFieldNam
       mockPayload[`${parentFieldName}`][`${fieldName}`] = null;
     });
 
-    it('should return a 400 response', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       // Act
       const response = await api.post(url, mockPayload);
 
@@ -60,7 +61,7 @@ export const dateStringValidation = ({ fieldName, initialPayload, parentFieldNam
       mockPayload[`${parentFieldName}`][`${fieldName}`] = undefined;
     });
 
-    it('should return a 400 response', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       // Act
       const response = await api.post(url, mockPayload);
 
@@ -85,7 +86,7 @@ export const dateStringValidation = ({ fieldName, initialPayload, parentFieldNam
       mockPayload[`${parentFieldName}`][`${fieldName}`] = [];
     });
 
-    it('should return a 400 response', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       // Act
       const response = await api.post(url, mockPayload);
 
@@ -110,7 +111,7 @@ export const dateStringValidation = ({ fieldName, initialPayload, parentFieldNam
       mockPayload[`${parentFieldName}`][`${fieldName}`] = true;
     });
 
-    it('should return a 400 response', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       // Act
       const response = await api.post(url, mockPayload);
 
@@ -135,7 +136,7 @@ export const dateStringValidation = ({ fieldName, initialPayload, parentFieldNam
       mockPayload[`${parentFieldName}`][`${fieldName}`] = false;
     });
 
-    it('should return a 400 response', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       // Act
       const response = await api.post(url, mockPayload);
 
@@ -160,7 +161,7 @@ export const dateStringValidation = ({ fieldName, initialPayload, parentFieldNam
       mockPayload[`${parentFieldName}`][`${fieldName}`] = 0;
     });
 
-    it('should return a 400 response', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       // Act
       const response = await api.post(url, mockPayload);
 
@@ -185,7 +186,7 @@ export const dateStringValidation = ({ fieldName, initialPayload, parentFieldNam
       mockPayload[`${parentFieldName}`][`${fieldName}`] = 1;
     });
 
-    it('should return a 400 response', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       // Act
       const response = await api.post(url, mockPayload);
 
@@ -210,7 +211,7 @@ export const dateStringValidation = ({ fieldName, initialPayload, parentFieldNam
       mockPayload[`${parentFieldName}`][`${fieldName}`] = '';
     });
 
-    it('should return a 400 response', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       // Act
       const response = await api.post(url, mockPayload);
 
@@ -237,7 +238,7 @@ export const dateStringValidation = ({ fieldName, initialPayload, parentFieldNam
       mockPayload[`${parentFieldName}`][`${fieldName}`] = value;
     });
 
-    it('should return a 400 response', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       // Act
       const response = await api.post(url, mockPayload);
 
@@ -264,7 +265,7 @@ export const dateStringValidation = ({ fieldName, initialPayload, parentFieldNam
       mockPayload[`${parentFieldName}`][`${fieldName}`] = value;
     });
 
-    it('should return a 400 response', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       // Act
       const response = await api.post(url, mockPayload);
 
@@ -291,7 +292,7 @@ export const dateStringValidation = ({ fieldName, initialPayload, parentFieldNam
       mockPayload[`${parentFieldName}`][`${fieldName}`] = value;
     });
 
-    it('should return a 400 response', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       // Act
       const response = await api.post(url, mockPayload);
 
