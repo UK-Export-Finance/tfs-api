@@ -270,9 +270,6 @@ describe('POST /gift/facility - validation', () => {
           'overview.effectiveDate should not be null or undefined',
           `overview.effectiveDate must be longer than or equal to ${VALIDATION.FACILITY.OVERVIEW.EFFECTIVE_DATE.MIN_LENGTH} characters`,
           'overview.effectiveDate must be a string',
-          'overview.endOfCoverDate should not be null or undefined',
-          `overview.endOfCoverDate must be longer than or equal to ${VALIDATION.FACILITY.OVERVIEW.END_OF_COVER_DATE.MIN_LENGTH} characters`,
-          'overview.endOfCoverDate must be a string',
           'overview.expiryDate should not be null or undefined',
           `overview.expiryDate must be longer than or equal to ${VALIDATION.FACILITY.OVERVIEW.EXPIRY_DATE.MIN_LENGTH} characters`,
           'overview.expiryDate must be a string',
@@ -377,15 +374,6 @@ describe('POST /gift/facility - validation', () => {
       fieldName: 'effectiveDate',
       min: VALIDATION.FACILITY.OVERVIEW.EFFECTIVE_DATE.MIN_LENGTH,
       max: VALIDATION.FACILITY.OVERVIEW.EFFECTIVE_DATE.MAX_LENGTH,
-    });
-  });
-
-  describe('overview.endOfCoverDate', () => {
-    stringValidation({
-      ...baseParams,
-      fieldName: 'endOfCoverDate',
-      min: VALIDATION.FACILITY.OVERVIEW.END_OF_COVER_DATE.MIN_LENGTH,
-      max: VALIDATION.FACILITY.OVERVIEW.END_OF_COVER_DATE.MAX_LENGTH,
     });
   });
 

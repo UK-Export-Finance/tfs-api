@@ -53,15 +53,6 @@ export class GiftFacilityOverviewDto {
 
   @IsDefined()
   @IsString()
-  @Length(VALIDATION.END_OF_COVER_DATE.MIN_LENGTH, VALIDATION.END_OF_COVER_DATE.MAX_LENGTH)
-  @ApiProperty({
-    example: EXAMPLE.endOfCoverDate,
-    required: true,
-  })
-  endOfCoverDate: string;
-
-  @IsDefined()
-  @IsString()
   @Length(VALIDATION.EXPIRY_DATE.MIN_LENGTH, VALIDATION.EXPIRY_DATE.MAX_LENGTH)
   @ApiProperty({
     example: EXAMPLE.expiryDate,
