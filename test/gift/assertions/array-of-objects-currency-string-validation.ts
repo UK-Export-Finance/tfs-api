@@ -1,3 +1,4 @@
+import { HttpStatus } from '@nestjs/common';
 import { GIFT } from '@ukef/constants';
 import { AUD } from '@ukef/constants/currencies.constant';
 import { Api } from '@ukef-test/support/api';
