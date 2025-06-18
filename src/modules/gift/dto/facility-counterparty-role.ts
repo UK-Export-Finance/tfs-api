@@ -20,10 +20,10 @@ export class GiftFacilityCounterpartyRoleDto {
 
   @IsString()
   @ApiProperty({
-    example: COUNTERPARTY_ROLE.LEAD_ECA.displayText,
+    example: COUNTERPARTY_ROLE.LEAD_ECA.name,
     required: true,
   })
-  displayText: string;
+  name: string;
 
   @IsBoolean()
   @ApiProperty({

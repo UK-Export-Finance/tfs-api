@@ -14,17 +14,17 @@ const {
 const mockRoles: GiftFacilityCounterpartyRoleDto[] = [
   {
     id: '1',
-    displayText: 'Role 1',
+    name: 'Role 1',
     hasShare: false,
   },
   {
     id: '2',
-    displayText: 'Role 2',
+    name: 'Role 2',
     hasShare: true,
   },
   {
     id: '3',
-    displayText: 'Role 3',
+    name: 'Role 3',
     hasShare: false,
   },
 ];
