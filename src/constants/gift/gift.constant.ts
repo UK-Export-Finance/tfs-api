@@ -8,7 +8,7 @@ export const GIFT = {
   API_RESPONSE_TYPES: {
     ERROR: 'api-error-response',
   },
-  COUNTERPARTY_ROLE_IDS: {
+  COUNTERPARTY_ROLE_CODES: {
     LEAD_ECA: 'lead-eca',
     GUARANTOR: 'guarantor',
   },

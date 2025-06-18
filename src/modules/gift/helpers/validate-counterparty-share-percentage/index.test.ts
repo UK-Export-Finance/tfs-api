@@ -38,7 +38,7 @@ describe('modules/gift/helpers/validate-counterparty-share-percentage', () => {
       // Act
       const result = validateCounterpartySharePercentage({
         roles: mockRoles,
-        roleId: mockRoleId,
+        roleCode: mockRoleId,
       });
 
       // Assert
@@ -54,7 +54,7 @@ describe('modules/gift/helpers/validate-counterparty-share-percentage', () => {
       // Act
       const result = validateCounterpartySharePercentage({
         roles: mockRoles,
-        roleId: mockRoleId,
+        roleCode: mockRoleId,
       });
 
       // Assert
@@ -71,7 +71,7 @@ describe('modules/gift/helpers/validate-counterparty-share-percentage', () => {
         // Act
         const result = validateCounterpartySharePercentage({
           roles: mockRoles,
-          roleId: mockRoleId,
+          roleCode: mockRoleId,
           sharePercentage,
         });
 
@@ -90,7 +90,7 @@ describe('modules/gift/helpers/validate-counterparty-share-percentage', () => {
           // Act
           const result = validateCounterpartySharePercentage({
             roles: mockRoles,
-            roleId: mockRoleId,
+            roleCode: mockRoleId,
             sharePercentage: mockSharePercentage,
           });
 
@@ -108,7 +108,7 @@ describe('modules/gift/helpers/validate-counterparty-share-percentage', () => {
           // Act
           const result = validateCounterpartySharePercentage({
             roles: mockRoles,
-            roleId: mockRoleId,
+            roleCode: mockRoleId,
             sharePercentage: mockSharePercentage,
           });
 
@@ -126,7 +126,7 @@ describe('modules/gift/helpers/validate-counterparty-share-percentage', () => {
           // Act
           const result = validateCounterpartySharePercentage({
             roles: mockRoles,
-            roleId: mockRoleId,
+            roleCode: mockRoleId,
             sharePercentage: mockSharePercentage,
           });
 

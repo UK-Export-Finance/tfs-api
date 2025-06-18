@@ -5,7 +5,7 @@ import { Chance } from 'chance';
 import { SUPPORTED_CURRENCIES } from '../currencies.constant';
 import { GIFT } from '../gift/gift.constant';
 
-const { COUNTERPARTY_ROLE_IDS, FEE_TYPE_CODES, FEE_TYPE_DESCRIPTIONS, OBLIGATION_SUBTYPE_CODES, PRODUCT_TYPE_CODES, PRODUCT_TYPE_NAMES, VALIDATION } = GIFT;
+const { COUNTERPARTY_ROLE_CODES, FEE_TYPE_CODES, FEE_TYPE_DESCRIPTIONS, OBLIGATION_SUBTYPE_CODES, PRODUCT_TYPE_CODES, PRODUCT_TYPE_NAMES, VALIDATION } = GIFT;
 
 const chance = new Chance();
 
@@ -21,12 +21,12 @@ const COUNTERPARTY_ROLE = {
   LEAD_ECA: {
     displayText: 'Lead ECA',
     hasShare: false,
-    id: COUNTERPARTY_ROLE_IDS.LEAD_ECA,
+    id: COUNTERPARTY_ROLE_CODES.LEAD_ECA,
   },
   GUARANTOR: {
     displayText: 'Guarantor',
     hasShare: true,
-    id: COUNTERPARTY_ROLE_IDS.GUARANTOR,
+    id: COUNTERPARTY_ROLE_CODES.GUARANTOR,
   },
 };
 
@@ -40,7 +40,7 @@ const COUNTERPARTY = () => ({
     numeric: true,
   }),
   exitDate: '2025-01-16',
-  roleId: COUNTERPARTY_ROLE.GUARANTOR.id,
+  roleCode: COUNTERPARTY_ROLE.GUARANTOR.id,
   sharePercentage: 25,
   startDate: '2025-01-13',
 });
