@@ -5,7 +5,12 @@ import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import nock from 'nock';
 
-import { arrayOfObjectsCurrencyStringValidation, arrayOfObjectsNumberValidation, arrayOfObjectsStringValidation } from './assertions';
+import {
+  arrayOfObjectsCurrencyStringValidation,
+  arrayOfObjectsDateStringValidation,
+  arrayOfObjectsNumberValidation,
+  arrayOfObjectsStringValidation,
+} from './assertions';
 import { counterpartyRolesUrl, currencyUrl, feeTypeUrl, mockResponses, productTypeUrl } from './test-helpers';
 
 const {
@@ -73,11 +78,9 @@ describe('POST /gift/facility - validation - obligations', () => {
           `obligations.0.currency must be longer than or equal to ${OBLIGATION_VALIDATION.CURRENCY.MIN_LENGTH} characters`,
           'obligations.0.currency must be a string',
           'obligations.0.effectiveDate should not be null or undefined',
-          `obligations.0.effectiveDate must be longer than or equal to ${OBLIGATION_VALIDATION.EFFECTIVE_DATE.MIN_LENGTH} characters`,
-          'obligations.0.effectiveDate must be a string',
+          'obligations.0.effectiveDate must be a valid ISO 8601 date string',
           'obligations.0.maturityDate should not be null or undefined',
-          `obligations.0.maturityDate must be longer than or equal to ${OBLIGATION_VALIDATION.MATURITY_DATE.MIN_LENGTH} characters`,
-          'obligations.0.maturityDate must be a string',
+          'obligations.0.maturityDate must be a valid ISO 8601 date string',
           'obligations.0.amount should not be null or undefined',
           `obligations.0.amount must not be greater than ${OBLIGATION_VALIDATION.OBLIGATION_AMOUNT.MAX}`,
           'obligations.0.amount must not be less than 1',
@@ -98,20 +101,16 @@ describe('POST /gift/facility - validation - obligations', () => {
   });
 
   describe('effectiveDate', () => {
-    arrayOfObjectsStringValidation({
+    arrayOfObjectsDateStringValidation({
       ...baseParams,
       fieldName: 'effectiveDate',
-      min: OBLIGATION_VALIDATION.EFFECTIVE_DATE.MIN_LENGTH,
-      max: OBLIGATION_VALIDATION.EFFECTIVE_DATE.MAX_LENGTH,
     });
   });
 
   describe('maturityDate', () => {
-    arrayOfObjectsStringValidation({
+    arrayOfObjectsDateStringValidation({
       ...baseParams,
       fieldName: 'maturityDate',
-      min: OBLIGATION_VALIDATION.MATURITY_DATE.MIN_LENGTH,
-      max: OBLIGATION_VALIDATION.MATURITY_DATE.MAX_LENGTH,
     });
   });
 

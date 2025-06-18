@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { EXAMPLES, GIFT } from '@ukef/constants';
-import { IsDefined, IsNumber, IsString, Length, Max, Min } from 'class-validator';
+import { IsDateString, IsDefined, IsNumber, Max, Min } from 'class-validator';
 
 const {
   GIFT: { REPAYMENT_PROFILE_ALLOCATION },
@@ -28,8 +28,7 @@ export class GiftRepaymentProfileAllocationDto {
   amount: number;
 
   @IsDefined()
-  @IsString()
-  @Length(VALIDATION.DUE_DATE.MIN_LENGTH, VALIDATION.DUE_DATE.MAX_LENGTH)
+  @IsDateString()
   @ApiProperty({
     example: REPAYMENT_PROFILE_ALLOCATION().dueDate,
     required: true,

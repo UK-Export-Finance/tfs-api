@@ -9,6 +9,7 @@ import {
   assert400Response,
   booleanValidation,
   currencyStringValidation,
+  dateStringValidation,
   numberStringValidation,
   numberValidation,
   stringValidation,
@@ -268,14 +269,11 @@ describe('POST /gift/facility - validation', () => {
           `overview.dealId must be longer than or equal to ${VALIDATION.FACILITY.OVERVIEW.DEAL_ID.MIN_LENGTH} characters`,
           'overview.dealId must match /^00\\d{8}$/ regular expression',
           'overview.effectiveDate should not be null or undefined',
-          `overview.effectiveDate must be longer than or equal to ${VALIDATION.FACILITY.OVERVIEW.EFFECTIVE_DATE.MIN_LENGTH} characters`,
-          'overview.effectiveDate must be a string',
+          'overview.effectiveDate must be a valid ISO 8601 date string',
           'overview.endOfCoverDate should not be null or undefined',
-          `overview.endOfCoverDate must be longer than or equal to ${VALIDATION.FACILITY.OVERVIEW.END_OF_COVER_DATE.MIN_LENGTH} characters`,
-          'overview.endOfCoverDate must be a string',
+          'overview.endOfCoverDate must be a valid ISO 8601 date string',
           'overview.expiryDate should not be null or undefined',
-          `overview.expiryDate must be longer than or equal to ${VALIDATION.FACILITY.OVERVIEW.EXPIRY_DATE.MIN_LENGTH} characters`,
-          'overview.expiryDate must be a string',
+          'overview.expiryDate must be a valid ISO 8601 date string',
           'overview.facilityAmount should not be null or undefined',
           `overview.facilityAmount must not be greater than ${VALIDATION.FACILITY.OVERVIEW.FACILITY_AMOUNT.MAX}`,
           `overview.facilityAmount must not be less than ${VALIDATION.FACILITY.OVERVIEW.FACILITY_AMOUNT.MIN}`,
@@ -298,14 +296,12 @@ describe('POST /gift/facility - validation', () => {
           `counterparties.counterpartyUrn must be longer than or equal to ${VALIDATION.COUNTERPARTY.COUNTERPARTY_URN.MIN_LENGTH} characters`,
           `counterparties.counterpartyUrn must be a string`,
           `counterparties.exitDate should not be null or undefined`,
-          `counterparties.exitDate must be longer than or equal to ${VALIDATION.COUNTERPARTY.EXIT_DATE.MIN_LENGTH} characters`,
-          `counterparties.exitDate must be a string`,
+          'counterparties.exitDate must be a valid ISO 8601 date string',
           `counterparties.roleId should not be null or undefined`,
           `counterparties.roleId must be longer than or equal to ${VALIDATION.COUNTERPARTY.ROLE_ID.MIN_LENGTH} characters`,
           `counterparties.roleId must be a string`,
           `counterparties.startDate should not be null or undefined`,
-          `counterparties.startDate must be longer than or equal to ${VALIDATION.COUNTERPARTY.START_DATE.MIN_LENGTH} characters`,
-          `counterparties.startDate must be a string`,
+          'counterparties.startDate must be a valid ISO 8601 date string',
           'fixedFees.amountDue should not be null or undefined',
           `fixedFees.amountDue must not be greater than ${VALIDATION.FIXED_FEE.AMOUNT_DUE.MAX}`,
           `fixedFees.amountDue must not be less than ${VALIDATION.FIXED_FEE.AMOUNT_DUE.MIN}`,
@@ -317,8 +313,7 @@ describe('POST /gift/facility - validation', () => {
           `fixedFees.description must be longer than or equal to ${VALIDATION.FIXED_FEE.DESCRIPTION.MIN_LENGTH} characters`,
           'fixedFees.description must be a string',
           'fixedFees.effectiveDate should not be null or undefined',
-          `fixedFees.effectiveDate must be longer than or equal to ${VALIDATION.FIXED_FEE.EFFECTIVE_DATE.MIN_LENGTH} characters`,
-          'fixedFees.effectiveDate must be a string',
+          'fixedFees.effectiveDate must be a valid ISO 8601 date string',
           'fixedFees.feeTypeCode should not be null or undefined',
           `fixedFees.feeTypeCode must be longer than or equal to ${VALIDATION.FIXED_FEE.FEE_TYPE_CODE.MIN_LENGTH} characters`,
           'fixedFees.feeTypeCode must be a string',
@@ -326,11 +321,9 @@ describe('POST /gift/facility - validation', () => {
           `obligations.currency must be longer than or equal to ${VALIDATION.OBLIGATION.CURRENCY.MIN_LENGTH} characters`,
           'obligations.currency must be a string',
           'obligations.effectiveDate should not be null or undefined',
-          `obligations.effectiveDate must be longer than or equal to ${VALIDATION.OBLIGATION.EFFECTIVE_DATE.MIN_LENGTH} characters`,
-          'obligations.effectiveDate must be a string',
+          'obligations.effectiveDate must be a valid ISO 8601 date string',
           'obligations.maturityDate should not be null or undefined',
-          `obligations.maturityDate must be longer than or equal to ${VALIDATION.OBLIGATION.MATURITY_DATE.MIN_LENGTH} characters`,
-          'obligations.maturityDate must be a string',
+          'obligations.maturityDate must be a valid ISO 8601 date string',
           'obligations.amount should not be null or undefined',
           `obligations.amount must not be greater than ${VALIDATION.OBLIGATION.OBLIGATION_AMOUNT.MAX}`,
           `obligations.amount must not be less than ${VALIDATION.OBLIGATION.OBLIGATION_AMOUNT.MIN}`,
@@ -372,29 +365,23 @@ describe('POST /gift/facility - validation', () => {
   });
 
   describe('overview.effectiveDate', () => {
-    stringValidation({
+    dateStringValidation({
       ...baseParams,
       fieldName: 'effectiveDate',
-      min: VALIDATION.FACILITY.OVERVIEW.EFFECTIVE_DATE.MIN_LENGTH,
-      max: VALIDATION.FACILITY.OVERVIEW.EFFECTIVE_DATE.MAX_LENGTH,
     });
   });
 
   describe('overview.endOfCoverDate', () => {
-    stringValidation({
+    dateStringValidation({
       ...baseParams,
       fieldName: 'endOfCoverDate',
-      min: VALIDATION.FACILITY.OVERVIEW.END_OF_COVER_DATE.MIN_LENGTH,
-      max: VALIDATION.FACILITY.OVERVIEW.END_OF_COVER_DATE.MAX_LENGTH,
     });
   });
 
   describe('overview.expiryDate', () => {
-    stringValidation({
+    dateStringValidation({
       ...baseParams,
       fieldName: 'expiryDate',
-      min: VALIDATION.FACILITY.OVERVIEW.EXPIRY_DATE.MIN_LENGTH,
-      max: VALIDATION.FACILITY.OVERVIEW.EXPIRY_DATE.MAX_LENGTH,
     });
   });
 
