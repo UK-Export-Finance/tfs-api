@@ -28,6 +28,7 @@ const {
   VALIDATION,
 } = GIFT;
 
+const UNSUPPORTED_SERVICE_NAME = 'ABC';
 const UNSUPPORTED_PRODUCT_TYPE_CODE = 'ABC';
 
 describe('POST /gift/facility - validation', () => {
@@ -71,6 +72,8 @@ describe('POST /gift/facility - validation', () => {
       const expected = {
         error: 'Bad Request',
         message: [
+          'serviceName should not be null or undefined',
+          'serviceName must be a string',
           'overview should not be null or undefined',
           'overview must be a non-empty object',
           'counterparties should not be null or undefined',
@@ -110,6 +113,8 @@ describe('POST /gift/facility - validation', () => {
       const expected = {
         error: 'Bad Request',
         message: [
+          'serviceName should not be null or undefined',
+          'serviceName must be a string',
           'overview should not be null or undefined',
           'overview must be a non-empty object',
           'counterparties should not be null or undefined',
@@ -149,6 +154,8 @@ describe('POST /gift/facility - validation', () => {
       const expected = {
         error: 'Bad Request',
         message: [
+          'serviceName should not be null or undefined',
+          'serviceName must be a string',
           'overview must be a non-empty object',
           "counterparty[] URN's must be unique",
           'counterparties should not be empty',
@@ -179,6 +186,8 @@ describe('POST /gift/facility - validation', () => {
       const expected = {
         error: 'Bad Request',
         message: [
+          'serviceName should not be null or undefined',
+          'serviceName must be a string',
           'overview should not be null or undefined',
           'overview must be a non-empty object',
           'nested property overview must be either object or array',
@@ -223,6 +232,8 @@ describe('POST /gift/facility - validation', () => {
       const expected = {
         error: 'Bad Request',
         message: [
+          'serviceName should not be null or undefined',
+          'serviceName must be a string',
           'overview should not be null or undefined',
           'overview must be a non-empty object',
           'counterparties should not be null or undefined',
@@ -262,6 +273,8 @@ describe('POST /gift/facility - validation', () => {
       const expected = {
         error: 'Bad Request',
         message: [
+          'serviceName should not be null or undefined',
+          'serviceName must be a string',
           'overview.currency should not be null or undefined',
           `overview.currency must be longer than or equal to ${VALIDATION.FACILITY.OVERVIEW.CURRENCY.MIN_LENGTH} characters`,
           'overview.currency must be a string',
@@ -350,6 +363,38 @@ describe('POST /gift/facility - validation', () => {
     initialPayload: EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD,
     url,
   };
+
+  describe('serviceName', () => {
+    let mockPayload;
+
+    describe('when the provided service name is not supported', () => {
+      beforeAll(() => {
+        // Arrange
+        mockPayload = {
+          ...EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD,
+          serviceName: UNSUPPORTED_SERVICE_NAME,
+        };
+      });
+
+      it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
+        // Act
+        const response = await api.post(url, mockPayload);
+
+        // Assert
+        assert400Response(response);
+      });
+
+      it('should return the correct error messages', async () => {
+        // Act
+        const { body } = await api.post(url, mockPayload);
+
+        // Assert
+        const expected = [`serviceName is not supported (${UNSUPPORTED_SERVICE_NAME})`];
+
+        expect(body.message).toStrictEqual(expected);
+      });
+    });
+  });
 
   describe('overview.currency', () => {
     currencyStringValidation(baseParams);
@@ -440,7 +485,7 @@ describe('POST /gift/facility - validation', () => {
         // Arrange
         nock(GIFT_API_URL).persist().get(`${PRODUCT_TYPE}/${UNSUPPORTED_PRODUCT_TYPE_CODE}`).reply(HttpStatus.NOT_FOUND, mockResponses.notFound);
 
-        mockPayload = baseParams.initialPayload;
+        mockPayload = EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD;
 
         mockPayload.overview.productTypeCode = UNSUPPORTED_PRODUCT_TYPE_CODE;
       });
