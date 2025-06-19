@@ -8,9 +8,9 @@ const {
 
 /**
  * GIFT facility counterparty role DTO.
- * These fields are returned by GIFT.
+ * These fields are returned by GIFT when getting counterparty roles.
  */
-export class GiftFacilityCounterpartyRoleDto {
+export class GiftFacilityCounterpartyRoleResponseDto {
   @IsString()
   @ApiProperty({
     example: COUNTERPARTY_ROLE.LEAD_ECA.id,

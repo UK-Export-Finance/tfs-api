@@ -3,7 +3,7 @@ import { EXAMPLES } from '@ukef/constants';
 import { Type } from 'class-transformer';
 import { IsObject } from 'class-validator';
 
-import { GiftFacilityResponseDto } from './facility-get';
+import { GiftFacilityResponseDto } from './facility-get-gift-response';
 
 const {
   GIFT: { FACILITY_RESPONSE_DATA: EXAMPLE },
@@ -11,7 +11,7 @@ const {
 
 /**
  * GIFT facility config POST response DTO.
- * These fields are returned from GIFT when creating a facility.
+ * This is subset of fields returned from GIFT when getting a facility work package.
  */
 export class GiftFacilityConfigPostResponseDto {
   @IsObject()

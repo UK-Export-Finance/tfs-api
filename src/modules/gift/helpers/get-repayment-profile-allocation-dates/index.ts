@@ -1,14 +1,14 @@
-import { GiftRepaymentProfileDto } from '../../dto';
+import { GiftRepaymentProfileRequestDto } from '../../dto';
 
 /**
  * Get all allocation dates from GIFT repayment profile allocations
- * @param {GiftRepaymentProfileDto[]} repaymentProfiles: All repayment profiles
+ * @param {GiftRepaymentProfileRequestDto[]} repaymentProfiles: All repayment profiles
  * @returns {String[]} All allocation's dueDate values
  */
-export const getRepaymentProfileAllocationDates = (repaymentProfiles?: GiftRepaymentProfileDto[]): string[] => {
+export const getRepaymentProfileAllocationDates = (repaymentProfiles?: GiftRepaymentProfileRequestDto[]): string[] => {
   if (Array.isArray(repaymentProfiles)) {
     return repaymentProfiles
-      .map((profile: GiftRepaymentProfileDto) => {
+      .map((profile: GiftRepaymentProfileRequestDto) => {
         if (Array.isArray(profile.allocations)) {
           return profile.allocations.map((allocation) => allocation.dueDate);
         }

@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { IsDateString, IsDefined, IsNumber, IsString, Length, Max, Min } from 'class-validator';
 
-import { IsSupportedCurrency, IsSupportedFeeType } from '../custom-decorators';
+import { IsSupportedCurrency, IsSupportedFeeType } from '../../custom-decorators';
 
 const {
   GIFT: { FIXED_FEE },
@@ -16,7 +16,7 @@ const {
  * GIFT fixed fee DTO.
  * These fields are required for APIM to create a fixed fee in GIFT.
  */
-export class GiftFixedFeeDto {
+export class GiftFixedFeeRequestDto {
   @IsDefined()
   @IsNumber()
   @Min(VALIDATION.AMOUNT_DUE.MIN)
