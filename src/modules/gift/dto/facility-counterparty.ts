@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { EXAMPLES, GIFT } from '@ukef/constants';
-import { IsDefined, IsString, Length } from 'class-validator';
+import { IsDateString, IsDefined, IsString, Length } from 'class-validator';
 
 import { CounterpartySharePercentageValidation, IsSupportedCounterpartyRole } from '../custom-decorators';
 
@@ -27,8 +27,7 @@ export class GiftFacilityCounterpartyDto {
   counterpartyUrn: string;
 
   @IsDefined()
-  @IsString()
-  @Length(VALIDATION.EXIT_DATE.MIN_LENGTH, VALIDATION.EXIT_DATE.MAX_LENGTH)
+  @IsDateString()
   @ApiProperty({
     example: COUNTERPARTY().exitDate,
     required: true,
@@ -53,8 +52,7 @@ export class GiftFacilityCounterpartyDto {
   sharePercentage: number;
 
   @IsDefined()
-  @IsString()
-  @Length(VALIDATION.START_DATE.MIN_LENGTH, VALIDATION.START_DATE.MAX_LENGTH)
+  @IsDateString()
   @ApiProperty({
     example: COUNTERPARTY().startDate,
     required: true,
