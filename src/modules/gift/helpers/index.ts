@@ -4,6 +4,7 @@ export * from './array-of-objects-has-value';
 export * from './get-counterparty-urns';
 export * from './get-repayment-profile-allocation-dates';
 export * from './get-repayment-profile-names';
+export * from './is-supported-consumer';
 export * from './is-valid-counterparty-role-id-format';
 export * from './is-valid-product-type-code-format';
 export * from './map-all-validation-error-responses';
