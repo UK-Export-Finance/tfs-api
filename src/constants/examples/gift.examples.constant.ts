@@ -3,8 +3,8 @@ import { GiftFacilityCreationRequestDto, GiftFacilityPostResponseDto } from '@uk
 import { Chance } from 'chance';
 
 import { SUPPORTED_CURRENCIES } from '../currencies.constant';
+import { CONSUMER } from '../gift/consumer.constant';
 import { GIFT } from '../gift/gift.constant';
-import { SERVICE_NAME } from '../gift/service-name.constant';
 
 const { COUNTERPARTY_ROLE_IDS, FEE_TYPE_CODES, FEE_TYPE_DESCRIPTIONS, OBLIGATION_SUBTYPE_CODES, PRODUCT_TYPE_CODES, PRODUCT_TYPE_NAMES, VALIDATION } = GIFT;
 
@@ -130,7 +130,7 @@ const FACILITY_OVERVIEW = {
  * Facility creation data in the shape that APIM TFS requires.
  */
 const FACILITY_CREATION_PAYLOAD: GiftFacilityCreationRequestDto = {
-  serviceName: SERVICE_NAME.DTFS,
+  consumer: CONSUMER.DTFS,
   overview: FACILITY_OVERVIEW,
   counterparties: [COUNTERPARTY(), COUNTERPARTY()],
   fixedFees: [FIXED_FEE(), FIXED_FEE()],

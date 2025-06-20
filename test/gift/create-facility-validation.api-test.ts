@@ -28,7 +28,7 @@ const {
   VALIDATION,
 } = GIFT;
 
-const UNSUPPORTED_SERVICE_NAME = 'ABC';
+const UNSUPPORTED_CONSUMER = 'ABC';
 const UNSUPPORTED_PRODUCT_TYPE_CODE = 'ABC';
 
 describe('POST /gift/facility - validation', () => {
@@ -72,8 +72,8 @@ describe('POST /gift/facility - validation', () => {
       const expected = {
         error: 'Bad Request',
         message: [
-          'serviceName should not be null or undefined',
-          'serviceName must be a string',
+          'consumer should not be null or undefined',
+          'consumer must be a string',
           'overview should not be null or undefined',
           'overview must be a non-empty object',
           'counterparties should not be null or undefined',
@@ -113,8 +113,8 @@ describe('POST /gift/facility - validation', () => {
       const expected = {
         error: 'Bad Request',
         message: [
-          'serviceName should not be null or undefined',
-          'serviceName must be a string',
+          'consumer should not be null or undefined',
+          'consumer must be a string',
           'overview should not be null or undefined',
           'overview must be a non-empty object',
           'counterparties should not be null or undefined',
@@ -154,8 +154,8 @@ describe('POST /gift/facility - validation', () => {
       const expected = {
         error: 'Bad Request',
         message: [
-          'serviceName should not be null or undefined',
-          'serviceName must be a string',
+          'consumer should not be null or undefined',
+          'consumer must be a string',
           'overview must be a non-empty object',
           "counterparty[] URN's must be unique",
           'counterparties should not be empty',
@@ -186,8 +186,8 @@ describe('POST /gift/facility - validation', () => {
       const expected = {
         error: 'Bad Request',
         message: [
-          'serviceName should not be null or undefined',
-          'serviceName must be a string',
+          'consumer should not be null or undefined',
+          'consumer must be a string',
           'overview should not be null or undefined',
           'overview must be a non-empty object',
           'nested property overview must be either object or array',
@@ -232,8 +232,8 @@ describe('POST /gift/facility - validation', () => {
       const expected = {
         error: 'Bad Request',
         message: [
-          'serviceName should not be null or undefined',
-          'serviceName must be a string',
+          'consumer should not be null or undefined',
+          'consumer must be a string',
           'overview should not be null or undefined',
           'overview must be a non-empty object',
           'counterparties should not be null or undefined',
@@ -273,8 +273,8 @@ describe('POST /gift/facility - validation', () => {
       const expected = {
         error: 'Bad Request',
         message: [
-          'serviceName should not be null or undefined',
-          'serviceName must be a string',
+          'consumer should not be null or undefined',
+          'consumer must be a string',
           'overview.currency should not be null or undefined',
           `overview.currency must be longer than or equal to ${VALIDATION.FACILITY.OVERVIEW.CURRENCY.MIN_LENGTH} characters`,
           'overview.currency must be a string',
@@ -362,7 +362,7 @@ describe('POST /gift/facility - validation', () => {
     url,
   };
 
-  describe('serviceName', () => {
+  describe('consumer', () => {
     let mockPayload;
 
     describe('when the provided service name is not supported', () => {
@@ -370,7 +370,7 @@ describe('POST /gift/facility - validation', () => {
         // Arrange
         mockPayload = {
           ...EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD,
-          serviceName: UNSUPPORTED_SERVICE_NAME,
+          consumer: UNSUPPORTED_CONSUMER,
         };
       });
 
@@ -387,7 +387,7 @@ describe('POST /gift/facility - validation', () => {
         const { body } = await api.post(url, mockPayload);
 
         // Assert
-        const expected = [`serviceName is not supported (${UNSUPPORTED_SERVICE_NAME})`];
+        const expected = [`consumer is not supported (${UNSUPPORTED_CONSUMER})`];
 
         expect(body.message).toStrictEqual(expected);
       });

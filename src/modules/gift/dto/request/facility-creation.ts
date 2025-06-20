@@ -3,7 +3,7 @@ import { EXAMPLES, GIFT } from '@ukef/constants';
 import { Type } from 'class-transformer';
 import { ArrayNotEmpty, IsArray, IsDefined, IsNotEmptyObject, IsString, ValidateNested } from 'class-validator';
 
-import { IsSupportedServiceName, UniqueCounterpartyUrns, UniqueRepaymentProfileAllocationDates, UniqueRepaymentProfileNames } from '../../custom-decorators';
+import { IsSupportedConsumer, UniqueCounterpartyUrns, UniqueRepaymentProfileAllocationDates, UniqueRepaymentProfileNames } from '../../custom-decorators';
 import { GiftFacilityCounterpartyRequestDto } from './counterparty';
 import { GiftFacilityOverviewRequestDto } from './facility-overview';
 import { GiftFixedFeeRequestDto } from './fixed-fee';
@@ -21,12 +21,12 @@ const {
 export class GiftFacilityCreationRequestDto {
   @IsDefined()
   @IsString()
-  @IsSupportedServiceName()
+  @IsSupportedConsumer()
   @ApiProperty({
-    example: GIFT.SERVICE_NAME.DTFS,
+    example: GIFT.CONSUMER.DTFS,
     required: true,
   })
-  serviceName: string;
+  consumer: string;
 
   @ApiProperty({
     example: FACILITY_OVERVIEW,
