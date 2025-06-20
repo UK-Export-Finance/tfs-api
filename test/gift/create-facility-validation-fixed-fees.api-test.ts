@@ -7,6 +7,7 @@ import nock from 'nock';
 
 import {
   arrayOfObjectsCurrencyStringValidation,
+  arrayOfObjectsDateStringValidation,
   arrayOfObjectsFeeTypeCodeStringValidation,
   arrayOfObjectsNumberValidation,
   arrayOfObjectsStringValidation,
@@ -87,8 +88,7 @@ describe('POST /gift/facility - validation - fixed fees', () => {
           `fixedFees.0.description must be longer than or equal to ${FIXED_FEE_VALIDATION.DESCRIPTION.MIN_LENGTH} characters`,
           'fixedFees.0.description must be a string',
           'fixedFees.0.effectiveDate should not be null or undefined',
-          `fixedFees.0.effectiveDate must be longer than or equal to ${FIXED_FEE_VALIDATION.EFFECTIVE_DATE.MIN_LENGTH} characters`,
-          'fixedFees.0.effectiveDate must be a string',
+          'fixedFees.0.effectiveDate must be a valid ISO 8601 date string',
           'fixedFees.0.feeTypeCode should not be null or undefined',
           `fixedFees.0.feeTypeCode must be longer than or equal to ${FIXED_FEE_VALIDATION.FEE_TYPE_CODE.MIN_LENGTH} characters`,
           'fixedFees.0.feeTypeCode must be a string',
@@ -123,11 +123,9 @@ describe('POST /gift/facility - validation - fixed fees', () => {
   });
 
   describe('effectiveDate', () => {
-    arrayOfObjectsStringValidation({
+    arrayOfObjectsDateStringValidation({
       ...baseParams,
       fieldName: 'effectiveDate',
-      min: FIXED_FEE_VALIDATION.EFFECTIVE_DATE.MIN_LENGTH,
-      max: FIXED_FEE_VALIDATION.EFFECTIVE_DATE.MAX_LENGTH,
     });
   });
 

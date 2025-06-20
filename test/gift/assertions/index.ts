@@ -1,6 +1,8 @@
+export * from './array-of-nested-objects-date-string-validation';
 export * from './array-of-nested-objects-number-validation';
 export * from './array-of-nested-objects-string-validation';
 export * from './array-of-objects-currency-string-validation';
+export * from './array-of-objects-date-string-validation';
 export * from './array-of-objects-fee-type-code-string-validation';
 export * from './array-of-objects-number-validation';
 export * from './array-of-objects-role-id-string-validation';
@@ -8,6 +10,7 @@ export * from './array-of-objects-share-percentage-validation';
 export * from './array-of-objects-string-validation';
 export * from './boolean-validation';
 export * from './currency-string-validation';
+export * from './date-string-validation';
 export * from './generate-payload';
 export * from './number-string-validation';
 export * from './number-validation';

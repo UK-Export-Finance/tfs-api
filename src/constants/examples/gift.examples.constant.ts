@@ -126,7 +126,6 @@ const FACILITY_OVERVIEW = {
   facilityAmount: 10000,
   effectiveDate: '2025-01-01',
   expiryDate: '2027-02-01',
-  endOfCoverDate: '2027-02-01',
   dealId: DEAL_ID,
   isRevolving: true,
   isDraft: true,

@@ -5,7 +5,7 @@ import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import nock from 'nock';
 
-import { arrayOfNestedObjectsNumberValidation, arrayOfNestedObjectsStringValidation, arrayOfObjectsStringValidation } from './assertions';
+import { arrayOfNestedObjectsDateStringValidation, arrayOfNestedObjectsNumberValidation, arrayOfObjectsStringValidation } from './assertions';
 import { counterpartyRolesUrl, currencyUrl, feeTypeUrl, mockResponses, obligationSubtypeUrl, productTypeUrl } from './test-helpers';
 
 const {
@@ -213,8 +213,7 @@ describe('POST /gift/facility - validation - repayment profiles', () => {
           `repaymentProfiles.0.allocations.0.amount must not be less than ${REPAYMENT_PROFILE_VALIDATION.ALLOCATION.AMOUNT.MIN}`,
           'repaymentProfiles.0.allocations.0.amount must be a number conforming to the specified constraints',
           'repaymentProfiles.0.allocations.0.dueDate should not be null or undefined',
-          `repaymentProfiles.0.allocations.0.dueDate must be longer than or equal to ${REPAYMENT_PROFILE_VALIDATION.ALLOCATION.DUE_DATE.MIN_LENGTH} characters`,
-          'repaymentProfiles.0.allocations.0.dueDate must be a string',
+          'repaymentProfiles.0.allocations.0.dueDate must be a valid ISO 8601 date string',
         ],
         statusCode: HttpStatus.BAD_REQUEST,
       };
@@ -235,13 +234,11 @@ describe('POST /gift/facility - validation - repayment profiles', () => {
   });
 
   describe('allocation.dueDate', () => {
-    arrayOfNestedObjectsStringValidation({
+    arrayOfNestedObjectsDateStringValidation({
       ...baseParams,
       grandParentFieldName: 'repaymentProfiles',
       parentFieldName: 'allocations',
       fieldName: 'dueDate',
-      min: REPAYMENT_PROFILE_VALIDATION.ALLOCATION.DUE_DATE.MIN_LENGTH,
-      max: REPAYMENT_PROFILE_VALIDATION.ALLOCATION.DUE_DATE.MAX_LENGTH,
     });
   });
 });

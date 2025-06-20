@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { ValidatedFacilityIdentifierApiProperty } from '@ukef/decorators/validated-facility-identifier-api-property';
 import { UkefId } from '@ukef/helpers';
-import { IsBoolean, IsDefined, IsNumber, IsNumberString, IsString, Length, Max, Min } from 'class-validator';
+import { IsBoolean, IsDateString, IsDefined, IsNumber, IsNumberString, IsString, Length, Max, Min } from 'class-validator';
 
 import { IsSupportedCurrency, IsSupportedProductType } from '../custom-decorators';
 
@@ -43,8 +43,7 @@ export class GiftFacilityOverviewDto {
   dealId: UkefId;
 
   @IsDefined()
-  @IsString()
-  @Length(VALIDATION.EFFECTIVE_DATE.MIN_LENGTH, VALIDATION.EFFECTIVE_DATE.MAX_LENGTH)
+  @IsDateString()
   @ApiProperty({
     example: EXAMPLE.effectiveDate,
     required: true,
@@ -52,17 +51,7 @@ export class GiftFacilityOverviewDto {
   effectiveDate: string;
 
   @IsDefined()
-  @IsString()
-  @Length(VALIDATION.END_OF_COVER_DATE.MIN_LENGTH, VALIDATION.END_OF_COVER_DATE.MAX_LENGTH)
-  @ApiProperty({
-    example: EXAMPLE.endOfCoverDate,
-    required: true,
-  })
-  endOfCoverDate: string;
-
-  @IsDefined()
-  @IsString()
-  @Length(VALIDATION.EXPIRY_DATE.MIN_LENGTH, VALIDATION.EXPIRY_DATE.MAX_LENGTH)
+  @IsDateString()
   @ApiProperty({
     example: EXAMPLE.expiryDate,
     required: true,

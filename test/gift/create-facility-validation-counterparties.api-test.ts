@@ -5,7 +5,7 @@ import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import nock from 'nock';
 
-import { arrayOfObjectsRoleIdStringValidation, arrayOfObjectsStringValidation } from './assertions';
+import { arrayOfObjectsDateStringValidation, arrayOfObjectsRoleIdStringValidation, arrayOfObjectsStringValidation } from './assertions';
 import { counterpartyRolesUrl, currencyUrl, feeTypeUrl, mockResponses, obligationSubtypeUrl, productTypeUrl } from './test-helpers';
 
 const {
@@ -77,14 +77,12 @@ describe('POST /gift/facility - validation - counterparties', () => {
           `counterparties.0.counterpartyUrn must be longer than or equal to ${COUNTERPARTY_VALIDATION.COUNTERPARTY_URN.MIN_LENGTH} characters`,
           `counterparties.0.counterpartyUrn must be a string`,
           `counterparties.0.exitDate should not be null or undefined`,
-          `counterparties.0.exitDate must be longer than or equal to ${COUNTERPARTY_VALIDATION.EXIT_DATE.MIN_LENGTH} characters`,
-          `counterparties.0.exitDate must be a string`,
+          'counterparties.0.exitDate must be a valid ISO 8601 date string',
           `counterparties.0.roleId should not be null or undefined`,
           `counterparties.0.roleId must be longer than or equal to ${COUNTERPARTY_VALIDATION.ROLE_ID.MIN_LENGTH} characters`,
           `counterparties.0.roleId must be a string`,
           `counterparties.0.startDate should not be null or undefined`,
-          `counterparties.0.startDate must be longer than or equal to ${COUNTERPARTY_VALIDATION.START_DATE.MIN_LENGTH} characters`,
-          `counterparties.0.startDate must be a string`,
+          'counterparties.0.startDate must be a valid ISO 8601 date string',
         ],
         statusCode: HttpStatus.BAD_REQUEST,
       };
@@ -133,11 +131,9 @@ describe('POST /gift/facility - validation - counterparties', () => {
   });
 
   describe('exitDate', () => {
-    arrayOfObjectsStringValidation({
+    arrayOfObjectsDateStringValidation({
       ...baseParams,
       fieldName: 'exitDate',
-      min: COUNTERPARTY_VALIDATION.EXIT_DATE.MIN_LENGTH,
-      max: COUNTERPARTY_VALIDATION.EXIT_DATE.MAX_LENGTH,
     });
   });
 
@@ -146,11 +142,9 @@ describe('POST /gift/facility - validation - counterparties', () => {
   });
 
   describe('startDate', () => {
-    arrayOfObjectsStringValidation({
+    arrayOfObjectsDateStringValidation({
       ...baseParams,
       fieldName: 'startDate',
-      min: COUNTERPARTY_VALIDATION.START_DATE.MIN_LENGTH,
-      max: COUNTERPARTY_VALIDATION.START_DATE.MAX_LENGTH,
     });
   });
 });

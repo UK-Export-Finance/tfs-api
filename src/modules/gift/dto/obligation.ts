@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { EXAMPLES, GIFT } from '@ukef/constants';
-import { IsDefined, IsNumber, IsString, Length, Max, Min } from 'class-validator';
+import { IsDateString, IsDefined, IsNumber, IsString, Length, Max, Min } from 'class-validator';
 
 import { IsSupportedCurrency } from '../custom-decorators';
 
@@ -28,8 +28,7 @@ export class GiftObligationDto {
   currency: string;
 
   @IsDefined()
-  @IsString()
-  @Length(VALIDATION.EFFECTIVE_DATE.MIN_LENGTH, VALIDATION.EFFECTIVE_DATE.MAX_LENGTH)
+  @IsDateString()
   @ApiProperty({
     example: OBLIGATION().effectiveDate,
     required: true,
@@ -37,8 +36,7 @@ export class GiftObligationDto {
   effectiveDate: string;
 
   @IsDefined()
-  @IsString()
-  @Length(VALIDATION.MATURITY_DATE.MIN_LENGTH, VALIDATION.MATURITY_DATE.MAX_LENGTH)
+  @IsDateString()
   @ApiProperty({
     example: OBLIGATION().maturityDate,
     required: true,
