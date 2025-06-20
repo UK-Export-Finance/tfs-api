@@ -14,18 +14,18 @@ const {
 const mockRoles: GiftFacilityCounterpartyRoleResponseDto[] = [
   {
     id: '1',
-    displayText: 'Role 1',
-    hasShare: false,
+    name: 'Role 1',
+    hasSharePercentage: false,
   },
   {
     id: '2',
-    displayText: 'Role 2',
-    hasShare: true,
+    name: 'Role 2',
+    hasSharePercentage: true,
   },
   {
     id: '3',
-    displayText: 'Role 3',
-    hasShare: false,
+    name: 'Role 3',
+    hasSharePercentage: false,
   },
 ];
 
@@ -38,7 +38,7 @@ describe('modules/gift/helpers/validate-counterparty-share-percentage', () => {
       // Act
       const result = validateCounterpartySharePercentage({
         roles: mockRoles,
-        roleId: mockRoleId,
+        roleCode: mockRoleId,
       });
 
       // Assert
@@ -46,7 +46,7 @@ describe('modules/gift/helpers/validate-counterparty-share-percentage', () => {
     });
   });
 
-  describe('when a role is found and does NOT have hasShare', () => {
+  describe('when a role is found and does NOT have hasSharePercentage', () => {
     it('should return true', () => {
       // Arrange
       const mockRoleId = '3';
@@ -54,7 +54,7 @@ describe('modules/gift/helpers/validate-counterparty-share-percentage', () => {
       // Act
       const result = validateCounterpartySharePercentage({
         roles: mockRoles,
-        roleId: mockRoleId,
+        roleCode: mockRoleId,
       });
 
       // Assert
@@ -62,7 +62,7 @@ describe('modules/gift/helpers/validate-counterparty-share-percentage', () => {
     });
   });
 
-  describe('when a role is found and does have hasShare', () => {
+  describe('when a role is found and does have hasSharePercentage', () => {
     describe('when the provided sharePercentage is NOT a number', () => {
       it.each(['10', null, undefined, true, false, {}, []])('should return false', (sharePercentage) => {
         // Arrange
@@ -71,7 +71,7 @@ describe('modules/gift/helpers/validate-counterparty-share-percentage', () => {
         // Act
         const result = validateCounterpartySharePercentage({
           roles: mockRoles,
-          roleId: mockRoleId,
+          roleCode: mockRoleId,
           sharePercentage,
         });
 
@@ -90,7 +90,7 @@ describe('modules/gift/helpers/validate-counterparty-share-percentage', () => {
           // Act
           const result = validateCounterpartySharePercentage({
             roles: mockRoles,
-            roleId: mockRoleId,
+            roleCode: mockRoleId,
             sharePercentage: mockSharePercentage,
           });
 
@@ -108,7 +108,7 @@ describe('modules/gift/helpers/validate-counterparty-share-percentage', () => {
           // Act
           const result = validateCounterpartySharePercentage({
             roles: mockRoles,
-            roleId: mockRoleId,
+            roleCode: mockRoleId,
             sharePercentage: mockSharePercentage,
           });
 
@@ -126,7 +126,7 @@ describe('modules/gift/helpers/validate-counterparty-share-percentage', () => {
           // Act
           const result = validateCounterpartySharePercentage({
             roles: mockRoles,
-            roleId: mockRoleId,
+            roleCode: mockRoleId,
             sharePercentage: mockSharePercentage,
           });
 

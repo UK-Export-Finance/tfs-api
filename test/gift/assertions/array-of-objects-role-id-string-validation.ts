@@ -4,8 +4,8 @@ import { Api } from '@ukef-test/support/api';
 import { generatePayloadArrayOfObjects } from './generate-payload';
 import { assert400Response } from './response-assertion';
 
-const INVALID_ROLE_ID = 'abc';
-const UNSUPPORTED_ROLE_ID = 'unsupported-role-id';
+const INVALID_ROLE_CODE = 'abc';
+const UNSUPPORTED_ROLE_CODE = 'unsupported-role-id';
 
 /**
  * Validation tests for an array of objects - fee type code string field with invalid values
@@ -16,9 +16,9 @@ const UNSUPPORTED_ROLE_ID = 'unsupported-role-id';
 export const arrayOfObjectsRoleIdStringValidation = ({ initialPayload, parentFieldName, url }) => {
   let api: Api;
 
-  const fieldName = 'roleId';
-  const min = GIFT.VALIDATION.COUNTERPARTY.ROLE_ID.MIN_LENGTH;
-  const max = GIFT.VALIDATION.COUNTERPARTY.ROLE_ID.MAX_LENGTH;
+  const fieldName = 'roleCode';
+  const min = GIFT.VALIDATION.COUNTERPARTY.ROLE_CODE.MIN_LENGTH;
+  const max = GIFT.VALIDATION.COUNTERPARTY.ROLE_CODE.MAX_LENGTH;
 
   const payloadParams = { initialPayload, fieldName, parentFieldName };
 
@@ -355,7 +355,7 @@ export const arrayOfObjectsRoleIdStringValidation = ({ initialPayload, parentFie
   describe('when the provided role ID is an invalid code', () => {
     let mockPayload;
 
-    const value = INVALID_ROLE_ID;
+    const value = INVALID_ROLE_CODE;
 
     beforeAll(() => {
       // Arrange
@@ -376,8 +376,8 @@ export const arrayOfObjectsRoleIdStringValidation = ({ initialPayload, parentFie
 
       // Assert
       const expected = [
-        `${parentFieldName}.0.${fieldName} is not supported (${INVALID_ROLE_ID})`,
-        `${parentFieldName}.1.${fieldName} is not supported (${INVALID_ROLE_ID})`,
+        `${parentFieldName}.0.${fieldName} is not supported (${INVALID_ROLE_CODE})`,
+        `${parentFieldName}.1.${fieldName} is not supported (${INVALID_ROLE_CODE})`,
       ];
 
       expect(body.message).toStrictEqual(expected);
@@ -387,7 +387,7 @@ export const arrayOfObjectsRoleIdStringValidation = ({ initialPayload, parentFie
   describe('when the provided role ID is not supported', () => {
     let mockPayload;
 
-    const value = UNSUPPORTED_ROLE_ID;
+    const value = UNSUPPORTED_ROLE_CODE;
 
     beforeAll(() => {
       // Arrange
@@ -408,8 +408,8 @@ export const arrayOfObjectsRoleIdStringValidation = ({ initialPayload, parentFie
 
       // Assert
       const expected = [
-        `${parentFieldName}.0.${fieldName} is not supported (${UNSUPPORTED_ROLE_ID})`,
-        `${parentFieldName}.1.${fieldName} is not supported (${UNSUPPORTED_ROLE_ID})`,
+        `${parentFieldName}.0.${fieldName} is not supported (${UNSUPPORTED_ROLE_CODE})`,
+        `${parentFieldName}.1.${fieldName} is not supported (${UNSUPPORTED_ROLE_CODE})`,
       ];
 
       expect(body.message).toStrictEqual(expected);

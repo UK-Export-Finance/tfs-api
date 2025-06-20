@@ -19,7 +19,7 @@ const FEE_TYPE_CODE = {
   MAX_LENGTH: 3,
 };
 
-const ROLE_ID = {
+const ROLE_CODE = {
   MIN_LENGTH: 1,
   MAX_LENGTH: 50,
 };
@@ -46,7 +46,7 @@ export const VALIDATION = {
   },
   COUNTERPARTY: {
     COUNTERPARTY_URN: { MIN_LENGTH: 8, MAX_LENGTH: 8 },
-    ROLE_ID,
+    ROLE_CODE,
     SHARE_PERCENTAGE: { MIN: 0.1, MAX: 100 },
   },
   FEE_TYPE_CODE,
