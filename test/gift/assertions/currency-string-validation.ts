@@ -1,3 +1,4 @@
+import { HttpStatus } from '@nestjs/common';
 import { GIFT } from '@ukef/constants';
 import { AUD } from '@ukef/constants/currencies.constant';
 import { Api } from '@ukef-test/support/api';
@@ -36,7 +37,7 @@ export const currencyStringValidation = ({ initialPayload, parentFieldName, url 
       mockPayload[`${parentFieldName}`][`${fieldName}`] = INVALID_CURRENCY;
     });
 
-    it('should return a 400 response', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       // Act
       const response = await api.post(url, mockPayload);
 
@@ -61,7 +62,7 @@ export const currencyStringValidation = ({ initialPayload, parentFieldName, url 
       mockPayload[`${parentFieldName}`][`${fieldName}`] = UNSUPPORTED_CURRENCY;
     });
 
-    it('should return a 400 response', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       // Act
       const response = await api.post(url, mockPayload);
 

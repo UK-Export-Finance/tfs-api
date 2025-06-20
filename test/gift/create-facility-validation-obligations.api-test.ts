@@ -10,8 +10,10 @@ import {
   arrayOfObjectsDateStringValidation,
   arrayOfObjectsNumberValidation,
   arrayOfObjectsStringValidation,
+  assert400Response,
+  generatePayloadArrayOfObjects,
 } from './assertions';
-import { counterpartyRolesUrl, currencyUrl, feeTypeUrl, mockResponses, productTypeUrl } from './test-helpers';
+import { counterpartyRolesUrl, currencyUrl, feeTypeUrl, mockResponses, obligationSubtypeUrl, productTypeUrl } from './test-helpers';
 
 const {
   giftVersioning: { prefixAndVersion },
@@ -41,6 +43,8 @@ describe('POST /gift/facility - validation - obligations', () => {
     nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
 
     nock(GIFT_API_URL).persist().get(counterpartyRolesUrl).reply(HttpStatus.OK, mockResponses.counterpartyRoles);
+
+    nock(GIFT_API_URL).persist().get(obligationSubtypeUrl).reply(HttpStatus.OK, mockResponses.obligationSubtype);
   });
 
   afterAll(async () => {
@@ -51,9 +55,11 @@ describe('POST /gift/facility - validation - obligations', () => {
     jest.resetAllMocks();
   });
 
+  const parentFieldName = 'obligations';
+
   const baseParams = {
     initialPayload: EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD,
-    parentFieldName: 'obligations',
+    parentFieldName,
     url,
   };
 
@@ -124,11 +130,51 @@ describe('POST /gift/facility - validation - obligations', () => {
   });
 
   describe('subtypeCode', () => {
+    const fieldName = 'subtypeCode';
+
     arrayOfObjectsStringValidation({
       ...baseParams,
-      fieldName: 'subtypeCode',
+      fieldName,
       min: OBLIGATION_VALIDATION.OBLIGATION_SUBTYPE_CODE.MIN_LENGTH,
       max: OBLIGATION_VALIDATION.OBLIGATION_SUBTYPE_CODE.MAX_LENGTH,
+    });
+
+    describe('when the provided subtype code is not supported', () => {
+      const UNSUPPORTED_SUBTYPE_CODE = 'UNSUPPORTED';
+
+      let mockPayload;
+
+      const value = UNSUPPORTED_SUBTYPE_CODE;
+
+      beforeAll(() => {
+        // Arrange
+        mockPayload = generatePayloadArrayOfObjects({
+          initialPayload: baseParams.initialPayload,
+          fieldName,
+          parentFieldName,
+          value,
+        });
+      });
+
+      it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
+        // Act
+        const response = await api.post(url, mockPayload);
+
+        // Assert
+        assert400Response(response);
+      });
+
+      it('should return the correct error messages', async () => {
+        // Act
+        const { body } = await api.post(url, mockPayload);
+
+        // Assert
+        const expected = [
+          `obligations contain a subtypeCode that is not supported for the provided productTypeCode (${EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD.overview.productTypeCode})`,
+        ];
+
+        expect(body.message).toStrictEqual(expected);
+      });
     });
   });
 });

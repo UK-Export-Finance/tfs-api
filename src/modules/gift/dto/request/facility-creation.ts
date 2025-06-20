@@ -3,7 +3,12 @@ import { EXAMPLES } from '@ukef/constants';
 import { Type } from 'class-transformer';
 import { ArrayNotEmpty, IsArray, IsDefined, IsNotEmptyObject, ValidateNested } from 'class-validator';
 
-import { UniqueCounterpartyUrns, UniqueRepaymentProfileAllocationDates, UniqueRepaymentProfileNames } from '../../custom-decorators';
+import {
+  ObligationSubtypeCodeAreSupported,
+  UniqueCounterpartyUrns,
+  UniqueRepaymentProfileAllocationDates,
+  UniqueRepaymentProfileNames,
+} from '../../custom-decorators';
 import { GiftFacilityCounterpartyRequestDto } from './counterparty';
 import { GiftFacilityOverviewRequestDto } from './facility-overview';
 import { GiftFixedFeeRequestDto } from './fixed-fee';
@@ -66,6 +71,7 @@ export class GiftFacilityCreationRequestDto {
   @IsArray()
   @ArrayNotEmpty()
   @IsDefined()
+  @ObligationSubtypeCodeAreSupported()
   @Type(() => GiftObligationRequestDto)
   @ValidateNested()
   obligations: GiftObligationRequestDto[];

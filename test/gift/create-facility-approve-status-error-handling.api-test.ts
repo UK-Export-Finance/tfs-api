@@ -16,6 +16,7 @@ import {
   feeTypeUrl,
   fixedFeeUrl,
   mockResponses,
+  obligationSubtypeUrl,
   obligationUrl,
   productTypeUrl,
   repaymentProfileUrl,
@@ -37,6 +38,8 @@ const setupMocks = (approveStatusResponse: MockGiftResponse) => {
   nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
 
   nock(GIFT_API_URL).persist().get(counterpartyRolesUrl).reply(HttpStatus.OK, mockResponses.counterpartyRoles);
+
+  nock(GIFT_API_URL).persist().get(obligationSubtypeUrl).reply(HttpStatus.OK, mockResponses.obligationSubtype);
 
   nock(GIFT_API_URL).post(facilityCreationUrl).reply(HttpStatus.CREATED, mockResponses.facility);
 

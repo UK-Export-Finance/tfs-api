@@ -10,6 +10,7 @@ import { GiftFeeTypeService } from './gift.fee-type.service';
 import { GiftFixedFeeService } from './gift.fixed-fee.service';
 import { GiftHttpService } from './gift.http.service';
 import { GiftObligationService } from './gift.obligation.service';
+import { GiftObligationSubtypeService } from './gift.obligation-subtype.service';
 import { GiftRepaymentProfileService } from './gift.repayment-profile.service';
 import { GiftStatusService } from './gift.status.service';
 
@@ -21,6 +22,7 @@ import { GiftStatusService } from './gift.status.service';
     GiftFixedFeeService,
     GiftFeeTypeService,
     GiftObligationService,
+    GiftObligationSubtypeService,
     GiftRepaymentProfileService,
     GiftFacilityService,
     GiftStatusService,
