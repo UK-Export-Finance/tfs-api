@@ -1,6 +1,6 @@
 import { registerDecorator, ValidationOptions } from 'class-validator';
 
-import { GiftRepaymentProfileDto } from '../dto';
+import { GiftRepaymentProfileRequestDto } from '../dto';
 import { arrayHasUniqueStrings, getRepaymentProfileNames } from '../helpers';
 
 /**
@@ -16,7 +16,7 @@ export function UniqueRepaymentProfileNames(validationOptions?: ValidationOption
       propertyName: propertyName,
       options: validationOptions,
       validator: {
-        validate(repaymentProfiles: GiftRepaymentProfileDto[]) {
+        validate(repaymentProfiles: GiftRepaymentProfileRequestDto[]) {
           const profileNames = getRepaymentProfileNames(repaymentProfiles);
 
           return arrayHasUniqueStrings(profileNames);

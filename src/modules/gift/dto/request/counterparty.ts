@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { IsDateString, IsDefined, IsString, Length } from 'class-validator';
 
-import { CounterpartySharePercentageValidation, IsSupportedCounterpartyRole } from '../custom-decorators';
+import { CounterpartySharePercentageValidation, IsSupportedCounterpartyRole } from '../../custom-decorators';
 
 const {
   GIFT: { COUNTERPARTY },
@@ -16,7 +16,7 @@ const {
  * GIFT facility counterparty DTO.
  * These fields are required for APIM to create a facility counterparty in GIFT.
  */
-export class GiftFacilityCounterpartyDto {
+export class GiftFacilityCounterpartyRequestDto {
   @IsDefined()
   @IsString()
   @Length(VALIDATION.COUNTERPARTY_URN.MIN_LENGTH, VALIDATION.COUNTERPARTY_URN.MAX_LENGTH)

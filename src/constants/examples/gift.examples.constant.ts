@@ -1,5 +1,5 @@
 import { UkefId } from '@ukef/helpers';
-import { GiftFacilityCreationDto, GiftFacilityPostResponseDto } from '@ukef/modules/gift/dto';
+import { GiftFacilityCreationRequestDto, GiftFacilityPostResponseDto } from '@ukef/modules/gift/dto';
 import { Chance } from 'chance';
 
 import { SUPPORTED_CURRENCIES } from '../currencies.constant';
@@ -128,7 +128,7 @@ const FACILITY_OVERVIEW = {
  * FACILITY_CREATION_PAYLOAD
  * Facility creation data in the shape that APIM TFS requires.
  */
-const FACILITY_CREATION_PAYLOAD: GiftFacilityCreationDto = {
+const FACILITY_CREATION_PAYLOAD: GiftFacilityCreationRequestDto = {
   overview: FACILITY_OVERVIEW,
   counterparties: [COUNTERPARTY(), COUNTERPARTY()],
   fixedFees: [FIXED_FEE(), FIXED_FEE()],

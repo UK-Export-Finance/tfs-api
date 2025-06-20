@@ -1,6 +1,6 @@
 import { GIFT } from '@ukef/constants';
 
-import { GiftFacilityCounterpartyRoleDto } from '../../dto';
+import { GiftFacilityCounterpartyRoleResponseDto } from '../../dto';
 import { validateCounterpartySharePercentage } from '.';
 
 const {
@@ -11,7 +11,7 @@ const {
   },
 } = GIFT;
 
-const mockRoles: GiftFacilityCounterpartyRoleDto[] = [
+const mockRoles: GiftFacilityCounterpartyRoleResponseDto[] = [
   {
     id: '1',
     displayText: 'Role 1',

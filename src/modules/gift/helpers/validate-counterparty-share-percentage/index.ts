@@ -1,6 +1,6 @@
 import { GIFT } from '@ukef/constants';
 
-import { GiftFacilityCounterpartyRoleDto } from '../../dto';
+import { GiftFacilityCounterpartyRoleResponseDto } from '../../dto';
 
 const {
   VALIDATION: {
@@ -11,7 +11,7 @@ const {
 } = GIFT;
 
 interface ValidateCounterpartySharePercentageParams {
-  roles: GiftFacilityCounterpartyRoleDto[];
+  roles: GiftFacilityCounterpartyRoleResponseDto[];
   roleId: string;
   sharePercentage?: any;
 }
@@ -19,13 +19,13 @@ interface ValidateCounterpartySharePercentageParams {
 /**
  * Check if a roleId requires a share percentage
  * and if so, validate that a provided share percentage is valid.
- * @param {GiftFacilityCounterpartyRoleDto[]} roles: Array of counterparty roles
+ * @param {GiftFacilityCounterpartyRoleResponseDto[]} roles: Array of counterparty roles
  * @param {String} roleId: Counterparty role ID
  * @param {any} sharePercentage: Provided share percentage for a counterparty
  * @returns {Boolean}
  */
 export const validateCounterpartySharePercentage = ({ roles, roleId, sharePercentage }: ValidateCounterpartySharePercentageParams): boolean => {
-  const role = roles.find((role: GiftFacilityCounterpartyRoleDto) => role.id === roleId);
+  const role = roles.find((role: GiftFacilityCounterpartyRoleResponseDto) => role.id === roleId);
 
   /**
    * No role has been found.

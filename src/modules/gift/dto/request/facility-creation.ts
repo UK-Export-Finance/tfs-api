@@ -3,12 +3,12 @@ import { EXAMPLES } from '@ukef/constants';
 import { Type } from 'class-transformer';
 import { ArrayNotEmpty, IsArray, IsDefined, IsNotEmptyObject, ValidateNested } from 'class-validator';
 
-import { UniqueCounterpartyUrns, UniqueRepaymentProfileAllocationDates, UniqueRepaymentProfileNames } from '../custom-decorators';
-import { GiftFacilityCounterpartyDto } from './facility-counterparty';
-import { GiftFacilityOverviewDto } from './facility-overview';
-import { GiftFixedFeeDto } from './fixed-fee';
-import { GiftObligationDto } from './obligation';
-import { GiftRepaymentProfileDto } from './repayment-profile';
+import { UniqueCounterpartyUrns, UniqueRepaymentProfileAllocationDates, UniqueRepaymentProfileNames } from '../../custom-decorators';
+import { GiftFacilityCounterpartyRequestDto } from './counterparty';
+import { GiftFacilityOverviewRequestDto } from './facility-overview';
+import { GiftFixedFeeRequestDto } from './fixed-fee';
+import { GiftObligationRequestDto } from './obligation';
+import { GiftRepaymentProfileRequestDto } from './repayment-profile';
 
 const {
   GIFT: { COUNTERPARTY, FACILITY_OVERVIEW, FIXED_FEE, OBLIGATION, REPAYMENT_PROFILE },
@@ -18,70 +18,70 @@ const {
  * GIFT facility creation DTO.
  * These fields are required for APIM to create a fully populated facility in GIFT.
  */
-export class GiftFacilityCreationDto {
+export class GiftFacilityCreationRequestDto {
   @ApiProperty({
     example: FACILITY_OVERVIEW,
     required: true,
-    type: GiftFacilityOverviewDto,
+    type: GiftFacilityOverviewRequestDto,
   })
   @IsNotEmptyObject()
   @IsDefined()
-  @Type(() => GiftFacilityOverviewDto)
+  @Type(() => GiftFacilityOverviewRequestDto)
   @ValidateNested()
-  overview: GiftFacilityOverviewDto;
+  overview: GiftFacilityOverviewRequestDto;
 
   @ApiProperty({
     isArray: true,
     example: [COUNTERPARTY(), COUNTERPARTY()],
     required: true,
-    type: GiftFacilityCounterpartyDto,
+    type: GiftFacilityCounterpartyRequestDto,
   })
   @IsArray()
   @ArrayNotEmpty()
   @IsDefined()
   @UniqueCounterpartyUrns()
-  @Type(() => GiftFacilityCounterpartyDto)
+  @Type(() => GiftFacilityCounterpartyRequestDto)
   @ValidateNested()
-  counterparties: GiftFacilityCounterpartyDto[];
+  counterparties: GiftFacilityCounterpartyRequestDto[];
 
   @ApiProperty({
     isArray: true,
     example: [FIXED_FEE(), FIXED_FEE()],
     required: true,
-    type: GiftFixedFeeDto,
+    type: GiftFixedFeeRequestDto,
   })
   @IsArray()
   @ArrayNotEmpty()
   @IsDefined()
-  @Type(() => GiftFixedFeeDto)
+  @Type(() => GiftFixedFeeRequestDto)
   @ValidateNested()
-  fixedFees: GiftFixedFeeDto[];
+  fixedFees: GiftFixedFeeRequestDto[];
 
   @ApiProperty({
     isArray: true,
     example: [OBLIGATION(), OBLIGATION()],
     required: true,
-    type: GiftObligationDto,
+    type: GiftObligationRequestDto,
   })
   @IsArray()
   @ArrayNotEmpty()
   @IsDefined()
-  @Type(() => GiftObligationDto)
+  @Type(() => GiftObligationRequestDto)
   @ValidateNested()
-  obligations: GiftObligationDto[];
+  obligations: GiftObligationRequestDto[];
 
   @ApiProperty({
     isArray: true,
     example: [REPAYMENT_PROFILE()],
     required: true,
-    type: GiftRepaymentProfileDto,
+    type: GiftRepaymentProfileRequestDto,
   })
   @IsArray()
   @ArrayNotEmpty()
   @IsDefined()
   @UniqueRepaymentProfileNames()
   @UniqueRepaymentProfileAllocationDates()
-  @Type(() => GiftRepaymentProfileDto)
+  @Type(() => GiftRepaymentProfileRequestDto)
   @ValidateNested()
-  repaymentProfiles: GiftRepaymentProfileDto[];
+  repaymentProfiles: GiftRepaymentProfileRequestDto[];
 }

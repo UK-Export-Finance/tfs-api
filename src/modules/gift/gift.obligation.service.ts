@@ -3,7 +3,7 @@ import { GIFT } from '@ukef/constants';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 
-import { GiftObligationDto } from './dto';
+import { GiftObligationRequestDto } from './dto';
 import { GiftHttpService } from './gift.http.service';
 
 const { EVENT_TYPES, PATH } = GIFT;
@@ -23,17 +23,17 @@ export class GiftObligationService {
 
   /**
    * Create a GIFT obligation
-   * @param {GiftObligationDto} obligationData: Obligation data
+   * @param {GiftObligationRequestDto} obligationData: Obligation data
    * @param {String} facilityId: Facility ID
    * @param {Number} workPackageId: Facility work package ID
    * @returns {Promise<AxiosResponse>}
    * @throws {Error}
    */
-  async createOne(obligationData: GiftObligationDto, facilityId: string, workPackageId: number): Promise<AxiosResponse> {
+  async createOne(obligationData: GiftObligationRequestDto, facilityId: string, workPackageId: number): Promise<AxiosResponse> {
     try {
       this.logger.info('Creating an obligation with amount %s for facility %s', obligationData.amount, facilityId);
 
-      const response = await this.giftHttpService.post<GiftObligationDto>({
+      const response = await this.giftHttpService.post<GiftObligationRequestDto>({
         path: `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.CREATE_OBLIGATION}`,
         payload: obligationData,
       });
@@ -48,13 +48,13 @@ export class GiftObligationService {
 
   /**
    * Create multiple GIFT obligations
-   * @param {Array<GiftObligationDto>} obligations: Obligations data
+   * @param {Array<GiftObligationRequestDto>} obligations: Obligations data
    * @param {String} facilityId: Facility ID
    * @param {Number} workPackageId: Facility work package ID
    * @returns {Promise<Array<AxiosResponse>>}
    * @throws {Error}
    */
-  async createMany(obligations: GiftObligationDto[], facilityId: string, workPackageId: number): Promise<Array<AxiosResponse>> {
+  async createMany(obligations: GiftObligationRequestDto[], facilityId: string, workPackageId: number): Promise<Array<AxiosResponse>> {
     try {
       this.logger.info('Creating obligations for facility %s', facilityId);
 
