@@ -1,5 +1,5 @@
 import { UkefId } from '@ukef/helpers';
-import { GiftFacilityCreationDto, GiftFacilityPostResponseDto, GiftObligationDto } from '@ukef/modules/gift/dto';
+import { GiftFacilityCreationRequestDto, GiftFacilityPostResponseDto, GiftObligationRequestDto } from '@ukef/modules/gift/dto';
 import { Chance } from 'chance';
 
 import { SUPPORTED_CURRENCIES } from '../currencies.constant';
@@ -72,9 +72,9 @@ const FIXED_FEE = () => ({
 /**
  * Obligation example
  * @param {String} subtypeCode: Obligation subtype code
- * @returns {GiftObligationDto}
+ * @returns {GiftObligationRequestDto}
  */
-const OBLIGATION = ({ subtypeCode = OBLIGATION_SUBTYPES.EXP01.code } = {}): GiftObligationDto => ({
+const OBLIGATION = ({ subtypeCode = OBLIGATION_SUBTYPES.EXP01.code } = {}): GiftObligationRequestDto => ({
   effectiveDate: '2025-01-13',
   maturityDate: '2025-01-15',
   currency: SUPPORTED_CURRENCIES.USD,
@@ -137,7 +137,7 @@ const FACILITY_OVERVIEW = {
  * FACILITY_CREATION_PAYLOAD
  * Facility creation data in the shape that APIM TFS requires.
  */
-const FACILITY_CREATION_PAYLOAD: GiftFacilityCreationDto = {
+const FACILITY_CREATION_PAYLOAD: GiftFacilityCreationRequestDto = {
   overview: FACILITY_OVERVIEW,
   counterparties: [COUNTERPARTY(), COUNTERPARTY()],
   fixedFees: [FIXED_FEE(), FIXED_FEE()],

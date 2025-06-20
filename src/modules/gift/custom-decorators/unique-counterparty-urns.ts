@@ -1,6 +1,6 @@
 import { registerDecorator, ValidationOptions } from 'class-validator';
 
-import { GiftFacilityCounterpartyDto } from '../dto';
+import { GiftFacilityCounterpartyRequestDto } from '../dto';
 import { arrayHasUniqueStrings, getCounterpartyUrns } from '../helpers';
 
 /**
@@ -16,7 +16,7 @@ export function UniqueCounterpartyUrns(validationOptions?: ValidationOptions) {
       propertyName: propertyName,
       options: validationOptions,
       validator: {
-        validate(counterparties: GiftFacilityCounterpartyDto[]) {
+        validate(counterparties: GiftFacilityCounterpartyRequestDto[]) {
           const profileNames = getCounterpartyUrns(counterparties);
 
           return arrayHasUniqueStrings(profileNames);

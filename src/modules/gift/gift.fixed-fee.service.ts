@@ -3,7 +3,7 @@ import { GIFT } from '@ukef/constants';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 
-import { GiftFixedFeeDto } from './dto';
+import { GiftFixedFeeRequestDto } from './dto';
 import { GiftHttpService } from './gift.http.service';
 
 const { EVENT_TYPES, PATH } = GIFT;
@@ -23,17 +23,17 @@ export class GiftFixedFeeService {
 
   /**
    * Create a GIFT fixed fee
-   * @param {GiftFixedFeeDto} payload: Fixed fee data
+   * @param {GiftFixedFeeRequestDto} payload: Fixed fee data
    * @param {String} facilityId: Facility ID
    * @param {Number} workPackageId: Facility work package ID
    * @returns {Promise<AxiosResponse>}
    * @throws {Error}
    */
-  async createOne(fixedFeeData: GiftFixedFeeDto, facilityId: string, workPackageId: number): Promise<AxiosResponse> {
+  async createOne(fixedFeeData: GiftFixedFeeRequestDto, facilityId: string, workPackageId: number): Promise<AxiosResponse> {
     try {
       this.logger.info('Creating a fixed fee with description %s for facility %s', fixedFeeData.description, facilityId);
 
-      const response = await this.giftHttpService.post<GiftFixedFeeDto>({
+      const response = await this.giftHttpService.post<GiftFixedFeeRequestDto>({
         path: `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.CREATE_FIXED_FEE}`,
         payload: fixedFeeData,
       });
@@ -48,13 +48,13 @@ export class GiftFixedFeeService {
 
   /**
    * Create multiple GIFT fixed fees
-   * @param {Array<GiftFixedFeeDto>} fixedFeesData: Fixed fees data
+   * @param {Array<GiftFixedFeeRequestDto>} fixedFeesData: Fixed fees data
    * @param {String} facilityId: Facility ID
    * @param {Number} workPackageId: Facility work package ID
    * @returns {Promise<Array<AxiosResponse>>}
    * @throws {Error}
    */
-  async createMany(fixedFeesData: GiftFixedFeeDto[], facilityId: string, workPackageId: number): Promise<Array<AxiosResponse>> {
+  async createMany(fixedFeesData: GiftFixedFeeRequestDto[], facilityId: string, workPackageId: number): Promise<Array<AxiosResponse>> {
     try {
       this.logger.info('Creating fixed fees for facility %s', facilityId);
 

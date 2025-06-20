@@ -3,7 +3,7 @@ import { EXAMPLES, GIFT } from '@ukef/constants';
 import { Type } from 'class-transformer';
 import { ArrayNotEmpty, IsArray, IsDefined, IsString, Length, ValidateNested } from 'class-validator';
 
-import { GiftRepaymentProfileAllocationDto } from './repayment-profile-allocation';
+import { GiftRepaymentProfileAllocationRequestDto } from './repayment-profile-allocation';
 
 const {
   GIFT: { REPAYMENT_PROFILE, REPAYMENT_PROFILE_ALLOCATION },
@@ -17,7 +17,7 @@ const {
  * GIFT repayment profile DTO.
  * These fields are required for APIM to create a repayment profile in GIFT.
  */
-export class GiftRepaymentProfileDto {
+export class GiftRepaymentProfileRequestDto {
   @IsDefined()
   @IsString()
   @Length(VALIDATION.NAME.MIN_LENGTH, VALIDATION.NAME.MAX_LENGTH)
@@ -30,13 +30,13 @@ export class GiftRepaymentProfileDto {
   @IsArray()
   @ArrayNotEmpty()
   @IsDefined()
-  @Type(() => GiftRepaymentProfileAllocationDto)
+  @Type(() => GiftRepaymentProfileAllocationRequestDto)
   @ValidateNested()
   @ApiProperty({
     isArray: true,
     example: [REPAYMENT_PROFILE_ALLOCATION(), REPAYMENT_PROFILE_ALLOCATION()],
     required: true,
-    type: GiftRepaymentProfileAllocationDto,
+    type: GiftRepaymentProfileAllocationRequestDto,
   })
-  allocations: GiftRepaymentProfileAllocationDto[];
+  allocations: GiftRepaymentProfileAllocationRequestDto[];
 }

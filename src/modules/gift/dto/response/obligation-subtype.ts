@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString } from 'class-validator';
 
-import { GIFT } from '../../../constants/gift/gift.constant';
+import { GIFT } from '../../../../constants/gift/gift.constant';
 
 const { OBLIGATION_SUBTYPES } = GIFT;
 
@@ -9,7 +9,7 @@ const { OBLIGATION_SUBTYPES } = GIFT;
  * GIFT obligation subtype DTO.
  * These fields are returned from GIFT when getting an obligation subtype
  */
-export class GiftObligationSubtypeDto {
+export class GiftObligationSubtypeResponseDto {
   @IsString()
   @ApiProperty({
     example: OBLIGATION_SUBTYPES.EXP01.code,

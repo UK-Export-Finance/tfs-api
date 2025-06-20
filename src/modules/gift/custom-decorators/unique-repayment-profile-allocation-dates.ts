@@ -1,6 +1,6 @@
 import { registerDecorator, ValidationOptions } from 'class-validator';
 
-import { GiftRepaymentProfileDto } from '../dto';
+import { GiftRepaymentProfileRequestDto } from '../dto';
 import { arrayHasUniqueStrings, getRepaymentProfileAllocationDates } from '../helpers';
 
 /**
@@ -16,7 +16,7 @@ export function UniqueRepaymentProfileAllocationDates(validationOptions?: Valida
       propertyName: propertyName,
       options: validationOptions,
       validator: {
-        validate(repaymentProfiles: GiftRepaymentProfileDto[]) {
+        validate(repaymentProfiles: GiftRepaymentProfileRequestDto[]) {
           const allocationDates = getRepaymentProfileAllocationDates(repaymentProfiles);
 
           return arrayHasUniqueStrings(allocationDates);

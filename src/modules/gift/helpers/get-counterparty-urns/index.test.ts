@@ -1,13 +1,13 @@
 import { EXAMPLES } from '@ukef/constants';
 
-import { GiftFacilityCounterpartyDto } from '../../dto';
+import { GiftFacilityCounterpartyRequestDto } from '../../dto';
 import { getCounterpartyUrns } from '.';
 
 const {
   GIFT: { COUNTERPARTY },
 } = EXAMPLES;
 
-const mockCounterparties: GiftFacilityCounterpartyDto[] = [COUNTERPARTY(), COUNTERPARTY(), COUNTERPARTY()];
+const mockCounterparties: GiftFacilityCounterpartyRequestDto[] = [COUNTERPARTY(), COUNTERPARTY(), COUNTERPARTY()];
 
 describe('modules/gift/helpers/get-counterparty-urns', () => {
   describe('when counterparties are provided', () => {

@@ -3,7 +3,7 @@ import { GIFT } from '@ukef/constants';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 
-import { GiftFacilityCounterpartyDto, GiftFacilityCounterpartyRoleDto } from './dto';
+import { GiftFacilityCounterpartyRequestDto, GiftFacilityCounterpartyRoleResponseDto } from './dto';
 import { GiftHttpService } from './gift.http.service';
 
 const { EVENT_TYPES, PATH } = GIFT;
@@ -23,17 +23,17 @@ export class GiftCounterpartyService {
 
   /**
    * Create a GIFT counterparty
-   * @param {GiftFacilityCounterpartyDto} counterpartyData: Counterparty data
+   * @param {GiftFacilityCounterpartyRequestDto} counterpartyData: Counterparty data
    * @param {String} facilityId: Facility ID
    * @param {Number} workPackageId: Facility work package ID
    * @returns {Promise<AxiosResponse>}
    * @throws {Error}
    */
-  async createOne(counterpartyData: GiftFacilityCounterpartyDto, facilityId: string, workPackageId: number): Promise<AxiosResponse> {
+  async createOne(counterpartyData: GiftFacilityCounterpartyRequestDto, facilityId: string, workPackageId: number): Promise<AxiosResponse> {
     try {
       this.logger.info('Creating a counterparty with URN %s for facility %s', counterpartyData.counterpartyUrn, facilityId);
 
-      const response = await this.giftHttpService.post<GiftFacilityCounterpartyDto>({
+      const response = await this.giftHttpService.post<GiftFacilityCounterpartyRequestDto>({
         path: `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_COUNTERPARTY}`,
         payload: counterpartyData,
       });
@@ -48,13 +48,13 @@ export class GiftCounterpartyService {
 
   /**
    * Create multiple GIFT counterparties
-   * @param {Array<GiftFacilityCounterpartyDto>} counterpartiesData: Counterparties data
+   * @param {Array<GiftFacilityCounterpartyRequestDto>} counterpartiesData: Counterparties data
    * @param {String} facilityId: Facility ID
    * @param {Number} workPackageId: Facility work package ID
    * @returns {Promise<Array<AxiosResponse>>}
    * @throws {Error}
    */
-  async createMany(counterpartiesData: GiftFacilityCounterpartyDto[], facilityId: string, workPackageId: number): Promise<Array<AxiosResponse>> {
+  async createMany(counterpartiesData: GiftFacilityCounterpartyRequestDto[], facilityId: string, workPackageId: number): Promise<Array<AxiosResponse>> {
     try {
       this.logger.info('Creating counterparties for facility %s', facilityId);
 
@@ -77,7 +77,7 @@ export class GiftCounterpartyService {
     try {
       this.logger.info('Getting all counterparty roles');
 
-      const response = await this.giftHttpService.get<GiftFacilityCounterpartyRoleDto[]>({
+      const response = await this.giftHttpService.get<GiftFacilityCounterpartyRoleResponseDto[]>({
         path: PATH.COUNTERPARTY_ROLES,
       });
 
