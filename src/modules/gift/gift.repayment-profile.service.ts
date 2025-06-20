@@ -3,7 +3,7 @@ import { GIFT } from '@ukef/constants';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 
-import { GiftRepaymentProfileDto } from './dto';
+import { GiftRepaymentProfileRequestDto } from './dto';
 import { GiftHttpService } from './gift.http.service';
 
 const { EVENT_TYPES, PATH } = GIFT;
@@ -23,17 +23,17 @@ export class GiftRepaymentProfileService {
 
   /**
    * Create a GIFT repayment profile
-   * @param {GiftRepaymentProfileDto} repaymentProfileData: Repayment profile data
+   * @param {GiftRepaymentProfileRequestDto} repaymentProfileData: Repayment profile data
    * @param {String} facilityId: Facility ID
    * @param {Number} workPackageId: Facility work package ID
    * @returns {Promise<AxiosResponse>}
    * @throws {Error}
    */
-  async createOne(repaymentProfileData: GiftRepaymentProfileDto, facilityId: string, workPackageId: number): Promise<AxiosResponse> {
+  async createOne(repaymentProfileData: GiftRepaymentProfileRequestDto, facilityId: string, workPackageId: number): Promise<AxiosResponse> {
     try {
       this.logger.info('Creating a repayment profile with name %s for facility %s', repaymentProfileData.name, facilityId);
 
-      const response = await this.giftHttpService.post<GiftRepaymentProfileDto>({
+      const response = await this.giftHttpService.post<GiftRepaymentProfileRequestDto>({
         path: `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_MANUAL_REPAYMENT_PROFILE}`,
         payload: repaymentProfileData,
       });
@@ -48,13 +48,13 @@ export class GiftRepaymentProfileService {
 
   /**
    * Create multiple GIFT repayment profiles
-   * @param {Array<GiftRepaymentProfileDto>} repaymentProfilesData: Repayment profiles data
+   * @param {Array<GiftRepaymentProfileRequestDto>} repaymentProfilesData: Repayment profiles data
    * @param {String} facilityId: Facility ID
    * @param {Number} workPackageId: Facility work package ID
    * @returns {Promise<Array<AxiosResponse>>}
    * @throws {Error}
    */
-  async createMany(repaymentProfilesData: GiftRepaymentProfileDto[], facilityId: string, workPackageId: number): Promise<Array<AxiosResponse>> {
+  async createMany(repaymentProfilesData: GiftRepaymentProfileRequestDto[], facilityId: string, workPackageId: number): Promise<Array<AxiosResponse>> {
     try {
       this.logger.info('Creating repayment profiles for facility %s', facilityId);
 

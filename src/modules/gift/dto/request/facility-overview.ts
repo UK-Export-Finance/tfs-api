@@ -4,7 +4,7 @@ import { ValidatedFacilityIdentifierApiProperty } from '@ukef/decorators/validat
 import { UkefId } from '@ukef/helpers';
 import { IsBoolean, IsDateString, IsDefined, IsNumber, IsNumberString, IsString, Length, Max, Min } from 'class-validator';
 
-import { IsSupportedCurrency, IsSupportedProductType } from '../custom-decorators';
+import { IsSupportedCurrency, IsSupportedProductType } from '../../custom-decorators';
 
 const {
   GIFT: { DEAL_ID, FACILITY_ID, FACILITY_OVERVIEW: EXAMPLE },
@@ -18,9 +18,9 @@ const {
 
 /**
  * GIFT facility overview DTO.
- * This is the "overview" data of a GIFT facility.
+ * These fields are required for APIM to create a high level facility data in GIFT.
  */
-export class GiftFacilityOverviewDto {
+export class GiftFacilityOverviewRequestDto {
   @IsDefined()
   @IsString()
   @Length(VALIDATION.CURRENCY.MIN_LENGTH, VALIDATION.CURRENCY.MAX_LENGTH)
@@ -49,14 +49,6 @@ export class GiftFacilityOverviewDto {
     required: true,
   })
   effectiveDate: string;
-
-  @IsDefined()
-  @IsDateString()
-  @ApiProperty({
-    example: EXAMPLE.endOfCoverDate,
-    required: true,
-  })
-  endOfCoverDate: string;
 
   @IsDefined()
   @IsDateString()
