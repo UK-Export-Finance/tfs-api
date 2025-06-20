@@ -14,7 +14,7 @@ import AppConfig from '@ukef/config/app.config';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { Response } from 'express';
 
-import { GetFacilityOperationParamsDto, GiftFacilityCreationDto, GiftFacilityCreationResponseDto, GiftFacilityOverviewDto } from './dto';
+import { GetFacilityOperationParamsDto, GiftFacilityCreationRequestDto, GiftFacilityCreationResponseDto, GiftFacilityOverviewRequestDto } from './dto';
 import { GiftFacilityService } from './gift.facility.service';
 
 const { PATH } = GIFT;
@@ -39,7 +39,7 @@ export class GiftFacilityController {
   })
   @ApiOkResponse({
     description: 'The facility',
-    type: GiftFacilityOverviewDto,
+    type: GiftFacilityOverviewRequestDto,
   })
   @ApiNotFoundResponse({
     description: 'The facility was not found',
@@ -67,7 +67,7 @@ export class GiftFacilityController {
   @Post()
   @ApiOperation({ summary: 'Create a GIFT facility' })
   @ApiBody({
-    type: GiftFacilityCreationDto,
+    type: GiftFacilityCreationRequestDto,
     required: true,
   })
   @ApiCreatedResponse({
@@ -88,7 +88,7 @@ export class GiftFacilityController {
    * Therefore, we use passthrough: true to ensure that NestJS provides some additional response handling.
    * Further information: https://docs.nestjs.com/controllers#library-specific-approach
    */
-  async post(@Body(new ValidationPipe({ transform: true })) facilityData: GiftFacilityCreationDto, @Res({ passthrough: true }) res: Response) {
+  async post(@Body(new ValidationPipe({ transform: true })) facilityData: GiftFacilityCreationRequestDto, @Res({ passthrough: true }) res: Response) {
     const {
       overview: { facilityId },
     } = facilityData;

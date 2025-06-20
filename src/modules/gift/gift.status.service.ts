@@ -3,7 +3,6 @@ import { GIFT } from '@ukef/constants';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 
-import { GiftRepaymentProfileDto } from './dto';
 import { GiftHttpService } from './gift.http.service';
 
 const { PATH } = GIFT;
@@ -32,7 +31,7 @@ export class GiftStatusService {
     try {
       this.logger.info('Updating facility work package status to approved for facility %s', facilityId);
 
-      const response = await this.giftHttpService.post<GiftRepaymentProfileDto>({
+      const response = await this.giftHttpService.post({
         path: `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.APPROVE}`,
       });
 

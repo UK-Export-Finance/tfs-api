@@ -16,7 +16,7 @@ const {
  * GIFT repayment profile allocation DTO.
  * These fields are required for APIM to create a repayment profile allocation in GIFT.
  */
-export class GiftRepaymentProfileAllocationDto {
+export class GiftRepaymentProfileAllocationRequestDto {
   @IsDefined()
   @IsNumber()
   @Min(VALIDATION.AMOUNT.MIN)

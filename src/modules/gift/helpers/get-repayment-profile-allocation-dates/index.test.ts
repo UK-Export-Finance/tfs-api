@@ -1,13 +1,13 @@
 import { EXAMPLES } from '@ukef/constants';
 
-import { GiftRepaymentProfileDto } from '../../dto';
+import { GiftRepaymentProfileRequestDto } from '../../dto';
 import { getRepaymentProfileAllocationDates } from '.';
 
 const {
   GIFT: { REPAYMENT_PROFILE },
 } = EXAMPLES;
 
-const mockRepaymentProfiles: GiftRepaymentProfileDto[] = [REPAYMENT_PROFILE(), REPAYMENT_PROFILE(), REPAYMENT_PROFILE()];
+const mockRepaymentProfiles: GiftRepaymentProfileRequestDto[] = [REPAYMENT_PROFILE(), REPAYMENT_PROFILE(), REPAYMENT_PROFILE()];
 
 describe('modules/gift/helpers/get-repayment-profile-allocation-dates', () => {
   describe('when repayment profiles are provided', () => {

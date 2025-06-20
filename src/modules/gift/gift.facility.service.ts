@@ -4,7 +4,7 @@ import { UkefId } from '@ukef/helpers';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 
-import { GiftFacilityCreationDto, GiftFacilityOverviewDto } from './dto';
+import { GiftFacilityCreationRequestDto, GiftFacilityOverviewRequestDto } from './dto';
 import { GiftCounterpartyService } from './gift.counterparty.service';
 import { GiftFixedFeeService } from './gift.fixed-fee.service';
 import { GiftHttpService } from './gift.http.service';
@@ -50,7 +50,7 @@ export class GiftFacilityService {
    */
   async get(facilityId: UkefId): Promise<AxiosResponse> {
     try {
-      const response = await this.giftHttpService.get<GiftFacilityOverviewDto>({
+      const response = await this.giftHttpService.get<GiftFacilityOverviewRequestDto>({
         path: `${PATH.FACILITY}/${facilityId}`,
       });
 
@@ -64,14 +64,14 @@ export class GiftFacilityService {
 
   /**
    * Create a GIFT facility - initial/overview data
-   * @param {GiftFacilityOverviewDto} overviewData: Facility overview data
+   * @param {GiftFacilityOverviewRequestDto} overviewData: Facility overview data
    * @returns {Promise<AxiosResponse>}
    */
-  async createInitialFacility(overviewData: GiftFacilityOverviewDto): Promise<AxiosResponse> {
+  async createInitialFacility(overviewData: GiftFacilityOverviewRequestDto): Promise<AxiosResponse> {
     try {
       this.logger.info('Creating an initial GIFT facility %s', overviewData.facilityId);
 
-      const response = await this.giftHttpService.post<GiftFacilityCreationDto>({
+      const response = await this.giftHttpService.post<GiftFacilityCreationRequestDto>({
         path: PATH.CREATE_FACILITY,
         payload: overviewData,
       });
@@ -86,12 +86,12 @@ export class GiftFacilityService {
 
   /**
    * Create a GIFT facility
-   * @param {GiftFacilityCreationDto} data: Facility data
+   * @param {GiftFacilityCreationRequestDto} data: Facility data
    * @param {String} facilityId: Facility ID
    * @returns {Promise<CreateFacilityResponse>}
    * @throws {AxiosError | Error}
    */
-  async create(data: GiftFacilityCreationDto, facilityId: string): Promise<CreateFacilityResponse> {
+  async create(data: GiftFacilityCreationRequestDto, facilityId: string): Promise<CreateFacilityResponse> {
     try {
       this.logger.info('Creating a GIFT facility %s', facilityId);
 

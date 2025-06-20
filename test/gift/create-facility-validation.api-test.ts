@@ -270,8 +270,6 @@ describe('POST /gift/facility - validation', () => {
           'overview.dealId must match /^00\\d{8}$/ regular expression',
           'overview.effectiveDate should not be null or undefined',
           'overview.effectiveDate must be a valid ISO 8601 date string',
-          'overview.endOfCoverDate should not be null or undefined',
-          'overview.endOfCoverDate must be a valid ISO 8601 date string',
           'overview.expiryDate should not be null or undefined',
           'overview.expiryDate must be a valid ISO 8601 date string',
           'overview.facilityAmount should not be null or undefined',
@@ -367,13 +365,6 @@ describe('POST /gift/facility - validation', () => {
     dateStringValidation({
       ...baseParams,
       fieldName: 'effectiveDate',
-    });
-  });
-
-  describe('overview.endOfCoverDate', () => {
-    dateStringValidation({
-      ...baseParams,
-      fieldName: 'endOfCoverDate',
     });
   });
 
