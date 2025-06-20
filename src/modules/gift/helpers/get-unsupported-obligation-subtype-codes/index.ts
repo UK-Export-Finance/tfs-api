@@ -1,8 +1,8 @@
-import { GiftObligationDto, GiftObligationSubtypeDto } from '../../dto';
+import { GiftObligationRequestDto, GiftObligationSubtypeResponseDto } from '../../dto';
 
 interface GetUnsupportedObligationSubtypesParams {
-  obligations: GiftObligationDto[];
-  supportedSubtypes: GiftObligationSubtypeDto[];
+  obligations: GiftObligationRequestDto[];
+  supportedSubtypes: GiftObligationSubtypeResponseDto[];
 }
 
 /**
@@ -12,11 +12,11 @@ interface GetUnsupportedObligationSubtypesParams {
  * @returns {string[]} Array of subtype codes that are not supported
  */
 export const getUnsupportedObligationSubtypeCodes = ({ obligations, supportedSubtypes }: GetUnsupportedObligationSubtypesParams) => {
-  const supportedCodes = supportedSubtypes.map((subtype: GiftObligationSubtypeDto) => subtype.code);
+  const supportedCodes = supportedSubtypes.map((subtype: GiftObligationSubtypeResponseDto) => subtype.code);
 
   const unsupportedSubtypeCodes = [];
 
-  obligations.forEach(({ subtypeCode }: GiftObligationDto) => {
+  obligations.forEach(({ subtypeCode }: GiftObligationRequestDto) => {
     if (!supportedCodes.includes(subtypeCode)) {
       unsupportedSubtypeCodes.push(subtypeCode);
     }

@@ -1,7 +1,7 @@
 import { GIFT } from '@ukef/constants';
 import { GIFT_EXAMPLES } from '@ukef/constants/examples/gift.examples.constant';
 
-import { GiftObligationDto } from '../../dto';
+import { GiftObligationRequestDto } from '../../dto';
 import { hasValidFormat, hasValidObligationSubtypeCodeFormats } from '.';
 
 const {
@@ -27,7 +27,7 @@ describe('modules/gift/helpers/is-valid-obligation-subtype-code-format', () => {
     describe('when an obligation has an empty subtypeCode is provided', () => {
       it('should return false', () => {
         // Arrange
-        const mockObligation: GiftObligationDto = {
+        const mockObligation: GiftObligationRequestDto = {
           ...GIFT_EXAMPLES.OBLIGATION(),
           subtypeCode: '',
         };
@@ -43,7 +43,7 @@ describe('modules/gift/helpers/is-valid-obligation-subtype-code-format', () => {
     describe(`when an obligation has a subtypeCode that is less than ${MIN_LENGTH}`, () => {
       it('should return false', () => {
         // Arrange
-        const mockObligation: GiftObligationDto = {
+        const mockObligation: GiftObligationRequestDto = {
           ...GIFT_EXAMPLES.OBLIGATION(),
           subtypeCode: 'a'.repeat(MIN_LENGTH - 1),
         };
@@ -59,7 +59,7 @@ describe('modules/gift/helpers/is-valid-obligation-subtype-code-format', () => {
     describe(`when an obligation has a subtypeCode that is greater than ${MAX_LENGTH}`, () => {
       it('should return false', () => {
         // Arrange
-        const mockObligation: GiftObligationDto = {
+        const mockObligation: GiftObligationRequestDto = {
           ...GIFT_EXAMPLES.OBLIGATION(),
           subtypeCode: 'a'.repeat(MAX_LENGTH + 1),
         };

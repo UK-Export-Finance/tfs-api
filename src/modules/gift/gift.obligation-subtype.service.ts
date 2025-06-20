@@ -3,7 +3,7 @@ import { GIFT } from '@ukef/constants';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 
-import { GiftObligationDto, GiftObligationSubtypeDto } from './dto';
+import { GiftObligationRequestDto, GiftObligationSubtypeResponseDto } from './dto';
 import { GiftHttpService } from './gift.http.service';
 import { getUnsupportedObligationSubtypeCodes } from './helpers';
 
@@ -11,7 +11,7 @@ const { PATH } = GIFT;
 
 interface IsSupportedParams {
   facilityId: string;
-  obligations: GiftObligationDto[];
+  obligations: GiftObligationRequestDto[];
   productTypeCode: string;
 }
 
@@ -37,7 +37,7 @@ export class GiftObligationSubtypeService {
     try {
       this.logger.info('Getting obligation subtypes');
 
-      const response = await this.giftHttpService.get<GiftObligationSubtypeDto[]>({
+      const response = await this.giftHttpService.get<GiftObligationSubtypeResponseDto[]>({
         path: PATH.OBLIGATION_SUBTYPE,
       });
 
@@ -52,16 +52,16 @@ export class GiftObligationSubtypeService {
   /**
    * Get all GIFT obligation subtypes by product type
    * @param {String} productTypeCode: Product type code
-   * @returns {Promise<Array<GiftObligationSubtypeDto>>}
+   * @returns {Promise<Array<GiftObligationSubtypeResponseDto>>}
    * @throws {Error}
    */
-  async getAllByProductType(productTypeCode: string): Promise<GiftObligationSubtypeDto[]> {
+  async getAllByProductType(productTypeCode: string): Promise<GiftObligationSubtypeResponseDto[]> {
     try {
       this.logger.info('Getting obligation subtypes by product type %s', productTypeCode);
 
       const allSubtypes = await this.getAll();
 
-      const filtered = allSubtypes.data?.obligationSubtypes?.filter((subtype: GiftObligationSubtypeDto) => subtype.productTypeCode === productTypeCode);
+      const filtered = allSubtypes.data?.obligationSubtypes?.filter((subtype: GiftObligationSubtypeResponseDto) => subtype.productTypeCode === productTypeCode);
 
       return filtered;
     } catch (error) {

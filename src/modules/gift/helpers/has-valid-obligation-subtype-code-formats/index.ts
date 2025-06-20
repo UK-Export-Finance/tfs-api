@@ -1,6 +1,6 @@
 import { GIFT } from '@ukef/constants';
 
-import { GiftObligationDto } from '../../dto';
+import { GiftObligationRequestDto } from '../../dto';
 
 const {
   VALIDATION: {
@@ -12,10 +12,10 @@ const {
 
 /**
  * Check if an obligation's subtype code has a valid format.
- * @param {GiftObligationDto} obligation
+ * @param {GiftObligationRequestDto} obligation
  * @returns {Boolean}
  */
-export const hasValidFormat = (obligation?: GiftObligationDto) => {
+export const hasValidFormat = (obligation?: GiftObligationRequestDto) => {
   if (obligation?.subtypeCode && typeof obligation.subtypeCode === 'string') {
     const { subtypeCode } = obligation;
 
@@ -29,17 +29,17 @@ export const hasValidFormat = (obligation?: GiftObligationDto) => {
 
 /**
  * Check if an array of obligations have valid subtype code formats.
- * @param {GiftObligationDto[]} obligations: Array of obligations
+ * @param {GiftObligationRequestDto[]} obligations: Array of obligations
  * @returns {Boolean}
  */
-export const hasValidObligationSubtypeCodeFormats = (obligations?: GiftObligationDto[]): boolean => {
+export const hasValidObligationSubtypeCodeFormats = (obligations?: GiftObligationRequestDto[]): boolean => {
   const invalidFormats = [];
 
   if (!Array.isArray(obligations) || !obligations.length) {
     return false;
   }
 
-  obligations.forEach((obligation: GiftObligationDto) => {
+  obligations.forEach((obligation: GiftObligationRequestDto) => {
     if (!hasValidFormat(obligation)) {
       invalidFormats.push(obligation);
     }

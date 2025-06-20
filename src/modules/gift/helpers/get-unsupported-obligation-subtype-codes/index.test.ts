@@ -1,6 +1,6 @@
 import { EXAMPLES, GIFT } from '@ukef/constants';
 
-import { GiftObligationDto } from '../../dto';
+import { GiftObligationRequestDto } from '../../dto';
 import { getUnsupportedObligationSubtypeCodes } from '.';
 
 const {
@@ -9,7 +9,7 @@ const {
 
 const { OBLIGATION_SUBTYPES } = GIFT;
 
-const mockObligations: GiftObligationDto[] = [OBLIGATION(), OBLIGATION()];
+const mockObligations: GiftObligationRequestDto[] = [OBLIGATION(), OBLIGATION()];
 
 describe('modules/gift/helpers/get-unsupported-obligation-subtype-codes', () => {
   describe('when all obligation subtype codes are supported', () => {
