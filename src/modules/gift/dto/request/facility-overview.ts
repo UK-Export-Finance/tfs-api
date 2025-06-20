@@ -53,14 +53,6 @@ export class GiftFacilityOverviewRequestDto {
   @IsDefined()
   @IsDateString()
   @ApiProperty({
-    example: EXAMPLE.endOfCoverDate,
-    required: true,
-  })
-  endOfCoverDate: string;
-
-  @IsDefined()
-  @IsDateString()
-  @ApiProperty({
     example: EXAMPLE.expiryDate,
     required: true,
   })
