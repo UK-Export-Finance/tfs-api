@@ -81,11 +81,11 @@ export class GiftObligationSubtypeService {
     try {
       this.logger.info('Checking if multiple obligation subtypes are supported by product type %s for facility %s', productTypeCode, facilityId);
 
-      const productSubtypes = await this.getAllByProductType(productTypeCode);
+      const supportedSubtypes = await this.getAllByProductType(productTypeCode);
 
       const unsupportedSubtypeCodes = getUnsupportedObligationSubtypeCodes({
         obligations,
-        supportedSubtypes: productSubtypes,
+        supportedSubtypes,
       });
 
       if (unsupportedSubtypeCodes.length) {
