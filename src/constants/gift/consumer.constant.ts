@@ -5,8 +5,10 @@
  */
 const DTFS = 'DTFS' as const;
 
-type ConsumerNames = typeof DTFS;
+type ConsumerTypes = typeof DTFS;
 
 export const CONSUMER = {
   DTFS,
-} as const satisfies Record<string, ConsumerNames>;
+} as const satisfies Record<string, ConsumerTypes>;
+
+export type ConsumerNames = (typeof CONSUMER)[keyof typeof CONSUMER];
