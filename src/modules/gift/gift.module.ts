@@ -5,6 +5,7 @@ import { GiftCurrencyController } from './gift.currency.controller';
 import { GiftCurrencyService } from './gift.currency.service';
 import { GiftFacilityController } from './gift.facility.controller';
 import { GiftFacilityService } from './gift.facility.service';
+import { GiftFacilityValidationService } from './gift.facility-validation.service';
 import { GiftFeeTypeController } from './gift.fee-type.controller';
 import { GiftFeeTypeService } from './gift.fee-type.service';
 import { GiftFixedFeeService } from './gift.fixed-fee.service';
@@ -12,6 +13,8 @@ import { GiftHttpService } from './gift.http.service';
 import { GiftObligationService } from './gift.obligation.service';
 import { GiftRepaymentProfileService } from './gift.repayment-profile.service';
 import { GiftStatusService } from './gift.status.service';
+
+// TODO: ordering
 
 @Module({
   providers: [
@@ -24,6 +27,7 @@ import { GiftStatusService } from './gift.status.service';
     GiftRepaymentProfileService,
     GiftFacilityService,
     GiftStatusService,
+    GiftFacilityValidationService,
   ],
   controllers: [GiftCurrencyController, GiftFacilityController, GiftFeeTypeController],
 })
