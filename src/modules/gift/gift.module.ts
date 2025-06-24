@@ -14,20 +14,18 @@ import { GiftObligationService } from './gift.obligation.service';
 import { GiftRepaymentProfileService } from './gift.repayment-profile.service';
 import { GiftStatusService } from './gift.status.service';
 
-// TODO: ordering
-
 @Module({
   providers: [
-    GiftHttpService,
-    GiftCurrencyService,
     GiftCounterpartyService,
-    GiftFixedFeeService,
+    GiftCurrencyService,
+    GiftFacilityService,
+    GiftFacilityValidationService,
     GiftFeeTypeService,
+    GiftFixedFeeService,
+    GiftHttpService,
     GiftObligationService,
     GiftRepaymentProfileService,
-    GiftFacilityService,
     GiftStatusService,
-    GiftFacilityValidationService,
   ],
   controllers: [GiftCurrencyController, GiftFacilityController, GiftFeeTypeController],
 })
