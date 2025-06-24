@@ -5,7 +5,7 @@ import { GiftCurrencyController } from './gift.currency.controller';
 import { GiftCurrencyService } from './gift.currency.service';
 import { GiftFacilityController } from './gift.facility.controller';
 import { GiftFacilityService } from './gift.facility.service';
-import { GiftFacilityValidationService } from './gift.facility-validation.service';
+import { GiftFacilityAsyncValidationService } from './gift.facility-async-validation.service';
 import { GiftFeeTypeController } from './gift.fee-type.controller';
 import { GiftFeeTypeService } from './gift.fee-type.service';
 import { GiftFixedFeeService } from './gift.fixed-fee.service';
@@ -19,7 +19,7 @@ import { GiftStatusService } from './gift.status.service';
     GiftCounterpartyService,
     GiftCurrencyService,
     GiftFacilityService,
-    GiftFacilityValidationService,
+    GiftFacilityAsyncValidationService,
     GiftFeeTypeService,
     GiftFixedFeeService,
     GiftHttpService,

@@ -7,12 +7,16 @@ import { generateOverviewValidationErrors, generateValidationErrors, stripPayloa
 
 // TODO: rename to async validation?
 
-// /**
-//  * GIFT facility service.
-//  * This is responsible for all facility operations that call the GIFT API.
-//  */
+/**
+ * GIFT facility validation service.
+ * This is responsible for all manual, asynchronous facility validations.
+ * The reason for doing this, instead of custom, async NestJS decorators, is that:
+ * 1) Such custom decorators can end up unnecessarily making the same API calls multiple times.
+ * 2) Async NestJS validation decorators are not entirely suitable for our requirements.
+ * 3) Custom validation gives us complete control and optimisation.
+ */
 @Injectable()
-export class GiftFacilityValidationService {
+export class GiftFacilityAsyncValidationService {
   constructor(
     private readonly logger: PinoLogger,
     private readonly currencyService: GiftCurrencyService,
@@ -20,8 +24,10 @@ export class GiftFacilityValidationService {
     this.currencyService = currencyService;
   }
 
-  async creation(payload: GiftFacilityCreationRequestDto) {
+  async creation(payload: GiftFacilityCreationRequestDto, facilityId: string) {
     try {
+      this.logger.info('Validating a GIFT facility (async) %s', facilityId);
+
       const supportedCurrencies = await this.currencyService.getSupportedCurrencies();
 
       const overviewErrs = generateOverviewValidationErrors(payload.overview, supportedCurrencies.data);
@@ -31,8 +37,10 @@ export class GiftFacilityValidationService {
       const currencyErrors = generateValidationErrors(payloadCurrencies, supportedCurrencies.data, 'currency');
 
       return [...overviewErrs, ...currencyErrors];
-    } catch {
-      throw new Error('oh no ');
+    } catch (error) {
+      this.logger.error('Error validating a GIFT facility (async) %s %o', facilityId, error);
+
+      throw new Error(`Error validating a GIFT facility (async) ${facilityId}`, error);
     }
   }
 }

@@ -6,7 +6,7 @@ import { PinoLogger } from 'nestjs-pino';
 
 import { GiftFacilityCreationRequestDto, GiftFacilityOverviewRequestDto } from './dto';
 import { GiftCounterpartyService } from './gift.counterparty.service';
-import { GiftFacilityValidationService } from './gift.facility-validation.service';
+import { GiftFacilityAsyncValidationService } from './gift.facility-async-validation.service';
 import { GiftFixedFeeService } from './gift.fixed-fee.service';
 import { GiftHttpService } from './gift.http.service';
 import { GiftObligationService } from './gift.obligation.service';
@@ -30,7 +30,7 @@ export class GiftFacilityService {
   constructor(
     private readonly giftHttpService: GiftHttpService,
     private readonly logger: PinoLogger,
-    private readonly giftFacilityValidationService: GiftFacilityValidationService,
+    private readonly giftFacilityValidationService: GiftFacilityAsyncValidationService,
     private readonly giftCounterpartyService: GiftCounterpartyService,
     private readonly giftFixedFeeService: GiftFixedFeeService,
     private readonly giftObligationService: GiftObligationService,
@@ -86,7 +86,7 @@ export class GiftFacilityService {
       throw new Error(`Error creating an initial GIFT facility ${overviewData.facilityId}`, error);
     }
   }
-  a;
+
   /**
    * Create a GIFT facility
    * @param {GiftFacilityCreationRequestDto} data: Facility data
