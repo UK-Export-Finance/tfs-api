@@ -1,4 +1,4 @@
-## Introduction :pencil2:
+# Introduction :pencil2:
 
 Include a summary of the changes and related feature(s) or issue(s).
 
