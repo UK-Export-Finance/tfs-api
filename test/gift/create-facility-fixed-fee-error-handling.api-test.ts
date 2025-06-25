@@ -82,7 +82,7 @@ describe('POST /gift/facility - fixed fee error handling', () => {
 
       const expected = {
         ...mockResponses.badRequest,
-        message: API_RESPONSE_MESSAGES.FACILITY_VALIDATION_ERRORS,
+        message: API_RESPONSE_MESSAGES.GIFT_FACILITY_VALIDATION_ERRORS,
         validationErrors: getExpectedValidationErrors(payloadFixedFees, mockResponses.badRequest, ENTITY_NAMES.FIXED_FEE),
       };
 

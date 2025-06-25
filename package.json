@@ -6,7 +6,7 @@
   "license": "MIT",
   "author": "UKEF",
   "scripts": {
-    "api-test": "jest --coverage --selectProjects=API",
+    "api-test": "clear && jest test/gift",
     "audit:fix": "npm audit --fix",
     "build": "nest build -p tsconfig.build.json",
     "e2e-test": "jest --passWithNoTests --coverage --selectProjects=E2E",

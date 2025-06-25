@@ -1,5 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
-import { EXAMPLES } from '@ukef/constants';
+import { EXAMPLES, GIFT } from '@ukef/constants';
 import { mockAxiosError, mockResponse201 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
@@ -24,6 +24,8 @@ const {
     WORK_PACKAGE_APPROVE_RESPONSE_DATA,
   },
 } = EXAMPLES;
+
+const { API_RESPONSE_MESSAGES } = GIFT;
 
 const mockCreateInitialFacilityResponse = mockResponse201(FACILITY_RESPONSE_DATA);
 
@@ -114,7 +116,11 @@ describe('GiftFacilityService.create - async validation errors', () => {
       // Assert
       const expected = {
         status: HttpStatus.BAD_REQUEST,
-        data: mockValidationErrors,
+        data: {
+          statusCode: HttpStatus.BAD_REQUEST,
+          message: API_RESPONSE_MESSAGES.ASYNC_FACILITY_VALIDATION_ERRORS,
+          validationErrors: mockValidationErrors,
+        },
       };
 
       expect(response).toEqual(expected);

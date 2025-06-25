@@ -3,7 +3,8 @@ import { VALIDATION } from './validation.constant';
 
 export const GIFT = {
   API_RESPONSE_MESSAGES: {
-    FACILITY_VALIDATION_ERRORS: 'Validation errors with facility entity(s)',
+    ASYNC_FACILITY_VALIDATION_ERRORS: 'Async validation errors with facility entity(s)',
+    GIFT_FACILITY_VALIDATION_ERRORS: 'GIFT validation errors with facility entity(s)',
     APPROVED_STATUS_ERROR_MESSAGE: 'Error updating GIFT work package status to approved',
   },
   API_RESPONSE_TYPES: {

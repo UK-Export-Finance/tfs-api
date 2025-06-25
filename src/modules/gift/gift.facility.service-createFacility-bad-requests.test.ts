@@ -143,7 +143,7 @@ describe('GiftFacilityService.create - bad requests', () => {
           status: HttpStatus.BAD_REQUEST,
           data: {
             statusCode: HttpStatus.BAD_REQUEST,
-            message: API_RESPONSE_MESSAGES.FACILITY_VALIDATION_ERRORS,
+            message: API_RESPONSE_MESSAGES.GIFT_FACILITY_VALIDATION_ERRORS,
             validationErrors: expectedValidationErrors,
           },
         };
@@ -182,7 +182,7 @@ describe('GiftFacilityService.create - bad requests', () => {
           status: HttpStatus.BAD_REQUEST,
           data: {
             statusCode: HttpStatus.BAD_REQUEST,
-            message: API_RESPONSE_MESSAGES.FACILITY_VALIDATION_ERRORS,
+            message: API_RESPONSE_MESSAGES.GIFT_FACILITY_VALIDATION_ERRORS,
             validationErrors: expectedValidationErrors,
           },
         };
@@ -221,7 +221,7 @@ describe('GiftFacilityService.create - bad requests', () => {
           status: HttpStatus.BAD_REQUEST,
           data: {
             statusCode: HttpStatus.BAD_REQUEST,
-            message: API_RESPONSE_MESSAGES.FACILITY_VALIDATION_ERRORS,
+            message: API_RESPONSE_MESSAGES.GIFT_FACILITY_VALIDATION_ERRORS,
             validationErrors: expectedValidationErrors,
           },
         };
@@ -260,7 +260,7 @@ describe('GiftFacilityService.create - bad requests', () => {
           status: HttpStatus.BAD_REQUEST,
           data: {
             statusCode: HttpStatus.BAD_REQUEST,
-            message: API_RESPONSE_MESSAGES.FACILITY_VALIDATION_ERRORS,
+            message: API_RESPONSE_MESSAGES.GIFT_FACILITY_VALIDATION_ERRORS,
             validationErrors: expectedValidationErrors,
           },
         };
@@ -317,7 +317,7 @@ describe('GiftFacilityService.create - bad requests', () => {
         status: HttpStatus.BAD_REQUEST,
         data: {
           statusCode: HttpStatus.BAD_REQUEST,
-          message: API_RESPONSE_MESSAGES.FACILITY_VALIDATION_ERRORS,
+          message: API_RESPONSE_MESSAGES.GIFT_FACILITY_VALIDATION_ERRORS,
           validationErrors: expectedValidationErrors,
         },
       };
@@ -366,7 +366,7 @@ describe('GiftFacilityService.create - bad requests', () => {
           status: HttpStatus.BAD_REQUEST,
           data: {
             statusCode: HttpStatus.BAD_REQUEST,
-            message: API_RESPONSE_MESSAGES.FACILITY_VALIDATION_ERRORS,
+            message: API_RESPONSE_MESSAGES.GIFT_FACILITY_VALIDATION_ERRORS,
             validationErrors: expectedValidationErrors,
           },
         };
@@ -405,7 +405,7 @@ describe('GiftFacilityService.create - bad requests', () => {
           status: HttpStatus.BAD_REQUEST,
           data: {
             statusCode: HttpStatus.BAD_REQUEST,
-            message: API_RESPONSE_MESSAGES.FACILITY_VALIDATION_ERRORS,
+            message: API_RESPONSE_MESSAGES.GIFT_FACILITY_VALIDATION_ERRORS,
             validationErrors: expectedValidationErrors,
           },
         };
@@ -444,7 +444,7 @@ describe('GiftFacilityService.create - bad requests', () => {
           status: HttpStatus.BAD_REQUEST,
           data: {
             statusCode: HttpStatus.BAD_REQUEST,
-            message: API_RESPONSE_MESSAGES.FACILITY_VALIDATION_ERRORS,
+            message: API_RESPONSE_MESSAGES.GIFT_FACILITY_VALIDATION_ERRORS,
             validationErrors: expectedValidationErrors,
           },
         };
@@ -483,7 +483,7 @@ describe('GiftFacilityService.create - bad requests', () => {
           status: HttpStatus.BAD_REQUEST,
           data: {
             statusCode: HttpStatus.BAD_REQUEST,
-            message: API_RESPONSE_MESSAGES.FACILITY_VALIDATION_ERRORS,
+            message: API_RESPONSE_MESSAGES.GIFT_FACILITY_VALIDATION_ERRORS,
             validationErrors: expectedValidationErrors,
           },
         };

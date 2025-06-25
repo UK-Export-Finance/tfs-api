@@ -109,16 +109,11 @@ export class GiftFacilityService {
       const validationErrors = await this.asyncValidationService.creation(data, facilityId);
 
       if (validationErrors.length) {
-        // return {
-        //   status: HttpStatus.BAD_REQUEST,
-        //   data: validationErrors,
-        // };
-
         return {
           status: HttpStatus.BAD_REQUEST,
           data: {
             statusCode: HttpStatus.BAD_REQUEST,
-            message: 'TEMP MESSAGE',
+            message: API_RESPONSE_MESSAGES.ASYNC_FACILITY_VALIDATION_ERRORS,
             validationErrors,
           },
         };
@@ -173,7 +168,7 @@ export class GiftFacilityService {
         let message = firstMessage;
 
         if (status === HttpStatus.BAD_REQUEST) {
-          message = API_RESPONSE_MESSAGES.FACILITY_VALIDATION_ERRORS;
+          message = API_RESPONSE_MESSAGES.GIFT_FACILITY_VALIDATION_ERRORS;
         }
 
         return {
