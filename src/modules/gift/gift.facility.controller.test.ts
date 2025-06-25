@@ -3,8 +3,10 @@ import { mockResponse200, mockResponse201 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
 import { GiftCounterpartyService } from './gift.counterparty.service';
+import { GiftCurrencyService } from './gift.currency.service';
 import { GiftFacilityController } from './gift.facility.controller';
 import { GiftFacilityService } from './gift.facility.service';
+import { GiftFacilityAsyncValidationService } from './gift.facility-async-validation.service';
 import { GiftFixedFeeService } from './gift.fixed-fee.service';
 import { GiftHttpService } from './gift.http.service';
 import { GiftObligationService } from './gift.obligation.service';
@@ -22,6 +24,7 @@ describe('GiftFacilityController', () => {
   const logger = new PinoLogger({});
 
   let giftHttpService: GiftHttpService;
+  let asyncValidationService: GiftFacilityAsyncValidationService;
   let counterpartyService: GiftCounterpartyService;
   let fixedFeeService: GiftFixedFeeService;
   let obligationService: GiftObligationService;
@@ -41,6 +44,9 @@ describe('GiftFacilityController', () => {
     // Arrange
     giftHttpService = new GiftHttpService(logger);
 
+    const currencyService = new GiftCurrencyService(giftHttpService, logger);
+
+    asyncValidationService = new GiftFacilityAsyncValidationService(logger, currencyService);
     counterpartyService = new GiftCounterpartyService(giftHttpService, logger);
     fixedFeeService = new GiftFixedFeeService(giftHttpService, logger);
     obligationService = new GiftObligationService(giftHttpService, logger);
@@ -50,6 +56,7 @@ describe('GiftFacilityController', () => {
     giftFacilityService = new GiftFacilityService(
       giftHttpService,
       logger,
+      asyncValidationService,
       counterpartyService,
       fixedFeeService,
       obligationService,

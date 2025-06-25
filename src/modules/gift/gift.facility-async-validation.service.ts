@@ -5,8 +5,6 @@ import { GiftFacilityCreationRequestDto } from './dto';
 import { GiftCurrencyService } from './gift.currency.service';
 import { generateOverviewValidationErrors, generateValidationErrors, stripPayload } from './helpers';
 
-// TODO: rename to async validation?
-
 /**
  * GIFT facility validation service.
  * This is responsible for all manual, asynchronous facility validations.

@@ -30,7 +30,7 @@ export class GiftFacilityService {
   constructor(
     private readonly giftHttpService: GiftHttpService,
     private readonly logger: PinoLogger,
-    private readonly giftFacilityValidationService: GiftFacilityAsyncValidationService,
+    private readonly asyncValidationService: GiftFacilityAsyncValidationService,
     private readonly giftCounterpartyService: GiftCounterpartyService,
     private readonly giftFixedFeeService: GiftFixedFeeService,
     private readonly giftObligationService: GiftObligationService,
@@ -38,7 +38,7 @@ export class GiftFacilityService {
     private readonly giftStatusService: GiftStatusService,
   ) {
     this.giftHttpService = giftHttpService;
-    this.giftFacilityValidationService = giftFacilityValidationService;
+    this.asyncValidationService = asyncValidationService;
     this.giftCounterpartyService = giftCounterpartyService;
     this.giftFixedFeeService = giftFixedFeeService;
     this.giftObligationService = giftObligationService;
@@ -106,12 +106,21 @@ export class GiftFacilityService {
         repaymentProfiles: repaymentProfilesPayload,
       } = data;
 
-      const validationErrors = await this.giftFacilityValidationService.creation(data);
+      const validationErrors = await this.asyncValidationService.creation(data, facilityId);
 
       if (validationErrors.length) {
+        // return {
+        //   status: HttpStatus.BAD_REQUEST,
+        //   data: validationErrors,
+        // };
+
         return {
           status: HttpStatus.BAD_REQUEST,
-          data: validationErrors,
+          data: {
+            statusCode: HttpStatus.BAD_REQUEST,
+            message: 'TEMP MESSAGE',
+            validationErrors,
+          },
         };
       }
 

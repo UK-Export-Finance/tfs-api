@@ -5,7 +5,9 @@ import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 
 import { GiftCounterpartyService } from './gift.counterparty.service';
+import { GiftCurrencyService } from './gift.currency.service';
 import { GiftFacilityService } from './gift.facility.service';
+import { GiftFacilityAsyncValidationService } from './gift.facility-async-validation.service';
 import { GiftFixedFeeService } from './gift.fixed-fee.service';
 import { GiftObligationService } from './gift.obligation.service';
 import { GiftRepaymentProfileService } from './gift.repayment-profile.service';
@@ -34,6 +36,7 @@ const mockFixedFees = [FIXED_FEE(), FIXED_FEE()];
 const mockObligations = [OBLIGATION(), OBLIGATION(), OBLIGATION()];
 const mockRepaymentProfiles = [REPAYMENT_PROFILE(), REPAYMENT_PROFILE(), REPAYMENT_PROFILE()];
 
+const mockAsyncValidationServiceCreationResponse = [];
 const mockCreateCounterpartiesResponse = mockCounterparties.map((counterparty) => mockResponse201(counterparty));
 const mockCreateFixedFeesResponse = mockFixedFees.map((fixedFee) => mockResponse201(fixedFee));
 const mockCreateObligationsResponse = mockObligations.map((counterparty) => mockResponse201(counterparty));
@@ -43,6 +46,7 @@ const mockApprovedStatusResponse = mockResponse201({ data: WORK_PACKAGE_APPROVE_
 describe('GiftFacilityService.create - bad requests', () => {
   const logger = new PinoLogger({});
 
+  let asyncValidationService: GiftFacilityAsyncValidationService;
   let counterpartyService: GiftCounterpartyService;
   let fixedFeeService: GiftFixedFeeService;
   let obligationService: GiftObligationService;
@@ -51,6 +55,7 @@ describe('GiftFacilityService.create - bad requests', () => {
   let service: GiftFacilityService;
 
   let giftHttpService;
+  let asyncValidationServiceCreationSpy: jest.Mock;
   let createInitialFacilitySpy: jest.Mock;
   let createCounterpartiesSpy: jest.Mock;
   let createFixedFeesSpy: jest.Mock;
@@ -60,12 +65,16 @@ describe('GiftFacilityService.create - bad requests', () => {
 
   beforeEach(() => {
     // Arrange
+    const currencyService = new GiftCurrencyService(giftHttpService, logger);
+
+    asyncValidationService = new GiftFacilityAsyncValidationService(logger, currencyService);
     counterpartyService = new GiftCounterpartyService(giftHttpService, logger);
     fixedFeeService = new GiftFixedFeeService(giftHttpService, logger);
     obligationService = new GiftObligationService(giftHttpService, logger);
     repaymentProfileService = new GiftRepaymentProfileService(giftHttpService, logger);
     statusService = new GiftStatusService(giftHttpService, logger);
 
+    asyncValidationServiceCreationSpy = jest.fn().mockResolvedValueOnce(mockAsyncValidationServiceCreationResponse);
     createInitialFacilitySpy = jest.fn().mockResolvedValueOnce(mockCreateInitialFacilityResponse);
     createCounterpartiesSpy = jest.fn().mockResolvedValueOnce(mockCreateCounterpartiesResponse);
     createFixedFeesSpy = jest.fn().mockResolvedValueOnce(mockCreateFixedFeesResponse);
@@ -73,13 +82,23 @@ describe('GiftFacilityService.create - bad requests', () => {
     createRepaymentProfilesSpy = jest.fn().mockResolvedValueOnce(mockRepaymentProfilesResponse);
     approvedStatusSpy = jest.fn().mockResolvedValueOnce(mockApprovedStatusResponse);
 
+    asyncValidationService.creation = asyncValidationServiceCreationSpy;
     counterpartyService.createMany = createCounterpartiesSpy;
     fixedFeeService.createMany = createFixedFeesSpy;
     obligationService.createMany = createObligationsSpy;
     repaymentProfileService.createMany = createRepaymentProfilesSpy;
     statusService.approved = approvedStatusSpy;
 
-    service = new GiftFacilityService(giftHttpService, logger, counterpartyService, fixedFeeService, obligationService, repaymentProfileService, statusService);
+    service = new GiftFacilityService(
+      giftHttpService,
+      logger,
+      asyncValidationService,
+      counterpartyService,
+      fixedFeeService,
+      obligationService,
+      repaymentProfileService,
+      statusService,
+    );
 
     service.createInitialFacility = createInitialFacilitySpy;
   });
