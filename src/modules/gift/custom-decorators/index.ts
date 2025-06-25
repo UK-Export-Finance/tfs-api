@@ -1,4 +1,5 @@
 export * from './counterparty-share-percentage-validation';
+export * from './is-supported-consumer';
 export * from './is-supported-counterparty-role';
 export * from './is-supported-currency';
 export * from './is-supported-fee-type';

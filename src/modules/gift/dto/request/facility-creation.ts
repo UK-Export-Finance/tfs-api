@@ -1,9 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { EXAMPLES } from '@ukef/constants';
+import { EXAMPLES, GIFT } from '@ukef/constants';
 import { Type } from 'class-transformer';
-import { ArrayNotEmpty, IsArray, IsDefined, IsNotEmptyObject, ValidateNested } from 'class-validator';
+import { ArrayNotEmpty, IsArray, IsDefined, IsNotEmptyObject, IsString, ValidateNested } from 'class-validator';
 
 import {
+  IsSupportedConsumer,
   ObligationSubtypeCodeAreSupported,
   UniqueCounterpartyUrns,
   UniqueRepaymentProfileAllocationDates,
@@ -24,6 +25,15 @@ const {
  * These fields are required for APIM to create a fully populated facility in GIFT.
  */
 export class GiftFacilityCreationRequestDto {
+  @IsDefined()
+  @IsString()
+  @IsSupportedConsumer()
+  @ApiProperty({
+    example: GIFT.CONSUMER.DTFS,
+    required: true,
+  })
+  consumer: string;
+
   @ApiProperty({
     example: FACILITY_OVERVIEW,
     required: true,

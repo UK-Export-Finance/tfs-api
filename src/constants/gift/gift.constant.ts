@@ -1,3 +1,4 @@
+import { CONSUMER } from './consumer.constant';
 import { VALIDATION } from './validation.constant';
 
 export const GIFT = {
@@ -73,5 +74,6 @@ export const GIFT = {
     BIP: 'Bond Insurance Policy (BIP)',
     EXIP: 'Export Insurance Policy (EXIP)',
   },
+  CONSUMER,
   VALIDATION,
 };
