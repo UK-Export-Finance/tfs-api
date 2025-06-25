@@ -6,6 +6,7 @@ import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables'
 import nock from 'nock';
 
 import {
+  assert400Response,
   booleanValidation,
   currencyStringValidation,
   dateStringValidation,
@@ -27,6 +28,8 @@ const {
   PATH: { FACILITY },
   VALIDATION,
 } = GIFT;
+
+const UNSUPPORTED_CONSUMER = 'Unsupported consumer';
 
 describe('POST /gift/facility - validation', () => {
   const url = `/api/${prefixAndVersion}/gift${FACILITY}`;
