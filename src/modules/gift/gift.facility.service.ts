@@ -112,6 +112,7 @@ export class GiftFacilityService {
         return {
           status: HttpStatus.BAD_REQUEST,
           data: {
+            error: 'Bad Request',
             statusCode: HttpStatus.BAD_REQUEST,
             message: API_RESPONSE_MESSAGES.ASYNC_FACILITY_VALIDATION_ERRORS,
             validationErrors,

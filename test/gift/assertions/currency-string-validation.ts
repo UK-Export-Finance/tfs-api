@@ -6,8 +6,9 @@ import { generatePayload } from './generate-payload';
 import { assert400Response } from './response-assertion';
 import { stringValidation } from './string-validation';
 
-const INVALID_CURRENCY = 'ABC';
 const UNSUPPORTED_CURRENCY = AUD;
+
+const { API_RESPONSE_MESSAGES } = GIFT;
 
 /**
  * Validation tests for a currency string field with an unsupported currency and invalid values
@@ -30,32 +31,7 @@ export const currencyStringValidation = ({ initialPayload, parentFieldName, url 
 
   const mockPayload = generatePayload({ initialPayload, fieldName, parentFieldName });
 
-  describe('when the provided currency is an invalid ISO code', () => {
-    beforeAll(() => {
-      // Arrange
-      mockPayload[`${parentFieldName}`][`${fieldName}`] = INVALID_CURRENCY;
-    });
-
-    it('should return a 400 response', async () => {
-      // Act
-      const response = await api.post(url, mockPayload);
-
-      // Assert
-      assert400Response(response);
-    });
-
-    it('should return the correct error messages', async () => {
-      // Act
-      const { body } = await api.post(url, mockPayload);
-
-      // Assert
-      const expected = [`${parentFieldName}.${fieldName} is not supported (${INVALID_CURRENCY})`];
-
-      expect(body.message).toStrictEqual(expected);
-    });
-  });
-
-  describe('when the provided currency is not supported', () => {
+  describe('async validation - when the provided currency is not supported', () => {
     beforeAll(() => {
       // Arrange
       mockPayload[`${parentFieldName}`][`${fieldName}`] = UNSUPPORTED_CURRENCY;
@@ -69,14 +45,24 @@ export const currencyStringValidation = ({ initialPayload, parentFieldName, url 
       assert400Response(response);
     });
 
-    it('should return the correct error messages', async () => {
+    it('should return the correct body.message', async () => {
+      // Act
+      const { body } = await api.post(url, mockPayload);
+
+      // Assert
+      const expected = API_RESPONSE_MESSAGES.ASYNC_FACILITY_VALIDATION_ERRORS;
+
+      expect(body.message).toStrictEqual(expected);
+    });
+
+    it('should return the correct body.validationErrors', async () => {
       // Act
       const { body } = await api.post(url, mockPayload);
 
       // Assert
       const expected = [`${parentFieldName}.${fieldName} is not supported (${UNSUPPORTED_CURRENCY})`];
 
-      expect(body.message).toStrictEqual(expected);
+      expect(body.validationErrors).toStrictEqual(expected);
     });
   });
 

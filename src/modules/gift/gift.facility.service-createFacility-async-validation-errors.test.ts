@@ -117,6 +117,7 @@ describe('GiftFacilityService.create - async validation errors', () => {
       const expected = {
         status: HttpStatus.BAD_REQUEST,
         data: {
+          error: 'Bad request',
           statusCode: HttpStatus.BAD_REQUEST,
           message: API_RESPONSE_MESSAGES.ASYNC_FACILITY_VALIDATION_ERRORS,
           validationErrors: mockValidationErrors,
