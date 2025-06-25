@@ -42,7 +42,7 @@ export const GIFT = {
   },
   PATH: {
     APPROVE: '/approve',
-    COUNTERPARTY_ROLES: '/facility-counterparty/roles',
+    COUNTERPARTY_ROLES: '/counterparty-role',
     CURRENCY: '/currency',
     CONFIGURATION_EVENT: '/configuration-event/type',
     CREATE_FACILITY: '/work-package/create-facility',

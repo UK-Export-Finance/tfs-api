@@ -54,10 +54,10 @@ export function CounterpartySharePercentageValidation(options?: ValidationOption
             const httpService = new GiftHttpService(logger);
             const counterpartyService = new GiftCounterpartyService(httpService, logger);
 
-            const { data: roles } = await counterpartyService.getAllRoles();
+            const { data: rolesResponse } = await counterpartyService.getAllRoles();
 
             return validateCounterpartySharePercentage({
-              roles,
+              roles: rolesResponse?.counterpartyRoles,
               roleCode: providedRoleId,
               sharePercentage: providedSharePercentage,
             });
