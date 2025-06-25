@@ -31,7 +31,11 @@ describe('modules/gift/helpers/async-validation/generate-validation-errors', () 
         const mockSupportedValues = ['A', 'C'];
 
         // Act
-        const result = generateValidationErrors(mockPayload, mockSupportedValues, mockFieldName);
+        const result = generateValidationErrors({
+          payload: mockPayload,
+          supportedValues: mockSupportedValues,
+          fieldName: mockFieldName,
+        });
 
         // Assert
         const expected = [
@@ -59,7 +63,11 @@ describe('modules/gift/helpers/async-validation/generate-validation-errors', () 
         const mockSupportedValues = ['A', 'C'];
 
         // Act
-        const result = generateValidationErrors(mockPayload, mockSupportedValues, mockFieldName);
+        const result = generateValidationErrors({
+          payload: mockPayload,
+          supportedValues: mockSupportedValues,
+          fieldName: mockFieldName,
+        });
 
         // Assert
         expect(result).toEqual([]);

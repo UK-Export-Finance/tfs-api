@@ -54,7 +54,11 @@ describe('GiftFacilityAsyncValidationService', () => {
         // Assert
         const overviewErrs = generateOverviewValidationErrors(mockPayload.overview, CURRENCIES);
 
-        const currencyErrors = generateValidationErrors(stripPayload(mockPayload, 'currency'), CURRENCIES, 'currency');
+        const currencyErrors = generateValidationErrors({
+          payload: stripPayload(mockPayload, 'currency'),
+          supportedValues: CURRENCIES,
+          fieldName: 'currency',
+        });
 
         const expected = [...overviewErrs, ...currencyErrors];
 

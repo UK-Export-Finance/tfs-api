@@ -7,6 +7,12 @@ interface GenerateMessageParams {
   index: number;
 }
 
+interface GenerateValidationErrorsParams {
+  payload: GiftFacilityCreationValidationStrippedPayload;
+  supportedValues: string[];
+  fieldName: string;
+}
+
 /**
  * Generate a validation error message from the provided params
  * @param {GenerateMessageParams}: parentEntityName, fieldName, fieldValue, index
@@ -16,13 +22,10 @@ export const generateMessage = ({ parentEntityName, fieldName, fieldValue, index
   `${parentEntityName}.${index}.${fieldName} is not supported (${fieldValue})`;
 
 /**
- * Generate validation errors for multiple entities,
- * that have values not contained in a provided list of supported values.
+ * Generate validation errors for multiple entities, depending on the provided field name,
+ * and if values are contained the provided list of supported values.
  * NOTE: Whilst "overview" is part of the payload, overview validation does not occur in this function, as it has a different structure.
- * @param {GiftFacilityCreationValidationStrippedPayload} payload: A stripped payload
- * @param {String[]} supportedValues: Supported values
- * @param {String} fieldName: Field name to assert.
- * @returns {String[]} Validation errors
+ * @param {GenerateValidationErrorsParams} payload, supportedValues, fieldName
  * @example
  * ```ts
  * const payload = {
@@ -41,7 +44,7 @@ export const generateMessage = ({ parentEntityName, fieldName, fieldValue, index
  * ]
  * ```
  */
-export const generateValidationErrors = (payload: GiftFacilityCreationValidationStrippedPayload, supportedValues: string[], fieldName: string): string[] => {
+export const generateValidationErrors = ({ payload, supportedValues, fieldName }: GenerateValidationErrorsParams): string[] => {
   const validationErrors = [];
 
   Object.keys(payload).forEach((parentEntityName) => {

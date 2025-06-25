@@ -22,6 +22,12 @@ export class GiftFacilityAsyncValidationService {
     this.currencyService = currencyService;
   }
 
+  /**
+   * Custom async validation for GIFT facility creation
+   * @param {GiftFacilityCreationRequestDto} payload: The facility creation payload
+   * @param {String} facilityId: Facility ID
+   * @returns {Object}
+   */
   async creation(payload: GiftFacilityCreationRequestDto, facilityId: string) {
     try {
       this.logger.info('Validating a GIFT facility (async) %s', facilityId);
@@ -32,7 +38,11 @@ export class GiftFacilityAsyncValidationService {
 
       const payloadCurrencies = stripPayload(payload, 'currency');
 
-      const currencyErrors = generateValidationErrors(payloadCurrencies, supportedCurrencies.data, 'currency');
+      const currencyErrors = generateValidationErrors({
+        payload: payloadCurrencies,
+        supportedValues: supportedCurrencies.data,
+        fieldName: 'currency',
+      });
 
       return [...overviewErrs, ...currencyErrors];
     } catch (error) {
