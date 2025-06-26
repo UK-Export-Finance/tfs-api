@@ -19,10 +19,10 @@ const WORK_PACKAGE_ID = 123;
  * Example counterparty roles.
  */
 const COUNTERPARTY_ROLE = {
-  LEAD_ECA: {
-    name: 'Lead ECA',
+  EXPORTER: {
+    name: 'Exporter',
     hasSharePercentage: false,
-    code: COUNTERPARTY_ROLE_CODES.LEAD_ECA,
+    code: COUNTERPARTY_ROLE_CODES.EXPORTER,
   },
   GUARANTOR: {
     name: 'Guarantor',
