@@ -10,8 +10,8 @@ export const GIFT = {
     ERROR: 'api-error-response',
   },
   COUNTERPARTY_ROLE_CODES: {
-    LEAD_ECA: 'lead-eca',
-    GUARANTOR: 'guarantor',
+    LEAD_ECA: 'CRP002',
+    GUARANTOR: 'CRP013',
   },
   ENTITY_NAMES: {
     COUNTERPARTY: 'Counterparty',
