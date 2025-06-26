@@ -13,10 +13,10 @@ const {
 export class GiftFacilityCounterpartyRoleResponseDto {
   @IsString()
   @ApiProperty({
-    example: COUNTERPARTY_ROLE.LEAD_ECA.id,
+    example: COUNTERPARTY_ROLE.LEAD_ECA.code,
     required: true,
   })
-  id: string;
+  code: string;
 
   @IsString()
   @ApiProperty({

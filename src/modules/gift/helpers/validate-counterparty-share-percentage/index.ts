@@ -25,9 +25,7 @@ interface ValidateCounterpartySharePercentageParams {
  * @returns {Boolean}
  */
 export const validateCounterpartySharePercentage = ({ roles, roleCode, sharePercentage }: ValidateCounterpartySharePercentageParams): boolean => {
-  // TODO
-  // TODO: should it be role.code?
-  const role = roles.find((role: GiftFacilityCounterpartyRoleResponseDto) => role.id === roleCode);
+  const role = roles.find((role: GiftFacilityCounterpartyRoleResponseDto) => role.code === roleCode);
 
   /**
    * No role has been found.

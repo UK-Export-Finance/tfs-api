@@ -22,13 +22,17 @@ const COUNTERPARTY_ROLE = {
   LEAD_ECA: {
     name: 'Lead ECA',
     hasSharePercentage: false,
-    id: COUNTERPARTY_ROLE_CODES.LEAD_ECA,
+    code: COUNTERPARTY_ROLE_CODES.LEAD_ECA,
   },
   GUARANTOR: {
     name: 'Guarantor',
     hasSharePercentage: true,
-    id: COUNTERPARTY_ROLE_CODES.GUARANTOR,
+    code: COUNTERPARTY_ROLE_CODES.GUARANTOR,
   },
+};
+
+const COUNTERPARTY_ROLES_RESPONSE_DATA = {
+  counterpartyRoles: [COUNTERPARTY_ROLE.GUARANTOR],
 };
 
 /**
@@ -41,7 +45,7 @@ const COUNTERPARTY = () => ({
     numeric: true,
   }),
   exitDate: '2025-01-16',
-  roleCode: COUNTERPARTY_ROLE.GUARANTOR.id,
+  roleCode: COUNTERPARTY_ROLE.GUARANTOR.code,
   sharePercentage: 25,
   startDate: '2025-01-13',
 });
@@ -179,6 +183,7 @@ const WORK_PACKAGE_APPROVE_RESPONSE_DATA = {
 export const GIFT_EXAMPLES = {
   COUNTERPARTY,
   COUNTERPARTY_ROLE,
+  COUNTERPARTY_ROLES_RESPONSE_DATA,
   CURRENCIES: Object.values(SUPPORTED_CURRENCIES),
   DEAL_ID,
   FACILITY_CREATION_PAYLOAD,

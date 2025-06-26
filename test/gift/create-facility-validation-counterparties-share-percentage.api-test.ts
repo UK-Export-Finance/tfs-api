@@ -18,11 +18,7 @@ const {
   PATH: { FACILITY },
 } = GIFT;
 
-const [firstCounterparty] = EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD.counterparties;
-
-const mockCounterParty = firstCounterparty;
-
-delete mockCounterParty.sharePercentage;
+const [mockFirstCounterparty, mockSecondCounterparty] = EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD.counterparties;
 
 describe('POST /gift/facility - validation - counterparties - share percentage', () => {
   const url = `/api/${prefixAndVersion}/gift${FACILITY}`;
@@ -54,7 +50,7 @@ describe('POST /gift/facility - validation - counterparties - share percentage',
   const baseParams = {
     initialPayload: {
       ...EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD,
-      counterparties: [mockCounterParty, mockCounterParty],
+      counterparties: [mockFirstCounterparty, mockSecondCounterparty],
     },
     parentFieldName: 'counterparties',
     url,
