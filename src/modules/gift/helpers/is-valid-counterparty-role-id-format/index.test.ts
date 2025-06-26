@@ -61,7 +61,7 @@ describe('modules/gift/helpers/is-valid-counterparty-role-id-format', () => {
   describe('when a role ID is has the correct format', () => {
     it('should return true', () => {
       // Arrange
-      const mockRoleId = GIFT_EXAMPLES.COUNTERPARTY_ROLE.GUARANTOR.id;
+      const mockRoleId = GIFT_EXAMPLES.COUNTERPARTY_ROLE.GUARANTOR.code;
 
       // Act
       const result = isValidCounterpartyRoleIdFormat(mockRoleId);
