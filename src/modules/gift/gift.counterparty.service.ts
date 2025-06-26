@@ -5,6 +5,7 @@ import { PinoLogger } from 'nestjs-pino';
 
 import { GiftFacilityCounterpartyRequestDto, GiftFacilityCounterpartyRoleResponseDto } from './dto';
 import { GiftHttpService } from './gift.http.service';
+import { mapCounterpartiesRequestData } from './helpers';
 
 const { EVENT_TYPES, PATH } = GIFT;
 
@@ -58,7 +59,11 @@ export class GiftCounterpartyService {
     try {
       this.logger.info('Creating counterparties for facility %s', facilityId);
 
-      const responses = await Promise.all(counterpartiesData.map((counterParty) => this.createOne(counterParty, facilityId, workPackageId)));
+      const mappedCounterparties = mapCounterpartiesRequestData(counterpartiesData);
+
+      const responses = await Promise.all(
+        mappedCounterparties.map((counterparty: GiftFacilityCounterpartyRequestDto) => this.createOne(counterparty, facilityId, workPackageId)),
+      );
 
       return responses;
     } catch (error) {
