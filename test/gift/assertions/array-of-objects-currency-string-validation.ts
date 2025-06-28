@@ -1,3 +1,4 @@
+import { HttpStatus } from '@nestjs/common';
 import { GIFT } from '@ukef/constants';
 import { AUD } from '@ukef/constants/currencies.constant';
 import { Api } from '@ukef-test/support/api';
@@ -39,7 +40,7 @@ export const arrayOfObjectsCurrencyStringValidation = ({ initialPayload, parentF
       mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value: null });
     });
 
-    it('should return a 400 response', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       // Act
       const response = await api.post(url, mockPayload);
 
@@ -73,7 +74,7 @@ export const arrayOfObjectsCurrencyStringValidation = ({ initialPayload, parentF
       mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value: undefined });
     });
 
-    it('should return a 400 response', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       // Act
       const response = await api.post(url, mockPayload);
 
@@ -107,7 +108,7 @@ export const arrayOfObjectsCurrencyStringValidation = ({ initialPayload, parentF
       mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value: [] });
     });
 
-    it('should return a 400 response', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       // Act
       const response = await api.post(url, mockPayload);
 
@@ -139,7 +140,7 @@ export const arrayOfObjectsCurrencyStringValidation = ({ initialPayload, parentF
       mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value: true });
     });
 
-    it('should return a 400 response', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       // Act
       const response = await api.post(url, mockPayload);
 
@@ -171,7 +172,7 @@ export const arrayOfObjectsCurrencyStringValidation = ({ initialPayload, parentF
       mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value: false });
     });
 
-    it('should return a 400 response', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       // Act
       const response = await api.post(url, mockPayload);
 
@@ -203,7 +204,7 @@ export const arrayOfObjectsCurrencyStringValidation = ({ initialPayload, parentF
       mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value: 0 });
     });
 
-    it('should return a 400 response', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       // Act
       const response = await api.post(url, mockPayload);
 
@@ -235,7 +236,7 @@ export const arrayOfObjectsCurrencyStringValidation = ({ initialPayload, parentF
       mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value: 1 });
     });
 
-    it('should return a 400 response', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       // Act
       const response = await api.post(url, mockPayload);
 
@@ -267,7 +268,7 @@ export const arrayOfObjectsCurrencyStringValidation = ({ initialPayload, parentF
       mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value: '' });
     });
 
-    it('should return a 400 response', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       // Act
       const response = await api.post(url, mockPayload);
 
@@ -299,7 +300,7 @@ export const arrayOfObjectsCurrencyStringValidation = ({ initialPayload, parentF
       mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value });
     });
 
-    it('should return a 400 response', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       // Act
       const response = await api.post(url, mockPayload);
 
@@ -331,7 +332,7 @@ export const arrayOfObjectsCurrencyStringValidation = ({ initialPayload, parentF
       mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value });
     });
 
-    it('should return a 400 response', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       // Act
       const response = await api.post(url, mockPayload);
 
@@ -363,7 +364,7 @@ export const arrayOfObjectsCurrencyStringValidation = ({ initialPayload, parentF
       mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value });
     });
 
-    it('should return a 400 response', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       // Act
       const response = await api.post(url, mockPayload);
 
@@ -395,7 +396,7 @@ export const arrayOfObjectsCurrencyStringValidation = ({ initialPayload, parentF
       mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value });
     });
 
-    it('should return a 400 response', async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       // Act
       const response = await api.post(url, mockPayload);
 

@@ -12,10 +12,11 @@ import {
   dateStringValidation,
   numberStringValidation,
   numberValidation,
+  productTypeCodeStringValidation,
   stringValidation,
   ukefIdValidation,
 } from './assertions';
-import { counterpartyRolesUrl, currencyUrl, feeTypeUrl, mockResponses, productTypeUrl } from './test-helpers';
+import { counterpartyRolesUrl, currencyUrl, feeTypeUrl, mockResponses, obligationSubtypeUrl, productTypeUrl } from './test-helpers';
 
 const {
   giftVersioning: { prefixAndVersion },
@@ -24,12 +25,11 @@ const {
 const { GIFT_API_URL } = ENVIRONMENT_VARIABLES;
 
 const {
-  PATH: { FACILITY, PRODUCT_TYPE },
+  PATH: { FACILITY },
   VALIDATION,
 } = GIFT;
 
-const UNSUPPORTED_CONSUMER = 'ABC';
-const UNSUPPORTED_PRODUCT_TYPE_CODE = 'ABC';
+const UNSUPPORTED_CONSUMER = 'Unsupported consumer';
 
 describe('POST /gift/facility - validation', () => {
   const url = `/api/${prefixAndVersion}/gift${FACILITY}`;
@@ -48,6 +48,8 @@ describe('POST /gift/facility - validation', () => {
     nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
 
     nock(GIFT_API_URL).persist().get(counterpartyRolesUrl).reply(HttpStatus.OK, mockResponses.counterpartyRoles);
+
+    nock(GIFT_API_URL).persist().get(obligationSubtypeUrl).reply(HttpStatus.OK, mockResponses.obligationSubtype);
   });
 
   afterAll(async () => {
@@ -462,42 +464,6 @@ describe('POST /gift/facility - validation', () => {
   });
 
   describe('overview.productTypeCode', () => {
-    stringValidation({
-      ...baseParams,
-      fieldName: 'productTypeCode',
-      min: VALIDATION.FACILITY.OVERVIEW.PRODUCT_TYPE_CODE.MIN_LENGTH,
-      max: VALIDATION.FACILITY.OVERVIEW.PRODUCT_TYPE_CODE.MAX_LENGTH,
-    });
-
-    describe('when the provided product type code is not supported', () => {
-      let mockPayload;
-
-      beforeEach(() => {
-        // Arrange
-        nock(GIFT_API_URL).persist().get(`${PRODUCT_TYPE}/${UNSUPPORTED_PRODUCT_TYPE_CODE}`).reply(HttpStatus.NOT_FOUND, mockResponses.notFound);
-
-        mockPayload = EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD;
-
-        mockPayload.overview.productTypeCode = UNSUPPORTED_PRODUCT_TYPE_CODE;
-      });
-
-      it('should return a 400 response', async () => {
-        // Act
-        const response = await api.post(url, mockPayload);
-
-        // Assert
-        assert400Response(response);
-      });
-
-      it('should return the correct error messages', async () => {
-        // Act
-        const { body } = await api.post(url, mockPayload);
-
-        // Assert
-        const expected = [`overview.productTypeCode is not supported (${UNSUPPORTED_PRODUCT_TYPE_CODE})`];
-
-        expect(body.message).toStrictEqual(expected);
-      });
-    });
+    productTypeCodeStringValidation(baseParams);
   });
 });
