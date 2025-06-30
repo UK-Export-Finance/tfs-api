@@ -6,6 +6,7 @@ import { AcbsConfigBaseUrlAndUseReturnExceptionHeader } from './acbs-config-base
 import { AcbsHttpService } from './acbs-http.service';
 import { AcbsCreateDealDto } from './dto/acbs-create-deal.dto';
 import { AcbsGetDealResponseDto } from './dto/acbs-get-deal-response.dto';
+import { AcbsUpdateDealDto } from './dto/acbs-update-deal.dto';
 import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
 import { createWrapAcbsHttpGetErrorCallback, createWrapAcbsHttpPostOrPutErrorCallback } from './wrap-acbs-http-error-callback';
 
@@ -21,13 +22,25 @@ export class AcbsDealService {
     this.acbsHttpService = new AcbsHttpService(config, httpService);
   }
 
-  async createDeal(portfolioIdentifier: string, newDeal: AcbsCreateDealDto, idToken: string): Promise<void> {
+  async createDeal(portfolioIdentifier: string, deal: AcbsCreateDealDto, idToken: string): Promise<void> {
     await this.acbsHttpService.post<AcbsCreateDealDto>({
       path: this.getAcbsDealPath(portfolioIdentifier),
-      requestBody: newDeal,
+      requestBody: deal,
       idToken,
       onError: createWrapAcbsHttpPostOrPutErrorCallback({
-        messageForUnknownError: `Failed to create a deal with identifier ${newDeal.DealIdentifier} in ACBS.`,
+        messageForUnknownError: `Failed to create a deal with identifier ${deal.DealIdentifier} in ACBS.`,
+        knownErrors: [],
+      }),
+    });
+  }
+
+  async updateDeal(portfolioIdentifier: string, deal: AcbsUpdateDealDto, idToken: string): Promise<void> {
+    await this.acbsHttpService.put<AcbsUpdateDealDto, AcbsGetDealResponseDto>({
+      path: this.getAcbsDealPath(portfolioIdentifier),
+      requestBody: deal,
+      idToken,
+      onError: createWrapAcbsHttpPostOrPutErrorCallback({
+        messageForUnknownError: `Failed to update a deal with identifier ${deal.DealIdentifier} in ACBS.`,
         knownErrors: [],
       }),
     });
