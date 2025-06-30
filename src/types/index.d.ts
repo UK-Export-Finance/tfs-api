@@ -17,3 +17,9 @@ interface ValidationErrorResponse {
   type: string;
   validationErrors: GiftValidationError[];
 }
+
+interface GiftFacilityCreationValidationStrippedPayload {
+  overview: string;
+  fixedFees: string[];
+  obligations: string[];
+}

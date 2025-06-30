@@ -5,7 +5,9 @@ import { mockAxiosError, mockResponse201 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
 import { GiftCounterpartyService } from './gift.counterparty.service';
+import { GiftCurrencyService } from './gift.currency.service';
 import { GiftFacilityService } from './gift.facility.service';
+import { GiftFacilityAsyncValidationService } from './gift.facility-async-validation.service';
 import { GiftFixedFeeService } from './gift.fixed-fee.service';
 import { GiftObligationService } from './gift.obligation.service';
 import { GiftRepaymentProfileService } from './gift.repayment-profile.service';
@@ -41,6 +43,7 @@ describe('GiftFacilityService.create - error handling', () => {
   const logger = new PinoLogger({});
 
   let httpService: HttpService;
+  let asyncValidationService: GiftFacilityAsyncValidationService;
   let counterpartyService: GiftCounterpartyService;
   let fixedFeeService: GiftFixedFeeService;
   let obligationService: GiftObligationService;
@@ -50,6 +53,7 @@ describe('GiftFacilityService.create - error handling', () => {
 
   let giftHttpService;
   let mockHttpServicePost: jest.Mock;
+  let asyncValidationServiceCreationSpy: jest.Mock;
   let createInitialFacilitySpy: jest.Mock;
   let createCounterpartiesSpy: jest.Mock;
   let createFixedFeesSpy: jest.Mock;
@@ -75,6 +79,9 @@ describe('GiftFacilityService.create - error handling', () => {
       post: mockHttpServicePost,
     };
 
+    const currencyService = new GiftCurrencyService(giftHttpService, logger);
+
+    asyncValidationService = new GiftFacilityAsyncValidationService(logger, currencyService);
     counterpartyService = new GiftCounterpartyService(giftHttpService, logger);
     fixedFeeService = new GiftFixedFeeService(giftHttpService, logger);
     obligationService = new GiftObligationService(giftHttpService, logger);
@@ -88,13 +95,23 @@ describe('GiftFacilityService.create - error handling', () => {
     createRepaymentProfilesSpy = jest.fn().mockResolvedValueOnce(mockRepaymentProfilesResponse);
     approvedStatusSpy = jest.fn().mockResolvedValueOnce(mockApprovedStatusResponse);
 
+    asyncValidationService.creation = asyncValidationServiceCreationSpy;
     counterpartyService.createMany = createCounterpartiesSpy;
     fixedFeeService.createMany = createFixedFeesSpy;
     obligationService.createMany = createObligationsSpy;
     repaymentProfileService.createMany = createRepaymentProfilesSpy;
     statusService.approved = approvedStatusSpy;
 
-    service = new GiftFacilityService(giftHttpService, logger, counterpartyService, fixedFeeService, obligationService, repaymentProfileService, statusService);
+    service = new GiftFacilityService(
+      giftHttpService,
+      logger,
+      asyncValidationService,
+      counterpartyService,
+      fixedFeeService,
+      obligationService,
+      repaymentProfileService,
+      statusService,
+    );
 
     service.createInitialFacility = createInitialFacilitySpy;
   });
@@ -111,6 +128,7 @@ describe('GiftFacilityService.create - error handling', () => {
       service = new GiftFacilityService(
         giftHttpService,
         logger,
+        asyncValidationService,
         counterpartyService,
         fixedFeeService,
         obligationService,
@@ -142,6 +160,7 @@ describe('GiftFacilityService.create - error handling', () => {
       service = new GiftFacilityService(
         giftHttpService,
         logger,
+        asyncValidationService,
         counterpartyService,
         fixedFeeService,
         obligationService,
@@ -173,6 +192,7 @@ describe('GiftFacilityService.create - error handling', () => {
       service = new GiftFacilityService(
         giftHttpService,
         logger,
+        asyncValidationService,
         counterpartyService,
         fixedFeeService,
         obligationService,
@@ -204,6 +224,7 @@ describe('GiftFacilityService.create - error handling', () => {
       service = new GiftFacilityService(
         giftHttpService,
         logger,
+        asyncValidationService,
         counterpartyService,
         fixedFeeService,
         obligationService,
@@ -235,6 +256,7 @@ describe('GiftFacilityService.create - error handling', () => {
       service = new GiftFacilityService(
         giftHttpService,
         logger,
+        asyncValidationService,
         counterpartyService,
         fixedFeeService,
         obligationService,
@@ -266,6 +288,7 @@ describe('GiftFacilityService.create - error handling', () => {
       service = new GiftFacilityService(
         giftHttpService,
         logger,
+        asyncValidationService,
         counterpartyService,
         fixedFeeService,
         obligationService,

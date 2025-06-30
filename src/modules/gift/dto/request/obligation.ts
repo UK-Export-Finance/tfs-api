@@ -2,8 +2,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { IsDateString, IsDefined, IsNumber, IsString, Length, Max, Min } from 'class-validator';
 
-import { IsSupportedCurrency } from '../../custom-decorators';
-
 const {
   GIFT: { OBLIGATION },
 } = EXAMPLES;
@@ -20,7 +18,6 @@ export class GiftObligationRequestDto {
   @IsDefined()
   @IsString()
   @Length(VALIDATION.CURRENCY.MIN_LENGTH, VALIDATION.CURRENCY.MAX_LENGTH)
-  @IsSupportedCurrency()
   @ApiProperty({
     example: OBLIGATION().currency,
     required: true,
