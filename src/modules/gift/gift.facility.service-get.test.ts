@@ -4,7 +4,9 @@ import { mockResponse200, mockResponse500 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
 import { GiftCounterpartyService } from './gift.counterparty.service';
+import { GiftCurrencyService } from './gift.currency.service';
 import { GiftFacilityService } from './gift.facility.service';
+import { GiftFacilityAsyncValidationService } from './gift.facility-async-validation.service';
 import { GiftFixedFeeService } from './gift.fixed-fee.service';
 import { GiftObligationService } from './gift.obligation.service';
 import { GiftRepaymentProfileService } from './gift.repayment-profile.service';
@@ -22,6 +24,7 @@ describe('GiftFacilityService.get', () => {
   const logger = new PinoLogger({});
 
   let httpService: HttpService;
+  let asyncValidationService: GiftFacilityAsyncValidationService;
   let counterpartyService: GiftCounterpartyService;
   let fixedFeeService: GiftFixedFeeService;
   let obligationService: GiftObligationService;
@@ -44,13 +47,25 @@ describe('GiftFacilityService.get', () => {
       get: mockHttpServiceGet,
     };
 
+    const currencyService = new GiftCurrencyService(giftHttpService, logger);
+
+    asyncValidationService = new GiftFacilityAsyncValidationService(logger, currencyService);
     counterpartyService = new GiftCounterpartyService(giftHttpService, logger);
     fixedFeeService = new GiftFixedFeeService(giftHttpService, logger);
     obligationService = new GiftObligationService(giftHttpService, logger);
     repaymentProfileService = new GiftRepaymentProfileService(giftHttpService, logger);
     statusService = new GiftStatusService(giftHttpService, logger);
 
-    service = new GiftFacilityService(giftHttpService, logger, counterpartyService, fixedFeeService, obligationService, repaymentProfileService, statusService);
+    service = new GiftFacilityService(
+      giftHttpService,
+      logger,
+      asyncValidationService,
+      counterpartyService,
+      fixedFeeService,
+      obligationService,
+      repaymentProfileService,
+      statusService,
+    );
   });
 
   afterAll(() => {
@@ -91,6 +106,7 @@ describe('GiftFacilityService.get', () => {
       service = new GiftFacilityService(
         giftHttpService,
         logger,
+        asyncValidationService,
         counterpartyService,
         fixedFeeService,
         obligationService,

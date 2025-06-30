@@ -367,7 +367,7 @@ describe('POST /gift/facility - validation', () => {
   describe('consumer', () => {
     let mockPayload;
 
-    describe('when the provided service name is not supported', () => {
+    describe('when the provided consumer is not supported', () => {
       beforeAll(() => {
         // Arrange
         mockPayload = {

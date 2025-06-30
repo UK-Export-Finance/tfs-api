@@ -85,7 +85,7 @@ describe('POST /gift/facility - repayment profile error handling', () => {
 
       const expected = {
         ...mockResponses.badRequest,
-        message: API_RESPONSE_MESSAGES.FACILITY_VALIDATION_ERRORS,
+        message: API_RESPONSE_MESSAGES.GIFT_FACILITY_VALIDATION_ERRORS,
         validationErrors: getExpectedValidationErrors(payloadRepaymentProfiles, mockResponses.badRequest, ENTITY_NAMES.REPAYMENT_PROFILE),
       };
 

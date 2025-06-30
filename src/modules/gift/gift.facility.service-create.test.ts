@@ -5,7 +5,9 @@ import { mockResponse200, mockResponse201 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
 import { GiftCounterpartyService } from './gift.counterparty.service';
+import { GiftCurrencyService } from './gift.currency.service';
 import { GiftFacilityService } from './gift.facility.service';
+import { GiftFacilityAsyncValidationService } from './gift.facility-async-validation.service';
 import { GiftFixedFeeService } from './gift.fixed-fee.service';
 import { GiftObligationService } from './gift.obligation.service';
 import { GiftRepaymentProfileService } from './gift.repayment-profile.service';
@@ -31,6 +33,7 @@ const mockFixedFees = [FIXED_FEE(), FIXED_FEE()];
 const mockObligations = [OBLIGATION(), OBLIGATION(), OBLIGATION()];
 const mockRepaymentProfiles = [REPAYMENT_PROFILE(), REPAYMENT_PROFILE(), REPAYMENT_PROFILE()];
 
+const mockAsyncValidationServiceCreationResponse = [];
 const mockCreateCounterpartiesResponse = mockCounterparties.map((counterparty) => mockResponse201({ data: counterparty }));
 const mockCreateFixedFeesResponse = mockFixedFees.map((fixedFee) => mockResponse201({ data: fixedFee }));
 const mockCreateObligationsResponse = mockObligations.map((obligation) => mockResponse201({ data: obligation }));
@@ -41,6 +44,8 @@ describe('GiftFacilityService.create', () => {
 
   let httpService: HttpService;
   let counterpartyService: GiftCounterpartyService;
+  let currencyService: GiftCurrencyService;
+  let asyncValidationService: GiftFacilityAsyncValidationService;
   let fixedFeeService: GiftFixedFeeService;
   let obligationService: GiftObligationService;
   let repaymentProfileService: GiftRepaymentProfileService;
@@ -51,6 +56,7 @@ describe('GiftFacilityService.create', () => {
   let mockHttpServicePost: jest.Mock;
   let createInitialFacilitySpy: jest.Mock;
   let createCounterpartiesSpy: jest.Mock;
+  let asyncValidationServiceCreationSpy: jest.Mock;
   let createFixedFeesSpy: jest.Mock;
   let createObligationsSpy: jest.Mock;
   let createRepaymentProfilesSpy: jest.Mock;
@@ -69,6 +75,7 @@ describe('GiftFacilityService.create', () => {
     };
 
     counterpartyService = new GiftCounterpartyService(giftHttpService, logger);
+    asyncValidationService = new GiftFacilityAsyncValidationService(logger, currencyService);
     fixedFeeService = new GiftFixedFeeService(giftHttpService, logger);
     obligationService = new GiftObligationService(giftHttpService, logger);
     repaymentProfileService = new GiftRepaymentProfileService(giftHttpService, logger);
@@ -76,24 +83,45 @@ describe('GiftFacilityService.create', () => {
 
     createInitialFacilitySpy = jest.fn().mockResolvedValueOnce(mockResponse201(FACILITY_RESPONSE_DATA));
     createCounterpartiesSpy = jest.fn().mockResolvedValueOnce(mockCreateCounterpartiesResponse);
+    asyncValidationServiceCreationSpy = jest.fn().mockResolvedValueOnce(mockAsyncValidationServiceCreationResponse);
     createFixedFeesSpy = jest.fn().mockResolvedValueOnce(mockCreateFixedFeesResponse);
     createObligationsSpy = jest.fn().mockResolvedValueOnce(mockCreateObligationsResponse);
     createRepaymentProfilesSpy = jest.fn().mockResolvedValueOnce(mockRepaymentProfilesResponse);
     approvedStatusSpy = jest.fn().mockResolvedValueOnce(mockResponse200(WORK_PACKAGE_APPROVE_RESPONSE_DATA));
 
     counterpartyService.createMany = createCounterpartiesSpy;
+    asyncValidationService.creation = asyncValidationServiceCreationSpy;
     fixedFeeService.createMany = createFixedFeesSpy;
     obligationService.createMany = createObligationsSpy;
     repaymentProfileService.createMany = createRepaymentProfilesSpy;
     statusService.approved = approvedStatusSpy;
 
-    service = new GiftFacilityService(giftHttpService, logger, counterpartyService, fixedFeeService, obligationService, repaymentProfileService, statusService);
+    service = new GiftFacilityService(
+      giftHttpService,
+      logger,
+      asyncValidationService,
+      counterpartyService,
+      fixedFeeService,
+      obligationService,
+      repaymentProfileService,
+      statusService,
+    );
 
     service.createInitialFacility = createInitialFacilitySpy;
   });
 
   afterAll(() => {
     jest.resetAllMocks();
+  });
+
+  it('should call asyncValidationService.creation', async () => {
+    // Act
+    await service.create(mockPayload, mockFacilityId);
+
+    // Assert
+    expect(asyncValidationServiceCreationSpy).toHaveBeenCalledTimes(1);
+
+    expect(asyncValidationServiceCreationSpy).toHaveBeenCalledWith(mockPayload, mockFacilityId);
   });
 
   it('should call service.createInitialFacility', async () => {

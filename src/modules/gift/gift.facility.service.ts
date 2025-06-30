@@ -6,6 +6,7 @@ import { PinoLogger } from 'nestjs-pino';
 
 import { GiftFacilityCreationRequestDto, GiftFacilityOverviewRequestDto } from './dto';
 import { GiftCounterpartyService } from './gift.counterparty.service';
+import { GiftFacilityAsyncValidationService } from './gift.facility-async-validation.service';
 import { GiftFixedFeeService } from './gift.fixed-fee.service';
 import { GiftHttpService } from './gift.http.service';
 import { GiftObligationService } from './gift.obligation.service';
@@ -29,6 +30,7 @@ export class GiftFacilityService {
   constructor(
     private readonly giftHttpService: GiftHttpService,
     private readonly logger: PinoLogger,
+    private readonly asyncValidationService: GiftFacilityAsyncValidationService,
     private readonly giftCounterpartyService: GiftCounterpartyService,
     private readonly giftFixedFeeService: GiftFixedFeeService,
     private readonly giftObligationService: GiftObligationService,
@@ -36,6 +38,7 @@ export class GiftFacilityService {
     private readonly giftStatusService: GiftStatusService,
   ) {
     this.giftHttpService = giftHttpService;
+    this.asyncValidationService = asyncValidationService;
     this.giftCounterpartyService = giftCounterpartyService;
     this.giftFixedFeeService = giftFixedFeeService;
     this.giftObligationService = giftObligationService;
@@ -103,6 +106,20 @@ export class GiftFacilityService {
         repaymentProfiles: repaymentProfilesPayload,
       } = data;
 
+      const validationErrors = await this.asyncValidationService.creation(data, facilityId);
+
+      if (validationErrors.length) {
+        return {
+          status: HttpStatus.BAD_REQUEST,
+          data: {
+            error: 'Bad Request',
+            statusCode: HttpStatus.BAD_REQUEST,
+            message: API_RESPONSE_MESSAGES.ASYNC_FACILITY_VALIDATION_ERRORS,
+            validationErrors,
+          },
+        };
+      }
+
       const { data: facility, status } = await this.createInitialFacility(overview);
 
       /**
@@ -130,17 +147,17 @@ export class GiftFacilityService {
 
       const repaymentProfiles = await this.giftRepaymentProfileService.createMany(repaymentProfilesPayload, facilityId, workPackageId);
 
-      const validationErrors = mapAllValidationErrorResponses({
+      const giftValidationErrors = mapAllValidationErrorResponses({
         counterparties,
         fixedFees,
         obligations,
         repaymentProfiles,
       });
 
-      if (validationErrors.length) {
+      if (giftValidationErrors.length) {
         this.logger.info('Creating a GIFT facility - returning validation errors %s', facilityId);
 
-        const [firstError] = validationErrors;
+        const [firstError] = giftValidationErrors;
 
         /**
          * NOTE: Individual calls to GIFT could return different statuses.
@@ -152,7 +169,7 @@ export class GiftFacilityService {
         let message = firstMessage;
 
         if (status === HttpStatus.BAD_REQUEST) {
-          message = API_RESPONSE_MESSAGES.FACILITY_VALIDATION_ERRORS;
+          message = API_RESPONSE_MESSAGES.GIFT_FACILITY_VALIDATION_ERRORS;
         }
 
         return {
@@ -160,7 +177,7 @@ export class GiftFacilityService {
           data: {
             statusCode: status,
             message,
-            validationErrors,
+            validationErrors: giftValidationErrors,
           },
         };
       }
