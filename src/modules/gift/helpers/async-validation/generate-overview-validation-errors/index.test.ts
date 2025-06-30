@@ -19,7 +19,11 @@ describe('modules/gift/helpers/async-validation/generate-overview-validation-err
       const mockSupportedCurrencies = [SUPPORTED_CURRENCIES.GBP];
 
       // Act
-      const result = generateOverviewValidationErrors(mockPayload, mockSupportedCurrencies);
+      const result = generateOverviewValidationErrors({
+        isSupportedProductType: true,
+        payload: mockPayload,
+        supportedCurrencies: mockSupportedCurrencies,
+      });
 
       // Assert
       const expected = [`overview.currency is not supported - ${SUPPORTED_CURRENCIES.USD}`];
@@ -39,10 +43,57 @@ describe('modules/gift/helpers/async-validation/generate-overview-validation-err
       const mockSupportedCurrencies = [SUPPORTED_CURRENCIES.GBP];
 
       // Act
-      const result = generateOverviewValidationErrors(mockPayload, mockSupportedCurrencies);
+      const result = generateOverviewValidationErrors({
+        isSupportedProductType: true,
+        payload: mockPayload,
+        supportedCurrencies: mockSupportedCurrencies,
+      });
 
       // Assert
       expect(result).toEqual([]);
+    });
+  });
+
+  describe('when isSupportedProductType is false', () => {
+    it('should return an array with validation error', () => {
+      // Arrange
+      const mockPayload = FACILITY_CREATION_PAYLOAD.overview;
+
+      const mockSupportedCurrencies = Object.values(SUPPORTED_CURRENCIES);
+
+      // Act
+      const result = generateOverviewValidationErrors({
+        isSupportedProductType: false,
+        payload: mockPayload,
+        supportedCurrencies: mockSupportedCurrencies,
+      });
+
+      // Assert
+      const expected = [`overview.productTypeCode is not supported - ${mockPayload.productTypeCode}`];
+
+      expect(result).toEqual(expected);
+    });
+  });
+
+  describe('when all validation errors occur', () => {
+    it('should return an array with multiple validation errors', () => {
+      // Arrange
+      const mockPayload = FACILITY_CREATION_PAYLOAD.overview;
+
+      // Act
+      const result = generateOverviewValidationErrors({
+        isSupportedProductType: false,
+        payload: mockPayload,
+        supportedCurrencies: [],
+      });
+
+      // Assert
+      const expected = [
+        `overview.currency is not supported - ${SUPPORTED_CURRENCIES.USD}`,
+        `overview.productTypeCode is not supported - ${mockPayload.productTypeCode}`,
+      ];
+
+      expect(result).toEqual(expected);
     });
   });
 });

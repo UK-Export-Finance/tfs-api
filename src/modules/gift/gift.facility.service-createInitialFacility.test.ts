@@ -9,6 +9,7 @@ import { GiftFacilityService } from './gift.facility.service';
 import { GiftFacilityAsyncValidationService } from './gift.facility-async-validation.service';
 import { GiftFixedFeeService } from './gift.fixed-fee.service';
 import { GiftObligationService } from './gift.obligation.service';
+import { GiftProductTypeService } from './gift.product-type.service';
 import { GiftRepaymentProfileService } from './gift.repayment-profile.service';
 import { GiftStatusService } from './gift.status.service';
 
@@ -48,8 +49,9 @@ describe('GiftFacilityService.createInitialFacility', () => {
     };
 
     const currencyService = new GiftCurrencyService(giftHttpService, logger);
+    const productTypeService = new GiftProductTypeService(giftHttpService, logger);
 
-    asyncValidationService = new GiftFacilityAsyncValidationService(logger, currencyService);
+    asyncValidationService = new GiftFacilityAsyncValidationService(logger, currencyService, productTypeService);
     counterpartyService = new GiftCounterpartyService(giftHttpService, logger);
     fixedFeeService = new GiftFixedFeeService(giftHttpService, logger);
     obligationService = new GiftObligationService(giftHttpService, logger);
