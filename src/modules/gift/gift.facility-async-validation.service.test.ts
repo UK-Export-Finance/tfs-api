@@ -81,7 +81,7 @@ describe('GiftFacilityAsyncValidationService', () => {
         const promise = service.creation(mockPayload, mockFacilityId);
 
         // Assert
-        const expected = new Error(`Error validating a GIFT facility (async) ${mockFacilityId}`);
+        const expected = new Error(`Error validating a GIFT facility - async ${mockFacilityId}`);
 
         await expect(promise).rejects.toThrow(expected);
       });

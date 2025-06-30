@@ -61,7 +61,7 @@ export const currencyStringValidation = ({ initialPayload, parentFieldName, url 
       const { body } = await api.post(url, mockPayload);
 
       // Assert
-      const expected = [`${parentFieldName}.${fieldName} is not supported (${UNSUPPORTED_CURRENCY})`];
+      const expected = [`${parentFieldName}.${fieldName} is not supported - ${UNSUPPORTED_CURRENCY}`];
 
       expect(body.validationErrors).toStrictEqual(expected);
     });

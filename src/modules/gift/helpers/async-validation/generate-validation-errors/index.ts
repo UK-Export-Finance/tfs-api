@@ -19,7 +19,7 @@ interface GenerateValidationErrorsParams {
  * @returns {String}
  */
 export const generateMessage = ({ parentEntityName, fieldName, fieldValue, index }: GenerateMessageParams) =>
-  `${parentEntityName}.${index}.${fieldName} is not supported (${fieldValue})`;
+  `${parentEntityName}.${index}.${fieldName} is not supported - ${fieldValue}`;
 
 /**
  * Generate validation errors for multiple entities, depending on the provided field name,

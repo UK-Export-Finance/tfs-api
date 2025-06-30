@@ -389,8 +389,8 @@ export const arrayOfObjectsCurrencyStringValidation = ({ initialPayload, parentF
 
       // Assert
       const expected = [
-        `${parentFieldName}.0.${fieldName} is not supported (${UNSUPPORTED_CURRENCY})`,
-        `${parentFieldName}.1.${fieldName} is not supported (${UNSUPPORTED_CURRENCY})`,
+        `${parentFieldName}.0.${fieldName} is not supported - ${UNSUPPORTED_CURRENCY}`,
+        `${parentFieldName}.1.${fieldName} is not supported - ${UNSUPPORTED_CURRENCY}`,
       ];
 
       expect(body.validationErrors).toStrictEqual(expected);
