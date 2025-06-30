@@ -1,12 +1,12 @@
 import { UkefId } from '@ukef/helpers';
-import { GiftFacilityCreationRequestDto, GiftFacilityPostResponseDto } from '@ukef/modules/gift/dto';
+import { GiftFacilityCreationRequestDto, GiftFacilityPostResponseDto, GiftObligationRequestDto } from '@ukef/modules/gift/dto';
 import { Chance } from 'chance';
 
 import { SUPPORTED_CURRENCIES } from '../currencies.constant';
 import { CONSUMER } from '../gift/consumer.constant';
 import { GIFT } from '../gift/gift.constant';
 
-const { COUNTERPARTY_ROLE_IDS, FEE_TYPE_CODES, FEE_TYPE_DESCRIPTIONS, OBLIGATION_SUBTYPE_CODES, PRODUCT_TYPE_CODES, PRODUCT_TYPE_NAMES, VALIDATION } = GIFT;
+const { COUNTERPARTY_ROLE_IDS, FEE_TYPE_CODES, FEE_TYPE_DESCRIPTIONS, OBLIGATION_SUBTYPES, PRODUCT_TYPE_CODES, PRODUCT_TYPE_NAMES, VALIDATION } = GIFT;
 
 const chance = new Chance();
 
@@ -70,13 +70,22 @@ const FIXED_FEE = () => ({
   amountDue: 5000,
 });
 
-const OBLIGATION = () => ({
+/**
+ * Obligation example
+ * @param {String} subtypeCode: Obligation subtype code
+ * @returns {GiftObligationRequestDto}
+ */
+const OBLIGATION = ({ subtypeCode = OBLIGATION_SUBTYPES.EXP01.code } = {}): GiftObligationRequestDto => ({
   effectiveDate: '2025-01-13',
   maturityDate: '2025-01-15',
   currency: SUPPORTED_CURRENCIES.USD,
   amount: 2500,
-  subtypeCode: OBLIGATION_SUBTYPE_CODES.EXP01,
+  subtypeCode,
 });
+
+const OBLIGATION_SUBTYPES_RESPONSE_DATA = {
+  obligationSubtypes: Object.values(OBLIGATION_SUBTYPES),
+};
 
 const PRODUCT_TYPE_RESPONSE_DATA = {
   code: PRODUCT_TYPE_CODES.EXIP,
@@ -188,6 +197,7 @@ export const GIFT_EXAMPLES = {
   FEE_TYPES_RESPONSE_DATA,
   FIXED_FEE,
   OBLIGATION,
+  OBLIGATION_SUBTYPES_RESPONSE_DATA,
   PRODUCT_TYPE_RESPONSE_DATA,
   REPAYMENT_PROFILE,
   REPAYMENT_PROFILE_ALLOCATION,
