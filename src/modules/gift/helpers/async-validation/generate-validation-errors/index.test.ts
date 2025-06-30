@@ -12,7 +12,7 @@ describe('modules/gift/helpers/async-validation/generate-validation-errors', () 
       const result = generateMessage({ parentEntityName: 'fixedFees', fieldName: mockFieldName, fieldValue: 'B', index: 1 });
 
       // Assert
-      const expected = `${mockParentEntityName}.1.${mockFieldName} is not supported (B)`;
+      const expected = `${mockParentEntityName}.1.${mockFieldName} is not supported - B`;
 
       expect(result).toEqual(expected);
     });
