@@ -52,7 +52,7 @@ const iAmATeapot: MockGiftResponse = {
 export const mockResponses = {
   badRequest,
   counterparty: { data: { aCounterparty: true } },
-  counterpartyRoles: Object.values(GIFT_EXAMPLES.COUNTERPARTY_ROLE),
+  counterpartyRoles: GIFT_EXAMPLES.COUNTERPARTY_ROLES_RESPONSE_DATA,
   currencies: GIFT_EXAMPLES.CURRENCIES,
   feeTypes: GIFT_EXAMPLES.FEE_TYPES_RESPONSE_DATA,
   fixedFee: { data: { aFixedFee: true } },

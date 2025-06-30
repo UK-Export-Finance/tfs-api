@@ -9,9 +9,9 @@ export const GIFT = {
   API_RESPONSE_TYPES: {
     ERROR: 'api-error-response',
   },
-  COUNTERPARTY_ROLE_IDS: {
-    LEAD_ECA: 'lead-eca',
-    GUARANTOR: 'guarantor',
+  COUNTERPARTY_ROLE_CODES: {
+    EXPORTER: 'CRP001',
+    GUARANTOR: 'CRP013',
   },
   ENTITY_NAMES: {
     COUNTERPARTY: 'Counterparty',
@@ -55,7 +55,7 @@ export const GIFT = {
   },
   PATH: {
     APPROVE: '/approve',
-    COUNTERPARTY_ROLES: '/facility-counterparty/roles',
+    COUNTERPARTY_ROLES: '/counterparty-role',
     CURRENCY: '/currency',
     CONFIGURATION_EVENT: '/configuration-event/type',
     CREATE_FACILITY: '/work-package/create-facility',

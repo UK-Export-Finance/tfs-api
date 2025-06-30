@@ -36,18 +36,18 @@ export class GiftFacilityCounterpartyRequestDto {
 
   @IsDefined()
   @IsString()
-  @Length(VALIDATION.ROLE_ID.MIN_LENGTH, VALIDATION.ROLE_ID.MAX_LENGTH)
+  @Length(VALIDATION.ROLE_CODE.MIN_LENGTH, VALIDATION.ROLE_CODE.MAX_LENGTH)
   @IsSupportedCounterpartyRole()
   @ApiProperty({
-    example: COUNTERPARTY().roleId,
+    example: COUNTERPARTY().roleCode,
     required: true,
   })
-  roleId: string;
+  roleCode: string;
 
   @CounterpartySharePercentageValidation()
   @ApiProperty({
     example: COUNTERPARTY().sharePercentage,
-    description: "Required if a counterparty's role has a true hasShare property",
+    description: "Required if a counterparty's role has a true hasSharePercentage property",
   })
   sharePercentage: number;
 

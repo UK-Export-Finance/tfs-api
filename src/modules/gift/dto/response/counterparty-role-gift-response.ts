@@ -13,22 +13,22 @@ const {
 export class GiftFacilityCounterpartyRoleResponseDto {
   @IsString()
   @ApiProperty({
-    example: COUNTERPARTY_ROLE.LEAD_ECA.id,
+    example: COUNTERPARTY_ROLE.EXPORTER.code,
     required: true,
   })
-  id: string;
+  code: string;
 
   @IsString()
   @ApiProperty({
-    example: COUNTERPARTY_ROLE.LEAD_ECA.displayText,
+    example: COUNTERPARTY_ROLE.EXPORTER.name,
     required: true,
   })
-  displayText: string;
+  name: string;
 
   @IsBoolean()
   @ApiProperty({
-    example: COUNTERPARTY_ROLE.LEAD_ECA.hasShare,
+    example: COUNTERPARTY_ROLE.EXPORTER.hasSharePercentage,
     required: true,
   })
-  hasShare: boolean;
+  hasSharePercentage: boolean;
 }

@@ -4,6 +4,8 @@ import { mockResponse200, mockResponse201, mockResponse500 } from '@ukef-test/ht
 import { PinoLogger } from 'nestjs-pino';
 
 import { GiftCounterpartyService } from './gift.counterparty.service';
+import { mapCounterpartiesRequestData } from './helpers';
+
 const {
   GIFT: { COUNTERPARTY, COUNTERPARTY_ROLE, FACILITY_ID: mockFacilityId, WORK_PACKAGE_ID: mockWorkPackageId },
 } = EXAMPLES;
@@ -117,16 +119,18 @@ describe('GiftCounterpartyService', () => {
       service.createOne = mockCreateOne;
     });
 
-    it('should call service.createOne for each provided counterparty', async () => {
+    it('should call service.createOne with mapped data for each provided counterparty', async () => {
       // Act
       await service.createMany(mockCounterparties, mockFacilityId, mockWorkPackageId);
 
       // Assert
       expect(mockCreateOne).toHaveBeenCalledTimes(counterpartiesLength);
 
-      expect(mockCreateOne).toHaveBeenCalledWith(mockCounterparties[0], mockFacilityId, mockWorkPackageId);
-      expect(mockCreateOne).toHaveBeenCalledWith(mockCounterparties[1], mockFacilityId, mockWorkPackageId);
-      expect(mockCreateOne).toHaveBeenCalledWith(mockCounterparties[2], mockFacilityId, mockWorkPackageId);
+      const mappedCounterpartiesData = mapCounterpartiesRequestData(mockCounterparties);
+
+      expect(mockCreateOne).toHaveBeenCalledWith(mappedCounterpartiesData[0], mockFacilityId, mockWorkPackageId);
+      expect(mockCreateOne).toHaveBeenCalledWith(mappedCounterpartiesData[1], mockFacilityId, mockWorkPackageId);
+      expect(mockCreateOne).toHaveBeenCalledWith(mappedCounterpartiesData[2], mockFacilityId, mockWorkPackageId);
     });
 
     describe('when service.createOne is successful', () => {
