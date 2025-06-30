@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post } from '@nestjs/common';
+import { Controller, Get, Param, Post, Put, UseInterceptors } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -11,11 +11,14 @@ import {
 } from '@nestjs/swagger';
 import { EXAMPLES } from '@ukef/constants';
 import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decorator';
+import { WarningErrorsHeaderInterceptor } from '@ukef/interceptors/warning-errors-header.interceptor';
 
 import { DealService } from './deal.service';
 import { CreateDealRequest, CreateDealRequestItem } from './dto/create-deal-request.dto';
 import { CreateDealResponse } from './dto/create-deal-response.dto';
 import { GetDealByIdentifierResponse } from './dto/get-deal-by-identifier-response.dto';
+import { UpdateDealRequest, UpdateDealRequestItem } from './dto/update-deal-request.dto';
+import { UpdateDealResponse } from './dto/update-deal-response.dto';
 
 @Controller('deals')
 export class DealController {
@@ -61,8 +64,49 @@ export class DealController {
     description: 'An internal server error has occurred.',
   })
   async createDeal(@ValidatedArrayBody({ items: CreateDealRequestItem }) createDealDto: CreateDealRequest): Promise<CreateDealResponse> {
-    const [newDeal] = createDealDto;
-    await this.dealService.createDeal(newDeal);
-    return new CreateDealResponse(newDeal.dealIdentifier);
+    const [deal] = createDealDto;
+
+    await this.dealService.createDeal(deal);
+    return new CreateDealResponse(deal.dealIdentifier);
+  }
+
+  @Put(':dealIdentifier')
+  @UseInterceptors(WarningErrorsHeaderInterceptor)
+  @ApiOperation({ summary: 'Update a deal by deal identifier' })
+  @ApiBody({
+    type: UpdateDealRequestItem,
+    isArray: true,
+  })
+  @ApiParam({
+    name: 'dealIdentifier',
+    required: true,
+    type: 'string',
+    description: 'The identifier of the deal in ACBS.',
+    example: EXAMPLES.DEAL_ID,
+  })
+  @ApiOkResponse({
+    description: 'The deal has been successfully updated.',
+    type: CreateDealResponse,
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad request.',
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'An internal server error has occurred.',
+  })
+  async updateDeal(
+    @Param('dealIdentifier') dealIdentifier: string,
+    @ValidatedArrayBody({ items: UpdateDealRequestItem }) updateDealDto: UpdateDealRequest,
+  ): Promise<UpdateDealResponse> {
+    const [deal] = updateDealDto;
+    const acbsDeal = await this.dealService.getDealByIdentifier(dealIdentifier);
+    const updatedDeal = {
+      ...acbsDeal,
+      ...deal,
+    };
+
+    await this.dealService.updateDeal(updatedDeal, acbsDeal.dealIdentifier, acbsDeal.guaranteeCommencementDate);
+
+    return await this.dealService.getDealByIdentifier(dealIdentifier);
   }
 }
