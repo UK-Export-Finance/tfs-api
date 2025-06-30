@@ -30,11 +30,11 @@ export class GiftFacilityAsyncValidationService {
    */
   async creation(payload: GiftFacilityCreationRequestDto, facilityId: string) {
     try {
-      this.logger.info('Validating a GIFT facility (async) %s', facilityId);
+      this.logger.info('Validating a GIFT facility - async %s', facilityId);
 
       const supportedCurrencies = await this.currencyService.getSupportedCurrencies();
 
-      const overviewErrs = generateOverviewValidationErrors(payload.overview, supportedCurrencies.data);
+      const overviewErrors = generateOverviewValidationErrors(payload.overview, supportedCurrencies.data);
 
       const payloadCurrencies = stripPayload(payload, 'currency');
 
@@ -44,11 +44,11 @@ export class GiftFacilityAsyncValidationService {
         fieldName: 'currency',
       });
 
-      return [...overviewErrs, ...currencyErrors];
+      return [...overviewErrors, ...currencyErrors];
     } catch (error) {
-      this.logger.error('Error validating a GIFT facility (async) %s %o', facilityId, error);
+      this.logger.error('Error validating a GIFT facility - async %s %o', facilityId, error);
 
-      throw new Error(`Error validating a GIFT facility (async) ${facilityId}`, error);
+      throw new Error(`Error validating a GIFT facility - async ${facilityId}`, error);
     }
   }
 }

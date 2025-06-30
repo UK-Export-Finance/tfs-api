@@ -13,16 +13,16 @@ describe('modules/gift/helpers/async-validation/generate-overview-validation-err
       // Arrange
       const mockPayload = {
         ...FACILITY_CREATION_PAYLOAD.overview,
-        currency: SUPPORTED_CURRENCIES.GBP,
+        currency: SUPPORTED_CURRENCIES.USD,
       };
 
-      const mockSupportedCurrencies = [SUPPORTED_CURRENCIES.USD];
+      const mockSupportedCurrencies = [SUPPORTED_CURRENCIES.GBP];
 
       // Act
       const result = generateOverviewValidationErrors(mockPayload, mockSupportedCurrencies);
 
       // Assert
-      const expected = [`overview.currency is not supported (${SUPPORTED_CURRENCIES.GBP})`];
+      const expected = [`overview.currency is not supported - ${SUPPORTED_CURRENCIES.USD}`];
 
       expect(result).toEqual(expected);
     });

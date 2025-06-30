@@ -10,7 +10,7 @@ export const generateOverviewValidationErrors = (payload: GiftFacilityOverviewRe
   const validationErrors = [];
 
   if (!supportedCurrencies.includes(payload.currency)) {
-    validationErrors.push(`overview.currency is not supported (${payload.currency})`);
+    validationErrors.push(`overview.currency is not supported - ${payload.currency}`);
   }
 
   return validationErrors;
