@@ -78,9 +78,9 @@ describe('POST /gift/facility - validation - counterparties', () => {
           `counterparties.0.counterpartyUrn must be a string`,
           `counterparties.0.exitDate should not be null or undefined`,
           'counterparties.0.exitDate must be a valid ISO 8601 date string',
-          `counterparties.0.roleId should not be null or undefined`,
-          `counterparties.0.roleId must be longer than or equal to ${COUNTERPARTY_VALIDATION.ROLE_ID.MIN_LENGTH} characters`,
-          `counterparties.0.roleId must be a string`,
+          `counterparties.0.roleCode should not be null or undefined`,
+          `counterparties.0.roleCode must be longer than or equal to ${COUNTERPARTY_VALIDATION.ROLE_CODE.MIN_LENGTH} characters`,
+          `counterparties.0.roleCode must be a string`,
           `counterparties.0.startDate should not be null or undefined`,
           'counterparties.0.startDate must be a valid ISO 8601 date string',
         ],
@@ -137,7 +137,7 @@ describe('POST /gift/facility - validation - counterparties', () => {
     });
   });
 
-  describe('roleId', () => {
+  describe('roleCode', () => {
     arrayOfObjectsRoleIdStringValidation(baseParams);
   });
 

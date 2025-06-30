@@ -7,7 +7,7 @@ import { hasValidFormat, hasValidObligationSubtypeCodeFormats } from '.';
 const {
   VALIDATION: {
     COUNTERPARTY: {
-      ROLE_ID: { MIN_LENGTH, MAX_LENGTH },
+      ROLE_CODE: { MIN_LENGTH, MAX_LENGTH },
     },
   },
 } = GIFT;

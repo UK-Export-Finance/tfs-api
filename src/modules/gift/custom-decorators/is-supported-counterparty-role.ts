@@ -6,7 +6,7 @@ import { GiftHttpService } from '../gift.http.service';
 import { arrayOfObjectsHasValue, isValidCounterpartyRoleIdFormat } from '../helpers';
 
 interface ObjectWithRoleId {
-  roleId: string;
+  roleCode: string;
 }
 
 interface RoleIdValidationArguments extends ValidationArguments {
@@ -26,36 +26,36 @@ export function IsSupportedCounterpartyRole(options?: ValidationOptions) {
       propertyName,
       options,
       validator: {
-        async validate(providedRoleId) {
+        async validate(providedRoleCode) {
           /**
-           * Only check if a counterparty roleId is supported, if a string with the correct length is provided.
+           * Only check if a counterparty roleCode is supported, if a string with the correct length is provided.
            * Otherwise, we know that the provided value, is not in the correct format and will therefore not be supported.
            * By doing this we ensure that:
-           * 1) We only call the GIFT API's counterparty roles endpoint, if we have a correctly formatted roleId.
-           * 2) A consumer of this API receives only relevant validation errors, e.g "must be provided/X length" OR "roleId is not supported", not both.
+           * 1) We only call the GIFT API's counterparty roles endpoint, if we have a correctly formatted roleCode.
+           * 2) A consumer of this API receives only relevant validation errors, e.g "must be provided/X length" OR "roleCode is not supported", not both.
            */
-          if (isValidCounterpartyRoleIdFormat(providedRoleId)) {
+          if (isValidCounterpartyRoleIdFormat(providedRoleCode)) {
             const logger = new PinoLogger({});
             const httpService = new GiftHttpService(logger);
             const counterpartyService = new GiftCounterpartyService(httpService, logger);
 
-            const { data: roles } = await counterpartyService.getAllRoles();
+            const { data: rolesResponse } = await counterpartyService.getAllRoles();
 
-            const isSupportedRoleId = arrayOfObjectsHasValue(roles, 'id', providedRoleId);
+            const isSupportedRoleId = arrayOfObjectsHasValue(rolesResponse?.counterpartyRoles, 'code', providedRoleCode);
 
             return isSupportedRoleId;
           }
 
           /**
-           * An invalid roleId format has been provided - other validation errors from the controller will be surfaced.
-           * Therefore, no need to call GIFT to check if the (incorrectly formatted) roleId is supported.
+           * An invalid roleCode format has been provided - other validation errors from the controller will be surfaced.
+           * Therefore, no need to call GIFT to check if the (incorrectly formatted) roleCode is supported.
            */
           return true;
         },
         defaultMessage(args: RoleIdValidationArguments) {
-          const { roleId: providedRoleId } = args.object;
+          const { roleCode: providedRoleCode } = args.object;
 
-          return `roleId is not supported (${providedRoleId})`;
+          return `roleCode is not supported (${providedRoleCode})`;
         },
       },
     });

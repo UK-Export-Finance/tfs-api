@@ -6,7 +6,7 @@ import { SUPPORTED_CURRENCIES } from '../currencies.constant';
 import { CONSUMER } from '../gift/consumer.constant';
 import { GIFT } from '../gift/gift.constant';
 
-const { COUNTERPARTY_ROLE_IDS, FEE_TYPE_CODES, FEE_TYPE_DESCRIPTIONS, OBLIGATION_SUBTYPES, PRODUCT_TYPE_CODES, PRODUCT_TYPE_NAMES, VALIDATION } = GIFT;
+const { COUNTERPARTY_ROLE_CODES, FEE_TYPE_CODES, FEE_TYPE_DESCRIPTIONS, OBLIGATION_SUBTYPES, PRODUCT_TYPE_CODES, PRODUCT_TYPE_NAMES, VALIDATION } = GIFT;
 
 const chance = new Chance();
 
@@ -19,16 +19,20 @@ const WORK_PACKAGE_ID = 123;
  * Example counterparty roles.
  */
 const COUNTERPARTY_ROLE = {
-  LEAD_ECA: {
-    displayText: 'Lead ECA',
-    hasShare: false,
-    id: COUNTERPARTY_ROLE_IDS.LEAD_ECA,
+  EXPORTER: {
+    name: 'Exporter',
+    hasSharePercentage: false,
+    code: COUNTERPARTY_ROLE_CODES.EXPORTER,
   },
   GUARANTOR: {
-    displayText: 'Guarantor',
-    hasShare: true,
-    id: COUNTERPARTY_ROLE_IDS.GUARANTOR,
+    name: 'Guarantor',
+    hasSharePercentage: true,
+    code: COUNTERPARTY_ROLE_CODES.GUARANTOR,
   },
+};
+
+const COUNTERPARTY_ROLES_RESPONSE_DATA = {
+  counterpartyRoles: [COUNTERPARTY_ROLE.GUARANTOR],
 };
 
 /**
@@ -41,7 +45,7 @@ const COUNTERPARTY = () => ({
     numeric: true,
   }),
   exitDate: '2025-01-16',
-  roleId: COUNTERPARTY_ROLE.GUARANTOR.id,
+  roleCode: COUNTERPARTY_ROLE.GUARANTOR.code,
   sharePercentage: 25,
   startDate: '2025-01-13',
 });
@@ -188,6 +192,7 @@ const WORK_PACKAGE_APPROVE_RESPONSE_DATA = {
 export const GIFT_EXAMPLES = {
   COUNTERPARTY,
   COUNTERPARTY_ROLE,
+  COUNTERPARTY_ROLES_RESPONSE_DATA,
   CURRENCIES: Object.values(SUPPORTED_CURRENCIES),
   DEAL_ID,
   FACILITY_CREATION_PAYLOAD,

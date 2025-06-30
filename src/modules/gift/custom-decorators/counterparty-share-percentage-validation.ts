@@ -15,7 +15,7 @@ const {
 } = GIFT;
 
 interface ObjectWithRoleId {
-  roleId: string;
+  roleCode: string;
 }
 
 interface RoleIdValidationArguments extends ValidationArguments {
@@ -24,7 +24,7 @@ interface RoleIdValidationArguments extends ValidationArguments {
 
 /**
  * Custom decorator to conditionally validate a counterparty sharePercentage,
- * If the provided counterparty role (roleId) requires a sharePercentage.
+ * If the provided counterparty role (roleCode) requires a sharePercentage.
  * NOTE: This validation has to be in a custom decorator due to class-validator limitations:
  * 1) IsOptional cannot be used - this ignores all other validators.
  * 2) ValidateIf cannot be used - this does not allow for async calls:
@@ -43,29 +43,29 @@ export function CounterpartySharePercentageValidation(options?: ValidationOption
       validator: {
         async validate(providedSharePercentage, args: RoleIdValidationArguments) {
           /**
-           * Only check counterparty sharePercentage validation, if a counterparty roleId is provided.
+           * Only check counterparty sharePercentage validation, if a counterparty roleCode is provided.
            * Otherwise, we know that there will be no matching role and therefore a sharePercentage cannot be required.
-           * By doing this we ensure that we only call the GIFT API's counterparty roles endpoint, if we have a correctly formatted roleId.
+           * By doing this we ensure that we only call the GIFT API's counterparty roles endpoint, if we have a correctly formatted roleCode.
            */
-          const { roleId: providedRoleId } = args.object;
+          const { roleCode: providedRoleId } = args.object;
 
           if (isValidCounterpartyRoleIdFormat(providedRoleId)) {
             const logger = new PinoLogger({});
             const httpService = new GiftHttpService(logger);
             const counterpartyService = new GiftCounterpartyService(httpService, logger);
 
-            const { data: roles } = await counterpartyService.getAllRoles();
+            const { data: rolesResponse } = await counterpartyService.getAllRoles();
 
             return validateCounterpartySharePercentage({
-              roles,
-              roleId: providedRoleId,
+              roles: rolesResponse?.counterpartyRoles,
+              roleCode: providedRoleId,
               sharePercentage: providedSharePercentage,
             });
           }
 
           /**
-           * An invalid roleId format has been provided - other validation errors from the controller will be surfaced.
-           * Therefore, no need to call GIFT to check if the (incorrectly formatted) roleId requires a sharePercentage.
+           * An invalid roleCode format has been provided - other validation errors from the controller will be surfaced.
+           * Therefore, no need to call GIFT to check if the (incorrectly formatted) roleCode requires a sharePercentage.
            */
           return true;
         },
