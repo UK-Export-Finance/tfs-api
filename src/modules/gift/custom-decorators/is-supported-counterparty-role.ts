@@ -1,9 +1,9 @@
 import { registerDecorator, ValidationArguments, ValidationOptions } from 'class-validator';
 import { PinoLogger } from 'nestjs-pino';
 
-import { GiftCounterpartyService } from '../gift.counterparty.service';
-import { GiftHttpService } from '../gift.http.service';
 import { arrayOfObjectsHasValue, isValidCounterpartyRoleIdFormat } from '../helpers';
+import { GiftCounterpartyService } from '../services/gift.counterparty.service';
+import { GiftHttpService } from '../services/gift.http.service';
 
 interface ObjectWithRoleId {
   roleCode: string;

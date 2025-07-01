@@ -3,8 +3,8 @@ import { EXAMPLES, GIFT } from '@ukef/constants';
 import { mockResponse200, mockResponse201, mockResponse500 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
+import { mapCounterpartiesRequestData } from '../helpers';
 import { GiftCounterpartyService } from './gift.counterparty.service';
-import { mapCounterpartiesRequestData } from './helpers';
 
 const {
   GIFT: { COUNTERPARTY, COUNTERPARTY_ROLE, FACILITY_ID: mockFacilityId, WORK_PACKAGE_ID: mockWorkPackageId },

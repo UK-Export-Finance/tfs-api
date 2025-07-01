@@ -4,7 +4,7 @@ import AppConfig from '@ukef/config/app.config';
 import { GIFT } from '@ukef/constants';
 import { Response } from 'express';
 
-import { GiftCurrencyService } from './gift.currency.service';
+import { GiftCurrencyService } from '../services/gift.currency.service';
 
 const { PATH } = GIFT;
 

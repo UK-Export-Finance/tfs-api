@@ -3,32 +3,32 @@ import { GIFT_EXAMPLES } from '@ukef/constants/examples/gift.examples.constant';
 import { mockResponse200 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
-import { GiftFeeTypeController } from './gift.fee-type.controller';
-import { GiftFeeTypeService } from './gift.fee-type.service';
-import { GiftHttpService } from './gift.http.service';
+import { GiftCurrencyService } from '../services/gift.currency.service';
+import { GiftHttpService } from '../services/gift.http.service';
+import { GiftCurrencyController } from './gift.currency.controller';
 
 const { PATH } = GIFT;
 
-const mockResponseGet = mockResponse200(GIFT_EXAMPLES.FEE_TYPES_RESPONSE_DATA);
+const mockResponseGet = mockResponse200(GIFT_EXAMPLES.CURRENCIES);
 
-describe('GiftFeeTypeController', () => {
+describe('GiftCurrencyController', () => {
   const logger = new PinoLogger({});
 
   let giftHttpService: GiftHttpService;
-  let feeTypeService: GiftFeeTypeService;
-  let controller: GiftFeeTypeController;
+  let currencyService: GiftCurrencyService;
+  let controller: GiftCurrencyController;
 
   let mockRes;
   let mockResStatus;
   let mockResSend;
 
-  let mockServiceGetSupportedFeeTypes;
+  let mockServiceGetSupportedCurrencies;
 
   beforeEach(() => {
     // Arrange
     giftHttpService = new GiftHttpService(logger);
 
-    feeTypeService = new GiftFeeTypeService(giftHttpService, logger);
+    currencyService = new GiftCurrencyService(giftHttpService, logger);
 
     mockResSend = jest.fn();
 
@@ -40,11 +40,11 @@ describe('GiftFeeTypeController', () => {
 
     mockRes.status = mockResStatus;
 
-    mockServiceGetSupportedFeeTypes = jest.fn().mockResolvedValueOnce(mockResponseGet);
+    mockServiceGetSupportedCurrencies = jest.fn().mockResolvedValueOnce(mockResponseGet);
 
-    feeTypeService.getSupportedFeeTypes = mockServiceGetSupportedFeeTypes;
+    currencyService.getSupportedCurrencies = mockServiceGetSupportedCurrencies;
 
-    controller = new GiftFeeTypeController(feeTypeService);
+    controller = new GiftCurrencyController(currencyService);
   });
 
   afterAll(() => {
@@ -52,12 +52,12 @@ describe('GiftFeeTypeController', () => {
   });
 
   describe(`GET ${PATH.SUPPORTED}`, () => {
-    it('should call giftFeeTypeService.getSupportedFeeTypes', async () => {
+    it('should call giftCurrencyService.getSupportedCurrencies', async () => {
       // Act
       await controller.get(mockRes);
 
       // Assert
-      expect(mockServiceGetSupportedFeeTypes).toHaveBeenCalledTimes(1);
+      expect(mockServiceGetSupportedCurrencies).toHaveBeenCalledTimes(1);
     });
 
     it('should call res.status with a status', async () => {

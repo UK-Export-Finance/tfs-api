@@ -3,7 +3,7 @@ import { GIFT } from '@ukef/constants';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 
-import { GiftObligationRequestDto } from './dto';
+import { GiftObligationRequestDto } from '../dto';
 import { GiftHttpService } from './gift.http.service';
 
 const { EVENT_TYPES, PATH } = GIFT;

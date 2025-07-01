@@ -1,19 +1,17 @@
 import { Module } from '@nestjs/common';
 
-import { GiftCounterpartyService } from './gift.counterparty.service';
-import { GiftCurrencyController } from './gift.currency.controller';
-import { GiftCurrencyService } from './gift.currency.service';
-import { GiftFacilityController } from './gift.facility.controller';
-import { GiftFacilityService } from './gift.facility.service';
-import { GiftFacilityAsyncValidationService } from './gift.facility-async-validation.service';
-import { GiftFeeTypeController } from './gift.fee-type.controller';
-import { GiftFeeTypeService } from './gift.fee-type.service';
-import { GiftFixedFeeService } from './gift.fixed-fee.service';
-import { GiftHttpService } from './gift.http.service';
-import { GiftObligationService } from './gift.obligation.service';
-import { GiftObligationSubtypeService } from './gift.obligation-subtype.service';
-import { GiftRepaymentProfileService } from './gift.repayment-profile.service';
-import { GiftStatusService } from './gift.status.service';
+import { GiftCurrencyController, GiftFacilityController, GiftFeeTypeController } from './controllers';
+import { GiftCounterpartyService } from './services/gift.counterparty.service';
+import { GiftCurrencyService } from './services/gift.currency.service';
+import { GiftFacilityService } from './services/gift.facility.service';
+import { GiftFacilityAsyncValidationService } from './services/gift.facility-async-validation.service';
+import { GiftFeeTypeService } from './services/gift.fee-type.service';
+import { GiftFixedFeeService } from './services/gift.fixed-fee.service';
+import { GiftHttpService } from './services/gift.http.service';
+import { GiftObligationService } from './services/gift.obligation.service';
+import { GiftObligationSubtypeService } from './services/gift.obligation-subtype.service';
+import { GiftRepaymentProfileService } from './services/gift.repayment-profile.service';
+import { GiftStatusService } from './services/gift.status.service';
 
 @Module({
   providers: [

@@ -2,9 +2,9 @@ import { VALIDATION } from '@ukef/constants/gift/validation.constant';
 import { registerDecorator, ValidationArguments, ValidationOptions } from 'class-validator';
 import { PinoLogger } from 'nestjs-pino';
 
-import { GiftFeeTypeService } from '../gift.fee-type.service';
-import { GiftHttpService } from '../gift.http.service';
 import { arrayOfObjectsHasValue } from '../helpers';
+import { GiftFeeTypeService } from '../services/gift.fee-type.service';
+import { GiftHttpService } from '../services/gift.http.service';
 
 interface ObjectWithFeeTypeCode {
   feeTypeCode: string;
