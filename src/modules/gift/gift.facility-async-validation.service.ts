@@ -35,13 +35,15 @@ export class GiftFacilityAsyncValidationService {
     try {
       this.logger.info('Validating a GIFT facility - async %s', facilityId);
 
+      const { overview } = payload;
+
       const supportedCurrencies = await this.currencyService.getSupportedCurrencies();
 
-      const isSupportedProductType = await this.productTypeService.isSupported(payload.overview.productTypeCode);
+      const isSupportedProductType = await this.productTypeService.isSupported(overview.productTypeCode);
 
       const overviewErrors = generateOverviewValidationErrors({
         isSupportedProductType,
-        payload: payload.overview,
+        payload: overview,
         supportedCurrencies: supportedCurrencies.data,
       });
 
