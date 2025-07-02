@@ -8,6 +8,8 @@ const { CONTENT_TYPE } = HEADERS;
 
 /**
  * Array of acceptable statuses to consume from a GIFT API response
+ * NOTE: We need to consume and surface certain error scenarios,
+ * such as Bad request (validation errors), Not found etc.
  * @returns {Array<HttpStatus>}
  */
 export const GIFT_API_ACCEPTABLE_STATUSES = [
