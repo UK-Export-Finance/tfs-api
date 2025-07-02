@@ -4,8 +4,6 @@ import { ValidatedFacilityIdentifierApiProperty } from '@ukef/decorators/validat
 import { UkefId } from '@ukef/helpers';
 import { IsBoolean, IsDateString, IsDefined, IsNumber, IsNumberString, IsString, Length, Max, Min } from 'class-validator';
 
-import { IsSupportedProductType } from '../../custom-decorators';
-
 const {
   GIFT: { DEAL_ID, FACILITY_ID, FACILITY_OVERVIEW: EXAMPLE },
 } = EXAMPLES;
@@ -107,7 +105,6 @@ export class GiftFacilityOverviewRequestDto {
   @IsDefined()
   @IsString()
   @Length(VALIDATION.PRODUCT_TYPE_CODE.MIN_LENGTH, VALIDATION.PRODUCT_TYPE_CODE.MAX_LENGTH)
-  @IsSupportedProductType()
   @ApiProperty({
     example: EXAMPLE.productTypeCode,
     required: true,

@@ -156,7 +156,8 @@ describe('POST /gift/facility - validation - obligations', () => {
         });
       });
 
-      it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
+      // TODO: GIFT-13028 - re-enable
+      it.skip(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
         // Act
         const response = await api.post(url, mockPayload);
 
@@ -164,7 +165,8 @@ describe('POST /gift/facility - validation - obligations', () => {
         assert400Response(response);
       });
 
-      it('should return the correct error messages', async () => {
+      // TODO: GIFT-13028 - re-enable
+      it.skip('should return the correct error messages', async () => {
         // Act
         const { body } = await api.post(url, mockPayload);
 

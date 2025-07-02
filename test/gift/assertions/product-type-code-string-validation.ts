@@ -4,12 +4,12 @@ import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import nock from 'nock';
 
-import { mockResponses } from '../test-helpers';
+import { mockResponses, obligationSubtypeUrl } from '../test-helpers';
 import { generatePayload } from './generate-payload';
 import { assert400Response } from './response-assertion';
 import { stringValidation } from './string-validation';
 
-const { PATH } = GIFT;
+const { API_RESPONSE_MESSAGES, OBLIGATION_SUBTYPES, PATH } = GIFT;
 
 const { GIFT_API_URL } = ENVIRONMENT_VARIABLES;
 
@@ -34,15 +34,45 @@ export const productTypeCodeStringValidation = ({ initialPayload, parentFieldNam
     await api.destroy();
   });
 
+  // generate initial payload
   const mockPayload = generatePayload({ initialPayload, fieldName, parentFieldName });
+
+  // set the fieldName to have an unsupported product type
+  mockPayload[`${parentFieldName}`][`${fieldName}`] = UNSUPPORTED_PRODUCT_TYPE_CODE;
+
+  /**
+   * Map over the payload's obligations so that each obligation has the same unsupported product type code.
+   * Otherwise, obligation validation errors will be returned.
+   * This test is specifically for the high level product type code only.
+   */
+  mockPayload.obligations = mockPayload.obligations.map((obligation) => ({
+    ...obligation,
+    productTypeCode: UNSUPPORTED_PRODUCT_TYPE_CODE,
+  }));
+
+  /**
+   * Mock the obligation subtype response,
+   * so that obligations with an unsupported product type code are technically valid.
+   * This prevents the obligation validation errors from being returned.
+   * So that this test is specifically focus on the high level product type code.
+   */
+  const mockObligationSubtypeResponse = {
+    obligationSubtypes: [
+      {
+        tonyTest: true,
+        code: OBLIGATION_SUBTYPES.EXP01.code,
+        name: OBLIGATION_SUBTYPES.EXP01.name,
+        productTypeCode: UNSUPPORTED_PRODUCT_TYPE_CODE,
+      },
+    ],
+  };
 
   describe('when the provided product type code is not supported', () => {
     beforeAll(() => {
       // Arrange
-
       nock(GIFT_API_URL).persist().get(`${PATH.PRODUCT_TYPE}/${UNSUPPORTED_PRODUCT_TYPE_CODE}`).reply(HttpStatus.NOT_FOUND, mockResponses.productType);
 
-      mockPayload[`${parentFieldName}`][`${fieldName}`] = UNSUPPORTED_PRODUCT_TYPE_CODE;
+      nock(GIFT_API_URL).persist().get(obligationSubtypeUrl).reply(HttpStatus.OK, mockObligationSubtypeResponse);
     });
 
     it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
@@ -53,17 +83,24 @@ export const productTypeCodeStringValidation = ({ initialPayload, parentFieldNam
       assert400Response(response);
     });
 
-    it('should return the correct error messages', async () => {
+    it('should return the correct body.message', async () => {
       // Act
       const { body } = await api.post(url, mockPayload);
 
       // Assert
-      const expected = [
-        `${parentFieldName}.${fieldName} is not supported (${UNSUPPORTED_PRODUCT_TYPE_CODE})`,
-        `obligations contain a subtypeCode that is not supported for the provided productTypeCode (${UNSUPPORTED_PRODUCT_TYPE_CODE})`,
-      ];
+      const expected = API_RESPONSE_MESSAGES.ASYNC_FACILITY_VALIDATION_ERRORS;
 
       expect(body.message).toStrictEqual(expected);
+    });
+
+    it('should return the correct body.validationErrors', async () => {
+      // Act
+      const { body } = await api.post(url, mockPayload);
+
+      // Assert
+      const expected = [`${parentFieldName}.${fieldName} is not supported - ${UNSUPPORTED_PRODUCT_TYPE_CODE}`];
+
+      expect(body.validationErrors).toStrictEqual(expected);
     });
   });
 

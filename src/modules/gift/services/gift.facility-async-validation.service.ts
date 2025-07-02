@@ -4,6 +4,7 @@ import { PinoLogger } from 'nestjs-pino';
 import { GiftFacilityCreationRequestDto } from '../dto';
 import { generateOverviewValidationErrors, generateValidationErrors, stripPayload } from '../helpers';
 import { GiftCurrencyService } from './gift.currency.service';
+import { GiftProductTypeService } from './gift.product-type.service';
 
 /**
  * GIFT facility validation service.
@@ -18,8 +19,10 @@ export class GiftFacilityAsyncValidationService {
   constructor(
     private readonly logger: PinoLogger,
     private readonly currencyService: GiftCurrencyService,
+    private readonly productTypeService: GiftProductTypeService,
   ) {
     this.currencyService = currencyService;
+    this.productTypeService = productTypeService;
   }
 
   /**
@@ -32,9 +35,17 @@ export class GiftFacilityAsyncValidationService {
     try {
       this.logger.info('Validating a GIFT facility - async %s', facilityId);
 
+      const { overview } = payload;
+
       const supportedCurrencies = await this.currencyService.getSupportedCurrencies();
 
-      const overviewErrors = generateOverviewValidationErrors(payload.overview, supportedCurrencies.data);
+      const isSupportedProductType = await this.productTypeService.isSupported(overview.productTypeCode);
+
+      const overviewErrors = generateOverviewValidationErrors({
+        isSupportedProductType,
+        payload: overview,
+        supportedCurrencies: supportedCurrencies.data,
+      });
 
       const payloadCurrencies = stripPayload(payload, 'currency');
 

@@ -11,6 +11,7 @@ import {
   GiftHttpService,
   GiftObligationService,
   GiftObligationSubtypeService,
+  GiftProductTypeService,
   GiftRepaymentProfileService,
   GiftStatusService,
 } from './services';
@@ -26,6 +27,7 @@ import {
     GiftHttpService,
     GiftObligationService,
     GiftObligationSubtypeService,
+    GiftProductTypeService,
     GiftRepaymentProfileService,
     GiftStatusService,
   ],

@@ -10,6 +10,7 @@ import {
   GiftFacilityAsyncValidationService,
   GiftFixedFeeService,
   GiftObligationService,
+  GiftProductTypeService,
   GiftRepaymentProfileService,
   GiftStatusService,
 } from '../';
@@ -76,8 +77,10 @@ describe('GiftFacilityService.create', () => {
       post: mockHttpServicePost,
     };
 
+    const productTypeService = new GiftProductTypeService(giftHttpService, logger);
+
     counterpartyService = new GiftCounterpartyService(giftHttpService, logger);
-    asyncValidationService = new GiftFacilityAsyncValidationService(logger, currencyService);
+    asyncValidationService = new GiftFacilityAsyncValidationService(logger, currencyService, productTypeService);
     fixedFeeService = new GiftFixedFeeService(giftHttpService, logger);
     obligationService = new GiftObligationService(giftHttpService, logger);
     repaymentProfileService = new GiftRepaymentProfileService(giftHttpService, logger);

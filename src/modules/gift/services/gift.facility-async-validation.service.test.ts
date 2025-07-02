@@ -3,7 +3,7 @@ import { mockResponse200, mockResponse500 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
 import { generateOverviewValidationErrors, generateValidationErrors, stripPayload } from '../helpers';
-import { GiftCurrencyService } from '.';
+import { GiftCurrencyService, GiftProductTypeService } from '.';
 import { GiftFacilityAsyncValidationService } from './gift.facility-async-validation.service';
 
 const {
@@ -14,11 +14,13 @@ describe('GiftFacilityAsyncValidationService', () => {
   const logger = new PinoLogger({});
 
   let currencyService: GiftCurrencyService;
+  let productTypeService: GiftProductTypeService;
   let service: GiftFacilityAsyncValidationService;
 
   let giftHttpService;
   let mockGetResponse;
   let mockGetSupportedCurrencies: jest.Mock;
+  let mockProductTypeIsSupported: jest.Mock;
 
   beforeEach(() => {
     // Arrange
@@ -27,10 +29,14 @@ describe('GiftFacilityAsyncValidationService', () => {
     mockGetSupportedCurrencies = jest.fn().mockResolvedValueOnce(mockGetResponse);
 
     currencyService = new GiftCurrencyService(giftHttpService, logger);
-
     currencyService.getSupportedCurrencies = mockGetSupportedCurrencies;
 
-    service = new GiftFacilityAsyncValidationService(logger, currencyService);
+    mockProductTypeIsSupported = jest.fn().mockResolvedValueOnce(true);
+
+    productTypeService = new GiftProductTypeService(giftHttpService, logger);
+    productTypeService.isSupported = mockProductTypeIsSupported;
+
+    service = new GiftFacilityAsyncValidationService(logger, currencyService, productTypeService);
   });
 
   afterAll(() => {
@@ -52,7 +58,11 @@ describe('GiftFacilityAsyncValidationService', () => {
         const response = await service.creation(mockPayload, mockFacilityId);
 
         // Assert
-        const overviewErrs = generateOverviewValidationErrors(mockPayload.overview, CURRENCIES);
+        const overviewErrs = generateOverviewValidationErrors({
+          isSupportedProductType: true,
+          payload: mockPayload.overview,
+          supportedCurrencies: CURRENCIES,
+        });
 
         const currencyErrors = generateValidationErrors({
           payload: stripPayload(mockPayload, 'currency'),
@@ -73,7 +83,28 @@ describe('GiftFacilityAsyncValidationService', () => {
 
         currencyService.getSupportedCurrencies = mockGetSupportedCurrencies;
 
-        service = new GiftFacilityAsyncValidationService(logger, currencyService);
+        service = new GiftFacilityAsyncValidationService(logger, currencyService, productTypeService);
+      });
+
+      it('should thrown an error', async () => {
+        // Act
+        const promise = service.creation(mockPayload, mockFacilityId);
+
+        // Assert
+        const expected = new Error(`Error validating a GIFT facility - async ${mockFacilityId}`);
+
+        await expect(promise).rejects.toThrow(expected);
+      });
+    });
+
+    describe('when productTypeService.isSupported returns an error', () => {
+      beforeEach(() => {
+        // Arrange
+        mockProductTypeIsSupported = jest.fn().mockRejectedValueOnce(mockResponse500());
+
+        productTypeService.isSupported = mockProductTypeIsSupported;
+
+        service = new GiftFacilityAsyncValidationService(logger, currencyService, productTypeService);
       });
 
       it('should thrown an error', async () => {
