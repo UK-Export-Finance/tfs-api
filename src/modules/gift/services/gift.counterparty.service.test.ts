@@ -23,6 +23,7 @@ describe('GiftCounterpartyService', () => {
   let mockCreateOneResponse;
   let mockHttpServiceGet: jest.Mock;
   let mockHttpServicePost: jest.Mock;
+  let mockGetAllRoles: jest.Mock;
 
   beforeEach(() => {
     // Arrange
@@ -206,6 +207,53 @@ describe('GiftCounterpartyService', () => {
 
         // Assert
         const expected = new Error('Error getting all counterparty roles');
+
+        await expect(promise).rejects.toThrow(expected);
+      });
+    });
+  });
+
+  describe('getAllRoleCodes', () => {
+    beforeEach(() => {
+      mockGetAllRoles = jest.fn().mockResolvedValueOnce([COUNTERPARTY_ROLE.EXPORTER, COUNTERPARTY_ROLE.GUARANTOR]);
+    });
+
+    it('should call service.getAllRoles', async () => {
+      // Act
+      await service.getAllRoleCodes();
+
+      // Assert
+      expect(mockGetAllRoles).toHaveBeenCalledTimes(1);
+    });
+
+    describe('when service.getAllRoles is successful', () => {
+      it('should return an array of codes from the response of service.getAllRoles', async () => {
+        // Act
+        const response = await service.getAllRoleCodes();
+
+        // Assert
+        const expected = [COUNTERPARTY_ROLE.EXPORTER.code, COUNTERPARTY_ROLE.GUARANTOR.code];
+
+        expect(response).toEqual(expected);
+      });
+    });
+
+    describe('when service.getAllRoles returns an error', () => {
+      beforeEach(() => {
+        // Arrange
+        mockGetAllRoles = jest.fn().mockRejectedValueOnce(mockResponse500());
+
+        service.getAllRoles = mockGetAllRoles;
+
+        service = new GiftCounterpartyService(giftHttpService, logger);
+      });
+
+      it('should thrown an error', async () => {
+        // Act
+        const promise = service.getAllRoleCodes();
+
+        // Assert
+        const expected = new Error('Error getting all counterparty role codes');
 
         await expect(promise).rejects.toThrow(expected);
       });
