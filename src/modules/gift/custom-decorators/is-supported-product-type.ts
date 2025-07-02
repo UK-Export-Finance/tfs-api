@@ -1,8 +1,7 @@
 import { registerDecorator, ValidationArguments, ValidationOptions } from 'class-validator';
 import { PinoLogger } from 'nestjs-pino';
 
-import { GiftHttpService } from '../services/gift.http.service';
-import { GiftProductTypeService } from '../services/gift.product-type.service';
+import { GiftHttpService, GiftProductTypeService } from '../services';
 import { isValidProductTypeCodeFormat } from './../helpers';
 
 interface ObjectWithProductTypeCode {

@@ -3,8 +3,7 @@ import { GIFT_EXAMPLES } from '@ukef/constants/examples/gift.examples.constant';
 import { mockResponse200 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
-import { GiftFeeTypeService } from '../services/gift.fee-type.service';
-import { GiftHttpService } from '../services/gift.http.service';
+import { GiftFeeTypeService, GiftHttpService } from '../services';
 import { GiftFeeTypeController } from './gift.fee-type.controller';
 
 const { PATH } = GIFT;

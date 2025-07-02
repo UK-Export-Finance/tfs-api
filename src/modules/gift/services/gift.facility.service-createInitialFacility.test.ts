@@ -1,26 +1,28 @@
 import { HttpService } from '@nestjs/axios';
 import { EXAMPLES, GIFT } from '@ukef/constants';
-import { mockResponse200, mockResponse500 } from '@ukef-test/http-response';
+import { mockResponse201, mockResponse500 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
-import { GiftCounterpartyService } from '../gift.counterparty.service';
-import { GiftCurrencyService } from '../gift.currency.service';
-import { GiftFacilityAsyncValidationService } from '../gift.facility-async-validation.service';
-import { GiftFixedFeeService } from '../gift.fixed-fee.service';
-import { GiftObligationService } from '../gift.obligation.service';
-import { GiftRepaymentProfileService } from '../gift.repayment-profile.service';
-import { GiftStatusService } from '../gift.status.service';
-import { GiftFacilityService } from '.';
+import {
+  GiftCounterpartyService,
+  GiftCurrencyService,
+  GiftFacilityAsyncValidationService,
+  GiftFixedFeeService,
+  GiftObligationService,
+  GiftRepaymentProfileService,
+  GiftStatusService,
+} from '.';
+import { GiftFacilityService } from './gift.facility.service';
 
 const {
-  GIFT: { FACILITY_RESPONSE_DATA, FACILITY_ID: mockFacilityId },
+  GIFT: { FACILITY_CREATION_PAYLOAD: mockPayload, FACILITY_ID: mockFacilityId },
 } = EXAMPLES;
 
 const { PATH } = GIFT;
 
-const mockResponseGet = mockResponse200(FACILITY_RESPONSE_DATA);
+const mockResponsePost = mockResponse201(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA);
 
-describe('GiftFacilityService.get', () => {
+describe('GiftFacilityService.createInitialFacility', () => {
   const logger = new PinoLogger({});
 
   let httpService: HttpService;
@@ -33,18 +35,18 @@ describe('GiftFacilityService.get', () => {
   let service: GiftFacilityService;
 
   let giftHttpService;
-  let mockHttpServiceGet: jest.Mock;
+  let mockHttpServicePost: jest.Mock;
 
   beforeEach(() => {
     // Arrange
     httpService = new HttpService();
 
-    mockHttpServiceGet = jest.fn().mockResolvedValueOnce(mockResponseGet);
+    mockHttpServicePost = jest.fn().mockResolvedValueOnce(mockResponsePost);
 
-    httpService.get = mockHttpServiceGet;
+    httpService.post = mockHttpServicePost;
 
     giftHttpService = {
-      get: mockHttpServiceGet,
+      post: mockHttpServicePost,
     };
 
     const currencyService = new GiftCurrencyService(giftHttpService, logger);
@@ -72,36 +74,37 @@ describe('GiftFacilityService.get', () => {
     jest.resetAllMocks();
   });
 
-  it('should call giftHttpService.get', async () => {
+  it('should call giftHttpService.post', async () => {
     // Act
-    await service.get(mockFacilityId);
+    await service.createInitialFacility(mockPayload.overview);
 
     // Assert
-    expect(mockHttpServiceGet).toHaveBeenCalledTimes(1);
+    expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
 
-    expect(mockHttpServiceGet).toHaveBeenCalledWith({
-      path: `${PATH.FACILITY}/${mockFacilityId}`,
+    expect(mockHttpServicePost).toHaveBeenCalledWith({
+      path: PATH.CREATE_FACILITY,
+      payload: mockPayload.overview,
     });
   });
 
-  describe('when giftHttpService.get is successful', () => {
-    it('should return the response of giftHttpService.get', async () => {
+  describe('when giftHttpService.post is successful', () => {
+    it('should return the response of giftHttpService.post', async () => {
       // Act
-      const response = await service.get(mockFacilityId);
+      const response = await service.createInitialFacility(mockPayload.overview);
 
       // Assert
-      expect(response).toEqual(mockResponseGet);
+      expect(response).toEqual(mockResponsePost);
     });
   });
 
-  describe('when giftHttpService.get returns an error', () => {
+  describe('when giftHttpService.post returns an error', () => {
     beforeEach(() => {
       // Arrange
-      mockHttpServiceGet = jest.fn().mockRejectedValueOnce(mockResponse500());
+      mockHttpServicePost = jest.fn().mockRejectedValueOnce(mockResponse500());
 
-      httpService.get = mockHttpServiceGet;
+      httpService.post = mockHttpServicePost;
 
-      giftHttpService.get = mockHttpServiceGet;
+      giftHttpService.post = mockHttpServicePost;
 
       service = new GiftFacilityService(
         giftHttpService,
@@ -117,10 +120,10 @@ describe('GiftFacilityService.get', () => {
 
     it('should thrown an error', async () => {
       // Act
-      const promise = service.get(mockFacilityId);
+      const promise = service.createInitialFacility(mockPayload.overview);
 
       // Assert
-      const expected = new Error(`Error getting a GIFT facility ${mockFacilityId}`);
+      const expected = new Error(`Error creating an initial GIFT facility ${mockFacilityId}`);
 
       await expect(promise).rejects.toThrow(expected);
     });

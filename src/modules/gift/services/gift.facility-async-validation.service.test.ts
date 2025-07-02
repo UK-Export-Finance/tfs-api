@@ -3,7 +3,7 @@ import { mockResponse200, mockResponse500 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
 import { generateOverviewValidationErrors, generateValidationErrors, stripPayload } from '../helpers';
-import { GiftCurrencyService } from './gift.currency.service';
+import { GiftCurrencyService } from '.';
 import { GiftFacilityAsyncValidationService } from './gift.facility-async-validation.service';
 
 const {

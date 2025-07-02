@@ -3,8 +3,7 @@ import { GIFT_EXAMPLES } from '@ukef/constants/examples/gift.examples.constant';
 import { mockResponse200 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
-import { GiftCurrencyService } from '../services/gift.currency.service';
-import { GiftHttpService } from '../services/gift.http.service';
+import { GiftCurrencyService, GiftHttpService } from '../services';
 import { GiftCurrencyController } from './gift.currency.controller';
 
 const { PATH } = GIFT;

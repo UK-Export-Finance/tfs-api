@@ -4,7 +4,7 @@ import AppConfig from '@ukef/config/app.config';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { Response } from 'express';
 
-import { GiftFeeTypeService } from '../services/gift.fee-type.service';
+import { GiftFeeTypeService } from '../services';
 
 const { PATH } = GIFT;
 

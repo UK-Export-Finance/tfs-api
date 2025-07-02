@@ -3,8 +3,7 @@ import { registerDecorator, ValidationArguments, ValidationOptions } from 'class
 import { PinoLogger } from 'nestjs-pino';
 
 import { isValidCounterpartyRoleIdFormat, validateCounterpartySharePercentage } from '../helpers';
-import { GiftCounterpartyService } from '../services/gift.counterparty.service';
-import { GiftHttpService } from '../services/gift.http.service';
+import { GiftCounterpartyService, GiftHttpService } from '../services';
 
 const {
   VALIDATION: {

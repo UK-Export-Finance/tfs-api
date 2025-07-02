@@ -15,7 +15,7 @@ import { EXAMPLES, GIFT } from '@ukef/constants';
 import { Response } from 'express';
 
 import { GetFacilityOperationParamsDto, GiftFacilityCreationRequestDto, GiftFacilityCreationResponseDto, GiftFacilityOverviewRequestDto } from '../dto';
-import { GiftFacilityService } from '../services/gift.facility.service';
+import { GiftFacilityService } from '../services';
 
 const { PATH } = GIFT;
 

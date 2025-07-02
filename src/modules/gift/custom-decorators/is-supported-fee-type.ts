@@ -3,8 +3,7 @@ import { registerDecorator, ValidationArguments, ValidationOptions } from 'class
 import { PinoLogger } from 'nestjs-pino';
 
 import { arrayOfObjectsHasValue } from '../helpers';
-import { GiftFeeTypeService } from '../services/gift.fee-type.service';
-import { GiftHttpService } from '../services/gift.http.service';
+import { GiftFeeTypeService, GiftHttpService } from '../services';
 
 interface ObjectWithFeeTypeCode {
   feeTypeCode: string;
