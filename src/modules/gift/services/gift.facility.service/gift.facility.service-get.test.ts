@@ -11,8 +11,8 @@ import {
   GiftObligationService,
   GiftRepaymentProfileService,
   GiftStatusService,
-} from '.';
-import { GiftFacilityService } from './gift.facility.service';
+} from '../';
+import { GiftFacilityService } from './';
 
 const {
   GIFT: { FACILITY_RESPONSE_DATA, FACILITY_ID: mockFacilityId },

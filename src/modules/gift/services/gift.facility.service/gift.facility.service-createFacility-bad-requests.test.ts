@@ -4,7 +4,7 @@ import { mockResponse201 } from '@ukef-test/http-response';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 
-import { mapAllValidationErrorResponses, mapValidationErrorResponses } from '../helpers';
+import { mapAllValidationErrorResponses, mapValidationErrorResponses } from '../../helpers';
 import {
   GiftCounterpartyService,
   GiftCurrencyService,
@@ -13,8 +13,8 @@ import {
   GiftObligationService,
   GiftRepaymentProfileService,
   GiftStatusService,
-} from '.';
-import { GiftFacilityService } from './gift.facility.service';
+} from '../';
+import { GiftFacilityService } from './';
 
 const {
   GIFT: {

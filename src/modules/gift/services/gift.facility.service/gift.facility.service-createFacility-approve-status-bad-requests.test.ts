@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 import { EXAMPLES, GIFT } from '@ukef/constants';
-import { mockAxiosError, mockResponse201 } from '@ukef-test/http-response';
+import { mockAxiosError, mockResponse200, mockResponse201 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
 import {
@@ -11,8 +11,8 @@ import {
   GiftObligationService,
   GiftRepaymentProfileService,
   GiftStatusService,
-} from '.';
-import { GiftFacilityService } from './gift.facility.service';
+} from '../';
+import { GiftFacilityService } from './';
 
 const {
   GIFT: {
@@ -36,13 +36,14 @@ const mockFixedFees = [FIXED_FEE(), FIXED_FEE()];
 const mockObligations = [OBLIGATION(), OBLIGATION(), OBLIGATION()];
 const mockRepaymentProfiles = [REPAYMENT_PROFILE(), REPAYMENT_PROFILE(), REPAYMENT_PROFILE()];
 
+const mockAsyncValidationServiceCreationResponse = [];
 const mockCreateCounterpartiesResponse = mockCounterparties.map((counterparty) => mockResponse201(counterparty));
 const mockCreateFixedFeesResponse = mockFixedFees.map((fixedFee) => mockResponse201(fixedFee));
 const mockCreateObligationsResponse = mockObligations.map((counterparty) => mockResponse201(counterparty));
 const mockRepaymentProfilesResponse = mockRepaymentProfiles.map((repaymentProfile) => mockResponse201(repaymentProfile));
-const mockApprovedStatusResponse = mockResponse201({ data: WORK_PACKAGE_APPROVE_RESPONSE_DATA });
+const mockApprovedStatusResponse = mockResponse200({ data: WORK_PACKAGE_APPROVE_RESPONSE_DATA });
 
-describe('GiftFacilityService.create - async validation errors', () => {
+describe('GiftFacilityService.create - error handling', () => {
   const logger = new PinoLogger({});
 
   let asyncValidationService: GiftFacilityAsyncValidationService;
@@ -73,6 +74,7 @@ describe('GiftFacilityService.create - async validation errors', () => {
     repaymentProfileService = new GiftRepaymentProfileService(giftHttpService, logger);
     statusService = new GiftStatusService(giftHttpService, logger);
 
+    asyncValidationServiceCreationSpy = jest.fn().mockResolvedValueOnce(mockAsyncValidationServiceCreationResponse);
     createInitialFacilitySpy = jest.fn().mockResolvedValueOnce(mockCreateInitialFacilityResponse);
     createCounterpartiesSpy = jest.fn().mockResolvedValueOnce(mockCreateCounterpartiesResponse);
     createFixedFeesSpy = jest.fn().mockResolvedValueOnce(mockCreateFixedFeesResponse);
@@ -85,7 +87,6 @@ describe('GiftFacilityService.create - async validation errors', () => {
     fixedFeeService.createMany = createFixedFeesSpy;
     obligationService.createMany = createObligationsSpy;
     repaymentProfileService.createMany = createRepaymentProfilesSpy;
-    statusService.approved = approvedStatusSpy;
 
     service = new GiftFacilityService(
       giftHttpService,
@@ -101,89 +102,16 @@ describe('GiftFacilityService.create - async validation errors', () => {
     service.createInitialFacility = createInitialFacilitySpy;
   });
 
-  describe('when asyncValidationService.creation returns a populated array', () => {
-    const mockValidationErrors = ['Mock validation error'];
-
-    beforeEach(() => {
-      // Arrange
-      asyncValidationServiceCreationSpy = jest.fn().mockResolvedValueOnce(mockValidationErrors);
-
-      asyncValidationService.creation = asyncValidationServiceCreationSpy;
-    });
-
-    it(`should return an object with ${HttpStatus.BAD_REQUEST} and received validation errors`, async () => {
-      // Act
-      const response = await service.create(mockPayload, mockFacilityId);
-
-      // Assert
-      const expected = {
-        status: HttpStatus.BAD_REQUEST,
-        data: {
-          error: 'Bad Request',
-          statusCode: HttpStatus.BAD_REQUEST,
-          message: API_RESPONSE_MESSAGES.ASYNC_FACILITY_VALIDATION_ERRORS,
-          validationErrors: mockValidationErrors,
-        },
-      };
-
-      expect(response).toEqual(expected);
-    });
-
-    it('should NOT call service.createInitialFacility', async () => {
-      // Act
-      await service.create(mockPayload, mockFacilityId);
-
-      // Assert
-      expect(createInitialFacilitySpy).not.toHaveBeenCalled();
-    });
-
-    it('should NOT call counterpartyService.createMany', async () => {
-      // Act
-      await service.create(mockPayload, mockFacilityId);
-
-      // Assert
-      expect(createCounterpartiesSpy).not.toHaveBeenCalled();
-    });
-
-    it('should NOT call fixedFeeService.createMany', async () => {
-      // Act
-      await service.create(mockPayload, mockFacilityId);
-
-      // Assert
-      expect(createFixedFeesSpy).not.toHaveBeenCalled();
-    });
-
-    it('should NOT call obligationService.createMany', async () => {
-      // Act
-      await service.create(mockPayload, mockFacilityId);
-
-      // Assert
-      expect(createObligationsSpy).not.toHaveBeenCalled();
-    });
-
-    it('should NOT call giftRepaymentProfileService.createMany', async () => {
-      // Act
-      await service.create(mockPayload, mockFacilityId);
-
-      // Assert
-      expect(createRepaymentProfilesSpy).not.toHaveBeenCalled();
-    });
-
-    it('should NOT call giftStatusService.approved', async () => {
-      // Act
-      await service.create(mockPayload, mockFacilityId);
-
-      // Assert
-      expect(approvedStatusSpy).not.toHaveBeenCalled();
-    });
+  afterAll(() => {
+    jest.resetAllMocks();
   });
 
-  describe('when asyncValidationService.creation throws an error', () => {
+  describe(`when giftStatusService.approved returns ${HttpStatus.BAD_REQUEST}`, () => {
     beforeEach(() => {
       // Arrange
-      asyncValidationServiceCreationSpy = jest.fn().mockRejectedValueOnce(mockAxiosError());
+      approvedStatusSpy = jest.fn().mockResolvedValueOnce(mockAxiosError({ status: HttpStatus.BAD_REQUEST }));
 
-      asyncValidationService.creation = asyncValidationServiceCreationSpy;
+      statusService.approved = approvedStatusSpy;
 
       service = new GiftFacilityService(
         giftHttpService,
@@ -195,16 +123,62 @@ describe('GiftFacilityService.create - async validation errors', () => {
         repaymentProfileService,
         statusService,
       );
+
+      service.createInitialFacility = createInitialFacilitySpy;
     });
 
-    it('should throw an error', async () => {
+    it('should return an object with the giftStatusService.approved data and status', async () => {
       // Act
-      const response = service.create(mockPayload, mockFacilityId);
+      const response = await service.create(mockPayload, mockFacilityId);
 
       // Assert
-      const expected = new Error(`Error creating a GIFT facility ${mockFacilityId}`);
+      const expected = {
+        status: HttpStatus.BAD_REQUEST,
+        data: {
+          statusCode: HttpStatus.BAD_REQUEST,
+          message: API_RESPONSE_MESSAGES.APPROVED_STATUS_ERROR_MESSAGE,
+        },
+      };
 
-      await expect(response).rejects.toThrow(expected);
+      expect(response).toEqual(expected);
+    });
+  });
+
+  describe(`when giftStatusService.approved returns ${HttpStatus.INTERNAL_SERVER_ERROR}`, () => {
+    beforeEach(() => {
+      // Arrange
+      approvedStatusSpy = jest.fn().mockResolvedValueOnce(mockAxiosError({ status: HttpStatus.INTERNAL_SERVER_ERROR }));
+
+      statusService.approved = approvedStatusSpy;
+
+      service = new GiftFacilityService(
+        giftHttpService,
+        logger,
+        asyncValidationService,
+        counterpartyService,
+        fixedFeeService,
+        obligationService,
+        repaymentProfileService,
+        statusService,
+      );
+
+      service.createInitialFacility = createInitialFacilitySpy;
+    });
+
+    it('should return an object with the giftStatusService.approved data and status', async () => {
+      // Act
+      const response = await service.create(mockPayload, mockFacilityId);
+
+      // Assert
+      const expected = {
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        data: {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: API_RESPONSE_MESSAGES.APPROVED_STATUS_ERROR_MESSAGE,
+        },
+      };
+
+      expect(response).toEqual(expected);
     });
   });
 });
