@@ -4,16 +4,18 @@ import { mockResponse201 } from '@ukef-test/http-response';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 
-import { GiftCounterpartyService } from './gift.counterparty.service';
-import { GiftCurrencyService } from './gift.currency.service';
-import { GiftFacilityService } from './gift.facility.service';
-import { GiftFacilityAsyncValidationService } from './gift.facility-async-validation.service';
-import { GiftFixedFeeService } from './gift.fixed-fee.service';
-import { GiftObligationService } from './gift.obligation.service';
-import { GiftProductTypeService } from './gift.product-type.service';
-import { GiftRepaymentProfileService } from './gift.repayment-profile.service';
-import { GiftStatusService } from './gift.status.service';
-import { mapAllValidationErrorResponses, mapValidationErrorResponses } from './helpers';
+import { mapAllValidationErrorResponses, mapValidationErrorResponses } from '../../helpers';
+import {
+  GiftCounterpartyService,
+  GiftCurrencyService,
+  GiftFacilityAsyncValidationService,
+  GiftFixedFeeService,
+  GiftObligationService,
+  GiftProductTypeService,
+  GiftRepaymentProfileService,
+  GiftStatusService,
+} from '../';
+import { GiftFacilityService } from './';
 
 const {
   GIFT: {

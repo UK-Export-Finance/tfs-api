@@ -1,27 +1,28 @@
 import { Controller, Get, Res } from '@nestjs/common';
 import { ApiInternalServerErrorResponse, ApiOkResponse, ApiOperation, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import AppConfig from '@ukef/config/app.config';
-import { EXAMPLES, GIFT } from '@ukef/constants';
+import { GIFT } from '@ukef/constants';
 import { Response } from 'express';
 
-import { GiftFeeTypeService } from './gift.fee-type.service';
+import { GiftCurrencyService } from '../services';
 
 const { PATH } = GIFT;
 
 const { giftVersioning } = AppConfig();
 
 @Controller({
-  path: `gift${PATH.FEE_TYPE}`,
+  path: `gift${PATH.CURRENCY}`,
   version: giftVersioning.version,
 })
-export class GiftFeeTypeController {
-  constructor(private readonly giftFeeTypeService: GiftFeeTypeService) {}
+export class GiftCurrencyController {
+  constructor(private readonly giftCurrencyService: GiftCurrencyService) {}
 
   @Get(PATH.SUPPORTED)
-  @ApiOperation({ summary: 'Get all supported GIFT fee types' })
+  @ApiOperation({ summary: 'Get all supported GIFT currencies' })
   @ApiOkResponse({
-    description: 'The supported fee types',
-    example: EXAMPLES.GIFT.FEE_TYPES_RESPONSE_DATA,
+    description: 'The supported currencies',
+    isArray: true,
+    type: String,
   })
   @ApiUnauthorizedResponse({
     description: 'Unauthorized',
@@ -35,7 +36,7 @@ export class GiftFeeTypeController {
    * Further information: https://docs.nestjs.com/controllers#library-specific-approach
    */
   async get(@Res({ passthrough: true }) res: Response) {
-    const { status, data } = await this.giftFeeTypeService.getSupportedFeeTypes();
+    const { status, data } = await this.giftCurrencyService.getSupportedCurrencies();
 
     res.status(status).send(data);
   }

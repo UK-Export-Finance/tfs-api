@@ -21,5 +21,5 @@ export class GiftFacilityConfigPostResponseDto {
     type: GiftFacilityResponseDto,
   })
   @Type(() => GiftFacilityResponseDto)
-  data: GiftFacilityResponseDto;
+  readonly data: GiftFacilityResponseDto;
 }

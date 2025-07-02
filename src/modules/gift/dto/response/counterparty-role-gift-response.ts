@@ -16,19 +16,19 @@ export class GiftFacilityCounterpartyRoleResponseDto {
     example: COUNTERPARTY_ROLE.EXPORTER.code,
     required: true,
   })
-  code: string;
+  readonly code: string;
 
   @IsString()
   @ApiProperty({
     example: COUNTERPARTY_ROLE.EXPORTER.name,
     required: true,
   })
-  name: string;
+  readonly name: string;
 
   @IsBoolean()
   @ApiProperty({
     example: COUNTERPARTY_ROLE.EXPORTER.hasSharePercentage,
     required: true,
   })
-  hasSharePercentage: boolean;
+  readonly hasSharePercentage: boolean;
 }

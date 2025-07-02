@@ -3,9 +3,9 @@ import { GIFT } from '@ukef/constants';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 
-import { GiftFacilityCounterpartyRequestDto, GiftFacilityCounterpartyRoleResponseDto } from './dto';
+import { GiftFacilityCounterpartyRequestDto, GiftFacilityCounterpartyRoleResponseDto } from '../dto';
+import { mapCounterpartiesRequestData } from '../helpers';
 import { GiftHttpService } from './gift.http.service';
-import { mapCounterpartiesRequestData } from './helpers';
 
 const { EVENT_TYPES, PATH } = GIFT;
 

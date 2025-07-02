@@ -2,17 +2,19 @@ import { EXAMPLES } from '@ukef/constants';
 import { mockResponse200, mockResponse201 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
-import { GiftCounterpartyService } from './gift.counterparty.service';
-import { GiftCurrencyService } from './gift.currency.service';
+import {
+  GiftCounterpartyService,
+  GiftCurrencyService,
+  GiftFacilityAsyncValidationService,
+  GiftFacilityService,
+  GiftFixedFeeService,
+  GiftHttpService,
+  GiftObligationService,
+  GiftProductTypeService,
+  GiftRepaymentProfileService,
+  GiftStatusService,
+} from '../services';
 import { GiftFacilityController } from './gift.facility.controller';
-import { GiftFacilityService } from './gift.facility.service';
-import { GiftFacilityAsyncValidationService } from './gift.facility-async-validation.service';
-import { GiftFixedFeeService } from './gift.fixed-fee.service';
-import { GiftHttpService } from './gift.http.service';
-import { GiftObligationService } from './gift.obligation.service';
-import { GiftProductTypeService } from './gift.product-type.service';
-import { GiftRepaymentProfileService } from './gift.repayment-profile.service';
-import { GiftStatusService } from './gift.status.service';
 
 const {
   GIFT: { FACILITY_ID: mockFacilityId, FACILITY_CREATION_PAYLOAD },

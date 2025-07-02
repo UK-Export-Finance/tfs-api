@@ -2,10 +2,9 @@ import { EXAMPLES } from '@ukef/constants';
 import { mockResponse200, mockResponse500 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
-import { GiftCurrencyService } from './gift.currency.service';
+import { generateOverviewValidationErrors, generateValidationErrors, stripPayload } from '../helpers';
+import { GiftCurrencyService, GiftProductTypeService } from '.';
 import { GiftFacilityAsyncValidationService } from './gift.facility-async-validation.service';
-import { GiftProductTypeService } from './gift.product-type.service';
-import { generateOverviewValidationErrors, generateValidationErrors, stripPayload } from './helpers';
 
 const {
   GIFT: { CURRENCIES, FACILITY_CREATION_PAYLOAD: mockPayload, FACILITY_ID: mockFacilityId },
