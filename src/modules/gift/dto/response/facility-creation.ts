@@ -13,5 +13,5 @@ export class GiftFacilityCreationResponseDto extends GiftFacilityCreationRequest
   @ApiProperty({
     example: EXAMPLES.GIFT.STATES.APPROVED,
   })
-  state: string;
+  readonly state: string;
 }

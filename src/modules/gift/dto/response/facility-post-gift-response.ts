@@ -21,11 +21,11 @@ export class GiftFacilityPostResponseDto {
     type: GiftFacilityConfigPostResponseDto,
   })
   @Type(() => GiftFacilityConfigPostResponseDto)
-  configurationEvent: GiftFacilityConfigPostResponseDto;
+  readonly configurationEvent: GiftFacilityConfigPostResponseDto;
 
   @IsNumber()
   @ApiProperty({
     example: EXAMPLE.workPackageId,
   })
-  workPackageId: number;
+  readonly workPackageId: number;
 }

@@ -3,9 +3,9 @@ import { GIFT } from '@ukef/constants';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 
-import { GiftObligationRequestDto, GiftObligationSubtypeResponseDto } from './dto';
+import { GiftObligationRequestDto, GiftObligationSubtypeResponseDto } from '../dto';
+import { getUnsupportedObligationSubtypeCodes } from '../helpers';
 import { GiftHttpService } from './gift.http.service';
-import { getUnsupportedObligationSubtypeCodes } from './helpers';
 
 const { PATH } = GIFT;
 

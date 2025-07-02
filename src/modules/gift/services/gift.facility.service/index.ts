@@ -4,15 +4,15 @@ import { UkefId } from '@ukef/helpers';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 
-import { GiftFacilityCreationRequestDto, GiftFacilityOverviewRequestDto } from './dto';
-import { GiftCounterpartyService } from './gift.counterparty.service';
-import { GiftFacilityAsyncValidationService } from './gift.facility-async-validation.service';
-import { GiftFixedFeeService } from './gift.fixed-fee.service';
-import { GiftHttpService } from './gift.http.service';
-import { GiftObligationService } from './gift.obligation.service';
-import { GiftRepaymentProfileService } from './gift.repayment-profile.service';
-import { GiftStatusService } from './gift.status.service';
-import { mapAllValidationErrorResponses, mapResponsesData } from './helpers';
+import { GiftFacilityCreationRequestDto, GiftFacilityOverviewRequestDto } from '../../dto';
+import { mapAllValidationErrorResponses, mapResponsesData } from '../../helpers';
+import { GiftCounterpartyService } from '../gift.counterparty.service';
+import { GiftFacilityAsyncValidationService } from '../gift.facility-async-validation.service';
+import { GiftFixedFeeService } from '../gift.fixed-fee.service';
+import { GiftHttpService } from '../gift.http.service';
+import { GiftObligationService } from '../gift.obligation.service';
+import { GiftRepaymentProfileService } from '../gift.repayment-profile.service';
+import { GiftStatusService } from '../gift.status.service';
 
 const { API_RESPONSE_MESSAGES, PATH } = GIFT;
 

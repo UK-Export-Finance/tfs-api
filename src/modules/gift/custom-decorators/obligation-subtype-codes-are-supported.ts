@@ -2,9 +2,8 @@ import { registerDecorator, ValidationArguments, ValidationOptions } from 'class
 import { PinoLogger } from 'nestjs-pino';
 
 import { GiftFacilityCreationRequestDto } from '../dto';
-import { GiftHttpService } from '../gift.http.service';
-import { GiftObligationSubtypeService } from '../gift.obligation-subtype.service';
 import { hasValidObligationSubtypeCodeFormats, isValidProductTypeCodeFormat } from '../helpers';
+import { GiftHttpService, GiftObligationSubtypeService } from '../services';
 
 interface ObligationSubtypeValidationArguments extends ValidationArguments {
   object: GiftFacilityCreationRequestDto;

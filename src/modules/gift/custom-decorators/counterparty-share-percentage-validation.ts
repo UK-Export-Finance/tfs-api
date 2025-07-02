@@ -2,9 +2,8 @@ import { GIFT } from '@ukef/constants';
 import { registerDecorator, ValidationArguments, ValidationOptions } from 'class-validator';
 import { PinoLogger } from 'nestjs-pino';
 
-import { GiftCounterpartyService } from '../gift.counterparty.service';
-import { GiftHttpService } from '../gift.http.service';
 import { isValidCounterpartyRoleIdFormat, validateCounterpartySharePercentage } from '../helpers';
+import { GiftCounterpartyService, GiftHttpService } from '../services';
 
 const {
   VALIDATION: {

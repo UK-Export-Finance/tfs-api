@@ -17,7 +17,7 @@ export class GiftFacilityResponseDto extends GiftFacilityOverviewRequestDto {
   @ApiProperty({
     example: EXAMPLE.configurationEvent.data.availableAmount,
   })
-  availableAmount: number;
+  readonly availableAmount: number;
 
   @ApiProperty({
     example: EXAMPLE.configurationEvent.data.createdDatetime,
@@ -28,23 +28,23 @@ export class GiftFacilityResponseDto extends GiftFacilityOverviewRequestDto {
   @ApiProperty({
     example: EXAMPLE.configurationEvent.data.drawnAmount,
   })
-  drawnAmount: number;
+  readonly drawnAmount: number;
 
   @IsBoolean()
   @ApiProperty({
     example: EXAMPLE.configurationEvent.data.isDraft,
   })
-  isDraft: boolean;
+  readonly isDraft: boolean;
 
   @IsString()
   @ApiProperty({
     example: EXAMPLE.configurationEvent.data.streamId,
   })
-  streamId: string;
+  readonly streamId: string;
 
   @IsNumber()
   @ApiProperty({
     example: EXAMPLE.configurationEvent.data.streamVersion,
   })
-  streamVersion: number;
+  readonly streamVersion: number;
 }

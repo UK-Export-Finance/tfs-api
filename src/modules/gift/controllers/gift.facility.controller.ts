@@ -14,8 +14,8 @@ import AppConfig from '@ukef/config/app.config';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { Response } from 'express';
 
-import { GetFacilityOperationParamsDto, GiftFacilityCreationRequestDto, GiftFacilityCreationResponseDto, GiftFacilityOverviewRequestDto } from './dto';
-import { GiftFacilityService } from './gift.facility.service';
+import { GetFacilityOperationParamsDto, GiftFacilityCreationRequestDto, GiftFacilityCreationResponseDto, GiftFacilityOverviewRequestDto } from '../dto';
+import { GiftFacilityService } from '../services';
 
 const { PATH } = GIFT;
 
