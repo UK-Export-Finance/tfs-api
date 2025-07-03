@@ -8,7 +8,7 @@ import { assert400Response } from './response-assertion';
 
 const UNSUPPORTED_CURRENCY = AUD;
 
-const { API_RESPONSE_MESSAGES } = GIFT;
+const { API_RESPONSE_MESSAGES, VALIDATION } = GIFT;
 
 /**
  * Validation tests for an array of objects - currency string field with invalid values
@@ -20,8 +20,8 @@ export const arrayOfObjectsCurrencyStringValidation = ({ initialPayload, parentF
   let api: Api;
 
   const fieldName = 'currency';
-  const min = GIFT.VALIDATION.CURRENCY.MIN_LENGTH;
-  const max = GIFT.VALIDATION.CURRENCY.MAX_LENGTH;
+  const min = VALIDATION.CURRENCY.MIN_LENGTH;
+  const max = VALIDATION.CURRENCY.MAX_LENGTH;
 
   const payloadParams = { initialPayload, fieldName, parentFieldName };
 
