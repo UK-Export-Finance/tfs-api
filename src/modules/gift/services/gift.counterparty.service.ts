@@ -96,7 +96,7 @@ export class GiftCounterpartyService {
 
   /**
    * Get all GIFT counterparty role codes
-   * @returns {Promise<Array<AxiosResponse>>}
+   * @returns {Promise<string[]>}
    * @throws {Error}
    */
   async getAllRoleCodes(): Promise<string[]> {
