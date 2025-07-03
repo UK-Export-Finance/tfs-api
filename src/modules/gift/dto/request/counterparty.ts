@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { IsDateString, IsDefined, IsString, Length } from 'class-validator';
 
-import { CounterpartySharePercentageValidation, IsSupportedCounterpartyRole } from '../../custom-decorators';
+import { CounterpartySharePercentageValidation } from '../../custom-decorators';
 
 const {
   GIFT: { COUNTERPARTY },
@@ -37,7 +37,6 @@ export class GiftFacilityCounterpartyRequestDto {
   @IsDefined()
   @IsString()
   @Length(VALIDATION.ROLE_CODE.MIN_LENGTH, VALIDATION.ROLE_CODE.MAX_LENGTH)
-  @IsSupportedCounterpartyRole()
   @ApiProperty({
     example: COUNTERPARTY().roleCode,
     required: true,
