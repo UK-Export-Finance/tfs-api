@@ -215,7 +215,13 @@ describe('GiftCounterpartyService', () => {
 
   describe('getAllRoleCodes', () => {
     beforeEach(() => {
-      mockGetAllRoles = jest.fn().mockResolvedValueOnce([COUNTERPARTY_ROLE.EXPORTER, COUNTERPARTY_ROLE.GUARANTOR]);
+      mockGetAllRoles = jest.fn().mockResolvedValueOnce({
+        data: {
+          counterpartyRoles: [COUNTERPARTY_ROLE.EXPORTER, COUNTERPARTY_ROLE.GUARANTOR],
+        },
+      });
+
+      service.getAllRoles = mockGetAllRoles;
     });
 
     it('should call service.getAllRoles', async () => {
