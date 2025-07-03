@@ -2,8 +2,8 @@ import { EXAMPLES } from '@ukef/constants';
 import { mockResponse200, mockResponse500 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
-import { generateHighLevelErrors, generateOverviewValidationErrors, mapEntitiesByField, stripPayload } from '../helpers';
-import { generateArrayOfErrors } from '../helpers/async-validation/generate-validation-errors';
+import { generateHighLevelErrors, generateOverviewErrors, mapEntitiesByField, stripPayload } from '../helpers';
+import { generateArrayOfErrors } from '../helpers/async-validation/generate-errors';
 import { GiftCounterpartyService, GiftCurrencyService, GiftProductTypeService } from '.';
 import { GiftFacilityAsyncValidationService } from './gift.facility-async-validation.service';
 
@@ -16,6 +16,7 @@ describe('GiftFacilityAsyncValidationService', () => {
 
   let currencyService: GiftCurrencyService;
   let productTypeService: GiftProductTypeService;
+  let counterpartyService: GiftCounterpartyService;
   let service: GiftFacilityAsyncValidationService;
 
   let giftHttpService;
@@ -43,7 +44,7 @@ describe('GiftFacilityAsyncValidationService', () => {
     counterpartyService = new GiftCounterpartyService(giftHttpService, logger);
     counterpartyService.getAllRoleCodes = mockGetAllRoleCodes;
 
-    service = new GiftFacilityAsyncValidationService(logger, currencyService, productTypeService);
+    service = new GiftFacilityAsyncValidationService(logger, counterpartyService, currencyService, productTypeService);
   });
 
   afterAll(() => {
@@ -82,7 +83,7 @@ describe('GiftFacilityAsyncValidationService', () => {
         const response = await service.creation(mockPayload, mockFacilityId);
 
         // Assert
-        const overviewErrors = generateOverviewValidationErrors({
+        const overviewErrors = generateOverviewErrors({
           isSupportedProductType: true,
           payload: mockPayload.overview,
           supportedCurrencies: CURRENCIES,
@@ -114,7 +115,7 @@ describe('GiftFacilityAsyncValidationService', () => {
 
         currencyService.getSupportedCurrencies = mockGetSupportedCurrencies;
 
-        service = new GiftFacilityAsyncValidationService(logger, currencyService, productTypeService);
+        service = new GiftFacilityAsyncValidationService(logger, counterpartyService, currencyService, productTypeService);
       });
 
       it('should thrown an error', async () => {
@@ -135,7 +136,7 @@ describe('GiftFacilityAsyncValidationService', () => {
 
         productTypeService.isSupported = mockProductTypeIsSupported;
 
-        service = new GiftFacilityAsyncValidationService(logger, currencyService, productTypeService);
+        service = new GiftFacilityAsyncValidationService(logger, counterpartyService, currencyService, productTypeService);
       });
 
       it('should thrown an error', async () => {

@@ -1,13 +1,13 @@
 import { EXAMPLES } from '@ukef/constants';
 import { SUPPORTED_CURRENCIES } from '@ukef/constants/currencies.constant';
 
-import { generateOverviewValidationErrors } from '.';
+import { generateOverviewErrors } from '.';
 
 const {
   GIFT: { FACILITY_CREATION_PAYLOAD },
 } = EXAMPLES;
 
-describe('modules/gift/helpers/async-validation/generate-overview-validation-errors', () => {
+describe('modules/gift/helpers/async-validation/generate-overview-errors', () => {
   describe('when payload.currency is NOT in the supported currencies array', () => {
     it('should return an array with validation error', () => {
       // Arrange
@@ -19,7 +19,7 @@ describe('modules/gift/helpers/async-validation/generate-overview-validation-err
       const mockSupportedCurrencies = [SUPPORTED_CURRENCIES.GBP];
 
       // Act
-      const result = generateOverviewValidationErrors({
+      const result = generateOverviewErrors({
         isSupportedProductType: true,
         payload: mockPayload,
         supportedCurrencies: mockSupportedCurrencies,
@@ -43,7 +43,7 @@ describe('modules/gift/helpers/async-validation/generate-overview-validation-err
       const mockSupportedCurrencies = [SUPPORTED_CURRENCIES.GBP];
 
       // Act
-      const result = generateOverviewValidationErrors({
+      const result = generateOverviewErrors({
         isSupportedProductType: true,
         payload: mockPayload,
         supportedCurrencies: mockSupportedCurrencies,
@@ -62,7 +62,7 @@ describe('modules/gift/helpers/async-validation/generate-overview-validation-err
       const mockSupportedCurrencies = Object.values(SUPPORTED_CURRENCIES);
 
       // Act
-      const result = generateOverviewValidationErrors({
+      const result = generateOverviewErrors({
         isSupportedProductType: false,
         payload: mockPayload,
         supportedCurrencies: mockSupportedCurrencies,
@@ -81,7 +81,7 @@ describe('modules/gift/helpers/async-validation/generate-overview-validation-err
       const mockPayload = FACILITY_CREATION_PAYLOAD.overview;
 
       // Act
-      const result = generateOverviewValidationErrors({
+      const result = generateOverviewErrors({
         isSupportedProductType: false,
         payload: mockPayload,
         supportedCurrencies: [],

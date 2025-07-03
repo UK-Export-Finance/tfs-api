@@ -2,8 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
 
 import { GiftFacilityCreationRequestDto } from '../dto';
-import { generateHighLevelErrors, generateOverviewErrors, mapEntitiesByField, stripPayload } from '../helpers';
-import { generateArrayOfErrors } from '../helpers/async-validation/generate-validation-errors';
+import { generateArrayOfErrors, generateHighLevelErrors, generateOverviewErrors, mapEntitiesByField, stripPayload } from '../helpers';
 import { GiftCounterpartyService } from './gift.counterparty.service';
 import { GiftCurrencyService } from './gift.currency.service';
 import { GiftProductTypeService } from './gift.product-type.service';

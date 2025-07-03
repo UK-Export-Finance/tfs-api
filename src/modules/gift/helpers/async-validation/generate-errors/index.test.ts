@@ -2,7 +2,7 @@ import { generateArrayOfErrors, generateErrorMessage, generateHighLevelErrors } 
 
 const mockFieldName = 'fieldX';
 
-describe('modules/gift/helpers/async-validation/generate-validation-errors', () => {
+describe('modules/gift/helpers/async-validation/generate-errors', () => {
   describe('generateErrorMessage', () => {
     const mockParentEntityName = 'fixedFees';
     const mockSupportedValues = ['A', 'B', 'C'];
