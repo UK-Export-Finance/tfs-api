@@ -2,7 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
 
 import { GiftFacilityCreationRequestDto } from '../dto';
-import { generateOverviewValidationErrors, generateValidationErrors, stripPayload } from '../helpers';
+import { generateHighLevelErrors, generateOverviewErrors, mapEntitiesByField, stripPayload } from '../helpers';
+import { generateArrayOfErrors } from '../helpers/async-validation/generate-validation-errors';
+import { GiftCounterpartyService } from './gift.counterparty.service';
 import { GiftCurrencyService } from './gift.currency.service';
 import { GiftProductTypeService } from './gift.product-type.service';
 
@@ -18,9 +20,11 @@ import { GiftProductTypeService } from './gift.product-type.service';
 export class GiftFacilityAsyncValidationService {
   constructor(
     private readonly logger: PinoLogger,
+    private readonly counterpartyService: GiftCounterpartyService,
     private readonly currencyService: GiftCurrencyService,
     private readonly productTypeService: GiftProductTypeService,
   ) {
+    this.counterpartyService = counterpartyService;
     this.currencyService = currencyService;
     this.productTypeService = productTypeService;
   }
@@ -41,21 +45,28 @@ export class GiftFacilityAsyncValidationService {
 
       const isSupportedProductType = await this.productTypeService.isSupported(overview.productTypeCode);
 
-      const overviewErrors = generateOverviewValidationErrors({
+      const counterpartyRoles = await this.counterpartyService.getAllRoleCodes();
+
+      const overviewErrors = generateOverviewErrors({
         isSupportedProductType,
         payload: overview,
         supportedCurrencies: supportedCurrencies.data,
       });
 
-      const payloadCurrencies = stripPayload(payload, 'currency');
-
-      const currencyErrors = generateValidationErrors({
-        payload: payloadCurrencies,
+      const currencyErrors = generateHighLevelErrors({
+        payload: stripPayload(payload, 'currency'),
         supportedValues: supportedCurrencies.data,
         fieldName: 'currency',
       });
 
-      return [...overviewErrors, ...currencyErrors];
+      const counterpartyRoleErrors = generateArrayOfErrors({
+        fieldValues: mapEntitiesByField(payload.counterparties, 'roleCode'),
+        supportedValues: counterpartyRoles,
+        fieldName: 'roleCode',
+        parentEntityName: 'counterparties',
+      });
+
+      return [...overviewErrors, ...currencyErrors, ...counterpartyRoleErrors];
     } catch (error) {
       this.logger.error('Error validating a GIFT facility - async %s %o', facilityId, error);
 

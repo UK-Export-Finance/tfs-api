@@ -42,6 +42,7 @@ export const stripPayload = (payload: GiftFacilityCreationRequestDto, fieldName:
 
   return {
     overview: overview[`${fieldName}`],
+    // counterparties: mapEntitiesByField(counterparties, fieldName),
     fixedFees: mapEntitiesByField(fixedFees, fieldName),
     obligations: mapEntitiesByField(obligations, fieldName),
   };

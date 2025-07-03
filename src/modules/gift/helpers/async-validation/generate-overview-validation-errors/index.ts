@@ -13,11 +13,7 @@ interface GenerateOverviewValidationErrorsParams {
  * @param {String[]} supportedCurrencies: Currencies supported by GIFT
  * @returns {String[]} An array of validation errors
  */
-export const generateOverviewValidationErrors = ({
-  isSupportedProductType,
-  payload,
-  supportedCurrencies,
-}: GenerateOverviewValidationErrorsParams): string[] => {
+export const generateOverviewErrors = ({ isSupportedProductType, payload, supportedCurrencies }: GenerateOverviewValidationErrorsParams): string[] => {
   const validationErrors = [];
 
   if (!supportedCurrencies.includes(payload.currency)) {

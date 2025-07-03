@@ -1,26 +1,82 @@
-import { generateMessage, generateValidationErrors } from '.';
+import { generateArrayOfErrors, generateErrorMessage, generateHighLevelErrors } from '.';
 
-const mockFieldName = 'fieldA';
+const mockFieldName = 'fieldX';
 
 describe('modules/gift/helpers/async-validation/generate-validation-errors', () => {
-  describe('generateMessage', () => {
-    it('should return an error message string', () => {
-      // Arrange
-      const mockParentEntityName = 'fixedFees';
+  describe('generateErrorMessage', () => {
+    const mockParentEntityName = 'fixedFees';
+    const mockSupportedValues = ['A', 'B', 'C'];
 
-      // Act
-      const result = generateMessage({ parentEntityName: 'fixedFees', fieldName: mockFieldName, fieldValue: 'B', index: 1 });
+    describe('when the provided fieldValue is NOT in the provided supportedValues array', () => {
+      it('should return an error message string', () => {
+        // Arrange & Act
+        const result = generateErrorMessage({
+          fieldName: mockFieldName,
+          fieldValue: 'Z',
+          index: 1,
+          parentEntityName: mockParentEntityName,
+          supportedValues: mockSupportedValues,
+        });
 
-      // Assert
-      const expected = `${mockParentEntityName}.1.${mockFieldName} is not supported - B`;
+        // Assert
+        const expected = `${mockParentEntityName}.1.${mockFieldName} is not supported - Z`;
 
-      expect(result).toEqual(expected);
+        expect(result).toEqual(expected);
+      });
+    });
+
+    describe('when the provided fieldValue is in the provided supportedValues array', () => {
+      it('should return undefined', () => {
+        // Arrange & Act
+        const result = generateErrorMessage({
+          fieldName: mockFieldName,
+          fieldValue: 'B',
+          index: 1,
+          parentEntityName: mockParentEntityName,
+          supportedValues: mockSupportedValues,
+        });
+
+        // Assert
+        expect(result).toBeUndefined();
+      });
     });
   });
 
-  describe('generateValidationErrors', () => {
-    describe('when child entities contain values that are NOT in the provided supportedValues array', () => {
-      it('should return an array with validation errors for all entities', () => {
+  describe('generateArrayOfErrors', () => {
+    it('should return an array of error messages via generateErrorMessage', () => {
+      // Arrange
+      const mockFieldValues = ['A', 'B', 'C', 'D', 'Z'];
+      const mockSupportedValues = ['A', 'C'];
+      const mockParentEntityName = 'fixedFees';
+
+      // Act
+      const result = generateArrayOfErrors({
+        fieldValues: mockFieldValues,
+        supportedValues: mockSupportedValues,
+        fieldName: mockFieldName,
+        parentEntityName: mockParentEntityName,
+      });
+
+      // Assert
+      const shareParams = {
+        fieldName: mockFieldName,
+        parentEntityName: mockParentEntityName,
+        supportedValues: mockSupportedValues,
+      };
+
+      const expected = [
+        generateErrorMessage({ ...shareParams, fieldValue: 'B', index: 1 }),
+        generateErrorMessage({ ...shareParams, fieldValue: 'D', index: 3 }),
+        generateErrorMessage({ ...shareParams, fieldValue: 'Z', index: 4 }),
+      ];
+
+      expect(result).toStrictEqual(expected);
+    });
+  });
+
+  describe('generateHighLevelErrors', () => {
+    describe('when a child entities is an array', () => {
+      it('should return an array of errors via generateArrayOfErrors', () => {
         // Arrange
         const mockPayload = {
           overview: 'A',
@@ -31,7 +87,7 @@ describe('modules/gift/helpers/async-validation/generate-validation-errors', () 
         const mockSupportedValues = ['A', 'C'];
 
         // Act
-        const result = generateValidationErrors({
+        const result = generateHighLevelErrors({
           payload: mockPayload,
           supportedValues: mockSupportedValues,
           fieldName: mockFieldName,
@@ -39,31 +95,37 @@ describe('modules/gift/helpers/async-validation/generate-validation-errors', () 
 
         // Assert
         const expected = [
-          generateMessage({ parentEntityName: 'fixedFees', fieldName: mockFieldName, fieldValue: 'B', index: 2 }),
-          generateMessage({ parentEntityName: 'fixedFees', fieldName: mockFieldName, fieldValue: 'B', index: 3 }),
-          generateMessage({ parentEntityName: 'fixedFees', fieldName: mockFieldName, fieldValue: 'D', index: 6 }),
-          generateMessage({ parentEntityName: 'obligations', fieldName: mockFieldName, fieldValue: 'B', index: 0 }),
-          generateMessage({ parentEntityName: 'obligations', fieldName: mockFieldName, fieldValue: 'B', index: 1 }),
-          generateMessage({ parentEntityName: 'obligations', fieldName: mockFieldName, fieldValue: 'D', index: 6 }),
+          ...generateArrayOfErrors({
+            fieldValues: mockPayload.fixedFees,
+            supportedValues: mockSupportedValues,
+            fieldName: mockFieldName,
+            parentEntityName: 'fixedFees',
+          }),
+          ...generateArrayOfErrors({
+            fieldValues: mockPayload.obligations,
+            supportedValues: mockSupportedValues,
+            fieldName: mockFieldName,
+            parentEntityName: 'obligations',
+          }),
         ];
 
-        expect(result).toEqual(expected);
+        expect(result).toStrictEqual(expected);
       });
     });
 
-    describe('when child entities contain values that are in the provided supportedValues array', () => {
+    describe('when no child array entities are populated', () => {
       it('should return an empty array', () => {
         // Arrange
         const mockPayload = {
           overview: 'A',
-          fixedFees: ['A', 'A', 'C', 'C'],
-          obligations: ['A', 'A', 'C', 'C'],
+          fixedFees: [],
+          obligations: [],
         };
 
-        const mockSupportedValues = ['A', 'C'];
+        const mockSupportedValues = ['A', 'B'];
 
         // Act
-        const result = generateValidationErrors({
+        const result = generateHighLevelErrors({
           payload: mockPayload,
           supportedValues: mockSupportedValues,
           fieldName: mockFieldName,

@@ -1,31 +1,76 @@
 import { GiftFacilityCreationValidationStrippedPayload } from '@ukef/types';
 
-interface GenerateMessageParams {
-  parentEntityName: string;
+interface GenerateErrorMessageParams {
   fieldName: string;
   fieldValue: string;
   index: number;
+  parentEntityName: string;
+  supportedValues: string[];
+}
+
+interface GenerateArrayOfErrorsParams {
+  fieldName: string;
+  fieldValues: string[];
+  parentEntityName: string;
+  supportedValues: string[];
 }
 
 interface GenerateValidationErrorsParams {
+  fieldName: string;
   payload: GiftFacilityCreationValidationStrippedPayload;
   supportedValues: string[];
-  fieldName: string;
 }
 
 /**
- * Generate a validation error message from the provided params
- * @param {GenerateMessageParams}: parentEntityName, fieldName, fieldValue, index
- * @returns {String}
+ * If a field value is not in the provided supported values,
+ * generate an error message from the provided params.
+ * @param {GenerateErrorMessageParams}: fieldName, fieldValue, index, parentEntityName, supportedValues
+ * @returns {String | undefined}
  */
-export const generateMessage = ({ parentEntityName, fieldName, fieldValue, index }: GenerateMessageParams) =>
-  `${parentEntityName}.${index}.${fieldName} is not supported - ${fieldValue}`;
+export const generateErrorMessage = ({ fieldName, fieldValue, index, parentEntityName, supportedValues }: GenerateErrorMessageParams) => {
+  if (!supportedValues.includes(fieldValue)) {
+    return `${parentEntityName}.${index}.${fieldName} is not supported - ${fieldValue}`;
+  }
+};
 
 /**
- * Generate validation errors for multiple entities, depending on the provided field name,
- * and if values are contained the provided list of supported values.
+ * Generate an array of errors
+ * @param {GenerateArrayOfErrorsParams} fieldName, fieldValues, parentEntityName, supportedValues
+ * @returns {String[]}
+ */
+export const generateArrayOfErrors = ({ fieldName, fieldValues, parentEntityName, supportedValues }: GenerateArrayOfErrorsParams): string[] => {
+  const validationErrors = [];
+
+  fieldValues.forEach((fieldValue: string, index: number) => {
+    const validationError = generateErrorMessage({
+      fieldName,
+      fieldValue,
+      index,
+      parentEntityName,
+      supportedValues,
+    });
+
+    if (validationError) {
+      validationErrors.push(validationError);
+    }
+  });
+
+  return validationErrors;
+};
+
+// TODO
+// TODO
+// TODO
+// review documentation throughout
+// add examples
+// and param ordering, alphabetical
+
+/**
+ * Generate validation errors at a high level for multiple entities.
+ * Depending on the provided field name and if values are contained the provided list of supported values.
  * NOTE: Whilst "overview" is part of the payload, overview validation does not occur in this function, as it has a different structure.
- * @param {GenerateValidationErrorsParams} payload, supportedValues, fieldName
+ * @param {GenerateValidationErrorsParams} fieldName, payload, supportedValues
+ * @returns {String[]} Array of validation errors
  * @example
  * ```ts
  * const payload = {
@@ -36,7 +81,7 @@ export const generateMessage = ({ parentEntityName, fieldName, fieldValue, index
  *
  * const supportedValues = ['GBP', 'USD'];
  *
- * generateValidationErrors(payload, supportedValues, 'currency')
+ * generateHighLevelValidationErrors('currency', payload, supportedValues)
  *
  * [
  *   'fixedFees.2.currency is not supported (EUR)'
@@ -44,27 +89,23 @@ export const generateMessage = ({ parentEntityName, fieldName, fieldValue, index
  * ]
  * ```
  */
-export const generateValidationErrors = ({ payload, supportedValues, fieldName }: GenerateValidationErrorsParams): string[] => {
-  const validationErrors = [];
+export const generateHighLevelErrors = ({ fieldName, payload, supportedValues }: GenerateValidationErrorsParams): string[] => {
+  const highlevelErrors = [];
 
   Object.keys(payload).forEach((parentEntityName) => {
     const entity = payload[`${parentEntityName}`];
 
     if (Array.isArray(entity)) {
-      entity.forEach((fieldValue: string, index: number) => {
-        if (!supportedValues.includes(fieldValue)) {
-          const errorMessage = generateMessage({
-            parentEntityName,
-            fieldName,
-            fieldValue,
-            index,
-          });
-
-          validationErrors.push(errorMessage);
-        }
+      const errors = generateArrayOfErrors({
+        fieldValues: entity,
+        supportedValues,
+        fieldName,
+        parentEntityName,
       });
+
+      highlevelErrors.push(...errors);
     }
   });
 
-  return validationErrors;
+  return highlevelErrors;
 };
