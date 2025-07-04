@@ -53,9 +53,9 @@ export class GiftFeeTypeService {
 
       const response = await this.getSupportedFeeTypes();
 
-      const filtered = response.data?.feeTypes.map((role: GiftFacilityFeeTypeResponseDto) => role.code);
+      const codes = response.data?.feeTypes.map((role: GiftFacilityFeeTypeResponseDto) => role.code);
 
-      return filtered;
+      return codes;
     } catch (error) {
       this.logger.error('Error getting all fee type codes %o', error);
 
