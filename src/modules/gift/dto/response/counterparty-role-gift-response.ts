@@ -6,6 +6,10 @@ const {
   GIFT: { COUNTERPARTY_ROLE },
 } = EXAMPLES;
 
+export interface GiftFacilityCounterpartyRolesResponse {
+  counterpartyRoles: GiftFacilityCounterpartyRoleResponseDto[];
+}
+
 /**
  * GIFT facility counterparty role DTO.
  * These fields are returned by GIFT when getting counterparty roles.

@@ -71,7 +71,7 @@ describe('GiftFacilityService.create - bad requests', () => {
     const currencyService = new GiftCurrencyService(giftHttpService, logger);
     const productTypeService = new GiftProductTypeService(giftHttpService, logger);
 
-    asyncValidationService = new GiftFacilityAsyncValidationService(logger, currencyService, productTypeService);
+    asyncValidationService = new GiftFacilityAsyncValidationService(logger, counterpartyService, currencyService, productTypeService);
     counterpartyService = new GiftCounterpartyService(giftHttpService, logger);
     fixedFeeService = new GiftFixedFeeService(giftHttpService, logger);
     obligationService = new GiftObligationService(giftHttpService, logger);

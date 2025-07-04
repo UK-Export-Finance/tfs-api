@@ -5,7 +5,8 @@ import { Api } from '@ukef-test/support/api';
 import { generatePayloadArrayOfObjects } from './generate-payload';
 import { assert400Response } from './response-assertion';
 
-const INVALID_ROLE_CODE = 'abc';
+const { API_RESPONSE_MESSAGES, VALIDATION } = GIFT;
+
 const UNSUPPORTED_ROLE_CODE = 'unsupported-role-id';
 
 /**
@@ -18,8 +19,8 @@ export const arrayOfObjectsRoleIdStringValidation = ({ initialPayload, parentFie
   let api: Api;
 
   const fieldName = 'roleCode';
-  const min = GIFT.VALIDATION.COUNTERPARTY.ROLE_CODE.MIN_LENGTH;
-  const max = GIFT.VALIDATION.COUNTERPARTY.ROLE_CODE.MAX_LENGTH;
+  const min = VALIDATION.COUNTERPARTY.ROLE_CODE.MIN_LENGTH;
+  const max = VALIDATION.COUNTERPARTY.ROLE_CODE.MAX_LENGTH;
 
   const payloadParams = { initialPayload, fieldName, parentFieldName };
 
@@ -353,38 +354,6 @@ export const arrayOfObjectsRoleIdStringValidation = ({ initialPayload, parentFie
     });
   });
 
-  describe('when the provided role ID is an invalid code', () => {
-    let mockPayload;
-
-    const value = INVALID_ROLE_CODE;
-
-    beforeAll(() => {
-      // Arrange
-      mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value });
-    });
-
-    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
-      // Act
-      const response = await api.post(url, mockPayload);
-
-      // Assert
-      assert400Response(response);
-    });
-
-    it('should return the correct error messages', async () => {
-      // Act
-      const { body } = await api.post(url, mockPayload);
-
-      // Assert
-      const expected = [
-        `${parentFieldName}.0.${fieldName} is not supported (${INVALID_ROLE_CODE})`,
-        `${parentFieldName}.1.${fieldName} is not supported (${INVALID_ROLE_CODE})`,
-      ];
-
-      expect(body.message).toStrictEqual(expected);
-    });
-  });
-
   describe('when the provided role ID is not supported', () => {
     let mockPayload;
 
@@ -403,17 +372,27 @@ export const arrayOfObjectsRoleIdStringValidation = ({ initialPayload, parentFie
       assert400Response(response);
     });
 
-    it('should return the correct error messages', async () => {
+    it('should return the correct body.message', async () => {
+      // Act
+      const { body } = await api.post(url, mockPayload);
+
+      // Assert
+      const expected = API_RESPONSE_MESSAGES.ASYNC_FACILITY_VALIDATION_ERRORS;
+
+      expect(body.message).toStrictEqual(expected);
+    });
+
+    it('should return the correct body.validationErrors', async () => {
       // Act
       const { body } = await api.post(url, mockPayload);
 
       // Assert
       const expected = [
-        `${parentFieldName}.0.${fieldName} is not supported (${UNSUPPORTED_ROLE_CODE})`,
-        `${parentFieldName}.1.${fieldName} is not supported (${UNSUPPORTED_ROLE_CODE})`,
+        `${parentFieldName}.0.${fieldName} is not supported - ${UNSUPPORTED_ROLE_CODE}`,
+        `${parentFieldName}.1.${fieldName} is not supported - ${UNSUPPORTED_ROLE_CODE}`,
       ];
 
-      expect(body.message).toStrictEqual(expected);
+      expect(body.validationErrors).toStrictEqual(expected);
     });
   });
 };

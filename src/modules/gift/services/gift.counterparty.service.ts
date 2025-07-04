@@ -3,7 +3,7 @@ import { GIFT } from '@ukef/constants';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 
-import { GiftFacilityCounterpartyRequestDto, GiftFacilityCounterpartyRoleResponseDto } from '../dto';
+import { GiftFacilityCounterpartyRequestDto, GiftFacilityCounterpartyRoleResponseDto, GiftFacilityCounterpartyRolesResponse } from '../dto';
 import { mapCounterpartiesRequestData } from '../helpers';
 import { GiftHttpService } from './gift.http.service';
 
@@ -82,7 +82,7 @@ export class GiftCounterpartyService {
     try {
       this.logger.info('Getting all counterparty roles');
 
-      const response = await this.giftHttpService.get<GiftFacilityCounterpartyRoleResponseDto[]>({
+      const response = await this.giftHttpService.get<GiftFacilityCounterpartyRolesResponse>({
         path: PATH.COUNTERPARTY_ROLES,
       });
 
@@ -91,6 +91,27 @@ export class GiftCounterpartyService {
       this.logger.error('Error getting all counterparty roles %o', error);
 
       throw new Error('Error getting all counterparty roles', error);
+    }
+  }
+
+  /**
+   * Get all GIFT counterparty role codes
+   * @returns {Promise<string[]>}
+   * @throws {Error}
+   */
+  async getAllRoleCodes(): Promise<string[]> {
+    try {
+      this.logger.info('Getting all counterparty role codes');
+
+      const response = await this.getAllRoles();
+
+      const codes = response.data?.counterpartyRoles.map((role: GiftFacilityCounterpartyRoleResponseDto) => role.code);
+
+      return codes;
+    } catch (error) {
+      this.logger.error('Error getting all counterparty role codes %o', error);
+
+      throw new Error('Error getting all counterparty role codes', error);
     }
   }
 }

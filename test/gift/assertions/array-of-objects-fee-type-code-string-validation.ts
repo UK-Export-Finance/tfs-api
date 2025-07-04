@@ -5,8 +5,10 @@ import { Api } from '@ukef-test/support/api';
 import { generatePayloadArrayOfObjects } from './generate-payload';
 import { assert400Response } from './response-assertion';
 
+const { FEE_TYPE_CODES, VALIDATION } = GIFT;
+
 const INVALID_FEE_TYPE_CODE = 'ABC';
-const UNSUPPORTED_FEE_TYPE_CODE = GIFT.FEE_TYPE_CODES.CMF;
+const UNSUPPORTED_FEE_TYPE_CODE = FEE_TYPE_CODES.CMF;
 
 /**
  * Validation tests for an array of objects - fee type code string field with invalid values
@@ -18,8 +20,8 @@ export const arrayOfObjectsFeeTypeCodeStringValidation = ({ initialPayload, pare
   let api: Api;
 
   const fieldName = 'feeTypeCode';
-  const min = GIFT.VALIDATION.FEE_TYPE_CODE.MIN_LENGTH;
-  const max = GIFT.VALIDATION.FEE_TYPE_CODE.MAX_LENGTH;
+  const min = VALIDATION.FEE_TYPE_CODE.MIN_LENGTH;
+  const max = VALIDATION.FEE_TYPE_CODE.MAX_LENGTH;
 
   const payloadParams = { initialPayload, fieldName, parentFieldName };
 

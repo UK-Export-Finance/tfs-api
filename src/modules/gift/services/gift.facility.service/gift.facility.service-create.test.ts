@@ -80,7 +80,7 @@ describe('GiftFacilityService.create', () => {
     const productTypeService = new GiftProductTypeService(giftHttpService, logger);
 
     counterpartyService = new GiftCounterpartyService(giftHttpService, logger);
-    asyncValidationService = new GiftFacilityAsyncValidationService(logger, currencyService, productTypeService);
+    asyncValidationService = new GiftFacilityAsyncValidationService(logger, counterpartyService, currencyService, productTypeService);
     fixedFeeService = new GiftFixedFeeService(giftHttpService, logger);
     obligationService = new GiftObligationService(giftHttpService, logger);
     repaymentProfileService = new GiftRepaymentProfileService(giftHttpService, logger);

@@ -2,8 +2,9 @@ import { EXAMPLES } from '@ukef/constants';
 import { mockResponse200, mockResponse500 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
-import { generateOverviewValidationErrors, generateValidationErrors, stripPayload } from '../helpers';
-import { GiftCurrencyService, GiftProductTypeService } from '.';
+import { generateHighLevelErrors, generateOverviewErrors, mapEntitiesByField, stripPayload } from '../helpers';
+import { generateArrayOfErrors } from '../helpers/async-validation/generate-errors';
+import { GiftCounterpartyService, GiftCurrencyService, GiftProductTypeService } from '.';
 import { GiftFacilityAsyncValidationService } from './gift.facility-async-validation.service';
 
 const {
@@ -15,12 +16,14 @@ describe('GiftFacilityAsyncValidationService', () => {
 
   let currencyService: GiftCurrencyService;
   let productTypeService: GiftProductTypeService;
+  let counterpartyService: GiftCounterpartyService;
   let service: GiftFacilityAsyncValidationService;
 
   let giftHttpService;
   let mockGetResponse;
   let mockGetSupportedCurrencies: jest.Mock;
   let mockProductTypeIsSupported: jest.Mock;
+  let mockGetAllRoleCodes: jest.Mock;
 
   beforeEach(() => {
     // Arrange
@@ -36,7 +39,12 @@ describe('GiftFacilityAsyncValidationService', () => {
     productTypeService = new GiftProductTypeService(giftHttpService, logger);
     productTypeService.isSupported = mockProductTypeIsSupported;
 
-    service = new GiftFacilityAsyncValidationService(logger, currencyService, productTypeService);
+    mockGetAllRoleCodes = jest.fn().mockResolvedValueOnce([]);
+
+    counterpartyService = new GiftCounterpartyService(giftHttpService, logger);
+    counterpartyService.getAllRoleCodes = mockGetAllRoleCodes;
+
+    service = new GiftFacilityAsyncValidationService(logger, counterpartyService, currencyService, productTypeService);
   });
 
   afterAll(() => {
@@ -52,25 +60,49 @@ describe('GiftFacilityAsyncValidationService', () => {
       expect(mockGetSupportedCurrencies).toHaveBeenCalledTimes(1);
     });
 
-    describe('when currencyService.getSupportedCurrencies is successful', () => {
+    it('should call productTypeService.isSupported', async () => {
+      // Act
+      await service.creation(mockPayload, mockFacilityId);
+
+      // Assert
+      expect(mockProductTypeIsSupported).toHaveBeenCalledTimes(1);
+      expect(mockProductTypeIsSupported).toHaveBeenCalledWith(mockPayload.overview.productTypeCode);
+    });
+
+    it('should call counterpartyService.getAllRoleCodes', async () => {
+      // Act
+      await service.creation(mockPayload, mockFacilityId);
+
+      // Assert
+      expect(mockGetAllRoleCodes).toHaveBeenCalledTimes(1);
+    });
+
+    describe('when all service calls are successful', () => {
       it('should return validation errors from various helper functions', async () => {
         // Act
         const response = await service.creation(mockPayload, mockFacilityId);
 
         // Assert
-        const overviewErrs = generateOverviewValidationErrors({
+        const overviewErrors = generateOverviewErrors({
           isSupportedProductType: true,
           payload: mockPayload.overview,
           supportedCurrencies: CURRENCIES,
         });
 
-        const currencyErrors = generateValidationErrors({
+        const currencyErrors = generateHighLevelErrors({
           payload: stripPayload(mockPayload, 'currency'),
           supportedValues: CURRENCIES,
           fieldName: 'currency',
         });
 
-        const expected = [...overviewErrs, ...currencyErrors];
+        const counterpartyRoleErrors = generateArrayOfErrors({
+          fieldValues: mapEntitiesByField(mockPayload.counterparties, 'roleCode'),
+          supportedValues: [],
+          fieldName: 'roleCode',
+          parentEntityName: 'counterparties',
+        });
+
+        const expected = [...overviewErrors, ...currencyErrors, ...counterpartyRoleErrors];
 
         expect(response).toEqual(expected);
       });
@@ -83,7 +115,7 @@ describe('GiftFacilityAsyncValidationService', () => {
 
         currencyService.getSupportedCurrencies = mockGetSupportedCurrencies;
 
-        service = new GiftFacilityAsyncValidationService(logger, currencyService, productTypeService);
+        service = new GiftFacilityAsyncValidationService(logger, counterpartyService, currencyService, productTypeService);
       });
 
       it('should thrown an error', async () => {
@@ -104,7 +136,7 @@ describe('GiftFacilityAsyncValidationService', () => {
 
         productTypeService.isSupported = mockProductTypeIsSupported;
 
-        service = new GiftFacilityAsyncValidationService(logger, currencyService, productTypeService);
+        service = new GiftFacilityAsyncValidationService(logger, counterpartyService, currencyService, productTypeService);
       });
 
       it('should thrown an error', async () => {
