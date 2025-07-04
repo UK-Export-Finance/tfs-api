@@ -4,7 +4,7 @@ import { PinoLogger } from 'nestjs-pino';
 
 import { generateHighLevelErrors, generateOverviewErrors, mapEntitiesByField, stripPayload } from '../helpers';
 import { generateArrayOfErrors } from '../helpers/async-validation/generate-errors';
-import { GiftCounterpartyService, GiftCurrencyService, GiftProductTypeService } from '.';
+import { GiftCounterpartyService, GiftCurrencyService, GiftFeeTypeService, GiftProductTypeService } from '.';
 import { GiftFacilityAsyncValidationService } from './gift.facility-async-validation.service';
 
 const {
@@ -15,6 +15,7 @@ describe('GiftFacilityAsyncValidationService', () => {
   const logger = new PinoLogger({});
 
   let currencyService: GiftCurrencyService;
+  let feeTypeService: GiftFeeTypeService;
   let productTypeService: GiftProductTypeService;
   let counterpartyService: GiftCounterpartyService;
   let service: GiftFacilityAsyncValidationService;
@@ -22,6 +23,7 @@ describe('GiftFacilityAsyncValidationService', () => {
   let giftHttpService;
   let mockGetResponse;
   let mockGetSupportedCurrencies: jest.Mock;
+  let mockGetAllFeeTypeCodes: jest.Mock;
   let mockProductTypeIsSupported: jest.Mock;
   let mockGetAllRoleCodes: jest.Mock;
 
@@ -34,6 +36,10 @@ describe('GiftFacilityAsyncValidationService', () => {
     currencyService = new GiftCurrencyService(giftHttpService, logger);
     currencyService.getSupportedCurrencies = mockGetSupportedCurrencies;
 
+    mockGetAllFeeTypeCodes = jest.fn().mockResolvedValueOnce([]);
+    feeTypeService = new GiftFeeTypeService(giftHttpService, logger);
+    feeTypeService.getAllFeeTypeCodes = mockGetAllFeeTypeCodes;
+
     mockProductTypeIsSupported = jest.fn().mockResolvedValueOnce(true);
 
     productTypeService = new GiftProductTypeService(giftHttpService, logger);
@@ -44,7 +50,7 @@ describe('GiftFacilityAsyncValidationService', () => {
     counterpartyService = new GiftCounterpartyService(giftHttpService, logger);
     counterpartyService.getAllRoleCodes = mockGetAllRoleCodes;
 
-    service = new GiftFacilityAsyncValidationService(logger, counterpartyService, currencyService, productTypeService);
+    service = new GiftFacilityAsyncValidationService(logger, counterpartyService, currencyService, feeTypeService, productTypeService);
   });
 
   afterAll(() => {
@@ -77,6 +83,14 @@ describe('GiftFacilityAsyncValidationService', () => {
       expect(mockGetAllRoleCodes).toHaveBeenCalledTimes(1);
     });
 
+    it('should call feeTypeService.getAllFeeTypeCodes', async () => {
+      // Act
+      await service.creation(mockPayload, mockFacilityId);
+
+      // Assert
+      expect(mockGetAllFeeTypeCodes).toHaveBeenCalledTimes(1);
+    });
+
     describe('when all service calls are successful', () => {
       it('should return validation errors from various helper functions', async () => {
         // Act
@@ -102,7 +116,14 @@ describe('GiftFacilityAsyncValidationService', () => {
           parentEntityName: 'counterparties',
         });
 
-        const expected = [...overviewErrors, ...currencyErrors, ...counterpartyRoleErrors];
+        const feeTypeCodeErrors = generateArrayOfErrors({
+          fieldValues: mapEntitiesByField(mockPayload.fixedFees, 'feeTypeCode'),
+          supportedValues: [],
+          fieldName: 'feeTypeCode',
+          parentEntityName: 'fixedFees',
+        });
+
+        const expected = [...overviewErrors, ...currencyErrors, ...counterpartyRoleErrors, ...feeTypeCodeErrors];
 
         expect(response).toEqual(expected);
       });
@@ -115,7 +136,7 @@ describe('GiftFacilityAsyncValidationService', () => {
 
         currencyService.getSupportedCurrencies = mockGetSupportedCurrencies;
 
-        service = new GiftFacilityAsyncValidationService(logger, counterpartyService, currencyService, productTypeService);
+        service = new GiftFacilityAsyncValidationService(logger, counterpartyService, currencyService, feeTypeService, productTypeService);
       });
 
       it('should thrown an error', async () => {
@@ -136,7 +157,7 @@ describe('GiftFacilityAsyncValidationService', () => {
 
         productTypeService.isSupported = mockProductTypeIsSupported;
 
-        service = new GiftFacilityAsyncValidationService(logger, counterpartyService, currencyService, productTypeService);
+        service = new GiftFacilityAsyncValidationService(logger, counterpartyService, currencyService, feeTypeService, productTypeService);
       });
 
       it('should thrown an error', async () => {

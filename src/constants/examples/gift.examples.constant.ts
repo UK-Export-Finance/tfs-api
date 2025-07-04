@@ -53,17 +53,19 @@ const COUNTERPARTY = () => ({
 /**
  * Example fee types.
  */
+const FEE_TYPES = {
+  BEX: {
+    code: FEE_TYPE_CODES.BEX,
+    description: FEE_TYPE_DESCRIPTIONS.BEX,
+  },
+  PLA: {
+    code: FEE_TYPE_CODES.PLA,
+    description: FEE_TYPE_DESCRIPTIONS.PLA,
+  },
+};
+
 const FEE_TYPES_RESPONSE_DATA = {
-  feeTypes: [
-    {
-      code: FEE_TYPE_CODES.BEX,
-      description: FEE_TYPE_DESCRIPTIONS.BEX,
-    },
-    {
-      code: FEE_TYPE_CODES.PLA,
-      description: FEE_TYPE_DESCRIPTIONS.PLA,
-    },
-  ],
+  feeTypes: [FEE_TYPES.BEX, FEE_TYPES.PLA],
 };
 
 const FIXED_FEE = () => ({
@@ -199,6 +201,7 @@ export const GIFT_EXAMPLES = {
   FACILITY_ID,
   FACILITY_OVERVIEW,
   FACILITY_RESPONSE_DATA,
+  FEE_TYPES,
   FEE_TYPES_RESPONSE_DATA,
   FIXED_FEE,
   OBLIGATION,

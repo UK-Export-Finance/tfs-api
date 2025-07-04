@@ -5,9 +5,8 @@ import { Api } from '@ukef-test/support/api';
 import { generatePayloadArrayOfObjects } from './generate-payload';
 import { assert400Response } from './response-assertion';
 
-const { FEE_TYPE_CODES, VALIDATION } = GIFT;
+const { API_RESPONSE_MESSAGES, FEE_TYPE_CODES, VALIDATION } = GIFT;
 
-const INVALID_FEE_TYPE_CODE = 'ABC';
 const UNSUPPORTED_FEE_TYPE_CODE = FEE_TYPE_CODES.CMF;
 
 /**
@@ -355,38 +354,6 @@ export const arrayOfObjectsFeeTypeCodeStringValidation = ({ initialPayload, pare
     });
   });
 
-  describe('when the provided fee type code is an invalid code', () => {
-    let mockPayload;
-
-    const value = INVALID_FEE_TYPE_CODE;
-
-    beforeAll(() => {
-      // Arrange
-      mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value });
-    });
-
-    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
-      // Act
-      const response = await api.post(url, mockPayload);
-
-      // Assert
-      assert400Response(response);
-    });
-
-    it('should return the correct error messages', async () => {
-      // Act
-      const { body } = await api.post(url, mockPayload);
-
-      // Assert
-      const expected = [
-        `${parentFieldName}.0.${fieldName} is not supported (${INVALID_FEE_TYPE_CODE})`,
-        `${parentFieldName}.1.${fieldName} is not supported (${INVALID_FEE_TYPE_CODE})`,
-      ];
-
-      expect(body.message).toStrictEqual(expected);
-    });
-  });
-
   describe('when the provided fee type code is not supported', () => {
     let mockPayload;
 
@@ -405,17 +372,27 @@ export const arrayOfObjectsFeeTypeCodeStringValidation = ({ initialPayload, pare
       assert400Response(response);
     });
 
-    it('should return the correct error messages', async () => {
+    it('should return the correct body.message', async () => {
+      // Act
+      const { body } = await api.post(url, mockPayload);
+
+      // Assert
+      const expected = API_RESPONSE_MESSAGES.ASYNC_FACILITY_VALIDATION_ERRORS;
+
+      expect(body.message).toStrictEqual(expected);
+    });
+
+    it('should return the correct body.validationErrors', async () => {
       // Act
       const { body } = await api.post(url, mockPayload);
 
       // Assert
       const expected = [
-        `${parentFieldName}.0.${fieldName} is not supported (${UNSUPPORTED_FEE_TYPE_CODE})`,
-        `${parentFieldName}.1.${fieldName} is not supported (${UNSUPPORTED_FEE_TYPE_CODE})`,
+        `${parentFieldName}.0.${fieldName} is not supported - ${UNSUPPORTED_FEE_TYPE_CODE}`,
+        `${parentFieldName}.1.${fieldName} is not supported - ${UNSUPPORTED_FEE_TYPE_CODE}`,
       ];
 
-      expect(body.message).toStrictEqual(expected);
+      expect(body.validationErrors).toStrictEqual(expected);
     });
   });
 };

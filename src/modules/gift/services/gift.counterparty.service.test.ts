@@ -249,9 +249,9 @@ describe('GiftCounterpartyService', () => {
         // Arrange
         mockGetAllRoles = jest.fn().mockRejectedValueOnce(mockResponse500());
 
-        service.getAllRoles = mockGetAllRoles;
-
         service = new GiftCounterpartyService(giftHttpService, logger);
+
+        service.getAllRoles = mockGetAllRoles;
       });
 
       it('should thrown an error', async () => {
