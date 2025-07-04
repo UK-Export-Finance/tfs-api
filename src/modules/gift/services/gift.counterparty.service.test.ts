@@ -168,51 +168,6 @@ describe('GiftCounterpartyService', () => {
     });
   });
 
-  describe('getAllRoles', () => {
-    it('should call giftHttpService.get', async () => {
-      // Act
-      await service.getAllRoles();
-
-      // Assert
-      expect(mockHttpServiceGet).toHaveBeenCalledTimes(1);
-
-      expect(mockHttpServiceGet).toHaveBeenCalledWith({
-        path: PATH.COUNTERPARTY_ROLES,
-      });
-    });
-
-    describe('when giftHttpService.get is successful', () => {
-      it('should return the response of giftHttpService.get', async () => {
-        // Act
-        const response = await service.getAllRoles();
-
-        // Assert
-        expect(response).toEqual(mockGetResponse);
-      });
-    });
-
-    describe('when giftHttpService.get returns an error', () => {
-      beforeEach(() => {
-        // Arrange
-        mockHttpServiceGet = jest.fn().mockRejectedValueOnce(mockResponse500());
-
-        giftHttpService.get = mockHttpServiceGet;
-
-        service = new GiftCounterpartyService(giftHttpService, logger);
-      });
-
-      it('should thrown an error', async () => {
-        // Act
-        const promise = service.getAllRoles();
-
-        // Assert
-        const expected = new Error('Error getting all counterparty roles');
-
-        await expect(promise).rejects.toThrow(expected);
-      });
-    });
-  });
-
   describe('getAllRoleCodes', () => {
     beforeEach(() => {
       mockGetAllRoles = jest.fn().mockResolvedValueOnce({
@@ -249,9 +204,9 @@ describe('GiftCounterpartyService', () => {
         // Arrange
         mockGetAllRoles = jest.fn().mockRejectedValueOnce(mockResponse500());
 
-        service.getAllRoles = mockGetAllRoles;
-
         service = new GiftCounterpartyService(giftHttpService, logger);
+
+        service.getAllRoles = mockGetAllRoles;
       });
 
       it('should thrown an error', async () => {
