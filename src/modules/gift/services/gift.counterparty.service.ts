@@ -105,9 +105,9 @@ export class GiftCounterpartyService {
 
       const response = await this.getAllRoles();
 
-      const filtered = response.data?.counterpartyRoles.map((role: GiftFacilityCounterpartyRoleResponseDto) => role.code);
+      const codes = response.data?.counterpartyRoles.map((role: GiftFacilityCounterpartyRoleResponseDto) => role.code);
 
-      return filtered;
+      return codes;
     } catch (error) {
       this.logger.error('Error getting all counterparty role codes %o', error);
 
