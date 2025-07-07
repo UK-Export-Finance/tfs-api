@@ -5,6 +5,7 @@ import { GiftFacilityCreationRequestDto } from '../dto';
 import { generateArrayOfErrors, generateHighLevelErrors, generateOverviewErrors, mapEntitiesByField, stripPayload } from '../helpers';
 import { GiftCounterpartyService } from './gift.counterparty.service';
 import { GiftCurrencyService } from './gift.currency.service';
+import { GiftFeeTypeService } from './gift.fee-type.service';
 import { GiftProductTypeService } from './gift.product-type.service';
 
 /**
@@ -21,10 +22,12 @@ export class GiftFacilityAsyncValidationService {
     private readonly logger: PinoLogger,
     private readonly counterpartyService: GiftCounterpartyService,
     private readonly currencyService: GiftCurrencyService,
+    private readonly feeTypeService: GiftFeeTypeService,
     private readonly productTypeService: GiftProductTypeService,
   ) {
     this.counterpartyService = counterpartyService;
     this.currencyService = currencyService;
+    this.feeTypeService = feeTypeService;
     this.productTypeService = productTypeService;
   }
 
@@ -40,11 +43,13 @@ export class GiftFacilityAsyncValidationService {
 
       const { overview } = payload;
 
+      const counterpartyRoles = await this.counterpartyService.getAllRoleCodes();
+
       const supportedCurrencies = await this.currencyService.getSupportedCurrencies();
 
       const isSupportedProductType = await this.productTypeService.isSupported(overview.productTypeCode);
 
-      const counterpartyRoles = await this.counterpartyService.getAllRoleCodes();
+      const feeTypeCodes = await this.feeTypeService.getAllFeeTypeCodes();
 
       const overviewErrors = generateOverviewErrors({
         isSupportedProductType,
@@ -65,7 +70,14 @@ export class GiftFacilityAsyncValidationService {
         parentEntityName: 'counterparties',
       });
 
-      return [...overviewErrors, ...currencyErrors, ...counterpartyRoleErrors];
+      const feeTypeCodeErrors = generateArrayOfErrors({
+        fieldValues: mapEntitiesByField(payload.fixedFees, 'feeTypeCode'),
+        supportedValues: feeTypeCodes,
+        fieldName: 'feeTypeCode',
+        parentEntityName: 'fixedFees',
+      });
+
+      return [...overviewErrors, ...currencyErrors, ...counterpartyRoleErrors, ...feeTypeCodeErrors];
     } catch (error) {
       this.logger.error('Error validating a GIFT facility - async %s %o', facilityId, error);
 

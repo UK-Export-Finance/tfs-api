@@ -3,6 +3,7 @@ import { GIFT } from '@ukef/constants';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 
+import { GiftFacilityFeeTypeResponse, GiftFacilityFeeTypeResponseDto } from '../dto';
 import { GiftHttpService } from './gift.http.service';
 
 const { PATH } = GIFT;
@@ -29,7 +30,7 @@ export class GiftFeeTypeService {
     try {
       this.logger.info('Getting supported fee types');
 
-      const response = await this.giftHttpService.get<string>({
+      const response = await this.giftHttpService.get<GiftFacilityFeeTypeResponse>({
         path: PATH.FEE_TYPE,
       });
 
@@ -38,6 +39,27 @@ export class GiftFeeTypeService {
       this.logger.error('Error getting supported fee types %o', error);
 
       throw new Error('Error getting supported fee types', error);
+    }
+  }
+
+  /**
+   * Get all GIFT fee type codes
+   * @returns {Promise<string[]>}
+   * @throws {Error}
+   */
+  async getAllFeeTypeCodes(): Promise<string[]> {
+    try {
+      this.logger.info('Getting all fee type codes');
+
+      const response = await this.getSupportedFeeTypes();
+
+      const codes = response.data?.feeTypes.map((role: GiftFacilityFeeTypeResponseDto) => role.code);
+
+      return codes;
+    } catch (error) {
+      this.logger.error('Error getting all fee type codes %o', error);
+
+      throw new Error('Error getting all fee type codes', error);
     }
   }
 }
