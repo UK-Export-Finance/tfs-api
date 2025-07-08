@@ -2,7 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
 
 import { GiftFacilityCreationRequestDto } from '../dto';
-import { generateArrayOfErrors, generateHighLevelErrors, generateOverviewErrors, mapEntitiesByField, stripPayload } from '../helpers';
+import {
+  generateArrayOfErrors,
+  generateCounterpartySharePercentageErrors,
+  generateHighLevelErrors,
+  generateOverviewErrors,
+  mapEntitiesByField,
+  stripPayload,
+} from '../helpers';
 import { GiftCounterpartyService } from './gift.counterparty.service';
 import { GiftCurrencyService } from './gift.currency.service';
 import { GiftFeeTypeService } from './gift.fee-type.service';
@@ -43,7 +50,11 @@ export class GiftFacilityAsyncValidationService {
 
       const { overview } = payload;
 
-      const counterpartyRoles = await this.counterpartyService.getAllRoleCodes();
+      const {
+        data: { counterpartyRoles },
+      } = await this.counterpartyService.getAllRoles();
+
+      const counterpartyRoleCodes = this.counterpartyService.getAllRoleCodes(counterpartyRoles);
 
       const supportedCurrencies = await this.currencyService.getSupportedCurrencies();
 
@@ -65,9 +76,14 @@ export class GiftFacilityAsyncValidationService {
 
       const counterpartyRoleErrors = generateArrayOfErrors({
         fieldValues: mapEntitiesByField(payload.counterparties, 'roleCode'),
-        supportedValues: counterpartyRoles,
+        supportedValues: counterpartyRoleCodes,
         fieldName: 'roleCode',
         parentEntityName: 'counterparties',
+      });
+
+      const counterpartySharePercentageErrors = generateCounterpartySharePercentageErrors({
+        counterpartyRoles,
+        providedCounterparties: payload.counterparties,
       });
 
       const feeTypeCodeErrors = generateArrayOfErrors({
@@ -77,7 +93,7 @@ export class GiftFacilityAsyncValidationService {
         parentEntityName: 'fixedFees',
       });
 
-      return [...overviewErrors, ...currencyErrors, ...counterpartyRoleErrors, ...feeTypeCodeErrors];
+      return [...overviewErrors, ...currencyErrors, ...counterpartyRoleErrors, ...counterpartySharePercentageErrors, ...feeTypeCodeErrors];
     } catch (error) {
       this.logger.error('Error validating a GIFT facility - async %s %o', facilityId, error);
 

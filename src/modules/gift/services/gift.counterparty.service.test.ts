@@ -23,7 +23,6 @@ describe('GiftCounterpartyService', () => {
   let mockCreateOneResponse;
   let mockHttpServiceGet: jest.Mock;
   let mockHttpServicePost: jest.Mock;
-  let mockGetAllRoles: jest.Mock;
 
   beforeEach(() => {
     // Arrange
@@ -214,55 +213,17 @@ describe('GiftCounterpartyService', () => {
   });
 
   describe('getAllRoleCodes', () => {
-    beforeEach(() => {
-      mockGetAllRoles = jest.fn().mockResolvedValueOnce({
-        data: {
-          counterpartyRoles: [COUNTERPARTY_ROLE.EXPORTER, COUNTERPARTY_ROLE.GUARANTOR],
-        },
-      });
+    it('should return an array of codes from the response of service.getAllRoles', async () => {
+      // Arrange
+      const mockRoles = [COUNTERPARTY_ROLE.EXPORTER, COUNTERPARTY_ROLE.GUARANTOR];
 
-      service.getAllRoles = mockGetAllRoles;
-    });
-
-    it('should call service.getAllRoles', async () => {
       // Act
-      await service.getAllRoleCodes();
+      const response = await service.getAllRoleCodes(mockRoles);
 
       // Assert
-      expect(mockGetAllRoles).toHaveBeenCalledTimes(1);
-    });
+      const expected = [mockRoles[0].code, mockRoles[1].code];
 
-    describe('when service.getAllRoles is successful', () => {
-      it('should return an array of codes from the response of service.getAllRoles', async () => {
-        // Act
-        const response = await service.getAllRoleCodes();
-
-        // Assert
-        const expected = [COUNTERPARTY_ROLE.EXPORTER.code, COUNTERPARTY_ROLE.GUARANTOR.code];
-
-        expect(response).toEqual(expected);
-      });
-    });
-
-    describe('when service.getAllRoles returns an error', () => {
-      beforeEach(() => {
-        // Arrange
-        mockGetAllRoles = jest.fn().mockRejectedValueOnce(mockResponse500());
-
-        service = new GiftCounterpartyService(giftHttpService, logger);
-
-        service.getAllRoles = mockGetAllRoles;
-      });
-
-      it('should thrown an error', async () => {
-        // Act
-        const promise = service.getAllRoleCodes();
-
-        // Assert
-        const expected = new Error('Error getting all counterparty role codes');
-
-        await expect(promise).rejects.toThrow(expected);
-      });
+      expect(response).toEqual(expected);
     });
   });
 });
