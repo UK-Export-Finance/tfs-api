@@ -18,7 +18,8 @@ const {
   PATH: { FACILITY },
 } = GIFT;
 
-const [mockFirstCounterparty, mockSecondCounterparty] = EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD.counterparties;
+const mockFirstCounterparty = EXAMPLES.GIFT.COUNTERPARTY({ withSharePercentage: true });
+const mockSecondCounterparty = EXAMPLES.GIFT.COUNTERPARTY({ withSharePercentage: true });
 
 describe('POST /gift/facility - validation - counterparties - share percentage', () => {
   const url = `/api/${prefixAndVersion}/gift${FACILITY}`;
@@ -36,7 +37,7 @@ describe('POST /gift/facility - validation - counterparties - share percentage',
 
     nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
 
-    nock(GIFT_API_URL).persist().get(counterpartyRolesUrl).reply(HttpStatus.OK, mockResponses.counterpartyRoles);
+    nock(GIFT_API_URL).persist().get(counterpartyRolesUrl).reply(HttpStatus.OK, mockResponses.counterpartyRolesWithHasSharePercentage);
 
     nock(GIFT_API_URL).persist().get(obligationSubtypeUrl).reply(HttpStatus.OK, mockResponses.obligationSubtype);
   });

@@ -53,6 +53,9 @@ export const mockResponses = {
   badRequest,
   counterparty: { data: { aCounterparty: true } },
   counterpartyRoles: GIFT_EXAMPLES.COUNTERPARTY_ROLES_RESPONSE_DATA,
+  counterpartyRolesWithHasSharePercentage: {
+    counterpartyRoles: [GIFT_EXAMPLES.COUNTERPARTY_ROLE.GUARANTOR],
+  },
   currencies: GIFT_EXAMPLES.CURRENCIES,
   feeTypes: GIFT_EXAMPLES.FEE_TYPES_RESPONSE_DATA,
   fixedFee: { data: { aFixedFee: true } },

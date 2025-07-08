@@ -10,6 +10,8 @@ const {
   VALIDATION: { COUNTERPARTY: VALIDATION },
 } = GIFT;
 
+const EXAMPLE = COUNTERPARTY({ withSharePercentage: true });
+
 /**
  * GIFT facility counterparty DTO.
  * These fields are required for APIM to create a facility counterparty in GIFT.
@@ -19,7 +21,7 @@ export class GiftFacilityCounterpartyRequestDto {
   @IsString()
   @Length(VALIDATION.COUNTERPARTY_URN.MIN_LENGTH, VALIDATION.COUNTERPARTY_URN.MAX_LENGTH)
   @ApiProperty({
-    example: COUNTERPARTY().counterpartyUrn,
+    example: EXAMPLE.counterpartyUrn,
     required: true,
   })
   counterpartyUrn: string;
@@ -27,7 +29,7 @@ export class GiftFacilityCounterpartyRequestDto {
   @IsDefined()
   @IsDateString()
   @ApiProperty({
-    example: COUNTERPARTY().exitDate,
+    example: EXAMPLE.exitDate,
     required: true,
   })
   exitDate: string;
@@ -36,21 +38,21 @@ export class GiftFacilityCounterpartyRequestDto {
   @IsString()
   @Length(VALIDATION.ROLE_CODE.MIN_LENGTH, VALIDATION.ROLE_CODE.MAX_LENGTH)
   @ApiProperty({
-    example: COUNTERPARTY().roleCode,
+    example: EXAMPLE.roleCode,
     required: true,
   })
   roleCode: string;
 
   @ApiProperty({
-    example: COUNTERPARTY().sharePercentage,
-    description: "Required if a counterparty's role has a true hasSharePercentage property",
+    example: EXAMPLE.sharePercentage,
+    description: "Required if a counterparty's role's hasSharePercentage field is true",
   })
-  sharePercentage: number;
+  sharePercentage?: number;
 
   @IsDefined()
   @IsDateString()
   @ApiProperty({
-    example: COUNTERPARTY().startDate,
+    example: EXAMPLE.startDate,
     required: true,
   })
   startDate: string;
