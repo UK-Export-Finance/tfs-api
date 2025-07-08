@@ -46,7 +46,7 @@ export const generateCounterpartySharePercentageErrors = ({
 
     const giftRole = counterpartyRoles.find((giftRole: GiftFacilityCounterpartyRoleResponseDto) => giftRole.code === providedRoleCode);
 
-    if (giftRole && giftRole.hasSharePercentage && !providedSharePercentage) {
+    if (giftRole?.hasSharePercentage && !providedSharePercentage) {
       validationErrors.push(`counterparties.${index}.sharePercentage must be a provided as a number, at least ${MIN} and not greater than ${MAX}`);
     }
   });
