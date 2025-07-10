@@ -2,14 +2,22 @@ import { EXAMPLES } from '@ukef/constants';
 import { mockResponse200, mockResponse500 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
-import { generateHighLevelErrors, generateOverviewErrors, mapEntitiesByField, stripPayload } from '../helpers';
-import { generateArrayOfErrors } from '../helpers/async-validation/generate-errors';
+import {
+  generateArrayOfErrors,
+  generateCounterpartySharePercentageErrors,
+  generateHighLevelErrors,
+  generateOverviewErrors,
+  mapEntitiesByField,
+  stripPayload,
+} from '../helpers';
 import { GiftCounterpartyService, GiftCurrencyService, GiftFeeTypeService, GiftProductTypeService } from '.';
 import { GiftFacilityAsyncValidationService } from './gift.facility-async-validation.service';
 
 const {
-  GIFT: { CURRENCIES, FACILITY_CREATION_PAYLOAD: mockPayload, FACILITY_ID: mockFacilityId },
+  GIFT: { COUNTERPARTY_ROLES_RESPONSE_DATA, CURRENCIES, FACILITY_CREATION_PAYLOAD: mockPayload, FACILITY_ID: mockFacilityId },
 } = EXAMPLES;
+
+const mockCounterpartyRoleCodes = [COUNTERPARTY_ROLES_RESPONSE_DATA.counterpartyRoles[0].code];
 
 describe('GiftFacilityAsyncValidationService', () => {
   const logger = new PinoLogger({});
@@ -25,6 +33,7 @@ describe('GiftFacilityAsyncValidationService', () => {
   let mockGetSupportedCurrencies: jest.Mock;
   let mockGetAllFeeTypeCodes: jest.Mock;
   let mockProductTypeIsSupported: jest.Mock;
+  let mockGetAllRoles: jest.Mock;
   let mockGetAllRoleCodes: jest.Mock;
 
   beforeEach(() => {
@@ -45,9 +54,11 @@ describe('GiftFacilityAsyncValidationService', () => {
     productTypeService = new GiftProductTypeService(giftHttpService, logger);
     productTypeService.isSupported = mockProductTypeIsSupported;
 
-    mockGetAllRoleCodes = jest.fn().mockResolvedValueOnce([]);
+    mockGetAllRoles = jest.fn().mockResolvedValueOnce({ data: COUNTERPARTY_ROLES_RESPONSE_DATA });
+    mockGetAllRoleCodes = jest.fn().mockReturnValueOnce(mockCounterpartyRoleCodes);
 
     counterpartyService = new GiftCounterpartyService(giftHttpService, logger);
+    counterpartyService.getAllRoles = mockGetAllRoles;
     counterpartyService.getAllRoleCodes = mockGetAllRoleCodes;
 
     service = new GiftFacilityAsyncValidationService(logger, counterpartyService, currencyService, feeTypeService, productTypeService);
@@ -75,12 +86,21 @@ describe('GiftFacilityAsyncValidationService', () => {
       expect(mockProductTypeIsSupported).toHaveBeenCalledWith(mockPayload.overview.productTypeCode);
     });
 
+    it('should call counterpartyService.getAllRoles', async () => {
+      // Act
+      await service.creation(mockPayload, mockFacilityId);
+
+      // Assert
+      expect(mockGetAllRoles).toHaveBeenCalledTimes(1);
+    });
+
     it('should call counterpartyService.getAllRoleCodes', async () => {
       // Act
       await service.creation(mockPayload, mockFacilityId);
 
       // Assert
       expect(mockGetAllRoleCodes).toHaveBeenCalledTimes(1);
+      expect(mockGetAllRoleCodes).toHaveBeenCalledWith(COUNTERPARTY_ROLES_RESPONSE_DATA.counterpartyRoles);
     });
 
     it('should call feeTypeService.getAllFeeTypeCodes', async () => {
@@ -111,9 +131,14 @@ describe('GiftFacilityAsyncValidationService', () => {
 
         const counterpartyRoleErrors = generateArrayOfErrors({
           fieldValues: mapEntitiesByField(mockPayload.counterparties, 'roleCode'),
-          supportedValues: [],
+          supportedValues: mockCounterpartyRoleCodes,
           fieldName: 'roleCode',
           parentEntityName: 'counterparties',
+        });
+
+        const counterpartySharePercentageErrors = generateCounterpartySharePercentageErrors({
+          counterpartyRoles: COUNTERPARTY_ROLES_RESPONSE_DATA.counterpartyRoles,
+          providedCounterparties: mockPayload.counterparties,
         });
 
         const feeTypeCodeErrors = generateArrayOfErrors({
@@ -123,7 +148,7 @@ describe('GiftFacilityAsyncValidationService', () => {
           parentEntityName: 'fixedFees',
         });
 
-        const expected = [...overviewErrors, ...currencyErrors, ...counterpartyRoleErrors, ...feeTypeCodeErrors];
+        const expected = [...overviewErrors, ...currencyErrors, ...counterpartyRoleErrors, ...counterpartySharePercentageErrors, ...feeTypeCodeErrors];
 
         expect(response).toEqual(expected);
       });

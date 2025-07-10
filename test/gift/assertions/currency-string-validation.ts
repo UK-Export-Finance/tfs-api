@@ -30,10 +30,12 @@ export const currencyStringValidation = ({ initialPayload, parentFieldName, url 
     await api.destroy();
   });
 
-  const mockPayload = generatePayload({ initialPayload, fieldName, parentFieldName });
-
   describe('async validation - when the provided currency is not supported', () => {
+    let mockPayload;
+
     beforeAll(() => {
+      mockPayload = generatePayload({ initialPayload, fieldName, parentFieldName });
+
       // Arrange
       mockPayload[`${parentFieldName}`][`${fieldName}`] = UNSUPPORTED_CURRENCY;
     });

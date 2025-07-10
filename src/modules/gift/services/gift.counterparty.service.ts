@@ -95,19 +95,18 @@ export class GiftCounterpartyService {
   }
 
   /**
-   * Get all GIFT counterparty role codes
-   * @returns {Promise<string[]>}
+   * Get/map all GIFT counterparty role codes
+   * @param {GiftFacilityCounterpartyRoleResponseDto[]} roles: Counterparty roles
+   * @returns {string[]}
    * @throws {Error}
    */
-  async getAllRoleCodes(): Promise<string[]> {
+  getAllRoleCodes(roles: GiftFacilityCounterpartyRoleResponseDto[]): string[] {
     try {
       this.logger.info('Getting all counterparty role codes');
 
-      const response = await this.getAllRoles();
+      const codes = roles.map((role: GiftFacilityCounterpartyRoleResponseDto) => role.code);
 
-      const filtered = response.data?.counterpartyRoles.map((role: GiftFacilityCounterpartyRoleResponseDto) => role.code);
-
-      return filtered;
+      return codes;
     } catch (error) {
       this.logger.error('Error getting all counterparty role codes %o', error);
 

@@ -1,5 +1,10 @@
 import { UkefId } from '@ukef/helpers';
-import { GiftFacilityCreationRequestDto, GiftFacilityPostResponseDto, GiftObligationRequestDto } from '@ukef/modules/gift/dto';
+import {
+  GiftFacilityCounterpartyRequestDto,
+  GiftFacilityCreationRequestDto,
+  GiftFacilityPostResponseDto,
+  GiftObligationRequestDto,
+} from '@ukef/modules/gift/dto';
 import { Chance } from 'chance';
 
 import { SUPPORTED_CURRENCIES } from '../currencies.constant';
@@ -32,23 +37,34 @@ const COUNTERPARTY_ROLE = {
 };
 
 const COUNTERPARTY_ROLES_RESPONSE_DATA = {
-  counterpartyRoles: [COUNTERPARTY_ROLE.GUARANTOR],
+  counterpartyRoles: [COUNTERPARTY_ROLE.EXPORTER],
 };
 
 /**
  * Example counterparty.
- * NOTE: Each counterparty URN is unique.
+ * NOTE:
+ * - Each counterparty URN is unique.
+ * - Counterparty sharePercentage is only required if a counterparty role has hasSharePercentage=true
+ * @param {Boolean} withSharePercentage: Whether to return a sharePercentage field and alterantive roleCode
  */
-const COUNTERPARTY = () => ({
-  counterpartyUrn: chance.string({
-    length: VALIDATION.COUNTERPARTY.COUNTERPARTY_URN.MAX_LENGTH,
-    numeric: true,
-  }),
-  exitDate: '2025-01-16',
-  roleCode: COUNTERPARTY_ROLE.GUARANTOR.code,
-  sharePercentage: 25,
-  startDate: '2025-01-13',
-});
+const COUNTERPARTY = ({ withSharePercentage = false } = {}) => {
+  const counterparty: GiftFacilityCounterpartyRequestDto = {
+    counterpartyUrn: chance.string({
+      length: VALIDATION.COUNTERPARTY.COUNTERPARTY_URN.MAX_LENGTH,
+      numeric: true,
+    }),
+    exitDate: '2025-01-16',
+    roleCode: COUNTERPARTY_ROLE.EXPORTER.code,
+    startDate: '2025-01-13',
+  };
+
+  if (withSharePercentage) {
+    counterparty.roleCode = COUNTERPARTY_ROLE.GUARANTOR.code;
+    counterparty.sharePercentage = 50;
+  }
+
+  return counterparty;
+};
 
 /**
  * Example fee types.
