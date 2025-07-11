@@ -22,11 +22,27 @@ export const mockResponse201 = (data: object | Array<any> = {}) => ({
 });
 
 /**
+ * Mock 400 response
+ * @returns {Object}
+ */
+export const mockResponse400 = () => ({
+  status: HttpStatus.BAD_REQUEST,
+});
+
+/**
  * Mock 404 response
  * @returns {Object}
  */
 export const mockResponse404 = () => ({
   status: HttpStatus.NOT_FOUND,
+});
+
+/**
+ * Mock 418 response
+ * @returns {Object}
+ */
+export const mockResponse418 = () => ({
+  status: HttpStatus.I_AM_A_TEAPOT,
 });
 
 /**

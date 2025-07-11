@@ -1,6 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { EXAMPLES, GIFT } from '@ukef/constants';
-import { mockResponse201, mockResponse500 } from '@ukef-test/http-response';
+import { mockResponse201, mockResponse400, mockResponse418, mockResponse500 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
 import { GiftFixedFeeService } from './gift.fixed-fee.service';
@@ -154,6 +154,31 @@ describe('GiftFixedFeeService', () => {
         const expected = new Error(`Error creating fixed fees for facility ${mockFacilityId}`);
 
         await expect(promise).rejects.toThrow(expected);
+      });
+    });
+
+    describe('when service.createOne returns multiple unacceptable and acceptable error statuses', () => {
+      beforeEach(() => {
+        // Arrange
+        mockCreateOneResponse = mockResponse201(mockFixedFees);
+
+        service = new GiftFixedFeeService(giftHttpService, logger);
+
+        mockCreateOne = jest.fn().mockResolvedValueOnce(mockResponse418()).mockResolvedValueOnce(mockResponse500()).mockResolvedValueOnce(mockResponse400());
+
+        service.createOne = mockCreateOne;
+      });
+
+      it('should continue to call service.createOne with mapped data for each provided counterparty', async () => {
+        // Act
+        await service.createMany(mockFixedFees, mockFacilityId, mockWorkPackageId);
+
+        // Assert
+        expect(mockCreateOne).toHaveBeenCalledTimes(fixedFeesLength);
+
+        expect(mockCreateOne).toHaveBeenCalledWith(mockFixedFees[0], mockFacilityId, mockWorkPackageId);
+        expect(mockCreateOne).toHaveBeenCalledWith(mockFixedFees[1], mockFacilityId, mockWorkPackageId);
+        expect(mockCreateOne).toHaveBeenCalledWith(mockFixedFees[2], mockFacilityId, mockWorkPackageId);
       });
     });
   });

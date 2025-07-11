@@ -1,6 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { EXAMPLES, GIFT } from '@ukef/constants';
-import { mockResponse200, mockResponse201, mockResponse500 } from '@ukef-test/http-response';
+import { mockResponse200, mockResponse201, mockResponse400, mockResponse418, mockResponse500 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
 import { mapCounterpartiesRequestData } from '../helpers';
@@ -163,6 +163,33 @@ describe('GiftCounterpartyService', () => {
         const expected = new Error(`Error creating counterparties for facility ${mockFacilityId}`);
 
         await expect(promise).rejects.toThrow(expected);
+      });
+    });
+
+    describe('when service.createOne returns multiple unacceptable and acceptable error statuses', () => {
+      beforeEach(() => {
+        // Arrange
+        mockCreateOneResponse = mockResponse201(mockCounterparties);
+
+        service = new GiftCounterpartyService(giftHttpService, logger);
+
+        mockCreateOne = jest.fn().mockResolvedValueOnce(mockResponse418()).mockResolvedValueOnce(mockResponse500()).mockResolvedValueOnce(mockResponse400());
+
+        service.createOne = mockCreateOne;
+      });
+
+      it('should continue to call service.createOne with mapped data for each provided counterparty', async () => {
+        // Act
+        await service.createMany(mockCounterparties, mockFacilityId, mockWorkPackageId);
+
+        // Assert
+        expect(mockCreateOne).toHaveBeenCalledTimes(counterpartiesLength);
+
+        const mappedCounterpartiesData = mapCounterpartiesRequestData(mockCounterparties);
+
+        expect(mockCreateOne).toHaveBeenCalledWith(mappedCounterpartiesData[0], mockFacilityId, mockWorkPackageId);
+        expect(mockCreateOne).toHaveBeenCalledWith(mappedCounterpartiesData[1], mockFacilityId, mockWorkPackageId);
+        expect(mockCreateOne).toHaveBeenCalledWith(mappedCounterpartiesData[2], mockFacilityId, mockWorkPackageId);
       });
     });
   });
