@@ -54,11 +54,19 @@ export class GiftObligationService {
    * @returns {Promise<Array<AxiosResponse>>}
    * @throws {Error}
    */
-  async createMany(obligations: GiftObligationRequestDto[], facilityId: string, workPackageId: number): Promise<Array<AxiosResponse>> {
+  async createMany(obligationsData: GiftObligationRequestDto[], facilityId: string, workPackageId: number): Promise<Array<AxiosResponse>> {
     try {
       this.logger.info('Creating obligations for facility %s', facilityId);
 
-      const responses = await Promise.all(obligations.map((repaymentProfile) => this.createOne(repaymentProfile, facilityId, workPackageId)));
+      /**
+       * NOTE: We need to use a for loop instead of Promise.all, to ensure that the calls are sequential.
+       * Promise.all is not sequential.
+       */
+      const responses = [];
+
+      for (const obligations of obligationsData) {
+        responses.push(await this.createOne(obligations, facilityId, workPackageId));
+      }
 
       return responses;
     } catch (error) {

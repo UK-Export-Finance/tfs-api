@@ -58,7 +58,15 @@ export class GiftRepaymentProfileService {
     try {
       this.logger.info('Creating repayment profiles for facility %s', facilityId);
 
-      const responses = await Promise.all(repaymentProfilesData.map((repaymentProfile) => this.createOne(repaymentProfile, facilityId, workPackageId)));
+      /**
+       * NOTE: We need to use a for loop instead of Promise.all, to ensure that the calls are sequential.
+       * Promise.all is not sequential.
+       */
+      const responses = [];
+
+      for (const repaymentProfile of repaymentProfilesData) {
+        responses.push(await this.createOne(repaymentProfile, facilityId, workPackageId));
+      }
 
       return responses;
     } catch (error) {
