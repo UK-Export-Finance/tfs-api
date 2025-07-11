@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { EXAMPLES, GIFT } from '@ukef/constants';
-import { IsDateString, IsDefined, IsString, Length } from 'class-validator';
+import { IsDateString, IsDefined, IsNumber, IsOptional, IsString, Length } from 'class-validator';
 
 const {
   GIFT: { COUNTERPARTY },
@@ -43,6 +43,8 @@ export class GiftFacilityCounterpartyRequestDto {
   })
   roleCode: string;
 
+  @IsOptional()
+  @IsNumber()
   @ApiProperty({
     example: EXAMPLE.sharePercentage,
     description: "Required if a counterparty's role's hasSharePercentage field is true",
