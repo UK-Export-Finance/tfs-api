@@ -126,27 +126,17 @@ export const arrayOfObjectsSharePercentageValidation = ({ parentFieldName, initi
       assert400Response(response);
     });
 
-    it('should return the correct body.message', async () => {
-      // Act
-      const { body } = await api.post(url, mockPayload);
-
-      // Assert
-      const expected = API_RESPONSE_MESSAGES.ASYNC_FACILITY_VALIDATION_ERRORS;
-
-      expect(body.message).toStrictEqual(expected);
-    });
-
-    it('should return the correct body.validationErrors', async () => {
+    it('should return the correct error messages', async () => {
       // Act
       const { body } = await api.post(url, mockPayload);
 
       // Assert
       const expected = [
-        `${parentFieldName}.0.${fieldName} must be a provided as a number, at least ${min} and not greater than ${max}`,
-        `${parentFieldName}.1.${fieldName} must be a provided as a number, at least ${min} and not greater than ${max}`,
+        `${parentFieldName}.0.${fieldName} must be a number conforming to the specified constraints`,
+        `${parentFieldName}.1.${fieldName} must be a number conforming to the specified constraints`,
       ];
 
-      expect(body.validationErrors).toStrictEqual(expected);
+      expect(body.message).toStrictEqual(expected);
     });
   });
 
@@ -166,27 +156,17 @@ export const arrayOfObjectsSharePercentageValidation = ({ parentFieldName, initi
       assert400Response(response);
     });
 
-    it('should return the correct body.message', async () => {
-      // Act
-      const { body } = await api.post(url, mockPayload);
-
-      // Assert
-      const expected = API_RESPONSE_MESSAGES.ASYNC_FACILITY_VALIDATION_ERRORS;
-
-      expect(body.message).toStrictEqual(expected);
-    });
-
-    it('should return the correct body.validationErrors', async () => {
+    it('should return the correct error messages', async () => {
       // Act
       const { body } = await api.post(url, mockPayload);
 
       // Assert
       const expected = [
-        `${parentFieldName}.0.${fieldName} must be a provided as a number, at least ${min} and not greater than ${max}`,
-        `${parentFieldName}.1.${fieldName} must be a provided as a number, at least ${min} and not greater than ${max}`,
+        `${parentFieldName}.0.${fieldName} must be a number conforming to the specified constraints`,
+        `${parentFieldName}.1.${fieldName} must be a number conforming to the specified constraints`,
       ];
 
-      expect(body.validationErrors).toStrictEqual(expected);
+      expect(body.message).toStrictEqual(expected);
     });
   });
 
@@ -206,27 +186,17 @@ export const arrayOfObjectsSharePercentageValidation = ({ parentFieldName, initi
       assert400Response(response);
     });
 
-    it('should return the correct body.message', async () => {
-      // Act
-      const { body } = await api.post(url, mockPayload);
-
-      // Assert
-      const expected = API_RESPONSE_MESSAGES.ASYNC_FACILITY_VALIDATION_ERRORS;
-
-      expect(body.message).toStrictEqual(expected);
-    });
-
-    it('should return the correct body.validationErrors', async () => {
+    it('should return the correct error messages', async () => {
       // Act
       const { body } = await api.post(url, mockPayload);
 
       // Assert
       const expected = [
-        `${parentFieldName}.0.${fieldName} must be a provided as a number, at least ${min} and not greater than ${max}`,
-        `${parentFieldName}.1.${fieldName} must be a provided as a number, at least ${min} and not greater than ${max}`,
+        `${parentFieldName}.0.${fieldName} must be a number conforming to the specified constraints`,
+        `${parentFieldName}.1.${fieldName} must be a number conforming to the specified constraints`,
       ];
 
-      expect(body.validationErrors).toStrictEqual(expected);
+      expect(body.message).toStrictEqual(expected);
     });
   });
 
@@ -246,27 +216,17 @@ export const arrayOfObjectsSharePercentageValidation = ({ parentFieldName, initi
       assert400Response(response);
     });
 
-    it('should return the correct body.message', async () => {
-      // Act
-      const { body } = await api.post(url, mockPayload);
-
-      // Assert
-      const expected = API_RESPONSE_MESSAGES.ASYNC_FACILITY_VALIDATION_ERRORS;
-
-      expect(body.message).toStrictEqual(expected);
-    });
-
-    it('should return the correct body.validationErrors', async () => {
+    it('should return the correct error messages', async () => {
       // Act
       const { body } = await api.post(url, mockPayload);
 
       // Assert
       const expected = [
-        `${parentFieldName}.0.${fieldName} must be a provided as a number, at least ${min} and not greater than ${max}`,
-        `${parentFieldName}.1.${fieldName} must be a provided as a number, at least ${min} and not greater than ${max}`,
+        `${parentFieldName}.0.${fieldName} must be a number conforming to the specified constraints`,
+        `${parentFieldName}.1.${fieldName} must be a number conforming to the specified constraints`,
       ];
 
-      expect(body.validationErrors).toStrictEqual(expected);
+      expect(body.message).toStrictEqual(expected);
     });
   });
 
