@@ -195,6 +195,34 @@ describe('GiftFacilityAsyncValidationService', () => {
       });
     });
 
+    describe('when feeTypeService.getAllFeeTypeCodes returns an error', () => {
+      beforeEach(() => {
+        // Arrange
+        mockGetAllFeeTypeCodes = jest.fn().mockRejectedValueOnce(mockResponse500());
+
+        feeTypeService.getAllFeeTypeCodes = mockGetAllFeeTypeCodes;
+
+        service = new GiftFacilityAsyncValidationService(
+          logger,
+          counterpartyService,
+          currencyService,
+          feeTypeService,
+          obligationSubtypeService,
+          productTypeService,
+        );
+      });
+
+      it('should thrown an error', async () => {
+        // Act
+        const promise = service.creation(mockPayload, mockFacilityId);
+
+        // Assert
+        const expected = new Error(`Error validating a GIFT facility - async ${mockFacilityId}`);
+
+        await expect(promise).rejects.toThrow(expected);
+      });
+    });
+
     describe('when currencyService.getSupportedCurrencies returns an error', () => {
       beforeEach(() => {
         // Arrange
@@ -229,6 +257,34 @@ describe('GiftFacilityAsyncValidationService', () => {
         mockProductTypeIsSupported = jest.fn().mockRejectedValueOnce(mockResponse500());
 
         productTypeService.isSupported = mockProductTypeIsSupported;
+
+        service = new GiftFacilityAsyncValidationService(
+          logger,
+          counterpartyService,
+          currencyService,
+          feeTypeService,
+          obligationSubtypeService,
+          productTypeService,
+        );
+      });
+
+      it('should thrown an error', async () => {
+        // Act
+        const promise = service.creation(mockPayload, mockFacilityId);
+
+        // Assert
+        const expected = new Error(`Error validating a GIFT facility - async ${mockFacilityId}`);
+
+        await expect(promise).rejects.toThrow(expected);
+      });
+    });
+
+    describe('when obligationSubtypeService.getAllByProductType returns an error', () => {
+      beforeEach(() => {
+        // Arrange
+        mockGetAllByProductType = jest.fn().mockRejectedValueOnce(mockResponse500());
+
+        obligationSubtypeService.getAllByProductType = mockGetAllByProductType;
 
         service = new GiftFacilityAsyncValidationService(
           logger,
