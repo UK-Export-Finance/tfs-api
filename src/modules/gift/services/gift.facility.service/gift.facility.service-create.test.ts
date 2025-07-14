@@ -11,6 +11,7 @@ import {
   GiftFeeTypeService,
   GiftFixedFeeService,
   GiftObligationService,
+  GiftObligationSubtypeService,
   GiftProductTypeService,
   GiftRepaymentProfileService,
   GiftStatusService,
@@ -47,7 +48,6 @@ describe('GiftFacilityService.create', () => {
   const logger = new PinoLogger({});
 
   let httpService: HttpService;
-  let counterpartyService: GiftCounterpartyService;
   let currencyService: GiftCurrencyService;
   let asyncValidationService: GiftFacilityAsyncValidationService;
   let fixedFeeService: GiftFixedFeeService;
@@ -78,12 +78,20 @@ describe('GiftFacilityService.create', () => {
       post: mockHttpServicePost,
     };
 
+    const counterpartyService = new GiftCounterpartyService(giftHttpService, logger);
+    const obligationSubtypeService = new GiftObligationSubtypeService(giftHttpService, logger);
     const productTypeService = new GiftProductTypeService(giftHttpService, logger);
     const feeTypeService = new GiftFeeTypeService(giftHttpService, logger);
 
-    counterpartyService = new GiftCounterpartyService(giftHttpService, logger);
+    asyncValidationService = new GiftFacilityAsyncValidationService(
+      logger,
+      counterpartyService,
+      currencyService,
+      feeTypeService,
+      obligationSubtypeService,
+      productTypeService,
+    );
 
-    asyncValidationService = new GiftFacilityAsyncValidationService(logger, counterpartyService, currencyService, feeTypeService, productTypeService);
     fixedFeeService = new GiftFixedFeeService(giftHttpService, logger);
     obligationService = new GiftObligationService(giftHttpService, logger);
     repaymentProfileService = new GiftRepaymentProfileService(giftHttpService, logger);

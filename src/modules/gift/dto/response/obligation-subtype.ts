@@ -19,15 +19,15 @@ export class GiftObligationSubtypeResponseDto {
 
   @IsString()
   @ApiProperty({
-    example: OBLIGATION_SUBTYPES.EXP01.productTypeCode,
-    required: true,
-  })
-  readonly productTypeCode: string;
-
-  @IsString()
-  @ApiProperty({
     example: OBLIGATION_SUBTYPES.EXP01.name,
     required: true,
   })
   readonly name: string;
+
+  @IsString()
+  @ApiProperty({
+    example: OBLIGATION_SUBTYPES.EXP01.productTypeCode,
+    required: true,
+  })
+  readonly productTypeCode: string;
 }

@@ -11,6 +11,7 @@ import {
   GiftFeeTypeService,
   GiftFixedFeeService,
   GiftObligationService,
+  GiftObligationSubtypeService,
   GiftProductTypeService,
   GiftRepaymentProfileService,
   GiftStatusService,
@@ -83,12 +84,21 @@ describe('GiftFacilityService.create - error handling', () => {
       post: mockHttpServicePost,
     };
 
+    counterpartyService = new GiftCounterpartyService(giftHttpService, logger);
     const currencyService = new GiftCurrencyService(giftHttpService, logger);
     const feeTypeService = new GiftFeeTypeService(giftHttpService, logger);
+    const obligationSubtypeService = new GiftObligationSubtypeService(giftHttpService, logger);
     const productTypeService = new GiftProductTypeService(giftHttpService, logger);
 
-    asyncValidationService = new GiftFacilityAsyncValidationService(logger, counterpartyService, currencyService, feeTypeService, productTypeService);
-    counterpartyService = new GiftCounterpartyService(giftHttpService, logger);
+    asyncValidationService = new GiftFacilityAsyncValidationService(
+      logger,
+      counterpartyService,
+      currencyService,
+      feeTypeService,
+      obligationSubtypeService,
+      productTypeService,
+    );
+
     fixedFeeService = new GiftFixedFeeService(giftHttpService, logger);
     obligationService = new GiftObligationService(giftHttpService, logger);
     repaymentProfileService = new GiftRepaymentProfileService(giftHttpService, logger);
