@@ -1,6 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { EXAMPLES, GIFT } from '@ukef/constants';
-import { mockResponse201, mockResponse500 } from '@ukef-test/http-response';
+import { mockResponse201, mockResponse400, mockResponse418, mockResponse500 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
 import { GiftRepaymentProfileService } from './gift.repayment-profile.service';
@@ -95,8 +95,6 @@ describe('GiftRepaymentProfileService', () => {
 
     const mockRepaymentProfiles = Array(repaymentProfilesLength).fill(REPAYMENT_PROFILE());
 
-    const mockPayload = mockRepaymentProfiles;
-
     let mockCreateOne = jest.fn().mockResolvedValue(mockResponse201(mockRepaymentProfiles));
 
     beforeEach(() => {
@@ -116,20 +114,20 @@ describe('GiftRepaymentProfileService', () => {
 
     it('should call service.createOne for each provided repayment profile', async () => {
       // Act
-      await service.createMany(mockPayload, mockFacilityId, mockWorkPackageId);
+      await service.createMany(mockRepaymentProfiles, mockFacilityId, mockWorkPackageId);
 
       // Assert
       expect(mockCreateOne).toHaveBeenCalledTimes(repaymentProfilesLength);
 
-      expect(mockCreateOne).toHaveBeenCalledWith(mockPayload[0], mockFacilityId, mockWorkPackageId);
-      expect(mockCreateOne).toHaveBeenCalledWith(mockPayload[1], mockFacilityId, mockWorkPackageId);
-      expect(mockCreateOne).toHaveBeenCalledWith(mockPayload[2], mockFacilityId, mockWorkPackageId);
+      expect(mockCreateOne).toHaveBeenCalledWith(mockRepaymentProfiles[0], mockFacilityId, mockWorkPackageId);
+      expect(mockCreateOne).toHaveBeenCalledWith(mockRepaymentProfiles[1], mockFacilityId, mockWorkPackageId);
+      expect(mockCreateOne).toHaveBeenCalledWith(mockRepaymentProfiles[2], mockFacilityId, mockWorkPackageId);
     });
 
     describe('when service.createOne is successful', () => {
       it('should return the response of multiple calls to service.createOne', async () => {
         // Act
-        const response = await service.createMany(mockPayload, mockFacilityId, mockWorkPackageId);
+        const response = await service.createMany(mockRepaymentProfiles, mockFacilityId, mockWorkPackageId);
 
         // Assert
         const expected = [mockCreateOneResponse, mockCreateOneResponse, mockCreateOneResponse];
@@ -150,12 +148,37 @@ describe('GiftRepaymentProfileService', () => {
 
       it('should thrown an error', async () => {
         // Act
-        const promise = service.createMany(mockPayload, mockFacilityId, mockWorkPackageId);
+        const promise = service.createMany(mockRepaymentProfiles, mockFacilityId, mockWorkPackageId);
 
         // Assert
         const expected = new Error(`Error creating repayment profiles for facility ${mockFacilityId}`);
 
         await expect(promise).rejects.toThrow(expected);
+      });
+    });
+
+    describe('when service.createOne returns multiple unacceptable and acceptable error statuses', () => {
+      beforeEach(() => {
+        // Arrange
+        mockCreateOneResponse = mockResponse201(mockRepaymentProfiles);
+
+        service = new GiftRepaymentProfileService(giftHttpService, logger);
+
+        mockCreateOne = jest.fn().mockResolvedValueOnce(mockResponse418()).mockResolvedValueOnce(mockResponse500()).mockResolvedValueOnce(mockResponse400());
+
+        service.createOne = mockCreateOne;
+      });
+
+      it('should continue to call service.createOne with mapped data for each provided counterparty', async () => {
+        // Act
+        await service.createMany(mockRepaymentProfiles, mockFacilityId, mockWorkPackageId);
+
+        // Assert
+        expect(mockCreateOne).toHaveBeenCalledTimes(repaymentProfilesLength);
+
+        expect(mockCreateOne).toHaveBeenCalledWith(mockRepaymentProfiles[0], mockFacilityId, mockWorkPackageId);
+        expect(mockCreateOne).toHaveBeenCalledWith(mockRepaymentProfiles[1], mockFacilityId, mockWorkPackageId);
+        expect(mockCreateOne).toHaveBeenCalledWith(mockRepaymentProfiles[2], mockFacilityId, mockWorkPackageId);
       });
     });
   });

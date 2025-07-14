@@ -61,9 +61,17 @@ export class GiftCounterpartyService {
 
       const mappedCounterparties = mapCounterpartiesRequestData(counterpartiesData);
 
-      const responses = await Promise.all(
-        mappedCounterparties.map((counterparty: GiftFacilityCounterpartyRequestDto) => this.createOne(counterparty, facilityId, workPackageId)),
-      );
+      /**
+       * NOTE: We need to use a for loop instead of Promise.all, to ensure that the calls are sequential.
+       * Promise.all is not sequential.
+       */
+      const responses = [];
+
+      for (const counterparty of mappedCounterparties) {
+        const response = await this.createOne(counterparty, facilityId, workPackageId);
+
+        responses.push(response);
+      }
 
       return responses;
     } catch (error) {

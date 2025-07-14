@@ -58,7 +58,17 @@ export class GiftFixedFeeService {
     try {
       this.logger.info('Creating fixed fees for facility %s', facilityId);
 
-      const responses = await Promise.all(fixedFeesData.map((fixedFee) => this.createOne(fixedFee, facilityId, workPackageId)));
+      /**
+       * NOTE: We need to use a for loop instead of Promise.all, to ensure that the calls are sequential.
+       * Promise.all is not sequential.
+       */
+      const responses = [];
+
+      for (const fixedFee of fixedFeesData) {
+        const response = await this.createOne(fixedFee, facilityId, workPackageId);
+
+        responses.push(response);
+      }
 
       return responses;
     } catch (error) {
