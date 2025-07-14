@@ -65,7 +65,9 @@ export class GiftFixedFeeService {
       const responses = [];
 
       for (const fixedFee of fixedFeesData) {
-        responses.push(await this.createOne(fixedFee, facilityId, workPackageId));
+        const response = await this.createOne(fixedFee, facilityId, workPackageId);
+
+        responses.push(response);
       }
 
       return responses;

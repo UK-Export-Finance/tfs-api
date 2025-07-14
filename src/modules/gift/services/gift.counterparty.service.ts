@@ -68,7 +68,9 @@ export class GiftCounterpartyService {
       const responses = [];
 
       for (const counterparty of mappedCounterparties) {
-        responses.push(await this.createOne(counterparty, facilityId, workPackageId));
+        const response = await this.createOne(counterparty, facilityId, workPackageId);
+
+        responses.push(response);
       }
 
       return responses;

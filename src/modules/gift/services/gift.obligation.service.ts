@@ -65,7 +65,9 @@ export class GiftObligationService {
       const responses = [];
 
       for (const obligations of obligationsData) {
-        responses.push(await this.createOne(obligations, facilityId, workPackageId));
+        const response = await this.createOne(obligations, facilityId, workPackageId);
+
+        responses.push(response);
       }
 
       return responses;

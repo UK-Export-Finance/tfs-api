@@ -65,7 +65,9 @@ export class GiftRepaymentProfileService {
       const responses = [];
 
       for (const repaymentProfile of repaymentProfilesData) {
-        responses.push(await this.createOne(repaymentProfile, facilityId, workPackageId));
+        const response = await this.createOne(repaymentProfile, facilityId, workPackageId);
+
+        responses.push(response);
       }
 
       return responses;
