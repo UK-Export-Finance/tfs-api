@@ -30,13 +30,13 @@ const mockCounterpartyRoles: GiftFacilityCounterpartyRoleResponseDto[] = [
 ];
 
 describe('modules/gift/helpers/generate-counterparty-share-percentage-errors', () => {
-  describe('when all provided roles require a sharePercentage, but is not provided', () => {
+  describe('when all provided roles require a sharePercentage, but are not provided', () => {
     it('should return an array with validation errors', () => {
       // Arrange
       const mockProvidedRoles = [
-        { ...EXAMPLES.GIFT.COUNTERPARTY(), roleCode: '2', sharePercentage: null },
-        { ...EXAMPLES.GIFT.COUNTERPARTY(), roleCode: '2', sharePercentage: null },
-        { ...EXAMPLES.GIFT.COUNTERPARTY(), roleCode: '2', sharePercentage: null },
+        { ...EXAMPLES.GIFT.COUNTERPARTY(), roleCode: '2' },
+        { ...EXAMPLES.GIFT.COUNTERPARTY(), roleCode: '2' },
+        { ...EXAMPLES.GIFT.COUNTERPARTY(), roleCode: '2' },
       ];
 
       // Act
