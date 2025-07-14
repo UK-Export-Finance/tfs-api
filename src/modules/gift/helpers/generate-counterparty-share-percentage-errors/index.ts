@@ -50,9 +50,14 @@ export const generateCounterpartySharePercentageErrors = ({
      * If the GIFT role hasSharePercentage flag is true,
      * and no sharePercentage is provided,
      * or if a provided sharePercentage is not within the MIN/MAX range,
-     * return an error.
+     * return a validation error.
      */
-    if (giftRole?.hasSharePercentage && (!sharePercentage || (sharePercentage && (sharePercentage < MIN || sharePercentage > MAX)))) {
+    const sharePercentageRequired = giftRole?.hasSharePercentage;
+    const sharePercentageLessThanMin = sharePercentage < MIN;
+    const sharePercentageGreaterThanMax = sharePercentage > MAX;
+    const invalidSharePercentage = !sharePercentage || sharePercentageLessThanMin || sharePercentageGreaterThanMax;
+
+    if (sharePercentageRequired && invalidSharePercentage) {
       validationErrors.push(`counterparties.${index}.sharePercentage must be a provided as a number, at least ${MIN} and not greater than ${MAX}`);
     }
   });
