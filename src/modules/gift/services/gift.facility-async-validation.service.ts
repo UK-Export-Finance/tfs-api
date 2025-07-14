@@ -60,17 +60,15 @@ export class GiftFacilityAsyncValidationService {
         data: { counterpartyRoles },
       } = await this.counterpartyService.getAllRoles();
 
-      // TODO: re-order await calls to be alphabetical?
-
       const counterpartyRoleCodes = this.counterpartyService.getAllRoleCodes(counterpartyRoles);
+
+      const feeTypeCodes = await this.feeTypeService.getAllFeeTypeCodes();
+
+      const isSupportedProductType = await this.productTypeService.isSupported(productTypeCode);
 
       const supportedCurrencies = await this.currencyService.getSupportedCurrencies();
 
       const supportedObligationSubtypes = await this.obligationSubtypeService.getAllByProductType(productTypeCode);
-
-      const isSupportedProductType = await this.productTypeService.isSupported(productTypeCode);
-
-      const feeTypeCodes = await this.feeTypeService.getAllFeeTypeCodes();
 
       const overviewErrors = generateOverviewErrors({
         isSupportedProductType,
