@@ -59,7 +59,7 @@ describe('POST /gift/facility - validation - counterparties - share percentage',
     url,
   };
 
-  describe('when a counterparty role requires a sharePercentage and a sharePercentage is NOT provided', () => {
+  describe('when a counterparty role requires a sharePercentage', () => {
     arrayOfObjectsSharePercentageValidation(baseParams);
   });
 });
