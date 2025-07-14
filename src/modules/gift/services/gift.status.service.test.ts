@@ -52,6 +52,7 @@ describe('GiftStatusService', () => {
 
       expect(mockHttpServicePost).toHaveBeenCalledWith({
         path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.APPROVE}`,
+        payload: { notes: '' },
       });
     });
 

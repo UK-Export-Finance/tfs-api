@@ -33,6 +33,7 @@ export class GiftStatusService {
 
       const response = await this.giftHttpService.post({
         path: `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.APPROVE}`,
+        payload: { notes: '' },
       });
 
       return response;
