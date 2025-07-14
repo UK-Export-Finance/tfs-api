@@ -25,7 +25,7 @@ interface GenerateCounterpartySharePercentageErrorsParams {
  * @example
  * ```ts
  * const counterpartyRoles = [ { code: 'A', hasSharePercentage: true } ];
- * const providedCounterparties [ { counterpartyUrn: 'ABC', roleCode: 'A' sharePercentage: 20 }];
+ * const providedCounterparties = [ { counterpartyUrn: 'ABC', roleCode: 'A' sharePercentage: 20 }];
  *
  * generateCounterpartySharePercentageErrors({ counterpartyRoles, providedCounterparties })
  *

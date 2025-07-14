@@ -98,7 +98,11 @@ export const productTypeCodeStringValidation = ({ initialPayload, parentFieldNam
       const { body } = await api.post(url, mockPayload);
 
       // Assert
-      const expected = [`${parentFieldName}.${fieldName} is not supported - ${UNSUPPORTED_PRODUCT_TYPE_CODE}`];
+      const expected = [
+        `${parentFieldName}.${fieldName} is not supported - ${UNSUPPORTED_PRODUCT_TYPE_CODE}`,
+        `obligations.0.subtypeCode is not supported by product type ${UNSUPPORTED_PRODUCT_TYPE_CODE}`,
+        `obligations.1.subtypeCode is not supported by product type ${UNSUPPORTED_PRODUCT_TYPE_CODE}`,
+      ];
 
       expect(body.validationErrors).toStrictEqual(expected);
     });

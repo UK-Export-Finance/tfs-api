@@ -75,8 +75,6 @@ export class GiftFacilityCreationRequestDto {
   @IsArray()
   @ArrayNotEmpty()
   @IsDefined()
-  // TODO: GIFT-13028 - move to custom async validators
-  // @ObligationSubtypeCodeAreSupported()
   @Type(() => GiftObligationRequestDto)
   @ValidateNested()
   obligations: GiftObligationRequestDto[];

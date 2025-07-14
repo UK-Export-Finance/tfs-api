@@ -3,17 +3,10 @@ import { GIFT } from '@ukef/constants';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 
-import { GiftObligationRequestDto, GiftObligationSubtypeResponseDto } from '../dto';
-import { getUnsupportedObligationSubtypeCodes } from '../helpers';
+import { GiftObligationSubtypeResponseDto } from '../dto';
 import { GiftHttpService } from './gift.http.service';
 
 const { PATH } = GIFT;
-
-interface IsSupportedParams {
-  facilityId: string;
-  obligations: GiftObligationRequestDto[];
-  productTypeCode: string;
-}
 
 /**
  * GIFT obligation subtype service.
@@ -68,42 +61,6 @@ export class GiftObligationSubtypeService {
       this.logger.error('Error getting obligation subtypes by product type %s %o', productTypeCode, error);
 
       throw new Error(`Error getting obligation subtypes by product type ${productTypeCode}`, error);
-    }
-  }
-
-  /**
-   * Check if multiple obligation subtypes are supported by a product type.
-   * @param {IsSupportedParams} facility ID, obligations, product type code
-   * @returns {promise<Boolean>}
-   * @throws {Error}
-   */
-  async isSupported({ facilityId, obligations, productTypeCode }: IsSupportedParams): Promise<boolean> {
-    try {
-      this.logger.info('Checking if multiple obligation subtypes are supported by product type %s for facility %s', productTypeCode, facilityId);
-
-      const supportedSubtypes = await this.getAllByProductType(productTypeCode);
-
-      const unsupportedSubtypeCodes = getUnsupportedObligationSubtypeCodes({
-        obligations,
-        supportedSubtypes,
-      });
-
-      if (unsupportedSubtypeCodes.length) {
-        this.logger.info(
-          '%d Obligation subtypes are not supported by product type %s for facility %s',
-          unsupportedSubtypeCodes.length,
-          productTypeCode,
-          facilityId,
-        );
-
-        return false;
-      }
-
-      return true;
-    } catch (error) {
-      this.logger.error('Error checking if multiple obligation subtypes are supported for product type for facility %s %o', productTypeCode, facilityId, error);
-
-      throw new Error(`Error checking if multiple obligation subtypes are supported for product type ${productTypeCode} for facility ${facilityId}`, error);
     }
   }
 }

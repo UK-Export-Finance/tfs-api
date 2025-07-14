@@ -6,6 +6,7 @@ import {
   generateArrayOfErrors,
   generateCounterpartySharePercentageErrors,
   generateHighLevelErrors,
+  generateObligationSubtypeCodeErrors,
   generateOverviewErrors,
   mapEntitiesByField,
   stripPayload,
@@ -13,6 +14,7 @@ import {
 import { GiftCounterpartyService } from './gift.counterparty.service';
 import { GiftCurrencyService } from './gift.currency.service';
 import { GiftFeeTypeService } from './gift.fee-type.service';
+import { GiftObligationSubtypeService } from './gift.obligation-subtype.service';
 import { GiftProductTypeService } from './gift.product-type.service';
 
 /**
@@ -30,11 +32,13 @@ export class GiftFacilityAsyncValidationService {
     private readonly counterpartyService: GiftCounterpartyService,
     private readonly currencyService: GiftCurrencyService,
     private readonly feeTypeService: GiftFeeTypeService,
+    private readonly obligationSubtypeService: GiftObligationSubtypeService,
     private readonly productTypeService: GiftProductTypeService,
   ) {
     this.counterpartyService = counterpartyService;
     this.currencyService = currencyService;
     this.feeTypeService = feeTypeService;
+    this.obligationSubtypeService = obligationSubtypeService;
     this.productTypeService = productTypeService;
   }
 
@@ -50,17 +54,21 @@ export class GiftFacilityAsyncValidationService {
 
       const { overview } = payload;
 
+      const { productTypeCode } = overview;
+
       const {
         data: { counterpartyRoles },
       } = await this.counterpartyService.getAllRoles();
 
       const counterpartyRoleCodes = this.counterpartyService.getAllRoleCodes(counterpartyRoles);
 
+      const feeTypeCodes = await this.feeTypeService.getAllFeeTypeCodes();
+
+      const isSupportedProductType = await this.productTypeService.isSupported(productTypeCode);
+
       const supportedCurrencies = await this.currencyService.getSupportedCurrencies();
 
-      const isSupportedProductType = await this.productTypeService.isSupported(overview.productTypeCode);
-
-      const feeTypeCodes = await this.feeTypeService.getAllFeeTypeCodes();
+      const supportedObligationSubtypes = await this.obligationSubtypeService.getAllByProductType(productTypeCode);
 
       const overviewErrors = generateOverviewErrors({
         isSupportedProductType,
@@ -93,7 +101,20 @@ export class GiftFacilityAsyncValidationService {
         parentEntityName: 'fixedFees',
       });
 
-      return [...overviewErrors, ...currencyErrors, ...counterpartyRoleErrors, ...counterpartySharePercentageErrors, ...feeTypeCodeErrors];
+      const obligationSubtypeCodeErrors = generateObligationSubtypeCodeErrors({
+        subtypes: supportedObligationSubtypes,
+        productTypeCode,
+        providedObligations: payload.obligations,
+      });
+
+      return [
+        ...overviewErrors,
+        ...currencyErrors,
+        ...counterpartyRoleErrors,
+        ...counterpartySharePercentageErrors,
+        ...feeTypeCodeErrors,
+        ...obligationSubtypeCodeErrors,
+      ];
     } catch (error) {
       this.logger.error('Error validating a GIFT facility - async %s %o', facilityId, error);
 
