@@ -2,7 +2,6 @@ export * from './array-contains-string';
 export * from './array-has-unique-strings';
 export * from './array-of-objects-has-value';
 export * from './async-validation';
-export * from './generate-counterparty-share-percentage-errors';
 export * from './generate-obligation-subtype-code-errors';
 export * from './get-counterparty-urns';
 export * from './get-repayment-profile-allocation-dates';

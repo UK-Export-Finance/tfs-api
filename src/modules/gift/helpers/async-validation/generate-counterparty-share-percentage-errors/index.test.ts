@@ -1,6 +1,6 @@
 import { EXAMPLES, GIFT } from '@ukef/constants';
 
-import { GiftFacilityCounterpartyRoleResponseDto } from '../../dto';
+import { GiftFacilityCounterpartyRoleResponseDto } from '../../../dto';
 import { generateCounterpartySharePercentageErrors } from '.';
 
 const {
@@ -29,7 +29,7 @@ const mockCounterpartyRoles: GiftFacilityCounterpartyRoleResponseDto[] = [
   },
 ];
 
-describe('modules/gift/helpers/generate-counterparty-share-percentage-errors', () => {
+describe('modules/gift/helpers/async-validation/generate-counterparty-share-percentage-errors', () => {
   describe('when all provided roles require a sharePercentage, but are not provided', () => {
     it('should return an array with validation errors', () => {
       // Arrange

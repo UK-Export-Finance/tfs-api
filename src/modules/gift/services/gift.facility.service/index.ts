@@ -185,7 +185,7 @@ export class GiftFacilityService {
       const approvedStatusResponse = await this.giftStatusService.approved(facilityId, workPackageId);
 
       if (approvedStatusResponse.status !== HttpStatus.OK) {
-        this.logger.info('Creating a GIFT facility - approved status update failed %s', facilityId);
+        this.logger.info('Creating a GIFT facility - approved status update failed %s %o', facilityId, approvedStatusResponse);
 
         return {
           status: approvedStatusResponse.status,
