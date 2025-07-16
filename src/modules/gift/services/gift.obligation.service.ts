@@ -34,7 +34,7 @@ export class GiftObligationService {
       this.logger.info('Creating an obligation with amount %s for facility %s', obligationData.amount, facilityId);
 
       const response = await this.giftHttpService.post<GiftObligationRequestDto>({
-        path: `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.CREATE_OBLIGATION}`,
+        path: `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_OBLIGATION}`,
         payload: obligationData,
       });
 

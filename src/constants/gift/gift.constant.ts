@@ -24,8 +24,8 @@ export const GIFT = {
     ADD_COUNTERPARTY: 'AddFacilityCounterparty',
     ADD_MANUAL_REPAYMENT_PROFILE: 'AddManualRepaymentProfile',
     CREATE_FACILITY: 'CreateFacility',
-    CREATE_FIXED_FEE: 'CreateFixedFee',
-    CREATE_OBLIGATION: 'CreateObligation',
+    ADD_FIXED_FEE: 'AddFixedFee',
+    ADD_OBLIGATION: 'AddObligation',
   },
   FEE_TYPE_CODES: {
     BEX: 'BEX',
