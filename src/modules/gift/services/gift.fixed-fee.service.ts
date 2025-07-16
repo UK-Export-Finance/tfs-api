@@ -34,7 +34,7 @@ export class GiftFixedFeeService {
       this.logger.info('Creating a fixed fee with description %s for facility %s', fixedFeeData.description, facilityId);
 
       const response = await this.giftHttpService.post<GiftFixedFeeRequestDto>({
-        path: `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.CREATE_FIXED_FEE}`,
+        path: `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_FIXED_FEE}`,
         payload: fixedFeeData,
       });
 
