@@ -22,6 +22,7 @@ const {
 const { GIFT_API_URL } = ENVIRONMENT_VARIABLES;
 
 const {
+  API_RESPONSE_MESSAGES,
   PATH: { FACILITY },
   VALIDATION: { OBLIGATION: OBLIGATION_VALIDATION },
 } = GIFT;
@@ -156,8 +157,7 @@ describe('POST /gift/facility - validation - obligations', () => {
         });
       });
 
-      // TODO: GIFT-13028 - re-enable
-      it.skip(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
+      it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
         // Act
         const response = await api.post(url, mockPayload);
 
@@ -165,17 +165,27 @@ describe('POST /gift/facility - validation - obligations', () => {
         assert400Response(response);
       });
 
-      // TODO: GIFT-13028 - re-enable
-      it.skip('should return the correct error messages', async () => {
+      it('should return the correct body.message', async () => {
+        // Act
+        const { body } = await api.post(url, mockPayload);
+
+        // Assert
+        const expected = API_RESPONSE_MESSAGES.ASYNC_FACILITY_VALIDATION_ERRORS;
+
+        expect(body.message).toStrictEqual(expected);
+      });
+
+      it('should return the correct body.validationErrors', async () => {
         // Act
         const { body } = await api.post(url, mockPayload);
 
         // Assert
         const expected = [
-          `obligations contain a subtypeCode that is not supported for the provided productTypeCode (${EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD.overview.productTypeCode})`,
+          `${parentFieldName}.0.${fieldName} is not supported by product type ${EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD.overview.productTypeCode}`,
+          `${parentFieldName}.1.${fieldName} is not supported by product type ${EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD.overview.productTypeCode}`,
         ];
 
-        expect(body.message).toStrictEqual(expected);
+        expect(body.validationErrors).toStrictEqual(expected);
       });
     });
   });

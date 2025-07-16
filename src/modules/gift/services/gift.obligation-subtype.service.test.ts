@@ -1,15 +1,11 @@
 import { HttpService } from '@nestjs/axios';
-import { EXAMPLES, GIFT } from '@ukef/constants';
+import { GIFT } from '@ukef/constants';
 import { mockResponse200, mockResponse500 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
 import { GiftObligationSubtypeService } from './gift.obligation-subtype.service';
 
 const { OBLIGATION_SUBTYPES, PATH, PRODUCT_TYPE_CODES } = GIFT;
-
-const {
-  GIFT: { FACILITY_ID: mockFacilityId, OBLIGATION },
-} = EXAMPLES;
 
 const mockProductCode = PRODUCT_TYPE_CODES.EXIP;
 
@@ -23,7 +19,6 @@ describe('GiftObligationSubtypeService', () => {
   let mockGetAllResponse;
   let mockHttpServiceGet: jest.Mock;
   let mockGetAll: jest.Mock;
-  let mockGetAllByProductType: jest.Mock;
 
   beforeEach(() => {
     // Arrange
@@ -143,91 +138,6 @@ describe('GiftObligationSubtypeService', () => {
 
         // Assert
         const expected = new Error(`Error getting obligation subtypes by product type ${mockProductCode}`);
-
-        await expect(promise).rejects.toThrow(expected);
-      });
-    });
-  });
-
-  describe('isSupported', () => {
-    beforeEach(() => {
-      // Arrange
-      service = new GiftObligationSubtypeService(giftHttpService, logger);
-
-      mockGetAllByProductType = jest.fn().mockResolvedValueOnce([OBLIGATION_SUBTYPES.EXP01]);
-
-      service.getAllByProductType = mockGetAllByProductType;
-    });
-
-    it('should call service.getAllByProductType', async () => {
-      // Act
-      await service.isSupported({
-        facilityId: mockFacilityId,
-        obligations: [OBLIGATION()],
-        productTypeCode: mockProductCode,
-      });
-
-      // Assert
-      expect(mockGetAllByProductType).toHaveBeenCalledTimes(1);
-
-      expect(mockGetAllByProductType).toHaveBeenCalledWith(mockProductCode);
-    });
-
-    describe('when the provided subtype codes are supported', () => {
-      it('should return true', async () => {
-        // Act
-        const response = await service.isSupported({
-          facilityId: mockFacilityId,
-          obligations: [OBLIGATION()],
-          productTypeCode: mockProductCode,
-        });
-
-        // Assert
-        expect(response).toBe(true);
-      });
-    });
-
-    describe('when the provided subtype codes are NOT supported', () => {
-      it('should return false', async () => {
-        // Arrange
-        mockGetAllByProductType = jest.fn().mockResolvedValueOnce([OBLIGATION_SUBTYPES.BIP02]);
-
-        service.getAllByProductType = mockGetAllByProductType;
-
-        // Act
-        const response = await service.isSupported({
-          facilityId: mockFacilityId,
-          obligations: [OBLIGATION()],
-          productTypeCode: mockProductCode,
-        });
-
-        // Assert
-        expect(response).toBe(false);
-      });
-    });
-
-    describe('when service.getAllByProductType returns an error', () => {
-      beforeEach(() => {
-        // Arrange
-        mockGetAllByProductType = jest.fn().mockRejectedValueOnce(new Error());
-
-        service = new GiftObligationSubtypeService(giftHttpService, logger);
-
-        service.getAllByProductType = mockGetAllByProductType;
-      });
-
-      it('should thrown an error', async () => {
-        // Act
-        const promise = service.isSupported({
-          facilityId: mockFacilityId,
-          obligations: [OBLIGATION()],
-          productTypeCode: mockProductCode,
-        });
-
-        // Assert
-        const expected = new Error(
-          `Error checking if multiple obligation subtypes are supported for product type ${mockProductCode} for facility ${mockFacilityId}`,
-        );
 
         await expect(promise).rejects.toThrow(expected);
       });

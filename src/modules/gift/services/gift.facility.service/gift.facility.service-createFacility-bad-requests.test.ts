@@ -12,6 +12,7 @@ import {
   GiftFeeTypeService,
   GiftFixedFeeService,
   GiftObligationService,
+  GiftObligationSubtypeService,
   GiftProductTypeService,
   GiftRepaymentProfileService,
   GiftStatusService,
@@ -71,9 +72,18 @@ describe('GiftFacilityService.create - bad requests', () => {
     // Arrange
     const currencyService = new GiftCurrencyService(giftHttpService, logger);
     const feeTypeService = new GiftFeeTypeService(giftHttpService, logger);
+    const obligationSubtypeService = new GiftObligationSubtypeService(giftHttpService, logger);
     const productTypeService = new GiftProductTypeService(giftHttpService, logger);
 
-    asyncValidationService = new GiftFacilityAsyncValidationService(logger, counterpartyService, currencyService, feeTypeService, productTypeService);
+    asyncValidationService = new GiftFacilityAsyncValidationService(
+      logger,
+      counterpartyService,
+      currencyService,
+      feeTypeService,
+      obligationSubtypeService,
+      productTypeService,
+    );
+
     counterpartyService = new GiftCounterpartyService(giftHttpService, logger);
     fixedFeeService = new GiftFixedFeeService(giftHttpService, logger);
     obligationService = new GiftObligationService(giftHttpService, logger);
