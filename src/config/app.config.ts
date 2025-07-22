@@ -6,9 +6,9 @@ import { getIntConfig } from '@ukef/helpers/get-int-config';
 
 import { InvalidConfigException } from './invalid-config.exception';
 
-const { APP_NAME, NODE_ENV } = process.env;
+const { NODE_ENV } = process.env;
 
-const { VERSION_PREFIX } = APPLICATION;
+const { NAME, VERSION_PREFIX } = APPLICATION;
 
 const validLogLevels = ['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent'];
 
@@ -69,11 +69,11 @@ export default registerAs('app', (): Record<string, any> => {
 
   return {
     apiKey: process.env.API_KEY,
-    env: NODE_ENV || 'development',
+    env: NODE_ENV,
     giftVersioning,
     globalPrefix: '/api',
     logLevel: process.env.LOG_LEVEL || 'info',
-    name: APP_NAME || 'tfs',
+    name: NAME,
     port: getIntConfig(process.env.HTTP_PORT, 3001),
     redactLogs: process.env.REDACT_LOGS !== 'false',
     singleLineLogFormat: process.env.SINGLE_LINE_LOG_FORMAT !== 'false',
