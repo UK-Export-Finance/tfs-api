@@ -6,6 +6,7 @@ import { PinoLogger } from 'nestjs-pino';
 
 import { mapAllValidationErrorResponses, mapValidationErrorResponses } from '../../helpers';
 import {
+  GiftBusinessCalendarService,
   GiftCounterpartyService,
   GiftCurrencyService,
   GiftFacilityAsyncValidationService,
@@ -21,6 +22,7 @@ import { GiftFacilityService } from './';
 
 const {
   GIFT: {
+    BUSINESS_CALENDAR,
     COUNTERPARTY,
     FACILITY_ID: mockFacilityId,
     FACILITY_RESPONSE_DATA,
@@ -36,12 +38,14 @@ const { API_RESPONSE_MESSAGES, ENTITY_NAMES } = GIFT;
 
 const mockCreateInitialFacilityResponse = mockResponse201(FACILITY_RESPONSE_DATA);
 
+const mockBusinessCalendar = BUSINESS_CALENDAR;
 const mockCounterparties = [COUNTERPARTY(), COUNTERPARTY(), COUNTERPARTY()];
 const mockFixedFees = [FIXED_FEE(), FIXED_FEE()];
 const mockObligations = [OBLIGATION(), OBLIGATION(), OBLIGATION()];
 const mockRepaymentProfiles = [REPAYMENT_PROFILE(), REPAYMENT_PROFILE(), REPAYMENT_PROFILE()];
 
 const mockAsyncValidationServiceCreationResponse = [];
+const mockCreateBusinessCalendarResponse = mockResponse201({ data: mockBusinessCalendar });
 const mockCreateCounterpartiesResponse = mockCounterparties.map((counterparty) => mockResponse201(counterparty));
 const mockCreateFixedFeesResponse = mockFixedFees.map((fixedFee) => mockResponse201(fixedFee));
 const mockCreateObligationsResponse = mockObligations.map((counterparty) => mockResponse201(counterparty));
@@ -52,6 +56,7 @@ describe('GiftFacilityService.create - bad requests', () => {
   const logger = new PinoLogger({});
 
   let asyncValidationService: GiftFacilityAsyncValidationService;
+  let businessCalendarService: GiftBusinessCalendarService;
   let counterpartyService: GiftCounterpartyService;
   let fixedFeeService: GiftFixedFeeService;
   let obligationService: GiftObligationService;
@@ -62,6 +67,7 @@ describe('GiftFacilityService.create - bad requests', () => {
   let giftHttpService;
   let asyncValidationServiceCreationSpy: jest.Mock;
   let createInitialFacilitySpy: jest.Mock;
+  let createBusinessCalendarSpy: jest.Mock;
   let createCounterpartiesSpy: jest.Mock;
   let createFixedFeesSpy: jest.Mock;
   let createObligationsSpy: jest.Mock;
@@ -84,6 +90,7 @@ describe('GiftFacilityService.create - bad requests', () => {
       productTypeService,
     );
 
+    businessCalendarService = new GiftBusinessCalendarService(giftHttpService, logger);
     counterpartyService = new GiftCounterpartyService(giftHttpService, logger);
     fixedFeeService = new GiftFixedFeeService(giftHttpService, logger);
     obligationService = new GiftObligationService(giftHttpService, logger);
@@ -92,6 +99,7 @@ describe('GiftFacilityService.create - bad requests', () => {
 
     asyncValidationServiceCreationSpy = jest.fn().mockResolvedValueOnce(mockAsyncValidationServiceCreationResponse);
     createInitialFacilitySpy = jest.fn().mockResolvedValueOnce(mockCreateInitialFacilityResponse);
+    createBusinessCalendarSpy = jest.fn().mockResolvedValueOnce(mockCreateBusinessCalendarResponse);
     createCounterpartiesSpy = jest.fn().mockResolvedValueOnce(mockCreateCounterpartiesResponse);
     createFixedFeesSpy = jest.fn().mockResolvedValueOnce(mockCreateFixedFeesResponse);
     createObligationsSpy = jest.fn().mockResolvedValueOnce(mockCreateObligationsResponse);
@@ -99,6 +107,7 @@ describe('GiftFacilityService.create - bad requests', () => {
     approvedStatusSpy = jest.fn().mockResolvedValueOnce(mockApprovedStatusResponse);
 
     asyncValidationService.creation = asyncValidationServiceCreationSpy;
+    businessCalendarService.createOne = createBusinessCalendarSpy;
     counterpartyService.createMany = createCounterpartiesSpy;
     fixedFeeService.createMany = createFixedFeesSpy;
     obligationService.createMany = createObligationsSpy;
@@ -109,6 +118,7 @@ describe('GiftFacilityService.create - bad requests', () => {
       giftHttpService,
       logger,
       asyncValidationService,
+      businessCalendarService,
       counterpartyService,
       fixedFeeService,
       obligationService,
@@ -323,6 +333,7 @@ describe('GiftFacilityService.create - bad requests', () => {
 
       // Assert
       const expectedValidationErrors = mapAllValidationErrorResponses({
+        businessCalendars: mockResponse,
         counterparties: mockResponse,
         fixedFees: mockResponse,
         obligations: mockResponse,
