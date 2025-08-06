@@ -11,8 +11,8 @@ const {
 } = GIFT;
 
 /**
- * GIFT fixed fee DTO.
- * These fields are required for APIM to create a fixed fee in GIFT.
+ * GIFT "fixed fee" request DTO.
+ * These fields are required for APIM to create a "fixed fee" in GIFT.
  */
 export class GiftFixedFeeRequestDto {
   @IsDefined()
