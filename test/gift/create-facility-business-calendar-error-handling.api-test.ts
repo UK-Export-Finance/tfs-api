@@ -6,9 +6,6 @@ import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables'
 import { MockGiftResponse } from '@ukef-test/support/interfaces/mock-gift-response.interface';
 import nock from 'nock';
 
-// TODO
-// TODO
-// TODO
 import {
   apimFacilityUrl,
   approveStatusUrl,
