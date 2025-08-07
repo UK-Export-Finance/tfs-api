@@ -316,11 +316,13 @@ describe('GiftFacilityService.create - bad requests', () => {
 
     beforeEach(() => {
       // Arrange
+      createBusinessCalendarSpy = jest.fn().mockResolvedValueOnce(mockResponse);
       createCounterpartiesSpy = jest.fn().mockResolvedValueOnce(mockResponse);
       createFixedFeesSpy = jest.fn().mockResolvedValueOnce(mockResponse);
       createObligationsSpy = jest.fn().mockResolvedValueOnce(mockResponse);
       createRepaymentProfilesSpy = jest.fn().mockResolvedValueOnce(mockResponse);
 
+      businessCalendarService.createOne = createBusinessCalendarSpy;
       counterpartyService.createMany = createCounterpartiesSpy;
       fixedFeeService.createMany = createFixedFeesSpy;
       obligationService.createMany = createObligationsSpy;

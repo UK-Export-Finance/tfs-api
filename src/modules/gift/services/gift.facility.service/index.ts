@@ -161,7 +161,7 @@ export class GiftFacilityService {
       const repaymentProfiles = await this.giftRepaymentProfileService.createMany(repaymentProfilesPayload, facilityId, workPackageId);
 
       const giftValidationErrors = mapAllValidationErrorResponses({
-        businessCalendars: [defaultBusinessCalendar],
+        businessCalendars,
         counterparties,
         fixedFees,
         obligations,
