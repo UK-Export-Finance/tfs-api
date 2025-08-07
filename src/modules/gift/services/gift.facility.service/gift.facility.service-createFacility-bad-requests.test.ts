@@ -142,7 +142,7 @@ describe('GiftFacilityService.create - bad requests', () => {
       {
         status: HttpStatus.BAD_REQUEST,
         data: {
-          validationErrors: [{ message: 'mock validation error' }],
+          validationErrors: [{ message: 'Mock validation error' }],
         },
       },
     ] as AxiosResponse[];
@@ -308,19 +308,19 @@ describe('GiftFacilityService.create - bad requests', () => {
     const mockBadRequest = {
       status: HttpStatus.BAD_REQUEST,
       data: {
-        validationErrors: [{ message: 'mock validation error' }],
+        validationErrors: [{ message: 'Mock validation error' }],
       },
-    };
+    } as AxiosResponse;
 
-    const mockResponse = [mockBadRequest, mockBadRequest, mockBadRequest] as AxiosResponse[];
+    const mockResponses = [mockBadRequest, mockBadRequest, mockBadRequest] as AxiosResponse[];
 
     beforeEach(() => {
       // Arrange
-      createBusinessCalendarSpy = jest.fn().mockResolvedValueOnce(mockResponse);
-      createCounterpartiesSpy = jest.fn().mockResolvedValueOnce(mockResponse);
-      createFixedFeesSpy = jest.fn().mockResolvedValueOnce(mockResponse);
-      createObligationsSpy = jest.fn().mockResolvedValueOnce(mockResponse);
-      createRepaymentProfilesSpy = jest.fn().mockResolvedValueOnce(mockResponse);
+      createBusinessCalendarSpy = jest.fn().mockResolvedValueOnce(mockBadRequest);
+      createCounterpartiesSpy = jest.fn().mockResolvedValueOnce(mockResponses);
+      createFixedFeesSpy = jest.fn().mockResolvedValueOnce(mockResponses);
+      createObligationsSpy = jest.fn().mockResolvedValueOnce(mockResponses);
+      createRepaymentProfilesSpy = jest.fn().mockResolvedValueOnce(mockResponses);
 
       businessCalendarService.createOne = createBusinessCalendarSpy;
       counterpartyService.createMany = createCounterpartiesSpy;
@@ -335,11 +335,11 @@ describe('GiftFacilityService.create - bad requests', () => {
 
       // Assert
       const expectedValidationErrors = mapAllValidationErrorResponses({
-        businessCalendars: mockResponse,
-        counterparties: mockResponse,
-        fixedFees: mockResponse,
-        obligations: mockResponse,
-        repaymentProfiles: mockResponse,
+        businessCalendars: [mockBadRequest],
+        counterparties: mockResponses,
+        fixedFees: mockResponses,
+        obligations: mockResponses,
+        repaymentProfiles: mockResponses,
       });
 
       const expected = {
