@@ -31,7 +31,6 @@ export class GiftBusinessCalendarService {
   /**
    * Create a GIFT business calendar. Currently defaults to a London.
    * @param {CreateOneParams} facilityId, workPackageId, startDate, exitDate
-   * TODO update
    * @returns {Promise<AxiosResponse>}
    * @throws {Error}
    */
