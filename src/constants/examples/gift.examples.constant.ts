@@ -51,7 +51,7 @@ const COUNTERPARTY_ROLES_RESPONSE_DATA = {
  * NOTE:
  * - Each counterparty URN is unique.
  * - Counterparty sharePercentage is only required if a counterparty role has hasSharePercentage=true
- * @param {Boolean} withSharePercentage: Whether to return a sharePercentage field and alterantive roleCode
+ * @param {boolean} withSharePercentage: Whether to return a sharePercentage field and alterantive roleCode
  */
 const COUNTERPARTY = ({ withSharePercentage = false } = {}) => {
   const counterparty: GiftFacilityCounterpartyRequestDto = {
@@ -100,7 +100,7 @@ const FIXED_FEE = () => ({
 
 /**
  * Obligation example
- * @param {String} subtypeCode: Obligation subtype code
+ * @param {string} subtypeCode: Obligation subtype code
  * @returns {GiftObligationRequestDto}
  */
 const OBLIGATION = ({ subtypeCode = OBLIGATION_SUBTYPES.EXP01.code } = {}): GiftObligationRequestDto => ({

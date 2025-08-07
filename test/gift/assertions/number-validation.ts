@@ -6,12 +6,12 @@ import { assert400Response } from './response-assertion';
 
 /**
  * Validation tests for a number field with invalid values
- * @param {String} fieldName: The name of a field. E.g, amount
- * @param {Object} initialPayload: The payload to use before adding a field value
- * @param {Number} min: The minimum
- * @param {Number} max: The maximum
- * @param {String} parentFieldName: The name of a parent field. E.g parentObject
- * @param {String} url: The URL the tests will call.
+ * @param {string} fieldName: The name of a field. E.g, amount
+ * @param {object} initialPayload: The payload to use before adding a field value
+ * @param {number} min: The minimum
+ * @param {number} max: The maximum
+ * @param {string} parentFieldName: The name of a parent field. E.g parentObject
+ * @param {string} url: The URL the tests will call.
  */
 export const numberValidation = ({ fieldName, initialPayload, min, max, parentFieldName, url }) => {
   let api: Api;

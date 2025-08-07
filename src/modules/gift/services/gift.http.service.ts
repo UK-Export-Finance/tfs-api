@@ -55,7 +55,7 @@ export class GiftHttpService {
 
   /**
    * Execute a GET axios/HTTP request
-   * @param {String} path
+   * @param {string} path
    * @returns {Promise<AxiosResponse<T>>}
    */
   async get<T>({ path }: { path: string }): Promise<AxiosResponse<T>> {
@@ -72,8 +72,8 @@ export class GiftHttpService {
 
   /**
    * Execute a POST axios/HTTP request
-   * @param {String} path
-   * @param {Object} payload
+   * @param {string} path
+   * @param {object} payload
    * @returns {Promise<AxiosResponse<T>>}
    */
   async post<T>({ path, payload }: { path: string; payload?: object }): Promise<AxiosResponse<T>> {

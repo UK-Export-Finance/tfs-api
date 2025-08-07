@@ -24,8 +24,8 @@ export class GiftObligationService {
   /**
    * Create a GIFT obligation
    * @param {GiftObligationRequestDto} obligationData: Obligation data
-   * @param {String} facilityId: Facility ID
-   * @param {Number} workPackageId: Facility work package ID
+   * @param {string} facilityId: Facility ID
+   * @param {number} workPackageId: Facility work package ID
    * @returns {Promise<AxiosResponse>}
    * @throws {Error}
    */
@@ -49,8 +49,8 @@ export class GiftObligationService {
   /**
    * Create multiple GIFT obligations
    * @param {Array<GiftObligationRequestDto>} obligations: Obligations data
-   * @param {String} facilityId: Facility ID
-   * @param {Number} workPackageId: Facility work package ID
+   * @param {string} facilityId: Facility ID
+   * @param {number} workPackageId: Facility work package ID
    * @returns {Promise<Array<AxiosResponse>>}
    * @throws {Error}
    */

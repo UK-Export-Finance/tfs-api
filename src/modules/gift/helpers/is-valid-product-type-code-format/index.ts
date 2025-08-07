@@ -12,8 +12,8 @@ const {
 
 /**
  * Check if a product type code has a valid format.
- * @param {String} productTypeCode: Product type code
- * @returns {Boolean}
+ * @param {string} productTypeCode: Product type code
+ * @returns {boolean}
  */
 export const isValidProductTypeCodeFormat = (productTypeCode?: string): boolean => {
   if (productTypeCode && typeof productTypeCode === 'string') {

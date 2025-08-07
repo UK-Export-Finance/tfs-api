@@ -11,9 +11,9 @@ const UNSUPPORTED_ROLE_CODE = 'unsupported-role-id';
 
 /**
  * Validation tests for an array of objects - fee type code string field with invalid values
- * @param {Object} initialPayload: The payload to use before adding a field value
- * @param {String} parentFieldName: The name of a parent field. E.g parentObject
- * @param {String} url: The URL the tests will call.
+ * @param {object} initialPayload: The payload to use before adding a field value
+ * @param {string} parentFieldName: The name of a parent field. E.g parentObject
+ * @param {string} url: The URL the tests will call.
  */
 export const arrayOfObjectsRoleIdStringValidation = ({ initialPayload, parentFieldName, url }) => {
   let api: Api;

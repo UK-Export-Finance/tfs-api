@@ -51,7 +51,7 @@ export class GiftFacilityService {
 
   /**
    * Get a GIFT facility by ID
-   * @param {String} facilityId
+   * @param {string} facilityId
    * @returns {Promise<AxiosResponse>}
    */
   async get(facilityId: UkefId): Promise<AxiosResponse> {
@@ -93,7 +93,7 @@ export class GiftFacilityService {
   /**
    * Create a GIFT facility
    * @param {GiftFacilityCreationRequestDto} data: Facility data
-   * @param {String} facilityId: Facility ID
+   * @param {string} facilityId: Facility ID
    * @returns {Promise<CreateFacilityResponse>}
    * @throws {AxiosError | Error}
    */

@@ -5,7 +5,7 @@ import { GiftFacilityCreationRequestDto } from '../../../dto';
 /**
  * Get a single array from multiple entity field values
  * @param {object[]} entities
- * @param {String} fieldName: Name of the field to return
+ * @param {string} fieldName: Name of the field to return
  * @returns {String[] | Number[]}
  * @example
  * ```ts
@@ -24,7 +24,7 @@ export const mapEntitiesByField = (entities: object[], fieldName: string) => ent
  * This allows the validation checks to simply assert if an array contains X.
  * in addition to being able to return an index for improve messaging.
  * @param {GiftFacilityCreationRequestDto} payload: The facility creation payload
- * @param {String} fieldName: Name of the field to return in in the stripped payload
+ * @param {string} fieldName: Name of the field to return in in the stripped payload
  * @returns {GiftFacilityCreationValidationStrippedPayload}
  * @example
  * ```ts

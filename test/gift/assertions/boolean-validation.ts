@@ -6,10 +6,10 @@ import { assert400Response } from './response-assertion';
 
 /**
  * Validation tests for a boolean field with invalid values
- * @param {String} fieldName: The name of a field. E.g, isRevolving
- * @param {Object} initialPayload: The payload to use before adding a field value
- * @param {String} parentFieldName: The name of a parent field. E.g parentObject
- * @param {String} url: The URL the tests will call.
+ * @param {string} fieldName: The name of a field. E.g, isRevolving
+ * @param {object} initialPayload: The payload to use before adding a field value
+ * @param {string} parentFieldName: The name of a parent field. E.g parentObject
+ * @param {string} url: The URL the tests will call.
  */
 export const booleanValidation = ({ fieldName, initialPayload, parentFieldName, url }) => {
   let api: Api;

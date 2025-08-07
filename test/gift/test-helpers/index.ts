@@ -104,9 +104,9 @@ export const payloadRepaymentProfiles = Object.keys(GIFT_EXAMPLES.FACILITY_CREAT
 
 /**
  * Generate expected validation errors
- * @param {Object} payload: The payload that has been sent
- * @param {Object} expectedResponse: The expected response message and status
- * @param {String} entityName: The name of the payload entity
+ * @param {object} payload: The payload that has been sent
+ * @param {object} expectedResponse: The expected response message and status
+ * @param {string} entityName: The name of the payload entity
  * @returns {Array[Object]} Validation errors
  */
 export const getExpectedValidationErrors = (payload, expectedResponse, entityName) => {
