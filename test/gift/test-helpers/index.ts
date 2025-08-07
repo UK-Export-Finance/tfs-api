@@ -51,6 +51,7 @@ const iAmATeapot: MockGiftResponse = {
 
 export const mockResponses = {
   badRequest,
+  businessCalendar: { data: GIFT_EXAMPLES.BUSINESS_CALENDAR },
   counterparty: { data: { aCounterparty: true } },
   counterpartyRoles: GIFT_EXAMPLES.COUNTERPARTY_ROLES_RESPONSE_DATA,
   counterpartyRolesWithHasSharePercentage: {
@@ -87,11 +88,14 @@ export const facilityCreationUrl = PATH.CREATE_FACILITY;
 export const feeTypeUrl = PATH.FEE_TYPE;
 export const obligationSubtypeUrl = PATH.OBLIGATION_SUBTYPE;
 export const productTypeUrl = `${PATH.PRODUCT_TYPE}/${PRODUCT_TYPE_CODES.EXIP}`;
+export const businessCalendarUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_BUSINESS_CALENDAR}`;
 export const counterpartyUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_COUNTERPARTY}`;
 export const fixedFeeUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_FIXED_FEE}`;
 export const obligationUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_OBLIGATION}`;
 export const repaymentProfileUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_MANUAL_REPAYMENT_PROFILE}`;
 export const approveStatusUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.APPROVE}`;
+
+export const businessCalendar = GIFT_EXAMPLES.BUSINESS_CALENDAR;
 
 export const payloadCounterparties = Object.keys(GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD.counterparties);
 export const payloadFixedFees = Object.keys(GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD.fixedFees);
