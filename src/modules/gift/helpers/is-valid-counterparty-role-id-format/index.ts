@@ -10,8 +10,8 @@ const {
 
 /**
  * Check if a role ID has a valid format.
- * @param {String} roleCode: Role code
- * @returns {Boolean}
+ * @param {string} roleCode: Role code
+ * @returns {boolean}
  */
 export const isValidCounterpartyRoleIdFormat = (roleCode?: string): boolean => {
   if (roleCode && typeof roleCode === 'string') {

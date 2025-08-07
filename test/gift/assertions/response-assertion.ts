@@ -2,7 +2,7 @@ import { HttpStatus } from '@nestjs/common';
 
 /**
  * Check that a response is a 400 response.
- * @param {Object} response: The API response
+ * @param {object} response: The API response
  */
 export const assert400Response = (response) => {
   const { status, body } = response;

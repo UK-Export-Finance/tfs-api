@@ -10,7 +10,7 @@ const {
 } = EXAMPLES;
 
 /**
- * GIFT facility config POST response DTO.
+ * GIFT facility "config" POST response DTO.
  * This is subset of fields returned from GIFT when getting a facility work package.
  */
 export class GiftFacilityConfigPostResponseDto {

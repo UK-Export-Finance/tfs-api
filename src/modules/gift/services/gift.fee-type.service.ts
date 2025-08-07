@@ -3,7 +3,7 @@ import { GIFT } from '@ukef/constants';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 
-import { GiftFacilityFeeTypeResponse, GiftFacilityFeeTypeResponseDto } from '../dto';
+import { GiftFacilityFeeTypeResponse, GiftFeeTypeResponseDto } from '../dto';
 import { GiftHttpService } from './gift.http.service';
 
 const { PATH } = GIFT;
@@ -53,7 +53,7 @@ export class GiftFeeTypeService {
 
       const response = await this.getSupportedFeeTypes();
 
-      const codes = response.data?.feeTypes.map((role: GiftFacilityFeeTypeResponseDto) => role.code);
+      const codes = response.data?.feeTypes.map((role: GiftFeeTypeResponseDto) => role.code);
 
       return codes;
     } catch (error) {

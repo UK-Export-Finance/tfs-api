@@ -11,8 +11,8 @@ export interface GiftFacilityCounterpartyRolesResponse {
 }
 
 /**
- * GIFT facility counterparty role DTO.
- * These fields are returned by GIFT when getting counterparty roles.
+ * GIFT facility "counterparty role" response DTO.
+ * These fields are returned by GIFT when getting "counterparty roles".
  */
 export class GiftFacilityCounterpartyRoleResponseDto {
   @IsString()

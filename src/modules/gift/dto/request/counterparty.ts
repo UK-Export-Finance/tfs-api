@@ -13,8 +13,8 @@ const {
 const EXAMPLE = COUNTERPARTY({ withSharePercentage: true });
 
 /**
- * GIFT facility counterparty DTO.
- * These fields are required for APIM to create a facility counterparty in GIFT.
+ * GIFT "counterparty" request DTO.
+ * These fields are required for APIM to create a "counterparty" in GIFT.
  */
 export class GiftFacilityCounterpartyRequestDto {
   @IsDefined()

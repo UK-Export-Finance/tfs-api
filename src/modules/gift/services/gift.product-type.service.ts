@@ -22,7 +22,7 @@ export class GiftProductTypeService {
 
   /**
    * Get a GIFT product type
-   * @param {String} productTypeCode: Product type code
+   * @param {string} productTypeCode: Product type code
    * @returns {Promise<AxiosResponse>}
    * @throws {Error}
    */
@@ -44,7 +44,7 @@ export class GiftProductTypeService {
 
   /**
    * Check if a GIFT product type is supported
-   * @param {String} productTypeCode: Product type code
+   * @param {string} productTypeCode: Product type code
    * @returns {Promise<Boolean>}
    * @throws {Error}
    */

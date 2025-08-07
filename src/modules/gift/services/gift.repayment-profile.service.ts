@@ -24,8 +24,8 @@ export class GiftRepaymentProfileService {
   /**
    * Create a GIFT repayment profile
    * @param {GiftRepaymentProfileRequestDto} repaymentProfileData: Repayment profile data
-   * @param {String} facilityId: Facility ID
-   * @param {Number} workPackageId: Facility work package ID
+   * @param {string} facilityId: Facility ID
+   * @param {number} workPackageId: Facility work package ID
    * @returns {Promise<AxiosResponse>}
    * @throws {Error}
    */
@@ -49,8 +49,8 @@ export class GiftRepaymentProfileService {
   /**
    * Create multiple GIFT repayment profiles
    * @param {Array<GiftRepaymentProfileRequestDto>} repaymentProfilesData: Repayment profiles data
-   * @param {String} facilityId: Facility ID
-   * @param {Number} workPackageId: Facility work package ID
+   * @param {string} facilityId: Facility ID
+   * @param {number} workPackageId: Facility work package ID
    * @returns {Promise<Array<AxiosResponse>>}
    * @throws {Error}
    */

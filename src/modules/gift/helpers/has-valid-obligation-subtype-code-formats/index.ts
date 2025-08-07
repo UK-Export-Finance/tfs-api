@@ -13,7 +13,7 @@ const {
 /**
  * Check if an obligation's subtype code has a valid format.
  * @param {GiftObligationRequestDto} obligation
- * @returns {Boolean}
+ * @returns {boolean}
  */
 export const hasValidFormat = (obligation?: GiftObligationRequestDto) => {
   if (obligation?.subtypeCode && typeof obligation.subtypeCode === 'string') {
@@ -30,7 +30,7 @@ export const hasValidFormat = (obligation?: GiftObligationRequestDto) => {
 /**
  * Check if an array of obligations have valid subtype code formats.
  * @param {GiftObligationRequestDto[]} obligations: Array of obligations
- * @returns {Boolean}
+ * @returns {boolean}
  */
 export const hasValidObligationSubtypeCodeFormats = (obligations?: GiftObligationRequestDto[]): boolean => {
   const invalidFormats = [];

@@ -13,8 +13,8 @@ const {
 } = GIFT;
 
 /**
- * GIFT repayment profile allocation DTO.
- * These fields are required for APIM to create a repayment profile allocation in GIFT.
+ * GIFT "repayment profile allocation" request DTO.
+ * These fields are required for APIM to create a "repayment profile allocation" in GIFT.
  */
 export class GiftRepaymentProfileAllocationRequestDto {
   @IsDefined()

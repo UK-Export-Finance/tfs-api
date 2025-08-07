@@ -15,7 +15,7 @@ const {
 } = EXAMPLES;
 
 /**
- * GIFT facility creation DTO.
+ * GIFT facility creation request DTO.
  * These fields are required for APIM to create a fully populated facility in GIFT.
  */
 export class GiftFacilityCreationRequestDto {

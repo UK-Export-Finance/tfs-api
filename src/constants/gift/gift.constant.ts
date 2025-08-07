@@ -15,12 +15,14 @@ export const GIFT = {
     GUARANTOR: 'CRP013',
   },
   ENTITY_NAMES: {
+    BUSINESS_CALENDAR: 'Business calendar',
     COUNTERPARTY: 'Counterparty',
     FIXED_FEE: 'Fixed fee',
     OBLIGATION: 'Obligation',
     REPAYMENT_PROFILE: 'Repayment profile',
   },
   EVENT_TYPES: {
+    ADD_BUSINESS_CALENDAR: 'AddFacilityBusinessCalendar',
     ADD_COUNTERPARTY: 'AddFacilityCounterparty',
     ADD_MANUAL_REPAYMENT_PROFILE: 'AddManualRepaymentProfile',
     CREATE_FACILITY: 'CreateFacility',

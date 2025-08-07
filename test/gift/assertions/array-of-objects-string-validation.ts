@@ -6,12 +6,12 @@ import { assert400Response } from './response-assertion';
 
 /**
  * Validation tests for an array of objects - string field with invalid values
- * @param {String} fieldName: The name of a field. E.g, email
- * @param {Object} initialPayload: The payload to use before adding a field value
- * @param {Number} min: The minimum length
- * @param {Number} max: The maximum length
- * @param {String} parentFieldName: The name of a parent field. E.g parentObject
- * @param {String} url: The URL the tests will call.
+ * @param {string} fieldName: The name of a field. E.g, email
+ * @param {object} initialPayload: The payload to use before adding a field value
+ * @param {number} min: The minimum length
+ * @param {number} max: The maximum length
+ * @param {string} parentFieldName: The name of a parent field. E.g parentObject
+ * @param {string} url: The URL the tests will call.
  */
 export const arrayOfObjectsStringValidation = ({ fieldName, initialPayload, min, max, parentFieldName, url }) => {
   let api: Api;

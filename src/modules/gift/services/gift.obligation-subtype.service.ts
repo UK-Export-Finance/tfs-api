@@ -44,7 +44,7 @@ export class GiftObligationSubtypeService {
 
   /**
    * Get all GIFT obligation subtypes by product type
-   * @param {String} productTypeCode: Product type code
+   * @param {string} productTypeCode: Product type code
    * @returns {Promise<Array<GiftObligationSubtypeResponseDto>>}
    * @throws {Error}
    */

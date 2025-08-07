@@ -9,9 +9,9 @@ const { API_RESPONSE_MESSAGES } = GIFT;
 
 /**
  * Validation tests for an array of objects - sharePercentage field with invalid values
- * @param {String} parentFieldName: The name of a parent field. E.g parentObject
- * @param {Object} initialPayload: The payload to use before adding a field value
- * @param {String} url: The URL the tests will call.
+ * @param {string} parentFieldName: The name of a parent field. E.g parentObject
+ * @param {object} initialPayload: The payload to use before adding a field value
+ * @param {string} url: The URL the tests will call.
  */
 export const arrayOfObjectsSharePercentageValidation = ({ parentFieldName, initialPayload, url }) => {
   let api: Api;

@@ -11,8 +11,8 @@ const {
 } = GIFT;
 
 /**
- * GIFT obligation DTO.
- * These fields are required for APIM to create an obligation in GIFT.
+ * GIFT "obligation" request DTO.
+ * These fields are required for APIM to create an "obligation" in GIFT.
  */
 export class GiftObligationRequestDto {
   @IsDefined()

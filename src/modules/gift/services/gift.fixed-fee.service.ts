@@ -24,8 +24,8 @@ export class GiftFixedFeeService {
   /**
    * Create a GIFT fixed fee
    * @param {GiftFixedFeeRequestDto} payload: Fixed fee data
-   * @param {String} facilityId: Facility ID
-   * @param {Number} workPackageId: Facility work package ID
+   * @param {string} facilityId: Facility ID
+   * @param {number} workPackageId: Facility work package ID
    * @returns {Promise<AxiosResponse>}
    * @throws {Error}
    */
@@ -49,8 +49,8 @@ export class GiftFixedFeeService {
   /**
    * Create multiple GIFT fixed fees
    * @param {Array<GiftFixedFeeRequestDto>} fixedFeesData: Fixed fees data
-   * @param {String} facilityId: Facility ID
-   * @param {Number} workPackageId: Facility work package ID
+   * @param {string} facilityId: Facility ID
+   * @param {number} workPackageId: Facility work package ID
    * @returns {Promise<Array<AxiosResponse>>}
    * @throws {Error}
    */

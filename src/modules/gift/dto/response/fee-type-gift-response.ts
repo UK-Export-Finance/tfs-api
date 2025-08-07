@@ -7,14 +7,14 @@ const {
 } = EXAMPLES;
 
 export interface GiftFacilityFeeTypeResponse {
-  feeTypes: GiftFacilityFeeTypeResponseDto[];
+  feeTypes: GiftFeeTypeResponseDto[];
 }
 
 /**
- * GIFT facility fee type DTO.
+ * GIFT facility "fee type" response DTO.
  * These fields are returned by GIFT when getting fee types
  */
-export class GiftFacilityFeeTypeResponseDto {
+export class GiftFeeTypeResponseDto {
   @IsString()
   @ApiProperty({
     example: FEE_TYPES.BEX.code,

@@ -9,6 +9,7 @@ import nock from 'nock';
 import {
   apimFacilityUrl,
   approveStatusUrl,
+  businessCalendarUrl,
   counterpartyRolesUrl,
   counterpartyUrl,
   currencyUrl,
@@ -44,6 +45,8 @@ const setupMocks = (obligationResponse: MockGiftResponse) => {
   nock(GIFT_API_URL).persist().get(obligationSubtypeUrl).reply(HttpStatus.OK, mockResponses.obligationSubtype);
 
   nock(GIFT_API_URL).post(facilityCreationUrl).reply(HttpStatus.CREATED, mockResponses.facility);
+
+  nock(GIFT_API_URL).persist().post(businessCalendarUrl).reply(HttpStatus.CREATED, mockResponses.businessCalendar);
 
   nock(GIFT_API_URL).persist().post(counterpartyUrl).reply(HttpStatus.CREATED, mockResponses.counterparty);
 

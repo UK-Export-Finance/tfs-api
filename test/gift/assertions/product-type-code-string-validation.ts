@@ -17,9 +17,9 @@ const UNSUPPORTED_PRODUCT_TYPE_CODE = 'ABC';
 
 /**
  * Validation tests for a product type code string field with an unsupported product type code and invalid values
- * @param {Object} initialPayload: The payload to use before adding a field value
- * @param {String} parentFieldName: The name of a parent field. E.g parentObject
- * @param {String} url: The URL the tests will call.
+ * @param {object} initialPayload: The payload to use before adding a field value
+ * @param {string} parentFieldName: The name of a parent field. E.g parentObject
+ * @param {string} url: The URL the tests will call.
  */
 export const productTypeCodeStringValidation = ({ initialPayload, parentFieldName, url }) => {
   let api: Api;

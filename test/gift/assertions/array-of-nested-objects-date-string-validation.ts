@@ -7,11 +7,11 @@ import { assert400Response } from './response-assertion';
 
 /**
  * Validation tests for a nested array of objects - date string field with invalid values
- * @param {String} fieldName: The name of a field. E.g, email
- * @param {String} parentFieldName: The name of a parent field. E.g parentObject
- * @param {String} grandParentFieldName: The name of a parent field. E.g grandParentObject
- * @param {Object} initialPayload: The payload to use before adding a field value
- * @param {String} url: The URL the tests will call.
+ * @param {string} fieldName: The name of a field. E.g, email
+ * @param {string} parentFieldName: The name of a parent field. E.g parentObject
+ * @param {string} grandParentFieldName: The name of a parent field. E.g grandParentObject
+ * @param {object} initialPayload: The payload to use before adding a field value
+ * @param {string} url: The URL the tests will call.
  */
 export const arrayOfNestedObjectsDateStringValidation = ({ fieldName, grandParentFieldName, parentFieldName, initialPayload, url }) => {
   let api: Api;
