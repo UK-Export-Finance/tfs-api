@@ -102,7 +102,7 @@ describe('GiftBusinessCalendarService', () => {
         });
 
         // Assert
-        const expected = new Error(`Error creating a business calendar with for facility ${mockFacilityId}`);
+        const expected = new Error(`Error creating a business calendar for facility ${mockFacilityId}`);
 
         await expect(promise).rejects.toThrow(expected);
       });
