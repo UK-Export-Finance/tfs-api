@@ -6,7 +6,7 @@ import { PinoLogger } from 'nestjs-pino';
 import { GiftBusinessCalendarService } from './gift.business-calendar.service';
 
 const {
-  GIFT: { BUSINESS_CALENDAR, COUNTERPARTY, COUNTERPARTY_ROLE, FACILITY_ID: mockFacilityId, WORK_PACKAGE_ID: mockWorkPackageId },
+  GIFT: { BUSINESS_CALENDAR, COUNTERPARTY_ROLE, FACILITY_ID: mockFacilityId, WORK_PACKAGE_ID: mockWorkPackageId },
 } = EXAMPLES;
 
 const { EVENT_TYPES, PATH } = GIFT;
@@ -49,8 +49,6 @@ describe('GiftBusinessCalendarService', () => {
   });
 
   describe('createOne', () => {
-    const mockCounterparty = COUNTERPARTY();
-
     it('should call giftHttpService.post', async () => {
       // Act
       await service.createOne({
@@ -64,8 +62,8 @@ describe('GiftBusinessCalendarService', () => {
       expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
 
       expect(mockHttpServicePost).toHaveBeenCalledWith({
-        path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_COUNTERPARTY}`,
-        payload: mockCounterparty,
+        path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_BUSINESS_CALENDAR}`,
+        payload: BUSINESS_CALENDAR,
       });
     });
 
