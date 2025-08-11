@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { EXAMPLES } from '@ukef/constants';
-import { IsDateString, IsDefined, IsString } from 'class-validator';
+import { IsDateString, IsString } from 'class-validator';
 
 const {
   GIFT: { BUSINESS_CALENDAR },
@@ -11,7 +11,6 @@ const {
  * These fields are required for APIM to create a "business calendar" in GIFT.
  */
 export class GiftBusinessCalendarResponseDto {
-  @IsDefined()
   @IsString()
   @ApiProperty({
     example: BUSINESS_CALENDAR.centreCode,
@@ -19,7 +18,6 @@ export class GiftBusinessCalendarResponseDto {
   })
   centreCode: string;
 
-  @IsDefined()
   @IsDateString()
   @ApiProperty({
     example: BUSINESS_CALENDAR.startDate,
@@ -27,7 +25,6 @@ export class GiftBusinessCalendarResponseDto {
   })
   startDate: string;
 
-  @IsDefined()
   @IsDateString()
   @ApiProperty({
     example: BUSINESS_CALENDAR.exitDate,
