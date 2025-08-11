@@ -7,10 +7,10 @@ const {
 } = EXAMPLES;
 
 /**
- * GIFT "business calendar" request DTO.
+ * GIFT "business calendar" response DTO.
  * These fields are required for APIM to create a "business calendar" in GIFT.
  */
-export class GiftBusinessCalendarRequestDto {
+export class GiftBusinessCalendarResponseDto {
   @IsDefined()
   @IsString()
   @ApiProperty({

@@ -3,7 +3,7 @@ import { BUSINESS_CALENDAR, GIFT } from '@ukef/constants';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 
-import { GiftBusinessCalendarRequestDto } from '../dto';
+import { GiftBusinessCalendarResponseDto } from '../dto';
 import { GiftHttpService } from './gift.http.service';
 
 const { EVENT_TYPES, PATH } = GIFT;
@@ -38,7 +38,7 @@ export class GiftBusinessCalendarService {
     try {
       this.logger.info('Creating a business calendar for facility %s', facilityId);
 
-      const response = await this.giftHttpService.post<GiftBusinessCalendarRequestDto>({
+      const response = await this.giftHttpService.post<GiftBusinessCalendarResponseDto>({
         path: `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_BUSINESS_CALENDAR}`,
         payload: {
           centreCode: BUSINESS_CALENDAR.LONDON.CODE,
