@@ -20,6 +20,12 @@ const FACILITY_ID: UkefId = '0030000321';
 
 const WORK_PACKAGE_ID = 123;
 
+const BUSINESS_CALENDAR = {
+  centreCode: 'GB_LON',
+  startDate: '2025-01-01',
+  exitDate: '2027-02-01',
+};
+
 /**
  * Example counterparty roles.
  */
@@ -45,7 +51,7 @@ const COUNTERPARTY_ROLES_RESPONSE_DATA = {
  * NOTE:
  * - Each counterparty URN is unique.
  * - Counterparty sharePercentage is only required if a counterparty role has hasSharePercentage=true
- * @param {Boolean} withSharePercentage: Whether to return a sharePercentage field and alterantive roleCode
+ * @param {boolean} withSharePercentage: Whether to return a sharePercentage field and alterantive roleCode
  */
 const COUNTERPARTY = ({ withSharePercentage = false } = {}) => {
   const counterparty: GiftFacilityCounterpartyRequestDto = {
@@ -94,7 +100,7 @@ const FIXED_FEE = () => ({
 
 /**
  * Obligation example
- * @param {String} subtypeCode: Obligation subtype code
+ * @param {string} subtypeCode: Obligation subtype code
  * @returns {GiftObligationRequestDto}
  */
 const OBLIGATION = ({ subtypeCode = OBLIGATION_SUBTYPES.EXP01.code } = {}): GiftObligationRequestDto => ({
@@ -208,6 +214,7 @@ const WORK_PACKAGE_APPROVE_RESPONSE_DATA = {
 };
 
 export const GIFT_EXAMPLES = {
+  BUSINESS_CALENDAR,
   COUNTERPARTY,
   COUNTERPARTY_ROLE,
   COUNTERPARTY_ROLES_RESPONSE_DATA,

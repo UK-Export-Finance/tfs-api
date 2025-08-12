@@ -22,8 +22,8 @@ export class GiftStatusService {
 
   /**
    * Set a GIFT facility work package as approved
-   * @param {String} facilityId: Facility ID
-   * @param {Number} workPackageId: Facility work package ID
+   * @param {string} facilityId: Facility ID
+   * @param {number} workPackageId: Facility work package ID
    * @returns {Promise<AxiosResponse>}
    * @throws {Error}
    */

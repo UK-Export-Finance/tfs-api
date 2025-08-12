@@ -9,12 +9,12 @@ const INVALID_UKEF_IDS = ['0123456789', '0123456700', '1123456789', '8765432100'
 
 /**
  * Validation tests for a UKEF ID field with invalid values
- * @param {String} fieldName: The name of a field. E.g, email
- * @param {Object} initialPayload: The payload to use before adding a field value
- * @param {Number} min: The minimum length
- * @param {Number} max: The maximum length
- * @param {String} parentFieldName: The name of a parent field. E.g parentObject
- * @param {String} url: The URL the tests will call.
+ * @param {string} fieldName: The name of a field. E.g, email
+ * @param {object} initialPayload: The payload to use before adding a field value
+ * @param {number} min: The minimum length
+ * @param {number} max: The maximum length
+ * @param {string} parentFieldName: The name of a parent field. E.g parentObject
+ * @param {string} url: The URL the tests will call.
  */
 export const ukefIdValidation = ({ fieldName, initialPayload, min, max, parentFieldName, url }) => {
   let api: Api;

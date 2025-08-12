@@ -3,8 +3,8 @@ import { AxiosError, AxiosHeaders } from 'axios';
 
 /**
  * Mock 200 response
- * @param {Object} data
- * @returns {Object}
+ * @param {object} data
+ * @returns {object}
  */
 export const mockResponse200 = (data: object = {}) => ({
   status: HttpStatus.OK,
@@ -14,7 +14,7 @@ export const mockResponse200 = (data: object = {}) => ({
 /**
  * Mock 201 response
  * @param {Object | Array<any>} data
- * @returns {Object}
+ * @returns {object}
  */
 export const mockResponse201 = (data: object | Array<any> = {}) => ({
   status: HttpStatus.CREATED,
@@ -23,7 +23,7 @@ export const mockResponse201 = (data: object | Array<any> = {}) => ({
 
 /**
  * Mock 400 response
- * @returns {Object}
+ * @returns {object}
  */
 export const mockResponse400 = () => ({
   status: HttpStatus.BAD_REQUEST,
@@ -31,7 +31,7 @@ export const mockResponse400 = () => ({
 
 /**
  * Mock 404 response
- * @returns {Object}
+ * @returns {object}
  */
 export const mockResponse404 = () => ({
   status: HttpStatus.NOT_FOUND,
@@ -39,7 +39,7 @@ export const mockResponse404 = () => ({
 
 /**
  * Mock 418 response
- * @returns {Object}
+ * @returns {object}
  */
 export const mockResponse418 = () => ({
   status: HttpStatus.I_AM_A_TEAPOT,
@@ -47,7 +47,7 @@ export const mockResponse418 = () => ({
 
 /**
  * Mock 500 response
- * @returns {Object}
+ * @returns {object}
  */
 export const mockResponse500 = () => ({
   status: HttpStatus.INTERNAL_SERVER_ERROR,
@@ -55,8 +55,8 @@ export const mockResponse500 = () => ({
 
 /**
  * Mock Axios error.
- * @param {Number} status
- * @param {Object} data
+ * @param {number} status
+ * @param {object} data
  * @returns {AxiosError}
  */
 export const mockAxiosError = ({ status = HttpStatus.CREATED, data = {} } = {}): AxiosError => {

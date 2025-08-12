@@ -7,10 +7,10 @@ import { assert400Response } from './response-assertion';
 
 /**
  * Validation tests for an array of objects - date string field (ISO_639-1) with invalid values
- * @param {String} fieldName: The name of a field. E.g, email
- * @param {Object} initialPayload: The payload to use before adding a field value
- * @param {String} parentFieldName: The name of a parent field. E.g parentObject
- * @param {String} url: The URL the tests will call.
+ * @param {string} fieldName: The name of a field. E.g, email
+ * @param {object} initialPayload: The payload to use before adding a field value
+ * @param {string} parentFieldName: The name of a parent field. E.g parentObject
+ * @param {string} url: The URL the tests will call.
  */
 export const arrayOfObjectsDateStringValidation = ({ fieldName, initialPayload, parentFieldName, url }) => {
   let api: Api;

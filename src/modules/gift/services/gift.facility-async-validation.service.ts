@@ -45,8 +45,8 @@ export class GiftFacilityAsyncValidationService {
   /**
    * Custom async validation for GIFT facility creation
    * @param {GiftFacilityCreationRequestDto} payload: The facility creation payload
-   * @param {String} facilityId: Facility ID
-   * @returns {Object}
+   * @param {string} facilityId: Facility ID
+   * @returns {object}
    */
   async creation(payload: GiftFacilityCreationRequestDto, facilityId: string) {
     try {

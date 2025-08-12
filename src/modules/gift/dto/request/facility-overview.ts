@@ -15,7 +15,7 @@ const {
 } = GIFT;
 
 /**
- * GIFT facility overview DTO.
+ * GIFT facility overview request DTO.
  * These fields are required for APIM to create a high level facility data in GIFT.
  */
 export class GiftFacilityOverviewRequestDto {

@@ -6,7 +6,7 @@ import { GIFT } from '../../../../constants/gift/gift.constant';
 const { OBLIGATION_SUBTYPES } = GIFT;
 
 /**
- * GIFT obligation subtype DTO.
+ * GIFT "obligation subtype" response DTO.
  * These fields are returned from GIFT when getting an obligation subtype
  */
 export class GiftObligationSubtypeResponseDto {

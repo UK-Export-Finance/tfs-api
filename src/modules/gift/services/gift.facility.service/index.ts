@@ -6,6 +6,7 @@ import { PinoLogger } from 'nestjs-pino';
 
 import { GiftFacilityCreationRequestDto, GiftFacilityOverviewRequestDto } from '../../dto';
 import { mapAllValidationErrorResponses, mapResponsesData } from '../../helpers';
+import { GiftBusinessCalendarService } from '../gift.business-calendar.service';
 import { GiftCounterpartyService } from '../gift.counterparty.service';
 import { GiftFacilityAsyncValidationService } from '../gift.facility-async-validation.service';
 import { GiftFixedFeeService } from '../gift.fixed-fee.service';
@@ -31,6 +32,7 @@ export class GiftFacilityService {
     private readonly giftHttpService: GiftHttpService,
     private readonly logger: PinoLogger,
     private readonly asyncValidationService: GiftFacilityAsyncValidationService,
+    private readonly giftBusinessCalendarService: GiftBusinessCalendarService,
     private readonly giftCounterpartyService: GiftCounterpartyService,
     private readonly giftFixedFeeService: GiftFixedFeeService,
     private readonly giftObligationService: GiftObligationService,
@@ -39,6 +41,7 @@ export class GiftFacilityService {
   ) {
     this.giftHttpService = giftHttpService;
     this.asyncValidationService = asyncValidationService;
+    this.giftBusinessCalendarService = giftBusinessCalendarService;
     this.giftCounterpartyService = giftCounterpartyService;
     this.giftFixedFeeService = giftFixedFeeService;
     this.giftObligationService = giftObligationService;
@@ -48,7 +51,7 @@ export class GiftFacilityService {
 
   /**
    * Get a GIFT facility by ID
-   * @param {String} facilityId
+   * @param {string} facilityId
    * @returns {Promise<AxiosResponse>}
    */
   async get(facilityId: UkefId): Promise<AxiosResponse> {
@@ -90,7 +93,7 @@ export class GiftFacilityService {
   /**
    * Create a GIFT facility
    * @param {GiftFacilityCreationRequestDto} data: Facility data
-   * @param {String} facilityId: Facility ID
+   * @param {string} facilityId: Facility ID
    * @returns {Promise<CreateFacilityResponse>}
    * @throws {AxiosError | Error}
    */
@@ -138,6 +141,16 @@ export class GiftFacilityService {
       }
 
       const { workPackageId } = facility;
+      const { effectiveDate, expiryDate } = overview;
+
+      const defaultBusinessCalendar = await this.giftBusinessCalendarService.createOne({
+        facilityId,
+        workPackageId,
+        startDate: effectiveDate,
+        exitDate: expiryDate,
+      });
+
+      const businessCalendars = [defaultBusinessCalendar];
 
       const counterparties = await this.giftCounterpartyService.createMany(counterpartiesPayload, facilityId, workPackageId);
 
@@ -148,6 +161,7 @@ export class GiftFacilityService {
       const repaymentProfiles = await this.giftRepaymentProfileService.createMany(repaymentProfilesPayload, facilityId, workPackageId);
 
       const giftValidationErrors = mapAllValidationErrorResponses({
+        businessCalendars,
         counterparties,
         fixedFees,
         obligations,
@@ -203,6 +217,7 @@ export class GiftFacilityService {
         data: {
           ...facility.configurationEvent.data,
           state: approvedStatusResponse.data.state,
+          businessCalendars: mapResponsesData(businessCalendars),
           counterparties: mapResponsesData(counterparties),
           fixedFees: mapResponsesData(fixedFees),
           obligations: mapResponsesData(obligations),

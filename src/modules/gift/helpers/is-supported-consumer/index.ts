@@ -4,7 +4,7 @@ const { CONSUMER } = GIFT;
 
 /**
  * Check if a consumer is supported
- * @param {String} consumer: Consumer
- * @returns {Boolean}
+ * @param {string} consumer: Consumer
+ * @returns {boolean}
  */
 export const isSupportedConsumer = (consumer: string): boolean => Boolean(CONSUMER[`${consumer}`]);
