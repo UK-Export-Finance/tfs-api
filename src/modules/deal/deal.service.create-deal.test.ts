@@ -178,7 +178,7 @@ describe('DealService', () => {
       it('does not update the borrowing restriction for the deal if creating the deal throws an error', async () => {
         when(acbsDealServiceCreateDeal)
           .calledWith(portfolioIdentifier, expectedDealToCreateInAcbs, idToken)
-          .mockRejectedValueOnce(new Error('Simulated error for test.'));
+          .mockRejectedValue(new Error('Simulated error for test.'));
 
         await service.createDeal(dealToCreate).catch(() => {
           // ignored for test
@@ -190,7 +190,7 @@ describe('DealService', () => {
       it('throws an InternalServerErrorException if the ACBS service throws an error', async () => {
         const { dealIdentifier } = dealToCreate;
         const acbsServiceError = new Error('Simulated error for test.');
-        when(updateDealBorrowingRestriction).calledWith(dealIdentifier).mockRejectedValueOnce(acbsServiceError);
+        when(updateDealBorrowingRestriction).calledWith(dealIdentifier).mockRejectedValue(acbsServiceError);
 
         const createDealPromise = service.createDeal(dealToCreate);
 

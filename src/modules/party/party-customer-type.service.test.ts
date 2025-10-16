@@ -94,7 +94,7 @@ describe('PartyCustomerTypeService', () => {
     {
       description: 'when the MdmService throws a MdmResourceNotFoundException',
       setUpScenario: () =>
-        when(findCustomersByPartyUrn).calledWith(alternateIdentifier).mockRejectedValueOnce(new MdmResourceNotFoundException('Test error', new AxiosError())),
+        when(findCustomersByPartyUrn).calledWith(alternateIdentifier).mockRejectedValue(new MdmResourceNotFoundException('Test error', new AxiosError())),
     },
   ])('$description', ({ setUpScenario }) => {
     beforeEach(() => {
@@ -126,7 +126,7 @@ describe('PartyCustomerTypeService', () => {
   describe('when the MdmService throws an MdmException that is not MdmResourceNotFoundException', () => {
     it('throws the MdmException', async () => {
       const mdmException = new MdmException('Test error');
-      when(findCustomersByPartyUrn).calledWith(alternateIdentifier).mockRejectedValueOnce(mdmException);
+      when(findCustomersByPartyUrn).calledWith(alternateIdentifier).mockRejectedValue(mdmException);
 
       const getCustomerTypePromise = service.getCustomerTypeForPartyFromAlternateIdentifier({
         alternateIdentifier,

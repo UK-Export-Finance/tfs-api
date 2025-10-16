@@ -128,7 +128,7 @@ describe('RetryingAcbsAuthenticationService', () => {
     const arrayOfLengthTimes = new Array(times).fill(0);
     const errors = arrayOfLengthTimes.map((_value, index) => new Error(`Error number ${index + 1}`));
     errors.forEach((error) => {
-      when(acbsAuthenticationServiceGetIdToken).calledWith().mockRejectedValueOnce(error);
+      when(acbsAuthenticationServiceGetIdToken).calledWith().mockRejectedValue(error);
     });
     return { allErrors: errors, lastError: errors[times - 1] };
   };

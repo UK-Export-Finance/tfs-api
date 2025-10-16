@@ -72,7 +72,7 @@ describe('CachingAcbsAuthenticationService', () => {
 
       it('returns a new id token from the AcbsAuthenticationService if storing it in the cache DOES error', async () => {
         const cacheManagerSetError = new Error('Test error');
-        cacheManagerSet.mockRejectedValueOnce(cacheManagerSetError);
+        cacheManagerSet.mockRejectedValue(cacheManagerSetError);
 
         const idToken = await service.getIdToken();
 
@@ -89,7 +89,7 @@ describe('CachingAcbsAuthenticationService', () => {
 
       it('logs that storing the id token in the cache failed at WARN level if storing it in the cache DOES error', async () => {
         const cacheManagerSetError = new Error('Test error');
-        cacheManagerSet.mockRejectedValueOnce(cacheManagerSetError);
+        cacheManagerSet.mockRejectedValue(cacheManagerSetError);
 
         await service.getIdToken();
 
@@ -117,7 +117,7 @@ describe('CachingAcbsAuthenticationService', () => {
       it('throws the same error as the AcbsAuthenticationService if it errors', async () => {
         const getIdTokenError = new Error('Test error');
         acbsAuthenticationServiceGetIdToken.mockReset();
-        when(acbsAuthenticationServiceGetIdToken).calledWith().mockRejectedValueOnce(getIdTokenError);
+        when(acbsAuthenticationServiceGetIdToken).calledWith().mockRejectedValue(getIdTokenError);
 
         const getIdTokenPromise = service.getIdToken();
 
@@ -138,7 +138,7 @@ describe('CachingAcbsAuthenticationService', () => {
 
       beforeEach(() => {
         error = new Error('Test error');
-        when(cacheManagerGet).calledWith(ACBS_ID_TOKEN_CACHE_KEY).mockRejectedValueOnce(error);
+        when(cacheManagerGet).calledWith(ACBS_ID_TOKEN_CACHE_KEY).mockRejectedValue(error);
       });
 
       it('logs that trying to get the id token from the cache failed at WARN level', async () => {
