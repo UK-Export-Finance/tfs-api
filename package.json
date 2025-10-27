@@ -52,7 +52,7 @@
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.1.6",
     "@nestjs/passport": "^10.0.3",
-    "@nestjs/platform-express": "^11.1.6",
+    "@nestjs/platform-express": "^11.1.7",
     "@nestjs/swagger": "^7.4.2",
     "axios": "^1.11.0",
     "cache-manager": "^5.7.6",
