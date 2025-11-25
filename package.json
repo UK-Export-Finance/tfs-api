@@ -75,7 +75,7 @@
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^20.0.0",
-    "@nestjs/cli": "^11.0.10",
+    "@nestjs/cli": "^11.0.12",
     "@nestjs/schematics": "^11.0.9",
     "@nestjs/testing": "^11.1.9",
     "@tsconfig/node21": "^21.0.6",
@@ -113,7 +113,7 @@
     "jest": "29.7.0",
     "jest-when": "^3.7.0",
     "lint-staged": "^16.2.6",
-    "markdownlint-cli": "^0.45.0",
+    "markdownlint-cli": "^0.46.0",
     "nock": "13.5.6",
     "pino-pretty": "^13.1.2",
     "prettier": "^3.6.2",
