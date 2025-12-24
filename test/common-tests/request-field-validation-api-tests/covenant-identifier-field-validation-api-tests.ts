@@ -5,11 +5,10 @@ import { StringFieldValidationApiTestOptions, withStringFieldValidationApiTests 
 
 type CovenantIdentifierFieldName = 'covenantIdentifier';
 
-interface CovenantIdentifierFieldValidationApiTestOptions<RequestBodyItem extends { covenantIdentifier: string }>
-  extends Pick<
-    StringFieldValidationApiTestOptions<RequestBodyItem, CovenantIdentifierFieldName>,
-    'validRequestBody' | 'makeRequest' | 'givenAnyRequestBodyWouldSucceed'
-  > {
+interface CovenantIdentifierFieldValidationApiTestOptions<RequestBodyItem extends { covenantIdentifier: string }> extends Pick<
+  StringFieldValidationApiTestOptions<RequestBodyItem, CovenantIdentifierFieldName>,
+  'validRequestBody' | 'makeRequest' | 'givenAnyRequestBodyWouldSucceed'
+> {
   valueGenerator: RandomValueGenerator;
 }
 
