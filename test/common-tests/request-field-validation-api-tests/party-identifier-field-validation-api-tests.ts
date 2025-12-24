@@ -7,9 +7,9 @@ interface PartyIdentifierFieldValidationApiTestOptions<
   RequestBodyItem extends Record<PartyIdentifierFieldName, string>,
   PartyIdentifierFieldName extends keyof any,
 > extends Pick<
-    StringFieldValidationApiTestOptions<RequestBodyItem, PartyIdentifierFieldName>,
-    'fieldName' | 'validRequestBody' | 'makeRequest' | 'givenAnyRequestBodyWouldSucceed'
-  > {
+  StringFieldValidationApiTestOptions<RequestBodyItem, PartyIdentifierFieldName>,
+  'fieldName' | 'validRequestBody' | 'makeRequest' | 'givenAnyRequestBodyWouldSucceed'
+> {
   valueGenerator: RandomValueGenerator;
 }
 
