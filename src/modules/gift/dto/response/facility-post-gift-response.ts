@@ -6,8 +6,15 @@ import { IsNumber, IsObject } from 'class-validator';
 import { GiftFacilityConfigPostResponseDto } from './facility-post-gift-config-response-event';
 
 const {
-  GIFT: { FACILITY_RESPONSE_DATA: EXAMPLE },
+  GIFT: { FACILITY_RESPONSE_DATA },
 } = EXAMPLES;
+
+const EXAMPLE = FACILITY_RESPONSE_DATA as {
+  configurationEvent: {
+    data: unknown;
+  };
+  workPackageId: number;
+};
 
 /**
  * GIFT facility response DTO.
