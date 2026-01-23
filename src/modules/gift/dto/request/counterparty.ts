@@ -10,7 +10,13 @@ const {
   VALIDATION: { COUNTERPARTY: VALIDATION },
 } = GIFT;
 
-const EXAMPLE = COUNTERPARTY({ withSharePercentage: true });
+const EXAMPLE = COUNTERPARTY({ withSharePercentage: true }) as {
+  counterpartyUrn: string;
+  exitDate: string;
+  roleCode: string;
+  sharePercentage?: number;
+  startDate: string;
+};
 
 /**
  * GIFT "counterparty" request DTO.
