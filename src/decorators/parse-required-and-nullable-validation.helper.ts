@@ -40,7 +40,7 @@ const getAllowedNullishValuesForProperty = (currentObject: Record<string, unknow
   return allowedNullishValues;
 };
 
-interface RequiredAndNullable<> {
+interface RequiredAndNullable {
   required: RequiredOption;
   nullable: NullableOption;
 }

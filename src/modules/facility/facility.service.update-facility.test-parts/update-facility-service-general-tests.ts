@@ -44,7 +44,7 @@ export const withUpdateFacilityServiceGeneralTests = <T>({
 
       await expect(amendFacilityExpiryDateByIdentifier).rejects.toBeInstanceOf(AcbsException);
       expect(getAcbsFacilityServiceGetFacilityByIdentifierMock()).toHaveBeenCalledTimes(1);
-      expect(getAcbsUpdateMethodMock()).toHaveBeenCalledTimes(0);
+      expect(getAcbsUpdateMethodMock()).not.toHaveBeenCalled();
     });
   });
 };
