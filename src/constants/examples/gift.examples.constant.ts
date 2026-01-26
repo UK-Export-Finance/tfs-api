@@ -53,7 +53,7 @@ const COUNTERPARTY_ROLES_RESPONSE_DATA = {
  * - Counterparty sharePercentage is only required if a counterparty role has hasSharePercentage=true
  * @param {boolean} withSharePercentage: Whether to return a sharePercentage field and alterantive roleCode
  */
-const COUNTERPARTY = ({ withSharePercentage = false } = {}) => {
+const COUNTERPARTY = ({ withSharePercentage = false } = {}): GiftFacilityCounterpartyRequestDto => {
   const counterparty: GiftFacilityCounterpartyRequestDto = {
     counterpartyUrn: chance.string({
       length: VALIDATION.COUNTERPARTY.COUNTERPARTY_URN.MAX_LENGTH,

@@ -10,6 +10,14 @@ const {
   VALIDATION: { OBLIGATION: VALIDATION },
 } = GIFT;
 
+const EXAMPLE = OBLIGATION() as {
+  currency: string;
+  effectiveDate: string;
+  maturityDate: string;
+  amount: number;
+  subtypeCode: string;
+};
+
 /**
  * GIFT "obligation" request DTO.
  * These fields are required for APIM to create an "obligation" in GIFT.
@@ -19,7 +27,7 @@ export class GiftObligationRequestDto {
   @IsString()
   @Length(VALIDATION.CURRENCY.MIN_LENGTH, VALIDATION.CURRENCY.MAX_LENGTH)
   @ApiProperty({
-    example: OBLIGATION().currency,
+    example: EXAMPLE.currency,
     required: true,
   })
   currency: string;
@@ -27,7 +35,7 @@ export class GiftObligationRequestDto {
   @IsDefined()
   @IsDateString()
   @ApiProperty({
-    example: OBLIGATION().effectiveDate,
+    example: EXAMPLE.effectiveDate,
     required: true,
   })
   effectiveDate: string;
@@ -35,7 +43,7 @@ export class GiftObligationRequestDto {
   @IsDefined()
   @IsDateString()
   @ApiProperty({
-    example: OBLIGATION().maturityDate,
+    example: EXAMPLE.maturityDate,
     required: true,
   })
   maturityDate: string;
@@ -45,7 +53,7 @@ export class GiftObligationRequestDto {
   @Min(VALIDATION.OBLIGATION_AMOUNT.MIN)
   @Max(VALIDATION.OBLIGATION_AMOUNT.MAX)
   @ApiProperty({
-    example: OBLIGATION().amount,
+    example: EXAMPLE.amount,
     required: true,
   })
   amount: number;
@@ -54,7 +62,7 @@ export class GiftObligationRequestDto {
   @IsString()
   @Length(VALIDATION.OBLIGATION_SUBTYPE_CODE.MIN_LENGTH, VALIDATION.OBLIGATION_SUBTYPE_CODE.MAX_LENGTH)
   @ApiProperty({
-    example: OBLIGATION().subtypeCode,
+    example: EXAMPLE.subtypeCode,
     required: true,
   })
   subtypeCode: string;
