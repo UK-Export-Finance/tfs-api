@@ -33,9 +33,19 @@ export class GiftFixedFeeService {
     try {
       this.logger.info('Creating a fixed fee with feeTypeCode %s for facility %s', fixedFeeData.feeTypeCode, facilityId);
 
+      /**
+       * GIFT requires a null acbsFeeSegmentId.
+       * This field is not relevant for consumers of APIM TFS.
+       * This is purely for GIFT version 1, for ACBS migration.
+       */
+      const payload = {
+        ...fixedFeeData,
+        acbsFeeSegmentId: null,
+      };
+
       const response = await this.giftHttpService.post<GiftFixedFeeRequestDto>({
         path: `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_FIXED_FEE}`,
-        payload: fixedFeeData,
+        payload,
       });
 
       return response;
