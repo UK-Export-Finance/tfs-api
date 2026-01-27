@@ -389,6 +389,15 @@ describe('POST /gift/facility - validation', () => {
     });
   });
 
+  describe('overview.creditType', () => {
+    stringValidation({
+      ...baseParams,
+      fieldName: 'creditType',
+      min: VALIDATION.FACILITY.OVERVIEW.CREDIT_TYPE.MIN_LENGTH,
+      max: VALIDATION.FACILITY.OVERVIEW.CREDIT_TYPE.MAX_LENGTH,
+    });
+  });
+
   describe('overview.currency', () => {
     currencyStringValidation(baseParams);
   });

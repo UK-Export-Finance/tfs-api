@@ -21,20 +21,21 @@ const {
 export class GiftFacilityOverviewRequestDto {
   @IsDefined()
   @IsString()
+  @Length(VALIDATION.CREDIT_TYPE.MIN_LENGTH, VALIDATION.CREDIT_TYPE.MAX_LENGTH)
+  @ApiProperty({
+    example: EXAMPLE.creditType,
+    required: true,
+  })
+  creditType: string;
+
+  @IsDefined()
+  @IsString()
   @Length(VALIDATION.CURRENCY.MIN_LENGTH, VALIDATION.CURRENCY.MAX_LENGTH)
   @ApiProperty({
     example: EXAMPLE.currency,
     required: true,
   })
   currency: string;
-
-  @IsDefined()
-  @IsString()
-  @ApiProperty({
-    example: EXAMPLE.creditType,
-    required: true,
-  })
-  creditType: string;
 
   @IsDefined()
   @IsDateString()
