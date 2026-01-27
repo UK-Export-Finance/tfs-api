@@ -66,4 +66,6 @@ export class GiftObligationRequestDto {
     required: true,
   })
   subtypeCode: string;
+
+  // TODO: acbsObligationId
 }

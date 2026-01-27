@@ -14,6 +14,10 @@ export const GIFT = {
     EXPORTER: 'CRP001',
     GUARANTOR: 'CRP013',
   },
+  CREDIT_TYPES: {
+    REVOLVER: 'Revolver',
+    TERM: 'Term',
+  },
   ENTITY_NAMES: {
     BUSINESS_CALENDAR: 'Business calendar',
     COUNTERPARTY: 'Counterparty',
@@ -24,7 +28,7 @@ export const GIFT = {
   EVENT_TYPES: {
     ADD_BUSINESS_CALENDAR: 'AddFacilityBusinessCalendar',
     ADD_COUNTERPARTY: 'AddFacilityCounterparty',
-    ADD_MANUAL_REPAYMENT_PROFILE: 'AddManualRepaymentProfile',
+    ADD_REPAYMENT_PROFILE: 'AddRepaymentProfile',
     CREATE_FACILITY: 'CreateFacility',
     ADD_FIXED_FEE: 'AddFixedFee',
     ADD_OBLIGATION: 'AddObligation',

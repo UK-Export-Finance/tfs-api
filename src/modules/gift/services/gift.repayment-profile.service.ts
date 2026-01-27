@@ -34,7 +34,7 @@ export class GiftRepaymentProfileService {
       this.logger.info('Creating a repayment profile with name %s for facility %s', repaymentProfileData.name, facilityId);
 
       const response = await this.giftHttpService.post<GiftRepaymentProfileRequestDto>({
-        path: `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_MANUAL_REPAYMENT_PROFILE}`,
+        path: `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_REPAYMENT_PROFILE}`,
         payload: repaymentProfileData,
       });
 

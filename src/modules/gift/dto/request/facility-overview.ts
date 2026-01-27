@@ -2,10 +2,10 @@ import { ApiProperty } from '@nestjs/swagger';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { ValidatedFacilityIdentifierApiProperty } from '@ukef/decorators/validated-facility-identifier-api-property';
 import { UkefId } from '@ukef/helpers';
-import { IsBoolean, IsDateString, IsDefined, IsNumber, IsNumberString, IsString, Length, Max, Min } from 'class-validator';
+import { IsDateString, IsDefined, IsNumber, IsNumberString, IsString, Length, Max, Min } from 'class-validator';
 
 const {
-  GIFT: { DEAL_ID, FACILITY_ID, FACILITY_OVERVIEW: EXAMPLE },
+  GIFT: { FACILITY_ID, FACILITY_OVERVIEW: EXAMPLE },
 } = EXAMPLES;
 
 const {
@@ -28,16 +28,13 @@ export class GiftFacilityOverviewRequestDto {
   })
   currency: string;
 
-  @ValidatedFacilityIdentifierApiProperty({
-    description: 'The deal ID',
-  })
+  @IsDefined()
+  @IsString()
   @ApiProperty({
-    example: DEAL_ID,
-    minLength: VALIDATION.DEAL_ID.MIN_LENGTH,
-    maxLength: VALIDATION.DEAL_ID.MAX_LENGTH,
+    example: EXAMPLE.creditType,
     required: true,
   })
-  dealId: UkefId;
+  creditType: string;
 
   @IsDefined()
   @IsDateString()
@@ -60,10 +57,10 @@ export class GiftFacilityOverviewRequestDto {
   @Min(VALIDATION.FACILITY_AMOUNT.MIN)
   @Max(VALIDATION.FACILITY_AMOUNT.MAX)
   @ApiProperty({
-    example: EXAMPLE.facilityAmount,
+    example: EXAMPLE.amount,
     required: true,
   })
-  facilityAmount: number;
+  amount: number;
 
   @ValidatedFacilityIdentifierApiProperty({
     description: 'The facility ID',
@@ -75,14 +72,6 @@ export class GiftFacilityOverviewRequestDto {
     required: true,
   })
   facilityId: UkefId;
-
-  @IsDefined()
-  @IsBoolean()
-  @ApiProperty({
-    example: EXAMPLE.isRevolving,
-    required: true,
-  })
-  isRevolving: boolean;
 
   @IsDefined()
   @IsString()
