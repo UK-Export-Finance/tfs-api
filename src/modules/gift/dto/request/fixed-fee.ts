@@ -50,6 +50,4 @@ export class GiftFixedFeeRequestDto {
     example: FIXED_FEE().feeTypeCode,
   })
   feeTypeCode: string;
-
-  // TODO: acbsFeeSegmentId
 }
