@@ -3,7 +3,7 @@ import { GIFT } from '@ukef/constants';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 
-import { GiftBusinessCalendarResponseDto } from '../dto';
+import { GiftBusinessCalendarsConventionResponseDto } from '../dto';
 import { GiftHttpService } from './gift.http.service';
 
 const { INTEGRATION_DEFAULTS, EVENT_TYPES, PATH } = GIFT;
@@ -37,7 +37,7 @@ export class GiftBusinessCalendarsConventionService {
     try {
       this.logger.info('Creating business calendars convention for facility %s', facilityId);
 
-      const response = await this.giftHttpService.post<GiftBusinessCalendarResponseDto>({
+      const response = await this.giftHttpService.post<GiftBusinessCalendarsConventionResponseDto>({
         path: `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_BUSINESS_CALENDARS_CONVENTION}`,
         payload: {
           businessDayConvention: INTEGRATION_DEFAULTS.BUSINESS_CALENDARS_CONVENTION,

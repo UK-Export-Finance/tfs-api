@@ -18,19 +18,19 @@ export class GiftBusinessCalendarResponseDto {
     example: BUSINESS_CALENDAR.centreCode,
     required: false,
   })
-  centreCode: string;
+  readonly centreCode: string;
 
   @IsDateString()
   @ApiProperty({
     example: BUSINESS_CALENDAR.startDate,
     required: true,
   })
-  startDate: string;
+  readonly startDate: string;
 
   @IsDateString()
   @ApiProperty({
     example: BUSINESS_CALENDAR.exitDate,
     required: true,
   })
-  exitDate: string;
+  readonly exitDate: string;
 }

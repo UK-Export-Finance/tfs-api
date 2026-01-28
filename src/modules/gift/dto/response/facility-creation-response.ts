@@ -18,7 +18,7 @@ export class GiftFacilityCreationResponseDto extends GiftFacilityCreationRequest
   readonly state: string;
 
   @ApiProperty({
-    example: EXAMPLES.GIFT.BUSINESS_CALENDARS_CONVENTION,
+    example: EXAMPLES.GIFT.BUSINESS_CALENDAR,
     isArray: true,
   })
   readonly businessCalendars: GiftBusinessCalendarResponseDto[];

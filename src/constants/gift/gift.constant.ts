@@ -25,7 +25,7 @@ export const GIFT = {
   },
   ENTITY_NAMES: {
     BUSINESS_CALENDAR: 'Business calendar',
-    BUSINESS_CALENDARS_CONVENTION: 'Busness calendar conventioN',
+    BUSINESS_CALENDARS_CONVENTION: 'Business calendar convention',
     COUNTERPARTY: 'Counterparty',
     FIXED_FEE: 'Fixed fee',
     OBLIGATION: 'Obligation',

@@ -47,7 +47,7 @@ const setupMocks = (businessCalendarsConventionResponse: MockGiftResponse) => {
 
   nock(GIFT_API_URL).post(facilityCreationUrl).reply(HttpStatus.CREATED, mockResponses.facility);
 
-  nock(GIFT_API_URL).persist().post(businessCalendarUrl).reply(HttpStatus.CREATED, mockResponses.businessCalendarsConvention);
+  nock(GIFT_API_URL).persist().post(businessCalendarUrl).reply(HttpStatus.CREATED, mockResponses.businessCalendar);
 
   nock(GIFT_API_URL).persist().post(businessCalendarsConventionUrl).reply(businessCalendarsConventionResponse.statusCode, businessCalendarsConventionResponse);
 
@@ -62,7 +62,7 @@ const setupMocks = (businessCalendarsConventionResponse: MockGiftResponse) => {
   nock(GIFT_API_URL).persist().post(approveStatusUrl).reply(HttpStatus.OK, mockResponses.approveStatus);
 };
 
-describe('POST /gift/facility - business calendar error handling', () => {
+describe('POST /gift/facility - business calendars convention error handling', () => {
   let api: Api;
 
   beforeAll(async () => {
