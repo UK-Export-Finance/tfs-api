@@ -1,6 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { HttpStatus } from '@nestjs/common';
-import { EXAMPLES, GIFT } from '@ukef/constants';
+import { EXAMPLES } from '@ukef/constants';
 import { mockResponse200, mockResponse201 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
@@ -19,8 +19,6 @@ import {
   GiftStatusService,
 } from '../';
 import { GiftFacilityService } from './';
-
-const { DTFS_INTEGRATION_DEFAULTS } = GIFT;
 
 const {
   GIFT: {
@@ -197,9 +195,6 @@ describe('GiftFacilityService.create', () => {
     expect(createBusinessCalendarsConventionSpy).toHaveBeenCalledWith({
       facilityId: mockPayload.overview.facilityId,
       workPackageId: FACILITY_RESPONSE_DATA.workPackageId,
-      businessDayConvention: DTFS_INTEGRATION_DEFAULTS.BUSINESS_CALENDARS_CONVENTION,
-      dueOnLastWorkingDayEachMonth: DTFS_INTEGRATION_DEFAULTS.DUE_ON_LAST_WORKING_DAY_EACH_MONTH,
-      dateSnapBack: DTFS_INTEGRATION_DEFAULTS.DATE_SNAP_BACK,
     });
   });
 
@@ -265,7 +260,7 @@ describe('GiftFacilityService.create', () => {
           ...FACILITY_RESPONSE_DATA.configurationEvent.data,
           state: WORK_PACKAGE_APPROVE_RESPONSE_DATA.state,
           businessCalendars: [mockBusinessCalendar],
-          businessCalendarsConvention: [mockBusinessCalendarsConvention],
+          businessCalendarsConvention: mockBusinessCalendarsConvention,
           counterparties: mockCounterparties,
           fixedFees: mockFixedFees,
           obligations: mockObligations,

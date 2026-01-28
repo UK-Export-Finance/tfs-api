@@ -6,14 +6,11 @@ import { PinoLogger } from 'nestjs-pino';
 import { GiftBusinessCalendarResponseDto } from '../dto';
 import { GiftHttpService } from './gift.http.service';
 
-const { EVENT_TYPES, PATH } = GIFT;
+const { INTEGRATION_DEFAULTS, EVENT_TYPES, PATH } = GIFT;
 
 interface CreateOneParams {
   facilityId: string;
   workPackageId: number;
-  businessDayConvention: string;
-  dueOnLastWorkingDayEachMonth: boolean;
-  dateSnapBack: boolean;
 }
 
 /**
@@ -31,28 +28,29 @@ export class GiftBusinessCalendarsConventionService {
 
   /**
    * Create a GIFT "business calendars convention".
-   * @param {CreateOneParams} facilityId, businessDayConvention, dueOnLastWorkingDayEachMonth, dateSnapBack
+   * NOTE: This uses default integration values.
+   * @param {CreateOneParams} facilityId, workPackageId
    * @returns {Promise<AxiosResponse>}
    * @throws {Error}
    */
-  async createOne({ facilityId, workPackageId, businessDayConvention, dueOnLastWorkingDayEachMonth, dateSnapBack }: CreateOneParams): Promise<AxiosResponse> {
+  async createOne({ facilityId, workPackageId }: CreateOneParams): Promise<AxiosResponse> {
     try {
-      this.logger.info('Creating a business calendars convention for facility %s', facilityId);
+      this.logger.info('Creating business calendars convention for facility %s', facilityId);
 
       const response = await this.giftHttpService.post<GiftBusinessCalendarResponseDto>({
         path: `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_BUSINESS_CALENDARS_CONVENTION}`,
         payload: {
-          businessDayConvention,
-          dueOnLastWorkingDayEachMonth,
-          dateSnapBack,
+          businessDayConvention: INTEGRATION_DEFAULTS.BUSINESS_CALENDARS_CONVENTION,
+          dueOnLastWorkingDayEachMonth: INTEGRATION_DEFAULTS.DUE_ON_LAST_WORKING_DAY_EACH_MONTH,
+          dateSnapBack: INTEGRATION_DEFAULTS.DATE_SNAP_BACK,
         },
       });
 
       return response;
     } catch (error) {
-      this.logger.error('Error creating a business calendars convention for facility %s %o', facilityId, error);
+      this.logger.error('Error creating business calendars convention for facility %s %o', facilityId, error);
 
-      throw new Error(`Error creating a business calendars convention for facility ${facilityId}`, error);
+      throw new Error(`Error creating business calendars convention for facility ${facilityId}`, error);
     }
   }
 }

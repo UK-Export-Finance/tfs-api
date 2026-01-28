@@ -3,7 +3,7 @@ import { EXAMPLES, GIFT } from '@ukef/constants';
 import { mockResponse201, mockResponse500 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
-import { GiftBusinessCalendarsConventionService } from './gift.business-calendar-convention.service';
+import { GiftBusinessCalendarsConventionService } from './gift.business-calendars-convention.service';
 
 const {
   GIFT: { BUSINESS_CALENDARS_CONVENTION, FACILITY_ID: mockFacilityId, WORK_PACKAGE_ID: mockWorkPackageId },
@@ -51,9 +51,6 @@ describe('GiftBusinessCalendarsConventionService', () => {
       await service.createOne({
         facilityId: mockFacilityId,
         workPackageId: mockWorkPackageId,
-        businessDayConvention: BUSINESS_CALENDARS_CONVENTION.businessDayConvention,
-        dueOnLastWorkingDayEachMonth: BUSINESS_CALENDARS_CONVENTION.dueOnLastWorkingDayEachMonth,
-        dateSnapBack: BUSINESS_CALENDARS_CONVENTION.dateSnapBack,
       });
 
       // Assert
@@ -61,7 +58,11 @@ describe('GiftBusinessCalendarsConventionService', () => {
 
       expect(mockHttpServicePost).toHaveBeenCalledWith({
         path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_BUSINESS_CALENDARS_CONVENTION}`,
-        payload: BUSINESS_CALENDARS_CONVENTION,
+        payload: {
+          businessDayConvention: BUSINESS_CALENDARS_CONVENTION.businessDayConvention,
+          dueOnLastWorkingDayEachMonth: BUSINESS_CALENDARS_CONVENTION.dueOnLastWorkingDayEachMonth,
+          dateSnapBack: BUSINESS_CALENDARS_CONVENTION.dateSnapBack,
+        },
       });
     });
 
@@ -71,9 +72,6 @@ describe('GiftBusinessCalendarsConventionService', () => {
         const response = await service.createOne({
           facilityId: mockFacilityId,
           workPackageId: mockWorkPackageId,
-          businessDayConvention: BUSINESS_CALENDARS_CONVENTION.businessDayConvention,
-          dueOnLastWorkingDayEachMonth: BUSINESS_CALENDARS_CONVENTION.dueOnLastWorkingDayEachMonth,
-          dateSnapBack: BUSINESS_CALENDARS_CONVENTION.dateSnapBack,
         });
 
         // Assert
@@ -96,13 +94,10 @@ describe('GiftBusinessCalendarsConventionService', () => {
         const promise = service.createOne({
           facilityId: mockFacilityId,
           workPackageId: mockWorkPackageId,
-          businessDayConvention: BUSINESS_CALENDARS_CONVENTION.businessDayConvention,
-          dueOnLastWorkingDayEachMonth: BUSINESS_CALENDARS_CONVENTION.dueOnLastWorkingDayEachMonth,
-          dateSnapBack: BUSINESS_CALENDARS_CONVENTION.dateSnapBack,
         });
 
         // Assert
-        const expected = new Error(`Error creating a business calendars convention for facility ${mockFacilityId}`);
+        const expected = new Error(`Error creating business calendars convention for facility ${mockFacilityId}`);
 
         await expect(promise).rejects.toThrow(expected);
       });

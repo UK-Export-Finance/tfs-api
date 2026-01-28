@@ -7,7 +7,7 @@ import { PinoLogger } from 'nestjs-pino';
 import { GiftFacilityCreationRequestDto, GiftFacilityOverviewRequestDto } from '../../dto';
 import { mapAllValidationErrorResponses, mapResponsesData } from '../../helpers';
 import { GiftBusinessCalendarService } from '../gift.business-calendar.service';
-import { GiftBusinessCalendarsConventionService } from '../gift.business-calendar-convention.service';
+import { GiftBusinessCalendarsConventionService } from '../gift.business-calendars-convention.service';
 import { GiftCounterpartyService } from '../gift.counterparty.service';
 import { GiftFacilityAsyncValidationService } from '../gift.facility-async-validation.service';
 import { GiftFixedFeeService } from '../gift.fixed-fee.service';
@@ -16,7 +16,7 @@ import { GiftObligationService } from '../gift.obligation.service';
 import { GiftRepaymentProfileService } from '../gift.repayment-profile.service';
 import { GiftStatusService } from '../gift.status.service';
 
-const { API_RESPONSE_MESSAGES, DTFS_INTEGRATION_DEFAULTS, PATH } = GIFT;
+const { API_RESPONSE_MESSAGES, PATH } = GIFT;
 
 interface CreateFacilityResponse {
   status: AxiosResponse['status'];
@@ -153,14 +153,7 @@ export class GiftFacilityService {
         exitDate: expiryDate,
       });
 
-      // TODO: move the defaults to the service itself?
-      const defaultBusinessCalendarsConvention = await this.giftBusinessCalendarsConventionService.createOne({
-        facilityId,
-        workPackageId,
-        businessDayConvention: DTFS_INTEGRATION_DEFAULTS.BUSINESS_CALENDARS_CONVENTION,
-        dueOnLastWorkingDayEachMonth: DTFS_INTEGRATION_DEFAULTS.DUE_ON_LAST_WORKING_DAY_EACH_MONTH,
-        dateSnapBack: DTFS_INTEGRATION_DEFAULTS.DATE_SNAP_BACK,
-      });
+      const defaultBusinessCalendarsConvention = await this.giftBusinessCalendarsConventionService.createOne({ facilityId, workPackageId });
 
       const businessCalendars = [defaultBusinessCalendar];
       const businessCalendarsConvention = [defaultBusinessCalendarsConvention];
