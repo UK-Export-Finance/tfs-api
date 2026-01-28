@@ -5,7 +5,7 @@ import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 
 import { GiftFacilityCreationRequestDto, GiftFacilityOverviewRequestDto } from '../../dto';
-import { mapAllValidationErrorResponses, mapResponsesData } from '../../helpers';
+import { mapAllValidationErrorResponses, mapResponseData, mapResponsesData } from '../../helpers';
 import { GiftBusinessCalendarService } from '../gift.business-calendar.service';
 import { GiftBusinessCalendarsConventionService } from '../gift.business-calendars-convention.service';
 import { GiftCounterpartyService } from '../gift.counterparty.service';
@@ -224,9 +224,8 @@ export class GiftFacilityService {
         data: {
           ...facility.configurationEvent.data,
           state: approvedStatusResponse.data.state,
-          // TODO: simplify, create mapResponseData().
           businessCalendars: mapResponsesData(businessCalendars),
-          businessCalendarsConvention: defaultBusinessCalendarsConvention.data?.data,
+          businessCalendarsConvention: mapResponseData(defaultBusinessCalendarsConvention),
           counterparties: mapResponsesData(counterparties),
           fixedFees: mapResponsesData(fixedFees),
           obligations: mapResponsesData(obligations),

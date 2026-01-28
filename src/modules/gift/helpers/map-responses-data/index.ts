@@ -1,9 +1,8 @@
 import { AxiosResponse } from 'axios';
 
 /**
- * Map responses into an array of objects,
- * with each object containing only information from data.data.
- * @param {Array<AxiosResponse>} responses
- * @returns {Array<object>}
+ * Map an array of axios responses into an array of data objects (data.data)
+ * @param {AxiosResponse[]} responses
+ * @returns {object[]}
  */
 export const mapResponsesData = (responses: AxiosResponse[]) => responses.map((response: AxiosResponse) => response.data?.data);
