@@ -31,18 +31,28 @@ export class GiftFixedFeeService {
    */
   async createOne(fixedFeeData: GiftFixedFeeRequestDto, facilityId: string, workPackageId: number): Promise<AxiosResponse> {
     try {
-      this.logger.info('Creating a fixed fee with description %s for facility %s', fixedFeeData.description, facilityId);
+      this.logger.info('Creating a fixed fee with feeTypeCode %s for facility %s', fixedFeeData.feeTypeCode, facilityId);
+
+      /**
+       * GIFT requires a null acbsFeeSegmentId.
+       * This field is not relevant for consumers of APIM TFS.
+       * This is purely for GIFT version 1, for ACBS migration.
+       */
+      const payload = {
+        ...fixedFeeData,
+        acbsFeeSegmentId: null,
+      };
 
       const response = await this.giftHttpService.post<GiftFixedFeeRequestDto>({
         path: `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_FIXED_FEE}`,
-        payload: fixedFeeData,
+        payload,
       });
 
       return response;
     } catch (error) {
-      this.logger.error('Error creating a fixed fee with description %s for facility %s %o', fixedFeeData.description, facilityId, error);
+      this.logger.error('Error creating a fixed fee with feeTypeCode %s for facility %s %o', fixedFeeData.feeTypeCode, facilityId, error);
 
-      throw new Error(`Error creating a fixed fee with description ${fixedFeeData.description} for facility ${facilityId}`, error);
+      throw new Error(`Error creating a fixed fee with feeTypeCode ${fixedFeeData.feeTypeCode} for facility ${facilityId}`, error);
     }
   }
 

@@ -7,7 +7,6 @@ import nock from 'nock';
 
 import {
   assert400Response,
-  booleanValidation,
   currencyStringValidation,
   dateStringValidation,
   numberStringValidation,
@@ -280,22 +279,19 @@ describe('POST /gift/facility - validation', () => {
           'overview.currency should not be null or undefined',
           `overview.currency must be longer than or equal to ${VALIDATION.FACILITY.OVERVIEW.CURRENCY.MIN_LENGTH} characters`,
           'overview.currency must be a string',
-          'overview.dealId must be a string',
-          `overview.dealId must be longer than or equal to ${VALIDATION.FACILITY.OVERVIEW.DEAL_ID.MIN_LENGTH} characters`,
-          'overview.dealId must match /^00\\d{8}$/ regular expression',
+          'overview.creditType should not be null or undefined',
+          'overview.creditType must be a string',
           'overview.effectiveDate should not be null or undefined',
           'overview.effectiveDate must be a valid ISO 8601 date string',
           'overview.expiryDate should not be null or undefined',
           'overview.expiryDate must be a valid ISO 8601 date string',
-          'overview.facilityAmount should not be null or undefined',
-          `overview.facilityAmount must not be greater than ${VALIDATION.FACILITY.OVERVIEW.FACILITY_AMOUNT.MAX}`,
-          `overview.facilityAmount must not be less than ${VALIDATION.FACILITY.OVERVIEW.FACILITY_AMOUNT.MIN}`,
-          'overview.facilityAmount must be a number conforming to the specified constraints',
+          'overview.amount should not be null or undefined',
+          `overview.amount must not be greater than ${VALIDATION.FACILITY.OVERVIEW.FACILITY_AMOUNT.MAX}`,
+          `overview.amount must not be less than ${VALIDATION.FACILITY.OVERVIEW.FACILITY_AMOUNT.MIN}`,
+          'overview.amount must be a number conforming to the specified constraints',
           'overview.facilityId must be a string',
           `overview.facilityId must be longer than or equal to ${VALIDATION.FACILITY.OVERVIEW.FACILITY_ID.MIN_LENGTH} characters`,
           'overview.facilityId must match /^00\\d{8}$/ regular expression',
-          'overview.isRevolving should not be null or undefined',
-          'overview.isRevolving must be a boolean value',
           'overview.name should not be null or undefined',
           `overview.name must be longer than or equal to ${VALIDATION.FACILITY.OVERVIEW.FACILITY_NAME.MIN_LENGTH} characters`,
           'overview.name must be a string',
@@ -315,16 +311,13 @@ describe('POST /gift/facility - validation', () => {
           `counterparties.roleCode must be a string`,
           `counterparties.startDate should not be null or undefined`,
           'counterparties.startDate must be a valid ISO 8601 date string',
-          'fixedFees.amountDue should not be null or undefined',
-          `fixedFees.amountDue must not be greater than ${VALIDATION.FIXED_FEE.AMOUNT_DUE.MAX}`,
-          `fixedFees.amountDue must not be less than ${VALIDATION.FIXED_FEE.AMOUNT_DUE.MIN}`,
-          'fixedFees.amountDue must be a number conforming to the specified constraints',
+          'fixedFees.amount should not be null or undefined',
+          `fixedFees.amount must not be greater than ${VALIDATION.FIXED_FEE.AMOUNT_DUE.MAX}`,
+          `fixedFees.amount must not be less than ${VALIDATION.FIXED_FEE.AMOUNT_DUE.MIN}`,
+          'fixedFees.amount must be a number conforming to the specified constraints',
           'fixedFees.currency should not be null or undefined',
           `fixedFees.currency must be longer than or equal to ${VALIDATION.FIXED_FEE.CURRENCY.MIN_LENGTH} characters`,
           'fixedFees.currency must be a string',
-          'fixedFees.description should not be null or undefined',
-          `fixedFees.description must be longer than or equal to ${VALIDATION.FIXED_FEE.DESCRIPTION.MIN_LENGTH} characters`,
-          'fixedFees.description must be a string',
           'fixedFees.effectiveDate should not be null or undefined',
           'fixedFees.effectiveDate must be a valid ISO 8601 date string',
           'fixedFees.feeTypeCode should not be null or undefined',
@@ -396,17 +389,17 @@ describe('POST /gift/facility - validation', () => {
     });
   });
 
-  describe('overview.currency', () => {
-    currencyStringValidation(baseParams);
+  describe('overview.creditType', () => {
+    stringValidation({
+      ...baseParams,
+      fieldName: 'creditType',
+      min: VALIDATION.FACILITY.OVERVIEW.CREDIT_TYPE.MIN_LENGTH,
+      max: VALIDATION.FACILITY.OVERVIEW.CREDIT_TYPE.MAX_LENGTH,
+    });
   });
 
-  describe('overview.dealId', () => {
-    ukefIdValidation({
-      ...baseParams,
-      fieldName: 'dealId',
-      min: VALIDATION.FACILITY.OVERVIEW.DEAL_ID.MIN_LENGTH,
-      max: VALIDATION.FACILITY.OVERVIEW.DEAL_ID.MAX_LENGTH,
-    });
+  describe('overview.currency', () => {
+    currencyStringValidation(baseParams);
   });
 
   describe('overview.effectiveDate', () => {
@@ -423,10 +416,10 @@ describe('POST /gift/facility - validation', () => {
     });
   });
 
-  describe('overview.facilityAmount', () => {
+  describe('overview.amount', () => {
     numberValidation({
       ...baseParams,
-      fieldName: 'facilityAmount',
+      fieldName: 'amount',
       min: VALIDATION.FACILITY.OVERVIEW.FACILITY_AMOUNT.MIN,
       max: VALIDATION.FACILITY.OVERVIEW.FACILITY_AMOUNT.MAX,
     });
@@ -439,10 +432,6 @@ describe('POST /gift/facility - validation', () => {
       min: VALIDATION.FACILITY.OVERVIEW.FACILITY_ID.MIN_LENGTH,
       max: VALIDATION.FACILITY.OVERVIEW.FACILITY_ID.MAX_LENGTH,
     });
-  });
-
-  describe('overview.isRevolving', () => {
-    booleanValidation({ ...baseParams, fieldName: 'isRevolving' });
   });
 
   describe('overview.name', () => {

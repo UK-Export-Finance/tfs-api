@@ -11,7 +11,16 @@ import { SUPPORTED_CURRENCIES } from '../currencies.constant';
 import { CONSUMER } from '../gift/consumer.constant';
 import { GIFT } from '../gift/gift.constant';
 
-const { COUNTERPARTY_ROLE_CODES, FEE_TYPE_CODES, FEE_TYPE_DESCRIPTIONS, OBLIGATION_SUBTYPES, PRODUCT_TYPE_CODES, PRODUCT_TYPE_NAMES, VALIDATION } = GIFT;
+const {
+  COUNTERPARTY_ROLE_CODES,
+  CREDIT_TYPES,
+  FEE_TYPE_CODES,
+  FEE_TYPE_DESCRIPTIONS,
+  OBLIGATION_SUBTYPES,
+  PRODUCT_TYPE_CODES,
+  PRODUCT_TYPE_NAMES,
+  VALIDATION,
+} = GIFT;
 
 const chance = new Chance();
 
@@ -92,10 +101,9 @@ const FEE_TYPES_RESPONSE_DATA = {
 
 const FIXED_FEE = () => ({
   feeTypeCode: FEE_TYPE_CODES.PLA,
-  description: 'Mock fixed fee description',
   effectiveDate: '2025-01-15',
   currency: SUPPORTED_CURRENCIES.USD,
-  amountDue: 5000,
+  amount: 5000,
 });
 
 /**
@@ -152,11 +160,10 @@ const FACILITY_OVERVIEW = {
   name: 'Amazing facility',
   obligorUrn: '01234567',
   currency: SUPPORTED_CURRENCIES.USD,
-  facilityAmount: 10000,
+  amount: 10000,
   effectiveDate: '2025-01-01',
   expiryDate: '2027-02-01',
-  dealId: DEAL_ID,
-  isRevolving: true,
+  creditType: CREDIT_TYPES.REVOLVER,
   isDraft: true,
   createdDatetime: '2025-01-21T09:58:21.115Z',
   productTypeCode: PRODUCT_TYPE_CODES.EXIP,

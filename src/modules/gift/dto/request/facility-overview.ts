@@ -2,10 +2,10 @@ import { ApiProperty } from '@nestjs/swagger';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { ValidatedFacilityIdentifierApiProperty } from '@ukef/decorators/validated-facility-identifier-api-property';
 import { UkefId } from '@ukef/helpers';
-import { IsBoolean, IsDateString, IsDefined, IsNumber, IsNumberString, IsString, Length, Max, Min } from 'class-validator';
+import { IsDateString, IsDefined, IsNumber, IsNumberString, IsString, Length, Max, Min } from 'class-validator';
 
 const {
-  GIFT: { DEAL_ID, FACILITY_ID, FACILITY_OVERVIEW: EXAMPLE },
+  GIFT: { FACILITY_ID, FACILITY_OVERVIEW: EXAMPLE },
 } = EXAMPLES;
 
 const {
@@ -21,23 +21,21 @@ const {
 export class GiftFacilityOverviewRequestDto {
   @IsDefined()
   @IsString()
+  @Length(VALIDATION.CREDIT_TYPE.MIN_LENGTH, VALIDATION.CREDIT_TYPE.MAX_LENGTH)
+  @ApiProperty({
+    example: EXAMPLE.creditType,
+    required: true,
+  })
+  creditType: string;
+
+  @IsDefined()
+  @IsString()
   @Length(VALIDATION.CURRENCY.MIN_LENGTH, VALIDATION.CURRENCY.MAX_LENGTH)
   @ApiProperty({
     example: EXAMPLE.currency,
     required: true,
   })
   currency: string;
-
-  @ValidatedFacilityIdentifierApiProperty({
-    description: 'The deal ID',
-  })
-  @ApiProperty({
-    example: DEAL_ID,
-    minLength: VALIDATION.DEAL_ID.MIN_LENGTH,
-    maxLength: VALIDATION.DEAL_ID.MAX_LENGTH,
-    required: true,
-  })
-  dealId: UkefId;
 
   @IsDefined()
   @IsDateString()
@@ -60,10 +58,10 @@ export class GiftFacilityOverviewRequestDto {
   @Min(VALIDATION.FACILITY_AMOUNT.MIN)
   @Max(VALIDATION.FACILITY_AMOUNT.MAX)
   @ApiProperty({
-    example: EXAMPLE.facilityAmount,
+    example: EXAMPLE.amount,
     required: true,
   })
-  facilityAmount: number;
+  amount: number;
 
   @ValidatedFacilityIdentifierApiProperty({
     description: 'The facility ID',
@@ -75,14 +73,6 @@ export class GiftFacilityOverviewRequestDto {
     required: true,
   })
   facilityId: UkefId;
-
-  @IsDefined()
-  @IsBoolean()
-  @ApiProperty({
-    example: EXAMPLE.isRevolving,
-    required: true,
-  })
-  isRevolving: boolean;
 
   @IsDefined()
   @IsString()

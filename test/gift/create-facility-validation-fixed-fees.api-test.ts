@@ -10,7 +10,6 @@ import {
   arrayOfObjectsDateStringValidation,
   arrayOfObjectsFeeTypeCodeStringValidation,
   arrayOfObjectsNumberValidation,
-  arrayOfObjectsStringValidation,
 } from './assertions';
 import { counterpartyRolesUrl, currencyUrl, feeTypeUrl, mockResponses, obligationSubtypeUrl, productTypeUrl } from './test-helpers';
 
@@ -77,16 +76,13 @@ describe('POST /gift/facility - validation - fixed fees', () => {
       const expected = {
         error: 'Bad Request',
         message: [
-          'fixedFees.0.amountDue should not be null or undefined',
-          `fixedFees.0.amountDue must not be greater than ${FIXED_FEE_VALIDATION.AMOUNT_DUE.MAX}`,
-          `fixedFees.0.amountDue must not be less than ${FIXED_FEE_VALIDATION.AMOUNT_DUE.MIN}`,
-          'fixedFees.0.amountDue must be a number conforming to the specified constraints',
+          'fixedFees.0.amount should not be null or undefined',
+          `fixedFees.0.amount must not be greater than ${FIXED_FEE_VALIDATION.AMOUNT_DUE.MAX}`,
+          `fixedFees.0.amount must not be less than ${FIXED_FEE_VALIDATION.AMOUNT_DUE.MIN}`,
+          'fixedFees.0.amount must be a number conforming to the specified constraints',
           'fixedFees.0.currency should not be null or undefined',
           `fixedFees.0.currency must be longer than or equal to ${FIXED_FEE_VALIDATION.CURRENCY.MIN_LENGTH} characters`,
           'fixedFees.0.currency must be a string',
-          'fixedFees.0.description should not be null or undefined',
-          `fixedFees.0.description must be longer than or equal to ${FIXED_FEE_VALIDATION.DESCRIPTION.MIN_LENGTH} characters`,
-          'fixedFees.0.description must be a string',
           'fixedFees.0.effectiveDate should not be null or undefined',
           'fixedFees.0.effectiveDate must be a valid ISO 8601 date string',
           'fixedFees.0.feeTypeCode should not be null or undefined',
@@ -100,10 +96,10 @@ describe('POST /gift/facility - validation - fixed fees', () => {
     });
   });
 
-  describe('amountDue', () => {
+  describe('amount', () => {
     arrayOfObjectsNumberValidation({
       ...baseParams,
-      fieldName: 'amountDue',
+      fieldName: 'amount',
       min: FIXED_FEE_VALIDATION.AMOUNT_DUE.MIN,
       max: FIXED_FEE_VALIDATION.AMOUNT_DUE.MAX,
     });
@@ -111,15 +107,6 @@ describe('POST /gift/facility - validation - fixed fees', () => {
 
   describe('currency', () => {
     arrayOfObjectsCurrencyStringValidation(baseParams);
-  });
-
-  describe('description', () => {
-    arrayOfObjectsStringValidation({
-      ...baseParams,
-      fieldName: 'description',
-      min: FIXED_FEE_VALIDATION.DESCRIPTION.MIN_LENGTH,
-      max: FIXED_FEE_VALIDATION.DESCRIPTION.MAX_LENGTH,
-    });
   });
 
   describe('effectiveDate', () => {

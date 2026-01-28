@@ -21,9 +21,9 @@ export class GiftFixedFeeRequestDto {
   @Max(VALIDATION.AMOUNT_DUE.MAX)
   @ApiProperty({
     required: true,
-    example: FIXED_FEE().amountDue,
+    example: FIXED_FEE().amount,
   })
-  amountDue: number;
+  amount: number;
 
   @IsDefined()
   @IsString()
@@ -33,15 +33,6 @@ export class GiftFixedFeeRequestDto {
     example: FIXED_FEE().currency,
   })
   currency: string;
-
-  @IsDefined()
-  @IsString()
-  @Length(VALIDATION.DESCRIPTION.MIN_LENGTH, VALIDATION.DESCRIPTION.MAX_LENGTH)
-  @ApiProperty({
-    required: true,
-    example: FIXED_FEE().description,
-  })
-  description: string;
 
   @IsDefined()
   @IsDateString()

@@ -33,9 +33,19 @@ export class GiftObligationService {
     try {
       this.logger.info('Creating an obligation with amount %s for facility %s', obligationData.amount, facilityId);
 
+      /**
+       * GIFT requires a null acbsObligationId.
+       * This field is not relevant for consumers of APIM TFS.
+       * This is purely for GIFT version 1, for ACBS migration.
+       */
+      const payload = {
+        ...obligationData,
+        acbsObligationId: null,
+      };
+
       const response = await this.giftHttpService.post<GiftObligationRequestDto>({
         path: `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_OBLIGATION}`,
-        payload: obligationData,
+        payload,
       });
 
       return response;
