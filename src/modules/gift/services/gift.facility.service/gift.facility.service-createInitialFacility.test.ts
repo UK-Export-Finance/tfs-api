@@ -4,6 +4,7 @@ import { mockResponse201, mockResponse500 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
 import {
+  GiftBusinessCalendarsConventionService,
   GiftBusinessCalendarService,
   GiftCounterpartyService,
   GiftCurrencyService,
@@ -32,6 +33,7 @@ describe('GiftFacilityService.createInitialFacility', () => {
   let httpService: HttpService;
   let asyncValidationService: GiftFacilityAsyncValidationService;
   let businessCalendarService: GiftBusinessCalendarService;
+  let businessCalendersConventionService: GiftBusinessCalendarsConventionService;
   let counterpartyService: GiftCounterpartyService;
   let fixedFeeService: GiftFixedFeeService;
   let obligationService: GiftObligationService;
@@ -70,6 +72,7 @@ describe('GiftFacilityService.createInitialFacility', () => {
     );
 
     businessCalendarService = new GiftBusinessCalendarService(giftHttpService, logger);
+    businessCalendersConventionService = new GiftBusinessCalendarsConventionService(giftHttpService, logger);
     fixedFeeService = new GiftFixedFeeService(giftHttpService, logger);
     obligationService = new GiftObligationService(giftHttpService, logger);
     repaymentProfileService = new GiftRepaymentProfileService(giftHttpService, logger);
@@ -80,6 +83,7 @@ describe('GiftFacilityService.createInitialFacility', () => {
       logger,
       asyncValidationService,
       businessCalendarService,
+      businessCalendersConventionService,
       counterpartyService,
       fixedFeeService,
       obligationService,
@@ -129,6 +133,7 @@ describe('GiftFacilityService.createInitialFacility', () => {
         logger,
         asyncValidationService,
         businessCalendarService,
+        businessCalendersConventionService,
         counterpartyService,
         fixedFeeService,
         obligationService,

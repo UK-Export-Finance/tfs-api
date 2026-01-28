@@ -8,7 +8,9 @@ const {
 
 /**
  * GIFT "business calendar" response DTO.
- * These fields are required for APIM to create a "business calendar" in GIFT.
+ * These fields are:
+ * - Defaulted in the request.
+ * - Returned when a response when creating a "business calendar" in GIFT.
  */
 export class GiftBusinessCalendarResponseDto {
   @IsString()

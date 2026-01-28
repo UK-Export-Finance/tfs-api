@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 
 import { GiftCurrencyController, GiftFacilityController, GiftFeeTypeController } from './controllers';
 import {
+  GiftBusinessCalendarsConventionService,
   GiftBusinessCalendarService,
   GiftCounterpartyService,
   GiftCurrencyService,
@@ -20,6 +21,7 @@ import {
 @Module({
   providers: [
     GiftBusinessCalendarService,
+    GiftBusinessCalendarsConventionService,
     GiftCounterpartyService,
     GiftCurrencyService,
     GiftFacilityAsyncValidationService,

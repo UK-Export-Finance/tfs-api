@@ -5,6 +5,7 @@ import { mockAxiosError, mockResponse201 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
 import {
+  GiftBusinessCalendarsConventionService,
   GiftBusinessCalendarService,
   GiftCounterpartyService,
   GiftCurrencyService,
@@ -42,6 +43,7 @@ const mockObligations = [OBLIGATION(), OBLIGATION(), OBLIGATION()];
 const mockRepaymentProfiles = [REPAYMENT_PROFILE(), REPAYMENT_PROFILE(), REPAYMENT_PROFILE()];
 
 const mockCreateBusinessCalendarResponse = mockResponse201({ data: mockBusinessCalendar });
+const mockCreateBusinessCalendarsConventionResponse = mockResponse201({ data: BUSINESS_CALENDAR });
 const mockCreateCounterpartiesResponse = mockCounterparties.map((counterparty) => mockResponse201(counterparty));
 const mockCreateFixedFeesResponse = mockFixedFees.map((fixedFee) => mockResponse201(fixedFee));
 const mockCreateObligationsResponse = mockObligations.map((counterparty) => mockResponse201(counterparty));
@@ -54,6 +56,7 @@ describe('GiftFacilityService.create - error handling', () => {
   let httpService: HttpService;
   let asyncValidationService: GiftFacilityAsyncValidationService;
   let businessCalendarService: GiftBusinessCalendarService;
+  let businessCalendarsConventionService: GiftBusinessCalendarsConventionService;
   let counterpartyService: GiftCounterpartyService;
   let fixedFeeService: GiftFixedFeeService;
   let obligationService: GiftObligationService;
@@ -66,6 +69,7 @@ describe('GiftFacilityService.create - error handling', () => {
   let asyncValidationServiceCreationSpy: jest.Mock;
   let createInitialFacilitySpy: jest.Mock;
   let createBusinessCalendarSpy: jest.Mock;
+  let createBusinessCalendarsConventionSpy: jest.Mock;
   let createCounterpartiesSpy: jest.Mock;
   let createFixedFeesSpy: jest.Mock;
   let createObligationsSpy: jest.Mock;
@@ -106,6 +110,7 @@ describe('GiftFacilityService.create - error handling', () => {
     );
 
     businessCalendarService = new GiftBusinessCalendarService(giftHttpService, logger);
+    businessCalendarsConventionService = new GiftBusinessCalendarsConventionService(giftHttpService, logger);
     fixedFeeService = new GiftFixedFeeService(giftHttpService, logger);
     obligationService = new GiftObligationService(giftHttpService, logger);
     repaymentProfileService = new GiftRepaymentProfileService(giftHttpService, logger);
@@ -113,6 +118,7 @@ describe('GiftFacilityService.create - error handling', () => {
 
     createInitialFacilitySpy = jest.fn().mockResolvedValueOnce(mockResponse201(FACILITY_RESPONSE_DATA));
     createBusinessCalendarSpy = jest.fn().mockResolvedValueOnce(mockCreateBusinessCalendarResponse);
+    createBusinessCalendarsConventionSpy = jest.fn().mockResolvedValueOnce(mockCreateBusinessCalendarsConventionResponse);
     createCounterpartiesSpy = jest.fn().mockResolvedValueOnce(mockCreateCounterpartiesResponse);
     createFixedFeesSpy = jest.fn().mockResolvedValueOnce(mockCreateFixedFeesResponse);
     createObligationsSpy = jest.fn().mockResolvedValueOnce(mockCreateObligationsResponse);
@@ -121,6 +127,7 @@ describe('GiftFacilityService.create - error handling', () => {
 
     asyncValidationService.creation = asyncValidationServiceCreationSpy;
     businessCalendarService.createOne = createBusinessCalendarSpy;
+    businessCalendarsConventionService.createOne = createBusinessCalendarsConventionSpy;
     counterpartyService.createMany = createCounterpartiesSpy;
     fixedFeeService.createMany = createFixedFeesSpy;
     obligationService.createMany = createObligationsSpy;
@@ -132,6 +139,7 @@ describe('GiftFacilityService.create - error handling', () => {
       logger,
       asyncValidationService,
       businessCalendarService,
+      businessCalendarsConventionService,
       counterpartyService,
       fixedFeeService,
       obligationService,
@@ -156,6 +164,7 @@ describe('GiftFacilityService.create - error handling', () => {
         logger,
         asyncValidationService,
         businessCalendarService,
+        businessCalendarsConventionService,
         counterpartyService,
         fixedFeeService,
         obligationService,
@@ -189,6 +198,7 @@ describe('GiftFacilityService.create - error handling', () => {
         logger,
         asyncValidationService,
         businessCalendarService,
+        businessCalendarsConventionService,
         counterpartyService,
         fixedFeeService,
         obligationService,
@@ -222,6 +232,7 @@ describe('GiftFacilityService.create - error handling', () => {
         logger,
         asyncValidationService,
         businessCalendarService,
+        businessCalendarsConventionService,
         counterpartyService,
         fixedFeeService,
         obligationService,
@@ -255,6 +266,7 @@ describe('GiftFacilityService.create - error handling', () => {
         logger,
         asyncValidationService,
         businessCalendarService,
+        businessCalendarsConventionService,
         counterpartyService,
         fixedFeeService,
         obligationService,
@@ -288,6 +300,7 @@ describe('GiftFacilityService.create - error handling', () => {
         logger,
         asyncValidationService,
         businessCalendarService,
+        businessCalendarsConventionService,
         counterpartyService,
         fixedFeeService,
         obligationService,
@@ -321,6 +334,7 @@ describe('GiftFacilityService.create - error handling', () => {
         logger,
         asyncValidationService,
         businessCalendarService,
+        businessCalendarsConventionService,
         counterpartyService,
         fixedFeeService,
         obligationService,
