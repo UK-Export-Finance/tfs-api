@@ -33,7 +33,7 @@ describe('GiftFacilityService.createInitialFacility', () => {
   let httpService: HttpService;
   let asyncValidationService: GiftFacilityAsyncValidationService;
   let businessCalendarService: GiftBusinessCalendarService;
-  let businessCalendersConventionService: GiftBusinessCalendarsConventionService;
+  let businessCalendarsConventionService: GiftBusinessCalendarsConventionService;
   let counterpartyService: GiftCounterpartyService;
   let fixedFeeService: GiftFixedFeeService;
   let obligationService: GiftObligationService;
@@ -72,7 +72,7 @@ describe('GiftFacilityService.createInitialFacility', () => {
     );
 
     businessCalendarService = new GiftBusinessCalendarService(giftHttpService, logger);
-    businessCalendersConventionService = new GiftBusinessCalendarsConventionService(giftHttpService, logger);
+    businessCalendarsConventionService = new GiftBusinessCalendarsConventionService(giftHttpService, logger);
     fixedFeeService = new GiftFixedFeeService(giftHttpService, logger);
     obligationService = new GiftObligationService(giftHttpService, logger);
     repaymentProfileService = new GiftRepaymentProfileService(giftHttpService, logger);
@@ -83,7 +83,7 @@ describe('GiftFacilityService.createInitialFacility', () => {
       logger,
       asyncValidationService,
       businessCalendarService,
-      businessCalendersConventionService,
+      businessCalendarsConventionService,
       counterpartyService,
       fixedFeeService,
       obligationService,
@@ -133,7 +133,7 @@ describe('GiftFacilityService.createInitialFacility', () => {
         logger,
         asyncValidationService,
         businessCalendarService,
-        businessCalendersConventionService,
+        businessCalendarsConventionService,
         counterpartyService,
         fixedFeeService,
         obligationService,

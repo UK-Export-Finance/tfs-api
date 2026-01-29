@@ -59,7 +59,7 @@ describe('GiftFacilityService.create', () => {
   let currencyService: GiftCurrencyService;
   let asyncValidationService: GiftFacilityAsyncValidationService;
   let businessCalendarService: GiftBusinessCalendarService;
-  let businessCalendersConventionService: GiftBusinessCalendarsConventionService;
+  let businessCalendarsConventionService: GiftBusinessCalendarsConventionService;
   let fixedFeeService: GiftFixedFeeService;
   let obligationService: GiftObligationService;
   let repaymentProfileService: GiftRepaymentProfileService;
@@ -105,7 +105,7 @@ describe('GiftFacilityService.create', () => {
     );
 
     businessCalendarService = new GiftBusinessCalendarService(giftHttpService, logger);
-    businessCalendersConventionService = new GiftBusinessCalendarsConventionService(giftHttpService, logger);
+    businessCalendarsConventionService = new GiftBusinessCalendarsConventionService(giftHttpService, logger);
     fixedFeeService = new GiftFixedFeeService(giftHttpService, logger);
     obligationService = new GiftObligationService(giftHttpService, logger);
     repaymentProfileService = new GiftRepaymentProfileService(giftHttpService, logger);
@@ -123,7 +123,7 @@ describe('GiftFacilityService.create', () => {
 
     asyncValidationService.creation = asyncValidationServiceCreationSpy;
     businessCalendarService.createOne = createBusinessCalendarSpy;
-    businessCalendersConventionService.createOne = createBusinessCalendarsConventionSpy;
+    businessCalendarsConventionService.createOne = createBusinessCalendarsConventionSpy;
     counterpartyService.createMany = createCounterpartiesSpy;
     fixedFeeService.createMany = createFixedFeesSpy;
     obligationService.createMany = createObligationsSpy;
@@ -135,7 +135,7 @@ describe('GiftFacilityService.create', () => {
       logger,
       asyncValidationService,
       businessCalendarService,
-      businessCalendersConventionService,
+      businessCalendarsConventionService,
       counterpartyService,
       fixedFeeService,
       obligationService,

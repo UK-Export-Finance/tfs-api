@@ -62,7 +62,7 @@ describe('GiftFacilityService.create - bad requests', () => {
 
   let asyncValidationService: GiftFacilityAsyncValidationService;
   let businessCalendarService: GiftBusinessCalendarService;
-  let businessCalendersConventionService: GiftBusinessCalendarsConventionService;
+  let businessCalendarsConventionService: GiftBusinessCalendarsConventionService;
   let counterpartyService: GiftCounterpartyService;
   let fixedFeeService: GiftFixedFeeService;
   let obligationService: GiftObligationService;
@@ -98,7 +98,7 @@ describe('GiftFacilityService.create - bad requests', () => {
     );
 
     businessCalendarService = new GiftBusinessCalendarService(giftHttpService, logger);
-    businessCalendersConventionService = new GiftBusinessCalendarsConventionService(giftHttpService, logger);
+    businessCalendarsConventionService = new GiftBusinessCalendarsConventionService(giftHttpService, logger);
     counterpartyService = new GiftCounterpartyService(giftHttpService, logger);
     fixedFeeService = new GiftFixedFeeService(giftHttpService, logger);
     obligationService = new GiftObligationService(giftHttpService, logger);
@@ -117,7 +117,7 @@ describe('GiftFacilityService.create - bad requests', () => {
 
     asyncValidationService.creation = asyncValidationServiceCreationSpy;
     businessCalendarService.createOne = createBusinessCalendarSpy;
-    businessCalendersConventionService.createOne = createBusinessCalendarsConventionSpy;
+    businessCalendarsConventionService.createOne = createBusinessCalendarsConventionSpy;
     counterpartyService.createMany = createCounterpartiesSpy;
     fixedFeeService.createMany = createFixedFeesSpy;
     obligationService.createMany = createObligationsSpy;
@@ -129,7 +129,7 @@ describe('GiftFacilityService.create - bad requests', () => {
       logger,
       asyncValidationService,
       businessCalendarService,
-      businessCalendersConventionService,
+      businessCalendarsConventionService,
       counterpartyService,
       fixedFeeService,
       obligationService,
@@ -335,7 +335,7 @@ describe('GiftFacilityService.create - bad requests', () => {
       createRepaymentProfilesSpy = jest.fn().mockResolvedValueOnce(mockResponses);
 
       businessCalendarService.createOne = createBusinessCalendarSpy;
-      businessCalendersConventionService.createOne = createBusinessCalendarsConventionSpy;
+      businessCalendarsConventionService.createOne = createBusinessCalendarsConventionSpy;
       counterpartyService.createMany = createCounterpartiesSpy;
       fixedFeeService.createMany = createFixedFeesSpy;
       obligationService.createMany = createObligationsSpy;
