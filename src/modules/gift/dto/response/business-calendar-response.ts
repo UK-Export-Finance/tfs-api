@@ -8,7 +8,9 @@ const {
 
 /**
  * GIFT "business calendar" response DTO.
- * These fields are required for APIM to create a "business calendar" in GIFT.
+ * These fields are:
+ * - Defaulted in the request.
+ * - Returned in a response when creating a "business calendar" in GIFT.
  */
 export class GiftBusinessCalendarResponseDto {
   @IsString()
@@ -16,19 +18,19 @@ export class GiftBusinessCalendarResponseDto {
     example: BUSINESS_CALENDAR.centreCode,
     required: false,
   })
-  centreCode: string;
+  readonly centreCode: string;
 
   @IsDateString()
   @ApiProperty({
     example: BUSINESS_CALENDAR.startDate,
     required: true,
   })
-  startDate: string;
+  readonly startDate: string;
 
   @IsDateString()
   @ApiProperty({
     example: BUSINESS_CALENDAR.exitDate,
     required: true,
   })
-  exitDate: string;
+  readonly exitDate: string;
 }

@@ -5,6 +5,7 @@ import { mockResponse200, mockResponse201 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
 import {
+  GiftBusinessCalendarsConventionService,
   GiftBusinessCalendarService,
   GiftCounterpartyService,
   GiftCurrencyService,
@@ -22,6 +23,7 @@ import { GiftFacilityService } from './';
 const {
   GIFT: {
     BUSINESS_CALENDAR,
+    BUSINESS_CALENDARS_CONVENTION,
     COUNTERPARTY,
     FACILITY_ID: mockFacilityId,
     FACILITY_RESPONSE_DATA,
@@ -36,6 +38,7 @@ const {
 const mockResponsePost = mockResponse201(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA);
 
 const mockBusinessCalendar = BUSINESS_CALENDAR;
+const mockBusinessCalendarsConvention = BUSINESS_CALENDARS_CONVENTION;
 const mockCounterparties = [COUNTERPARTY(), COUNTERPARTY(), COUNTERPARTY()];
 const mockFixedFees = [FIXED_FEE(), FIXED_FEE()];
 const mockObligations = [OBLIGATION(), OBLIGATION(), OBLIGATION()];
@@ -43,6 +46,7 @@ const mockRepaymentProfiles = [REPAYMENT_PROFILE(), REPAYMENT_PROFILE(), REPAYME
 
 const mockAsyncValidationServiceCreationResponse = [];
 const mockCreateBusinessCalendarResponse = mockResponse201({ data: mockBusinessCalendar });
+const mockCreateBusinessCalendarsConventionResponse = mockResponse201({ data: mockBusinessCalendarsConvention });
 const mockCreateCounterpartiesResponse = mockCounterparties.map((counterparty) => mockResponse201({ data: counterparty }));
 const mockCreateFixedFeesResponse = mockFixedFees.map((fixedFee) => mockResponse201({ data: fixedFee }));
 const mockCreateObligationsResponse = mockObligations.map((obligation) => mockResponse201({ data: obligation }));
@@ -55,6 +59,7 @@ describe('GiftFacilityService.create', () => {
   let currencyService: GiftCurrencyService;
   let asyncValidationService: GiftFacilityAsyncValidationService;
   let businessCalendarService: GiftBusinessCalendarService;
+  let businessCalendarsConventionService: GiftBusinessCalendarsConventionService;
   let fixedFeeService: GiftFixedFeeService;
   let obligationService: GiftObligationService;
   let repaymentProfileService: GiftRepaymentProfileService;
@@ -65,6 +70,7 @@ describe('GiftFacilityService.create', () => {
   let mockHttpServicePost: jest.Mock;
   let createInitialFacilitySpy: jest.Mock;
   let createBusinessCalendarSpy: jest.Mock;
+  let createBusinessCalendarsConventionSpy: jest.Mock;
   let createCounterpartiesSpy: jest.Mock;
   let asyncValidationServiceCreationSpy: jest.Mock;
   let createFixedFeesSpy: jest.Mock;
@@ -99,6 +105,7 @@ describe('GiftFacilityService.create', () => {
     );
 
     businessCalendarService = new GiftBusinessCalendarService(giftHttpService, logger);
+    businessCalendarsConventionService = new GiftBusinessCalendarsConventionService(giftHttpService, logger);
     fixedFeeService = new GiftFixedFeeService(giftHttpService, logger);
     obligationService = new GiftObligationService(giftHttpService, logger);
     repaymentProfileService = new GiftRepaymentProfileService(giftHttpService, logger);
@@ -107,6 +114,7 @@ describe('GiftFacilityService.create', () => {
     createInitialFacilitySpy = jest.fn().mockResolvedValueOnce(mockResponse201(FACILITY_RESPONSE_DATA));
     asyncValidationServiceCreationSpy = jest.fn().mockResolvedValueOnce(mockAsyncValidationServiceCreationResponse);
     createBusinessCalendarSpy = jest.fn().mockResolvedValueOnce(mockCreateBusinessCalendarResponse);
+    createBusinessCalendarsConventionSpy = jest.fn().mockResolvedValueOnce(mockCreateBusinessCalendarsConventionResponse);
     createCounterpartiesSpy = jest.fn().mockResolvedValueOnce(mockCreateCounterpartiesResponse);
     createFixedFeesSpy = jest.fn().mockResolvedValueOnce(mockCreateFixedFeesResponse);
     createObligationsSpy = jest.fn().mockResolvedValueOnce(mockCreateObligationsResponse);
@@ -115,6 +123,7 @@ describe('GiftFacilityService.create', () => {
 
     asyncValidationService.creation = asyncValidationServiceCreationSpy;
     businessCalendarService.createOne = createBusinessCalendarSpy;
+    businessCalendarsConventionService.createOne = createBusinessCalendarsConventionSpy;
     counterpartyService.createMany = createCounterpartiesSpy;
     fixedFeeService.createMany = createFixedFeesSpy;
     obligationService.createMany = createObligationsSpy;
@@ -126,6 +135,7 @@ describe('GiftFacilityService.create', () => {
       logger,
       asyncValidationService,
       businessCalendarService,
+      businessCalendarsConventionService,
       counterpartyService,
       fixedFeeService,
       obligationService,
@@ -172,6 +182,19 @@ describe('GiftFacilityService.create', () => {
       workPackageId: FACILITY_RESPONSE_DATA.workPackageId,
       startDate: mockPayload.overview.effectiveDate,
       exitDate: mockPayload.overview.expiryDate,
+    });
+  });
+
+  it('should call businessCalendarsConventionService.createOne', async () => {
+    // Act
+    await service.create(mockPayload, mockFacilityId);
+
+    // Assert
+    expect(createBusinessCalendarsConventionSpy).toHaveBeenCalledTimes(1);
+
+    expect(createBusinessCalendarsConventionSpy).toHaveBeenCalledWith({
+      facilityId: mockPayload.overview.facilityId,
+      workPackageId: FACILITY_RESPONSE_DATA.workPackageId,
     });
   });
 
@@ -237,6 +260,7 @@ describe('GiftFacilityService.create', () => {
           ...FACILITY_RESPONSE_DATA.configurationEvent.data,
           state: WORK_PACKAGE_APPROVE_RESPONSE_DATA.state,
           businessCalendars: [mockBusinessCalendar],
+          businessCalendarsConvention: mockBusinessCalendarsConvention,
           counterparties: mockCounterparties,
           fixedFees: mockFixedFees,
           obligations: mockObligations,

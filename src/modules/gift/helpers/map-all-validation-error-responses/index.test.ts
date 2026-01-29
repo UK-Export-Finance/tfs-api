@@ -25,6 +25,7 @@ describe('modules/gift/helpers/map-all-validation-error-responses', () => {
     // Act
     const result = mapAllValidationErrorResponses({
       businessCalendars: mockResponses,
+      businessCalendarsConvention: mockResponses,
       counterparties: mockResponses,
       fixedFees: mockResponses,
       obligations: mockResponses,
@@ -35,6 +36,10 @@ describe('modules/gift/helpers/map-all-validation-error-responses', () => {
     const expected = [
       ...mapValidationErrorResponses({
         entityName: ENTITY_NAMES.BUSINESS_CALENDAR,
+        responses: mockResponses,
+      }),
+      ...mapValidationErrorResponses({
+        entityName: ENTITY_NAMES.BUSINESS_CALENDARS_CONVENTION,
         responses: mockResponses,
       }),
       ...mapValidationErrorResponses({

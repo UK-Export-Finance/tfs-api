@@ -10,6 +10,7 @@ import {
   apimFacilityUrl,
   approveStatusUrl,
   businessCalendar,
+  businessCalendarsConventionUrl,
   businessCalendarUrl,
   counterpartyRolesUrl,
   counterpartyUrl,
@@ -47,6 +48,8 @@ const setupMocks = (businessCalendarResponse: MockGiftResponse) => {
   nock(GIFT_API_URL).post(facilityCreationUrl).reply(HttpStatus.CREATED, mockResponses.facility);
 
   nock(GIFT_API_URL).persist().post(businessCalendarUrl).reply(businessCalendarResponse.statusCode, businessCalendarResponse);
+
+  nock(GIFT_API_URL).persist().post(businessCalendarsConventionUrl).reply(HttpStatus.CREATED, mockResponses.businessCalendarsConvention);
 
   nock(GIFT_API_URL).persist().post(counterpartyUrl).reply(HttpStatus.CREATED, mockResponses.counterparty);
 

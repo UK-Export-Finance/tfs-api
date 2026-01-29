@@ -8,6 +8,7 @@ const { ENTITY_NAMES } = GIFT;
 
 interface MapAllValidationErrorResponsesParams {
   businessCalendars: AxiosResponse[];
+  businessCalendarsConvention: AxiosResponse[];
   counterparties: AxiosResponse[];
   fixedFees: AxiosResponse[];
   obligations: AxiosResponse[];
@@ -21,6 +22,7 @@ interface MapAllValidationErrorResponsesParams {
  */
 export const mapAllValidationErrorResponses = ({
   businessCalendars,
+  businessCalendarsConvention,
   counterparties,
   fixedFees,
   obligations,
@@ -29,6 +31,10 @@ export const mapAllValidationErrorResponses = ({
   ...mapValidationErrorResponses({
     entityName: ENTITY_NAMES.BUSINESS_CALENDAR,
     responses: businessCalendars,
+  }),
+  ...mapValidationErrorResponses({
+    entityName: ENTITY_NAMES.BUSINESS_CALENDARS_CONVENTION,
+    responses: businessCalendarsConvention,
   }),
   ...mapValidationErrorResponses({
     entityName: ENTITY_NAMES.COUNTERPARTY,

@@ -8,6 +8,7 @@ import nock from 'nock';
 import {
   apimFacilityUrl,
   approveStatusUrl,
+  businessCalendarsConventionUrl,
   businessCalendarUrl,
   counterpartyRolesUrl,
   counterpartyUrl,
@@ -67,6 +68,8 @@ describe('POST /gift/facility', () => {
 
       nock(GIFT_API_URL).persist().post(businessCalendarUrl).reply(HttpStatus.CREATED, mockResponses.businessCalendar);
 
+      nock(GIFT_API_URL).persist().post(businessCalendarsConventionUrl).reply(HttpStatus.CREATED, mockResponses.businessCalendarsConvention);
+
       nock(GIFT_API_URL).persist().post(counterpartyUrl).reply(HttpStatus.CREATED, mockResponses.counterparty);
 
       nock(GIFT_API_URL).persist().post(fixedFeeUrl).reply(HttpStatus.CREATED, mockResponses.fixedFee);
@@ -86,6 +89,7 @@ describe('POST /gift/facility', () => {
       const expected = {
         ...mockResponses.facility.configurationEvent.data,
         businessCalendars: [mockResponses.businessCalendar.data],
+        businessCalendarsConvention: mockResponses.businessCalendarsConvention.data,
         counterparties: Array(payloadCounterparties.length).fill(mockResponses.counterparty.data),
         fixedFees: Array(payloadFixedFees.length).fill(mockResponses.fixedFee.data),
         obligations: Array(payloadObligations.length).fill(mockResponses.obligation.data),

@@ -1,4 +1,5 @@
 export * from './gift.business-calendar.service';
+export * from './gift.business-calendars-convention.service';
 export * from './gift.counterparty.service';
 export * from './gift.currency.service';
 export * from './gift.facility.service';

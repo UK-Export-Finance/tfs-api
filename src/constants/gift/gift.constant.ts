@@ -18,8 +18,14 @@ export const GIFT = {
     REVOLVER: 'Revolver',
     TERM: 'Term',
   },
+  INTEGRATION_DEFAULTS: {
+    BUSINESS_CALENDARS_CONVENTION: 'MODIFIED_FOLLOWING',
+    DUE_ON_LAST_WORKING_DAY_EACH_MONTH: false,
+    DATE_SNAP_BACK: false,
+  },
   ENTITY_NAMES: {
     BUSINESS_CALENDAR: 'Business calendar',
+    BUSINESS_CALENDARS_CONVENTION: 'Business calendars convention',
     COUNTERPARTY: 'Counterparty',
     FIXED_FEE: 'Fixed fee',
     OBLIGATION: 'Obligation',
@@ -27,6 +33,7 @@ export const GIFT = {
   },
   EVENT_TYPES: {
     ADD_BUSINESS_CALENDAR: 'AddFacilityBusinessCalendar',
+    ADD_BUSINESS_CALENDARS_CONVENTION: 'AddFacilityBusinessCalendarsConvention',
     ADD_COUNTERPARTY: 'AddFacilityCounterparty',
     ADD_REPAYMENT_PROFILE: 'AddRepaymentProfile',
     CREATE_FACILITY: 'CreateFacility',

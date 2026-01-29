@@ -5,8 +5,9 @@ import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 
 import { GiftFacilityCreationRequestDto, GiftFacilityOverviewRequestDto } from '../../dto';
-import { mapAllValidationErrorResponses, mapResponsesData } from '../../helpers';
+import { mapAllValidationErrorResponses, mapResponseData, mapResponsesData } from '../../helpers';
 import { GiftBusinessCalendarService } from '../gift.business-calendar.service';
+import { GiftBusinessCalendarsConventionService } from '../gift.business-calendars-convention.service';
 import { GiftCounterpartyService } from '../gift.counterparty.service';
 import { GiftFacilityAsyncValidationService } from '../gift.facility-async-validation.service';
 import { GiftFixedFeeService } from '../gift.fixed-fee.service';
@@ -33,6 +34,7 @@ export class GiftFacilityService {
     private readonly logger: PinoLogger,
     private readonly asyncValidationService: GiftFacilityAsyncValidationService,
     private readonly giftBusinessCalendarService: GiftBusinessCalendarService,
+    private readonly giftBusinessCalendarsConventionService: GiftBusinessCalendarsConventionService,
     private readonly giftCounterpartyService: GiftCounterpartyService,
     private readonly giftFixedFeeService: GiftFixedFeeService,
     private readonly giftObligationService: GiftObligationService,
@@ -42,6 +44,7 @@ export class GiftFacilityService {
     this.giftHttpService = giftHttpService;
     this.asyncValidationService = asyncValidationService;
     this.giftBusinessCalendarService = giftBusinessCalendarService;
+    this.giftBusinessCalendarsConventionService = giftBusinessCalendarsConventionService;
     this.giftCounterpartyService = giftCounterpartyService;
     this.giftFixedFeeService = giftFixedFeeService;
     this.giftObligationService = giftObligationService;
@@ -150,7 +153,10 @@ export class GiftFacilityService {
         exitDate: expiryDate,
       });
 
+      const defaultBusinessCalendarsConvention = await this.giftBusinessCalendarsConventionService.createOne({ facilityId, workPackageId });
+
       const businessCalendars = [defaultBusinessCalendar];
+      const businessCalendarsConvention = [defaultBusinessCalendarsConvention];
 
       const counterparties = await this.giftCounterpartyService.createMany(counterpartiesPayload, facilityId, workPackageId);
 
@@ -162,6 +168,7 @@ export class GiftFacilityService {
 
       const giftValidationErrors = mapAllValidationErrorResponses({
         businessCalendars,
+        businessCalendarsConvention,
         counterparties,
         fixedFees,
         obligations,
@@ -218,6 +225,7 @@ export class GiftFacilityService {
           ...facility.configurationEvent.data,
           state: approvedStatusResponse.data.state,
           businessCalendars: mapResponsesData(businessCalendars),
+          businessCalendarsConvention: mapResponseData(defaultBusinessCalendarsConvention),
           counterparties: mapResponsesData(counterparties),
           fixedFees: mapResponsesData(fixedFees),
           obligations: mapResponsesData(obligations),
