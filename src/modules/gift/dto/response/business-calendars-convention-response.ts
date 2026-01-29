@@ -10,7 +10,7 @@ const {
  * GIFT "business calendars convention" response DTO.
  * These fields are:
  * - Defaulted in the request.
- * - Returned when a response when creating a "business calendars convention" in GIFT.
+ * - Returned in a response when creating a "business calendars convention" in GIFT.
  */
 export class GiftBusinessCalendarsConventionResponseDto {
   @IsString()
