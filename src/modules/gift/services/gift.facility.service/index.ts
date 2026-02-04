@@ -227,7 +227,7 @@ export class GiftFacilityService {
 
       this.logger.info('Creating a GIFT facility - success %s', facilityId);
 
-      return {
+      const returnResponse = {
         status: HttpStatus.CREATED,
         data: {
           ...facility.configurationEvent.data,
@@ -238,9 +238,11 @@ export class GiftFacilityService {
           fixedFees: mapResponsesData(fixedFees),
           obligations: mapResponsesData(obligations),
           repaymentProfiles: mapResponsesData(repaymentProfiles),
-          riskDetails: mapResponsesData(riskDetailsArray),
+          riskDetails: mapResponseData(riskDetails),
         },
       };
+
+      return returnResponse;
     } catch (error) {
       this.logger.error('Error creating a GIFT facility %s %o', facilityId, error);
 

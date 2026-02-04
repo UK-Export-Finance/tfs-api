@@ -25,6 +25,7 @@ import {
   payloadRepaymentProfiles,
   productTypeUrl,
   repaymentProfileUrl,
+  riskDetailsUrl,
 } from './test-helpers';
 
 const { GIFT_API_URL } = ENVIRONMENT_VARIABLES;
@@ -78,6 +79,8 @@ describe('POST /gift/facility', () => {
 
       nock(GIFT_API_URL).persist().post(repaymentProfileUrl).reply(HttpStatus.CREATED, mockResponses.repaymentProfile);
 
+      nock(GIFT_API_URL).persist().post(riskDetailsUrl).reply(HttpStatus.CREATED, mockResponses.riskDetails);
+
       nock(GIFT_API_URL).persist().post(approveStatusUrl).reply(HttpStatus.OK, mockResponses.approveStatus);
 
       // Act
@@ -94,6 +97,7 @@ describe('POST /gift/facility', () => {
         fixedFees: Array(payloadFixedFees.length).fill(mockResponses.fixedFee.data),
         obligations: Array(payloadObligations.length).fill(mockResponses.obligation.data),
         repaymentProfiles: Array(payloadRepaymentProfiles.length).fill(mockResponses.repaymentProfile.data),
+        riskDetails: mockResponses.riskDetails.data,
       };
 
       expect(body).toStrictEqual(expected);

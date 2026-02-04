@@ -285,7 +285,7 @@ describe('GiftFacilityService.create', () => {
           fixedFees: mockFixedFees,
           obligations: mockObligations,
           repaymentProfiles: mockRepaymentProfiles,
-          riskDetails: [mockRiskDetails],
+          riskDetails: mockRiskDetails,
         },
       };
 

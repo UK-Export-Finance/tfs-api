@@ -60,7 +60,7 @@ describe('POST /gift/facility - validation', () => {
   });
 
   describe('when an empty object is provided', () => {
-    it(`should return a ${HttpStatus.BAD_REQUEST} response with a validation error`, async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response with validation errors`, async () => {
       // Arrange
       const mockPayload = {};
 
@@ -92,6 +92,8 @@ describe('POST /gift/facility - validation', () => {
           `repaymentProfile[] name's must be unique`,
           'repaymentProfiles should not be empty',
           'repaymentProfiles must be an array',
+          'riskDetails should not be null or undefined',
+          'riskDetails must be a non-empty object',
         ],
         statusCode: HttpStatus.BAD_REQUEST,
       };
@@ -101,7 +103,7 @@ describe('POST /gift/facility - validation', () => {
   });
 
   describe('when an empty array is provided', () => {
-    it(`should return a ${HttpStatus.BAD_REQUEST} response with a validation error`, async () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response with validation errors`, async () => {
       // Arrange
       const mockPayload = [];
 
@@ -133,6 +135,8 @@ describe('POST /gift/facility - validation', () => {
           `repaymentProfile[] name's must be unique`,
           'repaymentProfiles should not be empty',
           'repaymentProfiles must be an array',
+          'riskDetails should not be null or undefined',
+          'riskDetails must be a non-empty object',
         ],
         statusCode: HttpStatus.BAD_REQUEST,
       };
@@ -144,7 +148,15 @@ describe('POST /gift/facility - validation', () => {
   describe('when empty entity arrays are provided', () => {
     it(`should return a ${HttpStatus.BAD_REQUEST} response with validation errors for all required fields`, async () => {
       // Arrange
-      const mockPayload = { overview: [], counterparties: [], fixedFees: [], obligations: [], repaymentProfiles: [] };
+      const mockPayload = {
+        overview: [],
+        businessCalendarsConvention: [],
+        counterparties: [],
+        fixedFees: [],
+        obligations: [],
+        repaymentProfiles: [],
+        riskDetails: [],
+      };
 
       // Act
       const { status, body } = await api.post(url, mockPayload);
@@ -165,6 +177,7 @@ describe('POST /gift/facility - validation', () => {
           `repaymentProfile[].allocation[] dueDate's must be unique`,
           `repaymentProfile[] name's must be unique`,
           'repaymentProfiles should not be empty',
+          'riskDetails must be a non-empty object',
         ],
         statusCode: HttpStatus.BAD_REQUEST,
       };
@@ -176,7 +189,15 @@ describe('POST /gift/facility - validation', () => {
   describe('when null entities are provided', () => {
     it(`should return a ${HttpStatus.BAD_REQUEST} response with validation errors for all required fields`, async () => {
       // Arrange
-      const mockPayload = { overview: null, counterparties: null, fixedFees: null, obligations: null, repaymentProfiles: null };
+      const mockPayload = {
+        overview: null,
+        businessCalendarsConvention: null,
+        counterparties: null,
+        fixedFees: null,
+        obligations: null,
+        repaymentProfiles: null,
+        riskDetails: null,
+      };
 
       // Act
       const { status, body } = await api.post(url, mockPayload);
@@ -211,6 +232,9 @@ describe('POST /gift/facility - validation', () => {
           'repaymentProfiles should not be empty',
           'repaymentProfiles must be an array',
           'nested property repaymentProfiles must be either object or array',
+          'riskDetails should not be null or undefined',
+          'riskDetails must be a non-empty object',
+          'nested property riskDetails must be either object or array',
         ],
         statusCode: HttpStatus.BAD_REQUEST,
       };
@@ -222,7 +246,15 @@ describe('POST /gift/facility - validation', () => {
   describe('when undefined entities are provided', () => {
     it(`should return a ${HttpStatus.BAD_REQUEST} response with validation errors for all required fields`, async () => {
       // Arrange
-      const mockPayload = { overview: undefined, counterparties: undefined, fixedFees: undefined, obligations: undefined, repaymentProfiles: undefined };
+      const mockPayload = {
+        overview: undefined,
+        businessCalendarsConvention: undefined,
+        counterparties: undefined,
+        fixedFees: undefined,
+        obligations: undefined,
+        repaymentProfiles: undefined,
+        riskDetails: undefined,
+      };
 
       // Act
       const { status, body } = await api.post(url, mockPayload);
@@ -252,6 +284,8 @@ describe('POST /gift/facility - validation', () => {
           `repaymentProfile[] name's must be unique`,
           'repaymentProfiles should not be empty',
           'repaymentProfiles must be an array',
+          'riskDetails should not be null or undefined',
+          'riskDetails must be a non-empty object',
         ],
         statusCode: HttpStatus.BAD_REQUEST,
       };
@@ -263,7 +297,15 @@ describe('POST /gift/facility - validation', () => {
   describe('when empty entity objects are provided', () => {
     it(`should return a ${HttpStatus.BAD_REQUEST} response with validation errors for all required fields`, async () => {
       // Arrange
-      const mockPayload = { overview: {}, counterparties: {}, fixedFees: {}, obligations: {}, repaymentProfiles: {} };
+      const mockPayload = {
+        overview: {},
+        businessCalendarsConvention: {},
+        counterparties: {},
+        fixedFees: {},
+        obligations: {},
+        repaymentProfiles: {},
+        riskDetails: {},
+      };
 
       // Act
       const { status, body } = await api.post(url, mockPayload);
@@ -344,6 +386,25 @@ describe('POST /gift/facility - validation', () => {
           'repaymentProfiles.allocations should not be null or undefined',
           'repaymentProfiles.allocations should not be empty',
           'repaymentProfiles.allocations must be an array',
+          'riskDetails.account should not be null or undefined',
+          `riskDetails.account must be longer than or equal to ${VALIDATION.RISK_DETAILS.ACCOUNT.MIN_LENGTH} characters`,
+          'riskDetails.account must be a number string',
+          'riskDetails.dealId must be a string',
+          `riskDetails.dealId must be longer than or equal to ${VALIDATION.RISK_DETAILS.DEAL_ID.MIN_LENGTH} characters`,
+          'riskDetails.dealId must match /^00\\d{8}$/ regular expression',
+          'riskDetails.facilityCategory should not be null or undefined',
+          `riskDetails.facilityCategory must be longer than or equal to ${VALIDATION.RISK_DETAILS.FACILITY_CATEGORY.MIN_LENGTH} characters`,
+          'riskDetails.facilityCategory must be a string',
+          'riskDetails.facilityCreditRatingId should not be null or undefined',
+          `riskDetails.facilityCreditRatingId must not be greater than ${VALIDATION.RISK_DETAILS.FACILITY_CREDIT_RATING_ID.MAX}`,
+          `riskDetails.facilityCreditRatingId must not be less than ${VALIDATION.RISK_DETAILS.FACILITY_CREDIT_RATING_ID.MIN}`,
+          'riskDetails.facilityCreditRatingId must be a number conforming to the specified constraints',
+          'riskDetails.riskStatus should not be null or undefined',
+          `riskDetails.riskStatus must be longer than or equal to ${VALIDATION.RISK_DETAILS.RISK_STATUS.MIN_LENGTH} characters`,
+          'riskDetails.riskStatus must be a string',
+          'riskDetails.ukefIndustryCode should not be null or undefined',
+          `riskDetails.ukefIndustryCode must be longer than or equal to ${VALIDATION.RISK_DETAILS.UKEF_INDUSTRY_CODE.MIN_LENGTH} characters`,
+          'riskDetails.ukefIndustryCode must be a number string',
         ],
         statusCode: HttpStatus.BAD_REQUEST,
       };
