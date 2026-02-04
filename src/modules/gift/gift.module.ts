@@ -15,6 +15,7 @@ import {
   GiftObligationSubtypeService,
   GiftProductTypeService,
   GiftRepaymentProfileService,
+  GiftRiskDetailsService,
   GiftStatusService,
 } from './services';
 
@@ -33,6 +34,7 @@ import {
     GiftObligationSubtypeService,
     GiftProductTypeService,
     GiftRepaymentProfileService,
+    GiftRiskDetailsService,
     GiftStatusService,
   ],
   controllers: [GiftCurrencyController, GiftFacilityController, GiftFeeTypeController],

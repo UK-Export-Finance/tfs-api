@@ -15,6 +15,7 @@ import {
   GiftObligationSubtypeService,
   GiftProductTypeService,
   GiftRepaymentProfileService,
+  GiftRiskDetailsService,
   GiftStatusService,
 } from '../';
 import { GiftFacilityService } from './';
@@ -38,6 +39,7 @@ describe('GiftFacilityService.createInitialFacility', () => {
   let fixedFeeService: GiftFixedFeeService;
   let obligationService: GiftObligationService;
   let repaymentProfileService: GiftRepaymentProfileService;
+  let riskDetailsService: GiftRiskDetailsService;
   let statusService: GiftStatusService;
   let service: GiftFacilityService;
 
@@ -76,6 +78,7 @@ describe('GiftFacilityService.createInitialFacility', () => {
     fixedFeeService = new GiftFixedFeeService(giftHttpService, logger);
     obligationService = new GiftObligationService(giftHttpService, logger);
     repaymentProfileService = new GiftRepaymentProfileService(giftHttpService, logger);
+    riskDetailsService = new GiftRiskDetailsService(giftHttpService, logger);
     statusService = new GiftStatusService(giftHttpService, logger);
 
     service = new GiftFacilityService(
@@ -88,6 +91,7 @@ describe('GiftFacilityService.createInitialFacility', () => {
       fixedFeeService,
       obligationService,
       repaymentProfileService,
+      riskDetailsService,
       statusService,
     );
   });
@@ -138,6 +142,7 @@ describe('GiftFacilityService.createInitialFacility', () => {
         fixedFeeService,
         obligationService,
         repaymentProfileService,
+        riskDetailsService,
         statusService,
       );
     });

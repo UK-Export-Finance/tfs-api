@@ -9,9 +9,10 @@ import { GiftFacilityOverviewRequestDto } from './facility-overview';
 import { GiftFixedFeeRequestDto } from './fixed-fee';
 import { GiftObligationRequestDto } from './obligation';
 import { GiftRepaymentProfileRequestDto } from './repayment-profile';
+import { GiftFacilityRiskDetailsRequestDto } from './risk-details';
 
 const {
-  GIFT: { COUNTERPARTY, FACILITY_OVERVIEW, FIXED_FEE, OBLIGATION, REPAYMENT_PROFILE },
+  GIFT: { COUNTERPARTY, FACILITY_OVERVIEW, FIXED_FEE, OBLIGATION, REPAYMENT_PROFILE, RISK_DETAILS },
 } = EXAMPLES;
 
 /**
@@ -93,4 +94,15 @@ export class GiftFacilityCreationRequestDto {
   @Type(() => GiftRepaymentProfileRequestDto)
   @ValidateNested()
   repaymentProfiles: GiftRepaymentProfileRequestDto[];
+
+  @ApiProperty({
+    example: RISK_DETAILS,
+    required: true,
+    type: GiftFacilityRiskDetailsRequestDto,
+  })
+  @IsNotEmptyObject()
+  @IsDefined()
+  @Type(() => GiftFacilityRiskDetailsRequestDto)
+  @ValidateNested()
+  riskDetails: GiftFacilityRiskDetailsRequestDto;
 }

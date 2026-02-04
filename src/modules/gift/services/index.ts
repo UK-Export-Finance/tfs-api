@@ -11,4 +11,5 @@ export * from './gift.obligation.service';
 export * from './gift.obligation-subtype.service';
 export * from './gift.product-type.service';
 export * from './gift.repayment-profile.service';
+export * from './gift.risk-details.service';
 export * from './gift.status.service';

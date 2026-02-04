@@ -13,6 +13,7 @@ interface MapAllValidationErrorResponsesParams {
   fixedFees: AxiosResponse[];
   obligations: AxiosResponse[];
   repaymentProfiles: AxiosResponse[];
+  riskDetails: AxiosResponse[];
 }
 
 /**
@@ -27,6 +28,7 @@ export const mapAllValidationErrorResponses = ({
   fixedFees,
   obligations,
   repaymentProfiles,
+  riskDetails,
 }: MapAllValidationErrorResponsesParams): ValidationErrorResponse[] => [
   ...mapValidationErrorResponses({
     entityName: ENTITY_NAMES.BUSINESS_CALENDAR,
@@ -51,5 +53,9 @@ export const mapAllValidationErrorResponses = ({
   ...mapValidationErrorResponses({
     entityName: ENTITY_NAMES.REPAYMENT_PROFILE,
     responses: repaymentProfiles,
+  }),
+  ...mapValidationErrorResponses({
+    entityName: ENTITY_NAMES.RISK_DETAILS,
+    responses: riskDetails,
   }),
 ];
