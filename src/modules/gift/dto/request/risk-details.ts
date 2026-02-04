@@ -22,8 +22,6 @@ export class GiftFacilityRiskDetailsRequestDto {
   @Length(VALIDATION.ACCOUNT.MIN_LENGTH, VALIDATION.ACCOUNT.MAX_LENGTH)
   @ApiProperty({
     example: EXAMPLE.account,
-    minLength: VALIDATION.ACCOUNT.MIN_LENGTH,
-    maxLength: VALIDATION.ACCOUNT.MAX_LENGTH,
     required: true,
   })
   account: string;
@@ -74,6 +72,7 @@ export class GiftFacilityRiskDetailsRequestDto {
   @Length(VALIDATION.UKEF_INDUSTRY_CODE.MIN_LENGTH, VALIDATION.UKEF_INDUSTRY_CODE.MAX_LENGTH)
   @ApiProperty({
     example: EXAMPLE.ukefIndustryCode,
+    required: true,
   })
   ukefIndustryCode: string;
 }
