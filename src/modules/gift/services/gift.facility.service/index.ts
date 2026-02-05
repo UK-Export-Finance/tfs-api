@@ -14,6 +14,7 @@ import { GiftFixedFeeService } from '../gift.fixed-fee.service';
 import { GiftHttpService } from '../gift.http.service';
 import { GiftObligationService } from '../gift.obligation.service';
 import { GiftRepaymentProfileService } from '../gift.repayment-profile.service';
+import { GiftRiskDetailsService } from '../gift.risk-details.service';
 import { GiftStatusService } from '../gift.status.service';
 
 const { API_RESPONSE_MESSAGES, PATH } = GIFT;
@@ -39,6 +40,7 @@ export class GiftFacilityService {
     private readonly giftFixedFeeService: GiftFixedFeeService,
     private readonly giftObligationService: GiftObligationService,
     private readonly giftRepaymentProfileService: GiftRepaymentProfileService,
+    private readonly giftRiskDetailsService: GiftRiskDetailsService,
     private readonly giftStatusService: GiftStatusService,
   ) {
     this.giftHttpService = giftHttpService;
@@ -49,6 +51,7 @@ export class GiftFacilityService {
     this.giftFixedFeeService = giftFixedFeeService;
     this.giftObligationService = giftObligationService;
     this.giftRepaymentProfileService = giftRepaymentProfileService;
+    this.giftRiskDetailsService = giftRiskDetailsService;
     this.giftStatusService = giftStatusService;
   }
 
@@ -166,6 +169,10 @@ export class GiftFacilityService {
 
       const repaymentProfiles = await this.giftRepaymentProfileService.createMany(repaymentProfilesPayload, facilityId, workPackageId);
 
+      const riskDetails = await this.giftRiskDetailsService.createOne(data.riskDetails, facilityId, workPackageId);
+
+      const riskDetailsArray = [riskDetails];
+
       const giftValidationErrors = mapAllValidationErrorResponses({
         businessCalendars,
         businessCalendarsConvention,
@@ -173,6 +180,7 @@ export class GiftFacilityService {
         fixedFees,
         obligations,
         repaymentProfiles,
+        riskDetails: riskDetailsArray,
       });
 
       if (giftValidationErrors.length) {
@@ -219,7 +227,7 @@ export class GiftFacilityService {
 
       this.logger.info('Creating a GIFT facility - success %s', facilityId);
 
-      return {
+      const returnResponse = {
         status: HttpStatus.CREATED,
         data: {
           ...facility.configurationEvent.data,
@@ -230,8 +238,11 @@ export class GiftFacilityService {
           fixedFees: mapResponsesData(fixedFees),
           obligations: mapResponsesData(obligations),
           repaymentProfiles: mapResponsesData(repaymentProfiles),
+          riskDetails: mapResponseData(riskDetails),
         },
       };
+
+      return returnResponse;
     } catch (error) {
       this.logger.error('Error creating a GIFT facility %s %o', facilityId, error);
 

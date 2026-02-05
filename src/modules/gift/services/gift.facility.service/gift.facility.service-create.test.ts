@@ -16,6 +16,7 @@ import {
   GiftObligationSubtypeService,
   GiftProductTypeService,
   GiftRepaymentProfileService,
+  GiftRiskDetailsService,
   GiftStatusService,
 } from '../';
 import { GiftFacilityService } from './';
@@ -31,6 +32,7 @@ const {
     FIXED_FEE,
     OBLIGATION,
     REPAYMENT_PROFILE,
+    RISK_DETAILS,
     WORK_PACKAGE_APPROVE_RESPONSE_DATA,
   },
 } = EXAMPLES;
@@ -43,6 +45,7 @@ const mockCounterparties = [COUNTERPARTY(), COUNTERPARTY(), COUNTERPARTY()];
 const mockFixedFees = [FIXED_FEE(), FIXED_FEE()];
 const mockObligations = [OBLIGATION(), OBLIGATION(), OBLIGATION()];
 const mockRepaymentProfiles = [REPAYMENT_PROFILE(), REPAYMENT_PROFILE(), REPAYMENT_PROFILE()];
+const mockRiskDetails = RISK_DETAILS;
 
 const mockAsyncValidationServiceCreationResponse = [];
 const mockCreateBusinessCalendarResponse = mockResponse201({ data: mockBusinessCalendar });
@@ -50,7 +53,8 @@ const mockCreateBusinessCalendarsConventionResponse = mockResponse201({ data: mo
 const mockCreateCounterpartiesResponse = mockCounterparties.map((counterparty) => mockResponse201({ data: counterparty }));
 const mockCreateFixedFeesResponse = mockFixedFees.map((fixedFee) => mockResponse201({ data: fixedFee }));
 const mockCreateObligationsResponse = mockObligations.map((obligation) => mockResponse201({ data: obligation }));
-const mockRepaymentProfilesResponse = mockRepaymentProfiles.map((repaymentProfile) => mockResponse201({ data: repaymentProfile }));
+const mockCreateRepaymentProfilesResponse = mockRepaymentProfiles.map((repaymentProfile) => mockResponse201({ data: repaymentProfile }));
+const mockCreateRiskDetailsResponse = mockResponse201({ data: mockRiskDetails });
 
 describe('GiftFacilityService.create', () => {
   const logger = new PinoLogger({});
@@ -63,6 +67,7 @@ describe('GiftFacilityService.create', () => {
   let fixedFeeService: GiftFixedFeeService;
   let obligationService: GiftObligationService;
   let repaymentProfileService: GiftRepaymentProfileService;
+  let riskDetailsService: GiftRiskDetailsService;
   let statusService: GiftStatusService;
   let service: GiftFacilityService;
 
@@ -76,6 +81,7 @@ describe('GiftFacilityService.create', () => {
   let createFixedFeesSpy: jest.Mock;
   let createObligationsSpy: jest.Mock;
   let createRepaymentProfilesSpy: jest.Mock;
+  let createRiskDetailsSpy: jest.Mock;
   let approvedStatusSpy: jest.Mock;
 
   beforeEach(() => {
@@ -109,6 +115,7 @@ describe('GiftFacilityService.create', () => {
     fixedFeeService = new GiftFixedFeeService(giftHttpService, logger);
     obligationService = new GiftObligationService(giftHttpService, logger);
     repaymentProfileService = new GiftRepaymentProfileService(giftHttpService, logger);
+    riskDetailsService = new GiftRiskDetailsService(giftHttpService, logger);
     statusService = new GiftStatusService(giftHttpService, logger);
 
     createInitialFacilitySpy = jest.fn().mockResolvedValueOnce(mockResponse201(FACILITY_RESPONSE_DATA));
@@ -118,7 +125,8 @@ describe('GiftFacilityService.create', () => {
     createCounterpartiesSpy = jest.fn().mockResolvedValueOnce(mockCreateCounterpartiesResponse);
     createFixedFeesSpy = jest.fn().mockResolvedValueOnce(mockCreateFixedFeesResponse);
     createObligationsSpy = jest.fn().mockResolvedValueOnce(mockCreateObligationsResponse);
-    createRepaymentProfilesSpy = jest.fn().mockResolvedValueOnce(mockRepaymentProfilesResponse);
+    createRepaymentProfilesSpy = jest.fn().mockResolvedValueOnce(mockCreateRepaymentProfilesResponse);
+    createRiskDetailsSpy = jest.fn().mockResolvedValueOnce(mockCreateRiskDetailsResponse);
     approvedStatusSpy = jest.fn().mockResolvedValueOnce(mockResponse200(WORK_PACKAGE_APPROVE_RESPONSE_DATA));
 
     asyncValidationService.creation = asyncValidationServiceCreationSpy;
@@ -128,6 +136,7 @@ describe('GiftFacilityService.create', () => {
     fixedFeeService.createMany = createFixedFeesSpy;
     obligationService.createMany = createObligationsSpy;
     repaymentProfileService.createMany = createRepaymentProfilesSpy;
+    riskDetailsService.createOne = createRiskDetailsSpy;
     statusService.approved = approvedStatusSpy;
 
     service = new GiftFacilityService(
@@ -140,6 +149,7 @@ describe('GiftFacilityService.create', () => {
       fixedFeeService,
       obligationService,
       repaymentProfileService,
+      riskDetailsService,
       statusService,
     );
 
@@ -238,6 +248,16 @@ describe('GiftFacilityService.create', () => {
     expect(createRepaymentProfilesSpy).toHaveBeenCalledWith(mockPayload.repaymentProfiles, mockFacilityId, FACILITY_RESPONSE_DATA.workPackageId);
   });
 
+  it('should call giftRiskDetailsService.createOne', async () => {
+    // Act
+    await service.create(mockPayload, mockFacilityId);
+
+    // Assert
+    expect(createRiskDetailsSpy).toHaveBeenCalledTimes(1);
+
+    expect(createRiskDetailsSpy).toHaveBeenCalledWith(mockPayload.riskDetails, mockFacilityId, FACILITY_RESPONSE_DATA.workPackageId);
+  });
+
   it('should call giftStatusService.approved', async () => {
     // Act
     await service.create(mockPayload, mockFacilityId);
@@ -265,6 +285,7 @@ describe('GiftFacilityService.create', () => {
           fixedFees: mockFixedFees,
           obligations: mockObligations,
           repaymentProfiles: mockRepaymentProfiles,
+          riskDetails: mockRiskDetails,
         },
       };
 

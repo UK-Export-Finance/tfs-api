@@ -16,6 +16,7 @@ import {
   GiftObligationSubtypeService,
   GiftProductTypeService,
   GiftRepaymentProfileService,
+  GiftRiskDetailsService,
   GiftStatusService,
 } from '../services';
 import { GiftFacilityController } from './gift.facility.controller';
@@ -37,6 +38,7 @@ describe('GiftFacilityController', () => {
   let fixedFeeService: GiftFixedFeeService;
   let obligationService: GiftObligationService;
   let repaymentProfileService: GiftRepaymentProfileService;
+  let riskDetailsService: GiftRiskDetailsService;
   let statusService: GiftStatusService;
   let giftFacilityService: GiftFacilityService;
   let controller: GiftFacilityController;
@@ -72,6 +74,7 @@ describe('GiftFacilityController', () => {
     fixedFeeService = new GiftFixedFeeService(giftHttpService, logger);
     obligationService = new GiftObligationService(giftHttpService, logger);
     repaymentProfileService = new GiftRepaymentProfileService(giftHttpService, logger);
+    riskDetailsService = new GiftRiskDetailsService(giftHttpService, logger);
     statusService = new GiftStatusService(giftHttpService, logger);
 
     giftFacilityService = new GiftFacilityService(
@@ -84,6 +87,7 @@ describe('GiftFacilityController', () => {
       fixedFeeService,
       obligationService,
       repaymentProfileService,
+      riskDetailsService,
       statusService,
     );
 

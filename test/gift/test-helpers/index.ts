@@ -8,7 +8,7 @@ const {
   giftVersioning: { prefixAndVersion },
 } = AppConfig();
 
-const { EVENT_TYPES, PATH, PRODUCT_TYPE_CODES, API_RESPONSE_TYPES } = GIFT;
+const { EVENT_TYPES, INTEGRATION_DEFAULTS, PATH, PRODUCT_TYPE_CODES, API_RESPONSE_TYPES } = GIFT;
 
 export const mockFacilityId = GIFT_EXAMPLES.FACILITY_ID;
 export const mockWorkPackageId = GIFT_EXAMPLES.WORK_PACKAGE_ID;
@@ -50,7 +50,7 @@ const iAmATeapot: MockGiftResponse = {
 };
 
 export const mockResponses = {
-  badRequest,
+  approveStatus: { data: { aStatusUpdate: true } },
   businessCalendar: { data: GIFT_EXAMPLES.BUSINESS_CALENDAR },
   businessCalendarsConvention: { data: GIFT_EXAMPLES.BUSINESS_CALENDARS_CONVENTION },
   counterparty: { data: { aCounterparty: true } },
@@ -59,12 +59,6 @@ export const mockResponses = {
     counterpartyRoles: [GIFT_EXAMPLES.COUNTERPARTY_ROLE.GUARANTOR],
   },
   currencies: GIFT_EXAMPLES.CURRENCIES,
-  feeTypes: GIFT_EXAMPLES.FEE_TYPES_RESPONSE_DATA,
-  fixedFee: { data: { aFixedFee: true } },
-  obligation: { data: { anObligation: true } },
-  obligationSubtype: GIFT_EXAMPLES.OBLIGATION_SUBTYPES_RESPONSE_DATA,
-  productType: { data: { aProductType: true } },
-  repaymentProfile: { data: { aRepaymentProfile: true } },
   facility: {
     workPackageId: mockWorkPackageId,
     configurationEvent: {
@@ -74,7 +68,21 @@ export const mockResponses = {
       },
     },
   },
-  approveStatus: { data: { aStatusUpdate: true } },
+  feeTypes: GIFT_EXAMPLES.FEE_TYPES_RESPONSE_DATA,
+  fixedFee: { data: { aFixedFee: true } },
+  obligation: { data: { anObligation: true } },
+  obligationSubtype: GIFT_EXAMPLES.OBLIGATION_SUBTYPES_RESPONSE_DATA,
+  productType: { data: { aProductType: true } },
+  repaymentProfile: { data: { aRepaymentProfile: true } },
+  riskDetails: {
+    data: {
+      ...GIFT_EXAMPLES.RISK_DETAILS,
+      overrideRiskRatingId: INTEGRATION_DEFAULTS.OVERRIDE_RISK_RATING_ID,
+      overrideLossGivenDefault: INTEGRATION_DEFAULTS.OVERRIDE_LOSS_GIVEN_DEFAULT,
+      riskReassessmentDate: INTEGRATION_DEFAULTS.RISK_REASSESSMENT_DATE,
+    },
+  },
+  badRequest,
   internalServerError,
   forbidden,
   notFound,
@@ -95,6 +103,7 @@ export const counterpartyUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PA
 export const fixedFeeUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_FIXED_FEE}`;
 export const obligationUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_OBLIGATION}`;
 export const repaymentProfileUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_REPAYMENT_PROFILE}`;
+export const riskDetailsUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_RISK_DETAILS}`;
 export const approveStatusUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.APPROVE}`;
 
 export const businessCalendar = GIFT_EXAMPLES.BUSINESS_CALENDAR;

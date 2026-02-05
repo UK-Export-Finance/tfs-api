@@ -243,9 +243,11 @@ export const numberStringValidation = ({ fieldName, initialPayload, min, max, pa
   });
 
   describe(`when ${fieldName} is below the minimum`, () => {
+    const value = '1'.repeat(min - 1);
+
     beforeAll(() => {
       // Arrange
-      mockPayload[`${parentFieldName}`][`${fieldName}`] = '1'.repeat(min - 1);
+      mockPayload[`${parentFieldName}`][`${fieldName}`] = value;
     });
 
     it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
@@ -262,6 +264,10 @@ export const numberStringValidation = ({ fieldName, initialPayload, min, max, pa
 
       // Assert
       const expected = [`${fieldPath} must be longer than or equal to ${min} characters`];
+
+      if (Number(value) < 1) {
+        expected.push(`${fieldPath} must be a number string`);
+      }
 
       expect(body.message).toStrictEqual(expected);
     });

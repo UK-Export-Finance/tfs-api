@@ -30,6 +30,7 @@ describe('modules/gift/helpers/map-all-validation-error-responses', () => {
       fixedFees: mockResponses,
       obligations: mockResponses,
       repaymentProfiles: mockResponses,
+      riskDetails: mockResponses,
     });
 
     // Assert
@@ -56,6 +57,10 @@ describe('modules/gift/helpers/map-all-validation-error-responses', () => {
       }),
       ...mapValidationErrorResponses({
         entityName: ENTITY_NAMES.REPAYMENT_PROFILE,
+        responses: mockResponses,
+      }),
+      ...mapValidationErrorResponses({
+        entityName: ENTITY_NAMES.RISK_DETAILS,
         responses: mockResponses,
       }),
     ];

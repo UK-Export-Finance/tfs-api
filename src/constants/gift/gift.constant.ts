@@ -19,9 +19,14 @@ export const GIFT = {
     TERM: 'Term',
   },
   INTEGRATION_DEFAULTS: {
+    ACCOUNT: '2',
     BUSINESS_CALENDARS_CONVENTION: 'MODIFIED_FOLLOWING',
-    DUE_ON_LAST_WORKING_DAY_EACH_MONTH: false,
     DATE_SNAP_BACK: false,
+    DUE_ON_LAST_WORKING_DAY_EACH_MONTH: false,
+    RISK_STATUS: 'Corporate',
+    OVERRIDE_RISK_RATING_ID: null,
+    OVERRIDE_LOSS_GIVEN_DEFAULT: null,
+    RISK_REASSESSMENT_DATE: null,
   },
   ENTITY_NAMES: {
     BUSINESS_CALENDAR: 'Business calendar',
@@ -30,6 +35,7 @@ export const GIFT = {
     FIXED_FEE: 'Fixed fee',
     OBLIGATION: 'Obligation',
     REPAYMENT_PROFILE: 'Repayment profile',
+    RISK_DETAILS: 'Risk details',
   },
   EVENT_TYPES: {
     ADD_BUSINESS_CALENDAR: 'AddFacilityBusinessCalendar',
@@ -39,6 +45,7 @@ export const GIFT = {
     CREATE_FACILITY: 'CreateFacility',
     ADD_FIXED_FEE: 'AddFixedFee',
     ADD_OBLIGATION: 'AddObligation',
+    ADD_RISK_DETAILS: 'AddRiskDetails',
   },
   FEE_TYPE_CODES: {
     BEX: 'BEX',
@@ -79,6 +86,11 @@ export const GIFT = {
     PRODUCT_TYPE: '/product-type',
     SUPPORTED: '/supported',
     WORK_PACKAGE: '/work-package',
+  },
+  FACILITY_CATEGORIES: {
+    BOND_STAND_ALONE: 'BOND: STAND ALONE',
+    BOND_SUPPLEMENTAL_TO_CASH: 'BOND: SUPPLEMENTAL TO CASH',
+    BOND_SUPPLEMENTAL_TO_CREDIT: 'BOND: SUPPLEMENTAL TO CREDIT',
   },
   PRODUCT_TYPE_CODES: {
     BIP: 'BIP',

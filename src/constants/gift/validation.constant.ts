@@ -19,11 +19,6 @@ const FEE_TYPE_CODE = {
   MAX_LENGTH: 3,
 };
 
-const ROLE_CODE = {
-  MIN_LENGTH: 1,
-  MAX_LENGTH: 50,
-};
-
 /**
  * Maximum monetary amount.
  * This is used for any monetary "amount" field.
@@ -37,7 +32,6 @@ export const VALIDATION = {
     OVERVIEW: {
       CREDIT_TYPE: { MIN_LENGTH: 1, MAX_LENGTH: 120 },
       CURRENCY: CURRENCY_VALIDATION,
-      DEAL_ID: UKEFID.VALIDATION,
       FACILITY_AMOUNT: { MIN: 1, MAX: MAX_MONETARY_AMOUNT },
       FACILITY_ID: UKEFID.VALIDATION,
       FACILITY_NAME: { MIN_LENGTH: 1, MAX_LENGTH: 35 },
@@ -47,7 +41,10 @@ export const VALIDATION = {
   },
   COUNTERPARTY: {
     COUNTERPARTY_URN: { MIN_LENGTH: 8, MAX_LENGTH: 8 },
-    ROLE_CODE,
+    ROLE_CODE: {
+      MIN_LENGTH: 1,
+      MAX_LENGTH: 50,
+    },
     SHARE_PERCENTAGE: { MIN: 0.1, MAX: 100 },
   },
   FEE_TYPE_CODE,
@@ -68,5 +65,13 @@ export const VALIDATION = {
     ALLOCATION: {
       AMOUNT: { MIN: 0, MAX: MAX_MONETARY_AMOUNT },
     },
+  },
+  RISK_DETAILS: {
+    ACCOUNT: { MIN_LENGTH: 1, MAX_LENGTH: 10 },
+    DEAL_ID: UKEFID.VALIDATION,
+    FACILITY_CATEGORY: { MIN_LENGTH: 1, MAX_LENGTH: 100 },
+    FACILITY_CREDIT_RATING_ID: { MIN: 1, MAX: 100 },
+    RISK_STATUS: { MIN_LENGTH: 1, MAX_LENGTH: 50 },
+    UKEF_INDUSTRY_CODE: { MIN_LENGTH: 4, MAX_LENGTH: 4 },
   },
 };
