@@ -463,8 +463,8 @@ export const PROPERTIES = {
         cashOffsetTypeCode: '02',
         isDraftIndicator: false,
         transactionTypeCode: {
-          increase: '9020',
-          decrease: '9030',
+          increase: '9040',
+          decrease: '9050',
         },
       },
     },
