@@ -53,15 +53,15 @@ export class GiftFacilityRiskDetailsResponseDto {
   @ApiProperty({
     example: INTEGRATION_DEFAULTS.OVERRIDE_RISK_RATING_ID,
   })
-  readonly overrideRiskRatingId: null;
+  readonly overrideRiskRatingId: string | null;
 
   @ApiProperty({
     example: INTEGRATION_DEFAULTS.OVERRIDE_LOSS_GIVEN_DEFAULT,
   })
-  readonly overrideLossGivenDefault: null;
+  readonly overrideLossGivenDefault: boolean | null;
 
   @ApiProperty({
     example: INTEGRATION_DEFAULTS.RISK_REASSESSMENT_DATE,
   })
-  readonly riskReassessmentDate: null;
+  readonly riskReassessmentDate: string | null;
 }
