@@ -24,7 +24,7 @@ export class GiftRiskDetailsService {
 
   /**
    * Create a GIFT "risk details".
-   * @param {CreateOneParams} facilityId, workPackageId
+   * @param {CreateOneParams} riskDetailsData, facilityId, workPackageId
    * @returns {Promise<AxiosResponse>}
    * @throws {Error}
    */
@@ -36,7 +36,7 @@ export class GiftRiskDetailsService {
         path: `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_RISK_DETAILS}`,
         payload: {
           ...riskDetailsData,
-          overrideRiskRatingId: INTEGRATION_DEFAULTS.OVERRIDE_RISK_RATING_ID,
+          overrideRiskRating: INTEGRATION_DEFAULTS.OVERRIDE_RISK_RATING,
           overrideLossGivenDefault: INTEGRATION_DEFAULTS.OVERRIDE_LOSS_GIVEN_DEFAULT,
           riskReassessmentDate: INTEGRATION_DEFAULTS.RISK_REASSESSMENT_DATE,
         },
