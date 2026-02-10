@@ -1,6 +1,7 @@
 export * from './counterparty';
 export * from './facility-creation';
 export * from './facility-creation-generic';
+export * from './facility-id-param.dto';
 export * from './facility-overview';
 export * from './fixed-fee';
 export * from './get-facility-params.dto';
