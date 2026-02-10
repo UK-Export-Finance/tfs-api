@@ -89,6 +89,15 @@ const COUNTERPARTY = ({ withSharePercentage = false } = {}): GiftFacilityCounter
   return counterparty;
 };
 
+const CREDIT_RISK_RATINGS = {
+  A: 'A',
+  AA: 'AA',
+  B: 'B',
+  BBB: 'BBB',
+  C: 'C',
+  CC: 'CC',
+};
+
 /**
  * Example fee types.
  */
@@ -119,7 +128,7 @@ const FIXED_FEE = () => ({
  * @param {string} subtypeCode: Obligation subtype code
  * @returns {GiftObligationRequestDto}
  */
-const OBLIGATION = ({ subtypeCode = OBLIGATION_SUBTYPES.EXP01.code } = {}): GiftObligationRequestDto => ({
+const OBLIGATION = ({ subtypeCode = OBLIGATION_SUBTYPES.BIP02.code } = {}): GiftObligationRequestDto => ({
   effectiveDate: '2025-01-13',
   maturityDate: '2025-01-15',
   currency: SUPPORTED_CURRENCIES.USD,
@@ -162,10 +171,10 @@ const REPAYMENT_PROFILE = () => ({
 });
 
 const RISK_DETAILS = {
-  facilityCategory: FACILITY_CATEGORIES.BOND_SUPPLEMENTAL_TO_CASH,
+  facilityCategoryCode: FACILITY_CATEGORIES.BOND_STAND_ALONE,
   dealId: DEAL_ID,
   account: INTEGRATION_DEFAULTS.ACCOUNT,
-  facilityCreditRatingId: 1,
+  facilityCreditRating: CREDIT_RISK_RATINGS.AA,
   riskStatus: INTEGRATION_DEFAULTS.RISK_STATUS,
   ukefIndustryCode: '0101',
 };
@@ -183,7 +192,7 @@ const FACILITY_OVERVIEW = {
   creditType: CREDIT_TYPES.REVOLVER,
   isDraft: true,
   createdDatetime: '2025-01-21T09:58:21.115Z',
-  productTypeCode: PRODUCT_TYPE_CODES.EXIP,
+  productTypeCode: PRODUCT_TYPE_CODES.BIP,
 };
 
 /**
@@ -244,6 +253,7 @@ export const GIFT_EXAMPLES = {
   COUNTERPARTY,
   COUNTERPARTY_ROLE,
   COUNTERPARTY_ROLES_RESPONSE_DATA,
+  CREDIT_RISK_RATINGS,
   CURRENCIES: Object.values(SUPPORTED_CURRENCIES),
   DEAL_ID,
   FACILITY_CREATION_PAYLOAD,

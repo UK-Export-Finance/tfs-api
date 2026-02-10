@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { ValidatedFacilityIdentifierApiProperty } from '@ukef/decorators/validated-facility-identifier-api-property';
 import { UkefId } from '@ukef/helpers';
-import { IsDefined, IsNumber, IsNumberString, IsString, Length, Max, Min } from 'class-validator';
+import { IsDefined, IsNumberString, IsString, Length } from 'class-validator';
 
 const {
   GIFT: { RISK_DETAILS: EXAMPLE },
@@ -39,24 +39,23 @@ export class GiftFacilityRiskDetailsRequestDto {
 
   @IsDefined()
   @IsString()
-  @Length(VALIDATION.FACILITY_CATEGORY.MIN_LENGTH, VALIDATION.FACILITY_CATEGORY.MAX_LENGTH)
+  @Length(VALIDATION.FACILITY_CATEGORY_CODE.MIN_LENGTH, VALIDATION.FACILITY_CATEGORY_CODE.MAX_LENGTH)
   @ApiProperty({
-    example: EXAMPLE.facilityCategory,
-    minLength: VALIDATION.FACILITY_CATEGORY.MIN_LENGTH,
-    maxLength: VALIDATION.FACILITY_CATEGORY.MAX_LENGTH,
+    example: EXAMPLE.facilityCategoryCode,
+    minLength: VALIDATION.FACILITY_CATEGORY_CODE.MIN_LENGTH,
+    maxLength: VALIDATION.FACILITY_CATEGORY_CODE.MAX_LENGTH,
     required: true,
   })
-  facilityCategory: string;
+  facilityCategoryCode: string;
 
   @IsDefined()
-  @IsNumber()
-  @Min(VALIDATION.FACILITY_CREDIT_RATING_ID.MIN)
-  @Max(VALIDATION.FACILITY_CREDIT_RATING_ID.MAX)
+  @IsString()
+  @Length(VALIDATION.FACILITY_CREDIT_RATING.MIN_LENGTH, VALIDATION.FACILITY_CREDIT_RATING.MAX_LENGTH)
   @ApiProperty({
-    example: EXAMPLE.facilityCreditRatingId,
+    example: EXAMPLE.facilityCreditRating,
     required: true,
   })
-  facilityCreditRatingId: number;
+  facilityCreditRating: string;
 
   @IsDefined()
   @IsString()
