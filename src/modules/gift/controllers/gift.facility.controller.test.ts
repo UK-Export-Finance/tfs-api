@@ -7,6 +7,7 @@ import {
   GiftBusinessCalendarService,
   GiftCounterpartyService,
   GiftCurrencyService,
+  GiftFacilityAmendmentService,
   GiftFacilityAsyncValidationService,
   GiftFacilityService,
   GiftFeeTypeService,
@@ -18,15 +19,18 @@ import {
   GiftRepaymentProfileService,
   GiftRiskDetailsService,
   GiftStatusService,
+  GiftWorkPackageService,
 } from '../services';
 import { GiftFacilityController } from './gift.facility.controller';
 
 const {
-  GIFT: { FACILITY_ID: mockFacilityId, FACILITY_CREATION_PAYLOAD },
+  GIFT: { FACILITY_ID: mockFacilityId, FACILITY_CREATION_PAYLOAD, FACILITY_AMENDMENT_REQUEST_PAYLOAD },
 } = EXAMPLES;
 
 const mockResponseGet = mockResponse200(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA);
 const mockResponsePost = mockResponse201(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA);
+
+const mockResponseAmendmentPost = mockResponse201(EXAMPLES.GIFT.WORK_PACKAGE_CREATION_RESPONSE_DATA);
 
 describe('GiftFacilityController', () => {
   const logger = new PinoLogger({});
@@ -41,6 +45,8 @@ describe('GiftFacilityController', () => {
   let riskDetailsService: GiftRiskDetailsService;
   let statusService: GiftStatusService;
   let giftFacilityService: GiftFacilityService;
+  let giftFacilityAmendmentService: GiftFacilityAmendmentService;
+  let giftWorkPackageService: GiftWorkPackageService;
   let controller: GiftFacilityController;
 
   let mockRes;
@@ -49,6 +55,7 @@ describe('GiftFacilityController', () => {
 
   let mockServiceGetFacility;
   let mockServiceCreateFacility;
+  let mockAmendmentServiceCreate;
 
   beforeEach(() => {
     // Arrange
@@ -72,6 +79,7 @@ describe('GiftFacilityController', () => {
     businessCalendarService = new GiftBusinessCalendarService(giftHttpService, logger);
     businessCalendarsConventionService = new GiftBusinessCalendarsConventionService(giftHttpService, logger);
     fixedFeeService = new GiftFixedFeeService(giftHttpService, logger);
+    giftWorkPackageService = new GiftWorkPackageService(giftHttpService, logger);
     obligationService = new GiftObligationService(giftHttpService, logger);
     repaymentProfileService = new GiftRepaymentProfileService(giftHttpService, logger);
     riskDetailsService = new GiftRiskDetailsService(giftHttpService, logger);
@@ -91,6 +99,8 @@ describe('GiftFacilityController', () => {
       statusService,
     );
 
+    giftFacilityAmendmentService = new GiftFacilityAmendmentService(giftHttpService, logger, giftWorkPackageService);
+
     mockResSend = jest.fn();
 
     mockRes = {
@@ -107,7 +117,11 @@ describe('GiftFacilityController', () => {
     giftFacilityService.get = mockServiceGetFacility;
     giftFacilityService.create = mockServiceCreateFacility;
 
-    controller = new GiftFacilityController(giftFacilityService);
+    mockAmendmentServiceCreate = jest.fn().mockResolvedValueOnce(mockResponseAmendmentPost);
+
+    giftFacilityAmendmentService.create = mockAmendmentServiceCreate;
+
+    controller = new GiftFacilityController(giftFacilityService, giftFacilityAmendmentService);
   });
 
   afterAll(() => {
@@ -115,9 +129,11 @@ describe('GiftFacilityController', () => {
   });
 
   describe('GET :facilityId', () => {
+    const mockParams = { facilityId: mockFacilityId };
+
     it('should call giftFacilityService.getFacility', async () => {
       // Act
-      await controller.get({ facilityId: mockFacilityId }, mockRes);
+      await controller.get(mockParams, mockRes);
 
       // Assert
       expect(mockServiceGetFacility).toHaveBeenCalledTimes(1);
@@ -127,7 +143,7 @@ describe('GiftFacilityController', () => {
 
     it('should call res.status with a status', async () => {
       // Act
-      await controller.get({ facilityId: mockFacilityId }, mockRes);
+      await controller.get(mockParams, mockRes);
 
       // Assert
       expect(mockResStatus).toHaveBeenCalledTimes(1);
@@ -137,7 +153,7 @@ describe('GiftFacilityController', () => {
 
     it('should call res.status.send with data obtained from the service call', async () => {
       // Act
-      await controller.get({ facilityId: mockFacilityId }, mockRes);
+      await controller.get(mockParams, mockRes);
 
       // Assert
       expect(mockResSend).toHaveBeenCalledTimes(1);
@@ -146,20 +162,22 @@ describe('GiftFacilityController', () => {
     });
   });
 
-  describe('POST', () => {
+  describe('POST :facilityId', () => {
+    const mockBody = FACILITY_CREATION_PAYLOAD;
+
     it('should call giftFacilityService.create', async () => {
       // Act
-      await controller.post(FACILITY_CREATION_PAYLOAD, mockRes);
+      await controller.post(mockBody, mockRes);
 
       // Assert
       expect(mockServiceCreateFacility).toHaveBeenCalledTimes(1);
 
-      expect(mockServiceCreateFacility).toHaveBeenCalledWith(FACILITY_CREATION_PAYLOAD, FACILITY_CREATION_PAYLOAD.overview.facilityId);
+      expect(mockServiceCreateFacility).toHaveBeenCalledWith(mockBody, mockBody.overview.facilityId);
     });
 
     it('should call res.status with a status', async () => {
       // Act
-      await controller.post(FACILITY_CREATION_PAYLOAD, mockRes);
+      await controller.post(mockBody, mockRes);
 
       // Assert
       expect(mockResStatus).toHaveBeenCalledTimes(1);
@@ -169,12 +187,47 @@ describe('GiftFacilityController', () => {
 
     it('should call res.status.send with data obtained from the service call', async () => {
       // Act
-      await controller.post(FACILITY_CREATION_PAYLOAD, mockRes);
+      await controller.post(mockBody, mockRes);
 
       // Assert
       expect(mockResSend).toHaveBeenCalledTimes(1);
 
       expect(mockResSend).toHaveBeenCalledWith(mockResponsePost.data);
+    });
+  });
+
+  describe('POST :facilityId/amendment', () => {
+    const mockParams = { facilityId: mockFacilityId };
+    const mockBody = FACILITY_AMENDMENT_REQUEST_PAYLOAD;
+
+    it('should call giftFacilityAmendmentService.create', async () => {
+      // Act
+      await controller.postAmendment(mockParams, mockBody, mockRes);
+
+      // Assert
+      expect(mockAmendmentServiceCreate).toHaveBeenCalledTimes(1);
+
+      expect(mockAmendmentServiceCreate).toHaveBeenCalledWith(mockFacilityId, mockBody);
+    });
+
+    it('should call res.status with a status', async () => {
+      // Act
+      await controller.postAmendment(mockParams, mockBody, mockRes);
+
+      // Assert
+      expect(mockResStatus).toHaveBeenCalledTimes(1);
+
+      expect(mockResStatus).toHaveBeenCalledWith(mockResponseAmendmentPost.status);
+    });
+
+    it('should call res.status.send with data obtained from the service call', async () => {
+      // Act
+      await controller.postAmendment(mockParams, mockBody, mockRes);
+
+      // Assert
+      expect(mockResSend).toHaveBeenCalledTimes(1);
+
+      expect(mockResSend).toHaveBeenCalledWith(mockResponseAmendmentPost.data);
     });
   });
 });

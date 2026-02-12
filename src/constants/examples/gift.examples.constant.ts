@@ -9,14 +9,15 @@ import { Chance } from 'chance';
 
 import { SUPPORTED_CURRENCIES } from '../currencies.constant';
 import { CONSUMER } from '../gift/consumer.constant';
-import { GIFT } from '../gift/gift.constant';
+import { AMEND_FACILITY_TYPES, GIFT } from '../gift/gift.constant';
 
 const {
   COUNTERPARTY_ROLE_CODES,
   CREDIT_TYPES,
-  INTEGRATION_DEFAULTS,
+  EVENT_TYPES,
   FEE_TYPE_CODES,
   FEE_TYPE_DESCRIPTIONS,
+  INTEGRATION_DEFAULTS,
   OBLIGATION_SUBTYPES,
   FACILITY_CATEGORIES,
   PRODUCT_TYPE_CODES,
@@ -212,6 +213,22 @@ const FACILITY_CREATION_PAYLOAD: GiftFacilityCreationRequestDto = {
   riskDetails: RISK_DETAILS,
 };
 
+const FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA = {
+  INCREASE_AMOUNT: {
+    amount: 150,
+    date: '2027-01-30',
+  },
+  DECREASE_AMOUNT: {
+    amount: 100,
+    date: '2027-02-15',
+  },
+};
+
+const FACILITY_AMENDMENT_REQUEST_PAYLOAD = {
+  amendmentType: AMEND_FACILITY_TYPES.AMEND_FACILITY_INCREASE_AMOUNT,
+  amendmentData: FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA.INCREASE_AMOUNT,
+};
+
 /**
  * FACILITY_RESPONSE_DATA
  * Facility data in the shape that GIFT returns.
@@ -229,6 +246,21 @@ const FACILITY_RESPONSE_DATA: GiftFacilityPostResponseDto = {
 
 const STATES = {
   APPROVED: 'APPROVED',
+};
+
+/**
+ * WORK_PACKAGE_CREATION_RESPONSE_DATA
+ * "Work package creation" data in the shape that GIFT returns.
+ * NOTE:
+ * - The "type" field could be any string - any GIFT configuration event name.
+ * - The "data" field could be any object - depending on the GIFT configuration event data.
+ */
+const WORK_PACKAGE_CREATION_RESPONSE_DATA = {
+  id: 1234,
+  type: EVENT_TYPES.AMEND_FACILITY_INCREASE_AMOUNT,
+  data: FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA.INCREASE_AMOUNT,
+  isApproved: false,
+  createdByUserId: 'API-USER - APIM TFS - DTFS',
 };
 
 /**
@@ -257,6 +289,8 @@ export const GIFT_EXAMPLES = {
   CURRENCIES: Object.values(SUPPORTED_CURRENCIES),
   DEAL_ID,
   FACILITY_CREATION_PAYLOAD,
+  FACILITY_AMENDMENT_REQUEST_PAYLOAD,
+  FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA,
   FACILITY_ID,
   FACILITY_OVERVIEW,
   FACILITY_RESPONSE_DATA,
@@ -270,6 +304,7 @@ export const GIFT_EXAMPLES = {
   REPAYMENT_PROFILE_ALLOCATION,
   RISK_DETAILS,
   STATES,
+  WORK_PACKAGE_CREATION_RESPONSE_DATA,
   WORK_PACKAGE_APPROVE_RESPONSE_DATA,
   WORK_PACKAGE_ID,
 };

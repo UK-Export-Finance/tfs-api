@@ -1,4 +1,5 @@
 export * from './counterparty';
+export * from './facility-amendment';
 export * from './facility-creation';
 export * from './facility-creation-generic';
 export * from './facility-id-param.dto';

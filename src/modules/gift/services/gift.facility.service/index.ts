@@ -62,6 +62,8 @@ export class GiftFacilityService {
    */
   async get(facilityId: UkefId): Promise<AxiosResponse> {
     try {
+      this.logger.info('Getting a GIFT facility %s', facilityId);
+
       const response = await this.giftHttpService.get<GiftFacilityOverviewRequestDto>({
         path: `${PATH.FACILITY}/${facilityId}`,
       });
@@ -138,7 +140,7 @@ export class GiftFacilityService {
        * If the initial facility creation fails and we attempt to create a counterparty, a work package ID error will be returned.
        */
       if (status !== HttpStatus.CREATED) {
-        this.logger.info('Creating a GIFT facility - initial creation failed %s', facilityId);
+        this.logger.error('Creating a GIFT facility - initial creation failed %s', facilityId);
 
         return {
           status,
@@ -214,7 +216,7 @@ export class GiftFacilityService {
       const approvedStatusResponse = await this.giftStatusService.approved(facilityId, workPackageId);
 
       if (approvedStatusResponse.status !== HttpStatus.OK) {
-        this.logger.info('Creating a GIFT facility - approved status update failed %s %o', facilityId, approvedStatusResponse);
+        this.logger.error('Creating a GIFT facility - approved status update failed %s %o', facilityId, approvedStatusResponse);
 
         return {
           status: approvedStatusResponse.status,

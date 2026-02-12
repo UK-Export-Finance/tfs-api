@@ -77,13 +77,13 @@ describe('POST /gift/facility - validation - risk details', () => {
           'riskDetails.dealId must be a string',
           `riskDetails.dealId must be longer than or equal to ${VALIDATION.RISK_DETAILS.DEAL_ID.MIN_LENGTH} characters`,
           'riskDetails.dealId must match /^00\\d{8}$/ regular expression',
-          'riskDetails.facilityCategory should not be null or undefined',
-          `riskDetails.facilityCategory must be longer than or equal to ${VALIDATION.RISK_DETAILS.FACILITY_CATEGORY.MIN_LENGTH} characters`,
-          'riskDetails.facilityCategory must be a string',
-          'riskDetails.facilityCreditRatingId should not be null or undefined',
-          `riskDetails.facilityCreditRatingId must not be greater than ${VALIDATION.RISK_DETAILS.FACILITY_CREDIT_RATING_ID.MAX}`,
-          `riskDetails.facilityCreditRatingId must not be less than ${VALIDATION.RISK_DETAILS.FACILITY_CREDIT_RATING_ID.MIN}`,
-          'riskDetails.facilityCreditRatingId must be a number conforming to the specified constraints',
+          'riskDetails.facilityCategoryCode should not be null or undefined',
+          `riskDetails.facilityCategoryCode must be longer than or equal to ${VALIDATION.RISK_DETAILS.FACILITY_CATEGORY_CODE.MIN_LENGTH} characters`,
+          'riskDetails.facilityCategoryCode must be a string',
+          'riskDetails.facilityCreditRating should not be null or undefined',
+          `riskDetails.facilityCreditRating must not be greater than ${VALIDATION.RISK_DETAILS.FACILITY_CREDIT_RATING.MAX_LENGTH}`,
+          `riskDetails.facilityCreditRating must not be less than ${VALIDATION.RISK_DETAILS.FACILITY_CREDIT_RATING.MIN_LENGTH}`,
+          'riskDetails.facilityCreditRating must be a number conforming to the specified constraints',
           'riskDetails.riskStatus should not be null or undefined',
           `riskDetails.riskStatus must be longer than or equal to ${VALIDATION.RISK_DETAILS.RISK_STATUS.MIN_LENGTH} characters`,
           'riskDetails.riskStatus must be a string',
@@ -118,23 +118,23 @@ describe('POST /gift/facility - validation - risk details', () => {
     });
   });
 
-  describe('facilityCategory', () => {
+  describe('facilityCategoryCode', () => {
     stringValidation({
       ...baseParams,
-      fieldName: 'facilityCategory',
+      fieldName: 'facilityCategoryCode',
       parentFieldName: 'riskDetails',
-      min: VALIDATION.RISK_DETAILS.FACILITY_CATEGORY.MIN_LENGTH,
-      max: VALIDATION.RISK_DETAILS.FACILITY_CATEGORY.MAX_LENGTH,
+      min: VALIDATION.RISK_DETAILS.FACILITY_CATEGORY_CODE.MIN_LENGTH,
+      max: VALIDATION.RISK_DETAILS.FACILITY_CATEGORY_CODE.MAX_LENGTH,
     });
   });
 
-  describe('facilityCreditRatingId', () => {
+  describe('facilityCreditRating', () => {
     numberValidation({
       ...baseParams,
-      fieldName: 'facilityCreditRatingId',
+      fieldName: 'facilityCreditRating',
       parentFieldName: 'riskDetails',
-      min: VALIDATION.RISK_DETAILS.FACILITY_CREDIT_RATING_ID.MIN,
-      max: VALIDATION.RISK_DETAILS.FACILITY_CREDIT_RATING_ID.MAX,
+      min: VALIDATION.RISK_DETAILS.FACILITY_CREDIT_RATING.MIN_LENGTH,
+      max: VALIDATION.RISK_DETAILS.FACILITY_CREDIT_RATING.MAX_LENGTH,
     });
   });
 

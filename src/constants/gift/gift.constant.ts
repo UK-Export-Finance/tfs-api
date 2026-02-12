@@ -1,7 +1,16 @@
 import { CONSUMER } from './consumer.constant';
 import { VALIDATION } from './validation.constant';
 
+export const AMEND_FACILITY_TYPES = {
+  AMEND_FACILITY_INCREASE_AMOUNT: 'IncreaseAmount',
+  AMEND_FACILITY_DECREASE_AMOUNT: 'DecreaseAmount',
+  AMEND_FACILITY_REPLACE_EXPIRY_DATE: 'ReplaceExpiryDate',
+} as const;
+
+export type AmendFacilityType = (typeof AMEND_FACILITY_TYPES)[keyof typeof AMEND_FACILITY_TYPES];
+
 export const GIFT = {
+  AMEND_FACILITY_TYPES,
   API_RESPONSE_MESSAGES: {
     ASYNC_FACILITY_VALIDATION_ERRORS: 'Async validation errors with facility entity(s)',
     GIFT_FACILITY_VALIDATION_ERRORS: 'GIFT validation errors with facility entity(s)',

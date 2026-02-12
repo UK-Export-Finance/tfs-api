@@ -77,7 +77,7 @@ export const mockResponses = {
   riskDetails: {
     data: {
       ...GIFT_EXAMPLES.RISK_DETAILS,
-      overrideRiskRatingId: INTEGRATION_DEFAULTS.OVERRIDE_RISK_RATING_ID,
+      overrideRiskRating: INTEGRATION_DEFAULTS.OVERRIDE_RISK_RATING,
       overrideLossGivenDefault: INTEGRATION_DEFAULTS.OVERRIDE_LOSS_GIVEN_DEFAULT,
       riskReassessmentDate: INTEGRATION_DEFAULTS.RISK_REASSESSMENT_DATE,
     },
