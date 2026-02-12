@@ -5,7 +5,7 @@ import { PinoLogger } from 'nestjs-pino';
 import { GiftWorkPackageResponseDto } from '../dto';
 import { GiftHttpService } from './gift.http.service';
 
-const { PATH } = GIFT;
+const { INTEGRATION_DEFAULTS, PATH } = GIFT;
 
 @Injectable()
 export class GiftWorkPackageService {
@@ -23,7 +23,7 @@ export class GiftWorkPackageService {
       const response = await this.giftHttpService.post<GiftWorkPackageResponseDto>({
         path: `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}`,
         payload: {
-          name: 'TODO - THIS IS AN AMENDMENT',
+          name: INTEGRATION_DEFAULTS.GIFT_AMENDMENT_WORK_PACKAGE_NAME,
         },
       });
 
