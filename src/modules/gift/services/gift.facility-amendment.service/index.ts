@@ -78,8 +78,8 @@ export class GiftFacilityAmendmentService {
         };
       }
 
-      // TODO: GIFT-20330 - validation handling
       // TODO: GIFT-20330 - auto approve the work package
+      // TODO: GIFT-20331 - validation handling
 
       const returnResponse = {
         status: HttpStatus.CREATED,
