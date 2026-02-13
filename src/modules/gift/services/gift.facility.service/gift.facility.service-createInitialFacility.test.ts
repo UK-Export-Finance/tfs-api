@@ -26,7 +26,7 @@ const {
 
 const { PATH } = GIFT;
 
-const mockResponsePost = mockResponse201(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA);
+const mockHttpPostResponse = mockResponse201(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA);
 
 describe('GiftFacilityService.createInitialFacility', () => {
   const logger = new PinoLogger({});
@@ -50,7 +50,7 @@ describe('GiftFacilityService.createInitialFacility', () => {
     // Arrange
     httpService = new HttpService();
 
-    mockHttpServicePost = jest.fn().mockResolvedValueOnce(mockResponsePost);
+    mockHttpServicePost = jest.fn().mockResolvedValueOnce(mockHttpPostResponse);
 
     httpService.post = mockHttpServicePost;
 
@@ -119,7 +119,7 @@ describe('GiftFacilityService.createInitialFacility', () => {
       const response = await service.createInitialFacility(mockPayload.overview);
 
       // Assert
-      expect(response).toEqual(mockResponsePost);
+      expect(response).toEqual(mockHttpPostResponse);
     });
   });
 

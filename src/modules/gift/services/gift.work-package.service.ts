@@ -16,6 +16,12 @@ export class GiftWorkPackageService {
     this.giftHttpService = giftHttpService;
   }
 
+  /**
+   * Create a GIFT work package for a facility
+   * @param {string} facilityId: Facility ID
+   * @returns {Promise<AxiosResponse>}
+   * @throws {Error}
+   */
   async create(facilityId: string) {
     try {
       this.logger.info('Creating work package for facility %s', facilityId);

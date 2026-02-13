@@ -18,16 +18,16 @@ describe('GiftStatusService', () => {
   let service: GiftStatusService;
 
   let giftHttpService;
-  let mockApprovedResponse;
+  let mockHttpPostResponse;
   let mockHttpServicePost: jest.Mock;
 
   beforeEach(() => {
     // Arrange
     httpService = new HttpService();
 
-    mockApprovedResponse = mockResponse201(WORK_PACKAGE_APPROVE_RESPONSE_DATA);
+    mockHttpPostResponse = mockResponse201(WORK_PACKAGE_APPROVE_RESPONSE_DATA);
 
-    mockHttpServicePost = jest.fn().mockResolvedValueOnce(mockApprovedResponse);
+    mockHttpServicePost = jest.fn().mockResolvedValueOnce(mockHttpPostResponse);
 
     httpService.post = mockHttpServicePost;
 
@@ -61,7 +61,7 @@ describe('GiftStatusService', () => {
         const response = await service.approved(mockFacilityId, mockWorkPackageId);
 
         // Assert
-        expect(response).toEqual(mockApprovedResponse);
+        expect(response).toEqual(mockHttpPostResponse);
       });
     });
 

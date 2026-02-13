@@ -1,13 +1,23 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { GIFT } from '@ukef/constants';
+import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 
-import { GiftFacilityAmendmentRequestDto, GiftWorkPackageResponseDto } from '../dto';
-import { GiftHttpService } from './gift.http.service';
-import { GiftWorkPackageService } from './gift.work-package.service';
+import { GiftFacilityAmendmentRequestDto, GiftWorkPackageResponseDto } from '../../dto';
+import { GiftHttpService } from '../gift.http.service';
+import { GiftWorkPackageService } from '../gift.work-package.service';
 
 const { PATH } = GIFT;
 
+interface CreateFacilityAmendmentResponse {
+  status: AxiosResponse['status'];
+  data: AxiosResponse['data'];
+}
+
+/**
+ * GIFT facility amendment service.
+ * This is responsible for all facility amendment operations that call the GIFT API.
+ */
 @Injectable()
 export class GiftFacilityAmendmentService {
   constructor(
@@ -26,12 +36,12 @@ export class GiftFacilityAmendmentService {
    * As a result, GIFT will have a new work package in the facility, with an amendment in the facility's work package.
    * @param {string} facilityId: Facility ID
    * @param {GiftFacilityAmendmentRequestDto} amendmentData: Amendment data
-   * @returns {Promise<AxiosResponse>}
+   * @returns {Promise<CreateFacilityAmendmentResponse>}
    */
-  async create(facilityId: string, amendmentData: GiftFacilityAmendmentRequestDto) {
-    try {
-      const { amendmentType } = amendmentData;
+  async create(facilityId: string, amendment: GiftFacilityAmendmentRequestDto): Promise<CreateFacilityAmendmentResponse> {
+    const { amendmentType, amendmentData } = amendment;
 
+    try {
       this.logger.info('Creating amendment %s for facility %s', amendmentType, facilityId);
 
       const { data: workPackage, status } = await this.giftWorkPackageService.create(facilityId);
@@ -63,7 +73,7 @@ export class GiftFacilityAmendmentService {
         this.logger.error('Error creating amendment %s for work package %s facility %s', amendmentType, workPackageId, facilityId);
 
         return {
-          status,
+          status: amendmentResponse.status,
           data: workPackage,
         };
       }
@@ -80,9 +90,10 @@ export class GiftFacilityAmendmentService {
 
       return returnResponse;
     } catch (error) {
-      this.logger.error('Error creating amendment for facility %s %o', facilityId, error);
+      this.logger.error('Error creating amendment %s for facility %s %o', amendmentType, facilityId, error);
 
-      throw new Error(`Error creating amendment for facility ${facilityId}`, error);
+      // TODO: update all error instances with { cause: error } / create ticket.
+      throw new Error(`Error creating amendment ${amendmentType} for facility ${facilityId}`, { cause: error });
     }
   }
 }

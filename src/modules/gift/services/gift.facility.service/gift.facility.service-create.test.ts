@@ -37,7 +37,7 @@ const {
   },
 } = EXAMPLES;
 
-const mockResponsePost = mockResponse201(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA);
+const mockHttpPostResponse = mockResponse201(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA);
 
 const mockBusinessCalendar = BUSINESS_CALENDAR;
 const mockBusinessCalendarsConvention = BUSINESS_CALENDARS_CONVENTION;
@@ -88,7 +88,7 @@ describe('GiftFacilityService.create', () => {
     // Arrange
     httpService = new HttpService();
 
-    mockHttpServicePost = jest.fn().mockResolvedValueOnce(mockResponsePost);
+    mockHttpServicePost = jest.fn().mockResolvedValueOnce(mockHttpPostResponse);
 
     httpService.post = mockHttpServicePost;
 

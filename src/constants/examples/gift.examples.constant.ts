@@ -256,7 +256,7 @@ const STATES = {
  * - The "data" field could be any object - depending on the GIFT configuration event data.
  */
 const WORK_PACKAGE_CREATION_RESPONSE_DATA = {
-  id: 1234,
+  id: WORK_PACKAGE_ID,
   type: EVENT_TYPES.AMEND_FACILITY_INCREASE_AMOUNT,
   data: FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA.INCREASE_AMOUNT,
   isApproved: false,
