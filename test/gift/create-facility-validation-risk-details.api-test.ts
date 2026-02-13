@@ -5,7 +5,7 @@ import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import nock from 'nock';
 
-import { numberStringValidation, numberValidation, stringValidation, ukefIdValidation } from './assertions';
+import { numberStringValidation, stringValidation, ukefIdValidation } from './assertions';
 import { counterpartyRolesUrl, currencyUrl, feeTypeUrl, mockResponses, obligationSubtypeUrl, productTypeUrl } from './test-helpers';
 
 const {
@@ -81,9 +81,8 @@ describe('POST /gift/facility - validation - risk details', () => {
           `riskDetails.facilityCategoryCode must be longer than or equal to ${VALIDATION.RISK_DETAILS.FACILITY_CATEGORY_CODE.MIN_LENGTH} characters`,
           'riskDetails.facilityCategoryCode must be a string',
           'riskDetails.facilityCreditRating should not be null or undefined',
-          `riskDetails.facilityCreditRating must not be greater than ${VALIDATION.RISK_DETAILS.FACILITY_CREDIT_RATING.MAX_LENGTH}`,
-          `riskDetails.facilityCreditRating must not be less than ${VALIDATION.RISK_DETAILS.FACILITY_CREDIT_RATING.MIN_LENGTH}`,
-          'riskDetails.facilityCreditRating must be a number conforming to the specified constraints',
+          `riskDetails.facilityCreditRating must be longer than or equal to ${VALIDATION.RISK_DETAILS.FACILITY_CREDIT_RATING.MIN_LENGTH} characters`,
+          'riskDetails.facilityCreditRating must be a string',
           'riskDetails.riskStatus should not be null or undefined',
           `riskDetails.riskStatus must be longer than or equal to ${VALIDATION.RISK_DETAILS.RISK_STATUS.MIN_LENGTH} characters`,
           'riskDetails.riskStatus must be a string',
@@ -129,7 +128,7 @@ describe('POST /gift/facility - validation - risk details', () => {
   });
 
   describe('facilityCreditRating', () => {
-    numberValidation({
+    stringValidation({
       ...baseParams,
       fieldName: 'facilityCreditRating',
       parentFieldName: 'riskDetails',
