@@ -1,4 +1,3 @@
-import { HttpService } from '@nestjs/axios';
 import { HttpStatus } from '@nestjs/common';
 import { EXAMPLES } from '@ukef/constants';
 import { mockResponse201, mockResponse500 } from '@ukef-test/http-response';
@@ -16,7 +15,6 @@ const mockWorkPackageServiceCreateResponse = mockResponse201(WORK_PACKAGE_CREATI
 describe('GiftFacilityAmendmentService - error handling', () => {
   const logger = new PinoLogger({});
 
-  let httpService: HttpService;
   let mockHttpServicePost: jest.Mock;
   let workPackageService: GiftWorkPackageService;
   let mockWorkPackageServiceCreate: jest.Mock;
@@ -28,20 +26,6 @@ describe('GiftFacilityAmendmentService - error handling', () => {
   beforeEach(() => {
     // Arrange
     workPackageService = new GiftWorkPackageService(giftHttpService, logger);
-    httpService = new HttpService();
-
-    // mockWorkPackageServiceCreate = jest.fn().mockResolvedValueOnce(mockWorkPackageServiceCreateResponse);
-    // mockHttpServicePost = jest.fn().mockResolvedValueOnce(mockHttpPostResponse);
-
-    // workPackageService.create = mockWorkPackageServiceCreate;
-
-    // httpService.post = mockHttpServicePost;
-
-    // giftHttpService = {
-    //   post: mockHttpServicePost,
-    // };
-
-    // service = new GiftFacilityAmendmentService(giftHttpService, logger, workPackageService);
   });
 
   afterAll(() => {
@@ -50,8 +34,6 @@ describe('GiftFacilityAmendmentService - error handling', () => {
 
   describe('giftWorkPackageService.create', () => {
     beforeEach(() => {
-      // httpService.post = mockHttpServicePost;
-
       giftHttpService = {
         post: mockHttpServicePost,
       };
@@ -143,8 +125,6 @@ describe('GiftFacilityAmendmentService - error handling', () => {
           data: mockResponseData,
         });
 
-        // httpService.post = mockHttpServicePost;
-
         giftHttpService = {
           post: mockHttpServicePost,
         };
@@ -170,8 +150,6 @@ describe('GiftFacilityAmendmentService - error handling', () => {
         const mockError = mockResponse500();
 
         mockHttpServicePost = jest.fn().mockRejectedValueOnce(mockError);
-
-        httpService.post = mockHttpServicePost;
 
         giftHttpService = {
           post: mockHttpServicePost,

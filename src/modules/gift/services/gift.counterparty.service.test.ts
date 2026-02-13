@@ -1,4 +1,3 @@
-import { HttpService } from '@nestjs/axios';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { mockResponse200, mockResponse201, mockResponse400, mockResponse418, mockResponse500 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
@@ -15,7 +14,6 @@ const { EVENT_TYPES, PATH } = GIFT;
 describe('GiftCounterpartyService', () => {
   const logger = new PinoLogger({});
 
-  let httpService: HttpService;
   let service: GiftCounterpartyService;
 
   let giftHttpService;
@@ -26,16 +24,12 @@ describe('GiftCounterpartyService', () => {
 
   beforeEach(() => {
     // Arrange
-    httpService = new HttpService();
 
     mockGetResponse = mockResponse200([COUNTERPARTY_ROLE, COUNTERPARTY_ROLE]);
     mockCreateOneResponse = mockResponse201(COUNTERPARTY());
 
     mockHttpServiceGet = jest.fn().mockResolvedValueOnce(mockGetResponse);
     mockHttpServicePost = jest.fn().mockResolvedValueOnce(mockCreateOneResponse);
-
-    httpService.get = mockHttpServiceGet;
-    httpService.post = mockHttpServicePost;
 
     giftHttpService = {
       get: mockHttpServiceGet,

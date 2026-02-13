@@ -1,4 +1,3 @@
-import { HttpService } from '@nestjs/axios';
 import { HttpStatus } from '@nestjs/common';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { mockWorkPackageId } from '@ukef-test/gift/test-helpers';
@@ -21,7 +20,6 @@ const mockHttpPostResponse = mockResponse201(WORK_PACKAGE_CREATION_RESPONSE_DATA
 describe('GiftFacilityAmendmentService', () => {
   const logger = new PinoLogger({});
 
-  let httpService: HttpService;
   let mockHttpServicePost: jest.Mock;
   let workPackageService: GiftWorkPackageService;
   let mockWorkPackageServiceCreate: jest.Mock;
@@ -33,14 +31,11 @@ describe('GiftFacilityAmendmentService', () => {
   beforeEach(() => {
     // Arrange
     workPackageService = new GiftWorkPackageService(giftHttpService, logger);
-    httpService = new HttpService();
 
     mockWorkPackageServiceCreate = jest.fn().mockResolvedValueOnce(mockWorkPackageServiceCreateResponse);
     mockHttpServicePost = jest.fn().mockResolvedValueOnce(mockHttpPostResponse);
 
     workPackageService.create = mockWorkPackageServiceCreate;
-
-    httpService.post = mockHttpServicePost;
 
     giftHttpService = {
       post: mockHttpServicePost,

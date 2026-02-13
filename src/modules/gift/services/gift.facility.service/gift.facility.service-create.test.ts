@@ -1,4 +1,3 @@
-import { HttpService } from '@nestjs/axios';
 import { HttpStatus } from '@nestjs/common';
 import { EXAMPLES } from '@ukef/constants';
 import { mockResponse200, mockResponse201 } from '@ukef-test/http-response';
@@ -59,7 +58,6 @@ const mockCreateRiskDetailsResponse = mockResponse201({ data: mockRiskDetails })
 describe('GiftFacilityService.create', () => {
   const logger = new PinoLogger({});
 
-  let httpService: HttpService;
   let currencyService: GiftCurrencyService;
   let asyncValidationService: GiftFacilityAsyncValidationService;
   let businessCalendarService: GiftBusinessCalendarService;
@@ -86,11 +84,7 @@ describe('GiftFacilityService.create', () => {
 
   beforeEach(() => {
     // Arrange
-    httpService = new HttpService();
-
     mockHttpServicePost = jest.fn().mockResolvedValueOnce(mockHttpPostResponse);
-
-    httpService.post = mockHttpServicePost;
 
     giftHttpService = {
       post: mockHttpServicePost,

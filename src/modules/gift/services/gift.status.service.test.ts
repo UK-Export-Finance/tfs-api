@@ -1,4 +1,3 @@
-import { HttpService } from '@nestjs/axios';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { mockResponse201, mockResponse500 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
@@ -14,7 +13,6 @@ const { PATH } = GIFT;
 describe('GiftStatusService', () => {
   const logger = new PinoLogger({});
 
-  let httpService: HttpService;
   let service: GiftStatusService;
 
   let giftHttpService;
@@ -23,13 +21,9 @@ describe('GiftStatusService', () => {
 
   beforeEach(() => {
     // Arrange
-    httpService = new HttpService();
-
     mockHttpPostResponse = mockResponse201(WORK_PACKAGE_APPROVE_RESPONSE_DATA);
 
     mockHttpServicePost = jest.fn().mockResolvedValueOnce(mockHttpPostResponse);
-
-    httpService.post = mockHttpServicePost;
 
     giftHttpService = {
       post: mockHttpServicePost,

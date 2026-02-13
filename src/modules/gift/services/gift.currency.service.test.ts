@@ -1,4 +1,3 @@
-import { HttpService } from '@nestjs/axios';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { mockResponse201, mockResponse500 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
@@ -10,7 +9,6 @@ const { PATH } = GIFT;
 describe('GiftCurrencyService', () => {
   const logger = new PinoLogger({});
 
-  let httpService: HttpService;
   let service: GiftCurrencyService;
 
   let giftHttpService;
@@ -19,13 +17,9 @@ describe('GiftCurrencyService', () => {
 
   beforeEach(() => {
     // Arrange
-    httpService = new HttpService();
-
     mockGetResponse = mockResponse201(EXAMPLES.GIFT.CURRENCIES);
 
     mockHttpServiceGet = jest.fn().mockResolvedValueOnce(mockGetResponse);
-
-    httpService.get = mockHttpServiceGet;
 
     giftHttpService = {
       get: mockHttpServiceGet,

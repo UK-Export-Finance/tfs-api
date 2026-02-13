@@ -1,4 +1,3 @@
-import { HttpService } from '@nestjs/axios';
 import { GIFT } from '@ukef/constants';
 import { mockResponse200, mockResponse500 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
@@ -12,7 +11,6 @@ const mockProductCode = PRODUCT_TYPE_CODES.EXIP;
 describe('GiftObligationSubtypeService', () => {
   const logger = new PinoLogger({});
 
-  let httpService: HttpService;
   let service: GiftObligationSubtypeService;
 
   let giftHttpService;
@@ -22,13 +20,9 @@ describe('GiftObligationSubtypeService', () => {
 
   beforeEach(() => {
     // Arrange
-    httpService = new HttpService();
-
     mockGetAllResponse = mockResponse200({ obligationSubtypes: Object.values(OBLIGATION_SUBTYPES) });
 
     mockHttpServiceGet = jest.fn().mockResolvedValueOnce(mockGetAllResponse);
-
-    httpService.get = mockHttpServiceGet;
 
     giftHttpService = {
       get: mockHttpServiceGet,
