@@ -1,4 +1,3 @@
-import { HttpService } from '@nestjs/axios';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { mockResponse201, mockResponse500 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
@@ -14,7 +13,6 @@ const { EVENT_TYPES, INTEGRATION_DEFAULTS, PATH } = GIFT;
 describe('GiftRiskDetailsService', () => {
   const logger = new PinoLogger({});
 
-  let httpService: HttpService;
   let service: GiftRiskDetailsService;
 
   let giftHttpService;
@@ -24,14 +22,9 @@ describe('GiftRiskDetailsService', () => {
 
   beforeEach(() => {
     // Arrange
-    httpService = new HttpService();
-
     mockCreateOneResponse = mockResponse201(RISK_DETAILS);
 
     mockHttpServicePost = jest.fn().mockResolvedValueOnce(mockCreateOneResponse);
-
-    httpService.get = mockHttpServiceGet;
-    httpService.post = mockHttpServicePost;
 
     giftHttpService = {
       get: mockHttpServiceGet,
@@ -57,7 +50,7 @@ describe('GiftRiskDetailsService', () => {
         path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_RISK_DETAILS}`,
         payload: {
           ...RISK_DETAILS,
-          overrideRiskRatingId: INTEGRATION_DEFAULTS.OVERRIDE_RISK_RATING_ID,
+          overrideRiskRating: INTEGRATION_DEFAULTS.OVERRIDE_RISK_RATING,
           overrideLossGivenDefault: INTEGRATION_DEFAULTS.OVERRIDE_LOSS_GIVEN_DEFAULT,
           riskReassessmentDate: INTEGRATION_DEFAULTS.RISK_REASSESSMENT_DATE,
         },

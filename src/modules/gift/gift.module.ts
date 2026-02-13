@@ -6,6 +6,7 @@ import {
   GiftBusinessCalendarService,
   GiftCounterpartyService,
   GiftCurrencyService,
+  GiftFacilityAmendmentService,
   GiftFacilityAsyncValidationService,
   GiftFacilityService,
   GiftFeeTypeService,
@@ -17,6 +18,7 @@ import {
   GiftRepaymentProfileService,
   GiftRiskDetailsService,
   GiftStatusService,
+  GiftWorkPackageService,
 } from './services';
 
 @Module({
@@ -27,6 +29,7 @@ import {
     GiftCurrencyService,
     GiftFacilityAsyncValidationService,
     GiftFacilityService,
+    GiftFacilityAmendmentService,
     GiftFeeTypeService,
     GiftFixedFeeService,
     GiftHttpService,
@@ -36,6 +39,7 @@ import {
     GiftRepaymentProfileService,
     GiftRiskDetailsService,
     GiftStatusService,
+    GiftWorkPackageService,
   ],
   controllers: [GiftCurrencyController, GiftFacilityController, GiftFeeTypeController],
 })

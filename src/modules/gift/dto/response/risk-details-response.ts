@@ -28,15 +28,15 @@ export class GiftFacilityRiskDetailsResponseDto {
 
   @IsString()
   @ApiProperty({
-    example: EXAMPLE.facilityCategory,
+    example: EXAMPLE.facilityCategoryCode,
   })
-  readonly facilityCategory: string;
+  readonly facilityCategoryCode: string;
 
   @IsNumber()
   @ApiProperty({
-    example: EXAMPLE.facilityCreditRatingId,
+    example: EXAMPLE.facilityCreditRating,
   })
-  readonly facilityCreditRatingId: number;
+  readonly facilityCreditRating: number;
 
   @IsString()
   @ApiProperty({
@@ -51,9 +51,9 @@ export class GiftFacilityRiskDetailsResponseDto {
   readonly ukefIndustryCode: string;
 
   @ApiProperty({
-    example: INTEGRATION_DEFAULTS.OVERRIDE_RISK_RATING_ID,
+    example: INTEGRATION_DEFAULTS.OVERRIDE_RISK_RATING,
   })
-  readonly overrideRiskRatingId: string | null;
+  readonly overrideRiskRating: string | null;
 
   @ApiProperty({
     example: INTEGRATION_DEFAULTS.OVERRIDE_LOSS_GIVEN_DEFAULT,
