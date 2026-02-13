@@ -1,6 +1,7 @@
 export * from './business-calendar-response';
 export * from './business-calendars-convention-response';
 export * from './counterparty-role-gift-response';
+export * from './create-gift-facility-amendment-response';
 export * from './facility-creation-response';
 export * from './facility-get-gift-response';
 export * from './facility-post-gift-config-response-event';

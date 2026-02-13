@@ -9,9 +9,9 @@ import { GiftWorkPackageService } from '../gift.work-package.service';
 
 const { PATH } = GIFT;
 
-interface CreateFacilityAmendmentResponse {
+interface CreateGiftFacilityAmendmentResponseDto {
   status: AxiosResponse['status'];
-  data: AxiosResponse['data'];
+  data: GiftWorkPackageResponseDto;
 }
 
 /**
@@ -38,7 +38,7 @@ export class GiftFacilityAmendmentService {
    * @param {GiftFacilityAmendmentRequestDto} amendmentData: Amendment data
    * @returns {Promise<CreateFacilityAmendmentResponse>}
    */
-  async create(facilityId: string, amendment: GiftFacilityAmendmentRequestDto): Promise<CreateFacilityAmendmentResponse> {
+  async create(facilityId: string, amendment: GiftFacilityAmendmentRequestDto): Promise<CreateGiftFacilityAmendmentResponseDto> {
     const { amendmentType, amendmentData } = amendment;
 
     try {
@@ -78,10 +78,8 @@ export class GiftFacilityAmendmentService {
         };
       }
 
-      // TODO: validation handling
-
-      // TODO: create ticket
-      // TODO: auto approve the work package
+      // TODO: GIFT-20330 - validation handling
+      // TODO: GIFT-20330 - auto approve the work package
 
       const returnResponse = {
         status: HttpStatus.CREATED,

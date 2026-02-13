@@ -14,8 +14,7 @@ const {
 const { PATH } = GIFT;
 
 const mockWorkPackageServiceCreateResponse = mockResponse201(WORK_PACKAGE_CREATION_RESPONSE_DATA);
-// TODO: below is wrong. above response is correct.
-const mockHttpPostResponse = mockResponse201(WORK_PACKAGE_CREATION_RESPONSE_DATA);
+const mockHttpPostResponse = mockResponse201({ mockHttpPostResponse: true });
 
 describe('GiftFacilityAmendmentService', () => {
   const logger = new PinoLogger({});

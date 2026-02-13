@@ -15,12 +15,12 @@ import { EXAMPLES, GIFT } from '@ukef/constants';
 import { Response } from 'express';
 
 import {
+  CreateGiftFacilityAmendmentResponseDto,
   FacilityIdOperationParamsDto,
   GiftFacilityAmendmentRequestDto,
   GiftFacilityCreationRequestDto,
   GiftFacilityCreationResponseDto,
   GiftFacilityOverviewRequestDto,
-  GiftWorkPackageResponseDto,
 } from '../dto';
 import { GiftFacilityAmendmentService, GiftFacilityService } from '../services';
 
@@ -123,8 +123,7 @@ export class GiftFacilityController {
   })
   @ApiOkResponse({
     description: 'The amended facility',
-    // TODO: check if this is correct vs actual response
-    type: GiftWorkPackageResponseDto,
+    type: CreateGiftFacilityAmendmentResponseDto,
   })
   @ApiBadRequestResponse({
     description: 'Bad request',
