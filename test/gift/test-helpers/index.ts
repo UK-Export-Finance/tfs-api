@@ -8,7 +8,7 @@ const {
   giftVersioning: { prefixAndVersion },
 } = AppConfig();
 
-const { EVENT_TYPES, INTEGRATION_DEFAULTS, PATH, PRODUCT_TYPE_CODES, API_RESPONSE_TYPES } = GIFT;
+const { AMEND_FACILITY_TYPES, EVENT_TYPES, INTEGRATION_DEFAULTS, PATH, PRODUCT_TYPE_CODES, API_RESPONSE_TYPES } = GIFT;
 
 export const mockFacilityId = GIFT_EXAMPLES.FACILITY_ID;
 export const mockWorkPackageId = GIFT_EXAMPLES.WORK_PACKAGE_ID;
@@ -68,6 +68,9 @@ export const mockResponses = {
       },
     },
   },
+  facilityAmendment: {
+    data: { anAmendedFacility: true },
+  },
   feeTypes: GIFT_EXAMPLES.FEE_TYPES_RESPONSE_DATA,
   fixedFee: { data: { aFixedFee: true } },
   obligation: { data: { anObligation: true } },
@@ -82,6 +85,7 @@ export const mockResponses = {
       riskReassessmentDate: INTEGRATION_DEFAULTS.RISK_REASSESSMENT_DATE,
     },
   },
+  workPackageCreation: GIFT_EXAMPLES.WORK_PACKAGE_CREATION_RESPONSE_DATA,
   badRequest,
   internalServerError,
   forbidden,
@@ -91,6 +95,7 @@ export const mockResponses = {
 };
 
 export const apimFacilityUrl = `/api/${prefixAndVersion}/gift${PATH.FACILITY}`;
+export const apimFacilityAmendmentUrl = `/api/${prefixAndVersion}/gift${PATH.FACILITY}/${mockFacilityId}${PATH.AMENDMENT}`;
 export const currencyUrl = PATH.CURRENCY;
 export const counterpartyRolesUrl = PATH.COUNTERPARTY_ROLES;
 export const facilityCreationUrl = PATH.CREATE_FACILITY;
@@ -105,6 +110,8 @@ export const obligationUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACK
 export const repaymentProfileUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_REPAYMENT_PROFILE}`;
 export const riskDetailsUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_RISK_DETAILS}`;
 export const approveStatusUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.APPROVE}`;
+export const workPackageUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}`;
+export const facilityAmendmentUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/AmendFacility_${AMEND_FACILITY_TYPES.AMEND_FACILITY_INCREASE_AMOUNT}`;
 
 export const businessCalendar = GIFT_EXAMPLES.BUSINESS_CALENDAR;
 export const businessCalendarsConvention = GIFT_EXAMPLES.BUSINESS_CALENDARS_CONVENTION;

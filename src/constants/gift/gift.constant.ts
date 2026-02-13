@@ -88,6 +88,7 @@ export const GIFT = {
     },
   },
   PATH: {
+    AMENDMENT: '/amendment',
     APPROVE: '/approve',
     COUNTERPARTY_ROLES: '/counterparty-role',
     CURRENCY: '/currency',
