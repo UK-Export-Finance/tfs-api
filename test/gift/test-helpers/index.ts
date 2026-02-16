@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 import AppConfig from '@ukef/config/app.config';
-import { GIFT } from '@ukef/constants';
+import { AMEND_FACILITY_TYPES_ARRAY, GIFT } from '@ukef/constants';
 import { GIFT_EXAMPLES } from '@ukef/constants/examples/gift.examples.constant';
 import { MockGiftResponse } from '@ukef-test/support/interfaces/mock-gift-response.interface';
 
@@ -146,3 +146,5 @@ export const getExpectedValidationErrors = (payload, expectedResponse, entityNam
 
   return expected;
 };
+
+export const amendmentTypeValidationMessage = `amendmentType must be one of the following values: ${AMEND_FACILITY_TYPES_ARRAY.join(', ')}`;

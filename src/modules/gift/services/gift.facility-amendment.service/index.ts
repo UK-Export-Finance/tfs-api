@@ -3,7 +3,7 @@ import { GIFT } from '@ukef/constants';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 
-import { GiftFacilityAmendmentRequestDto, GiftWorkPackageResponseDto } from '../../dto';
+import { CreateGiftFacilityAmendmentRequestDto, GiftWorkPackageResponseDto } from '../../dto';
 import { GiftHttpService } from '../gift.http.service';
 import { GiftWorkPackageService } from '../gift.work-package.service';
 
@@ -35,10 +35,10 @@ export class GiftFacilityAmendmentService {
    * 2) Create a new GIFT "configuration event" for the amendment.
    * As a result, GIFT will have a new work package in the facility, with an amendment in the facility's work package.
    * @param {string} facilityId: Facility ID
-   * @param {GiftFacilityAmendmentRequestDto} amendmentData: Amendment data
+   * @param {CreateGiftFacilityAmendmentRequestDto} amendmentData: Amendment data
    * @returns {Promise<CreateFacilityAmendmentResponse>}
    */
-  async create(facilityId: string, amendment: GiftFacilityAmendmentRequestDto): Promise<CreateGiftFacilityAmendmentResponseDto> {
+  async create(facilityId: string, amendment: CreateGiftFacilityAmendmentRequestDto): Promise<CreateGiftFacilityAmendmentResponseDto> {
     const { amendmentType, amendmentData } = amendment;
 
     try {

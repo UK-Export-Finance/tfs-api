@@ -15,9 +15,9 @@ import { EXAMPLES, GIFT } from '@ukef/constants';
 import { Response } from 'express';
 
 import {
+  CreateGiftFacilityAmendmentRequestDto,
   CreateGiftFacilityAmendmentResponseDto,
   FacilityIdOperationParamsDto,
-  GiftFacilityAmendmentRequestDto,
   GiftFacilityCreationRequestDto,
   GiftFacilityCreationResponseDto,
   GiftFacilityOverviewRequestDto,
@@ -119,7 +119,7 @@ export class GiftFacilityController {
   })
   @ApiBody({
     required: true,
-    type: GiftFacilityAmendmentRequestDto,
+    type: CreateGiftFacilityAmendmentRequestDto,
   })
   @ApiOkResponse({
     description: 'The amended facility',
@@ -141,7 +141,7 @@ export class GiftFacilityController {
    */
   async postAmendment(
     @Param() { facilityId }: FacilityIdOperationParamsDto,
-    @Body() amendmentData: GiftFacilityAmendmentRequestDto,
+    @Body(new ValidationPipe({ transform: true })) amendmentData: CreateGiftFacilityAmendmentRequestDto,
     @Res({ passthrough: true }) res: Response,
   ) {
     const { status, data } = await this.giftFacilityAmendmentService.create(facilityId, amendmentData);

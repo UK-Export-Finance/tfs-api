@@ -7,6 +7,8 @@ export const AMEND_FACILITY_TYPES = {
   AMEND_FACILITY_REPLACE_EXPIRY_DATE: 'ReplaceExpiryDate',
 } as const;
 
+export const AMEND_FACILITY_TYPES_ARRAY = Object.values(AMEND_FACILITY_TYPES);
+
 export type AmendFacilityType = (typeof AMEND_FACILITY_TYPES)[keyof typeof AMEND_FACILITY_TYPES];
 
 export const GIFT = {
