@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { UkefId } from '@ukef/helpers';
-import { IsNumber, IsNumberString, IsString } from 'class-validator';
+import { IsNumberString, IsString } from 'class-validator';
 
 const {
   GIFT: { RISK_DETAILS: EXAMPLE },
@@ -28,15 +28,15 @@ export class GiftFacilityRiskDetailsResponseDto {
 
   @IsString()
   @ApiProperty({
-    example: EXAMPLE.facilityCategory,
+    example: EXAMPLE.facilityCategoryCode,
   })
-  readonly facilityCategory: string;
+  readonly facilityCategoryCode: string;
 
-  @IsNumber()
+  @IsString()
   @ApiProperty({
-    example: EXAMPLE.facilityCreditRatingId,
+    example: EXAMPLE.facilityCreditRating,
   })
-  readonly facilityCreditRatingId: number;
+  readonly facilityCreditRating: string;
 
   @IsString()
   @ApiProperty({
@@ -51,9 +51,9 @@ export class GiftFacilityRiskDetailsResponseDto {
   readonly ukefIndustryCode: string;
 
   @ApiProperty({
-    example: INTEGRATION_DEFAULTS.OVERRIDE_RISK_RATING_ID,
+    example: INTEGRATION_DEFAULTS.OVERRIDE_RISK_RATING,
   })
-  readonly overrideRiskRatingId: string | null;
+  readonly overrideRiskRating: string | null;
 
   @ApiProperty({
     example: INTEGRATION_DEFAULTS.OVERRIDE_LOSS_GIVEN_DEFAULT,

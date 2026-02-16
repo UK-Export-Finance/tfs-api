@@ -1,3 +1,4 @@
+export * from './amendment-type-string-validation';
 export * from './array-of-nested-objects-date-string-validation';
 export * from './array-of-nested-objects-number-validation';
 export * from './array-of-nested-objects-string-validation';

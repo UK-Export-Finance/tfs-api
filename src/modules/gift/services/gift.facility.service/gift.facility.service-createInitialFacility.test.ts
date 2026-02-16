@@ -1,4 +1,3 @@
-import { HttpService } from '@nestjs/axios';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { mockResponse201, mockResponse500 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
@@ -26,12 +25,11 @@ const {
 
 const { PATH } = GIFT;
 
-const mockResponsePost = mockResponse201(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA);
+const mockHttpPostResponse = mockResponse201(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA);
 
 describe('GiftFacilityService.createInitialFacility', () => {
   const logger = new PinoLogger({});
 
-  let httpService: HttpService;
   let asyncValidationService: GiftFacilityAsyncValidationService;
   let businessCalendarService: GiftBusinessCalendarService;
   let businessCalendarsConventionService: GiftBusinessCalendarsConventionService;
@@ -48,11 +46,7 @@ describe('GiftFacilityService.createInitialFacility', () => {
 
   beforeEach(() => {
     // Arrange
-    httpService = new HttpService();
-
-    mockHttpServicePost = jest.fn().mockResolvedValueOnce(mockResponsePost);
-
-    httpService.post = mockHttpServicePost;
+    mockHttpServicePost = jest.fn().mockResolvedValueOnce(mockHttpPostResponse);
 
     giftHttpService = {
       post: mockHttpServicePost,
@@ -119,7 +113,7 @@ describe('GiftFacilityService.createInitialFacility', () => {
       const response = await service.createInitialFacility(mockPayload.overview);
 
       // Assert
-      expect(response).toEqual(mockResponsePost);
+      expect(response).toEqual(mockHttpPostResponse);
     });
   });
 
@@ -127,8 +121,6 @@ describe('GiftFacilityService.createInitialFacility', () => {
     beforeEach(() => {
       // Arrange
       mockHttpServicePost = jest.fn().mockRejectedValueOnce(mockResponse500());
-
-      httpService.post = mockHttpServicePost;
 
       giftHttpService.post = mockHttpServicePost;
 

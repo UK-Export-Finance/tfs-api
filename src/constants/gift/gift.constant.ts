@@ -1,7 +1,18 @@
 import { CONSUMER } from './consumer.constant';
 import { VALIDATION } from './validation.constant';
 
+export const AMEND_FACILITY_TYPES = {
+  AMEND_FACILITY_INCREASE_AMOUNT: 'IncreaseAmount',
+  AMEND_FACILITY_DECREASE_AMOUNT: 'DecreaseAmount',
+  AMEND_FACILITY_REPLACE_EXPIRY_DATE: 'ReplaceExpiryDate',
+} as const;
+
+export const AMEND_FACILITY_TYPES_ARRAY = Object.values(AMEND_FACILITY_TYPES);
+
+export type AmendFacilityType = (typeof AMEND_FACILITY_TYPES)[keyof typeof AMEND_FACILITY_TYPES];
+
 export const GIFT = {
+  AMEND_FACILITY_TYPES,
   API_RESPONSE_MESSAGES: {
     ASYNC_FACILITY_VALIDATION_ERRORS: 'Async validation errors with facility entity(s)',
     GIFT_FACILITY_VALIDATION_ERRORS: 'GIFT validation errors with facility entity(s)',
@@ -11,20 +22,21 @@ export const GIFT = {
     ERROR: 'api-error-response',
   },
   COUNTERPARTY_ROLE_CODES: {
-    EXPORTER: 'CRP001',
-    GUARANTOR: 'CRP013',
+    EXPORTER: 'CRT001',
+    GUARANTOR: 'CRT013',
   },
   CREDIT_TYPES: {
     REVOLVER: 'Revolver',
     TERM: 'Term',
   },
   INTEGRATION_DEFAULTS: {
-    ACCOUNT: '2',
+    ACCOUNT: '1',
     BUSINESS_CALENDARS_CONVENTION: 'MODIFIED_FOLLOWING',
     DATE_SNAP_BACK: false,
     DUE_ON_LAST_WORKING_DAY_EACH_MONTH: false,
+    GIFT_AMENDMENT_WORK_PACKAGE_NAME: 'Amendments',
     RISK_STATUS: 'Corporate',
-    OVERRIDE_RISK_RATING_ID: null,
+    OVERRIDE_RISK_RATING: null,
     OVERRIDE_LOSS_GIVEN_DEFAULT: null,
     RISK_REASSESSMENT_DATE: null,
   },
@@ -46,6 +58,9 @@ export const GIFT = {
     ADD_FIXED_FEE: 'AddFixedFee',
     ADD_OBLIGATION: 'AddObligation',
     ADD_RISK_DETAILS: 'AddRiskDetails',
+    AMEND_FACILITY_INCREASE_AMOUNT: 'AmendFacility_IncreaseAmount',
+    AMEND_FACILITY_DECREASE_AMOUNT: 'AmendFacility_DecreaseAmount',
+    AMEND_FACILITY_REPLACE_EXPIRY_DATE: 'AmendFacility_ReplaceExpiryDate',
   },
   FEE_TYPE_CODES: {
     BEX: 'BEX',
@@ -59,22 +74,23 @@ export const GIFT = {
   },
   OBLIGATION_SUBTYPES: {
     BIP02: {
-      code: 'BIP02',
-      productTypeCode: 'BIP',
+      code: 'OST001',
+      productTypeCode: 'PRT001',
       name: 'Advanced Payment Bond',
     },
     EXP01: {
-      code: 'EXP01',
-      productTypeCode: 'EXIP',
+      code: 'OST009',
+      productTypeCode: 'PRT002',
       name: 'EXIP Cash',
     },
     EXP02: {
-      code: 'EXP02',
-      productTypeCode: 'EXIP',
+      code: 'OST010',
+      productTypeCode: 'PRT002',
       name: 'Consecutive',
     },
   },
   PATH: {
+    AMENDMENT: '/amendment',
     APPROVE: '/approve',
     COUNTERPARTY_ROLES: '/counterparty-role',
     CURRENCY: '/currency',
@@ -93,8 +109,8 @@ export const GIFT = {
     BOND_SUPPLEMENTAL_TO_CREDIT: 'BOND: SUPPLEMENTAL TO CREDIT',
   },
   PRODUCT_TYPE_CODES: {
-    BIP: 'BIP',
-    EXIP: 'EXIP',
+    BIP: 'PRT001',
+    EXIP: 'PRT002',
   },
   PRODUCT_TYPE_NAMES: {
     BIP: 'Bond Insurance Policy (BIP)',

@@ -1,19 +1,18 @@
 import { HttpStatus } from '@nestjs/common';
 import { Api } from '@ukef-test/support/api';
 
+import { amendmentTypeValidationMessage } from '../test-helpers';
 import { generatePayload } from './generate-payload';
 import { assert400Response } from './response-assertion';
 
 /**
- * Validation tests for a nested string field with invalid values
- * @param {string} fieldName: The name of a field. E.g, email
+ * Validation tests for an "amendmentType" string field with invalid values
  * @param {object} initialPayload: The payload to use before adding a field value
  * @param {number} min: The minimum length
  * @param {number} max: The maximum length
- * @param {string} parentFieldName: The name of a parent field. E.g parentObject
  * @param {string} url: The URL the tests will call.
  */
-export const stringValidation = ({ fieldName, initialPayload, min, max, parentFieldName, url }) => {
+export const amendmentTypeStringValidation = ({ initialPayload, min, max, url }) => {
   let api: Api;
 
   beforeAll(async () => {
@@ -24,14 +23,12 @@ export const stringValidation = ({ fieldName, initialPayload, min, max, parentFi
     await api.destroy();
   });
 
-  const fieldPath = `${parentFieldName}.${fieldName}`;
+  const mockPayload = generatePayload({ initialPayload, fieldName: 'amendmentType' });
 
-  const mockPayload = generatePayload({ initialPayload, fieldName, parentFieldName });
-
-  describe(`when ${fieldName} is null`, () => {
+  describe('when amendmentType is null', () => {
     beforeAll(() => {
       // Arrange
-      mockPayload[`${parentFieldName}`][`${fieldName}`] = null;
+      mockPayload.amendmentType = null;
     });
 
     it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
@@ -48,19 +45,20 @@ export const stringValidation = ({ fieldName, initialPayload, min, max, parentFi
 
       // Assert
       const expected = [
-        `${fieldPath} should not be null or undefined`,
-        `${fieldPath} must be longer than or equal to ${min} characters`,
-        `${fieldPath} must be a string`,
+        'amendmentType should not be null or undefined',
+        amendmentTypeValidationMessage,
+        `amendmentType must be longer than or equal to ${min} characters`,
+        'amendmentType must be a string',
       ];
 
       expect(body.message).toStrictEqual(expected);
     });
   });
 
-  describe(`when ${fieldName} is undefined`, () => {
+  describe('when amendmentType is undefined', () => {
     beforeAll(() => {
       // Arrange
-      mockPayload[`${parentFieldName}`][`${fieldName}`] = undefined;
+      mockPayload.amendmentType = undefined;
     });
 
     it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
@@ -77,19 +75,20 @@ export const stringValidation = ({ fieldName, initialPayload, min, max, parentFi
 
       // Assert
       const expected = [
-        `${fieldPath} should not be null or undefined`,
-        `${fieldPath} must be longer than or equal to ${min} characters`,
-        `${fieldPath} must be a string`,
+        'amendmentType should not be null or undefined',
+        amendmentTypeValidationMessage,
+        `amendmentType must be longer than or equal to ${min} characters`,
+        'amendmentType must be a string',
       ];
 
       expect(body.message).toStrictEqual(expected);
     });
   });
 
-  describe(`when ${fieldName} is an empty array`, () => {
+  describe('when amendmentType is an empty array', () => {
     beforeAll(() => {
       // Arrange
-      mockPayload[`${parentFieldName}`][`${fieldName}`] = [];
+      mockPayload.amendmentType = [];
     });
 
     it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
@@ -105,16 +104,16 @@ export const stringValidation = ({ fieldName, initialPayload, min, max, parentFi
       const { body } = await api.post(url, mockPayload);
 
       // Assert
-      const expected = [`${fieldPath} must be longer than or equal to ${min} characters`, `${fieldPath} must be a string`];
+      const expected = [amendmentTypeValidationMessage, `amendmentType must be longer than or equal to ${min} characters`, 'amendmentType must be a string'];
 
       expect(body.message).toStrictEqual(expected);
     });
   });
 
-  describe(`when ${fieldName} is a boolean, true`, () => {
+  describe('when amendmentType is a boolean, true', () => {
     beforeAll(() => {
       // Arrange
-      mockPayload[`${parentFieldName}`][`${fieldName}`] = true;
+      mockPayload.amendmentType = true;
     });
 
     it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
@@ -130,16 +129,20 @@ export const stringValidation = ({ fieldName, initialPayload, min, max, parentFi
       const { body } = await api.post(url, mockPayload);
 
       // Assert
-      const expected = [`${fieldPath} must be longer than or equal to ${min} and shorter than or equal to ${max} characters`, `${fieldPath} must be a string`];
+      const expected = [
+        amendmentTypeValidationMessage,
+        `amendmentType must be longer than or equal to ${min} and shorter than or equal to ${max} characters`,
+        'amendmentType must be a string',
+      ];
 
       expect(body.message).toStrictEqual(expected);
     });
   });
 
-  describe(`when ${fieldName} is a boolean, false`, () => {
+  describe('when amendmentType is a boolean, false', () => {
     beforeAll(() => {
       // Arrange
-      mockPayload[`${parentFieldName}`][`${fieldName}`] = false;
+      mockPayload.amendmentType = false;
     });
 
     it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
@@ -155,16 +158,16 @@ export const stringValidation = ({ fieldName, initialPayload, min, max, parentFi
       const { body } = await api.post(url, mockPayload);
 
       // Assert
-      const expected = [`${fieldPath} must be longer than or equal to ${min} characters`, `${fieldPath} must be a string`];
+      const expected = [amendmentTypeValidationMessage, `amendmentType must be longer than or equal to ${min} characters`, 'amendmentType must be a string'];
 
       expect(body.message).toStrictEqual(expected);
     });
   });
 
-  describe(`when ${fieldName} is a number, 0`, () => {
+  describe('when amendmentType is a number, 0', () => {
     beforeAll(() => {
       // Arrange
-      mockPayload[`${parentFieldName}`][`${fieldName}`] = 0;
+      mockPayload.amendmentType = 0;
     });
 
     it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
@@ -180,16 +183,16 @@ export const stringValidation = ({ fieldName, initialPayload, min, max, parentFi
       const { body } = await api.post(url, mockPayload);
 
       // Assert
-      const expected = [`${fieldPath} must be longer than or equal to ${min} characters`, `${fieldPath} must be a string`];
+      const expected = [amendmentTypeValidationMessage, `amendmentType must be longer than or equal to ${min} characters`, 'amendmentType must be a string'];
 
       expect(body.message).toStrictEqual(expected);
     });
   });
 
-  describe(`when ${fieldName} is a number, 1`, () => {
+  describe('when amendmentType is a number, 1', () => {
     beforeAll(() => {
       // Arrange
-      mockPayload[`${parentFieldName}`][`${fieldName}`] = 1;
+      mockPayload.amendmentType = 1;
     });
 
     it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
@@ -205,16 +208,20 @@ export const stringValidation = ({ fieldName, initialPayload, min, max, parentFi
       const { body } = await api.post(url, mockPayload);
 
       // Assert
-      const expected = [`${fieldPath} must be longer than or equal to ${min} and shorter than or equal to ${max} characters`, `${fieldPath} must be a string`];
+      const expected = [
+        amendmentTypeValidationMessage,
+        `amendmentType must be longer than or equal to ${min} and shorter than or equal to ${max} characters`,
+        'amendmentType must be a string',
+      ];
 
       expect(body.message).toStrictEqual(expected);
     });
   });
 
-  describe(`when ${fieldName} is an empty string`, () => {
+  describe('when amendmentType is an empty string', () => {
     beforeAll(() => {
       // Arrange
-      mockPayload[`${parentFieldName}`][`${fieldName}`] = '';
+      mockPayload.amendmentType = '';
     });
 
     it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
@@ -230,16 +237,16 @@ export const stringValidation = ({ fieldName, initialPayload, min, max, parentFi
       const { body } = await api.post(url, mockPayload);
 
       // Assert
-      const expected = [`${fieldPath} must be longer than or equal to ${min} characters`];
+      const expected = [amendmentTypeValidationMessage, `amendmentType must be longer than or equal to ${min} characters`];
 
       expect(body.message).toStrictEqual(expected);
     });
   });
 
-  describe(`when ${fieldName} is below the minimum`, () => {
+  describe('when amendmentType is below the minimum', () => {
     beforeAll(() => {
       // Arrange
-      mockPayload[`${parentFieldName}`][`${fieldName}`] = 'a'.repeat(min - 1);
+      mockPayload.amendmentType = 'a'.repeat(min - 1);
     });
 
     it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
@@ -255,16 +262,16 @@ export const stringValidation = ({ fieldName, initialPayload, min, max, parentFi
       const { body } = await api.post(url, mockPayload);
 
       // Assert
-      const expected = [`${fieldPath} must be longer than or equal to ${min} characters`];
+      const expected = [amendmentTypeValidationMessage, `amendmentType must be longer than or equal to ${min} characters`];
 
       expect(body.message).toStrictEqual(expected);
     });
   });
 
-  describe(`when ${fieldName} is above the maximum`, () => {
+  describe('when amendmentType is above the maximum', () => {
     beforeAll(() => {
       // Arrange
-      mockPayload[`${parentFieldName}`][`${fieldName}`] = 'a'.repeat(max + 1);
+      mockPayload.amendmentType = 'a'.repeat(max + 1);
     });
 
     it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
@@ -280,7 +287,7 @@ export const stringValidation = ({ fieldName, initialPayload, min, max, parentFi
       const { body } = await api.post(url, mockPayload);
 
       // Assert
-      const expected = [`${fieldPath} must be shorter than or equal to ${max} characters`];
+      const expected = [amendmentTypeValidationMessage, `amendmentType must be shorter than or equal to ${max} characters`];
 
       expect(body.message).toStrictEqual(expected);
     });

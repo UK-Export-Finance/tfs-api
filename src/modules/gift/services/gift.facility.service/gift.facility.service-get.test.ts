@@ -1,4 +1,3 @@
-import { HttpService } from '@nestjs/axios';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { mockResponse200, mockResponse500 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
@@ -31,7 +30,6 @@ const mockResponseGet = mockResponse200(FACILITY_RESPONSE_DATA);
 describe('GiftFacilityService.get', () => {
   const logger = new PinoLogger({});
 
-  let httpService: HttpService;
   let asyncValidationService: GiftFacilityAsyncValidationService;
   let businessCalendarService: GiftBusinessCalendarService;
   let businessCalendarsConventionService: GiftBusinessCalendarsConventionService;
@@ -48,11 +46,7 @@ describe('GiftFacilityService.get', () => {
 
   beforeEach(() => {
     // Arrange
-    httpService = new HttpService();
-
     mockHttpServiceGet = jest.fn().mockResolvedValueOnce(mockResponseGet);
-
-    httpService.get = mockHttpServiceGet;
 
     giftHttpService = {
       get: mockHttpServiceGet,
@@ -126,8 +120,6 @@ describe('GiftFacilityService.get', () => {
     beforeEach(() => {
       // Arrange
       mockHttpServiceGet = jest.fn().mockRejectedValueOnce(mockResponse500());
-
-      httpService.get = mockHttpServiceGet;
 
       giftHttpService.get = mockHttpServiceGet;
 

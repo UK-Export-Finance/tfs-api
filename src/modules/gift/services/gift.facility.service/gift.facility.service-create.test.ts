@@ -1,4 +1,3 @@
-import { HttpService } from '@nestjs/axios';
 import { HttpStatus } from '@nestjs/common';
 import { EXAMPLES } from '@ukef/constants';
 import { mockResponse200, mockResponse201 } from '@ukef-test/http-response';
@@ -37,7 +36,7 @@ const {
   },
 } = EXAMPLES;
 
-const mockResponsePost = mockResponse201(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA);
+const mockHttpPostResponse = mockResponse201(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA);
 
 const mockBusinessCalendar = BUSINESS_CALENDAR;
 const mockBusinessCalendarsConvention = BUSINESS_CALENDARS_CONVENTION;
@@ -59,7 +58,6 @@ const mockCreateRiskDetailsResponse = mockResponse201({ data: mockRiskDetails })
 describe('GiftFacilityService.create', () => {
   const logger = new PinoLogger({});
 
-  let httpService: HttpService;
   let currencyService: GiftCurrencyService;
   let asyncValidationService: GiftFacilityAsyncValidationService;
   let businessCalendarService: GiftBusinessCalendarService;
@@ -86,11 +84,7 @@ describe('GiftFacilityService.create', () => {
 
   beforeEach(() => {
     // Arrange
-    httpService = new HttpService();
-
-    mockHttpServicePost = jest.fn().mockResolvedValueOnce(mockResponsePost);
-
-    httpService.post = mockHttpServicePost;
+    mockHttpServicePost = jest.fn().mockResolvedValueOnce(mockHttpPostResponse);
 
     giftHttpService = {
       post: mockHttpServicePost,

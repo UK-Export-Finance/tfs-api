@@ -73,6 +73,8 @@ describe('POST /gift/facility - validation', () => {
       const expected = {
         error: 'Bad Request',
         message: [
+          'riskDetails should not be null or undefined',
+          'riskDetails must be a non-empty object',
           'consumer should not be null or undefined',
           'consumer must be a string',
           'overview should not be null or undefined',
@@ -92,8 +94,6 @@ describe('POST /gift/facility - validation', () => {
           `repaymentProfile[] name's must be unique`,
           'repaymentProfiles should not be empty',
           'repaymentProfiles must be an array',
-          'riskDetails should not be null or undefined',
-          'riskDetails must be a non-empty object',
         ],
         statusCode: HttpStatus.BAD_REQUEST,
       };
@@ -116,6 +116,8 @@ describe('POST /gift/facility - validation', () => {
       const expected = {
         error: 'Bad Request',
         message: [
+          'riskDetails should not be null or undefined',
+          'riskDetails must be a non-empty object',
           'consumer should not be null or undefined',
           'consumer must be a string',
           'overview should not be null or undefined',
@@ -135,8 +137,6 @@ describe('POST /gift/facility - validation', () => {
           `repaymentProfile[] name's must be unique`,
           'repaymentProfiles should not be empty',
           'repaymentProfiles must be an array',
-          'riskDetails should not be null or undefined',
-          'riskDetails must be a non-empty object',
         ],
         statusCode: HttpStatus.BAD_REQUEST,
       };
@@ -167,6 +167,7 @@ describe('POST /gift/facility - validation', () => {
       const expected = {
         error: 'Bad Request',
         message: [
+          'riskDetails must be a non-empty object',
           'consumer should not be null or undefined',
           'consumer must be a string',
           'overview must be a non-empty object',
@@ -177,7 +178,6 @@ describe('POST /gift/facility - validation', () => {
           `repaymentProfile[].allocation[] dueDate's must be unique`,
           `repaymentProfile[] name's must be unique`,
           'repaymentProfiles should not be empty',
-          'riskDetails must be a non-empty object',
         ],
         statusCode: HttpStatus.BAD_REQUEST,
       };
@@ -208,6 +208,9 @@ describe('POST /gift/facility - validation', () => {
       const expected = {
         error: 'Bad Request',
         message: [
+          'riskDetails should not be null or undefined',
+          'riskDetails must be a non-empty object',
+          'nested property riskDetails must be either object or array',
           'consumer should not be null or undefined',
           'consumer must be a string',
           'overview should not be null or undefined',
@@ -232,9 +235,6 @@ describe('POST /gift/facility - validation', () => {
           'repaymentProfiles should not be empty',
           'repaymentProfiles must be an array',
           'nested property repaymentProfiles must be either object or array',
-          'riskDetails should not be null or undefined',
-          'riskDetails must be a non-empty object',
-          'nested property riskDetails must be either object or array',
         ],
         statusCode: HttpStatus.BAD_REQUEST,
       };
@@ -265,6 +265,8 @@ describe('POST /gift/facility - validation', () => {
       const expected = {
         error: 'Bad Request',
         message: [
+          'riskDetails should not be null or undefined',
+          'riskDetails must be a non-empty object',
           'consumer should not be null or undefined',
           'consumer must be a string',
           'overview should not be null or undefined',
@@ -284,8 +286,6 @@ describe('POST /gift/facility - validation', () => {
           `repaymentProfile[] name's must be unique`,
           'repaymentProfiles should not be empty',
           'repaymentProfiles must be an array',
-          'riskDetails should not be null or undefined',
-          'riskDetails must be a non-empty object',
         ],
         statusCode: HttpStatus.BAD_REQUEST,
       };
@@ -316,6 +316,24 @@ describe('POST /gift/facility - validation', () => {
       const expected = {
         error: 'Bad Request',
         message: [
+          'riskDetails.account should not be null or undefined',
+          `riskDetails.account must be longer than or equal to ${VALIDATION.RISK_DETAILS.ACCOUNT.MIN_LENGTH} characters`,
+          'riskDetails.account must be a number string',
+          'riskDetails.dealId must be a string',
+          `riskDetails.dealId must be longer than or equal to ${VALIDATION.RISK_DETAILS.DEAL_ID.MIN_LENGTH} characters`,
+          'riskDetails.dealId must match /^00\\d{8}$/ regular expression',
+          'riskDetails.facilityCategoryCode should not be null or undefined',
+          `riskDetails.facilityCategoryCode must be longer than or equal to ${VALIDATION.RISK_DETAILS.FACILITY_CATEGORY_CODE.MIN_LENGTH} characters`,
+          'riskDetails.facilityCategoryCode must be a string',
+          'riskDetails.facilityCreditRating should not be null or undefined',
+          `riskDetails.facilityCreditRating must be longer than or equal to ${VALIDATION.RISK_DETAILS.FACILITY_CREDIT_RATING.MIN_LENGTH} characters`,
+          'riskDetails.facilityCreditRating must be a string',
+          'riskDetails.riskStatus should not be null or undefined',
+          `riskDetails.riskStatus must be longer than or equal to ${VALIDATION.RISK_DETAILS.RISK_STATUS.MIN_LENGTH} characters`,
+          'riskDetails.riskStatus must be a string',
+          'riskDetails.ukefIndustryCode should not be null or undefined',
+          `riskDetails.ukefIndustryCode must be longer than or equal to ${VALIDATION.RISK_DETAILS.UKEF_INDUSTRY_CODE.MIN_LENGTH} characters`,
+          'riskDetails.ukefIndustryCode must be a number string',
           'consumer should not be null or undefined',
           'consumer must be a string',
           'overview.creditType should not be null or undefined',
@@ -386,25 +404,6 @@ describe('POST /gift/facility - validation', () => {
           'repaymentProfiles.allocations should not be null or undefined',
           'repaymentProfiles.allocations should not be empty',
           'repaymentProfiles.allocations must be an array',
-          'riskDetails.account should not be null or undefined',
-          `riskDetails.account must be longer than or equal to ${VALIDATION.RISK_DETAILS.ACCOUNT.MIN_LENGTH} characters`,
-          'riskDetails.account must be a number string',
-          'riskDetails.dealId must be a string',
-          `riskDetails.dealId must be longer than or equal to ${VALIDATION.RISK_DETAILS.DEAL_ID.MIN_LENGTH} characters`,
-          'riskDetails.dealId must match /^00\\d{8}$/ regular expression',
-          'riskDetails.facilityCategory should not be null or undefined',
-          `riskDetails.facilityCategory must be longer than or equal to ${VALIDATION.RISK_DETAILS.FACILITY_CATEGORY.MIN_LENGTH} characters`,
-          'riskDetails.facilityCategory must be a string',
-          'riskDetails.facilityCreditRatingId should not be null or undefined',
-          `riskDetails.facilityCreditRatingId must not be greater than ${VALIDATION.RISK_DETAILS.FACILITY_CREDIT_RATING_ID.MAX}`,
-          `riskDetails.facilityCreditRatingId must not be less than ${VALIDATION.RISK_DETAILS.FACILITY_CREDIT_RATING_ID.MIN}`,
-          'riskDetails.facilityCreditRatingId must be a number conforming to the specified constraints',
-          'riskDetails.riskStatus should not be null or undefined',
-          `riskDetails.riskStatus must be longer than or equal to ${VALIDATION.RISK_DETAILS.RISK_STATUS.MIN_LENGTH} characters`,
-          'riskDetails.riskStatus must be a string',
-          'riskDetails.ukefIndustryCode should not be null or undefined',
-          `riskDetails.ukefIndustryCode must be longer than or equal to ${VALIDATION.RISK_DETAILS.UKEF_INDUSTRY_CODE.MIN_LENGTH} characters`,
-          'riskDetails.ukefIndustryCode must be a number string',
         ],
         statusCode: HttpStatus.BAD_REQUEST,
       };
