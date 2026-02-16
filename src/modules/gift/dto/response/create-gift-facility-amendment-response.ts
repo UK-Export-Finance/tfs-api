@@ -14,7 +14,7 @@ export class CreateGiftFacilityAmendmentResponseDto {
   @ApiProperty({
     example: HttpStatus.CREATED,
   })
-  readonly status: string;
+  readonly status: number;
 
   @IsObject()
   @ApiProperty({
