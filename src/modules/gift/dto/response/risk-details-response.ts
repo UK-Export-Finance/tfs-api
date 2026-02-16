@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { UkefId } from '@ukef/helpers';
-import { IsNumber, IsNumberString, IsString } from 'class-validator';
+import { IsNumberString, IsString } from 'class-validator';
 
 const {
   GIFT: { RISK_DETAILS: EXAMPLE },
@@ -32,11 +32,11 @@ export class GiftFacilityRiskDetailsResponseDto {
   })
   readonly facilityCategoryCode: string;
 
-  @IsNumber()
+  @IsString()
   @ApiProperty({
     example: EXAMPLE.facilityCreditRating,
   })
-  readonly facilityCreditRating: number;
+  readonly facilityCreditRating: string;
 
   @IsString()
   @ApiProperty({

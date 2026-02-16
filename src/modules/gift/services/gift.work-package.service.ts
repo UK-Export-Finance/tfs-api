@@ -37,7 +37,7 @@ export class GiftWorkPackageService {
     } catch (error) {
       this.logger.error('Error creating work package for facility %s %o', facilityId, error);
 
-      throw new Error(`Error creating work package for facility ${facilityId}`, error);
+      throw new Error(`Error creating work package for facility ${facilityId}`, { cause: error });
     }
   }
 }

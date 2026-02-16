@@ -76,7 +76,7 @@ describe('GiftWorkPackageService', () => {
       const promise = service.create(mockFacilityId);
 
       // Assert
-      const expected = new Error(`Error creating work package for facility ${mockFacilityId}`);
+      const expected = new Error(`Error creating work package for facility ${mockFacilityId}`, { cause: mockResponse500() });
 
       await expect(promise).rejects.toThrow(expected);
     });

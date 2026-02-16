@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { EXAMPLES } from '@ukef/constants';
-import { IsBoolean, IsObject, IsString } from 'class-validator';
+import { IsBoolean, IsNumber, IsObject, IsString } from 'class-validator';
 
 const {
   GIFT: { WORK_PACKAGE_CREATION_RESPONSE_DATA },
@@ -13,7 +13,7 @@ const {
  * - Adding an amendment (configuration event) to a work package.
  */
 export class GiftWorkPackageResponseDto {
-  @IsString()
+  @IsNumber()
   @ApiProperty({
     example: WORK_PACKAGE_CREATION_RESPONSE_DATA.id,
   })

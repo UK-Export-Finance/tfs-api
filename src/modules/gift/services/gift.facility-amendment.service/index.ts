@@ -74,7 +74,7 @@ export class GiftFacilityAmendmentService {
 
         return {
           status: amendmentResponse.status,
-          data: workPackage,
+          data: amendmentResponse.data,
         };
       }
 

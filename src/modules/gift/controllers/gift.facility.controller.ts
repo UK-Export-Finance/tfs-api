@@ -121,8 +121,8 @@ export class GiftFacilityController {
     required: true,
     type: CreateGiftFacilityAmendmentRequestDto,
   })
-  @ApiOkResponse({
-    description: 'The amended facility',
+  @ApiCreatedResponse({
+    description: 'The facility amendment',
     type: CreateGiftFacilityAmendmentResponseDto,
   })
   @ApiBadRequestResponse({

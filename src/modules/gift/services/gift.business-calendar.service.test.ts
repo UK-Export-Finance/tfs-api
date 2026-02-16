@@ -21,7 +21,7 @@ describe('GiftBusinessCalendarService', () => {
   let mockHttpServicePost: jest.Mock;
 
   beforeEach(() => {
-    // Arrang
+    // Arrange
 
     mockCreateOneResponse = mockResponse201(BUSINESS_CALENDAR);
 
