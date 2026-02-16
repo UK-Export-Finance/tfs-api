@@ -47,7 +47,7 @@ export class CreateGiftFacilityAmendmentRequestDto {
   @Transform(
     ({ value, obj }) => {
       /**
-       * Depending on the provided amendmenType, we need to transform the amendmentData into the correct DTO type,
+       * Depending on the provided amendmentType, we need to transform the amendmentData into the correct DTO type,
        * so that the correct validation rules are applied.
        * We cannot determine the correct type to transform to until we have access to the entire object;
        * So we use a "Transform" decorator from class-transformer with toClassOnly: true,

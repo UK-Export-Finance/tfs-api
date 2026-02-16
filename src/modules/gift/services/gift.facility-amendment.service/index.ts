@@ -47,7 +47,7 @@ export class GiftFacilityAmendmentService {
       const { data: workPackage, status } = await this.giftWorkPackageService.create(facilityId);
 
       if (status !== HttpStatus.CREATED) {
-        this.logger.error('Error creating work package for facility %s amendment %o', facilityId);
+        this.logger.error('Error creating work package for facility %s amendment %o', facilityId, amendmentType);
 
         return {
           status,
