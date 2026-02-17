@@ -1,4 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
+import { GIFT } from '@ukef/constants';
 import { GIFT_EXAMPLES } from '@ukef/constants/examples/gift.examples.constant';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
 import { Api } from '@ukef-test/support/api';
@@ -8,6 +9,10 @@ import nock from 'nock';
 import { apimFacilityAmendmentUrl, facilityAmendmentUrl, mockResponses, workPackageUrl } from './test-helpers';
 
 const { GIFT_API_URL } = ENVIRONMENT_VARIABLES;
+
+const {
+  AMEND_FACILITY_TYPES: { AMEND_FACILITY_INCREASE_AMOUNT, AMEND_FACILITY_DECREASE_AMOUNT },
+} = GIFT;
 
 describe('POST /gift/facility/:facilityId/amendment', () => {
   let api: Api;
@@ -31,22 +36,56 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
       api.postWithoutAuth(apimFacilityAmendmentUrl, GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD, incorrectAuth?.headerName, incorrectAuth?.headerValue),
   });
 
-  describe(`when the payload is valid and a ${HttpStatus.CREATED} response is returned by all GIFT endpoints`, () => {
-    it(`should return a ${HttpStatus.CREATED} response with a facility and the created amendment`, async () => {
-      // Arrange
-      nock(GIFT_API_URL).persist().post(workPackageUrl).reply(HttpStatus.CREATED, mockResponses.workPackageCreation);
+  beforeEach(() => {
+    // Arrange
+    nock(GIFT_API_URL).persist().post(workPackageUrl).reply(HttpStatus.CREATED, mockResponses.workPackageCreation);
 
-      nock(GIFT_API_URL).persist().post(facilityAmendmentUrl).reply(HttpStatus.CREATED, mockResponses.facilityAmendment);
+    nock(GIFT_API_URL).persist().post(facilityAmendmentUrl(AMEND_FACILITY_INCREASE_AMOUNT)).reply(HttpStatus.CREATED, mockResponses.facilityAmendment);
 
-      // Act
-      const { status, body } = await api.post(apimFacilityAmendmentUrl, GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD);
+    nock(GIFT_API_URL).persist().post(facilityAmendmentUrl(AMEND_FACILITY_DECREASE_AMOUNT)).reply(HttpStatus.CREATED, mockResponses.facilityAmendment);
+  });
 
-      // Assert
-      expect(status).toBe(HttpStatus.CREATED);
+  describe(`${AMEND_FACILITY_INCREASE_AMOUNT}`, () => {
+    describe(`when the payload is valid and a ${HttpStatus.CREATED} response is returned by all GIFT endpoints`, () => {
+      it(`should return a ${HttpStatus.CREATED} response with a facility and the created amendment`, async () => {
+        // Arrange
+        const mockPayload = {
+          amendmentType: AMEND_FACILITY_INCREASE_AMOUNT,
+          amendmentData: GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA.INCREASE_AMOUNT,
+        };
 
-      const expected = mockResponses.facilityAmendment;
+        // Act
+        const { status, body } = await api.post(apimFacilityAmendmentUrl, mockPayload);
 
-      expect(body).toStrictEqual(expected);
+        // Assert
+        expect(status).toBe(HttpStatus.CREATED);
+
+        const expected = mockResponses.facilityAmendment;
+
+        expect(body).toStrictEqual(expected);
+      });
+    });
+  });
+
+  describe(`${AMEND_FACILITY_DECREASE_AMOUNT}`, () => {
+    describe(`when the payload is valid and a ${HttpStatus.CREATED} response is returned by all GIFT endpoints`, () => {
+      it(`should return a ${HttpStatus.CREATED} response with a facility and the created amendment`, async () => {
+        // Arrange
+        const mockPayload = {
+          amendmentType: AMEND_FACILITY_DECREASE_AMOUNT,
+          amendmentData: GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA.DECREASE_AMOUNT,
+        };
+
+        // Act
+        const { status, body } = await api.post(apimFacilityAmendmentUrl, mockPayload);
+
+        // Assert
+        expect(status).toBe(HttpStatus.CREATED);
+
+        const expected = mockResponses.facilityAmendment;
+
+        expect(body).toStrictEqual(expected);
+      });
     });
   });
 });
