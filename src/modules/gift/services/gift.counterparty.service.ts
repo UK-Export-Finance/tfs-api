@@ -43,7 +43,7 @@ export class GiftCounterpartyService {
     } catch (error) {
       this.logger.error('Error creating a counterparty with URN %s for facility %s %o', counterpartyData.counterpartyUrn, facilityId, error);
 
-      throw new Error(`Error creating a counterparty with URN ${counterpartyData.counterpartyUrn} for facility ${facilityId}`, { cause: error });
+      throw new Error(`Error creating a counterparty with URN ${counterpartyData.counterpartyUrn} for facility ${facilityId}`);
     }
   }
 

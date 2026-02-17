@@ -70,11 +70,9 @@ describe('GiftCounterpartyService', () => {
     });
 
     describe('when giftHttpService.post returns an error', () => {
-      const mockError = mockResponse500();
-
       beforeEach(() => {
         // Arrange
-        mockHttpServicePost = jest.fn().mockRejectedValueOnce(mockError);
+        mockHttpServicePost = jest.fn().mockRejectedValueOnce(mockResponse500());
         giftHttpService.post = mockHttpServicePost;
 
         service = new GiftCounterpartyService(giftHttpService, logger);
@@ -85,9 +83,7 @@ describe('GiftCounterpartyService', () => {
         const promise = service.createOne(mockCounterparty, mockFacilityId, mockWorkPackageId);
 
         // Assert
-        const expected = new Error(`Error creating a counterparty with URN ${mockCounterparty.counterpartyUrn} for facility ${mockFacilityId}`, {
-          cause: mockError,
-        });
+        const expected = new Error(`Error creating a counterparty with URN ${mockCounterparty.counterpartyUrn} for facility ${mockFacilityId}`);
 
         await expect(promise).rejects.toThrow(expected);
       });
