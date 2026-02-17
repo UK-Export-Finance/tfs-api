@@ -72,7 +72,7 @@ export class GiftFacilityService {
     } catch (error) {
       this.logger.error('Error getting a GIFT facility %s %o', facilityId, error);
 
-      throw new Error(`Error getting a GIFT facility ${facilityId}`, error);
+      throw new Error(`Error getting a GIFT facility ${facilityId}`, { cause: error });
     }
   }
 
@@ -94,7 +94,7 @@ export class GiftFacilityService {
     } catch (error) {
       this.logger.error('Error creating an initial GIFT facility %s %o', overviewData.facilityId, error);
 
-      throw new Error(`Error creating an initial GIFT facility ${overviewData.facilityId}`, error);
+      throw new Error(`Error creating an initial GIFT facility ${overviewData.facilityId}`, { cause: error });
     }
   }
 
@@ -248,7 +248,7 @@ export class GiftFacilityService {
     } catch (error) {
       this.logger.error('Error creating a GIFT facility %s %o', facilityId, error);
 
-      throw new Error(`Error creating a GIFT facility ${facilityId}`, error);
+      throw new Error(`Error creating a GIFT facility ${facilityId}`, { cause: error });
     }
   }
 }

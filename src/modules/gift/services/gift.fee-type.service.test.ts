@@ -20,6 +20,8 @@ describe('GiftFeeTypeService', () => {
   let mockHttpServiceGet: jest.Mock;
   let mockGetSupportedFeeTypes: jest.Mock;
 
+  const mockError = mockResponse500();
+
   beforeEach(() => {
     // Arrange
     mockGetResponse = mockResponse201(FEE_TYPES_RESPONSE_DATA);
@@ -61,7 +63,7 @@ describe('GiftFeeTypeService', () => {
     describe('when giftHttpService.get returns an error', () => {
       beforeEach(() => {
         // Arrange
-        mockHttpServiceGet = jest.fn().mockRejectedValueOnce(mockResponse500());
+        mockHttpServiceGet = jest.fn().mockRejectedValueOnce(mockError);
 
         giftHttpService.get = mockHttpServiceGet;
 
@@ -73,7 +75,7 @@ describe('GiftFeeTypeService', () => {
         const promise = service.getSupportedFeeTypes();
 
         // Assert
-        const expected = new Error('Error getting supported fee types');
+        const expected = new Error('Error getting supported fee types', { cause: mockError });
 
         await expect(promise).rejects.toThrow(expected);
       });
@@ -114,7 +116,7 @@ describe('GiftFeeTypeService', () => {
     describe('when service.getSupportedFeeTypes returns an error', () => {
       beforeEach(() => {
         // Arrange
-        mockGetSupportedFeeTypes = jest.fn().mockRejectedValueOnce(mockResponse500());
+        mockGetSupportedFeeTypes = jest.fn().mockRejectedValueOnce(mockError);
 
         service = new GiftFeeTypeService(giftHttpService, logger);
 
@@ -126,7 +128,7 @@ describe('GiftFeeTypeService', () => {
         const promise = service.getAllFeeTypeCodes();
 
         // Assert
-        const expected = new Error('Error getting all fee type codes');
+        const expected = new Error('Error getting all fee type codes', { cause: mockError });
 
         await expect(promise).rejects.toThrow(expected);
       });

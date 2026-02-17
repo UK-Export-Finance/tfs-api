@@ -28,6 +28,8 @@ const mockCounterpartyRoleCodes = [COUNTERPARTY_ROLES_RESPONSE_DATA.counterparty
 
 const mockObligationSubtypes = OBLIGATION_SUBTYPES_RESPONSE_DATA.obligationSubtypes;
 
+const mockError = mockResponse500();
+
 describe('GiftFacilityAsyncValidationService', () => {
   const logger = new PinoLogger({});
 
@@ -198,7 +200,7 @@ describe('GiftFacilityAsyncValidationService', () => {
     describe('when feeTypeService.getAllFeeTypeCodes returns an error', () => {
       beforeEach(() => {
         // Arrange
-        mockGetAllFeeTypeCodes = jest.fn().mockRejectedValueOnce(mockResponse500());
+        mockGetAllFeeTypeCodes = jest.fn().mockRejectedValueOnce(mockError);
 
         feeTypeService.getAllFeeTypeCodes = mockGetAllFeeTypeCodes;
 
@@ -217,7 +219,7 @@ describe('GiftFacilityAsyncValidationService', () => {
         const promise = service.creation(mockPayload, mockFacilityId);
 
         // Assert
-        const expected = new Error(`Error validating a GIFT facility - async ${mockFacilityId}`);
+        const expected = new Error(`Error validating a GIFT facility - async ${mockFacilityId}`, { cause: mockError });
 
         await expect(promise).rejects.toThrow(expected);
       });
@@ -226,7 +228,7 @@ describe('GiftFacilityAsyncValidationService', () => {
     describe('when currencyService.getSupportedCurrencies returns an error', () => {
       beforeEach(() => {
         // Arrange
-        mockGetSupportedCurrencies = jest.fn().mockRejectedValueOnce(mockResponse500());
+        mockGetSupportedCurrencies = jest.fn().mockRejectedValueOnce(mockError);
 
         currencyService.getSupportedCurrencies = mockGetSupportedCurrencies;
 
@@ -245,7 +247,7 @@ describe('GiftFacilityAsyncValidationService', () => {
         const promise = service.creation(mockPayload, mockFacilityId);
 
         // Assert
-        const expected = new Error(`Error validating a GIFT facility - async ${mockFacilityId}`);
+        const expected = new Error(`Error validating a GIFT facility - async ${mockFacilityId}`, { cause: mockError });
 
         await expect(promise).rejects.toThrow(expected);
       });
@@ -254,7 +256,7 @@ describe('GiftFacilityAsyncValidationService', () => {
     describe('when productTypeService.isSupported returns an error', () => {
       beforeEach(() => {
         // Arrange
-        mockProductTypeIsSupported = jest.fn().mockRejectedValueOnce(mockResponse500());
+        mockProductTypeIsSupported = jest.fn().mockRejectedValueOnce(mockError);
 
         productTypeService.isSupported = mockProductTypeIsSupported;
 
@@ -273,7 +275,7 @@ describe('GiftFacilityAsyncValidationService', () => {
         const promise = service.creation(mockPayload, mockFacilityId);
 
         // Assert
-        const expected = new Error(`Error validating a GIFT facility - async ${mockFacilityId}`);
+        const expected = new Error(`Error validating a GIFT facility - async ${mockFacilityId}`, { cause: mockError });
 
         await expect(promise).rejects.toThrow(expected);
       });
@@ -282,7 +284,7 @@ describe('GiftFacilityAsyncValidationService', () => {
     describe('when obligationSubtypeService.getAllByProductType returns an error', () => {
       beforeEach(() => {
         // Arrange
-        mockGetAllByProductType = jest.fn().mockRejectedValueOnce(mockResponse500());
+        mockGetAllByProductType = jest.fn().mockRejectedValueOnce(mockError);
 
         obligationSubtypeService.getAllByProductType = mockGetAllByProductType;
 
@@ -301,7 +303,7 @@ describe('GiftFacilityAsyncValidationService', () => {
         const promise = service.creation(mockPayload, mockFacilityId);
 
         // Assert
-        const expected = new Error(`Error validating a GIFT facility - async ${mockFacilityId}`);
+        const expected = new Error(`Error validating a GIFT facility - async ${mockFacilityId}`, { cause: mockError });
 
         await expect(promise).rejects.toThrow(expected);
       });

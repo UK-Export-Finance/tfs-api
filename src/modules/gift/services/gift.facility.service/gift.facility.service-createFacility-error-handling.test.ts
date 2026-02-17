@@ -86,6 +86,8 @@ describe('GiftFacilityService.create - error handling', () => {
     validationErrors: [{ mock: true }],
   };
 
+  const mockError = mockAxiosError({ data: mockAxiosErrorData, status: HttpStatus.BAD_REQUEST });
+
   beforeEach(() => {
     // Arrange
     mockHttpServicePost = jest.fn().mockResolvedValueOnce(mockHttpPostResponse);
@@ -161,7 +163,7 @@ describe('GiftFacilityService.create - error handling', () => {
   describe('when giftFacilityService.createInitialFacility throws an error', () => {
     beforeEach(() => {
       // Arrange
-      createInitialFacilitySpy = jest.fn().mockRejectedValueOnce(mockAxiosError({ data: mockAxiosErrorData, status: HttpStatus.BAD_REQUEST }));
+      createInitialFacilitySpy = jest.fn().mockRejectedValueOnce(mockError);
 
       service = new GiftFacilityService(
         giftHttpService,
@@ -185,7 +187,7 @@ describe('GiftFacilityService.create - error handling', () => {
       const response = service.create(mockPayload, mockFacilityId);
 
       // Assert
-      const expected = new Error(`Error creating a GIFT facility ${mockFacilityId}`);
+      const expected = new Error(`Error creating a GIFT facility ${mockFacilityId}`, { cause: mockError });
 
       await expect(response).rejects.toThrow(expected);
     });
@@ -194,7 +196,7 @@ describe('GiftFacilityService.create - error handling', () => {
   describe('when counterpartyService.createMany throws an error', () => {
     beforeEach(() => {
       // Arrange
-      createCounterpartiesSpy = jest.fn().mockRejectedValueOnce(mockAxiosError({ data: mockAxiosErrorData, status: HttpStatus.BAD_REQUEST }));
+      createCounterpartiesSpy = jest.fn().mockRejectedValueOnce(mockError);
 
       counterpartyService.createMany = createCounterpartiesSpy;
 
@@ -229,9 +231,9 @@ describe('GiftFacilityService.create - error handling', () => {
   describe('when fixedFeeService.createMany throws an error', () => {
     beforeEach(() => {
       // Arrange
-      createFixedFeesSpy = jest.fn().mockRejectedValueOnce(mockAxiosError({ data: mockAxiosErrorData, status: HttpStatus.BAD_REQUEST }));
+      createFixedFeesSpy = jest.fn().mockRejectedValueOnce(mockError);
 
-      counterpartyService.createMany = createFixedFeesSpy;
+      fixedFeeService.createMany = createFixedFeesSpy;
 
       service = new GiftFacilityService(
         giftHttpService,
@@ -255,7 +257,7 @@ describe('GiftFacilityService.create - error handling', () => {
       const response = service.create(mockPayload, mockFacilityId);
 
       // Assert
-      const expected = new Error(`Error creating a GIFT facility ${mockFacilityId}`);
+      const expected = new Error(`Error creating a GIFT facility ${mockFacilityId}`, { cause: mockError });
 
       await expect(response).rejects.toThrow(expected);
     });
@@ -290,7 +292,7 @@ describe('GiftFacilityService.create - error handling', () => {
       const response = service.create(mockPayload, mockFacilityId);
 
       // Assert
-      const expected = new Error(`Error creating a GIFT facility ${mockFacilityId}`);
+      const expected = new Error(`Error creating a GIFT facility ${mockFacilityId}`, { cause: mockError });
 
       await expect(response).rejects.toThrow(expected);
     });
@@ -325,7 +327,7 @@ describe('GiftFacilityService.create - error handling', () => {
       const response = service.create(mockPayload, mockFacilityId);
 
       // Assert
-      const expected = new Error(`Error creating a GIFT facility ${mockFacilityId}`);
+      const expected = new Error(`Error creating a GIFT facility ${mockFacilityId}`, { cause: mockError });
 
       await expect(response).rejects.toThrow(expected);
     });
@@ -360,7 +362,7 @@ describe('GiftFacilityService.create - error handling', () => {
       const response = service.create(mockPayload, mockFacilityId);
 
       // Assert
-      const expected = new Error(`Error creating a GIFT facility ${mockFacilityId}`);
+      const expected = new Error(`Error creating a GIFT facility ${mockFacilityId}`, { cause: mockError });
 
       await expect(response).rejects.toThrow(expected);
     });
@@ -395,7 +397,7 @@ describe('GiftFacilityService.create - error handling', () => {
       const response = service.create(mockPayload, mockFacilityId);
 
       // Assert
-      const expected = new Error(`Error creating a GIFT facility ${mockFacilityId}`);
+      const expected = new Error(`Error creating a GIFT facility ${mockFacilityId}`, { cause: mockError });
 
       await expect(response).rejects.toThrow(expected);
     });

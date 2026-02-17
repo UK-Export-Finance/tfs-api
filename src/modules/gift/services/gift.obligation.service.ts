@@ -52,7 +52,7 @@ export class GiftObligationService {
     } catch (error) {
       this.logger.error('Error creating an obligation with amount %s for facility %s %o', obligationData.amount, facilityId, error);
 
-      throw new Error(`Error creating an obligation with amount ${obligationData.amount} for facility ${facilityId}`, error);
+      throw new Error(`Error creating an obligation with amount ${obligationData.amount} for facility ${facilityId}`, { cause: error });
     }
   }
 
@@ -84,7 +84,7 @@ export class GiftObligationService {
     } catch (error) {
       this.logger.error('Error creating obligations for facility %s %o', facilityId, error);
 
-      throw new Error(`Error creating obligations for facility ${facilityId}`, error);
+      throw new Error(`Error creating obligations for facility ${facilityId}`, { cause: error });
     }
   }
 }

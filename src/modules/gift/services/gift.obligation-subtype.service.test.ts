@@ -67,9 +67,11 @@ describe('GiftObligationSubtypeService', () => {
     });
 
     describe('when giftHttpService.get returns an error', () => {
+      const mockError = mockResponse500();
+
       beforeEach(() => {
         // Arrange
-        mockHttpServiceGet = jest.fn().mockRejectedValueOnce(mockResponse500());
+        mockHttpServiceGet = jest.fn().mockRejectedValueOnce(mockError);
 
         giftHttpService.get = mockHttpServiceGet;
 
@@ -81,7 +83,7 @@ describe('GiftObligationSubtypeService', () => {
         const promise = service.getAll();
 
         // Assert
-        const expected = new Error('Error getting obligation subtypes');
+        const expected = new Error('Error getting obligation subtypes', { cause: mockError });
 
         await expect(promise).rejects.toThrow(expected);
       });
@@ -117,9 +119,11 @@ describe('GiftObligationSubtypeService', () => {
     });
 
     describe('when service.getAll returns an error', () => {
+      const mockError = mockResponse500();
+
       beforeEach(() => {
         // Arrange
-        mockGetAll = jest.fn().mockRejectedValueOnce(mockResponse500());
+        mockGetAll = jest.fn().mockRejectedValueOnce(mockError);
 
         service = new GiftObligationSubtypeService(giftHttpService, logger);
 
@@ -131,7 +135,7 @@ describe('GiftObligationSubtypeService', () => {
         const promise = service.getAllByProductType(mockProductCode);
 
         // Assert
-        const expected = new Error(`Error getting obligation subtypes by product type ${mockProductCode}`);
+        const expected = new Error(`Error getting obligation subtypes by product type ${mockProductCode}`, { cause: mockError });
 
         await expect(promise).rejects.toThrow(expected);
       });

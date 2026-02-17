@@ -52,7 +52,7 @@ export class GiftFixedFeeService {
     } catch (error) {
       this.logger.error('Error creating a fixed fee with feeTypeCode %s for facility %s %o', fixedFeeData.feeTypeCode, facilityId, error);
 
-      throw new Error(`Error creating a fixed fee with feeTypeCode ${fixedFeeData.feeTypeCode} for facility ${facilityId}`, error);
+      throw new Error(`Error creating a fixed fee with feeTypeCode ${fixedFeeData.feeTypeCode} for facility ${facilityId}`, { cause: error });
     }
   }
 
@@ -84,7 +84,7 @@ export class GiftFixedFeeService {
     } catch (error) {
       this.logger.error('Error creating fixed fees for facility %s %o', facilityId, error);
 
-      throw new Error(`Error creating fixed fees for facility ${facilityId}`, error);
+      throw new Error(`Error creating fixed fees for facility ${facilityId}`, { cause: error });
     }
   }
 }

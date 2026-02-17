@@ -50,7 +50,7 @@ export class GiftBusinessCalendarsConventionService {
     } catch (error) {
       this.logger.error('Error creating business calendars convention for facility %s %o', facilityId, error);
 
-      throw new Error(`Error creating business calendars convention for facility ${facilityId}`, error);
+      throw new Error(`Error creating business calendars convention for facility ${facilityId}`, { cause: error });
     }
   }
 }

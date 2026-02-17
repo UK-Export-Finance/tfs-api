@@ -68,9 +68,11 @@ describe('GiftRiskDetailsService', () => {
     });
 
     describe('when giftHttpService.post returns an error', () => {
+      const mockError = mockResponse500();
+
       beforeEach(() => {
         // Arrange
-        mockHttpServicePost = jest.fn().mockRejectedValueOnce(mockResponse500());
+        mockHttpServicePost = jest.fn().mockRejectedValueOnce(mockError);
 
         giftHttpService.post = mockHttpServicePost;
 
@@ -82,7 +84,7 @@ describe('GiftRiskDetailsService', () => {
         const promise = service.createOne(RISK_DETAILS, mockFacilityId, mockWorkPackageId);
 
         // Assert
-        const expected = new Error(`Error creating risk details for facility ${mockFacilityId}`);
+        const expected = new Error(`Error creating risk details for facility ${mockFacilityId}`, { cause: mockError });
 
         await expect(promise).rejects.toThrow(expected);
       });

@@ -46,7 +46,7 @@ export class GiftRiskDetailsService {
     } catch (error) {
       this.logger.error('Error creating risk details for facility %s %o', facilityId, error);
 
-      throw new Error(`Error creating risk details for facility ${facilityId}`, error);
+      throw new Error(`Error creating risk details for facility ${facilityId}`, { cause: error });
     }
   }
 }

@@ -60,9 +60,11 @@ describe('GiftStatusService', () => {
     });
 
     describe('when giftHttpService.post returns an error', () => {
+      const mockError = mockResponse500();
+
       beforeEach(() => {
         // Arrange
-        mockHttpServicePost = jest.fn().mockRejectedValueOnce(mockResponse500());
+        mockHttpServicePost = jest.fn().mockRejectedValueOnce(mockError);
 
         giftHttpService.post = mockHttpServicePost;
 
@@ -74,7 +76,7 @@ describe('GiftStatusService', () => {
         const promise = service.approved(mockFacilityId, mockWorkPackageId);
 
         // Assert
-        const expected = new Error(`Error updating facility work package status to approved for facility ${mockFacilityId}`);
+        const expected = new Error(`Error updating facility work package status to approved for facility ${mockFacilityId}`, { cause: mockError });
 
         await expect(promise).rejects.toThrow(expected);
       });

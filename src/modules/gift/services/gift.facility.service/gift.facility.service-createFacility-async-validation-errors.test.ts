@@ -223,9 +223,11 @@ describe('GiftFacilityService.create - async validation errors', () => {
   });
 
   describe('when asyncValidationService.creation throws an error', () => {
+    const mockError = mockAxiosError();
+
     beforeEach(() => {
       // Arrange
-      asyncValidationServiceCreationSpy = jest.fn().mockRejectedValueOnce(mockAxiosError());
+      asyncValidationServiceCreationSpy = jest.fn().mockRejectedValueOnce(mockError);
 
       asyncValidationService.creation = asyncValidationServiceCreationSpy;
 
@@ -249,7 +251,7 @@ describe('GiftFacilityService.create - async validation errors', () => {
       const response = service.create(mockPayload, mockFacilityId);
 
       // Assert
-      const expected = new Error(`Error creating a GIFT facility ${mockFacilityId}`);
+      const expected = new Error(`Error creating a GIFT facility ${mockFacilityId}`, { cause: mockError });
 
       await expect(response).rejects.toThrow(expected);
     });

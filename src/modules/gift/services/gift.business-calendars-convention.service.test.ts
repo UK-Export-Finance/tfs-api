@@ -73,9 +73,11 @@ describe('GiftBusinessCalendarsConventionService', () => {
     });
 
     describe('when giftHttpService.post returns an error', () => {
+      const mockError = mockResponse500();
+
       beforeEach(() => {
         // Arrange
-        mockHttpServicePost = jest.fn().mockRejectedValueOnce(mockResponse500());
+        mockHttpServicePost = jest.fn().mockRejectedValueOnce(mockError);
 
         giftHttpService.post = mockHttpServicePost;
 
@@ -90,7 +92,7 @@ describe('GiftBusinessCalendarsConventionService', () => {
         });
 
         // Assert
-        const expected = new Error(`Error creating business calendars convention for facility ${mockFacilityId}`);
+        const expected = new Error(`Error creating business calendars convention for facility ${mockFacilityId}`, { cause: mockError });
 
         await expect(promise).rejects.toThrow(expected);
       });

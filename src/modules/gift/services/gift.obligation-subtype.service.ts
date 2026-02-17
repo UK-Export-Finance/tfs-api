@@ -38,7 +38,7 @@ export class GiftObligationSubtypeService {
     } catch (error) {
       this.logger.error('Error getting obligation subtypes %o', error);
 
-      throw new Error('Error getting obligation subtypes', error);
+      throw new Error('Error getting obligation subtypes', { cause: error });
     }
   }
 
@@ -60,7 +60,7 @@ export class GiftObligationSubtypeService {
     } catch (error) {
       this.logger.error('Error getting obligation subtypes by product type %s %o', productTypeCode, error);
 
-      throw new Error(`Error getting obligation subtypes by product type ${productTypeCode}`, error);
+      throw new Error(`Error getting obligation subtypes by product type ${productTypeCode}`, { cause: error });
     }
   }
 }

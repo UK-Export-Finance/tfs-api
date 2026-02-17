@@ -38,7 +38,7 @@ export class GiftProductTypeService {
     } catch (error) {
       this.logger.error('Error getting product type %s %o', productTypeCode, error);
 
-      throw new Error(`Error getting product type ${productTypeCode}`, error);
+      throw new Error(`Error getting product type ${productTypeCode}`, { cause: error });
     }
   }
 
@@ -62,7 +62,7 @@ export class GiftProductTypeService {
     } catch (error) {
       this.logger.error('Error checking if product type %s is supported %o', productTypeCode, error);
 
-      throw new Error(`Error checking if product type ${productTypeCode} is supported`, error);
+      throw new Error(`Error checking if product type ${productTypeCode} is supported`, { cause: error });
     }
   }
 }

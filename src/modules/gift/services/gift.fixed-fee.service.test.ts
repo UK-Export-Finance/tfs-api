@@ -66,10 +66,11 @@ describe('GiftFixedFeeService', () => {
     });
 
     describe('when giftHttpService.post returns an error', () => {
+      const mockError = mockResponse500();
+
       beforeEach(() => {
         // Arrange
-        mockHttpServicePost = jest.fn().mockRejectedValueOnce(mockResponse500());
-
+        mockHttpServicePost = jest.fn().mockRejectedValueOnce(mockError);
         giftHttpService.post = mockHttpServicePost;
 
         service = new GiftFixedFeeService(giftHttpService, logger);
@@ -80,7 +81,9 @@ describe('GiftFixedFeeService', () => {
         const promise = service.createOne(mockFixedFee, mockFacilityId, mockWorkPackageId);
 
         // Assert
-        const expected = new Error(`Error creating a fixed fee with feeTypeCode ${mockFixedFee.feeTypeCode} for facility ${mockFacilityId}`);
+        const expected = new Error(`Error creating a fixed fee with feeTypeCode ${mockFixedFee.feeTypeCode} for facility ${mockFacilityId}`, {
+          cause: mockError,
+        });
 
         await expect(promise).rejects.toThrow(expected);
       });
@@ -136,9 +139,11 @@ describe('GiftFixedFeeService', () => {
     });
 
     describe('when service.createOne returns an error', () => {
+      const mockError = mockResponse500();
+
       beforeEach(() => {
         // Arrange
-        mockCreateOne = jest.fn().mockRejectedValueOnce(mockResponse500());
+        mockCreateOne = jest.fn().mockRejectedValueOnce(mockError);
 
         service = new GiftFixedFeeService(giftHttpService, logger);
 
@@ -150,7 +155,7 @@ describe('GiftFixedFeeService', () => {
         const promise = service.createMany(mockFixedFees, mockFacilityId, mockWorkPackageId);
 
         // Assert
-        const expected = new Error(`Error creating fixed fees for facility ${mockFacilityId}`);
+        const expected = new Error(`Error creating fixed fees for facility ${mockFacilityId}`, { cause: mockError });
 
         await expect(promise).rejects.toThrow(expected);
       });
