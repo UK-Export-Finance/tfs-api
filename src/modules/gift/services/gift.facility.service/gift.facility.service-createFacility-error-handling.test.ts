@@ -222,7 +222,7 @@ describe('GiftFacilityService.create - error handling', () => {
       const response = service.create(mockPayload, mockFacilityId);
 
       // Assert
-      const expected = new Error(`Error creating a GIFT facility ${mockFacilityId}`);
+      const expected = new Error(`Error creating a GIFT facility ${mockFacilityId}`, { cause: mockError });
 
       await expect(response).rejects.toThrow(expected);
     });

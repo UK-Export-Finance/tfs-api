@@ -117,9 +117,11 @@ describe('GiftFacilityService.get', () => {
   });
 
   describe('when giftHttpService.get returns an error', () => {
+    const mockError = mockResponse500();
+
     beforeEach(() => {
       // Arrange
-      mockHttpServiceGet = jest.fn().mockRejectedValueOnce(mockResponse500());
+      mockHttpServiceGet = jest.fn().mockRejectedValueOnce(mockError);
 
       giftHttpService.get = mockHttpServiceGet;
 
@@ -143,7 +145,7 @@ describe('GiftFacilityService.get', () => {
       const promise = service.get(mockFacilityId);
 
       // Assert
-      const expected = new Error(`Error getting a GIFT facility ${mockFacilityId}`);
+      const expected = new Error(`Error getting a GIFT facility ${mockFacilityId}`, { cause: mockError });
 
       await expect(promise).rejects.toThrow(expected);
     });

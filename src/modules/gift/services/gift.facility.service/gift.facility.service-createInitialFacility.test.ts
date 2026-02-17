@@ -118,9 +118,11 @@ describe('GiftFacilityService.createInitialFacility', () => {
   });
 
   describe('when giftHttpService.post returns an error', () => {
+    const mockError = mockResponse500();
+
     beforeEach(() => {
       // Arrange
-      mockHttpServicePost = jest.fn().mockRejectedValueOnce(mockResponse500());
+      mockHttpServicePost = jest.fn().mockRejectedValueOnce(mockError);
 
       giftHttpService.post = mockHttpServicePost;
 
@@ -144,7 +146,7 @@ describe('GiftFacilityService.createInitialFacility', () => {
       const promise = service.createInitialFacility(mockPayload.overview);
 
       // Assert
-      const expected = new Error(`Error creating an initial GIFT facility ${mockFacilityId}`);
+      const expected = new Error(`Error creating an initial GIFT facility ${mockFacilityId}`, { cause: mockError });
 
       await expect(promise).rejects.toThrow(expected);
     });
