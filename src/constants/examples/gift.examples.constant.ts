@@ -222,6 +222,9 @@ const FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA = {
     amount: 100,
     date: '2027-02-15',
   },
+  REPLACE_EXPIRY_DATE: {
+    expiryDate: '2030-03-20',
+  },
 };
 
 const FACILITY_AMENDMENT_REQUEST_PAYLOAD = {

@@ -4,6 +4,8 @@ import { GIFT_EXAMPLES } from '@ukef/constants/examples/gift.examples.constant';
 import { plainToInstance, Transform } from 'class-transformer';
 import { IsDateString, IsDefined, IsIn, IsNotEmptyObject, IsNumber, IsString, Length, Max, Min, ValidateNested } from 'class-validator';
 
+import { getAmendmentDataDto } from '../../helpers';
+
 const { VALIDATION } = GIFT;
 
 export class AmountDto {
@@ -30,7 +32,17 @@ export class AmountDto {
 export class DecreaseAmountDto extends AmountDto {}
 export class IncreaseAmountDto extends AmountDto {}
 
-@ApiExtraModels(DecreaseAmountDto, IncreaseAmountDto)
+export class ReplaceExpiryDateDto {
+  @IsDefined()
+  @IsDateString()
+  @ApiProperty({
+    required: true,
+    example: GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA.REPLACE_EXPIRY_DATE.expiryDate,
+  })
+  expiryDate: string;
+}
+
+@ApiExtraModels(DecreaseAmountDto, IncreaseAmountDto, ReplaceExpiryDateDto)
 export class CreateGiftFacilityAmendmentRequestDto {
   @IsDefined()
   @IsString()
@@ -55,17 +67,16 @@ export class CreateGiftFacilityAmendmentRequestDto {
        */
       const { amendmentType } = obj;
 
-      const Decrease = GIFT.AMEND_FACILITY_TYPES.AMEND_FACILITY_DECREASE_AMOUNT;
-      const Target = amendmentType === Decrease ? DecreaseAmountDto : IncreaseAmountDto;
+      const amendmentDataDto = getAmendmentDataDto(amendmentType);
 
-      return plainToInstance(Target, value);
+      return plainToInstance(amendmentDataDto, value);
     },
     { toClassOnly: true },
   )
   @ValidateNested()
   @ApiProperty({
     required: true,
-    oneOf: [{ $ref: getSchemaPath(DecreaseAmountDto) }, { $ref: getSchemaPath(IncreaseAmountDto) }],
+    oneOf: [{ $ref: getSchemaPath(DecreaseAmountDto) }, { $ref: getSchemaPath(IncreaseAmountDto) }, { $ref: getSchemaPath(ReplaceExpiryDateDto) }],
   })
-  amendmentData: DecreaseAmountDto | IncreaseAmountDto;
+  amendmentData: DecreaseAmountDto | IncreaseAmountDto | ReplaceExpiryDateDto;
 }

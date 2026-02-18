@@ -126,6 +126,13 @@ describe('POST /gift/facility/:facilityId/amendment - validation', () => {
     });
   });
 
+  // TODO
+  // TODO
+  // TODO - split up this test file
+  // TODO
+
+  // TODO - when additional field is provided.
+
   describe('amendmentData', () => {
     describe.each([AMEND_FACILITY_INCREASE_AMOUNT, AMEND_FACILITY_DECREASE_AMOUNT])(`when amendmentType is %s`, (amendmentType: string) => {
       describe('when an empty object is provided', () => {
@@ -152,6 +159,30 @@ describe('POST /gift/facility/:facilityId/amendment - validation', () => {
               'amendmentData.date should not be null or undefined',
               'amendmentData.date must be a valid ISO 8601 date string',
             ],
+            statusCode: HttpStatus.BAD_REQUEST,
+          };
+
+          expect(body).toStrictEqual(expected);
+        });
+      });
+
+      describe('when an empty array is provided', () => {
+        it(`should return a ${HttpStatus.BAD_REQUEST} response with validation errors`, async () => {
+          // Arrange
+          const mockPayload = {
+            amendmentType,
+            amendmentData: [],
+          };
+
+          // Act
+          const { status, body } = await api.post(apimFacilityAmendmentUrl, mockPayload);
+
+          // Assert
+          expect(status).toBe(HttpStatus.BAD_REQUEST);
+
+          const expected = {
+            error: 'Bad Request',
+            message: ['amendmentData must be a non-empty object'],
             statusCode: HttpStatus.BAD_REQUEST,
           };
 
@@ -231,6 +262,68 @@ describe('POST /gift/facility/:facilityId/amendment - validation', () => {
         dateStringValidation({
           fieldName: 'date',
           initialPayload: GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD,
+          parentFieldName: 'amendmentData',
+          url: apimFacilityAmendmentUrl,
+        });
+      });
+    });
+
+    describe(`when amendmentType is ${AMEND_FACILITY_REPLACE_EXPIRY_DATE}`, () => {
+      describe('when an empty object is provided', () => {
+        it(`should return a ${HttpStatus.BAD_REQUEST} response with validation errors`, async () => {
+          // Arrange
+          const mockPayload = {
+            amendmentType: AMEND_FACILITY_REPLACE_EXPIRY_DATE,
+            amendmentData: {},
+          };
+
+          // Act
+          const { status, body } = await api.post(apimFacilityAmendmentUrl, mockPayload);
+
+          // Assert
+          expect(status).toBe(HttpStatus.BAD_REQUEST);
+
+          const expected = {
+            error: 'Bad Request',
+            message: ['amendmentData.expiryDate should not be null or undefined', 'amendmentData.expiryDate must be a valid ISO 8601 date string'],
+            statusCode: HttpStatus.BAD_REQUEST,
+          };
+
+          expect(body).toStrictEqual(expected);
+        });
+      });
+
+      describe('when an empty array is provided', () => {
+        it(`should return a ${HttpStatus.BAD_REQUEST} response with validation errors`, async () => {
+          // Arrange
+          const mockPayload = {
+            amendmentType: AMEND_FACILITY_REPLACE_EXPIRY_DATE,
+            amendmentData: [],
+          };
+
+          // Act
+          const { status, body } = await api.post(apimFacilityAmendmentUrl, mockPayload);
+
+          // Assert
+          expect(status).toBe(HttpStatus.BAD_REQUEST);
+
+          const expected = {
+            error: 'Bad Request',
+            message: ['amendmentData must be a non-empty object'],
+            statusCode: HttpStatus.BAD_REQUEST,
+          };
+
+          expect(body).toStrictEqual(expected);
+        });
+      });
+
+      describe('expiryDate', () => {
+        dateStringValidation({
+          fieldName: 'expiryDate',
+          initialPayload: {
+            amendmentType: AMEND_FACILITY_REPLACE_EXPIRY_DATE,
+            amendmentData: GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA.REPLACE_EXPIRY_DATE,
+          },
           parentFieldName: 'amendmentData',
           url: apimFacilityAmendmentUrl,
         });
