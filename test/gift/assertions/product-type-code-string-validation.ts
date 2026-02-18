@@ -41,16 +41,6 @@ export const productTypeCodeStringValidation = ({ initialPayload, parentFieldNam
   mockPayload[`${parentFieldName}`][`${fieldName}`] = UNSUPPORTED_PRODUCT_TYPE_CODE;
 
   /**
-   * Map over the payload's obligations so that each obligation has the same unsupported product type code.
-   * Otherwise, obligation validation errors will be returned.
-   * This test is specifically for the high level product type code only.
-   */
-  mockPayload.obligations = mockPayload.obligations.map((obligation) => ({
-    ...obligation,
-    productTypeCode: UNSUPPORTED_PRODUCT_TYPE_CODE,
-  }));
-
-  /**
    * Mock the obligation subtype response,
    * so that obligations with an unsupported product type code are technically valid.
    * This prevents the obligation validation errors from being returned.
@@ -59,7 +49,6 @@ export const productTypeCodeStringValidation = ({ initialPayload, parentFieldNam
   const mockObligationSubtypeResponse = {
     obligationSubtypes: [
       {
-        tonyTest: true,
         code: OBLIGATION_SUBTYPES.EXP01.code,
         name: OBLIGATION_SUBTYPES.EXP01.name,
         productTypeCode: UNSUPPORTED_PRODUCT_TYPE_CODE,

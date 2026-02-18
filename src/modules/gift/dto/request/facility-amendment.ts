@@ -2,7 +2,7 @@ import { ApiExtraModels, ApiProperty, getSchemaPath } from '@nestjs/swagger';
 import { AMEND_FACILITY_TYPES_ARRAY, AmendFacilityType, GIFT } from '@ukef/constants';
 import { GIFT_EXAMPLES } from '@ukef/constants/examples/gift.examples.constant';
 import { plainToInstance, Transform } from 'class-transformer';
-import { IsDateString, IsDefined, IsIn, IsNotEmptyObject, IsNumber, IsString, Length, Max, Min, ValidateNested } from 'class-validator';
+import { IsDateString, IsDefined, IsIn, IsNumber, IsObject, IsString, Length, Max, Min, ValidateNested } from 'class-validator';
 
 import { getAmendmentDataDto } from '../../helpers';
 
@@ -54,7 +54,7 @@ export class CreateGiftFacilityAmendmentRequestDto {
   })
   amendmentType: AmendFacilityType;
 
-  @IsNotEmptyObject()
+  @IsObject()
   @IsDefined()
   @Transform(
     ({ value, obj }) => {

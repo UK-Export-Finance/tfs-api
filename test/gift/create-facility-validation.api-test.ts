@@ -150,7 +150,6 @@ describe('POST /gift/facility - validation', () => {
       // Arrange
       const mockPayload = {
         overview: [],
-        businessCalendarsConvention: [],
         counterparties: [],
         fixedFees: [],
         obligations: [],
@@ -191,7 +190,6 @@ describe('POST /gift/facility - validation', () => {
       // Arrange
       const mockPayload = {
         overview: null,
-        businessCalendarsConvention: null,
         counterparties: null,
         fixedFees: null,
         obligations: null,
@@ -248,7 +246,6 @@ describe('POST /gift/facility - validation', () => {
       // Arrange
       const mockPayload = {
         overview: undefined,
-        businessCalendarsConvention: undefined,
         counterparties: undefined,
         fixedFees: undefined,
         obligations: undefined,
@@ -299,7 +296,6 @@ describe('POST /gift/facility - validation', () => {
       // Arrange
       const mockPayload = {
         overview: {},
-        businessCalendarsConvention: {},
         counterparties: {},
         fixedFees: {},
         obligations: {},

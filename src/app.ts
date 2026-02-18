@@ -36,8 +36,9 @@ export class App {
     app.useGlobalPipes(
       new InputCharacterValidationPipe(),
       new ValidationPipe({
-        whitelist: true,
-        transform: true,
+        whitelist: true, // strips properties that do not have any decorators
+        forbidNonWhitelisted: true, // if non-whitelisted properties are present, validation will fail
+        transform: true, // automatically transform payloads to be objects typed according to their DTO classes
       }),
     );
 
