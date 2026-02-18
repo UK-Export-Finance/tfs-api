@@ -54,9 +54,11 @@ describe('GiftCurrencyService', () => {
     });
 
     describe('when giftHttpService.get returns an error', () => {
+      const mockError = mockResponse500();
+
       beforeEach(() => {
         // Arrange
-        mockHttpServiceGet = jest.fn().mockRejectedValueOnce(mockResponse500());
+        mockHttpServiceGet = jest.fn().mockRejectedValueOnce(mockError);
 
         giftHttpService.get = mockHttpServiceGet;
 
@@ -68,7 +70,7 @@ describe('GiftCurrencyService', () => {
         const promise = service.getSupportedCurrencies();
 
         // Assert
-        const expected = new Error('Error getting supported currencies');
+        const expected = new Error('Error getting supported currencies', { cause: mockError });
 
         await expect(promise).rejects.toThrow(expected);
       });

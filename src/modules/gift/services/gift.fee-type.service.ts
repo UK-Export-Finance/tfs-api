@@ -38,7 +38,7 @@ export class GiftFeeTypeService {
     } catch (error) {
       this.logger.error('Error getting supported fee types %o', error);
 
-      throw new Error('Error getting supported fee types', error);
+      throw new Error('Error getting supported fee types', { cause: error });
     }
   }
 
@@ -59,7 +59,7 @@ export class GiftFeeTypeService {
     } catch (error) {
       this.logger.error('Error getting all fee type codes %o', error);
 
-      throw new Error('Error getting all fee type codes', error);
+      throw new Error('Error getting all fee type codes', { cause: error });
     }
   }
 }

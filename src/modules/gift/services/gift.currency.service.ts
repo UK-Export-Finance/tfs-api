@@ -37,7 +37,7 @@ export class GiftCurrencyService {
     } catch (error) {
       this.logger.error('Error getting supported currencies %o', error);
 
-      throw new Error('Error getting supported currencies', error);
+      throw new Error('Error getting supported currencies', { cause: error });
     }
   }
 }

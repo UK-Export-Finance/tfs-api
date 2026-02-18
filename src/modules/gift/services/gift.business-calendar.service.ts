@@ -53,7 +53,7 @@ export class GiftBusinessCalendarService {
     } catch (error) {
       this.logger.error('Error creating a business calendar for facility %s %o', facilityId, error);
 
-      throw new Error(`Error creating a business calendar for facility ${facilityId}`, error);
+      throw new Error(`Error creating a business calendar for facility ${facilityId}`, { cause: error });
     }
   }
 }

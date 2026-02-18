@@ -62,9 +62,11 @@ describe('GiftWorkPackageService', () => {
   });
 
   describe('when giftHttpService.post returns an error', () => {
+    const mockError = mockResponse500();
+
     beforeEach(() => {
       // Arrange
-      mockHttpServicePost = jest.fn().mockRejectedValueOnce(mockResponse500());
+      mockHttpServicePost = jest.fn().mockRejectedValueOnce(mockError);
 
       giftHttpService.post = mockHttpServicePost;
 
@@ -76,7 +78,7 @@ describe('GiftWorkPackageService', () => {
       const promise = service.create(mockFacilityId);
 
       // Assert
-      const expected = new Error(`Error creating work package for facility ${mockFacilityId}`, { cause: mockResponse500() });
+      const expected = new Error(`Error creating work package for facility ${mockFacilityId}`, { cause: mockError });
 
       await expect(promise).rejects.toThrow(expected);
     });

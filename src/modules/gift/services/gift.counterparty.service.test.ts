@@ -73,7 +73,6 @@ describe('GiftCounterpartyService', () => {
       beforeEach(() => {
         // Arrange
         mockHttpServicePost = jest.fn().mockRejectedValueOnce(mockResponse500());
-
         giftHttpService.post = mockHttpServicePost;
 
         service = new GiftCounterpartyService(giftHttpService, logger);
@@ -140,9 +139,11 @@ describe('GiftCounterpartyService', () => {
     });
 
     describe('when service.createOne returns an error', () => {
+      const mockError = mockResponse500();
+
       beforeEach(() => {
         // Arrange
-        mockCreateOne = jest.fn().mockRejectedValueOnce(mockResponse500());
+        mockCreateOne = jest.fn().mockRejectedValueOnce(mockError);
 
         service = new GiftCounterpartyService(giftHttpService, logger);
 
@@ -154,7 +155,7 @@ describe('GiftCounterpartyService', () => {
         const promise = service.createMany(mockCounterparties, mockFacilityId, mockWorkPackageId);
 
         // Assert
-        const expected = new Error(`Error creating counterparties for facility ${mockFacilityId}`);
+        const expected = new Error(`Error creating counterparties for facility ${mockFacilityId}`, { cause: mockError });
 
         await expect(promise).rejects.toThrow(expected);
       });
@@ -212,9 +213,11 @@ describe('GiftCounterpartyService', () => {
     });
 
     describe('when giftHttpService.get returns an error', () => {
+      const mockError = mockResponse500();
+
       beforeEach(() => {
         // Arrange
-        mockHttpServiceGet = jest.fn().mockRejectedValueOnce(mockResponse500());
+        mockHttpServiceGet = jest.fn().mockRejectedValueOnce(mockError);
 
         giftHttpService.get = mockHttpServiceGet;
 
@@ -226,7 +229,7 @@ describe('GiftCounterpartyService', () => {
         const promise = service.getAllRoles();
 
         // Assert
-        const expected = new Error('Error getting all counterparty roles');
+        const expected = new Error('Error getting all counterparty roles', { cause: mockError });
 
         await expect(promise).rejects.toThrow(expected);
       });

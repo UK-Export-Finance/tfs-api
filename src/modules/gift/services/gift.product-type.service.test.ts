@@ -56,9 +56,11 @@ describe('GiftProductTypeService', () => {
     });
 
     describe('when giftHttpService.get returns an error', () => {
+      const mockError = mockResponse500();
+
       beforeEach(() => {
         // Arrange
-        mockHttpServiceGet = jest.fn().mockRejectedValueOnce(mockResponse500());
+        mockHttpServiceGet = jest.fn().mockRejectedValueOnce(mockError);
 
         giftHttpService.get = mockHttpServiceGet;
 
@@ -70,7 +72,7 @@ describe('GiftProductTypeService', () => {
         const promise = service.getOne(PRODUCT_TYPE_CODES.EXIP);
 
         // Assert
-        const expected = new Error(`Error getting product type ${PRODUCT_TYPE_CODES.EXIP}`);
+        const expected = new Error(`Error getting product type ${PRODUCT_TYPE_CODES.EXIP}`, { cause: mockError });
 
         await expect(promise).rejects.toThrow(expected);
       });
@@ -125,9 +127,11 @@ describe('GiftProductTypeService', () => {
     });
 
     describe('when service.getOne returns an error', () => {
+      const mockError = mockResponse500();
+
       beforeEach(() => {
         // Arrange
-        mockGetOne = jest.fn().mockRejectedValueOnce(mockResponse500());
+        mockGetOne = jest.fn().mockRejectedValueOnce(mockError);
 
         service = new GiftProductTypeService(giftHttpService, logger);
 
@@ -139,7 +143,7 @@ describe('GiftProductTypeService', () => {
         const promise = service.isSupported(PRODUCT_TYPE_CODES.EXIP);
 
         // Assert
-        const expected = new Error(`Error checking if product type ${PRODUCT_TYPE_CODES.EXIP} is supported`);
+        const expected = new Error(`Error checking if product type ${PRODUCT_TYPE_CODES.EXIP} is supported`, { cause: mockError });
 
         await expect(promise).rejects.toThrow(expected);
       });

@@ -42,7 +42,7 @@ export class GiftRepaymentProfileService {
     } catch (error) {
       this.logger.error('Error creating a repayment profile with name %s for facility %s %o', repaymentProfileData.name, facilityId, error);
 
-      throw new Error(`Error creating a repayment profile with name ${repaymentProfileData.name} for facility ${facilityId}`, error);
+      throw new Error(`Error creating a repayment profile with name ${repaymentProfileData.name} for facility ${facilityId}`);
     }
   }
 
@@ -74,7 +74,7 @@ export class GiftRepaymentProfileService {
     } catch (error) {
       this.logger.error('Error creating repayment profiles for facility %s %o', facilityId, error);
 
-      throw new Error(`Error creating repayment profiles for facility ${facilityId}`, error);
+      throw new Error(`Error creating repayment profiles for facility ${facilityId}`, { cause: error });
     }
   }
 }

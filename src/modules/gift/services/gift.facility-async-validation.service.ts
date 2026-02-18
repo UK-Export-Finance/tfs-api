@@ -118,7 +118,7 @@ export class GiftFacilityAsyncValidationService {
     } catch (error) {
       this.logger.error('Error validating a GIFT facility - async %s %o', facilityId, error);
 
-      throw new Error(`Error validating a GIFT facility - async ${facilityId}`, error);
+      throw new Error(`Error validating a GIFT facility - async ${facilityId}`, { cause: error });
     }
   }
 }
