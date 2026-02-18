@@ -11,16 +11,16 @@ type ReturnType = DecreaseAmountDto | IncreaseAmountDto | ReplaceExpiryDateDto;
 /**
  * Get an "amendmentData" DTO class constructor corresponding to the provided amendmentType
  * @param {AmendFacilityType} amendmentType: The type of amendment
- * @returns {ReturnType | null} A DTO class instance or null if the amendment type is invalid
+ * @returns {new () => ReturnType | null} A DTO class constructor or null if the amendment type is invalid
  */
-export const getAmendmentDataDto = (amendmentType: AmendFacilityType): ReturnType | null => {
+export const getAmendmentDataDto = (amendmentType: AmendFacilityType): (new () => ReturnType) | null => {
   switch (amendmentType) {
     case AMEND_FACILITY_DECREASE_AMOUNT:
-      return new DecreaseAmountDto();
+      return DecreaseAmountDto;
     case AMEND_FACILITY_INCREASE_AMOUNT:
-      return new IncreaseAmountDto();
+      return IncreaseAmountDto;
     case AMEND_FACILITY_REPLACE_EXPIRY_DATE:
-      return new ReplaceExpiryDateDto();
+      return ReplaceExpiryDateDto;
     default:
       return null;
   }
