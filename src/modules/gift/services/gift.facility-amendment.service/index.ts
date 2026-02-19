@@ -90,7 +90,6 @@ export class GiftFacilityAmendmentService {
     } catch (error) {
       this.logger.error('Error creating amendment %s for facility %s %o', amendmentType, facilityId, error);
 
-      // TODO: update all error instances with { cause: error } / create ticket.
       throw new Error(`Error creating amendment ${amendmentType} for facility ${facilityId}`, { cause: error });
     }
   }
