@@ -69,6 +69,14 @@ export class CreateGiftFacilityAmendmentRequestDto {
 
       const amendmentDataDto = getAmendmentDataDto(amendmentType);
 
+      if (!amendmentDataDto) {
+        /**
+         * If we cannot determine a DTO for the given amendmentType (e.g. invalid type),
+         * return the original value so that amendmentType validation can handle the error.
+         */
+        return value;
+      }
+
       return plainToInstance(amendmentDataDto, value);
     },
     { toClassOnly: true },
