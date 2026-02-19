@@ -182,8 +182,6 @@ const RISK_DETAILS = {
 
 const FACILITY_OVERVIEW = {
   facilityId: FACILITY_ID,
-  streamId: '7d915bfa-0069-4aaa-92c5-013925f019a1',
-  streamVersion: 1,
   name: 'Amazing facility',
   obligorUrn: '01234567',
   currency: SUPPORTED_CURRENCIES.USD,
@@ -191,8 +189,6 @@ const FACILITY_OVERVIEW = {
   effectiveDate: '2025-01-01',
   expiryDate: '2027-02-01',
   creditType: CREDIT_TYPES.REVOLVER,
-  isDraft: true,
-  createdDatetime: '2025-01-21T09:58:21.115Z',
   productTypeCode: PRODUCT_TYPE_CODES.BIP,
 };
 
@@ -222,6 +218,9 @@ const FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA = {
     amount: 100,
     date: '2027-02-15',
   },
+  REPLACE_EXPIRY_DATE: {
+    expiryDate: '2030-03-20',
+  },
 };
 
 const FACILITY_AMENDMENT_REQUEST_PAYLOAD = {
@@ -237,6 +236,10 @@ const FACILITY_RESPONSE_DATA: GiftFacilityPostResponseDto = {
   configurationEvent: {
     data: {
       ...FACILITY_OVERVIEW,
+      streamId: '7d915bfa-0069-4aaa-92c5-013925f019a1',
+      streamVersion: 1,
+      isDraft: true,
+      createdDatetime: '2025-01-21T09:58:21.115Z',
       drawnAmount: 2000000,
       availableAmount: 3000000,
     },

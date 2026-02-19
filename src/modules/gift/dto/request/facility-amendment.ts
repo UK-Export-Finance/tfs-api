@@ -2,7 +2,9 @@ import { ApiExtraModels, ApiProperty, getSchemaPath } from '@nestjs/swagger';
 import { AMEND_FACILITY_TYPES_ARRAY, AmendFacilityType, GIFT } from '@ukef/constants';
 import { GIFT_EXAMPLES } from '@ukef/constants/examples/gift.examples.constant';
 import { plainToInstance, Transform } from 'class-transformer';
-import { IsDateString, IsDefined, IsIn, IsNotEmptyObject, IsNumber, IsString, Length, Max, Min, ValidateNested } from 'class-validator';
+import { IsDateString, IsDefined, IsIn, IsNumber, IsObject, IsString, Length, Max, Min, ValidateNested } from 'class-validator';
+
+import { getAmendmentDataDto } from '../../helpers';
 
 const { VALIDATION } = GIFT;
 
@@ -30,7 +32,17 @@ export class AmountDto {
 export class DecreaseAmountDto extends AmountDto {}
 export class IncreaseAmountDto extends AmountDto {}
 
-@ApiExtraModels(DecreaseAmountDto, IncreaseAmountDto)
+export class ReplaceExpiryDateDto {
+  @IsDefined()
+  @IsDateString()
+  @ApiProperty({
+    required: true,
+    example: GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA.REPLACE_EXPIRY_DATE.expiryDate,
+  })
+  expiryDate: string;
+}
+
+@ApiExtraModels(DecreaseAmountDto, IncreaseAmountDto, ReplaceExpiryDateDto)
 export class CreateGiftFacilityAmendmentRequestDto {
   @IsDefined()
   @IsString()
@@ -42,7 +54,7 @@ export class CreateGiftFacilityAmendmentRequestDto {
   })
   amendmentType: AmendFacilityType;
 
-  @IsNotEmptyObject()
+  @IsObject()
   @IsDefined()
   @Transform(
     ({ value, obj }) => {
@@ -55,17 +67,24 @@ export class CreateGiftFacilityAmendmentRequestDto {
        */
       const { amendmentType } = obj;
 
-      const Decrease = GIFT.AMEND_FACILITY_TYPES.AMEND_FACILITY_DECREASE_AMOUNT;
-      const Target = amendmentType === Decrease ? DecreaseAmountDto : IncreaseAmountDto;
+      const amendmentDataDto = getAmendmentDataDto(amendmentType);
 
-      return plainToInstance(Target, value);
+      if (!amendmentDataDto) {
+        /**
+         * If we cannot determine a DTO for the given amendmentType (e.g. invalid type),
+         * return the original value so that amendmentType validation can handle the error.
+         */
+        return value;
+      }
+
+      return plainToInstance(amendmentDataDto, value);
     },
     { toClassOnly: true },
   )
   @ValidateNested()
   @ApiProperty({
     required: true,
-    oneOf: [{ $ref: getSchemaPath(DecreaseAmountDto) }, { $ref: getSchemaPath(IncreaseAmountDto) }],
+    oneOf: [{ $ref: getSchemaPath(DecreaseAmountDto) }, { $ref: getSchemaPath(IncreaseAmountDto) }, { $ref: getSchemaPath(ReplaceExpiryDateDto) }],
   })
-  amendmentData: DecreaseAmountDto | IncreaseAmountDto;
+  amendmentData: DecreaseAmountDto | IncreaseAmountDto | ReplaceExpiryDateDto;
 }

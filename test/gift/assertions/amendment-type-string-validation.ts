@@ -49,6 +49,8 @@ export const amendmentTypeStringValidation = ({ initialPayload, min, max, url })
         amendmentTypeValidationMessage,
         `amendmentType must be longer than or equal to ${min} characters`,
         'amendmentType must be a string',
+        'amendmentData should not be null or undefined',
+        'amendmentData must be an object',
       ];
 
       expect(body.message).toStrictEqual(expected);
@@ -79,6 +81,8 @@ export const amendmentTypeStringValidation = ({ initialPayload, min, max, url })
         amendmentTypeValidationMessage,
         `amendmentType must be longer than or equal to ${min} characters`,
         'amendmentType must be a string',
+        'amendmentData should not be null or undefined',
+        'amendmentData must be an object',
       ];
 
       expect(body.message).toStrictEqual(expected);
@@ -104,7 +108,13 @@ export const amendmentTypeStringValidation = ({ initialPayload, min, max, url })
       const { body } = await api.post(url, mockPayload);
 
       // Assert
-      const expected = [amendmentTypeValidationMessage, `amendmentType must be longer than or equal to ${min} characters`, 'amendmentType must be a string'];
+      const expected = [
+        amendmentTypeValidationMessage,
+        `amendmentType must be longer than or equal to ${min} characters`,
+        'amendmentType must be a string',
+        'amendmentData should not be null or undefined',
+        'amendmentData must be an object',
+      ];
 
       expect(body.message).toStrictEqual(expected);
     });
@@ -133,6 +143,8 @@ export const amendmentTypeStringValidation = ({ initialPayload, min, max, url })
         amendmentTypeValidationMessage,
         `amendmentType must be longer than or equal to ${min} and shorter than or equal to ${max} characters`,
         'amendmentType must be a string',
+        'amendmentData should not be null or undefined',
+        'amendmentData must be an object',
       ];
 
       expect(body.message).toStrictEqual(expected);
@@ -158,7 +170,13 @@ export const amendmentTypeStringValidation = ({ initialPayload, min, max, url })
       const { body } = await api.post(url, mockPayload);
 
       // Assert
-      const expected = [amendmentTypeValidationMessage, `amendmentType must be longer than or equal to ${min} characters`, 'amendmentType must be a string'];
+      const expected = [
+        amendmentTypeValidationMessage,
+        `amendmentType must be longer than or equal to ${min} characters`,
+        'amendmentType must be a string',
+        'amendmentData should not be null or undefined',
+        'amendmentData must be an object',
+      ];
 
       expect(body.message).toStrictEqual(expected);
     });
@@ -183,7 +201,13 @@ export const amendmentTypeStringValidation = ({ initialPayload, min, max, url })
       const { body } = await api.post(url, mockPayload);
 
       // Assert
-      const expected = [amendmentTypeValidationMessage, `amendmentType must be longer than or equal to ${min} characters`, 'amendmentType must be a string'];
+      const expected = [
+        amendmentTypeValidationMessage,
+        `amendmentType must be longer than or equal to ${min} characters`,
+        'amendmentType must be a string',
+        'amendmentData should not be null or undefined',
+        'amendmentData must be an object',
+      ];
 
       expect(body.message).toStrictEqual(expected);
     });
@@ -212,6 +236,8 @@ export const amendmentTypeStringValidation = ({ initialPayload, min, max, url })
         amendmentTypeValidationMessage,
         `amendmentType must be longer than or equal to ${min} and shorter than or equal to ${max} characters`,
         'amendmentType must be a string',
+        'amendmentData should not be null or undefined',
+        'amendmentData must be an object',
       ];
 
       expect(body.message).toStrictEqual(expected);
@@ -237,7 +263,12 @@ export const amendmentTypeStringValidation = ({ initialPayload, min, max, url })
       const { body } = await api.post(url, mockPayload);
 
       // Assert
-      const expected = [amendmentTypeValidationMessage, `amendmentType must be longer than or equal to ${min} characters`];
+      const expected = [
+        amendmentTypeValidationMessage,
+        `amendmentType must be longer than or equal to ${min} characters`,
+        'amendmentData should not be null or undefined',
+        'amendmentData must be an object',
+      ];
 
       expect(body.message).toStrictEqual(expected);
     });
@@ -262,7 +293,12 @@ export const amendmentTypeStringValidation = ({ initialPayload, min, max, url })
       const { body } = await api.post(url, mockPayload);
 
       // Assert
-      const expected = [amendmentTypeValidationMessage, `amendmentType must be longer than or equal to ${min} characters`];
+      const expected = [
+        amendmentTypeValidationMessage,
+        `amendmentType must be longer than or equal to ${min} characters`,
+        'amendmentData should not be null or undefined',
+        'amendmentData must be an object',
+      ];
 
       expect(body.message).toStrictEqual(expected);
     });
@@ -287,7 +323,12 @@ export const amendmentTypeStringValidation = ({ initialPayload, min, max, url })
       const { body } = await api.post(url, mockPayload);
 
       // Assert
-      const expected = [amendmentTypeValidationMessage, `amendmentType must be shorter than or equal to ${max} characters`];
+      const expected = [
+        amendmentTypeValidationMessage,
+        `amendmentType must be shorter than or equal to ${max} characters`,
+        'amendmentData should not be null or undefined',
+        'amendmentData must be an object',
+      ];
 
       expect(body.message).toStrictEqual(expected);
     });
