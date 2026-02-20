@@ -21,6 +21,11 @@ export const GIFT_API_ACCEPTABLE_STATUSES = [
   HttpStatus.NOT_FOUND,
 ];
 
+/**
+ * Array of acceptable statuses to consume from a GIFT API DELETE response
+ * NOTE: For DELETE requests, we currently only expect a 204 No content response.
+ * @returns {Array<HttpStatus>}
+ */
 export const GIFT_API_ACCEPTABLE_DELETE_STATUSES = [HttpStatus.NO_CONTENT];
 
 /**
