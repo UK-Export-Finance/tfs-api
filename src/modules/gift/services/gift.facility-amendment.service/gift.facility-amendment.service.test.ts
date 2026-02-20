@@ -1,7 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { mockWorkPackageId } from '@ukef-test/gift/test-helpers';
-import { mockResponse201 } from '@ukef-test/http-response';
+import { mockResponse201, mockResponse204 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
 import { GiftWorkPackageService } from '../gift.work-package.service';
@@ -20,6 +20,7 @@ describe('GiftFacilityAmendmentService', () => {
   const logger = new PinoLogger({});
 
   let mockHttpServicePost: jest.Mock;
+  let mockHttpServiceDelete: jest.Mock;
   let workPackageService: GiftWorkPackageService;
   let mockWorkPackageServiceCreate: jest.Mock;
 
@@ -33,11 +34,13 @@ describe('GiftFacilityAmendmentService', () => {
 
     mockWorkPackageServiceCreate = jest.fn().mockResolvedValueOnce(mockWorkPackageServiceCreateResponse);
     mockHttpServicePost = jest.fn().mockResolvedValueOnce(mockHttpPostResponse);
+    mockHttpServiceDelete = jest.fn().mockResolvedValueOnce(mockResponse204());
 
     workPackageService.create = mockWorkPackageServiceCreate;
 
     giftHttpService = {
       post: mockHttpServicePost,
+      delete: mockHttpServiceDelete,
     };
 
     service = new GiftFacilityAmendmentService(giftHttpService, logger, workPackageService);
@@ -68,6 +71,14 @@ describe('GiftFacilityAmendmentService', () => {
       path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/AmendFacility_${mockPayload.amendmentType}`,
       payload: mockPayload.amendmentData,
     });
+  });
+
+  it('should NOT call giftHttpService.delete', async () => {
+    // Act
+    await service.create(mockFacilityId, mockPayload);
+
+    // Assert
+    expect(mockHttpServiceDelete).not.toHaveBeenCalled();
   });
 
   describe('when all calls are successful', () => {
