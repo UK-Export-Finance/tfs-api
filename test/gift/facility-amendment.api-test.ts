@@ -6,7 +6,7 @@ import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import nock from 'nock';
 
-import { apimFacilityAmendmentUrl, facilityAmendmentUrl, mockResponses, workPackageUrl } from './test-helpers';
+import { apimFacilityAmendmentUrl, facilityAmendmentUrl, facilityWorkPackageUrl, mockResponses } from './test-helpers';
 
 const { GIFT_API_URL } = ENVIRONMENT_VARIABLES;
 
@@ -38,7 +38,7 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
 
   beforeEach(() => {
     // Arrange
-    nock(GIFT_API_URL).persist().post(workPackageUrl).reply(HttpStatus.CREATED, mockResponses.workPackageCreation);
+    nock(GIFT_API_URL).persist().post(facilityWorkPackageUrl).reply(HttpStatus.CREATED, mockResponses.workPackageCreation);
 
     nock(GIFT_API_URL).persist().post(facilityAmendmentUrl(AMEND_FACILITY_INCREASE_AMOUNT)).reply(HttpStatus.CREATED, mockResponses.facilityAmendment);
 
