@@ -34,9 +34,12 @@ export class GiftFacilityAmendmentService {
    * 1) Create a new GIFT work package
    * 2) Create a new GIFT "configuration event" for the amendment.
    * As a result, GIFT will have a new work package in the facility, with an amendment in the facility's work package.
+   *
+   * If there is an error creating the amendment, the previous created work package will be deleted.
    * @param {string} facilityId: Facility ID
    * @param {CreateGiftFacilityAmendmentRequestDto} amendmentData: Amendment data
-   * @returns {Promise<CreateFacilityAmendmentResponse>}
+   * @throws {Error} If there is an error creating the amendment or the work package.
+   * @returns {Promise<CreateGiftFacilityAmendmentResponseDto>}
    */
   async create(facilityId: string, amendment: CreateGiftFacilityAmendmentRequestDto): Promise<CreateGiftFacilityAmendmentResponseDto> {
     const { amendmentType, amendmentData } = amendment;
@@ -71,6 +74,20 @@ export class GiftFacilityAmendmentService {
 
       if (amendmentResponse.status !== HttpStatus.CREATED) {
         this.logger.error('Error creating amendment %s for work package %s facility %s', amendmentType, workPackageId, facilityId);
+
+        /**
+         * If an amendment has failed to be created,
+         * For example if GIFT returns a 400 Bad Request due to invalid payload, or a 500 Internal Server Error due to an issue in GIFT,
+         * Then the work package that was created in step 1 needs to be deleted, as it will be empty and unused without the amendment.
+         *
+         * Additionally, there is no need to manually handle any deletion response error - only 1x status is acceptable (GIFT_API_ACCEPTABLE_DELETE_STATUSES).
+         * If that status isn't returned, an error will be thrown, caught in the catch block, and logged accordingly.
+         */
+        this.logger.info('Deleting work package %s', workPackageId);
+
+        await this.giftHttpService.delete<GiftWorkPackageResponseDto>({
+          path: `${PATH.WORK_PACKAGE}/${workPackageId}`,
+        });
 
         return {
           status: amendmentResponse.status,

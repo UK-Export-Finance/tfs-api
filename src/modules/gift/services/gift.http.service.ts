@@ -22,6 +22,13 @@ export const GIFT_API_ACCEPTABLE_STATUSES = [
 ];
 
 /**
+ * Array of acceptable statuses to consume from a GIFT API DELETE response
+ * NOTE: For DELETE requests, we currently only expect a 204 No content response.
+ * @returns {Array<HttpStatus>}
+ */
+export const GIFT_API_ACCEPTABLE_DELETE_STATUSES = [HttpStatus.NO_CONTENT];
+
+/**
  * GIFT HTTP service.
  * This is responsible for all CRUD calls made to the external GIFT API.
  */
@@ -38,16 +45,21 @@ export class GiftHttpService {
 
   /**
    * Create a new Axios instance
+   * @param {number[]} acceptableStatuses - Array of acceptable statuses to consume from a GIFT API response
+   * NOTE: We need to consume and surface certain error scenarios,
+   * such as Bad request (validation errors), Not found etc.
+   * By default, this is set to GIFT_API_ACCEPTABLE_STATUSES, but can be overridden if needed (e.g. for DELETE requests)
+   * @see GIFT_API_ACCEPTABLE_STATUSES
    * @returns {AxiosInstance}
    */
-  createAxiosInstance(): AxiosInstance {
+  createAxiosInstance(acceptableStatuses: number[] = GIFT_API_ACCEPTABLE_STATUSES): AxiosInstance {
     const instance = axios.create({
       baseURL: this.config.baseUrl,
       headers: {
         [this.config.apiKeyHeaderName]: this.config.apiKeyHeaderValue,
         [CONTENT_TYPE.KEY]: [CONTENT_TYPE.VALUES.JSON],
       },
-      validateStatus: (status) => GIFT_API_ACCEPTABLE_STATUSES.includes(status),
+      validateStatus: (status) => acceptableStatuses.includes(status),
     });
 
     return instance;
@@ -85,6 +97,25 @@ export class GiftHttpService {
       this.logger.error('Error calling POST with path %s %o', path, error);
 
       throw new Error(`Error calling POST with path ${path}`, { cause: error });
+    }
+  }
+
+  /**
+   * Execute a DELETE axios/HTTP request
+   * @param {string} path
+   * @returns {Promise<AxiosResponse<T>>}
+   */
+  async delete<T>({ path }: { path: string }): Promise<AxiosResponse<T>> {
+    try {
+      const axiosInstance = this.createAxiosInstance(GIFT_API_ACCEPTABLE_DELETE_STATUSES);
+
+      const response = await axiosInstance.delete(path);
+
+      return response;
+    } catch (error) {
+      this.logger.error('Error calling DELETE with path %s %o', path, error);
+
+      throw new Error(`Error calling DELETE with path ${path}`, { cause: error });
     }
   }
 }
