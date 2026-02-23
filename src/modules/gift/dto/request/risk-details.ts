@@ -47,9 +47,9 @@ export class GiftFacilityRiskDetailsRequestDto {
     example: FACILITY_CATEGORIES.BOND_STAND_ALONE,
     minLength: VALIDATION.FACILITY_CATEGORY_CODE.MIN_LENGTH,
     maxLength: VALIDATION.FACILITY_CATEGORY_CODE.MAX_LENGTH,
-    description: "The facility's category code. Required if the product's configuration (APIM MDM/DOM) 'facilityCategoryTypes' field is populated",
+    description: "Optional facility category code. Required if the product's configuration (APIM MDM/DOM) 'facilityCategoryTypes' field is populated",
   })
-  facilityCategoryCode?: string;
+  facilityCategoryCode: string;
 
   @IsDefined()
   @IsString()
