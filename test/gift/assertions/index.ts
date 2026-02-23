@@ -15,6 +15,7 @@ export * from './date-string-validation';
 export * from './generate-payload';
 export * from './number-string-validation';
 export * from './number-validation';
+export * from './optional-string-validation';
 export * from './product-type-code-string-validation';
 export * from './response-assertion';
 export * from './string-validation';

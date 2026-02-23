@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { ValidatedFacilityIdentifierApiProperty } from '@ukef/decorators/validated-facility-identifier-api-property';
 import { UkefId } from '@ukef/helpers';
-import { IsDefined, IsNumberString, IsString, Length } from 'class-validator';
+import { IsDefined, IsNumberString, IsOptional, IsString, Length } from 'class-validator';
 
 const {
   GIFT: { RISK_DETAILS: EXAMPLE },
@@ -23,6 +23,7 @@ export class GiftFacilityRiskDetailsRequestDto {
   @ApiProperty({
     example: EXAMPLE.account,
     required: true,
+    description: 'The account number',
   })
   account: string;
 
@@ -34,17 +35,18 @@ export class GiftFacilityRiskDetailsRequestDto {
     minLength: VALIDATION.DEAL_ID.MIN_LENGTH,
     maxLength: VALIDATION.DEAL_ID.MAX_LENGTH,
     required: true,
+    description: 'The deal ID',
   })
   dealId: UkefId;
 
-  @IsDefined()
+  @IsOptional()
   @IsString()
   @Length(VALIDATION.FACILITY_CATEGORY_CODE.MIN_LENGTH, VALIDATION.FACILITY_CATEGORY_CODE.MAX_LENGTH)
   @ApiProperty({
     example: EXAMPLE.facilityCategoryCode,
     minLength: VALIDATION.FACILITY_CATEGORY_CODE.MIN_LENGTH,
     maxLength: VALIDATION.FACILITY_CATEGORY_CODE.MAX_LENGTH,
-    required: true,
+    description: "The facility's category code. Required if the product's configuration (APIM MDM/DOM) 'facilityCategoryTypes' field is populated",
   })
   facilityCategoryCode: string;
 
@@ -54,6 +56,7 @@ export class GiftFacilityRiskDetailsRequestDto {
   @ApiProperty({
     example: EXAMPLE.facilityCreditRating,
     required: true,
+    description: "The facility's credit rating",
   })
   facilityCreditRating: string;
 
@@ -63,6 +66,7 @@ export class GiftFacilityRiskDetailsRequestDto {
   @ApiProperty({
     example: EXAMPLE.riskStatus,
     required: true,
+    description: "The facility's risk status",
   })
   riskStatus: string;
 
@@ -72,6 +76,7 @@ export class GiftFacilityRiskDetailsRequestDto {
   @ApiProperty({
     example: EXAMPLE.ukefIndustryCode,
     required: true,
+    description: 'The UKEF industry code',
   })
   ukefIndustryCode: string;
 }
