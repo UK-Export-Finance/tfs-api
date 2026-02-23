@@ -22,6 +22,14 @@ export const mockResponse201 = (data: object | Array<any> = {}) => ({
 });
 
 /**
+ * Mock 204 response
+ * @returns {object}
+ */
+export const mockResponse204 = () => ({
+  status: HttpStatus.NO_CONTENT,
+});
+
+/**
  * Mock 400 response
  * @returns {object}
  */

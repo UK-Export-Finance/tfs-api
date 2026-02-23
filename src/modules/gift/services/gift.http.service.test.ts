@@ -1,7 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 import giftConfig from '@ukef/config/gift.config';
 import { HEADERS } from '@ukef/constants';
-import { mockResponse200, mockResponse201, mockResponse500 } from '@ukef-test/http-response';
+import { mockResponse200, mockResponse201, mockResponse204, mockResponse500 } from '@ukef-test/http-response';
 import axios from 'axios';
 import * as dotenv from 'dotenv';
 import { PinoLogger } from 'nestjs-pino';
@@ -19,6 +19,7 @@ const mockAxios = jest.createMockFromModule<typeof axios>('axios');
 let mockAxiosCreate = jest.fn();
 let mockAxiosGet = jest.fn();
 let mockAxiosPost = jest.fn();
+let mockAxiosDelete = jest.fn();
 
 const logger = new PinoLogger({});
 
@@ -26,6 +27,7 @@ mockAxiosCreate = jest.fn(() => ({
   ...mockAxios,
   get: mockAxiosGet,
   post: mockAxiosPost,
+  delete: mockAxiosDelete,
 }));
 
 describe('GiftHttpService', () => {
@@ -35,6 +37,7 @@ describe('GiftHttpService', () => {
     axios.create = mockAxiosCreate;
     axios.get = mockAxiosGet;
     axios.post = mockAxiosPost;
+    axios.delete = mockAxiosDelete;
   });
 
   afterAll(() => {
@@ -51,7 +54,7 @@ describe('GiftHttpService', () => {
   });
 
   describe('createAxiosInstance', () => {
-    it('should call axios.create', () => {
+    it('should create an axios instance', () => {
       // Act
       new GiftHttpService(logger).createAxiosInstance();
 
@@ -172,6 +175,58 @@ describe('GiftHttpService', () => {
 
         // Assert
         const expected = new Error(`Error calling POST with path ${mockPostPath}`, { cause: mockError });
+
+        await expect(serviceCall).rejects.toThrow(expected);
+      });
+    });
+  });
+
+  describe('delete', () => {
+    const mockDeletePath = '/mock-delete-path';
+
+    beforeEach(() => {
+      // Arrange
+      axios.create = mockAxiosCreate;
+
+      mockAxiosDelete = jest.fn().mockResolvedValue(mockResponse204());
+
+      service = new GiftHttpService(logger);
+    });
+
+    it('should call axios.delete', async () => {
+      // Act
+      await service.delete({ path: mockDeletePath });
+
+      // Assert
+      expect(mockAxiosDelete).toHaveBeenCalledTimes(1);
+
+      expect(mockAxiosDelete).toHaveBeenCalledWith(mockDeletePath);
+    });
+
+    it('should return the result of axios.delete', async () => {
+      // Act
+      const response = await service.delete({ path: mockDeletePath });
+
+      // Assert
+      expect(response).toEqual(mockResponse204());
+    });
+
+    describe('when the axios call fails', () => {
+      const mockError = mockResponse500();
+
+      beforeEach(() => {
+        // Arrange
+        mockAxiosDelete = jest.fn().mockRejectedValueOnce(mockError);
+
+        service = new GiftHttpService(logger);
+      });
+
+      it('should throw an error', async () => {
+        // Act
+        const serviceCall = service.delete({ path: mockDeletePath });
+
+        // Assert
+        const expected = new Error(`Error calling DELETE with path ${mockDeletePath}`, { cause: mockError });
 
         await expect(serviceCall).rejects.toThrow(expected);
       });
