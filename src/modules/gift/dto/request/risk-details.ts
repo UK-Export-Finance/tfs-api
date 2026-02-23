@@ -49,7 +49,7 @@ export class GiftFacilityRiskDetailsRequestDto {
     maxLength: VALIDATION.FACILITY_CATEGORY_CODE.MAX_LENGTH,
     description: "Optional facility category code. Required if the product's configuration (APIM MDM/DOM) 'facilityCategoryTypes' field is populated",
   })
-  facilityCategoryCode: string;
+  facilityCategoryCode?: string;
 
   @IsDefined()
   @IsString()
