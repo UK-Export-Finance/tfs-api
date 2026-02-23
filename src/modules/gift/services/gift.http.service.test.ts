@@ -6,7 +6,7 @@ import axios from 'axios';
 import * as dotenv from 'dotenv';
 import { PinoLogger } from 'nestjs-pino';
 
-import { GIFT_API_ACCEPTABLE_STATUSES, GiftHttpService } from './gift.http.service';
+import { GIFT_API_ACCEPTABLE_DELETE_STATUSES, GIFT_API_ACCEPTABLE_STATUSES, GiftHttpService } from './gift.http.service';
 
 dotenv.config();
 
@@ -50,6 +50,15 @@ describe('GiftHttpService', () => {
       const expected = [HttpStatus.OK, HttpStatus.CREATED, HttpStatus.BAD_REQUEST, HttpStatus.FORBIDDEN, HttpStatus.UNAUTHORIZED, HttpStatus.NOT_FOUND];
 
       expect(GIFT_API_ACCEPTABLE_STATUSES).toEqual(expected);
+    });
+  });
+
+  describe('GIFT_API_ACCEPTABLE_DELETE_STATUSES', () => {
+    it('should return an array of statuses', () => {
+      // Act & Assert
+      const expected = [HttpStatus.NO_CONTENT];
+
+      expect(GIFT_API_ACCEPTABLE_DELETE_STATUSES).toEqual(expected);
     });
   });
 
