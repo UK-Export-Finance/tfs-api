@@ -33,6 +33,8 @@ const { GIFT_API_URL } = ENVIRONMENT_VARIABLES;
 
 const { OBLIGATION_SUBTYPES, PRODUCT_TYPE_CODES, PRODUCT_TYPE_NAMES } = GIFT;
 
+const { FACILITY_CREATION_PAYLOAD: initPayload } = GIFT_EXAMPLES;
+
 const setupMocks = () => {
   nock(GIFT_API_URL).persist().get(productTypeUrl(PRODUCT_TYPE_CODES.BIP)).reply(HttpStatus.OK, mockResponses.productType);
   nock(GIFT_API_URL).persist().get(productTypeUrl(PRODUCT_TYPE_CODES.EXIP)).reply(HttpStatus.OK, mockResponses.productType);
@@ -118,16 +120,19 @@ describe('POST /gift/facility', () => {
         // Arrange
         setupMocks();
 
-        const mockPayload = GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD;
-
-        mockPayload.overview.productTypeCode = PRODUCT_TYPE_CODES.BIP;
-
-        mockPayload.obligations = [
-          {
-            ...mockPayload.obligations[0],
-            subtypeCode: OBLIGATION_SUBTYPES.OST001.code,
+        const mockPayload = {
+          ...initPayload,
+          overview: {
+            ...initPayload.overview,
+            productTypeCode: PRODUCT_TYPE_CODES.BIP,
           },
-        ];
+          obligations: [
+            {
+              ...initPayload.obligations[0],
+              subtypeCode: OBLIGATION_SUBTYPES.OST001.code,
+            },
+          ],
+        };
 
         // Act
         const { status } = await api.post(apimFacilityUrl, mockPayload);
@@ -142,16 +147,19 @@ describe('POST /gift/facility', () => {
         // Arrange
         setupMocks();
 
-        const mockPayload = GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD;
-
-        mockPayload.overview.productTypeCode = PRODUCT_TYPE_CODES.EXIP;
-
-        mockPayload.obligations = [
-          {
-            ...mockPayload.obligations[0],
-            subtypeCode: OBLIGATION_SUBTYPES.OST009.code,
+        const mockPayload = {
+          ...initPayload,
+          overview: {
+            ...initPayload.overview,
+            productTypeCode: PRODUCT_TYPE_CODES.EXIP,
           },
-        ];
+          obligations: [
+            {
+              ...initPayload.obligations[0],
+              subtypeCode: OBLIGATION_SUBTYPES.OST009.code,
+            },
+          ],
+        };
 
         // Act
         const { status } = await api.post(apimFacilityUrl, mockPayload);
@@ -166,16 +174,19 @@ describe('POST /gift/facility', () => {
         // Arrange
         setupMocks();
 
-        const mockPayload = GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD;
-
-        mockPayload.overview.productTypeCode = PRODUCT_TYPE_CODES.BSS;
-
-        mockPayload.obligations = [
-          {
-            ...mockPayload.obligations[0],
-            subtypeCode: OBLIGATION_SUBTYPES.OST012.code,
+        const mockPayload = {
+          ...initPayload,
+          overview: {
+            ...initPayload.overview,
+            productTypeCode: PRODUCT_TYPE_CODES.BSS,
           },
-        ];
+          obligations: [
+            {
+              ...initPayload.obligations[0],
+              subtypeCode: OBLIGATION_SUBTYPES.OST012.code,
+            },
+          ],
+        };
 
         // Act
         const { status } = await api.post(apimFacilityUrl, mockPayload);

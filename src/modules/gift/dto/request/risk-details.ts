@@ -36,7 +36,6 @@ export class GiftFacilityRiskDetailsRequestDto {
     minLength: VALIDATION.DEAL_ID.MIN_LENGTH,
     maxLength: VALIDATION.DEAL_ID.MAX_LENGTH,
     required: true,
-    description: 'The deal ID',
   })
   dealId: UkefId;
 
