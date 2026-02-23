@@ -12,21 +12,21 @@ const { OBLIGATION_SUBTYPES } = GIFT;
 export class GiftObligationSubtypeResponseDto {
   @IsString()
   @ApiProperty({
-    example: OBLIGATION_SUBTYPES.EXP01.code,
+    example: OBLIGATION_SUBTYPES.OST009.code,
     required: true,
   })
   readonly code: string;
 
   @IsString()
   @ApiProperty({
-    example: OBLIGATION_SUBTYPES.EXP01.name,
+    example: OBLIGATION_SUBTYPES.OST009.name,
     required: true,
   })
   readonly name: string;
 
   @IsString()
   @ApiProperty({
-    example: OBLIGATION_SUBTYPES.EXP01.productTypeCode,
+    example: OBLIGATION_SUBTYPES.OST009.productTypeCode,
     required: true,
   })
   readonly productTypeCode: string;

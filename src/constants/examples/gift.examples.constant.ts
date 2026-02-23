@@ -19,7 +19,6 @@ const {
   FEE_TYPE_DESCRIPTIONS,
   INTEGRATION_DEFAULTS,
   OBLIGATION_SUBTYPES,
-  FACILITY_CATEGORIES,
   PRODUCT_TYPE_CODES,
   PRODUCT_TYPE_NAMES,
   VALIDATION,
@@ -129,7 +128,7 @@ const FIXED_FEE = () => ({
  * @param {string} subtypeCode: Obligation subtype code
  * @returns {GiftObligationRequestDto}
  */
-const OBLIGATION = ({ subtypeCode = OBLIGATION_SUBTYPES.BIP02.code } = {}): GiftObligationRequestDto => ({
+const OBLIGATION = ({ subtypeCode = OBLIGATION_SUBTYPES.OST001.code } = {}): GiftObligationRequestDto => ({
   effectiveDate: '2025-01-13',
   maturityDate: '2025-01-15',
   currency: SUPPORTED_CURRENCIES.USD,
@@ -172,7 +171,6 @@ const REPAYMENT_PROFILE = () => ({
 });
 
 const RISK_DETAILS = {
-  facilityCategoryCode: FACILITY_CATEGORIES.BOND_STAND_ALONE,
   dealId: DEAL_ID,
   account: INTEGRATION_DEFAULTS.ACCOUNT,
   facilityCreditRating: CREDIT_RISK_RATINGS.AA,

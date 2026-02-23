@@ -29,7 +29,7 @@ describe('POST /gift/facility - validation - risk details', () => {
   });
 
   beforeEach(() => {
-    nock(GIFT_API_URL).persist().get(productTypeUrl).reply(HttpStatus.OK, mockResponses.productType);
+    nock(GIFT_API_URL).persist().get(productTypeUrl()).reply(HttpStatus.OK, mockResponses.productType);
 
     nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
 

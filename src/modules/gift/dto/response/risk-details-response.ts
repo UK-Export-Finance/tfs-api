@@ -7,7 +7,7 @@ const {
   GIFT: { RISK_DETAILS: EXAMPLE },
 } = EXAMPLES;
 
-const { INTEGRATION_DEFAULTS } = GIFT;
+const { FACILITY_CATEGORIES, INTEGRATION_DEFAULTS } = GIFT;
 
 /**
  * GIFT "risk details" response DTO.
@@ -28,7 +28,7 @@ export class GiftFacilityRiskDetailsResponseDto {
 
   @IsString()
   @ApiProperty({
-    example: EXAMPLE.facilityCategoryCode,
+    example: FACILITY_CATEGORIES.BOND_STAND_ALONE,
   })
   readonly facilityCategoryCode: string;
 

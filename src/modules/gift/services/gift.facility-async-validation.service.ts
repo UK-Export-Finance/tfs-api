@@ -107,7 +107,7 @@ export class GiftFacilityAsyncValidationService {
         providedObligations: payload.obligations,
       });
 
-      return [
+      const asyncValidationErrors = [
         ...overviewErrors,
         ...currencyErrors,
         ...counterpartyRoleErrors,
@@ -115,6 +115,8 @@ export class GiftFacilityAsyncValidationService {
         ...feeTypeCodeErrors,
         ...obligationSubtypeCodeErrors,
       ];
+
+      return asyncValidationErrors;
     } catch (error) {
       this.logger.error('Error validating a GIFT facility - async %s %o', facilityId, error);
 

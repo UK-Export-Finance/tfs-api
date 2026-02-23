@@ -36,7 +36,7 @@ const { GIFT_API_URL } = ENVIRONMENT_VARIABLES;
  * @param {MockGiftResponse} Mock "repayment profile" response
  */
 const setupMocks = (repaymentProfileResponse: MockGiftResponse) => {
-  nock(GIFT_API_URL).persist().get(productTypeUrl).reply(HttpStatus.OK, mockResponses.productType);
+  nock(GIFT_API_URL).persist().get(productTypeUrl()).reply(HttpStatus.OK, mockResponses.productType);
 
   nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
 

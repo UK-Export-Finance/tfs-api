@@ -113,7 +113,7 @@ describe('GiftObligationSubtypeService', () => {
       const response = await service.getAllByProductType(mockProductCode);
 
       // Assert
-      const expected = [OBLIGATION_SUBTYPES.EXP01, OBLIGATION_SUBTYPES.EXP02];
+      const expected = [OBLIGATION_SUBTYPES.OST009, OBLIGATION_SUBTYPES.OST010];
 
       expect(response).toStrictEqual(expected);
     });
