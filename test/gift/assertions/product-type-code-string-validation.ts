@@ -49,8 +49,8 @@ export const productTypeCodeStringValidation = ({ initialPayload, parentFieldNam
   const mockObligationSubtypeResponse = {
     obligationSubtypes: [
       {
-        code: OBLIGATION_SUBTYPES.EXP01.code,
-        name: OBLIGATION_SUBTYPES.EXP01.name,
+        code: OBLIGATION_SUBTYPES.OST009.code,
+        name: OBLIGATION_SUBTYPES.OST009.name,
         productTypeCode: UNSUPPORTED_PRODUCT_TYPE_CODE,
       },
     ],

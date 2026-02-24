@@ -5,7 +5,7 @@ import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import nock from 'nock';
 
-import { numberStringValidation, stringValidation, ukefIdValidation } from './assertions';
+import { numberStringValidation, optionalStringValidation, stringValidation, ukefIdValidation } from './assertions';
 import { counterpartyRolesUrl, currencyUrl, feeTypeUrl, mockResponses, obligationSubtypeUrl, productTypeUrl } from './test-helpers';
 
 const {
@@ -29,7 +29,7 @@ describe('POST /gift/facility - validation - risk details', () => {
   });
 
   beforeEach(() => {
-    nock(GIFT_API_URL).persist().get(productTypeUrl).reply(HttpStatus.OK, mockResponses.productType);
+    nock(GIFT_API_URL).persist().get(productTypeUrl()).reply(HttpStatus.OK, mockResponses.productType);
 
     nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
 
@@ -77,9 +77,6 @@ describe('POST /gift/facility - validation - risk details', () => {
           'riskDetails.dealId must be a string',
           `riskDetails.dealId must be longer than or equal to ${VALIDATION.RISK_DETAILS.DEAL_ID.MIN_LENGTH} characters`,
           'riskDetails.dealId must match /^00\\d{8}$/ regular expression',
-          'riskDetails.facilityCategoryCode should not be null or undefined',
-          `riskDetails.facilityCategoryCode must be longer than or equal to ${VALIDATION.RISK_DETAILS.FACILITY_CATEGORY_CODE.MIN_LENGTH} characters`,
-          'riskDetails.facilityCategoryCode must be a string',
           'riskDetails.facilityCreditRating should not be null or undefined',
           `riskDetails.facilityCreditRating must be longer than or equal to ${VALIDATION.RISK_DETAILS.FACILITY_CREDIT_RATING.MIN_LENGTH} characters`,
           'riskDetails.facilityCreditRating must be a string',
@@ -118,7 +115,7 @@ describe('POST /gift/facility - validation - risk details', () => {
   });
 
   describe('facilityCategoryCode', () => {
-    stringValidation({
+    optionalStringValidation({
       ...baseParams,
       fieldName: 'facilityCategoryCode',
       parentFieldName: 'riskDetails',

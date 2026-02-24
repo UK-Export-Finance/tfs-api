@@ -101,7 +101,7 @@ export const counterpartyRolesUrl = PATH.COUNTERPARTY_ROLES;
 export const facilityCreationUrl = PATH.CREATE_FACILITY;
 export const feeTypeUrl = PATH.FEE_TYPE;
 export const obligationSubtypeUrl = PATH.OBLIGATION_SUBTYPE;
-export const productTypeUrl = `${PATH.PRODUCT_TYPE}/${PRODUCT_TYPE_CODES.BIP}`;
+export const productTypeUrl = (productTypeCode: string = PRODUCT_TYPE_CODES.BIP) => `${PATH.PRODUCT_TYPE}/${productTypeCode}`;
 export const businessCalendarUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_BUSINESS_CALENDAR}`;
 export const businessCalendarsConventionUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_BUSINESS_CALENDARS_CONVENTION}`;
 export const counterpartyUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_COUNTERPARTY}`;

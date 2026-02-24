@@ -73,19 +73,24 @@ export const GIFT = {
     PLA: 'PREMIUM LESS ADMIN',
   },
   OBLIGATION_SUBTYPES: {
-    BIP02: {
+    OST001: {
       code: 'OST001',
       productTypeCode: 'PRT001',
       name: 'Advanced Payment Bond',
     },
-    EXP01: {
+    OST009: {
       code: 'OST009',
       productTypeCode: 'PRT002',
       name: 'EXIP Cash',
     },
-    EXP02: {
+    OST010: {
       code: 'OST010',
       productTypeCode: 'PRT002',
+      name: 'Consecutive',
+    },
+    OST012: {
+      code: 'OST012',
+      productTypeCode: 'PRT003',
       name: 'Consecutive',
     },
   },
@@ -111,10 +116,14 @@ export const GIFT = {
   PRODUCT_TYPE_CODES: {
     BIP: 'PRT001',
     EXIP: 'PRT002',
+    BSS: 'PRT003',
+    GEF: 'PRT004',
   },
   PRODUCT_TYPE_NAMES: {
     BIP: 'Bond Insurance Policy (BIP)',
     EXIP: 'Export Insurance Policy (EXIP)',
+    BSS: 'Bond Support Scheme (BSS)',
+    GEF: 'General Export Facility (GEF)',
   },
   CONSUMER,
   VALIDATION,
