@@ -36,6 +36,14 @@ const setupMocks = (facilityCreationResponse: MockGiftResponse) => {
   nock(GIFT_API_URL).post(facilityCreationUrl).reply(facilityCreationResponse.statusCode, facilityCreationResponse);
 };
 
+// TODO: tests for the "approved status" endpoint erroring or not returning OK status.
+
+// TODO: tests for "finally":
+// setup another endpoint to fail
+// goes into finally..
+// setup the "delete" endpoint  to fail.
+// then our endpoint should return a 500.
+
 describe('POST /gift/facility - facility creation error handling', () => {
   let api: Api;
 
@@ -99,7 +107,7 @@ describe('POST /gift/facility - facility creation error handling', () => {
     });
   });
 
-  describe('when an unacceptable status is returned by the GIFT facility endpoint', () => {
+  describe('when an otherwise unacceptable status is returned by the GIFT facility endpoint', () => {
     it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
       // Arrange
       setupMocks(mockResponses.iAmATeapot);

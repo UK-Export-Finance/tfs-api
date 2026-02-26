@@ -103,7 +103,7 @@ describe('POST /gift/facility/:facilityId/amendment - error handling', () => {
       });
     });
 
-    describe('when an unacceptable response is returned', () => {
+    describe('when an otherwise unacceptable response is returned', () => {
       it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
         // Arrange
         nock(GIFT_API_URL).persist().post(facilityWorkPackageUrl).reply(HttpStatus.INTERNAL_SERVER_ERROR, mockResponses.iAmATeapot);
@@ -198,7 +198,7 @@ describe('POST /gift/facility/:facilityId/amendment - error handling', () => {
       });
     });
 
-    describe('when an unacceptable response is returned', () => {
+    describe('when an otherwise unacceptable response is returned', () => {
       it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
         // Arrange
         nock(GIFT_API_URL).persist().post(facilityWorkPackageUrl).reply(HttpStatus.CREATED, mockResponses.workPackageCreation);

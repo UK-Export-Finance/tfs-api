@@ -1,4 +1,5 @@
 import { EXAMPLES, GIFT } from '@ukef/constants';
+import { mockFacilityCreationErrorService } from '@ukef-test/gift/mock-services';
 import { mockResponse200, mockResponse500 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
@@ -8,6 +9,7 @@ import {
   GiftCounterpartyService,
   GiftCurrencyService,
   GiftFacilityAsyncValidationService,
+  GiftFacilityCreationErrorService,
   GiftFeeTypeService,
   GiftFixedFeeService,
   GiftObligationService,
@@ -39,6 +41,7 @@ describe('GiftFacilityService.get', () => {
   let repaymentProfileService: GiftRepaymentProfileService;
   let riskDetailsService: GiftRiskDetailsService;
   let statusService: GiftStatusService;
+  let creationErrorService: GiftFacilityCreationErrorService;
   let service: GiftFacilityService;
 
   let giftHttpService;
@@ -74,6 +77,7 @@ describe('GiftFacilityService.get', () => {
     repaymentProfileService = new GiftRepaymentProfileService(giftHttpService, logger);
     riskDetailsService = new GiftRiskDetailsService(giftHttpService, logger);
     statusService = new GiftStatusService(giftHttpService, logger);
+    creationErrorService = mockFacilityCreationErrorService();
 
     service = new GiftFacilityService(
       giftHttpService,
@@ -87,6 +91,7 @@ describe('GiftFacilityService.get', () => {
       repaymentProfileService,
       riskDetailsService,
       statusService,
+      creationErrorService,
     );
   });
 
@@ -137,6 +142,7 @@ describe('GiftFacilityService.get', () => {
         repaymentProfileService,
         riskDetailsService,
         statusService,
+        creationErrorService,
       );
     });
 

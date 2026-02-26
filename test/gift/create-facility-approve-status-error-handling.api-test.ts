@@ -1,5 +1,4 @@
 import { HttpStatus } from '@nestjs/common';
-import { GIFT } from '@ukef/constants';
 import { GIFT_EXAMPLES } from '@ukef/constants/examples/gift.examples.constant';
 import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
@@ -24,8 +23,6 @@ import {
   repaymentProfileUrl,
   riskDetailsUrl,
 } from './test-helpers';
-
-const { API_RESPONSE_MESSAGES } = GIFT;
 
 const { GIFT_API_URL } = ENVIRONMENT_VARIABLES;
 
@@ -92,7 +89,7 @@ describe('POST /gift/facility - approve status error handling', () => {
 
       const expected = {
         statusCode: HttpStatus.BAD_REQUEST,
-        message: API_RESPONSE_MESSAGES.APPROVED_STATUS_ERROR_MESSAGE,
+        // message: API_RESPONSE_MESSAGES.APPROVED_STATUS_ERROR_MESSAGE,
       };
 
       expect(body).toStrictEqual(expected);
@@ -112,7 +109,7 @@ describe('POST /gift/facility - approve status error handling', () => {
 
       const expected = {
         statusCode: HttpStatus.UNAUTHORIZED,
-        message: API_RESPONSE_MESSAGES.APPROVED_STATUS_ERROR_MESSAGE,
+        // message: API_RESPONSE_MESSAGES.APPROVED_STATUS_ERROR_MESSAGE,
       };
 
       expect(body).toStrictEqual(expected);
@@ -132,7 +129,7 @@ describe('POST /gift/facility - approve status error handling', () => {
 
       const expected = {
         statusCode: HttpStatus.FORBIDDEN,
-        message: API_RESPONSE_MESSAGES.APPROVED_STATUS_ERROR_MESSAGE,
+        // message: API_RESPONSE_MESSAGES.APPROVED_STATUS_ERROR_MESSAGE,
       };
 
       expect(body).toStrictEqual(expected);

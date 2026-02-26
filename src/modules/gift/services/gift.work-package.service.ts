@@ -40,4 +40,27 @@ export class GiftWorkPackageService {
       throw new Error(`Error creating work package for facility ${facilityId}`, { cause: error });
     }
   }
+
+  /**
+   * Delete a GIFT work package
+   * @param {string} workPackageId: Work package ID
+   * @param {string} facilityId: Facility ID - for logging, debugging purposes only.
+   * @returns {Promise<AxiosResponse>}
+   * @throws {Error}
+   */
+  async delete(workPackageId: number, facilityId: string) {
+    try {
+      this.logger.info('Deleting work package %s for facility %s', workPackageId, facilityId);
+
+      const response = await this.giftHttpService.delete<GiftWorkPackageResponseDto>({
+        path: `${PATH.WORK_PACKAGE}/${workPackageId}`,
+      });
+
+      return response;
+    } catch (error) {
+      this.logger.error('Error deleting work package %s for facility %s %o', workPackageId, facilityId, error);
+
+      throw new Error(`Error deleting work package ${workPackageId} for facility ${facilityId}`, { cause: error });
+    }
+  }
 }

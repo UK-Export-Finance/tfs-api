@@ -9,6 +9,7 @@ import {
   GiftCurrencyService,
   GiftFacilityAmendmentService,
   GiftFacilityAsyncValidationService,
+  GiftFacilityCreationErrorService,
   GiftFacilityService,
   GiftFeeTypeService,
   GiftFixedFeeService,
@@ -47,6 +48,7 @@ describe('GiftFacilityController', () => {
   let giftFacilityService: GiftFacilityService;
   let giftFacilityAmendmentService: GiftFacilityAmendmentService;
   let giftWorkPackageService: GiftWorkPackageService;
+  let creationErrorService: GiftFacilityCreationErrorService;
   let controller: GiftFacilityController;
 
   let mockRes;
@@ -84,6 +86,8 @@ describe('GiftFacilityController', () => {
     repaymentProfileService = new GiftRepaymentProfileService(giftHttpService, logger);
     riskDetailsService = new GiftRiskDetailsService(giftHttpService, logger);
     statusService = new GiftStatusService(giftHttpService, logger);
+    creationErrorService = new GiftFacilityCreationErrorService(giftWorkPackageService, logger);
+    giftFacilityAmendmentService = new GiftFacilityAmendmentService(giftHttpService, logger, giftWorkPackageService);
 
     giftFacilityService = new GiftFacilityService(
       giftHttpService,
@@ -97,9 +101,8 @@ describe('GiftFacilityController', () => {
       repaymentProfileService,
       riskDetailsService,
       statusService,
+      creationErrorService,
     );
-
-    giftFacilityAmendmentService = new GiftFacilityAmendmentService(giftHttpService, logger, giftWorkPackageService);
 
     mockResSend = jest.fn();
 

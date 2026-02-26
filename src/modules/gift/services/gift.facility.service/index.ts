@@ -10,6 +10,7 @@ import { GiftBusinessCalendarService } from '../gift.business-calendar.service';
 import { GiftBusinessCalendarsConventionService } from '../gift.business-calendars-convention.service';
 import { GiftCounterpartyService } from '../gift.counterparty.service';
 import { GiftFacilityAsyncValidationService } from '../gift.facility-async-validation.service';
+import { GiftFacilityCreationErrorService } from '../gift.facility-creation-error-service';
 import { GiftFixedFeeService } from '../gift.fixed-fee.service';
 import { GiftHttpService } from '../gift.http.service';
 import { GiftObligationService } from '../gift.obligation.service';
@@ -42,6 +43,7 @@ export class GiftFacilityService {
     private readonly giftRepaymentProfileService: GiftRepaymentProfileService,
     private readonly giftRiskDetailsService: GiftRiskDetailsService,
     private readonly giftStatusService: GiftStatusService,
+    private readonly giftFacilityCreationErrorService: GiftFacilityCreationErrorService,
   ) {
     this.giftHttpService = giftHttpService;
     this.asyncValidationService = asyncValidationService;
@@ -53,6 +55,7 @@ export class GiftFacilityService {
     this.giftRepaymentProfileService = giftRepaymentProfileService;
     this.giftRiskDetailsService = giftRiskDetailsService;
     this.giftStatusService = giftStatusService;
+    this.giftFacilityCreationErrorService = giftFacilityCreationErrorService;
   }
 
   /**
@@ -106,6 +109,19 @@ export class GiftFacilityService {
    * @throws {AxiosError | Error}
    */
   async create(data: GiftFacilityCreationRequestDto, facilityId: string): Promise<CreateFacilityResponse> {
+    /**
+     * NOTE: When a GIFT facility is created, a work package is automatically created.
+     * We need to reference this work package ID for the "finally" method at the end,
+     * in the event of an error.
+     *
+     * NOTE: Additionally, a "catch error message" reference is used, so that in an error scenario,
+     * where facility creation succeeds - a work package is created, but other calls fail,
+     * the "finally" catch, can log out as much details as possible for debugging.
+     */
+    let success = false;
+    let facilityWorkPackageId: number;
+    let catchError: unknown;
+
     try {
       this.logger.info('Creating a GIFT facility %s', facilityId);
 
@@ -149,6 +165,9 @@ export class GiftFacilityService {
       }
 
       const { workPackageId } = facility;
+
+      facilityWorkPackageId = workPackageId;
+
       const { effectiveDate, expiryDate } = overview;
 
       const defaultBusinessCalendar = await this.giftBusinessCalendarService.createOne({
@@ -218,16 +237,15 @@ export class GiftFacilityService {
       if (approvedStatusResponse.status !== HttpStatus.OK) {
         this.logger.error('Creating a GIFT facility - approved status update failed %s %o', facilityId, approvedStatusResponse);
 
-        return {
-          status: approvedStatusResponse.status,
-          data: {
-            statusCode: approvedStatusResponse.status,
-            message: API_RESPONSE_MESSAGES.APPROVED_STATUS_ERROR_MESSAGE,
-          },
+        const cause = {
+          status: approvedStatusResponse?.status,
+          data: approvedStatusResponse?.data,
         };
+
+        throw new Error(`Error creating a GIFT facility - approved status update failed ${facilityId}`, { cause });
       }
 
-      this.logger.info('Creating a GIFT facility - success %s', facilityId);
+      this.logger.info('Creating a GIFT facility - success. Returning mapped response data %s', facilityId);
 
       const returnResponse = {
         status: HttpStatus.CREATED,
@@ -244,11 +262,39 @@ export class GiftFacilityService {
         },
       };
 
+      /**
+       * Everything succeeded. Change the success variable to true.
+       * This is used in the finally block for error handling.
+       */
+      success = true;
+
       return returnResponse;
     } catch (error) {
+      catchError = error;
+
       this.logger.error('Error creating a GIFT facility %s %o', facilityId, error);
 
       throw new Error(`Error creating a GIFT facility ${facilityId}`, { cause: error });
+    } finally {
+      /**
+       * If anything during creation (apart from createInitialFacility) is unsuccessful / thrown an error,
+       * call giftFacilityCreationErrorService.finallyHandler.
+       */
+      if (!success) {
+        this.logger.error('Creating a GIFT facility - failed %s', facilityId);
+
+        await this.giftFacilityCreationErrorService.finallyHandler({
+          facilityId,
+          workPackageId: facilityWorkPackageId,
+          creationCatchError: catchError,
+        });
+      }
+
+      /**
+       * Everything succeeded. No further action required.
+       * log a message for confirmation.
+       */
+      this.logger.info('Creating a GIFT facility - successfully completed %s', facilityId);
     }
   }
 }
