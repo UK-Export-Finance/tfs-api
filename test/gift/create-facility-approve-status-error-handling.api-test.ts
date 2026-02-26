@@ -89,7 +89,6 @@ describe('POST /gift/facility - approve status error handling', () => {
 
       const expected = {
         statusCode: HttpStatus.BAD_REQUEST,
-        // message: API_RESPONSE_MESSAGES.APPROVED_STATUS_ERROR_MESSAGE,
       };
 
       expect(body).toStrictEqual(expected);
@@ -109,7 +108,6 @@ describe('POST /gift/facility - approve status error handling', () => {
 
       const expected = {
         statusCode: HttpStatus.UNAUTHORIZED,
-        // message: API_RESPONSE_MESSAGES.APPROVED_STATUS_ERROR_MESSAGE,
       };
 
       expect(body).toStrictEqual(expected);
@@ -129,7 +127,6 @@ describe('POST /gift/facility - approve status error handling', () => {
 
       const expected = {
         statusCode: HttpStatus.FORBIDDEN,
-        // message: API_RESPONSE_MESSAGES.APPROVED_STATUS_ERROR_MESSAGE,
       };
 
       expect(body).toStrictEqual(expected);
