@@ -10,8 +10,8 @@ interface FinallyHandlerParams {
 }
 
 /**
- * GIFT facility creation service.
- * This service is responsible handling errors during the GIFT facility creation process.
+ * GIFT facility creation error service.
+ * This service is responsible for handling errors during the GIFT facility creation process.
  */
 @Injectable()
 export class GiftFacilityCreationErrorService {
@@ -37,9 +37,10 @@ export class GiftFacilityCreationErrorService {
    *
    * 2) Logging and populating error messages from facility creation and the deletion response, for debugging purposes.
    *
-   * @param {number} workPackageId: Work package ID
-   * @param {string} facilityId: Facility ID
-   * @param {unknown} creationCatchError: Optional catch error thrown during facility creation. Defaults to false.
+   * @param {CreationFinallyHandlerParams} params - The parameters object.
+   * @param {number} [params.workPackageId] - Work package ID (optional).
+   * @param {string} params.facilityId - Facility ID.
+   * @param {unknown} [params.creationCatchError] - Optional catch error thrown during facility creation.
    * @throws {Error} If work package deletion has an unexpected status code.
    * @throws {Error} If work package deletion throws an error.
    */

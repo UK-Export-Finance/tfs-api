@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 import { EXAMPLES, GIFT } from '@ukef/constants';
-import { mockFacilityCreationErrorService } from '@ukef-test/gift/mock-services';
+import { mockGiftFacilityCreationErrorService } from '@ukef-test/gift/mock-services';
 import { mockResponse201 } from '@ukef-test/http-response';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
@@ -114,7 +114,7 @@ describe('GiftFacilityService.create - bad requests', () => {
     repaymentProfileService = new GiftRepaymentProfileService(giftHttpService, logger);
     riskDetailsService = new GiftRiskDetailsService(giftHttpService, logger);
     statusService = new GiftStatusService(giftHttpService, logger);
-    creationErrorService = mockFacilityCreationErrorService();
+    creationErrorService = mockGiftFacilityCreationErrorService();
 
     asyncValidationServiceCreationSpy = jest.fn().mockResolvedValueOnce(mockAsyncValidationServiceCreationResponse);
     createInitialFacilitySpy = jest.fn().mockResolvedValueOnce(mockCreateInitialFacilityResponse);

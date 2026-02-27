@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 import { EXAMPLES } from '@ukef/constants';
-import { mockFacilityCreationErrorService } from '@ukef-test/gift/mock-services';
+import { mockGiftFacilityCreationErrorService } from '@ukef-test/gift/mock-services';
 import { mockAxiosError, mockResponse201, mockResponse204 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
@@ -125,7 +125,7 @@ describe('GiftFacilityService.create - error handling', () => {
     repaymentProfileService = new GiftRepaymentProfileService(giftHttpService, logger);
     riskDetailsService = new GiftRiskDetailsService(giftHttpService, logger);
     statusService = new GiftStatusService(giftHttpService, logger);
-    creationErrorService = mockFacilityCreationErrorService();
+    creationErrorService = mockGiftFacilityCreationErrorService();
 
     asyncValidationServiceCreationSpy = jest.fn().mockResolvedValueOnce(mockAsyncValidationServiceCreationResponse);
     createInitialFacilitySpy = jest.fn().mockResolvedValueOnce(mockResponse201(FACILITY_RESPONSE_DATA));

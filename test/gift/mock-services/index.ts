@@ -3,16 +3,16 @@ import { mockResponse204 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
 /**
- * Mock GiftFacilityCreationErrorService service.
+ * Mock GiftFacilityCreationErrorService.
  * Used for unit testing purposes only.
  * This avoids repeating the same code in individual tests.
  * @returns {GiftFacilityCreationErrorService}
  */
-export const mockFacilityCreationErrorService = () => {
-  let giftHttpService;
+export const mockGiftFacilityCreationErrorService = () => {
+  let giftWorkPackageService;
   const logger = new PinoLogger({});
 
-  const creationErrorService = new GiftFacilityCreationErrorService(giftHttpService, logger);
+  const creationErrorService = new GiftFacilityCreationErrorService(giftWorkPackageService, logger);
 
   creationErrorService.finallyHandler = jest.fn().mockResolvedValueOnce(mockResponse204());
 

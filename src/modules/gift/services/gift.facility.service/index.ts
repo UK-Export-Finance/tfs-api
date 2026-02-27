@@ -114,9 +114,9 @@ export class GiftFacilityService {
      * We need to reference this work package ID for the "finally" method at the end,
      * in the event of an error.
      *
-     * NOTE: Additionally, a "catch error message" reference is used, so that in an error scenario,
-     * where facility creation succeeds - a work package is created, but other calls fail,
-     * the "finally" catch, can log out as much details as possible for debugging.
+     * NOTE: Additionally, a "catch error" reference is used, so that in an error scenario,
+     * where facility creation succeeds (a work package is created), but other calls fail,
+     * the "finally" block can log out as much detail as possible for debugging.
      */
     let success = false;
     let facilityWorkPackageId: number;
@@ -275,25 +275,29 @@ export class GiftFacilityService {
 
       throw new Error(`Error creating a GIFT facility ${facilityId}`, { cause: error });
     } finally {
-      /**
-       * If anything during creation (apart from createInitialFacility) is unsuccessful / thrown an error,
-       * call giftFacilityCreationErrorService.finallyHandler.
-       */
-      if (!success) {
+      if (success) {
+        /**
+         * Everything succeeded. No further action required.
+         * log a message for confirmation.
+         */
+        this.logger.info('Creating a GIFT facility - successfully completed %s', facilityId);
+      } else {
+        /**
+         * If anything during creation (apart from createInitialFacility) is unsuccessful / thrown an error,
+         * call giftFacilityCreationErrorService.finallyHandler.
+         */
         this.logger.error('Creating a GIFT facility - failed %s', facilityId);
 
-        await this.giftFacilityCreationErrorService.finallyHandler({
-          facilityId,
-          workPackageId: facilityWorkPackageId,
-          creationCatchError: catchError,
-        });
+        try {
+          await this.giftFacilityCreationErrorService.finallyHandler({
+            facilityId,
+            workPackageId: facilityWorkPackageId,
+            creationCatchError: catchError,
+          });
+        } catch (finallyError) {
+          this.logger.error('Error calling giftFacilityCreationErrorService.finallyHandler for facility %s %o', facilityId, finallyError);
+        }
       }
-
-      /**
-       * Everything succeeded. No further action required.
-       * log a message for confirmation.
-       */
-      this.logger.info('Creating a GIFT facility - successfully completed %s', facilityId);
     }
   }
 }
