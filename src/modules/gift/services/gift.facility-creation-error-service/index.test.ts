@@ -47,6 +47,32 @@ describe('GiftFacilityCreationErrorService', () => {
       });
     });
 
+    describe('when a workPackageId is NOT provided', () => {
+      it('should NOT call giftWorkPackageService.delete', async () => {
+        // Act
+        const promise = service.finallyHandler({
+          facilityId: mockFacilityId,
+        });
+
+        await expect(promise).rejects.toThrow();
+
+        // Assert
+        expect(mockWorkPackageDelete).not.toHaveBeenCalled();
+      });
+
+      it('should throw an error', async () => {
+        // Act
+        const promise = service.finallyHandler({
+          facilityId: mockFacilityId,
+        });
+
+        // Assert
+        const expected = new Error(`Severe error creating a GIFT facility ${mockFacilityId} and deleting work package. No workPackageId available`);
+
+        await expect(promise).rejects.toThrow(expected);
+      });
+    });
+
     describe(`when workPackageService.delete returns a status that is NOT ${HttpStatus.NO_CONTENT}`, () => {
       beforeEach(() => {
         // Arrange
@@ -67,7 +93,7 @@ describe('GiftFacilityCreationErrorService', () => {
         // Assert
         const expectedCause = `Creation error: false \n Work package deletion error: ${mockResponse400()}`;
 
-        const expected = new Error(`Severe error creating a GIFT facility ${mockFacilityId} and deleting work package ${mockWorkPackageId}`, {
+        const expected = new Error(`Error creating a GIFT facility ${mockFacilityId} and deleting work package ${mockWorkPackageId}`, {
           cause: expectedCause,
         });
 
@@ -95,7 +121,7 @@ describe('GiftFacilityCreationErrorService', () => {
         // Assert
         const expectedCause = `Creation error: false \n Work package deletion error: ${mockResponse500()}`;
 
-        const expected = new Error(`Severe error creating a GIFT facility ${mockFacilityId} and deleting work package ${mockWorkPackageId}`, {
+        const expected = new Error(`Error creating a GIFT facility ${mockFacilityId} and deleting work package ${mockWorkPackageId}`, {
           cause: expectedCause,
         });
 
@@ -127,7 +153,7 @@ describe('GiftFacilityCreationErrorService', () => {
         // Assert
         const expectedCause = `Creation error: ${mockCreationCatchError} \n Work package deletion error: ${mockResponse500()}`;
 
-        const expected = new Error(`Severe error creating a GIFT facility ${mockFacilityId} and deleting work package ${mockWorkPackageId}`, {
+        const expected = new Error(`Error creating a GIFT facility ${mockFacilityId} and deleting work package ${mockWorkPackageId}`, {
           cause: expectedCause,
         });
 

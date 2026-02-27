@@ -36,14 +36,6 @@ const setupMocks = (facilityCreationResponse: MockGiftResponse) => {
   nock(GIFT_API_URL).post(facilityCreationUrl).reply(facilityCreationResponse.statusCode, facilityCreationResponse);
 };
 
-// TODO: tests for the "approved status" endpoint erroring or not returning OK status.
-
-// TODO: tests for "finally":
-// setup another endpoint to fail
-// goes into finally..
-// setup the "delete" endpoint  to fail.
-// then our endpoint should return a 500.
-
 describe('POST /gift/facility - facility creation error handling', () => {
   let api: Api;
 

@@ -43,22 +43,23 @@ export class GiftFacilityCreationErrorService {
    * @param {unknown} [params.creationCatchError] - Optional catch error thrown during facility creation.
    * @throws {Error} If work package deletion has an unexpected status code.
    * @throws {Error} If work package deletion throws an error.
+   * @throws {Error} If no work package ID is provided.
    */
   async finallyHandler({ workPackageId, facilityId, creationCatchError = false }: FinallyHandlerParams) {
     if (workPackageId) {
       try {
-        this.logger.info('Severe error creating a GIFT facility (finally handler) %s %s', facilityId, workPackageId);
+        this.logger.info('Error creating a GIFT facility (finally handler) %s %s', facilityId, workPackageId);
 
         await this.giftWorkPackageService.delete(workPackageId, facilityId);
       } catch (deletionError) {
-        this.logger.error('Severe error creating a GIFT facility %s and deleting GIFT work package %s', facilityId, workPackageId);
+        this.logger.error('Error creating a GIFT facility %s and deleting GIFT work package %s', facilityId, workPackageId);
 
-        const populatedCause = `Creation error: ${creationCatchError} \n Work package deletion error: ${deletionError}`;
+        const populatedCause = `Creation error: ${creationCatchError.toString()} \n Work package deletion error: ${deletionError}`;
 
-        throw new Error(`Severe error creating a GIFT facility ${facilityId} and deleting work package ${workPackageId}`, { cause: populatedCause });
+        throw new Error(`Error creating a GIFT facility ${facilityId} and deleting work package ${workPackageId}`, { cause: populatedCause });
       }
+    } else {
+      throw new Error(`Severe error creating a GIFT facility ${facilityId} and deleting work package. No workPackageId available`);
     }
-
-    // TODO: throw error here - no work package ID available?
   }
 }
