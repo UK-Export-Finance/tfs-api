@@ -67,7 +67,7 @@ describe('GiftProductTypeService', () => {
         service = new GiftProductTypeService(giftHttpService, logger);
       });
 
-      it('should thrown an error', async () => {
+      it('should throw an error', async () => {
         // Act
         const promise = service.getOne(PRODUCT_TYPE_CODES.EXIP);
 
@@ -138,7 +138,7 @@ describe('GiftProductTypeService', () => {
         service.getOne = mockGetOne;
       });
 
-      it('should thrown an error', async () => {
+      it('should throw an error', async () => {
         // Act
         const promise = service.isSupported(PRODUCT_TYPE_CODES.EXIP);
 

@@ -72,7 +72,7 @@ describe('GiftRepaymentProfileService', () => {
         service = new GiftRepaymentProfileService(giftHttpService, logger);
       });
 
-      it('should thrown an error', async () => {
+      it('should throw an error', async () => {
         // Act
         const promise = service.createOne(mockRepaymentProfile, mockFacilityId, mockWorkPackageId);
 
@@ -142,7 +142,7 @@ describe('GiftRepaymentProfileService', () => {
         service.createOne = mockCreateOne;
       });
 
-      it('should thrown an error', async () => {
+      it('should throw an error', async () => {
         // Act
         const promise = service.createMany(mockRepaymentProfiles, mockFacilityId, mockWorkPackageId);
 

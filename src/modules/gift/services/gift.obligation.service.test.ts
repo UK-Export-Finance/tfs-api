@@ -75,7 +75,7 @@ describe('GiftObligationService', () => {
         service = new GiftObligationService(giftHttpService, logger);
       });
 
-      it('should thrown an error', async () => {
+      it('should throw an error', async () => {
         // Act
         const promise = service.createOne(mockObligation, mockFacilityId, mockWorkPackageId);
 
@@ -145,7 +145,7 @@ describe('GiftObligationService', () => {
         service.createOne = mockCreateOne;
       });
 
-      it('should thrown an error', async () => {
+      it('should throw an error', async () => {
         // Act
         const promise = service.createMany(mockObligations, mockFacilityId, mockWorkPackageId);
 

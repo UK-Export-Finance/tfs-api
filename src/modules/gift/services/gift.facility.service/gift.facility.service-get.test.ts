@@ -146,7 +146,7 @@ describe('GiftFacilityService.get', () => {
       );
     });
 
-    it('should thrown an error', async () => {
+    it('should throw an error', async () => {
       // Act
       const promise = service.get(mockFacilityId);
 

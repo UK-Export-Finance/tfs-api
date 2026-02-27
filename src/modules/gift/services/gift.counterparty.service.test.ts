@@ -78,7 +78,7 @@ describe('GiftCounterpartyService', () => {
         service = new GiftCounterpartyService(giftHttpService, logger);
       });
 
-      it('should thrown an error', async () => {
+      it('should throw an error', async () => {
         // Act
         const promise = service.createOne(mockCounterparty, mockFacilityId, mockWorkPackageId);
 
@@ -150,7 +150,7 @@ describe('GiftCounterpartyService', () => {
         service.createOne = mockCreateOne;
       });
 
-      it('should thrown an error', async () => {
+      it('should throw an error', async () => {
         // Act
         const promise = service.createMany(mockCounterparties, mockFacilityId, mockWorkPackageId);
 
@@ -224,7 +224,7 @@ describe('GiftCounterpartyService', () => {
         service = new GiftCounterpartyService(giftHttpService, logger);
       });
 
-      it('should thrown an error', async () => {
+      it('should throw an error', async () => {
         // Act
         const promise = service.getAllRoles();
 

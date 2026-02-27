@@ -79,7 +79,7 @@ describe('GiftWorkPackageService', () => {
         service = new GiftWorkPackageService(giftHttpService, logger);
       });
 
-      it('should thrown an error', async () => {
+      it('should throw an error', async () => {
         // Act
         const promise = service.create(mockFacilityId);
 
@@ -126,7 +126,7 @@ describe('GiftWorkPackageService', () => {
         service = new GiftWorkPackageService(giftHttpService, logger);
       });
 
-      it('should thrown an error', async () => {
+      it('should throw an error', async () => {
         // Act
         const promise = service.delete(mockWorkPackageId, mockFacilityId);
 

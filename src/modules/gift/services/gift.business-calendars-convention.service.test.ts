@@ -84,7 +84,7 @@ describe('GiftBusinessCalendarsConventionService', () => {
         service = new GiftBusinessCalendarsConventionService(giftHttpService, logger);
       });
 
-      it('should thrown an error', async () => {
+      it('should throw an error', async () => {
         // Act
         const promise = service.createOne({
           facilityId: mockFacilityId,

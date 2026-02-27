@@ -71,7 +71,7 @@ describe('GiftStatusService', () => {
         service = new GiftStatusService(giftHttpService, logger);
       });
 
-      it('should thrown an error', async () => {
+      it('should throw an error', async () => {
         // Act
         const promise = service.approved(mockFacilityId, mockWorkPackageId);
 
