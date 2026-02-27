@@ -3,13 +3,11 @@ import { PinoLogger } from 'nestjs-pino';
 
 import { GiftWorkPackageService } from '../gift.work-package.service';
 
-interface CreationFinallyHandlerParams {
+interface FinallyHandlerParams {
   workPackageId?: number;
   facilityId: string;
   creationCatchError?: unknown;
 }
-
-// TODO: Review log and error messages. align/simplify?
 
 /**
  * GIFT facility creation service.
@@ -45,10 +43,10 @@ export class GiftFacilityCreationErrorService {
    * @throws {Error} If work package deletion has an unexpected status code.
    * @throws {Error} If work package deletion throws an error.
    */
-  async finallyHandler({ workPackageId, facilityId, creationCatchError = false }: CreationFinallyHandlerParams) {
+  async finallyHandler({ workPackageId, facilityId, creationCatchError = false }: FinallyHandlerParams) {
     if (workPackageId) {
       try {
-        this.logger.info('GIFT facility creation - finally handler %s %s', facilityId, workPackageId);
+        this.logger.info('Severe error creating a GIFT facility (finally handler) %s %s', facilityId, workPackageId);
 
         await this.giftWorkPackageService.delete(workPackageId, facilityId);
       } catch (deletionError) {
