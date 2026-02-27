@@ -38,6 +38,7 @@ export const GIFT = {
     OVERRIDE_RISK_RATING: null,
     OVERRIDE_LOSS_GIVEN_DEFAULT: null,
     RISK_REASSESSMENT_DATE: null,
+    FACILITY_CATEGORY_CODE: null,
   },
   ENTITY_NAMES: {
     BUSINESS_CALENDAR: 'Business calendar',
