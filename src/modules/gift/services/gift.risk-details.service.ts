@@ -32,14 +32,17 @@ export class GiftRiskDetailsService {
     try {
       this.logger.info('Creating risk details for facility %s', facilityId);
 
+      const payload = {
+        ...riskDetailsData,
+        overrideRiskRating: INTEGRATION_DEFAULTS.OVERRIDE_RISK_RATING,
+        overrideLossGivenDefault: INTEGRATION_DEFAULTS.OVERRIDE_LOSS_GIVEN_DEFAULT,
+        riskReassessmentDate: INTEGRATION_DEFAULTS.RISK_REASSESSMENT_DATE,
+        facilityCategoryCode: riskDetailsData.facilityCategoryCode || INTEGRATION_DEFAULTS.FACILITY_CATEGORY_CODE,
+      };
+
       const response = await this.giftHttpService.post<GiftBusinessCalendarsConventionResponseDto>({
         path: `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_RISK_DETAILS}`,
-        payload: {
-          ...riskDetailsData,
-          overrideRiskRating: INTEGRATION_DEFAULTS.OVERRIDE_RISK_RATING,
-          overrideLossGivenDefault: INTEGRATION_DEFAULTS.OVERRIDE_LOSS_GIVEN_DEFAULT,
-          riskReassessmentDate: INTEGRATION_DEFAULTS.RISK_REASSESSMENT_DATE,
-        },
+        payload,
       });
 
       return response;

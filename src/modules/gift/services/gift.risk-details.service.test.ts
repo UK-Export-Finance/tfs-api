@@ -39,21 +39,50 @@ describe('GiftRiskDetailsService', () => {
   });
 
   describe('createOne', () => {
-    it('should call giftHttpService.post', async () => {
-      // Act
-      await service.createOne(RISK_DETAILS, mockFacilityId, mockWorkPackageId);
+    describe('when facilityCategoryCode is NOT provided', () => {
+      it('should call giftHttpService.post with facilityCategoryCode as null', async () => {
+        // Act
+        await service.createOne(RISK_DETAILS, mockFacilityId, mockWorkPackageId);
 
-      // Assert
-      expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
+        // Assert
+        expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
 
-      expect(mockHttpServicePost).toHaveBeenCalledWith({
-        path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_RISK_DETAILS}`,
-        payload: {
+        expect(mockHttpServicePost).toHaveBeenCalledWith({
+          path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_RISK_DETAILS}`,
+          payload: {
+            ...RISK_DETAILS,
+            overrideRiskRating: INTEGRATION_DEFAULTS.OVERRIDE_RISK_RATING,
+            overrideLossGivenDefault: INTEGRATION_DEFAULTS.OVERRIDE_LOSS_GIVEN_DEFAULT,
+            riskReassessmentDate: INTEGRATION_DEFAULTS.RISK_REASSESSMENT_DATE,
+            facilityCategoryCode: null,
+          },
+        });
+      });
+    });
+
+    describe('when facilityCategoryCode is provided', () => {
+      it('should call giftHttpService.post with the provided facilityCategoryCode', async () => {
+        // Arrange
+        const mockPayload = {
           ...RISK_DETAILS,
-          overrideRiskRating: INTEGRATION_DEFAULTS.OVERRIDE_RISK_RATING,
-          overrideLossGivenDefault: INTEGRATION_DEFAULTS.OVERRIDE_LOSS_GIVEN_DEFAULT,
-          riskReassessmentDate: INTEGRATION_DEFAULTS.RISK_REASSESSMENT_DATE,
-        },
+          facilityCategoryCode: 'Mock facility category code',
+        };
+
+        // Act
+        await service.createOne(mockPayload, mockFacilityId, mockWorkPackageId);
+
+        // Assert
+        expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
+
+        expect(mockHttpServicePost).toHaveBeenCalledWith({
+          path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_RISK_DETAILS}`,
+          payload: {
+            ...mockPayload,
+            overrideRiskRating: INTEGRATION_DEFAULTS.OVERRIDE_RISK_RATING,
+            overrideLossGivenDefault: INTEGRATION_DEFAULTS.OVERRIDE_LOSS_GIVEN_DEFAULT,
+            riskReassessmentDate: INTEGRATION_DEFAULTS.RISK_REASSESSMENT_DATE,
+          },
+        });
       });
     });
 
