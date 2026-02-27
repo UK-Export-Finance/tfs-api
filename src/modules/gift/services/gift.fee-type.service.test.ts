@@ -70,7 +70,7 @@ describe('GiftFeeTypeService', () => {
         service = new GiftFeeTypeService(giftHttpService, logger);
       });
 
-      it('should thrown an error', async () => {
+      it('should throw an error', async () => {
         // Act
         const promise = service.getSupportedFeeTypes();
 
@@ -123,7 +123,7 @@ describe('GiftFeeTypeService', () => {
         service.getSupportedFeeTypes = mockGetSupportedFeeTypes;
       });
 
-      it('should thrown an error', async () => {
+      it('should throw an error', async () => {
         // Act
         const promise = service.getAllFeeTypeCodes();
 

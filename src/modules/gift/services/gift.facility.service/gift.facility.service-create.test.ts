@@ -1,6 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 import { EXAMPLES } from '@ukef/constants';
-import { mockResponse200, mockResponse201 } from '@ukef-test/http-response';
+import { mockGiftFacilityCreationErrorService } from '@ukef-test/gift/mock-services';
+import { mockResponse200, mockResponse201, mockResponse204 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
 import {
@@ -9,6 +10,7 @@ import {
   GiftCounterpartyService,
   GiftCurrencyService,
   GiftFacilityAsyncValidationService,
+  GiftFacilityCreationErrorService,
   GiftFeeTypeService,
   GiftFixedFeeService,
   GiftObligationService,
@@ -54,8 +56,9 @@ const mockCreateFixedFeesResponse = mockFixedFees.map((fixedFee) => mockResponse
 const mockCreateObligationsResponse = mockObligations.map((obligation) => mockResponse201({ data: obligation }));
 const mockCreateRepaymentProfilesResponse = mockRepaymentProfiles.map((repaymentProfile) => mockResponse201({ data: repaymentProfile }));
 const mockCreateRiskDetailsResponse = mockResponse201({ data: mockRiskDetails });
+const mockFinallyHandlerResponse = mockResponse204();
 
-describe('GiftFacilityService.create', () => {
+describe('GiftFacilityService.create - happy path', () => {
   const logger = new PinoLogger({});
 
   let currencyService: GiftCurrencyService;
@@ -67,6 +70,7 @@ describe('GiftFacilityService.create', () => {
   let repaymentProfileService: GiftRepaymentProfileService;
   let riskDetailsService: GiftRiskDetailsService;
   let statusService: GiftStatusService;
+  let creationErrorService: GiftFacilityCreationErrorService;
   let service: GiftFacilityService;
 
   let giftHttpService;
@@ -81,6 +85,7 @@ describe('GiftFacilityService.create', () => {
   let createRepaymentProfilesSpy: jest.Mock;
   let createRiskDetailsSpy: jest.Mock;
   let approvedStatusSpy: jest.Mock;
+  let finallyHandlerSpy: jest.Mock;
 
   beforeEach(() => {
     // Arrange
@@ -111,6 +116,7 @@ describe('GiftFacilityService.create', () => {
     repaymentProfileService = new GiftRepaymentProfileService(giftHttpService, logger);
     riskDetailsService = new GiftRiskDetailsService(giftHttpService, logger);
     statusService = new GiftStatusService(giftHttpService, logger);
+    creationErrorService = mockGiftFacilityCreationErrorService();
 
     createInitialFacilitySpy = jest.fn().mockResolvedValueOnce(mockResponse201(FACILITY_RESPONSE_DATA));
     asyncValidationServiceCreationSpy = jest.fn().mockResolvedValueOnce(mockAsyncValidationServiceCreationResponse);
@@ -122,6 +128,7 @@ describe('GiftFacilityService.create', () => {
     createRepaymentProfilesSpy = jest.fn().mockResolvedValueOnce(mockCreateRepaymentProfilesResponse);
     createRiskDetailsSpy = jest.fn().mockResolvedValueOnce(mockCreateRiskDetailsResponse);
     approvedStatusSpy = jest.fn().mockResolvedValueOnce(mockResponse200(WORK_PACKAGE_APPROVE_RESPONSE_DATA));
+    finallyHandlerSpy = jest.fn().mockResolvedValueOnce(mockFinallyHandlerResponse);
 
     asyncValidationService.creation = asyncValidationServiceCreationSpy;
     businessCalendarService.createOne = createBusinessCalendarSpy;
@@ -145,6 +152,7 @@ describe('GiftFacilityService.create', () => {
       repaymentProfileService,
       riskDetailsService,
       statusService,
+      creationErrorService,
     );
 
     service.createInitialFacility = createInitialFacilitySpy;
@@ -262,28 +270,34 @@ describe('GiftFacilityService.create', () => {
     expect(approvedStatusSpy).toHaveBeenCalledWith(mockFacilityId, FACILITY_RESPONSE_DATA.workPackageId);
   });
 
-  describe('when all calls are successful', () => {
-    it('should return a response object', async () => {
-      // Act
-      const response = await service.create(mockPayload, mockFacilityId);
+  it('should NOT call giftFacilityCreationErrorService.finallyHandler', async () => {
+    // Act
+    await service.create(mockPayload, mockFacilityId);
 
-      // Assert
-      const expected = {
-        status: HttpStatus.CREATED,
-        data: {
-          ...FACILITY_RESPONSE_DATA.configurationEvent.data,
-          state: WORK_PACKAGE_APPROVE_RESPONSE_DATA.state,
-          businessCalendars: [mockBusinessCalendar],
-          businessCalendarsConvention: mockBusinessCalendarsConvention,
-          counterparties: mockCounterparties,
-          fixedFees: mockFixedFees,
-          obligations: mockObligations,
-          repaymentProfiles: mockRepaymentProfiles,
-          riskDetails: mockRiskDetails,
-        },
-      };
+    // Assert
+    expect(finallyHandlerSpy).toHaveBeenCalledTimes(0);
+  });
 
-      expect(response).toEqual(expected);
-    });
+  it('should return a response object', async () => {
+    // Act
+    const response = await service.create(mockPayload, mockFacilityId);
+
+    // Assert
+    const expected = {
+      status: HttpStatus.CREATED,
+      data: {
+        ...FACILITY_RESPONSE_DATA.configurationEvent.data,
+        state: WORK_PACKAGE_APPROVE_RESPONSE_DATA.state,
+        businessCalendars: [mockBusinessCalendar],
+        businessCalendarsConvention: mockBusinessCalendarsConvention,
+        counterparties: mockCounterparties,
+        fixedFees: mockFixedFees,
+        obligations: mockObligations,
+        repaymentProfiles: mockRepaymentProfiles,
+        riskDetails: mockRiskDetails,
+      },
+    };
+
+    expect(response).toEqual(expected);
   });
 });

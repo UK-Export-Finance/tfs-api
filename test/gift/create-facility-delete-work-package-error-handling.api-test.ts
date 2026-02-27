@@ -31,7 +31,7 @@ const { GIFT_API_URL } = ENVIRONMENT_VARIABLES;
  * Setup mocks for all endpoints.
  * @param {MockGiftResponse} Mock "approve status" response
  */
-const setupMocks = (approveStatusResponse: MockGiftResponse) => {
+const setupMocks = (deleteWorkPackageResponse: MockGiftResponse) => {
   nock(GIFT_API_URL).persist().get(productTypeUrl()).reply(HttpStatus.OK, mockResponses.productType);
 
   nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
@@ -58,9 +58,13 @@ const setupMocks = (approveStatusResponse: MockGiftResponse) => {
 
   nock(GIFT_API_URL).persist().post(riskDetailsUrl).reply(HttpStatus.CREATED, mockResponses.riskDetails);
 
-  nock(GIFT_API_URL).persist().post(approveStatusUrl).reply(approveStatusResponse.statusCode, approveStatusResponse);
+  /**
+   * Make the "approve status" endpoint error,
+   * so that the "delete work package" endpoint will be called.
+   */
+  nock(GIFT_API_URL).persist().post(approveStatusUrl).reply(HttpStatus.BAD_REQUEST, mockResponses.approveStatus);
 
-  nock(GIFT_API_URL).persist().delete(workPackageUrl).reply(HttpStatus.NO_CONTENT);
+  nock(GIFT_API_URL).persist().delete(workPackageUrl).reply(deleteWorkPackageResponse.statusCode, deleteWorkPackageResponse);
 };
 
 describe('POST /gift/facility - approve status error handling', () => {
@@ -79,8 +83,8 @@ describe('POST /gift/facility - approve status error handling', () => {
     nock.cleanAll();
   });
 
-  describe(`when a ${HttpStatus.BAD_REQUEST} response is returned by the GIFT approve status endpoint`, () => {
-    it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
+  describe(`when a ${HttpStatus.BAD_REQUEST} response is returned by the GIFT delete work package endpoint`, () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       // Arrange
       setupMocks(mockResponses.badRequest);
 
@@ -94,7 +98,7 @@ describe('POST /gift/facility - approve status error handling', () => {
     });
   });
 
-  describe(`when a ${HttpStatus.UNAUTHORIZED} response is returned by the GIFT approve status endpoint`, () => {
+  describe(`when a ${HttpStatus.UNAUTHORIZED} response is returned by the GIFT delete work package endpoint`, () => {
     it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
       // Arrange
       setupMocks(mockResponses.unauthorized);
@@ -109,7 +113,7 @@ describe('POST /gift/facility - approve status error handling', () => {
     });
   });
 
-  describe(`when a ${HttpStatus.FORBIDDEN} response is returned by the GIFT approve status endpoint`, () => {
+  describe(`when a ${HttpStatus.FORBIDDEN} response is returned by the GIFT delete work package endpoint`, () => {
     it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
       // Arrange
       setupMocks(mockResponses.forbidden);
@@ -124,7 +128,7 @@ describe('POST /gift/facility - approve status error handling', () => {
     });
   });
 
-  describe(`when a ${HttpStatus.INTERNAL_SERVER_ERROR} status is returned by the GIFT approve status endpoint`, () => {
+  describe(`when a ${HttpStatus.INTERNAL_SERVER_ERROR} status is returned by the GIFT delete work package endpoint`, () => {
     it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
       // Arrange
       setupMocks(mockResponses.internalServerError);
@@ -139,7 +143,7 @@ describe('POST /gift/facility - approve status error handling', () => {
     });
   });
 
-  describe(`when an unacceptable response is returned by the GIFT approve status endpoint`, () => {
+  describe(`when an unacceptable response is returned by the GIFT delete work package endpoint`, () => {
     it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
       // Arrange
       setupMocks(mockResponses.iAmATeapot);

@@ -5,6 +5,7 @@ export * from './gift.currency.service';
 export * from './gift.facility.service';
 export * from './gift.facility-amendment.service';
 export * from './gift.facility-async-validation.service';
+export * from './gift.facility-creation-error-service';
 export * from './gift.fee-type.service';
 export * from './gift.fixed-fee.service';
 export * from './gift.http.service';

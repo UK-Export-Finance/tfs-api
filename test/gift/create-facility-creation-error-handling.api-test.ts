@@ -99,7 +99,7 @@ describe('POST /gift/facility - facility creation error handling', () => {
     });
   });
 
-  describe('when an unacceptable status is returned by the GIFT facility endpoint', () => {
+  describe('when an otherwise unacceptable status is returned by the GIFT facility endpoint', () => {
     it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
       // Arrange
       setupMocks(mockResponses.iAmATeapot);

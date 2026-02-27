@@ -1,6 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 import { EXAMPLES } from '@ukef/constants';
-import { mockAxiosError, mockResponse201 } from '@ukef-test/http-response';
+import { mockGiftFacilityCreationErrorService } from '@ukef-test/gift/mock-services';
+import { mockAxiosError, mockResponse201, mockResponse204 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
 import {
@@ -9,6 +10,7 @@ import {
   GiftCounterpartyService,
   GiftCurrencyService,
   GiftFacilityAsyncValidationService,
+  GiftFacilityCreationErrorService,
   GiftFeeTypeService,
   GiftFixedFeeService,
   GiftObligationService,
@@ -32,6 +34,7 @@ const {
     REPAYMENT_PROFILE,
     RISK_DETAILS,
     WORK_PACKAGE_APPROVE_RESPONSE_DATA,
+    WORK_PACKAGE_ID: mockWorkPackageId,
   },
 } = EXAMPLES;
 
@@ -53,6 +56,7 @@ const mockCreateObligationsResponse = mockObligations.map((counterparty) => mock
 const mockCreateRepaymentProfilesResponse = mockRepaymentProfiles.map((repaymentProfile) => mockResponse201(repaymentProfile));
 const mockCreateRiskDetailsResponse = mockResponse201({ data: mockRiskDetails });
 const mockApprovedStatusResponse = mockResponse201({ data: WORK_PACKAGE_APPROVE_RESPONSE_DATA });
+const mockFinallyHandlerResponse = mockResponse204();
 
 describe('GiftFacilityService.create - error handling', () => {
   const logger = new PinoLogger({});
@@ -66,6 +70,7 @@ describe('GiftFacilityService.create - error handling', () => {
   let repaymentProfileService: GiftRepaymentProfileService;
   let riskDetailsService: GiftRiskDetailsService;
   let statusService: GiftStatusService;
+  let creationErrorService: GiftFacilityCreationErrorService;
   let service: GiftFacilityService;
 
   let giftHttpService;
@@ -80,6 +85,7 @@ describe('GiftFacilityService.create - error handling', () => {
   let createRepaymentProfilesSpy: jest.Mock;
   let createRiskDetailsSpy: jest.Mock;
   let approvedStatusSpy: jest.Mock;
+  let finallyHandlerSpy: jest.Mock;
 
   const mockAxiosErrorStatus = HttpStatus.BAD_REQUEST;
 
@@ -119,6 +125,7 @@ describe('GiftFacilityService.create - error handling', () => {
     repaymentProfileService = new GiftRepaymentProfileService(giftHttpService, logger);
     riskDetailsService = new GiftRiskDetailsService(giftHttpService, logger);
     statusService = new GiftStatusService(giftHttpService, logger);
+    creationErrorService = mockGiftFacilityCreationErrorService();
 
     asyncValidationServiceCreationSpy = jest.fn().mockResolvedValueOnce(mockAsyncValidationServiceCreationResponse);
     createInitialFacilitySpy = jest.fn().mockResolvedValueOnce(mockResponse201(FACILITY_RESPONSE_DATA));
@@ -130,6 +137,7 @@ describe('GiftFacilityService.create - error handling', () => {
     createRepaymentProfilesSpy = jest.fn().mockResolvedValueOnce(mockCreateRepaymentProfilesResponse);
     createRiskDetailsSpy = jest.fn().mockResolvedValueOnce(mockCreateRiskDetailsResponse);
     approvedStatusSpy = jest.fn().mockResolvedValueOnce(mockApprovedStatusResponse);
+    finallyHandlerSpy = jest.fn().mockResolvedValueOnce(mockFinallyHandlerResponse);
 
     asyncValidationService.creation = asyncValidationServiceCreationSpy;
     businessCalendarService.createOne = createBusinessCalendarSpy;
@@ -140,6 +148,7 @@ describe('GiftFacilityService.create - error handling', () => {
     repaymentProfileService.createMany = createRepaymentProfilesSpy;
     riskDetailsService.createOne = createRiskDetailsSpy;
     statusService.approved = approvedStatusSpy;
+    creationErrorService.finallyHandler = finallyHandlerSpy;
 
     service = new GiftFacilityService(
       giftHttpService,
@@ -153,6 +162,7 @@ describe('GiftFacilityService.create - error handling', () => {
       repaymentProfileService,
       riskDetailsService,
       statusService,
+      creationErrorService,
     );
 
     service.createInitialFacility = createInitialFacilitySpy;
@@ -179,6 +189,7 @@ describe('GiftFacilityService.create - error handling', () => {
         repaymentProfileService,
         riskDetailsService,
         statusService,
+        creationErrorService,
       );
 
       service.createInitialFacility = createInitialFacilitySpy;
@@ -192,6 +203,18 @@ describe('GiftFacilityService.create - error handling', () => {
       const expected = new Error(`Error creating a GIFT facility ${mockFacilityId}`, { cause: mockError });
 
       await expect(response).rejects.toThrow(expected);
+    });
+
+    it('should call giftFacilityCreationErrorService.finallyHandler (without a work package ID)', async () => {
+      // Act
+      await expect(service.create(mockPayload, mockFacilityId)).rejects.toThrow();
+
+      // Assert
+      expect(finallyHandlerSpy).toHaveBeenCalledTimes(1);
+      expect(finallyHandlerSpy).toHaveBeenCalledWith({
+        facilityId: mockFacilityId,
+        creationCatchError: mockError,
+      });
     });
   });
 
@@ -214,6 +237,7 @@ describe('GiftFacilityService.create - error handling', () => {
         repaymentProfileService,
         riskDetailsService,
         statusService,
+        creationErrorService,
       );
 
       service.createInitialFacility = jest.fn().mockResolvedValueOnce(mockResponse201(FACILITY_RESPONSE_DATA));
@@ -227,6 +251,19 @@ describe('GiftFacilityService.create - error handling', () => {
       const expected = new Error(`Error creating a GIFT facility ${mockFacilityId}`, { cause: mockError });
 
       await expect(response).rejects.toThrow(expected);
+    });
+
+    it('should call giftFacilityCreationErrorService.finallyHandler', async () => {
+      // Act
+      await expect(service.create(mockPayload, mockFacilityId)).rejects.toThrow();
+
+      // Assert
+      expect(finallyHandlerSpy).toHaveBeenCalledTimes(1);
+      expect(finallyHandlerSpy).toHaveBeenCalledWith({
+        facilityId: mockFacilityId,
+        workPackageId: mockWorkPackageId,
+        creationCatchError: mockError,
+      });
     });
   });
 
@@ -249,6 +286,7 @@ describe('GiftFacilityService.create - error handling', () => {
         repaymentProfileService,
         riskDetailsService,
         statusService,
+        creationErrorService,
       );
 
       service.createInitialFacility = jest.fn().mockResolvedValueOnce(mockResponse201(FACILITY_RESPONSE_DATA));
@@ -262,6 +300,19 @@ describe('GiftFacilityService.create - error handling', () => {
       const expected = new Error(`Error creating a GIFT facility ${mockFacilityId}`, { cause: mockError });
 
       await expect(response).rejects.toThrow(expected);
+    });
+
+    it('should call giftFacilityCreationErrorService.finallyHandler', async () => {
+      // Act
+      await expect(service.create(mockPayload, mockFacilityId)).rejects.toThrow();
+
+      // Assert
+      expect(finallyHandlerSpy).toHaveBeenCalledTimes(1);
+      expect(finallyHandlerSpy).toHaveBeenCalledWith({
+        facilityId: mockFacilityId,
+        workPackageId: mockWorkPackageId,
+        creationCatchError: mockError,
+      });
     });
   });
 
@@ -284,6 +335,7 @@ describe('GiftFacilityService.create - error handling', () => {
         repaymentProfileService,
         riskDetailsService,
         statusService,
+        creationErrorService,
       );
 
       service.createInitialFacility = jest.fn().mockResolvedValueOnce(mockResponse201(FACILITY_RESPONSE_DATA));
@@ -297,6 +349,19 @@ describe('GiftFacilityService.create - error handling', () => {
       const expected = new Error(`Error creating a GIFT facility ${mockFacilityId}`, { cause: mockError });
 
       await expect(response).rejects.toThrow(expected);
+    });
+
+    it('should call giftFacilityCreationErrorService.finallyHandler', async () => {
+      // Act
+      await expect(service.create(mockPayload, mockFacilityId)).rejects.toThrow();
+
+      // Assert
+      expect(finallyHandlerSpy).toHaveBeenCalledTimes(1);
+      expect(finallyHandlerSpy).toHaveBeenCalledWith({
+        facilityId: mockFacilityId,
+        workPackageId: mockWorkPackageId,
+        creationCatchError: mockError,
+      });
     });
   });
 
@@ -319,6 +384,7 @@ describe('GiftFacilityService.create - error handling', () => {
         repaymentProfileService,
         riskDetailsService,
         statusService,
+        creationErrorService,
       );
 
       service.createInitialFacility = jest.fn().mockResolvedValueOnce(mockResponse201(FACILITY_RESPONSE_DATA));
@@ -332,6 +398,19 @@ describe('GiftFacilityService.create - error handling', () => {
       const expected = new Error(`Error creating a GIFT facility ${mockFacilityId}`, { cause: mockError });
 
       await expect(response).rejects.toThrow(expected);
+    });
+
+    it('should call giftFacilityCreationErrorService.finallyHandler', async () => {
+      // Act
+      await expect(service.create(mockPayload, mockFacilityId)).rejects.toThrow();
+
+      // Assert
+      expect(finallyHandlerSpy).toHaveBeenCalledTimes(1);
+      expect(finallyHandlerSpy).toHaveBeenCalledWith({
+        facilityId: mockFacilityId,
+        workPackageId: mockWorkPackageId,
+        creationCatchError: mockError,
+      });
     });
   });
 
@@ -354,6 +433,7 @@ describe('GiftFacilityService.create - error handling', () => {
         repaymentProfileService,
         riskDetailsService,
         statusService,
+        creationErrorService,
       );
 
       service.createInitialFacility = jest.fn().mockResolvedValueOnce(mockResponse201(FACILITY_RESPONSE_DATA));
@@ -367,6 +447,19 @@ describe('GiftFacilityService.create - error handling', () => {
       const expected = new Error(`Error creating a GIFT facility ${mockFacilityId}`, { cause: mockError });
 
       await expect(response).rejects.toThrow(expected);
+    });
+
+    it('should call giftFacilityCreationErrorService.finallyHandler', async () => {
+      // Act
+      await expect(service.create(mockPayload, mockFacilityId)).rejects.toThrow();
+
+      // Assert
+      expect(finallyHandlerSpy).toHaveBeenCalledTimes(1);
+      expect(finallyHandlerSpy).toHaveBeenCalledWith({
+        facilityId: mockFacilityId,
+        workPackageId: mockWorkPackageId,
+        creationCatchError: mockError,
+      });
     });
   });
 
@@ -389,6 +482,7 @@ describe('GiftFacilityService.create - error handling', () => {
         repaymentProfileService,
         riskDetailsService,
         statusService,
+        creationErrorService,
       );
 
       service.createInitialFacility = jest.fn().mockResolvedValueOnce(mockResponse201(FACILITY_RESPONSE_DATA));
@@ -402,6 +496,19 @@ describe('GiftFacilityService.create - error handling', () => {
       const expected = new Error(`Error creating a GIFT facility ${mockFacilityId}`, { cause: mockError });
 
       await expect(response).rejects.toThrow(expected);
+    });
+
+    it('should call giftFacilityCreationErrorService.finallyHandler', async () => {
+      // Act
+      await expect(service.create(mockPayload, mockFacilityId)).rejects.toThrow();
+
+      // Assert
+      expect(finallyHandlerSpy).toHaveBeenCalledTimes(1);
+      expect(finallyHandlerSpy).toHaveBeenCalledWith({
+        facilityId: mockFacilityId,
+        workPackageId: mockWorkPackageId,
+        creationCatchError: mockError,
+      });
     });
   });
 });

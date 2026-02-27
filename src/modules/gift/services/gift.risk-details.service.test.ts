@@ -79,7 +79,7 @@ describe('GiftRiskDetailsService', () => {
         service = new GiftRiskDetailsService(giftHttpService, logger);
       });
 
-      it('should thrown an error', async () => {
+      it('should throw an error', async () => {
         // Act
         const promise = service.createOne(RISK_DETAILS, mockFacilityId, mockWorkPackageId);
 
