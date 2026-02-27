@@ -239,7 +239,6 @@ export class GiftFacilityService {
 
         const cause = {
           status: approvedStatusResponse?.status,
-          data: approvedStatusResponse?.data,
         };
 
         throw new Error(`Error creating a GIFT facility - approved status update failed ${facilityId}`, { cause });

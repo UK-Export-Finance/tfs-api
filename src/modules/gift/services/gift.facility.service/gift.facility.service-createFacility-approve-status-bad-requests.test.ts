@@ -1,7 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
-import { EXAMPLES, GIFT } from '@ukef/constants';
+import { EXAMPLES } from '@ukef/constants';
 import { mockFacilityCreationErrorService } from '@ukef-test/gift/mock-services';
-import { mockAxiosError, mockResponse200, mockResponse201 } from '@ukef-test/http-response';
+import { mockAxiosError, mockResponse200, mockResponse201, mockResponse500 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
 import {
@@ -37,8 +37,6 @@ const {
     WORK_PACKAGE_APPROVE_RESPONSE_DATA,
   },
 } = EXAMPLES;
-
-const { API_RESPONSE_MESSAGES } = GIFT;
 
 const mockCreateInitialFacilityResponse = mockResponse201(FACILITY_RESPONSE_DATA);
 
@@ -155,10 +153,14 @@ describe('GiftFacilityService.create - error handling', () => {
     jest.resetAllMocks();
   });
 
-  describe(`when giftStatusService.approved returns ${HttpStatus.BAD_REQUEST}`, () => {
+  describe(`when giftStatusService.approved returns a status that is not ${HttpStatus.OK}`, () => {
+    const mockResponse = mockAxiosError({
+      status: HttpStatus.BAD_REQUEST,
+    });
+
     beforeEach(() => {
       // Arrange
-      approvedStatusSpy = jest.fn().mockResolvedValueOnce(mockAxiosError({ status: HttpStatus.BAD_REQUEST }));
+      approvedStatusSpy = jest.fn().mockResolvedValueOnce(mockResponse);
 
       statusService.approved = approvedStatusSpy;
 
@@ -180,27 +182,28 @@ describe('GiftFacilityService.create - error handling', () => {
       service.createInitialFacility = createInitialFacilitySpy;
     });
 
-    it('should return an object with the giftStatusService.approved data and status', async () => {
+    it('should throw an error', async () => {
       // Act
-      const response = await service.create(mockPayload, mockFacilityId);
+      const response = service.create(mockPayload, mockFacilityId);
 
       // Assert
-      const expected = {
-        status: HttpStatus.BAD_REQUEST,
-        data: {
-          statusCode: HttpStatus.BAD_REQUEST,
-          message: API_RESPONSE_MESSAGES.APPROVED_STATUS_ERROR_MESSAGE,
-        },
+      const expectedCause = {
+        cause: { status: HttpStatus.BAD_REQUEST },
+        message: `Error creating a GIFT facility - approved status update failed ${mockFacilityId}`,
       };
 
-      expect(response).toEqual(expected);
+      const expected = new Error(`Error creating a GIFT facility ${mockFacilityId}`, { cause: expectedCause });
+
+      await expect(response).rejects.toThrow(expected);
     });
   });
 
-  describe(`when giftStatusService.approved returns ${HttpStatus.INTERNAL_SERVER_ERROR}`, () => {
+  describe('when giftStatusService.approved throws an error', () => {
+    const mockError = mockResponse500();
+
     beforeEach(() => {
       // Arrange
-      approvedStatusSpy = jest.fn().mockResolvedValueOnce(mockAxiosError({ status: HttpStatus.INTERNAL_SERVER_ERROR }));
+      approvedStatusSpy = jest.fn().mockRejectedValueOnce(mockError);
 
       statusService.approved = approvedStatusSpy;
 
@@ -222,20 +225,18 @@ describe('GiftFacilityService.create - error handling', () => {
       service.createInitialFacility = createInitialFacilitySpy;
     });
 
-    it('should return an object with the giftStatusService.approved data and status', async () => {
+    it('should throw an error', async () => {
       // Act
-      const response = await service.create(mockPayload, mockFacilityId);
+      const response = service.create(mockPayload, mockFacilityId);
 
       // Assert
-      const expected = {
+      const expectedCause = {
         status: HttpStatus.INTERNAL_SERVER_ERROR,
-        data: {
-          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-          message: API_RESPONSE_MESSAGES.APPROVED_STATUS_ERROR_MESSAGE,
-        },
       };
 
-      expect(response).toEqual(expected);
+      const expected = new Error(`Error creating a GIFT facility ${mockFacilityId}`, { cause: expectedCause });
+
+      await expect(response).rejects.toThrow(expected);
     });
   });
 });
