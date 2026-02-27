@@ -54,7 +54,7 @@ export class GiftFacilityCreationErrorService {
       } catch (deletionError) {
         this.logger.error('Error creating a GIFT facility %s and deleting GIFT work package %s', facilityId, workPackageId);
 
-        const populatedCause = `Creation error: ${creationCatchError.toString()} \n Work package deletion error: ${deletionError}`;
+        const populatedCause = `Creation error: ${JSON.stringify(creationCatchError)} \n Work package deletion error: ${deletionError}`;
 
         throw new Error(`Error creating a GIFT facility ${facilityId} and deleting work package ${workPackageId}`, { cause: populatedCause });
       }

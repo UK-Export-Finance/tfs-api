@@ -151,7 +151,7 @@ describe('GiftFacilityCreationErrorService', () => {
         });
 
         // Assert
-        const expectedCause = `Creation error: ${mockCreationCatchError} \n Work package deletion error: ${mockResponse500()}`;
+        const expectedCause = `Creation error: ${JSON.stringify(mockCreationCatchError)} \n Work package deletion error: ${mockResponse500()}`;
 
         const expected = new Error(`Error creating a GIFT facility ${mockFacilityId} and deleting work package ${mockWorkPackageId}`, {
           cause: expectedCause,
