@@ -119,9 +119,9 @@ describe('GiftWorkPackageService', () => {
 
       beforeEach(() => {
         // Arrange
-        mockHttpServicePost = jest.fn().mockRejectedValueOnce(mockError);
+        mockHttpServiceDelete = jest.fn().mockRejectedValueOnce(mockError);
 
-        giftHttpService.delete = mockHttpServicePost;
+        giftHttpService.delete = mockHttpServiceDelete;
 
         service = new GiftWorkPackageService(giftHttpService, logger);
       });

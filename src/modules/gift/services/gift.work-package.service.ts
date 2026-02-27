@@ -43,7 +43,7 @@ export class GiftWorkPackageService {
 
   /**
    * Delete a GIFT work package
-   * @param {string} workPackageId: Work package ID
+   * @param {number} workPackageId: Work package ID
    * @param {string} facilityId: Facility ID - for logging, debugging purposes only.
    * @returns {Promise<AxiosResponse>}
    * @throws {Error}
