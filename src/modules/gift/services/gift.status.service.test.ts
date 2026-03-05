@@ -76,7 +76,9 @@ describe('GiftStatusService', () => {
         const promise = service.approved(mockFacilityId, mockWorkPackageId);
 
         // Assert
-        const expected = new Error(`Error updating facility work package status to approved for facility ${mockFacilityId}`, { cause: mockError });
+        const expected = new Error(`Error updating facility work package ${mockWorkPackageId} status to approved for facility ${mockFacilityId}`, {
+          cause: mockError,
+        });
 
         await expect(promise).rejects.toThrow(expected);
       });

@@ -69,7 +69,8 @@ export const mockResponses = {
     },
   },
   facilityAmendment: {
-    data: { anAmendedFacility: true },
+    anAmendedFacility: true,
+    isApproved: true,
   },
   feeTypes: GIFT_EXAMPLES.FEE_TYPES_RESPONSE_DATA,
   fixedFee: { data: { aFixedFee: true } },

@@ -5,6 +5,7 @@ import { PinoLogger } from 'nestjs-pino';
 
 import { CreateGiftFacilityAmendmentRequestDto, GiftWorkPackageResponseDto } from '../../dto';
 import { GiftHttpService } from '../gift.http.service';
+import { GiftStatusService } from '../gift.status.service';
 import { GiftWorkPackageService } from '../gift.work-package.service';
 
 const { PATH } = GIFT;
@@ -24,16 +25,19 @@ export class GiftFacilityAmendmentService {
     private readonly giftHttpService: GiftHttpService,
     private readonly logger: PinoLogger,
     private readonly giftWorkPackageService: GiftWorkPackageService,
+    private readonly giftStatusService: GiftStatusService,
   ) {
     this.giftHttpService = giftHttpService;
     this.giftWorkPackageService = giftWorkPackageService;
+    this.giftStatusService = giftStatusService;
   }
 
   /**
    * Create a GIFT facility amendment
    * 1) Create a new GIFT work package
    * 2) Create a new GIFT "configuration event" for the amendment.
-   * As a result, GIFT will have a new work package in the facility, with an amendment in the facility's work package.
+   * 3) Approve the GIFT work package.
+   * As a result, GIFT will have a new, approved work package in the facility, with an amendment in the work package.
    *
    * If there is an error creating the amendment, the previous created work package will be deleted.
    * @param {string} facilityId: Facility ID
@@ -83,7 +87,7 @@ export class GiftFacilityAmendmentService {
          * Additionally, there is no need to manually handle any deletion response error - only 1x status is acceptable (GIFT_API_ACCEPTABLE_DELETE_STATUSES).
          * If that status isn't returned, an error will be thrown, caught in the catch block, and logged accordingly.
          */
-        this.logger.info('Deleting work package %s', workPackageId);
+        this.logger.info('Deleting work package %s for facility %s', workPackageId, facilityId);
 
         await this.giftHttpService.delete<GiftWorkPackageResponseDto>({
           path: `${PATH.WORK_PACKAGE}/${workPackageId}`,
@@ -95,12 +99,22 @@ export class GiftFacilityAmendmentService {
         };
       }
 
-      // TODO: GIFT-20330 - auto approve the work package
+      const approvalResponse = await this.giftStatusService.approved(facilityId, workPackageId);
+
+      if (approvalResponse.status !== HttpStatus.OK) {
+        this.logger.error('Error approving work package %s for facility %s amendment %s', workPackageId, facilityId, amendmentType);
+
+        throw new Error(`Error approving work package ${workPackageId} for facility ${facilityId} amendment ${amendmentType}`, { cause: approvalResponse });
+      }
+
       // TODO: GIFT-20331 - validation handling
 
       const returnResponse = {
         status: HttpStatus.CREATED,
-        data: amendmentResponse.data,
+        data: {
+          ...amendmentResponse.data,
+          isApproved: true,
+        },
       };
 
       return returnResponse;

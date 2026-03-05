@@ -20,6 +20,7 @@ export const GIFT = {
   API_RESPONSE_TYPES: {
     ERROR: 'api-error-response',
   },
+  CONSUMER,
   COUNTERPARTY_ROLE_CODES: {
     EXPORTER: 'CRT001',
     GUARANTOR: 'CRT013',
@@ -61,6 +62,11 @@ export const GIFT = {
     AMEND_FACILITY_INCREASE_AMOUNT: 'AmendFacility_IncreaseAmount',
     AMEND_FACILITY_DECREASE_AMOUNT: 'AmendFacility_DecreaseAmount',
     AMEND_FACILITY_REPLACE_EXPIRY_DATE: 'AmendFacility_ReplaceExpiryDate',
+  },
+  FACILITY_CATEGORIES: {
+    BOND_STAND_ALONE: 'BOND: STAND ALONE',
+    BOND_SUPPLEMENTAL_TO_CASH: 'BOND: SUPPLEMENTAL TO CASH',
+    BOND_SUPPLEMENTAL_TO_CREDIT: 'BOND: SUPPLEMENTAL TO CREDIT',
   },
   FEE_TYPE_CODES: {
     BEX: 'BEX',
@@ -108,11 +114,6 @@ export const GIFT = {
     SUPPORTED: '/supported',
     WORK_PACKAGE: '/work-package',
   },
-  FACILITY_CATEGORIES: {
-    BOND_STAND_ALONE: 'BOND: STAND ALONE',
-    BOND_SUPPLEMENTAL_TO_CASH: 'BOND: SUPPLEMENTAL TO CASH',
-    BOND_SUPPLEMENTAL_TO_CREDIT: 'BOND: SUPPLEMENTAL TO CREDIT',
-  },
   PRODUCT_TYPE_CODES: {
     BIP: 'PRT001',
     EXIP: 'PRT002',
@@ -125,6 +126,5 @@ export const GIFT = {
     BSS: 'Bond Support Scheme (BSS)',
     GEF: 'General Export Facility (GEF)',
   },
-  CONSUMER,
   VALIDATION,
 };
