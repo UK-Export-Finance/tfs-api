@@ -104,7 +104,12 @@ export class GiftFacilityAmendmentService {
       if (approvalResponse.status !== HttpStatus.OK) {
         this.logger.error('Error approving work package %s for facility %s amendment %s', workPackageId, facilityId, amendmentType);
 
-        throw new Error(`Error approving work package ${workPackageId} for facility ${facilityId} amendment ${amendmentType}`, { cause: approvalResponse });
+        throw new Error(`Error approving work package ${workPackageId} for facility ${facilityId} amendment ${amendmentType}`, {
+          cause: {
+            data: approvalResponse.data,
+            status: approvalResponse.status,
+          },
+        });
       }
 
       // TODO: GIFT-20331 - validation handling

@@ -29,7 +29,7 @@ export class GiftStatusService {
    */
   async approved(facilityId: string, workPackageId: number): Promise<AxiosResponse> {
     try {
-      this.logger.info('Updating facility work package %s status to approved for facility %s work package %s', workPackageId, facilityId, workPackageId);
+      this.logger.info('Updating facility work package %s status to approved for facility %s', workPackageId, facilityId, workPackageId);
 
       const response = await this.giftHttpService.post({
         path: `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.APPROVE}`,
