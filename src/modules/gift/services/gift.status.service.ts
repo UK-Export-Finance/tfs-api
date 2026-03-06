@@ -29,7 +29,7 @@ export class GiftStatusService {
    */
   async approved(facilityId: string, workPackageId: number): Promise<AxiosResponse> {
     try {
-      this.logger.info('Updating facility work package status to approved for facility %s', facilityId);
+      this.logger.info('Updating facility work package %s status to approved for facility %s', workPackageId, facilityId, workPackageId);
 
       const response = await this.giftHttpService.post({
         path: `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.APPROVE}`,
@@ -37,9 +37,9 @@ export class GiftStatusService {
 
       return response;
     } catch (error) {
-      this.logger.error('Error updating facility work package status to approved for facility %s %o', facilityId, error);
+      this.logger.error('Error updating facility work package %s status to approved for facility %s %o', workPackageId, facilityId, error);
 
-      throw new Error(`Error updating facility work package status to approved for facility ${facilityId}`, { cause: error });
+      throw new Error(`Error updating facility work package ${workPackageId} status to approved for facility ${facilityId}`, { cause: error });
     }
   }
 }

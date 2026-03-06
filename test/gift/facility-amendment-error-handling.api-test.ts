@@ -5,7 +5,7 @@ import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import nock from 'nock';
 
-import { apimFacilityAmendmentUrl, facilityAmendmentUrl, facilityWorkPackageUrl, mockResponses, workPackageUrl } from './test-helpers';
+import { apimFacilityAmendmentUrl, approveStatusUrl, facilityAmendmentUrl, facilityWorkPackageUrl, mockResponses, workPackageUrl } from './test-helpers';
 
 const { GIFT_API_URL } = ENVIRONMENT_VARIABLES;
 
@@ -107,6 +107,103 @@ describe('POST /gift/facility/:facilityId/amendment - error handling', () => {
       it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
         // Arrange
         nock(GIFT_API_URL).persist().post(facilityWorkPackageUrl).reply(HttpStatus.INTERNAL_SERVER_ERROR, mockResponses.iAmATeapot);
+
+        // Act
+        const { status, body } = await api.post(apimFacilityAmendmentUrl, GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD);
+
+        // Assert
+        expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
+
+        const expected = mockResponses.internalServerError;
+
+        expect(body).toStrictEqual(expected);
+      });
+    });
+  });
+
+  describe('GIFT "approve work package status" endpoint', () => {
+    describe(`when a ${HttpStatus.BAD_REQUEST} response is returned`, () => {
+      it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
+        // Arrange
+        nock(GIFT_API_URL).persist().post(facilityWorkPackageUrl).reply(HttpStatus.CREATED, mockResponses.workPackageCreation);
+
+        nock(GIFT_API_URL).persist().post(approveStatusUrl).reply(HttpStatus.BAD_REQUEST, mockResponses.badRequest);
+
+        // Act
+        const { status, body } = await api.post(apimFacilityAmendmentUrl, GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD);
+
+        // Assert
+        expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
+
+        const expected = mockResponses.internalServerError;
+
+        expect(body).toStrictEqual(expected);
+      });
+    });
+
+    describe(`when a ${HttpStatus.UNAUTHORIZED} response is returned`, () => {
+      it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
+        // Arrange
+        nock(GIFT_API_URL).persist().post(facilityWorkPackageUrl).reply(HttpStatus.CREATED, mockResponses.workPackageCreation);
+
+        nock(GIFT_API_URL).persist().post(approveStatusUrl).reply(HttpStatus.UNAUTHORIZED, mockResponses.unauthorized);
+
+        // Act
+        const { status, body } = await api.post(apimFacilityAmendmentUrl, GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD);
+
+        // Assert
+        expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
+
+        const expected = mockResponses.internalServerError;
+
+        expect(body).toStrictEqual(expected);
+      });
+    });
+
+    describe(`when a ${HttpStatus.FORBIDDEN} response is returned`, () => {
+      it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
+        // Arrange
+        nock(GIFT_API_URL).persist().post(facilityWorkPackageUrl).reply(HttpStatus.CREATED, mockResponses.workPackageCreation);
+
+        nock(GIFT_API_URL).persist().post(approveStatusUrl).reply(HttpStatus.FORBIDDEN, mockResponses.forbidden);
+
+        // Act
+        const { status, body } = await api.post(apimFacilityAmendmentUrl, GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD);
+
+        // Assert
+        expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
+
+        const expected = mockResponses.internalServerError;
+
+        expect(body).toStrictEqual(expected);
+      });
+    });
+
+    describe(`when a ${HttpStatus.INTERNAL_SERVER_ERROR} response is returned`, () => {
+      it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
+        // Arrange
+        nock(GIFT_API_URL).persist().post(facilityWorkPackageUrl).reply(HttpStatus.CREATED, mockResponses.workPackageCreation);
+
+        nock(GIFT_API_URL).persist().post(approveStatusUrl).reply(HttpStatus.INTERNAL_SERVER_ERROR, mockResponses.internalServerError);
+
+        // Act
+        const { status, body } = await api.post(apimFacilityAmendmentUrl, GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD);
+
+        // Assert
+        expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
+
+        const expected = mockResponses.internalServerError;
+
+        expect(body).toStrictEqual(expected);
+      });
+    });
+
+    describe('when an otherwise unacceptable response is returned', () => {
+      it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
+        // Arrange
+        nock(GIFT_API_URL).persist().post(facilityWorkPackageUrl).reply(HttpStatus.CREATED, mockResponses.workPackageCreation);
+
+        nock(GIFT_API_URL).persist().post(approveStatusUrl).reply(HttpStatus.INTERNAL_SERVER_ERROR, mockResponses.iAmATeapot);
 
         // Act
         const { status, body } = await api.post(apimFacilityAmendmentUrl, GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD);

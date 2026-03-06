@@ -1,9 +1,10 @@
 import { HttpStatus } from '@nestjs/common';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { mockWorkPackageId } from '@ukef-test/gift/test-helpers';
-import { mockResponse201, mockResponse204 } from '@ukef-test/http-response';
+import { mockResponse200, mockResponse201, mockResponse204 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
+import { GiftStatusService } from '../gift.status.service';
 import { GiftWorkPackageService } from '../gift.work-package.service';
 import { GiftFacilityAmendmentService } from '.';
 
@@ -22,7 +23,9 @@ describe('GiftFacilityAmendmentService', () => {
   let mockHttpServicePost: jest.Mock;
   let mockHttpServiceDelete: jest.Mock;
   let workPackageService: GiftWorkPackageService;
+  let statusService: GiftStatusService;
   let mockWorkPackageServiceCreate: jest.Mock;
+  let mockStatusServiceApproved: jest.Mock;
 
   let service: GiftFacilityAmendmentService;
 
@@ -31,19 +34,22 @@ describe('GiftFacilityAmendmentService', () => {
   beforeEach(() => {
     // Arrange
     workPackageService = new GiftWorkPackageService(giftHttpService, logger);
+    statusService = new GiftStatusService(giftHttpService, logger);
 
     mockWorkPackageServiceCreate = jest.fn().mockResolvedValueOnce(mockWorkPackageServiceCreateResponse);
     mockHttpServicePost = jest.fn().mockResolvedValueOnce(mockHttpPostResponse);
     mockHttpServiceDelete = jest.fn().mockResolvedValueOnce(mockResponse204());
+    mockStatusServiceApproved = jest.fn().mockResolvedValueOnce(mockResponse200());
 
     workPackageService.create = mockWorkPackageServiceCreate;
+    statusService.approved = mockStatusServiceApproved;
 
     giftHttpService = {
       post: mockHttpServicePost,
       delete: mockHttpServiceDelete,
     };
 
-    service = new GiftFacilityAmendmentService(giftHttpService, logger, workPackageService);
+    service = new GiftFacilityAmendmentService(giftHttpService, logger, workPackageService, statusService);
   });
 
   afterAll(() => {
@@ -73,12 +79,14 @@ describe('GiftFacilityAmendmentService', () => {
     });
   });
 
-  it('should NOT call giftHttpService.delete', async () => {
+  it('should call giftStatusService.approved', async () => {
     // Act
     await service.create(mockFacilityId, mockPayload);
 
     // Assert
-    expect(mockHttpServiceDelete).not.toHaveBeenCalled();
+    expect(mockStatusServiceApproved).toHaveBeenCalledTimes(1);
+
+    expect(mockStatusServiceApproved).toHaveBeenCalledWith(mockFacilityId, mockWorkPackageId);
   });
 
   describe('when all calls are successful', () => {
@@ -89,7 +97,10 @@ describe('GiftFacilityAmendmentService', () => {
       // Assert
       const expected = {
         status: HttpStatus.CREATED,
-        data: mockHttpPostResponse.data,
+        data: {
+          ...mockHttpPostResponse.data,
+          isApproved: true,
+        },
       };
 
       expect(response).toEqual(expected);

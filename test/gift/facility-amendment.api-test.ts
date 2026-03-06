@@ -6,7 +6,7 @@ import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import nock from 'nock';
 
-import { apimFacilityAmendmentUrl, facilityAmendmentUrl, facilityWorkPackageUrl, mockResponses } from './test-helpers';
+import { apimFacilityAmendmentUrl, approveStatusUrl, facilityAmendmentUrl, facilityWorkPackageUrl, mockResponses } from './test-helpers';
 
 const { GIFT_API_URL } = ENVIRONMENT_VARIABLES;
 
@@ -45,6 +45,8 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
     nock(GIFT_API_URL).persist().post(facilityAmendmentUrl(AMEND_FACILITY_DECREASE_AMOUNT)).reply(HttpStatus.CREATED, mockResponses.facilityAmendment);
 
     nock(GIFT_API_URL).persist().post(facilityAmendmentUrl(AMEND_FACILITY_REPLACE_EXPIRY_DATE)).reply(HttpStatus.CREATED, mockResponses.facilityAmendment);
+
+    nock(GIFT_API_URL).persist().post(approveStatusUrl).reply(HttpStatus.OK, mockResponses.approveStatus);
   });
 
   describe(`${AMEND_FACILITY_INCREASE_AMOUNT}`, () => {

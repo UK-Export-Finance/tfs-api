@@ -1,15 +1,21 @@
 import { HttpStatus } from '@nestjs/common';
 import { EXAMPLES, GIFT } from '@ukef/constants';
-import { mockResponse201, mockResponse204, mockResponse500 } from '@ukef-test/http-response';
+import { mockResponse200, mockResponse201, mockResponse204, mockResponse500 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
+import { GiftStatusService } from '../gift.status.service';
 import { GiftWorkPackageService } from '../gift.work-package.service';
 import { GiftFacilityAmendmentService } from '.';
 
 const { PATH } = GIFT;
 
 const {
-  GIFT: { WORK_PACKAGE_CREATION_RESPONSE_DATA, FACILITY_ID: mockFacilityId, FACILITY_AMENDMENT_REQUEST_PAYLOAD: mockPayload },
+  GIFT: {
+    WORK_PACKAGE_APPROVE_RESPONSE_DATA,
+    WORK_PACKAGE_CREATION_RESPONSE_DATA,
+    FACILITY_ID: mockFacilityId,
+    FACILITY_AMENDMENT_REQUEST_PAYLOAD: mockPayload,
+  },
 } = EXAMPLES;
 
 const mockWorkPackageServiceCreateResponse = mockResponse201(WORK_PACKAGE_CREATION_RESPONSE_DATA);
@@ -20,7 +26,9 @@ describe('GiftFacilityAmendmentService - error handling', () => {
   let mockHttpServicePost: jest.Mock;
   let mockHttpServiceDelete: jest.Mock;
   let workPackageService: GiftWorkPackageService;
+  let statusService: GiftStatusService;
   let mockWorkPackageServiceCreate: jest.Mock;
+  let mockStatusServiceApproved: jest.Mock;
 
   let service: GiftFacilityAmendmentService;
 
@@ -29,6 +37,12 @@ describe('GiftFacilityAmendmentService - error handling', () => {
   beforeEach(() => {
     // Arrange
     workPackageService = new GiftWorkPackageService(giftHttpService, logger);
+
+    mockStatusServiceApproved = jest.fn().mockResolvedValueOnce(mockResponse200());
+
+    statusService = new GiftStatusService(giftHttpService, logger);
+
+    statusService.approved = mockStatusServiceApproved;
   });
 
   afterAll(() => {
@@ -64,7 +78,7 @@ describe('GiftFacilityAmendmentService - error handling', () => {
 
         workPackageService.create = mockWorkPackageServiceCreate;
 
-        service = new GiftFacilityAmendmentService(giftHttpService, logger, workPackageService);
+        service = new GiftFacilityAmendmentService(giftHttpService, logger, workPackageService, statusService);
 
         // Act
         const response = await service.create(mockFacilityId, mockPayload);
@@ -88,7 +102,7 @@ describe('GiftFacilityAmendmentService - error handling', () => {
 
         workPackageService.create = mockWorkPackageServiceCreate;
 
-        service = new GiftFacilityAmendmentService(giftHttpService, logger, workPackageService);
+        service = new GiftFacilityAmendmentService(giftHttpService, logger, workPackageService, statusService);
 
         // Act
         const response = service.create(mockFacilityId, mockPayload);
@@ -136,7 +150,7 @@ describe('GiftFacilityAmendmentService - error handling', () => {
             post: mockHttpServicePost,
           };
 
-          service = new GiftFacilityAmendmentService(giftHttpService, logger, workPackageService);
+          service = new GiftFacilityAmendmentService(giftHttpService, logger, workPackageService, statusService);
         });
 
         it(`should return a response with the received status and data - %s`, async () => {
@@ -180,7 +194,7 @@ describe('GiftFacilityAmendmentService - error handling', () => {
               post: mockHttpServicePost,
             };
 
-            service = new GiftFacilityAmendmentService(giftHttpService, logger, workPackageService);
+            service = new GiftFacilityAmendmentService(giftHttpService, logger, workPackageService, statusService);
 
             // Act
             const response = service.create(mockFacilityId, mockPayload);
@@ -205,7 +219,86 @@ describe('GiftFacilityAmendmentService - error handling', () => {
           post: mockHttpServicePost,
         };
 
-        service = new GiftFacilityAmendmentService(giftHttpService, logger, workPackageService);
+        service = new GiftFacilityAmendmentService(giftHttpService, logger, workPackageService, statusService);
+
+        // Act
+        const response = service.create(mockFacilityId, mockPayload);
+
+        // Assert
+        const expected = new Error(`Error creating amendment ${mockPayload.amendmentType} for facility ${mockFacilityId}`, { cause: mockError });
+
+        await expect(response).rejects.toThrow(expected);
+      });
+    });
+  });
+
+  describe('giftStatusService.approved', () => {
+    beforeEach(() => {
+      mockWorkPackageServiceCreate = jest.fn().mockResolvedValueOnce(mockWorkPackageServiceCreateResponse);
+
+      mockHttpServicePost = jest.fn().mockResolvedValueOnce(mockResponse201());
+
+      giftHttpService = {
+        post: mockHttpServicePost,
+      };
+
+      workPackageService.create = mockWorkPackageServiceCreate;
+
+      service = new GiftFacilityAmendmentService(giftHttpService, logger, workPackageService, statusService);
+    });
+
+    describe(`when giftStatusService.approved does NOT return a ${HttpStatus.OK} status`, () => {
+      describe.each([
+        HttpStatus.ACCEPTED,
+        HttpStatus.BAD_GATEWAY,
+        HttpStatus.BAD_REQUEST,
+        HttpStatus.CONFLICT,
+        HttpStatus.CREATED,
+        HttpStatus.FORBIDDEN,
+        HttpStatus.I_AM_A_TEAPOT,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        HttpStatus.NOT_FOUND,
+      ])('with status %s', (status) => {
+        const mockResponseData = WORK_PACKAGE_APPROVE_RESPONSE_DATA;
+
+        beforeEach(() => {
+          // Arrange
+          mockStatusServiceApproved = jest.fn().mockResolvedValueOnce({
+            status,
+            data: mockResponseData,
+          });
+
+          statusService.approved = mockStatusServiceApproved;
+
+          service = new GiftFacilityAmendmentService(giftHttpService, logger, workPackageService, statusService);
+        });
+
+        it('should throw an error', async () => {
+          // Act & Assert
+          await expect(service.create(mockFacilityId, mockPayload)).rejects.toMatchObject({
+            message: `Error creating amendment ${mockPayload.amendmentType} for facility ${mockFacilityId}`,
+            cause: {
+              message: `Error approving work package ${WORK_PACKAGE_CREATION_RESPONSE_DATA.id} for facility ${mockFacilityId} amendment ${mockPayload.amendmentType}`,
+              cause: {
+                status,
+                data: mockResponseData,
+              },
+            },
+          });
+        });
+      });
+    });
+
+    describe('when giftStatusService.approved throws an error', () => {
+      it('should throw an error', async () => {
+        // Arrange
+        const mockError = mockResponse500();
+
+        mockStatusServiceApproved = jest.fn().mockRejectedValueOnce(mockError);
+
+        statusService.approved = mockStatusServiceApproved;
+
+        service = new GiftFacilityAmendmentService(giftHttpService, logger, workPackageService, statusService);
 
         // Act
         const response = service.create(mockFacilityId, mockPayload);
