@@ -86,6 +86,61 @@ describe('GiftRiskDetailsService', () => {
       });
     });
 
+    describe('when facilityCreditRating is NOT provided', () => {
+      it('should call giftHttpService.post with facilityCreditRating as null', async () => {
+        // Arrange
+        const mockPayload = {
+          ...RISK_DETAILS,
+          facilityCreditRating: undefined,
+          facilityCategoryCode: 'Mock facility category code',
+        };
+
+        // Act
+        await service.createOne(mockPayload, mockFacilityId, mockWorkPackageId);
+
+        // Assert
+        expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
+
+        expect(mockHttpServicePost).toHaveBeenCalledWith({
+          path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_RISK_DETAILS}`,
+          payload: {
+            ...mockPayload,
+            overrideRiskRating: INTEGRATION_DEFAULTS.OVERRIDE_RISK_RATING,
+            overrideLossGivenDefault: INTEGRATION_DEFAULTS.OVERRIDE_LOSS_GIVEN_DEFAULT,
+            riskReassessmentDate: INTEGRATION_DEFAULTS.RISK_REASSESSMENT_DATE,
+            facilityCreditRating: null,
+          },
+        });
+      });
+    });
+
+    describe('when facilityCreditRating is provided', () => {
+      it('should call giftHttpService.post with the provided facilityCreditRating', async () => {
+        // Arrange
+        const mockPayload = {
+          ...RISK_DETAILS,
+          facilityCreditRating: 'Mock facility credit rating',
+          facilityCategoryCode: 'Mock facility category code',
+        };
+
+        // Act
+        await service.createOne(mockPayload, mockFacilityId, mockWorkPackageId);
+
+        // Assert
+        expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
+
+        expect(mockHttpServicePost).toHaveBeenCalledWith({
+          path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_RISK_DETAILS}`,
+          payload: {
+            ...mockPayload,
+            overrideRiskRating: INTEGRATION_DEFAULTS.OVERRIDE_RISK_RATING,
+            overrideLossGivenDefault: INTEGRATION_DEFAULTS.OVERRIDE_LOSS_GIVEN_DEFAULT,
+            riskReassessmentDate: INTEGRATION_DEFAULTS.RISK_REASSESSMENT_DATE,
+          },
+        });
+      });
+    });
+
     describe('when giftHttpService.post is successful', () => {
       it('should return the response of giftHttpService.post', async () => {
         // Act

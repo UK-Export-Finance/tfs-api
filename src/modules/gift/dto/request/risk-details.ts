@@ -50,7 +50,7 @@ export class GiftFacilityRiskDetailsRequestDto {
   })
   facilityCategoryCode?: string;
 
-  @IsDefined()
+  @IsOptional()
   @IsString()
   @Length(VALIDATION.FACILITY_CREDIT_RATING.MIN_LENGTH, VALIDATION.FACILITY_CREDIT_RATING.MAX_LENGTH)
   @ApiProperty({
@@ -58,7 +58,7 @@ export class GiftFacilityRiskDetailsRequestDto {
     required: true,
     description: "The facility's credit rating",
   })
-  facilityCreditRating: string;
+  facilityCreditRating?: string;
 
   @IsDefined()
   @IsString()
