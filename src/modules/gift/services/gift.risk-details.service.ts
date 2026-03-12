@@ -38,6 +38,7 @@ export class GiftRiskDetailsService {
         overrideLossGivenDefault: INTEGRATION_DEFAULTS.OVERRIDE_LOSS_GIVEN_DEFAULT,
         riskReassessmentDate: INTEGRATION_DEFAULTS.RISK_REASSESSMENT_DATE,
         facilityCategoryCode: riskDetailsData.facilityCategoryCode || INTEGRATION_DEFAULTS.FACILITY_CATEGORY_CODE,
+        facilityCreditRating: riskDetailsData.facilityCreditRating || INTEGRATION_DEFAULTS.FACILITY_CREDIT_RATING,
       };
 
       const response = await this.giftHttpService.post<GiftBusinessCalendarsConventionResponseDto>({

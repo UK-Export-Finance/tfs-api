@@ -77,9 +77,6 @@ describe('POST /gift/facility - validation - risk details', () => {
           'riskDetails.dealId must be a string',
           `riskDetails.dealId must be longer than or equal to ${VALIDATION.RISK_DETAILS.DEAL_ID.MIN_LENGTH} characters`,
           'riskDetails.dealId must match /^00\\d{8}$/ regular expression',
-          'riskDetails.facilityCreditRating should not be null or undefined',
-          `riskDetails.facilityCreditRating must be longer than or equal to ${VALIDATION.RISK_DETAILS.FACILITY_CREDIT_RATING.MIN_LENGTH} characters`,
-          'riskDetails.facilityCreditRating must be a string',
           'riskDetails.riskStatus should not be null or undefined',
           `riskDetails.riskStatus must be longer than or equal to ${VALIDATION.RISK_DETAILS.RISK_STATUS.MIN_LENGTH} characters`,
           'riskDetails.riskStatus must be a string',
@@ -125,7 +122,7 @@ describe('POST /gift/facility - validation - risk details', () => {
   });
 
   describe('facilityCreditRating', () => {
-    stringValidation({
+    optionalStringValidation({
       ...baseParams,
       fieldName: 'facilityCreditRating',
       parentFieldName: 'riskDetails',

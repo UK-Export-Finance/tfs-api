@@ -40,6 +40,7 @@ export const GIFT = {
     OVERRIDE_LOSS_GIVEN_DEFAULT: null,
     RISK_REASSESSMENT_DATE: null,
     FACILITY_CATEGORY_CODE: null,
+    FACILITY_CREDIT_RATING: null,
   },
   ENTITY_NAMES: {
     BUSINESS_CALENDAR: 'Business calendar',
