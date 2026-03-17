@@ -4,7 +4,6 @@ export * from './array-of-objects-has-value';
 export * from './async-validation';
 export * from './generate-obligation-subtype-code-errors';
 export * from './get-amendment-data-dto';
-export * from './get-counterparty-urns';
 export * from './get-repayment-profile-allocation-dates';
 export * from './get-repayment-profile-names';
 export * from './has-valid-obligation-subtype-code-formats';

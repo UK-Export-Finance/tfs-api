@@ -3,7 +3,7 @@ import { EXAMPLES, GIFT } from '@ukef/constants';
 import { Type } from 'class-transformer';
 import { ArrayNotEmpty, IsArray, IsDefined, IsNotEmptyObject, IsString, ValidateNested } from 'class-validator';
 
-import { IsSupportedConsumer, UniqueCounterpartyUrns, UniqueRepaymentProfileAllocationDates, UniqueRepaymentProfileNames } from '../../custom-decorators';
+import { IsSupportedConsumer, UniqueRepaymentProfileAllocationDates, UniqueRepaymentProfileNames } from '../../custom-decorators';
 import { GiftFacilityCounterpartyRequestDto } from './counterparty';
 import { GiftFacilityOverviewRequestDto } from './facility-overview';
 import { GiftFixedFeeRequestDto } from './fixed-fee';
@@ -48,7 +48,6 @@ export class GiftFacilityCreationGenericRequestDto {
   @IsArray()
   @ArrayNotEmpty()
   @IsDefined()
-  @UniqueCounterpartyUrns()
   @Type(() => GiftFacilityCounterpartyRequestDto)
   @ValidateNested()
   counterparties: GiftFacilityCounterpartyRequestDto[];
