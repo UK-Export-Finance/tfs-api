@@ -40,7 +40,6 @@ describe('MdmService', () => {
 
     const expectedHttpServiceGetArgs: [string, object] = ['/v1/customers', { headers: {}, params: { partyUrn: partyUrnToSearch } }];
 
-    // TODO: clean up.
     it('returns the search results from sending a GET request to the MDM /v1/customers?partyUrn={partyUrn} endpoint', async () => {
       when(httpServiceGet)
         .calledWith(...expectedHttpServiceGetArgs)
