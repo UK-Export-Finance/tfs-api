@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import { AxiosResponse } from 'axios';
+import { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { catchError, lastValueFrom, Observable, ObservableInput } from 'rxjs';
 
 import { RequestHeaders } from './type/headers.type';
@@ -16,10 +16,16 @@ export class HttpClient {
   }: {
     path: string;
     requestBody: RequestBody;
-    headers: RequestHeaders;
+    headers?: RequestHeaders;
     onError: (error: Error) => ObservableInput<never>;
   }): Promise<AxiosResponse<ResponseBody, RequestBody>> {
-    return this.responseFrom({ request: this.httpService.post<ResponseBody>(path, requestBody, { headers }), onError });
+    const config: AxiosRequestConfig<RequestBody> = {};
+
+    if (headers) {
+      config.headers = headers;
+    }
+
+    return this.responseFrom({ request: this.httpService.post<ResponseBody>(path, requestBody, config), onError });
   }
 
   get<QueryParams, ResponseBody>({
@@ -30,10 +36,16 @@ export class HttpClient {
   }: {
     path: string;
     queryParams: QueryParams;
-    headers: RequestHeaders;
+    headers?: RequestHeaders;
     onError: (error: Error) => ObservableInput<never>;
   }): Promise<AxiosResponse<ResponseBody>> {
-    return this.responseFrom({ request: this.httpService.get<ResponseBody>(path, { headers, params: queryParams }), onError });
+    const config: AxiosRequestConfig = { params: queryParams };
+
+    if (headers) {
+      config.headers = headers;
+    }
+
+    return this.responseFrom({ request: this.httpService.get<ResponseBody>(path, config), onError });
   }
 
   private async responseFrom<RequestBody, ResponseBody>({

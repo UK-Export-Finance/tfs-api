@@ -32,6 +32,7 @@ describe('HttpClient', () => {
     };
 
     const expectedHttpServicePostArgs: [string, object, object] = [path, requestBody, { headers }];
+    const expectedHttpServicePostArgsWithoutHeaders: [string, object, object] = [path, requestBody, {}];
 
     const response: AxiosResponse = {
       data: {
@@ -79,6 +80,34 @@ describe('HttpClient', () => {
         });
 
         expect(onError).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('when headers are not provided', () => {
+      beforeEach(() => {
+        when(httpServicePost)
+          .calledWith(...expectedHttpServicePostArgsWithoutHeaders)
+          .mockReturnValueOnce(of(response));
+      });
+
+      it('calls HttpService.post with an empty config object', async () => {
+        await client.post({
+          path,
+          requestBody,
+          onError,
+        });
+
+        expect(httpServicePost).toHaveBeenCalledWith(...expectedHttpServicePostArgsWithoutHeaders);
+      });
+
+      it('resolves with the same response', async () => {
+        const result = await client.post({
+          path,
+          requestBody,
+          onError,
+        });
+
+        expect(result).toBe(response);
       });
     });
 

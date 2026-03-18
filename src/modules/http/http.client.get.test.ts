@@ -32,6 +32,7 @@ describe('HttpClient', () => {
     };
 
     const expectedHttpServiceGetArgs: [string, object] = [path, { headers, params: queryParams }];
+    const expectedHttpServiceGetArgsWithoutHeaders: [string, object] = [path, { params: queryParams }];
 
     const response: AxiosResponse = {
       data: {
@@ -79,6 +80,34 @@ describe('HttpClient', () => {
         });
 
         expect(onError).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('when headers are not provided', () => {
+      beforeEach(() => {
+        when(httpServiceGet)
+          .calledWith(...expectedHttpServiceGetArgsWithoutHeaders)
+          .mockReturnValueOnce(of(response));
+      });
+
+      it('calls HttpService.get without headers in config', async () => {
+        await client.get({
+          path,
+          queryParams,
+          onError,
+        });
+
+        expect(httpServiceGet).toHaveBeenCalledWith(...expectedHttpServiceGetArgsWithoutHeaders);
+      });
+
+      it('resolves with the same response', async () => {
+        const result = await client.get({
+          path,
+          queryParams,
+          onError,
+        });
+
+        expect(result).toBe(response);
       });
     });
 
