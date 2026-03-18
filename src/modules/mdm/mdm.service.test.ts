@@ -21,7 +21,7 @@ describe('MdmService', () => {
     httpServiceGet = jest.fn();
     httpService.get = httpServiceGet;
 
-    service = new MdmService(httpService, null);
+    service = new MdmService(httpService);
   });
 
   describe('findCustomersByPartyUrn', () => {
@@ -38,7 +38,7 @@ describe('MdmService', () => {
       },
     ];
 
-    const expectedHttpServiceGetArgs: [string, object] = ['/v1/customers', { headers: {}, params: { partyUrn: partyUrnToSearch } }];
+    const expectedHttpServiceGetArgs: [string, object] = ['/v1/customers', { params: { partyUrn: partyUrnToSearch } }];
 
     it('returns the search results from sending a GET request to the MDM /v1/customers?partyUrn={partyUrn} endpoint', async () => {
       when(httpServiceGet)

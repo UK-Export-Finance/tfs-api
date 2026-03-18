@@ -4,6 +4,7 @@ import { AxiosError } from 'axios';
 import { when } from 'jest-when';
 import { PinoLogger } from 'nestjs-pino';
 
+import { HttpService } from '../http/http.module';
 import { MdmException } from '../mdm/exception/mdm.exception';
 import { MdmResourceNotFoundException } from '../mdm/exception/mdm-resource-not-found.exception';
 import { PartyCustomerTypeService } from './party-customer-type.service';
@@ -20,7 +21,9 @@ describe('PartyCustomerTypeService', () => {
   let service: PartyCustomerTypeService;
 
   beforeEach(() => {
-    const mdmService = new MdmService(null);
+    const httpService = new HttpService();
+
+    const mdmService = new MdmService(httpService, null);
     findCustomersByPartyUrn = jest.fn();
     mdmService.findCustomersByPartyUrn = findCustomersByPartyUrn;
 

@@ -2,7 +2,6 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { HttpClient } from '@ukef/modules/http/http.client';
 import { AxiosError } from 'axios';
-import { PinoLogger } from 'nestjs-pino';
 import { throwError } from 'rxjs';
 
 import { MdmCustomersParams } from './dto/mdm-customers-params.dto';
@@ -13,11 +12,9 @@ import { MdmResourceNotFoundException } from './exception/mdm-resource-not-found
 @Injectable()
 export class MdmService {
   private readonly httpClient: HttpClient;
-  private readonly logger: PinoLogger;
 
-  constructor(httpService: HttpService, logger: PinoLogger) {
+  constructor(httpService: HttpService) {
     this.httpClient = new HttpClient(httpService);
-    this.logger = logger;
   }
 
   /**
