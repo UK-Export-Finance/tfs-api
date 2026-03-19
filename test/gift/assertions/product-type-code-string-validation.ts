@@ -42,10 +42,8 @@ export const productTypeCodeStringValidation = ({ initialPayload, parentFieldNam
   mockPayload[`${parentFieldName}`][`${fieldName}`] = UNSUPPORTED_PRODUCT_TYPE_CODE;
 
   /**
-   * Mock the obligation subtype response,
-   * so that obligations with an unsupported product type code are technically valid.
-   * This prevents the obligation validation errors from being returned.
-   * So that this test is specifically focus on the high level product type code.
+   * Mock the obligation subtype response to return a 404, as the product type code in the payload is not supported.
+   * This allows us to assert that the correct error message is returned when the product type code is not supported.
    */
   const mockObligationSubtypeResponse = [
     {

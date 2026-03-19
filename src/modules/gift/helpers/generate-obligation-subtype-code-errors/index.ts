@@ -38,9 +38,9 @@ export const generateObligationSubtypeCodeErrors = ({
   providedObligations.forEach((obligation: GiftObligationRequestDto, index: number) => {
     const { subtypeCode: providedSubtypeCode } = obligation;
 
-    const giftSubtypeCode = subtypes.find((subtype: ObligationSubtypeMdmResponseDto) => subtype.code === providedSubtypeCode);
+    const matchedSubtypeCode = subtypes.find((subtype: ObligationSubtypeMdmResponseDto) => subtype.code === providedSubtypeCode);
 
-    if (!giftSubtypeCode) {
+    if (!matchedSubtypeCode) {
       validationErrors.push(`obligations.${index}.subtypeCode is not supported by product type ${productTypeCode}`);
     }
   });

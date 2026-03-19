@@ -6,7 +6,7 @@ import { ObligationSubtypeMdmResponseDto } from './obligation-subtype-mdm-respon
 
 /**
  * APIM TFS "obligation subtype with product type code" response DTO.
- * This is returned from the APIM TFS MdmService, as part of mapping
+ * This is returned from the APIM TFS MdmService, as part of mapping in APIM TFS.
  */
 export class ObligationSubtypeWithProductTypeCodeResponseDto extends ObligationSubtypeMdmResponseDto {
   @IsString()

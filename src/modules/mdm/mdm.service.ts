@@ -46,7 +46,7 @@ export class MdmService {
   }
 
   /**
-   * Get all obligation subtypes with product typecodes from APIM MDM.
+   * Get all obligation subtypes with product type codes from APIM MDM.
    * @returns {Promise<ObligationSubtypeWithProductTypeCodeResponseDto[]>}
    */
   async getAllObligationSubtypesWithProductTypeCodes(): Promise<ObligationSubtypeWithProductTypeCodeResponseDto[]> {
