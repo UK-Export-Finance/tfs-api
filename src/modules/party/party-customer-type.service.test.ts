@@ -23,7 +23,7 @@ describe('PartyCustomerTypeService', () => {
   beforeEach(() => {
     const httpService = new HttpService();
 
-    const mdmService = new MdmService(httpService, null);
+    const mdmService = new MdmService(httpService);
     findCustomersByPartyUrn = jest.fn();
     mdmService.findCustomersByPartyUrn = findCustomersByPartyUrn;
 
