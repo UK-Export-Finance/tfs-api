@@ -16,18 +16,13 @@ import { GiftCounterpartyService, GiftCurrencyService, GiftFeeTypeService, GiftP
 import { GiftFacilityAsyncValidationService } from './gift.facility-async-validation.service';
 
 const {
-  GIFT: {
-    COUNTERPARTY_ROLES_RESPONSE_DATA,
-    CURRENCIES,
-    FACILITY_CREATION_PAYLOAD: mockPayload,
-    FACILITY_ID: mockFacilityId,
-    OBLIGATION_SUBTYPES_RESPONSE_DATA,
-  },
+  GIFT: { COUNTERPARTY_ROLES_RESPONSE_DATA, CURRENCIES, FACILITY_CREATION_PAYLOAD: mockPayload, FACILITY_ID: mockFacilityId },
+  MDM: { OBLIGATION_SUBTYPES_RESPONSE_DATA },
 } = EXAMPLES;
 
 const mockCounterpartyRoleCodes = [COUNTERPARTY_ROLES_RESPONSE_DATA.counterpartyRoles[0].code];
 
-const mockObligationSubtypes = OBLIGATION_SUBTYPES_RESPONSE_DATA.obligationSubtypes;
+const mockObligationSubtypes = OBLIGATION_SUBTYPES_RESPONSE_DATA;
 
 const mockError = mockResponse500();
 

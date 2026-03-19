@@ -79,30 +79,6 @@ export const GIFT = {
     CMF: 'COMMITMENT FEES',
     PLA: 'PREMIUM LESS ADMIN',
   },
-  // TODO: extract. Not GIFT constants any more.
-  OBLIGATION_SUBTYPES: {
-    OST001: {
-      type: 'Obligation Sub-Type',
-      typeCode: 'obligationSubtype',
-      code: 'OST001',
-      description: 'BIP Advance Payment Bond',
-      isActive: true,
-    },
-    OST009: {
-      type: 'Obligation Sub-Type',
-      typeCode: 'obligationSubtype',
-      code: 'OST009',
-      description: 'EXIP Cash',
-      isActive: true,
-    },
-    OST012: {
-      type: 'Obligation Sub-Type',
-      typeCode: 'obligationSubtype',
-      code: 'OST012',
-      description: 'BSS Advance Payment Guarantee',
-      isActive: true,
-    },
-  },
   PATH: {
     AMENDMENT: '/amendment',
     APPROVE: '/approve',

@@ -1,6 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 import { GIFT } from '@ukef/constants';
 import { GIFT_EXAMPLES } from '@ukef/constants/examples/gift.examples.constant';
+import { MDM_EXAMPLES } from '@ukef/constants/examples/mdm.examples.constant';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
 import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
@@ -32,7 +33,7 @@ import {
 const { GIFT_API_URL } = ENVIRONMENT_VARIABLES;
 const { APIM_MDM_KEY, APIM_MDM_URL, APIM_MDM_VALUE } = ENVIRONMENT_VARIABLES;
 
-const { OBLIGATION_SUBTYPES, PRODUCT_TYPE_CODES, PRODUCT_TYPE_NAMES } = GIFT;
+const { PRODUCT_TYPE_CODES, PRODUCT_TYPE_NAMES } = GIFT;
 
 const { FACILITY_CREATION_PAYLOAD: initPayload } = GIFT_EXAMPLES;
 
@@ -134,7 +135,7 @@ describe('POST /gift/facility', () => {
           obligations: [
             {
               ...initPayload.obligations[0],
-              subtypeCode: OBLIGATION_SUBTYPES.OST001.code,
+              subtypeCode: MDM_EXAMPLES.OBLIGATION_SUBTYPES.OST001.code,
             },
           ],
         };
@@ -161,7 +162,7 @@ describe('POST /gift/facility', () => {
           obligations: [
             {
               ...initPayload.obligations[0],
-              subtypeCode: OBLIGATION_SUBTYPES.OST009.code,
+              subtypeCode: MDM_EXAMPLES.OBLIGATION_SUBTYPES.OST009.code,
             },
           ],
         };
@@ -188,7 +189,7 @@ describe('POST /gift/facility', () => {
           obligations: [
             {
               ...initPayload.obligations[0],
-              subtypeCode: OBLIGATION_SUBTYPES.OST012.code,
+              subtypeCode: MDM_EXAMPLES.OBLIGATION_SUBTYPES.OST012.code,
             },
           ],
         };

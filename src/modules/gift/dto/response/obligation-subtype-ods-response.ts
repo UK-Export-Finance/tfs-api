@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString } from 'class-validator';
 
-import { GIFT } from '../../../../constants/gift/gift.constant';
+import { MDM_EXAMPLES } from '../../../../constants/examples/mdm.examples.constant';
 
-const { OBLIGATION_SUBTYPES } = GIFT;
+const { OBLIGATION_SUBTYPES } = MDM_EXAMPLES;
 
 /**
  * GIFT "obligation subtype" response DTO.

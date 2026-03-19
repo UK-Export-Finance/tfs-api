@@ -10,6 +10,7 @@ import { Chance } from 'chance';
 import { SUPPORTED_CURRENCIES } from '../currencies.constant';
 import { CONSUMER } from '../gift/consumer.constant';
 import { AMEND_FACILITY_TYPES, GIFT } from '../gift/gift.constant';
+import { MDM_EXAMPLES } from './mdm.examples.constant';
 
 const {
   COUNTERPARTY_ROLE_CODES,
@@ -18,7 +19,6 @@ const {
   FEE_TYPE_CODES,
   FEE_TYPE_DESCRIPTIONS,
   INTEGRATION_DEFAULTS,
-  OBLIGATION_SUBTYPES,
   PRODUCT_TYPE_CODES,
   PRODUCT_TYPE_NAMES,
   VALIDATION,
@@ -128,17 +128,13 @@ const FIXED_FEE = () => ({
  * @param {string} subtypeCode: Obligation subtype code
  * @returns {GiftObligationRequestDto}
  */
-const OBLIGATION = ({ subtypeCode = OBLIGATION_SUBTYPES.OST001.code } = {}): GiftObligationRequestDto => ({
+const OBLIGATION = ({ subtypeCode = MDM_EXAMPLES.OBLIGATION_SUBTYPES.OST001.code } = {}): GiftObligationRequestDto => ({
   effectiveDate: '2025-01-13',
   maturityDate: '2025-01-15',
   currency: SUPPORTED_CURRENCIES.USD,
   amount: 2500,
   subtypeCode,
 });
-
-const OBLIGATION_SUBTYPES_RESPONSE_DATA = {
-  obligationSubtypes: Object.values(OBLIGATION_SUBTYPES),
-};
 
 const PRODUCT_TYPE_RESPONSE_DATA = {
   code: PRODUCT_TYPE_CODES.EXIP,
@@ -299,7 +295,6 @@ export const GIFT_EXAMPLES = {
   FEE_TYPES_RESPONSE_DATA,
   FIXED_FEE,
   OBLIGATION,
-  OBLIGATION_SUBTYPES_RESPONSE_DATA,
   PRODUCT_TYPE_RESPONSE_DATA,
   REPAYMENT_PROFILE,
   REPAYMENT_PROFILE_ALLOCATION,

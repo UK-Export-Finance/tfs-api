@@ -1,5 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 import { GIFT } from '@ukef/constants';
+import { MDM_EXAMPLES } from '@ukef/constants/examples/mdm.examples.constant';
 import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import nock from 'nock';
@@ -9,7 +10,7 @@ import { generatePayload } from './generate-payload';
 import { assert400Response } from './response-assertion';
 import { stringValidation } from './string-validation';
 
-const { API_RESPONSE_MESSAGES, OBLIGATION_SUBTYPES, PATH } = GIFT;
+const { API_RESPONSE_MESSAGES, PATH } = GIFT;
 
 const { APIM_MDM_KEY, APIM_MDM_URL, APIM_MDM_VALUE, GIFT_API_URL } = ENVIRONMENT_VARIABLES;
 
@@ -49,7 +50,7 @@ export const productTypeCodeStringValidation = ({ initialPayload, parentFieldNam
   const mockObligationSubtypeResponse = [
     {
       ...mockResponses.obligationSubtypes[0],
-      code: OBLIGATION_SUBTYPES.OST009.code,
+      code: MDM_EXAMPLES.OBLIGATION_SUBTYPES.OST009.code,
       productTypeCode: UNSUPPORTED_PRODUCT_TYPE_CODE,
     },
   ];
