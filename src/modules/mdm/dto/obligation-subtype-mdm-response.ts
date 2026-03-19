@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
-
-import { MDM_EXAMPLES } from '../../../constants/examples/mdm.examples.constant';
+import { MDM_EXAMPLES } from '@ukef/constants/examples/mdm.examples.constant';
+import { IsBoolean, IsString } from 'class-validator';
 
 const { OBLIGATION_SUBTYPES } = MDM_EXAMPLES;
 
@@ -34,7 +33,7 @@ export class ObligationSubtypeMdmResponseDto {
   })
   readonly description: string;
 
-  @IsString()
+  @IsBoolean()
   @ApiProperty({
     example: OBLIGATION_SUBTYPES.OST001.isActive,
   })

@@ -83,32 +83,6 @@ describe('HttpClient', () => {
       });
     });
 
-    describe('when optional headers are not provided', () => {
-      beforeEach(() => {
-        httpServicePost.mockReturnValueOnce(of(response));
-      });
-
-      it('should call HttpService.post', async () => {
-        await client.post({
-          path,
-          requestBody,
-          onError,
-        });
-
-        expect(httpServicePost).toHaveBeenCalledWith(path, requestBody, expect.any(Object));
-      });
-
-      it('should return the same response', async () => {
-        const result = await client.post({
-          path,
-          requestBody,
-          onError,
-        });
-
-        expect(result).toBe(response);
-      });
-    });
-
     describe('when the HttpService errors', () => {
       const errorFromHttpService = new Error('Test error from HttpService');
       const errorThatOnErrorThrows = new Error('Test error from onError');

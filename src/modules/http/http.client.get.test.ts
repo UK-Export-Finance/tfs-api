@@ -100,7 +100,7 @@ describe('HttpClient', () => {
             onError,
           })
           .catch(() => {
-            /* error ignored for test */
+            // Error assertion is covered by the next test.
           });
 
         expect(onError).toHaveBeenCalledWith(errorFromHttpService);
