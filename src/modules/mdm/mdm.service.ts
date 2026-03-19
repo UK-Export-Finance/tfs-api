@@ -5,7 +5,7 @@ import { AxiosError } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 import { throwError } from 'rxjs';
 
-import { GiftObligationSubtypeResponseDto, GiftObligationSubtypeWithProductTypeCodeResponseDto } from '../gift/dto';
+import { GiftObligationSubtypeWithProductTypeCodeResponseDto } from '../gift/dto';
 import { MdmCustomersParams } from './dto/mdm-customers-params.dto';
 import { MdmCustomersResponse } from './dto/mdm-customers-response.dto';
 import { MdmException } from './exception/mdm.exception';
@@ -45,27 +45,6 @@ export class MdmService {
     return customerSearchResults;
   }
 
-  /**
-   * Get all obligation subtypes from APIM MDM.
-   * @returns {Promise<GiftObligationSubtypeResponseDto[]>}
-   */
-  async getAllObligationSubtypes(): Promise<GiftObligationSubtypeResponseDto[]> {
-    try {
-      this.logger.info('Getting obligation subtypes from APIM MDM');
-
-      const response = await this.httpClient.get<Record<string, never>, GiftObligationSubtypeResponseDto[]>({
-        path: '/v2/ods/obligation-subtypes',
-        onError: (error: Error) => throwError(() => error),
-      });
-
-      return response.data;
-    } catch (error) {
-      this.logger.error('Error getting obligation subtypes from APIM MDM %o', error);
-
-      throw new Error('Error getting obligation subtypes from APIM MDM', { cause: error });
-    }
-  }
-
   // TODO
   // TODO
   // TODO
@@ -92,6 +71,7 @@ export class MdmService {
     }
   }
 
+  // TODO: unit test
   /**
    * Get all obligation subtypes for a product type code from APIM MDM.
    * @param {string} productTypeCode - The product type code to filter obligation subtypes by.

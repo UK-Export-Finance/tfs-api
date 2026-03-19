@@ -122,65 +122,6 @@ describe('MdmService', () => {
     });
   });
 
-  describe('getAllObligationSubtypes', () => {
-    const expectedHttpServiceGetArgs: [string, object] = ['/v2/ods/obligation-subtypes', {}];
-
-    beforeEach(() => {
-      when(httpServiceGet)
-        .calledWith(...expectedHttpServiceGetArgs)
-        .mockReturnValueOnce(
-          of({
-            data: EXAMPLES.MDM.OBLIGATION_SUBTYPES_RESPONSE_DATA,
-            status: 200,
-            statusText: 'OK',
-            config: undefined,
-            headers: undefined,
-          }),
-        );
-    });
-
-    it('should call httpService.get', async () => {
-      // Act
-      await service.getAllObligationSubtypes();
-
-      // Assert
-      expect(httpServiceGet).toHaveBeenCalledTimes(1);
-      expect(httpServiceGet).toHaveBeenCalledWith(...expectedHttpServiceGetArgs);
-    });
-
-    describe('when httpService.get is successful', () => {
-      it('should return the response from httpService.get', async () => {
-        // Act
-        const result = await service.getAllObligationSubtypes();
-
-        // Assert
-        expect(result).toEqual(EXAMPLES.MDM.OBLIGATION_SUBTYPES_RESPONSE_DATA);
-      });
-    });
-
-    describe('when httpService.get returns an error', () => {
-      const mockError = new Error('Mock error');
-
-      beforeEach(() => {
-        httpServiceGet.mockReset();
-
-        when(httpServiceGet)
-          .calledWith(...expectedHttpServiceGetArgs)
-          .mockReturnValueOnce(throwError(() => mockError));
-      });
-
-      it('should throw an error', async () => {
-        // Act
-        const promise = service.getAllObligationSubtypes();
-
-        // Assert
-        const expected = new Error('Error getting obligation subtypes from APIM MDM', { cause: mockError });
-
-        await expect(promise).rejects.toThrow(expected);
-      });
-    });
-  });
-
   describe('getAllObligationSubtypesWithProductTypeCodes', () => {
     const expectedHttpServiceGetArgs: [string, object] = ['/v2/ods/obligation-subtypes/with-product-codes', {}];
 
