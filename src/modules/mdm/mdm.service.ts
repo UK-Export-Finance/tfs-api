@@ -17,20 +17,27 @@ export class MdmService {
     this.httpClient = new HttpClient(httpService);
   }
 
+  /**
+   * Finds a customer in APIM MDM by their party URN.
+   * @param {string} partyUrnToSearch: The party URN to search for.
+   * @returns {Promise<MdmCustomersResponse>}
+   */
   async findCustomersByPartyUrn(partyUrnToSearch: string): Promise<MdmCustomersResponse> {
     const { data: customerSearchResults } = await this.httpClient.get<MdmCustomersParams, MdmCustomersResponse>({
-      path: '/customers',
+      path: '/v1/customers',
       queryParams: { partyUrn: partyUrnToSearch },
-      headers: {},
       onError: (error: Error) =>
         throwError(() => {
-          const baseErrorMessage = `Failed to find customers with partyUrn ${partyUrnToSearch} in MDM.`;
+          const baseErrorMessage = `Failed to find customers with partyUrn ${partyUrnToSearch} in APIM MDM.`;
+
           if (error instanceof AxiosError && error.response?.status === 404) {
             return new MdmResourceNotFoundException(`${baseErrorMessage} The response status was 404 Not Found.`, error);
           }
+
           return new MdmException(baseErrorMessage, error);
         }),
     });
+
     return customerSearchResults;
   }
 }

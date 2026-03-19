@@ -17,6 +17,7 @@ describe('MdmService', () => {
 
   beforeEach(() => {
     const httpService = new HttpService();
+
     httpServiceGet = jest.fn();
     httpService.get = httpServiceGet;
 
@@ -37,9 +38,9 @@ describe('MdmService', () => {
       },
     ];
 
-    const expectedHttpServiceGetArgs: [string, object] = ['/customers', { headers: {}, params: { partyUrn: partyUrnToSearch } }];
+    const expectedHttpServiceGetArgs: [string, object] = ['/v1/customers', { params: { partyUrn: partyUrnToSearch } }];
 
-    it('returns the search results from sending a GET request to the MDM /customers?partyUrn={partyUrn} endpoint', async () => {
+    it('returns the search results from sending a GET request to the MDM /v1/customers?partyUrn={partyUrn} endpoint', async () => {
       when(httpServiceGet)
         .calledWith(...expectedHttpServiceGetArgs)
         .mockReturnValueOnce(
@@ -57,7 +58,7 @@ describe('MdmService', () => {
       expect(foundCustomers).toBe(customerSearchResults);
     });
 
-    it('throws an MdmResourceNotFoundException if the request to MDM fails with a 404 response', async () => {
+    it('throws an MdmResourceNotFoundException if the request in APIM MDM fails with a 404 response', async () => {
       const axios404Error = new AxiosError();
       axios404Error.response = { data: valueGenerator.string(), status: 404, statusText: 'Not Found', headers: undefined, config: undefined };
       when(httpServiceGet)
@@ -68,12 +69,12 @@ describe('MdmService', () => {
 
       await expect(findCustomersPromise).rejects.toBeInstanceOf(MdmResourceNotFoundException);
       await expect(findCustomersPromise).rejects.toThrow(
-        `Failed to find customers with partyUrn ${partyUrnToSearch} in MDM. The response status was 404 Not Found.`,
+        `Failed to find customers with partyUrn ${partyUrnToSearch} in APIM MDM. The response status was 404 Not Found.`,
       );
       await expect(findCustomersPromise).rejects.toHaveProperty('innerError', axios404Error);
     });
 
-    it('throws an MdmException that is not an MdmResourceNotFoundException if the request to MDM fails with a 500 response', async () => {
+    it('throws an MdmException that is not an MdmResourceNotFoundException if the request to APIM MDM fails with a 500 response', async () => {
       const axios500Error = new AxiosError();
       axios500Error.response = { data: valueGenerator.string(), status: 500, statusText: 'Internal Server Error', headers: undefined, config: undefined };
       when(httpServiceGet)
@@ -84,11 +85,11 @@ describe('MdmService', () => {
 
       await expect(findCustomersPromise).rejects.not.toBeInstanceOf(MdmResourceNotFoundException);
       await expect(findCustomersPromise).rejects.toBeInstanceOf(MdmException);
-      await expect(findCustomersPromise).rejects.toThrow(`Failed to find customers with partyUrn ${partyUrnToSearch} in MDM.`);
+      await expect(findCustomersPromise).rejects.toThrow(`Failed to find customers with partyUrn ${partyUrnToSearch} in APIM MDM.`);
       await expect(findCustomersPromise).rejects.toHaveProperty('innerError', axios500Error);
     });
 
-    it('throws an MdmException that is not an MdmResourceNotFoundException if the request to MDM fails with an AxiosError without a response', async () => {
+    it('throws an MdmException that is not an MdmResourceNotFoundException if the request in APIM MDM fails with an AxiosError without a response', async () => {
       const axiosErrorWithoutResponse = new AxiosError();
       when(httpServiceGet)
         .calledWith(...expectedHttpServiceGetArgs)
@@ -98,11 +99,11 @@ describe('MdmService', () => {
 
       await expect(findCustomersPromise).rejects.not.toBeInstanceOf(MdmResourceNotFoundException);
       await expect(findCustomersPromise).rejects.toBeInstanceOf(MdmException);
-      await expect(findCustomersPromise).rejects.toThrow(`Failed to find customers with partyUrn ${partyUrnToSearch} in MDM.`);
+      await expect(findCustomersPromise).rejects.toThrow(`Failed to find customers with partyUrn ${partyUrnToSearch} in APIM MDM.`);
       await expect(findCustomersPromise).rejects.toHaveProperty('innerError', axiosErrorWithoutResponse);
     });
 
-    it('throws an MdmException that is not an MdmResourceNotFoundException if the request to MDM fails with a generic error', async () => {
+    it('throws an MdmException that is not an MdmResourceNotFoundException if the request in APIM MDM fails with a generic error', async () => {
       const error = new Error();
       when(httpServiceGet)
         .calledWith(...expectedHttpServiceGetArgs)
@@ -112,7 +113,7 @@ describe('MdmService', () => {
 
       await expect(findCustomersPromise).rejects.not.toBeInstanceOf(MdmResourceNotFoundException);
       await expect(findCustomersPromise).rejects.toBeInstanceOf(MdmException);
-      await expect(findCustomersPromise).rejects.toThrow(`Failed to find customers with partyUrn ${partyUrnToSearch} in MDM.`);
+      await expect(findCustomersPromise).rejects.toThrow(`Failed to find customers with partyUrn ${partyUrnToSearch} in APIM MDM.`);
       await expect(findCustomersPromise).rejects.toHaveProperty('innerError', error);
     });
   });

@@ -32,6 +32,7 @@ describe('HttpClient', () => {
     };
 
     const expectedHttpServiceGetArgs: [string, object] = [path, { headers, params: queryParams }];
+    const expectedHttpServiceGetArgsWithoutHeaders: [string, object] = [path, { params: queryParams }];
 
     const response: AxiosResponse = {
       data: {
@@ -59,7 +60,7 @@ describe('HttpClient', () => {
           .mockReturnValueOnce(of(response));
       });
 
-      it('resolves with the same response', async () => {
+      it('should return the same response', async () => {
         const result = await client.get({
           path,
           queryParams,
@@ -70,7 +71,7 @@ describe('HttpClient', () => {
         expect(result).toBe(response);
       });
 
-      it('does not call onError', async () => {
+      it('should NOT call onError', async () => {
         await client.get({
           path,
           queryParams,
@@ -79,6 +80,34 @@ describe('HttpClient', () => {
         });
 
         expect(onError).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('when headers are not provided', () => {
+      beforeEach(() => {
+        when(httpServiceGet)
+          .calledWith(...expectedHttpServiceGetArgsWithoutHeaders)
+          .mockReturnValueOnce(of(response));
+      });
+
+      it('should call HttpService.get without headers in config', async () => {
+        await client.get({
+          path,
+          queryParams,
+          onError,
+        });
+
+        expect(httpServiceGet).toHaveBeenCalledWith(...expectedHttpServiceGetArgsWithoutHeaders);
+      });
+
+      it('should return the same response', async () => {
+        const result = await client.get({
+          path,
+          queryParams,
+          onError,
+        });
+
+        expect(result).toBe(response);
       });
     });
 
@@ -95,7 +124,7 @@ describe('HttpClient', () => {
           .mockImplementationOnce(() => throwError(() => errorThatOnErrorThrows));
       });
 
-      it('calls onError with the error that HttpService errored with', async () => {
+      it('should call onError with the error that HttpService errored with', async () => {
         await client
           .get({
             path,
@@ -111,15 +140,15 @@ describe('HttpClient', () => {
         expect(onError).toHaveBeenCalledTimes(1);
       });
 
-      it('rejects with the error that onError throws', async () => {
-        const clientPostPromise = client.get({
+      it('should reject with the error that onError throws', async () => {
+        const clientGetPromise = client.get({
           path,
           queryParams,
           headers,
           onError,
         });
 
-        await expect(clientPostPromise).rejects.toBe(errorThatOnErrorThrows);
+        await expect(clientGetPromise).rejects.toBe(errorThatOnErrorThrows);
       });
     });
   });

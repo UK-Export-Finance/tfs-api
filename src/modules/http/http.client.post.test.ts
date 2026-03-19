@@ -32,6 +32,7 @@ describe('HttpClient', () => {
     };
 
     const expectedHttpServicePostArgs: [string, object, object] = [path, requestBody, { headers }];
+    const expectedHttpServicePostArgsWithoutHeaders: [string, object, object] = [path, requestBody, {}];
 
     const response: AxiosResponse = {
       data: {
@@ -59,7 +60,7 @@ describe('HttpClient', () => {
           .mockReturnValueOnce(of(response));
       });
 
-      it('resolves with the same response', async () => {
+      it('should return the same response', async () => {
         const result = await client.post({
           path,
           requestBody,
@@ -70,7 +71,7 @@ describe('HttpClient', () => {
         expect(result).toBe(response);
       });
 
-      it('does not call onError', async () => {
+      it('should NOT call onError', async () => {
         await client.post({
           path,
           requestBody,
@@ -79,6 +80,34 @@ describe('HttpClient', () => {
         });
 
         expect(onError).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('when headers are not provided', () => {
+      beforeEach(() => {
+        when(httpServicePost)
+          .calledWith(...expectedHttpServicePostArgsWithoutHeaders)
+          .mockReturnValueOnce(of(response));
+      });
+
+      it('should call HttpService.post with an empty config object', async () => {
+        await client.post({
+          path,
+          requestBody,
+          onError,
+        });
+
+        expect(httpServicePost).toHaveBeenCalledWith(...expectedHttpServicePostArgsWithoutHeaders);
+      });
+
+      it('should return the same response', async () => {
+        const result = await client.post({
+          path,
+          requestBody,
+          onError,
+        });
+
+        expect(result).toBe(response);
       });
     });
 
@@ -95,7 +124,7 @@ describe('HttpClient', () => {
           .mockImplementationOnce(() => throwError(() => errorThatOnErrorThrows));
       });
 
-      it('calls onError with the error that HttpService errored with', async () => {
+      it('should call onError with the error that HttpService errored with', async () => {
         await client
           .post({
             path,
@@ -111,7 +140,7 @@ describe('HttpClient', () => {
         expect(onError).toHaveBeenCalledTimes(1);
       });
 
-      it('rejects with the error that onError throws', async () => {
+      it('should reject with the error that onError throws', async () => {
         const clientPostPromise = client.post({
           path,
           requestBody,
