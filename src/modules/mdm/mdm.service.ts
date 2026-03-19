@@ -5,9 +5,9 @@ import { AxiosError } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 import { throwError } from 'rxjs';
 
-import { GiftObligationSubtypeWithProductTypeCodeResponseDto } from '../gift/dto';
 import { MdmCustomersParams } from './dto/mdm-customers-params.dto';
 import { MdmCustomersResponse } from './dto/mdm-customers-response.dto';
+import { ObligationSubtypeWithProductTypeCodeResponseDto } from './dto/obligation-subtype-with-product-type-code-response';
 import { MdmException } from './exception/mdm.exception';
 import { MdmResourceNotFoundException } from './exception/mdm-resource-not-found.exception';
 
@@ -45,20 +45,15 @@ export class MdmService {
     return customerSearchResults;
   }
 
-  // TODO
-  // TODO
-  // TODO
-  // move DTOS out of GIFT directory
-  // and update the DTO documentation - they mention GIFT, but they're from APIM MDM.
   /**
    * Get all obligation subtypes with product typecodes from APIM MDM.
-   * @returns {Promise<GiftObligationSubtypeWithProductTypeCodeResponseDto[]>}
+   * @returns {Promise<ObligationSubtypeWithProductTypeCodeResponseDto[]>}
    */
-  async getAllObligationSubtypesWithProductTypeCodes(): Promise<GiftObligationSubtypeWithProductTypeCodeResponseDto[]> {
+  async getAllObligationSubtypesWithProductTypeCodes(): Promise<ObligationSubtypeWithProductTypeCodeResponseDto[]> {
     try {
       this.logger.info('Getting obligation subtypes with product type codes from APIM MDM');
 
-      const response = await this.httpClient.get<Record<string, never>, GiftObligationSubtypeWithProductTypeCodeResponseDto[]>({
+      const response = await this.httpClient.get<Record<string, never>, ObligationSubtypeWithProductTypeCodeResponseDto[]>({
         path: '/v2/ods/obligation-subtypes/with-product-type-codes',
         onError: (error: Error) => throwError(() => error),
       });
@@ -71,19 +66,18 @@ export class MdmService {
     }
   }
 
-  // TODO: unit test
   /**
    * Get all obligation subtypes for a product type code from APIM MDM.
    * @param {string} productTypeCode - The product type code to filter obligation subtypes by.
-   * @returns {Promise<GiftObligationSubtypeWithProductTypeCodeResponseDto[]>}
+   * @returns {Promise<ObligationSubtypeWithProductTypeCodeResponseDto[]>}
    */
-  async getAllObligationSubtypesByProductTypeCode(productTypeCode: string): Promise<GiftObligationSubtypeWithProductTypeCodeResponseDto[]> {
+  async getAllObligationSubtypesByProductTypeCode(productTypeCode: string): Promise<ObligationSubtypeWithProductTypeCodeResponseDto[]> {
     try {
       this.logger.info('Getting obligation subtypes by product type code %s from APIM MDM', productTypeCode);
 
       const allSubtypes = await this.getAllObligationSubtypesWithProductTypeCodes();
 
-      const filtered = allSubtypes.filter((subtype: GiftObligationSubtypeWithProductTypeCodeResponseDto) => subtype.productTypeCode === productTypeCode);
+      const filtered = allSubtypes.filter((subtype: ObligationSubtypeWithProductTypeCodeResponseDto) => subtype.productTypeCode === productTypeCode);
 
       return filtered;
     } catch (error) {

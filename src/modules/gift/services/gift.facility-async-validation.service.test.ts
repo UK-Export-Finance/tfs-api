@@ -43,10 +43,13 @@ describe('GiftFacilityAsyncValidationService', () => {
   let mockProductTypeIsSupported: jest.Mock;
   let mockGetAllRoles: jest.Mock;
   let mockGetAllRoleCodes: jest.Mock;
-  let mockGetAllSubtypesByProductType: jest.Mock;
+  let mockGetAllSubtypesByProductTypeCode: jest.Mock;
 
   beforeEach(() => {
     // Arrange
+    mockGetAllRoles = jest.fn().mockResolvedValueOnce({ data: COUNTERPARTY_ROLES_RESPONSE_DATA });
+    mockGetAllRoleCodes = jest.fn().mockReturnValueOnce(mockCounterpartyRoleCodes);
+
     counterpartyService = new GiftCounterpartyService(giftHttpService, logger);
     counterpartyService.getAllRoles = mockGetAllRoles;
     counterpartyService.getAllRoleCodes = mockGetAllRoleCodes;
@@ -69,11 +72,8 @@ describe('GiftFacilityAsyncValidationService', () => {
 
     mdmService = new MdmService(httpService, logger);
 
-    mockGetAllSubtypesByProductType = jest.fn().mockResolvedValueOnce(mockObligationSubtypes);
-    mdmService.getAllObligationSubtypesByProductTypeCode = mockGetAllSubtypesByProductType;
-
-    mockGetAllRoles = jest.fn().mockResolvedValueOnce({ data: COUNTERPARTY_ROLES_RESPONSE_DATA });
-    mockGetAllRoleCodes = jest.fn().mockReturnValueOnce(mockCounterpartyRoleCodes);
+    mockGetAllSubtypesByProductTypeCode = jest.fn().mockResolvedValueOnce(mockObligationSubtypes);
+    mdmService.getAllObligationSubtypesByProductTypeCode = mockGetAllSubtypesByProductTypeCode;
 
     service = new GiftFacilityAsyncValidationService(logger, counterpartyService, currencyService, feeTypeService, mdmService, productTypeService);
   });
@@ -130,8 +130,8 @@ describe('GiftFacilityAsyncValidationService', () => {
       await service.creation(mockPayload, mockFacilityId);
 
       // Assert
-      expect(mockGetAllSubtypesByProductType).toHaveBeenCalledTimes(1);
-      expect(mockGetAllSubtypesByProductType).toHaveBeenCalledWith(mockPayload.overview.productTypeCode);
+      expect(mockGetAllSubtypesByProductTypeCode).toHaveBeenCalledTimes(1);
+      expect(mockGetAllSubtypesByProductTypeCode).toHaveBeenCalledWith(mockPayload.overview.productTypeCode);
     });
 
     describe('when all service calls are successful', () => {
@@ -256,9 +256,9 @@ describe('GiftFacilityAsyncValidationService', () => {
     describe('when mdmService.getAllObligationSubtypesByProductTypeCode returns an error', () => {
       beforeEach(() => {
         // Arrange
-        mockGetAllSubtypesByProductType = jest.fn().mockRejectedValueOnce(mockError);
+        mockGetAllSubtypesByProductTypeCode = jest.fn().mockRejectedValueOnce(mockError);
 
-        mdmService.getAllObligationSubtypesByProductTypeCode = mockGetAllSubtypesByProductType;
+        mdmService.getAllObligationSubtypesByProductTypeCode = mockGetAllSubtypesByProductTypeCode;
 
         service = new GiftFacilityAsyncValidationService(logger, counterpartyService, currencyService, feeTypeService, mdmService, productTypeService);
       });

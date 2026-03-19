@@ -1,4 +1,5 @@
 import { HttpService } from '@nestjs/axios';
+import { HttpStatus } from '@nestjs/common';
 import { EXAMPLES } from '@ukef/constants';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { AxiosError } from 'axios';
@@ -15,6 +16,9 @@ describe('MdmService', () => {
   const logger = new PinoLogger({});
 
   const valueGenerator = new RandomValueGenerator();
+  const expectedApimHeaders = {
+    [process.env.APIM_MDM_KEY]: process.env.APIM_MDM_VALUE,
+  };
 
   let httpServiceGet: jest.Mock;
   let service: MdmService;
@@ -42,7 +46,7 @@ describe('MdmService', () => {
       },
     ];
 
-    const expectedHttpServiceGetArgs: [string, object] = ['/v1/customers', { params: { partyUrn: partyUrnToSearch } }];
+    const expectedHttpServiceGetArgs: [string, object] = ['/v1/customers', { headers: expectedApimHeaders, params: { partyUrn: partyUrnToSearch } }];
 
     it('returns the search results from sending a GET request to the MDM /v1/customers?partyUrn={partyUrn} endpoint', async () => {
       when(httpServiceGet)
@@ -50,10 +54,8 @@ describe('MdmService', () => {
         .mockReturnValueOnce(
           of({
             data: customerSearchResults,
-            status: 200,
+            status: HttpStatus.OK,
             statusText: 'OK',
-            config: undefined,
-            headers: undefined,
           }),
         );
 
@@ -123,7 +125,7 @@ describe('MdmService', () => {
   });
 
   describe('getAllObligationSubtypesWithProductTypeCodes', () => {
-    const expectedHttpServiceGetArgs: [string, object] = ['/v2/ods/obligation-subtypes/with-product-codes', {}];
+    const expectedHttpServiceGetArgs: [string, object] = ['/v2/ods/obligation-subtypes/with-product-type-codes', { headers: expectedApimHeaders }];
 
     beforeEach(() => {
       when(httpServiceGet)
@@ -131,10 +133,8 @@ describe('MdmService', () => {
         .mockReturnValueOnce(
           of({
             data: EXAMPLES.MDM.OBLIGATION_SUBTYPES_WITH_PRODUCT_CODES_RESPONSE_DATA,
-            status: 200,
+            status: HttpStatus.OK,
             statusText: 'OK',
-            config: undefined,
-            headers: undefined,
           }),
         );
     });
@@ -174,7 +174,54 @@ describe('MdmService', () => {
         const promise = service.getAllObligationSubtypesWithProductTypeCodes();
 
         // Assert
-        const expected = new Error('Error getting obligation subtypes with product codes from APIM MDM', { cause: mockError });
+        const expected = new Error('Error getting obligation subtypes with product type codes from APIM MDM', { cause: mockError });
+
+        await expect(promise).rejects.toThrow(expected);
+      });
+    });
+  });
+
+  describe('getAllObligationSubtypesByProductTypeCode', () => {
+    const allObligationSubtypes = EXAMPLES.MDM.OBLIGATION_SUBTYPES_WITH_PRODUCT_CODES_RESPONSE_DATA;
+    const { productTypeCode } = EXAMPLES.MDM.OBLIGATION_SUBTYPES_WITH_PRODUCT_CODES.OST001;
+
+    let mockGetAllObligationSubtypesWithProductTypeCodes: jest.Mock;
+
+    beforeEach(() => {
+      mockGetAllObligationSubtypesWithProductTypeCodes = jest.fn().mockResolvedValueOnce(allObligationSubtypes);
+      service.getAllObligationSubtypesWithProductTypeCodes = mockGetAllObligationSubtypesWithProductTypeCodes;
+    });
+
+    it('should call getAllObligationSubtypesWithProductTypeCodes', async () => {
+      // Act
+      await service.getAllObligationSubtypesByProductTypeCode(productTypeCode);
+
+      // Assert
+      expect(mockGetAllObligationSubtypesWithProductTypeCodes).toHaveBeenCalledTimes(1);
+    });
+
+    it('should return all obligation subtypes matching the provided product type code', async () => {
+      // Act
+      const result = await service.getAllObligationSubtypesByProductTypeCode(productTypeCode);
+
+      // Assert
+      expect(result).toStrictEqual([EXAMPLES.MDM.OBLIGATION_SUBTYPES_WITH_PRODUCT_CODES.OST001]);
+    });
+
+    describe('when getAllObligationSubtypesWithProductTypeCodes returns an error', () => {
+      const mockError = new Error('Mock error');
+
+      beforeEach(() => {
+        mockGetAllObligationSubtypesWithProductTypeCodes = jest.fn().mockRejectedValueOnce(mockError);
+        service.getAllObligationSubtypesWithProductTypeCodes = mockGetAllObligationSubtypesWithProductTypeCodes;
+      });
+
+      it('should throw an error', async () => {
+        // Act
+        const promise = service.getAllObligationSubtypesByProductTypeCode(productTypeCode);
+
+        // Assert
+        const expected = new Error(`Error getting obligation subtypes by product type code ${productTypeCode} from APIM MDM`, { cause: mockError });
 
         await expect(promise).rejects.toThrow(expected);
       });
