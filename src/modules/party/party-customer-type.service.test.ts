@@ -23,13 +23,13 @@ describe('PartyCustomerTypeService', () => {
   beforeEach(() => {
     const httpService = new HttpService();
 
-    const mdmService = new MdmService(httpService);
-    findCustomersByPartyUrn = jest.fn();
-    mdmService.findCustomersByPartyUrn = findCustomersByPartyUrn;
-
     const logger = new PinoLogger({});
     logWarn = jest.fn();
     logger.warn = logWarn;
+
+    const mdmService = new MdmService(httpService, logger);
+    findCustomersByPartyUrn = jest.fn();
+    mdmService.findCustomersByPartyUrn = findCustomersByPartyUrn;
 
     service = new PartyCustomerTypeService(mdmService, logger);
   });

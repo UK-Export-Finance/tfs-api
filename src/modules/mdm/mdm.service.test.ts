@@ -123,7 +123,7 @@ describe('MdmService', () => {
   });
 
   describe('getAllObligationSubtypes', () => {
-    const expectedHttpServiceGetArgs: [string, object] = ['/v2/ods/obligation-subtypes', { params: {} }];
+    const expectedHttpServiceGetArgs: [string, object] = ['/v2/ods/obligation-subtypes', {}];
 
     beforeEach(() => {
       when(httpServiceGet)
@@ -151,10 +151,10 @@ describe('MdmService', () => {
     describe('when httpService.get is successful', () => {
       it('should return the response from httpService.get', async () => {
         // Act
-        const response = await service.getAllObligationSubtypes();
+        const result = await service.getAllObligationSubtypes();
 
         // Assert
-        expect(response.data).toEqual(EXAMPLES.MDM.OBLIGATION_SUBTYPES_RESPONSE_DATA);
+        expect(result).toEqual(EXAMPLES.MDM.OBLIGATION_SUBTYPES_RESPONSE_DATA);
       });
     });
 
@@ -181,8 +181,8 @@ describe('MdmService', () => {
     });
   });
 
-  describe('getAllObligationSubtypesWithProductCodes', () => {
-    const expectedHttpServiceGetArgs: [string, object] = ['/v2/ods/obligation-subtypes/with-product-codes', { params: {} }];
+  describe('getAllObligationSubtypesWithProductTypeCodes', () => {
+    const expectedHttpServiceGetArgs: [string, object] = ['/v2/ods/obligation-subtypes/with-product-codes', {}];
 
     beforeEach(() => {
       when(httpServiceGet)
@@ -200,7 +200,7 @@ describe('MdmService', () => {
 
     it('should call httpService.get', async () => {
       // Act
-      await service.getAllObligationSubtypesWithProductCodes();
+      await service.getAllObligationSubtypesWithProductTypeCodes();
 
       // Assert
       expect(httpServiceGet).toHaveBeenCalledTimes(1);
@@ -210,10 +210,10 @@ describe('MdmService', () => {
     describe('when httpService.get is successful', () => {
       it('should return the response from httpService.get', async () => {
         // Act
-        const response = await service.getAllObligationSubtypesWithProductCodes();
+        const result = await service.getAllObligationSubtypesWithProductTypeCodes();
 
         // Assert
-        expect(response.data).toEqual(EXAMPLES.MDM.OBLIGATION_SUBTYPES_WITH_PRODUCT_CODES_RESPONSE_DATA);
+        expect(result).toEqual(EXAMPLES.MDM.OBLIGATION_SUBTYPES_WITH_PRODUCT_CODES_RESPONSE_DATA);
       });
     });
 
@@ -230,7 +230,7 @@ describe('MdmService', () => {
 
       it('should throw an error', async () => {
         // Act
-        const promise = service.getAllObligationSubtypesWithProductCodes();
+        const promise = service.getAllObligationSubtypesWithProductTypeCodes();
 
         // Assert
         const expected = new Error('Error getting obligation subtypes with product codes from APIM MDM', { cause: mockError });

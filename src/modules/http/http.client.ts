@@ -11,7 +11,6 @@ export class HttpClient {
   post<RequestBody, ResponseBody>({
     path,
     requestBody,
-    headers,
     onError,
   }: {
     path: string;
@@ -21,9 +20,9 @@ export class HttpClient {
   }): Promise<AxiosResponse<ResponseBody, RequestBody>> {
     const config: AxiosRequestConfig<RequestBody> = {};
 
-    if (headers) {
-      config.headers = headers;
-    }
+    config.headers = {
+      [process.env.APIM_MDM_KEY]: process.env.APIM_MDM_VALUE,
+    };
 
     return this.responseFrom({ request: this.httpService.post<ResponseBody>(path, requestBody, config), onError });
   }
@@ -31,18 +30,21 @@ export class HttpClient {
   get<QueryParams, ResponseBody>({
     path,
     queryParams,
-    headers,
     onError,
   }: {
-    path: string;
-    queryParams: QueryParams;
     headers?: RequestHeaders;
+    path: string;
+    queryParams?: QueryParams;
     onError: (error: Error) => ObservableInput<never>;
   }): Promise<AxiosResponse<ResponseBody>> {
-    const config: AxiosRequestConfig = { params: queryParams };
+    const config: AxiosRequestConfig = {};
 
-    if (headers) {
-      config.headers = headers;
+    config.headers = {
+      [process.env.APIM_MDM_KEY]: process.env.APIM_MDM_VALUE,
+    };
+
+    if (queryParams) {
+      config.params = queryParams;
     }
 
     return this.responseFrom({ request: this.httpService.get<ResponseBody>(path, config), onError });

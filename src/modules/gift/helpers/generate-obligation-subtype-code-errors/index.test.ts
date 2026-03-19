@@ -1,27 +1,10 @@
 import { EXAMPLES } from '@ukef/constants';
 
-import { GiftObligationSubtypeResponseDto } from '../../dto';
 import { generateObligationSubtypeCodeErrors } from '.';
 
 const mockProductTypeCode = 'Mock product 1';
 
-const mockSubtypes: GiftObligationSubtypeResponseDto[] = [
-  {
-    code: '1',
-    name: 'Code 1',
-    productTypeCode: mockProductTypeCode,
-  },
-  {
-    code: '2',
-    name: 'Code 2',
-    productTypeCode: mockProductTypeCode,
-  },
-  {
-    code: '3',
-    name: 'Code 3',
-    productTypeCode: mockProductTypeCode,
-  },
-];
+const mockSubtypes = EXAMPLES.MDM.OBLIGATION_SUBTYPES_RESPONSE_DATA;
 
 describe('modules/gift/helpers/generate-obligation-subtype-code-errors', () => {
   describe('when all provided subtype codes are not supported', () => {

@@ -26,13 +26,20 @@ describe('HttpClient', () => {
       [valueGenerator.word()]: valueGenerator.string(),
       [valueGenerator.word()]: valueGenerator.string(),
     };
+
+    const expectedApimHeaders = {
+      [process.env.APIM_MDM_KEY]: process.env.APIM_MDM_VALUE,
+    };
+
     const queryParams = {
       [valueGenerator.word()]: valueGenerator.string(),
       [valueGenerator.word()]: valueGenerator.string(),
     };
 
-    const expectedHttpServiceGetArgs: [string, object] = [path, { headers, params: queryParams }];
-    const expectedHttpServiceGetArgsWithoutHeaders: [string, object] = [path, { params: queryParams }];
+    const expectedHttpServiceGetArgs: [string, object] = [path, { headers: expectedApimHeaders, params: queryParams }];
+    const expectedHttpServiceGetArgsWithoutHeaders: [string, object] = [path, { headers: expectedApimHeaders, params: queryParams }];
+    const expectedHttpServiceGetArgsWithoutQueryParams: [string, object] = [path, { headers: expectedApimHeaders }];
+    const expectedHttpServiceGetArgsWithoutQueryParamsAndHeaders: [string, object] = [path, { headers: expectedApimHeaders }];
 
     const response: AxiosResponse = {
       data: {
@@ -90,7 +97,7 @@ describe('HttpClient', () => {
           .mockReturnValueOnce(of(response));
       });
 
-      it('should call HttpService.get without headers in config', async () => {
+      it('should call HttpService.get with APIM headers in config', async () => {
         await client.get({
           path,
           queryParams,
@@ -149,6 +156,35 @@ describe('HttpClient', () => {
         });
 
         await expect(clientGetPromise).rejects.toBe(errorThatOnErrorThrows);
+      });
+    });
+
+    describe('when queryParams are not provided', () => {
+      it('should call HttpService.get without params when headers are provided', async () => {
+        when(httpServiceGet)
+          .calledWith(...expectedHttpServiceGetArgsWithoutQueryParams)
+          .mockReturnValueOnce(of(response));
+
+        await client.get({
+          path,
+          headers,
+          onError,
+        });
+
+        expect(httpServiceGet).toHaveBeenCalledWith(...expectedHttpServiceGetArgsWithoutQueryParams);
+      });
+
+      it('should call HttpService.get with APIM headers when headers are not provided', async () => {
+        when(httpServiceGet)
+          .calledWith(...expectedHttpServiceGetArgsWithoutQueryParamsAndHeaders)
+          .mockReturnValueOnce(of(response));
+
+        await client.get({
+          path,
+          onError,
+        });
+
+        expect(httpServiceGet).toHaveBeenCalledWith(...expectedHttpServiceGetArgsWithoutQueryParamsAndHeaders);
       });
     });
   });

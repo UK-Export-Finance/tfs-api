@@ -13,35 +13,30 @@ export class GiftObligationSubtypeResponseDto {
   @IsString()
   @ApiProperty({
     example: OBLIGATION_SUBTYPES.OST001.type,
-    required: true,
   })
   readonly type: string;
 
   @IsString()
   @ApiProperty({
     example: OBLIGATION_SUBTYPES.OST001.typeCode,
-    required: true,
   })
   readonly typeCode: string;
 
   @IsString()
   @ApiProperty({
     example: OBLIGATION_SUBTYPES.OST001.code,
-    required: true,
   })
   readonly code: string;
 
   @IsString()
   @ApiProperty({
     example: OBLIGATION_SUBTYPES.OST001.description,
-    required: true,
   })
   readonly description: string;
 
   @IsString()
   @ApiProperty({
     example: OBLIGATION_SUBTYPES.OST001.isActive,
-    required: true,
   })
   readonly isActive: boolean;
 }

@@ -22,17 +22,23 @@ describe('HttpClient', () => {
 
   describe('post', () => {
     const path = `/${valueGenerator.word()}/${valueGenerator.word()}`;
+
     const headers = {
       [valueGenerator.word()]: valueGenerator.string(),
       [valueGenerator.word()]: valueGenerator.string(),
     };
+
+    const expectedApimHeaders = {
+      [process.env.APIM_MDM_KEY]: process.env.APIM_MDM_VALUE,
+    };
+
     const requestBody = {
       field1: 'data1',
       field2: 'data2',
     };
 
-    const expectedHttpServicePostArgs: [string, object, object] = [path, requestBody, { headers }];
-    const expectedHttpServicePostArgsWithoutHeaders: [string, object, object] = [path, requestBody, {}];
+    const expectedHttpServicePostArgs: [string, object, object] = [path, requestBody, { headers: expectedApimHeaders }];
+    const expectedHttpServicePostArgsWithoutHeaders: [string, object, object] = [path, requestBody, { headers: expectedApimHeaders }];
 
     const response: AxiosResponse = {
       data: {
@@ -90,7 +96,7 @@ describe('HttpClient', () => {
           .mockReturnValueOnce(of(response));
       });
 
-      it('should call HttpService.post with an empty config object', async () => {
+      it('should call HttpService.post with APIM headers in config', async () => {
         await client.post({
           path,
           requestBody,
