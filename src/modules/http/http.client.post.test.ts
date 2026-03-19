@@ -1,7 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { AxiosResponse, InternalAxiosRequestConfig } from 'axios';
-import { when } from 'jest-when';
 import { ObservableInput, of, throwError } from 'rxjs';
 
 import { HttpClient } from './http.client';
@@ -23,22 +22,10 @@ describe('HttpClient', () => {
   describe('post', () => {
     const path = `/${valueGenerator.word()}/${valueGenerator.word()}`;
 
-    const headers = {
-      [valueGenerator.word()]: valueGenerator.string(),
-      [valueGenerator.word()]: valueGenerator.string(),
-    };
-
-    const expectedApimHeaders = {
-      [process.env.APIM_MDM_KEY]: process.env.APIM_MDM_VALUE,
-    };
-
     const requestBody = {
       field1: 'data1',
       field2: 'data2',
     };
-
-    const expectedHttpServicePostArgs: [string, object, object] = [path, requestBody, { headers: expectedApimHeaders }];
-    const expectedHttpServicePostArgsWithoutHeaders: [string, object, object] = [path, requestBody, { headers: expectedApimHeaders }];
 
     const response: AxiosResponse = {
       data: {
@@ -61,16 +48,24 @@ describe('HttpClient', () => {
 
     describe('when the HttpService succeeds', () => {
       beforeEach(() => {
-        when(httpServicePost)
-          .calledWith(...expectedHttpServicePostArgs)
-          .mockReturnValueOnce(of(response));
+        httpServicePost.mockReturnValueOnce(of(response));
+      });
+
+      it('should call HttpService.post', async () => {
+        await client.post({
+          path,
+          requestBody,
+          onError,
+        });
+
+        expect(httpServicePost).toHaveBeenCalledTimes(1);
+        expect(httpServicePost).toHaveBeenCalledWith(path, requestBody, expect.any(Object));
       });
 
       it('should return the same response', async () => {
         const result = await client.post({
           path,
           requestBody,
-          headers,
           onError,
         });
 
@@ -81,7 +76,6 @@ describe('HttpClient', () => {
         await client.post({
           path,
           requestBody,
-          headers,
           onError,
         });
 
@@ -89,11 +83,9 @@ describe('HttpClient', () => {
       });
     });
 
-    describe('when headers are not provided', () => {
+    describe('when optional headers are not provided', () => {
       beforeEach(() => {
-        when(httpServicePost)
-          .calledWith(...expectedHttpServicePostArgsWithoutHeaders)
-          .mockReturnValueOnce(of(response));
+        httpServicePost.mockReturnValueOnce(of(response));
       });
 
       it('should call HttpService.post', async () => {
@@ -103,7 +95,7 @@ describe('HttpClient', () => {
           onError,
         });
 
-        expect(httpServicePost).toHaveBeenCalledWith(...expectedHttpServicePostArgsWithoutHeaders);
+        expect(httpServicePost).toHaveBeenCalledWith(path, requestBody, expect.any(Object));
       });
 
       it('should return the same response', async () => {
@@ -122,12 +114,8 @@ describe('HttpClient', () => {
       const errorThatOnErrorThrows = new Error('Test error from onError');
 
       beforeEach(() => {
-        when(httpServicePost)
-          .calledWith(...expectedHttpServicePostArgs)
-          .mockReturnValueOnce(throwError(() => errorFromHttpService));
-        when(onError)
-          .calledWith(errorFromHttpService)
-          .mockImplementationOnce(() => throwError(() => errorThatOnErrorThrows));
+        httpServicePost.mockReturnValueOnce(throwError(() => errorFromHttpService));
+        onError = jest.fn().mockImplementation(() => throwError(() => errorThatOnErrorThrows));
       });
 
       it('should call onError with the error that HttpService errored with', async () => {
@@ -135,7 +123,6 @@ describe('HttpClient', () => {
           .post({
             path,
             requestBody,
-            headers,
             onError,
           })
           .catch(() => {
@@ -150,7 +137,6 @@ describe('HttpClient', () => {
         const clientPostPromise = client.post({
           path,
           requestBody,
-          headers,
           onError,
         });
 

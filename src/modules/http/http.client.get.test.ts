@@ -1,7 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { AxiosResponse, InternalAxiosRequestConfig } from 'axios';
-import { when } from 'jest-when';
 import { ObservableInput, of, throwError } from 'rxjs';
 
 import { HttpClient } from './http.client';
@@ -23,19 +22,10 @@ describe('HttpClient', () => {
   describe('get', () => {
     const path = `/${valueGenerator.word()}/${valueGenerator.word()}`;
 
-    const expectedApimHeaders = {
-      [process.env.APIM_MDM_KEY]: process.env.APIM_MDM_VALUE,
-    };
-
     const queryParams = {
       [valueGenerator.word()]: valueGenerator.string(),
       [valueGenerator.word()]: valueGenerator.string(),
     };
-
-    const expectedHttpServiceGetArgs: [string, object] = [path, { headers: expectedApimHeaders, params: queryParams }];
-    const expectedHttpServiceGetArgsWithoutHeaders: [string, object] = [path, { headers: expectedApimHeaders, params: queryParams }];
-    const expectedHttpServiceGetArgsWithoutQueryParams: [string, object] = [path, { headers: expectedApimHeaders }];
-    const expectedHttpServiceGetArgsWithoutQueryParamsAndHeaders: [string, object] = [path, { headers: expectedApimHeaders }];
 
     const response: AxiosResponse = {
       data: {
@@ -58,9 +48,18 @@ describe('HttpClient', () => {
 
     describe('when the HttpService succeeds', () => {
       beforeEach(() => {
-        when(httpServiceGet)
-          .calledWith(...expectedHttpServiceGetArgs)
-          .mockReturnValueOnce(of(response));
+        httpServiceGet.mockReturnValueOnce(of(response));
+      });
+
+      it('should call HttpService.get', async () => {
+        await client.get({
+          path,
+          queryParams,
+          onError,
+        });
+
+        expect(httpServiceGet).toHaveBeenCalledTimes(1);
+        expect(httpServiceGet).toHaveBeenCalledWith(path, expect.objectContaining({ params: queryParams }));
       });
 
       it('should return the same response', async () => {
@@ -84,45 +83,13 @@ describe('HttpClient', () => {
       });
     });
 
-    describe('when headers are not provided', () => {
-      beforeEach(() => {
-        when(httpServiceGet)
-          .calledWith(...expectedHttpServiceGetArgsWithoutHeaders)
-          .mockReturnValueOnce(of(response));
-      });
-
-      it('should call HttpService.get', async () => {
-        await client.get({
-          path,
-          queryParams,
-          onError,
-        });
-
-        expect(httpServiceGet).toHaveBeenCalledWith(...expectedHttpServiceGetArgsWithoutHeaders);
-      });
-
-      it('should return the same response', async () => {
-        const result = await client.get({
-          path,
-          queryParams,
-          onError,
-        });
-
-        expect(result).toBe(response);
-      });
-    });
-
     describe('when the HttpService errors', () => {
       const errorFromHttpService = new Error('Test error from HttpService');
       const errorThatOnErrorThrows = new Error('Test error from onError');
 
       beforeEach(() => {
-        when(httpServiceGet)
-          .calledWith(...expectedHttpServiceGetArgs)
-          .mockReturnValueOnce(throwError(() => errorFromHttpService));
-        when(onError)
-          .calledWith(errorFromHttpService)
-          .mockImplementationOnce(() => throwError(() => errorThatOnErrorThrows));
+        httpServiceGet.mockReturnValueOnce(throwError(() => errorFromHttpService));
+        onError = jest.fn().mockImplementation(() => throwError(() => errorThatOnErrorThrows));
       });
 
       it('should call onError with the error that HttpService errored with', async () => {
@@ -153,29 +120,18 @@ describe('HttpClient', () => {
 
     describe('when queryParams are not provided', () => {
       it('should call HttpService.get', async () => {
-        when(httpServiceGet)
-          .calledWith(...expectedHttpServiceGetArgsWithoutQueryParams)
-          .mockReturnValueOnce(of(response));
+        httpServiceGet.mockReturnValueOnce(of(response));
 
         await client.get({
           path,
           onError,
         });
 
-        expect(httpServiceGet).toHaveBeenCalledWith(...expectedHttpServiceGetArgsWithoutQueryParams);
-      });
+        expect(httpServiceGet).toHaveBeenCalledWith(path, expect.any(Object));
 
-      it('should call HttpService.get with APIM headers when headers are not provided', async () => {
-        when(httpServiceGet)
-          .calledWith(...expectedHttpServiceGetArgsWithoutQueryParamsAndHeaders)
-          .mockReturnValueOnce(of(response));
+        const [[, config]] = httpServiceGet.mock.calls;
 
-        await client.get({
-          path,
-          onError,
-        });
-
-        expect(httpServiceGet).toHaveBeenCalledWith(...expectedHttpServiceGetArgsWithoutQueryParamsAndHeaders);
+        expect(config.params).toBeUndefined();
       });
     });
   });

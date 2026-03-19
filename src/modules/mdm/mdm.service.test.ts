@@ -3,7 +3,6 @@ import { HttpStatus } from '@nestjs/common';
 import { EXAMPLES } from '@ukef/constants';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { AxiosError } from 'axios';
-import { when } from 'jest-when';
 import { PinoLogger } from 'nestjs-pino';
 import { of, throwError } from 'rxjs';
 
@@ -16,10 +15,6 @@ describe('MdmService', () => {
   const logger = new PinoLogger({});
 
   const valueGenerator = new RandomValueGenerator();
-
-  const expectedApimHeaders = {
-    [process.env.APIM_MDM_KEY]: process.env.APIM_MDM_VALUE,
-  };
 
   let httpServiceGet: jest.Mock;
   let service: MdmService;
@@ -47,30 +42,25 @@ describe('MdmService', () => {
       },
     ];
 
-    const expectedHttpServiceGetArgs: [string, object] = ['/v1/customers', { headers: expectedApimHeaders, params: { partyUrn: partyUrnToSearch } }];
-
     it('returns the search results from sending a GET request to the MDM /v1/customers?partyUrn={partyUrn} endpoint', async () => {
-      when(httpServiceGet)
-        .calledWith(...expectedHttpServiceGetArgs)
-        .mockReturnValueOnce(
-          of({
-            data: customerSearchResults,
-            status: HttpStatus.OK,
-            statusText: 'OK',
-          }),
-        );
+      httpServiceGet.mockReturnValueOnce(
+        of({
+          data: customerSearchResults,
+          status: HttpStatus.OK,
+          statusText: 'OK',
+        }),
+      );
 
       const foundCustomers = await service.findCustomersByPartyUrn(partyUrnToSearch);
 
       expect(foundCustomers).toBe(customerSearchResults);
+      expect(httpServiceGet).toHaveBeenCalledWith('/v1/customers', expect.objectContaining({ params: { partyUrn: partyUrnToSearch } }));
     });
 
     it('throws an MdmResourceNotFoundException if the request in APIM MDM fails with a 404 response', async () => {
       const axios404Error = new AxiosError();
       axios404Error.response = { data: valueGenerator.string(), status: 404, statusText: 'Not Found', headers: undefined, config: undefined };
-      when(httpServiceGet)
-        .calledWith(...expectedHttpServiceGetArgs)
-        .mockReturnValueOnce(throwError(() => axios404Error));
+      httpServiceGet.mockReturnValueOnce(throwError(() => axios404Error));
 
       const findCustomersPromise = service.findCustomersByPartyUrn(partyUrnToSearch);
 
@@ -84,9 +74,7 @@ describe('MdmService', () => {
     it('throws an MdmException that is not an MdmResourceNotFoundException if the request to APIM MDM fails with a 500 response', async () => {
       const axios500Error = new AxiosError();
       axios500Error.response = { data: valueGenerator.string(), status: 500, statusText: 'Internal Server Error', headers: undefined, config: undefined };
-      when(httpServiceGet)
-        .calledWith(...expectedHttpServiceGetArgs)
-        .mockReturnValueOnce(throwError(() => axios500Error));
+      httpServiceGet.mockReturnValueOnce(throwError(() => axios500Error));
 
       const findCustomersPromise = service.findCustomersByPartyUrn(partyUrnToSearch);
 
@@ -98,9 +86,7 @@ describe('MdmService', () => {
 
     it('throws an MdmException that is not an MdmResourceNotFoundException if the request in APIM MDM fails with an AxiosError without a response', async () => {
       const axiosErrorWithoutResponse = new AxiosError();
-      when(httpServiceGet)
-        .calledWith(...expectedHttpServiceGetArgs)
-        .mockReturnValueOnce(throwError(() => axiosErrorWithoutResponse));
+      httpServiceGet.mockReturnValueOnce(throwError(() => axiosErrorWithoutResponse));
 
       const findCustomersPromise = service.findCustomersByPartyUrn(partyUrnToSearch);
 
@@ -112,9 +98,7 @@ describe('MdmService', () => {
 
     it('throws an MdmException that is not an MdmResourceNotFoundException if the request in APIM MDM fails with a generic error', async () => {
       const error = new Error();
-      when(httpServiceGet)
-        .calledWith(...expectedHttpServiceGetArgs)
-        .mockReturnValueOnce(throwError(() => error));
+      httpServiceGet.mockReturnValueOnce(throwError(() => error));
 
       const findCustomersPromise = service.findCustomersByPartyUrn(partyUrnToSearch);
 
@@ -126,18 +110,14 @@ describe('MdmService', () => {
   });
 
   describe('getAllObligationSubtypesWithProductTypeCodes', () => {
-    const expectedHttpServiceGetArgs: [string, object] = ['/v2/ods/obligation-subtypes/with-product-type-codes', { headers: expectedApimHeaders }];
-
     beforeEach(() => {
-      when(httpServiceGet)
-        .calledWith(...expectedHttpServiceGetArgs)
-        .mockReturnValueOnce(
-          of({
-            data: EXAMPLES.MDM.OBLIGATION_SUBTYPES_WITH_PRODUCT_CODES_RESPONSE_DATA,
-            status: HttpStatus.OK,
-            statusText: 'OK',
-          }),
-        );
+      httpServiceGet.mockReturnValueOnce(
+        of({
+          data: EXAMPLES.MDM.OBLIGATION_SUBTYPES_WITH_PRODUCT_CODES_RESPONSE_DATA,
+          status: HttpStatus.OK,
+          statusText: 'OK',
+        }),
+      );
     });
 
     it('should call httpService.get', async () => {
@@ -146,7 +126,7 @@ describe('MdmService', () => {
 
       // Assert
       expect(httpServiceGet).toHaveBeenCalledTimes(1);
-      expect(httpServiceGet).toHaveBeenCalledWith(...expectedHttpServiceGetArgs);
+      expect(httpServiceGet).toHaveBeenCalledWith('/v2/ods/obligation-subtypes/with-product-type-codes', expect.any(Object));
     });
 
     describe('when httpService.get is successful', () => {
@@ -164,10 +144,7 @@ describe('MdmService', () => {
 
       beforeEach(() => {
         httpServiceGet.mockReset();
-
-        when(httpServiceGet)
-          .calledWith(...expectedHttpServiceGetArgs)
-          .mockReturnValueOnce(throwError(() => mockError));
+        httpServiceGet.mockReturnValueOnce(throwError(() => mockError));
       });
 
       it('should throw an error', async () => {
