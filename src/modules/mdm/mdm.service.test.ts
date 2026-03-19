@@ -16,6 +16,7 @@ describe('MdmService', () => {
   const logger = new PinoLogger({});
 
   const valueGenerator = new RandomValueGenerator();
+
   const expectedApimHeaders = {
     [process.env.APIM_MDM_KEY]: process.env.APIM_MDM_VALUE,
   };

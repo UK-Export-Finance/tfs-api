@@ -32,7 +32,6 @@ export class HttpClient {
     queryParams,
     onError,
   }: {
-    headers?: RequestHeaders;
     path: string;
     queryParams?: QueryParams;
     onError: (error: Error) => ObservableInput<never>;

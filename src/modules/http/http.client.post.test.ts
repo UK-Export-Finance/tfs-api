@@ -96,7 +96,7 @@ describe('HttpClient', () => {
           .mockReturnValueOnce(of(response));
       });
 
-      it('should call HttpService.post with APIM headers in config', async () => {
+      it('should call HttpService.post', async () => {
         await client.post({
           path,
           requestBody,

@@ -22,10 +22,6 @@ describe('HttpClient', () => {
 
   describe('get', () => {
     const path = `/${valueGenerator.word()}/${valueGenerator.word()}`;
-    const headers = {
-      [valueGenerator.word()]: valueGenerator.string(),
-      [valueGenerator.word()]: valueGenerator.string(),
-    };
 
     const expectedApimHeaders = {
       [process.env.APIM_MDM_KEY]: process.env.APIM_MDM_VALUE,
@@ -71,7 +67,6 @@ describe('HttpClient', () => {
         const result = await client.get({
           path,
           queryParams,
-          headers,
           onError,
         });
 
@@ -82,7 +77,6 @@ describe('HttpClient', () => {
         await client.get({
           path,
           queryParams,
-          headers,
           onError,
         });
 
@@ -97,7 +91,7 @@ describe('HttpClient', () => {
           .mockReturnValueOnce(of(response));
       });
 
-      it('should call HttpService.get with APIM headers in config', async () => {
+      it('should call HttpService.get', async () => {
         await client.get({
           path,
           queryParams,
@@ -136,7 +130,6 @@ describe('HttpClient', () => {
           .get({
             path,
             queryParams,
-            headers,
             onError,
           })
           .catch(() => {
@@ -151,7 +144,6 @@ describe('HttpClient', () => {
         const clientGetPromise = client.get({
           path,
           queryParams,
-          headers,
           onError,
         });
 
@@ -160,14 +152,13 @@ describe('HttpClient', () => {
     });
 
     describe('when queryParams are not provided', () => {
-      it('should call HttpService.get without params when headers are provided', async () => {
+      it('should call HttpService.get', async () => {
         when(httpServiceGet)
           .calledWith(...expectedHttpServiceGetArgsWithoutQueryParams)
           .mockReturnValueOnce(of(response));
 
         await client.get({
           path,
-          headers,
           onError,
         });
 
