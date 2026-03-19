@@ -2,6 +2,7 @@ import { HttpStatus } from '@nestjs/common';
 import AppConfig from '@ukef/config/app.config';
 import { AMEND_FACILITY_TYPES_ARRAY, GIFT } from '@ukef/constants';
 import { GIFT_EXAMPLES } from '@ukef/constants/examples/gift.examples.constant';
+import { MDM_EXAMPLES } from '@ukef/constants/examples/mdm.examples.constant';
 import { MockGiftResponse } from '@ukef-test/support/interfaces/mock-gift-response.interface';
 
 const {
@@ -75,7 +76,7 @@ export const mockResponses = {
   feeTypes: GIFT_EXAMPLES.FEE_TYPES_RESPONSE_DATA,
   fixedFee: { data: { aFixedFee: true } },
   obligation: { data: { anObligation: true } },
-  obligationSubtype: GIFT_EXAMPLES.OBLIGATION_SUBTYPES_RESPONSE_DATA,
+  obligationSubtypes: MDM_EXAMPLES.OBLIGATION_SUBTYPES_WITH_PRODUCT_CODES_RESPONSE_DATA,
   productType: { data: { aProductType: true } },
   repaymentProfile: { data: { aRepaymentProfile: true } },
   riskDetails: {
@@ -101,7 +102,7 @@ export const currencyUrl = PATH.CURRENCY;
 export const counterpartyRolesUrl = PATH.COUNTERPARTY_ROLES;
 export const facilityCreationUrl = PATH.CREATE_FACILITY;
 export const feeTypeUrl = PATH.FEE_TYPE;
-// export const obligationSubtypeUrl = PATH.OBLIGATION_SUBTYPE;
+export const apimMdmObligationSubtypesUrl = '/v2/ods/obligation-subtypes/with-product-type-codes';
 export const productTypeUrl = (productTypeCode: string = PRODUCT_TYPE_CODES.BIP) => `${PATH.PRODUCT_TYPE}/${productTypeCode}`;
 export const businessCalendarUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_BUSINESS_CALENDAR}`;
 export const businessCalendarsConventionUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_BUSINESS_CALENDARS_CONVENTION}`;

@@ -8,6 +8,7 @@ import nock from 'nock';
 
 import {
   apimFacilityUrl,
+  apimMdmObligationSubtypesUrl,
   approveStatusUrl,
   businessCalendarsConventionUrl,
   businessCalendarUrl,
@@ -18,7 +19,6 @@ import {
   feeTypeUrl,
   fixedFeeUrl,
   mockResponses,
-  obligationSubtypeUrl,
   obligationUrl,
   payloadCounterparties,
   payloadFixedFees,
@@ -30,6 +30,7 @@ import {
 } from './test-helpers';
 
 const { GIFT_API_URL } = ENVIRONMENT_VARIABLES;
+const { APIM_MDM_KEY, APIM_MDM_URL, APIM_MDM_VALUE } = ENVIRONMENT_VARIABLES;
 
 const { OBLIGATION_SUBTYPES, PRODUCT_TYPE_CODES, PRODUCT_TYPE_NAMES } = GIFT;
 
@@ -47,7 +48,11 @@ const setupMocks = () => {
 
   nock(GIFT_API_URL).persist().get(counterpartyRolesUrl).reply(HttpStatus.OK, mockResponses.counterpartyRoles);
 
-  nock(GIFT_API_URL).persist().get(obligationSubtypeUrl).reply(HttpStatus.OK, mockResponses.obligationSubtype);
+  nock(APIM_MDM_URL)
+    .persist()
+    .get(apimMdmObligationSubtypesUrl)
+    .matchHeader(APIM_MDM_KEY, APIM_MDM_VALUE)
+    .reply(HttpStatus.OK, mockResponses.obligationSubtypes);
 
   nock(GIFT_API_URL).persist().post(facilityCreationUrl).reply(HttpStatus.CREATED, mockResponses.facility);
 

@@ -4,14 +4,14 @@ import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import nock from 'nock';
 
-import { mockResponses, obligationSubtypeUrl } from '../test-helpers';
+import { apimMdmObligationSubtypesUrl, mockResponses } from '../test-helpers';
 import { generatePayload } from './generate-payload';
 import { assert400Response } from './response-assertion';
 import { stringValidation } from './string-validation';
 
 const { API_RESPONSE_MESSAGES, OBLIGATION_SUBTYPES, PATH } = GIFT;
 
-const { GIFT_API_URL } = ENVIRONMENT_VARIABLES;
+const { APIM_MDM_KEY, APIM_MDM_URL, APIM_MDM_VALUE, GIFT_API_URL } = ENVIRONMENT_VARIABLES;
 
 const UNSUPPORTED_PRODUCT_TYPE_CODE = 'ABC';
 
@@ -46,22 +46,24 @@ export const productTypeCodeStringValidation = ({ initialPayload, parentFieldNam
    * This prevents the obligation validation errors from being returned.
    * So that this test is specifically focus on the high level product type code.
    */
-  const mockObligationSubtypeResponse = {
-    obligationSubtypes: [
-      {
-        code: OBLIGATION_SUBTYPES.OST009.code,
-        name: OBLIGATION_SUBTYPES.OST009.name,
-        productTypeCode: UNSUPPORTED_PRODUCT_TYPE_CODE,
-      },
-    ],
-  };
+  const mockObligationSubtypeResponse = [
+    {
+      ...mockResponses.obligationSubtypes[0],
+      code: OBLIGATION_SUBTYPES.OST009.code,
+      productTypeCode: UNSUPPORTED_PRODUCT_TYPE_CODE,
+    },
+  ];
 
   describe('when the provided product type code is not supported', () => {
     beforeAll(() => {
       // Arrange
       nock(GIFT_API_URL).persist().get(`${PATH.PRODUCT_TYPE}/${UNSUPPORTED_PRODUCT_TYPE_CODE}`).reply(HttpStatus.NOT_FOUND, mockResponses.productType);
 
-      nock(GIFT_API_URL).persist().get(obligationSubtypeUrl).reply(HttpStatus.OK, mockObligationSubtypeResponse);
+      nock(APIM_MDM_URL)
+        .persist()
+        .get(apimMdmObligationSubtypesUrl)
+        .matchHeader(APIM_MDM_KEY, APIM_MDM_VALUE)
+        .reply(HttpStatus.OK, mockObligationSubtypeResponse);
     });
 
     it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
