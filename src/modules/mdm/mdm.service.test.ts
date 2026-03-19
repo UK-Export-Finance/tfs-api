@@ -1,7 +1,9 @@
 import { HttpService } from '@nestjs/axios';
+import { EXAMPLES } from '@ukef/constants';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { AxiosError } from 'axios';
 import { when } from 'jest-when';
+import { PinoLogger } from 'nestjs-pino';
 import { of, throwError } from 'rxjs';
 
 import { MdmCustomersResponse } from './dto/mdm-customers-response.dto';
@@ -10,6 +12,8 @@ import { MdmResourceNotFoundException } from './exception/mdm-resource-not-found
 import { MdmService } from './mdm.service';
 
 describe('MdmService', () => {
+  const logger = new PinoLogger({});
+
   const valueGenerator = new RandomValueGenerator();
 
   let httpServiceGet: jest.Mock;
@@ -21,7 +25,7 @@ describe('MdmService', () => {
     httpServiceGet = jest.fn();
     httpService.get = httpServiceGet;
 
-    service = new MdmService(httpService);
+    service = new MdmService(httpService, logger);
   });
 
   describe('findCustomersByPartyUrn', () => {
@@ -115,6 +119,124 @@ describe('MdmService', () => {
       await expect(findCustomersPromise).rejects.toBeInstanceOf(MdmException);
       await expect(findCustomersPromise).rejects.toThrow(`Failed to find customers with partyUrn ${partyUrnToSearch} in APIM MDM.`);
       await expect(findCustomersPromise).rejects.toHaveProperty('innerError', error);
+    });
+  });
+
+  describe('getAllObligationSubtypes', () => {
+    const expectedHttpServiceGetArgs: [string, object] = ['/v2/ods/obligation-subtypes', { params: {} }];
+
+    beforeEach(() => {
+      when(httpServiceGet)
+        .calledWith(...expectedHttpServiceGetArgs)
+        .mockReturnValueOnce(
+          of({
+            data: EXAMPLES.MDM.OBLIGATION_SUBTYPES_RESPONSE_DATA,
+            status: 200,
+            statusText: 'OK',
+            config: undefined,
+            headers: undefined,
+          }),
+        );
+    });
+
+    it('should call httpService.get', async () => {
+      // Act
+      await service.getAllObligationSubtypes();
+
+      // Assert
+      expect(httpServiceGet).toHaveBeenCalledTimes(1);
+      expect(httpServiceGet).toHaveBeenCalledWith(...expectedHttpServiceGetArgs);
+    });
+
+    describe('when httpService.get is successful', () => {
+      it('should return the response from httpService.get', async () => {
+        // Act
+        const response = await service.getAllObligationSubtypes();
+
+        // Assert
+        expect(response.data).toEqual(EXAMPLES.MDM.OBLIGATION_SUBTYPES_RESPONSE_DATA);
+      });
+    });
+
+    describe('when httpService.get returns an error', () => {
+      const mockError = new Error('Mock error');
+
+      beforeEach(() => {
+        httpServiceGet.mockReset();
+
+        when(httpServiceGet)
+          .calledWith(...expectedHttpServiceGetArgs)
+          .mockReturnValueOnce(throwError(() => mockError));
+      });
+
+      it('should throw an error', async () => {
+        // Act
+        const promise = service.getAllObligationSubtypes();
+
+        // Assert
+        const expected = new Error('Error getting obligation subtypes from APIM MDM', { cause: mockError });
+
+        await expect(promise).rejects.toThrow(expected);
+      });
+    });
+  });
+
+  describe('getAllObligationSubtypesWithProductCodes', () => {
+    const expectedHttpServiceGetArgs: [string, object] = ['/v2/ods/obligation-subtypes/with-product-codes', { params: {} }];
+
+    beforeEach(() => {
+      when(httpServiceGet)
+        .calledWith(...expectedHttpServiceGetArgs)
+        .mockReturnValueOnce(
+          of({
+            data: EXAMPLES.MDM.OBLIGATION_SUBTYPES_WITH_PRODUCT_CODES_RESPONSE_DATA,
+            status: 200,
+            statusText: 'OK',
+            config: undefined,
+            headers: undefined,
+          }),
+        );
+    });
+
+    it('should call httpService.get', async () => {
+      // Act
+      await service.getAllObligationSubtypesWithProductCodes();
+
+      // Assert
+      expect(httpServiceGet).toHaveBeenCalledTimes(1);
+      expect(httpServiceGet).toHaveBeenCalledWith(...expectedHttpServiceGetArgs);
+    });
+
+    describe('when httpService.get is successful', () => {
+      it('should return the response from httpService.get', async () => {
+        // Act
+        const response = await service.getAllObligationSubtypesWithProductCodes();
+
+        // Assert
+        expect(response.data).toEqual(EXAMPLES.MDM.OBLIGATION_SUBTYPES_WITH_PRODUCT_CODES_RESPONSE_DATA);
+      });
+    });
+
+    describe('when httpService.get returns an error', () => {
+      const mockError = new Error('Mock error');
+
+      beforeEach(() => {
+        httpServiceGet.mockReset();
+
+        when(httpServiceGet)
+          .calledWith(...expectedHttpServiceGetArgs)
+          .mockReturnValueOnce(throwError(() => mockError));
+      });
+
+      it('should throw an error', async () => {
+        // Act
+        const promise = service.getAllObligationSubtypesWithProductCodes();
+
+        // Assert
+        const expected = new Error('Error getting obligation subtypes with product codes from APIM MDM', { cause: mockError });
+
+        await expect(promise).rejects.toThrow(expected);
+      });
     });
   });
 });

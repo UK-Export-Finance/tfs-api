@@ -12,22 +12,36 @@ const { OBLIGATION_SUBTYPES } = GIFT;
 export class GiftObligationSubtypeResponseDto {
   @IsString()
   @ApiProperty({
-    example: OBLIGATION_SUBTYPES.OST009.code,
+    example: OBLIGATION_SUBTYPES.OST001.type,
+    required: true,
+  })
+  readonly type: string;
+
+  @IsString()
+  @ApiProperty({
+    example: OBLIGATION_SUBTYPES.OST001.typeCode,
+    required: true,
+  })
+  readonly typeCode: string;
+
+  @IsString()
+  @ApiProperty({
+    example: OBLIGATION_SUBTYPES.OST001.code,
     required: true,
   })
   readonly code: string;
 
   @IsString()
   @ApiProperty({
-    example: OBLIGATION_SUBTYPES.OST009.name,
+    example: OBLIGATION_SUBTYPES.OST001.description,
     required: true,
   })
-  readonly name: string;
+  readonly description: string;
 
   @IsString()
   @ApiProperty({
-    example: OBLIGATION_SUBTYPES.OST009.productTypeCode,
+    example: OBLIGATION_SUBTYPES.OST001.isActive,
     required: true,
   })
-  readonly productTypeCode: string;
+  readonly isActive: boolean;
 }

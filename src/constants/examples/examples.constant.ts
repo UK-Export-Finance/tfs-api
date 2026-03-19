@@ -1,6 +1,7 @@
 import { COUNTRIES } from '../countries.constant';
 import { SUPPORTED_CURRENCIES } from '../currencies.constant';
 import { GIFT_EXAMPLES } from './gift.examples.constant';
+import { MDM_EXAMPLES } from './mdm.examples.constant';
 
 export const EXAMPLES = {
   ACBS_BUNDLE_ID: '0000321000',
@@ -31,4 +32,5 @@ export const EXAMPLES = {
   PARTY_ALTERNATE_ID: '00345678',
   LENDER_TYPE_CODE: '500',
   GIFT: GIFT_EXAMPLES,
+  MDM: MDM_EXAMPLES,
 };

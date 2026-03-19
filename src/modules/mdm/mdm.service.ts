@@ -1,9 +1,11 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { HttpClient } from '@ukef/modules/http/http.client';
-import { AxiosError } from 'axios';
+import { AxiosError, AxiosResponse } from 'axios';
+import { PinoLogger } from 'nestjs-pino';
 import { throwError } from 'rxjs';
 
+import { GiftObligationSubtypeResponseDto } from '../gift/dto';
 import { MdmCustomersParams } from './dto/mdm-customers-params.dto';
 import { MdmCustomersResponse } from './dto/mdm-customers-response.dto';
 import { MdmException } from './exception/mdm.exception';
@@ -12,9 +14,11 @@ import { MdmResourceNotFoundException } from './exception/mdm-resource-not-found
 @Injectable()
 export class MdmService {
   private readonly httpClient: HttpClient;
+  private readonly logger: PinoLogger;
 
-  constructor(httpService: HttpService) {
+  constructor(httpService: HttpService, logger: PinoLogger) {
     this.httpClient = new HttpClient(httpService);
+    this.logger = logger;
   }
 
   /**
@@ -39,5 +43,49 @@ export class MdmService {
     });
 
     return customerSearchResults;
+  }
+
+  /**
+   * Get all obligation subtypes from APIM MDM.
+   * @returns {Promise<AxiosResponse<GiftObligationSubtypeResponseDto[]>>}
+   */
+  async getAllObligationSubtypes(): Promise<AxiosResponse<GiftObligationSubtypeResponseDto[]>> {
+    try {
+      this.logger.info('Getting obligation subtypes from APIM MDM');
+
+      const response = await this.httpClient.get<Record<string, never>, GiftObligationSubtypeResponseDto[]>({
+        path: '/v2/ods/obligation-subtypes',
+        queryParams: {},
+        onError: (error: Error) => throwError(() => error),
+      });
+
+      return response;
+    } catch (error) {
+      this.logger.error('Error getting obligation subtypes from APIM MDM %o', error);
+
+      throw new Error('Error getting obligation subtypes from APIM MDM', { cause: error });
+    }
+  }
+
+  /**
+   * Get all obligation subtypes with product codes from APIM MDM.
+   * @returns {Promise<AxiosResponse<GiftObligationSubtypeResponseDto[]>>}
+   */
+  async getAllObligationSubtypesWithProductCodes(): Promise<AxiosResponse<GiftObligationSubtypeResponseDto[]>> {
+    try {
+      this.logger.info('Getting obligation subtypes with product codes from APIM MDM');
+
+      const response = await this.httpClient.get<Record<string, never>, GiftObligationSubtypeResponseDto[]>({
+        path: '/v2/ods/obligation-subtypes/with-product-codes',
+        queryParams: {},
+        onError: (error: Error) => throwError(() => error),
+      });
+
+      return response;
+    } catch (error) {
+      this.logger.error('Error getting obligation subtypes with product codes from APIM MDM %o', error);
+
+      throw new Error('Error getting obligation subtypes with product codes from APIM MDM', { cause: error });
+    }
   }
 }
