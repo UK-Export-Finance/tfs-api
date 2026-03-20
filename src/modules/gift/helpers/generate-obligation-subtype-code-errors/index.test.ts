@@ -1,27 +1,11 @@
 import { EXAMPLES } from '@ukef/constants';
 
-import { GiftObligationSubtypeResponseDto } from '../../dto';
 import { generateObligationSubtypeCodeErrors } from '.';
 
 const mockProductTypeCode = 'Mock product 1';
+const { OBLIGATION_SUBTYPES, OBLIGATION_SUBTYPES_WITH_PRODUCT_CODES_RESPONSE_DATA } = EXAMPLES.MDM;
 
-const mockSubtypes: GiftObligationSubtypeResponseDto[] = [
-  {
-    code: '1',
-    name: 'Code 1',
-    productTypeCode: mockProductTypeCode,
-  },
-  {
-    code: '2',
-    name: 'Code 2',
-    productTypeCode: mockProductTypeCode,
-  },
-  {
-    code: '3',
-    name: 'Code 3',
-    productTypeCode: mockProductTypeCode,
-  },
-];
+const mockSubtypes = OBLIGATION_SUBTYPES_WITH_PRODUCT_CODES_RESPONSE_DATA;
 
 describe('modules/gift/helpers/generate-obligation-subtype-code-errors', () => {
   describe('when all provided subtype codes are not supported', () => {
@@ -55,9 +39,9 @@ describe('modules/gift/helpers/generate-obligation-subtype-code-errors', () => {
     it('should return an array with validation errors', () => {
       // Arrange
       const mockProvidedObligations = [
-        { ...EXAMPLES.GIFT.OBLIGATION(), subtypeCode: '1' },
+        { ...EXAMPLES.GIFT.OBLIGATION(), subtypeCode: OBLIGATION_SUBTYPES.OST001.code },
         { ...EXAMPLES.GIFT.OBLIGATION(), subtypeCode: '200' },
-        { ...EXAMPLES.GIFT.OBLIGATION(), subtypeCode: '3' },
+        { ...EXAMPLES.GIFT.OBLIGATION(), subtypeCode: OBLIGATION_SUBTYPES.OST012.code },
       ];
 
       // Act
@@ -74,13 +58,13 @@ describe('modules/gift/helpers/generate-obligation-subtype-code-errors', () => {
     });
   });
 
-  describe('when one provided subtype codes are supported', () => {
+  describe('when all provided subtype codes are supported', () => {
     it('should return an empty array', () => {
       // Arrange
       const mockProvidedObligations = [
-        { ...EXAMPLES.GIFT.OBLIGATION(), subtypeCode: '1' },
-        { ...EXAMPLES.GIFT.OBLIGATION(), subtypeCode: '2' },
-        { ...EXAMPLES.GIFT.OBLIGATION(), subtypeCode: '3' },
+        { ...EXAMPLES.GIFT.OBLIGATION(), subtypeCode: OBLIGATION_SUBTYPES.OST001.code },
+        { ...EXAMPLES.GIFT.OBLIGATION(), subtypeCode: OBLIGATION_SUBTYPES.OST009.code },
+        { ...EXAMPLES.GIFT.OBLIGATION(), subtypeCode: OBLIGATION_SUBTYPES.OST012.code },
       ];
 
       // Act

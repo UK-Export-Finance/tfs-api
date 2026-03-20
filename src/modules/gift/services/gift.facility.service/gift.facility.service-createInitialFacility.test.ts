@@ -1,4 +1,5 @@
 import { EXAMPLES, GIFT } from '@ukef/constants';
+import { MdmService } from '@ukef/modules/mdm/mdm.service';
 import { mockGiftFacilityCreationErrorService } from '@ukef-test/gift/mock-services';
 import { mockResponse201, mockResponse500 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
@@ -13,7 +14,6 @@ import {
   GiftFeeTypeService,
   GiftFixedFeeService,
   GiftObligationService,
-  GiftObligationSubtypeService,
   GiftProductTypeService,
   GiftRepaymentProfileService,
   GiftRiskDetailsService,
@@ -45,6 +45,7 @@ describe('GiftFacilityService.createInitialFacility', () => {
   let service: GiftFacilityService;
 
   let giftHttpService;
+  let httpService;
   let mockHttpServicePost: jest.Mock;
 
   beforeEach(() => {
@@ -55,10 +56,12 @@ describe('GiftFacilityService.createInitialFacility', () => {
       post: mockHttpServicePost,
     };
 
+    httpService = giftHttpService;
+
     const counterpartyService = new GiftCounterpartyService(giftHttpService, logger);
     const currencyService = new GiftCurrencyService(giftHttpService, logger);
     const feeTypeService = new GiftFeeTypeService(giftHttpService, logger);
-    const obligationSubtypeService = new GiftObligationSubtypeService(giftHttpService, logger);
+    const mdmService = new MdmService(httpService, logger);
     const productTypeService = new GiftProductTypeService(giftHttpService, logger);
 
     asyncValidationService = new GiftFacilityAsyncValidationService(
@@ -66,7 +69,7 @@ describe('GiftFacilityService.createInitialFacility', () => {
       counterpartyService,
       currencyService,
       feeTypeService,
-      obligationSubtypeService,
+      mdmService,
       productTypeService,
     );
 

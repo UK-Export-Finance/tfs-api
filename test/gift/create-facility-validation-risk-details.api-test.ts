@@ -6,13 +6,13 @@ import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables'
 import nock from 'nock';
 
 import { numberStringValidation, optionalStringValidation, stringValidation, ukefIdValidation } from './assertions';
-import { counterpartyRolesUrl, currencyUrl, feeTypeUrl, mockResponses, obligationSubtypeUrl, productTypeUrl } from './test-helpers';
+import { apimMdmObligationSubtypesUrl, counterpartyRolesUrl, currencyUrl, feeTypeUrl, mockResponses, productTypeUrl } from './test-helpers';
 
 const {
   giftVersioning: { prefixAndVersion },
 } = AppConfig();
 
-const { GIFT_API_URL } = ENVIRONMENT_VARIABLES;
+const { APIM_MDM_KEY, APIM_MDM_URL, APIM_MDM_VALUE, GIFT_API_URL } = ENVIRONMENT_VARIABLES;
 
 const {
   PATH: { FACILITY },
@@ -37,7 +37,11 @@ describe('POST /gift/facility - validation - risk details', () => {
 
     nock(GIFT_API_URL).persist().get(counterpartyRolesUrl).reply(HttpStatus.OK, mockResponses.counterpartyRoles);
 
-    nock(GIFT_API_URL).persist().get(obligationSubtypeUrl).reply(HttpStatus.OK, mockResponses.obligationSubtype);
+    nock(APIM_MDM_URL)
+      .persist()
+      .get(apimMdmObligationSubtypesUrl)
+      .matchHeader(APIM_MDM_KEY, APIM_MDM_VALUE)
+      .reply(HttpStatus.OK, mockResponses.obligationSubtypes);
   });
 
   afterAll(async () => {

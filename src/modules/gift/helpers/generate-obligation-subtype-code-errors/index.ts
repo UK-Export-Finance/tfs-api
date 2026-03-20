@@ -1,7 +1,9 @@
-import { GiftObligationRequestDto, GiftObligationSubtypeResponseDto } from '../../dto';
+import { ObligationSubtypeMdmResponseDto } from '@ukef/modules/mdm/dto/obligation-subtype-mdm-response';
+
+import { GiftObligationRequestDto } from '../../dto';
 
 interface GenerateObligationSubtypeCodeErrorsParams {
-  subtypes: GiftObligationSubtypeResponseDto[];
+  subtypes: ObligationSubtypeMdmResponseDto[];
   productTypeCode: string;
   providedObligations: GiftObligationRequestDto[];
 }
@@ -36,9 +38,9 @@ export const generateObligationSubtypeCodeErrors = ({
   providedObligations.forEach((obligation: GiftObligationRequestDto, index: number) => {
     const { subtypeCode: providedSubtypeCode } = obligation;
 
-    const giftSubtypeCode = subtypes.find((subtype: GiftObligationSubtypeResponseDto) => subtype.code === providedSubtypeCode);
+    const matchedSubtypeCode = subtypes.find((subtype: ObligationSubtypeMdmResponseDto) => subtype.code === providedSubtypeCode);
 
-    if (!giftSubtypeCode) {
+    if (!matchedSubtypeCode) {
       validationErrors.push(`obligations.${index}.subtypeCode is not supported by product type ${productTypeCode}`);
     }
   });

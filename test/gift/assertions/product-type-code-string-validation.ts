@@ -1,17 +1,18 @@
 import { HttpStatus } from '@nestjs/common';
 import { GIFT } from '@ukef/constants';
+import { MDM_EXAMPLES } from '@ukef/constants/examples/mdm.examples.constant';
 import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import nock from 'nock';
 
-import { mockResponses, obligationSubtypeUrl } from '../test-helpers';
+import { apimMdmObligationSubtypesUrl, mockResponses } from '../test-helpers';
 import { generatePayload } from './generate-payload';
 import { assert400Response } from './response-assertion';
 import { stringValidation } from './string-validation';
 
-const { API_RESPONSE_MESSAGES, OBLIGATION_SUBTYPES, PATH } = GIFT;
+const { API_RESPONSE_MESSAGES, PATH } = GIFT;
 
-const { GIFT_API_URL } = ENVIRONMENT_VARIABLES;
+const { APIM_MDM_KEY, APIM_MDM_URL, APIM_MDM_VALUE, GIFT_API_URL } = ENVIRONMENT_VARIABLES;
 
 const UNSUPPORTED_PRODUCT_TYPE_CODE = 'ABC';
 
@@ -41,27 +42,27 @@ export const productTypeCodeStringValidation = ({ initialPayload, parentFieldNam
   mockPayload[`${parentFieldName}`][`${fieldName}`] = UNSUPPORTED_PRODUCT_TYPE_CODE;
 
   /**
-   * Mock the obligation subtype response,
-   * so that obligations with an unsupported product type code are technically valid.
-   * This prevents the obligation validation errors from being returned.
-   * So that this test is specifically focus on the high level product type code.
+   * Mock the obligation subtype response to return a 404, as the product type code in the payload is not supported.
+   * This allows us to assert that the correct error message is returned when the product type code is not supported.
    */
-  const mockObligationSubtypeResponse = {
-    obligationSubtypes: [
-      {
-        code: OBLIGATION_SUBTYPES.OST009.code,
-        name: OBLIGATION_SUBTYPES.OST009.name,
-        productTypeCode: UNSUPPORTED_PRODUCT_TYPE_CODE,
-      },
-    ],
-  };
+  const mockObligationSubtypeResponse = [
+    {
+      ...mockResponses.obligationSubtypes[0],
+      code: MDM_EXAMPLES.OBLIGATION_SUBTYPES.OST009.code,
+      productTypeCode: UNSUPPORTED_PRODUCT_TYPE_CODE,
+    },
+  ];
 
   describe('when the provided product type code is not supported', () => {
     beforeAll(() => {
       // Arrange
       nock(GIFT_API_URL).persist().get(`${PATH.PRODUCT_TYPE}/${UNSUPPORTED_PRODUCT_TYPE_CODE}`).reply(HttpStatus.NOT_FOUND, mockResponses.productType);
 
-      nock(GIFT_API_URL).persist().get(obligationSubtypeUrl).reply(HttpStatus.OK, mockObligationSubtypeResponse);
+      nock(APIM_MDM_URL)
+        .persist()
+        .get(apimMdmObligationSubtypesUrl)
+        .matchHeader(APIM_MDM_KEY, APIM_MDM_VALUE)
+        .reply(HttpStatus.OK, mockObligationSubtypeResponse);
     });
 
     it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {

@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { MdmModule } from '@ukef/modules/mdm/mdm.module';
 
 import { GiftCurrencyController, GiftFacilityController, GiftFeeTypeController } from './controllers';
 import {
@@ -14,7 +15,6 @@ import {
   GiftFixedFeeService,
   GiftHttpService,
   GiftObligationService,
-  GiftObligationSubtypeService,
   GiftProductTypeService,
   GiftRepaymentProfileService,
   GiftRiskDetailsService,
@@ -23,6 +23,7 @@ import {
 } from './services';
 
 @Module({
+  imports: [MdmModule],
   providers: [
     GiftBusinessCalendarService,
     GiftBusinessCalendarsConventionService,
@@ -36,7 +37,6 @@ import {
     GiftFixedFeeService,
     GiftHttpService,
     GiftObligationService,
-    GiftObligationSubtypeService,
     GiftProductTypeService,
     GiftRepaymentProfileService,
     GiftRiskDetailsService,

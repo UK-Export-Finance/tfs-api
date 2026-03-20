@@ -79,28 +79,6 @@ export const GIFT = {
     CMF: 'COMMITMENT FEES',
     PLA: 'PREMIUM LESS ADMIN',
   },
-  OBLIGATION_SUBTYPES: {
-    OST001: {
-      code: 'OST001',
-      productTypeCode: 'PRT001',
-      name: 'Advanced Payment Bond',
-    },
-    OST009: {
-      code: 'OST009',
-      productTypeCode: 'PRT002',
-      name: 'EXIP Cash',
-    },
-    OST010: {
-      code: 'OST010',
-      productTypeCode: 'PRT002',
-      name: 'Consecutive',
-    },
-    OST012: {
-      code: 'OST012',
-      productTypeCode: 'PRT003',
-      name: 'Consecutive',
-    },
-  },
   PATH: {
     AMENDMENT: '/amendment',
     APPROVE: '/approve',
@@ -110,7 +88,6 @@ export const GIFT = {
     CREATE_FACILITY: '/work-package/create-facility',
     FACILITY: '/facility',
     FEE_TYPE: '/fee-type',
-    OBLIGATION_SUBTYPE: '/obligation-subtype',
     PRODUCT_TYPE: '/product-type',
     SUPPORTED: '/supported',
     WORK_PACKAGE: '/work-package',

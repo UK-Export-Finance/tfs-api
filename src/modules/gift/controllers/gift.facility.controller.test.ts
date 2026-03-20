@@ -1,4 +1,5 @@
 import { EXAMPLES } from '@ukef/constants';
+import { MdmService } from '@ukef/modules/mdm/mdm.service';
 import { mockResponse200, mockResponse201 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
@@ -15,7 +16,6 @@ import {
   GiftFixedFeeService,
   GiftHttpService,
   GiftObligationService,
-  GiftObligationSubtypeService,
   GiftProductTypeService,
   GiftRepaymentProfileService,
   GiftRiskDetailsService,
@@ -37,6 +37,7 @@ describe('GiftFacilityController', () => {
   const logger = new PinoLogger({});
 
   let giftHttpService: GiftHttpService;
+  let httpService;
   let asyncValidationService: GiftFacilityAsyncValidationService;
   let businessCalendarService: GiftBusinessCalendarService;
   let businessCalendarsConventionService: GiftBusinessCalendarsConventionService;
@@ -63,10 +64,12 @@ describe('GiftFacilityController', () => {
     // Arrange
     giftHttpService = new GiftHttpService(logger);
 
+    httpService = giftHttpService;
+
     const counterpartyService = new GiftCounterpartyService(giftHttpService, logger);
     const currencyService = new GiftCurrencyService(giftHttpService, logger);
     const feeTypeService = new GiftFeeTypeService(giftHttpService, logger);
-    const obligationSubtypeService = new GiftObligationSubtypeService(giftHttpService, logger);
+    const mdmService = new MdmService(httpService, logger);
     const productTypeService = new GiftProductTypeService(giftHttpService, logger);
 
     asyncValidationService = new GiftFacilityAsyncValidationService(
@@ -74,7 +77,7 @@ describe('GiftFacilityController', () => {
       counterpartyService,
       currencyService,
       feeTypeService,
-      obligationSubtypeService,
+      mdmService,
       productTypeService,
     );
 

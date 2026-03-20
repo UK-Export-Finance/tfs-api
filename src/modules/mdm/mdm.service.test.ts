@@ -1,7 +1,9 @@
 import { HttpService } from '@nestjs/axios';
+import { HttpStatus } from '@nestjs/common';
+import { EXAMPLES } from '@ukef/constants';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { AxiosError } from 'axios';
-import { when } from 'jest-when';
+import { PinoLogger } from 'nestjs-pino';
 import { of, throwError } from 'rxjs';
 
 import { MdmCustomersResponse } from './dto/mdm-customers-response.dto';
@@ -10,6 +12,8 @@ import { MdmResourceNotFoundException } from './exception/mdm-resource-not-found
 import { MdmService } from './mdm.service';
 
 describe('MdmService', () => {
+  const logger = new PinoLogger({});
+
   const valueGenerator = new RandomValueGenerator();
 
   let httpServiceGet: jest.Mock;
@@ -21,7 +25,7 @@ describe('MdmService', () => {
     httpServiceGet = jest.fn();
     httpService.get = httpServiceGet;
 
-    service = new MdmService(httpService);
+    service = new MdmService(httpService, logger);
   });
 
   describe('findCustomersByPartyUrn', () => {
@@ -38,32 +42,25 @@ describe('MdmService', () => {
       },
     ];
 
-    const expectedHttpServiceGetArgs: [string, object] = ['/v1/customers', { params: { partyUrn: partyUrnToSearch } }];
-
     it('returns the search results from sending a GET request to the MDM /v1/customers?partyUrn={partyUrn} endpoint', async () => {
-      when(httpServiceGet)
-        .calledWith(...expectedHttpServiceGetArgs)
-        .mockReturnValueOnce(
-          of({
-            data: customerSearchResults,
-            status: 200,
-            statusText: 'OK',
-            config: undefined,
-            headers: undefined,
-          }),
-        );
+      httpServiceGet.mockReturnValueOnce(
+        of({
+          data: customerSearchResults,
+          status: HttpStatus.OK,
+          statusText: 'OK',
+        }),
+      );
 
       const foundCustomers = await service.findCustomersByPartyUrn(partyUrnToSearch);
 
       expect(foundCustomers).toBe(customerSearchResults);
+      expect(httpServiceGet).toHaveBeenCalledWith('/v1/customers', expect.objectContaining({ params: { partyUrn: partyUrnToSearch } }));
     });
 
     it('throws an MdmResourceNotFoundException if the request in APIM MDM fails with a 404 response', async () => {
       const axios404Error = new AxiosError();
       axios404Error.response = { data: valueGenerator.string(), status: 404, statusText: 'Not Found', headers: undefined, config: undefined };
-      when(httpServiceGet)
-        .calledWith(...expectedHttpServiceGetArgs)
-        .mockReturnValueOnce(throwError(() => axios404Error));
+      httpServiceGet.mockReturnValueOnce(throwError(() => axios404Error));
 
       const findCustomersPromise = service.findCustomersByPartyUrn(partyUrnToSearch);
 
@@ -77,9 +74,7 @@ describe('MdmService', () => {
     it('throws an MdmException that is not an MdmResourceNotFoundException if the request to APIM MDM fails with a 500 response', async () => {
       const axios500Error = new AxiosError();
       axios500Error.response = { data: valueGenerator.string(), status: 500, statusText: 'Internal Server Error', headers: undefined, config: undefined };
-      when(httpServiceGet)
-        .calledWith(...expectedHttpServiceGetArgs)
-        .mockReturnValueOnce(throwError(() => axios500Error));
+      httpServiceGet.mockReturnValueOnce(throwError(() => axios500Error));
 
       const findCustomersPromise = service.findCustomersByPartyUrn(partyUrnToSearch);
 
@@ -91,9 +86,7 @@ describe('MdmService', () => {
 
     it('throws an MdmException that is not an MdmResourceNotFoundException if the request in APIM MDM fails with an AxiosError without a response', async () => {
       const axiosErrorWithoutResponse = new AxiosError();
-      when(httpServiceGet)
-        .calledWith(...expectedHttpServiceGetArgs)
-        .mockReturnValueOnce(throwError(() => axiosErrorWithoutResponse));
+      httpServiceGet.mockReturnValueOnce(throwError(() => axiosErrorWithoutResponse));
 
       const findCustomersPromise = service.findCustomersByPartyUrn(partyUrnToSearch);
 
@@ -105,9 +98,7 @@ describe('MdmService', () => {
 
     it('throws an MdmException that is not an MdmResourceNotFoundException if the request in APIM MDM fails with a generic error', async () => {
       const error = new Error();
-      when(httpServiceGet)
-        .calledWith(...expectedHttpServiceGetArgs)
-        .mockReturnValueOnce(throwError(() => error));
+      httpServiceGet.mockReturnValueOnce(throwError(() => error));
 
       const findCustomersPromise = service.findCustomersByPartyUrn(partyUrnToSearch);
 
@@ -115,6 +106,103 @@ describe('MdmService', () => {
       await expect(findCustomersPromise).rejects.toBeInstanceOf(MdmException);
       await expect(findCustomersPromise).rejects.toThrow(`Failed to find customers with partyUrn ${partyUrnToSearch} in APIM MDM.`);
       await expect(findCustomersPromise).rejects.toHaveProperty('innerError', error);
+    });
+  });
+
+  describe('getAllObligationSubtypesWithProductTypeCodes', () => {
+    beforeEach(() => {
+      httpServiceGet.mockReturnValueOnce(
+        of({
+          data: EXAMPLES.MDM.OBLIGATION_SUBTYPES_WITH_PRODUCT_CODES_RESPONSE_DATA,
+          status: HttpStatus.OK,
+          statusText: 'OK',
+        }),
+      );
+    });
+
+    it('should call httpService.get', async () => {
+      // Act
+      await service.getAllObligationSubtypesWithProductTypeCodes();
+
+      // Assert
+      expect(httpServiceGet).toHaveBeenCalledTimes(1);
+      expect(httpServiceGet).toHaveBeenCalledWith('/v2/ods/obligation-subtypes/with-product-type-codes', expect.any(Object));
+    });
+
+    describe('when httpService.get is successful', () => {
+      it('should return the response from httpService.get', async () => {
+        // Act
+        const result = await service.getAllObligationSubtypesWithProductTypeCodes();
+
+        // Assert
+        expect(result).toEqual(EXAMPLES.MDM.OBLIGATION_SUBTYPES_WITH_PRODUCT_CODES_RESPONSE_DATA);
+      });
+    });
+
+    describe('when httpService.get returns an error', () => {
+      const mockError = new Error('Mock error');
+
+      beforeEach(() => {
+        httpServiceGet.mockReset();
+        httpServiceGet.mockReturnValueOnce(throwError(() => mockError));
+      });
+
+      it('should throw an error', async () => {
+        // Act
+        const promise = service.getAllObligationSubtypesWithProductTypeCodes();
+
+        // Assert
+        const expected = new Error('Error getting obligation subtypes with product type codes from APIM MDM', { cause: mockError });
+
+        await expect(promise).rejects.toThrow(expected);
+      });
+    });
+  });
+
+  describe('getAllObligationSubtypesByProductTypeCode', () => {
+    const allObligationSubtypes = EXAMPLES.MDM.OBLIGATION_SUBTYPES_WITH_PRODUCT_CODES_RESPONSE_DATA;
+    const { productTypeCode } = EXAMPLES.MDM.OBLIGATION_SUBTYPES_WITH_PRODUCT_CODES.OST001;
+
+    let mockGetAllObligationSubtypesWithProductTypeCodes: jest.Mock;
+
+    beforeEach(() => {
+      mockGetAllObligationSubtypesWithProductTypeCodes = jest.fn().mockResolvedValueOnce(allObligationSubtypes);
+      service.getAllObligationSubtypesWithProductTypeCodes = mockGetAllObligationSubtypesWithProductTypeCodes;
+    });
+
+    it('should call getAllObligationSubtypesWithProductTypeCodes', async () => {
+      // Act
+      await service.getAllObligationSubtypesByProductTypeCode(productTypeCode);
+
+      // Assert
+      expect(mockGetAllObligationSubtypesWithProductTypeCodes).toHaveBeenCalledTimes(1);
+    });
+
+    it('should return all obligation subtypes matching the provided product type code', async () => {
+      // Act
+      const result = await service.getAllObligationSubtypesByProductTypeCode(productTypeCode);
+
+      // Assert
+      expect(result).toStrictEqual([EXAMPLES.MDM.OBLIGATION_SUBTYPES_WITH_PRODUCT_CODES.OST001]);
+    });
+
+    describe('when getAllObligationSubtypesWithProductTypeCodes returns an error', () => {
+      const mockError = new Error('Mock error');
+
+      beforeEach(() => {
+        mockGetAllObligationSubtypesWithProductTypeCodes = jest.fn().mockRejectedValueOnce(mockError);
+        service.getAllObligationSubtypesWithProductTypeCodes = mockGetAllObligationSubtypesWithProductTypeCodes;
+      });
+
+      it('should throw an error', async () => {
+        // Act
+        const promise = service.getAllObligationSubtypesByProductTypeCode(productTypeCode);
+
+        // Assert
+        const expected = new Error(`Error getting obligation subtypes by product type code ${productTypeCode} from APIM MDM`, { cause: mockError });
+
+        await expect(promise).rejects.toThrow(expected);
+      });
     });
   });
 });

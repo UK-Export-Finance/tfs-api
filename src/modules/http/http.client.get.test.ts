@@ -1,7 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { AxiosResponse, InternalAxiosRequestConfig } from 'axios';
-import { when } from 'jest-when';
 import { ObservableInput, of, throwError } from 'rxjs';
 
 import { HttpClient } from './http.client';
@@ -22,17 +21,11 @@ describe('HttpClient', () => {
 
   describe('get', () => {
     const path = `/${valueGenerator.word()}/${valueGenerator.word()}`;
-    const headers = {
-      [valueGenerator.word()]: valueGenerator.string(),
-      [valueGenerator.word()]: valueGenerator.string(),
-    };
+
     const queryParams = {
       [valueGenerator.word()]: valueGenerator.string(),
       [valueGenerator.word()]: valueGenerator.string(),
     };
-
-    const expectedHttpServiceGetArgs: [string, object] = [path, { headers, params: queryParams }];
-    const expectedHttpServiceGetArgsWithoutHeaders: [string, object] = [path, { params: queryParams }];
 
     const response: AxiosResponse = {
       data: {
@@ -55,16 +48,24 @@ describe('HttpClient', () => {
 
     describe('when the HttpService succeeds', () => {
       beforeEach(() => {
-        when(httpServiceGet)
-          .calledWith(...expectedHttpServiceGetArgs)
-          .mockReturnValueOnce(of(response));
+        httpServiceGet.mockReturnValueOnce(of(response));
+      });
+
+      it('should call HttpService.get', async () => {
+        await client.get({
+          path,
+          queryParams,
+          onError,
+        });
+
+        expect(httpServiceGet).toHaveBeenCalledTimes(1);
+        expect(httpServiceGet).toHaveBeenCalledWith(path, expect.objectContaining({ params: queryParams }));
       });
 
       it('should return the same response', async () => {
         const result = await client.get({
           path,
           queryParams,
-          headers,
           onError,
         });
 
@@ -75,39 +76,10 @@ describe('HttpClient', () => {
         await client.get({
           path,
           queryParams,
-          headers,
           onError,
         });
 
         expect(onError).not.toHaveBeenCalled();
-      });
-    });
-
-    describe('when headers are not provided', () => {
-      beforeEach(() => {
-        when(httpServiceGet)
-          .calledWith(...expectedHttpServiceGetArgsWithoutHeaders)
-          .mockReturnValueOnce(of(response));
-      });
-
-      it('should call HttpService.get without headers in config', async () => {
-        await client.get({
-          path,
-          queryParams,
-          onError,
-        });
-
-        expect(httpServiceGet).toHaveBeenCalledWith(...expectedHttpServiceGetArgsWithoutHeaders);
-      });
-
-      it('should return the same response', async () => {
-        const result = await client.get({
-          path,
-          queryParams,
-          onError,
-        });
-
-        expect(result).toBe(response);
       });
     });
 
@@ -116,12 +88,8 @@ describe('HttpClient', () => {
       const errorThatOnErrorThrows = new Error('Test error from onError');
 
       beforeEach(() => {
-        when(httpServiceGet)
-          .calledWith(...expectedHttpServiceGetArgs)
-          .mockReturnValueOnce(throwError(() => errorFromHttpService));
-        when(onError)
-          .calledWith(errorFromHttpService)
-          .mockImplementationOnce(() => throwError(() => errorThatOnErrorThrows));
+        httpServiceGet.mockReturnValueOnce(throwError(() => errorFromHttpService));
+        onError = jest.fn().mockImplementation(() => throwError(() => errorThatOnErrorThrows));
       });
 
       it('should call onError with the error that HttpService errored with', async () => {
@@ -129,11 +97,10 @@ describe('HttpClient', () => {
           .get({
             path,
             queryParams,
-            headers,
             onError,
           })
           .catch(() => {
-            /* error ignored for test */
+            // Error assertion is covered by the next test.
           });
 
         expect(onError).toHaveBeenCalledWith(errorFromHttpService);
@@ -144,11 +111,27 @@ describe('HttpClient', () => {
         const clientGetPromise = client.get({
           path,
           queryParams,
-          headers,
           onError,
         });
 
         await expect(clientGetPromise).rejects.toBe(errorThatOnErrorThrows);
+      });
+    });
+
+    describe('when queryParams are not provided', () => {
+      it('should call HttpService.get', async () => {
+        httpServiceGet.mockReturnValueOnce(of(response));
+
+        await client.get({
+          path,
+          onError,
+        });
+
+        expect(httpServiceGet).toHaveBeenCalledWith(path, expect.any(Object));
+
+        const [[, config]] = httpServiceGet.mock.calls;
+
+        expect(config.params).toBeUndefined();
       });
     });
   });

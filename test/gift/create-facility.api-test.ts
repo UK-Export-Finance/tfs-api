@@ -1,6 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 import { GIFT } from '@ukef/constants';
 import { GIFT_EXAMPLES } from '@ukef/constants/examples/gift.examples.constant';
+import { MDM_EXAMPLES } from '@ukef/constants/examples/mdm.examples.constant';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
 import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
@@ -8,6 +9,7 @@ import nock from 'nock';
 
 import {
   apimFacilityUrl,
+  apimMdmObligationSubtypesUrl,
   approveStatusUrl,
   businessCalendarsConventionUrl,
   businessCalendarUrl,
@@ -18,7 +20,6 @@ import {
   feeTypeUrl,
   fixedFeeUrl,
   mockResponses,
-  obligationSubtypeUrl,
   obligationUrl,
   payloadCounterparties,
   payloadFixedFees,
@@ -30,8 +31,9 @@ import {
 } from './test-helpers';
 
 const { GIFT_API_URL } = ENVIRONMENT_VARIABLES;
+const { APIM_MDM_KEY, APIM_MDM_URL, APIM_MDM_VALUE } = ENVIRONMENT_VARIABLES;
 
-const { OBLIGATION_SUBTYPES, PRODUCT_TYPE_CODES, PRODUCT_TYPE_NAMES } = GIFT;
+const { PRODUCT_TYPE_CODES, PRODUCT_TYPE_NAMES } = GIFT;
 
 const { FACILITY_CREATION_PAYLOAD: initPayload } = GIFT_EXAMPLES;
 
@@ -47,7 +49,11 @@ const setupMocks = () => {
 
   nock(GIFT_API_URL).persist().get(counterpartyRolesUrl).reply(HttpStatus.OK, mockResponses.counterpartyRoles);
 
-  nock(GIFT_API_URL).persist().get(obligationSubtypeUrl).reply(HttpStatus.OK, mockResponses.obligationSubtype);
+  nock(APIM_MDM_URL)
+    .persist()
+    .get(apimMdmObligationSubtypesUrl)
+    .matchHeader(APIM_MDM_KEY, APIM_MDM_VALUE)
+    .reply(HttpStatus.OK, mockResponses.obligationSubtypes);
 
   nock(GIFT_API_URL).persist().post(facilityCreationUrl).reply(HttpStatus.CREATED, mockResponses.facility);
 
@@ -129,7 +135,7 @@ describe('POST /gift/facility', () => {
           obligations: [
             {
               ...initPayload.obligations[0],
-              subtypeCode: OBLIGATION_SUBTYPES.OST001.code,
+              subtypeCode: MDM_EXAMPLES.OBLIGATION_SUBTYPES.OST001.code,
             },
           ],
         };
@@ -156,7 +162,7 @@ describe('POST /gift/facility', () => {
           obligations: [
             {
               ...initPayload.obligations[0],
-              subtypeCode: OBLIGATION_SUBTYPES.OST009.code,
+              subtypeCode: MDM_EXAMPLES.OBLIGATION_SUBTYPES.OST009.code,
             },
           ],
         };
@@ -183,7 +189,7 @@ describe('POST /gift/facility', () => {
           obligations: [
             {
               ...initPayload.obligations[0],
-              subtypeCode: OBLIGATION_SUBTYPES.OST012.code,
+              subtypeCode: MDM_EXAMPLES.OBLIGATION_SUBTYPES.OST012.code,
             },
           ],
         };

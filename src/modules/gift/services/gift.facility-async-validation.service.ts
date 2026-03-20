@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { MdmService } from '@ukef/modules/mdm/mdm.service';
 import { PinoLogger } from 'nestjs-pino';
 
 import { GiftFacilityCreationRequestDto } from '../dto';
@@ -14,7 +15,6 @@ import {
 import { GiftCounterpartyService } from './gift.counterparty.service';
 import { GiftCurrencyService } from './gift.currency.service';
 import { GiftFeeTypeService } from './gift.fee-type.service';
-import { GiftObligationSubtypeService } from './gift.obligation-subtype.service';
 import { GiftProductTypeService } from './gift.product-type.service';
 
 /**
@@ -32,13 +32,13 @@ export class GiftFacilityAsyncValidationService {
     private readonly counterpartyService: GiftCounterpartyService,
     private readonly currencyService: GiftCurrencyService,
     private readonly feeTypeService: GiftFeeTypeService,
-    private readonly obligationSubtypeService: GiftObligationSubtypeService,
+    private readonly mdmService: MdmService,
     private readonly productTypeService: GiftProductTypeService,
   ) {
     this.counterpartyService = counterpartyService;
     this.currencyService = currencyService;
     this.feeTypeService = feeTypeService;
-    this.obligationSubtypeService = obligationSubtypeService;
+    this.mdmService = mdmService;
     this.productTypeService = productTypeService;
   }
 
@@ -68,7 +68,7 @@ export class GiftFacilityAsyncValidationService {
 
       const supportedCurrencies = await this.currencyService.getSupportedCurrencies();
 
-      const supportedObligationSubtypes = await this.obligationSubtypeService.getAllByProductType(productTypeCode);
+      const supportedObligationSubtypes = await this.mdmService.getAllObligationSubtypesByProductTypeCode(productTypeCode);
 
       const overviewErrors = generateOverviewErrors({
         isSupportedProductType,
