@@ -169,29 +169,12 @@ jobs:
               echo "❌ Failed to retrieve Container App FQDN"
               exit 1
             fi
+
             echo "✅ FQDN resolved: https://$FQDN"
+            SPEC_URL="https://$FQDN/openapi/json"
+            echo "📄 OpenAPI Spec URL: $SPEC_URL"
 
-            echo "📄 Downloading OpenAPI specification"
-            wget \
-              --quiet \
-              --tries=5 \
-              --waitretry=5 \
-              --retry-connrefused \
-              --timeout=15 \
-              --read-timeout=20 \
-              -O openapi.json \
-              "https://$FQDN/openapi/json"
-
-            WGET_EXIT=$?
-            if [ $WGET_EXIT -ne 0 ]; then
-              echo "❌ Failed to download OpenAPI spec (wget exit code: $WGET_EXIT)"
-              exit 1
-            fi
-
-            echo "✅ OpenAPI spec downloaded"
-
-            echo "📡 Importing API into APIM (with retry logic)"
-
+            echo "📡 Importing API into APIM (with retry logic)..."
             max_retries=5
             delay=15
 
@@ -203,7 +186,7 @@ jobs:
                 --api-id "${{ env.API_ID }}" \
                 --path "${{ env.NAME }}" \
                 --specification-format OpenApi \
-                --specification-path openapi.json \
+                --specification-url "$SPEC_URL" \
                 --api-type http \
                 --service-url "https://$FQDN" \
                 --protocols https \
