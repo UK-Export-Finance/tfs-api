@@ -155,20 +155,76 @@ jobs:
               "GIFT_API_TIMEOUT=${{ secrets.GIFT_API_TIMEOUT }}" \
               "GIFT_HTTP_VERSION=${{ vars.GIFT_HTTP_VERSION }}"
 
-      - name: Import ⬇️
-        if: ${{ '' != env.API_ID }}
+      - name: Import
+        if: ${{ env.API_ID != '' }}
         uses: Azure/cli@v2.2.0
         with:
           inlineScript: |
-            # API specification import
+            echo "🔍 Fetching Container App FQDN..."
+            FQDN=$(az containerapp show \
+              --name "${{ env.CA_NAME }}" \
+              --query properties.latestRevisionFqdn -o tsv)
 
-            az apim api import \
-            --path '${{ env.NAME }}' \
-            --service-name ${{ env.APIM }} \
-            --specification-format OpenApi \
-            --api-id ${{ env.API_ID }} \
-            --api-type http \
-            --service-url https://$(az containerapp show --name ${{ env.CA_NAME }} --query properties.latestRevisionFqdn -o tsv) \
-            --protocols https \
-            --specification-url https://$(az containerapp show --name ${{ env.CA_NAME }} --query properties.latestRevisionFqdn -o tsv)/openapi/json \
-            --subscription-required true
+            if [ -z "$FQDN" ]; then
+              echo "❌ Failed to retrieve Container App FQDN"
+              exit 1
+            fi
+
+            echo "✅ FQDN resolved: https://$FQDN"
+
+            echo "📄 Downloading OpenAPI specification..."
+
+            http_status=$(curl -fsSL \
+              --connect-timeout 10 \
+              --max-time 60 \
+              --retry 5 \
+              --retry-all-errors \
+              -w "%{http_code}" \
+              "https://$FQDN/openapi/json" \
+              -o openapi.json)
+            curl_exit=$?
+
+            if [ $curl_exit -ne 0 ]; then
+              echo "❌ Failed to download OpenAPI spec from Container App (curl exit code: $curl_exit, HTTP status: $http_status)"
+              exit 1
+            fi
+
+            if [ "$http_status" -lt 200 ] || [ "$http_status" -ge 300 ]; then
+              echo "❌ Failed to download OpenAPI spec from Container App (unexpected HTTP status: $http_status)"
+              exit 1
+            fi
+
+            echo "✅ OpenAPI spec downloaded (HTTP status: $http_status)"
+
+            echo "📡 Importing API into APIM (with retry logic)..."
+
+            max_retries=5
+            delay=15
+
+            for attempt in $(seq 1 $max_retries); do
+              echo "➡️ Attempt $attempt of $max_retries"
+
+              az apim api import \
+                --service-name "${{ env.APIM }}" \
+                --api-id "${{ env.API_ID }}" \
+                --path "${{ env.NAME }}" \
+                --specification-format OpenApi \
+                --specification-path openapi.json \
+                --api-type http \
+                --service-url "https://$FQDN" \
+                --protocols https \
+                --subscription-required true
+
+              if [ $? -eq 0 ]; then
+                echo "✅ API import succeeded"
+                break
+              fi
+
+              if [ $attempt -eq $max_retries ]; then
+                echo "❌ API import failed after $max_retries attempts"
+                exit 1
+              fi
+
+              echo "⚠️ Import failed. Retrying in $delay seconds..."
+              sleep $delay
+            done
