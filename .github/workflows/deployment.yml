@@ -27,6 +27,7 @@ on:
       - dev
       - staging
       - production
+      - fix/APIM-625-2
 
     paths:
       - "src/**"
@@ -39,7 +40,9 @@ on:
 
 env:
   PRODUCT: apim
-  ENVIRONMENT: ${{ github.ref_name }}
+  # ENVIRONMENT: ${{ github.ref_name }}
+  # TODO: remove
+  ENVIRONMENT: "dev"
   timezone: ${{ vars.TIMEZONE }}
   # Base artifact
   FROM: latest
