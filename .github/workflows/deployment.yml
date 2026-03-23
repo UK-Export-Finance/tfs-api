@@ -173,28 +173,13 @@ jobs:
             echo "✅ FQDN resolved: https://$FQDN"
 
             echo "📄 Downloading OpenAPI specification..."
-
-            http_status=$(curl -fsSL \
-              --connect-timeout 10 \
-              --max-time 60 \
-              --retry 5 \
-              --retry-all-errors \
-              -w "%{http_code}" \
-              "https://$FQDN/openapi/json" \
-              -o openapi.json)
-            curl_exit=$?
-
-            if [ $curl_exit -ne 0 ]; then
-              echo "❌ Failed to download OpenAPI spec from Container App (curl exit code: $curl_exit, HTTP status: $http_status)"
+            wget -q "https://$FQDN/openapi/json" -O openapi.json
+            if [ $? -ne 0 ]; then
+              echo "❌ Failed to download OpenAPI spec from Container App"
               exit 1
             fi
 
-            if [ "$http_status" -lt 200 ] || [ "$http_status" -ge 300 ]; then
-              echo "❌ Failed to download OpenAPI spec from Container App (unexpected HTTP status: $http_status)"
-              exit 1
-            fi
-
-            echo "✅ OpenAPI spec downloaded (HTTP status: $http_status)"
+            echo "✅ OpenAPI spec downloaded"
 
             echo "📡 Importing API into APIM (with retry logic)..."
 
