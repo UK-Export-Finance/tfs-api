@@ -69,7 +69,12 @@ jobs:
       NAME: tfs
       NAME_UPPERCASE: TFS
       ENVIRONMENT: ${{ needs.setup.outputs.environment }}
+    
+    # ✅ Run entire job in Debian-based Azure CLI container
     runs-on: [self-hosted, APIM, deployment]
+    container:
+      image: mcr.microsoft.com/azure-cli:latest
+
     steps:
       - name: Repository 🗃️
         uses: actions/checkout@v6
@@ -80,10 +85,10 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Defaults ✨
-        uses: Azure/cli@v2.2.0
+        uses: Azure/cli@v2
         with:
+          azcliversion: latest
           inlineScript: |
-            # Basic
             az configure --defaults location=${{ vars.REGION }}
             az configure --defaults group=rg-${{ env.PRODUCT }}-${{ github.ref_name }}-${{ vars.VERSION }}
 
@@ -111,8 +116,9 @@ jobs:
           docker push ${{ env.ACR }}/${{ env.NAME }}:${{ env.FROM }}
 
       - name: Revisions 🔀
-        uses: Azure/cli@v2.2.0
+        uses: Azure/cli@v2
         with:
+          azcliversion: latest
           inlineScript: |
             az containerapp update \
             --name ${{ env.CA_NAME }} \
@@ -157,10 +163,11 @@ jobs:
 
       - name: Import
         if: ${{ env.API_ID != '' }}
-        uses: Azure/cli@v2.2.0
+        uses: Azure/cli@v2
         with:
+          azcliversion: latest
           inlineScript: |
-            echo "🔍 Fetching Container App FQDN..."
+            echo "🔍 Fetching Container App FQDN"
             FQDN=$(az containerapp show \
               --name "${{ env.CA_NAME }}" \
               --query properties.latestRevisionFqdn -o tsv)
@@ -171,10 +178,12 @@ jobs:
             fi
 
             echo "✅ FQDN resolved: https://$FQDN"
+
             SPEC_URL="https://$FQDN/openapi/json"
+
             echo "📄 OpenAPI Spec URL: $SPEC_URL"
 
-            echo "📡 Importing API into APIM (with retry logic)..."
+            echo "📡 Importing API into APIM (with retry logic)"
             max_retries=5
             delay=15
 
@@ -202,6 +211,6 @@ jobs:
                 exit 1
               fi
 
-              echo "⚠️ Import failed. Retrying in $delay seconds..."
+              echo "⚠️ Import failed. Retrying in $delay seconds"
               sleep $delay
             done
