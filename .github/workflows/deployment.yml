@@ -173,13 +173,6 @@ jobs:
             echo "✅ FQDN resolved: https://$FQDN"
 
             echo "📄 Downloading OpenAPI specification..."
-            # curl -fsSL "https://$FQDN/openapi/json" -o openapi.json
-            # if [ $? -ne 0 ]; then
-            #   echo "❌ Failed to download OpenAPI spec from Container App"
-            #   exit 1
-            # fi
-            # echo "✅ OpenAPI spec downloaded"
-
 
             http_status=$(curl -fsSL \
               --connect-timeout 10 \
@@ -216,7 +209,7 @@ jobs:
                 --api-id "${{ env.API_ID }}" \
                 --path "${{ env.NAME }}" \
                 --specification-format OpenApi \
-                --specification-file openapi.json \
+                --specification-path openapi.json \
                 --api-type http \
                 --service-url "https://$FQDN" \
                 --protocols https \
