@@ -89,22 +89,6 @@ describe('GiftObligationService', () => {
       });
     });
 
-    // it('should call giftHttpService.post', async () => {
-    //   // Act
-    //   await service.createOne(mockObligation, mockFacilityId, mockWorkPackageId);
-
-    //   // Assert
-    //   expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
-
-    //   expect(mockHttpServicePost).toHaveBeenCalledWith({
-    //     path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_OBLIGATION}`,
-    //     payload: {
-    //       ...mockObligation,
-    //       acbsObligationId: null,
-    //     },
-    //   });
-    // });
-
     describe('when giftHttpService.post is successful', () => {
       it('should return the response of giftHttpService.post', async () => {
         // Act
