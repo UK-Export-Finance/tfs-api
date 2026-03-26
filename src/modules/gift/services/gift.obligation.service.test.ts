@@ -69,7 +69,6 @@ describe('GiftObligationService', () => {
         const mockPayload = {
           ...mockObligation,
           subtypeCode: undefined,
-          acbsObligationId: null,
         };
 
         // Act

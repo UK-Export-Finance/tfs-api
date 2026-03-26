@@ -9,6 +9,7 @@ import {
   generateHighLevelErrors,
   generateObligationSubtypeCodeErrors,
   generateOverviewErrors,
+  getObligationSubtypeCodes,
   mapEntitiesByField,
   stripPayload,
 } from '../helpers';
@@ -16,7 +17,7 @@ import { GiftCounterpartyService, GiftCurrencyService, GiftFeeTypeService, GiftP
 import { GiftFacilityAsyncValidationService } from './gift.facility-async-validation.service';
 
 const {
-  GIFT: { COUNTERPARTY_ROLES_RESPONSE_DATA, CURRENCIES, FACILITY_CREATION_PAYLOAD: mockPayload, FACILITY_ID: mockFacilityId },
+  GIFT: { COUNTERPARTY_ROLES_RESPONSE_DATA, CURRENCIES, FACILITY_CREATION_PAYLOAD: mockBasePayload, FACILITY_ID: mockFacilityId, OBLIGATION },
   MDM: { OBLIGATION_SUBTYPES_RESPONSE_DATA },
 } = EXAMPLES;
 
@@ -85,7 +86,7 @@ describe('GiftFacilityAsyncValidationService', () => {
   describe('creation', () => {
     it('should call currencyService.getSupportedCurrencies', async () => {
       // Act
-      await service.creation(mockPayload, mockFacilityId);
+      await service.creation(mockBasePayload, mockFacilityId);
 
       // Assert
       expect(mockGetSupportedCurrencies).toHaveBeenCalledTimes(1);
@@ -93,16 +94,16 @@ describe('GiftFacilityAsyncValidationService', () => {
 
     it('should call productTypeService.isSupported', async () => {
       // Act
-      await service.creation(mockPayload, mockFacilityId);
+      await service.creation(mockBasePayload, mockFacilityId);
 
       // Assert
       expect(mockProductTypeIsSupported).toHaveBeenCalledTimes(1);
-      expect(mockProductTypeIsSupported).toHaveBeenCalledWith(mockPayload.overview.productTypeCode);
+      expect(mockProductTypeIsSupported).toHaveBeenCalledWith(mockBasePayload.overview.productTypeCode);
     });
 
     it('should call counterpartyService.getAllRoles', async () => {
       // Act
-      await service.creation(mockPayload, mockFacilityId);
+      await service.creation(mockBasePayload, mockFacilityId);
 
       // Assert
       expect(mockGetAllRoles).toHaveBeenCalledTimes(1);
@@ -110,7 +111,7 @@ describe('GiftFacilityAsyncValidationService', () => {
 
     it('should call counterpartyService.getAllRoleCodes', async () => {
       // Act
-      await service.creation(mockPayload, mockFacilityId);
+      await service.creation(mockBasePayload, mockFacilityId);
 
       // Assert
       expect(mockGetAllRoleCodes).toHaveBeenCalledTimes(1);
@@ -119,41 +120,109 @@ describe('GiftFacilityAsyncValidationService', () => {
 
     it('should call feeTypeService.getAllFeeTypeCodes', async () => {
       // Act
-      await service.creation(mockPayload, mockFacilityId);
+      await service.creation(mockBasePayload, mockFacilityId);
 
       // Assert
       expect(mockGetAllFeeTypeCodes).toHaveBeenCalledTimes(1);
     });
 
-    it('should call mdmService.getAllObligationSubtypesByProductTypeCode', async () => {
-      // Act
-      await service.creation(mockPayload, mockFacilityId);
+    describe('when a single obligation subtype code is provided', () => {
+      it('should call mdmService.getAllObligationSubtypesByProductTypeCode', async () => {
+        // Arrange
+        const mockPayload = {
+          ...mockBasePayload,
+          obligations: [
+            {
+              ...mockBasePayload.obligations[0],
+              subtypeCode: 'Mock subtype code',
+            },
+          ],
+        };
 
-      // Assert
-      expect(mockGetAllSubtypesByProductTypeCode).toHaveBeenCalledTimes(1);
-      expect(mockGetAllSubtypesByProductTypeCode).toHaveBeenCalledWith(mockPayload.overview.productTypeCode);
+        // Act
+        await service.creation(mockPayload, mockFacilityId);
+
+        // Assert
+        expect(mockGetAllSubtypesByProductTypeCode).toHaveBeenCalledTimes(1);
+        expect(mockGetAllSubtypesByProductTypeCode).toHaveBeenCalledWith(mockBasePayload.overview.productTypeCode);
+      });
+    });
+
+    describe('when multiple obligation subtype codes are provided', () => {
+      it('should call mdmService.getAllObligationSubtypesByProductTypeCode', async () => {
+        // Act
+        await service.creation(mockBasePayload, mockFacilityId);
+
+        // Assert
+        expect(mockGetAllSubtypesByProductTypeCode).toHaveBeenCalledTimes(1);
+        expect(mockGetAllSubtypesByProductTypeCode).toHaveBeenCalledWith(mockBasePayload.overview.productTypeCode);
+      });
+    });
+
+    describe('when no obligation subtype code is provided', () => {
+      it('should NOT call mdmService.getAllObligationSubtypesByProductTypeCode', async () => {
+        // Arrange
+        const mockObligation = {
+          effectiveDate: OBLIGATION().effectiveDate,
+          maturityDate: OBLIGATION().maturityDate,
+          currency: OBLIGATION().currency,
+          amount: OBLIGATION().amount,
+        };
+
+        const mockPayload = {
+          ...mockBasePayload,
+          obligations: [mockObligation],
+        };
+
+        // Act
+        await service.creation(mockPayload, mockFacilityId);
+
+        // Assert
+        expect(mockGetAllSubtypesByProductTypeCode).toHaveBeenCalledTimes(0);
+      });
+    });
+
+    describe('when a null obligation subtype code is provided', () => {
+      it('should NOT call mdmService.getAllObligationSubtypesByProductTypeCode', async () => {
+        // Arrange
+        const mockPayload = {
+          ...mockBasePayload,
+          obligations: [
+            {
+              ...mockBasePayload.obligations[0],
+              subtypeCode: null,
+            },
+          ],
+        };
+
+        // Act
+        await service.creation(mockPayload, mockFacilityId);
+
+        // Assert
+        expect(mockGetAllSubtypesByProductTypeCode).toHaveBeenCalledTimes(0);
+      });
     });
 
     describe('when all service calls are successful', () => {
       it('should return validation errors from various helper functions', async () => {
         // Act
-        const response = await service.creation(mockPayload, mockFacilityId);
+        const response = await service.creation(mockBasePayload, mockFacilityId);
 
         // Assert
         const overviewErrors = generateOverviewErrors({
           isSupportedProductType: true,
-          payload: mockPayload.overview,
+          payload: mockBasePayload.overview,
           supportedCurrencies: CURRENCIES,
         });
 
         const currencyErrors = generateHighLevelErrors({
-          payload: stripPayload(mockPayload, 'currency'),
+          payload: stripPayload(mockBasePayload, 'currency'),
           supportedValues: CURRENCIES,
           fieldName: 'currency',
         });
 
         const counterpartyRoleErrors = generateArrayOfErrors({
-          fieldValues: mapEntitiesByField(mockPayload.counterparties, 'roleCode'),
+          fieldValues: mapEntitiesByField(mockBasePayload.counterparties, 'roleCode'),
           supportedValues: mockCounterpartyRoleCodes,
           fieldName: 'roleCode',
           parentEntityName: 'counterparties',
@@ -161,11 +230,11 @@ describe('GiftFacilityAsyncValidationService', () => {
 
         const counterpartySharePercentageErrors = generateCounterpartySharePercentageErrors({
           counterpartyRoles: COUNTERPARTY_ROLES_RESPONSE_DATA.counterpartyRoles,
-          providedCounterparties: mockPayload.counterparties,
+          providedCounterparties: mockBasePayload.counterparties,
         });
 
         const feeTypeCodeErrors = generateArrayOfErrors({
-          fieldValues: mapEntitiesByField(mockPayload.fixedFees, 'feeTypeCode'),
+          fieldValues: mapEntitiesByField(mockBasePayload.fixedFees, 'feeTypeCode'),
           supportedValues: [],
           fieldName: 'feeTypeCode',
           parentEntityName: 'fixedFees',
@@ -173,8 +242,8 @@ describe('GiftFacilityAsyncValidationService', () => {
 
         const obligationSubtypeCodeErrors = generateObligationSubtypeCodeErrors({
           subtypes: mockObligationSubtypes,
-          productTypeCode: mockPayload.overview.productTypeCode,
-          providedObligations: mockPayload.obligations,
+          productTypeCode: mockBasePayload.overview.productTypeCode,
+          providedSubtypeCodes: getObligationSubtypeCodes(mockBasePayload.obligations),
         });
 
         const expected = [
@@ -202,7 +271,7 @@ describe('GiftFacilityAsyncValidationService', () => {
 
       it('should throw an error', async () => {
         // Act
-        const promise = service.creation(mockPayload, mockFacilityId);
+        const promise = service.creation(mockBasePayload, mockFacilityId);
 
         // Assert
         const expected = new Error(`Error validating a GIFT facility - async ${mockFacilityId}`, { cause: mockError });
@@ -223,7 +292,7 @@ describe('GiftFacilityAsyncValidationService', () => {
 
       it('should throw an error', async () => {
         // Act
-        const promise = service.creation(mockPayload, mockFacilityId);
+        const promise = service.creation(mockBasePayload, mockFacilityId);
 
         // Assert
         const expected = new Error(`Error validating a GIFT facility - async ${mockFacilityId}`, { cause: mockError });
@@ -244,7 +313,7 @@ describe('GiftFacilityAsyncValidationService', () => {
 
       it('should throw an error', async () => {
         // Act
-        const promise = service.creation(mockPayload, mockFacilityId);
+        const promise = service.creation(mockBasePayload, mockFacilityId);
 
         // Assert
         const expected = new Error(`Error validating a GIFT facility - async ${mockFacilityId}`, { cause: mockError });
@@ -265,7 +334,7 @@ describe('GiftFacilityAsyncValidationService', () => {
 
       it('should throw an error', async () => {
         // Act
-        const promise = service.creation(mockPayload, mockFacilityId);
+        const promise = service.creation(mockBasePayload, mockFacilityId);
 
         // Assert
         const expected = new Error(`Error validating a GIFT facility - async ${mockFacilityId}`, { cause: mockError });

@@ -1,26 +1,24 @@
 import { ObligationSubtypeMdmResponseDto } from '@ukef/modules/mdm/dto/obligation-subtype-mdm-response';
 
-import { GiftObligationRequestDto } from '../../dto';
-
 interface GenerateObligationSubtypeCodeErrorsParams {
   subtypes: ObligationSubtypeMdmResponseDto[];
   productTypeCode: string;
-  providedObligations: GiftObligationRequestDto[];
+  providedSubtypeCodes: string[];
 }
 
 /**
  * Check all provided obligation subtype codes are supported by the product type.
  * If a provided obligation subtype is NOT included in the subtypes (for a specific product type),
  * an error message should be returned.
- * @param {GenerateObligationSubtypeCodeErrorsParams} productTypeCode, providedObligations, providedCounterparties
+ * @param {GenerateObligationSubtypeCodeErrorsParams} subtypes, productTypeCode, providedSubtypeCodes
  * @returns {String[]}
  * @example
  * ```ts
  * const subtypes = [ { code: 'A', productTypeCode: '1A' } ];
  * const productTypeCode = '1A';
- * const providedObligations = [ { subtypeCode: 'B', currency: 'GBP' }];
+ * const providedSubtypeCodes = [ 'B' ];
  *
- * generateObligationSubtypeCodeErrors({ subtypes, productTypeCode, providedObligations })
+ * generateObligationSubtypeCodeErrors({ subtypes, productTypeCode, providedSubtypeCodes })
  *
  * [
  *   'obligations.0.subtypeCode is not supported by product type 1A'
@@ -31,13 +29,11 @@ interface GenerateObligationSubtypeCodeErrorsParams {
 export const generateObligationSubtypeCodeErrors = ({
   subtypes,
   productTypeCode,
-  providedObligations,
+  providedSubtypeCodes,
 }: GenerateObligationSubtypeCodeErrorsParams): string[] => {
   const validationErrors = [];
 
-  providedObligations.forEach((obligation: GiftObligationRequestDto, index: number) => {
-    const { subtypeCode: providedSubtypeCode } = obligation;
-
+  providedSubtypeCodes.forEach((providedSubtypeCode: string, index: number) => {
     const matchedSubtypeCode = subtypes.find((subtype: ObligationSubtypeMdmResponseDto) => subtype.code === providedSubtypeCode);
 
     if (!matchedSubtypeCode) {

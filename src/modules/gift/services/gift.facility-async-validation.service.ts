@@ -9,6 +9,7 @@ import {
   generateHighLevelErrors,
   generateObligationSubtypeCodeErrors,
   generateOverviewErrors,
+  getObligationSubtypeCodes,
   mapEntitiesByField,
   stripPayload,
 } from '../helpers';
@@ -68,8 +69,6 @@ export class GiftFacilityAsyncValidationService {
 
       const supportedCurrencies = await this.currencyService.getSupportedCurrencies();
 
-      const supportedObligationSubtypes = await this.mdmService.getAllObligationSubtypesByProductTypeCode(productTypeCode);
-
       const overviewErrors = generateOverviewErrors({
         isSupportedProductType,
         payload: overview,
@@ -101,11 +100,19 @@ export class GiftFacilityAsyncValidationService {
         parentEntityName: 'fixedFees',
       });
 
-      const obligationSubtypeCodeErrors = generateObligationSubtypeCodeErrors({
-        subtypes: supportedObligationSubtypes,
-        productTypeCode,
-        providedObligations: payload.obligations,
-      });
+      let obligationSubtypeCodeErrors = [];
+
+      const providedObligationSubtypeCodes = getObligationSubtypeCodes(payload.obligations);
+
+      if (providedObligationSubtypeCodes.length) {
+        const supportedObligationSubtypes = await this.mdmService.getAllObligationSubtypesByProductTypeCode(productTypeCode);
+
+        obligationSubtypeCodeErrors = generateObligationSubtypeCodeErrors({
+          subtypes: supportedObligationSubtypes,
+          productTypeCode,
+          providedSubtypeCodes: providedObligationSubtypeCodes,
+        });
+      }
 
       const asyncValidationErrors = [
         ...overviewErrors,

@@ -11,17 +11,13 @@ describe('modules/gift/helpers/generate-obligation-subtype-code-errors', () => {
   describe('when all provided subtype codes are not supported', () => {
     it('should return an array with validation errors', () => {
       // Arrange
-      const mockProvidedObligations = [
-        { ...EXAMPLES.GIFT.OBLIGATION(), subtypeCode: '100' },
-        { ...EXAMPLES.GIFT.OBLIGATION(), subtypeCode: '200' },
-        { ...EXAMPLES.GIFT.OBLIGATION(), subtypeCode: '300' },
-      ];
+      const mockProvidedSubtypeCodes = ['100', '200', '300'];
 
       // Act
       const result = generateObligationSubtypeCodeErrors({
         subtypes: mockSubtypes,
         productTypeCode: mockProductTypeCode,
-        providedObligations: mockProvidedObligations,
+        providedSubtypeCodes: mockProvidedSubtypeCodes,
       });
 
       // Assert
@@ -38,17 +34,13 @@ describe('modules/gift/helpers/generate-obligation-subtype-code-errors', () => {
   describe('when one provided subtype code is not supported', () => {
     it('should return an array with validation errors', () => {
       // Arrange
-      const mockProvidedObligations = [
-        { ...EXAMPLES.GIFT.OBLIGATION(), subtypeCode: OBLIGATION_SUBTYPES.OST001.code },
-        { ...EXAMPLES.GIFT.OBLIGATION(), subtypeCode: '200' },
-        { ...EXAMPLES.GIFT.OBLIGATION(), subtypeCode: OBLIGATION_SUBTYPES.OST012.code },
-      ];
+      const mockProvidedSubtypeCodes = [OBLIGATION_SUBTYPES.OST001.code, '200', OBLIGATION_SUBTYPES.OST012.code];
 
       // Act
       const result = generateObligationSubtypeCodeErrors({
         subtypes: mockSubtypes,
         productTypeCode: mockProductTypeCode,
-        providedObligations: mockProvidedObligations,
+        providedSubtypeCodes: mockProvidedSubtypeCodes,
       });
 
       // Assert
@@ -61,17 +53,13 @@ describe('modules/gift/helpers/generate-obligation-subtype-code-errors', () => {
   describe('when all provided subtype codes are supported', () => {
     it('should return an empty array', () => {
       // Arrange
-      const mockProvidedObligations = [
-        { ...EXAMPLES.GIFT.OBLIGATION(), subtypeCode: OBLIGATION_SUBTYPES.OST001.code },
-        { ...EXAMPLES.GIFT.OBLIGATION(), subtypeCode: OBLIGATION_SUBTYPES.OST009.code },
-        { ...EXAMPLES.GIFT.OBLIGATION(), subtypeCode: OBLIGATION_SUBTYPES.OST012.code },
-      ];
+      const mockProvidedSubtypeCodes = [OBLIGATION_SUBTYPES.OST001.code, OBLIGATION_SUBTYPES.OST009.code, OBLIGATION_SUBTYPES.OST012.code];
 
       // Act
       const result = generateObligationSubtypeCodeErrors({
         subtypes: mockSubtypes,
         productTypeCode: mockProductTypeCode,
-        providedObligations: mockProvidedObligations,
+        providedSubtypeCodes: mockProvidedSubtypeCodes,
       });
 
       // Assert
