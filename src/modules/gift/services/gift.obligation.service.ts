@@ -6,7 +6,7 @@ import { PinoLogger } from 'nestjs-pino';
 import { GiftObligationRequestDto } from '../dto';
 import { GiftHttpService } from './gift.http.service';
 
-const { EVENT_TYPES, PATH } = GIFT;
+const { EVENT_TYPES, INTEGRATION_DEFAULTS, PATH } = GIFT;
 
 /**
  * GIFT obligation service.
@@ -41,6 +41,7 @@ export class GiftObligationService {
       const payload = {
         ...obligationData,
         acbsObligationId: null,
+        subtypeCode: obligationData.subtypeCode || INTEGRATION_DEFAULTS.OBLIGATION_SUBTYPE_CODE,
       };
 
       const response = await this.giftHttpService.post<GiftObligationRequestDto>({

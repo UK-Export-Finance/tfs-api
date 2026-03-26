@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { EXAMPLES, GIFT } from '@ukef/constants';
-import { IsDateString, IsDefined, IsNumber, IsString, Length, Max, Min } from 'class-validator';
+import { IsDateString, IsDefined, IsNumber, IsOptional, IsString, Length, Max, Min } from 'class-validator';
 
 const {
   GIFT: { OBLIGATION },
@@ -28,6 +28,7 @@ export class GiftObligationRequestDto {
   @Length(VALIDATION.CURRENCY.MIN_LENGTH, VALIDATION.CURRENCY.MAX_LENGTH)
   @ApiProperty({
     example: EXAMPLE.currency,
+    description: 'The currency of the obligation amount, in ISO 4217 format',
     required: true,
   })
   currency: string;
@@ -36,6 +37,7 @@ export class GiftObligationRequestDto {
   @IsDateString()
   @ApiProperty({
     example: EXAMPLE.effectiveDate,
+    description: 'The effective date of the obligation',
     required: true,
   })
   effectiveDate: string;
@@ -44,6 +46,7 @@ export class GiftObligationRequestDto {
   @IsDateString()
   @ApiProperty({
     example: EXAMPLE.maturityDate,
+    description: 'The maturity date of the obligation',
     required: true,
   })
   maturityDate: string;
@@ -54,16 +57,18 @@ export class GiftObligationRequestDto {
   @Max(VALIDATION.OBLIGATION_AMOUNT.MAX)
   @ApiProperty({
     example: EXAMPLE.amount,
+    description: 'The amount of the obligation',
     required: true,
   })
   amount: number;
 
-  @IsDefined()
+  @IsOptional()
   @IsString()
   @Length(VALIDATION.OBLIGATION_SUBTYPE_CODE.MIN_LENGTH, VALIDATION.OBLIGATION_SUBTYPE_CODE.MAX_LENGTH)
   @ApiProperty({
     example: EXAMPLE.subtypeCode,
-    required: true,
+    description: "Optional obligation subtype code. Required if the product's configuration (APIM MDM/DOM) 'obligationSubtypeCodes' field is populated",
+    required: false,
   })
-  subtypeCode: string;
+  subtypeCode?: string;
 }
