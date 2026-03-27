@@ -10,6 +10,7 @@ import {
   arrayOfObjectsDateStringValidation,
   arrayOfObjectsNumberValidation,
   arrayOfObjectsOptionalStringValidation,
+  arrayOfObjectsStringValidation,
   assert400Response,
   generatePayloadArrayOfObjects,
 } from './assertions';
@@ -85,6 +86,10 @@ describe('POST /gift/facility - validation - obligations', () => {
       const expected = {
         error: 'Bad Request',
         message: [
+          'obligations.0.amount should not be null or undefined',
+          `obligations.0.amount must not be greater than ${OBLIGATION_VALIDATION.OBLIGATION_AMOUNT.MAX}`,
+          'obligations.0.amount must not be less than 1',
+          'obligations.0.amount must be a number conforming to the specified constraints',
           'obligations.0.currency should not be null or undefined',
           `obligations.0.currency must be longer than or equal to ${OBLIGATION_VALIDATION.CURRENCY.MIN_LENGTH} characters`,
           'obligations.0.currency must be a string',
@@ -92,15 +97,23 @@ describe('POST /gift/facility - validation - obligations', () => {
           'obligations.0.effectiveDate must be a valid ISO 8601 date string',
           'obligations.0.maturityDate should not be null or undefined',
           'obligations.0.maturityDate must be a valid ISO 8601 date string',
-          'obligations.0.amount should not be null or undefined',
-          `obligations.0.amount must not be greater than ${OBLIGATION_VALIDATION.OBLIGATION_AMOUNT.MAX}`,
-          'obligations.0.amount must not be less than 1',
-          'obligations.0.amount must be a number conforming to the specified constraints',
+          'obligations.0.repaymentType should not be null or undefined',
+          `obligations.0.repaymentType must be longer than or equal to ${OBLIGATION_VALIDATION.REPAYMENT_TYPE.MIN_LENGTH} characters`,
+          'obligations.0.repaymentType must be a string',
         ],
         statusCode: HttpStatus.BAD_REQUEST,
       };
 
       expect(body).toStrictEqual(expected);
+    });
+  });
+
+  describe('amount', () => {
+    arrayOfObjectsNumberValidation({
+      ...baseParams,
+      fieldName: 'amount',
+      min: OBLIGATION_VALIDATION.OBLIGATION_AMOUNT.MIN,
+      max: OBLIGATION_VALIDATION.OBLIGATION_AMOUNT.MAX,
     });
   });
 
@@ -122,12 +135,12 @@ describe('POST /gift/facility - validation - obligations', () => {
     });
   });
 
-  describe('amount', () => {
-    arrayOfObjectsNumberValidation({
+  describe('repaymentType', () => {
+    arrayOfObjectsStringValidation({
       ...baseParams,
-      fieldName: 'amount',
-      min: OBLIGATION_VALIDATION.OBLIGATION_AMOUNT.MIN,
-      max: OBLIGATION_VALIDATION.OBLIGATION_AMOUNT.MAX,
+      fieldName: 'repaymentType',
+      min: OBLIGATION_VALIDATION.REPAYMENT_TYPE.MIN_LENGTH,
+      max: OBLIGATION_VALIDATION.REPAYMENT_TYPE.MAX_LENGTH,
     });
   });
 

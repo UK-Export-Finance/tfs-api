@@ -325,6 +325,10 @@ describe('POST /gift/facility - validation', () => {
           'riskDetails.ukefIndustryCode must be a number string',
           'consumer should not be null or undefined',
           'consumer must be a string',
+          'overview.amount should not be null or undefined',
+          `overview.amount must not be greater than ${VALIDATION.FACILITY.OVERVIEW.FACILITY_AMOUNT.MAX}`,
+          `overview.amount must not be less than ${VALIDATION.FACILITY.OVERVIEW.FACILITY_AMOUNT.MIN}`,
+          'overview.amount must be a number conforming to the specified constraints',
           'overview.creditType should not be null or undefined',
           'overview.creditType must be longer than or equal to 1 characters',
           'overview.creditType must be a string',
@@ -335,10 +339,6 @@ describe('POST /gift/facility - validation', () => {
           'overview.effectiveDate must be a valid ISO 8601 date string',
           'overview.expiryDate should not be null or undefined',
           'overview.expiryDate must be a valid ISO 8601 date string',
-          'overview.amount should not be null or undefined',
-          `overview.amount must not be greater than ${VALIDATION.FACILITY.OVERVIEW.FACILITY_AMOUNT.MAX}`,
-          `overview.amount must not be less than ${VALIDATION.FACILITY.OVERVIEW.FACILITY_AMOUNT.MIN}`,
-          'overview.amount must be a number conforming to the specified constraints',
           'overview.facilityId must be a string',
           `overview.facilityId must be longer than or equal to ${VALIDATION.FACILITY.OVERVIEW.FACILITY_ID.MIN_LENGTH} characters`,
           'overview.facilityId must match /^00\\d{8}$/ regular expression',
@@ -351,6 +351,9 @@ describe('POST /gift/facility - validation', () => {
           'overview.productTypeCode should not be null or undefined',
           `overview.productTypeCode must be longer than or equal to ${VALIDATION.FACILITY.OVERVIEW.PRODUCT_TYPE_CODE.MIN_LENGTH} characters`,
           'overview.productTypeCode must be a string',
+          'overview.repaymentType should not be null or undefined',
+          `overview.repaymentType must be longer than or equal to ${VALIDATION.FACILITY.OVERVIEW.REPAYMENT_TYPE.MIN_LENGTH} characters`,
+          'overview.repaymentType must be a string',
           `counterparties.counterpartyUrn should not be null or undefined`,
           `counterparties.counterpartyUrn must be longer than or equal to ${VALIDATION.COUNTERPARTY.COUNTERPARTY_URN.MIN_LENGTH} characters`,
           `counterparties.counterpartyUrn must be a string`,
@@ -373,6 +376,10 @@ describe('POST /gift/facility - validation', () => {
           'fixedFees.feeTypeCode should not be null or undefined',
           `fixedFees.feeTypeCode must be longer than or equal to ${VALIDATION.FIXED_FEE.FEE_TYPE_CODE.MIN_LENGTH} characters`,
           'fixedFees.feeTypeCode must be a string',
+          'obligations.amount should not be null or undefined',
+          `obligations.amount must not be greater than ${VALIDATION.OBLIGATION.OBLIGATION_AMOUNT.MAX}`,
+          `obligations.amount must not be less than ${VALIDATION.OBLIGATION.OBLIGATION_AMOUNT.MIN}`,
+          'obligations.amount must be a number conforming to the specified constraints',
           'obligations.currency should not be null or undefined',
           `obligations.currency must be longer than or equal to ${VALIDATION.OBLIGATION.CURRENCY.MIN_LENGTH} characters`,
           'obligations.currency must be a string',
@@ -380,10 +387,9 @@ describe('POST /gift/facility - validation', () => {
           'obligations.effectiveDate must be a valid ISO 8601 date string',
           'obligations.maturityDate should not be null or undefined',
           'obligations.maturityDate must be a valid ISO 8601 date string',
-          'obligations.amount should not be null or undefined',
-          `obligations.amount must not be greater than ${VALIDATION.OBLIGATION.OBLIGATION_AMOUNT.MAX}`,
-          `obligations.amount must not be less than ${VALIDATION.OBLIGATION.OBLIGATION_AMOUNT.MIN}`,
-          'obligations.amount must be a number conforming to the specified constraints',
+          'obligations.repaymentType should not be null or undefined',
+          `obligations.repaymentType must be longer than or equal to ${VALIDATION.OBLIGATION.REPAYMENT_TYPE.MIN_LENGTH} characters`,
+          'obligations.repaymentType must be a string',
           'repaymentProfiles.name should not be null or undefined',
           `repaymentProfiles.name must be longer than or equal to ${VALIDATION.REPAYMENT_PROFILE.NAME.MIN_LENGTH} characters`,
           'repaymentProfiles.name must be a string',
@@ -436,6 +442,15 @@ describe('POST /gift/facility - validation', () => {
     });
   });
 
+  describe('overview.amount', () => {
+    numberValidation({
+      ...baseParams,
+      fieldName: 'amount',
+      min: VALIDATION.FACILITY.OVERVIEW.FACILITY_AMOUNT.MIN,
+      max: VALIDATION.FACILITY.OVERVIEW.FACILITY_AMOUNT.MAX,
+    });
+  });
+
   describe('overview.creditType', () => {
     stringValidation({
       ...baseParams,
@@ -460,15 +475,6 @@ describe('POST /gift/facility - validation', () => {
     dateStringValidation({
       ...baseParams,
       fieldName: 'expiryDate',
-    });
-  });
-
-  describe('overview.amount', () => {
-    numberValidation({
-      ...baseParams,
-      fieldName: 'amount',
-      min: VALIDATION.FACILITY.OVERVIEW.FACILITY_AMOUNT.MIN,
-      max: VALIDATION.FACILITY.OVERVIEW.FACILITY_AMOUNT.MAX,
     });
   });
 
@@ -501,5 +507,14 @@ describe('POST /gift/facility - validation', () => {
 
   describe('overview.productTypeCode', () => {
     productTypeCodeStringValidation(baseParams);
+  });
+
+  describe('overview.repaymentType', () => {
+    stringValidation({
+      ...baseParams,
+      fieldName: 'repaymentType',
+      min: VALIDATION.FACILITY.OVERVIEW.REPAYMENT_TYPE.MIN_LENGTH,
+      max: VALIDATION.FACILITY.OVERVIEW.REPAYMENT_TYPE.MAX_LENGTH,
+    });
   });
 });

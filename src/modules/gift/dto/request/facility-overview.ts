@@ -20,6 +20,16 @@ const {
  */
 export class GiftFacilityOverviewRequestDto {
   @IsDefined()
+  @IsNumber()
+  @Min(VALIDATION.FACILITY_AMOUNT.MIN)
+  @Max(VALIDATION.FACILITY_AMOUNT.MAX)
+  @ApiProperty({
+    example: EXAMPLE.amount,
+    required: true,
+  })
+  amount: number;
+
+  @IsDefined()
   @IsString()
   @Length(VALIDATION.CREDIT_TYPE.MIN_LENGTH, VALIDATION.CREDIT_TYPE.MAX_LENGTH)
   @ApiProperty({
@@ -52,16 +62,6 @@ export class GiftFacilityOverviewRequestDto {
     required: true,
   })
   expiryDate: string;
-
-  @IsDefined()
-  @IsNumber()
-  @Min(VALIDATION.FACILITY_AMOUNT.MIN)
-  @Max(VALIDATION.FACILITY_AMOUNT.MAX)
-  @ApiProperty({
-    example: EXAMPLE.amount,
-    required: true,
-  })
-  amount: number;
 
   @ValidatedFacilityIdentifierApiProperty({
     description: 'The facility ID',
@@ -100,4 +100,14 @@ export class GiftFacilityOverviewRequestDto {
     required: true,
   })
   productTypeCode: string;
+
+  @IsDefined()
+  @IsString()
+  @Length(VALIDATION.REPAYMENT_TYPE.MIN_LENGTH, VALIDATION.REPAYMENT_TYPE.MAX_LENGTH)
+  @ApiProperty({
+    example: EXAMPLE.repaymentType,
+    description: 'The repayment type of the facility',
+    required: true,
+  })
+  repaymentType: string;
 }
