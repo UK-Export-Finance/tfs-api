@@ -21,6 +21,7 @@
     "APIM",
     "APIUKEF",
     "azurecr",
+    "azcliversion",
     "chara",
     "codacy",
     "codeql",
