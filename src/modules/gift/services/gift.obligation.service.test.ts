@@ -8,7 +8,7 @@ const {
   GIFT: { OBLIGATION, FACILITY_ID: mockFacilityId, WORK_PACKAGE_ID: mockWorkPackageId },
 } = EXAMPLES;
 
-const { EVENT_TYPES, PATH } = GIFT;
+const { EVENT_TYPES, INTEGRATION_DEFAULTS, PATH } = GIFT;
 
 describe('GiftObligationService', () => {
   const logger = new PinoLogger({});
@@ -39,19 +39,52 @@ describe('GiftObligationService', () => {
   describe('createOne', () => {
     const mockObligation = OBLIGATION();
 
-    it('should call giftHttpService.post', async () => {
-      // Act
-      await service.createOne(mockObligation, mockFacilityId, mockWorkPackageId);
-
-      // Assert
-      expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
-
-      expect(mockHttpServicePost).toHaveBeenCalledWith({
-        path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_OBLIGATION}`,
-        payload: {
+    describe('when subtypeCode is provided', () => {
+      it('should call giftHttpService.post with the provided subtypeCode and acbsObligationId as null', async () => {
+        // Arrange
+        const mockPayload = {
           ...mockObligation,
-          acbsObligationId: null,
-        },
+          subtypeCode: 'Mock subtype code',
+        };
+
+        // Act
+        await service.createOne(mockPayload, mockFacilityId, mockWorkPackageId);
+
+        // Assert
+        expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
+
+        expect(mockHttpServicePost).toHaveBeenCalledWith({
+          path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_OBLIGATION}`,
+          payload: {
+            ...mockPayload,
+            acbsObligationId: null,
+          },
+        });
+      });
+    });
+
+    describe('when subtypeCode is NOT provided', () => {
+      it('should call giftHttpService.post with subtypeCode and acbsObligationId as null', async () => {
+        // Arrange
+        const mockPayload = {
+          ...mockObligation,
+          subtypeCode: undefined,
+        };
+
+        // Act
+        await service.createOne(mockPayload, mockFacilityId, mockWorkPackageId);
+
+        // Assert
+        expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
+
+        expect(mockHttpServicePost).toHaveBeenCalledWith({
+          path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_OBLIGATION}`,
+          payload: {
+            ...mockPayload,
+            acbsObligationId: null,
+            subtypeCode: INTEGRATION_DEFAULTS.OBLIGATION_SUBTYPE_CODE,
+          },
+        });
       });
     });
 

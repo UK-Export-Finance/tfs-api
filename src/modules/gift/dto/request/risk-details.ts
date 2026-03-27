@@ -23,8 +23,8 @@ export class GiftFacilityRiskDetailsRequestDto {
   @Length(VALIDATION.ACCOUNT.MIN_LENGTH, VALIDATION.ACCOUNT.MAX_LENGTH)
   @ApiProperty({
     example: EXAMPLE.account,
-    required: true,
     description: 'The account number',
+    required: true,
   })
   account: string;
 
@@ -47,6 +47,7 @@ export class GiftFacilityRiskDetailsRequestDto {
     minLength: VALIDATION.FACILITY_CATEGORY_CODE.MIN_LENGTH,
     maxLength: VALIDATION.FACILITY_CATEGORY_CODE.MAX_LENGTH,
     description: "Optional facility category code. Required if the product's configuration (APIM MDM/DOM) 'facilityCategoryTypes' field is populated",
+    required: false,
   })
   facilityCategoryCode?: string;
 
@@ -56,6 +57,7 @@ export class GiftFacilityRiskDetailsRequestDto {
   @ApiProperty({
     example: EXAMPLE.facilityCreditRating,
     description: "The facility's credit rating",
+    required: false,
   })
   facilityCreditRating?: string;
 
@@ -64,8 +66,8 @@ export class GiftFacilityRiskDetailsRequestDto {
   @Length(VALIDATION.RISK_STATUS.MIN_LENGTH, VALIDATION.RISK_STATUS.MAX_LENGTH)
   @ApiProperty({
     example: EXAMPLE.riskStatus,
-    required: true,
     description: "The facility's risk status",
+    required: true,
   })
   riskStatus: string;
 
@@ -74,8 +76,8 @@ export class GiftFacilityRiskDetailsRequestDto {
   @Length(VALIDATION.UKEF_INDUSTRY_CODE.MIN_LENGTH, VALIDATION.UKEF_INDUSTRY_CODE.MAX_LENGTH)
   @ApiProperty({
     example: EXAMPLE.ukefIndustryCode,
-    required: true,
     description: 'The UKEF industry code',
+    required: true,
   })
   ukefIndustryCode: string;
 }

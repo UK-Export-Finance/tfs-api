@@ -41,6 +41,7 @@ export const GIFT = {
     RISK_REASSESSMENT_DATE: null,
     FACILITY_CATEGORY_CODE: null,
     FACILITY_CREDIT_RATING: null,
+    OBLIGATION_SUBTYPE_CODE: null,
   },
   ENTITY_NAMES: {
     BUSINESS_CALENDAR: 'Business calendar',

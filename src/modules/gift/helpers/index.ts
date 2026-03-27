@@ -12,6 +12,7 @@ export * from './is-valid-counterparty-role-id-format';
 export * from './is-valid-product-type-code-format';
 export * from './map-all-validation-error-responses';
 export * from './map-counterparties-request-data';
+export * from './map-obligation-subtype-codes';
 export * from './map-response-data';
 export * from './map-responses-data';
 export * from './map-validation-error-responses';
