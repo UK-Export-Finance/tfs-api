@@ -59,7 +59,6 @@ export class GiftFacilityCreationGenericRequestDto {
     type: GiftFixedFeeRequestDto,
   })
   @IsArray()
-  @ArrayNotEmpty()
   @IsDefined()
   @Type(() => GiftFixedFeeRequestDto)
   @ValidateNested()
