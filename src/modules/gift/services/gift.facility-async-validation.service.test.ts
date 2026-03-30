@@ -163,10 +163,11 @@ describe('GiftFacilityAsyncValidationService', () => {
       it('should NOT call mdmService.getAllObligationSubtypesByProductTypeCode', async () => {
         // Arrange
         const mockObligation = {
+          amount: OBLIGATION().amount,
+          currency: OBLIGATION().currency,
           effectiveDate: OBLIGATION().effectiveDate,
           maturityDate: OBLIGATION().maturityDate,
-          currency: OBLIGATION().currency,
-          amount: OBLIGATION().amount,
+          repaymentType: OBLIGATION().repaymentType,
         };
 
         const mockPayload = {

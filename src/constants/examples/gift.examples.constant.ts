@@ -63,6 +63,11 @@ const COUNTERPARTY_ROLES_RESPONSE_DATA = {
   counterpartyRoles: [COUNTERPARTY_ROLE.EXPORTER],
 };
 
+const REPAYMENT_TYPE = {
+  BULLET: 'Bullet',
+  SCHEDULED: 'Scheduled',
+};
+
 /**
  * Example counterparty.
  * NOTE:
@@ -129,10 +134,11 @@ const FIXED_FEE = () => ({
  * @returns {GiftObligationRequestDto}
  */
 const OBLIGATION = ({ subtypeCode = MDM_EXAMPLES.OBLIGATION_SUBTYPES.OST001.code } = {}): GiftObligationRequestDto => ({
+  amount: 2500,
+  currency: SUPPORTED_CURRENCIES.USD,
   effectiveDate: '2025-01-13',
   maturityDate: '2025-01-15',
-  currency: SUPPORTED_CURRENCIES.USD,
-  amount: 2500,
+  repaymentType: REPAYMENT_TYPE.BULLET,
   subtypeCode,
 });
 
@@ -175,15 +181,16 @@ const RISK_DETAILS = {
 };
 
 const FACILITY_OVERVIEW = {
+  amount: 10000,
+  creditType: CREDIT_TYPES.REVOLVER,
+  currency: SUPPORTED_CURRENCIES.USD,
+  effectiveDate: '2025-01-01',
   facilityId: FACILITY_ID,
+  expiryDate: '2027-02-01',
   name: 'Amazing facility',
   obligorUrn: '01234567',
-  currency: SUPPORTED_CURRENCIES.USD,
-  amount: 10000,
-  effectiveDate: '2025-01-01',
-  expiryDate: '2027-02-01',
-  creditType: CREDIT_TYPES.REVOLVER,
   productTypeCode: PRODUCT_TYPE_CODES.BIP,
+  repaymentType: REPAYMENT_TYPE.BULLET,
 };
 
 /**

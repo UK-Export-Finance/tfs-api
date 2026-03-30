@@ -16,6 +16,7 @@ const EXAMPLE = OBLIGATION() as {
   maturityDate: string;
   amount: number;
   subtypeCode: string;
+  repaymentType: string;
 };
 
 /**
@@ -23,6 +24,17 @@ const EXAMPLE = OBLIGATION() as {
  * These fields are required for APIM to create an "obligation" in GIFT.
  */
 export class GiftObligationRequestDto {
+  @IsDefined()
+  @IsNumber()
+  @Min(VALIDATION.OBLIGATION_AMOUNT.MIN)
+  @Max(VALIDATION.OBLIGATION_AMOUNT.MAX)
+  @ApiProperty({
+    example: EXAMPLE.amount,
+    description: 'The amount of the obligation',
+    required: true,
+  })
+  amount: number;
+
   @IsDefined()
   @IsString()
   @Length(VALIDATION.CURRENCY.MIN_LENGTH, VALIDATION.CURRENCY.MAX_LENGTH)
@@ -52,15 +64,14 @@ export class GiftObligationRequestDto {
   maturityDate: string;
 
   @IsDefined()
-  @IsNumber()
-  @Min(VALIDATION.OBLIGATION_AMOUNT.MIN)
-  @Max(VALIDATION.OBLIGATION_AMOUNT.MAX)
+  @IsString()
+  @Length(VALIDATION.REPAYMENT_TYPE.MIN_LENGTH, VALIDATION.REPAYMENT_TYPE.MAX_LENGTH)
   @ApiProperty({
-    example: EXAMPLE.amount,
-    description: 'The amount of the obligation',
+    example: EXAMPLE.repaymentType,
+    description: 'The repayment type of the obligation',
     required: true,
   })
-  amount: number;
+  repaymentType: string;
 
   @IsOptional()
   @IsString()
