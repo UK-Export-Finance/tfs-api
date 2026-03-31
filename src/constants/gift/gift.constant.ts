@@ -24,6 +24,7 @@ export const GIFT = {
   COUNTERPARTY_ROLE_CODES: {
     EXPORTER: 'CRT001',
     GUARANTOR: 'CRT013',
+    ISSUING_BANK: 'CRT043',
   },
   CREDIT_TYPES: {
     REVOLVER: 'Revolver',
