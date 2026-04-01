@@ -22,7 +22,7 @@ export function UniqueRepaymentProfileAllocationDates(validationOptions?: Valida
            * This is because repayment profiles are optional in the facility creation payload.
            * Therefore we only need to validate, if repayment profiles are provided.
            */
-          if (!Array.isArray(repaymentProfiles) || repaymentProfiles.length === 0) {
+          if (!Array.isArray(repaymentProfiles)) {
             return true;
           }
 
