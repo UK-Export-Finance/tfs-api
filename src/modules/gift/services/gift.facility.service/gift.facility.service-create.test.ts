@@ -29,6 +29,7 @@ const {
     COUNTERPARTY,
     FACILITY_ID: mockFacilityId,
     FACILITY_RESPONSE_DATA,
+    FACILITY_CREATION_PAYLOAD_NO_REPAYMENT_PROFILES,
     FACILITY_CREATION_PAYLOAD: mockPayload,
     FIXED_FEE,
     OBLIGATION,
@@ -279,6 +280,16 @@ describe('GiftFacilityService.create - happy path', () => {
 
     // Assert
     expect(finallyHandlerSpy).toHaveBeenCalledTimes(0);
+  });
+
+  describe('when repaymentProfiles is NOT provided in the payload', () => {
+    it('should NOT call giftRepaymentProfileService.createMany', async () => {
+      // Act
+      await service.create(FACILITY_CREATION_PAYLOAD_NO_REPAYMENT_PROFILES, mockFacilityId);
+
+      // Assert
+      expect(createRepaymentProfilesSpy).not.toHaveBeenCalled();
+    });
   });
 
   it('should return a response object', async () => {
