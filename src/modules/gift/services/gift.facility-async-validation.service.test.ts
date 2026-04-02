@@ -212,7 +212,7 @@ describe('GiftFacilityAsyncValidationService', () => {
     });
 
     describe('when fixedFees is NOT provided', () => {
-      it('should NOT call mdmService.getAllFeeTypeCodes', async () => {
+      it('should NOT call feeTypeService.getAllFeeTypeCodes', async () => {
         // Arrange
         const mockPayload = FACILITY_CREATION_PAYLOAD_NO_FIXED_FEES;
 
@@ -225,7 +225,7 @@ describe('GiftFacilityAsyncValidationService', () => {
     });
 
     describe('when fixedFees is provided as an empty array', () => {
-      it('should NOT call mdmService.getAllFeeTypeCodes', async () => {
+      it('should NOT call feeTypeService.getAllFeeTypeCodes', async () => {
         // Arrange
         const mockPayload = {
           ...mockBasePayload,

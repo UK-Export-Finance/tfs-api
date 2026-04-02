@@ -284,7 +284,7 @@ describe('GiftFacilityService.create - happy path', () => {
   });
 
   describe('when fixedFees is NOT provided in the payload', () => {
-    it('should NOT call giftRepaymentProfileService.createMany', async () => {
+    it('should NOT call giftFixedFeeService.createMany', async () => {
       // Act
       await service.create(FACILITY_CREATION_PAYLOAD_NO_FIXED_FEES, mockFacilityId);
 
