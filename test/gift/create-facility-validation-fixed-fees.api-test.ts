@@ -101,11 +101,11 @@ describe('POST /gift/facility - validation - fixed fees', () => {
   });
 
   describe('when an empty fixed fee array is provided', () => {
-    it(`should return a ${HttpStatus.ACCEPTED} response with validation errors for all required fields`, async () => {
+    it(`should NOT return a ${HttpStatus.BAD_REQUEST} response`, async () => {
       // Arrange
       const mockPayload = {
         ...EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD,
-        fixedFees: [{}],
+        fixedFees: [],
       };
 
       // Act

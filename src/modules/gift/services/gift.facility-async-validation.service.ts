@@ -63,8 +63,6 @@ export class GiftFacilityAsyncValidationService {
 
       const counterpartyRoleCodes = this.counterpartyService.getAllRoleCodes(counterpartyRoles);
 
-      const feeTypeCodes = await this.feeTypeService.getAllFeeTypeCodes();
-
       const isSupportedProductType = await this.productTypeService.isSupported(productTypeCode);
 
       const supportedCurrencies = await this.currencyService.getSupportedCurrencies();
@@ -93,12 +91,18 @@ export class GiftFacilityAsyncValidationService {
         providedCounterparties: payload.counterparties,
       });
 
-      const feeTypeCodeErrors = generateArrayOfErrors({
-        fieldValues: mapEntitiesByField(payload.fixedFees, 'feeTypeCode'),
-        supportedValues: feeTypeCodes,
-        fieldName: 'feeTypeCode',
-        parentEntityName: 'fixedFees',
-      });
+      let feeTypeCodeErrors = [];
+
+      if (Array.isArray(payload.fixedFees) && payload.fixedFees.length) {
+        const feeTypeCodes = await this.feeTypeService.getAllFeeTypeCodes();
+
+        feeTypeCodeErrors = generateArrayOfErrors({
+          fieldValues: mapEntitiesByField(payload.fixedFees, 'feeTypeCode'),
+          supportedValues: feeTypeCodes,
+          fieldName: 'feeTypeCode',
+          parentEntityName: 'fixedFees',
+        });
+      }
 
       let obligationSubtypeCodeErrors = [];
 

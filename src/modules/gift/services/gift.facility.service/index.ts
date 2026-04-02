@@ -125,13 +125,7 @@ export class GiftFacilityService {
     try {
       this.logger.info('Creating a GIFT facility %s', facilityId);
 
-      const {
-        overview,
-        counterparties: counterpartiesPayload,
-        fixedFees: fixedFeesPayload,
-        obligations: obligationsPayload,
-        repaymentProfiles: repaymentProfilesPayload,
-      } = data;
+      const { overview, counterparties: counterpartiesPayload, obligations: obligationsPayload, repaymentProfiles: repaymentProfilesPayload } = data;
 
       const validationErrors = await this.asyncValidationService.creation(data, facilityId);
 
@@ -184,7 +178,11 @@ export class GiftFacilityService {
 
       const counterparties = await this.giftCounterpartyService.createMany(counterpartiesPayload, facilityId, workPackageId);
 
-      const fixedFees = await this.giftFixedFeeService.createMany(fixedFeesPayload, facilityId, workPackageId);
+      let fixedFeesResponse = [];
+
+      if (Array.isArray(data.fixedFees) && data.fixedFees.length) {
+        fixedFeesResponse = await this.giftFixedFeeService.createMany(data.fixedFees, facilityId, workPackageId);
+      }
 
       const obligations = await this.giftObligationService.createMany(obligationsPayload, facilityId, workPackageId);
 
@@ -198,7 +196,7 @@ export class GiftFacilityService {
         businessCalendars,
         businessCalendarsConvention,
         counterparties,
-        fixedFees,
+        fixedFees: fixedFeesResponse,
         obligations,
         repaymentProfiles,
         riskDetails: riskDetailsArray,
@@ -254,7 +252,7 @@ export class GiftFacilityService {
           businessCalendars: mapResponsesData(businessCalendars),
           businessCalendarsConvention: mapResponseData(defaultBusinessCalendarsConvention),
           counterparties: mapResponsesData(counterparties),
-          fixedFees: mapResponsesData(fixedFees),
+          fixedFees: mapResponsesData(fixedFeesResponse),
           obligations: mapResponsesData(obligations),
           repaymentProfiles: mapResponsesData(repaymentProfiles),
           riskDetails: mapResponseData(riskDetails),

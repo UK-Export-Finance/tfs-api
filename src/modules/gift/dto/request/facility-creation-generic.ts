@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { Type } from 'class-transformer';
-import { ArrayNotEmpty, IsArray, IsDefined, IsNotEmptyObject, IsString, ValidateNested } from 'class-validator';
+import { ArrayNotEmpty, IsArray, IsDefined, IsNotEmptyObject, IsOptional, IsString, ValidateNested } from 'class-validator';
 
 import { IsSupportedConsumer, UniqueRepaymentProfileAllocationDates, UniqueRepaymentProfileNames } from '../../custom-decorators';
 import { GiftFacilityCounterpartyRequestDto } from './counterparty';
@@ -55,14 +55,14 @@ export class GiftFacilityCreationGenericRequestDto {
   @ApiProperty({
     isArray: true,
     example: [FIXED_FEE(), FIXED_FEE()],
-    required: true,
+    required: false,
     type: GiftFixedFeeRequestDto,
   })
+  @IsOptional()
   @IsArray()
-  @IsDefined()
   @Type(() => GiftFixedFeeRequestDto)
   @ValidateNested()
-  fixedFees: GiftFixedFeeRequestDto[];
+  fixedFees?: GiftFixedFeeRequestDto[];
 
   @ApiProperty({
     isArray: true,
