@@ -125,13 +125,7 @@ export class GiftFacilityService {
     try {
       this.logger.info('Creating a GIFT facility %s', facilityId);
 
-      const {
-        overview,
-        counterparties: counterpartiesPayload,
-        fixedFees: fixedFeesPayload,
-        obligations: obligationsPayload,
-        repaymentProfiles: repaymentProfilesPayload,
-      } = data;
+      const { overview, counterparties: counterpartiesPayload, fixedFees: fixedFeesPayload, obligations: obligationsPayload } = data;
 
       const validationErrors = await this.asyncValidationService.creation(data, facilityId);
 
@@ -188,7 +182,11 @@ export class GiftFacilityService {
 
       const obligations = await this.giftObligationService.createMany(obligationsPayload, facilityId, workPackageId);
 
-      const repaymentProfiles = await this.giftRepaymentProfileService.createMany(repaymentProfilesPayload, facilityId, workPackageId);
+      let repaymentProfilesResponse = [];
+
+      if (Array.isArray(data.repaymentProfiles) && data.repaymentProfiles.length) {
+        repaymentProfilesResponse = await this.giftRepaymentProfileService.createMany(data.repaymentProfiles, facilityId, workPackageId);
+      }
 
       const riskDetails = await this.giftRiskDetailsService.createOne(data.riskDetails, facilityId, workPackageId);
 
@@ -200,7 +198,7 @@ export class GiftFacilityService {
         counterparties,
         fixedFees,
         obligations,
-        repaymentProfiles,
+        repaymentProfiles: repaymentProfilesResponse,
         riskDetails: riskDetailsArray,
       });
 
@@ -256,7 +254,7 @@ export class GiftFacilityService {
           counterparties: mapResponsesData(counterparties),
           fixedFees: mapResponsesData(fixedFees),
           obligations: mapResponsesData(obligations),
-          repaymentProfiles: mapResponsesData(repaymentProfiles),
+          repaymentProfiles: mapResponsesData(repaymentProfilesResponse),
           riskDetails: mapResponseData(riskDetails),
         },
       };
