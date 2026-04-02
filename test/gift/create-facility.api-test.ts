@@ -228,4 +228,30 @@ describe('POST /gift/facility', () => {
       expect(body).toStrictEqual(expected);
     });
   });
+
+  describe(`when the payload does not contain repaymentProfiles and a ${HttpStatus.CREATED} response is returned by all GIFT endpoints`, () => {
+    it(`should return a ${HttpStatus.CREATED} response with a facility and all created entities`, async () => {
+      // Arrange
+      setupMocks();
+
+      // Act
+      const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD_NO_REPAYMENT_PROFILES);
+
+      // Assert
+      expect(status).toBe(HttpStatus.CREATED);
+
+      const expected = {
+        ...mockResponses.facility.configurationEvent.data,
+        businessCalendars: [mockResponses.businessCalendar.data],
+        businessCalendarsConvention: mockResponses.businessCalendarsConvention.data,
+        counterparties: Array(payloadCounterparties.length).fill(mockResponses.counterparty.data),
+        fixedFees: Array(payloadFixedFees.length).fill(mockResponses.fixedFee.data),
+        obligations: Array(payloadObligations.length).fill(mockResponses.obligation.data),
+        repaymentProfiles: [],
+        riskDetails: mockResponses.riskDetails.data,
+      };
+
+      expect(body).toStrictEqual(expected);
+    });
+  });
 });

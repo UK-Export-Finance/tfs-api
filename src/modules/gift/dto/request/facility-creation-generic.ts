@@ -80,15 +80,14 @@ export class GiftFacilityCreationGenericRequestDto {
   @ApiProperty({
     isArray: true,
     example: [REPAYMENT_PROFILE()],
-    required: true,
+    required: false,
     type: GiftRepaymentProfileRequestDto,
   })
+  @IsOptional()
   @IsArray()
-  @ArrayNotEmpty()
-  @IsDefined()
   @UniqueRepaymentProfileNames()
   @UniqueRepaymentProfileAllocationDates()
   @Type(() => GiftRepaymentProfileRequestDto)
   @ValidateNested()
-  repaymentProfiles: GiftRepaymentProfileRequestDto[];
+  repaymentProfiles?: GiftRepaymentProfileRequestDto[];
 }

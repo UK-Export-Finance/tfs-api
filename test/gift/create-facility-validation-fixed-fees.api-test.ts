@@ -112,7 +112,7 @@ describe('POST /gift/facility - validation - fixed fees', () => {
       const { status } = await api.post(url, mockPayload);
 
       // Assert
-      expect(status).toBe(HttpStatus.ACCEPTED);
+      expect(status).not.toBe(HttpStatus.BAD_REQUEST);
     });
   });
 

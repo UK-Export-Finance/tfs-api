@@ -17,6 +17,15 @@ export function UniqueRepaymentProfileNames(validationOptions?: ValidationOption
       options: validationOptions,
       validator: {
         validate(repaymentProfiles: GiftRepaymentProfileRequestDto[]) {
+          /**
+           * If repayment profiles are not provided, the validation of unique names will be skipped.
+           * This is because repayment profiles are optional in the facility creation payload.
+           * Therefore we only need to validate, if repayment profiles are provided.
+           */
+          if (!Array.isArray(repaymentProfiles) || !repaymentProfiles.length) {
+            return true;
+          }
+
           const profileNames = getRepaymentProfileNames(repaymentProfiles);
 
           return arrayHasUniqueStrings(profileNames);
