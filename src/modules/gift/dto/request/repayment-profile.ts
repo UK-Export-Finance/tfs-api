@@ -23,7 +23,7 @@ export class GiftRepaymentProfileRequestDto {
   @Length(VALIDATION.NAME.MIN_LENGTH, VALIDATION.NAME.MAX_LENGTH)
   @ApiProperty({
     example: REPAYMENT_PROFILE().name,
-    required: false,
+    required: true,
   })
   name: string;
 
@@ -35,7 +35,7 @@ export class GiftRepaymentProfileRequestDto {
   @ApiProperty({
     isArray: true,
     example: [REPAYMENT_PROFILE_ALLOCATION(), REPAYMENT_PROFILE_ALLOCATION()],
-    required: false,
+    required: true,
     type: GiftRepaymentProfileAllocationRequestDto,
   })
   allocations: GiftRepaymentProfileAllocationRequestDto[];

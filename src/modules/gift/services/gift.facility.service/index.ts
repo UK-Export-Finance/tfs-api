@@ -184,7 +184,7 @@ export class GiftFacilityService {
 
       let repaymentProfilesResponse = [];
 
-      if (data.repaymentProfiles) {
+      if (Array.isArray(data.repaymentProfiles) && data.repaymentProfiles.length) {
         repaymentProfilesResponse = await this.giftRepaymentProfileService.createMany(data.repaymentProfiles, facilityId, workPackageId);
       }
 

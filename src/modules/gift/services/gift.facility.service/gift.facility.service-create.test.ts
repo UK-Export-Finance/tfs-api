@@ -292,6 +292,22 @@ describe('GiftFacilityService.create - happy path', () => {
     });
   });
 
+  describe('when repaymentProfiles is provided in the payload as an empty array', () => {
+    it('should NOT call giftRepaymentProfileService.createMany', async () => {
+      // Arrange
+      const payload = {
+        ...FACILITY_CREATION_PAYLOAD_NO_REPAYMENT_PROFILES,
+        repaymentProfiles: [],
+      };
+
+      // Act
+      await service.create(payload, mockFacilityId);
+
+      // Assert
+      expect(createRepaymentProfilesSpy).not.toHaveBeenCalled();
+    });
+  });
+
   it('should return a response object', async () => {
     // Act
     const response = await service.create(mockPayload, mockFacilityId);
