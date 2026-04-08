@@ -38,7 +38,7 @@ export const mapEntitiesByField = (entities: object[], fieldName: string) => ent
  * ```
  */
 export const stripPayload = (payload: GiftFacilityCreationRequestDto, fieldName: string): GiftFacilityCreationValidationStrippedPayload => {
-  const { overview, fixedFees, obligations } = payload;
+  const { overview, fixedFees = [], obligations } = payload;
 
   return {
     overview: overview[`${fieldName}`],

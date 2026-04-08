@@ -55,14 +55,14 @@ export class GiftFacilityCreationGenericRequestDto {
   @ApiProperty({
     isArray: true,
     example: [FIXED_FEE(), FIXED_FEE()],
-    required: true,
+    required: false,
     type: GiftFixedFeeRequestDto,
   })
+  @IsOptional()
   @IsArray()
-  @IsDefined()
   @Type(() => GiftFixedFeeRequestDto)
   @ValidateNested()
-  fixedFees: GiftFixedFeeRequestDto[];
+  fixedFees?: GiftFixedFeeRequestDto[];
 
   @ApiProperty({
     isArray: true,
