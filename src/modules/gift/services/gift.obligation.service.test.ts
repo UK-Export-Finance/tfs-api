@@ -201,7 +201,7 @@ describe('GiftObligationService', () => {
         service.createOne = mockCreateOne;
       });
 
-      it('should continue to call service.createOne with mapped data for each provided counterparty', async () => {
+      it('should continue to call service.createOne with mapped data for each provided obligation', async () => {
         // Act
         await service.createMany(mockObligations, mockFacilityId, mockWorkPackageId);
 

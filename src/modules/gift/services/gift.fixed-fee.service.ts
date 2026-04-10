@@ -40,7 +40,7 @@ export class GiftFixedFeeService {
        */
       const payload = {
         ...fixedFeeData,
-        acbsFeeSegmentId: null,
+        acbsFeeSegmentId: null, // TODO: constant
       };
 
       const response = await this.giftHttpService.post<GiftFixedFeeRequestDto>({

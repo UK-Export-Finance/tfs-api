@@ -3,6 +3,7 @@ import { MdmModule } from '@ukef/modules/mdm/mdm.module';
 
 import { GiftCurrencyController, GiftFacilityController, GiftFeeTypeController } from './controllers';
 import {
+  GiftAccrualScheduleService,
   GiftBusinessCalendarsConventionService,
   GiftBusinessCalendarService,
   GiftCounterpartyService,
@@ -25,6 +26,7 @@ import {
 @Module({
   imports: [MdmModule],
   providers: [
+    GiftAccrualScheduleService,
     GiftBusinessCalendarService,
     GiftBusinessCalendarsConventionService,
     GiftCounterpartyService,

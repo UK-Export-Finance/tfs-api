@@ -6,6 +6,7 @@ import { mockAxiosError, mockResponse200, mockResponse201, mockResponse500 } fro
 import { PinoLogger } from 'nestjs-pino';
 
 import {
+  GiftAccrualScheduleService,
   GiftBusinessCalendarsConventionService,
   GiftBusinessCalendarService,
   GiftCounterpartyService,
@@ -24,6 +25,7 @@ import { GiftFacilityService } from './';
 
 const {
   GIFT: {
+    ACCRUAL_SCHEDULE,
     BUSINESS_CALENDAR,
     BUSINESS_CALENDARS_CONVENTION,
     COUNTERPARTY,
@@ -38,8 +40,9 @@ const {
   },
 } = EXAMPLES;
 
-const mockCreateInitialFacilityResponse = mockResponse201(FACILITY_RESPONSE_DATA);
+const mockCreateInitialFacilityResponse = mockResponse201({ data: FACILITY_RESPONSE_DATA });
 
+const mockAccrualSchedules = [ACCRUAL_SCHEDULE, ACCRUAL_SCHEDULE];
 const mockBusinessCalendar = BUSINESS_CALENDAR;
 const mockBusinessCalendarsConvention = BUSINESS_CALENDARS_CONVENTION;
 const mockCounterparties = [COUNTERPARTY(), COUNTERPARTY(), COUNTERPARTY()];
@@ -49,18 +52,20 @@ const mockRepaymentProfiles = [REPAYMENT_PROFILE(), REPAYMENT_PROFILE(), REPAYME
 const mockRiskDetails = RISK_DETAILS;
 
 const mockAsyncValidationServiceCreationResponse = [];
+const mockCreateAccrualSchedulesResponse = mockAccrualSchedules.map((accrualSchedule) => mockResponse201({ data: accrualSchedule }));
 const mockCreateBusinessCalendarsConventionResponse = mockResponse201({ data: mockBusinessCalendarsConvention });
 const mockCreateBusinessCalendarResponse = mockResponse201({ data: mockBusinessCalendar });
-const mockCreateCounterpartiesResponse = mockCounterparties.map((counterparty) => mockResponse201(counterparty));
-const mockCreateFixedFeesResponse = mockFixedFees.map((fixedFee) => mockResponse201(fixedFee));
-const mockCreateObligationsResponse = mockObligations.map((counterparty) => mockResponse201(counterparty));
-const mockCreateRepaymentProfilesResponse = mockRepaymentProfiles.map((repaymentProfile) => mockResponse201(repaymentProfile));
+const mockCreateCounterpartiesResponse = mockCounterparties.map((counterparty) => mockResponse201({ data: counterparty }));
+const mockCreateFixedFeesResponse = mockFixedFees.map((fixedFee) => mockResponse201({ data: fixedFee }));
+const mockCreateObligationsResponse = mockObligations.map((obligation) => mockResponse201({ data: obligation }));
+const mockCreateRepaymentProfilesResponse = mockRepaymentProfiles.map((repaymentProfile) => mockResponse201({ data: repaymentProfile }));
 const mockCreateRiskDetailsResponse = mockResponse201({ data: mockRiskDetails });
 const mockApprovedStatusResponse = mockResponse200({ data: WORK_PACKAGE_APPROVE_RESPONSE_DATA });
 
 describe('GiftFacilityService.create - error handling', () => {
   const logger = new PinoLogger({});
 
+  let accrualScheduleService: GiftAccrualScheduleService;
   let asyncValidationService: GiftFacilityAsyncValidationService;
   let businessCalendarService: GiftBusinessCalendarService;
   let businessCalendarsConventionService: GiftBusinessCalendarsConventionService;
@@ -77,6 +82,7 @@ describe('GiftFacilityService.create - error handling', () => {
   let httpService;
   let asyncValidationServiceCreationSpy: jest.Mock;
   let createInitialFacilitySpy: jest.Mock;
+  let createAccrualSchedulesSpy: jest.Mock;
   let createBusinessCalendarSpy: jest.Mock;
   let createBusinessCalendarsConventionSpy: jest.Mock;
   let createCounterpartiesSpy: jest.Mock;
@@ -103,6 +109,7 @@ describe('GiftFacilityService.create - error handling', () => {
       productTypeService,
     );
 
+    accrualScheduleService = new GiftAccrualScheduleService(giftHttpService, logger);
     businessCalendarService = new GiftBusinessCalendarService(giftHttpService, logger);
     businessCalendarsConventionService = new GiftBusinessCalendarsConventionService(giftHttpService, logger);
     counterpartyService = new GiftCounterpartyService(giftHttpService, logger);
@@ -115,6 +122,7 @@ describe('GiftFacilityService.create - error handling', () => {
 
     asyncValidationServiceCreationSpy = jest.fn().mockResolvedValueOnce(mockAsyncValidationServiceCreationResponse);
     createInitialFacilitySpy = jest.fn().mockResolvedValueOnce(mockCreateInitialFacilityResponse);
+    createAccrualSchedulesSpy = jest.fn().mockResolvedValueOnce(mockCreateAccrualSchedulesResponse);
     createBusinessCalendarSpy = jest.fn().mockResolvedValueOnce(mockCreateBusinessCalendarResponse);
     createBusinessCalendarsConventionSpy = jest.fn().mockResolvedValueOnce(mockCreateBusinessCalendarsConventionResponse);
     createCounterpartiesSpy = jest.fn().mockResolvedValueOnce(mockCreateCounterpartiesResponse);
@@ -125,6 +133,7 @@ describe('GiftFacilityService.create - error handling', () => {
     approvedStatusSpy = jest.fn().mockResolvedValueOnce(mockApprovedStatusResponse);
 
     asyncValidationService.creation = asyncValidationServiceCreationSpy;
+    accrualScheduleService.createMany = createAccrualSchedulesSpy;
     businessCalendarService.createOne = createBusinessCalendarSpy;
     businessCalendarsConventionService.createOne = createBusinessCalendarsConventionSpy;
     counterpartyService.createMany = createCounterpartiesSpy;
@@ -137,6 +146,7 @@ describe('GiftFacilityService.create - error handling', () => {
       giftHttpService,
       logger,
       asyncValidationService,
+      accrualScheduleService,
       businessCalendarService,
       businessCalendarsConventionService,
       counterpartyService,
@@ -170,6 +180,7 @@ describe('GiftFacilityService.create - error handling', () => {
         giftHttpService,
         logger,
         asyncValidationService,
+        accrualScheduleService,
         businessCalendarService,
         businessCalendarsConventionService,
         counterpartyService,
@@ -213,6 +224,7 @@ describe('GiftFacilityService.create - error handling', () => {
         giftHttpService,
         logger,
         asyncValidationService,
+        accrualScheduleService,
         businessCalendarService,
         businessCalendarsConventionService,
         counterpartyService,

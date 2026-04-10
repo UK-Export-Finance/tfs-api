@@ -6,6 +6,7 @@ import { mockAxiosError, mockResponse201 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
 import {
+  GiftAccrualScheduleService,
   GiftBusinessCalendarsConventionService,
   GiftBusinessCalendarService,
   GiftCounterpartyService,
@@ -24,6 +25,7 @@ import { GiftFacilityService } from './';
 
 const {
   GIFT: {
+    ACCRUAL_SCHEDULE,
     BUSINESS_CALENDAR,
     BUSINESS_CALENDARS_CONVENTION,
     COUNTERPARTY,
@@ -42,6 +44,7 @@ const { API_RESPONSE_MESSAGES } = GIFT;
 
 const mockCreateInitialFacilityResponse = mockResponse201(FACILITY_RESPONSE_DATA);
 
+const mockAccrualSchedules = [ACCRUAL_SCHEDULE, ACCRUAL_SCHEDULE];
 const mockBusinessCalendar = BUSINESS_CALENDAR;
 const mockBusinessCalendarsConvention = BUSINESS_CALENDARS_CONVENTION;
 const mockCounterparties = [COUNTERPARTY(), COUNTERPARTY(), COUNTERPARTY()];
@@ -50,6 +53,7 @@ const mockObligations = [OBLIGATION(), OBLIGATION(), OBLIGATION()];
 const mockRepaymentProfiles = [REPAYMENT_PROFILE(), REPAYMENT_PROFILE(), REPAYMENT_PROFILE()];
 const mockRiskDetails = RISK_DETAILS;
 
+const mockCreateAccrualSchedulesResponse = mockAccrualSchedules.map((accrualSchedule) => mockResponse201({ data: accrualSchedule }));
 const mockCreateBusinessCalendarResponse = mockResponse201({ data: mockBusinessCalendar });
 const mockCreateBusinessCalendarsConventionResponse = mockResponse201({ data: mockBusinessCalendarsConvention });
 const mockCreateCounterpartiesResponse = mockCounterparties.map((counterparty) => mockResponse201(counterparty));
@@ -62,6 +66,7 @@ const mockApprovedStatusResponse = mockResponse201({ data: WORK_PACKAGE_APPROVE_
 describe('GiftFacilityService.create - async validation errors', () => {
   const logger = new PinoLogger({});
 
+  let accrualScheduleService: GiftAccrualScheduleService;
   let asyncValidationService: GiftFacilityAsyncValidationService;
   let businessCalendarService: GiftBusinessCalendarService;
   let businessCalendarsConventionService: GiftBusinessCalendarsConventionService;
@@ -78,6 +83,7 @@ describe('GiftFacilityService.create - async validation errors', () => {
   let httpService;
   let asyncValidationServiceCreationSpy: jest.Mock;
   let createInitialFacilitySpy: jest.Mock;
+  let createAccrualSchedulesSpy: jest.Mock;
   let createBusinessCalendarSpy: jest.Mock;
   let createBusinessCalendarsConventionSpy: jest.Mock;
   let createCounterpartiesSpy: jest.Mock;
@@ -104,6 +110,7 @@ describe('GiftFacilityService.create - async validation errors', () => {
       productTypeService,
     );
 
+    accrualScheduleService = new GiftAccrualScheduleService(giftHttpService, logger);
     businessCalendarService = new GiftBusinessCalendarService(giftHttpService, logger);
     businessCalendarsConventionService = new GiftBusinessCalendarsConventionService(giftHttpService, logger);
     counterpartyService = new GiftCounterpartyService(giftHttpService, logger);
@@ -115,6 +122,7 @@ describe('GiftFacilityService.create - async validation errors', () => {
     creationErrorService = mockGiftFacilityCreationErrorService();
 
     createInitialFacilitySpy = jest.fn().mockResolvedValueOnce(mockCreateInitialFacilityResponse);
+    createAccrualSchedulesSpy = jest.fn().mockResolvedValueOnce(mockCreateAccrualSchedulesResponse);
     createBusinessCalendarSpy = jest.fn().mockResolvedValueOnce(mockCreateBusinessCalendarResponse);
     createBusinessCalendarsConventionSpy = jest.fn().mockResolvedValueOnce(mockCreateBusinessCalendarsConventionResponse);
     createCounterpartiesSpy = jest.fn().mockResolvedValueOnce(mockCreateCounterpartiesResponse);
@@ -125,6 +133,7 @@ describe('GiftFacilityService.create - async validation errors', () => {
     approvedStatusSpy = jest.fn().mockResolvedValueOnce(mockApprovedStatusResponse);
 
     asyncValidationService.creation = asyncValidationServiceCreationSpy;
+    accrualScheduleService.createMany = createAccrualSchedulesSpy;
     businessCalendarService.createOne = createBusinessCalendarSpy;
     businessCalendarsConventionService.createOne = createBusinessCalendarsConventionSpy;
     counterpartyService.createMany = createCounterpartiesSpy;
@@ -138,6 +147,7 @@ describe('GiftFacilityService.create - async validation errors', () => {
       giftHttpService,
       logger,
       asyncValidationService,
+      accrualScheduleService,
       businessCalendarService,
       businessCalendarsConventionService,
       counterpartyService,
@@ -188,7 +198,7 @@ describe('GiftFacilityService.create - async validation errors', () => {
       expect(createInitialFacilitySpy).not.toHaveBeenCalled();
     });
 
-    it('should NOT call counterpartyService.createMany', async () => {
+    it('should NOT call giftCounterpartyService.createMany', async () => {
       // Act
       await service.create(mockPayload, mockFacilityId);
 
@@ -196,7 +206,7 @@ describe('GiftFacilityService.create - async validation errors', () => {
       expect(createCounterpartiesSpy).not.toHaveBeenCalled();
     });
 
-    it('should NOT call fixedFeeService.createMany', async () => {
+    it('should NOT call giftFixedFeeService.createMany', async () => {
       // Act
       await service.create(mockPayload, mockFacilityId);
 
@@ -204,12 +214,20 @@ describe('GiftFacilityService.create - async validation errors', () => {
       expect(createFixedFeesSpy).not.toHaveBeenCalled();
     });
 
-    it('should NOT call obligationService.createMany', async () => {
+    it('should NOT call giftObligationService.createMany', async () => {
       // Act
       await service.create(mockPayload, mockFacilityId);
 
       // Assert
       expect(createObligationsSpy).not.toHaveBeenCalled();
+    });
+
+    it('should NOT call giftAccrualScheduleService.createMany', async () => {
+      // Act
+      await service.create(mockPayload, mockFacilityId);
+
+      // Assert
+      expect(createAccrualSchedulesSpy).not.toHaveBeenCalled();
     });
 
     it('should NOT call giftRepaymentProfileService.createMany', async () => {
@@ -242,6 +260,7 @@ describe('GiftFacilityService.create - async validation errors', () => {
         giftHttpService,
         logger,
         asyncValidationService,
+        accrualScheduleService,
         businessCalendarService,
         businessCalendarsConventionService,
         counterpartyService,

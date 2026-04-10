@@ -6,6 +6,7 @@ import { mockAxiosError, mockResponse201, mockResponse204 } from '@ukef-test/htt
 import { PinoLogger } from 'nestjs-pino';
 
 import {
+  GiftAccrualScheduleService,
   GiftBusinessCalendarsConventionService,
   GiftBusinessCalendarService,
   GiftCounterpartyService,
@@ -24,6 +25,7 @@ import { GiftFacilityService } from './';
 
 const {
   GIFT: {
+    ACCRUAL_SCHEDULE,
     BUSINESS_CALENDAR,
     COUNTERPARTY,
     FACILITY_ID: mockFacilityId,
@@ -40,6 +42,7 @@ const {
 
 const mockHttpPostResponse = mockResponse201(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA);
 
+const mockAccrualSchedules = [ACCRUAL_SCHEDULE, ACCRUAL_SCHEDULE];
 const mockBusinessCalendar = BUSINESS_CALENDAR;
 const mockCounterparties = [COUNTERPARTY(), COUNTERPARTY(), COUNTERPARTY()];
 const mockFixedFees = [FIXED_FEE(), FIXED_FEE()];
@@ -48,6 +51,7 @@ const mockRepaymentProfiles = [REPAYMENT_PROFILE(), REPAYMENT_PROFILE(), REPAYME
 const mockRiskDetails = RISK_DETAILS;
 
 const mockAsyncValidationServiceCreationResponse = [];
+const mockCreateAccrualSchedulesResponse = mockAccrualSchedules.map((accrualSchedule) => mockResponse201({ data: accrualSchedule }));
 const mockCreateBusinessCalendarResponse = mockResponse201({ data: mockBusinessCalendar });
 const mockCreateBusinessCalendarsConventionResponse = mockResponse201({ data: BUSINESS_CALENDAR });
 const mockCreateCounterpartiesResponse = mockCounterparties.map((counterparty) => mockResponse201(counterparty));
@@ -62,6 +66,7 @@ describe('GiftFacilityService.create - error handling', () => {
   const logger = new PinoLogger({});
 
   let asyncValidationService: GiftFacilityAsyncValidationService;
+  let accrualScheduleService: GiftAccrualScheduleService;
   let businessCalendarService: GiftBusinessCalendarService;
   let businessCalendarsConventionService: GiftBusinessCalendarsConventionService;
   let counterpartyService: GiftCounterpartyService;
@@ -78,6 +83,7 @@ describe('GiftFacilityService.create - error handling', () => {
   let mockHttpServicePost: jest.Mock;
   let asyncValidationServiceCreationSpy: jest.Mock;
   let createInitialFacilitySpy: jest.Mock;
+  let createAccrualSchedulesSpy: jest.Mock;
   let createBusinessCalendarSpy: jest.Mock;
   let createBusinessCalendarsConventionSpy: jest.Mock;
   let createCounterpartiesSpy: jest.Mock;
@@ -104,6 +110,7 @@ describe('GiftFacilityService.create - error handling', () => {
       post: mockHttpServicePost,
     };
 
+    accrualScheduleService = new GiftAccrualScheduleService(giftHttpService, logger);
     counterpartyService = new GiftCounterpartyService(giftHttpService, logger);
     const currencyService = new GiftCurrencyService(giftHttpService, logger);
     const feeTypeService = new GiftFeeTypeService(giftHttpService, logger);
@@ -120,6 +127,7 @@ describe('GiftFacilityService.create - error handling', () => {
       productTypeService,
     );
 
+    accrualScheduleService = new GiftAccrualScheduleService(giftHttpService, logger);
     businessCalendarService = new GiftBusinessCalendarService(giftHttpService, logger);
     businessCalendarsConventionService = new GiftBusinessCalendarsConventionService(giftHttpService, logger);
     fixedFeeService = new GiftFixedFeeService(giftHttpService, logger);
@@ -131,6 +139,7 @@ describe('GiftFacilityService.create - error handling', () => {
 
     asyncValidationServiceCreationSpy = jest.fn().mockResolvedValueOnce(mockAsyncValidationServiceCreationResponse);
     createInitialFacilitySpy = jest.fn().mockResolvedValueOnce(mockResponse201(FACILITY_RESPONSE_DATA));
+    createAccrualSchedulesSpy = jest.fn().mockResolvedValueOnce(mockCreateAccrualSchedulesResponse);
     createBusinessCalendarSpy = jest.fn().mockResolvedValueOnce(mockCreateBusinessCalendarResponse);
     createBusinessCalendarsConventionSpy = jest.fn().mockResolvedValueOnce(mockCreateBusinessCalendarsConventionResponse);
     createCounterpartiesSpy = jest.fn().mockResolvedValueOnce(mockCreateCounterpartiesResponse);
@@ -142,6 +151,7 @@ describe('GiftFacilityService.create - error handling', () => {
     finallyHandlerSpy = jest.fn().mockResolvedValueOnce(mockFinallyHandlerResponse);
 
     asyncValidationService.creation = asyncValidationServiceCreationSpy;
+    accrualScheduleService.createMany = createAccrualSchedulesSpy;
     businessCalendarService.createOne = createBusinessCalendarSpy;
     businessCalendarsConventionService.createOne = createBusinessCalendarsConventionSpy;
     counterpartyService.createMany = createCounterpartiesSpy;
@@ -156,6 +166,7 @@ describe('GiftFacilityService.create - error handling', () => {
       giftHttpService,
       logger,
       asyncValidationService,
+      accrualScheduleService,
       businessCalendarService,
       businessCalendarsConventionService,
       counterpartyService,
@@ -183,6 +194,7 @@ describe('GiftFacilityService.create - error handling', () => {
         giftHttpService,
         logger,
         asyncValidationService,
+        accrualScheduleService,
         businessCalendarService,
         businessCalendarsConventionService,
         counterpartyService,
@@ -231,6 +243,7 @@ describe('GiftFacilityService.create - error handling', () => {
         giftHttpService,
         logger,
         asyncValidationService,
+        accrualScheduleService,
         businessCalendarService,
         businessCalendarsConventionService,
         counterpartyService,
@@ -280,6 +293,7 @@ describe('GiftFacilityService.create - error handling', () => {
         giftHttpService,
         logger,
         asyncValidationService,
+        accrualScheduleService,
         businessCalendarService,
         businessCalendarsConventionService,
         counterpartyService,
@@ -329,6 +343,57 @@ describe('GiftFacilityService.create - error handling', () => {
         giftHttpService,
         logger,
         asyncValidationService,
+        accrualScheduleService,
+        businessCalendarService,
+        businessCalendarsConventionService,
+        counterpartyService,
+        fixedFeeService,
+        obligationService,
+        repaymentProfileService,
+        riskDetailsService,
+        statusService,
+        creationErrorService,
+      );
+
+      service.createInitialFacility = jest.fn().mockResolvedValueOnce(mockResponse201(FACILITY_RESPONSE_DATA));
+    });
+
+    it('should throw an error', async () => {
+      // Act
+      const response = service.create(mockPayload, mockFacilityId);
+
+      // Assert
+      const expected = new Error(`Error creating a GIFT facility ${mockFacilityId}`, { cause: mockError });
+
+      await expect(response).rejects.toThrow(expected);
+    });
+
+    it('should call giftFacilityCreationErrorService.finallyHandler', async () => {
+      // Act
+      await expect(service.create(mockPayload, mockFacilityId)).rejects.toThrow();
+
+      // Assert
+      expect(finallyHandlerSpy).toHaveBeenCalledTimes(1);
+      expect(finallyHandlerSpy).toHaveBeenCalledWith({
+        facilityId: mockFacilityId,
+        workPackageId: mockWorkPackageId,
+        creationCatchError: mockError,
+      });
+    });
+  });
+
+  describe('when accrualScheduleService.createMany throws an error', () => {
+    beforeEach(() => {
+      // Arrange
+      createAccrualSchedulesSpy = jest.fn().mockRejectedValueOnce(mockError);
+
+      accrualScheduleService.createMany = createAccrualSchedulesSpy;
+
+      service = new GiftFacilityService(
+        giftHttpService,
+        logger,
+        asyncValidationService,
+        accrualScheduleService,
         businessCalendarService,
         businessCalendarsConventionService,
         counterpartyService,
@@ -378,6 +443,7 @@ describe('GiftFacilityService.create - error handling', () => {
         giftHttpService,
         logger,
         asyncValidationService,
+        accrualScheduleService,
         businessCalendarService,
         businessCalendarsConventionService,
         counterpartyService,
@@ -427,6 +493,7 @@ describe('GiftFacilityService.create - error handling', () => {
         giftHttpService,
         logger,
         asyncValidationService,
+        accrualScheduleService,
         businessCalendarService,
         businessCalendarsConventionService,
         counterpartyService,
@@ -476,6 +543,7 @@ describe('GiftFacilityService.create - error handling', () => {
         giftHttpService,
         logger,
         asyncValidationService,
+        accrualScheduleService,
         businessCalendarService,
         businessCalendarsConventionService,
         counterpartyService,

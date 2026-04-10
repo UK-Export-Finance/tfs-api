@@ -3,9 +3,12 @@ import { EXAMPLES } from '@ukef/constants';
 import { MdmService } from '@ukef/modules/mdm/mdm.service';
 import { mockGiftFacilityCreationErrorService } from '@ukef-test/gift/mock-services';
 import { mockResponse200, mockResponse201, mockResponse204 } from '@ukef-test/http-response';
+import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 
+import { getObligationIds, mapAccrualSchedulesPayload } from '../../helpers';
 import {
+  GiftAccrualScheduleService,
   GiftBusinessCalendarsConventionService,
   GiftBusinessCalendarService,
   GiftCounterpartyService,
@@ -24,6 +27,7 @@ import { GiftFacilityService } from './';
 
 const {
   GIFT: {
+    ACCRUAL_SCHEDULE,
     BUSINESS_CALENDAR,
     BUSINESS_CALENDARS_CONVENTION,
     COUNTERPARTY,
@@ -42,6 +46,7 @@ const {
 
 const mockHttpPostResponse = mockResponse201(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA);
 
+const mockAccrualSchedules = [ACCRUAL_SCHEDULE, ACCRUAL_SCHEDULE];
 const mockBusinessCalendar = BUSINESS_CALENDAR;
 const mockBusinessCalendarsConvention = BUSINESS_CALENDARS_CONVENTION;
 const mockCounterparties = [COUNTERPARTY(), COUNTERPARTY(), COUNTERPARTY()];
@@ -51,11 +56,12 @@ const mockRepaymentProfiles = [REPAYMENT_PROFILE(), REPAYMENT_PROFILE(), REPAYME
 const mockRiskDetails = RISK_DETAILS;
 
 const mockAsyncValidationServiceCreationResponse = [];
+const mockCreateAccrualScheduleResponse = mockAccrualSchedules.map((accrualSchedule) => mockResponse201({ data: accrualSchedule }));
 const mockCreateBusinessCalendarResponse = mockResponse201({ data: mockBusinessCalendar });
 const mockCreateBusinessCalendarsConventionResponse = mockResponse201({ data: mockBusinessCalendarsConvention });
 const mockCreateCounterpartiesResponse = mockCounterparties.map((counterparty) => mockResponse201({ data: counterparty }));
 const mockCreateFixedFeesResponse = mockFixedFees.map((fixedFee) => mockResponse201({ data: fixedFee }));
-const mockCreateObligationsResponse = mockObligations.map((obligation) => mockResponse201({ data: obligation }));
+const mockCreateObligationsResponse = mockObligations.map((obligation) => mockResponse201({ data: obligation })) as AxiosResponse[];
 const mockCreateRepaymentProfilesResponse = mockRepaymentProfiles.map((repaymentProfile) => mockResponse201({ data: repaymentProfile }));
 const mockCreateRiskDetailsResponse = mockResponse201({ data: mockRiskDetails });
 const mockFinallyHandlerResponse = mockResponse204();
@@ -63,10 +69,11 @@ const mockFinallyHandlerResponse = mockResponse204();
 describe('GiftFacilityService.create - happy path', () => {
   const logger = new PinoLogger({});
 
-  let currencyService: GiftCurrencyService;
+  let accrualScheduleService: GiftAccrualScheduleService;
   let asyncValidationService: GiftFacilityAsyncValidationService;
   let businessCalendarService: GiftBusinessCalendarService;
   let businessCalendarsConventionService: GiftBusinessCalendarsConventionService;
+  let currencyService: GiftCurrencyService;
   let fixedFeeService: GiftFixedFeeService;
   let obligationService: GiftObligationService;
   let repaymentProfileService: GiftRepaymentProfileService;
@@ -79,6 +86,7 @@ describe('GiftFacilityService.create - happy path', () => {
   let httpService;
   let mockHttpServicePost: jest.Mock;
   let createInitialFacilitySpy: jest.Mock;
+  let createAccrualSchedulesSpy: jest.Mock;
   let createBusinessCalendarSpy: jest.Mock;
   let createBusinessCalendarsConventionSpy: jest.Mock;
   let createCounterpartiesSpy: jest.Mock;
@@ -114,6 +122,7 @@ describe('GiftFacilityService.create - happy path', () => {
       productTypeService,
     );
 
+    accrualScheduleService = new GiftAccrualScheduleService(giftHttpService, logger);
     businessCalendarService = new GiftBusinessCalendarService(giftHttpService, logger);
     businessCalendarsConventionService = new GiftBusinessCalendarsConventionService(giftHttpService, logger);
     fixedFeeService = new GiftFixedFeeService(giftHttpService, logger);
@@ -125,6 +134,7 @@ describe('GiftFacilityService.create - happy path', () => {
 
     createInitialFacilitySpy = jest.fn().mockResolvedValueOnce(mockResponse201(FACILITY_RESPONSE_DATA));
     asyncValidationServiceCreationSpy = jest.fn().mockResolvedValueOnce(mockAsyncValidationServiceCreationResponse);
+    createAccrualSchedulesSpy = jest.fn().mockResolvedValueOnce(mockCreateAccrualScheduleResponse);
     createBusinessCalendarSpy = jest.fn().mockResolvedValueOnce(mockCreateBusinessCalendarResponse);
     createBusinessCalendarsConventionSpy = jest.fn().mockResolvedValueOnce(mockCreateBusinessCalendarsConventionResponse);
     createCounterpartiesSpy = jest.fn().mockResolvedValueOnce(mockCreateCounterpartiesResponse);
@@ -136,6 +146,7 @@ describe('GiftFacilityService.create - happy path', () => {
     finallyHandlerSpy = jest.fn().mockResolvedValueOnce(mockFinallyHandlerResponse);
 
     asyncValidationService.creation = asyncValidationServiceCreationSpy;
+    accrualScheduleService.createMany = createAccrualSchedulesSpy;
     businessCalendarService.createOne = createBusinessCalendarSpy;
     businessCalendarsConventionService.createOne = createBusinessCalendarsConventionSpy;
     counterpartyService.createMany = createCounterpartiesSpy;
@@ -149,6 +160,7 @@ describe('GiftFacilityService.create - happy path', () => {
       giftHttpService,
       logger,
       asyncValidationService,
+      accrualScheduleService,
       businessCalendarService,
       businessCalendarsConventionService,
       counterpartyService,
@@ -243,6 +255,18 @@ describe('GiftFacilityService.create - happy path', () => {
     expect(createObligationsSpy).toHaveBeenCalledTimes(1);
 
     expect(createObligationsSpy).toHaveBeenCalledWith(mockPayload.obligations, mockFacilityId, FACILITY_RESPONSE_DATA.workPackageId);
+  });
+
+  it('should call accrualScheduleService.createOne', async () => {
+    // Act
+    await service.create(mockPayload, mockFacilityId);
+
+    // Assert
+    expect(createAccrualSchedulesSpy).toHaveBeenCalledTimes(1);
+
+    const expected = mapAccrualSchedulesPayload(mockPayload.accrualSchedules, getObligationIds(mockCreateObligationsResponse));
+
+    expect(createAccrualSchedulesSpy).toHaveBeenCalledWith(expected, mockFacilityId, FACILITY_RESPONSE_DATA.workPackageId);
   });
 
   it('should call giftRepaymentProfileService.createMany', async () => {
@@ -345,6 +369,7 @@ describe('GiftFacilityService.create - happy path', () => {
       data: {
         ...FACILITY_RESPONSE_DATA.configurationEvent.data,
         state: WORK_PACKAGE_APPROVE_RESPONSE_DATA.state,
+        accrualSchedules: mockAccrualSchedules,
         businessCalendars: [mockBusinessCalendar],
         businessCalendarsConvention: mockBusinessCalendarsConvention,
         counterparties: mockCounterparties,

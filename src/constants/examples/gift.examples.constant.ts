@@ -15,6 +15,7 @@ import { MDM_EXAMPLES } from './mdm.examples.constant';
 const {
   COUNTERPARTY_ROLE_CODES,
   CREDIT_TYPES,
+  DAY_BASIS_CODES,
   EVENT_TYPES,
   FEE_TYPE_CODES,
   FEE_TYPE_DESCRIPTIONS,
@@ -29,7 +30,24 @@ const chance = new Chance();
 const DEAL_ID: UkefId = '0030000123';
 const FACILITY_ID: UkefId = '0030000321';
 
+const OBLIGATION_ID = 1234;
+
 const WORK_PACKAGE_ID = 123;
+
+const effectiveDate = '2025-01-13';
+const maturityDate = '2025-01-15';
+
+const ACCRUAL_SCHEDULE = {
+  accrualScheduleTypeCode: MDM_EXAMPLES.ACCRUAL_SCHEDULE_TYPE_CODES.PAC01.code,
+  accrualEffectiveDate: effectiveDate,
+  accrualMaturityDate: maturityDate,
+  accrualFrequencyCode: MDM_EXAMPLES.ACCRUAL_FREQUENCY_CODES.FREQ12MON.code,
+  firstCycleAccrualEndDate: maturityDate,
+  accrualDayBasisCode: DAY_BASIS_CODES.ACTUAL_365,
+  baseRate: 0,
+  spreadRate: 0,
+  additionalRate: 0,
+};
 
 const BUSINESS_CALENDAR = {
   centreCode: 'GB_LON',
@@ -200,6 +218,7 @@ const FACILITY_OVERVIEW = {
 const FACILITY_CREATION_PAYLOAD_NO_FIXED_FEES: GiftFacilityCreationRequestDto = {
   consumer: CONSUMER.DTFS,
   overview: FACILITY_OVERVIEW,
+  accrualSchedules: [ACCRUAL_SCHEDULE, ACCRUAL_SCHEDULE],
   counterparties: [COUNTERPARTY(), COUNTERPARTY()],
   obligations: [OBLIGATION(), OBLIGATION()],
   repaymentProfiles: [
@@ -216,6 +235,7 @@ const FACILITY_CREATION_PAYLOAD_NO_FIXED_FEES: GiftFacilityCreationRequestDto = 
 const FACILITY_CREATION_PAYLOAD_NO_REPAYMENT_PROFILES: GiftFacilityCreationRequestDto = {
   consumer: CONSUMER.DTFS,
   overview: FACILITY_OVERVIEW,
+  accrualSchedules: [ACCRUAL_SCHEDULE, ACCRUAL_SCHEDULE],
   counterparties: [COUNTERPARTY(), COUNTERPARTY()],
   fixedFees: [FIXED_FEE(), FIXED_FEE()],
   obligations: [OBLIGATION(), OBLIGATION()],
@@ -308,6 +328,7 @@ const WORK_PACKAGE_APPROVE_RESPONSE_DATA = {
 };
 
 export const GIFT_EXAMPLES = {
+  ACCRUAL_SCHEDULE,
   BUSINESS_CALENDAR,
   BUSINESS_CALENDARS_CONVENTION,
   COUNTERPARTY,
@@ -328,6 +349,7 @@ export const GIFT_EXAMPLES = {
   FEE_TYPES_RESPONSE_DATA,
   FIXED_FEE,
   OBLIGATION,
+  OBLIGATION_ID,
   PRODUCT_TYPE_RESPONSE_DATA,
   REPAYMENT_PROFILE,
   REPAYMENT_PROFILE_ALLOCATION,
