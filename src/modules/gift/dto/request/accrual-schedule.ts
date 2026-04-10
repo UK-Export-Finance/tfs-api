@@ -17,7 +17,7 @@ const {
 export class GiftAccrualScheduleRequestDto {
   @IsDefined()
   @IsString()
-  @Length(VALIDATION.ACCURAL_DAY_BASIS_CODE.MIN_LENGTH, VALIDATION.ACCURAL_DAY_BASIS_CODE.MAX_LENGTH)
+  @Length(VALIDATION.ACCRUAL_DAY_BASIS_CODE.MIN_LENGTH, VALIDATION.ACCRUAL_DAY_BASIS_CODE.MAX_LENGTH)
   @ApiProperty({
     example: EXAMPLE.accrualDayBasisCode,
     description: 'The accrual day basis code',

@@ -52,6 +52,7 @@ const iAmATeapot: MockGiftResponse = {
 
 export const mockResponses = {
   approveStatus: { data: { aStatusUpdate: true } },
+  accrualSchedule: { data: GIFT_EXAMPLES.ACCRUAL_SCHEDULE },
   businessCalendar: { data: GIFT_EXAMPLES.BUSINESS_CALENDAR },
   businessCalendarsConvention: { data: GIFT_EXAMPLES.BUSINESS_CALENDARS_CONVENTION },
   counterparty: { data: { aCounterparty: true } },
@@ -104,6 +105,7 @@ export const facilityCreationUrl = PATH.CREATE_FACILITY;
 export const feeTypeUrl = PATH.FEE_TYPE;
 export const apimMdmObligationSubtypesUrl = '/v2/ods/obligation-subtypes/with-product-type-codes';
 export const productTypeUrl = (productTypeCode: string = PRODUCT_TYPE_CODES.BIP) => `${PATH.PRODUCT_TYPE}/${productTypeCode}`;
+export const accrualScheduleUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_ACCRUAL_SCHEDULE_FIXED_RATE}`;
 export const businessCalendarUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_BUSINESS_CALENDAR}`;
 export const businessCalendarsConventionUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_BUSINESS_CALENDARS_CONVENTION}`;
 export const counterpartyUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_COUNTERPARTY}`;
@@ -120,6 +122,7 @@ export const workPackageUrl = `${PATH.WORK_PACKAGE}/${mockWorkPackageId}`;
 export const businessCalendar = GIFT_EXAMPLES.BUSINESS_CALENDAR;
 export const businessCalendarsConvention = GIFT_EXAMPLES.BUSINESS_CALENDARS_CONVENTION;
 
+export const payloadAccrualSchedules = Object.keys(GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD.accrualSchedules);
 export const payloadCounterparties = Object.keys(GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD.counterparties);
 export const payloadFixedFees = Object.keys(GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD.fixedFees);
 export const payloadObligations = Object.keys(GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD.obligations);
