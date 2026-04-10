@@ -6,7 +6,7 @@ import { PinoLogger } from 'nestjs-pino';
 import { GiftFixedFeeRequestDto } from '../dto';
 import { GiftHttpService } from './gift.http.service';
 
-const { EVENT_TYPES, PATH } = GIFT;
+const { EVENT_TYPES, INTEGRATION_DEFAULTS, PATH } = GIFT;
 
 /**
  * GIFT fixed fee service.
@@ -40,7 +40,7 @@ export class GiftFixedFeeService {
        */
       const payload = {
         ...fixedFeeData,
-        acbsFeeSegmentId: null, // TODO: constant
+        acbsFeeSegmentId: INTEGRATION_DEFAULTS.ACBS_FEE_SEGMENT_ID,
       };
 
       const response = await this.giftHttpService.post<GiftFixedFeeRequestDto>({

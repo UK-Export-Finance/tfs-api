@@ -189,8 +189,6 @@ export class GiftFacilityService {
 
       const obligations = await this.giftObligationService.createMany(obligationsPayload, facilityId, workPackageId);
 
-      // TODO: update unit test orders for accrual schedule calls
-
       /**
        * GIFT Accrual schedules require obligation IDs, which are only returned after obligations are created.
        * Therefore, we need to create obligations first, get the obligation IDs, and then create accrual schedules.

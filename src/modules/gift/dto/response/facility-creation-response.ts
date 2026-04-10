@@ -7,8 +7,6 @@ import { GiftBusinessCalendarResponseDto } from './business-calendar-response';
 import { GiftBusinessCalendarsConventionResponseDto } from './business-calendars-convention-response';
 import { GiftFacilityRiskDetailsResponseDto } from './risk-details-response';
 
-// TODO: update to be fully populated. and type safety
-
 /**
  * GIFT facility creation response DTO.
  * This is what APIM returns after successfully creating a facility in GIFT.

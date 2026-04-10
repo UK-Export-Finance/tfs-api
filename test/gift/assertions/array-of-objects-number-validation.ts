@@ -76,14 +76,18 @@ export const arrayOfObjectsNumberValidation = ({
     });
 
     it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
+      // Act
       const response = await api.post(url, mockPayload);
 
+      // Assert
       assert400Response(response);
     });
 
     it('should return the correct error messages', async () => {
+      // Act
       const { body } = await api.post(url, mockPayload);
 
+      // Assert
       assertValidationMessages(body.message, buildTypeErrorMessages({ includeRequiredError: true }));
     });
   });
@@ -96,14 +100,18 @@ export const arrayOfObjectsNumberValidation = ({
     });
 
     it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
+      // Act
       const response = await api.post(url, mockPayload);
 
+      // Assert
       assert400Response(response);
     });
 
     it('should return the correct error messages', async () => {
+      // Act
       const { body } = await api.post(url, mockPayload);
 
+      // Assert
       assertValidationMessages(body.message, buildTypeErrorMessages({ includeRequiredError: true }));
     });
   });
@@ -116,14 +124,18 @@ export const arrayOfObjectsNumberValidation = ({
     });
 
     it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
+      // Act
       const response = await api.post(url, mockPayload);
 
+      // Assert
       assert400Response(response);
     });
 
     it('should return the correct error messages', async () => {
+      // Act
       const { body } = await api.post(url, mockPayload);
 
+      // Assert
       assertValidationMessages(body.message, buildTypeErrorMessages());
     });
   });
@@ -136,14 +148,18 @@ export const arrayOfObjectsNumberValidation = ({
     });
 
     it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
+      // Act
       const response = await api.post(url, mockPayload);
 
+      // Assert
       assert400Response(response);
     });
 
     it('should return the correct error messages', async () => {
+      // Act
       const { body } = await api.post(url, mockPayload);
 
+      // Assert
       assertValidationMessages(body.message, buildTypeErrorMessages());
     });
   });
@@ -156,14 +172,18 @@ export const arrayOfObjectsNumberValidation = ({
     });
 
     it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
+      // Act
       const response = await api.post(url, mockPayload);
 
+      // Assert
       assert400Response(response);
     });
 
     it('should return the correct error messages', async () => {
+      // Act
       const { body } = await api.post(url, mockPayload);
 
+      // Assert
       assertValidationMessages(body.message, buildTypeErrorMessages());
     });
   });
@@ -176,14 +196,18 @@ export const arrayOfObjectsNumberValidation = ({
     });
 
     it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
+      // Act
       const response = await api.post(url, mockPayload);
 
+      // Assert
       assert400Response(response);
     });
 
     it('should return the correct error messages', async () => {
+      // Act
       const { body } = await api.post(url, mockPayload);
 
+      // Assert
       assertValidationMessages(body.message, buildTypeErrorMessages());
     });
   });
@@ -198,13 +222,18 @@ export const arrayOfObjectsNumberValidation = ({
       });
 
       it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
+        // Act
         const response = await api.post(url, mockPayload);
+
+        // Assert
         assert400Response(response);
       });
 
       it('should return the correct error messages', async () => {
+        // Act
         const { body } = await api.post(url, mockPayload);
 
+        // Assert
         const expected = [`${parentFieldName}.0.${fieldName} must not be less than ${min}`, `${parentFieldName}.1.${fieldName} must not be less than ${min}`];
 
         assertValidationMessages(body.message, expected);
@@ -222,13 +251,18 @@ export const arrayOfObjectsNumberValidation = ({
       });
 
       it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
+        // Act
         const response = await api.post(url, mockPayload);
+
+        // Assert
         assert400Response(response);
       });
 
       it('should return the correct error messages', async () => {
+        // Act
         const { body } = await api.post(url, mockPayload);
 
+        // Assert
         const expected = [
           `${parentFieldName}.0.${fieldName} must not be greater than ${max}`,
           `${parentFieldName}.1.${fieldName} must not be greater than ${max}`,
