@@ -49,7 +49,7 @@ export class GiftAccrualScheduleService {
       return response;
     } catch (error) {
       this.logger.error(
-        'Error creating an accrual schedule with schedule type code %s for facility %s %s %o',
+        'Error creating an accrual schedule with schedule type code %s for facility %s %o',
         accrualScheduleData.accrualScheduleTypeCode,
         facilityId,
         error,

@@ -257,7 +257,7 @@ describe('GiftFacilityService.create - happy path', () => {
     expect(createObligationsSpy).toHaveBeenCalledWith(mockPayload.obligations, mockFacilityId, FACILITY_RESPONSE_DATA.workPackageId);
   });
 
-  it('should call accrualScheduleService.createOne', async () => {
+  it('should call accrualScheduleService.createMany', async () => {
     // Act
     await service.create(mockPayload, mockFacilityId);
 
