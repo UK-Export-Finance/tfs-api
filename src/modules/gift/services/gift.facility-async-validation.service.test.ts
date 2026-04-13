@@ -17,7 +17,14 @@ import { GiftCounterpartyService, GiftCurrencyService, GiftFeeTypeService, GiftP
 import { GiftFacilityAsyncValidationService } from './gift.facility-async-validation.service';
 
 const {
-  GIFT: { COUNTERPARTY_ROLES_RESPONSE_DATA, CURRENCIES, FACILITY_CREATION_PAYLOAD: mockBasePayload, FACILITY_ID: mockFacilityId, OBLIGATION },
+  GIFT: {
+    COUNTERPARTY_ROLES_RESPONSE_DATA,
+    CURRENCIES,
+    FACILITY_CREATION_PAYLOAD: mockBasePayload,
+    FACILITY_CREATION_PAYLOAD_NO_FIXED_FEES,
+    FACILITY_ID: mockFacilityId,
+    OBLIGATION,
+  },
   MDM: { OBLIGATION_SUBTYPES_RESPONSE_DATA },
 } = EXAMPLES;
 
@@ -201,6 +208,35 @@ describe('GiftFacilityAsyncValidationService', () => {
 
         // Assert
         expect(mockGetAllSubtypesByProductTypeCode).toHaveBeenCalledTimes(0);
+      });
+    });
+
+    describe('when fixedFees is NOT provided', () => {
+      it('should NOT call feeTypeService.getAllFeeTypeCodes', async () => {
+        // Arrange
+        const mockPayload = FACILITY_CREATION_PAYLOAD_NO_FIXED_FEES;
+
+        // Act
+        await service.creation(mockPayload, mockFacilityId);
+
+        // Assert
+        expect(mockGetAllFeeTypeCodes).toHaveBeenCalledTimes(0);
+      });
+    });
+
+    describe('when fixedFees is provided as an empty array', () => {
+      it('should NOT call feeTypeService.getAllFeeTypeCodes', async () => {
+        // Arrange
+        const mockPayload = {
+          ...mockBasePayload,
+          fixedFees: [],
+        };
+
+        // Act
+        await service.creation(mockPayload, mockFacilityId);
+
+        // Assert
+        expect(mockGetAllFeeTypeCodes).toHaveBeenCalledTimes(0);
       });
     });
 

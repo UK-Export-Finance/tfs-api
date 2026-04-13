@@ -24,7 +24,7 @@ describe('modules/gift/helpers/async-validation/strip-payload', () => {
   });
 
   describe('stripPayload', () => {
-    it('should return stripped payload', () => {
+    it('should return a stripped payload', () => {
       // Arrange
       const mockPayload = FACILITY_CREATION_PAYLOAD;
       const mockFieldName = 'fieldB';
@@ -40,6 +40,34 @@ describe('modules/gift/helpers/async-validation/strip-payload', () => {
       };
 
       expect(result).toEqual(expected);
+    });
+
+    describe('when fixedFees is not provided', () => {
+      it('should return a stripped payload with a default empty fixedFees array', () => {
+        // Arrange
+        const mockPayload = {
+          consumer: FACILITY_CREATION_PAYLOAD.consumer,
+          overview: FACILITY_CREATION_PAYLOAD.overview,
+          counterparties: FACILITY_CREATION_PAYLOAD.counterparties,
+          obligations: FACILITY_CREATION_PAYLOAD.obligations,
+          repaymentProfiles: FACILITY_CREATION_PAYLOAD.repaymentProfiles,
+          riskDetails: FACILITY_CREATION_PAYLOAD.riskDetails,
+        };
+
+        const mockFieldName = 'fieldB';
+
+        // Act
+        const result = stripPayload(mockPayload, mockFieldName);
+
+        // Assert
+        const expected = {
+          overview: mockPayload.overview[`${mockFieldName}`],
+          fixedFees: [],
+          obligations: mapEntitiesByField(mockPayload.obligations, mockFieldName),
+        };
+
+        expect(result).toEqual(expected);
+      });
     });
   });
 });
