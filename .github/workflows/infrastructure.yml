@@ -171,7 +171,7 @@ jobs:
           inlineScript: |
             az storage account create \
             --name st${{ env.PRODUCT }}fn${{ env.TARGET }}${{ vars.VERSION }} \
-            --sku Standard_LRS \
+            --sku ${{ vars.APIM_STORAGE_ACCOUNT_PLAN }} \
             --kind StorageV2 \
             --allow-blob-public-access false \
             --tags ${{ env.TAGS }} \
