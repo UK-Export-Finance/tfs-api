@@ -113,10 +113,12 @@ describe('GiftFacilityService.createInitialFacility', () => {
     // Assert
     expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
 
-    expect(mockHttpServicePost).toHaveBeenCalledWith({
+    const expected = {
       path: PATH.CREATE_FACILITY,
       payload: mockPayload.overview,
-    });
+    };
+
+    expect(mockHttpServicePost).toHaveBeenCalledWith(expected);
   });
 
   describe('when giftHttpService.post is successful', () => {

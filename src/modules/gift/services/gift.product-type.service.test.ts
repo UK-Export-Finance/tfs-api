@@ -42,7 +42,11 @@ describe('GiftProductTypeService', () => {
       // Assert
       expect(mockHttpServiceGet).toHaveBeenCalledTimes(1);
 
-      expect(mockHttpServiceGet).toHaveBeenCalledWith({ path: `${PATH.PRODUCT_TYPE}/${PRODUCT_TYPE_CODES.EXIP}` });
+      const expected = {
+        path: `${PATH.PRODUCT_TYPE}/${PRODUCT_TYPE_CODES.EXIP}`,
+      };
+
+      expect(mockHttpServiceGet).toHaveBeenCalledWith(expected);
     });
 
     describe('when giftHttpService.get is successful', () => {

@@ -44,7 +44,7 @@ describe('GiftAccrualScheduleService', () => {
       // Assert
       expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
 
-      expect(mockHttpServicePost).toHaveBeenCalledWith({
+      const expected = {
         path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_ACCRUAL_SCHEDULE_FIXED_RATE}`,
         payload: {
           ...mockAccrualSchedule,
@@ -53,7 +53,9 @@ describe('GiftAccrualScheduleService', () => {
           additionalRateTypeCode: null,
           acbsInterestScheduleId: INTEGRATION_DEFAULTS.ACBS_INTEREST_SCHEDULE_ID,
         },
-      });
+      };
+
+      expect(mockHttpServicePost).toHaveBeenCalledWith(expected);
     });
 
     describe('when giftHttpService.post is successful', () => {

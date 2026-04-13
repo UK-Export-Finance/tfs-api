@@ -46,13 +46,15 @@ describe('GiftFixedFeeService', () => {
       // Assert
       expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
 
-      expect(mockHttpServicePost).toHaveBeenCalledWith({
+      const expected = {
         path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_FIXED_FEE}`,
         payload: {
           ...mockFixedFee,
           acbsFeeSegmentId: INTEGRATION_DEFAULTS.ACBS_FEE_SEGMENT_ID,
         },
-      });
+      };
+
+      expect(mockHttpServicePost).toHaveBeenCalledWith(expected);
     });
 
     describe('when giftHttpService.post is successful', () => {

@@ -206,12 +206,14 @@ describe('GiftFacilityService.create - happy path', () => {
     // Assert
     expect(createBusinessCalendarSpy).toHaveBeenCalledTimes(1);
 
-    expect(createBusinessCalendarSpy).toHaveBeenCalledWith({
+    const expected = {
       facilityId: mockPayload.overview.facilityId,
       workPackageId: FACILITY_RESPONSE_DATA.workPackageId,
       startDate: mockPayload.overview.effectiveDate,
       exitDate: mockPayload.overview.expiryDate,
-    });
+    };
+
+    expect(createBusinessCalendarSpy).toHaveBeenCalledWith(expected);
   });
 
   it('should call businessCalendarsConventionService.createOne', async () => {
@@ -221,10 +223,12 @@ describe('GiftFacilityService.create - happy path', () => {
     // Assert
     expect(createBusinessCalendarsConventionSpy).toHaveBeenCalledTimes(1);
 
-    expect(createBusinessCalendarsConventionSpy).toHaveBeenCalledWith({
+    const expected = {
       facilityId: mockPayload.overview.facilityId,
       workPackageId: FACILITY_RESPONSE_DATA.workPackageId,
-    });
+    };
+
+    expect(createBusinessCalendarsConventionSpy).toHaveBeenCalledWith(expected);
   });
 
   it('should call counterpartyService.createMany', async () => {

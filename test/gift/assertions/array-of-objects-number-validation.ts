@@ -13,6 +13,11 @@ type ArrayOfObjectsNumberValidationParams = {
   url: string;
 };
 
+/**
+ * Asserts that the received validation messages match the expected validation messages, regardless of order.
+ * @param {string[]} received - The array of validation messages received from the API response.
+ * @param {string[]} expected - The array of expected validation messages to compare against.
+ */
 const assertValidationMessages = (received: string[], expected: string[]) => {
   expect([...received].sort()).toStrictEqual([...expected].sort());
 };
@@ -38,6 +43,17 @@ export const arrayOfObjectsNumberValidation = ({
 
   const payloadParams = { initialPayload, fieldName, parentFieldName };
 
+  /**
+   * Builds the expected validation messages for invalid number values in each array item.
+   *
+   * Messages are generated for indexes 0 and 1 using the current field and parent field names.
+   * The required message is optional, while min/max and number-type messages depend on helper
+   * configuration and function inputs.
+   *
+   * @param options - Optional flags that control which messages are included.
+   * @param options.includeRequiredError - Includes "should not be null or undefined" for each array item when true.
+   * @returns A flat array of expected validation messages for both array objects.
+   */
   const buildTypeErrorMessages = ({ includeRequiredError = false }: { includeRequiredError?: boolean } = {}) =>
     [0, 1].flatMap((index) => {
       const prefix = `${parentFieldName}.${index}.${fieldName}`;

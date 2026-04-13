@@ -73,10 +73,12 @@ describe('GiftFacilityAmendmentService', () => {
     // Assert
     expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
 
-    expect(mockHttpServicePost).toHaveBeenCalledWith({
+    const expected = {
       path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/AmendFacility_${mockPayload.amendmentType}`,
       payload: mockPayload.amendmentData,
-    });
+    };
+
+    expect(mockHttpServicePost).toHaveBeenCalledWith(expected);
   });
 
   it('should call giftStatusService.approved', async () => {

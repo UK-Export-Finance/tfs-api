@@ -38,15 +38,17 @@ export class GiftBusinessCalendarService {
     try {
       this.logger.info('Creating a business calendar for facility %s', facilityId);
 
-      const centreCode = BUSINESS_CALENDAR.LONDON.CODE;
+      const path = `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_BUSINESS_CALENDAR}`;
+
+      const payload = {
+        centreCode: BUSINESS_CALENDAR.LONDON.CODE,
+        startDate,
+        exitDate,
+      };
 
       const response = await this.giftHttpService.post<GiftBusinessCalendarResponseDto>({
-        path: `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_BUSINESS_CALENDAR}`,
-        payload: {
-          centreCode,
-          startDate,
-          exitDate,
-        },
+        path,
+        payload,
       });
 
       return response;

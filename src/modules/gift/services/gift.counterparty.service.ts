@@ -34,8 +34,10 @@ export class GiftCounterpartyService {
     try {
       this.logger.info('Creating a counterparty with URN %s for facility %s', counterpartyData.counterpartyUrn, facilityId);
 
+      const path = `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_COUNTERPARTY}`;
+
       const response = await this.giftHttpService.post<GiftFacilityCounterpartyRequestDto>({
-        path: `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_COUNTERPARTY}`,
+        path,
         payload: counterpartyData,
       });
 

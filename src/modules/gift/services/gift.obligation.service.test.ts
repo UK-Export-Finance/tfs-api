@@ -53,13 +53,15 @@ describe('GiftObligationService', () => {
         // Assert
         expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
 
-        expect(mockHttpServicePost).toHaveBeenCalledWith({
+        const expected = {
           path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_OBLIGATION}`,
           payload: {
             ...mockPayload,
             acbsObligationId: null,
           },
-        });
+        };
+
+        expect(mockHttpServicePost).toHaveBeenCalledWith(expected);
       });
     });
 
@@ -77,14 +79,16 @@ describe('GiftObligationService', () => {
         // Assert
         expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
 
-        expect(mockHttpServicePost).toHaveBeenCalledWith({
+        const expected = {
           path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_OBLIGATION}`,
           payload: {
             ...mockPayload,
             acbsObligationId: null,
             subtypeCode: INTEGRATION_DEFAULTS.OBLIGATION_SUBTYPE_CODE,
           },
-        });
+        };
+
+        expect(mockHttpServicePost).toHaveBeenCalledWith(expected);
       });
     });
 

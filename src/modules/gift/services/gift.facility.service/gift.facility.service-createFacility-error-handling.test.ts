@@ -225,10 +225,13 @@ describe('GiftFacilityService.create - error handling', () => {
 
       // Assert
       expect(finallyHandlerSpy).toHaveBeenCalledTimes(1);
-      expect(finallyHandlerSpy).toHaveBeenCalledWith({
+
+      const expected = {
         facilityId: mockFacilityId,
         creationCatchError: mockError,
-      });
+      };
+
+      expect(finallyHandlerSpy).toHaveBeenCalledWith(expected);
     });
   });
 
@@ -274,11 +277,14 @@ describe('GiftFacilityService.create - error handling', () => {
 
       // Assert
       expect(finallyHandlerSpy).toHaveBeenCalledTimes(1);
-      expect(finallyHandlerSpy).toHaveBeenCalledWith({
+
+      const expected = {
         facilityId: mockFacilityId,
         workPackageId: mockWorkPackageId,
         creationCatchError: mockError,
-      });
+      };
+
+      expect(finallyHandlerSpy).toHaveBeenCalledWith(expected);
     });
   });
 
@@ -324,11 +330,14 @@ describe('GiftFacilityService.create - error handling', () => {
 
       // Assert
       expect(finallyHandlerSpy).toHaveBeenCalledTimes(1);
-      expect(finallyHandlerSpy).toHaveBeenCalledWith({
+
+      const expected = {
         facilityId: mockFacilityId,
         workPackageId: mockWorkPackageId,
         creationCatchError: mockError,
-      });
+      };
+
+      expect(finallyHandlerSpy).toHaveBeenCalledWith(expected);
     });
   });
 
@@ -374,11 +383,14 @@ describe('GiftFacilityService.create - error handling', () => {
 
       // Assert
       expect(finallyHandlerSpy).toHaveBeenCalledTimes(1);
-      expect(finallyHandlerSpy).toHaveBeenCalledWith({
+
+      const expected = {
         facilityId: mockFacilityId,
         workPackageId: mockWorkPackageId,
         creationCatchError: mockError,
-      });
+      };
+
+      expect(finallyHandlerSpy).toHaveBeenCalledWith(expected);
     });
   });
 
@@ -424,11 +436,14 @@ describe('GiftFacilityService.create - error handling', () => {
 
       // Assert
       expect(finallyHandlerSpy).toHaveBeenCalledTimes(1);
-      expect(finallyHandlerSpy).toHaveBeenCalledWith({
+
+      const expected = {
         facilityId: mockFacilityId,
         workPackageId: mockWorkPackageId,
         creationCatchError: mockError,
-      });
+      };
+
+      expect(finallyHandlerSpy).toHaveBeenCalledWith(expected);
     });
   });
 
@@ -474,11 +489,14 @@ describe('GiftFacilityService.create - error handling', () => {
 
       // Assert
       expect(finallyHandlerSpy).toHaveBeenCalledTimes(1);
-      expect(finallyHandlerSpy).toHaveBeenCalledWith({
+
+      const expected = {
         facilityId: mockFacilityId,
         workPackageId: mockWorkPackageId,
         creationCatchError: mockError,
-      });
+      };
+
+      expect(finallyHandlerSpy).toHaveBeenCalledWith(expected);
     });
   });
 
@@ -524,11 +542,14 @@ describe('GiftFacilityService.create - error handling', () => {
 
       // Assert
       expect(finallyHandlerSpy).toHaveBeenCalledTimes(1);
-      expect(finallyHandlerSpy).toHaveBeenCalledWith({
+
+      const expected = {
         facilityId: mockFacilityId,
         workPackageId: mockWorkPackageId,
         creationCatchError: mockError,
-      });
+      };
+
+      expect(finallyHandlerSpy).toHaveBeenCalledWith(expected);
     });
   });
 
@@ -574,11 +595,14 @@ describe('GiftFacilityService.create - error handling', () => {
 
       // Assert
       expect(finallyHandlerSpy).toHaveBeenCalledTimes(1);
-      expect(finallyHandlerSpy).toHaveBeenCalledWith({
+
+      const expected = {
         facilityId: mockFacilityId,
         workPackageId: mockWorkPackageId,
         creationCatchError: mockError,
-      });
+      };
+
+      expect(finallyHandlerSpy).toHaveBeenCalledWith(expected);
     });
   });
 });

@@ -113,9 +113,11 @@ describe('GiftFacilityService.get', () => {
     // Assert
     expect(mockHttpServiceGet).toHaveBeenCalledTimes(1);
 
-    expect(mockHttpServiceGet).toHaveBeenCalledWith({
+    const expected = {
       path: `${PATH.FACILITY}/${mockFacilityId}`,
-    });
+    };
+
+    expect(mockHttpServiceGet).toHaveBeenCalledWith(expected);
   });
 
   describe('when giftHttpService.get is successful', () => {

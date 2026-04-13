@@ -49,12 +49,14 @@ describe('GiftWorkPackageService', () => {
       // Assert
       expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
 
-      expect(mockHttpServicePost).toHaveBeenCalledWith({
+      const expected = {
         path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}`,
         payload: {
           name: INTEGRATION_DEFAULTS.GIFT_AMENDMENT_WORK_PACKAGE_NAME,
         },
-      });
+      };
+
+      expect(mockHttpServicePost).toHaveBeenCalledWith(expected);
     });
 
     describe('when giftHttpService.post is successful', () => {
@@ -99,9 +101,11 @@ describe('GiftWorkPackageService', () => {
       // Assert
       expect(mockHttpServiceDelete).toHaveBeenCalledTimes(1);
 
-      expect(mockHttpServiceDelete).toHaveBeenCalledWith({
+      const expected = {
         path: `${PATH.WORK_PACKAGE}/${mockWorkPackageId}`,
-      });
+      };
+
+      expect(mockHttpServiceDelete).toHaveBeenCalledWith(expected);
     });
 
     describe('when giftHttpService.delete is successful', () => {

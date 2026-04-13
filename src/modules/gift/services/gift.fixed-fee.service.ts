@@ -43,8 +43,10 @@ export class GiftFixedFeeService {
         acbsFeeSegmentId: INTEGRATION_DEFAULTS.ACBS_FEE_SEGMENT_ID,
       };
 
+      const path = `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_FIXED_FEE}`;
+
       const response = await this.giftHttpService.post<GiftFixedFeeRequestDto>({
-        path: `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_FIXED_FEE}`,
+        path,
         payload,
       });
 
