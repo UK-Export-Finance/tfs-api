@@ -25,12 +25,10 @@
 # 2. Azure container registry - https://learn.microsoft.com/en-us/cli/azure/acr?view=azure-cli-latest#az-acr-create
 # 3. Azure storage account - https://learn.microsoft.com/en-us/cli/azure/storage/account?view=azure-cli-latest
 # 4. Azure storage queue - https://learn.microsoft.com/en-us/cli/azure/storage/queue?view=azure-cli-latest
-# 5. Azure virtual network - https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-overview
-# 6. Azure virtual network peer - https://learn.microsoft.com/en-us/cli/azure/network/vnet/peering?view=azure-cli-latest
-# 7. Azure container app environment - https://learn.microsoft.com/en-us/azure/container-apps/environment
-# 8. Azure container app - https://learn.microsoft.com/en-us/azure/container-apps/containers
-# 9. Azure API management - https://learn.microsoft.com/en-us/azure/api-management/
-# 10. Azure log analytics workspace - https://learn.microsoft.com/en-us/azure/azure-monitor/logs/log-analytics-workspace-overview
+# 5. Azure container app environment - https://learn.microsoft.com/en-us/azure/container-apps/environment
+# 6. Azure container app - https://learn.microsoft.com/en-us/azure/container-apps/containers
+# 7. Azure API management - https://learn.microsoft.com/en-us/azure/api-management/
+# 8. Azure log analytics workspace - https://learn.microsoft.com/en-us/azure/azure-monitor/logs/log-analytics-workspace-overview
 #
 #
 # Execution
