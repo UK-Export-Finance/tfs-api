@@ -576,3 +576,5 @@ jobs:
             --method PUT \
             --uri "https://management.azure.com/subscriptions/$(az account show --query id -o tsv)/resourceGroups/rg-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }}/providers/Microsoft.ApiManagement/service/apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }}/apis/${{ env.API_TFS }}/policies/policy?api-version=2022-09-01-preview" \
             --body ${{ secrets.APIM_POLICY }}
+
+# Comment to check that infrastructure workflow executes successfully 
