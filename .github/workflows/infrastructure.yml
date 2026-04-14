@@ -476,6 +476,35 @@ jobs:
             az configure --defaults location=${{ vars.REGION }}
             az configure --defaults group=rg-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }}
 
+      - name: Wait for APIM readiness ⏳
+        uses: Azure/cli@v2.2.0
+        with:
+          inlineScript: |
+            APIM_NAME="apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }}"
+            max_attempts=30
+            delay=15
+
+            echo "Waiting for APIM service: $APIM_NAME"
+
+            for attempt in $(seq 1 $max_attempts); do
+              echo "Attempt $attempt of $max_attempts"
+
+              if az apim product list \
+                --service-name "$APIM_NAME" \
+                --top 1 \
+                -o none 2>/dev/null; then
+                echo "APIM management plane is ready"
+                exit 0
+              fi
+
+              if [ "$attempt" -eq "$max_attempts" ]; then
+                echo "APIM did not become ready in time"
+                exit 1
+              fi
+
+              sleep "$delay"
+            done
+
       - name: APIM defaults ✨
         run: |
           echo PRODUCT_TFS=$(az apim product list --service-name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} --query '[?contains(displayName, `tfs`)].name' -o tsv) >> $GITHUB_ENV
