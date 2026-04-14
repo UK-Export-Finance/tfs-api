@@ -482,24 +482,44 @@ jobs:
           inlineScript: |
             APIM_NAME="apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }}"
             max_attempts=30
-            delay=15
+            delay=30
 
             echo "Waiting for APIM service: $APIM_NAME"
+
+            subscription_id=$(az account show --query id -o tsv)
+            echo "Using Azure subscription: $subscription_id"
+
+            apim_lookup_output=$(az apim show --name "$APIM_NAME" --query provisioningState -o tsv 2>&1)
+            apim_lookup_status=$?
+
+            if [ "$apim_lookup_status" -ne 0 ]; then
+              echo "APIM lookup failed before readiness polling:"
+              echo "$apim_lookup_output"
+              exit "$apim_lookup_status"
+            fi
+
+            echo "APIM resource found with provisioning state: $apim_lookup_output"
 
             for attempt in $(seq 1 $max_attempts); do
               echo "Attempt $attempt of $max_attempts"
 
-              if az apim product list \
+              readiness_output=$(az apim product list \
                 --service-name "$APIM_NAME" \
                 --top 1 \
-                -o none 2>/dev/null; then
+                -o none 2>&1)
+              readiness_status=$?
+
+              if [ "$readiness_status" -eq 0 ]; then
                 echo "APIM management plane is ready"
                 exit 0
               fi
 
+              echo "APIM management plane is not ready yet:"
+              echo "$readiness_output"
+
               if [ "$attempt" -eq "$max_attempts" ]; then
-                echo "APIM did not become ready in time"
-                exit 1
+                echo "APIM did not become ready after $max_attempts attempts"
+                exit "$readiness_status"
               fi
 
               sleep "$delay"
