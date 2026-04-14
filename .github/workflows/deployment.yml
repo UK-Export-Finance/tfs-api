@@ -155,14 +155,20 @@ jobs:
               "GIFT_API_TIMEOUT=${{ secrets.GIFT_API_TIMEOUT }}" \
               "GIFT_HTTP_VERSION=${{ vars.GIFT_HTTP_VERSION }}"
 
-      - name: Import
+      - name: Import ⬇️
         if: ${{ env.API_ID != '' }}
         uses: Azure/cli@v2.2.0
+        env:
+          API_ID: ${{ env.API_ID }}
+          APIM: ${{ env.APIM }}
+          CA_NAME: ${{ env.CA_NAME }}
+          NAME: ${{ env.NAME }}
         with:
+          azcliversion: latest
           inlineScript: |
-            echo "🔍 Fetching Container App FQDN..."
+            echo "🔍 Fetching Container App FQDN"
             FQDN=$(az containerapp show \
-              --name "${{ env.CA_NAME }}" \
+              --name "$CA_NAME" \
               --query properties.latestRevisionFqdn -o tsv)
 
             if [ -z "$FQDN" ]; then
@@ -174,7 +180,7 @@ jobs:
             SPEC_URL="https://$FQDN/openapi/json"
             echo "📄 OpenAPI Spec URL: $SPEC_URL"
 
-            echo "📡 Importing API into APIM (with retry logic)..."
+            echo "📡 Importing API into APIM (with retry logic)"
             max_retries=5
             delay=15
 
@@ -182,9 +188,9 @@ jobs:
               echo "➡️ Attempt $attempt of $max_retries"
 
               az apim api import \
-                --service-name "${{ env.APIM }}" \
-                --api-id "${{ env.API_ID }}" \
-                --path "${{ env.NAME }}" \
+                --service-name "$APIM" \
+                --api-id "$API_ID" \
+                --path "$NAME" \
                 --specification-format OpenApi \
                 --specification-url "$SPEC_URL" \
                 --api-type http \
@@ -202,6 +208,6 @@ jobs:
                 exit 1
               fi
 
-              echo "⚠️ Import failed. Retrying in $delay seconds..."
+              echo "⚠️ Import failed. Retrying in $delay seconds"
               sleep $delay
             done
