@@ -4,6 +4,7 @@ import { Type } from 'class-transformer';
 import { ArrayNotEmpty, IsArray, IsDefined, IsNotEmptyObject, IsOptional, IsString, ValidateNested } from 'class-validator';
 
 import { IsSupportedConsumer, UniqueRepaymentProfileAllocationDates, UniqueRepaymentProfileNames } from '../../custom-decorators';
+import { GiftAccrualScheduleRequestDto } from './accrual-schedule';
 import { GiftFacilityCounterpartyRequestDto } from './counterparty';
 import { GiftFacilityOverviewRequestDto } from './facility-overview';
 import { GiftFixedFeeRequestDto } from './fixed-fee';
@@ -11,7 +12,7 @@ import { GiftObligationRequestDto } from './obligation';
 import { GiftRepaymentProfileRequestDto } from './repayment-profile';
 
 const {
-  GIFT: { COUNTERPARTY, FACILITY_OVERVIEW, FIXED_FEE, OBLIGATION, REPAYMENT_PROFILE },
+  GIFT: { ACCRUAL_SCHEDULE, COUNTERPARTY, FACILITY_OVERVIEW, FIXED_FEE, OBLIGATION, REPAYMENT_PROFILE },
 } = EXAMPLES;
 
 /**
@@ -38,6 +39,19 @@ export class GiftFacilityCreationGenericRequestDto {
   @Type(() => GiftFacilityOverviewRequestDto)
   @ValidateNested()
   overview: GiftFacilityOverviewRequestDto;
+
+  @ApiProperty({
+    isArray: true,
+    example: [ACCRUAL_SCHEDULE, ACCRUAL_SCHEDULE],
+    required: true,
+    type: GiftAccrualScheduleRequestDto,
+  })
+  @IsArray()
+  @ArrayNotEmpty()
+  @IsDefined()
+  @Type(() => GiftAccrualScheduleRequestDto)
+  @ValidateNested()
+  accrualSchedules: GiftAccrualScheduleRequestDto[];
 
   @ApiProperty({
     isArray: true,

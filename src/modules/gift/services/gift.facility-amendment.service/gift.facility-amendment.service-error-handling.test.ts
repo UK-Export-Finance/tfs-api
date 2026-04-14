@@ -172,9 +172,12 @@ describe('GiftFacilityAmendmentService - error handling', () => {
 
           // Assert
           expect(mockHttpServiceDelete).toHaveBeenCalledTimes(1);
-          expect(mockHttpServiceDelete).toHaveBeenCalledWith({
+
+          const expected = {
             path: `${PATH.WORK_PACKAGE}/${WORK_PACKAGE_CREATION_RESPONSE_DATA.id}`,
-          });
+          };
+
+          expect(mockHttpServiceDelete).toHaveBeenCalledWith(expected);
         });
 
         describe('when giftHttpService.delete throws an error', () => {

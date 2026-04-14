@@ -1,3 +1,4 @@
+export * from './accrual-schedule';
 export * from './counterparty';
 export * from './facility-amendment';
 export * from './facility-creation';

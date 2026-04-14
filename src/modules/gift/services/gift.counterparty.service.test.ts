@@ -53,10 +53,12 @@ describe('GiftCounterpartyService', () => {
       // Assert
       expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
 
-      expect(mockHttpServicePost).toHaveBeenCalledWith({
+      const expected = {
         path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_COUNTERPARTY}`,
         payload: mockCounterparty,
-      });
+      };
+
+      expect(mockHttpServicePost).toHaveBeenCalledWith(expected);
     });
 
     describe('when giftHttpService.post is successful', () => {
@@ -197,9 +199,11 @@ describe('GiftCounterpartyService', () => {
       // Assert
       expect(mockHttpServiceGet).toHaveBeenCalledTimes(1);
 
-      expect(mockHttpServiceGet).toHaveBeenCalledWith({
+      const expected = {
         path: PATH.COUNTERPARTY_ROLES,
-      });
+      };
+
+      expect(mockHttpServiceGet).toHaveBeenCalledWith(expected);
     });
 
     describe('when giftHttpService.get is successful', () => {

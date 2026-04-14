@@ -8,6 +8,7 @@ import { PinoLogger } from 'nestjs-pino';
 
 import { mapAllValidationErrorResponses, mapValidationErrorResponses } from '../../helpers';
 import {
+  GiftAccrualScheduleService,
   GiftBusinessCalendarsConventionService,
   GiftBusinessCalendarService,
   GiftCounterpartyService,
@@ -26,6 +27,7 @@ import { GiftFacilityService } from './';
 
 const {
   GIFT: {
+    ACCRUAL_SCHEDULE,
     BUSINESS_CALENDAR,
     BUSINESS_CALENDARS_CONVENTION,
     COUNTERPARTY,
@@ -44,6 +46,7 @@ const { API_RESPONSE_MESSAGES, ENTITY_NAMES } = GIFT;
 
 const mockCreateInitialFacilityResponse = mockResponse201(FACILITY_RESPONSE_DATA);
 
+const mockAccrualSchedules = [ACCRUAL_SCHEDULE, ACCRUAL_SCHEDULE];
 const mockBusinessCalendar = BUSINESS_CALENDAR;
 const mockBusinessCalendarsConvention = BUSINESS_CALENDARS_CONVENTION;
 const mockCounterparties = [COUNTERPARTY(), COUNTERPARTY(), COUNTERPARTY()];
@@ -53,6 +56,7 @@ const mockRepaymentProfiles = [REPAYMENT_PROFILE(), REPAYMENT_PROFILE(), REPAYME
 const mockRiskDetails = RISK_DETAILS;
 
 const mockAsyncValidationServiceCreationResponse = [];
+const mockCreateAccrualSchedulesResponse = mockAccrualSchedules.map((accrualSchedule) => mockResponse201({ data: accrualSchedule }));
 const mockCreateBusinessCalendarResponse = mockResponse201({ data: mockBusinessCalendar });
 const mockCreateBusinessCalendarsConventionResponse = mockResponse201({ data: mockBusinessCalendarsConvention });
 
@@ -67,6 +71,7 @@ describe('GiftFacilityService.create - bad requests', () => {
   const logger = new PinoLogger({});
 
   let asyncValidationService: GiftFacilityAsyncValidationService;
+  let accrualScheduleService: GiftAccrualScheduleService;
   let businessCalendarService: GiftBusinessCalendarService;
   let businessCalendarsConventionService: GiftBusinessCalendarsConventionService;
   let counterpartyService: GiftCounterpartyService;
@@ -82,6 +87,7 @@ describe('GiftFacilityService.create - bad requests', () => {
   let httpService;
   let asyncValidationServiceCreationSpy: jest.Mock;
   let createInitialFacilitySpy: jest.Mock;
+  let createAccrualSchedulesSpy: jest.Mock;
   let createBusinessCalendarSpy: jest.Mock;
   let createBusinessCalendarsConventionSpy: jest.Mock;
   let createCounterpartiesSpy: jest.Mock;
@@ -108,6 +114,7 @@ describe('GiftFacilityService.create - bad requests', () => {
       productTypeService,
     );
 
+    accrualScheduleService = new GiftAccrualScheduleService(giftHttpService, logger);
     businessCalendarService = new GiftBusinessCalendarService(giftHttpService, logger);
     businessCalendarsConventionService = new GiftBusinessCalendarsConventionService(giftHttpService, logger);
     counterpartyService = new GiftCounterpartyService(giftHttpService, logger);
@@ -120,6 +127,7 @@ describe('GiftFacilityService.create - bad requests', () => {
 
     asyncValidationServiceCreationSpy = jest.fn().mockResolvedValueOnce(mockAsyncValidationServiceCreationResponse);
     createInitialFacilitySpy = jest.fn().mockResolvedValueOnce(mockCreateInitialFacilityResponse);
+    createAccrualSchedulesSpy = jest.fn().mockResolvedValueOnce(mockCreateAccrualSchedulesResponse);
     createBusinessCalendarSpy = jest.fn().mockResolvedValueOnce(mockCreateBusinessCalendarResponse);
     createBusinessCalendarsConventionSpy = jest.fn().mockResolvedValueOnce(mockCreateBusinessCalendarsConventionResponse);
     createCounterpartiesSpy = jest.fn().mockResolvedValueOnce(mockCreateCounterpartiesResponse);
@@ -130,6 +138,7 @@ describe('GiftFacilityService.create - bad requests', () => {
     approvedStatusSpy = jest.fn().mockResolvedValueOnce(mockApprovedStatusResponse);
 
     asyncValidationService.creation = asyncValidationServiceCreationSpy;
+    accrualScheduleService.createMany = createAccrualSchedulesSpy;
     businessCalendarService.createOne = createBusinessCalendarSpy;
     businessCalendarsConventionService.createOne = createBusinessCalendarsConventionSpy;
     counterpartyService.createMany = createCounterpartiesSpy;
@@ -143,6 +152,7 @@ describe('GiftFacilityService.create - bad requests', () => {
       giftHttpService,
       logger,
       asyncValidationService,
+      accrualScheduleService,
       businessCalendarService,
       businessCalendarsConventionService,
       counterpartyService,
@@ -344,6 +354,7 @@ describe('GiftFacilityService.create - bad requests', () => {
 
     beforeEach(() => {
       // Arrange
+      createAccrualSchedulesSpy = jest.fn().mockResolvedValueOnce(mockResponses);
       createBusinessCalendarSpy = jest.fn().mockResolvedValueOnce(mockBadRequest);
       createBusinessCalendarsConventionSpy = jest.fn().mockResolvedValueOnce(mockBadRequest);
       createCounterpartiesSpy = jest.fn().mockResolvedValueOnce(mockResponses);
@@ -352,6 +363,7 @@ describe('GiftFacilityService.create - bad requests', () => {
       createRepaymentProfilesSpy = jest.fn().mockResolvedValueOnce(mockResponses);
       createRiskDetailsSpy = jest.fn().mockResolvedValueOnce(mockBadRequest);
 
+      accrualScheduleService.createMany = createAccrualSchedulesSpy;
       businessCalendarService.createOne = createBusinessCalendarSpy;
       businessCalendarsConventionService.createOne = createBusinessCalendarsConventionSpy;
       counterpartyService.createMany = createCounterpartiesSpy;
@@ -367,6 +379,7 @@ describe('GiftFacilityService.create - bad requests', () => {
 
       // Assert
       const expectedValidationErrors = mapAllValidationErrorResponses({
+        accrualSchedules: mockResponses,
         businessCalendars: [mockBadRequest],
         businessCalendarsConvention: [mockBadRequest],
         counterparties: mockResponses,
@@ -406,6 +419,45 @@ describe('GiftFacilityService.create - bad requests', () => {
         },
       },
     ] as AxiosResponse[];
+
+    describe('accrualScheduleService.createMany', () => {
+      beforeEach(() => {
+        // Arrange
+        createAccrualSchedulesSpy = jest.fn().mockResolvedValueOnce(mockResponse);
+
+        accrualScheduleService.createMany = createAccrualSchedulesSpy;
+      });
+
+      it('should return an object with mapped accrual schedule errors', async () => {
+        // Act
+        const response = await service.create(mockPayload, mockFacilityId);
+
+        // Assert
+        const expectedValidationErrors = mapValidationErrorResponses({
+          entityName: ENTITY_NAMES.ACCRUAL_SCHEDULE,
+          responses: mockResponse,
+        });
+
+        const expected = {
+          status: HttpStatus.BAD_REQUEST,
+          data: {
+            statusCode: HttpStatus.BAD_REQUEST,
+            message: API_RESPONSE_MESSAGES.GIFT_FACILITY_VALIDATION_ERRORS,
+            validationErrors: expectedValidationErrors,
+          },
+        };
+
+        expect(response).toEqual(expected);
+      });
+
+      it('should NOT call giftStatusService.approved', async () => {
+        // Act
+        await service.create(mockPayload, mockFacilityId);
+
+        // Assert
+        expect(approvedStatusSpy).toHaveBeenCalledTimes(0);
+      });
+    });
 
     describe('counterpartyService.createMany', () => {
       beforeEach(() => {
@@ -573,6 +625,45 @@ describe('GiftFacilityService.create - bad requests', () => {
         data: { message: mockMessage },
       },
     ] as AxiosResponse[];
+
+    describe('accrualScheduleService.createMany', () => {
+      beforeEach(() => {
+        // Arrange
+        createAccrualSchedulesSpy = jest.fn().mockResolvedValueOnce(mockResponse);
+
+        accrualScheduleService.createMany = createAccrualSchedulesSpy;
+      });
+
+      it("should return an object with the first accrual schedule's status and message", async () => {
+        // Act
+        const response = await service.create(mockPayload, mockFacilityId);
+
+        // Assert
+        const expectedValidationErrors = mapValidationErrorResponses({
+          entityName: ENTITY_NAMES.ACCRUAL_SCHEDULE,
+          responses: mockResponse,
+        });
+
+        const expected = {
+          status: HttpStatus.SERVICE_UNAVAILABLE,
+          data: {
+            statusCode: HttpStatus.SERVICE_UNAVAILABLE,
+            message: mockMessage,
+            validationErrors: expectedValidationErrors,
+          },
+        };
+
+        expect(response).toEqual(expected);
+      });
+
+      it('should NOT call giftStatusService.approved', async () => {
+        // Act
+        await service.create(mockPayload, mockFacilityId);
+
+        // Assert
+        expect(approvedStatusSpy).toHaveBeenCalledTimes(0);
+      });
+    });
 
     describe('counterpartyService.createMany', () => {
       beforeEach(() => {

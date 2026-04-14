@@ -49,14 +49,16 @@ describe('GiftBusinessCalendarsConventionService', () => {
       // Assert
       expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
 
-      expect(mockHttpServicePost).toHaveBeenCalledWith({
+      const expected = {
         path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_BUSINESS_CALENDARS_CONVENTION}`,
         payload: {
           businessDayConvention: BUSINESS_CALENDARS_CONVENTION.businessDayConvention,
           dueOnLastWorkingDayEachMonth: BUSINESS_CALENDARS_CONVENTION.dueOnLastWorkingDayEachMonth,
           dateSnapBack: BUSINESS_CALENDARS_CONVENTION.dateSnapBack,
         },
-      });
+      };
+
+      expect(mockHttpServicePost).toHaveBeenCalledWith(expected);
     });
 
     describe('when giftHttpService.post is successful', () => {

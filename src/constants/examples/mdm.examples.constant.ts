@@ -1,3 +1,33 @@
+const ACCRUAL_FREQUENCY_CODES = {
+  FREQ12MON: {
+    code: 'FREQ12MON',
+    name: 'Annually',
+  },
+  FREQ1MON: {
+    code: 'FREQ1MON',
+    name: 'Monthly',
+  },
+  FREQ3MON: {
+    code: 'FREQ3MON',
+    name: 'Quarterly',
+  },
+};
+
+const ACCRUAL_SCHEDULE_TYPE_CODES = {
+  CTL02: {
+    code: 'CTL02',
+    name: 'Contractual Interest Non-Indexed Floating Rate',
+  },
+  CTL03: {
+    code: 'CTL03',
+    name: 'Contractual Interest Indexed Floating Rate',
+  },
+  PAC01: {
+    code: 'PAC01',
+    name: 'Premium Accrual',
+  },
+};
+
 const OBLIGATION_SUBTYPES = {
   OST001: {
     type: 'Obligation Sub-Type',
@@ -38,6 +68,8 @@ const OBLIGATION_SUBTYPES_WITH_PRODUCT_CODES = {
 };
 
 export const MDM_EXAMPLES = {
+  ACCRUAL_FREQUENCY_CODES,
+  ACCRUAL_SCHEDULE_TYPE_CODES,
   OBLIGATION_SUBTYPES,
   OBLIGATION_SUBTYPES_RESPONSE_DATA: Object.values(OBLIGATION_SUBTYPES),
   OBLIGATION_SUBTYPES_WITH_PRODUCT_CODES,
