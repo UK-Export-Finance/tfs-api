@@ -137,6 +137,16 @@
   "overrides": [
     {
       "files": [
+        "tfs-functions/**/*.ts"
+      ],
+      "parserOptions": {
+        "project": [
+          "tfs-functions/tsconfig.json"
+        ]
+      }
+    },
+    {
+      "files": [
         "**/*.test.ts",
         "**/*.api-test.ts"
       ],
