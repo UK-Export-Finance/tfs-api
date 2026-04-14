@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.2](https://github.com/UK-Export-Finance/tfs-api/compare/v1.7.1...v1.7.2) (2026-04-14)
+
+
+### Bug Fixes
+
+* **deps:** add keyv dependency ([#1286](https://github.com/UK-Export-Finance/tfs-api/issues/1286)) ([e9732c6](https://github.com/UK-Export-Finance/tfs-api/commit/e9732c60df57a2c0a87d0ee82426239ec658e459))
+
 ## [1.7.1](https://github.com/UK-Export-Finance/tfs-api/compare/v1.7.0...v1.7.1) (2026-02-05)
 
 
