@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.1](https://github.com/UK-Export-Finance/tfs-api/compare/v1.7.0...v1.7.1) (2026-02-05)
+
+
+### Bug Fixes
+
+* **DTFS2-8260:** acbs transaction type codes ([#1208](https://github.com/UK-Export-Finance/tfs-api/issues/1208)) ([863f1ae](https://github.com/UK-Export-Finance/tfs-api/commit/863f1aeb67c112ad084d3a6926ca30b4e73ca28a))
+
 ## [1.7.0](https://github.com/UK-Export-Finance/tfs-api/compare/v1.6.1...v1.7.0) (2025-04-08)
 
 

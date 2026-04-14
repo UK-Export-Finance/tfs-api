@@ -5,11 +5,10 @@ import { StringFieldValidationApiTestOptions, withStringFieldValidationApiTests 
 
 type DealIdentifierFieldName = 'dealIdentifier';
 
-interface DealIdentifierFieldValidationApiTestOptions<RequestBodyItem extends { dealIdentifier: string }>
-  extends Pick<
-    StringFieldValidationApiTestOptions<RequestBodyItem, DealIdentifierFieldName>,
-    'validRequestBody' | 'makeRequest' | 'givenAnyRequestBodyWouldSucceed'
-  > {
+interface DealIdentifierFieldValidationApiTestOptions<RequestBodyItem extends { dealIdentifier: string }> extends Pick<
+  StringFieldValidationApiTestOptions<RequestBodyItem, DealIdentifierFieldName>,
+  'validRequestBody' | 'makeRequest' | 'givenAnyRequestBodyWouldSucceed'
+> {
   valueGenerator: RandomValueGenerator;
 }
 
