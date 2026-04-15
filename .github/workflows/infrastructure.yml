@@ -479,7 +479,7 @@ jobs:
       - name: APIM defaults ✨
         run: |
           echo PRODUCT_TFS=$(az apim product list --service-name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} --query '[?contains(displayName, `tfs`)].name' -o tsv) >> $GITHUB_ENV
-          echo API_TFS=$(az apim api list --service-name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} --filter-display-name ${{ env.API_DISPLAY_NAME }} --top 1 --query [0].name -o tsv) >> $GITHUB_ENV
+          echo API_TFS=$(az apim api list --service-name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} --filter-display-name "${{ env.API_DISPLAY_NAME }}" --top 1 --query [0].name -o tsv) >> $GITHUB_ENV
 
       - name: TFS - Product ➕
         uses: Azure/cli@v2.2.0
@@ -510,7 +510,7 @@ jobs:
 
             if import_output=$(az apim api import \
               --only-show-errors \
-              --display-name ${{ env.API_DISPLAY_NAME }} \
+              --display-name "${{ env.API_DISPLAY_NAME }}" \
               --description '${{ vars.DESCRIPTION }}' \
               --service-url "$SERVICE_URL" \
               --path ${{ env.API_PATH }} \
@@ -530,7 +530,7 @@ jobs:
 
       - name: APIM defaults ✨
         run: |
-          echo API_TFS=$(az apim api list --service-name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} --filter-display-name ${{ env.API_DISPLAY_NAME }} --top 1 --query [0].name -o tsv) >> $GITHUB_ENV
+          echo API_TFS=$(az apim api list --service-name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} --filter-display-name "${{ env.API_DISPLAY_NAME }}" --top 1 --query [0].name -o tsv) >> $GITHUB_ENV
 
       - name: TFS - Product + API 🧱
         uses: Azure/cli@v2.2.0
