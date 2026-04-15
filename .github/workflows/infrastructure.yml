@@ -476,6 +476,52 @@ jobs:
             az configure --defaults location=${{ vars.REGION }}
             az configure --defaults group=rg-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }}
 
+      - name: Wait for APIM readiness ⏳
+        uses: Azure/cli@v2.2.0
+        with:
+          inlineScript: |
+            APIM_NAME="apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }}"
+            max_attempts=30
+            delay=30
+
+            echo "Waiting for APIM service: $APIM_NAME"
+
+            subscription_id=$(az account show --query id -o tsv)
+            echo "Using Azure subscription: $subscription_id"
+
+            if apim_lookup_output=$(az apim show --only-show-errors --name "$APIM_NAME" --query provisioningState -o tsv 2>&1); then
+              echo "APIM resource found with provisioning state: $apim_lookup_output"
+            else
+              apim_lookup_status=$?
+              echo "APIM lookup failed before readiness polling:"
+              echo "$apim_lookup_output"
+              exit "$apim_lookup_status"
+            fi
+
+            for attempt in $(seq 1 $max_attempts); do
+              echo "Attempt $attempt of $max_attempts"
+
+              if readiness_output=$(az apim product list \
+                --only-show-errors \
+                --service-name "$APIM_NAME" \
+                --top 1 \
+                -o none 2>&1); then
+                echo "APIM management plane is ready"
+                exit 0
+              else
+                readiness_status=$?
+                echo "APIM management plane is not ready yet:"
+                echo "$readiness_output"
+              fi
+
+              if [ "$attempt" -eq "$max_attempts" ]; then
+                echo "APIM did not become ready after $max_attempts attempts"
+                exit "$readiness_status"
+              fi
+
+              sleep "$delay"
+            done
+
       - name: APIM defaults ✨
         run: |
           echo PRODUCT_TFS=$(az apim product list --service-name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} --query '[?contains(displayName, `tfs`)].name' -o tsv) >> $GITHUB_ENV
