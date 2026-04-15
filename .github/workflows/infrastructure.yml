@@ -451,8 +451,8 @@ jobs:
     needs: base
     environment: ${{ needs.base.outputs.environment }}
     env:
-      NAME: tfs
-      NAME_UPPERCASE: TFS
+      API_PATH: tfs
+      API_DISPLAY_NAME: TFS API Specification
     runs-on: [self-hosted, APIM, infrastructure]
     steps:
       - name: Pre-production 💫
@@ -479,7 +479,7 @@ jobs:
       - name: APIM defaults ✨
         run: |
           echo PRODUCT_TFS=$(az apim product list --service-name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} --query '[?contains(displayName, `tfs`)].name' -o tsv) >> $GITHUB_ENV
-          echo API_TFS=$(az apim api list --service-name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} --filter-display-name ${{ env.NAME_UPPERCASE }} --top 1 --query [0].name -o tsv) >> $GITHUB_ENV
+          echo API_TFS=$(az apim api list --service-name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} --filter-display-name ${{ env.API_DISPLAY_NAME }} --top 1 --query [0].name -o tsv) >> $GITHUB_ENV
 
       - name: TFS - Product ➕
         uses: Azure/cli@v2.2.0
@@ -510,10 +510,10 @@ jobs:
 
             if import_output=$(az apim api import \
               --only-show-errors \
-              --display-name ${{ env.NAME_UPPERCASE }} \
+              --display-name ${{ env.API_DISPLAY_NAME }} \
               --description '${{ vars.DESCRIPTION }}' \
               --service-url "$SERVICE_URL" \
-              --path ${{ env.NAME }} \
+              --path ${{ env.API_PATH }} \
               --service-name "$APIM_NAME" \
               --specification-format OpenApi \
               --api-type http \
@@ -530,7 +530,7 @@ jobs:
 
       - name: APIM defaults ✨
         run: |
-          echo API_TFS=$(az apim api list --service-name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} --filter-display-name ${{ env.NAME_UPPERCASE }} --top 1 --query [0].name -o tsv) >> $GITHUB_ENV
+          echo API_TFS=$(az apim api list --service-name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} --filter-display-name ${{ env.API_DISPLAY_NAME }} --top 1 --query [0].name -o tsv) >> $GITHUB_ENV
 
       - name: TFS - Product + API 🧱
         uses: Azure/cli@v2.2.0
