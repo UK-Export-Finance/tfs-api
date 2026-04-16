@@ -6,6 +6,8 @@
   "scripts": {
     "build": "tsc",
     "clean": "rimraf dist",
+    "docker:build": "docker build -t tfs-functions-local .",
+    "docker:start": "docker compose -f docker-compose.local.yml up --build",
     "prestart": "npm run clean && npm run build",
     "start": "func start",
     "test": "echo \"No tests yet...\"",
