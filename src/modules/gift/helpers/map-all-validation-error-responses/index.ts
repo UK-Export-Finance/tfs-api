@@ -7,6 +7,7 @@ import { mapValidationErrorResponses } from '../map-validation-error-responses';
 const { ENTITY_NAMES } = GIFT;
 
 interface MapAllValidationErrorResponsesParams {
+  accrualSchedules: AxiosResponse[];
   businessCalendars: AxiosResponse[];
   businessCalendarsConvention: AxiosResponse[];
   counterparties: AxiosResponse[];
@@ -22,6 +23,7 @@ interface MapAllValidationErrorResponsesParams {
  * @returns {ValidationErrorResponse[]} Mapped validation error responses.
  */
 export const mapAllValidationErrorResponses = ({
+  accrualSchedules,
   businessCalendars,
   businessCalendarsConvention,
   counterparties,
@@ -30,6 +32,10 @@ export const mapAllValidationErrorResponses = ({
   repaymentProfiles,
   riskDetails,
 }: MapAllValidationErrorResponsesParams): ValidationErrorResponse[] => [
+  ...mapValidationErrorResponses({
+    entityName: ENTITY_NAMES.ACCRUAL_SCHEDULE,
+    responses: accrualSchedules,
+  }),
   ...mapValidationErrorResponses({
     entityName: ENTITY_NAMES.BUSINESS_CALENDAR,
     responses: businessCalendars,

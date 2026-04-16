@@ -48,6 +48,7 @@ describe('modules/gift/helpers/async-validation/strip-payload', () => {
         const mockPayload = {
           consumer: FACILITY_CREATION_PAYLOAD.consumer,
           overview: FACILITY_CREATION_PAYLOAD.overview,
+          accrualSchedules: FACILITY_CREATION_PAYLOAD.accrualSchedules,
           counterparties: FACILITY_CREATION_PAYLOAD.counterparties,
           obligations: FACILITY_CREATION_PAYLOAD.obligations,
           repaymentProfiles: FACILITY_CREATION_PAYLOAD.repaymentProfiles,

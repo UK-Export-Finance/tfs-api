@@ -30,9 +30,9 @@ export class GiftProductTypeService {
     try {
       this.logger.info('Getting product type %s', productTypeCode);
 
-      const response = await this.giftHttpService.get<string>({
-        path: `${PATH.PRODUCT_TYPE}/${productTypeCode}`,
-      });
+      const path = `${PATH.PRODUCT_TYPE}/${productTypeCode}`;
+
+      const response = await this.giftHttpService.get<string>({ path });
 
       return response;
     } catch (error) {

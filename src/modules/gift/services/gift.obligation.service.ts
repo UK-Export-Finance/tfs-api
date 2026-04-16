@@ -44,8 +44,10 @@ export class GiftObligationService {
         subtypeCode: obligationData.subtypeCode || INTEGRATION_DEFAULTS.OBLIGATION_SUBTYPE_CODE,
       };
 
+      const path = `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_OBLIGATION}`;
+
       const response = await this.giftHttpService.post<GiftObligationRequestDto>({
-        path: `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_OBLIGATION}`,
+        path,
         payload,
       });
 

@@ -47,7 +47,7 @@ describe('GiftRiskDetailsService', () => {
         // Assert
         expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
 
-        expect(mockHttpServicePost).toHaveBeenCalledWith({
+        const expected = {
           path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_RISK_DETAILS}`,
           payload: {
             ...RISK_DETAILS,
@@ -56,7 +56,9 @@ describe('GiftRiskDetailsService', () => {
             riskReassessmentDate: INTEGRATION_DEFAULTS.RISK_REASSESSMENT_DATE,
             facilityCategoryCode: null,
           },
-        });
+        };
+
+        expect(mockHttpServicePost).toHaveBeenCalledWith(expected);
       });
     });
 
@@ -74,7 +76,7 @@ describe('GiftRiskDetailsService', () => {
         // Assert
         expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
 
-        expect(mockHttpServicePost).toHaveBeenCalledWith({
+        const expected = {
           path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_RISK_DETAILS}`,
           payload: {
             ...mockPayload,
@@ -82,7 +84,9 @@ describe('GiftRiskDetailsService', () => {
             overrideLossGivenDefault: INTEGRATION_DEFAULTS.OVERRIDE_LOSS_GIVEN_DEFAULT,
             riskReassessmentDate: INTEGRATION_DEFAULTS.RISK_REASSESSMENT_DATE,
           },
-        });
+        };
+
+        expect(mockHttpServicePost).toHaveBeenCalledWith(expected);
       });
     });
 

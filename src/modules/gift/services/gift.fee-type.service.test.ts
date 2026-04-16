@@ -47,7 +47,9 @@ describe('GiftFeeTypeService', () => {
       // Assert
       expect(mockHttpServiceGet).toHaveBeenCalledTimes(1);
 
-      expect(mockHttpServiceGet).toHaveBeenCalledWith({ path: PATH.FEE_TYPE });
+      const expected = { path: PATH.FEE_TYPE };
+
+      expect(mockHttpServiceGet).toHaveBeenCalledWith(expected);
     });
 
     describe('when giftHttpService.get is successful', () => {

@@ -44,9 +44,11 @@ describe('GiftStatusService', () => {
       // Assert
       expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
 
-      expect(mockHttpServicePost).toHaveBeenCalledWith({
+      const expected = {
         path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.APPROVE}`,
-      });
+      };
+
+      expect(mockHttpServicePost).toHaveBeenCalledWith(expected);
     });
 
     describe('when giftHttpService.post is successful', () => {

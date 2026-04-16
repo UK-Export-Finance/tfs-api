@@ -26,11 +26,15 @@ export class GiftWorkPackageService {
     try {
       this.logger.info('Creating work package for facility %s', facilityId);
 
+      const path = `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}`;
+
+      const payload = {
+        name: INTEGRATION_DEFAULTS.GIFT_AMENDMENT_WORK_PACKAGE_NAME,
+      };
+
       const response = await this.giftHttpService.post<GiftWorkPackageResponseDto>({
-        path: `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}`,
-        payload: {
-          name: INTEGRATION_DEFAULTS.GIFT_AMENDMENT_WORK_PACKAGE_NAME,
-        },
+        path,
+        payload,
       });
 
       return response;
@@ -52,9 +56,9 @@ export class GiftWorkPackageService {
     try {
       this.logger.info('Deleting work package %s for facility %s', workPackageId, facilityId);
 
-      const response = await this.giftHttpService.delete<GiftWorkPackageResponseDto>({
-        path: `${PATH.WORK_PACKAGE}/${workPackageId}`,
-      });
+      const path = `${PATH.WORK_PACKAGE}/${workPackageId}`;
+
+      const response = await this.giftHttpService.delete<GiftWorkPackageResponseDto>({ path });
 
       return response;
     } catch (error) {

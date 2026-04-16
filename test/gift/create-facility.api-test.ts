@@ -8,6 +8,7 @@ import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables'
 import nock from 'nock';
 
 import {
+  accrualScheduleUrl,
   apimFacilityUrl,
   apimMdmObligationSubtypesUrl,
   approveStatusUrl,
@@ -21,6 +22,7 @@ import {
   fixedFeeUrl,
   mockResponses,
   obligationUrl,
+  payloadAccrualSchedules,
   payloadCounterparties,
   payloadFixedFees,
   payloadObligations,
@@ -56,6 +58,8 @@ const setupMocks = () => {
     .reply(HttpStatus.OK, mockResponses.obligationSubtypes);
 
   nock(GIFT_API_URL).persist().post(facilityCreationUrl).reply(HttpStatus.CREATED, mockResponses.facility);
+
+  nock(GIFT_API_URL).persist().post(accrualScheduleUrl).reply(HttpStatus.CREATED, mockResponses.accrualSchedule);
 
   nock(GIFT_API_URL).persist().post(businessCalendarUrl).reply(HttpStatus.CREATED, mockResponses.businessCalendar);
 
@@ -109,6 +113,7 @@ describe('POST /gift/facility', () => {
 
       const expected = {
         ...mockResponses.facility.configurationEvent.data,
+        accrualSchedules: Array(payloadAccrualSchedules.length).fill(mockResponses.accrualSchedule.data),
         businessCalendars: [mockResponses.businessCalendar.data],
         businessCalendarsConvention: mockResponses.businessCalendarsConvention.data,
         counterparties: Array(payloadCounterparties.length).fill(mockResponses.counterparty.data),
@@ -216,6 +221,7 @@ describe('POST /gift/facility', () => {
 
       const expected = {
         ...mockResponses.facility.configurationEvent.data,
+        accrualSchedules: Array(payloadAccrualSchedules.length).fill(mockResponses.accrualSchedule.data),
         businessCalendars: [mockResponses.businessCalendar.data],
         businessCalendarsConvention: mockResponses.businessCalendarsConvention.data,
         counterparties: Array(payloadCounterparties.length).fill(mockResponses.counterparty.data),
@@ -242,6 +248,7 @@ describe('POST /gift/facility', () => {
 
       const expected = {
         ...mockResponses.facility.configurationEvent.data,
+        accrualSchedules: Array(payloadAccrualSchedules.length).fill(mockResponses.accrualSchedule.data),
         businessCalendars: [mockResponses.businessCalendar.data],
         businessCalendarsConvention: mockResponses.businessCalendarsConvention.data,
         counterparties: Array(payloadCounterparties.length).fill(mockResponses.counterparty.data),

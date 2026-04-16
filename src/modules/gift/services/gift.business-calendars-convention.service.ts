@@ -37,13 +37,17 @@ export class GiftBusinessCalendarsConventionService {
     try {
       this.logger.info('Creating business calendars convention for facility %s', facilityId);
 
+      const path = `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_BUSINESS_CALENDARS_CONVENTION}`;
+
+      const payload = {
+        businessDayConvention: INTEGRATION_DEFAULTS.BUSINESS_CALENDARS_CONVENTION,
+        dueOnLastWorkingDayEachMonth: INTEGRATION_DEFAULTS.DUE_ON_LAST_WORKING_DAY_EACH_MONTH,
+        dateSnapBack: INTEGRATION_DEFAULTS.DATE_SNAP_BACK,
+      };
+
       const response = await this.giftHttpService.post<GiftBusinessCalendarsConventionResponseDto>({
-        path: `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_BUSINESS_CALENDARS_CONVENTION}`,
-        payload: {
-          businessDayConvention: INTEGRATION_DEFAULTS.BUSINESS_CALENDARS_CONVENTION,
-          dueOnLastWorkingDayEachMonth: INTEGRATION_DEFAULTS.DUE_ON_LAST_WORKING_DAY_EACH_MONTH,
-          dateSnapBack: INTEGRATION_DEFAULTS.DATE_SNAP_BACK,
-        },
+        path,
+        payload,
       });
 
       return response;

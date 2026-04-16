@@ -40,7 +40,9 @@ describe('GiftCurrencyService', () => {
       // Assert
       expect(mockHttpServiceGet).toHaveBeenCalledTimes(1);
 
-      expect(mockHttpServiceGet).toHaveBeenCalledWith({ path: PATH.CURRENCY });
+      const expected = { path: PATH.CURRENCY };
+
+      expect(mockHttpServiceGet).toHaveBeenCalledWith(expected);
     });
 
     describe('when giftHttpService.get is successful', () => {

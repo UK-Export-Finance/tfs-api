@@ -41,8 +41,10 @@ export class GiftRiskDetailsService {
         facilityCreditRating: riskDetailsData.facilityCreditRating || INTEGRATION_DEFAULTS.FACILITY_CREDIT_RATING,
       };
 
+      const path = `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_RISK_DETAILS}`;
+
       const response = await this.giftHttpService.post<GiftBusinessCalendarsConventionResponseDto>({
-        path: `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_RISK_DETAILS}`,
+        path,
         payload,
       });
 

@@ -4,6 +4,7 @@ import { mockResponse200, mockResponse201 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
 import {
+  GiftAccrualScheduleService,
   GiftBusinessCalendarsConventionService,
   GiftBusinessCalendarService,
   GiftCounterpartyService,
@@ -39,6 +40,7 @@ describe('GiftFacilityController', () => {
   let giftHttpService: GiftHttpService;
   let httpService;
   let asyncValidationService: GiftFacilityAsyncValidationService;
+  let accrualScheduleService: GiftAccrualScheduleService;
   let businessCalendarService: GiftBusinessCalendarService;
   let businessCalendarsConventionService: GiftBusinessCalendarsConventionService;
   let fixedFeeService: GiftFixedFeeService;
@@ -81,6 +83,7 @@ describe('GiftFacilityController', () => {
       productTypeService,
     );
 
+    accrualScheduleService = new GiftAccrualScheduleService(giftHttpService, logger);
     businessCalendarService = new GiftBusinessCalendarService(giftHttpService, logger);
     businessCalendarsConventionService = new GiftBusinessCalendarsConventionService(giftHttpService, logger);
     fixedFeeService = new GiftFixedFeeService(giftHttpService, logger);
@@ -96,6 +99,7 @@ describe('GiftFacilityController', () => {
       giftHttpService,
       logger,
       asyncValidationService,
+      accrualScheduleService,
       businessCalendarService,
       businessCalendarsConventionService,
       counterpartyService,

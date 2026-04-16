@@ -17,8 +17,8 @@ const {
 export class GiftFixedFeeRequestDto {
   @IsDefined()
   @IsNumber()
-  @Min(VALIDATION.AMOUNT_DUE.MIN)
   @Max(VALIDATION.AMOUNT_DUE.MAX)
+  @Min(VALIDATION.AMOUNT_DUE.MIN)
   @ApiProperty({
     required: true,
     example: FIXED_FEE().amount,

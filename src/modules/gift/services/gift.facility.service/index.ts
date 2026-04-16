@@ -5,7 +5,8 @@ import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 
 import { GiftFacilityCreationRequestDto, GiftFacilityOverviewRequestDto } from '../../dto';
-import { mapAllValidationErrorResponses, mapResponseData, mapResponsesData } from '../../helpers';
+import { getObligationIds, mapAccrualSchedulesPayload, mapAllValidationErrorResponses, mapResponseData, mapResponsesData } from '../../helpers';
+import { GiftAccrualScheduleService } from '../gift.accrual-schedule.service';
 import { GiftBusinessCalendarService } from '../gift.business-calendar.service';
 import { GiftBusinessCalendarsConventionService } from '../gift.business-calendars-convention.service';
 import { GiftCounterpartyService } from '../gift.counterparty.service';
@@ -35,6 +36,7 @@ export class GiftFacilityService {
     private readonly giftHttpService: GiftHttpService,
     private readonly logger: PinoLogger,
     private readonly asyncValidationService: GiftFacilityAsyncValidationService,
+    private readonly giftAccrualScheduleService: GiftAccrualScheduleService,
     private readonly giftBusinessCalendarService: GiftBusinessCalendarService,
     private readonly giftBusinessCalendarsConventionService: GiftBusinessCalendarsConventionService,
     private readonly giftCounterpartyService: GiftCounterpartyService,
@@ -47,6 +49,7 @@ export class GiftFacilityService {
   ) {
     this.giftHttpService = giftHttpService;
     this.asyncValidationService = asyncValidationService;
+    this.giftAccrualScheduleService = giftAccrualScheduleService;
     this.giftBusinessCalendarService = giftBusinessCalendarService;
     this.giftBusinessCalendarsConventionService = giftBusinessCalendarsConventionService;
     this.giftCounterpartyService = giftCounterpartyService;
@@ -186,6 +189,16 @@ export class GiftFacilityService {
 
       const obligations = await this.giftObligationService.createMany(obligationsPayload, facilityId, workPackageId);
 
+      /**
+       * GIFT Accrual schedules require obligation IDs, which are only returned after obligations are created.
+       * Therefore, we need to create obligations first, get the obligation IDs, and then create accrual schedules.
+       */
+      const obligationIds = getObligationIds(obligations);
+
+      const mappedAccrualSchedulesPayload = mapAccrualSchedulesPayload(data.accrualSchedules, obligationIds);
+
+      const accrualSchedules = await this.giftAccrualScheduleService.createMany(mappedAccrualSchedulesPayload, facilityId, workPackageId);
+
       let repaymentProfilesResponse = [];
 
       if (Array.isArray(data.repaymentProfiles) && data.repaymentProfiles.length) {
@@ -197,6 +210,7 @@ export class GiftFacilityService {
       const riskDetailsArray = [riskDetails];
 
       const giftValidationErrors = mapAllValidationErrorResponses({
+        accrualSchedules,
         businessCalendars,
         businessCalendarsConvention,
         counterparties,
@@ -253,6 +267,7 @@ export class GiftFacilityService {
         data: {
           ...facility.configurationEvent.data,
           state: approvedStatusResponse.data.state,
+          accrualSchedules: mapResponsesData(accrualSchedules),
           businessCalendars: mapResponsesData(businessCalendars),
           businessCalendarsConvention: mapResponseData(defaultBusinessCalendarsConvention),
           counterparties: mapResponsesData(counterparties),

@@ -31,9 +31,9 @@ export class GiftStatusService {
     try {
       this.logger.info('Updating facility work package %s status to approved for facility %s', workPackageId, facilityId, workPackageId);
 
-      const response = await this.giftHttpService.post({
-        path: `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.APPROVE}`,
-      });
+      const path = `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.APPROVE}`;
+
+      const response = await this.giftHttpService.post({ path });
 
       return response;
     } catch (error) {

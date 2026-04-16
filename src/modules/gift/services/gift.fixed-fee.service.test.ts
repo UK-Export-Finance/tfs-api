@@ -8,7 +8,7 @@ const {
   GIFT: { FIXED_FEE, FACILITY_ID: mockFacilityId, WORK_PACKAGE_ID: mockWorkPackageId },
 } = EXAMPLES;
 
-const { EVENT_TYPES, PATH } = GIFT;
+const { EVENT_TYPES, INTEGRATION_DEFAULTS, PATH } = GIFT;
 
 describe('GiftFixedFeeService', () => {
   const logger = new PinoLogger({});
@@ -46,13 +46,15 @@ describe('GiftFixedFeeService', () => {
       // Assert
       expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
 
-      expect(mockHttpServicePost).toHaveBeenCalledWith({
+      const expected = {
         path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_FIXED_FEE}`,
         payload: {
           ...mockFixedFee,
-          acbsFeeSegmentId: null,
+          acbsFeeSegmentId: INTEGRATION_DEFAULTS.ACBS_FEE_SEGMENT_ID,
         },
-      });
+      };
+
+      expect(mockHttpServicePost).toHaveBeenCalledWith(expected);
     });
 
     describe('when giftHttpService.post is successful', () => {
