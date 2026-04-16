@@ -23,12 +23,14 @@
 # Following Azure services are consumed:
 # 1. Azure resource group - https://learn.microsoft.com/en-us/cli/azure/group?view=azure-cli-latest#az-group-create
 # 2. Azure container registry - https://learn.microsoft.com/en-us/cli/azure/acr?view=azure-cli-latest#az-acr-create
-# 3. Azure virtual network - https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-overview
-# 4. Azure virtual network peer - https://learn.microsoft.com/en-us/cli/azure/network/vnet/peering?view=azure-cli-latest
-# 5. Azure container app environment - https://learn.microsoft.com/en-us/azure/container-apps/environment
-# 6. Azure container app - https://learn.microsoft.com/en-us/azure/container-apps/containers
-# 7. Azure API management - https://learn.microsoft.com/en-us/azure/api-management/
-# 8. Azure log analytics workspace - https://learn.microsoft.com/en-us/azure/azure-monitor/logs/log-analytics-workspace-overview
+# 3. Azure storage account - https://learn.microsoft.com/en-us/cli/azure/storage/account?view=azure-cli-latest
+# 4. Azure storage queue - https://learn.microsoft.com/en-us/cli/azure/storage/queue?view=azure-cli-latest
+# 5. Azure virtual network - https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-overview
+# 6. Azure virtual network peer - https://learn.microsoft.com/en-us/cli/azure/network/vnet/peering?view=azure-cli-latest
+# 7. Azure container app environment - https://learn.microsoft.com/en-us/azure/container-apps/environment
+# 8. Azure container app - https://learn.microsoft.com/en-us/azure/container-apps/containers
+# 9. Azure API management - https://learn.microsoft.com/en-us/azure/api-management/
+# 10. Azure log analytics workspace - https://learn.microsoft.com/en-us/azure/azure-monitor/logs/log-analytics-workspace-overview
 #
 #
 # Execution
@@ -163,6 +165,27 @@ jobs:
             --workspace log-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
             --tags ${{ env.TAGS }}
 
+      - name: Storage account 🗄️
+        uses: Azure/cli@v2.2.0
+        with:
+          inlineScript: |
+            az storage account create \
+            --name st${{ env.PRODUCT }}fn${{ env.TARGET }}${{ vars.VERSION }} \
+            --sku ${{ vars.APIM_STORAGE_ACCOUNT_PLAN }} \
+            --kind StorageV2 \
+            --allow-blob-public-access false \
+            --tags ${{ env.TAGS }} \
+            --fail-on-exist false   # Act idempotent
+
+      - name: Storage queue 📬
+        uses: Azure/cli@v2.2.0
+        with:
+          inlineScript: |
+            az storage queue create \
+            --name functions \
+            --account-name st${{ env.PRODUCT }}fn${{ env.TARGET }}${{ vars.VERSION }} \
+            --fail-on-exist false   # Act idempotent
+
       - name: Virtual network 🧵
         uses: Azure/cli@v2.2.0
         if: ${{ '1' == vars.NEW }}
@@ -293,6 +316,7 @@ jobs:
             --logs-workspace-key $(az monitor log-analytics workspace get-shared-keys --name log-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} --query primarySharedKey -o tsv) \
             --tags ${{ env.TAGS }}
 
+      # containerapp create implicitly acts as create or update
       - name: Container app - TFS 📄
         uses: Azure/cli@v2.2.0
         with:
@@ -309,6 +333,26 @@ jobs:
             --ingress external \
             --target-port ${{ vars.PORT }} \
             --revisions-mode multiple \
+            --transport auto \
+            --tags ${{ env.TAGS }}
+
+      # containerapp create implicitly acts as create or update
+      - name: Container app - Functions ⚙️
+        uses: Azure/cli@v2.2.0
+        with:
+          inlineScript: |
+            az containerapp create \
+            --name ca-${{ env.PRODUCT }}-functions-${{ env.TARGET }}-${{ vars.VERSION }} \
+            --kind functionapp \
+            --environment cae-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
+            --image mcr.microsoft.com/azure-functions/node:4-node22 \
+            --cpu 1.0 \
+            --memory 2.0Gi \
+            --min-replicas 1 \
+            --max-replicas 4 \
+            --ingress internal \
+            --target-port 80 \
+            --revisions-mode single \
             --transport auto \
             --tags ${{ env.TAGS }}
 
@@ -551,5 +595,3 @@ jobs:
             --method PUT \
             --uri "https://management.azure.com/subscriptions/$(az account show --query id -o tsv)/resourceGroups/rg-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }}/providers/Microsoft.ApiManagement/service/apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }}/apis/${{ env.API_TFS }}/policies/policy?api-version=2022-09-01-preview" \
             --body ${{ secrets.APIM_POLICY }}
-
-# Comment to check that infrastructure workflow executes successfully 
