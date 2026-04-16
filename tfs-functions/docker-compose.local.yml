@@ -18,3 +18,4 @@ services:
       FUNCTIONS_WORKER_RUNTIME: node
     ports:
       - '7071:80'
+      
