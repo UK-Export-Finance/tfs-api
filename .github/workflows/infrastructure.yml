@@ -316,6 +316,7 @@ jobs:
             --logs-workspace-key $(az monitor log-analytics workspace get-shared-keys --name log-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} --query primarySharedKey -o tsv) \
             --tags ${{ env.TAGS }}
 
+      # containerapp create implicitly acts as create or update
       - name: Container app - TFS 📄
         uses: Azure/cli@v2.2.0
         with:
@@ -335,6 +336,7 @@ jobs:
             --transport auto \
             --tags ${{ env.TAGS }}
 
+      # containerapp create implicitly acts as create or update
       - name: Container app - Functions ⚙️
         uses: Azure/cli@v2.2.0
         with:
