@@ -176,6 +176,7 @@ jobs:
             --workspace log-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
             --tags ${{ env.TAGS }}
 
+      # Acts as create or update
       - name: Storage account 🗄️
         uses: Azure/cli@v2.2.0
         with:
@@ -185,9 +186,9 @@ jobs:
             --sku ${{ vars.APIM_STORAGE_ACCOUNT_PLAN }} \
             --kind StorageV2 \
             --allow-blob-public-access false \
-            --tags ${{ env.TAGS }} \
-            --fail-on-exist false   # Act idempotent
-
+            --tags ${{ env.TAGS }} 
+      
+      # Defaults to not fail on existing queue
       - name: Storage queue 📬
         uses: Azure/cli@v2.2.0
         with:
@@ -195,7 +196,6 @@ jobs:
             az storage queue create \
             --name functions \
             --account-name st${{ env.PRODUCT }}fn${{ env.TARGET }}${{ vars.VERSION }} \
-            --fail-on-exist false   # Act idempotent
 
       - name: Virtual network 🧵
         uses: Azure/cli@v2.2.0
