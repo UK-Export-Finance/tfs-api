@@ -9,7 +9,7 @@ The current trigger is defined in `src/functions/function.ts` and listens on the
 - Node.js 22 or later
 - npm
 - Docker Desktop for local container builds
-- Azure Functions Core Tools for running the host outside Docker
+- Azure Functions Core Tools 
 
 ## Run the host locally (without Docker)
 
