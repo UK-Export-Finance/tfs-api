@@ -2,7 +2,7 @@
 
 This package contains a minimal Azure Functions app with a storage queue trigger.
 
-The current trigger is defined in `src/functions/function.ts` and listens on the `js-queue-items` queue using the `AzureWebJobsStorage` connection.
+The current trigger is defined in `src/functions/function.ts` and listens on the placeholder `js-queue-items` queue using the `AzureWebJobsStorage` connection.
 
 ## Prerequisites
 
@@ -11,33 +11,45 @@ The current trigger is defined in `src/functions/function.ts` and listens on the
 - Docker Desktop for local container builds
 - Azure Functions Core Tools for running the host outside Docker
 
-## Run the host locally
+## Run the host locally (without Docker)
 
 1. Copy `local.settings.json.sample` to `local.settings.json`.
 2. Install dependencies with `npm ci`.
-3. Start Azurite.
-   - Either use the VS Code Azurite extension, or run `docker compose -f docker-compose.local.yml up azurite -d`.
+3. Start Azurite, using the VS Code Azurite extension.
 4. Start the Functions host with `npm start`.
 
 The host will build the TypeScript source before startup.
 
-## Build the container locally
+## Running via a container in Docker
 
-Run the following from this directory:
+Run these commands from this directory.
+
+To build the container:
 
 ```sh
 npm run docker:build
 ```
 
-## Start the container locally
-
-To run the Functions container together with Azurite:
+To start the container locally, together with Azurite:
 
 ```sh
 npm run docker:start
 ```
 
 The Functions host will be available on `http://localhost:7071`.
+
+## Testing the queue
+
+After building the container, run the `seed-azurite.sh` script from within the environment in which you have Azure Functions Core Tools installed.
+This will create the queue.
+After that, you can post a message onto the queue. This needs to be Base64 encoded. The example below is the Base64 encoded message for hello world.
+
+```bash
+az storage message put \
+  --queue-name js-queue-items \
+  --content "aGVsbG8gd29ybGQ=" \
+  --connection-string "DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;QueueEndpoint=http://localhost:10001/devstoreaccount1;"
+```
 
 ## Queue trigger notes
 

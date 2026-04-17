@@ -13,3 +13,6 @@ RUN npm ci
 
 # Copy the rest of the code
 COPY . .
+
+# Compile TypeScript
+RUN npm run build

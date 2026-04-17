@@ -1,5 +1,5 @@
 {
-  "name": "",
+  "name": "tfs-functions",
   "version": "1.0.0",
   "description": "",
   "main": "dist/src/functions/*.js",
@@ -14,8 +14,7 @@
     "watch": "tsc -w"
   },
   "dependencies": {
-    "@azure/functions": "^4.0.0",
-    "glob": "^13.0.6"
+    "@azure/functions": "^4.0.0"
   },
   "devDependencies": {
     "@types/node": "18.x",
