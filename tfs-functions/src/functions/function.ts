@@ -5,7 +5,7 @@ export function processQueueItem(queueItem: unknown, context: InvocationContext)
 }
 
 app.storageQueue('processQueueItem', {
-  queueName: 'js-queue-items',
+  queueName: 'gift-requests',
   connection: 'AzureWebJobsStorage',
   handler: processQueueItem,
 });

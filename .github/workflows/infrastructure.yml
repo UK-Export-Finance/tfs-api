@@ -194,7 +194,7 @@ jobs:
         with:
           inlineScript: |
             az storage queue create \
-            --name functions \
+            --name gift-requests \
             --account-name st${{ env.PRODUCT }}fn${{ env.TARGET }}${{ vars.VERSION }} \
 
       - name: Virtual network 🧵
@@ -357,6 +357,8 @@ jobs:
             --kind functionapp \
             --environment cae-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
             --image mcr.microsoft.com/azure-functions/node:4-node22 \
+            --registry-server cr${{ env.PRODUCT }}${{ env.TARGET }}${{ vars.VERSION }}.azurecr.io \
+            --registry-username $(az acr credential show -n cr${{ env.PRODUCT }}${{ env.TARGET }}${{ vars.VERSION }} --query username -o tsv) \
             --cpu 1.0 \
             --memory 2.0Gi \
             --min-replicas 1 \

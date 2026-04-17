@@ -1,0 +1,124 @@
+# This GHA is responsible for Functions deployment.
+# Deployment is initiated using `az cli` bash script.
+#
+# Standard Azure naming convention has been followed:
+# https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming
+#
+#
+# Following Azure services are consumed:
+# 1. Azure resource group - https://learn.microsoft.com/en-us/cli/azure/group?view=azure-cli-latest#az-group-create
+# 2. Azure container registry - https://learn.microsoft.com/en-us/cli/azure/acr?view=azure-cli-latest#az-acr-create
+# 3. Azure container app environment - https://learn.microsoft.com/en-us/azure/container-apps/environment
+# 4. Azure container app - https://learn.microsoft.com/en-us/azure/container-apps/containers
+#
+#
+# Execution
+# *********
+# GHA is only invoked when following conditions are satisfied:
+# 1. Push to the `dev`, `staging` and `production` branches only
+#    AND there are any modifications to at least one of the `paths` targets.
+# 2. Manually using `workflow_dispatch` event trigger.
+
+name: Deployment (Functions) 🚀
+run-name: APIM Functions deployment for ${{ github.repository }}
+
+on:
+  push:
+    branches:
+      - dev
+      - staging
+      - production
+
+    paths:
+      - "tfs-functions/**"
+      - ".github/workflows/deployment-functions.yml"
+
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment target environment'
+        required: true
+        type: choice
+        options:
+          - dev
+          - staging
+          - production
+
+env:
+  PRODUCT: apim
+  ENVIRONMENT: ${{ inputs.environment || github.ref_name }}
+  timezone: ${{ vars.TIMEZONE }}
+
+jobs:
+  # 1. Setup deployment variables
+  setup:
+    name: Setup 🔧
+    runs-on: [self-hosted, APIM, deployment]
+    outputs:
+      environment: ${{ env.ENVIRONMENT }}
+      timezone: ${{ env.timezone }}
+    steps:
+      - name: Environment 🧪
+        run: echo "Environment set to ${{ env.ENVIRONMENT }}"
+
+      - name: Timezone 🌐
+        run: echo "Timezone set to ${{ env.TIMEZONE }}"
+
+  # 2. Functions micro-service deployment
+  functions:
+    name: Functions ⚙️
+    needs: setup
+    environment: ${{ needs.setup.outputs.environment }}
+    env:
+      NAME: functions
+      ENVIRONMENT: ${{ needs.setup.outputs.environment }}
+    runs-on: [self-hosted, APIM, deployment]
+    steps:
+      - name: Repository 🗃️
+        uses: actions/checkout@v6
+
+      - name: Azure 🔐
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Defaults ✨
+        uses: Azure/cli@v2.2.0
+        with:
+          inlineScript: |
+            # Basic
+            az configure --defaults location=${{ vars.REGION }}
+            az configure --defaults group=rg-${{ env.PRODUCT }}-${{ env.ENVIRONMENT }}-${{ vars.VERSION }}
+
+      - name: CLI 📝
+        run: |
+          echo ACR=$(az acr show -n $(az resource list --resource-type 'Microsoft.ContainerRegistry/registries' --query '[0].name' -o tsv) --query loginServer -o tsv) >> $GITHUB_ENV
+          echo ACR_USER=$(az acr show -n $(az resource list --resource-type 'Microsoft.ContainerRegistry/registries' --query '[0].name' -o tsv) --query name -o tsv) >> $GITHUB_ENV
+          echo CA_NAME=$(az resource list --resource-type 'Microsoft.App/containerApps' --query '[?contains(name, `${{ env.NAME }}`)].name' -o tsv) >> $GITHUB_ENV
+
+      - name: ACR 🔐
+        uses: azure/docker-login@v2
+        with:
+          login-server: ${{ env.ACR }}
+          username: ${{ env.ACR_USER }}
+          password: ${{ secrets.ACR_PASSWORD }}
+
+      - name: Artifacts 🗃️
+        run: |
+          docker build tfs-functions/ \
+          -t ${{ env.ACR }}/${{ env.NAME }}:${{ github.sha }}
+          docker push ${{ env.ACR }}/${{ env.NAME }}:${{ github.sha }}
+
+      - name: Revisions 🔀
+        uses: Azure/cli@v2.2.0
+        with:
+          inlineScript: |
+            az containerapp update \
+            --name ${{ env.CA_NAME }} \
+            --container-name ${{ env.CA_NAME }} \
+            --image ${{ env.ACR }}/${{ env.NAME }}:${{ github.sha }} \
+            --revision-suffix v${{ github.run_id }} \
+            --set-env-vars \
+              "AzureWebJobsStorage=${{ secrets.FUNCTIONS_AZURE_WEB_JOBS_STORAGE }}" \
+              "FUNCTIONS_WORKER_RUNTIME=node" \
+              "AzureFunctionsJobHost__Logging__Console__IsEnabled=true"
