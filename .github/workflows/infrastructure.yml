@@ -70,12 +70,23 @@ on:
       - 'package-lock.json'
       - '.github/workflows/infrastructure.yml'
 
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment target environment'
+        required: true
+        type: choice
+        options:
+          - dev
+          - staging
+          - production
+
 env:
   PRODUCT: apim
   ENVIRONMENT: infrastructure
   timezone: ${{ vars.TIMEZONE }}
   # Deployment environment target i.e., `dev`, `staging`, `production`
-  TARGET: ${{ vars.ENVIRONMENT }}
+  TARGET: ${{ inputs.environment || vars.ENVIRONMENT }}
 
 jobs:
   # 1. Setup infrastructure variables
