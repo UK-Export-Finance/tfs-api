@@ -4,7 +4,6 @@
   "plugins": [
     "switch-case",
     "simple-import-sort",
-    "deprecation",
     "import",
     "prettier",
     "unused-imports"
@@ -26,14 +25,10 @@
     "sourceType": "module"
   },
   "env": {
-    "node": true,
-    "jest": true
+    "node": true
   },
   "settings": {
     "node": {
-      "allowModules": [
-        "express"
-      ],
       "tryExtensions": [
         ".js",
         ".json",
@@ -69,7 +64,6 @@
     "simple-import-sort/exports": "error",
     "import/first": "error",
     "import/no-duplicates": "error",
-    "deprecation/deprecation": "warn",
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "import/no-unresolved": "error",
@@ -134,41 +128,8 @@
       "object": true
     }]
   },
-  "overrides": [
-    {
-      "files": [
-        "**/*.test.ts",
-        "**/*.api-test.ts"
-      ],
-      "extends": [
-        "plugin:jest/recommended",
-        "plugin:jest/style",
-        "plugin:jest-formatting/strict"
-      ],
-      "rules": {
-        "jest/expect-expect": [
-          "warn",
-          {
-            "assertFunctionNames": [
-              "expect",
-              "request.**.expect",
-              "**.expect\\w+"
-            ]
-          }
-        ],
-        "@typescript-eslint/no-unsafe-assignment": "off",
-        "@typescript-eslint/unbound-method": "off",
-        "jest/unbound-method": "error",
-        "security/detect-possible-timing-attacks": "off"
-      }
-    }
-  ],
   "ignorePatterns": [
     "node_modules/**",
-    ".eslintrc.js",
-    "dist/**",
-    "coverage/**",
-    "report/**",
-    "tfs-functions/**"
+    "dist/**"
   ]
 }
