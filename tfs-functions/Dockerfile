@@ -1,26 +1,15 @@
-FROM node:22-alpine AS build
-
-WORKDIR /app
-
-COPY package.json package-lock.json ./
-RUN npm ci
-
-COPY host.json tsconfig.json ./
-COPY src ./src
-
-RUN npm run build
-RUN npm ci --omit=dev --ignore-scripts
-
-FROM mcr.microsoft.com/azure-functions/node:4-node22
+# To enable ssh & remote debugging on app service change the base image to the one below
+# FROM mcr.microsoft.com/azure-functions/node:4-node20-appservice
+FROM mcr.microsoft.com/azure-functions/node:4-node20
 
 ENV AzureWebJobsScriptRoot=/home/site/wwwroot \
-    FUNCTIONS_WORKER_RUNTIME=node \
     AzureFunctionsJobHost__Logging__Console__IsEnabled=true
 
 WORKDIR /home/site/wwwroot
 
-COPY --from=build /app/package.json ./
-COPY --from=build /app/package-lock.json ./
-COPY --from=build /app/host.json ./
-COPY --from=build /app/node_modules ./node_modules
-COPY --from=build /app/dist ./dist
+# Copy package.json and install packages before copying the rest of the code to enable caching
+COPY package.json package-lock.json ./
+RUN npm ci
+
+# Copy the rest of the code
+COPY . .
