@@ -6,7 +6,7 @@ The current trigger is defined in `src/functions/function.ts` and listens on the
 
 ## Prerequisites
 
-- Node.js 22 or later
+- Node.js 20 or later
 - npm
 - Docker Desktop for local container builds
 - Azure Functions Core Tools 
