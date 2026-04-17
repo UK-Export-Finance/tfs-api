@@ -4,7 +4,7 @@ export function processQueueItem(queueItem: unknown, context: InvocationContext)
   context.log('Storage queue function processed work item:', queueItem);
 }
 
-app.storageQueue('function', {
+app.storageQueue('processQueueItem', {
   queueName: 'js-queue-items',
   connection: 'AzureWebJobsStorage',
   handler: processQueueItem,

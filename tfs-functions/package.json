@@ -1,8 +1,7 @@
 {
   "name": "tfs-functions",
   "version": "1.0.0",
-  "description": "",
-  "main": "dist/src/functions/*.js",
+  "description": "Functions for TFS API",
   "scripts": {
     "build": "tsc",
     "clean": "rimraf dist",

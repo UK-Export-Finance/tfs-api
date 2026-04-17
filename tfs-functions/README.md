@@ -10,6 +10,7 @@ The current trigger is defined in `src/functions/function.ts` and listens on the
 - npm
 - Docker Desktop for local container builds
 - Azure Functions Core Tools 
+- Azure CLI
 
 ## Run the host locally (without Docker)
 
@@ -40,8 +41,7 @@ The Functions host will be available on `http://localhost:7071`.
 
 ## Testing the queue
 
-After building the container, run the `seed-azurite.sh` script from within the environment in which you have Azure Functions Core Tools installed.
-This will create the queue.
+After building the container, run the `seed-azurite.sh` script; this will create the queue.
 After that, you can post a message onto the queue. This needs to be Base64 encoded. The example below is the Base64 encoded message for hello world.
 
 ```bash
