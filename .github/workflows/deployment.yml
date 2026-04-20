@@ -37,9 +37,20 @@ on:
       - "tsconfig.build.json"
       - ".github/workflows/deployment.yml"
 
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment target environment'
+        required: true
+        type: choice
+        options:
+          - dev
+          - staging
+          - production
+
 env:
   PRODUCT: apim
-  ENVIRONMENT: ${{ github.ref_name }}
+  ENVIRONMENT: ${{ inputs.environment || github.ref_name }}
   timezone: ${{ vars.TIMEZONE }}
   # Base artifact
   FROM: latest
@@ -85,7 +96,7 @@ jobs:
           inlineScript: |
             # Basic
             az configure --defaults location=${{ vars.REGION }}
-            az configure --defaults group=rg-${{ env.PRODUCT }}-${{ github.ref_name }}-${{ vars.VERSION }}
+            az configure --defaults group=rg-${{ env.PRODUCT }}-${{ env.ENVIRONMENT }}-${{ vars.VERSION }}
 
       - name: CLI 📝
         run: |
