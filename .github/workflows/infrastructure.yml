@@ -176,6 +176,7 @@ jobs:
             --workspace log-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
             --tags ${{ env.TAGS }}
 
+      # Acts as create or update
       - name: Storage account 🗄️
         uses: Azure/cli@v2.2.0
         with:
@@ -185,17 +186,16 @@ jobs:
             --sku ${{ vars.APIM_STORAGE_ACCOUNT_PLAN }} \
             --kind StorageV2 \
             --allow-blob-public-access false \
-            --tags ${{ env.TAGS }} \
-            --fail-on-exist false   # Act idempotent
-
+            --tags ${{ env.TAGS }} 
+      
+      # Defaults to not fail on existing queue
       - name: Storage queue 📬
         uses: Azure/cli@v2.2.0
         with:
           inlineScript: |
             az storage queue create \
-            --name functions \
+            --name gift-requests \
             --account-name st${{ env.PRODUCT }}fn${{ env.TARGET }}${{ vars.VERSION }} \
-            --fail-on-exist false   # Act idempotent
 
       - name: Virtual network 🧵
         uses: Azure/cli@v2.2.0
@@ -357,6 +357,8 @@ jobs:
             --kind functionapp \
             --environment cae-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
             --image mcr.microsoft.com/azure-functions/node:4-node22 \
+            --registry-server cr${{ env.PRODUCT }}${{ env.TARGET }}${{ vars.VERSION }}.azurecr.io \
+            --registry-username $(az acr credential show -n cr${{ env.PRODUCT }}${{ env.TARGET }}${{ vars.VERSION }} --query username -o tsv) \
             --cpu 1.0 \
             --memory 2.0Gi \
             --min-replicas 1 \
