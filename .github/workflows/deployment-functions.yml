@@ -21,6 +21,8 @@
 
 name: Deployment (Functions) 🚀
 run-name: APIM Functions deployment for ${{ github.repository }}
+permissions:
+  contents: read
 
 on:
   push:
@@ -72,44 +74,34 @@ jobs:
     env:
       NAME: functions
       ENVIRONMENT: ${{ needs.setup.outputs.environment }}
+      RG: rg-${{ env.PRODUCT }}-${{ needs.setup.outputs.environment }}-${{ vars.VERSION }}
+      ACR: cr${{ env.PRODUCT }}${{ needs.setup.outputs.environment }}${{ vars.VERSION }}.azurecr.io
+      ACR_USER: cr${{ env.PRODUCT }}${{ needs.setup.outputs.environment }}${{ vars.VERSION }}
+      CA_NAME: ca-${{ env.PRODUCT }}-functions-${{ needs.setup.outputs.environment }}-${{ vars.VERSION }}
     runs-on: [self-hosted, APIM, deployment]
     steps:
-      - name: Repository 🗃️
+      - name: Checkout repository 🗃️
         uses: actions/checkout@v6
 
-      - name: Azure 🔐
+      - name: Azure Login 🔐
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Defaults ✨
-        uses: Azure/cli@v2.2.0
-        with:
-          inlineScript: |
-            # Basic
-            az configure --defaults location=${{ vars.REGION }}
-            az configure --defaults group=rg-${{ env.PRODUCT }}-${{ env.ENVIRONMENT }}-${{ vars.VERSION }}
-
-      - name: CLI 📝
-        run: |
-          echo ACR=$(az acr show -n $(az resource list --resource-type 'Microsoft.ContainerRegistry/registries' --query '[0].name' -o tsv) --query loginServer -o tsv) >> $GITHUB_ENV
-          echo ACR_USER=$(az acr show -n $(az resource list --resource-type 'Microsoft.ContainerRegistry/registries' --query '[0].name' -o tsv) --query name -o tsv) >> $GITHUB_ENV
-          echo CA_NAME=$(az resource list --resource-type 'Microsoft.App/containerApps' --query '[?contains(name, `${{ env.NAME }}`)].name' -o tsv) >> $GITHUB_ENV
-
-      - name: ACR 🔐
+      - name: ACR Login 🔐
         uses: azure/docker-login@v2
         with:
           login-server: ${{ env.ACR }}
           username: ${{ env.ACR_USER }}
           password: ${{ secrets.ACR_PASSWORD }}
 
-      - name: Artifacts 🗃️
+      - name: Push functions image 🗃️
         run: |
           docker build tfs-functions/ \
           -t ${{ env.ACR }}/${{ env.NAME }}:${{ github.sha }}
           docker push ${{ env.ACR }}/${{ env.NAME }}:${{ github.sha }}
 
-      - name: Revisions 🔀
+      - name: Update container app with image 🔀
         uses: Azure/cli@v2.2.0
         with:
           inlineScript: |
