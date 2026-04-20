@@ -172,9 +172,44 @@ jobs:
             az acr create \
             --name cr${{ env.PRODUCT }}${{ env.TARGET }}${{ vars.VERSION }} \
             --sku ${{ vars.ACR_PLAN }} \
-            --admin-enabled true \
+            --admin-enabled false \
             --workspace log-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
             --tags ${{ env.TAGS }}
+
+      # az identity create is idempotent 
+      - name: Managed identity 🪪
+        uses: Azure/cli@v2.2.0
+        with:
+          inlineScript: |
+            az identity create \
+            --name id-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
+            --tags ${{ env.TAGS }}
+
+      - name: ACR role assignment 🔐
+        uses: Azure/cli@v2.2.0
+        with:
+          inlineScript: |
+            # Azure built-in role: AcrPull
+            ACR_PULL_ROLE_ID='7f951dda-4ed3-4680-a7ca-43fe172d538d'
+
+            ACR_ID=$(az acr show --name cr${{ env.PRODUCT }}${{ env.TARGET }}${{ vars.VERSION }} --query id -o tsv)
+            PRINCIPAL_ID=$(az identity show --name id-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} --query principalId -o tsv)
+
+            EXISTING=$(az role assignment list \
+              --assignee $PRINCIPAL_ID \
+              --role $ACR_PULL_ROLE_ID \
+              --scope $ACR_ID \
+              --query '[0].id' -o tsv 2>/dev/null)
+
+            if [ -z "$EXISTING" ]; then
+              az role assignment create \
+              --assignee-object-id $PRINCIPAL_ID \
+              --assignee-principal-type ServicePrincipal \
+              --role $ACR_PULL_ROLE_ID \
+              --scope $ACR_ID
+            else
+              echo 'AcrPull role assignment already exists, skipping'
+            fi
 
       # Acts as create or update
       - name: Storage account 🗄️
@@ -332,11 +367,14 @@ jobs:
         uses: Azure/cli@v2.2.0
         with:
           inlineScript: |
+            IDENTITY_ID=$(az identity show --name id-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} --query id -o tsv)
+
             az containerapp create \
             --name ca-${{ env.PRODUCT }}-tfs-${{ env.TARGET }}-${{ vars.VERSION }} \
             --environment cae-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
+            --user-assigned $IDENTITY_ID \
             --registry-server cr${{ env.PRODUCT }}${{ env.TARGET }}${{ vars.VERSION }}.azurecr.io \
-            --registry-username $(az acr credential show -n cr${{ env.PRODUCT }}${{ env.TARGET }}${{ vars.VERSION }} --query username -o tsv) \
+            --registry-identity $IDENTITY_ID \
             --cpu 1.0 \
             --memory 2.0Gi \
             --min-replicas 1 \
@@ -352,13 +390,16 @@ jobs:
         uses: Azure/cli@v2.2.0
         with:
           inlineScript: |
+            IDENTITY_ID=$(az identity show --name id-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} --query id -o tsv)
+
             az containerapp create \
             --name ca-${{ env.PRODUCT }}-functions-${{ env.TARGET }}-${{ vars.VERSION }} \
             --kind functionapp \
             --environment cae-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
             --image mcr.microsoft.com/azure-functions/node:4-node22 \
+            --user-assigned $IDENTITY_ID \
             --registry-server cr${{ env.PRODUCT }}${{ env.TARGET }}${{ vars.VERSION }}.azurecr.io \
-            --registry-username $(az acr credential show -n cr${{ env.PRODUCT }}${{ env.TARGET }}${{ vars.VERSION }} --query username -o tsv) \
+            --registry-identity $IDENTITY_ID \
             --cpu 1.0 \
             --memory 2.0Gi \
             --min-replicas 1 \
