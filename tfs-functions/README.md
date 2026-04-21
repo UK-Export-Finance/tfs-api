@@ -46,7 +46,16 @@ After that, you can post a message onto the queue. This needs to be Base64 encod
 
 ```bash
 az storage message put \
-  --queue-name js-queue-items \
+  --queue-name gift-requests \
+  --content "aGVsbG8gd29ybGQ=" \
+  --connection-string "DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;QueueEndpoint=http://localhost:10001/devstoreaccount1;"
+```
+
+To trigger the poison queue, you can put a message directly on the poison queue:
+
+```bash
+az storage message put \
+  --queue-name gift-requests-poison \
   --content "aGVsbG8gd29ybGQ=" \
   --connection-string "DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;QueueEndpoint=http://localhost:10001/devstoreaccount1;"
 ```
