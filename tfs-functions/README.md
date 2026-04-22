@@ -2,7 +2,7 @@
 
 This package contains a minimal Azure Functions app with a storage queue trigger.
 
-The current trigger is defined in `src/functions/function.ts` and listens on the placeholder `js-queue-items` queue using the `AzureWebJobsStorage` connection.
+The queue trigger is defined in `src/functions/function.ts` and listens on the `gift-requests` queue using the `AzureWebJobsStorage` connection. When a message is received, it calls the `POST /gift/v{version}/facility` endpoint on `tfs-api` to process the facility creation.
 
 ## Prerequisites
 
@@ -60,8 +60,36 @@ az storage message put \
   --connection-string "DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;QueueEndpoint=http://localhost:10001/devstoreaccount1;"
 ```
 
+## End-to-end local testing (via Docker)
+
+This tests the full flow: `POST /gift/facility/queue` → Azurite queue → function container → `tfs-api` facility creation.
+
+1. In `tfs-api`, set `GIFT_QUEUE_STORAGE_CONNECTION_STRING` to the Azurite connection string:
+   ```
+   DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;QueueEndpoint=http://localhost:10001/devstoreaccount1;
+   ```
+2. Start `tfs-api`.
+3. Build the functions container:
+   ```sh
+   npm run docker:build
+   ```
+4. Start the functions container and Azurite:
+   ```sh
+   TFS_API_KEY=<your-api-key> npm run docker:start
+   ```
+   `TFS_API_GIFT_VERSION` defaults to `1` — set it explicitly if your version differs.
+5. Run `seed-azurite.sh` to create the `gift-requests` queue.
+6. Send a request to the temp queue endpoint on `tfs-api`:
+   ```bash
+   curl -X POST http://localhost:3001/gift/v1/facility/queue \
+     -H "Content-Type: application/json" \
+     -H "x-api-key: <your-api-key>" \
+     -d '<facility-creation-payload>'
+   ```
+7. The function container log should show the message was received and the `POST /gift/facility` call was made.
+
 ## Queue trigger notes
 
-- The image is configured for a storage queue trigger.
 - The queue binding uses `AzureWebJobsStorage`.
-- No external queue is wired up yet.
+- Messages must be Base64-encoded JSON — the `GiftQueueService` in `tfs-api` handles this automatically when using the `/facility/queue` endpoint.
+- On 5 failed processing attempts, the message is moved to `gift-requests-poison` and the poison queue function logs it.

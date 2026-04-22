@@ -1,5 +1,6 @@
-import { Body, Controller, Get, Param, Post, Res, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Param, Post, Res, ValidationPipe } from '@nestjs/common';
 import {
+  ApiAcceptedResponse,
   ApiBadRequestResponse,
   ApiBody,
   ApiCreatedResponse,
@@ -22,7 +23,7 @@ import {
   GiftFacilityCreationResponseDto,
   GiftFacilityOverviewRequestDto,
 } from '../dto';
-import { GiftFacilityAmendmentService, GiftFacilityService } from '../services';
+import { GiftFacilityAmendmentService, GiftFacilityService, GiftQueueService } from '../services';
 
 const { PATH } = GIFT;
 
@@ -36,6 +37,7 @@ export class GiftFacilityController {
   constructor(
     private readonly giftFacilityService: GiftFacilityService,
     private readonly giftFacilityAmendmentService: GiftFacilityAmendmentService,
+    private readonly giftQueueService: GiftQueueService,
   ) {}
 
   @Get(':facilityId')
@@ -147,5 +149,38 @@ export class GiftFacilityController {
     const { status, data } = await this.giftFacilityAmendmentService.create(facilityId, amendmentData);
 
     res.status(status).send(data);
+  }
+
+  /**
+   * TEMPORARY: Enqueue a facility creation request.
+   * This endpoint accepts the same payload as POST /gift/facility but places it on the
+   * storage queue for async processing. It will replace the synchronous endpoint in future.
+   */
+  @Post('queue')
+  @ApiOperation({ summary: 'TEMPORARY: Enqueue a GIFT facility creation request for async processing' })
+  @ApiBody({
+    required: true,
+    type: GiftFacilityCreationRequestDto,
+  })
+  @ApiAcceptedResponse({
+    description: 'The facility creation request has been accepted and queued',
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad request',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized',
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'An internal server error has occurred',
+  })
+  async postQueue(@Body(new ValidationPipe({ transform: true })) facilityData: GiftFacilityCreationRequestDto, @Res({ passthrough: true }) res: Response) {
+    const {
+      overview: { facilityId },
+    } = facilityData;
+
+    await this.giftQueueService.enqueue(facilityData);
+
+    res.status(HttpStatus.ACCEPTED).send({ facilityId });
   }
 }
