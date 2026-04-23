@@ -62,10 +62,11 @@ az storage message put \
 
 ## End-to-end local testing (via Docker)
 
-This tests the full flow: `POST /gift/facility/queue` → Azurite queue → function container → `tfs-api` facility creation.
+This tests the full flow: `POST /gift/facility/queue` → Azurite queue → function container → `tfs-api` -> GIFT facility creation.
 
 1. In `tfs-api`, ensure `GIFT_QUEUE_STORAGE_CONNECTION_STRING` is set in your `.env` — the value is pre-populated in `.env.sample`.
 2. Start `tfs-api`.
+3. Start running GIFT locally, ensuring `GIFT_API_URL` in tfs-api `.env` is correct.
 3. Build the functions container:
    ```sh
    npm run docker:build
@@ -80,17 +81,11 @@ This tests the full flow: `POST /gift/facility/queue` → Azurite queue → func
    npm run docker:start
    ```
 6. Run `seed-azurite.sh` to create the `gift-requests` queue.
-7. Send a request to the temp queue endpoint on `tfs-api`:
-   ```bash
-   curl -X POST http://localhost:3001/gift/v1/facility/queue \
-     -H "Content-Type: application/json" \
-     -H "x-api-key: <your-api-key>" \
-     -d '<facility-creation-payload>'
-   ```
+7. Send a request to the POST `gift/facility/queue`endpoint using swagger.
 8. The function container log should show the message was received and the `POST /gift/facility` call was made.
 
 ## Queue trigger notes
 
 - The queue binding uses `AzureWebJobsStorage`.
 - Messages must be Base64-encoded JSON — the `GiftQueueService` in `tfs-api` handles this automatically when using the `/facility/queue` endpoint.
-- On 5 failed processing attempts, the message is moved to `gift-requests-poison` and the poison queue function logs it.
+- After 5 failed attempts, the message is moved to `gift-requests-poison` and the poison queue function logs it.
