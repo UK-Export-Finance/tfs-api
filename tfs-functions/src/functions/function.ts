@@ -2,13 +2,12 @@ import { app, InvocationContext } from '@azure/functions';
 
 const baseUrl = process.env.TFS_API_BASE_URL;
 const apiKey = process.env.TFS_API_KEY;
-const giftVersion = process.env.TFS_API_GIFT_VERSION;
 
-if (!baseUrl || !apiKey || !giftVersion) {
-  throw new Error('Missing required environment variables: TFS_API_BASE_URL, TFS_API_KEY, TFS_API_GIFT_VERSION');
+if (!baseUrl || !apiKey) {
+  throw new Error('Missing required environment variables: TFS_API_BASE_URL, TFS_API_KEY');
 }
 
-const facilityUrl = `${baseUrl}/gift/v${giftVersion}/facility`;
+const facilityUrl = `${baseUrl}/gift/v1/facility`;
 
 export async function processQueueItem(queueItem: unknown, context: InvocationContext): Promise<void> {
   context.log('Gift requests queue function received item:', queueItem);

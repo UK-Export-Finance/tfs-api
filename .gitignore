@@ -1,6 +1,7 @@
 # UKEF
 .env
 .env*
+!tfs-functions/.env.sample
 
 # compiled output
 /dist

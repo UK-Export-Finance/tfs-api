@@ -73,20 +73,24 @@ This tests the full flow: `POST /gift/facility/queue` → Azurite queue → func
    ```sh
    npm run docker:build
    ```
-4. Start the functions container and Azurite:
+4. Copy `.env.sample` to `.env` and fill in the values:
    ```sh
-   TFS_API_KEY=<your-api-key> npm run docker:start
+   cp .env.sample .env
    ```
-   `TFS_API_GIFT_VERSION` defaults to `1` — set it explicitly if your version differs.
-5. Run `seed-azurite.sh` to create the `gift-requests` queue.
-6. Send a request to the temp queue endpoint on `tfs-api`:
+   - `TFS_API_KEY` — must match the `API_KEY` env var set in `tfs-api`
+5. Start the functions container and Azurite:
+   ```sh
+   npm run docker:start
+   ```
+6. Run `seed-azurite.sh` to create the `gift-requests` queue.
+7. Send a request to the temp queue endpoint on `tfs-api`:
    ```bash
    curl -X POST http://localhost:3001/gift/v1/facility/queue \
      -H "Content-Type: application/json" \
      -H "x-api-key: <your-api-key>" \
      -d '<facility-creation-payload>'
    ```
-7. The function container log should show the message was received and the `POST /gift/facility` call was made.
+8. The function container log should show the message was received and the `POST /gift/facility` call was made.
 
 ## Queue trigger notes
 

@@ -130,8 +130,7 @@ describe('GiftFacilityController', () => {
     mockAmendmentServiceCreate = jest.fn().mockResolvedValueOnce(mockResponseAmendmentPost);
 
     giftFacilityAmendmentService.create = mockAmendmentServiceCreate;
-
-    controller = new GiftFacilityController(giftFacilityService, giftFacilityAmendmentService);
+    giftQueueService.create = controller = new GiftFacilityController(giftFacilityService, giftFacilityAmendmentService);
   });
 
   afterAll(() => {
