@@ -43,14 +43,15 @@ export class GiftFacilityCreationGenericRequestDto {
   @ApiProperty({
     isArray: true,
     example: [ACCRUAL_SCHEDULE, ACCRUAL_SCHEDULE],
-    required: false,
+    required: true,
     type: GiftAccrualScheduleRequestDto,
   })
-  @IsOptional()
   @IsArray()
+  @ArrayNotEmpty()
+  @IsDefined()
   @Type(() => GiftAccrualScheduleRequestDto)
   @ValidateNested()
-  accrualSchedules?: GiftAccrualScheduleRequestDto[];
+  accrualSchedules: GiftAccrualScheduleRequestDto[];
 
   @ApiProperty({
     isArray: true,
