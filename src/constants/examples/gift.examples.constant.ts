@@ -75,6 +75,11 @@ const COUNTERPARTY_ROLE = {
     hasSharePercentage: true,
     code: COUNTERPARTY_ROLE_CODES.GUARANTOR,
   },
+  BOND_GIVER: {
+    name: 'Bond Giver',
+    hasSharePercentage: false,
+    code: COUNTERPARTY_ROLE_CODES.BOND_GIVER,
+  },
 };
 
 const COUNTERPARTY_ROLES_RESPONSE_DATA = {
@@ -100,7 +105,7 @@ const COUNTERPARTY = ({ withSharePercentage = false } = {}): GiftFacilityCounter
       numeric: true,
     }),
     exitDate: '2025-01-16',
-    roleCode: COUNTERPARTY_ROLE.EXPORTER.code,
+    roleCode: COUNTERPARTY_ROLE.BOND_GIVER.code,
     startDate: '2025-01-13',
   };
 
@@ -151,7 +156,7 @@ const FIXED_FEE = () => ({
  * @param {string} subtypeCode: Obligation subtype code
  * @returns {GiftObligationRequestDto}
  */
-const OBLIGATION = ({ subtypeCode = MDM_EXAMPLES.OBLIGATION_SUBTYPES.OST001.code } = {}): GiftObligationRequestDto => ({
+const OBLIGATION = ({ subtypeCode = MDM_EXAMPLES.OBLIGATION_SUBTYPES.OST012.code } = {}): GiftObligationRequestDto => ({
   amount: 2500,
   currency: SUPPORTED_CURRENCIES.USD,
   effectiveDate: '2025-01-13',
@@ -196,19 +201,20 @@ const RISK_DETAILS = {
   facilityCreditRating: CREDIT_RISK_RATINGS.AA,
   riskStatus: INTEGRATION_DEFAULTS.RISK_STATUS,
   ukefIndustryCode: '0101',
+  facilityCategoryCode: null,
 };
 
 const FACILITY_OVERVIEW = {
   amount: 10000,
-  creditType: CREDIT_TYPES.REVOLVER,
+  creditType: CREDIT_TYPES.TERM,
   currency: SUPPORTED_CURRENCIES.USD,
   effectiveDate: '2025-01-01',
   facilityId: FACILITY_ID,
   expiryDate: '2027-02-01',
   name: 'Amazing facility',
   obligorUrn: '01234567',
-  productTypeCode: PRODUCT_TYPE_CODES.BIP,
-  repaymentType: REPAYMENT_TYPE.BULLET,
+  productTypeCode: PRODUCT_TYPE_CODES.BSS,
+  repaymentType: REPAYMENT_TYPE.SCHEDULED,
 };
 
 /**
