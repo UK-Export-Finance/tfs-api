@@ -64,10 +64,7 @@ az storage message put \
 
 This tests the full flow: `POST /gift/facility/queue` → Azurite queue → function container → `tfs-api` facility creation.
 
-1. In `tfs-api`, set `GIFT_QUEUE_STORAGE_CONNECTION_STRING` to the Azurite connection string:
-   ```
-   DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;QueueEndpoint=http://localhost:10001/devstoreaccount1;
-   ```
+1. In `tfs-api`, ensure `GIFT_QUEUE_STORAGE_CONNECTION_STRING` is set in your `.env` — the value is pre-populated in `.env.sample`.
 2. Start `tfs-api`.
 3. Build the functions container:
    ```sh
