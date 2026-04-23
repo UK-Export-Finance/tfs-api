@@ -114,4 +114,6 @@ jobs:
             --set-env-vars \
               "AzureWebJobsStorage=${{ secrets.FUNCTIONS_AZURE_WEB_JOBS_STORAGE }}" \
               "FUNCTIONS_WORKER_RUNTIME=node" \
-              "AzureFunctionsJobHost__Logging__Console__IsEnabled=true"
+              "AzureFunctionsJobHost__Logging__Console__IsEnabled=true" \
+              "TFS_API_BASE_URL=${{ secrets.TFS_API_BASE_URL }}" \
+              "TFS_API_KEY=${{ secrets.TFS_API_KEY }}"
