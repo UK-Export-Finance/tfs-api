@@ -65,6 +65,11 @@ const BUSINESS_CALENDARS_CONVENTION = {
  * Example counterparty roles.
  */
 const COUNTERPARTY_ROLE = {
+  BOND_GIVER: {
+    name: 'Bond Giver',
+    hasSharePercentage: false,
+    code: COUNTERPARTY_ROLE_CODES.BOND_GIVER,
+  },
   EXPORTER: {
     name: 'Exporter',
     hasSharePercentage: false,
@@ -75,15 +80,10 @@ const COUNTERPARTY_ROLE = {
     hasSharePercentage: true,
     code: COUNTERPARTY_ROLE_CODES.GUARANTOR,
   },
-  BOND_GIVER: {
-    name: 'Bond Giver',
-    hasSharePercentage: false,
-    code: COUNTERPARTY_ROLE_CODES.BOND_GIVER,
-  },
 };
 
 const COUNTERPARTY_ROLES_RESPONSE_DATA = {
-  counterpartyRoles: [COUNTERPARTY_ROLE.EXPORTER],
+  counterpartyRoles: [COUNTERPARTY_ROLE.BOND_GIVER, COUNTERPARTY_ROLE.EXPORTER, COUNTERPARTY_ROLE.GUARANTOR],
 };
 
 const REPAYMENT_TYPE = {
