@@ -18,6 +18,7 @@ import {
   GiftHttpService,
   GiftObligationService,
   GiftProductTypeService,
+  GiftQueueService,
   GiftRepaymentProfileService,
   GiftRiskDetailsService,
   GiftStatusService,
@@ -52,6 +53,7 @@ describe('GiftFacilityController', () => {
   let giftFacilityAmendmentService: GiftFacilityAmendmentService;
   let giftWorkPackageService: GiftWorkPackageService;
   let creationErrorService: GiftFacilityCreationErrorService;
+  let giftQueueService: GiftQueueService;
   let controller: GiftFacilityController;
 
   let mockRes;
@@ -64,7 +66,7 @@ describe('GiftFacilityController', () => {
 
   beforeEach(() => {
     // Arrange
-    giftHttpService = new GiftHttpService(logger);
+    giftHttpService = {} as GiftHttpService;
 
     httpService = giftHttpService;
 
@@ -130,7 +132,8 @@ describe('GiftFacilityController', () => {
     mockAmendmentServiceCreate = jest.fn().mockResolvedValueOnce(mockResponseAmendmentPost);
 
     giftFacilityAmendmentService.create = mockAmendmentServiceCreate;
-    giftQueueService.create = controller = new GiftFacilityController(giftFacilityService, giftFacilityAmendmentService);
+    giftQueueService = { enqueue: jest.fn() } as unknown as GiftQueueService;
+    controller = new GiftFacilityController(giftFacilityService, giftFacilityAmendmentService, giftQueueService);
   });
 
   afterAll(() => {
