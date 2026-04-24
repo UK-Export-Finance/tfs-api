@@ -2,7 +2,7 @@
 module.exports = {
   parser: '@typescript-eslint/parser',
   root: true,
-  ignorePatterns: ['jest.config.cjs', 'dist/'],
+  ignorePatterns: ['.eslintrc.js', 'jest.config.cjs', 'dist/', 'coverage/'],
   plugins: ['switch-case', 'simple-import-sort', 'import', 'prettier', 'unused-imports'],
   extends: [
     'plugin:@typescript-eslint/recommended',
@@ -37,6 +37,7 @@ module.exports = {
       },
       typescript: {
         alwaysTryTypes: true,
+        project: './tsconfig.json',
       },
     },
   },
@@ -75,5 +76,4 @@ module.exports = {
     'import/no-named-as-default-member': 'off',
     'prefer-destructuring': ['error', { array: true, object: true }],
   },
-  ignorePatterns: ['node_modules/**', 'dist/**'],
 };
