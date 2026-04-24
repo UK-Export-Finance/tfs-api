@@ -5,6 +5,9 @@
   "description": "Trade Finance Services API",
   "license": "MIT",
   "author": "UKEF",
+  "workspaces": [
+    "tfs-functions"
+  ],
   "scripts": {
     "api-test": "jest --coverage --selectProjects=API",
     "audit:fix": "npm audit --fix",
@@ -46,6 +49,7 @@
     ]
   },
   "dependencies": {
+    "@azure/storage-queue": "^12.29.0",
     "@nestjs/axios": "^4.0.1",
     "@nestjs/cache-manager": "^3.1.0",
     "@nestjs/common": "^11.1.19",

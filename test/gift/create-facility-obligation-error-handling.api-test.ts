@@ -26,6 +26,7 @@ import {
   productTypeUrl,
   repaymentProfileUrl,
   riskDetailsUrl,
+  workPackageUrl,
 } from './test-helpers';
 
 const { API_RESPONSE_MESSAGES, ENTITY_NAMES } = GIFT;
@@ -70,6 +71,8 @@ const setupMocks = (obligationResponse: MockGiftResponse) => {
   nock(GIFT_API_URL).persist().post(riskDetailsUrl).reply(HttpStatus.CREATED, mockResponses.riskDetails);
 
   nock(GIFT_API_URL).persist().post(approveStatusUrl).reply(HttpStatus.OK, mockResponses.approveStatus);
+
+  nock(GIFT_API_URL).persist().delete(workPackageUrl).reply(HttpStatus.NO_CONTENT);
 };
 
 describe('POST /gift/facility - obligation error handling', () => {

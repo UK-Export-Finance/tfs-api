@@ -2,7 +2,7 @@
 
 This package contains a minimal Azure Functions app with a storage queue trigger.
 
-The current trigger is defined in `src/functions/function.ts` and listens on the placeholder `js-queue-items` queue using the `AzureWebJobsStorage` connection.
+The main queue trigger is defined in `src/functions/process-queue-item.ts` and listens on the `gift-requests` queue using the `AzureWebJobsStorage` connection. When a message is received, the function calls the `/api/v2/gift/facility` endpoint on `tfs-api` to process the facility creation.
 
 ## Prerequisites
 
@@ -60,8 +60,38 @@ az storage message put \
   --connection-string "DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;QueueEndpoint=http://localhost:10001/devstoreaccount1;"
 ```
 
+## End-to-end local testing (via Docker)
+
+This tests the full flow: `POST /gift/facility/queue` → Azurite queue → function container → `tfs-api` -> GIFT facility creation.
+
+1. In `tfs-api`, ensure `GIFT_QUEUE_STORAGE_CONNECTION_STRING` is set in your `.env` — the value is pre-populated in `.env.sample`.
+2. Start `tfs-api`.
+3. Start running GIFT locally, ensuring `GIFT_API_URL` in tfs-api `.env` is correct.
+4. Build the functions container:
+
+   ```sh
+   npm run docker:build
+   ```
+
+5. Copy `.env.sample` to `.env` and fill in the values:
+
+   ```sh
+   cp .env.sample .env
+   ```
+
+   - `TFS_API_KEY` — must match the `API_KEY` env var set in `tfs-api`
+6. Start the functions container and Azurite:
+
+   ```sh
+   npm run docker:start
+   ```
+
+7. Run `seed-azurite.sh` to create the `gift-requests` queue.
+8. Send a request to the POST `gift/facility/queue` endpoint using swagger.
+9. The function container log should show the message was received and the `POST /gift/facility` call was made.
+
 ## Queue trigger notes
 
-- The image is configured for a storage queue trigger.
 - The queue binding uses `AzureWebJobsStorage`.
-- No external queue is wired up yet.
+- Messages must be Base64-encoded JSON — the `GiftQueueService` in `tfs-api` handles this automatically when using the `/facility/queue` endpoint.
+- After 5 failed attempts, the message is moved to `gift-requests-poison` and the poison queue function logs it.

@@ -6,6 +6,7 @@ describe('Get integer configuration value Helper', () => {
   describe('getIntConfig returns value', () => {
     it.each([
       { value: undefined, defaultValue: 60, expectedResult: 60 },
+      { value: '', defaultValue: 60, expectedResult: 60 },
       { value: '123', defaultValue: 60, expectedResult: 123 },
       { value: '123', defaultValue: undefined, expectedResult: 123 },
       { value: '-123', defaultValue: 60, expectedResult: -123 },
@@ -38,8 +39,8 @@ describe('Get integer configuration value Helper', () => {
     );
   });
 
-  it('throws InvalidConfigException if environment variable and default value is missing', () => {
-    const gettingTheConfig = () => getIntConfig(undefined);
+  it.each([undefined, ''])('throws InvalidConfigException if environment variable is "%s" and default value is missing', (value) => {
+    const gettingTheConfig = () => getIntConfig(value);
 
     expect(gettingTheConfig).toThrow(InvalidConfigException);
     expect(gettingTheConfig).toThrow("Environment variable is missing and doesn't have default value.");

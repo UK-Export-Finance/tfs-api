@@ -104,7 +104,7 @@ export const counterpartyRolesUrl = PATH.COUNTERPARTY_ROLES;
 export const facilityCreationUrl = PATH.CREATE_FACILITY;
 export const feeTypeUrl = PATH.FEE_TYPE;
 export const apimMdmObligationSubtypesUrl = '/v2/ods/obligation-subtypes/with-product-type-codes';
-export const productTypeUrl = (productTypeCode: string = PRODUCT_TYPE_CODES.BIP) => `${PATH.PRODUCT_TYPE}/${productTypeCode}`;
+export const productTypeUrl = (productTypeCode: string = PRODUCT_TYPE_CODES.BSS) => `${PATH.PRODUCT_TYPE}/${productTypeCode}`;
 export const accrualScheduleUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_ACCRUAL_SCHEDULE_FIXED_RATE}`;
 export const businessCalendarUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_BUSINESS_CALENDAR}`;
 export const businessCalendarsConventionUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_BUSINESS_CALENDARS_CONVENTION}`;
