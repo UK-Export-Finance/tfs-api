@@ -94,8 +94,8 @@ jobs:
           node-version: ${{ vars.NODE_VERSION }}
 
       - name: Dependencies
-        working-directory: ./tfs-functions
-        run: npm ci
+        working-directory: ./
+        run: npm ci --legacy-peer-deps
 
       - name: Execute
         working-directory: ./tfs-functions

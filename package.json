@@ -5,6 +5,9 @@
   "description": "Trade Finance Services API",
   "license": "MIT",
   "author": "UKEF",
+  "workspaces": [
+    "tfs-functions"
+  ],
   "scripts": {
     "api-test": "jest --coverage --selectProjects=API",
     "audit:fix": "npm audit --fix",
