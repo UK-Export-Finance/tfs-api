@@ -68,18 +68,24 @@ This tests the full flow: `POST /gift/facility/queue` → Azurite queue → func
 2. Start `tfs-api`.
 3. Start running GIFT locally, ensuring `GIFT_API_URL` in tfs-api `.env` is correct.
 4. Build the functions container:
+
    ```sh
    npm run docker:build
    ```
+
 5. Copy `.env.sample` to `.env` and fill in the values:
+
    ```sh
    cp .env.sample .env
    ```
+
    - `TFS_API_KEY` — must match the `API_KEY` env var set in `tfs-api`
 6. Start the functions container and Azurite:
+
    ```sh
    npm run docker:start
    ```
+   
 7. Run `seed-azurite.sh` to create the `gift-requests` queue.
 8. Send a request to the POST `gift/facility/queue`endpoint using swagger.
 9. The function container log should show the message was received and the `POST /gift/facility` call was made.
