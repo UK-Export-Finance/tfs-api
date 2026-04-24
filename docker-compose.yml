@@ -46,6 +46,8 @@ services:
       GIFT_API_MAX_REDIRECTS:
       GIFT_API_TIMEOUT:
       GIFT_HTTP_VERSION:
+      GIFT_QUEUE_NAME:
+      GIFT_QUEUE_STORAGE_CONNECTION_STRING:
 
 
     healthcheck:

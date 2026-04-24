@@ -1,0 +1,117 @@
+# This GHA is responsible for Functions deployment.
+# Deployment is initiated using `az cli` bash script.
+#
+# Standard Azure naming convention has been followed:
+# https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming
+#
+#
+# Following Azure services are consumed:
+# 1. Azure resource group - https://learn.microsoft.com/en-us/cli/azure/group?view=azure-cli-latest#az-group-create
+# 2. Azure container registry - https://learn.microsoft.com/en-us/cli/azure/acr?view=azure-cli-latest#az-acr-create
+# 3. Azure container app environment - https://learn.microsoft.com/en-us/azure/container-apps/environment
+# 4. Azure container app - https://learn.microsoft.com/en-us/azure/container-apps/containers
+#
+#
+# Execution
+# *********
+# GHA is only invoked when following conditions are satisfied:
+# 1. Push to the `dev`, `staging` and `production` branches only
+#    AND there are any modifications to at least one of the `paths` targets.
+# 2. Manually using `workflow_dispatch` event trigger.
+
+name: Deployment (Functions) 🚀
+run-name: APIM Functions deployment for ${{ github.repository }}
+
+on:
+  push:
+    branches:
+      - dev
+      - staging
+      - production
+
+    paths:
+      - "tfs-functions/**"
+      - ".github/workflows/deployment-functions.yml"
+
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment target environment'
+        required: true
+        type: choice
+        options:
+          - dev
+          - staging
+          - production
+
+env:
+  PRODUCT: apim
+  ENVIRONMENT: ${{ inputs.environment || github.ref_name }}
+  timezone: ${{ vars.TIMEZONE }}
+
+jobs:
+  # 1. Setup deployment variables
+  setup:
+    name: Setup 🔧
+    runs-on: [self-hosted, APIM, deployment]
+    permissions: {}
+    outputs:
+      environment: ${{ env.ENVIRONMENT }}
+      timezone: ${{ env.timezone }}
+    steps:
+      - name: Environment 🧪
+        run: echo "Environment set to ${{ env.ENVIRONMENT }}"
+
+      - name: Timezone 🌐
+        run: echo "Timezone set to ${{ env.TIMEZONE }}"
+
+  # 2. Functions micro-service deployment
+  functions:
+    name: Functions ⚙️
+    needs: setup
+    permissions: 
+      contents: read
+    environment: ${{ needs.setup.outputs.environment }}
+    env:
+      NAME: functions
+      ENVIRONMENT: ${{ needs.setup.outputs.environment }}
+      RG: rg-${{ env.PRODUCT }}-${{ needs.setup.outputs.environment }}-${{ vars.VERSION }}
+      ACR: cr${{ env.PRODUCT }}${{ needs.setup.outputs.environment }}${{ vars.VERSION }}.azurecr.io
+      ACR_USER: cr${{ env.PRODUCT }}${{ needs.setup.outputs.environment }}${{ vars.VERSION }}
+      CA_NAME: ca-${{ env.PRODUCT }}-functions-${{ needs.setup.outputs.environment }}-${{ vars.VERSION }}
+    runs-on: [self-hosted, APIM, deployment]
+    steps:
+      - name: Checkout repository 🗃️
+        uses: actions/checkout@v6
+
+      - name: Azure Login 🔐
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: ACR Login 🔐
+        uses: azure/docker-login@v2
+        with:
+          login-server: ${{ env.ACR }}
+          username: ${{ env.ACR_USER }}
+          password: ${{ secrets.ACR_PASSWORD }}
+
+      - name: Push functions image 🗃️
+        run: |
+          docker build tfs-functions/ \
+          -t ${{ env.ACR }}/${{ env.NAME }}:${{ github.sha }}
+          docker push ${{ env.ACR }}/${{ env.NAME }}:${{ github.sha }}
+
+      - name: Update container app with image 🔀
+        uses: Azure/cli@v2.2.0
+        with:
+          inlineScript: |
+            az containerapp update \
+            --name ${{ env.CA_NAME }} \
+            --container-name ${{ env.CA_NAME }} \
+            --image ${{ env.ACR }}/${{ env.NAME }}:${{ github.sha }} \
+            --revision-suffix v${{ github.run_id }} \
+            --set-env-vars \
+              "AzureWebJobsStorage=${{ secrets.FUNCTIONS_AZURE_WEB_JOBS_STORAGE }}" \
+              "FUNCTIONS_WORKER_RUNTIME=node" \
+              "AzureFunctionsJobHost__Logging__Console__IsEnabled=true"

@@ -25,6 +25,7 @@ import {
   productTypeUrl,
   repaymentProfileUrl,
   riskDetailsUrl,
+  workPackageUrl,
 } from './test-helpers';
 
 const { API_RESPONSE_MESSAGES, ENTITY_NAMES } = GIFT;
@@ -69,6 +70,8 @@ const setupMocks = (riskDetailsResponse: MockGiftResponse) => {
   nock(GIFT_API_URL).persist().post(riskDetailsUrl).reply(riskDetailsResponse.statusCode, riskDetailsResponse);
 
   nock(GIFT_API_URL).persist().post(approveStatusUrl).reply(HttpStatus.OK, mockResponses.approveStatus);
+
+  nock(GIFT_API_URL).persist().delete(workPackageUrl).reply(HttpStatus.NO_CONTENT);
 };
 
 describe('POST /gift/facility - risk details error handling', () => {

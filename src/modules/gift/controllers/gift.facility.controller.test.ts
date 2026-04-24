@@ -1,3 +1,4 @@
+import { HttpStatus } from '@nestjs/common';
 import { EXAMPLES } from '@ukef/constants';
 import { MdmService } from '@ukef/modules/mdm/mdm.service';
 import { mockResponse200, mockResponse201 } from '@ukef-test/http-response';
@@ -18,6 +19,7 @@ import {
   GiftHttpService,
   GiftObligationService,
   GiftProductTypeService,
+  GiftQueueService,
   GiftRepaymentProfileService,
   GiftRiskDetailsService,
   GiftStatusService,
@@ -52,6 +54,7 @@ describe('GiftFacilityController', () => {
   let giftFacilityAmendmentService: GiftFacilityAmendmentService;
   let giftWorkPackageService: GiftWorkPackageService;
   let creationErrorService: GiftFacilityCreationErrorService;
+  let giftQueueService: GiftQueueService;
   let controller: GiftFacilityController;
 
   let mockRes;
@@ -64,7 +67,7 @@ describe('GiftFacilityController', () => {
 
   beforeEach(() => {
     // Arrange
-    giftHttpService = new GiftHttpService(logger);
+    giftHttpService = {} as GiftHttpService;
 
     httpService = giftHttpService;
 
@@ -130,8 +133,8 @@ describe('GiftFacilityController', () => {
     mockAmendmentServiceCreate = jest.fn().mockResolvedValueOnce(mockResponseAmendmentPost);
 
     giftFacilityAmendmentService.create = mockAmendmentServiceCreate;
-
-    controller = new GiftFacilityController(giftFacilityService, giftFacilityAmendmentService);
+    giftQueueService = { enqueue: jest.fn() } as unknown as GiftQueueService;
+    controller = new GiftFacilityController(giftFacilityService, giftFacilityAmendmentService, giftQueueService);
   });
 
   afterAll(() => {
@@ -238,6 +241,28 @@ describe('GiftFacilityController', () => {
       expect(mockResSend).toHaveBeenCalledTimes(1);
 
       expect(mockResSend).toHaveBeenCalledWith(mockResponseAmendmentPost.data);
+    });
+  });
+
+  describe('POST queue', () => {
+    const mockBody = FACILITY_CREATION_PAYLOAD;
+
+    it('should call giftQueueService.enqueue with the facility data', async () => {
+      // Act
+      await controller.postQueue(mockBody, mockRes);
+
+      // Assert
+      expect(giftQueueService.enqueue).toHaveBeenCalledTimes(1);
+      expect(giftQueueService.enqueue).toHaveBeenCalledWith(mockBody);
+    });
+
+    it('should call res.status with HttpStatus.ACCEPTED', async () => {
+      // Act
+      await controller.postQueue(mockBody, mockRes);
+
+      // Assert
+      expect(mockResStatus).toHaveBeenCalledTimes(1);
+      expect(mockResStatus).toHaveBeenCalledWith(HttpStatus.ACCEPTED);
     });
   });
 });

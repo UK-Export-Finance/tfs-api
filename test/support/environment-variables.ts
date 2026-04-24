@@ -42,6 +42,10 @@ export const ENVIRONMENT_VARIABLES = Object.freeze({
   GIFT_API_MAX_REDIRECTS: 0,
   GIFT_API_TIMEOUT: 1000,
   GIFT_HTTP_VERSION: valueGenerator.string(),
+
+  GIFT_QUEUE_STORAGE_CONNECTION_STRING:
+    'DefaultEndpointsProtocol=https;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;EndpointSuffix=core.windows.net',
+  GIFT_QUEUE_NAME: valueGenerator.word(),
 });
 
 export const getEnvironmentVariablesForProcessEnv = (): NodeJS.ProcessEnv => ({

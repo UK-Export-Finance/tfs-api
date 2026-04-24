@@ -1,0 +1,9 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "FUNCTIONS_WORKER_RUNTIME": "node",
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "TFS_API_BASE_URL": "http://localhost:3001",
+    "TFS_API_KEY": ""
+  }
+}

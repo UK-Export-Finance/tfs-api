@@ -1,0 +1,35 @@
+{
+  "name": "tfs-functions",
+  "version": "1.0.0",
+  "description": "Functions for TFS API",
+  "main": "dist/src/functions/*.js",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rimraf dist",
+    "docker:build": "docker build -t tfs-functions-local .",
+    "docker:start": "docker compose -f docker-compose.local.yml up --build",
+    "lint": "eslint . --ext .js,.ts",
+    "lint:fix": "eslint . --ext .js,.ts --fix",
+    "prettier": "prettier --no-error-on-unmatched-pattern --check \"**/*.{ts,js}\" --ignore-path ../../.prettierignore",
+    "prettier:fix": "prettier --write \"**/*.{ts,js}\" --ignore-path ../../.prettierignore",
+    "prestart": "npm run clean && npm run build",
+    "start": "func start",
+    "unit-test": "jest --coverage --verbose --config=jest.config.cjs",
+    "unit-test:dev": "jest --verbose --config=jest.config.cjs",
+    "watch": "tsc -w"
+  },
+  "dependencies": {
+    "@azure/functions": "^4.0.0",
+    "axios": "^1.15.2"
+  },
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "@types/node": "20.x",
+    "azure-functions-core-tools": "^4.x",
+    "eslint-import-resolver-typescript": "^4.4.4",
+    "jest": "^30.3.0",
+    "rimraf": "^5.0.0",
+    "ts-jest": "^29.4.9",
+    "typescript": "^5.0.0"
+  }
+}
