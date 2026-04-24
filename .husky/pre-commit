@@ -1,1 +1,2 @@
 npx lint-staged
+cd tfs-functions && npm run lint:fix && npm run prettier:fix && cd ..
