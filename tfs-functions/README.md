@@ -2,7 +2,7 @@
 
 This package contains a minimal Azure Functions app with a storage queue trigger.
 
-The queue trigger is defined in `src/functions/function.ts` and listens on the `gift-requests` queue using the `AzureWebJobsStorage` connection. When a message is received, it calls the `POST /gift/v{version}/facility` endpoint on `tfs-api` to process the facility creation.
+The main queue trigger is defined in `src/functions/process-queue-item.ts` and listens on the `gift-requests` queue using the `AzureWebJobsStorage` connection. When a message is received, the function calls the `/api/v2/gift/facility` endpoint on `tfs-api` to process the facility creation.
 
 ## Prerequisites
 
@@ -85,9 +85,9 @@ This tests the full flow: `POST /gift/facility/queue` → Azurite queue → func
    ```sh
    npm run docker:start
    ```
-   
+
 7. Run `seed-azurite.sh` to create the `gift-requests` queue.
-8. Send a request to the POST `gift/facility/queue`endpoint using swagger.
+8. Send a request to the POST `gift/facility/queue` endpoint using swagger.
 9. The function container log should show the message was received and the `POST /gift/facility` call was made.
 
 ## Queue trigger notes
