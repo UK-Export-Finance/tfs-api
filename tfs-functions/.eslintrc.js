@@ -2,6 +2,7 @@
 module.exports = {
   parser: '@typescript-eslint/parser',
   root: true,
+  ignorePatterns: ['jest.config.cjs', 'dist/'],
   plugins: ['switch-case', 'simple-import-sort', 'import', 'prettier', 'unused-imports'],
   extends: [
     'plugin:@typescript-eslint/recommended',

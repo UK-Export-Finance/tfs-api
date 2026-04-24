@@ -12,7 +12,8 @@
     "lint:fix": "eslint . --ext .js,.ts --fix",
     "prestart": "npm run clean && npm run build",
     "start": "func start",
-    "test": "echo \"No tests yet...\"",
+    "unit-test": "jest --coverage --verbose --config=jest.config.cjs",
+    "unit-test:dev": "jest --verbose --config=jest.config.cjs",
     "watch": "tsc -w"
   },
   "dependencies": {
@@ -20,9 +21,12 @@
     "axios": "^1.15.2"
   },
   "devDependencies": {
+    "@types/jest": "^30.0.0",
     "@types/node": "20.x",
     "azure-functions-core-tools": "^4.x",
+    "jest": "^30.3.0",
     "rimraf": "^5.0.0",
+    "ts-jest": "^29.4.9",
     "typescript": "^5.0.0"
   }
 }
