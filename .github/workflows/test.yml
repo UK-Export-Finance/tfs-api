@@ -194,6 +194,8 @@ jobs:
           GIFT_API_MAX_REDIRECTS: ${{ secrets.GIFT_API_MAX_REDIRECTS }}
           GIFT_API_TIMEOUT: ${{ secrets.GIFT_API_TIMEOUT }}
           GIFT_HTTP_VERSION: ${{ secrets.GIFT_HTTP_VERSION }}
+          GIFT_QUEUE_NAME: ${{ vars.GIFT_QUEUE_NAME }}
+          GIFT_QUEUE_STORAGE_CONNECTION_STRING: ${{ secrets.GIFT_QUEUE_STORAGE_CONNECTION_STRING }}
         run: docker compose up --build -d
 
       - name: Execute

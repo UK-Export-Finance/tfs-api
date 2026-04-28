@@ -117,4 +117,5 @@ jobs:
               "FUNCTIONS_WORKER_RUNTIME=node" \
               "AzureFunctionsJobHost__Logging__Console__IsEnabled=true" \
               "TFS_API_BASE_URL=${{ vars.TFS_API_BASE_URL }}" \
-              "TFS_API_KEY=${{ secrets.API_KEY }}"
+              "TFS_API_KEY=${{ secrets.API_KEY }}" \
+              "AZURE_WEB_JOBS_STORAGE=${{ secrets.AZURE_WEB_JOBS_STORAGE }}"
