@@ -20,5 +20,9 @@ services:
       FUNCTIONS_WORKER_RUNTIME: node
       TFS_API_BASE_URL: http://host.docker.internal:3001
       TFS_API_KEY: ${TFS_API_KEY}
+      HALO_BASE_URL: ${HALO_BASE_URL}
+      HALO_TENANT_NAME: ${HALO_TENANT_NAME}
+      HALO_CLIENT_ID: ${HALO_CLIENT_ID}
+      HALO_CLIENT_SECRET: ${HALO_CLIENT_SECRET}
     ports:
       - '7071:80'
