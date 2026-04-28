@@ -167,8 +167,7 @@ jobs:
               "GIFT_API_TIMEOUT=${{ secrets.GIFT_API_TIMEOUT }}" \
               "GIFT_HTTP_VERSION=${{ vars.GIFT_HTTP_VERSION }}" \
               "GIFT_QUEUE_NAME=${{ vars.GIFT_QUEUE_NAME }}" \
-              "GIFT_QUEUE_STORAGE_CONNECTION_STRING=${{ vars.GIFT_QUEUE_STORAGE_CONNECTION_STRING }}" \
-              "AZURE_WEB_JOBS_STORAGE=${{ secrets.AZURE_WEB_JOBS_STORAGE }}" \
+              "GIFT_QUEUE_STORAGE_CONNECTION_STRING=${{ vars.GIFT_QUEUE_STORAGE_CONNECTION_STRING }}"
 
       - name: Import ⬇️
         if: ${{ env.API_ID != '' }}
