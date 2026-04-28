@@ -31,5 +31,8 @@
     "rimraf": "^5.0.0",
     "ts-jest": "^29.4.9",
     "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
   }
 }
