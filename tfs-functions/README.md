@@ -2,14 +2,16 @@
 
 This package contains a minimal Azure Functions app with a storage queue trigger.
 
-The main queue trigger is defined in `src/functions/process-queue-item.ts` and listens on the `gift-requests` queue using the `AzureWebJobsStorage` connection. When a message is received, the function calls the `/api/v2/gift/facility` endpoint on `tfs-api` to process the facility creation.
+The main queue trigger is defined in `src/functions/process-queue-item.ts` and listens on the
+`gift-requests` queue using the `AzureWebJobsStorage` connection. When a message is received, the
+function calls the `/api/v2/gift/facility` endpoint on `tfs-api` to process the facility creation.
 
 ## Prerequisites
 
 - Node.js 22 or later
 - npm
 - Docker Desktop for local container builds
-- Azure Functions Core Tools 
+- Azure Functions Core Tools
 - Azure CLI
 
 ## Run the host locally (without Docker)
