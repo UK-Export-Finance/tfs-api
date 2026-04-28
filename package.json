@@ -57,7 +57,7 @@
     "@nestjs/core": "^11.1.19",
     "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-express": "^11.1.19",
-    "@nestjs/swagger": "^7.4.2",
+    "@nestjs/swagger": "^11.4.2",
     "axios": "^1.15.1",
     "cache-manager": "^5.7.6",
     "chance": "^1.1.13",
