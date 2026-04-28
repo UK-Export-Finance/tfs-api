@@ -127,6 +127,7 @@ jobs:
           inlineScript: |
             az containerapp update \
             --name ${{ env.CA_NAME }} \
+            --resource-group rg-${{ env.PRODUCT }}-${{ env.ENVIRONMENT }}-${{ vars.VERSION }} \
             --container-name ${{ env.CA_NAME }} \
             --image ${{ env.ACR }}/${{ env.NAME }}:${{ env.FROM }} \
             --revision-suffix v${{ github.run_id }} \

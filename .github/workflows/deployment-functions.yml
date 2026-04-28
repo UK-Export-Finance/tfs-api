@@ -75,10 +75,10 @@ jobs:
     env:
       NAME: functions
       ENVIRONMENT: ${{ needs.setup.outputs.environment }}
-      RG: rg-${{ env.PRODUCT }}-${{ needs.setup.outputs.environment }}-${{ vars.VERSION }}
-      ACR: cr${{ env.PRODUCT }}${{ needs.setup.outputs.environment }}${{ vars.VERSION }}.azurecr.io
-      ACR_USER: cr${{ env.PRODUCT }}${{ needs.setup.outputs.environment }}${{ vars.VERSION }}
-      CA_NAME: ca-${{ env.PRODUCT }}-functions-${{ needs.setup.outputs.environment }}-${{ vars.VERSION }}
+      RG: rg-apim-${{ needs.setup.outputs.environment }}-${{ vars.VERSION }}
+      ACR: crapim${{ needs.setup.outputs.environment }}${{ vars.VERSION }}.azurecr.io
+      ACR_USER: crapim${{ needs.setup.outputs.environment }}${{ vars.VERSION }}
+      CA_NAME: ca-apim-functions-${{ needs.setup.outputs.environment }}-${{ vars.VERSION }}
     runs-on: [self-hosted, APIM, deployment]
     steps:
       - name: Checkout repository 🗃️
@@ -108,10 +108,13 @@ jobs:
           inlineScript: |
             az containerapp update \
             --name ${{ env.CA_NAME }} \
+            --resource-group ${{ env.RG }} \
             --container-name ${{ env.CA_NAME }} \
             --image ${{ env.ACR }}/${{ env.NAME }}:${{ github.sha }} \
             --revision-suffix v${{ github.run_id }} \
             --set-env-vars \
-              "AzureWebJobsStorage=${{ secrets.FUNCTIONS_AZURE_WEB_JOBS_STORAGE }}" \
+              "AzureWebJobsStorage=${{ secrets.AZURE_WEB_JOBS_STORAGE }}" \
               "FUNCTIONS_WORKER_RUNTIME=node" \
-              "AzureFunctionsJobHost__Logging__Console__IsEnabled=true"
+              "AzureFunctionsJobHost__Logging__Console__IsEnabled=true" \
+              "TFS_API_BASE_URL=${{ vars.TFS_API_BASE_URL }}" \
+              "TFS_API_KEY=${{ secrets.API_KEY }}"
