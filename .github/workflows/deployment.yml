@@ -127,6 +127,7 @@ jobs:
           inlineScript: |
             az containerapp update \
             --name ${{ env.CA_NAME }} \
+            --resource-group rg-${{ env.PRODUCT }}-${{ env.ENVIRONMENT }}-${{ vars.VERSION }} \
             --container-name ${{ env.CA_NAME }} \
             --image ${{ env.ACR }}/${{ env.NAME }}:${{ env.FROM }} \
             --revision-suffix v${{ github.run_id }} \
@@ -164,7 +165,9 @@ jobs:
               "GIFT_API_KEY=${{ secrets.GIFT_API_KEY }}" \
               "GIFT_API_MAX_REDIRECTS=${{ secrets.GIFT_API_MAX_REDIRECTS }}" \
               "GIFT_API_TIMEOUT=${{ secrets.GIFT_API_TIMEOUT }}" \
-              "GIFT_HTTP_VERSION=${{ vars.GIFT_HTTP_VERSION }}"
+              "GIFT_HTTP_VERSION=${{ vars.GIFT_HTTP_VERSION }}" \
+              "GIFT_QUEUE_NAME=${{ vars.GIFT_QUEUE_NAME }}" \
+              "GIFT_QUEUE_STORAGE_CONNECTION_STRING=${{ secrets.GIFT_QUEUE_STORAGE_CONNECTION_STRING }}"
 
       - name: Import ⬇️
         if: ${{ env.API_ID != '' }}
