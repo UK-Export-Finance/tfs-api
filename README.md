@@ -228,3 +228,62 @@ The most important prefixes you should have in mind are:
 1. `fix:` which represents bug fixes, and correlates to a [SemVer](https://semver.org/) **patch**.
 2. `feat:` which represents a new feature, and correlates to a [SemVer](https://semver.org/) **minor**.
 3. `feat!:`, `fix!:` or `refactor!:`, etc., which represent a breaking change (indicated by the `!`) and will result in a [SemVer](https://semver.org/) **major**.
+
+## Infrastructure 🏗️
+
+Infrastructure is provisioned via the `infrastructure` GitHub Actions workflow (`.github/workflows/infrastructure.yml`) using Azure CLI. It targets one of three environments: `dev`, `staging`, or `production`.
+
+The workflow is triggered by a push to the `infrastructure` branch, or manually via `workflow_dispatch`.
+
+### Azure Resources
+
+The following resources are created per environment:
+
+| Resource | Naming convention |
+|---|---|
+| Resource group | `rg-apim-{target}-{version}` |
+| Log analytics workspace | `log-apim-{target}-{version}` |
+| Container registry | `crapim{target}{version}` |
+| Managed identity (TFS API) | `id-apim-tfs-{target}-{version}` |
+| Managed identity (Functions) | `id-apim-functions-{target}-{version}` |
+| Storage account | `stapimfn{target}{version}` |
+| Storage queue | `gift-requests` |
+| Container app environment | `cae-apim-{target}-{version}` |
+| Container app (TFS API) | `ca-apim-tfs-{target}-{version}` |
+| Container app (Functions) | `ca-apim-functions-{target}-{version}` |
+| API management | `apim-infrastructure-{target}-{version}` |
+| Virtual network | `vnet-apim-{version}` |
+| Route table | `route-apim-vpn` |
+
+### Storage Account
+
+The storage account serves two purposes:
+
+1. **Queue trigger** — the `gift-requests` queue receives messages from the TFS API and triggers the functions app
+2. **Functions webjobs runtime** — `AzureWebJobsStorage` uses the same storage account for host locks, function key storage, and instance heartbeats
+
+The functions app connects to the storage account using **managed identity** (`AzureWebJobsStorage__accountName` + `credential=managedidentity`) rather than a connection string, avoiding the need to store storage account keys as secrets.
+
+#### Storage RBAC role assignments
+
+The following role assignments are configured on the storage account:
+
+| Identity | Role | Purpose |
+|---|---|---|
+| `id-apim-tfs-{target}-{version}` | Storage Queue Data Contributor (`974c5e8b-…`) | TFS API enqueues messages to `gift-requests` |
+| `id-apim-functions-{target}-{version}` | Storage Queue Data Message Processor (`8a0f0c08-…`) | Functions dequeues/triggers from `gift-requests` |
+| `id-apim-functions-{target}-{version}` | Storage Blob Data Owner (`b7e6dc6d-…`) | Webjobs runtime: host locks, key storage, heartbeats |
+| `id-apim-functions-{target}-{version}` | Storage Queue Data Contributor (`974c5e8b-…`) | Webjobs runtime: internal runtime queues and poison queues |
+
+Role requirements are documented by Microsoft at [Connecting to host storage with an identity](https://learn.microsoft.com/en-us/azure/azure-functions/functions-reference?tabs=blob#connecting-to-host-storage-with-an-identity).
+
+### Private Networking
+
+All storage traffic stays within the VNet via private endpoints. Two private endpoints are provisioned:
+
+| Endpoint | Sub-resource | DNS zone | Purpose |
+|---|---|---|---|
+| `pep-apim-{target}-{version}-st-queue` | `queue` | `privatelink.queue.core.windows.net` | Queue trigger and runtime queue access |
+| `pep-apim-{target}-{version}-st-blob` | `blob` | `privatelink.blob.core.windows.net` | Webjobs runtime blob access (host locks, key storage) |
+
+Both DNS zones are linked to `vnet-apim-{version}` so that container apps resolve storage hostnames to private IPs rather than public endpoints.
