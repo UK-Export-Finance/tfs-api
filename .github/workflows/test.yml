@@ -16,6 +16,7 @@ on:
       - ".github/workflows/test.yml"
       - "src/**"
       - "test/**"
+      - "tfs-functions/**"
       - "Dockerfile"
       - "docker-compose.yml"
       - "package*"
@@ -42,7 +43,7 @@ jobs:
       - name: Timezone 🌐
         run: echo "Timezone set to ${{ env.timezone }}"
 
-  # 2. Unit tests
+  # 2. API unit tests
   unit-tests:
     name: Unit 👷
     needs: setup
@@ -71,7 +72,36 @@ jobs:
         working-directory: ./
         run: npm run unit-test
 
-  # 3. API tests
+  # 3. Functions unit tests
+  functions-unit-tests:
+    name: Functions Unit 👷
+    needs: setup
+    environment:
+      name: ${{ needs.setup.outputs.environment }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Timezone
+        uses: szenius/set-timezone@v2.0
+        with:
+          timezoneLinux: ${{ needs.setup.outputs.timezone }}
+
+      - name: Repository
+        uses: actions/checkout@v6
+
+      - name: Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ vars.NODE_VERSION }}
+
+      - name: Dependencies
+        working-directory: ./
+        run: npm ci --legacy-peer-deps
+
+      - name: Execute
+        working-directory: ./tfs-functions
+        run: npm run unit-test
+
+  # 4. API tests
   api-tests:
     name: API 👷
     needs: setup
@@ -164,6 +194,8 @@ jobs:
           GIFT_API_MAX_REDIRECTS: ${{ secrets.GIFT_API_MAX_REDIRECTS }}
           GIFT_API_TIMEOUT: ${{ secrets.GIFT_API_TIMEOUT }}
           GIFT_HTTP_VERSION: ${{ secrets.GIFT_HTTP_VERSION }}
+          GIFT_QUEUE_NAME: ${{ vars.GIFT_QUEUE_NAME }}
+          GIFT_QUEUE_STORAGE_CONNECTION_STRING: ${{ secrets.GIFT_QUEUE_STORAGE_CONNECTION_STRING }}
         run: docker compose up --build -d
 
       - name: Execute

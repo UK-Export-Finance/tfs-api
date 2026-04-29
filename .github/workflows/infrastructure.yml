@@ -133,41 +133,34 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Azure defaults ✨
-        uses: Azure/cli@v2.2.0
-        with:
-          inlineScript: |
-            # Basic
-            az configure --defaults location=${{ vars.REGION }}
-            az configure --defaults group=rg-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }}
+        run: |
+          # Basic
+          az configure --defaults location=${{ vars.REGION }}
+          az configure --defaults group=rg-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }}
 
-            # AZ CLI extensions upgrade
-            az extension add --name containerapp --upgrade
+          # AZ CLI extensions upgrade
+          az extension add --name containerapp --upgrade
 
       - name: Resource group 🏗️
-        uses: Azure/cli@v2.2.0
-        with:
-          inlineScript: |
-            az group create \
-            --name rg-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
-            --tags ${{ env.TAGS }}
+        run: |
+          az group create \
+          --name rg-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
+          --tags ${{ env.TAGS }}
 
       - name: Log analytics workspace 📝
-        uses: Azure/cli@v2.2.0
         if: ${{ '1' == vars.NEW }}
-        with:
-          inlineScript: |
-            az monitor log-analytics workspace create \
-            --name log-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
-            --capacity-reservation-level 100 \
-            --ingestion-access Disabled \
-            --query-access Disabled \
-            --quota 0.05 \
-            --retention-time ${{ vars.LOG_RETENTION_DAY }} \
-            --sku ${{ vars.LOG_PLAN }} \
-            --tags ${{ env.TAGS }}
+        run: |
+          az monitor log-analytics workspace create \
+          --name log-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
+          --capacity-reservation-level 100 \
+          --ingestion-access Disabled \
+          --query-access Disabled \
+          --quota 0.05 \
+          --retention-time ${{ vars.LOG_RETENTION_DAY }} \
+          --sku ${{ vars.LOG_PLAN }} \
+          --tags ${{ env.TAGS }}
 
       - name: Container registry 📦️
-        uses: Azure/cli@v2.2.0
         if: ${{ '1' == vars.NEW }}
         with:
           inlineScript: |
@@ -388,177 +381,163 @@ jobs:
           inlineScript: |
             # Azure Managed Instance (AMI) SQL DB non-production VNET peering
 
-            # Local VNET peer
-            az network vnet peering create \
-            --name vnet-peer-ami-${{ env.TARGET }}-${{ env.PRODUCT }}-${{ vars.VERSION }} \
-            --vnet-name vnet-${{ env.PRODUCT }}-${{ vars.VERSION }} \
-            --remote-vnet $(az network vnet show --subscription ${{ secrets.REMOTE_VNET_SUBSCRIPTION_AMI }} --resource-group ${{ secrets.REMOTE_VNET_RESOURCE_GROUP_AMI }} --name ${{ secrets.REMOTE_VNET_NAME_AMI }} --query 'id' -o tsv) \
-            --allow-vnet-access 1
+          # Local VNET peer
+          az network vnet peering create \
+          --name vnet-peer-ami-${{ env.TARGET }}-${{ env.PRODUCT }}-${{ vars.VERSION }} \
+          --vnet-name vnet-${{ env.PRODUCT }}-${{ vars.VERSION }} \
+          --remote-vnet $(az network vnet show --subscription ${{ secrets.REMOTE_VNET_SUBSCRIPTION_AMI }} --resource-group ${{ secrets.REMOTE_VNET_RESOURCE_GROUP_AMI }} --name ${{ secrets.REMOTE_VNET_NAME_AMI }} --query 'id' -o tsv) \
+          --allow-vnet-access 1
 
-            # Remote VNET peer
-            az network vnet peering create \
-            --name vnet-peer-ami-${{ env.TARGET }}-${{ env.PRODUCT }}-${{ vars.VERSION }} \
-            --vnet-name  ${{ secrets.REMOTE_VNET_NAME_AMI }} \
-            --remote-vnet $(az network vnet show --name vnet-${{ env.PRODUCT }}-${{ vars.VERSION }} --query 'id' -o tsv) \
-            --allow-vnet-access 1 \
-            --subscription ${{ secrets.REMOTE_VNET_SUBSCRIPTION_AMI }} \
-            --resource-group ${{ secrets.REMOTE_VNET_RESOURCE_GROUP_AMI }}
+          # Remote VNET peer
+          az network vnet peering create \
+          --name vnet-peer-ami-${{ env.TARGET }}-${{ env.PRODUCT }}-${{ vars.VERSION }} \
+          --vnet-name  ${{ secrets.REMOTE_VNET_NAME_AMI }} \
+          --remote-vnet $(az network vnet show --name vnet-${{ env.PRODUCT }}-${{ vars.VERSION }} --query 'id' -o tsv) \
+          --allow-vnet-access 1 \
+          --subscription ${{ secrets.REMOTE_VNET_SUBSCRIPTION_AMI }} \
+          --resource-group ${{ secrets.REMOTE_VNET_RESOURCE_GROUP_AMI }}
 
-            # Fetch peering state
-            echo "Peering state: $(az network vnet peering show \
-            --vnet-name vnet-${{ env.PRODUCT }}-${{ vars.VERSION }} \
-            --name vnet-peer-ami-${{ env.TARGET }}-${{ env.PRODUCT }}-${{ vars.VERSION }} \
-            --query peeringState)"
+          # Fetch peering state
+          echo "Peering state: $(az network vnet peering show \
+          --vnet-name vnet-${{ env.PRODUCT }}-${{ vars.VERSION }} \
+          --name vnet-peer-ami-${{ env.TARGET }}-${{ env.PRODUCT }}-${{ vars.VERSION }} \
+          --query peeringState)"
 
       - name: AMI Production 🔀
         if: ${{ ('production' == env.TARGET) && ('1' == vars.NEW) }}
-        uses: Azure/cli@v2.2.0
-        with:
-          inlineScript: |
-            # Azure Managed Instance (AMI) SQL DB production VNET peering
+        run: |
+          # Azure Managed Instance (AMI) SQL DB production VNET peering
 
-            # Local VNET peer
-            az network vnet peering create \
-            --name vnet-peer-ami-${{ env.TARGET }}-${{ env.PRODUCT }}-${{ vars.VERSION }} \
-            --vnet-name vnet-${{ env.PRODUCT }}-${{ vars.VERSION }} \
-            --remote-vnet $(az network vnet show --subscription ${{ secrets.REMOTE_VNET_SUBSCRIPTION_AMI_PROD }} --resource-group ${{ secrets.REMOTE_VNET_RESOURCE_GROUP_AMI_PROD }} --name ${{ secrets.REMOTE_VNET_NAME_AMI_PROD }} --query 'id' -o tsv) \
-            --allow-vnet-access 1
+          # Local VNET peer
+          az network vnet peering create \
+          --name vnet-peer-ami-${{ env.TARGET }}-${{ env.PRODUCT }}-${{ vars.VERSION }} \
+          --vnet-name vnet-${{ env.PRODUCT }}-${{ vars.VERSION }} \
+          --remote-vnet $(az network vnet show --subscription ${{ secrets.REMOTE_VNET_SUBSCRIPTION_AMI_PROD }} --resource-group ${{ secrets.REMOTE_VNET_RESOURCE_GROUP_AMI_PROD }} --name ${{ secrets.REMOTE_VNET_NAME_AMI_PROD }} --query 'id' -o tsv) \
+          --allow-vnet-access 1
 
-            # Remote VNET peer
-            az network vnet peering create \
-            --name vnet-peer-ami-${{ env.TARGET }}-${{ env.PRODUCT }}-${{ vars.VERSION }} \
-            --vnet-name  ${{ secrets.REMOTE_VNET_NAME_AMI_PROD }} \
-            --remote-vnet $(az network vnet show --name vnet-${{ env.PRODUCT }}-${{ vars.VERSION }} --query 'id' -o tsv) \
-            --allow-vnet-access 1 \
-            --subscription ${{ secrets.REMOTE_VNET_SUBSCRIPTION_AMI_PROD }} \
-            --resource-group ${{ secrets.REMOTE_VNET_RESOURCE_GROUP_AMI_PROD }}
+          # Remote VNET peer
+          az network vnet peering create \
+          --name vnet-peer-ami-${{ env.TARGET }}-${{ env.PRODUCT }}-${{ vars.VERSION }} \
+          --vnet-name  ${{ secrets.REMOTE_VNET_NAME_AMI_PROD }} \
+          --remote-vnet $(az network vnet show --name vnet-${{ env.PRODUCT }}-${{ vars.VERSION }} --query 'id' -o tsv) \
+          --allow-vnet-access 1 \
+          --subscription ${{ secrets.REMOTE_VNET_SUBSCRIPTION_AMI_PROD }} \
+          --resource-group ${{ secrets.REMOTE_VNET_RESOURCE_GROUP_AMI_PROD }}
 
-            # Fetch peering state
-            echo "Peering state: $(az network vnet peering show \
-            --vnet-name vnet-${{ env.PRODUCT }}-${{ vars.VERSION }} \
-            --name vnet-peer-ami-${{ env.TARGET }}-${{ env.PRODUCT }}-${{ vars.VERSION }} \
-            --query peeringState)"
+          # Fetch peering state
+          echo "Peering state: $(az network vnet peering show \
+          --vnet-name vnet-${{ env.PRODUCT }}-${{ vars.VERSION }} \
+          --name vnet-peer-ami-${{ env.TARGET }}-${{ env.PRODUCT }}-${{ vars.VERSION }} \
+          --query peeringState)"
 
       - name: VNET Peer - VPN 🔀
-        uses: Azure/cli@v2.2.0
         if: ${{ '1' == vars.NEW }}
-        with:
-          inlineScript: |
-            # VPN VNET peering
+        run: |
+          # VPN VNET peering
 
-            # Local VNET peer
-            az network vnet peering create \
-            --name vnet-peer-vpn-${{ env.TARGET }}-${{ env.PRODUCT }}-${{ vars.VERSION }} \
-            --vnet-name vnet-${{ env.PRODUCT }}-${{ vars.VERSION }} \
-            --remote-vnet $(az network vnet show --subscription ${{ secrets.REMOTE_VNET_SUBSCRIPTION_VPN }} --resource-group ${{ secrets.REMOTE_VNET_RESOURCE_GROUP_VPN }} --name ${{ secrets.REMOTE_VNET_NAME_VPN }} --query 'id' -o tsv) \
-            --allow-vnet-access 1
+          # Local VNET peer
+          az network vnet peering create \
+          --name vnet-peer-vpn-${{ env.TARGET }}-${{ env.PRODUCT }}-${{ vars.VERSION }} \
+          --vnet-name vnet-${{ env.PRODUCT }}-${{ vars.VERSION }} \
+          --remote-vnet $(az network vnet show --subscription ${{ secrets.REMOTE_VNET_SUBSCRIPTION_VPN }} --resource-group ${{ secrets.REMOTE_VNET_RESOURCE_GROUP_VPN }} --name ${{ secrets.REMOTE_VNET_NAME_VPN }} --query 'id' -o tsv) \
+          --allow-vnet-access 1
 
-            # Remote VNET peer
-            az network vnet peering create \
-            --name vnet-peer-vpn-${{ env.TARGET }}-${{ env.PRODUCT }}-${{ vars.VERSION }} \
-            --vnet-name  ${{ secrets.REMOTE_VNET_NAME_VPN }} \
-            --remote-vnet $(az network vnet show --name vnet-${{ env.PRODUCT }}-${{ vars.VERSION }} --query 'id' -o tsv) \
-            --allow-vnet-access 1 \
-            --subscription ${{ secrets.REMOTE_VNET_SUBSCRIPTION_VPN }} \
-            --resource-group ${{ secrets.REMOTE_VNET_RESOURCE_GROUP_VPN }}
+          # Remote VNET peer
+          az network vnet peering create \
+          --name vnet-peer-vpn-${{ env.TARGET }}-${{ env.PRODUCT }}-${{ vars.VERSION }} \
+          --vnet-name  ${{ secrets.REMOTE_VNET_NAME_VPN }} \
+          --remote-vnet $(az network vnet show --name vnet-${{ env.PRODUCT }}-${{ vars.VERSION }} --query 'id' -o tsv) \
+          --allow-vnet-access 1 \
+          --subscription ${{ secrets.REMOTE_VNET_SUBSCRIPTION_VPN }} \
+          --resource-group ${{ secrets.REMOTE_VNET_RESOURCE_GROUP_VPN }}
 
-            # Fetch peering state
-            echo "Peering state: $(az network vnet peering show \
-            --vnet-name vnet-${{ env.PRODUCT }}-${{ vars.VERSION }} \
-            --name vnet-peer-vpn-${{ env.TARGET }}-${{ env.PRODUCT }}-${{ vars.VERSION }} \
-            --query peeringState)"
+          # Fetch peering state
+          echo "Peering state: $(az network vnet peering show \
+          --vnet-name vnet-${{ env.PRODUCT }}-${{ vars.VERSION }} \
+          --name vnet-peer-vpn-${{ env.TARGET }}-${{ env.PRODUCT }}-${{ vars.VERSION }} \
+          --query peeringState)"
 
       - name: Route table 🌐
-        uses: Azure/cli@v2.2.0
         if: ${{ '1' == vars.NEW }}
-        with:
-          inlineScript: |
-            az network route-table create \
-            --name route-${{ env.PRODUCT }}-vpn \
-            --disable-bgp-route-propagation false \
-            --tags ${{ env.TAGS }}
+        run: |
+          az network route-table create \
+          --name route-${{ env.PRODUCT }}-vpn \
+          --disable-bgp-route-propagation false \
+          --tags ${{ env.TAGS }}
 
-            # Add VPN route
-            az network route-table route create \
-            --route-table-name route-${{ env.PRODUCT }}-vpn \
-            --name 'NVA' \
-            --address-prefix ${{ vars.DESTINATION_ACBS }} \
-            --next-hop-ip-address ${{ vars.PALO_ALTO_NIC }} \
-            --next-hop-type VirtualAppliance
+          # Add VPN route
+          az network route-table route create \
+          --route-table-name route-${{ env.PRODUCT }}-vpn \
+          --name 'NVA' \
+          --address-prefix ${{ vars.DESTINATION_ACBS }} \
+          --next-hop-ip-address ${{ vars.PALO_ALTO_NIC }} \
+          --next-hop-type VirtualAppliance
 
       - name: Container app environment 🗃️
-        uses: Azure/cli@v2.2.0
         if: ${{ '1' == vars.NEW }}
-        with:
-          inlineScript: |
-            az containerapp env create \
-            --name cae-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
-            --infrastructure-subnet-resource-id $(az network vnet subnet show --name snet-${{ env.PRODUCT }}-${{ vars.VERSION }} --vnet-name vnet-${{ env.PRODUCT }}-${{ vars.VERSION }} --query 'id' -o tsv) \
-            --logs-workspace-id $(az monitor log-analytics workspace show --name log-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} --query customerId -o tsv) \
-            --logs-workspace-key $(az monitor log-analytics workspace get-shared-keys --name log-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} --query primarySharedKey -o tsv) \
-            --tags ${{ env.TAGS }}
+        run: |
+          az containerapp env create \
+          --name cae-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
+          --infrastructure-subnet-resource-id $(az network vnet subnet show --name snet-${{ env.PRODUCT }}-${{ vars.VERSION }} --vnet-name vnet-${{ env.PRODUCT }}-${{ vars.VERSION }} --query 'id' -o tsv) \
+          --logs-workspace-id $(az monitor log-analytics workspace show --name log-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} --query customerId -o tsv) \
+          --logs-workspace-key $(az monitor log-analytics workspace get-shared-keys --name log-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} --query primarySharedKey -o tsv) \
+          --tags ${{ env.TAGS }}
 
       # containerapp create implicitly acts as create or update
       - name: Container app - TFS 📄
-        uses: Azure/cli@v2.2.0
-        with:
-          inlineScript: |
+        run: |
             IDENTITY_ID=$(az identity show --name id-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} --query id -o tsv)
 
-            az containerapp create \
-            --name ca-${{ env.PRODUCT }}-tfs-${{ env.TARGET }}-${{ vars.VERSION }} \
-            --environment cae-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
+          az containerapp create \
+          --name ca-${{ env.PRODUCT }}-tfs-${{ env.TARGET }}-${{ vars.VERSION }} \
+          --environment cae-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
             --user-assigned $IDENTITY_ID \
-            --registry-server cr${{ env.PRODUCT }}${{ env.TARGET }}${{ vars.VERSION }}.azurecr.io \
-            --registry-identity $IDENTITY_ID \
-            --cpu 1.0 \
-            --memory 2.0Gi \
-            --min-replicas 1 \
-            --max-replicas 4 \
-            --ingress external \
-            --target-port ${{ vars.PORT }} \
-            --revisions-mode multiple \
-            --transport auto \
-            --tags ${{ env.TAGS }}
+          --registry-server cr${{ env.PRODUCT }}${{ env.TARGET }}${{ vars.VERSION }}.azurecr.io \
+          --registry-identity $IDENTITY_ID \
+          --cpu 1.0 \
+          --memory 2.0Gi \
+          --min-replicas 1 \
+          --max-replicas 4 \
+          --ingress external \
+          --target-port ${{ vars.PORT }} \
+          --revisions-mode multiple \
+          --transport auto \
+          --tags ${{ env.TAGS }}
 
       # containerapp create implicitly acts as create or update
       - name: Container app - Functions ⚙️
-        uses: Azure/cli@v2.2.0
-        with:
-          inlineScript: |
+        run: |
             IDENTITY_ID=$(az identity show --name id-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} --query id -o tsv)
 
-            az containerapp create \
-            --name ca-${{ env.PRODUCT }}-functions-${{ env.TARGET }}-${{ vars.VERSION }} \
-            --kind functionapp \
-            --environment cae-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
-            --image mcr.microsoft.com/azure-functions/node:4-node22 \
+          az containerapp create \
+          --name ca-${{ env.PRODUCT }}-functions-${{ env.TARGET }}-${{ vars.VERSION }} \
+          --kind functionapp \
+          --environment cae-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
+          --image mcr.microsoft.com/azure-functions/node:4-node22 \
             --user-assigned $IDENTITY_ID \
-            --registry-server cr${{ env.PRODUCT }}${{ env.TARGET }}${{ vars.VERSION }}.azurecr.io \
-            --registry-identity $IDENTITY_ID \
-            --cpu 1.0 \
-            --memory 2.0Gi \
-            --min-replicas 1 \
-            --max-replicas 4 \
-            --ingress internal \
-            --target-port 80 \
-            --revisions-mode single \
-            --transport auto \
-            --tags ${{ env.TAGS }}
+          --registry-server cr${{ env.PRODUCT }}${{ env.TARGET }}${{ vars.VERSION }}.azurecr.io \
+          --registry-identity $IDENTITY_ID \
+          --cpu 1.0 \
+          --memory 2.0Gi \
+          --min-replicas 1 \
+          --max-replicas 4 \
+          --ingress internal \
+          --target-port 80 \
+          --revisions-mode single \
+          --transport auto \
+          --tags ${{ env.TAGS }}
 
       - name: API management ⚡️
-        uses: Azure/cli@v2.2.0
         if: ${{ '1' == vars.NEW }}
-        with:
-          inlineScript: |
-            az apim create \
-            --name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
-            --publisher-email ${{ secrets.NOTIFICATION }} \
-            --publisher-name UKEF \
-            --public-network-access true \
-            --sku-capacity 1 \
-            --sku-name ${{ vars.APIM_PLAN }} \
-            --tags ${{ env.TAGS }}
+        run: |
+          az apim create \
+          --name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
+          --publisher-email ${{ secrets.NOTIFICATION }} \
+          --publisher-name UKEF \
+          --public-network-access true \
+          --sku-capacity 1 \
+          --sku-name ${{ vars.APIM_PLAN }} \
+          --tags ${{ env.TAGS }}
 
   # 3. Network configuration
   network:
@@ -581,22 +560,18 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Azure defaults ✨
-        uses: Azure/cli@v2.2.0
-        with:
-          inlineScript: |
-            # Basic
-            az configure --defaults location=${{ vars.REGION }}
-            az configure --defaults group=rg-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }}
+        run: |
+          # Basic
+          az configure --defaults location=${{ vars.REGION }}
+          az configure --defaults group=rg-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }}
 
       - name: Subnet routing table 🌐
-        uses: Azure/cli@v2.2.0
-        with:
-          inlineScript: |
-            # Associate VPN route table to default subnet
-            az network vnet subnet update \
-            --name snet-${{ env.PRODUCT }}-${{ vars.VERSION }} \
-            --vnet-name vnet-${{ env.PRODUCT }}-${{ vars.VERSION }} \
-            --route-table route-${{ env.PRODUCT }}-vpn
+        run: |
+          # Associate VPN route table to default subnet
+          az network vnet subnet update \
+          --name snet-${{ env.PRODUCT }}-${{ vars.VERSION }} \
+          --vnet-name vnet-${{ env.PRODUCT }}-${{ vars.VERSION }} \
+          --route-table route-${{ env.PRODUCT }}-vpn
 
   # 4. Container app configuration
   ca:
@@ -619,12 +594,10 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Azure defaults ✨
-        uses: Azure/cli@v2.2.0
-        with:
-          inlineScript: |
-            # Basic
-            az configure --defaults location=${{ vars.REGION }}
-            az configure --defaults group=rg-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }}
+        run: |
+          # Basic
+          az configure --defaults location=${{ vars.REGION }}
+          az configure --defaults group=rg-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }}
 
       - name: APIM defaults ✨
         run: |
@@ -633,51 +606,43 @@ jobs:
           echo API_ECHO=$(az apim api list --service-name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} --filter-display-name 'Echo API' --top 1 --query [0].name -o tsv) >> $GITHUB_ENV
 
       - name: IP restriction 🔒️
-        uses: Azure/cli@v2.2.0
-        with:
-          inlineScript: |
-            # Add APIM public IP
+        run: |
+          # Add APIM public IP
 
-            # TFS
-            az containerapp ingress access-restriction set \
-            --name ca-${{ env.PRODUCT }}-tfs-${{ env.TARGET }}-${{ vars.VERSION }} \
-            --action Allow \
-            --ip-address $(az apim show --name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} --query publicIpAddresses -o tsv) \
-            --rule-name APIM \
-            --description 'Allow APIM public IP address'
+          # TFS
+          az containerapp ingress access-restriction set \
+          --name ca-${{ env.PRODUCT }}-tfs-${{ env.TARGET }}-${{ vars.VERSION }} \
+          --action Allow \
+          --ip-address $(az apim show --name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} --query publicIpAddresses -o tsv) \
+          --rule-name APIM \
+          --description 'Allow APIM public IP address'
 
       - name: Delete - Starter product
-        uses: Azure/cli@v2.2.0
         if: ${{ '' != env.PRODUCT_STARTER }}
-        with:
-          inlineScript: |
-            az apim product delete \
-            --product-id $(az apim product list --service-name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} --query '[?contains(displayName, `Starter`)].name' -o tsv) \
-            --service-name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
-            --delete-subscriptions true \
-            --yes
+        run: |
+          az apim product delete \
+          --product-id $(az apim product list --service-name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} --query '[?contains(displayName, `Starter`)].name' -o tsv) \
+          --service-name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
+          --delete-subscriptions true \
+          --yes
 
       - name: Delete - Unlimited product
-        uses: Azure/cli@v2.2.0
         if: ${{ '' != env.PRODUCT_UNLIMITED }}
-        with:
-          inlineScript: |
-            az apim product delete \
-            --product-id $(az apim product list --service-name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} --query '[?contains(displayName, `Unlimited`)].name' -o tsv) \
-            --service-name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
-            --delete-subscriptions true \
-            --yes
+        run: |
+          az apim product delete \
+          --product-id $(az apim product list --service-name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} --query '[?contains(displayName, `Unlimited`)].name' -o tsv) \
+          --service-name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
+          --delete-subscriptions true \
+          --yes
 
       - name: Delete - Echo API
-        uses: Azure/cli@v2.2.0
         if: ${{ '' != env.API_ECHO }}
-        with:
-          inlineScript: |
-            az apim api delete \
-            --api-id $(az apim api list --service-name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} --filter-display-name 'Echo API' --top 1 --query [0].name -o tsv) \
-            --service-name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
-            --delete-revisions true \
-            --yes
+        run: |
+          az apim api delete \
+          --api-id $(az apim api list --service-name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} --filter-display-name 'Echo API' --top 1 --query [0].name -o tsv) \
+          --service-name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
+          --delete-revisions true \
+          --yes
 
   # 5. APIM configuration
   apim:
@@ -703,12 +668,10 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Azure defaults ✨
-        uses: Azure/cli@v2.2.0
-        with:
-          inlineScript: |
-            # Basic
-            az configure --defaults location=${{ vars.REGION }}
-            az configure --defaults group=rg-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }}
+        run: |
+          # Basic
+          az configure --defaults location=${{ vars.REGION }}
+          az configure --defaults group=rg-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }}
 
       - name: APIM defaults ✨
         run: |
@@ -716,72 +679,64 @@ jobs:
           echo API_TFS=$(az apim api list --service-name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} --filter-display-name "${{ env.API_DISPLAY_NAME }}" --top 1 --query [0].name -o tsv) >> $GITHUB_ENV
 
       - name: TFS - Product ➕
-        uses: Azure/cli@v2.2.0
         if: ${{ '' == env.PRODUCT_TFS }}
-        with:
-          inlineScript: |
-            az apim product create \
-            --service-name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
-            --product-name apim-${{ env.PRODUCT }}-tfs \
-            --description '${{ vars.DESCRIPTION }}' \
-            --state published \
-            --approval-required true \
-            --subscription-required true
+        run: |
+          az apim product create \
+          --service-name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
+          --product-name apim-${{ env.PRODUCT }}-tfs \
+          --description '${{ vars.DESCRIPTION }}' \
+          --state published \
+          --approval-required true \
+          --subscription-required true
 
       - name: TFS - API import ⬇️
-        uses: Azure/cli@v2.2.0
         if: ${{ '' == env.API_TFS }}
-        with:
-          inlineScript: |
-            APIM_NAME="apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }}"
-            CONTAINER_APP_NAME="ca-${{ env.PRODUCT }}-tfs-${{ env.TARGET }}-${{ vars.VERSION }}"
-            SERVICE_URL="https://$(az containerapp show --name "$CONTAINER_APP_NAME" --query properties.latestRevisionFqdn -o tsv)"
-            SPECIFICATION_URL="$SERVICE_URL/openapi/json"
+        run: |
+          APIM_NAME="apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }}"
+          CONTAINER_APP_NAME="ca-${{ env.PRODUCT }}-tfs-${{ env.TARGET }}-${{ vars.VERSION }}"
+          SERVICE_URL="https://$(az containerapp show --name "$CONTAINER_APP_NAME" --query properties.latestRevisionFqdn -o tsv)"
+          SPECIFICATION_URL="$SERVICE_URL/openapi/json"
 
-            echo "Importing API into APIM service: $APIM_NAME"
-            echo "Using backend service URL: $SERVICE_URL"
-            echo "Using OpenAPI URL: $SPECIFICATION_URL"
+          echo "Importing API into APIM service: $APIM_NAME"
+          echo "Using backend service URL: $SERVICE_URL"
+          echo "Using OpenAPI URL: $SPECIFICATION_URL"
 
-            if import_output=$(az apim api import \
-              --only-show-errors \
-              --display-name "${{ env.API_DISPLAY_NAME }}" \
-              --description '${{ vars.DESCRIPTION }}' \
-              --service-url "$SERVICE_URL" \
-              --path ${{ env.API_PATH }} \
-              --service-name "$APIM_NAME" \
-              --specification-format OpenApi \
-              --api-type http \
-              --protocols https \
-              --subscription-required true \
-              --specification-url "$SPECIFICATION_URL" 2>&1); then
-              echo "APIM API import succeeded"
-            else
-              import_status=$?
-              echo "APIM API import failed:"
-              echo "$import_output"
-              exit "$import_status"
-            fi
+          if import_output=$(az apim api import \
+            --only-show-errors \
+            --display-name "${{ env.API_DISPLAY_NAME }}" \
+            --description '${{ vars.DESCRIPTION }}' \
+            --service-url "$SERVICE_URL" \
+            --path ${{ env.API_PATH }} \
+            --service-name "$APIM_NAME" \
+            --specification-format OpenApi \
+            --api-type http \
+            --protocols https \
+            --subscription-required true \
+            --specification-url "$SPECIFICATION_URL" 2>&1); then
+            echo "APIM API import succeeded"
+          else
+            import_status=$?
+            echo "APIM API import failed:"
+            echo "$import_output"
+            exit "$import_status"
+          fi
 
       - name: APIM defaults ✨
         run: |
           echo API_TFS=$(az apim api list --service-name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} --filter-display-name "${{ env.API_DISPLAY_NAME }}" --top 1 --query [0].name -o tsv) >> $GITHUB_ENV
 
       - name: TFS - Product + API 🧱
-        uses: Azure/cli@v2.2.0
         if: ${{ '' != env.API_TFS }}
-        with:
-          inlineScript: |
-            az apim product api add \
-            --service-name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
-            --api-id ${{ env.API_TFS }} \
-            --product-id $(az apim product list --service-name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} --query '[?contains(displayName, `apim-${{ env.PRODUCT }}-tfs`)].name' -o tsv)
+        run: |
+          az apim product api add \
+          --service-name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
+          --api-id ${{ env.API_TFS }} \
+          --product-id $(az apim product list --service-name apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }} --query '[?contains(displayName, `apim-${{ env.PRODUCT }}-tfs`)].name' -o tsv)
 
       - name: TFS - Policy 🚧
-        uses: Azure/cli@v2.2.0
         if: ${{ '' != env.API_TFS }}
-        with:
-          inlineScript: |
-            az rest \
-            --method PUT \
-            --uri "https://management.azure.com/subscriptions/$(az account show --query id -o tsv)/resourceGroups/rg-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }}/providers/Microsoft.ApiManagement/service/apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }}/apis/${{ env.API_TFS }}/policies/policy?api-version=2022-09-01-preview" \
-            --body ${{ secrets.APIM_POLICY }}
+        run: |
+          az rest \
+          --method PUT \
+          --uri "https://management.azure.com/subscriptions/$(az account show --query id -o tsv)/resourceGroups/rg-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }}/providers/Microsoft.ApiManagement/service/apim-${{ env.ENVIRONMENT }}-${{ env.TARGET }}-${{ vars.VERSION }}/apis/${{ env.API_TFS }}/policies/policy?api-version=2022-09-01-preview" \
+          --body ${{ secrets.APIM_POLICY }}

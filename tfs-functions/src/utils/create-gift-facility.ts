@@ -12,19 +12,15 @@ const facilityCreationUrl = `${baseUrl}/api/v2/gift/facility`;
  * @param context - The context object for the function invocation.
  */
 export async function createGiftFacility(queueItem: unknown, context: InvocationContext): Promise<void> {
+  let response;
+
   try {
-    const response = await axios.post(facilityCreationUrl, queueItem, {
+    response = await axios.post(facilityCreationUrl, queueItem, {
       headers: {
         'x-api-key': apiKey,
         accept: 'application/json',
       },
     });
-
-    if (response.status !== 201) {
-      const message = `Gift facility creation failed with status ${response.status}. Response body: ${JSON.stringify(response.data)}`;
-      context.error(message);
-      throw new Error(message);
-    }
   } catch (error) {
     if (error instanceof Error) {
       const message = `Failed to create GIFT facility, error: ${error.message}`;
@@ -35,5 +31,11 @@ export async function createGiftFacility(queueItem: unknown, context: Invocation
     const message = 'Failed to create GIFT facility, unknown error';
     context.error(message);
     throw new Error(message);
+  }
+
+  if (response.status !== 201) {
+    const message = `Failed to create GIFT facility, status: ${response.status}, response: ${JSON.stringify(response.data)}`;
+    context.error(message);
+    throw new Error('Failed to create GIFT facility');
   }
 }

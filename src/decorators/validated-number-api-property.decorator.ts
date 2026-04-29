@@ -60,5 +60,5 @@ const buildSwaggerPropertyOptions = ({
     default: theDefault,
   };
 
-  return forbidZero ? { ...baseOptions, not: { enum: [0] } } : baseOptions;
+  return (forbidZero ? { ...baseOptions, not: { enum: [0] } } : baseOptions) as ApiPropertyOptions;
 };

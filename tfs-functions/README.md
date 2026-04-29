@@ -2,14 +2,16 @@
 
 This package contains a minimal Azure Functions app with a storage queue trigger.
 
-The queue trigger is defined in `src/functions/function.ts` and listens on the `gift-requests` queue using the `AzureWebJobsStorage` connection. When a message is received, it calls the `POST /gift/v{version}/facility` endpoint on `tfs-api` to process the facility creation.
+The main queue trigger is defined in `src/functions/process-queue-item.ts` and listens on the
+`gift-requests` queue using the `AzureWebJobsStorage` connection. When a message is received, the
+function calls the `/api/v2/gift/facility` endpoint on `tfs-api` to process the facility creation.
 
 ## Prerequisites
 
 - Node.js 22 or later
 - npm
 - Docker Desktop for local container builds
-- Azure Functions Core Tools 
+- Azure Functions Core Tools
 - Azure CLI
 
 ## Run the host locally (without Docker)
@@ -67,22 +69,28 @@ This tests the full flow: `POST /gift/facility/queue` → Azurite queue → func
 1. In `tfs-api`, ensure `GIFT_QUEUE_STORAGE_CONNECTION_STRING` is set in your `.env` — the value is pre-populated in `.env.sample`.
 2. Start `tfs-api`.
 3. Start running GIFT locally, ensuring `GIFT_API_URL` in tfs-api `.env` is correct.
-3. Build the functions container:
+4. Build the functions container:
+
    ```sh
    npm run docker:build
    ```
-4. Copy `.env.sample` to `.env` and fill in the values:
+
+5. Copy `.env.sample` to `.env` and fill in the values:
+
    ```sh
    cp .env.sample .env
    ```
+
    - `TFS_API_KEY` — must match the `API_KEY` env var set in `tfs-api`
-5. Start the functions container and Azurite:
+6. Start the functions container and Azurite:
+
    ```sh
    npm run docker:start
    ```
-6. Run `seed-azurite.sh` to create the `gift-requests` queue.
-7. Send a request to the POST `gift/facility/queue`endpoint using swagger.
-8. The function container log should show the message was received and the `POST /gift/facility` call was made.
+
+7. Run `seed-azurite.sh` to create the `gift-requests` queue.
+8. Send a request to the POST `gift/facility/queue` endpoint using swagger.
+9. The function container log should show the message was received and the `POST /gift/facility` call was made.
 
 ## Queue trigger notes
 

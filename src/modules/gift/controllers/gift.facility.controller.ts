@@ -175,12 +175,8 @@ export class GiftFacilityController {
     description: 'An internal server error has occurred',
   })
   async postQueue(@Body(new ValidationPipe({ transform: true })) facilityData: GiftFacilityCreationRequestDto, @Res({ passthrough: true }) res: Response) {
-    const {
-      overview: { facilityId },
-    } = facilityData;
-
     await this.giftQueueService.enqueue(facilityData);
 
-    res.status(HttpStatus.ACCEPTED).send({ facilityId });
+    res.status(HttpStatus.ACCEPTED);
   }
 }
