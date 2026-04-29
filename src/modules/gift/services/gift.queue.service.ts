@@ -1,3 +1,4 @@
+import { DefaultAzureCredential } from '@azure/identity';
 import { QueueClient, QueueServiceClient } from '@azure/storage-queue';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -16,8 +17,11 @@ export class GiftQueueService {
     private readonly logger: PinoLogger,
     private readonly configService: ConfigService,
   ) {
-    const { connectionString, queueName } = this.configService.get<GiftQueueConfig>(GIFT_QUEUE_CONFIG_KEY);
-    this.queueClient = QueueServiceClient.fromConnectionString(connectionString).getQueueClient(queueName);
+    const { storageAccountName, connectionString, queueName } = this.configService.get<GiftQueueConfig>(GIFT_QUEUE_CONFIG_KEY);
+    const serviceClient = connectionString
+      ? QueueServiceClient.fromConnectionString(connectionString)
+      : new QueueServiceClient(`https://${storageAccountName}.queue.core.windows.net`, new DefaultAzureCredential());
+    this.queueClient = serviceClient.getQueueClient(queueName);
   }
 
   /**

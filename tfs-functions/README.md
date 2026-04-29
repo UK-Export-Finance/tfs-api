@@ -97,3 +97,61 @@ This tests the full flow: `POST /gift/facility/queue` → Azurite queue → func
 - The queue binding uses `AzureWebJobsStorage`.
 - Messages must be Base64-encoded JSON — the `GiftQueueService` in `tfs-api` handles this automatically when using the `/facility/queue` endpoint.
 - After 5 failed attempts, the message is moved to `gift-requests-poison` and the poison queue function logs it.
+
+## Azure deployment
+
+### Architecture
+
+The full request flow on Azure is:
+
+```
+APIM → tfs-api (Container App) → Azure Storage Queue → tfs-functions (Container App) → GIFT API
+```
+
+All components run inside a single **Container Apps Environment** (`cae-apim-<env>-<version>`), deployed into a private VNet subnet. The storage account sits behind a **private endpoint** so queue traffic never leaves the VNet.
+
+### Resources
+
+| Resource | Name pattern | Purpose |
+|---|---|---|
+| Container Apps Environment | `cae-apim-<env>-<version>` | Shared environment for both container apps |
+| Container App — tfs-api | `ca-apim-tfs-<env>-<version>` | Hosts the tfs-api HTTP service, ingress external via APIM |
+| Container App — tfs-functions | `ca-apim-functions-<env>-<version>` | Hosts this functions app, ingress internal only |
+| Storage account | `stapimfn<env><version>` | Holds the `gift-requests` queue and Functions runtime state |
+| Storage queue | `gift-requests` | Queue bridging tfs-api and tfs-functions |
+| Managed identity — tfs-api | `id-apim-tfs-<env>-<version>` | Identity used by the tfs-api container app |
+| Managed identity — tfs-functions | `id-apim-functions-<env>-<version>` | Identity used by the tfs-functions container app |
+| Private endpoint | `pep-apim-<env>-<version>-st-queue` | Privately exposes the queue storage endpoint inside the VNet |
+| Private DNS zone | `privatelink.queue.core.windows.net` | Resolves the storage account to the private IP inside the VNet |
+
+### Identity and RBAC
+
+Each container app has its own managed identity with the minimum required permissions:
+
+| Identity | Role | Scope | Purpose |
+|---|---|---|---|
+| `id-apim-tfs-*` | Storage Queue Data Contributor | Storage account | Allows tfs-api to enqueue messages |
+| `id-apim-functions-*` | Storage Queue Data Message Processor | Storage account | Allows tfs-functions to dequeue and complete messages |
+| Both | AcrPull | Container registry | Allows both apps to pull images from ACR |
+
+### Authentication to the storage queue
+
+Both container apps authenticate to the storage account using **managed identity** — no connection strings or storage keys are used. The tfs-functions container app is configured with:
+
+```
+AzureWebJobsStorage__accountName = stapimfn<env><version>
+AzureWebJobsStorage__credential  = managedidentity
+AzureWebJobsStorage__clientId    = <client ID of id-apim-functions-*>
+```
+
+The `__accountName` / `__credential` / `__clientId` convention is the Azure Functions v4 passwordless storage binding format. The Functions runtime uses this to acquire tokens via the managed identity rather than a connection string.
+
+### Infrastructure provisioning
+
+All of the above is provisioned by `.github/workflows/infrastructure.yml` in the root of this repository. The relevant steps are:
+
+- **Storage account** — `az storage account create` acts as create-or-update; re-running applies the parameters to the existing account
+- **Storage queue** — idempotent `az storage queue create`
+- **Storage queue role assignments** — checks for existing assignments before creating, to avoid duplicates
+- **Storage private endpoint** — creates subnet, private endpoint, DNS zone, VNet link, and DNS zone group; all steps are guarded with existence checks
+- **Container app — tfs-functions** — `az containerapp create --kind functionapp` (requires the `containerapp` CLI extension, installed earlier in the workflow); acts as create-or-update on re-runs

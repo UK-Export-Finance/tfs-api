@@ -99,9 +99,16 @@ jobs:
           username: ${{ env.ACR_USER }}
           password: ${{ secrets.ACR_PASSWORD }}
 
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        working-directory: tfs-functions
+        run: npm run build
+
       - name: Push functions image 🗃️
         run: |
-          docker build tfs-functions/ \
+          docker build -f tfs-functions/Dockerfile . \
           -t ${{ env.ACR }}/${{ env.NAME }}:${{ github.sha }}
           docker push ${{ env.ACR }}/${{ env.NAME }}:${{ github.sha }}
 
