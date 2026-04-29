@@ -161,7 +161,7 @@ jobs:
           GIFT_HTTP_VERSION: ${{ vars.GIFT_HTTP_VERSION }}
         run: npm run api-test:gift
 
-  # 4. E2E tests
+  # 6. E2E tests
   e2e-tests:
     name: E2E 🧑‍💻
     needs: setup
