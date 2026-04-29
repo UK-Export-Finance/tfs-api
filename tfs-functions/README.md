@@ -104,11 +104,10 @@ This tests the full flow: `POST /gift/facility/queue` → Azurite queue → func
 
 The full request flow on Azure is:
 
-```
 APIM → tfs-api (Container App) → Azure Storage Queue → tfs-functions (Container App) → GIFT API
-```
 
-All components run inside a single **Container Apps Environment** (`cae-apim-<env>-<version>`), deployed into a private VNet subnet. The storage account sits behind a **private endpoint** so queue traffic never leaves the VNet.
+All components run inside a single **Container Apps Environment** (`cae-apim-<env>-<version>`), deployed into a private VNet subnet. 
+The storage account sits behind a **private endpoint** so queue traffic never leaves the VNet.
 
 ### Resources
 
@@ -136,7 +135,8 @@ Each container app has its own managed identity with the minimum required permis
 
 ### Authentication to the storage queue
 
-Both container apps authenticate to the storage account using **managed identity** — no connection strings or storage keys are used. The tfs-functions container app is configured with:
+Both container apps authenticate to the storage account using **managed identity** — no connection strings or storage keys are used. 
+The tfs-functions container app is configured with:
 
 ```
 AzureWebJobsStorage__accountName = stapimfn<env><version>
@@ -154,4 +154,5 @@ All of the above is provisioned by `.github/workflows/infrastructure.yml` in the
 - **Storage queue** — idempotent `az storage queue create`
 - **Storage queue role assignments** — checks for existing assignments before creating, to avoid duplicates
 - **Storage private endpoint** — creates subnet, private endpoint, DNS zone, VNet link, and DNS zone group; all steps are guarded with existence checks
-- **Container app — tfs-functions** — `az containerapp create --kind functionapp` (requires the `containerapp` CLI extension, installed earlier in the workflow); acts as create-or-update on re-runs
+- **Container app — tfs-functions** — `az containerapp create --kind functionapp` (requires the `containerapp` CLI extension, installed earlier in the workflow); 
+acts as create-or-update on re-runs

@@ -272,14 +272,14 @@ The following role assignments are configured on the storage account:
 |---|---|---|
 | `id-apim-tfs-{target}-{version}` | Storage Queue Data Contributor (`974c5e8b-…`) | TFS API enqueues messages to `gift-requests` |
 | `id-apim-functions-{target}-{version}` | Storage Queue Data Message Processor (`8a0f0c08-…`) | Functions dequeues/triggers from `gift-requests` |
-| `id-apim-functions-{target}-{version}` | Storage Blob Data Owner (`b7e6dc6d-…`) | Webjobs runtime: host locks, key storage, heartbeats |
-| `id-apim-functions-{target}-{version}` | Storage Queue Data Contributor (`974c5e8b-…`) | Webjobs runtime: internal runtime queues and poison queues |
+| `id-apim-functions-{target}-{version}` | Storage Blob Data Owner (`b7e6dc6d-…`) | Functions webjobs runtime: host locks, key storage, heartbeats |
+| `id-apim-functions-{target}-{version}` | Storage Queue Data Contributor (`974c5e8b-…`) | Functions webjobs runtime: internal runtime queues and poison queues |
 
 Role requirements are documented by Microsoft at [Connecting to host storage with an identity](https://learn.microsoft.com/en-us/azure/azure-functions/functions-reference?tabs=blob#connecting-to-host-storage-with-an-identity).
 
 ### Private Networking
 
-All storage traffic stays within the VNet via private endpoints. Two private endpoints are provisioned:
+Two private endpoints are provisioned:
 
 | Endpoint | Sub-resource | DNS zone | Purpose |
 |---|---|---|---|
