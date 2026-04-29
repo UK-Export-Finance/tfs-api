@@ -39,59 +39,6 @@ describe('GiftObligationService', () => {
   describe('createOne', () => {
     const mockObligation = OBLIGATION();
 
-    describe('when linkedRepaymentProfileId is provided', () => {
-      it('should call giftHttpService.post with the provided linkedRepaymentProfileId and acbsObligationId as null', async () => {
-        // Arrange
-        const mockPayload = {
-          ...mockObligation,
-          linkedRepaymentProfileId: 123,
-        };
-
-        // Act
-        await service.createOne(mockPayload, mockFacilityId, mockWorkPackageId);
-
-        // Assert
-        expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
-
-        const expected = {
-          path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_OBLIGATION}`,
-          payload: {
-            ...mockPayload,
-            acbsObligationId: INTEGRATION_DEFAULTS.ACBS_OBLIGATION_ID,
-          },
-        };
-
-        expect(mockHttpServicePost).toHaveBeenCalledWith(expected);
-      });
-    });
-
-    describe('when linkedRepaymentProfileId is NOT provided', () => {
-      it('should call giftHttpService.post with linkedRepaymentProfileId and acbsObligationId as null', async () => {
-        // Arrange
-        const mockPayload = {
-          ...mockObligation,
-          linkedRepaymentProfileId: undefined,
-        };
-
-        // Act
-        await service.createOne(mockPayload, mockFacilityId, mockWorkPackageId);
-
-        // Assert
-        expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
-
-        const expected = {
-          path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_OBLIGATION}`,
-          payload: {
-            ...mockPayload,
-            acbsObligationId: INTEGRATION_DEFAULTS.ACBS_OBLIGATION_ID,
-            linkedRepaymentProfileId: INTEGRATION_DEFAULTS.LINKED_REPAYMENT_PROFILE_ID,
-          },
-        };
-
-        expect(mockHttpServicePost).toHaveBeenCalledWith(expected);
-      });
-    });
-
     describe('when subtypeCode is provided', () => {
       it('should call giftHttpService.post with the provided subtypeCode and acbsObligationId as null', async () => {
         // Arrange
@@ -111,6 +58,7 @@ describe('GiftObligationService', () => {
           payload: {
             ...mockPayload,
             acbsObligationId: INTEGRATION_DEFAULTS.ACBS_OBLIGATION_ID,
+            linkedRepaymentProfileId: INTEGRATION_DEFAULTS.LINKED_REPAYMENT_PROFILE_ID,
           },
         };
 
@@ -137,6 +85,7 @@ describe('GiftObligationService', () => {
           payload: {
             ...mockPayload,
             acbsObligationId: INTEGRATION_DEFAULTS.ACBS_OBLIGATION_ID,
+            linkedRepaymentProfileId: INTEGRATION_DEFAULTS.LINKED_REPAYMENT_PROFILE_ID,
             subtypeCode: INTEGRATION_DEFAULTS.OBLIGATION_SUBTYPE_CODE,
           },
         };

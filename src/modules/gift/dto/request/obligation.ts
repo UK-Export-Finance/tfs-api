@@ -59,7 +59,7 @@ export class GiftObligationRequestDto {
   @IsNumber()
   @ApiProperty({
     example: EXAMPLE.linkedRepaymentProfileId,
-    description: `Optional linked repayment profile ID. overview.repaymentType is "${REPAYMENT_TYPE.BULLET}" (and therefore repayment profiles are required)`,
+    description: `Optional linked repayment profile ID. overview.repaymentType is "${REPAYMENT_TYPE.BULLET}" (and therefore repayment profiles are required) Note that this currently always defaults to null`,
     required: false,
   })
   linkedRepaymentProfileId?: number;

@@ -158,7 +158,6 @@ const OBLIGATION = ({ subtypeCode = MDM_EXAMPLES.OBLIGATION_SUBTYPES.OST012.code
   amount: 2500,
   currency: SUPPORTED_CURRENCIES.USD,
   effectiveDate: '2025-01-13',
-  linkedRepaymentProfileId: REPAYMENT_PROFILE_ID,
   maturityDate: '2025-01-15',
   repaymentType: REPAYMENT_TYPE.BULLET,
   subtypeCode,
