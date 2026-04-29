@@ -3,9 +3,9 @@ import { registerAs } from '@nestjs/config';
 export const KEY = 'giftQueue';
 
 export interface GiftQueueConfig {
-  storageAccountName?: string | undefined;
-  connectionString: string | undefined;
-  clientId: string | undefined;
+  storageAccountName?: string;
+  connectionString?: string;
+  clientId?: string;
   queueName: string;
 }
 

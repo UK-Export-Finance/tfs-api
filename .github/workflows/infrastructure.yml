@@ -219,7 +219,7 @@ jobs:
           --sku ${{ vars.APIM_STORAGE_ACCOUNT_PLAN }} \
           --kind StorageV2 \
           --allow-blob-public-access false \
-          --tags ${{ env.TAGS }} 
+          --tags ${{ env.TAGS }}
       
       # Defaults to not fail on existing queue
       - name: Storage queue 📬
@@ -240,11 +240,13 @@ jobs:
           TFS_PRINCIPAL_ID=$(az identity show \
             --name id-${{ env.PRODUCT }}-tfs-${{ env.TARGET }}-${{ vars.VERSION }} \
             --query principalId -o tsv)
+
           EXISTING_CONTRIBUTOR=$(az role assignment list \
             --assignee $TFS_PRINCIPAL_ID \
             --role $CONTRIBUTOR_ROLE \
             --scope $STORAGE_ID \
             --query '[0].id' -o tsv 2>/dev/null)
+
           if [ -z "$EXISTING_CONTRIBUTOR" ]; then
             az role assignment create \
             --assignee-object-id $TFS_PRINCIPAL_ID \
@@ -260,11 +262,13 @@ jobs:
           FUNCTIONS_PRINCIPAL_ID=$(az identity show \
             --name id-${{ env.PRODUCT }}-functions-${{ env.TARGET }}-${{ vars.VERSION }} \
             --query principalId -o tsv)
+
           EXISTING_PROCESSOR=$(az role assignment list \
             --assignee $FUNCTIONS_PRINCIPAL_ID \
             --role $PROCESSOR_ROLE \
             --scope $STORAGE_ID \
             --query '[0].id' -o tsv 2>/dev/null)
+
           if [ -z "$EXISTING_PROCESSOR" ]; then
             az role assignment create \
             --assignee-object-id $FUNCTIONS_PRINCIPAL_ID \
@@ -278,11 +282,13 @@ jobs:
           # Storage Blob Data Owner — required by the Azure Functions webjobs runtime to manage
           # host locks, heartbeats and logs via AzureWebJobsStorage managed identity connection
           BLOB_OWNER_ROLE='b7e6dc6d-f1e8-4753-8033-0f276bb0955b'
+
           EXISTING_BLOB_OWNER=$(az role assignment list \
             --assignee $FUNCTIONS_PRINCIPAL_ID \
             --role $BLOB_OWNER_ROLE \
             --scope $STORAGE_ID \
             --query '[0].id' -o tsv 2>/dev/null)
+
           if [ -z "$EXISTING_BLOB_OWNER" ]; then
             az role assignment create \
             --assignee-object-id $FUNCTIONS_PRINCIPAL_ID \
@@ -296,11 +302,13 @@ jobs:
           # Storage Queue Data Contributor — required by the Azure Functions webjobs runtime
           # to enqueue internal poison-queue messages and manage runtime queues
           QUEUE_CONTRIBUTOR_ROLE='974c5e8b-45b9-4653-ba55-5f855dd0fb88'
+
           EXISTING_QUEUE_CONTRIBUTOR=$(az role assignment list \
             --assignee $FUNCTIONS_PRINCIPAL_ID \
             --role $QUEUE_CONTRIBUTOR_ROLE \
             --scope $STORAGE_ID \
             --query '[0].id' -o tsv 2>/dev/null)
+
           if [ -z "$EXISTING_QUEUE_CONTRIBUTOR" ]; then
             az role assignment create \
             --assignee-object-id $FUNCTIONS_PRINCIPAL_ID \
@@ -328,6 +336,7 @@ jobs:
             --name snet-pep-${{ env.PRODUCT }}-${{ vars.VERSION }} \
             --vnet-name vnet-${{ env.PRODUCT }}-${{ vars.VERSION }} \
             --query id -o tsv 2>/dev/null)
+
           if [ -z "$EXISTING_SUBNET" ]; then
             az network vnet subnet create \
             --name snet-pep-${{ env.PRODUCT }}-${{ vars.VERSION }} \
@@ -346,6 +355,7 @@ jobs:
           EXISTING_PE=$(az network private-endpoint show \
             --name $PE_NAME \
             --query id -o tsv 2>/dev/null)
+
           if [ -z "$EXISTING_PE" ]; then
             STORAGE_ID=$(az storage account show \
               --name st${{ env.PRODUCT }}fn${{ env.TARGET }}${{ vars.VERSION }} \
@@ -368,6 +378,7 @@ jobs:
           EXISTING_ZONE=$(az network private-dns zone show \
             --name $DNS_ZONE_NAME \
             --query id -o tsv 2>/dev/null)
+
           if [ -z "$EXISTING_ZONE" ]; then
             az network private-dns zone create \
             --name $DNS_ZONE_NAME
@@ -377,10 +388,12 @@ jobs:
 
           # Link DNS zone to VNet so container apps resolve the private IP
           LINK_NAME='dns-link-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }}-st-queue'
+          
           EXISTING_LINK=$(az network private-dns link vnet show \
             --name $LINK_NAME \
             --zone-name $DNS_ZONE_NAME \
             --query id -o tsv 2>/dev/null)
+
           if [ -z "$EXISTING_LINK" ]; then
             az network private-dns link vnet create \
             --name $LINK_NAME \
@@ -396,6 +409,7 @@ jobs:
             --name queue-PrivateDnsZoneGroup \
             --endpoint-name $PE_NAME \
             --query id -o tsv 2>/dev/null)
+
           if [ -z "$EXISTING_ZG" ]; then
             az network private-endpoint dns-zone-group create \
             --name queue-PrivateDnsZoneGroup \
@@ -416,6 +430,7 @@ jobs:
           EXISTING_PE=$(az network private-endpoint show \
             --name $PE_NAME \
             --query id -o tsv 2>/dev/null)
+          
           if [ -z "$EXISTING_PE" ]; then
             STORAGE_ID=$(az storage account show \
               --name st${{ env.PRODUCT }}fn${{ env.TARGET }}${{ vars.VERSION }} \
@@ -438,6 +453,7 @@ jobs:
           EXISTING_ZONE=$(az network private-dns zone show \
             --name $DNS_ZONE_NAME \
             --query id -o tsv 2>/dev/null)
+
           if [ -z "$EXISTING_ZONE" ]; then
             az network private-dns zone create \
             --name $DNS_ZONE_NAME
@@ -447,10 +463,12 @@ jobs:
 
           # Link DNS zone to VNet so container apps resolve the private IP
           LINK_NAME='dns-link-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }}-st-blob'
+          
           EXISTING_LINK=$(az network private-dns link vnet show \
             --name $LINK_NAME \
             --zone-name $DNS_ZONE_NAME \
             --query id -o tsv 2>/dev/null)
+          
           if [ -z "$EXISTING_LINK" ]; then
             az network private-dns link vnet create \
             --name $LINK_NAME \
@@ -462,10 +480,12 @@ jobs:
           fi
 
           # Attach DNS zone to the private endpoint so the A record is auto-registered
+          
           EXISTING_ZG=$(az network private-endpoint dns-zone-group show \
             --name blob-PrivateDnsZoneGroup \
             --endpoint-name $PE_NAME \
             --query id -o tsv 2>/dev/null)
+          
           if [ -z "$EXISTING_ZG" ]; then
             az network private-endpoint dns-zone-group create \
             --name blob-PrivateDnsZoneGroup \
