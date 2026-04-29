@@ -103,7 +103,36 @@ jobs:
 
   # 4. API tests
   api-tests:
-    name: API 👷
+    name: API (ACBS) 👷
+    needs: setup
+    environment:
+      name: ${{ needs.setup.outputs.environment }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Timezone
+        uses: szenius/set-timezone@v2.0
+        with:
+          timezoneLinux: ${{ needs.setup.outputs.timezone }}
+
+      - name: Repository
+        uses: actions/checkout@v6
+
+      - name: Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ vars.NODE_VERSION }}
+
+      - name: Dependencies
+        working-directory: ./
+        run: npm ci --legacy-peer-deps
+
+      - name: Execute
+        working-directory: ./
+        run: npm run api-test:acbs
+
+  # 5. GIFT API tests
+  api-tests-gift:
+    name: API (GIFT) 👷
     needs: setup
     environment:
       name: ${{ needs.setup.outputs.environment }}
@@ -130,7 +159,7 @@ jobs:
         working-directory: ./
         env:
           GIFT_HTTP_VERSION: ${{ vars.GIFT_HTTP_VERSION }}
-        run: npm run api-test
+        run: npm run api-test:gift
 
   # 4. E2E tests
   e2e-tests:
