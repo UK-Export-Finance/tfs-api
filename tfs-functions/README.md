@@ -154,5 +154,5 @@ All of the above is provisioned by `.github/workflows/infrastructure.yml` in the
 - **Storage queue** — idempotent `az storage queue create`
 - **Storage queue role assignments** — checks for existing assignments before creating, to avoid duplicates
 - **Storage private endpoint** — creates subnet, private endpoint, DNS zone, VNet link, and DNS zone group; all steps are guarded with existence checks
-- **Container app — tfs-functions** — `az containerapp create --kind functionapp` (requires the `containerapp` CLI extension, installed earlier in the workflow); 
+- **Container app — tfs-functions** — `az containerapp create --kind functionapp` (requires the `containerapp` CLI extension, installed earlier in the workflow);
 acts as create-or-update on re-runs
