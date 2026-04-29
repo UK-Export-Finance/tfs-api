@@ -10,6 +10,8 @@
   ],
   "scripts": {
     "api-test": "jest --coverage --selectProjects=API",
+    "api-test:acbs": "jest --coverage --selectProjects=API --testPathIgnorePatterns=\"gift\"",
+    "api-test:gift": "jest --coverage --selectProjects=API --testPathPatterns=\"gift\"",
     "audit:fix": "npm audit --fix",
     "build": "nest build -p tsconfig.build.json",
     "e2e-test": "jest --passWithNoTests --coverage --selectProjects=E2E",
