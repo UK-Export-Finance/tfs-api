@@ -141,6 +141,7 @@ jobs:
         test_file:
           - test/gift/create-facility-business-calendars-convention-error-handling.api-test.ts
           - test/gift/create-facility-validation-fixed-fees.api-test.ts
+          - remaining
     runs-on: ubuntu-latest
     steps:
       - name: Timezone
@@ -164,7 +165,12 @@ jobs:
         working-directory: ./
         env:
           GIFT_HTTP_VERSION: ${{ vars.GIFT_HTTP_VERSION }}
-        run: npx jest --coverage --selectProjects=API --runTestsByPath "${{ matrix.test_file }}"
+        run: |
+          if [[ "${{ matrix.test_file }}" == "remaining" ]]; then
+            npx jest --coverage --selectProjects=API --testPathPatterns="gift" --testPathIgnorePatterns="create-facility-business-calendars-convention-error-handling.api-test.ts|create-facility-validation-fixed-fees.api-test.ts"
+          else
+            npx jest --coverage --selectProjects=API --runTestsByPath "${{ matrix.test_file }}"
+          fi
 
   # 6. E2E tests
   e2e-tests:
