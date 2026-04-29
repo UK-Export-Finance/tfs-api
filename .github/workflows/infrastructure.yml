@@ -162,6 +162,7 @@ jobs:
 
       - name: Container registry 📦️
         if: ${{ '1' == vars.NEW }}
+        uses: Azure/cli@v2.2.0
         with:
           inlineScript: |
             az acr create \
@@ -172,12 +173,21 @@ jobs:
             --tags ${{ env.TAGS }}
 
       # az identity create is idempotent 
-      - name: Managed identity 🪪
+      - name: Managed identity - TFS 🪪
         uses: Azure/cli@v2.2.0
         with:
           inlineScript: |
             az identity create \
-            --name id-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
+            --name id-${{ env.PRODUCT }}-tfs-${{ env.TARGET }}-${{ vars.VERSION }} \
+            --tags ${{ env.TAGS }}
+
+      # az identity create is idempotent 
+      - name: Managed identity - Functions 🪪
+        uses: Azure/cli@v2.2.0
+        with:
+          inlineScript: |
+            az identity create \
+            --name id-${{ env.PRODUCT }}-functions-${{ env.TARGET }}-${{ vars.VERSION }} \
             --tags ${{ env.TAGS }}
 
       - name: ACR role assignment 🔐
@@ -188,23 +198,26 @@ jobs:
             ACR_PULL_ROLE_ID='7f951dda-4ed3-4680-a7ca-43fe172d538d'
 
             ACR_ID=$(az acr show --name cr${{ env.PRODUCT }}${{ env.TARGET }}${{ vars.VERSION }} --query id -o tsv)
-            PRINCIPAL_ID=$(az identity show --name id-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} --query principalId -o tsv)
 
-            EXISTING=$(az role assignment list \
-              --assignee $PRINCIPAL_ID \
-              --role $ACR_PULL_ROLE_ID \
-              --scope $ACR_ID \
-              --query '[0].id' -o tsv 2>/dev/null)
-
-            if [ -z "$EXISTING" ]; then
-              az role assignment create \
-              --assignee-object-id $PRINCIPAL_ID \
-              --assignee-principal-type ServicePrincipal \
-              --role $ACR_PULL_ROLE_ID \
-              --scope $ACR_ID
-            else
-              echo 'AcrPull role assignment already exists, skipping'
-            fi
+            for IDENTITY_NAME in \
+              id-${{ env.PRODUCT }}-tfs-${{ env.TARGET }}-${{ vars.VERSION }} \
+              id-${{ env.PRODUCT }}-functions-${{ env.TARGET }}-${{ vars.VERSION }}; do
+              PRINCIPAL_ID=$(az identity show --name $IDENTITY_NAME --query principalId -o tsv)
+              EXISTING=$(az role assignment list \
+                --assignee $PRINCIPAL_ID \
+                --role $ACR_PULL_ROLE_ID \
+                --scope $ACR_ID \
+                --query '[0].id' -o tsv 2>/dev/null)
+              if [ -z "$EXISTING" ]; then
+                az role assignment create \
+                --assignee-object-id $PRINCIPAL_ID \
+                --assignee-principal-type ServicePrincipal \
+                --role $ACR_PULL_ROLE_ID \
+                --scope $ACR_ID
+              else
+                echo "AcrPull role assignment already exists for $IDENTITY_NAME, skipping"
+              fi
+            done
 
       # Acts as create or update
       - name: Storage account 🗄️
@@ -225,7 +238,7 @@ jobs:
           inlineScript: |
             az storage queue create \
             --name gift-requests \
-            --account-name st${{ env.PRODUCT }}fn${{ env.TARGET }}${{ vars.VERSION }} \
+            --account-name st${{ env.PRODUCT }}fn${{ env.TARGET }}${{ vars.VERSION }}
 
       
       - name: Storage queue role assignments 🔐
@@ -235,20 +248,20 @@ jobs:
             STORAGE_ID=$(az storage account show \
               --name st${{ env.PRODUCT }}fn${{ env.TARGET }}${{ vars.VERSION }} \
               --query id -o tsv)
-            PRINCIPAL_ID=$(az identity show \
-              --name id-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
-              --query principalId -o tsv)
 
             # Storage Queue Data Contributor — allows tfs-api to enqueue messages
             CONTRIBUTOR_ROLE='974c5e8b-45b9-4653-ba55-5f855dd0fb88'
+            TFS_PRINCIPAL_ID=$(az identity show \
+              --name id-${{ env.PRODUCT }}-tfs-${{ env.TARGET }}-${{ vars.VERSION }} \
+              --query principalId -o tsv)
             EXISTING_CONTRIBUTOR=$(az role assignment list \
-              --assignee $PRINCIPAL_ID \
+              --assignee $TFS_PRINCIPAL_ID \
               --role $CONTRIBUTOR_ROLE \
               --scope $STORAGE_ID \
               --query '[0].id' -o tsv 2>/dev/null)
             if [ -z "$EXISTING_CONTRIBUTOR" ]; then
               az role assignment create \
-              --assignee-object-id $PRINCIPAL_ID \
+              --assignee-object-id $TFS_PRINCIPAL_ID \
               --assignee-principal-type ServicePrincipal \
               --role $CONTRIBUTOR_ROLE \
               --scope $STORAGE_ID
@@ -258,14 +271,17 @@ jobs:
 
             # Storage Queue Data Message Processor — allows tfs-functions to dequeue/trigger
             PROCESSOR_ROLE='8a0f0c08-91a1-4084-bc3d-661d67233fed'
+            FUNCTIONS_PRINCIPAL_ID=$(az identity show \
+              --name id-${{ env.PRODUCT }}-functions-${{ env.TARGET }}-${{ vars.VERSION }} \
+              --query principalId -o tsv)
             EXISTING_PROCESSOR=$(az role assignment list \
-              --assignee $PRINCIPAL_ID \
+              --assignee $FUNCTIONS_PRINCIPAL_ID \
               --role $PROCESSOR_ROLE \
               --scope $STORAGE_ID \
               --query '[0].id' -o tsv 2>/dev/null)
             if [ -z "$EXISTING_PROCESSOR" ]; then
               az role assignment create \
-              --assignee-object-id $PRINCIPAL_ID \
+              --assignee-object-id $FUNCTIONS_PRINCIPAL_ID \
               --assignee-principal-type ServicePrincipal \
               --role $PROCESSOR_ROLE \
               --scope $STORAGE_ID
@@ -381,27 +397,27 @@ jobs:
           inlineScript: |
             # Azure Managed Instance (AMI) SQL DB non-production VNET peering
 
-          # Local VNET peer
-          az network vnet peering create \
-          --name vnet-peer-ami-${{ env.TARGET }}-${{ env.PRODUCT }}-${{ vars.VERSION }} \
-          --vnet-name vnet-${{ env.PRODUCT }}-${{ vars.VERSION }} \
-          --remote-vnet $(az network vnet show --subscription ${{ secrets.REMOTE_VNET_SUBSCRIPTION_AMI }} --resource-group ${{ secrets.REMOTE_VNET_RESOURCE_GROUP_AMI }} --name ${{ secrets.REMOTE_VNET_NAME_AMI }} --query 'id' -o tsv) \
-          --allow-vnet-access 1
+            # Local VNET peer
+            az network vnet peering create \
+            --name vnet-peer-ami-${{ env.TARGET }}-${{ env.PRODUCT }}-${{ vars.VERSION }} \
+            --vnet-name vnet-${{ env.PRODUCT }}-${{ vars.VERSION }} \
+            --remote-vnet $(az network vnet show --subscription ${{ secrets.REMOTE_VNET_SUBSCRIPTION_AMI }} --resource-group ${{ secrets.REMOTE_VNET_RESOURCE_GROUP_AMI }} --name ${{ secrets.REMOTE_VNET_NAME_AMI }} --query 'id' -o tsv) \
+            --allow-vnet-access 1
 
-          # Remote VNET peer
-          az network vnet peering create \
-          --name vnet-peer-ami-${{ env.TARGET }}-${{ env.PRODUCT }}-${{ vars.VERSION }} \
-          --vnet-name  ${{ secrets.REMOTE_VNET_NAME_AMI }} \
-          --remote-vnet $(az network vnet show --name vnet-${{ env.PRODUCT }}-${{ vars.VERSION }} --query 'id' -o tsv) \
-          --allow-vnet-access 1 \
-          --subscription ${{ secrets.REMOTE_VNET_SUBSCRIPTION_AMI }} \
-          --resource-group ${{ secrets.REMOTE_VNET_RESOURCE_GROUP_AMI }}
+            # Remote VNET peer
+            az network vnet peering create \
+            --name vnet-peer-ami-${{ env.TARGET }}-${{ env.PRODUCT }}-${{ vars.VERSION }} \
+            --vnet-name  ${{ secrets.REMOTE_VNET_NAME_AMI }} \
+            --remote-vnet $(az network vnet show --name vnet-${{ env.PRODUCT }}-${{ vars.VERSION }} --query 'id' -o tsv) \
+            --allow-vnet-access 1 \
+            --subscription ${{ secrets.REMOTE_VNET_SUBSCRIPTION_AMI }} \
+            --resource-group ${{ secrets.REMOTE_VNET_RESOURCE_GROUP_AMI }}
 
-          # Fetch peering state
-          echo "Peering state: $(az network vnet peering show \
-          --vnet-name vnet-${{ env.PRODUCT }}-${{ vars.VERSION }} \
-          --name vnet-peer-ami-${{ env.TARGET }}-${{ env.PRODUCT }}-${{ vars.VERSION }} \
-          --query peeringState)"
+            # Fetch peering state
+            echo "Peering state: $(az network vnet peering show \
+            --vnet-name vnet-${{ env.PRODUCT }}-${{ vars.VERSION }} \
+            --name vnet-peer-ami-${{ env.TARGET }}-${{ env.PRODUCT }}-${{ vars.VERSION }} \
+            --query peeringState)"
 
       - name: AMI Production 🔀
         if: ${{ ('production' == env.TARGET) && ('1' == vars.NEW) }}
@@ -486,12 +502,12 @@ jobs:
       # containerapp create implicitly acts as create or update
       - name: Container app - TFS 📄
         run: |
-            IDENTITY_ID=$(az identity show --name id-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} --query id -o tsv)
+          IDENTITY_ID=$(az identity show --name id-${{ env.PRODUCT }}-tfs-${{ env.TARGET }}-${{ vars.VERSION }} --query id -o tsv)
 
           az containerapp create \
           --name ca-${{ env.PRODUCT }}-tfs-${{ env.TARGET }}-${{ vars.VERSION }} \
           --environment cae-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
-            --user-assigned $IDENTITY_ID \
+          --user-assigned $IDENTITY_ID \
           --registry-server cr${{ env.PRODUCT }}${{ env.TARGET }}${{ vars.VERSION }}.azurecr.io \
           --registry-identity $IDENTITY_ID \
           --cpu 1.0 \
@@ -505,16 +521,19 @@ jobs:
           --tags ${{ env.TAGS }}
 
       # containerapp create implicitly acts as create or update
+      # --kind functionapp (Preview) enables built-in Functions support and autoscaling
+      # Requires the containerapp extension, installed above via 'az extension add --name containerapp'
       - name: Container app - Functions ⚙️
         run: |
-            IDENTITY_ID=$(az identity show --name id-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} --query id -o tsv)
+          IDENTITY_ID=$(az identity show --name id-${{ env.PRODUCT }}-functions-${{ env.TARGET }}-${{ vars.VERSION }} --query id -o tsv)
+          FUNCTIONS_CLIENT_ID=$(az identity show --name id-${{ env.PRODUCT }}-functions-${{ env.TARGET }}-${{ vars.VERSION }} --query clientId -o tsv)
 
           az containerapp create \
           --name ca-${{ env.PRODUCT }}-functions-${{ env.TARGET }}-${{ vars.VERSION }} \
           --kind functionapp \
           --environment cae-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
           --image mcr.microsoft.com/azure-functions/node:4-node22 \
-            --user-assigned $IDENTITY_ID \
+          --user-assigned $IDENTITY_ID \
           --registry-server cr${{ env.PRODUCT }}${{ env.TARGET }}${{ vars.VERSION }}.azurecr.io \
           --registry-identity $IDENTITY_ID \
           --cpu 1.0 \
@@ -525,6 +544,10 @@ jobs:
           --target-port 80 \
           --revisions-mode single \
           --transport auto \
+          --env-vars \
+            "AzureWebJobsStorage__accountName=st${{ env.PRODUCT }}fn${{ env.TARGET }}${{ vars.VERSION }}" \
+            "AzureWebJobsStorage__credential=managedidentity" \
+            "AzureWebJobsStorage__clientId=$FUNCTIONS_CLIENT_ID" \
           --tags ${{ env.TAGS }}
 
       - name: API management ⚡️
