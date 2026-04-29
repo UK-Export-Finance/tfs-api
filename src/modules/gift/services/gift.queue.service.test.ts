@@ -1,3 +1,4 @@
+import { DefaultAzureCredential } from '@azure/identity';
 import { QueueServiceClient } from '@azure/storage-queue';
 import { ConfigService } from '@nestjs/config';
 import { GiftQueueConfig, KEY as GIFT_QUEUE_CONFIG_KEY } from '@ukef/config/gift-queue.config';
@@ -5,12 +6,15 @@ import { PinoLogger } from 'nestjs-pino';
 
 import { GiftQueueService } from './gift.queue.service';
 
+jest.mock('@azure/identity');
 jest.mock('@azure/storage-queue');
 
 const mockConnectionString = 'DefaultEndpointsProtocol=https;AccountName=test;AccountKey=abc123;EndpointSuffix=core.windows.net';
+const mockStorageAccountName = 'mystorageaccount';
 const mockQueueName = 'gift-requests';
 
 const mockQueueConfig: GiftQueueConfig = {
+  storageAccountName: undefined,
   connectionString: mockConnectionString,
   queueName: mockQueueName,
 };
@@ -47,21 +51,77 @@ describe('GiftQueueService', () => {
   });
 
   describe('constructor', () => {
-    it('should call configService.get with the gift queue config key', () => {
-      // Assert
-      expect(configService.get).toHaveBeenCalledWith(GIFT_QUEUE_CONFIG_KEY);
+    describe('when connectionString is provided', () => {
+      it('should call configService.get with the gift queue config key', () => {
+        // Assert
+        expect(configService.get).toHaveBeenCalledWith(GIFT_QUEUE_CONFIG_KEY);
+      });
+
+      it('should call QueueServiceClient.fromConnectionString with the connection string', () => {
+        // Assert
+        expect(mockFromConnectionString).toHaveBeenCalledTimes(1);
+        expect(mockFromConnectionString).toHaveBeenCalledWith(mockConnectionString);
+      });
+
+      it('should call getQueueClient with the queue name', () => {
+        // Assert
+        expect(mockGetQueueClient).toHaveBeenCalledTimes(1);
+        expect(mockGetQueueClient).toHaveBeenCalledWith(mockQueueName);
+      });
     });
 
-    it('should call QueueServiceClient.fromConnectionString with the connection string', () => {
-      // Assert
-      expect(mockFromConnectionString).toHaveBeenCalledTimes(1);
-      expect(mockFromConnectionString).toHaveBeenCalledWith(mockConnectionString);
+    describe('when storageAccountName is provided and connectionString is not', () => {
+      let mockQueueServiceClientConstructor: jest.Mock;
+
+      beforeEach(() => {
+        // Arrange
+        mockGetQueueClient = jest.fn().mockReturnValue({ sendMessage: mockSendMessage });
+        mockQueueServiceClientConstructor = jest.fn().mockReturnValue({ getQueueClient: mockGetQueueClient });
+        (QueueServiceClient as unknown as jest.Mock).mockImplementation(mockQueueServiceClientConstructor);
+
+        const managedIdentityConfig: GiftQueueConfig = {
+          storageAccountName: mockStorageAccountName,
+          connectionString: undefined,
+          queueName: mockQueueName,
+        };
+
+        configService = {
+          get: jest.fn().mockReturnValue(managedIdentityConfig),
+        } as unknown as ConfigService;
+
+        service = new GiftQueueService(logger, configService);
+      });
+
+      it('should call QueueServiceClient with the storage account queue URL and a DefaultAzureCredential', () => {
+        // Assert
+        expect(QueueServiceClient).toHaveBeenCalledWith(`https://${mockStorageAccountName}.queue.core.windows.net`, expect.any(DefaultAzureCredential));
+      });
+
+      it('should call getQueueClient with the queue name', () => {
+        // Assert
+        expect(mockGetQueueClient).toHaveBeenCalledTimes(1);
+        expect(mockGetQueueClient).toHaveBeenCalledWith(mockQueueName);
+      });
     });
 
-    it('should call getQueueClient with the queue name', () => {
-      // Assert
-      expect(mockGetQueueClient).toHaveBeenCalledTimes(1);
-      expect(mockGetQueueClient).toHaveBeenCalledWith(mockQueueName);
+    describe('when neither connectionString nor storageAccountName is provided', () => {
+      it('should throw an error', () => {
+        // Arrange
+        const invalidConfig: GiftQueueConfig = {
+          storageAccountName: undefined,
+          connectionString: undefined,
+          queueName: mockQueueName,
+        };
+
+        configService = {
+          get: jest.fn().mockReturnValue(invalidConfig),
+        } as unknown as ConfigService;
+
+        // Act + Assert
+        expect(() => new GiftQueueService(logger, configService)).toThrow(
+          'Either GIFT_QUEUE_STORAGE_CONNECTION_STRING or GIFT_QUEUE_STORAGE_ACCOUNT_NAME must be set',
+        );
+      });
     });
   });
 
