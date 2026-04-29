@@ -5,14 +5,6 @@ FROM mcr.microsoft.com/azure-functions/node:4-node22
 ENV AzureWebJobsScriptRoot=/home/site/wwwroot \
     AzureFunctionsJobHost__Logging__Console__IsEnabled=true
 
-WORKDIR /home/site/wwwroot
+COPY node_modules/ /home/site/wwwroot/node_modules/
 
-# Copy package.json and install packages before copying the rest of the code to enable caching
-COPY package.json package-lock.json ./
-RUN npm ci
-
-# Copy the rest of the code
-COPY . .
-
-# Compile TypeScript
-RUN npm run build
+COPY tfs-functions/ /home/site/wwwroot
