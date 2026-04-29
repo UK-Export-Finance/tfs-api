@@ -144,6 +144,17 @@ describe('POST /gift/facility - validation - obligations', () => {
     });
   });
 
+  describe('linkedRepaymentProfileId', () => {
+    const fieldName = 'linkedRepaymentProfileId';
+
+    arrayOfObjectsOptionalStringValidation({
+      ...baseParams,
+      fieldName,
+      min: OBLIGATION_VALIDATION.LINKED_REPAYMENT_PROFILE_ID.MIN,
+      max: OBLIGATION_VALIDATION.LINKED_REPAYMENT_PROFILE_ID.MAX,
+    });
+  });
+
   describe('subtypeCode', () => {
     const fieldName = 'subtypeCode';
 

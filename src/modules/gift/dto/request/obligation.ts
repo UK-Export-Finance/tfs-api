@@ -3,7 +3,7 @@ import { EXAMPLES, GIFT } from '@ukef/constants';
 import { IsDateString, IsDefined, IsNumber, IsOptional, IsString, Length, Max, Min } from 'class-validator';
 
 const {
-  GIFT: { OBLIGATION },
+  GIFT: { OBLIGATION, REPAYMENT_TYPE },
 } = EXAMPLES;
 
 const {
@@ -11,12 +11,13 @@ const {
 } = GIFT;
 
 const EXAMPLE = OBLIGATION() as {
+  amount: number;
   currency: string;
   effectiveDate: string;
+  linkedRepaymentProfileId: number;
   maturityDate: string;
-  amount: number;
-  subtypeCode: string;
   repaymentType: string;
+  subtypeCode: string;
 };
 
 /**
@@ -53,6 +54,15 @@ export class GiftObligationRequestDto {
     required: true,
   })
   effectiveDate: string;
+
+  @IsOptional()
+  @IsNumber()
+  @ApiProperty({
+    example: EXAMPLE.linkedRepaymentProfileId,
+    description: `Optional linked repayment profile ID. overview.repaymentType is "${REPAYMENT_TYPE.BULLET}" (and therefore repayment profiles are required)`,
+    required: false,
+  })
+  linkedRepaymentProfileId?: number;
 
   @IsDefined()
   @IsDateString()

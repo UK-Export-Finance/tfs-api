@@ -81,12 +81,14 @@ export const GIFT = {
   INTEGRATION_DEFAULTS: {
     ACBS_FEE_SEGMENT_ID: null,
     ACBS_INTEREST_SCHEDULE_ID: null,
+    ACBS_OBLIGATION_ID: null,
     ACCOUNT: '2',
     BUSINESS_CALENDARS_CONVENTION: 'MODIFIED_FOLLOWING',
     DATE_SNAP_BACK: false,
     DATE_SNAP_BACK_OVERRIDE: null,
     DUE_ON_LAST_WORKING_DAY_EACH_MONTH: false,
     GIFT_AMENDMENT_WORK_PACKAGE_NAME: 'Amendments',
+    LINKED_REPAYMENT_PROFILE_ID: null,
     RISK_STATUS: 'Corporate',
     OVERRIDE_RISK_RATING: null,
     OVERRIDE_LOSS_GIVEN_DEFAULT: null,
@@ -119,6 +121,10 @@ export const GIFT = {
     EXIP: 'Export Insurance Policy (EXIP)',
     BSS: 'Bond Support Scheme (BSS)',
     GEF: 'General Export Facility (GEF)',
+  },
+  REPAYMENT_TYPE: {
+    BULLET: 'Bullet',
+    SCHEDULED: 'Scheduled',
   },
   VALIDATION,
 };
