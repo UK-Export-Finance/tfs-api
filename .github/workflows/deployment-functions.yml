@@ -89,6 +89,9 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      - name: Azure CLI extensions 🔧
+        run: az extension add --name containerapp --upgrade
+
       - name: ACR Login 🔐
         uses: azure/docker-login@v2
         with:
