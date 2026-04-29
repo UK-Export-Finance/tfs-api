@@ -141,7 +141,7 @@ jobs:
         test_file:
           - test/gift/create-facility-business-calendars-convention-error-handling.api-test.ts
           - test/gift/create-facility-validation-fixed-fees.api-test.ts
-          - remaining
+          - test/gift
     runs-on: ubuntu-latest
     steps:
       - name: Timezone
@@ -166,7 +166,7 @@ jobs:
         env:
           GIFT_HTTP_VERSION: ${{ vars.GIFT_HTTP_VERSION }}
         run: |
-          if [[ "${{ matrix.test_file }}" == "remaining" ]]; then
+          if [[ "${{ matrix.test_file }}" == "test/gift" ]]; then
             npx jest --coverage --selectProjects=API --testPathPatterns="gift" --testPathIgnorePatterns="create-facility-business-calendars-convention-error-handling.api-test.ts|create-facility-validation-fixed-fees.api-test.ts"
           else
             npx jest --coverage --selectProjects=API --runTestsByPath "${{ matrix.test_file }}"
