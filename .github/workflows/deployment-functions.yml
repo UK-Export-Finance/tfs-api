@@ -96,18 +96,20 @@ jobs:
           username: ${{ env.ACR_USER }}
           password: ${{ secrets.ACR_PASSWORD }}
 
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build
-        working-directory: tfs-functions
-        run: npm run build
-
       - name: Push functions image 🗃️
         run: |
           docker build -f tfs-functions/Dockerfile . \
           -t ${{ env.ACR }}/${{ env.NAME }}:${{ github.sha }}
           docker push ${{ env.ACR }}/${{ env.NAME }}:${{ github.sha }}
+
+      - name: Managed identity client ID 🪪
+        uses: Azure/cli@v2.2.0
+        with:
+          inlineScript: |
+            echo FUNCTIONS_CLIENT_ID=$(az identity show \
+              --name id-apim-functions-${{ env.ENVIRONMENT }}-${{ vars.VERSION }} \
+              --resource-group ${{ env.RG }} \
+              --query clientId -o tsv) >> $GITHUB_ENV
 
       - name: Update container app with image 🔀
         uses: Azure/cli@v2.2.0
@@ -120,9 +122,10 @@ jobs:
             --image ${{ env.ACR }}/${{ env.NAME }}:${{ github.sha }} \
             --revision-suffix v${{ github.run_id }} \
             --set-env-vars \
-              "AzureWebJobsStorage=${{ secrets.AZURE_WEB_JOBS_STORAGE }}" \
+              "AzureWebJobsStorage__accountName=stapimfn${{ env.ENVIRONMENT }}${{ vars.VERSION }}" \
+              "AzureWebJobsStorage__credential=managedidentity" \
+              "AzureWebJobsStorage__clientId=${{ env.FUNCTIONS_CLIENT_ID }}" \
               "FUNCTIONS_WORKER_RUNTIME=node" \
               "AzureFunctionsJobHost__Logging__Console__IsEnabled=true" \
               "TFS_API_BASE_URL=${{ vars.TFS_API_BASE_URL }}" \
-              "TFS_API_KEY=${{ secrets.API_KEY }}" \
-              "AZURE_WEB_JOBS_STORAGE=${{ secrets.AZURE_WEB_JOBS_STORAGE }}"
+              "TFS_API_KEY=${{ secrets.API_KEY }}"

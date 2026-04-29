@@ -12,10 +12,12 @@ jest.mock('@azure/storage-queue');
 const mockConnectionString = 'DefaultEndpointsProtocol=https;AccountName=test;AccountKey=abc123;EndpointSuffix=core.windows.net';
 const mockStorageAccountName = 'mystorageaccount';
 const mockQueueName = 'gift-requests';
+const mockClientId = 'mock-client-id';
 
 const mockQueueConfig: GiftQueueConfig = {
   storageAccountName: undefined,
   connectionString: mockConnectionString,
+  clientId: undefined,
   queueName: mockQueueName,
 };
 
@@ -82,6 +84,7 @@ describe('GiftQueueService', () => {
         const managedIdentityConfig: GiftQueueConfig = {
           storageAccountName: mockStorageAccountName,
           connectionString: undefined,
+          clientId: mockClientId,
           queueName: mockQueueName,
         };
 
@@ -94,6 +97,7 @@ describe('GiftQueueService', () => {
 
       it('should call QueueServiceClient with the storage account queue URL and a DefaultAzureCredential', () => {
         // Assert
+        expect(DefaultAzureCredential).toHaveBeenCalledWith({ managedIdentityClientId: mockClientId });
         expect(QueueServiceClient).toHaveBeenCalledWith(`https://${mockStorageAccountName}.queue.core.windows.net`, expect.any(DefaultAzureCredential));
       });
 
@@ -110,6 +114,7 @@ describe('GiftQueueService', () => {
         const invalidConfig: GiftQueueConfig = {
           storageAccountName: undefined,
           connectionString: undefined,
+          clientId: undefined,
           queueName: mockQueueName,
         };
 

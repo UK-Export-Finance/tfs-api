@@ -17,13 +17,13 @@ export class GiftQueueService {
     private readonly logger: PinoLogger,
     private readonly configService: ConfigService,
   ) {
-    const { storageAccountName, connectionString, queueName } = this.configService.get<GiftQueueConfig>(GIFT_QUEUE_CONFIG_KEY);
+    const { storageAccountName, connectionString, clientId, queueName } = this.configService.get<GiftQueueConfig>(GIFT_QUEUE_CONFIG_KEY);
     if (!connectionString && !storageAccountName) {
       throw new Error('Either GIFT_QUEUE_STORAGE_CONNECTION_STRING or GIFT_QUEUE_STORAGE_ACCOUNT_NAME must be set');
     }
     const serviceClient = connectionString
       ? QueueServiceClient.fromConnectionString(connectionString)
-      : new QueueServiceClient(`https://${storageAccountName}.queue.core.windows.net`, new DefaultAzureCredential());
+      : new QueueServiceClient(`https://${storageAccountName}.queue.core.windows.net`, new DefaultAzureCredential({ managedIdentityClientId: clientId }));
     this.queueClient = serviceClient.getQueueClient(queueName);
   }
 

@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc",
     "clean": "rimraf dist",
-    "docker:build": "docker build -t tfs-functions-local .",
+    "docker:build": "docker build -f Dockerfile -t tfs-functions-local ..",
     "docker:start": "docker compose -f docker-compose.local.yml up --build",
     "lint": "eslint . --ext .js,.ts",
     "lint:fix": "eslint . --ext .js,.ts --fix",

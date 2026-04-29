@@ -587,6 +587,7 @@ jobs:
       - name: Container app - TFS 📄
         run: |
           IDENTITY_ID=$(az identity show --name id-${{ env.PRODUCT }}-tfs-${{ env.TARGET }}-${{ vars.VERSION }} --query id -o tsv)
+          TFS_CLIENT_ID=$(az identity show --name id-${{ env.PRODUCT }}-tfs-${{ env.TARGET }}-${{ vars.VERSION }} --query clientId -o tsv)
 
           az containerapp create \
           --name ca-${{ env.PRODUCT }}-tfs-${{ env.TARGET }}-${{ vars.VERSION }} \
@@ -602,6 +603,9 @@ jobs:
           --target-port ${{ vars.PORT }} \
           --revisions-mode multiple \
           --transport auto \
+          --env-vars \
+            "AZURE_CLIENT_ID=$TFS_CLIENT_ID" \
+            "GIFT_QUEUE_STORAGE_ACCOUNT_NAME=st${{ env.PRODUCT }}fn${{ env.TARGET }}${{ vars.VERSION }}" \
           --tags ${{ env.TAGS }}
 
       # containerapp create implicitly acts as create or update
