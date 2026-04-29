@@ -136,6 +136,11 @@ jobs:
     needs: setup
     environment:
       name: ${{ needs.setup.outputs.environment }}
+    strategy:
+      matrix:
+        test_file:
+          - test/gift/create-facility-business-calendars-convention-error-handling.api-test.ts
+          - test/gift/create-facility-validation-fixed-fees.api-test.ts
     runs-on: ubuntu-latest
     steps:
       - name: Timezone
@@ -159,7 +164,7 @@ jobs:
         working-directory: ./
         env:
           GIFT_HTTP_VERSION: ${{ vars.GIFT_HTTP_VERSION }}
-        run: npm run api-test:gift
+        run: npx jest --coverage --selectProjects=API --runTestsByPath "${{ matrix.test_file }}"
 
   # 6. E2E tests
   e2e-tests:
