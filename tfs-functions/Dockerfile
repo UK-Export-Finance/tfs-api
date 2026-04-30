@@ -1,6 +1,6 @@
-# Stage 1 — install and compile
-# Uses the root workspace so npm ci resolves against the root package-lock.json,
-# giving the same deterministic dependency tree in CI and local builds.
+# Stage 1 — install and build
+# lockfile lives at the root so we need to use the root workspace
+# this is due to the workspaces structure
 FROM node:22-alpine AS builder
 
 WORKDIR /build
@@ -12,7 +12,7 @@ RUN npm ci --legacy-peer-deps
 COPY tfs-functions/ ./tfs-functions/
 RUN npm run build -w tfs-functions
 
-# Stage 2 — runtime
+# Stage 2 — functions runtime
 # To enable ssh & remote debugging on app service change the base image to the one below
 # FROM mcr.microsoft.com/azure-functions/node:4-node22-appservice
 FROM mcr.microsoft.com/azure-functions/node:4-node22
