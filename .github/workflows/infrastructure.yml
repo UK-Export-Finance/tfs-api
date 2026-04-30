@@ -404,7 +404,7 @@ jobs:
             echo 'Private DNS VNet link already exists, skipping'
           fi
 
-          # Attach DNS zone to the private endpoint so the A record is auto-registered
+          # Attach DNS zone to the private endpoint
           EXISTING_ZG=$(az network private-endpoint dns-zone-group show \
             --name queue-PrivateDnsZoneGroup \
             --endpoint-name $PE_NAME \
@@ -420,8 +420,7 @@ jobs:
             echo 'DNS zone group already exists, skipping'
           fi
 
-      # Required by the Azure Functions webjobs runtime for host locks, key storage
-      # and heartbeats which use the AzureWebJobsStorage blob service URI
+      # Required by the Azure Functions webjobs runtime
       - name: Storage blob private endpoint 🔒️
         run: |
           PE_NAME='pep-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }}-st-blob'

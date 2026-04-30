@@ -107,7 +107,7 @@ The full request flow on Azure is:
 APIM → tfs-api (Container App) → Azure Storage Queue → tfs-functions (Container App) → GIFT API
 
 All components run inside a single **Container Apps Environment** (`cae-apim-<env>-<version>`), deployed into a private VNet subnet. 
-The storage account sits behind a **private endpoint** so queue traffic never leaves the VNet.
+Access to the storage account is via a **private endpoint**.
 
 ### Resources
 
@@ -148,11 +148,4 @@ The `__accountName` / `__credential` / `__clientId` convention is the Azure Func
 
 ### Infrastructure provisioning
 
-All of the above is provisioned by `.github/workflows/infrastructure.yml` in the root of this repository. The relevant steps are:
-
-- **Storage account** — `az storage account create` acts as create-or-update; re-running applies the parameters to the existing account
-- **Storage queue** — idempotent `az storage queue create`
-- **Storage queue role assignments** — checks for existing assignments before creating, to avoid duplicates
-- **Storage private endpoint** — creates subnet, private endpoint, DNS zone, VNet link, and DNS zone group; all steps are guarded with existence checks
-- **Container app — tfs-functions** — `az containerapp create --kind functionapp` (requires the `containerapp` CLI extension, installed earlier in the workflow); 
-acts as create-or-update on re-runs
+All of the above is provisioned by `.github/workflows/infrastructure.yml` in the root of this repository.
