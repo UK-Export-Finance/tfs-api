@@ -106,7 +106,8 @@ The full request flow on Azure is:
 
 APIM → tfs-api (Container App) → Azure Storage Queue → tfs-functions (Container App) → GIFT API
 
-All components run inside a single **Container Apps Environment** (`cae-apim-<env>-<version>`), deployed into a private VNet subnet. 
+All components run inside a single **Container Apps Environment** (`cae-apim-<env>-<version>`), 
+deployed into a private VNet subnet. 
 Access to the storage account is via a **private endpoint**.
 
 ### Resources
@@ -131,6 +132,8 @@ Each container app has its own managed identity with the minimum required permis
 |---|---|---|---|
 | `id-apim-tfs-*` | Storage Queue Data Contributor | Storage account | Allows tfs-api to enqueue messages |
 | `id-apim-functions-*` | Storage Queue Data Message Processor | Storage account | Allows tfs-functions to dequeue and complete messages |
+| `id-apim-functions-*` | Storage Blob Data Owner | Storage account | Required by the Functions webjobs runtime since we are using managed identity, and for host locks/heartbeats |
+| `id-apim-functions-*` | Storage Queue Data Contributor | Storage account | Required by the Functions webjobs runtime for internal runtime queues and poison queues |
 | Both | AcrPull | Container registry | Allows both apps to pull images from ACR |
 
 ### Authentication to the storage queue
@@ -145,6 +148,13 @@ AzureWebJobsStorage__clientId    = <client ID of id-apim-functions-*>
 ```
 
 The `__accountName` / `__credential` / `__clientId` convention is the Azure Functions v4 passwordless storage binding format. The Functions runtime uses this to acquire tokens via the managed identity rather than a connection string.
+
+### Storage Account
+
+The storage account serves two functions:
+
+1. **Queue trigger** — the `gift-requests` queue receives messages from the TFS API and triggers the functions app
+2. **Functions webjobs runtime** — `AzureWebJobsStorage` uses the same storage account for host locks, function key storage, and instance heartbeats
 
 ### Infrastructure provisioning
 
