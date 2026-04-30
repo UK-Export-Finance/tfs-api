@@ -112,6 +112,21 @@ jobs:
               --resource-group ${{ env.RG }} \
               --query clientId -o tsv) >> $GITHUB_ENV
 
+      - name: Resolve TFS API URL 🔍
+        run: |
+          FQDN=$(az containerapp show \
+            --name ca-apim-tfs-${{ env.ENVIRONMENT }}-${{ vars.VERSION }} \
+            --resource-group ${{ env.RG }} \
+            --query properties.latestRevisionFqdn -o tsv)
+          echo "TFS_API_BASE_URL=https://$FQDN" >> $GITHUB_ENV
+
+      - name: Set container app secrets 🔒
+        run: |
+          az containerapp secret set \
+          --name ${{ env.CA_NAME }} \
+          --resource-group ${{ env.RG }} \
+          --secrets "tfs-api-key=${{ secrets.API_KEY }}"
+
       - name: Update container app with image 🔀
         run: |
             az containerapp update \
@@ -126,29 +141,5 @@ jobs:
               "AzureWebJobsStorage__clientId=${{ env.FUNCTIONS_CLIENT_ID }}" \
               "FUNCTIONS_WORKER_RUNTIME=node" \
               "AzureFunctionsJobHost__Logging__Console__IsEnabled=true" \
-              "TFS_API_BASE_URL=${{ vars.TFS_API_BASE_URL }}" \
-              "TFS_API_KEY=${{ secrets.API_KEY }}"
-
-      - name: Resolve TFS API URL 🔍
-        run: |
-          FQDN=$(az containerapp show \
-            --name ca-apim-tfs-${{ env.ENVIRONMENT }}-${{ vars.VERSION }} \
-            --resource-group ${{ env.RG }} \
-            --query properties.latestRevisionFqdn -o tsv)
-          echo "TFS_API_BASE_URL=https://$FQDN" >> $GITHUB_ENV
-
-      - name: Update container app with image 🔀
-        run: |
-          az containerapp update \
-          --name ${{ env.CA_NAME }} \
-          --resource-group ${{ env.RG }} \
-          --container-name ${{ env.CA_NAME }} \
-          --image ${{ env.ACR }}/${{ env.NAME }}:${{ github.sha }} \
-          --revision-suffix v${{ github.run_id }} \
-          --set-env-vars \
-            "AzureWebJobsStorage=${{ secrets.AZURE_WEB_JOBS_STORAGE }}" \
-            "FUNCTIONS_WORKER_RUNTIME=node" \
-            "AzureFunctionsJobHost__Logging__Console__IsEnabled=true" \
-            "TFS_API_BASE_URL=${{ env.TFS_API_BASE_URL }}" \
-            "TFS_API_KEY=${{ secrets.API_KEY }}" \
-            "AZURE_WEB_JOBS_STORAGE=${{ secrets.AZURE_WEB_JOBS_STORAGE }}"
+              "TFS_API_BASE_URL=${{ env.TFS_API_BASE_URL }}" \
+              "TFS_API_KEY=secretref:tfs-api-key"
