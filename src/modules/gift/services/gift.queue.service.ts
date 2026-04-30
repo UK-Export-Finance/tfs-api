@@ -21,6 +21,7 @@ export class GiftQueueService {
     if (!connectionString && !storageAccountName) {
       throw new Error('Either GIFT_QUEUE_STORAGE_CONNECTION_STRING or GIFT_QUEUE_STORAGE_ACCOUNT_NAME must be set');
     }
+    // connectionString is for local dev only, should not be used in production
     const serviceClient = connectionString
       ? QueueServiceClient.fromConnectionString(connectionString)
       : new QueueServiceClient(`https://${storageAccountName}.queue.core.windows.net`, new DefaultAzureCredential({ managedIdentityClientId: clientId }));

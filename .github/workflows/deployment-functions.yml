@@ -121,14 +121,14 @@ jobs:
             --image ${{ env.ACR }}/${{ env.NAME }}:${{ github.sha }} \
             --revision-suffix v${{ github.run_id }} \
             --set-env-vars \
-              "AzureWebJobsStorage__accountName=stapimfn${{ env.ENVIRONMENT }}${{ vars.VERSION }}" \
+              "AzureWebJobsStorage__accountName=st${{ env.PRODUCT }}fn${{ env.ENVIRONMENT }}${{ vars.VERSION }}" \
               "AzureWebJobsStorage__credential=managedidentity" \
               "AzureWebJobsStorage__clientId=${{ env.FUNCTIONS_CLIENT_ID }}" \
               "FUNCTIONS_WORKER_RUNTIME=node" \
               "AzureFunctionsJobHost__Logging__Console__IsEnabled=true" \
               "TFS_API_BASE_URL=${{ vars.TFS_API_BASE_URL }}" \
               "TFS_API_KEY=${{ secrets.API_KEY }}"
-              
+
       - name: Resolve TFS API URL 🔍
         run: |
           FQDN=$(az containerapp show \
