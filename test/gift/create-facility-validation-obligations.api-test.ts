@@ -9,6 +9,7 @@ import {
   arrayOfObjectsCurrencyStringValidation,
   arrayOfObjectsDateStringValidation,
   arrayOfObjectsNumberValidation,
+  arrayOfObjectsOptionalNumberValidation,
   arrayOfObjectsOptionalStringValidation,
   arrayOfObjectsStringValidation,
   assert400Response,
@@ -147,7 +148,7 @@ describe('POST /gift/facility - validation - obligations', () => {
   describe('linkedRepaymentProfileId', () => {
     const fieldName = 'linkedRepaymentProfileId';
 
-    arrayOfObjectsOptionalStringValidation({
+    arrayOfObjectsOptionalNumberValidation({
       ...baseParams,
       fieldName,
       min: OBLIGATION_VALIDATION.LINKED_REPAYMENT_PROFILE_ID.MIN,
