@@ -89,6 +89,9 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      - name: Azure CLI extensions 🔧
+        run: az extension add --name containerapp --upgrade
+
       - name: ACR Login 🔐
         uses: azure/docker-login@v2
         with:
@@ -103,18 +106,14 @@ jobs:
           docker push ${{ env.ACR }}/${{ env.NAME }}:${{ github.sha }}
 
       - name: Managed identity client ID 🪪
-        uses: Azure/cli@v2.2.0
-        with:
-          inlineScript: |
+        run: |
             echo FUNCTIONS_CLIENT_ID=$(az identity show \
               --name id-apim-functions-${{ env.ENVIRONMENT }}-${{ vars.VERSION }} \
               --resource-group ${{ env.RG }} \
               --query clientId -o tsv) >> $GITHUB_ENV
 
       - name: Update container app with image 🔀
-        uses: Azure/cli@v2.2.0
-        with:
-          inlineScript: |
+        run: |
             az containerapp update \
             --name ${{ env.CA_NAME }} \
             --resource-group ${{ env.RG }} \
@@ -129,3 +128,27 @@ jobs:
               "AzureFunctionsJobHost__Logging__Console__IsEnabled=true" \
               "TFS_API_BASE_URL=${{ vars.TFS_API_BASE_URL }}" \
               "TFS_API_KEY=${{ secrets.API_KEY }}"
+              
+      - name: Resolve TFS API URL 🔍
+        run: |
+          FQDN=$(az containerapp show \
+            --name ca-apim-tfs-${{ env.ENVIRONMENT }}-${{ vars.VERSION }} \
+            --resource-group ${{ env.RG }} \
+            --query properties.latestRevisionFqdn -o tsv)
+          echo "TFS_API_BASE_URL=https://$FQDN" >> $GITHUB_ENV
+
+      - name: Update container app with image 🔀
+        run: |
+          az containerapp update \
+          --name ${{ env.CA_NAME }} \
+          --resource-group ${{ env.RG }} \
+          --container-name ${{ env.CA_NAME }} \
+          --image ${{ env.ACR }}/${{ env.NAME }}:${{ github.sha }} \
+          --revision-suffix v${{ github.run_id }} \
+          --set-env-vars \
+            "AzureWebJobsStorage=${{ secrets.AZURE_WEB_JOBS_STORAGE }}" \
+            "FUNCTIONS_WORKER_RUNTIME=node" \
+            "AzureFunctionsJobHost__Logging__Console__IsEnabled=true" \
+            "TFS_API_BASE_URL=${{ env.TFS_API_BASE_URL }}" \
+            "TFS_API_KEY=${{ secrets.API_KEY }}" \
+            "AZURE_WEB_JOBS_STORAGE=${{ secrets.AZURE_WEB_JOBS_STORAGE }}"

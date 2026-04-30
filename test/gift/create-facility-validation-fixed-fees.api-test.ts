@@ -81,8 +81,8 @@ describe('POST /gift/facility - validation - fixed fees', () => {
         error: 'Bad Request',
         message: [
           'fixedFees.0.amount should not be null or undefined',
-          `fixedFees.0.amount must not be greater than ${FIXED_FEE_VALIDATION.AMOUNT_DUE.MAX}`,
           `fixedFees.0.amount must not be less than ${FIXED_FEE_VALIDATION.AMOUNT_DUE.MIN}`,
+          `fixedFees.0.amount must not be greater than ${FIXED_FEE_VALIDATION.AMOUNT_DUE.MAX}`,
           'fixedFees.0.amount must be a number conforming to the specified constraints',
           'fixedFees.0.currency should not be null or undefined',
           `fixedFees.0.currency must be longer than or equal to ${FIXED_FEE_VALIDATION.CURRENCY.MIN_LENGTH} characters`,
