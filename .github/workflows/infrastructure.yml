@@ -199,7 +199,7 @@ jobs:
               --assignee $PRINCIPAL_ID \
               --role $ACR_PULL_ROLE_ID \
               --scope $ACR_ID \
-              --query '[0].id' -o tsv 2>/dev/null)
+              --query '[0].id' -o tsv)
             if [ -z "$EXISTING" ]; then
               az role assignment create \
               --assignee-object-id $PRINCIPAL_ID \
