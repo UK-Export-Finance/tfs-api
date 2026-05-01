@@ -37,6 +37,10 @@ export class GiftRiskDetailsService {
         overrideRiskRating: INTEGRATION_DEFAULTS.OVERRIDE_RISK_RATING,
         overrideLossGivenDefault: INTEGRATION_DEFAULTS.OVERRIDE_LOSS_GIVEN_DEFAULT,
         riskReassessmentDate: INTEGRATION_DEFAULTS.RISK_REASSESSMENT_DATE,
+        riskMarketCode: INTEGRATION_DEFAULTS.RISK_MARKET_CODE,
+        projectFinance: INTEGRATION_DEFAULTS.PROJECT_FINANCE,
+        linkedFacilityId: INTEGRATION_DEFAULTS.LINKED_FACILITY_ID,
+        originalFacilityEffectiveDate: INTEGRATION_DEFAULTS.ORIGINAL_FACILITY_EFFECTIVE_DATE,
         facilityCategoryCode: riskDetailsData.facilityCategoryCode || INTEGRATION_DEFAULTS.FACILITY_CATEGORY_CODE,
         facilityCreditRating: riskDetailsData.facilityCreditRating || INTEGRATION_DEFAULTS.FACILITY_CREDIT_RATING,
       };
