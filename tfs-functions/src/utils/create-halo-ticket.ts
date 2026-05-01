@@ -19,26 +19,54 @@ const siteId = Number(siteIdEnv);
 const userId = Number(userIdEnv);
 const teamId = Number(teamIdEnv);
 
-const haloTokenUrl = `${baseUrl}/auth/token?tenant=${tenantName}`;
+const haloTokenUrl = new URL('/auth/token', baseUrl);
+haloTokenUrl.searchParams.set('tenant', tenantName);
 const haloTicketsUrl = `${baseUrl}/api/Tickets`;
+
+function formatError(prefix: string, error: unknown): string {
+  return error instanceof Error ? `${prefix}: ${error.message}` : `${prefix}: unknown error`;
+}
 
 /**
  * Acquires an OAuth2 access token from Halo using client credentials.
  */
-async function getHaloAccessToken(): Promise<string> {
+async function getHaloAccessToken(context: InvocationContext): Promise<string> {
   const params = new URLSearchParams({
     grant_type: 'client_credentials',
     client_id: clientId,
     client_secret: clientSecret,
   });
 
-  const response = await axios.post(haloTokenUrl, params.toString(), {
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-  });
+  try {
+    const response = await axios.post(haloTokenUrl.toString(), params.toString(), {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    });
+    return response.data.access_token as string;
+  } catch (error) {
+    const message = formatError('Failed to acquire Halo access token', error);
+    context.error(message);
+    throw new Error(message);
+  }
+}
 
-  return response.data.access_token as string;
+function buildTicketBody(facilityId: string, payload: unknown, errorMessage: string) {
+  return [
+    {
+      summary: `APIM Error submitting DTFS facility ${facilityId} to GIFT`,
+      details: `Error: ${errorMessage}\n\nOriginal payload:\n${JSON.stringify(payload, null, 2)}`,
+      tickettype_id: ticketTypeId,
+      client_id: ticketClientId,
+      site_id: siteId,
+      user_id: userId,
+      team_id: teamId,
+      itil_tickettype_id: -1,
+      dont_do_rules: true,
+      donotapplytemplateintheapi: true,
+      return_this: true,
+    },
+  ];
 }
 
 /**
@@ -52,34 +80,12 @@ async function getHaloAccessToken(): Promise<string> {
 export async function createHaloTicket(facilityId: string, payload: unknown, errorMessage: string, context: InvocationContext): Promise<void> {
   context.log('Raising Halo ticket for failed GIFT facility creation, facilityId:', facilityId);
 
-  let accessToken: string;
-
-  try {
-    accessToken = await getHaloAccessToken();
-  } catch (error) {
-    const message = error instanceof Error ? `Failed to acquire Halo access token: ${error.message}` : 'Failed to acquire Halo access token: unknown error';
-    context.error(message);
-    throw new Error(message);
-  }
+  const accessToken = await getHaloAccessToken(context);
 
   try {
     await axios.post(
       haloTicketsUrl,
-      [
-        {
-          summary: `APIM Error submitting DTFS facility ${facilityId} to GIFT`,
-          details: `Error: ${errorMessage}\n\nOriginal payload:\n${JSON.stringify(payload, null, 2)}`,
-          tickettype_id: ticketTypeId,
-          client_id: ticketClientId,
-          site_id: siteId,
-          user_id: userId,
-          team_id: teamId,
-          itil_tickettype_id: -1,
-          dont_do_rules: true,
-          donotapplytemplateintheapi: true,
-          return_this: true,
-        },
-      ],
+      buildTicketBody(facilityId, payload, errorMessage),
       // TODO 637: validate these field values once the Halo ticket type is confirmed
       {
         headers: {
@@ -89,7 +95,7 @@ export async function createHaloTicket(facilityId: string, payload: unknown, err
       },
     );
   } catch (error) {
-    const message = error instanceof Error ? `Failed to create Halo ticket: ${error.message}` : 'Failed to create Halo ticket: unknown error';
+    const message = formatError('Failed to create Halo ticket', error);
     context.error(message);
     throw new Error(message);
   }
