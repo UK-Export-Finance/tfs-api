@@ -21,7 +21,7 @@ README.md
 dist
 docker-compose.yml
 jest.config.ts
-node_modules
+tfs-functions/node_modules
 renovate.json
 npm-debug.log
 test

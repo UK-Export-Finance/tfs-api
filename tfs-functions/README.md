@@ -2,14 +2,16 @@
 
 This package contains a minimal Azure Functions app with a storage queue trigger.
 
-The main queue trigger is defined in `src/functions/process-queue-item.ts` and listens on the `gift-requests` queue using the `AzureWebJobsStorage` connection. When a message is received, the function calls the `/api/v2/gift/facility` endpoint on `tfs-api` to process the facility creation.
+The main queue trigger is defined in `src/functions/process-queue-item.ts` and listens on the
+`gift-requests` queue using the `AzureWebJobsStorage` connection. When a message is received, the
+function calls the `/api/v2/gift/facility` endpoint on `tfs-api` to process the facility creation.
 
 ## Prerequisites
 
 - Node.js 22 or later
 - npm
 - Docker Desktop for local container builds
-- Azure Functions Core Tools 
+- Azure Functions Core Tools
 - Azure CLI
 
 ## Run the host locally (without Docker)
@@ -95,3 +97,65 @@ This tests the full flow: `POST /gift/facility/queue` → Azurite queue → func
 - The queue binding uses `AzureWebJobsStorage`.
 - Messages must be Base64-encoded JSON — the `GiftQueueService` in `tfs-api` handles this automatically when using the `/facility/queue` endpoint.
 - After 5 failed attempts, the message is moved to `gift-requests-poison` and the poison queue function logs it.
+
+## Azure deployment
+
+### Architecture
+
+The full request flow on Azure is:
+
+APIM → tfs-api (Container App) → Azure Storage Queue → tfs-functions (Container App) → GIFT API
+
+All components run inside a single **Container Apps Environment** (`cae-apim-<env>-<version>`), 
+deployed into a private VNet subnet. 
+Access to the storage account is via a **private endpoint**.
+
+### Resources
+
+| Resource | Name pattern | Purpose |
+|---|---|---|
+| Container Apps Environment | `cae-apim-<env>-<version>` | Shared environment for both container apps |
+| Container App — tfs-api | `ca-apim-tfs-<env>-<version>` | Hosts the tfs-api HTTP service, ingress external via APIM |
+| Container App — tfs-functions | `ca-apim-functions-<env>-<version>` | Hosts this functions app, ingress internal only |
+| Storage account | `stapimfn<env><version>` | Holds the `gift-requests` queue and Functions runtime state |
+| Storage queue | `gift-requests` | Queue bridging tfs-api and tfs-functions |
+| Managed identity — tfs-api | `id-apim-tfs-<env>-<version>` | Identity used by the tfs-api container app |
+| Managed identity — tfs-functions | `id-apim-functions-<env>-<version>` | Identity used by the tfs-functions container app |
+| Private endpoint | `pep-apim-<env>-<version>-st-queue` | Privately exposes the queue storage endpoint inside the VNet |
+| Private DNS zone | `privatelink.queue.core.windows.net` | Resolves the storage account to the private IP inside the VNet |
+
+### Identity and RBAC
+
+Each container app has its own managed identity with the minimum required permissions:
+
+| Identity | Role | Scope | Purpose |
+|---|---|---|---|
+| `id-apim-tfs-*` | Storage Queue Data Contributor | Storage account | Allows tfs-api to enqueue messages |
+| `id-apim-functions-*` | Storage Queue Data Message Processor | Storage account | Allows tfs-functions to dequeue and complete messages |
+| `id-apim-functions-*` | Storage Blob Data Owner | Storage account | Required by the Functions webjobs runtime since we are using managed identity, and for host locks/heartbeats |
+| `id-apim-functions-*` | Storage Queue Data Contributor | Storage account | Required by the Functions webjobs runtime for internal runtime queues and poison queues |
+| Both | AcrPull | Container registry | Allows both apps to pull images from ACR |
+
+### Authentication to the storage queue
+
+Both container apps authenticate to the storage account using **managed identity** — no connection strings or storage keys are used. 
+The tfs-functions container app is configured with:
+
+```
+AzureWebJobsStorage__accountName = stapimfn<env><version>
+AzureWebJobsStorage__credential  = managedidentity
+AzureWebJobsStorage__clientId    = <client ID of id-apim-functions-*>
+```
+
+The `__accountName` / `__credential` / `__clientId` convention is the Azure Functions v4 passwordless storage binding format. The Functions runtime uses this to acquire tokens via the managed identity rather than a connection string.
+
+### Storage Account
+
+The storage account serves two functions:
+
+1. **Queue trigger** — the `gift-requests` queue receives messages from the TFS API and triggers the functions app
+2. **Functions webjobs runtime** — `AzureWebJobsStorage` uses the same storage account for host locks, function key storage, and instance heartbeats
+
+### Infrastructure provisioning
+
+All of the above is provisioned by `.github/workflows/infrastructure.yml` in the root of this repository.

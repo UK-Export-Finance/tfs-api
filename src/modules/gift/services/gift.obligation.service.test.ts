@@ -57,7 +57,8 @@ describe('GiftObligationService', () => {
           path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_OBLIGATION}`,
           payload: {
             ...mockPayload,
-            acbsObligationId: null,
+            acbsObligationId: INTEGRATION_DEFAULTS.ACBS_OBLIGATION_ID,
+            linkedRepaymentProfileId: INTEGRATION_DEFAULTS.LINKED_REPAYMENT_PROFILE_ID,
           },
         };
 
@@ -83,7 +84,8 @@ describe('GiftObligationService', () => {
           path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_OBLIGATION}`,
           payload: {
             ...mockPayload,
-            acbsObligationId: null,
+            acbsObligationId: INTEGRATION_DEFAULTS.ACBS_OBLIGATION_ID,
+            linkedRepaymentProfileId: INTEGRATION_DEFAULTS.LINKED_REPAYMENT_PROFILE_ID,
             subtypeCode: INTEGRATION_DEFAULTS.OBLIGATION_SUBTYPE_CODE,
           },
         };

@@ -11,7 +11,8 @@ services:
 
   functions:
     build:
-      context: .
+      context: ..
+      dockerfile: tfs-functions/Dockerfile
     image: tfs-functions-local
     depends_on:
       - azurite

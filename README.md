@@ -1,6 +1,7 @@
 # Trade Finance Services 🚀
 
-This TFS micro-service provides endpoints for internal trade finance manager systems that are responsible for reading and writing to following financial product tracking systems:
+This TFS micro-service provides endpoints for internal trade finance manager systems that are responsible for reading
+and writing to following financial product tracking systems:
 
 - ACBS (Advanced Commerical Banking System).
 - GIFT (Guarantee, Insurance, & Financing Tracker). Replaces ACBS.
@@ -41,10 +42,10 @@ send an encrypted copy of the `.env` file.
 
 Environment variable tips:
 
-* USE_PINO_PRETTY_LOG_FORMATER - Pino pretty should be enabled just in Dev laptop, as pino-pretty is development
-* ACBS_USE_RETURN_EXCEPTION_HEADER - When true an additional request header 'ReturnException' is sent to ACBS. The 'ApiResult' and 'ErrorResult' response headers
+- USE_PINO_PRETTY_LOG_FORMATER - Pino pretty should be enabled just in Dev laptop, as pino-pretty is development
+- ACBS_USE_RETURN_EXCEPTION_HEADER - When true an additional request header 'ReturnException' is sent to ACBS. The 'ApiResult' and 'ErrorResult' response headers
 can be used for debugging.
-* ACBS_AUTHENTICATION_ID_TOKEN_CACHE_TTL_IN_MILLISECONDS - A value of 0 will cache the first id token PERMANENTLY but ACBS accepts tokens just for 30 minutes.
+- ACBS_AUTHENTICATION_ID_TOKEN_CACHE_TTL_IN_MILLISECONDS - A value of 0 will cache the first id token PERMANENTLY but ACBS accepts tokens just for 30 minutes.
 
 ## Compilation / Build ⚙️
 
@@ -62,7 +63,7 @@ The `extends` property specifies the path to the base configuration file which i
 
 The `compilerOptions` property specifies the compiler options.
 
-* `types` specifies the types that should be included in the compilation, `node` in this case.
+- `types` specifies the types that should be included in the compilation, `node` in this case.
 
 ## Include 📂
 
@@ -72,12 +73,12 @@ The `include` property specifies the files that should be included in the compil
 
 The `exclude` property specifies the files that should be excluded from the compilation.
 
-* `node_modules` excludes the `node_modules` directory.
-* `test` excludes the `test` directory and all files that end with `.test.ts`.
-* `dist` excludes the `dist` directory.
-* `docker-compose*.yml` excludes all files that start with `docker-compose` and end with `.yml`.
-* `Dockerfile` excludes the `Dockerfile` file.
-* `logs` excludes the `logs` directory.
+- `node_modules` excludes the `node_modules` directory.
+- `test` excludes the `test` directory and all files that end with `.test.ts`.
+- `dist` excludes the `dist` directory.
+- `docker-compose*.yml` excludes all files that start with `docker-compose` and end with `.yml`.
+- `Dockerfile` excludes the `Dockerfile` file.
+- `logs` excludes the `logs` directory.
 
 ## Run 💡
 
@@ -104,9 +105,9 @@ Note: `PORT` will default to `3001` if it's not assigned a value in the `.env` f
 
 We are running several test suites as part of our CI/CD pipeline.
 
-* Unit test :   These tests are written using Jest and ends with `*.test.ts` extension.
-* API test  :   These tests are written using Jest and ends with `*.api-test.ts` extension.
-* E2E test  :   These tests are written using Jest and ends with `*.e2e-test.ts` extension.
+- Unit test :   These tests are written using Jest and ends with `*.test.ts` extension.
+- API test  :   These tests are written using Jest and ends with `*.api-test.ts` extension.
+- E2E test  :   These tests are written using Jest and ends with `*.e2e-test.ts` extension.
 
 ### NOTE ⚠️
 
@@ -161,28 +162,28 @@ The first section defines the version of the Compose file syntax being used (ver
 
 Under the api **service**, the following options are specified:
 
-* `build`: specifies the build context for the Docker image. In this case, it is set to the current directory (.), which means that Docker will look for a
+- `build`: specifies the build context for the Docker image. In this case, it is set to the current directory (.), which means that Docker will look for a
 Dockerfile in the current directory to build the image.
-* `image`: specifies the name of the Docker image that will be built.
-* `container_name`: specifies the name of the Docker container that will be created from the image.
-* `restart`: specifies that the container should always be restarted if it stops running.
-* `command`: specifies the command that should be run when the container starts. In this case, it is set to `npm run start:prod`.
-* `ports`: specifies the ports that should be exposed by the container. In this case, it is set to ${PORT}:${PORT}, which means that the value of the PORT
+- `image`: specifies the name of the Docker image that will be built.
+- `container_name`: specifies the name of the Docker container that will be created from the image.
+- `restart`: specifies that the container should always be restarted if it stops running.
+- `command`: specifies the command that should be run when the container starts. In this case, it is set to `npm run start:prod`.
+- `ports`: specifies the ports that should be exposed by the container. In this case, it is set to ${PORT}:${PORT}, which means that the value of the PORT
 environment variable will be used for both the host and container ports.
-* `volumes`: specifies any directories or files that should be mounted as volumes inside the container. In this case, it is set to `./:/app/src:rw`, which means
+- `volumes`: specifies any directories or files that should be mounted as volumes inside the container. In this case, it is set to `./:/app/src:rw`, which means
 that the current directory on the host machine will be mounted as a **read-write** volume at `/app/src` inside the container.
-* `environment`: specifies any environment variables that should be set inside the container. In this case, a list of environment variables is provided, but
+- `environment`: specifies any environment variables that should be set inside the container. In this case, a list of environment variables is provided, but
 their values are not specified in the file since they will be referred from local `.env` file. (Please refer to `.env.sample` for getting started).
 
 The next section defines a **healthcheck** for the container, which will periodically check if the container is running correctly. The options specified are:
 
-* `test`: specifies the command that should be run to test the health of the container. In this case, it is set to
+- `test`: specifies the command that should be run to test the health of the container. In this case, it is set to
   `['CMD', 'curl', '-f', 'http://localhost:${PORT}']`, which means that the healthcheck will run the curl command to make a
   request to the container's web server and check if it receives a response.
-* `retries`: specifies the number of times that the healthcheck should be retried before considering the container as unhealthy.
-* `interval`: specifies the interval at which the healthcheck should be run.
-* `timeout`: specifies the maximum amount of time that the healthcheck command can run before being considered as failed.
-* `start_period`: specifies the amount of time to wait before running the first healthcheck after the container has started.
+- `retries`: specifies the number of times that the healthcheck should be retried before considering the container as unhealthy.
+- `interval`: specifies the interval at which the healthcheck should be run.
+- `timeout`: specifies the maximum amount of time that the healthcheck command can run before being considered as failed.
+- `start_period`: specifies the amount of time to wait before running the first healthcheck after the container has started.
 
 ## Code ⌨️
 

@@ -9,6 +9,7 @@ import {
   arrayOfObjectsCurrencyStringValidation,
   arrayOfObjectsDateStringValidation,
   arrayOfObjectsNumberValidation,
+  arrayOfObjectsOptionalNumberValidation,
   arrayOfObjectsOptionalStringValidation,
   arrayOfObjectsStringValidation,
   assert400Response,
@@ -141,6 +142,17 @@ describe('POST /gift/facility - validation - obligations', () => {
       fieldName: 'repaymentType',
       min: OBLIGATION_VALIDATION.REPAYMENT_TYPE.MIN_LENGTH,
       max: OBLIGATION_VALIDATION.REPAYMENT_TYPE.MAX_LENGTH,
+    });
+  });
+
+  describe('linkedRepaymentProfileId', () => {
+    const fieldName = 'linkedRepaymentProfileId';
+
+    arrayOfObjectsOptionalNumberValidation({
+      ...baseParams,
+      fieldName,
+      min: OBLIGATION_VALIDATION.LINKED_REPAYMENT_PROFILE_ID.MIN,
+      max: OBLIGATION_VALIDATION.LINKED_REPAYMENT_PROFILE_ID.MAX,
     });
   });
 
