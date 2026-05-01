@@ -29,6 +29,28 @@ describe('giftQueueConfig', () => {
     });
   });
 
+  describe('clientId', () => {
+    it('is the env variable AZURE_CLIENT_ID', () => {
+      const environmentVariableValue = valueGenerator.string();
+
+      process.env = {
+        AZURE_CLIENT_ID: environmentVariableValue,
+      };
+
+      const { clientId } = giftQueueConfig();
+
+      expect(clientId).toBe(environmentVariableValue);
+    });
+
+    it('is undefined if AZURE_CLIENT_ID is not specified', () => {
+      process.env = {};
+
+      const { clientId } = giftQueueConfig();
+
+      expect(clientId).toBeUndefined();
+    });
+  });
+
   describe('queueName', () => {
     it('is the env variable GIFT_QUEUE_NAME if specified', () => {
       const environmentVariableValue = valueGenerator.string();
