@@ -4,15 +4,7 @@ import { createGiftFacility } from '../utils/create-gift-facility';
 import { createHaloTicket } from '../utils/create-halo-ticket';
 
 function extractFacilityId(queueItem: unknown): string {
-  if (
-    queueItem !== null &&
-    typeof queueItem === 'object' &&
-    'facilityId' in queueItem &&
-    typeof (queueItem as Record<string, unknown>).facilityId === 'string'
-  ) {
-    return (queueItem as Record<string, unknown>).facilityId as string;
-  }
-  return 'unknown';
+  return (queueItem as Record<string, Record<string, string>>)?.overview?.facilityId ?? 'unknown';
 }
 
 /**
