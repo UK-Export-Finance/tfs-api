@@ -101,9 +101,16 @@ jobs:
 
       - name: Push functions image 🗃️
         run: |
-          docker build tfs-functions/ \
+          docker build -f tfs-functions/Dockerfile . \
           -t ${{ env.ACR }}/${{ env.NAME }}:${{ github.sha }}
           docker push ${{ env.ACR }}/${{ env.NAME }}:${{ github.sha }}
+
+      - name: Managed identity client ID 🪪
+        run: |
+            echo FUNCTIONS_CLIENT_ID=$(az identity show \
+              --name id-apim-functions-${{ env.ENVIRONMENT }}-${{ vars.VERSION }} \
+              --resource-group ${{ env.RG }} \
+              --query clientId -o tsv) >> $GITHUB_ENV
 
       - name: Resolve TFS API URL 🔍
         run: |
@@ -113,18 +120,26 @@ jobs:
             --query properties.latestRevisionFqdn -o tsv)
           echo "TFS_API_BASE_URL=https://$FQDN" >> $GITHUB_ENV
 
-      - name: Update container app with image 🔀
+      - name: Set container app secrets 🔒
         run: |
-          az containerapp update \
+          az containerapp secret set \
           --name ${{ env.CA_NAME }} \
           --resource-group ${{ env.RG }} \
-          --container-name ${{ env.CA_NAME }} \
-          --image ${{ env.ACR }}/${{ env.NAME }}:${{ github.sha }} \
-          --revision-suffix v${{ github.run_id }} \
-          --set-env-vars \
-            "AzureWebJobsStorage=${{ secrets.AZURE_WEB_JOBS_STORAGE }}" \
-            "FUNCTIONS_WORKER_RUNTIME=node" \
-            "AzureFunctionsJobHost__Logging__Console__IsEnabled=true" \
-            "TFS_API_BASE_URL=${{ env.TFS_API_BASE_URL }}" \
-            "TFS_API_KEY=${{ secrets.API_KEY }}" \
-            "AZURE_WEB_JOBS_STORAGE=${{ secrets.AZURE_WEB_JOBS_STORAGE }}"
+          --secrets "tfs-api-key=${{ secrets.API_KEY }}"
+
+      - name: Update container app with image 🔀
+        run: |
+            az containerapp update \
+            --name ${{ env.CA_NAME }} \
+            --resource-group ${{ env.RG }} \
+            --container-name ${{ env.CA_NAME }} \
+            --image ${{ env.ACR }}/${{ env.NAME }}:${{ github.sha }} \
+            --revision-suffix v${{ github.run_id }} \
+            --set-env-vars \
+              "AzureWebJobsStorage__accountName=st${{ env.PRODUCT }}fn${{ env.ENVIRONMENT }}${{ vars.VERSION }}" \
+              "AzureWebJobsStorage__credential=managedidentity" \
+              "AzureWebJobsStorage__clientId=${{ env.FUNCTIONS_CLIENT_ID }}" \
+              "FUNCTIONS_WORKER_RUNTIME=node" \
+              "AzureFunctionsJobHost__Logging__Console__IsEnabled=true" \
+              "TFS_API_BASE_URL=${{ env.TFS_API_BASE_URL }}" \
+              "TFS_API_KEY=secretref:tfs-api-key"

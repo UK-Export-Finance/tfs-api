@@ -105,6 +105,7 @@ jobs:
           echo CA_NAME=$(az resource list --resource-type 'Microsoft.App/containerApps' --query '[?contains(name, `${{ env.NAME }}`)].name' -o tsv) >> $GITHUB_ENV
           echo APIM=$(az resource list --resource-type 'Microsoft.ApiManagement/service' --query '[0].name' -o tsv) >> $GITHUB_ENV
           echo API_ID=$(az apim api list --service-name $(az resource list --resource-type 'Microsoft.ApiManagement/service' --query '[0].name' -o tsv) --query '[?contains(displayName, `${{ env.NAME_UPPERCASE }}`)].name' -o tsv) >> $GITHUB_ENV
+          echo TFS_CLIENT_ID=$(az identity show --name id-${{ env.PRODUCT }}-tfs-${{ env.ENVIRONMENT }}-${{ vars.VERSION }} --query clientId -o tsv) >> $GITHUB_ENV
 
       - name: ACR 🔐
         uses: azure/docker-login@v2
@@ -167,7 +168,8 @@ jobs:
               "GIFT_API_TIMEOUT=${{ secrets.GIFT_API_TIMEOUT }}" \
               "GIFT_HTTP_VERSION=${{ vars.GIFT_HTTP_VERSION }}" \
               "GIFT_QUEUE_NAME=${{ vars.GIFT_QUEUE_NAME }}" \
-              "GIFT_QUEUE_STORAGE_CONNECTION_STRING=${{ secrets.GIFT_QUEUE_STORAGE_CONNECTION_STRING }}"
+              "AZURE_CLIENT_ID=${{ env.TFS_CLIENT_ID }}" \
+              "GIFT_QUEUE_STORAGE_ACCOUNT_NAME=st${{ env.PRODUCT }}fn${{ env.ENVIRONMENT }}${{ vars.VERSION }}"
 
       - name: Import ⬇️
         if: ${{ env.API_ID != '' }}
