@@ -22,6 +22,13 @@ export async function createGiftFacility(queueItem: unknown, context: Invocation
       },
     });
   } catch (error) {
+    if (axios.isAxiosError(error)) {
+      const responseBody = error.response?.data ? JSON.stringify(error.response.data) : 'no response body';
+      const message = `Failed to create GIFT facility, status: ${error.response?.status ?? 'unknown'}, error: ${error.message}, response: ${responseBody}`;
+      context.error(message);
+      throw new Error(message);
+    }
+
     if (error instanceof Error) {
       const message = `Failed to create GIFT facility, error: ${error.message}`;
       context.error(message);
