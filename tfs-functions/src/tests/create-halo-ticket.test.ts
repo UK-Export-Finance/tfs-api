@@ -2,12 +2,28 @@
 
 const HALO_BASE_URL = 'http://mock-halo.com';
 const HALO_TENANT_NAME = 'mock-tenant';
-const HALO_CLIENT_ID = 'mock-client-id';
+const HALO_AUTH_CLIENT_ID = 'mock-client-id';
 const HALO_CLIENT_SECRET = 'mock-client-secret';
+const HALO_TICKET_CLIENT_ID = '12';
+const HALO_TICKET_TYPE_ID = '4';
+const HALO_SITE_ID = '18';
+const HALO_USER_ID = '25';
+const HALO_TEAM_ID = '32';
 process.env.HALO_BASE_URL = HALO_BASE_URL;
 process.env.HALO_TENANT_NAME = HALO_TENANT_NAME;
-process.env.HALO_CLIENT_ID = HALO_CLIENT_ID;
+process.env.HALO_AUTH_CLIENT_ID = HALO_AUTH_CLIENT_ID;
 process.env.HALO_CLIENT_SECRET = HALO_CLIENT_SECRET;
+process.env.HALO_TICKET_CLIENT_ID = HALO_TICKET_CLIENT_ID;
+process.env.HALO_TICKET_TYPE_ID = HALO_TICKET_TYPE_ID;
+process.env.HALO_SITE_ID = HALO_SITE_ID;
+process.env.HALO_USER_ID = HALO_USER_ID;
+process.env.HALO_TEAM_ID = HALO_TEAM_ID;
+
+const ticketClientId = Number(HALO_TICKET_CLIENT_ID);
+const ticketTypeId = Number(HALO_TICKET_TYPE_ID);
+const siteId = Number(HALO_SITE_ID);
+const userId = Number(HALO_USER_ID);
+const teamId = Number(HALO_TEAM_ID);
 
 // eslint-disable-next-line import/first
 import axios from 'axios';
@@ -46,8 +62,8 @@ describe('createHaloTicket', () => {
       // Assert
       expect(axios.post).toHaveBeenNthCalledWith(
         1,
-        `${HALO_BASE_URL}/token?tenant=${HALO_TENANT_NAME}`,
-        `grant_type=client_credentials&client_id=${HALO_CLIENT_ID}&client_secret=${HALO_CLIENT_SECRET}`,
+        `${HALO_BASE_URL}/auth/token?tenant=${HALO_TENANT_NAME}`,
+        `grant_type=client_credentials&client_id=${HALO_AUTH_CLIENT_ID}&client_secret=${HALO_CLIENT_SECRET}`,
         { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } },
       );
     });
@@ -103,11 +119,20 @@ describe('createHaloTicket', () => {
       // Assert
       expect(axios.post).toHaveBeenNthCalledWith(
         2,
-        `${HALO_BASE_URL}/Tickets`,
+        `${HALO_BASE_URL}/api/Tickets`,
         [
           {
             summary: `APIM Error submitting DTFS facility ${facilityId} to GIFT`,
             details: `Error: ${errorMessage}\n\nOriginal payload:\n${JSON.stringify(payload, null, 2)}`,
+            tickettype_id: ticketTypeId,
+            client_id: ticketClientId,
+            site_id: siteId,
+            user_id: userId,
+            team_id: teamId,
+            itil_tickettype_id: -1,
+            dont_do_rules: true,
+            donotapplytemplateintheapi: true,
+            return_this: true,
           },
         ],
         {

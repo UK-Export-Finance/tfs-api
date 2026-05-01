@@ -1,10 +1,26 @@
 import { InvocationContext } from '@azure/functions';
 import axios from 'axios';
 
-const { HALO_BASE_URL: baseUrl, HALO_TENANT_NAME: tenantName, HALO_CLIENT_ID: clientId, HALO_CLIENT_SECRET: clientSecret } = process.env;
+const {
+  HALO_BASE_URL: baseUrl,
+  HALO_TENANT_NAME: tenantName,
+  HALO_AUTH_CLIENT_ID: clientId,
+  HALO_CLIENT_SECRET: clientSecret,
+  HALO_TICKET_CLIENT_ID: ticketClientIdEnv,
+  HALO_TICKET_TYPE_ID: ticketTypeIdEnv,
+  HALO_SITE_ID: siteIdEnv,
+  HALO_USER_ID: userIdEnv,
+  HALO_TEAM_ID: teamIdEnv,
+} = process.env;
 
-const haloTokenUrl = `${baseUrl}/token?tenant=${tenantName}`;
-const haloTicketsUrl = `${baseUrl}/Tickets`;
+const ticketClientId = Number(ticketClientIdEnv);
+const ticketTypeId = Number(ticketTypeIdEnv);
+const siteId = Number(siteIdEnv);
+const userId = Number(userIdEnv);
+const teamId = Number(teamIdEnv);
+
+const haloTokenUrl = `${baseUrl}/auth/token?tenant=${tenantName}`;
+const haloTicketsUrl = `${baseUrl}/api/Tickets`;
 
 /**
  * Acquires an OAuth2 access token from Halo using client credentials.
@@ -47,15 +63,24 @@ export async function createHaloTicket(facilityId: string, payload: unknown, err
   }
 
   try {
-    // TODO 637: confirm Halo ticket type and required fields
     await axios.post(
       haloTicketsUrl,
       [
         {
           summary: `APIM Error submitting DTFS facility ${facilityId} to GIFT`,
           details: `Error: ${errorMessage}\n\nOriginal payload:\n${JSON.stringify(payload, null, 2)}`,
+          tickettype_id: ticketTypeId,
+          client_id: ticketClientId,
+          site_id: siteId,
+          user_id: userId,
+          team_id: teamId,
+          itil_tickettype_id: -1,
+          dont_do_rules: true,
+          donotapplytemplateintheapi: true,
+          return_this: true,
         },
       ],
+      // TODO 637: validate these field values once the Halo ticket type is confirmed
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
