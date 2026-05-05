@@ -121,13 +121,16 @@ jobs:
           echo "TFS_API_BASE_URL=https://$FQDN" >> $GITHUB_ENV
 
       - name: Set container app secrets 🔒
+        env:
+          API_KEY: ${{ secrets.API_KEY }}
+          HALO_CLIENT_SECRET: ${{ secrets.HALO_CLIENT_SECRET }}
         run: |
           az containerapp secret set \
           --name ${{ env.CA_NAME }} \
           --resource-group ${{ env.RG }} \
           --secrets \
-            "tfs-api-key=${{ secrets.API_KEY }}" \
-            "halo-client-secret=${{ secrets.HALO_CLIENT_SECRET }}"
+            "tfs-api-key=$API_KEY" \
+            "halo-client-secret=$HALO_CLIENT_SECRET"
 
       - name: Update container app with image 🔀
         run: |
