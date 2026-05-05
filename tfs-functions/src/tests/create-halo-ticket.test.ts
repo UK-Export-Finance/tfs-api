@@ -28,6 +28,8 @@ const teamId = Number(HALO_TEAM_ID);
 // eslint-disable-next-line import/first
 import axios from 'axios';
 // eslint-disable-next-line import/first
+import { GIFT_QUEUE_MESSAGE_TYPE } from 'types/queue-message.type';
+// eslint-disable-next-line import/first
 import { createHaloTicket } from 'utils/create-halo-ticket';
 
 jest.mock('axios');
@@ -38,6 +40,22 @@ const context = {
 };
 
 const mockAccessToken = 'mock-access-token';
+
+const buildExpectedTicketBody = (facilityId: string, payload: unknown, errorMessage: string, operationType: string) => [
+  {
+    summary: `APIM Error submitting DTFS facility ${facilityId} ${operationType} to GIFT`,
+    details: `Error: ${errorMessage}\n\nOriginal payload:\n${JSON.stringify(payload, null, 2)}`,
+    tickettype_id: ticketTypeId,
+    client_id: ticketClientId,
+    site_id: siteId,
+    user_id: userId,
+    team_id: teamId,
+    itil_tickettype_id: -1,
+    dont_do_rules: true,
+    donotapplytemplateintheapi: true,
+    return_this: true,
+  },
+];
 
 describe('createHaloTicket', () => {
   beforeEach(() => {
@@ -57,7 +75,7 @@ describe('createHaloTicket', () => {
         .mockResolvedValueOnce({});
 
       // Act
-      await createHaloTicket(facilityId, payload, errorMessage, context as any);
+      await createHaloTicket(facilityId, payload, errorMessage, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION, context as any);
 
       // Assert
       expect(axios.post).toHaveBeenNthCalledWith(
@@ -77,7 +95,7 @@ describe('createHaloTicket', () => {
       axios.post = jest.fn().mockRejectedValueOnce(new Error('Unauthorized'));
 
       // Act
-      const createHaloTicketCall = () => createHaloTicket(facilityId, payload, errorMessage, context as any);
+      const createHaloTicketCall = () => createHaloTicket(facilityId, payload, errorMessage, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION, context as any);
 
       // Assert
       await expect(createHaloTicketCall()).rejects.toThrow('Failed to acquire Halo access token: Unauthorized');
@@ -93,7 +111,7 @@ describe('createHaloTicket', () => {
       axios.post = jest.fn().mockRejectedValueOnce('unexpected string error');
 
       // Act
-      const createHaloTicketCall = () => createHaloTicket(facilityId, payload, errorMessage, context as any);
+      const createHaloTicketCall = () => createHaloTicket(facilityId, payload, errorMessage, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION, context as any);
 
       // Assert
       await expect(createHaloTicketCall()).rejects.toThrow('Failed to acquire Halo access token: unknown error');
@@ -102,66 +120,119 @@ describe('createHaloTicket', () => {
   });
 
   describe('ticket creation', () => {
-    it('posts to the correct tickets URL with correct headers and body', async () => {
-      // Arrange
-      const facilityId = 'abc-123';
-      const payload = { facilityId, amount: 1000 };
-      const errorMessage = 'Failed to create GIFT facility, status: 400, response: {"error":"Bad Request"}';
+    describe('when messageType is facility-creation', () => {
+      it('posts a ticket with a summary referencing creation', async () => {
+        // Arrange
+        const facilityId = 'abc-123';
+        const payload = { facilityId, amount: 1000 };
+        const errorMessage = 'Failed to create GIFT facility, status: 400, response: {"error":"Bad Request"}';
 
-      axios.post = jest
-        .fn()
-        .mockResolvedValueOnce({ data: { access_token: mockAccessToken } })
-        .mockResolvedValueOnce({});
+        axios.post = jest
+          .fn()
+          .mockResolvedValueOnce({ data: { access_token: mockAccessToken } })
+          .mockResolvedValueOnce({});
 
-      // Act
-      await createHaloTicket(facilityId, payload, errorMessage, context as any);
+        // Act
+        await createHaloTicket(facilityId, payload, errorMessage, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION, context as any);
 
-      // Assert
-      expect(axios.post).toHaveBeenNthCalledWith(
-        2,
-        `${HALO_BASE_URL}/api/Tickets`,
-        [
-          {
-            summary: `APIM Error submitting DTFS facility ${facilityId} to GIFT`,
-            details: `Error: ${errorMessage}\n\nOriginal payload:\n${JSON.stringify(payload, null, 2)}`,
-            tickettype_id: ticketTypeId,
-            client_id: ticketClientId,
-            site_id: siteId,
-            user_id: userId,
-            team_id: teamId,
-            itil_tickettype_id: -1,
-            dont_do_rules: true,
-            donotapplytemplateintheapi: true,
-            return_this: true,
-          },
-        ],
-        {
+        // Assert
+        expect(axios.post).toHaveBeenNthCalledWith(2, `${HALO_BASE_URL}/api/Tickets`, buildExpectedTicketBody(facilityId, payload, errorMessage, 'creation'), {
           headers: {
             Authorization: `Bearer ${mockAccessToken}`,
             'Content-Type': 'application/json',
           },
-        },
-      );
+        });
+      });
+
+      it('logs the start and success of the ticket creation', async () => {
+        // Arrange
+        const facilityId = 'abc-123';
+        const payload = { facilityId };
+        const errorMessage = 'Something went wrong';
+
+        axios.post = jest
+          .fn()
+          .mockResolvedValueOnce({ data: { access_token: mockAccessToken } })
+          .mockResolvedValueOnce({});
+
+        // Act
+        await createHaloTicket(facilityId, payload, errorMessage, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION, context as any);
+
+        // Assert
+        expect(context.log).toHaveBeenCalledWith('Raising Halo ticket for failed GIFT facility creation, facilityId:', facilityId);
+        expect(context.log).toHaveBeenCalledWith('Halo ticket raised successfully for facilityId:', facilityId);
+        expect(context.error).not.toHaveBeenCalled();
+      });
     });
 
-    it('logs the start and success of the ticket creation', async () => {
-      // Arrange
-      const facilityId = 'abc-123';
-      const payload = { facilityId };
-      const errorMessage = 'Something went wrong';
+    describe('when messageType is facility-amendment', () => {
+      it('posts a ticket with a summary referencing amendment', async () => {
+        // Arrange
+        const facilityId = 'abc-123';
+        const payload = { facilityId, amendmentType: 'INCREASE_AMOUNT' };
+        const errorMessage = 'Failed to amend GIFT facility, status: 400, response: {"error":"Bad Request"}';
 
-      axios.post = jest
-        .fn()
-        .mockResolvedValueOnce({ data: { access_token: mockAccessToken } })
-        .mockResolvedValueOnce({});
+        axios.post = jest
+          .fn()
+          .mockResolvedValueOnce({ data: { access_token: mockAccessToken } })
+          .mockResolvedValueOnce({});
 
-      // Act
-      await createHaloTicket(facilityId, payload, errorMessage, context as any);
+        // Act
+        await createHaloTicket(facilityId, payload, errorMessage, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_AMENDMENT, context as any);
 
-      // Assert
-      expect(context.log).toHaveBeenCalledWith('Raising Halo ticket for failed GIFT facility creation, facilityId:', facilityId);
-      expect(context.log).toHaveBeenCalledWith('Halo ticket raised successfully for facilityId:', facilityId);
-      expect(context.error).not.toHaveBeenCalled();
+        // Assert
+        expect(axios.post).toHaveBeenNthCalledWith(2, `${HALO_BASE_URL}/api/Tickets`, buildExpectedTicketBody(facilityId, payload, errorMessage, 'amendment'), {
+          headers: {
+            Authorization: `Bearer ${mockAccessToken}`,
+            'Content-Type': 'application/json',
+          },
+        });
+      });
+
+      it('logs the start and success of the ticket creation', async () => {
+        // Arrange
+        const facilityId = 'abc-123';
+        const payload = { facilityId };
+        const errorMessage = 'Something went wrong';
+
+        axios.post = jest
+          .fn()
+          .mockResolvedValueOnce({ data: { access_token: mockAccessToken } })
+          .mockResolvedValueOnce({});
+
+        // Act
+        await createHaloTicket(facilityId, payload, errorMessage, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_AMENDMENT, context as any);
+
+        // Assert
+        expect(context.log).toHaveBeenCalledWith('Raising Halo ticket for failed GIFT facility amendment, facilityId:', facilityId);
+        expect(context.log).toHaveBeenCalledWith('Halo ticket raised successfully for facilityId:', facilityId);
+        expect(context.error).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('when messageType is undefined', () => {
+      it('posts a ticket with a summary referencing creation as the default', async () => {
+        // Arrange
+        const facilityId = 'abc-123';
+        const payload = { facilityId };
+        const errorMessage = 'Something went wrong';
+
+        axios.post = jest
+          .fn()
+          .mockResolvedValueOnce({ data: { access_token: mockAccessToken } })
+          .mockResolvedValueOnce({});
+
+        // Act
+        await createHaloTicket(facilityId, payload, errorMessage, undefined, context as any);
+
+        // Assert
+        expect(axios.post).toHaveBeenNthCalledWith(
+          2,
+          `${HALO_BASE_URL}/api/Tickets`,
+          buildExpectedTicketBody(facilityId, payload, errorMessage, 'creation'),
+          expect.anything(),
+        );
+      });
     });
 
     it('logs an error and throws if ticket creation fails with an Error', async () => {
@@ -176,7 +247,7 @@ describe('createHaloTicket', () => {
         .mockRejectedValueOnce(new Error('Internal Server Error'));
 
       // Act
-      const createHaloTicketCall = () => createHaloTicket(facilityId, payload, errorMessage, context as any);
+      const createHaloTicketCall = () => createHaloTicket(facilityId, payload, errorMessage, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION, context as any);
 
       // Assert
       await expect(createHaloTicketCall()).rejects.toThrow('Failed to create Halo ticket: Internal Server Error');
@@ -195,7 +266,7 @@ describe('createHaloTicket', () => {
         .mockRejectedValueOnce('unexpected string error');
 
       // Act
-      const createHaloTicketCall = () => createHaloTicket(facilityId, payload, errorMessage, context as any);
+      const createHaloTicketCall = () => createHaloTicket(facilityId, payload, errorMessage, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION, context as any);
 
       // Assert
       await expect(createHaloTicketCall()).rejects.toThrow('Failed to create Halo ticket: unknown error');
