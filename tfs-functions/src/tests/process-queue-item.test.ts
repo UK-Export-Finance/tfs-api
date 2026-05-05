@@ -47,7 +47,12 @@ describe('processQueueItem Azure function', () => {
   describe('when createGiftFacility throws', () => {
     it('calls createHaloTicket with the facilityId, payload, error message, and context', async () => {
       // Arrange
-      const queueItem = { facilityId: 'abc-123' };
+      const queueItem = {
+        overview: {
+          facilityId: 'abc-123',
+        },
+      };
+      
       const error = new Error('Failed to create GIFT facility, status: 400, response: {"error":"Bad Request"}');
 
       (createGiftFacility as jest.Mock).mockRejectedValue(error);
@@ -93,7 +98,11 @@ describe('processQueueItem Azure function', () => {
 
     it('uses "Unknown error" as the error message when the thrown value is not an Error', async () => {
       // Arrange
-      const queueItem = { facilityId: 'abc-123' };
+      const queueItem = {
+        overview: {
+          facilityId: 'abc-123',
+        },
+      };
 
       (createGiftFacility as jest.Mock).mockRejectedValue('unexpected string error');
       (createHaloTicket as jest.Mock).mockResolvedValue(undefined);

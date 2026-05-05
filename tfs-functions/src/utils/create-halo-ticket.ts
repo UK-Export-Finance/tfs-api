@@ -18,9 +18,6 @@ const ticketTypeId = Number(ticketTypeIdEnv);
 const siteId = Number(siteIdEnv);
 const userId = Number(userIdEnv);
 const teamId = Number(teamIdEnv);
-
-const haloTokenUrl = new URL('/auth/token', baseUrl);
-haloTokenUrl.searchParams.set('tenant', tenantName);
 const haloTicketsUrl = `${baseUrl}/api/Tickets`;
 
 function formatError(prefix: string, error: unknown): string {
@@ -31,6 +28,9 @@ function formatError(prefix: string, error: unknown): string {
  * Acquires an OAuth2 access token from Halo using client credentials.
  */
 async function getHaloAccessToken(context: InvocationContext): Promise<string> {
+  const haloTokenUrl = new URL('/auth/token', baseUrl);
+  haloTokenUrl.searchParams.set('tenant', tenantName);
+
   const params = new URLSearchParams({
     grant_type: 'client_credentials',
     client_id: clientId,
