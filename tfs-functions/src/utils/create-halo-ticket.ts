@@ -86,7 +86,7 @@ export async function createHaloTicket(facilityId: string, payload: unknown, err
   context.log('Raising Halo ticket for failed GIFT facility creation, facilityId:', facilityId);
 
   try {
-    const accessToken = await getHaloAccessToken(context);
+    const accessToken = await getHaloAccessToken();
 
     await axios.post(haloTicketsUrl, buildTicketBody(facilityId, payload, errorMessage), {
       headers: {
