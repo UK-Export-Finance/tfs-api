@@ -1,10 +1,12 @@
 # tfs-functions
 
-This package contains a minimal Azure Functions app with a storage queue trigger.
+This package contains an Azure Functions app with a storage queue trigger.
 
 The main queue trigger is defined in `src/functions/process-queue-item.ts` and listens on the
 `gift-requests` queue using the `AzureWebJobsStorage` connection. When a message is received, the
 function calls the `/api/v2/gift/facility` endpoint on `tfs-api` to process the facility creation.
+If that call fails, a Halo support ticket is automatically raised via `src/utils/create-halo-ticket.ts`
+before the error is rethrown (causing the message to be moved to the poison queue).
 
 ## Prerequisites
 
@@ -16,7 +18,10 @@ function calls the `/api/v2/gift/facility` endpoint on `tfs-api` to process the 
 
 ## Run the host locally (without Docker)
 
-1. Copy `local.settings.json.sample` to `local.settings.json`.
+1. Copy `local.settings.json.sample` to `local.settings.json` and fill in the values:
+   - `TFS_API_KEY` — must match the `API_KEY` env var set in `tfs-api`
+   - `HALO_BASE_URL`, `HALO_TENANT_NAME`, `HALO_AUTH_CLIENT_ID`, `HALO_CLIENT_SECRET` — Halo credentials (see [Halo integration](#halo-integration))
+   - `HALO_TICKET_CLIENT_ID`, `HALO_TICKET_TYPE_ID`, `HALO_SITE_ID`, `HALO_USER_ID`, `HALO_TEAM_ID` — Halo ticket field IDs (defaults are pre-populated in the sample)
 2. Install dependencies with `npm ci`.
 3. Start Azurite, using the VS Code Azurite extension.
 4. Start the Functions host with `npm start`.
@@ -44,16 +49,25 @@ The Functions host will be available on `http://localhost:7071`.
 ## Testing the queue
 
 After building the container, run the `seed-azurite.sh` script; this will create the queue.
-After that, you can post a message onto the queue. This needs to be Base64 encoded. The example below is the Base64 encoded message for hello world.
+
+To test the function in isolation (without running tfs-api), encode a valid JSON payload matching the `GiftFacilityCreationRequestDto` shape as Base64 and post it directly:
 
 ```bash
+# Encode your payload
+PAYLOAD='{"consumer":"DTFS","overview":{"facilityId":"0030000321",...},...}'
+ENCODED_PAYLOAD=$(echo -n "$PAYLOAD" | base64)
+
 az storage message put \
   --queue-name gift-requests \
-  --content "aGVsbG8gd29ybGQ=" \
+  --content "$ENCODED_PAYLOAD" \
   --connection-string "DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;QueueEndpoint=http://localhost:10001/devstoreaccount1;"
 ```
 
-To trigger the poison queue, you can put a message directly on the poison queue:
+The function container log should show the message was received and the `POST /api/v2/gift/facility` call was made.
+
+### Triggering the poison queue
+
+To test the poison queue handler directly, put a message onto the poison queue:
 
 ```bash
 az storage message put \
@@ -82,6 +96,8 @@ This tests the full flow: `POST /gift/facility/queue` → Azurite queue → func
    ```
 
    - `TFS_API_KEY` — must match the `API_KEY` env var set in `tfs-api`
+   - `HALO_BASE_URL`, `HALO_TENANT_NAME`, `HALO_AUTH_CLIENT_ID`, `HALO_CLIENT_SECRET` — Halo credentials (see [Halo integration](#halo-integration))
+   - `HALO_TICKET_CLIENT_ID`, `HALO_TICKET_TYPE_ID`, `HALO_SITE_ID`, `HALO_USER_ID`, `HALO_TEAM_ID` — Halo ticket field IDs (defaults are pre-populated in the sample)
 6. Start the functions container and Azurite:
 
    ```sh
@@ -97,6 +113,34 @@ This tests the full flow: `POST /gift/facility/queue` → Azurite queue → func
 - The queue binding uses `AzureWebJobsStorage`.
 - Messages must be Base64-encoded JSON — the `GiftQueueService` in `tfs-api` handles this automatically when using the `/facility/queue` endpoint.
 - After 5 failed attempts, the message is moved to `gift-requests-poison` and the poison queue function logs it.
+
+## Halo integration
+
+When a GIFT facility creation request fails, the function raises a support ticket in Halo PSA before rethrowing the error. The ticket includes the facility ID, the full original payload, and the error message.
+
+Authentication uses OAuth2 client credentials (`HALO_AUTH_CLIENT_ID` / `HALO_CLIENT_SECRET`) against the `HALO_BASE_URL` tenant.
+
+To test locally, you will need to have access to the Halo Test environment and set these authentication credentials in line with that. The variables below will make more sense when cross-referenced with the Halo UI.
+
+### Environment variables
+
+| Variable | Description |
+| --- | --- |
+| `HALO_BASE_URL` | Base URL of the Halo PSA instance (e.g. `https://your-org.halopsa.com`) |
+| `HALO_TENANT_NAME` | Halo tenant name used in the auth token request |
+| `HALO_AUTH_CLIENT_ID` | OAuth2 client ID for acquiring access tokens |
+| `HALO_CLIENT_SECRET` | OAuth2 client secret for acquiring access tokens |
+| `HALO_TICKET_CLIENT_ID` | Halo client ID to assign to created tickets |
+| `HALO_TICKET_TYPE_ID` | Halo ticket type ID for created tickets |
+| `HALO_SITE_ID` | Halo site ID to assign to created tickets |
+| `HALO_USER_ID` | Halo user ID to assign to created tickets |
+| `HALO_TEAM_ID` | Halo team ID to assign to created tickets |
+
+### Testing the failure path locally
+
+To trigger a Halo ticket during local testing, put a message onto the queue that will cause the GIFT facility creation to fail (e.g. an invalid payload). The function will attempt the GIFT call, fail, and then call Halo before moving the message to the poison queue - on the first attempt.
+
+You can then look at the Halo test environment to see the ticket you've raised.
 
 ## Azure deployment
 

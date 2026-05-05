@@ -53,7 +53,7 @@ async function getHaloAccessToken(context: InvocationContext): Promise<string> {
 
 /**
  * Builds the request body for creating a Halo ticket.
- * 
+ *
  * @param facilityId - The facility ID from the original DTFS payload (or 'unknown' if not present).
  * @param payload - The original payload sent by DTFS.
  * @param errorMessage - The formatted error message from the failed GIFT request.
@@ -91,16 +91,12 @@ export async function createHaloTicket(facilityId: string, payload: unknown, err
   const accessToken = await getHaloAccessToken(context);
 
   try {
-    await axios.post(
-      haloTicketsUrl,
-      buildTicketBody(facilityId, payload, errorMessage),
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
-        },
+    await axios.post(haloTicketsUrl, buildTicketBody(facilityId, payload, errorMessage), {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
       },
-    );
+    });
   } catch (error) {
     const message = formatError('Failed to create Halo ticket', error);
     context.error(message);
