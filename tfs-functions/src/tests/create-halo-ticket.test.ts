@@ -97,7 +97,7 @@ describe('createHaloTicket', () => {
 
       // Assert
       await expect(createHaloTicketCall()).rejects.toThrow('Failed to acquire Halo access token: unknown error');
-      expect(context.error).toHaveBeenCalledWith('Failed to acquire Halo access token: unknown error');
+      expect(context.error).toHaveBeenNthCalledWith(1, 'Failed to acquire Halo access token: unknown error');
     });
   });
 
