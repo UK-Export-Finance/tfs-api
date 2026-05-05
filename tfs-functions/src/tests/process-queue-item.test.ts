@@ -52,7 +52,7 @@ describe('processQueueItem Azure function', () => {
           facilityId: 'abc-123',
         },
       };
-      
+
       const error = new Error('Failed to create GIFT facility, status: 400, response: {"error":"Bad Request"}');
 
       (createGiftFacility as jest.Mock).mockRejectedValue(error);

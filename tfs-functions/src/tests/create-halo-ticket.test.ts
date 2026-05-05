@@ -1,6 +1,6 @@
 // Set mock environment variables before importing modules that depend on them
 
-const HALO_BASE_URL = 'http://mock-halo.com';
+const HALO_BASE_URL = 'https://mock-halo.com';
 const HALO_TENANT_NAME = 'mock-tenant';
 const HALO_AUTH_CLIENT_ID = 'mock-client-id';
 const HALO_CLIENT_SECRET = 'mock-client-secret';
