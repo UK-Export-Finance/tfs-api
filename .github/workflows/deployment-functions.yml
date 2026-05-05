@@ -125,7 +125,9 @@ jobs:
           az containerapp secret set \
           --name ${{ env.CA_NAME }} \
           --resource-group ${{ env.RG }} \
-          --secrets "tfs-api-key=${{ secrets.API_KEY }}"
+          --secrets \
+            "tfs-api-key=${{ secrets.API_KEY }}" \
+            "halo-client-secret=${{ secrets.HALO_CLIENT_SECRET }}"
 
       - name: Update container app with image 🔀
         run: |
@@ -142,4 +144,13 @@ jobs:
               "FUNCTIONS_WORKER_RUNTIME=node" \
               "AzureFunctionsJobHost__Logging__Console__IsEnabled=true" \
               "TFS_API_BASE_URL=${{ env.TFS_API_BASE_URL }}" \
-              "TFS_API_KEY=secretref:tfs-api-key"
+              "TFS_API_KEY=secretref:tfs-api-key" \
+              "HALO_BASE_URL=${{ vars.HALO_BASE_URL }}" \
+              "HALO_TENANT_NAME=${{ vars.HALO_TENANT_NAME }}" \
+              "HALO_AUTH_CLIENT_ID=${{ vars.HALO_AUTH_CLIENT_ID }}" \
+              "HALO_CLIENT_SECRET=secretref:halo-client-secret" \
+              "HALO_TICKET_CLIENT_ID=${{ vars.HALO_TICKET_CLIENT_ID }}" \
+              "HALO_TICKET_TYPE_ID=${{ vars.HALO_TICKET_TYPE_ID }}" \
+              "HALO_SITE_ID=${{ vars.HALO_SITE_ID }}" \
+              "HALO_USER_ID=${{ vars.HALO_USER_ID }}" \
+              "HALO_TEAM_ID=${{ vars.HALO_TEAM_ID }}"
