@@ -65,6 +65,8 @@ az storage message put \
 
 The function container log should show the message was received and the `POST /api/v2/gift/facility` call was made.
 
+Without running `tfs-api` locally, this call will fail.
+
 ### Triggering the poison queue
 
 To test the poison queue handler directly, put a message onto the poison queue:
@@ -112,7 +114,7 @@ This tests the full flow: `POST /gift/facility/queue` → Azurite queue → func
 
 - The queue binding uses `AzureWebJobsStorage`.
 - Messages must be Base64-encoded JSON — the `GiftQueueService` in `tfs-api` handles this automatically when using the `/facility/queue` endpoint.
-- After 5 failed attempts, the message is moved to `gift-requests-poison` and the poison queue function logs it.
+- After a single failed attempt, the message is moved to `gift-requests-poison` and the poison queue function logs it.
 
 ## Halo integration
 
@@ -138,7 +140,7 @@ To test locally, you will need to have access to the Halo Test environment and s
 
 ### Testing the failure path locally
 
-To trigger a Halo ticket during local testing, put a message onto the queue that will cause the GIFT facility creation to fail (e.g. an invalid payload). The function will attempt the GIFT call, fail, and then call Halo before moving the message to the poison queue - on the first attempt.
+To trigger a Halo ticket during local testing, put a message onto the queue that will cause the GIFT facility creation to fail (e.g. an invalid payload). The function will attempt the GIFT call, fail, and then call Halo before moving the message to the poison queue - on the first failed attempt.
 
 You can then look at the Halo test environment to see the ticket you've raised.
 

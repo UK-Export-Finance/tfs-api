@@ -25,10 +25,10 @@ const siteId = Number(HALO_SITE_ID);
 const userId = Number(HALO_USER_ID);
 const teamId = Number(HALO_TEAM_ID);
 
-// eslint-disable-next-line import/first
+/* eslint-disable import/first */
 import axios from 'axios';
-// eslint-disable-next-line import/first
 import { createHaloTicket } from 'utils/create-halo-ticket';
+/* eslint-enable import/first */
 
 jest.mock('axios');
 
@@ -68,7 +68,7 @@ describe('createHaloTicket', () => {
       );
     });
 
-    it('logs an error and throws if token acquisition fails with an Error', async () => {
+    it('logs an error and resolves if token acquisition fails with an Error', async () => {
       // Arrange
       const facilityId = 'abc-123';
       const payload = { facilityId };
@@ -77,14 +77,13 @@ describe('createHaloTicket', () => {
       axios.post = jest.fn().mockRejectedValueOnce(new Error('Unauthorized'));
 
       // Act
-      const createHaloTicketCall = () => createHaloTicket(facilityId, payload, errorMessage, context as any);
+      await createHaloTicket(facilityId, payload, errorMessage, context as any);
 
       // Assert
-      await expect(createHaloTicketCall()).rejects.toThrow('Failed to acquire Halo access token: Unauthorized');
-      expect(context.error).toHaveBeenCalledWith('Failed to acquire Halo access token: Unauthorized');
+      expect(context.error).toHaveBeenCalledWith('Failed to create Halo ticket: Unauthorized');
     });
 
-    it('logs an error and throws if token acquisition fails with a non-Error', async () => {
+    it('logs an error and resolves if token acquisition fails with a non-Error', async () => {
       // Arrange
       const facilityId = 'abc-123';
       const payload = { facilityId };
@@ -93,11 +92,10 @@ describe('createHaloTicket', () => {
       axios.post = jest.fn().mockRejectedValueOnce('unexpected string error');
 
       // Act
-      const createHaloTicketCall = () => createHaloTicket(facilityId, payload, errorMessage, context as any);
+      await createHaloTicket(facilityId, payload, errorMessage, context as any);
 
       // Assert
-      await expect(createHaloTicketCall()).rejects.toThrow('Failed to acquire Halo access token: unknown error');
-      expect(context.error).toHaveBeenNthCalledWith(1, 'Failed to acquire Halo access token: unknown error');
+      expect(context.error).toHaveBeenCalledWith('Failed to create Halo ticket: unknown error');
     });
   });
 
@@ -122,7 +120,7 @@ describe('createHaloTicket', () => {
         `${HALO_BASE_URL}/api/Tickets`,
         [
           {
-            summary: `APIM Error submitting DTFS facility ${facilityId} to GIFT`,
+            summary: `APIM TFS error submitting DTFS facility ${facilityId} to GIFT`,
             details: `Error: ${errorMessage}\n\nOriginal payload:\n${JSON.stringify(payload, null, 2)}`,
             tickettype_id: ticketTypeId,
             client_id: ticketClientId,
@@ -164,7 +162,7 @@ describe('createHaloTicket', () => {
       expect(context.error).not.toHaveBeenCalled();
     });
 
-    it('logs an error and throws if ticket creation fails with an Error', async () => {
+    it('logs an error and resolves if ticket creation fails with an Error', async () => {
       // Arrange
       const facilityId = 'abc-123';
       const payload = { facilityId };
@@ -176,14 +174,13 @@ describe('createHaloTicket', () => {
         .mockRejectedValueOnce(new Error('Internal Server Error'));
 
       // Act
-      const createHaloTicketCall = () => createHaloTicket(facilityId, payload, errorMessage, context as any);
+      await createHaloTicket(facilityId, payload, errorMessage, context as any);
 
       // Assert
-      await expect(createHaloTicketCall()).rejects.toThrow('Failed to create Halo ticket: Internal Server Error');
       expect(context.error).toHaveBeenCalledWith('Failed to create Halo ticket: Internal Server Error');
     });
 
-    it('logs an error and throws if ticket creation fails with a non-Error', async () => {
+    it('logs an error and resolves if ticket creation fails with a non-Error', async () => {
       // Arrange
       const facilityId = 'abc-123';
       const payload = { facilityId };
@@ -195,10 +192,9 @@ describe('createHaloTicket', () => {
         .mockRejectedValueOnce('unexpected string error');
 
       // Act
-      const createHaloTicketCall = () => createHaloTicket(facilityId, payload, errorMessage, context as any);
+      await createHaloTicket(facilityId, payload, errorMessage, context as any);
 
       // Assert
-      await expect(createHaloTicketCall()).rejects.toThrow('Failed to create Halo ticket: unknown error');
       expect(context.error).toHaveBeenCalledWith('Failed to create Halo ticket: unknown error');
     });
   });

@@ -128,21 +128,5 @@ describe('processQueueItem Azure function', () => {
       // Assert
       await expect(processQueueItemCall()).rejects.toThrow(error);
     });
-
-    it('rethrows the original error even if createHaloTicket also throws', async () => {
-      // Arrange
-      const queueItem = { facilityId: 'abc-123' };
-      const originalError = new Error('Failed to create GIFT facility');
-      const haloError = new Error('Failed to create Halo ticket: Internal Server Error');
-
-      (createGiftFacility as jest.Mock).mockRejectedValue(originalError);
-      (createHaloTicket as jest.Mock).mockRejectedValue(haloError);
-
-      // Act
-      const processQueueItemCall = () => processQueueItem(queueItem, context as any);
-
-      // Assert
-      await expect(processQueueItemCall()).rejects.toThrow(haloError);
-    });
   });
 });

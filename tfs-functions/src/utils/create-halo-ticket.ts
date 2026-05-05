@@ -26,8 +26,11 @@ function formatError(prefix: string, error: unknown): string {
 
 /**
  * Acquires an OAuth2 access token from Halo using client credentials.
+ *
+ * @param context - The Azure Functions invocation context for logging.
+ * @returns the access token as a string.
  */
-async function getHaloAccessToken(context: InvocationContext): Promise<string> {
+async function getHaloAccessToken(): Promise<string> {
   const haloTokenUrl = new URL('/auth/token', baseUrl);
   haloTokenUrl.searchParams.set('tenant', tenantName);
 
@@ -37,18 +40,12 @@ async function getHaloAccessToken(context: InvocationContext): Promise<string> {
     client_secret: clientSecret,
   });
 
-  try {
-    const response = await axios.post(haloTokenUrl.toString(), params.toString(), {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-    });
-    return response.data.access_token as string;
-  } catch (error) {
-    const message = formatError('Failed to acquire Halo access token', error);
-    context.error(message);
-    throw new Error(message);
-  }
+  const response = await axios.post(haloTokenUrl.toString(), params.toString(), {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+  });
+  return response.data.access_token as string;
 }
 
 /**
@@ -88,20 +85,18 @@ function buildTicketBody(facilityId: string, payload: unknown, errorMessage: str
 export async function createHaloTicket(facilityId: string, payload: unknown, errorMessage: string, context: InvocationContext): Promise<void> {
   context.log('Raising Halo ticket for failed GIFT facility creation, facilityId:', facilityId);
 
-  const accessToken = await getHaloAccessToken(context);
-
   try {
+    const accessToken = await getHaloAccessToken(context);
+
     await axios.post(haloTicketsUrl, buildTicketBody(facilityId, payload, errorMessage), {
       headers: {
         Authorization: `Bearer ${accessToken}`,
         'Content-Type': 'application/json',
       },
     });
-  } catch (error) {
-    const message = formatError('Failed to create Halo ticket', error);
-    context.error(message);
-    throw new Error(message);
-  }
 
-  context.log('Halo ticket raised successfully for facilityId:', facilityId);
+    context.log('Halo ticket raised successfully for facilityId:', facilityId);
+  } catch (error) {
+    context.error(formatError('Failed to create Halo ticket', error));
+  }
 }

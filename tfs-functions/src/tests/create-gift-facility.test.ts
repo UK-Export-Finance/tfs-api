@@ -5,10 +5,10 @@ const TFS_API_KEY = 'mock-api-key';
 process.env.TFS_API_BASE_URL = TFS_API_BASE_URL;
 process.env.TFS_API_KEY = TFS_API_KEY;
 
-// eslint-disable-next-line import/first
+/* eslint-disable import/first */
 import axios from 'axios';
-// eslint-disable-next-line import/first
 import { createGiftFacility } from 'utils/create-gift-facility';
+/* eslint-enable import/first */
 
 jest.mock('axios');
 
