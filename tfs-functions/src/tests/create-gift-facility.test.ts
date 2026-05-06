@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { createGiftFacility } from 'utils/create-gift-facility';
 
-const TFS_API_BASE_URL = process.env.TFS_API_BASE_URL;
-const TFS_API_KEY = process.env.TFS_API_KEY;
+const { TFS_API_BASE_URL } = process.env;
+const { TFS_API_KEY } = process.env;
 
 jest.mock('axios');
 
