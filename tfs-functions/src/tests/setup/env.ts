@@ -1,0 +1,11 @@
+process.env.TFS_API_BASE_URL = 'https://mock-tfs-api.com';
+process.env.TFS_API_KEY = 'mock-api-key';
+process.env.HALO_BASE_URL = 'https://mock-halo.com';
+process.env.HALO_TENANT_NAME = 'mock-tenant';
+process.env.HALO_AUTH_CLIENT_ID = 'mock-client-id';
+process.env.HALO_CLIENT_SECRET = 'mock-client-secret';
+process.env.HALO_TICKET_CLIENT_ID = '12';
+process.env.HALO_TICKET_TYPE_ID = '4';
+process.env.HALO_SITE_ID = '18';
+process.env.HALO_USER_ID = '25';
+process.env.HALO_TEAM_ID = '32';

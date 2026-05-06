@@ -9,10 +9,10 @@
     "HALO_TENANT_NAME": "",
     "HALO_AUTH_CLIENT_ID": "",
     "HALO_CLIENT_SECRET": "",
-    "HALO_TICKET_CLIENT_ID": "",
-    "HALO_TICKET_TYPE_ID": "",
-    "HALO_SITE_ID": "",
-    "HALO_USER_ID": "",
-    "HALO_TEAM_ID": ""
+    "HALO_TICKET_CLIENT_ID": "12",
+    "HALO_TICKET_TYPE_ID": "4",
+    "HALO_SITE_ID": "19",
+    "HALO_USER_ID": "25",
+    "HALO_TEAM_ID": "32"
   }
 }

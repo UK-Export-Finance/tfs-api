@@ -1,25 +1,16 @@
 import { InvocationContext } from '@azure/functions';
 import axios from 'axios';
+import { requireEnv, requireEnvInt } from 'utils/env';
 
-import { GIFT_QUEUE_OPERATION_LABEL, GiftQueueMessageType } from '../types/queue-message.type';
-
-const {
-  HALO_BASE_URL: baseUrl,
-  HALO_TENANT_NAME: tenantName,
-  HALO_AUTH_CLIENT_ID: clientId,
-  HALO_CLIENT_SECRET: clientSecret,
-  HALO_TICKET_CLIENT_ID: ticketClientIdEnv,
-  HALO_TICKET_TYPE_ID: ticketTypeIdEnv,
-  HALO_SITE_ID: siteIdEnv,
-  HALO_USER_ID: userIdEnv,
-  HALO_TEAM_ID: teamIdEnv,
-} = process.env;
-
-const ticketClientId = Number(ticketClientIdEnv);
-const ticketTypeId = Number(ticketTypeIdEnv);
-const siteId = Number(siteIdEnv);
-const userId = Number(userIdEnv);
-const teamId = Number(teamIdEnv);
+const baseUrl = requireEnv('HALO_BASE_URL');
+const tenantName = requireEnv('HALO_TENANT_NAME');
+const clientId = requireEnv('HALO_AUTH_CLIENT_ID');
+const clientSecret = requireEnv('HALO_CLIENT_SECRET');
+const ticketClientId = requireEnvInt('HALO_TICKET_CLIENT_ID');
+const ticketTypeId = requireEnvInt('HALO_TICKET_TYPE_ID');
+const siteId = requireEnvInt('HALO_SITE_ID');
+const userId = requireEnvInt('HALO_USER_ID');
+const teamId = requireEnvInt('HALO_TEAM_ID');
 const haloTicketsUrl = `${baseUrl}/api/Tickets`;
 
 function formatError(prefix: string, error: unknown): string {
@@ -28,8 +19,11 @@ function formatError(prefix: string, error: unknown): string {
 
 /**
  * Acquires an OAuth2 access token from Halo using client credentials.
+ *
+ * @param context - The Azure Functions invocation context for logging.
+ * @returns the access token as a string.
  */
-async function getHaloAccessToken(context: InvocationContext): Promise<string> {
+async function getHaloAccessToken(): Promise<string> {
   const haloTokenUrl = new URL('/auth/token', baseUrl);
   haloTokenUrl.searchParams.set('tenant', tenantName);
 
@@ -39,25 +33,19 @@ async function getHaloAccessToken(context: InvocationContext): Promise<string> {
     client_secret: clientSecret,
   });
 
-  try {
-    const response = await axios.post(haloTokenUrl.toString(), params.toString(), {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-    });
-    return response.data.access_token as string;
-  } catch (error) {
-    const message = formatError('Failed to acquire Halo access token', error);
-    context.error(message);
-    throw new Error(message);
-  }
+  const response = await axios.post(haloTokenUrl.toString(), params.toString(), {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+  });
+  return response.data.access_token as string;
 }
 
 /**
  * Builds the request body for creating a Halo ticket.
  *
  * @param facilityId - The facility ID from the original DTFS payload (or 'unknown' if not present).
- * @param payload - The original payload sent by DTFS.
+ * @param payload - The original payload sent by a consumer (e.g. DTFS).
  * @param errorMessage - The formatted error message from the failed GIFT request.
  * @param messageType - The type of GIFT request that failed ('facility-creation' or 'facility-amendment').
  * @returns the request body to create a Halo ticket, formatted according to the Halo API requirements.
@@ -100,7 +88,7 @@ export async function createHaloTicket(
   const operationType = GIFT_QUEUE_OPERATION_LABEL[messageType];
   context.log(`Raising Halo ticket for failed GIFT facility ${operationType}, facilityId:`, facilityId);
 
-  const accessToken = await getHaloAccessToken(context);
+  const accessToken = await getHaloAccessToken();
 
   try {
     await axios.post(haloTicketsUrl, buildTicketBody(facilityId, payload, errorMessage, messageType), {
@@ -109,11 +97,9 @@ export async function createHaloTicket(
         'Content-Type': 'application/json',
       },
     });
-  } catch (error) {
-    const message = formatError('Failed to create Halo ticket', error);
-    context.error(message);
-    throw new Error(message);
-  }
 
-  context.log('Halo ticket raised successfully for facilityId:', facilityId);
+    context.log('Halo ticket raised successfully for facilityId:', facilityId);
+  } catch (error) {
+    context.error(formatError('Failed to create Halo ticket', error));
+  }
 }
