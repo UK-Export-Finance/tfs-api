@@ -1,7 +1,9 @@
 import { InvocationContext } from '@azure/functions';
 import axios from 'axios';
+import { requireEnv } from 'utils/env';
 
-const { TFS_API_BASE_URL: baseUrl, TFS_API_KEY: apiKey } = process.env;
+const baseUrl = requireEnv('TFS_API_BASE_URL');
+const apiKey = requireEnv('TFS_API_KEY');
 
 const facilityCreationUrl = `${baseUrl}/api/v2/gift/facility`;
 

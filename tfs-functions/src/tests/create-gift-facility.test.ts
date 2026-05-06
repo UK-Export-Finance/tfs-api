@@ -1,14 +1,8 @@
-// Set mock environment variables before importing modules that depend on them
+import axios from 'axios';
+import { createGiftFacility } from 'utils/create-gift-facility';
 
 const TFS_API_BASE_URL = 'https://mock-tfs-api.com';
 const TFS_API_KEY = 'mock-api-key';
-process.env.TFS_API_BASE_URL = TFS_API_BASE_URL;
-process.env.TFS_API_KEY = TFS_API_KEY;
-
-/* eslint-disable import/first */
-import axios from 'axios';
-import { createGiftFacility } from 'utils/create-gift-facility';
-/* eslint-enable import/first */
 
 jest.mock('axios');
 

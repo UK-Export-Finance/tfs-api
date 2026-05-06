@@ -1,23 +1,16 @@
 import { InvocationContext } from '@azure/functions';
 import axios from 'axios';
+import { requireEnv, requireEnvInt } from 'utils/env';
 
-const {
-  HALO_BASE_URL: baseUrl,
-  HALO_TENANT_NAME: tenantName,
-  HALO_AUTH_CLIENT_ID: clientId,
-  HALO_CLIENT_SECRET: clientSecret,
-  HALO_TICKET_CLIENT_ID: ticketClientIdEnv,
-  HALO_TICKET_TYPE_ID: ticketTypeIdEnv,
-  HALO_SITE_ID: siteIdEnv,
-  HALO_USER_ID: userIdEnv,
-  HALO_TEAM_ID: teamIdEnv,
-} = process.env;
-
-const ticketClientId = Number(ticketClientIdEnv);
-const ticketTypeId = Number(ticketTypeIdEnv);
-const siteId = Number(siteIdEnv);
-const userId = Number(userIdEnv);
-const teamId = Number(teamIdEnv);
+const baseUrl = requireEnv('HALO_BASE_URL');
+const tenantName = requireEnv('HALO_TENANT_NAME');
+const clientId = requireEnv('HALO_AUTH_CLIENT_ID');
+const clientSecret = requireEnv('HALO_CLIENT_SECRET');
+const ticketClientId = requireEnvInt('HALO_TICKET_CLIENT_ID');
+const ticketTypeId = requireEnvInt('HALO_TICKET_TYPE_ID');
+const siteId = requireEnvInt('HALO_SITE_ID');
+const userId = requireEnvInt('HALO_USER_ID');
+const teamId = requireEnvInt('HALO_TEAM_ID');
 const haloTicketsUrl = `${baseUrl}/api/Tickets`;
 
 function formatError(prefix: string, error: unknown): string {

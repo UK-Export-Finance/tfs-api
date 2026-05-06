@@ -1,34 +1,15 @@
-// Set mock environment variables before importing modules that depend on them
+import axios from 'axios';
+import { createHaloTicket } from 'utils/create-halo-ticket';
 
 const HALO_BASE_URL = 'https://mock-halo.com';
 const HALO_TENANT_NAME = 'mock-tenant';
 const HALO_AUTH_CLIENT_ID = 'mock-client-id';
 const HALO_CLIENT_SECRET = 'mock-client-secret';
-const HALO_TICKET_CLIENT_ID = '12';
-const HALO_TICKET_TYPE_ID = '4';
-const HALO_SITE_ID = '18';
-const HALO_USER_ID = '25';
-const HALO_TEAM_ID = '32';
-process.env.HALO_BASE_URL = HALO_BASE_URL;
-process.env.HALO_TENANT_NAME = HALO_TENANT_NAME;
-process.env.HALO_AUTH_CLIENT_ID = HALO_AUTH_CLIENT_ID;
-process.env.HALO_CLIENT_SECRET = HALO_CLIENT_SECRET;
-process.env.HALO_TICKET_CLIENT_ID = HALO_TICKET_CLIENT_ID;
-process.env.HALO_TICKET_TYPE_ID = HALO_TICKET_TYPE_ID;
-process.env.HALO_SITE_ID = HALO_SITE_ID;
-process.env.HALO_USER_ID = HALO_USER_ID;
-process.env.HALO_TEAM_ID = HALO_TEAM_ID;
-
-const ticketClientId = Number(HALO_TICKET_CLIENT_ID);
-const ticketTypeId = Number(HALO_TICKET_TYPE_ID);
-const siteId = Number(HALO_SITE_ID);
-const userId = Number(HALO_USER_ID);
-const teamId = Number(HALO_TEAM_ID);
-
-/* eslint-disable import/first */
-import axios from 'axios';
-import { createHaloTicket } from 'utils/create-halo-ticket';
-/* eslint-enable import/first */
+const ticketClientId = 12;
+const ticketTypeId = 4;
+const siteId = 18;
+const userId = 25;
+const teamId = 32;
 
 jest.mock('axios');
 
