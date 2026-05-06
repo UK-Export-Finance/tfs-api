@@ -1,15 +1,15 @@
 import axios from 'axios';
 import { createHaloTicket } from 'utils/create-halo-ticket';
 
-const HALO_BASE_URL = 'https://mock-halo.com';
-const HALO_TENANT_NAME = 'mock-tenant';
-const HALO_AUTH_CLIENT_ID = 'mock-client-id';
-const HALO_CLIENT_SECRET = 'mock-client-secret';
-const ticketClientId = 12;
-const ticketTypeId = 4;
-const siteId = 18;
-const userId = 25;
-const teamId = 32;
+const HALO_BASE_URL = process.env.HALO_BASE_URL;
+const HALO_TENANT_NAME = process.env.HALO_TENANT_NAME;
+const HALO_AUTH_CLIENT_ID = process.env.HALO_AUTH_CLIENT_ID;
+const HALO_CLIENT_SECRET = process.env.HALO_CLIENT_SECRET;
+const ticketClientId = Number(process.env.HALO_TICKET_CLIENT_ID);
+const ticketTypeId = Number(process.env.HALO_TICKET_TYPE_ID);
+const siteId = Number(process.env.HALO_SITE_ID);
+const userId = Number(process.env.HALO_USER_ID);
+const teamId = Number(process.env.HALO_TEAM_ID);
 
 jest.mock('axios');
 
