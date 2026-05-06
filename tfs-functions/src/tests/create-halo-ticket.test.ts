@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { GIFT_QUEUE_MESSAGE_TYPE } from 'types/queue-message.type';
 import { createHaloTicket } from 'utils/create-halo-ticket';
 
 const { HALO_BASE_URL } = process.env;
