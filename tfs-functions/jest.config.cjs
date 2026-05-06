@@ -9,6 +9,7 @@ module.exports = {
     '/types/',
     '\\.d\\.ts$',
   ],
+  setupFiles: ['./src/tests/setup/env.ts'],
   testPathIgnorePatterns: ['dist'],
   moduleDirectories: ['node_modules', 'src'],
   testMatch: ['**/*.test.ts'],
