@@ -1,14 +1,9 @@
-const TFS_API_BASE_URL = 'https://mock-tfs-api.com';
-process.env.TFS_API_BASE_URL = TFS_API_BASE_URL;
-
-// eslint-disable-next-line import/first
-import { processQueueItem } from '../functions/process-queue-item';
-// eslint-disable-next-line import/first
+import { processQueueItem } from '../functions/process-queue-item';// eslint-disable-next-line import/first
 import { GIFT_QUEUE_MESSAGE_TYPE } from '../types/queue-message.type';
-// eslint-disable-next-line import/first
 import { createHaloTicket } from '../utils/create-halo-ticket';
-// eslint-disable-next-line import/first
 import { postToGiftApi } from '../utils/post-to-gift-api';
+
+const tfsApiBaseUrl = process.env.TFS_API_BASE_URL;
 
 jest.mock('../utils/post-to-gift-api');
 jest.mock('../utils/create-halo-ticket');
@@ -39,7 +34,7 @@ describe('processQueueItem Azure function', () => {
       // Assert
       expect(context.log).toHaveBeenCalledWith('Gift requests queue function received item:', queueItem);
       expect(postToGiftApi).toHaveBeenCalledTimes(1);
-      expect(postToGiftApi).toHaveBeenCalledWith(`${TFS_API_BASE_URL}/api/v2/gift/facility`, queueItem.payload, 'Failed to create GIFT facility', context);
+      expect(postToGiftApi).toHaveBeenCalledWith(`${tfsApiBaseUrl}/api/v2/gift/facility`, queueItem.payload, 'Failed to create GIFT facility', context);
       expect(context.log).toHaveBeenCalledWith('Gift facility creation succeeded');
     });
 
@@ -101,7 +96,7 @@ describe('processQueueItem Azure function', () => {
       expect(context.log).toHaveBeenCalledWith('Gift requests queue function received item:', queueItem);
       expect(postToGiftApi).toHaveBeenCalledTimes(1);
       expect(postToGiftApi).toHaveBeenCalledWith(
-        `${TFS_API_BASE_URL}/api/v2/gift/facility/abc-123/amendment`,
+        `${tfsApiBaseUrl}/api/v2/gift/facility/abc-123/amendment`,
         queueItem.payload,
         'Failed to amend GIFT facility',
         context,
