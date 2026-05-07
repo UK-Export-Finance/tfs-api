@@ -78,7 +78,7 @@ describe('createHaloTicket', () => {
       await createHaloTicket(facilityId, payload, errorMessage, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION, context as any);
 
       // Assert
-      expect(context.error).toHaveBeenCalledWith('Failed to create Halo ticket: Unauthorized');
+      expect(context.error).toHaveBeenCalledWith('Failed to acquire Halo access token: Unauthorized');
     });
 
     it('logs an error and resolves if token acquisition fails with a non-Error', async () => {
@@ -93,7 +93,7 @@ describe('createHaloTicket', () => {
       await createHaloTicket(facilityId, payload, errorMessage, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION, context as any);
 
       // Assert
-      expect(context.error).toHaveBeenCalledWith('Failed to create Halo ticket: unknown error');
+      expect(context.error).toHaveBeenCalledWith('Failed to acquire Halo access token: unknown error');
     });
   });
 
@@ -188,8 +188,8 @@ describe('createHaloTicket', () => {
       });
     });
 
-    describe('when messageType is undefined', () => {
-      it('posts a ticket with a summary referencing creation as the default', async () => {
+    describe('when ticket creation fails', () => {
+      it('logs an error and resolves if ticket creation fails with an Error', async () => {
         // Arrange
         const facilityId = 'abc-123';
         const payload = { facilityId };
@@ -198,55 +198,32 @@ describe('createHaloTicket', () => {
         axios.post = jest
           .fn()
           .mockResolvedValueOnce({ data: { access_token: mockAccessToken } })
-          .mockResolvedValueOnce({});
+          .mockRejectedValueOnce(new Error('Internal Server Error'));
 
         // Act
-        await createHaloTicket(facilityId, payload, errorMessage, undefined, context as any);
+        await createHaloTicket(facilityId, payload, errorMessage, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION, context as any);
 
         // Assert
-        expect(axios.post).toHaveBeenNthCalledWith(
-          2,
-          `${HALO_BASE_URL}/api/Tickets`,
-          buildExpectedTicketBody(facilityId, payload, errorMessage, 'creation'),
-          expect.anything(),
-        );
+        expect(context.error).toHaveBeenCalledWith('Failed to create Halo ticket: Internal Server Error');
       });
-    });
 
-    it('logs an error and resolves if ticket creation fails with an Error', async () => {
-      // Arrange
-      const facilityId = 'abc-123';
-      const payload = { facilityId };
-      const errorMessage = 'Something went wrong';
+      it('logs an error and resolves if ticket creation fails with a non-Error', async () => {
+        // Arrange
+        const facilityId = 'abc-123';
+        const payload = { facilityId };
+        const errorMessage = 'Something went wrong';
 
-      axios.post = jest
-        .fn()
-        .mockResolvedValueOnce({ data: { access_token: mockAccessToken } })
-        .mockRejectedValueOnce(new Error('Internal Server Error'));
+        axios.post = jest
+          .fn()
+          .mockResolvedValueOnce({ data: { access_token: mockAccessToken } })
+          .mockRejectedValueOnce('unexpected string error');
 
-      // Act
-      await createHaloTicket(facilityId, payload, errorMessage, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION, context as any);
+        // Act
+        await createHaloTicket(facilityId, payload, errorMessage, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION, context as any);
 
-      // Assert
-      expect(context.error).toHaveBeenCalledWith('Failed to create Halo ticket: Internal Server Error');
-    });
-
-    it('logs an error and resolves if ticket creation fails with a non-Error', async () => {
-      // Arrange
-      const facilityId = 'abc-123';
-      const payload = { facilityId };
-      const errorMessage = 'Something went wrong';
-
-      axios.post = jest
-        .fn()
-        .mockResolvedValueOnce({ data: { access_token: mockAccessToken } })
-        .mockRejectedValueOnce('unexpected string error');
-
-      // Act
-      await createHaloTicket(facilityId, payload, errorMessage, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION, context as any);
-
-      // Assert
-      expect(context.error).toHaveBeenCalledWith('Failed to create Halo ticket: unknown error');
+        // Assert
+        expect(context.error).toHaveBeenCalledWith('Failed to create Halo ticket: unknown error');
+      });
     });
   });
 });

@@ -89,7 +89,13 @@ export async function createHaloTicket(
   const operationType = GIFT_QUEUE_OPERATION_LABEL[messageType];
   context.log(`Raising Halo ticket for failed GIFT facility ${operationType}, facilityId:`, facilityId);
 
-  const accessToken = await getHaloAccessToken();
+  let accessToken: string;
+  try {
+    accessToken = await getHaloAccessToken();
+  } catch (error) {
+    context.error(formatError('Failed to acquire Halo access token', error));
+    return;
+  }
 
   try {
     await axios.post(haloTicketsUrl, buildTicketBody(facilityId, payload, errorMessage, messageType), {

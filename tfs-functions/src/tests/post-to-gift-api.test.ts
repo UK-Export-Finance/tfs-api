@@ -1,12 +1,7 @@
-// Set mock environment variables before importing modules that depend on them
-
-const TFS_API_KEY = 'mock-api-key';
-process.env.TFS_API_KEY = TFS_API_KEY;
-
-// eslint-disable-next-line import/first
 import axios from 'axios';
-// eslint-disable-next-line import/first
 import { postToGiftApi } from '../utils/post-to-gift-api';
+
+const tfsApiKey = process.env.TFS_API_KEY;
 
 jest.mock('axios');
 
@@ -36,7 +31,7 @@ describe('postToGiftApi', () => {
     expect(axios.post).toHaveBeenCalledTimes(1);
     expect(axios.post).toHaveBeenCalledWith(url, payload, {
       headers: {
-        'x-api-key': TFS_API_KEY,
+        'x-api-key': tfsApiKey,
         accept: 'application/json',
       },
     });
