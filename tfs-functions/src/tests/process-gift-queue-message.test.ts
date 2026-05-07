@@ -11,6 +11,7 @@ jest.mock('../utils/create-halo-ticket');
 const context = {
   log: jest.fn(),
   error: jest.fn(),
+  triggerMetadata: { dequeueCount: 5 },
 };
 
 describe('processGiftQueueMessage', () => {
@@ -49,30 +50,29 @@ describe('processGiftQueueMessage', () => {
     });
 
     describe('when postToTfsApi throws', () => {
-      it('calls createHaloTicket with the facilityId, payload, error message, messageType, and context', async () => {
+      it('calls createHaloTicket and rethrows when dequeueCount is 5', async () => {
         // Arrange
         const error = new Error('Failed to create GIFT facility, status: 400, response: {"error":"Bad Request"}');
 
         (postToTfsApi as jest.Mock).mockRejectedValue(error);
         (createHaloTicket as jest.Mock).mockResolvedValue(undefined);
 
-        // Act
-        await processGiftQueueMessage(queueItem, context as any).catch(() => {});
-
-        // Assert
+        // Act & Assert
+        await expect(processGiftQueueMessage(queueItem, context as any)).rejects.toThrow(error);
         expect(createHaloTicket).toHaveBeenCalledTimes(1);
         expect(createHaloTicket).toHaveBeenCalledWith('abc-123', queueItem, error.message, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION, context);
       });
 
-      it('rethrows the original error after calling createHaloTicket', async () => {
+      it('does not call createHaloTicket and rethrows when dequeueCount is less than 5', async () => {
         // Arrange
         const error = new Error('Failed to create GIFT facility');
+        const contextWithLowDequeueCount = { ...context, triggerMetadata: { dequeueCount: 4 } };
 
         (postToTfsApi as jest.Mock).mockRejectedValue(error);
-        (createHaloTicket as jest.Mock).mockResolvedValue(undefined);
 
         // Act & Assert
-        await expect(processGiftQueueMessage(queueItem, context as any)).rejects.toThrow(error);
+        await expect(processGiftQueueMessage(queueItem, contextWithLowDequeueCount as any)).rejects.toThrow(error);
+        expect(createHaloTicket).not.toHaveBeenCalled();
       });
     });
   });
@@ -114,30 +114,29 @@ describe('processGiftQueueMessage', () => {
     });
 
     describe('when postToTfsApi throws', () => {
-      it('calls createHaloTicket with the facilityId, payload, error message, messageType, and context', async () => {
+      it('calls createHaloTicket and rethrows when dequeueCount is 5', async () => {
         // Arrange
         const error = new Error('Failed to amend GIFT facility, status: 400, response: {"error":"Bad Request"}');
 
         (postToTfsApi as jest.Mock).mockRejectedValue(error);
         (createHaloTicket as jest.Mock).mockResolvedValue(undefined);
 
-        // Act
-        await processGiftQueueMessage(queueItem, context as any).catch(() => {});
-
-        // Assert
+        // Act & Assert
+        await expect(processGiftQueueMessage(queueItem, context as any)).rejects.toThrow(error);
         expect(createHaloTicket).toHaveBeenCalledTimes(1);
         expect(createHaloTicket).toHaveBeenCalledWith('abc-123', queueItem, error.message, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_AMENDMENT, context);
       });
 
-      it('rethrows the original error after calling createHaloTicket', async () => {
+      it('does not call createHaloTicket and rethrows when dequeueCount is less than 5', async () => {
         // Arrange
         const error = new Error('Failed to amend GIFT facility');
+        const contextWithLowDequeueCount = { ...context, triggerMetadata: { dequeueCount: 4 } };
 
         (postToTfsApi as jest.Mock).mockRejectedValue(error);
-        (createHaloTicket as jest.Mock).mockResolvedValue(undefined);
 
         // Act & Assert
-        await expect(processGiftQueueMessage(queueItem, context as any)).rejects.toThrow(error);
+        await expect(processGiftQueueMessage(queueItem, contextWithLowDequeueCount as any)).rejects.toThrow(error);
+        expect(createHaloTicket).not.toHaveBeenCalled();
       });
     });
   });
