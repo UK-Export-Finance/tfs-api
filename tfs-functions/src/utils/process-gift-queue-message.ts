@@ -56,7 +56,7 @@ export async function processGiftQueueMessage(queueItem: unknown, context: Invoc
       const facilityId = extractFacilityId(item);
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       await createHaloTicket(facilityId, queueItem, errorMessage, messageType, context);
-    } 
+    }
     throw error;
   }
 }
