@@ -11,7 +11,7 @@ const GIFT_API_URL = {
   facilityAmendment: (facilityId: string) => `${baseUrl}/api/v2/gift/facility/${facilityId}/amendment`,
 } as const;
 
-const assertNever = (value: never): never => {
+const throwIfNotExhaustive = (value: never): never => {
   throw new Error(`Unhandled message type: ${value}`);
 };
 
@@ -22,7 +22,7 @@ const extractFacilityId = (item: GiftQueueMessage): string => {
     case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION:
       return (item.payload as Record<string, Record<string, string>>)?.overview?.facilityId ?? 'unknown';
     default:
-      return assertNever(item.messageType);
+      return throwIfNotExhaustive(item.messageType);
   }
 };
 
@@ -50,7 +50,7 @@ export async function processQueueItem(queueItem: unknown, context: InvocationCo
         context.log('Gift facility amendment succeeded');
         break;
       default:
-        assertNever(messageType);
+        throwIfNotExhaustive(messageType);
     }
   } catch (error) {
     const facilityId = extractFacilityId(item);

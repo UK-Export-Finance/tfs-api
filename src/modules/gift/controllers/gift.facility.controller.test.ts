@@ -247,7 +247,7 @@ describe('GiftFacilityController', () => {
   describe('POST queue', () => {
     const mockBody = FACILITY_CREATION_PAYLOAD;
 
-    it('should call giftQueueService.enqueue with the wrapped facility creation message', async () => {
+    it('should call giftQueueService.enqueue with the facility creation message and message type', async () => {
       // Act
       await controller.postQueue(mockBody, mockRes);
 
@@ -270,7 +270,7 @@ describe('GiftFacilityController', () => {
     const mockParams = { facilityId: mockFacilityId };
     const mockBody = FACILITY_AMENDMENT_REQUEST_PAYLOAD;
 
-    it('should call giftQueueService.enqueue with the wrapped facility amendment message', async () => {
+    it('should call giftQueueService.enqueue with the facility amendment message and message type', async () => {
       // Act
       await controller.postAmendmentQueue(mockParams, mockBody, mockRes);
 

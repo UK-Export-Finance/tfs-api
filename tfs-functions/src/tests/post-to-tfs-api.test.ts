@@ -11,10 +11,10 @@ const context = {
   error: jest.fn(),
 };
 
-const url = 'https://mock-tfs-api.com/api/v2/gift/facility';
+const url = 'https://mock-tfs-api.com/api/v2/tfs/facility';
 const errorPrefix = 'Failed to do something';
 
-describe('postToGiftApi', () => {
+describe('postToTfsApi', () => {
   beforeEach(() => {
     jest.resetAllMocks();
   });

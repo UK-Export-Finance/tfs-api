@@ -3,10 +3,7 @@ import axios from 'axios';
 import { GIFT_QUEUE_MESSAGE_TYPE } from '../types/queue-message.type';
 import { createHaloTicket } from '../utils/create-halo-ticket';
 
-const { HALO_BASE_URL } = process.env;
-const { HALO_TENANT_NAME } = process.env;
-const { HALO_AUTH_CLIENT_ID } = process.env;
-const { HALO_CLIENT_SECRET } = process.env;
+const { HALO_BASE_URL, HALO_TENANT_NAME, HALO_AUTH_CLIENT_ID, HALO_CLIENT_SECRET } = process.env;
 const ticketClientId = Number(process.env.HALO_TICKET_CLIENT_ID);
 const ticketTypeId = Number(process.env.HALO_TICKET_TYPE_ID);
 const siteId = Number(process.env.HALO_SITE_ID);

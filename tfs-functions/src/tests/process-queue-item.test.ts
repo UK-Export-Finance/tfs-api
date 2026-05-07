@@ -24,7 +24,7 @@ describe('processQueueItem Azure function', () => {
       payload: { overview: { facilityId: 'abc-123' } },
     };
 
-    it('logs the received item and calls postToGiftApi with the creation URL, payload, and context', async () => {
+    it('logs the received item and calls postToTfsApi with the creation URL, payload, and context', async () => {
       // Arrange
       (postToTfsApi as jest.Mock).mockResolvedValue(undefined);
 
@@ -38,7 +38,7 @@ describe('processQueueItem Azure function', () => {
       expect(context.log).toHaveBeenCalledWith('Gift facility creation succeeded');
     });
 
-    it('does not call createHaloTicket when postToGiftApi succeeds', async () => {
+    it('does not call createHaloTicket when postToTfsApi succeeds', async () => {
       // Arrange
       (postToTfsApi as jest.Mock).mockResolvedValue(undefined);
 
@@ -49,7 +49,7 @@ describe('processQueueItem Azure function', () => {
       expect(createHaloTicket).not.toHaveBeenCalled();
     });
 
-    describe('when postToGiftApi throws', () => {
+    describe('when postToTfsApi throws', () => {
       it('calls createHaloTicket with the facilityId, payload, error message, messageType, and context', async () => {
         // Arrange
         const error = new Error('Failed to create GIFT facility, status: 400, response: {"error":"Bad Request"}');
@@ -85,7 +85,7 @@ describe('processQueueItem Azure function', () => {
       payload: { amendmentType: 'INCREASE_AMOUNT', data: { amount: 5000, date: '2025-06-01' } },
     };
 
-    it('logs the received item and calls postToGiftApi with the amendment URL, payload, and context', async () => {
+    it('logs the received item and calls postToTfsApi with the amendment URL, payload, and context', async () => {
       // Arrange
       (postToTfsApi as jest.Mock).mockResolvedValue(undefined);
 
@@ -104,7 +104,7 @@ describe('processQueueItem Azure function', () => {
       expect(context.log).toHaveBeenCalledWith('Gift facility amendment succeeded');
     });
 
-    it('does not call createHaloTicket when postToGiftApi succeeds', async () => {
+    it('does not call createHaloTicket when postToTfsApi succeeds', async () => {
       // Arrange
       (postToTfsApi as jest.Mock).mockResolvedValue(undefined);
 
@@ -115,7 +115,7 @@ describe('processQueueItem Azure function', () => {
       expect(createHaloTicket).not.toHaveBeenCalled();
     });
 
-    describe('when postToGiftApi throws', () => {
+    describe('when postToTfsApi throws', () => {
       it('calls createHaloTicket with the facilityId, payload, error message, messageType, and context', async () => {
         // Arrange
         const error = new Error('Failed to amend GIFT facility, status: 400, response: {"error":"Bad Request"}');
