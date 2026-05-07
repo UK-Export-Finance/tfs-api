@@ -45,7 +45,7 @@ export async function processGiftQueueMessage(queueItem: unknown, context: Invoc
         context.log('Gift facility creation succeeded');
         break;
       case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_AMENDMENT:
-        await postToTfsApi(GIFT_API_URL.facilityAmendment(item.facilityId as string), item.payload, 'Failed to amend GIFT facility', context);
+        await postToTfsApi(GIFT_API_URL.facilityAmendment(item.facilityId), item.payload, 'Failed to amend GIFT facility', context);
         context.log('Gift facility amendment succeeded');
         break;
       default:
