@@ -5,7 +5,7 @@ This package contains an Azure Functions app with a storage queue trigger.
 The main queue trigger is defined in `src/functions/process-queue-item.ts` and listens on the
 `gift-requests` queue using the `AzureWebJobsStorage` connection. When a message is received, the
 function calls the appropriate `/api/v2/gift/facility` endpoint on `tfs-api` to process the facility creation or amendment.
-If that call fails, a Halo support ticket is automatically raised via `src/utils/create-halo-ticket.ts`
+The call is retried five times; after that, a Halo support ticket is automatically raised via `src/utils/create-halo-ticket.ts`
 before the error is rethrown (causing the message to be moved to the poison queue).
 
 ## Prerequisites
@@ -114,7 +114,7 @@ This tests the full flow: `POST /gift/facility/queue` → Azurite queue → func
 
 - The queue binding uses `AzureWebJobsStorage`.
 - Messages must be Base64-encoded JSON — the `GiftQueueService` in `tfs-api` handles this automatically when using the `/facility/queue` endpoint.
-- After a single failed attempt, the message is moved to `gift-requests-poison` and the poison queue function logs it.
+- After 5 failed attempts, the message is moved to `gift-requests-poison` and the poison queue function logs it.
 
 ## Halo integration
 
@@ -140,7 +140,7 @@ To test locally, you will need to have access to the Halo Test environment and s
 
 ### Testing the failure path locally
 
-To trigger a Halo ticket during local testing, put a message onto the queue that will cause the GIFT facility creation or amendment to fail (e.g. an invalid payload). The function will attempt the GIFT call, fail, and then call Halo before moving the message to the poison queue - on the first failed attempt.
+To trigger a Halo ticket during local testing, put a message onto the queue that will cause the GIFT facility creation or amendment to fail (e.g. an invalid payload). The function will attempt the GIFT call, fail, and then call Halo before moving the message to the poison queue - after the 5th retry.
 
 You can then look at the Halo test environment to see the ticket you've raised.
 
