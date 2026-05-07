@@ -4,7 +4,7 @@ import axios from 'axios';
 const { TFS_API_KEY: apiKey } = process.env;
 
 /**
- * Posts a payload to a TFS API endpoint, handling errors consistently.
+ * Posts a GIFT facility payload to the TFS API, handling errors consistently.
  * Throws a descriptive Error on any failure.
  *
  * @param url - The full URL to POST to.

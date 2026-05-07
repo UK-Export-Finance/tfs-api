@@ -1,11 +1,11 @@
-import { processQueueItem } from '../functions/process-queue-item';// eslint-disable-next-line import/first
+import { processQueueItem } from '../functions/process-queue-item';
 import { GIFT_QUEUE_MESSAGE_TYPE } from '../types/queue-message.type';
 import { createHaloTicket } from '../utils/create-halo-ticket';
-import { postToGiftApi } from '../utils/post-to-gift-api';
+import { postToTfsApi } from '../utils/post-to-tfs-api';
 
 const tfsApiBaseUrl = process.env.TFS_API_BASE_URL;
 
-jest.mock('../utils/post-to-gift-api');
+jest.mock('../utils/post-to-tfs-api');
 jest.mock('../utils/create-halo-ticket');
 
 const context = {
@@ -26,21 +26,21 @@ describe('processQueueItem Azure function', () => {
 
     it('logs the received item and calls postToGiftApi with the creation URL, payload, and context', async () => {
       // Arrange
-      (postToGiftApi as jest.Mock).mockResolvedValue(undefined);
+      (postToTfsApi as jest.Mock).mockResolvedValue(undefined);
 
       // Act
       await processQueueItem(queueItem, context as any);
 
       // Assert
       expect(context.log).toHaveBeenCalledWith('Gift requests queue function received item:', queueItem);
-      expect(postToGiftApi).toHaveBeenCalledTimes(1);
-      expect(postToGiftApi).toHaveBeenCalledWith(`${tfsApiBaseUrl}/api/v2/gift/facility`, queueItem.payload, 'Failed to create GIFT facility', context);
+      expect(postToTfsApi).toHaveBeenCalledTimes(1);
+      expect(postToTfsApi).toHaveBeenCalledWith(`${tfsApiBaseUrl}/api/v2/gift/facility`, queueItem.payload, 'Failed to create GIFT facility', context);
       expect(context.log).toHaveBeenCalledWith('Gift facility creation succeeded');
     });
 
     it('does not call createHaloTicket when postToGiftApi succeeds', async () => {
       // Arrange
-      (postToGiftApi as jest.Mock).mockResolvedValue(undefined);
+      (postToTfsApi as jest.Mock).mockResolvedValue(undefined);
 
       // Act
       await processQueueItem(queueItem, context as any);
@@ -54,7 +54,7 @@ describe('processQueueItem Azure function', () => {
         // Arrange
         const error = new Error('Failed to create GIFT facility, status: 400, response: {"error":"Bad Request"}');
 
-        (postToGiftApi as jest.Mock).mockRejectedValue(error);
+        (postToTfsApi as jest.Mock).mockRejectedValue(error);
         (createHaloTicket as jest.Mock).mockResolvedValue(undefined);
 
         // Act
@@ -69,7 +69,7 @@ describe('processQueueItem Azure function', () => {
         // Arrange
         const error = new Error('Failed to create GIFT facility');
 
-        (postToGiftApi as jest.Mock).mockRejectedValue(error);
+        (postToTfsApi as jest.Mock).mockRejectedValue(error);
         (createHaloTicket as jest.Mock).mockResolvedValue(undefined);
 
         // Act & Assert
@@ -87,15 +87,15 @@ describe('processQueueItem Azure function', () => {
 
     it('logs the received item and calls postToGiftApi with the amendment URL, payload, and context', async () => {
       // Arrange
-      (postToGiftApi as jest.Mock).mockResolvedValue(undefined);
+      (postToTfsApi as jest.Mock).mockResolvedValue(undefined);
 
       // Act
       await processQueueItem(queueItem, context as any);
 
       // Assert
       expect(context.log).toHaveBeenCalledWith('Gift requests queue function received item:', queueItem);
-      expect(postToGiftApi).toHaveBeenCalledTimes(1);
-      expect(postToGiftApi).toHaveBeenCalledWith(
+      expect(postToTfsApi).toHaveBeenCalledTimes(1);
+      expect(postToTfsApi).toHaveBeenCalledWith(
         `${tfsApiBaseUrl}/api/v2/gift/facility/abc-123/amendment`,
         queueItem.payload,
         'Failed to amend GIFT facility',
@@ -106,7 +106,7 @@ describe('processQueueItem Azure function', () => {
 
     it('does not call createHaloTicket when postToGiftApi succeeds', async () => {
       // Arrange
-      (postToGiftApi as jest.Mock).mockResolvedValue(undefined);
+      (postToTfsApi as jest.Mock).mockResolvedValue(undefined);
 
       // Act
       await processQueueItem(queueItem, context as any);
@@ -120,7 +120,7 @@ describe('processQueueItem Azure function', () => {
         // Arrange
         const error = new Error('Failed to amend GIFT facility, status: 400, response: {"error":"Bad Request"}');
 
-        (postToGiftApi as jest.Mock).mockRejectedValue(error);
+        (postToTfsApi as jest.Mock).mockRejectedValue(error);
         (createHaloTicket as jest.Mock).mockResolvedValue(undefined);
 
         // Act
@@ -135,7 +135,7 @@ describe('processQueueItem Azure function', () => {
         // Arrange
         const error = new Error('Failed to amend GIFT facility');
 
-        (postToGiftApi as jest.Mock).mockRejectedValue(error);
+        (postToTfsApi as jest.Mock).mockRejectedValue(error);
         (createHaloTicket as jest.Mock).mockResolvedValue(undefined);
 
         // Act & Assert
@@ -150,7 +150,7 @@ describe('processQueueItem Azure function', () => {
       const queueItem = { messageType: GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION, payload: {} };
       const error = new Error('Failed to create GIFT facility');
 
-      (postToGiftApi as jest.Mock).mockRejectedValue(error);
+      (postToTfsApi as jest.Mock).mockRejectedValue(error);
       (createHaloTicket as jest.Mock).mockResolvedValue(undefined);
 
       // Act
@@ -164,7 +164,7 @@ describe('processQueueItem Azure function', () => {
       // Arrange
       const queueItem = { messageType: GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION, payload: { overview: { facilityId: 'abc-123' } } };
 
-      (postToGiftApi as jest.Mock).mockRejectedValue('unexpected string error');
+      (postToTfsApi as jest.Mock).mockRejectedValue('unexpected string error');
       (createHaloTicket as jest.Mock).mockResolvedValue(undefined);
 
       // Act

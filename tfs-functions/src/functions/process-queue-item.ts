@@ -2,7 +2,7 @@ import { app, InvocationContext } from '@azure/functions';
 
 import { GIFT_QUEUE_MESSAGE_TYPE, GiftQueueMessage } from '../types/queue-message.type';
 import { createHaloTicket } from '../utils/create-halo-ticket';
-import { postToGiftApi } from '../utils/post-to-gift-api';
+import { postToTfsApi } from '../utils/post-to-tfs-api';
 
 const { TFS_API_BASE_URL: baseUrl } = process.env;
 
@@ -42,11 +42,11 @@ export async function processQueueItem(queueItem: unknown, context: InvocationCo
   try {
     switch (messageType) {
       case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION:
-        await postToGiftApi(GIFT_API_URL.facilityCreation, item.payload, 'Failed to create GIFT facility', context);
+        await postToTfsApi(GIFT_API_URL.facilityCreation, item.payload, 'Failed to create GIFT facility', context);
         context.log('Gift facility creation succeeded');
         break;
       case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_AMENDMENT:
-        await postToGiftApi(GIFT_API_URL.facilityAmendment(item.facilityId as string), item.payload, 'Failed to amend GIFT facility', context);
+        await postToTfsApi(GIFT_API_URL.facilityAmendment(item.facilityId as string), item.payload, 'Failed to amend GIFT facility', context);
         context.log('Gift facility amendment succeeded');
         break;
       default:
