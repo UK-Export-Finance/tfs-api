@@ -2,16 +2,16 @@ const TFS_API_BASE_URL = 'https://mock-tfs-api.com';
 process.env.TFS_API_BASE_URL = TFS_API_BASE_URL;
 
 // eslint-disable-next-line import/first
-import { processQueueItem } from 'functions/process-queue-item';
+import { processQueueItem } from '../functions/process-queue-item';
 // eslint-disable-next-line import/first
-import { GIFT_QUEUE_MESSAGE_TYPE } from 'types/queue-message.type';
+import { GIFT_QUEUE_MESSAGE_TYPE } from '../types/queue-message.type';
 // eslint-disable-next-line import/first
-import { createHaloTicket } from 'utils/create-halo-ticket';
+import { createHaloTicket } from '../utils/create-halo-ticket';
 // eslint-disable-next-line import/first
-import { postToGiftApi } from 'utils/post-to-gift-api';
+import { postToGiftApi } from '../utils/post-to-gift-api';
 
-jest.mock('utils/post-to-gift-api');
-jest.mock('utils/create-halo-ticket');
+jest.mock('../utils/post-to-gift-api');
+jest.mock('../utils/create-halo-ticket');
 
 const context = {
   log: jest.fn(),

@@ -1,7 +1,7 @@
 import { InvocationContext } from '@azure/functions';
 import axios from 'axios';
-import { GIFT_QUEUE_OPERATION_LABEL, GiftQueueMessageType } from 'types/queue-message.type';
-import { requireEnv, requireEnvInt } from 'utils/env';
+import { GIFT_QUEUE_OPERATION_LABEL, GiftQueueMessageType } from '../types/queue-message.type';
+import { requireEnv, requireEnvInt } from './env';
 
 const baseUrl = requireEnv('HALO_BASE_URL');
 const tenantName = requireEnv('HALO_TENANT_NAME');

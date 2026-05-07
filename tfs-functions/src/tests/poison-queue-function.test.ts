@@ -1,4 +1,4 @@
-import { processPoisonQueueItem } from 'functions/poison-queue-function';
+import { processPoisonQueueItem } from '../functions/poison-queue-function';
 
 const context = {
   log: jest.fn(),

@@ -6,7 +6,7 @@ process.env.TFS_API_KEY = TFS_API_KEY;
 // eslint-disable-next-line import/first
 import axios from 'axios';
 // eslint-disable-next-line import/first
-import { postToGiftApi } from 'utils/post-to-gift-api';
+import { postToGiftApi } from '../utils/post-to-gift-api';
 
 jest.mock('axios');
 
