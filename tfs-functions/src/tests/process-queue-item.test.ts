@@ -26,4 +26,3 @@ describe('processQueueItem Azure function', () => {
     expect(processGiftQueueMessage).toHaveBeenCalledWith(queueItem, context);
   });
 });
-

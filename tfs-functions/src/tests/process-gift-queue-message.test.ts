@@ -1,7 +1,7 @@
 import { GIFT_QUEUE_MESSAGE_TYPE } from '../types/queue-message.type';
 import { createHaloTicket } from '../utils/create-halo-ticket';
-import { processGiftQueueMessage } from '../utils/process-gift-queue-message';
 import { postToTfsApi } from '../utils/post-to-tfs-api';
+import { processGiftQueueMessage } from '../utils/process-gift-queue-message';
 
 const tfsApiBaseUrl = process.env.TFS_API_BASE_URL;
 
