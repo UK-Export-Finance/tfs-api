@@ -12,10 +12,26 @@ const GIFT_API_URL = {
   facilityAmendment: (facilityId: string) => `${baseUrl}/api/v2/gift/facility/${facilityId}/amendment`,
 } as const;
 
+/**
+ * Exhaustiveness check for switch statements over discriminated unions.
+ * TypeScript will error at compile time if any union member is unhandled.
+ * Throws at runtime if an unexpected value reaches the default branch.
+ *
+ * @param value - The unhandled value (typed `never` to enforce exhaustiveness).
+ * @throws {Error} Always — with a message containing the unhandled value.
+ */
 const throwIfNotExhaustive = (value: never): never => {
   throw new Error(`Unhandled message type: ${value}`);
 };
 
+/**
+ * Extracts the facility ID from a queue message for use in Halo ticket reporting.
+ * For amendments, reads facilityId directly from the message.
+ * For creations, reads it from the nested payload overview.
+ *
+ * @param item - The parsed GIFT queue message.
+ * @returns The facility ID string, or `'unknown'` if it cannot be determined.
+ */
 const extractFacilityId = (item: GiftQueueMessage): string => {
   const { messageType } = item;
   switch (messageType) {
