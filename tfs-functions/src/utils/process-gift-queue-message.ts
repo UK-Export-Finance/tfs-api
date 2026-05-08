@@ -30,15 +30,15 @@ const throwIfNotExhaustive = (value: never): never => {
  * For creations, reads it from the nested payload overview.
  *
  * @param item - The parsed GIFT queue message.
- * @returns The facility ID string, or `'unknown'` if it cannot be determined.
+ * @returns The facility ID string, or `'UNKNOWN_FACILITY_ID'` if it cannot be determined.
  */
 const extractFacilityId = (item: GiftQueueMessage): string => {
   const { messageType } = item;
   switch (messageType) {
     case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_AMENDMENT:
-      return item.facilityId ?? 'unknown';
+      return item.facilityId ?? 'UNKNOWN_FACILITY_ID';
     case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION:
-      return (item.payload as Record<string, Record<string, string>>)?.overview?.facilityId ?? 'unknown';
+      return (item.payload as Record<string, Record<string, string>>)?.overview?.facilityId ?? 'UNKNOWN_FACILITY_ID';
     default:
       return throwIfNotExhaustive(messageType);
   }

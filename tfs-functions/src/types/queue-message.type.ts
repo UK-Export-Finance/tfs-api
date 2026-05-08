@@ -1,6 +1,6 @@
 export const GIFT_QUEUE_MESSAGE_TYPE = {
-  FACILITY_CREATION: 'facility-creation',
-  FACILITY_AMENDMENT: 'facility-amendment',
+  FACILITY_CREATION: 'FACILITY_CREATION',
+  FACILITY_AMENDMENT: 'FACILITY_AMENDMENT',
 } as const;
 
 export type GiftQueueMessageType = (typeof GIFT_QUEUE_MESSAGE_TYPE)[keyof typeof GIFT_QUEUE_MESSAGE_TYPE];

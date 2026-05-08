@@ -253,7 +253,7 @@ describe('GiftFacilityController', () => {
 
       // Assert
       expect(giftQueueService.enqueue).toHaveBeenCalledTimes(1);
-      expect(giftQueueService.enqueue).toHaveBeenCalledWith({ messageType: 'facility-creation', payload: mockBody });
+      expect(giftQueueService.enqueue).toHaveBeenCalledWith({ messageType: 'FACILITY_CREATION', payload: mockBody });
     });
 
     it('should call res.status with HttpStatus.ACCEPTED', async () => {
@@ -276,7 +276,7 @@ describe('GiftFacilityController', () => {
 
       // Assert
       expect(giftQueueService.enqueue).toHaveBeenCalledTimes(1);
-      expect(giftQueueService.enqueue).toHaveBeenCalledWith({ messageType: 'facility-amendment', facilityId: mockFacilityId, payload: mockBody });
+      expect(giftQueueService.enqueue).toHaveBeenCalledWith({ messageType: 'FACILITY_AMENDMENT', facilityId: mockFacilityId, payload: mockBody });
     });
 
     it('should call res.status with HttpStatus.ACCEPTED', async () => {
