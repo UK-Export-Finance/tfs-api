@@ -46,10 +46,10 @@ async function getHaloAccessToken(): Promise<string> {
 /**
  * Builds the request body for creating a Halo ticket.
  *
- * @param facilityId - The facility ID from the original DTFS payload (or 'unknown' if not present).
+ * @param facilityId - The facility ID from the original DTFS payload (or 'UNKNOWN_FACILITY_ID' if not present).
  * @param payload - The original payload sent by a consumer (e.g. DTFS).
  * @param errorMessage - The formatted error message from the failed GIFT request.
- * @param messageType - The type of GIFT request that failed ('facility-creation' or 'facility-amendment').
+ * @param messageType - The type of GIFT request that failed ('FACILITY_CREATION' or 'FACILITY_AMENDMENT').
  * @returns the request body to create a Halo ticket, formatted according to the Halo API requirements.
  */
 function buildTicketBody(facilityId: string, payload: unknown, errorMessage: string, messageType: GiftQueueMessageType | undefined) {
@@ -74,10 +74,10 @@ function buildTicketBody(facilityId: string, payload: unknown, errorMessage: str
 /**
  * Raises a Halo support ticket when a GIFT facility request fails.
  *
- * @param facilityId - The facility ID from the original DTFS payload (or 'unknown' if not present).
+ * @param facilityId - The facility ID from the original DTFS payload (or 'UNKNOWN_FACILITY_ID' if not present).
  * @param payload - The original payload sent by DTFS.
  * @param errorMessage - The formatted error message from the failed GIFT request.
- * @param messageType - The type of GIFT request that failed ('facility-creation' or 'facility-amendment').
+ * @param messageType - The type of GIFT request that failed ('FACILITY_CREATION' or 'FACILITY_AMENDMENT').
  * @param context - The Azure Functions invocation context for logging.
  */
 export async function createHaloTicket(
