@@ -4,6 +4,15 @@
     "FUNCTIONS_WORKER_RUNTIME": "node",
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
     "TFS_API_BASE_URL": "http://localhost:3001",
-    "TFS_API_KEY": ""
+    "TFS_API_KEY": "",
+    "HALO_BASE_URL": "",
+    "HALO_TENANT_NAME": "",
+    "HALO_AUTH_CLIENT_ID": "",
+    "HALO_CLIENT_SECRET": "",
+    "HALO_TICKET_CLIENT_ID": "12",
+    "HALO_TICKET_TYPE_ID": "4",
+    "HALO_SITE_ID": "19",
+    "HALO_USER_ID": "25",
+    "HALO_TEAM_ID": "32"
   }
 }

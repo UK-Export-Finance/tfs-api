@@ -1,7 +1,9 @@
 import { InvocationContext } from '@azure/functions';
 import axios from 'axios';
+import { requireEnv } from 'utils/env';
 
-const { TFS_API_BASE_URL: baseUrl, TFS_API_KEY: apiKey } = process.env;
+const baseUrl = requireEnv('TFS_API_BASE_URL');
+const apiKey = requireEnv('TFS_API_KEY');
 
 const facilityCreationUrl = `${baseUrl}/api/v2/gift/facility`;
 
@@ -22,6 +24,13 @@ export async function createGiftFacility(queueItem: unknown, context: Invocation
       },
     });
   } catch (error) {
+    if (axios.isAxiosError(error)) {
+      const responseBody = error.response?.data ? JSON.stringify(error.response.data) : 'no response body';
+      const message = `Failed to create GIFT facility, status: ${error.response?.status ?? 'unknown'}, error: ${error.message}, response: ${responseBody}`;
+      context.error(message);
+      throw new Error(message);
+    }
+
     if (error instanceof Error) {
       const message = `Failed to create GIFT facility, error: ${error.message}`;
       context.error(message);
