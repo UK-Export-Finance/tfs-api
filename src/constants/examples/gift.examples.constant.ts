@@ -200,10 +200,6 @@ const RISK_DETAILS = {
   riskStatus: INTEGRATION_DEFAULTS.RISK_STATUS,
   ukefIndustryCode: '0101',
   facilityCategoryCode: null,
-  riskMarket: 'GBR',
-  projectFinance: false,
-  linkedFacilityId: null,
-  originalFacilityEffectiveDate: null,
 };
 
 const FACILITY_OVERVIEW = {
