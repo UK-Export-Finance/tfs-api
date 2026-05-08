@@ -56,6 +56,7 @@ describe('createHaloTicket', () => {
       await createHaloTicket(facilityId, payload, errorMessage, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION, context as any);
 
       // Assert
+      expect(axios.post).toHaveBeenCalledTimes(2);
       expect(axios.post).toHaveBeenNthCalledWith(
         1,
         `${HALO_BASE_URL}/auth/token?tenant=${HALO_TENANT_NAME}`,
@@ -76,6 +77,8 @@ describe('createHaloTicket', () => {
       await createHaloTicket(facilityId, payload, errorMessage, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION, context as any);
 
       // Assert
+      expect(axios.post).toHaveBeenCalledTimes(1);
+      expect(context.error).toHaveBeenCalledTimes(1);
       expect(context.error).toHaveBeenCalledWith('Failed to acquire Halo access token: Unauthorized');
     });
 
@@ -91,6 +94,8 @@ describe('createHaloTicket', () => {
       await createHaloTicket(facilityId, payload, errorMessage, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION, context as any);
 
       // Assert
+      expect(axios.post).toHaveBeenCalledTimes(1);
+      expect(context.error).toHaveBeenCalledTimes(1);
       expect(context.error).toHaveBeenCalledWith('Failed to acquire Halo access token: unknown error');
     });
   });
@@ -112,6 +117,7 @@ describe('createHaloTicket', () => {
         await createHaloTicket(facilityId, payload, errorMessage, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION, context as any);
 
         // Assert
+        expect(axios.post).toHaveBeenCalledTimes(2);
         expect(axios.post).toHaveBeenNthCalledWith(2, `${HALO_BASE_URL}/api/Tickets`, buildExpectedTicketBody(facilityId, payload, errorMessage, 'creation'), {
           headers: {
             Authorization: `Bearer ${mockAccessToken}`,
@@ -135,6 +141,7 @@ describe('createHaloTicket', () => {
         await createHaloTicket(facilityId, payload, errorMessage, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION, context as any);
 
         // Assert
+        expect(context.log).toHaveBeenCalledTimes(2);
         expect(context.log).toHaveBeenCalledWith('Raising Halo ticket for failed GIFT facility creation, facilityId:', facilityId);
         expect(context.log).toHaveBeenCalledWith('Halo ticket raised successfully for facilityId:', facilityId);
         expect(context.error).not.toHaveBeenCalled();
@@ -157,6 +164,7 @@ describe('createHaloTicket', () => {
         await createHaloTicket(facilityId, payload, errorMessage, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_AMENDMENT, context as any);
 
         // Assert
+        expect(axios.post).toHaveBeenCalledTimes(2);
         expect(axios.post).toHaveBeenNthCalledWith(2, `${HALO_BASE_URL}/api/Tickets`, buildExpectedTicketBody(facilityId, payload, errorMessage, 'amendment'), {
           headers: {
             Authorization: `Bearer ${mockAccessToken}`,
@@ -180,6 +188,7 @@ describe('createHaloTicket', () => {
         await createHaloTicket(facilityId, payload, errorMessage, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_AMENDMENT, context as any);
 
         // Assert
+        expect(context.log).toHaveBeenCalledTimes(2);
         expect(context.log).toHaveBeenCalledWith('Raising Halo ticket for failed GIFT facility amendment, facilityId:', facilityId);
         expect(context.log).toHaveBeenCalledWith('Halo ticket raised successfully for facilityId:', facilityId);
         expect(context.error).not.toHaveBeenCalled();
@@ -202,6 +211,8 @@ describe('createHaloTicket', () => {
         await createHaloTicket(facilityId, payload, errorMessage, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION, context as any);
 
         // Assert
+        expect(axios.post).toHaveBeenCalledTimes(2);
+        expect(context.error).toHaveBeenCalledTimes(1);
         expect(context.error).toHaveBeenCalledWith('Failed to create Halo ticket: Internal Server Error');
       });
 
@@ -220,6 +231,8 @@ describe('createHaloTicket', () => {
         await createHaloTicket(facilityId, payload, errorMessage, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION, context as any);
 
         // Assert
+        expect(axios.post).toHaveBeenCalledTimes(2);
+        expect(context.error).toHaveBeenCalledTimes(1);
         expect(context.error).toHaveBeenCalledWith('Failed to create Halo ticket: unknown error');
       });
     });
