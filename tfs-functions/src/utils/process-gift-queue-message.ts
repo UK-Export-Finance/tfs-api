@@ -17,13 +17,14 @@ const throwIfNotExhaustive = (value: never): never => {
 };
 
 const extractFacilityId = (item: GiftQueueMessage): string => {
-  switch (item.messageType) {
+  const { messageType } = item;
+  switch (messageType) {
     case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_AMENDMENT:
       return item.facilityId ?? 'unknown';
     case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION:
       return (item.payload as Record<string, Record<string, string>>)?.overview?.facilityId ?? 'unknown';
     default:
-      return throwIfNotExhaustive(item.messageType);
+      return throwIfNotExhaustive(messageType);
   }
 };
 
@@ -37,6 +38,7 @@ const extractFacilityId = (item: GiftQueueMessage): string => {
 export async function processGiftQueueMessage(queueItem: unknown, context: InvocationContext): Promise<void> {
   const item = queueItem as GiftQueueMessage;
   const { messageType } = item;
+  const facilityId = extractFacilityId(item);
 
   try {
     switch (messageType) {
@@ -45,14 +47,16 @@ export async function processGiftQueueMessage(queueItem: unknown, context: Invoc
         context.log('Gift facility creation succeeded');
         break;
       case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_AMENDMENT:
-        await postToTfsApi(GIFT_API_URL.facilityAmendment(item.facilityId as string), item.payload, 'Failed to amend GIFT facility', context);
+        if (!item.facilityId) {
+          throw new Error('Failed to amend GIFT facility: facilityId is missing from queue message');
+        }
+        await postToTfsApi(GIFT_API_URL.facilityAmendment(item.facilityId), item.payload, 'Failed to amend GIFT facility', context);
         context.log('Gift facility amendment succeeded');
         break;
       default:
         throwIfNotExhaustive(messageType);
     }
   } catch (error) {
-    const facilityId = extractFacilityId(item);
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     await createHaloTicket(facilityId, queueItem, errorMessage, messageType, context);
     throw error;

@@ -59,7 +59,7 @@ describe('postToTfsApi', () => {
     const call = () => postToTfsApi(url, {}, errorPrefix, context as any);
 
     // Assert
-    await expect(call()).rejects.toThrow(errorPrefix);
+    await expect(call()).rejects.toThrow(`${errorPrefix}, status: 400, response: {"error":"Bad Request"}`);
     expect(context.error).toHaveBeenCalledWith(`${errorPrefix}, status: 400, response: {"error":"Bad Request"}`);
   });
 
