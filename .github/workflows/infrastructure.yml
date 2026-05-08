@@ -140,6 +140,7 @@ jobs:
 
           # AZ CLI extensions upgrade
           az extension add --name containerapp --upgrade
+          az extension add --name application-insights --upgrade
 
       - name: Resource group 🏗️
         run: |
@@ -159,6 +160,21 @@ jobs:
           --retention-time ${{ vars.LOG_RETENTION_DAY }} \
           --sku ${{ vars.LOG_PLAN }} \
           --tags ${{ env.TAGS }}
+
+      - name: Application insights 📈
+        run: |
+          APP_INSIGHTS_NAME=appi-${{ env.PRODUCT }}-functions-${{ env.TARGET }}-${{ vars.VERSION }}
+
+          if az monitor app-insights component show --app $APP_INSIGHTS_NAME >/dev/null 2>&1; then
+            echo "Application Insights $APP_INSIGHTS_NAME already exists, skipping create"
+          else
+            az monitor app-insights component create \
+            --app $APP_INSIGHTS_NAME \
+            --kind web \
+            --workspace log-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
+            --application-type web \
+            --tags ${{ env.TAGS }}
+          fi
 
       - name: Container registry 📦️
         if: ${{ '1' == vars.NEW }}
