@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@azure/functions": "^4.0.0",
+    "applicationinsights": "^3.14.0",
     "axios": "^1.15.2"
   },
   "devDependencies": {
