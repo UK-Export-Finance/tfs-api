@@ -56,7 +56,7 @@ function buildTicketBody(facilityId: string, payload: unknown, errorMessage: str
   const operationType = GIFT_QUEUE_OPERATION_LABEL[messageType];
   return [
     {
-      summary: `APIM Error submitting DTFS facility ${facilityId} ${operationType} to GIFT`,
+      summary: `APIM TFS Error sending facility ${facilityId} ${operationType} to GIFT`,
       details: `Error: ${errorMessage}\n\nOriginal payload:\n${JSON.stringify(payload, null, 2)}`,
       tickettype_id: ticketTypeId,
       client_id: ticketClientId,

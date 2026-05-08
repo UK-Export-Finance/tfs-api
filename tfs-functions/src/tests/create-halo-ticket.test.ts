@@ -21,7 +21,7 @@ const mockAccessToken = 'mock-access-token';
 
 const buildExpectedTicketBody = (facilityId: string, payload: unknown, errorMessage: string, operationType: string) => [
   {
-    summary: `APIM Error submitting DTFS facility ${facilityId} ${operationType} to GIFT`,
+    summary: `APIM TFS Error sending facility ${facilityId} ${operationType} to GIFT`,
     details: `Error: ${errorMessage}\n\nOriginal payload:\n${JSON.stringify(payload, null, 2)}`,
     tickettype_id: ticketTypeId,
     client_id: ticketClientId,
