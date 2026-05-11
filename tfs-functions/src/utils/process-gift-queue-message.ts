@@ -59,14 +59,14 @@ export async function processGiftQueueMessage(queueItem: unknown, context: Invoc
   try {
     switch (messageType) {
       case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION:
-        await postToTfsApi(GIFT_API_URL.facilityCreation, item.payload, 'Failed to create GIFT facility', context);
+        await postToTfsApi(GIFT_API_URL.facilityCreation, item.payload, `Failed to create GIFT facility ${facilityId}`, context);
         context.log('Gift facility creation succeeded');
         break;
       case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_AMENDMENT:
         if (!item.facilityId) {
           throw new Error('Failed to amend GIFT facility: facilityId is missing from queue message');
         }
-        await postToTfsApi(GIFT_API_URL.facilityAmendment(item.facilityId), item.payload, 'Failed to amend GIFT facility', context);
+        await postToTfsApi(GIFT_API_URL.facilityAmendment(item.facilityId), item.payload, `Failed to amend GIFT facility ${facilityId}`, context);
         context.log('Gift facility amendment succeeded');
         break;
       default:

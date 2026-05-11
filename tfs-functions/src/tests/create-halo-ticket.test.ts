@@ -19,10 +19,10 @@ const context = {
 
 const mockAccessToken = 'mock-access-token';
 
-const buildExpectedTicketBody = (facilityId: string, payload: unknown, errorMessage: string, operationType: string) => [
+const buildExpectedTicketBody = (facilityId: string, payload: unknown, giftErrorMessage: string, operationType: string) => [
   {
     summary: `APIM TFS Error sending facility ${facilityId} ${operationType} to GIFT`,
-    details: `Error: ${errorMessage}\n\nOriginal payload:\n${JSON.stringify(payload, null, 2)}`,
+    details: `Error: ${giftErrorMessage}\n\nOriginal payload:\n${JSON.stringify(payload, null, 2)}`,
     tickettype_id: ticketTypeId,
     client_id: ticketClientId,
     site_id: siteId,
@@ -45,7 +45,7 @@ describe('createHaloTicket', () => {
       // Arrange
       const facilityId = 'abc-123';
       const payload = { facilityId };
-      const errorMessage = 'Something went wrong';
+      const giftErrorMessage = 'Something went wrong';
 
       axios.post = jest
         .fn()
@@ -53,7 +53,7 @@ describe('createHaloTicket', () => {
         .mockResolvedValueOnce({});
 
       // Act
-      await createHaloTicket(facilityId, payload, errorMessage, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION, context as any);
+      await createHaloTicket(facilityId, payload, giftErrorMessage, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION, context as any);
 
       // Assert
       expect(axios.post).toHaveBeenCalledTimes(2);
@@ -69,12 +69,12 @@ describe('createHaloTicket', () => {
       // Arrange
       const facilityId = 'abc-123';
       const payload = { facilityId };
-      const errorMessage = 'Something went wrong';
+      const giftErrorMessage = 'Something went wrong';
 
       axios.post = jest.fn().mockRejectedValueOnce(new Error('Unauthorized'));
 
       // Act
-      await createHaloTicket(facilityId, payload, errorMessage, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION, context as any);
+      await createHaloTicket(facilityId, payload, giftErrorMessage, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION, context as any);
 
       // Assert
       expect(axios.post).toHaveBeenCalledTimes(1);
@@ -86,12 +86,12 @@ describe('createHaloTicket', () => {
       // Arrange
       const facilityId = 'abc-123';
       const payload = { facilityId };
-      const errorMessage = 'Something went wrong';
+      const giftErrorMessage = 'Something went wrong';
 
       axios.post = jest.fn().mockRejectedValueOnce('unexpected string error');
 
       // Act
-      await createHaloTicket(facilityId, payload, errorMessage, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION, context as any);
+      await createHaloTicket(facilityId, payload, giftErrorMessage, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION, context as any);
 
       // Assert
       expect(axios.post).toHaveBeenCalledTimes(1);
@@ -106,7 +106,7 @@ describe('createHaloTicket', () => {
         // Arrange
         const facilityId = 'abc-123';
         const payload = { facilityId, amount: 1000 };
-        const errorMessage = 'Failed to create GIFT facility, status: 400, response: {"error":"Bad Request"}';
+        const giftErrorMessage = 'Failed to create GIFT facility, status: 400, response: {"error":"Bad Request"}';
 
         axios.post = jest
           .fn()
@@ -114,11 +114,11 @@ describe('createHaloTicket', () => {
           .mockResolvedValueOnce({});
 
         // Act
-        await createHaloTicket(facilityId, payload, errorMessage, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION, context as any);
+        await createHaloTicket(facilityId, payload, giftErrorMessage, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION, context as any);
 
         // Assert
         expect(axios.post).toHaveBeenCalledTimes(2);
-        expect(axios.post).toHaveBeenNthCalledWith(2, `${HALO_BASE_URL}/api/Tickets`, buildExpectedTicketBody(facilityId, payload, errorMessage, 'creation'), {
+        expect(axios.post).toHaveBeenNthCalledWith(2, `${HALO_BASE_URL}/api/Tickets`, buildExpectedTicketBody(facilityId, payload, giftErrorMessage, 'creation'), {
           headers: {
             Authorization: `Bearer ${mockAccessToken}`,
             'Content-Type': 'application/json',
@@ -130,7 +130,7 @@ describe('createHaloTicket', () => {
         // Arrange
         const facilityId = 'abc-123';
         const payload = { facilityId };
-        const errorMessage = 'Something went wrong';
+        const giftErrorMessage = 'Something went wrong';
 
         axios.post = jest
           .fn()
@@ -138,7 +138,7 @@ describe('createHaloTicket', () => {
           .mockResolvedValueOnce({});
 
         // Act
-        await createHaloTicket(facilityId, payload, errorMessage, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION, context as any);
+        await createHaloTicket(facilityId, payload, giftErrorMessage, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION, context as any);
 
         // Assert
         expect(context.log).toHaveBeenCalledTimes(2);
@@ -200,7 +200,7 @@ describe('createHaloTicket', () => {
         // Arrange
         const facilityId = 'abc-123';
         const payload = { facilityId };
-        const errorMessage = 'Something went wrong';
+        const giftErrorMessage = 'Something went wrong';
 
         axios.post = jest
           .fn()
@@ -208,7 +208,7 @@ describe('createHaloTicket', () => {
           .mockRejectedValueOnce(new Error('Internal Server Error'));
 
         // Act
-        await createHaloTicket(facilityId, payload, errorMessage, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION, context as any);
+        await createHaloTicket(facilityId, payload, giftErrorMessage, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION, context as any);
 
         // Assert
         expect(axios.post).toHaveBeenCalledTimes(2);
@@ -220,7 +220,7 @@ describe('createHaloTicket', () => {
         // Arrange
         const facilityId = 'abc-123';
         const payload = { facilityId };
-        const errorMessage = 'Something went wrong';
+        const giftErrorMessage = 'Something went wrong';
 
         axios.post = jest
           .fn()
@@ -228,7 +228,7 @@ describe('createHaloTicket', () => {
           .mockRejectedValueOnce('unexpected string error');
 
         // Act
-        await createHaloTicket(facilityId, payload, errorMessage, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION, context as any);
+        await createHaloTicket(facilityId, payload, giftErrorMessage, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION, context as any);
 
         // Assert
         expect(axios.post).toHaveBeenCalledTimes(2);
