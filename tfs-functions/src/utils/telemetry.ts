@@ -1,8 +1,10 @@
+import { DefaultAzureCredential } from '@azure/identity';
 import appInsights from 'applicationinsights';
 
 let hasStartedTelemetry = false;
 
 const getTelemetryClient = () => {
+  // Not required; if the connection string is not set, telemetry will be disabled and calls to trackEvent and trackException will be no-ops
   const connectionString = process.env.APPLICATIONINSIGHTS_CONNECTION_STRING;
 
   if (!connectionString) {
@@ -10,7 +12,9 @@ const getTelemetryClient = () => {
   }
 
   if (!hasStartedTelemetry) {
+    const managedIdentityClientId = process.env.AZURE_CLIENT_ID;
     appInsights.setup(connectionString).start();
+    appInsights.defaultClient.config.aadTokenCredential = new DefaultAzureCredential({ managedIdentityClientId });
     hasStartedTelemetry = true;
   }
 
