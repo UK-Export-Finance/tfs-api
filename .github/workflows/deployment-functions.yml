@@ -146,6 +146,7 @@ jobs:
               "AzureWebJobsStorage__accountName=st${{ env.PRODUCT }}fn${{ env.ENVIRONMENT }}${{ vars.VERSION }}" \
               "AzureWebJobsStorage__credential=managedidentity" \
               "AzureWebJobsStorage__clientId=${{ env.FUNCTIONS_CLIENT_ID }}" \
+              "AZURE_CLIENT_ID=${{ env.FUNCTIONS_CLIENT_ID }}" \
               "FUNCTIONS_WORKER_RUNTIME=node" \
               "AzureFunctionsJobHost__Logging__Console__IsEnabled=true" \
               "APPLICATIONINSIGHTS_CONNECTION_STRING=$(az monitor app-insights component show --app appi-apim-functions-${{ env.ENVIRONMENT }}-${{ vars.VERSION }} --resource-group ${{ env.RG }} --query connectionString -o tsv)" \
