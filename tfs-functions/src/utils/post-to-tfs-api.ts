@@ -1,7 +1,9 @@
 import { InvocationContext } from '@azure/functions';
 import axios from 'axios';
 
-const { TFS_API_KEY: apiKey } = process.env;
+import { requireEnv } from './env';
+
+const apiKey = requireEnv('TFS_API_KEY');
 
 /**
  * Posts a GIFT facility payload to the TFS API, handling errors consistently.
@@ -44,6 +46,6 @@ export async function postToTfsApi(url: string, payload: unknown, errorPrefix: s
   if (response.status !== 201) {
     const message = `${errorPrefix}, status: ${response.status}, response: ${JSON.stringify(response.data)}`;
     context.error(message);
-    throw new Error(errorPrefix);
+    throw new Error(message);
   }
 }

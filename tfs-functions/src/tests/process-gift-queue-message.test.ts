@@ -154,7 +154,7 @@ describe('processGiftQueueMessage', () => {
       await processGiftQueueMessage(queueItem, context as any).catch(() => {});
 
       // Assert
-      expect(createHaloTicket).toHaveBeenCalledWith('unknown', queueItem, error.message, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION, context);
+      expect(createHaloTicket).toHaveBeenCalledWith('UNKNOWN_FACILITY_ID', queueItem, error.message, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION, context);
     });
 
     it('uses "Unknown error" as the error message when the thrown value is not an Error', async () => {
