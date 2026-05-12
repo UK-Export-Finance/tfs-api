@@ -4,6 +4,7 @@ import { postToTfsApi } from '../utils/post-to-tfs-api';
 import { processGiftQueueMessage } from '../utils/process-gift-queue-message';
 
 const tfsApiBaseUrl = process.env.TFS_API_BASE_URL;
+const GIFT_MAX_NUMBER_OF_RETRIES = Number(process.env.GIFT_MAX_NUMBER_OF_RETRIES);
 
 jest.mock('../utils/post-to-tfs-api');
 jest.mock('../utils/create-halo-ticket');
@@ -11,7 +12,7 @@ jest.mock('../utils/create-halo-ticket');
 const context = {
   log: jest.fn(),
   error: jest.fn(),
-  triggerMetadata: { dequeueCount: 5 },
+  triggerMetadata: { dequeueCount: GIFT_MAX_NUMBER_OF_RETRIES },
 };
 
 describe('processGiftQueueMessage', () => {
@@ -50,7 +51,7 @@ describe('processGiftQueueMessage', () => {
     });
 
     describe('when postToTfsApi throws', () => {
-      it('calls createHaloTicket and rethrows when dequeueCount is 5', async () => {
+      it('calls createHaloTicket and rethrows when dequeueCount is GIFT_MAX_NUMBER_OF_RETRIES', async () => {
         // Arrange
         const error = new Error('Failed to create GIFT facility, status: 400, response: {"error":"Bad Request"}');
 
@@ -63,10 +64,10 @@ describe('processGiftQueueMessage', () => {
         expect(createHaloTicket).toHaveBeenCalledWith('abc-123', queueItem, error.message, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION, context);
       });
 
-      it('does not call createHaloTicket and rethrows when dequeueCount is less than 5', async () => {
+      it('does not call createHaloTicket and rethrows when dequeueCount is less than GIFT_MAX_NUMBER_OF_RETRIES', async () => {
         // Arrange
         const error = new Error('Failed to create GIFT facility');
-        const contextWithLowDequeueCount = { ...context, triggerMetadata: { dequeueCount: 4 } };
+        const contextWithLowDequeueCount = { ...context, triggerMetadata: { dequeueCount: GIFT_MAX_NUMBER_OF_RETRIES - 1 } };
 
         (postToTfsApi as jest.Mock).mockRejectedValue(error);
 
@@ -114,7 +115,7 @@ describe('processGiftQueueMessage', () => {
     });
 
     describe('when postToTfsApi throws', () => {
-      it('calls createHaloTicket and rethrows when dequeueCount is 5', async () => {
+      it('calls createHaloTicket and rethrows when dequeueCount is GIFT_MAX_NUMBER_OF_RETRIES', async () => {
         // Arrange
         const error = new Error('Failed to amend GIFT facility, status: 400, response: {"error":"Bad Request"}');
 
@@ -127,10 +128,10 @@ describe('processGiftQueueMessage', () => {
         expect(createHaloTicket).toHaveBeenCalledWith('abc-123', queueItem, error.message, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_AMENDMENT, context);
       });
 
-      it('does not call createHaloTicket and rethrows when dequeueCount is less than 5', async () => {
+      it('does not call createHaloTicket and rethrows when dequeueCount is less than GIFT_MAX_NUMBER_OF_RETRIES', async () => {
         // Arrange
         const error = new Error('Failed to amend GIFT facility');
-        const contextWithLowDequeueCount = { ...context, triggerMetadata: { dequeueCount: 4 } };
+        const contextWithLowDequeueCount = { ...context, triggerMetadata: { dequeueCount: GIFT_MAX_NUMBER_OF_RETRIES - 1 } };
 
         (postToTfsApi as jest.Mock).mockRejectedValue(error);
 

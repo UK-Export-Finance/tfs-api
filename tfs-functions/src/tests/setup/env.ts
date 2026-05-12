@@ -1,4 +1,5 @@
 process.env.TFS_API_BASE_URL = 'https://mock-tfs-api.com';
+process.env.GIFT_MAX_NUMBER_OF_RETRIES = '5';
 process.env.TFS_API_KEY = 'mock-api-key';
 process.env.HALO_BASE_URL = 'https://mock-halo.com';
 process.env.HALO_TENANT_NAME = 'mock-tenant';
