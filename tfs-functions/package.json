@@ -20,14 +20,14 @@
   },
   "dependencies": {
     "@azure/functions": "^4.0.0",
-    "axios": "^1.15.2"
+    "axios": "^1.16.0"
   },
   "devDependencies": {
     "@types/jest": "^30.0.0",
     "@types/node": "20.x",
-    "azure-functions-core-tools": "^4.x",
+    "azure-functions-core-tools": "^4.10.0",
     "eslint-import-resolver-typescript": "^4.4.4",
-    "jest": "^30.3.0",
+    "jest": "^30.4.2",
     "rimraf": "^5.0.0",
     "ts-jest": "^29.4.9",
     "typescript": "^5.0.0"
