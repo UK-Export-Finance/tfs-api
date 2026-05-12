@@ -1,6 +1,6 @@
 {
   "*.ts": ["eslint --fix"],
-  "tfs-functions/**/*.ts": ["eslint --fix", "prettier --write"],
+  "tfs-functions/**/*.ts": ["npm run lint:fix --workspace=tfs-functions", "prettier --write"],
   "package.json": ["sort-package-json"],
   "*": ["cspell lint --no-summary --no-progress --no-must-find-files"]
 }
