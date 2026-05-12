@@ -5,7 +5,7 @@ This package contains an Azure Functions app with a storage queue trigger.
 The main queue trigger is defined in `src/functions/process-queue-item.ts` and listens on the
 `gift-requests` queue using the `AzureWebJobsStorage` connection. When a message is received, the
 function calls the appropriate `/api/v2/gift/facility` endpoint on `tfs-api` to process the facility creation or amendment.
-The call is retried five times; after that, a Halo support ticket is automatically raised via `src/utils/create-halo-ticket.ts`
+The call is retried up to `GIFT_MAX_NUMBER_OF_RETRIES` times (also set manually in host.json); after that, a Halo support ticket is automatically raised via `src/utils/create-halo-ticket.ts`
 before the error is rethrown (causing the message to be moved to the poison queue).
 
 ## Prerequisites
@@ -114,7 +114,8 @@ This tests the full flow: `POST /gift/facility/queue` → Azurite queue → func
 
 - The queue binding uses `AzureWebJobsStorage`.
 - Messages must be Base64-encoded JSON — the `GiftQueueService` in `tfs-api` handles this automatically when using the `/facility/queue` endpoint.
-- After 5 failed attempts, the message is moved to `gift-requests-poison` and the poison queue function logs it.
+- After `maxDequeueCount` failed attempts (set in `host.json`), the Azure Functions host moves the message to `gift-requests-poison` and the poison queue function logs it.
+- **Important:** `host.json` does not support environment variable substitution, so `maxDequeueCount` in `host.json` and `GIFT_MAX_NUMBER_OF_RETRIES` in the environment must be kept in sync manually — they should always be the same value.
 
 ## Halo integration
 
