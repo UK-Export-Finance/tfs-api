@@ -592,25 +592,6 @@ jobs:
           --next-hop-ip-address ${{ vars.PALO_ALTO_NIC }} \
           --next-hop-type VirtualAppliance
 
-
-      - name: Halo route 🌐
-        run: |
-          EXISTING=$(az network route-table route show \
-            --route-table-name route-${{ env.PRODUCT }}-vpn \
-            --name 'Halo' \
-            --query name -o tsv 2>/dev/null) || true
-
-          if [ -z "$EXISTING" ]; then
-            az network route-table route create \
-            --route-table-name route-${{ env.PRODUCT }}-vpn \
-            --name 'Halo' \
-            --address-prefix ${{ vars.DESTINATION_HALO }} \
-            --next-hop-ip-address ${{ vars.PALO_ALTO_NIC }} \
-            --next-hop-type VirtualAppliance
-          else
-            echo 'Halo route already exists, skipping'
-          fi
-
       - name: Container app environment 🗃️
         if: ${{ '1' == vars.NEW }}
         run: |
