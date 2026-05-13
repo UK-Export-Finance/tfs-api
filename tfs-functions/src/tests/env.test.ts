@@ -1,4 +1,4 @@
-import { requireEnv, requireEnvInt } from 'utils/env';
+import { requireEnv, requireEnvInt } from '../utils/env';
 
 describe('requireEnv', () => {
   const ENV_VAR = 'TEST_REQUIRE_ENV_VAR';

@@ -4,7 +4,6 @@
     "target": "es6",
     "outDir": "dist",
     "rootDir": ".",
-    "baseUrl": "src",
     "sourceMap": true,
     "strict": false,
     "esModuleInterop": true,

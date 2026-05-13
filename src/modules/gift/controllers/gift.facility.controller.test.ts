@@ -247,18 +247,41 @@ describe('GiftFacilityController', () => {
   describe('POST queue', () => {
     const mockBody = FACILITY_CREATION_PAYLOAD;
 
-    it('should call giftQueueService.enqueue with the facility data', async () => {
+    it('should call giftQueueService.enqueue with the facility creation message and message type', async () => {
       // Act
       await controller.postQueue(mockBody, mockRes);
 
       // Assert
       expect(giftQueueService.enqueue).toHaveBeenCalledTimes(1);
-      expect(giftQueueService.enqueue).toHaveBeenCalledWith(mockBody);
+      expect(giftQueueService.enqueue).toHaveBeenCalledWith({ messageType: 'FACILITY_CREATION', payload: mockBody });
     });
 
     it('should call res.status with HttpStatus.ACCEPTED', async () => {
       // Act
       await controller.postQueue(mockBody, mockRes);
+
+      // Assert
+      expect(mockResStatus).toHaveBeenCalledTimes(1);
+      expect(mockResStatus).toHaveBeenCalledWith(HttpStatus.ACCEPTED);
+    });
+  });
+
+  describe('POST :facilityId/amendment/queue', () => {
+    const mockParams = { facilityId: mockFacilityId };
+    const mockBody = FACILITY_AMENDMENT_REQUEST_PAYLOAD;
+
+    it('should call giftQueueService.enqueue with the facility amendment message and message type', async () => {
+      // Act
+      await controller.postAmendmentQueue(mockParams, mockBody, mockRes);
+
+      // Assert
+      expect(giftQueueService.enqueue).toHaveBeenCalledTimes(1);
+      expect(giftQueueService.enqueue).toHaveBeenCalledWith({ messageType: 'FACILITY_AMENDMENT', facilityId: mockFacilityId, payload: mockBody });
+    });
+
+    it('should call res.status with HttpStatus.ACCEPTED', async () => {
+      // Act
+      await controller.postAmendmentQueue(mockParams, mockBody, mockRes);
 
       // Assert
       expect(mockResStatus).toHaveBeenCalledTimes(1);

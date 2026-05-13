@@ -4,7 +4,7 @@ This package contains an Azure Functions app with a storage queue trigger.
 
 The main queue trigger is defined in `src/functions/process-queue-item.ts` and listens on the
 `gift-requests` queue using the `AzureWebJobsStorage` connection. When a message is received, the
-function calls the `/api/v2/gift/facility` endpoint on `tfs-api` to process the facility creation.
+function calls the appropriate `/api/v2/gift/facility` endpoint on `tfs-api` to process the facility creation or amendment.
 If that call fails, a Halo support ticket is automatically raised via `src/utils/create-halo-ticket.ts`
 before the error is rethrown (causing the message to be moved to the poison queue).
 
@@ -50,7 +50,7 @@ The Functions host will be available on `http://localhost:7071`.
 
 After building the container, run the `seed-azurite.sh` script; this will create the queue.
 
-To test the function in isolation (without running tfs-api), encode a valid JSON payload matching the `GiftFacilityCreationRequestDto` shape as Base64 and post it directly:
+To test the function in isolation (without running tfs-api), encode a valid JSON payload matching the `GiftFacilityCreationRequestDto` or `GiftFacilityAmendmentRequestDto` shape as Base64 and post it directly:
 
 ```bash
 # Encode your payload
@@ -118,7 +118,7 @@ This tests the full flow: `POST /gift/facility/queue` → Azurite queue → func
 
 ## Halo integration
 
-When a GIFT facility creation request fails, the function raises a support ticket in Halo PSA before rethrowing the error. The ticket includes the facility ID, the full original payload, and the error message.
+When a GIFT facility creation or amendment request fails, the function raises a support ticket in Halo PSA before rethrowing the error. The ticket includes the facility ID, the full original payload, and the error message.
 
 Authentication uses OAuth2 client credentials (`HALO_AUTH_CLIENT_ID` / `HALO_CLIENT_SECRET`) against the `HALO_BASE_URL` tenant.
 
@@ -140,7 +140,7 @@ To test locally, you will need to have access to the Halo Test environment and s
 
 ### Testing the failure path locally
 
-To trigger a Halo ticket during local testing, put a message onto the queue that will cause the GIFT facility creation to fail (e.g. an invalid payload). The function will attempt the GIFT call, fail, and then call Halo before moving the message to the poison queue - on the first failed attempt.
+To trigger a Halo ticket during local testing, put a message onto the queue that will cause the GIFT facility creation or amendment to fail (e.g. an invalid payload). The function will attempt the GIFT call, fail, and then call Halo before moving the message to the poison queue - on the first failed attempt.
 
 You can then look at the Halo test environment to see the ticket you've raised.
 
