@@ -96,6 +96,10 @@ export const GIFT = {
     FACILITY_CATEGORY_CODE: null,
     FACILITY_CREDIT_RATING: null,
     OBLIGATION_SUBTYPE_CODE: null,
+    RISK_MARKET_CODE: 'GBR',
+    PROJECT_FINANCE: false,
+    LINKED_FACILITY_ID: null,
+    ORIGINAL_FACILITY_EFFECTIVE_DATE: null,
   },
   PATH: {
     AMENDMENT: '/amendment',

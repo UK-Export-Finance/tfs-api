@@ -64,4 +64,24 @@ export class GiftFacilityRiskDetailsResponseDto {
     example: INTEGRATION_DEFAULTS.RISK_REASSESSMENT_DATE,
   })
   readonly riskReassessmentDate: string | null;
+
+  @ApiProperty({
+    example: INTEGRATION_DEFAULTS.RISK_MARKET_CODE,
+  })
+  readonly riskMarketCode: string;
+
+  @ApiProperty({
+    example: INTEGRATION_DEFAULTS.PROJECT_FINANCE,
+  })
+  readonly projectFinance: boolean;
+
+  @ApiProperty({
+    example: INTEGRATION_DEFAULTS.LINKED_FACILITY_ID,
+  })
+  readonly linkedFacilityId: string | null;
+
+  @ApiProperty({
+    example: INTEGRATION_DEFAULTS.ORIGINAL_FACILITY_EFFECTIVE_DATE,
+  })
+  readonly originalFacilityEffectiveDate: string | null;
 }
