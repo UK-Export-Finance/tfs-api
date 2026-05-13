@@ -175,7 +175,47 @@ export class GiftFacilityController {
     description: 'An internal server error has occurred',
   })
   async postQueue(@Body(new ValidationPipe({ transform: true })) facilityData: GiftFacilityCreationRequestDto, @Res({ passthrough: true }) res: Response) {
-    await this.giftQueueService.enqueue(facilityData);
+    await this.giftQueueService.enqueue({ messageType: 'FACILITY_CREATION', payload: facilityData });
+
+    res.status(HttpStatus.ACCEPTED);
+  }
+
+  /**
+   * TEMPORARY: Enqueue a facility amendment request.
+   * This endpoint accepts the same payload as POST /gift/facility/:facilityId/amendment but places it on the
+   * storage queue for async processing. It will replace the synchronous endpoint in future.
+   */
+  @Post(':facilityId/amendment/queue')
+  @ApiOperation({ summary: 'TEMPORARY: Enqueue a GIFT facility amendment request for async processing' })
+  @ApiParam({
+    required: true,
+    name: 'facilityId',
+    type: 'string',
+    description: 'The facility ID',
+    example: EXAMPLES.GIFT.FACILITY_ID,
+  })
+  @ApiBody({
+    required: true,
+    type: CreateGiftFacilityAmendmentRequestDto,
+  })
+  @ApiAcceptedResponse({
+    description: 'The facility amendment request has been accepted and queued',
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad request',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized',
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'An internal server error has occurred',
+  })
+  async postAmendmentQueue(
+    @Param() { facilityId }: FacilityIdOperationParamsDto,
+    @Body(new ValidationPipe({ transform: true })) amendmentData: CreateGiftFacilityAmendmentRequestDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    await this.giftQueueService.enqueue({ messageType: 'FACILITY_AMENDMENT', facilityId, payload: amendmentData });
 
     res.status(HttpStatus.ACCEPTED);
   }
