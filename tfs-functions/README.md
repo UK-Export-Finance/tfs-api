@@ -19,7 +19,9 @@ before the error is rethrown (causing the message to be moved to the poison queu
 ## Run the host locally (without Docker)
 
 1. Copy `local.settings.json.sample` to `local.settings.json` and fill in the values:
-   - `TFS_API_KEY` — must match the `API_KEY` env var set in `tfs-api`
+   - `APIM_TFS_URL` — base URL of tfs-api (default `http://localhost:3001`)
+   - `APIM_TFS_KEY` — HTTP header name for auth (default `x-api-key` locally)
+   - `APIM_TFS_VALUE` — must match the `API_KEY` env var set in `tfs-api`
    - `HALO_BASE_URL`, `HALO_TENANT_NAME`, `HALO_AUTH_CLIENT_ID`, `HALO_CLIENT_SECRET` — Halo credentials (see [Halo integration](#halo-integration))
    - `HALO_TICKET_CLIENT_ID`, `HALO_TICKET_TYPE_ID`, `HALO_SITE_ID`, `HALO_USER_ID`, `HALO_TEAM_ID` — Halo ticket field IDs (defaults are pre-populated in the sample)
 2. Install dependencies with `npm ci`.
@@ -97,7 +99,9 @@ This tests the full flow: `POST /gift/facility/queue` → Azurite queue → func
    cp .env.sample .env
    ```
 
-   - `TFS_API_KEY` — must match the `API_KEY` env var set in `tfs-api`
+   - `APIM_TFS_URL` — base URL of tfs-api (default `http://host.docker.internal:3001` when running in Docker)
+   - `APIM_TFS_KEY` — HTTP header name for auth (default `x-api-key` locally)
+   - `APIM_TFS_VALUE` — must match the `API_KEY` env var set in `tfs-api`
    - `HALO_BASE_URL`, `HALO_TENANT_NAME`, `HALO_AUTH_CLIENT_ID`, `HALO_CLIENT_SECRET` — Halo credentials (see [Halo integration](#halo-integration))
    - `HALO_TICKET_CLIENT_ID`, `HALO_TICKET_TYPE_ID`, `HALO_SITE_ID`, `HALO_USER_ID`, `HALO_TEAM_ID` — Halo ticket field IDs (defaults are pre-populated in the sample)
 6. Start the functions container and Azurite:
@@ -181,6 +185,18 @@ Each container app has its own managed identity with the minimum required permis
 | `id-apim-functions-*` | Storage Blob Data Owner | Storage account | Required by the Functions webjobs runtime since we are using managed identity, and for host locks/heartbeats |
 | `id-apim-functions-*` | Storage Queue Data Contributor | Storage account | Required by the Functions webjobs runtime for internal runtime queues and poison queues |
 | Both | AcrPull | Container registry | Allows both apps to pull images from ACR |
+
+### Authentication to tfs-api
+
+The functions app calls tfs-api using three environment variables that behave differently depending on environment:
+
+| Variable | Local (Docker) | Dev / Staging / Production |
+|---|---|---|
+| `APIM_TFS_URL` | `http://host.docker.internal:3001` — calls tfs-api directly | APIM gateway URL (e.g. `https://apim-infrastructure-dev-v1.azure-api.net/tfs`) |
+| `APIM_TFS_KEY` | `x-api-key` — tfs-api's own auth header | APIM's subscription key header |
+| `APIM_TFS_VALUE` | Must match the `API_KEY` value set on the local tfs-api instance | APIM subscription key — stored as a GitHub secret and injected as a container app secret |
+
+Locally, the functions app calls tfs-api directly and authenticates with its `x-api-key` header. In deployed environments, all traffic is routed through APIM using an APIM subscription key.
 
 ### Authentication to the storage queue
 
