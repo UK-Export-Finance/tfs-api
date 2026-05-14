@@ -2,7 +2,8 @@ import axios from 'axios';
 
 import { postToTfsApi } from '../utils/post-to-tfs-api';
 
-const tfsApiKey = process.env.TFS_API_KEY;
+const apimTfsKey = process.env.APIM_TFS_KEY;
+const apimTfsValue = process.env.APIM_TFS_VALUE;
 
 jest.mock('axios');
 
@@ -32,7 +33,7 @@ describe('postToTfsApi', () => {
     expect(axios.post).toHaveBeenCalledTimes(1);
     expect(axios.post).toHaveBeenCalledWith(url, payload, {
       headers: {
-        'x-api-key': tfsApiKey,
+        [apimTfsKey]: apimTfsValue,
         accept: 'application/json',
       },
     });

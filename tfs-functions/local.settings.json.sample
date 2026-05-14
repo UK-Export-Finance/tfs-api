@@ -3,8 +3,9 @@
   "Values": {
     "FUNCTIONS_WORKER_RUNTIME": "node",
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
-    "TFS_API_BASE_URL": "http://localhost:3001",
-    "TFS_API_KEY": "",
+    "APIM_TFS_URL": "http://localhost:3001",
+    "APIM_TFS_KEY": "x-api-key",
+    "APIM_TFS_VALUE": "",
     "HALO_BASE_URL": "",
     "HALO_TENANT_NAME": "",
     "HALO_AUTH_CLIENT_ID": "",

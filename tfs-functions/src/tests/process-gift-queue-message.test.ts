@@ -3,7 +3,7 @@ import { createHaloTicket } from '../utils/create-halo-ticket';
 import { postToTfsApi } from '../utils/post-to-tfs-api';
 import { processGiftQueueMessage } from '../utils/process-gift-queue-message';
 
-const tfsApiBaseUrl = process.env.TFS_API_BASE_URL;
+const apimTfsUrl = process.env.APIM_TFS_URL;
 const GIFT_MAX_NUMBER_OF_RETRIES = Number(process.env.GIFT_MAX_NUMBER_OF_RETRIES);
 const TEST_FACILITY_ID = '00111111111';
 
@@ -37,7 +37,7 @@ describe('processGiftQueueMessage', () => {
       // Assert
       expect(postToTfsApi).toHaveBeenCalledTimes(1);
       expect(postToTfsApi).toHaveBeenCalledWith(
-        `${tfsApiBaseUrl}/api/v2/gift/facility`,
+        `${apimTfsUrl}/api/v2/gift/facility`,
         queueItem.payload,
         `Failed to create GIFT facility ${TEST_FACILITY_ID}`,
         context,
@@ -101,7 +101,7 @@ describe('processGiftQueueMessage', () => {
       // Assert
       expect(postToTfsApi).toHaveBeenCalledTimes(1);
       expect(postToTfsApi).toHaveBeenCalledWith(
-        `${tfsApiBaseUrl}/api/v2/gift/facility/${TEST_FACILITY_ID}/amendment`,
+        `${apimTfsUrl}/api/v2/gift/facility/${TEST_FACILITY_ID}/amendment`,
         queueItem.payload,
         `Failed to amend GIFT facility ${TEST_FACILITY_ID}`,
         context,

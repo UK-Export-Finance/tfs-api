@@ -5,7 +5,7 @@ import { createHaloTicket } from './create-halo-ticket';
 import { requireEnv, requireEnvInt } from './env';
 import { postToTfsApi } from './post-to-tfs-api';
 
-const baseUrl = requireEnv('TFS_API_BASE_URL');
+const baseUrl = requireEnv('APIM_TFS_URL');
 const maxNumberOfRetries = requireEnvInt('GIFT_MAX_NUMBER_OF_RETRIES');
 
 const GIFT_API_URL = {
