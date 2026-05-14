@@ -39,19 +39,14 @@ export async function processGiftQueueMessage(queueItem: unknown, context: Invoc
   const { messageType } = item;
   const dequeueCount = String(context.triggerMetadata.dequeueCount ?? 1);
   const facilityId = extractFacilityId(item);
+  const telemetryBaseProps = { messageType, dequeueCount, facilityId };
 
   try {
     switch (messageType) {
       case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION:
         await postToTfsApi(GIFT_API_URL.facilityCreation, item.payload, `Failed to create GIFT facility ${facilityId}`, context);
         context.log('Gift facility creation succeeded for facilityId:', facilityId);
-        trackEvent('gift.queue.message.processed', {
-          messageType,
-          operation: 'facility-creation',
-          dequeueCount,
-          facilityId,
-          status: 'success',
-        });
+        trackEvent('gift.queue.message.processed', { ...telemetryBaseProps, operation: 'facility-creation', status: 'success' });
         break;
       case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_AMENDMENT:
         if (!item.facilityId) {
@@ -59,33 +54,17 @@ export async function processGiftQueueMessage(queueItem: unknown, context: Invoc
         }
         await postToTfsApi(GIFT_API_URL.facilityAmendment(item.facilityId), item.payload, `Failed to amend GIFT facility ${facilityId}`, context);
         context.log('Gift facility amendment succeeded for facilityId:', facilityId);
-        trackEvent('gift.queue.message.processed', {
-          messageType,
-          operation: 'facility-amendment',
-          dequeueCount,
-          facilityId,
-          status: 'success',
-        });
+        trackEvent('gift.queue.message.processed', { ...telemetryBaseProps, operation: 'facility-amendment', status: 'success' });
         break;
       default:
         throwIfNotExhaustive(messageType);
     }
   } catch (error) {
-    trackException(error, {
-      messageType,
-      dequeueCount,
-      facilityId,
-      status: 'error',
-    });
+    trackException(error, { ...telemetryBaseProps, status: 'error' });
     if (context.triggerMetadata.dequeueCount === maxNumberOfRetries) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       await createHaloTicket(facilityId, queueItem, errorMessage, messageType, context);
-      trackEvent('gift.queue.halo-ticket.created', {
-        messageType,
-        dequeueCount,
-        facilityId,
-        status: 'created',
-      });
+      trackEvent('gift.queue.halo-ticket.created', { ...telemetryBaseProps, status: 'created' });
     }
     throw error;
   }

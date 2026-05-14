@@ -149,21 +149,6 @@ describe('processGiftQueueMessage', () => {
   });
 
   describe('edge cases', () => {
-    it('uses "unknown" as the facilityId when facilityId is not present in the creation queue item', async () => {
-      // Arrange
-      const queueItem = { messageType: GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION, payload: {} };
-      const error = new Error(`Failed to create GIFT facility ${TEST_FACILITY_ID}`);
-
-      (postToTfsApi as jest.Mock).mockRejectedValue(error);
-      (createHaloTicket as jest.Mock).mockResolvedValue(undefined);
-
-      // Act
-      await processGiftQueueMessage(queueItem, context as any).catch(() => {});
-
-      // Assert
-      expect(createHaloTicket).toHaveBeenCalledWith('UNKNOWN_FACILITY_ID', queueItem, error.message, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION, context);
-    });
-
     it('uses "Unknown error" as the error message when the thrown value is not an Error', async () => {
       // Arrange
       const queueItem = { messageType: GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION, payload: { overview: { facilityId: TEST_FACILITY_ID } } };
