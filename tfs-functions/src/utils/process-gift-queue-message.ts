@@ -2,10 +2,11 @@ import { InvocationContext } from '@azure/functions';
 
 import { GIFT_QUEUE_MESSAGE_TYPE, GiftQueueMessage } from '../types/queue-message.type';
 import { createHaloTicket } from './create-halo-ticket';
-import { requireEnv } from './env';
+import { requireEnv, requireEnvInt } from './env';
 import { postToTfsApi } from './post-to-tfs-api';
 
 const baseUrl = requireEnv('TFS_API_BASE_URL');
+const maxNumberOfRetries = requireEnvInt('GIFT_MAX_NUMBER_OF_RETRIES');
 
 const GIFT_API_URL = {
   facilityCreation: `${baseUrl}/api/v2/gift/facility`,
@@ -73,8 +74,10 @@ export async function processGiftQueueMessage(queueItem: unknown, context: Invoc
         throwIfNotExhaustive(messageType);
     }
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    await createHaloTicket(facilityId, queueItem, errorMessage, messageType, context);
+    if (context.triggerMetadata.dequeueCount === maxNumberOfRetries) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      await createHaloTicket(facilityId, queueItem, errorMessage, messageType, context);
+    }
     throw error;
   }
 }

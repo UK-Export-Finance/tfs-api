@@ -118,12 +118,17 @@ describe('createHaloTicket', () => {
 
         // Assert
         expect(axios.post).toHaveBeenCalledTimes(2);
-        expect(axios.post).toHaveBeenNthCalledWith(2, `${HALO_BASE_URL}/api/Tickets`, buildExpectedTicketBody(facilityId, payload, giftErrorMessage, 'creation'), {
-          headers: {
-            Authorization: `Bearer ${mockAccessToken}`,
-            'Content-Type': 'application/json',
+        expect(axios.post).toHaveBeenNthCalledWith(
+          2,
+          `${HALO_BASE_URL}/api/Tickets`,
+          buildExpectedTicketBody(facilityId, payload, giftErrorMessage, 'creation'),
+          {
+            headers: {
+              Authorization: `Bearer ${mockAccessToken}`,
+              'Content-Type': 'application/json',
+            },
           },
-        });
+        );
       });
 
       it('logs the start and success of the ticket creation', async () => {

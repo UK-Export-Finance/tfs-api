@@ -10,7 +10,7 @@
   },
   "extensions": {
     "queues": {
-      "maxDequeueCount": 1
+      "maxDequeueCount": 5
     }
   },
   "extensionBundle": {

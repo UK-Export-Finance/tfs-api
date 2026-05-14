@@ -30,5 +30,6 @@ services:
       HALO_SITE_ID: ${HALO_SITE_ID}
       HALO_USER_ID: ${HALO_USER_ID}
       HALO_TEAM_ID: ${HALO_TEAM_ID}
+      GIFT_MAX_NUMBER_OF_RETRIES: ${GIFT_MAX_NUMBER_OF_RETRIES}
     ports:
       - '7071:80'
