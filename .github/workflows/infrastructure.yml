@@ -637,7 +637,6 @@ jobs:
           --name ca-${{ env.PRODUCT }}-functions-${{ env.TARGET }}-${{ vars.VERSION }} \
           --kind functionapp \
           --environment cae-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
-          --image mcr.microsoft.com/azure-functions/node:4-node22 \
           --user-assigned $IDENTITY_ID \
           --registry-server cr${{ env.PRODUCT }}${{ env.TARGET }}${{ vars.VERSION }}.azurecr.io \
           --registry-identity $IDENTITY_ID \
