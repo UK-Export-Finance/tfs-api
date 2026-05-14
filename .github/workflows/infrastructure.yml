@@ -59,6 +59,16 @@ name: Infrastructure 🔨
 run-name: APIM base infrastructure build from ${{ github.repository }}
 
 on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment target environment'
+        required: true
+        type: choice
+        options:
+          - dev
+          - staging
+          - production
   push:
     branches:
       - infrastructure
@@ -73,7 +83,7 @@ env:
   ENVIRONMENT: infrastructure
   timezone: ${{ vars.TIMEZONE }}
   # Deployment environment target i.e., `dev`, `staging`, `production`
-  TARGET: ${{ vars.ENVIRONMENT }}
+  TARGET: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || vars.ENVIRONMENT }}
 
 jobs:
   # 1. Setup infrastructure variables

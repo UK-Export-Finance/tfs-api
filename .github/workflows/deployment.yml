@@ -22,6 +22,16 @@ name: Deployment 🚀
 run-name: APIM deployment for ${{ github.repository }}
 
 on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment target environment'
+        required: true
+        type: choice
+        options:
+          - dev
+          - staging
+          - production
   push:
     branches:
       - dev
@@ -39,7 +49,7 @@ on:
 
 env:
   PRODUCT: apim
-  ENVIRONMENT: ${{ github.ref_name }}
+  ENVIRONMENT: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || github.ref_name }}
   timezone: ${{ vars.TIMEZONE }}
   # Base artifact
   FROM: latest
