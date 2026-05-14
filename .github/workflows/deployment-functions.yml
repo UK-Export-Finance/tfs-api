@@ -1,0 +1,23 @@
+name: Deployment (Functions) 🚀
+run-name: APIM Functions deployment for ${{ github.repository }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment target environment'
+        required: true
+        type: choice
+        options:
+          - dev
+          - staging
+          - production
+
+jobs:
+  placeholder:
+    name: Placeholder 🔧
+    runs-on: [self-hosted, APIM, deployment]
+    permissions: {}
+    steps:
+      - name: Placeholder step
+        run: echo "Placeholder"
