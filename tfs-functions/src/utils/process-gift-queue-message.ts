@@ -5,7 +5,7 @@ import { createHaloTicket } from './create-halo-ticket';
 import { requireEnv } from './env';
 import { postToTfsApi } from './post-to-tfs-api';
 
-const baseUrl = requireEnv('TFS_API_BASE_URL');
+const baseUrl = requireEnv('APIM_TFS_URL');
 
 const GIFT_API_URL = {
   facilityCreation: `${baseUrl}/api/v2/gift/facility`,

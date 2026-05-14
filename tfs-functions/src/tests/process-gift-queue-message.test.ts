@@ -3,7 +3,7 @@ import { createHaloTicket } from '../utils/create-halo-ticket';
 import { postToTfsApi } from '../utils/post-to-tfs-api';
 import { processGiftQueueMessage } from '../utils/process-gift-queue-message';
 
-const tfsApiBaseUrl = process.env.TFS_API_BASE_URL;
+const apimTfsUrl = process.env.APIM_TFS_URL;
 const TEST_FACILITY_ID = '00111111111';
 
 jest.mock('../utils/post-to-tfs-api');
@@ -34,7 +34,7 @@ describe('processGiftQueueMessage', () => {
 
       // Assert
       expect(postToTfsApi).toHaveBeenCalledTimes(1);
-      expect(postToTfsApi).toHaveBeenCalledWith(`${tfsApiBaseUrl}/api/v2/gift/facility`, queueItem.payload, `Failed to create GIFT facility ${TEST_FACILITY_ID}`, context);
+      expect(postToTfsApi).toHaveBeenCalledWith(`${apimTfsUrl}/api/v2/gift/facility`, queueItem.payload, `Failed to create GIFT facility ${TEST_FACILITY_ID}`, context);
       expect(context.log).toHaveBeenCalledWith('Gift facility creation succeeded');
     });
 
@@ -95,7 +95,7 @@ describe('processGiftQueueMessage', () => {
       // Assert
       expect(postToTfsApi).toHaveBeenCalledTimes(1);
       expect(postToTfsApi).toHaveBeenCalledWith(
-        `${tfsApiBaseUrl}/api/v2/gift/facility/${TEST_FACILITY_ID}/amendment`,
+        `${apimTfsUrl}/api/v2/gift/facility/${TEST_FACILITY_ID}/amendment`,
         queueItem.payload,
         `Failed to amend GIFT facility ${TEST_FACILITY_ID}`,
         context,
