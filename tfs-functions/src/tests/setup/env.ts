@@ -1,6 +1,7 @@
 process.env.APIM_TFS_URL = 'https://mock-tfs-api.com';
 process.env.APIM_TFS_KEY = 'x-api-key';
 process.env.APIM_TFS_VALUE = 'mock-api-key';
+process.env.GIFT_MAX_NUMBER_OF_RETRIES = '5';
 process.env.HALO_BASE_URL = 'https://mock-halo.com';
 process.env.HALO_TENANT_NAME = 'mock-tenant';
 process.env.HALO_AUTH_CLIENT_ID = 'mock-client-id';
