@@ -131,7 +131,7 @@ describe('processGiftQueueMessage', () => {
         // Act & Assert
         await expect(processGiftQueueMessage(queueItem, context as any)).rejects.toThrow(error);
         expect(createHaloTicket).toHaveBeenCalledTimes(1);
-        expect(createHaloTicket).toHaveBeenCalledWith('abc-123', queueItem, error.message, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_AMENDMENT, context);
+        expect(createHaloTicket).toHaveBeenCalledWith(TEST_FACILITY_ID, queueItem, error.message, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_AMENDMENT, context);
       });
 
       it('does not call createHaloTicket and rethrows when dequeueCount is less than GIFT_MAX_NUMBER_OF_RETRIES', async () => {
