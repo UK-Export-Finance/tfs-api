@@ -34,8 +34,7 @@ describe('telemetry', () => {
 
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const telemetry = require('../utils/telemetry');
-    trackEvent = telemetry.trackEvent;
-    trackException = telemetry.trackException;
+    ({ trackEvent, trackException } = telemetry);
 
     delete process.env.APPLICATIONINSIGHTS_CONNECTION_STRING;
     delete process.env.AZURE_CLIENT_ID;

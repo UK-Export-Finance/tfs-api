@@ -3,6 +3,7 @@ import axios from 'axios';
 
 import { GIFT_QUEUE_OPERATION_LABEL, GiftQueueMessageType } from '../types/queue-message.type';
 import { requireEnv, requireEnvInt } from './env';
+import { trackException } from './telemetry';
 
 const baseUrl = requireEnv('HALO_BASE_URL');
 const tenantName = requireEnv('HALO_TENANT_NAME');
@@ -95,6 +96,7 @@ export async function createHaloTicket(
     accessToken = await getHaloAccessToken();
   } catch (error) {
     context.error(formatError('Failed to acquire Halo access token', error));
+    trackException(error, { operation: 'halo-token-acquisition', facilityId });
     return;
   }
 
@@ -109,5 +111,6 @@ export async function createHaloTicket(
     context.log('Halo ticket raised successfully for facilityId:', facilityId);
   } catch (error) {
     context.error(formatError('Failed to create Halo ticket', error));
+    trackException(error, { operation: 'halo-ticket-creation', facilityId });
   }
 }

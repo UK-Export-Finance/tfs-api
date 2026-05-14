@@ -16,14 +16,14 @@ describe('processQueueItem Azure function', () => {
 
   it('logs the received item and delegates to processGiftQueueMessage', async () => {
     // Arrange
-    const queueItem = { messageType: GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION, payload: {} };
+    const queueItem = { messageType: GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION, payload: { overview: { facilityId: 'test-facility-id' } } };
     (processGiftQueueMessage as jest.Mock).mockResolvedValue(undefined);
 
     // Act
     await processQueueItem(queueItem, context as any);
 
     // Assert
-    expect(context.log).toHaveBeenCalledWith('Gift requests queue function received item:', queueItem);
+    expect(context.log).toHaveBeenCalledWith('Gift requests queue function received item, facilityId:', 'test-facility-id');
     expect(processGiftQueueMessage).toHaveBeenCalledWith(queueItem, context);
   });
 });

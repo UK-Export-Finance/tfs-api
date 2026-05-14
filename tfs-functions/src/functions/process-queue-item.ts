@@ -1,5 +1,7 @@
 import { app, InvocationContext } from '@azure/functions';
 
+import { GiftQueueMessage } from '../types/queue-message.type';
+import { extractFacilityId } from '../utils/extract-facility-id';
 import { processGiftQueueMessage } from '../utils/process-gift-queue-message';
 
 /**
@@ -11,7 +13,8 @@ import { processGiftQueueMessage } from '../utils/process-gift-queue-message';
  * @param context - The Azure Functions invocation context for logging and metadata.
  */
 export async function processQueueItem(queueItem: unknown, context: InvocationContext): Promise<void> {
-  context.log('Gift requests queue function received item:', queueItem);
+  const facilityId = extractFacilityId(queueItem as GiftQueueMessage);
+  context.log('Gift requests queue function received item, facilityId:', facilityId);
   await processGiftQueueMessage(queueItem, context);
 }
 
