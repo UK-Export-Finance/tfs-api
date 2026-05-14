@@ -2,11 +2,12 @@ import { InvocationContext } from '@azure/functions';
 
 import { GIFT_QUEUE_MESSAGE_TYPE, GiftQueueMessage } from '../types/queue-message.type';
 import { createHaloTicket } from './create-halo-ticket';
-import { requireEnv } from './env';
+import { requireEnv, requireEnvInt } from './env';
 import { postToTfsApi } from './post-to-tfs-api';
 import { trackEvent, trackException } from './telemetry';
 
-const baseUrl = requireEnv('TFS_API_BASE_URL');
+const baseUrl = requireEnv('APIM_TFS_URL');
+const maxNumberOfRetries = requireEnvInt('GIFT_MAX_NUMBER_OF_RETRIES');
 
 const GIFT_API_URL = {
   facilityCreation: `${baseUrl}/api/v2/gift/facility`,
@@ -67,7 +68,7 @@ export async function processGiftQueueMessage(queueItem: unknown, context: Invoc
   try {
     switch (messageType) {
       case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION:
-        await postToTfsApi(GIFT_API_URL.facilityCreation, item.payload, 'Failed to create GIFT facility', context);
+        await postToTfsApi(GIFT_API_URL.facilityCreation, item.payload, `Failed to create GIFT facility ${facilityId}`, context);
         context.log('Gift facility creation succeeded');
         trackEvent('gift.queue.message.processed', {
           messageType,
@@ -81,7 +82,7 @@ export async function processGiftQueueMessage(queueItem: unknown, context: Invoc
         if (!item.facilityId) {
           throw new Error('Failed to amend GIFT facility: facilityId is missing from queue message');
         }
-        await postToTfsApi(GIFT_API_URL.facilityAmendment(item.facilityId), item.payload, 'Failed to amend GIFT facility', context);
+        await postToTfsApi(GIFT_API_URL.facilityAmendment(item.facilityId), item.payload, `Failed to amend GIFT facility ${facilityId}`, context);
         context.log('Gift facility amendment succeeded');
         trackEvent('gift.queue.message.processed', {
           messageType,
@@ -101,8 +102,7 @@ export async function processGiftQueueMessage(queueItem: unknown, context: Invoc
       facilityId,
       status: 'error',
     });
-
-    if (context.triggerMetadata.dequeueCount === 5) {
+    if (context.triggerMetadata.dequeueCount === maxNumberOfRetries) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       await createHaloTicket(facilityId, queueItem, errorMessage, messageType, context);
       trackEvent('gift.queue.halo-ticket.created', {

@@ -3,7 +3,8 @@ import axios from 'axios';
 
 import { requireEnv } from './env';
 
-const apiKey = requireEnv('TFS_API_KEY');
+const apimKeyHeaderName = requireEnv('APIM_TFS_KEY');
+const apimKeyHeaderValue = requireEnv('APIM_TFS_VALUE');
 
 /**
  * Posts a GIFT facility payload to the TFS API, handling errors consistently.
@@ -20,7 +21,7 @@ export async function postToTfsApi(url: string, payload: unknown, errorPrefix: s
   try {
     response = await axios.post(url, payload, {
       headers: {
-        'x-api-key': apiKey,
+        [apimKeyHeaderName]: apimKeyHeaderValue,
         accept: 'application/json',
       },
     });

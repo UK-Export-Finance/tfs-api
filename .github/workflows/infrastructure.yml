@@ -351,7 +351,7 @@ jobs:
           EXISTING_SUBNET=$(az network vnet subnet show \
             --name snet-pep-${{ env.PRODUCT }}-${{ vars.VERSION }} \
             --vnet-name vnet-${{ env.PRODUCT }}-${{ vars.VERSION }} \
-            --query id -o tsv 2>/dev/null)
+            --query id -o tsv 2>/dev/null) || true
 
           if [ -z "$EXISTING_SUBNET" ]; then
             az network vnet subnet create \
@@ -370,7 +370,7 @@ jobs:
 
           EXISTING_PE=$(az network private-endpoint show \
             --name $PE_NAME \
-            --query id -o tsv 2>/dev/null)
+            --query id -o tsv 2>/dev/null) || true
 
           if [ -z "$EXISTING_PE" ]; then
             STORAGE_ID=$(az storage account show \
@@ -393,7 +393,7 @@ jobs:
           # Private DNS zone for queue storage
           EXISTING_ZONE=$(az network private-dns zone show \
             --name $DNS_ZONE_NAME \
-            --query id -o tsv 2>/dev/null)
+            --query id -o tsv 2>/dev/null) || true
 
           if [ -z "$EXISTING_ZONE" ]; then
             az network private-dns zone create \
@@ -408,7 +408,7 @@ jobs:
           EXISTING_LINK=$(az network private-dns link vnet show \
             --name $LINK_NAME \
             --zone-name $DNS_ZONE_NAME \
-            --query id -o tsv 2>/dev/null)
+            --query id -o tsv 2>/dev/null) || true
 
           if [ -z "$EXISTING_LINK" ]; then
             az network private-dns link vnet create \
@@ -424,7 +424,7 @@ jobs:
           EXISTING_ZG=$(az network private-endpoint dns-zone-group show \
             --name queue-PrivateDnsZoneGroup \
             --endpoint-name $PE_NAME \
-            --query id -o tsv 2>/dev/null)
+            --query id -o tsv 2>/dev/null) || true
 
           if [ -z "$EXISTING_ZG" ]; then
             az network private-endpoint dns-zone-group create \
@@ -444,7 +444,7 @@ jobs:
 
           EXISTING_PE=$(az network private-endpoint show \
             --name $PE_NAME \
-            --query id -o tsv 2>/dev/null)
+            --query id -o tsv 2>/dev/null) || true
           
           if [ -z "$EXISTING_PE" ]; then
             STORAGE_ID=$(az storage account show \
@@ -467,7 +467,7 @@ jobs:
           # Private DNS zone for blob storage
           EXISTING_ZONE=$(az network private-dns zone show \
             --name $DNS_ZONE_NAME \
-            --query id -o tsv 2>/dev/null)
+            --query id -o tsv 2>/dev/null) || true
 
           if [ -z "$EXISTING_ZONE" ]; then
             az network private-dns zone create \
@@ -482,7 +482,7 @@ jobs:
           EXISTING_LINK=$(az network private-dns link vnet show \
             --name $LINK_NAME \
             --zone-name $DNS_ZONE_NAME \
-            --query id -o tsv 2>/dev/null)
+            --query id -o tsv 2>/dev/null) || true
           
           if [ -z "$EXISTING_LINK" ]; then
             az network private-dns link vnet create \
@@ -499,7 +499,7 @@ jobs:
           EXISTING_ZG=$(az network private-endpoint dns-zone-group show \
             --name blob-PrivateDnsZoneGroup \
             --endpoint-name $PE_NAME \
-            --query id -o tsv 2>/dev/null)
+            --query id -o tsv 2>/dev/null) || true
           
           if [ -z "$EXISTING_ZG" ]; then
             az network private-endpoint dns-zone-group create \
@@ -608,25 +608,6 @@ jobs:
           --next-hop-ip-address ${{ vars.PALO_ALTO_NIC }} \
           --next-hop-type VirtualAppliance
 
-
-      - name: Halo route 🌐
-        run: |
-          EXISTING=$(az network route-table route show \
-            --route-table-name route-${{ env.PRODUCT }}-vpn \
-            --name 'Halo' \
-            --query name -o tsv 2>/dev/null)
-
-          if [ -z "$EXISTING" ]; then
-            az network route-table route create \
-            --route-table-name route-${{ env.PRODUCT }}-vpn \
-            --name 'Halo' \
-            --address-prefix ${{ vars.DESTINATION_HALO }} \
-            --next-hop-ip-address ${{ vars.PALO_ALTO_NIC }} \
-            --next-hop-type VirtualAppliance
-          else
-            echo 'Halo route already exists, skipping'
-          fi
-
       - name: Container app environment 🗃️
         if: ${{ '1' == vars.NEW }}
         run: |
@@ -672,7 +653,6 @@ jobs:
           --name ca-${{ env.PRODUCT }}-functions-${{ env.TARGET }}-${{ vars.VERSION }} \
           --kind functionapp \
           --environment cae-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
-          --image mcr.microsoft.com/azure-functions/node:4-node22 \
           --user-assigned $IDENTITY_ID \
           --registry-server cr${{ env.PRODUCT }}${{ env.TARGET }}${{ vars.VERSION }}.azurecr.io \
           --registry-identity $IDENTITY_ID \
