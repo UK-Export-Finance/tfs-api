@@ -141,6 +141,7 @@ jobs:
               "APIM_TFS_URL=${{ vars.APIM_TFS_URL }}" \
               "APIM_TFS_KEY=${{ vars.APIM_TFS_KEY }}" \
               "APIM_TFS_VALUE=secretref:apim-tfs-value" \
+              "GIFT_MAX_NUMBER_OF_RETRIES=${{ vars.GIFT_MAX_NUMBER_OF_RETRIES }}" \
               "HALO_BASE_URL=${{ vars.HALO_BASE_URL }}" \
               "HALO_TENANT_NAME=${{ vars.HALO_TENANT_NAME }}" \
               "HALO_AUTH_CLIENT_ID=${{ vars.HALO_AUTH_CLIENT_ID }}" \
