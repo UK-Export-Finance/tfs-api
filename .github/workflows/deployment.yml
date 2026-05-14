@@ -14,14 +14,24 @@
 #
 # Execution
 # *********
-# GHA is only invoked when following conditions are satisfied:
-# 1. Push to the `dev`, `staging` and `production` branches only.
-# 2. Any modifications to atleast one of the `paths` targets.
+# GHA can be invoked in either of the following ways:
+# 1. Manual dispatch with an `environment` input of `dev`, `staging`, or `production`.
+# 2. Push to the `dev`, `staging` and `production` branches when at least one of the `paths` targets is modified.
 
 name: Deployment 🚀
 run-name: APIM deployment for ${{ github.repository }}
 
 on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment target environment'
+        required: true
+        type: choice
+        options:
+          - dev
+          - staging
+          - production
   push:
     branches:
       - dev
@@ -39,7 +49,7 @@ on:
 
 env:
   PRODUCT: apim
-  ENVIRONMENT: ${{ github.ref_name }}
+  ENVIRONMENT: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || github.ref_name }}
   timezone: ${{ vars.TIMEZONE }}
   # Base artifact
   FROM: latest
@@ -85,7 +95,7 @@ jobs:
           inlineScript: |
             # Basic
             az configure --defaults location=${{ vars.REGION }}
-            az configure --defaults group=rg-${{ env.PRODUCT }}-${{ github.ref_name }}-${{ vars.VERSION }}
+            az configure --defaults group=rg-${{ env.PRODUCT }}-${{ env.ENVIRONMENT }}-${{ vars.VERSION }}
 
       - name: CLI 📝
         run: |
