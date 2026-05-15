@@ -1,4 +1,9 @@
-import { GIFT_QUEUE_MESSAGE_TYPE, GiftQueueMessage } from '../types/queue-message.type';
+import { GIFT_QUEUE_MESSAGE_TYPE, GiftFacilityAmendmentMessage, GiftFacilityCreationMessage, GiftQueueMessage } from '../types/queue-message.type';
+
+const extractAmendmentFacilityId = (message: GiftFacilityAmendmentMessage): string => message.facilityId ?? 'UNKNOWN_FACILITY_ID';
+
+const extractCreationFacilityId = (message: GiftFacilityCreationMessage): string =>
+  (message.payload as Record<string, Record<string, string>>)?.overview?.facilityId ?? 'UNKNOWN_FACILITY_ID';
 
 /**
  * Extracts the facility ID from a queue message.
@@ -15,9 +20,9 @@ export const extractFacilityId = (item: unknown): string => {
   const message = item as GiftQueueMessage;
   switch (message.messageType) {
     case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_AMENDMENT:
-      return message.facilityId ?? 'UNKNOWN_FACILITY_ID';
+      return extractAmendmentFacilityId(message);
     case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION:
-      return (message.payload as Record<string, Record<string, string>>)?.overview?.facilityId ?? 'UNKNOWN_FACILITY_ID';
+      return extractCreationFacilityId(message);
     default:
       return 'UNKNOWN_FACILITY_ID';
   }
