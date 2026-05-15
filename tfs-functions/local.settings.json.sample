@@ -3,6 +3,7 @@
   "Values": {
     "FUNCTIONS_WORKER_RUNTIME": "node",
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "APPLICATIONINSIGHTS_CONNECTION_STRING": "",
     "APIM_TFS_URL": "http://localhost:3001",
     "APIM_TFS_KEY": "x-api-key",
     "APIM_TFS_VALUE": "",

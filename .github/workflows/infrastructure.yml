@@ -140,6 +140,7 @@ jobs:
 
           # AZ CLI extensions upgrade
           az extension add --name containerapp --upgrade
+          az extension add --name application-insights --upgrade
 
       - name: Resource group 🏗️
         run: |
@@ -159,6 +160,21 @@ jobs:
           --retention-time ${{ vars.LOG_RETENTION_DAY }} \
           --sku ${{ vars.LOG_PLAN }} \
           --tags ${{ env.TAGS }}
+
+      - name: Application insights 📈
+        run: |
+          APP_INSIGHTS_NAME=appi-${{ env.PRODUCT }}-functions-${{ env.TARGET }}-${{ vars.VERSION }}
+
+          if az monitor app-insights component show --app $APP_INSIGHTS_NAME >/dev/null 2>&1; then
+            echo "Application Insights $APP_INSIGHTS_NAME already exists, skipping create"
+          else
+            az monitor app-insights component create \
+            --app $APP_INSIGHTS_NAME \
+            --kind web \
+            --workspace log-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
+            --application-type web \
+            --tags ${{ env.TAGS }}
+          fi
 
       - name: Container registry 📦️
         if: ${{ '1' == vars.NEW }}
@@ -652,7 +668,35 @@ jobs:
             "AzureWebJobsStorage__accountName=st${{ env.PRODUCT }}fn${{ env.TARGET }}${{ vars.VERSION }}" \
             "AzureWebJobsStorage__credential=managedidentity" \
             "AzureWebJobsStorage__clientId=$FUNCTIONS_CLIENT_ID" \
+            "AZURE_CLIENT_ID=$FUNCTIONS_CLIENT_ID" \
           --tags ${{ env.TAGS }}
+
+      - name: App Insights role assignment - Functions 🔐
+        run: |
+          # Monitoring Metrics Publisher — allows functions managed identity to send telemetry to App Insights
+          METRICS_PUBLISHER_ROLE='3913510d-42f4-4e42-8a64-420c390055eb'
+          APP_INSIGHTS_ID=$(az monitor app-insights component show \
+            --app appi-${{ env.PRODUCT }}-functions-${{ env.TARGET }}-${{ vars.VERSION }} \
+            --query id -o tsv)
+          FUNCTIONS_PRINCIPAL_ID=$(az identity show \
+            --name id-${{ env.PRODUCT }}-functions-${{ env.TARGET }}-${{ vars.VERSION }} \
+            --query principalId -o tsv)
+
+          EXISTING=$(az role assignment list \
+            --assignee $FUNCTIONS_PRINCIPAL_ID \
+            --role $METRICS_PUBLISHER_ROLE \
+            --scope $APP_INSIGHTS_ID \
+            --query '[0].id' -o tsv 2>/dev/null)
+
+          if [ -z "$EXISTING" ]; then
+            az role assignment create \
+            --assignee-object-id $FUNCTIONS_PRINCIPAL_ID \
+            --assignee-principal-type ServicePrincipal \
+            --role $METRICS_PUBLISHER_ROLE \
+            --scope $APP_INSIGHTS_ID
+          else
+            echo 'Monitoring Metrics Publisher role already exists, skipping'
+          fi
 
       - name: API management ⚡️
         if: ${{ '1' == vars.NEW }}

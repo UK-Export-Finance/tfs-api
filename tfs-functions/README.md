@@ -23,8 +23,8 @@ before the error is rethrown (causing the message to be moved to the poison queu
    - `APIM_TFS_KEY` — HTTP header name for auth (default `x-api-key` locally)
    - `APIM_TFS_VALUE` — must match the `API_KEY` env var set in `tfs-api`
    - `HALO_BASE_URL`, `HALO_TENANT_NAME`, `HALO_AUTH_CLIENT_ID`, `HALO_CLIENT_SECRET` — Halo credentials (see [Halo integration](#halo-integration))
-   - `HALO_TICKET_CLIENT_ID`, `HALO_TICKET_TYPE_ID`, `HALO_SITE_ID`, `HALO_USER_ID`, `HALO_TEAM_ID` — Halo ticket field IDs (defaults are pre-populated in the sample)
-2. Install dependencies with `npm ci`.
+   - `HALO_TICKET_CLIENT_ID`, `HALO_TICKET_TYPE_ID`, `HALO_SITE_ID`, `HALO_USER_ID`, `HALO_TEAM_ID` — Halo ticket field IDs (defaults are pre-populated in the sample).
+2. Install dependencies with `npm install` from the repo root (this installs all workspaces including `tfs-functions`).
 3. Start Azurite, using the VS Code Azurite extension.
 4. Start the Functions host with `npm start`.
 
@@ -170,6 +170,7 @@ Access to the storage account is via a **private endpoint**.
 | Container App — tfs-functions | `ca-apim-functions-<env>-<version>` | Hosts this functions app, ingress internal only |
 | Storage account | `stapimfn<env><version>` | Holds the `gift-requests` queue and Functions runtime state |
 | Storage queue | `gift-requests` | Queue bridging tfs-api and tfs-functions |
+| Application Insights | `appi-apim-<env>-<version>` | Telemetry, custom events, and exception tracking for tfs-functions |
 | Managed identity — tfs-api | `id-apim-tfs-<env>-<version>` | Identity used by the tfs-api container app |
 | Managed identity — tfs-functions | `id-apim-functions-<env>-<version>` | Identity used by the tfs-functions container app |
 | Private endpoint | `pep-apim-<env>-<version>-st-queue` | Privately exposes the queue storage endpoint inside the VNet |
@@ -185,6 +186,7 @@ Each container app has its own managed identity with the minimum required permis
 | `id-apim-functions-*` | Storage Queue Data Message Processor | Storage account | Allows tfs-functions to dequeue and complete messages |
 | `id-apim-functions-*` | Storage Blob Data Owner | Storage account | Required by the Functions webjobs runtime since we are using managed identity, and for host locks/heartbeats |
 | `id-apim-functions-*` | Storage Queue Data Contributor | Storage account | Required by the Functions webjobs runtime for internal runtime queues and poison queues |
+| `id-apim-functions-*` | Monitoring Metrics Publisher | Application Insights | Allows tfs-functions to send telemetry via managed identity |
 | Both | AcrPull | Container registry | Allows both apps to pull images from ACR |
 
 ### Authentication to tfs-api

@@ -90,7 +90,9 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Azure CLI extensions 🔧
-        run: az extension add --name containerapp --upgrade
+        run: |
+          az extension add --name containerapp --upgrade
+          az extension add --name application-insights --upgrade
 
       - name: ACR Login 🔐
         uses: azure/docker-login@v2
@@ -136,8 +138,10 @@ jobs:
               "AzureWebJobsStorage__accountName=st${{ env.PRODUCT }}fn${{ env.ENVIRONMENT }}${{ vars.VERSION }}" \
               "AzureWebJobsStorage__credential=managedidentity" \
               "AzureWebJobsStorage__clientId=${{ env.FUNCTIONS_CLIENT_ID }}" \
+              "AZURE_CLIENT_ID=${{ env.FUNCTIONS_CLIENT_ID }}" \
               "FUNCTIONS_WORKER_RUNTIME=node" \
               "AzureFunctionsJobHost__Logging__Console__IsEnabled=true" \
+              "APPLICATIONINSIGHTS_CONNECTION_STRING=$(az monitor app-insights component show --app appi-apim-functions-${{ env.ENVIRONMENT }}-${{ vars.VERSION }} --resource-group ${{ env.RG }} --query connectionString -o tsv)" \
               "APIM_TFS_URL=${{ vars.APIM_TFS_URL }}" \
               "APIM_TFS_KEY=${{ vars.APIM_TFS_KEY }}" \
               "APIM_TFS_VALUE=secretref:apim-tfs-value" \
