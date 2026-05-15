@@ -35,8 +35,8 @@ export class GiftQueueService {
    */
   async enqueue(payload: object): Promise<void> {
     const message = Buffer.from(JSON.stringify(payload)).toString('base64');
-    this.logger.info('Enqueuing gift request message');
+    this.logger.info('Enqueuing GIFT request message');
     await this.queueClient.sendMessage(message);
-    this.logger.info('Gift request message enqueued');
+    this.logger.info('GIFT request message enqueued');
   }
 }

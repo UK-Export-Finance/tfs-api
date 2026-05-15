@@ -45,7 +45,7 @@ export async function processGiftQueueMessage(queueItem: unknown, context: Invoc
     switch (messageType) {
       case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION:
         await postToTfsApi(GIFT_API_URL.facilityCreation, item.payload, `Failed to create GIFT facility ${facilityId}`, context);
-        context.log('Gift facility creation succeeded for facilityId:', facilityId);
+        context.log('GIFT facility creation succeeded for facilityId:', facilityId);
         trackEvent('gift.queue.message.processed', { ...telemetryBaseProps, operation: 'facility-creation', status: 'success' });
         break;
       case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_AMENDMENT:
@@ -53,7 +53,7 @@ export async function processGiftQueueMessage(queueItem: unknown, context: Invoc
           throw new Error('Failed to amend GIFT facility: facilityId is missing from queue message');
         }
         await postToTfsApi(GIFT_API_URL.facilityAmendment(item.facilityId), item.payload, `Failed to amend GIFT facility ${facilityId}`, context);
-        context.log('Gift facility amendment succeeded for facilityId:', facilityId);
+        context.log('GIFT facility amendment succeeded for facilityId:', facilityId);
         trackEvent('gift.queue.message.processed', { ...telemetryBaseProps, operation: 'facility-amendment', status: 'success' });
         break;
       default:

@@ -13,7 +13,7 @@ describe('processPoisonQueueItem Azure function', () => {
 
   it('logs the item added to the poison queue', () => {
     // Arrange
-    const queueItem = { messageType: GIFT_QUEUE_MESSAGE_TYPE.FACILITY_AMENDMENT, facilityId: 'abc-123', payload: {} };
+    const queueItem = { messageType: GIFT_QUEUE_MESSAGE_TYPE.FACILITY_AMENDMENT, facilityId: '0011111111', payload: {} };
 
     // Act
     processPoisonQueueItem(queueItem, context as any);
@@ -21,6 +21,6 @@ describe('processPoisonQueueItem Azure function', () => {
     // Assert
     expect(context.log).not.toHaveBeenCalled();
     expect(context.error).toHaveBeenCalledTimes(1);
-    expect(context.error).toHaveBeenCalledWith('Gift requests item added to poison queue, facilityId:', 'abc-123');
+    expect(context.error).toHaveBeenCalledWith('GIFT requests item added to poison queue, facilityId:', '0011111111');
   });
 });

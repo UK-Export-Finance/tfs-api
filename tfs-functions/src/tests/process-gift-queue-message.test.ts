@@ -42,7 +42,7 @@ describe('processGiftQueueMessage', () => {
         `Failed to create GIFT facility ${TEST_FACILITY_ID}`,
         context,
       );
-      expect(context.log).toHaveBeenCalledWith('Gift facility creation succeeded for facilityId:', TEST_FACILITY_ID);
+      expect(context.log).toHaveBeenCalledWith('GIFT facility creation succeeded for facilityId:', TEST_FACILITY_ID);
     });
 
     it('does not call createHaloTicket when postToTfsApi succeeds', async () => {
@@ -106,7 +106,7 @@ describe('processGiftQueueMessage', () => {
         `Failed to amend GIFT facility ${TEST_FACILITY_ID}`,
         context,
       );
-      expect(context.log).toHaveBeenCalledWith('Gift facility amendment succeeded for facilityId:', TEST_FACILITY_ID);
+      expect(context.log).toHaveBeenCalledWith('GIFT facility amendment succeeded for facilityId:', TEST_FACILITY_ID);
     });
 
     it('does not call createHaloTicket when postToTfsApi succeeds', async () => {

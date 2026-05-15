@@ -23,7 +23,7 @@ describe('processQueueItem Azure function', () => {
     await processQueueItem(queueItem, context as any);
 
     // Assert
-    expect(context.log).toHaveBeenCalledWith('Gift requests queue function received item, facilityId:', 'test-facility-id');
+    expect(context.log).toHaveBeenCalledWith('GIFT requests queue function received item, facilityId:', 'test-facility-id');
     expect(processGiftQueueMessage).toHaveBeenCalledWith(queueItem, context);
   });
 });
