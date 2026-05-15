@@ -45,4 +45,18 @@ describe('extractFacilityId', () => {
       expect(extractFacilityId(item)).toBe('UNKNOWN_FACILITY_ID');
     });
   });
+
+  describe('when item is malformed', () => {
+    it('returns UNKNOWN_FACILITY_ID when item is null', () => {
+      expect(extractFacilityId(null)).toBe('UNKNOWN_FACILITY_ID');
+    });
+
+    it('returns UNKNOWN_FACILITY_ID when item is a string', () => {
+      expect(extractFacilityId('not-an-object')).toBe('UNKNOWN_FACILITY_ID');
+    });
+
+    it('returns UNKNOWN_FACILITY_ID when item is a number', () => {
+      expect(extractFacilityId(42)).toBe('UNKNOWN_FACILITY_ID');
+    });
+  });
 });
