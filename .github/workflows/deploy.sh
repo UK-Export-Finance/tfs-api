@@ -18,11 +18,11 @@ if [ -n "$selection" ]; then
     ############### INFRASTRUCTURE ###############
     if [ "$selection" = "0" ]; then
         destination=infrastructure
-        branch=main
+        branch=main-gift-integration
     ############### DEPLOYMENT ###############
     elif [ "$selection" = "1" ]; then
         read destination
-        branch=main
+        branch=main-gift-integration
     ############### ACR PURGE ###############
     elif [ "$selection" = "2" ]; then
         destination=""

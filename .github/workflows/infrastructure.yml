@@ -149,12 +149,12 @@ jobs:
           --tags ${{ env.TAGS }}
 
       - name: Log analytics workspace 📝
-        if: ${{ '1' == vars.NEW }}
         run: |
+          # az monitor log-analytics workspace create implicitly acts as create or update
           az monitor log-analytics workspace create \
           --name log-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
+          --resource-group rg-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
           --capacity-reservation-level 100 \
-          --ingestion-access Disabled \
           --query-access Disabled \
           --quota 0.05 \
           --retention-time ${{ vars.LOG_RETENTION_DAY }} \
