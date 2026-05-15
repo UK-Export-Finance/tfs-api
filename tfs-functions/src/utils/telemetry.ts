@@ -39,7 +39,7 @@ export const trackException = (error: unknown, properties: Record<string, string
   }
 
   client.trackException({
-    exception: error instanceof Error ? error : new Error(String(error)),
+    exception: error instanceof Error ? error : new Error('Non-Error exception thrown'),
     properties,
   });
 };

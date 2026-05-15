@@ -126,24 +126,13 @@ describe('telemetry', () => {
         expect(mockTrackException).toHaveBeenCalledWith({ exception: error, properties });
       });
 
-      it('wraps a non-Error value in a new Error', () => {
+      it('wraps a non-Error value in a new Error with a generic message', () => {
         const properties = { key: 'value' };
 
         trackException('string error', properties);
 
         expect(mockTrackException).toHaveBeenCalledWith({
-          exception: new Error('string error'),
-          properties,
-        });
-      });
-
-      it('wraps a non-Error object in a new Error using String()', () => {
-        const properties = { key: 'value' };
-
-        trackException({ code: 500 }, properties);
-
-        expect(mockTrackException).toHaveBeenCalledWith({
-          exception: new Error('[object Object]'),
+          exception: new Error('Non-Error exception thrown'),
           properties,
         });
       });
