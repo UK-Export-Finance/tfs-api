@@ -109,6 +109,7 @@ export const GIFT = {
     CONFIGURATION_EVENT: '/configuration-event/type',
     CREATE_FACILITY: '/work-package/create-facility',
     FACILITY: '/facility',
+    FACILITIES: '/facilities',
     FEE_TYPE: '/fee-type',
     PRODUCT_TYPE: '/product-type',
     SUPPORTED: '/supported',
