@@ -24,7 +24,7 @@ describe('GET /gift/facilities/{ids}', () => {
 
   const mockFacilityIdsPathParam = mockFacilityIds.join(',');
 
-  const url = `/api/${prefixAndVersion}/gift${FACILITIES}?ids=${mockFacilityIdsPathParam}`;
+  const url = `/api/${prefixAndVersion}/gift${FACILITIES}/${mockFacilityIdsPathParam}`;
 
   let api: Api;
 
@@ -44,6 +44,34 @@ describe('GET /gift/facilities/{ids}', () => {
   withClientAuthenticationTests({
     givenTheRequestWouldOtherwiseSucceed: () => {},
     makeRequestWithoutAuth: (incorrectAuth?: IncorrectAuthArg) => api.getWithoutAuth(url, incorrectAuth?.headerName, incorrectAuth?.headerValue),
+  });
+
+  describe('validation', () => {
+    describe('when when ids path param is not comma-separated UKEF ids', () => {
+      it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
+        // Arrange
+        const invalidIds = 'invalid-id';
+
+        // Act
+        const { status } = await api.get(`/api/${prefixAndVersion}/gift${FACILITIES}/${invalidIds}`);
+
+        // Assert
+        expect(status).toEqual(HttpStatus.BAD_REQUEST);
+      });
+    });
+
+    describe('when ids path param contains a non-UKEF id', () => {
+      it(`should return a ${HttpStatus.BAD_REQUEST} response when one id is invalid`, async () => {
+        // Arrange
+        const invalidIds = `${valueGenerator.ukefId()},123,${valueGenerator.ukefId()}`;
+
+        // Act
+        const { status } = await api.get(`/api/${prefixAndVersion}/gift${FACILITIES}/${invalidIds}`);
+
+        // Assert
+        expect(status).toEqual(HttpStatus.BAD_REQUEST);
+      });
+    });
   });
 
   describe(`when ${HttpStatus.OK} responses are returned by GIFT for all facilities`, () => {
