@@ -5,7 +5,7 @@ This package contains an Azure Functions app with a storage queue trigger.
 The main queue trigger is defined in `src/functions/process-queue-item.ts` and listens on the
 `gift-requests` queue using the `AzureWebJobsStorage` connection. When a message is received, the
 function calls the appropriate `/api/v2/gift/facility` endpoint on `tfs-api` to process the facility creation or amendment.
-If that call fails, a Halo support ticket is automatically raised via `src/utils/create-halo-ticket.ts`
+The call is retried up to `GIFT_MAX_NUMBER_OF_RETRIES` times (also set manually in host.json); after that, a Halo support ticket is automatically raised via `src/utils/create-halo-ticket.ts`
 before the error is rethrown (causing the message to be moved to the poison queue).
 
 ## Prerequisites
@@ -19,10 +19,12 @@ before the error is rethrown (causing the message to be moved to the poison queu
 ## Run the host locally (without Docker)
 
 1. Copy `local.settings.json.sample` to `local.settings.json` and fill in the values:
-   - `TFS_API_KEY` — must match the `API_KEY` env var set in `tfs-api`
+   - `APIM_TFS_URL` — base URL of tfs-api (default `http://localhost:3001`)
+   - `APIM_TFS_KEY` — HTTP header name for auth (default `x-api-key` locally)
+   - `APIM_TFS_VALUE` — must match the `API_KEY` env var set in `tfs-api`
    - `HALO_BASE_URL`, `HALO_TENANT_NAME`, `HALO_AUTH_CLIENT_ID`, `HALO_CLIENT_SECRET` — Halo credentials (see [Halo integration](#halo-integration))
-   - `HALO_TICKET_CLIENT_ID`, `HALO_TICKET_TYPE_ID`, `HALO_SITE_ID`, `HALO_USER_ID`, `HALO_TEAM_ID` — Halo ticket field IDs (defaults are pre-populated in the sample)
-2. Install dependencies with `npm ci`.
+   - `HALO_TICKET_CLIENT_ID`, `HALO_TICKET_TYPE_ID`, `HALO_SITE_ID`, `HALO_USER_ID`, `HALO_TEAM_ID` — Halo ticket field IDs (defaults are pre-populated in the sample).
+2. Install dependencies with `npm install` from the repo root (this installs all workspaces including `tfs-functions`).
 3. Start Azurite, using the VS Code Azurite extension.
 4. Start the Functions host with `npm start`.
 
@@ -97,7 +99,9 @@ This tests the full flow: `POST /gift/facility/queue` → Azurite queue → func
    cp .env.sample .env
    ```
 
-   - `TFS_API_KEY` — must match the `API_KEY` env var set in `tfs-api`
+   - `APIM_TFS_URL` — base URL of tfs-api (default `http://host.docker.internal:3001` when running in Docker)
+   - `APIM_TFS_KEY` — HTTP header name for auth (default `x-api-key` locally)
+   - `APIM_TFS_VALUE` — must match the `API_KEY` env var set in `tfs-api`
    - `HALO_BASE_URL`, `HALO_TENANT_NAME`, `HALO_AUTH_CLIENT_ID`, `HALO_CLIENT_SECRET` — Halo credentials (see [Halo integration](#halo-integration))
    - `HALO_TICKET_CLIENT_ID`, `HALO_TICKET_TYPE_ID`, `HALO_SITE_ID`, `HALO_USER_ID`, `HALO_TEAM_ID` — Halo ticket field IDs (defaults are pre-populated in the sample)
 6. Start the functions container and Azurite:
@@ -114,7 +118,8 @@ This tests the full flow: `POST /gift/facility/queue` → Azurite queue → func
 
 - The queue binding uses `AzureWebJobsStorage`.
 - Messages must be Base64-encoded JSON — the `GiftQueueService` in `tfs-api` handles this automatically when using the `/facility/queue` endpoint.
-- After a single failed attempt, the message is moved to `gift-requests-poison` and the poison queue function logs it.
+- After `maxDequeueCount` failed attempts (set in `host.json`), the Azure Functions host moves the message to `gift-requests-poison` and the poison queue function logs it.
+- **Important:** `host.json` does not support environment variable substitution, so `maxDequeueCount` in `host.json` and `GIFT_MAX_NUMBER_OF_RETRIES` in the environment must be kept in sync manually — they should always be the same value.
 
 ## Halo integration
 
@@ -140,7 +145,7 @@ To test locally, you will need to have access to the Halo Test environment and s
 
 ### Testing the failure path locally
 
-To trigger a Halo ticket during local testing, put a message onto the queue that will cause the GIFT facility creation or amendment to fail (e.g. an invalid payload). The function will attempt the GIFT call, fail, and then call Halo before moving the message to the poison queue - on the first failed attempt.
+To trigger a Halo ticket during local testing, put a message onto the queue that will cause the GIFT facility creation or amendment to fail (e.g. an invalid payload). The function will attempt the GIFT call, fail, and then call Halo before moving the message to the poison queue - after the 5th retry.
 
 You can then look at the Halo test environment to see the ticket you've raised.
 
@@ -165,6 +170,7 @@ Access to the storage account is via a **private endpoint**.
 | Container App — tfs-functions | `ca-apim-functions-<env>-<version>` | Hosts this functions app, ingress internal only |
 | Storage account | `stapimfn<env><version>` | Holds the `gift-requests` queue and Functions runtime state |
 | Storage queue | `gift-requests` | Queue bridging tfs-api and tfs-functions |
+| Application Insights | `appi-apim-<env>-<version>` | Telemetry, custom events, and exception tracking for tfs-functions |
 | Managed identity — tfs-api | `id-apim-tfs-<env>-<version>` | Identity used by the tfs-api container app |
 | Managed identity — tfs-functions | `id-apim-functions-<env>-<version>` | Identity used by the tfs-functions container app |
 | Private endpoint | `pep-apim-<env>-<version>-st-queue` | Privately exposes the queue storage endpoint inside the VNet |
@@ -180,7 +186,20 @@ Each container app has its own managed identity with the minimum required permis
 | `id-apim-functions-*` | Storage Queue Data Message Processor | Storage account | Allows tfs-functions to dequeue and complete messages |
 | `id-apim-functions-*` | Storage Blob Data Owner | Storage account | Required by the Functions webjobs runtime since we are using managed identity, and for host locks/heartbeats |
 | `id-apim-functions-*` | Storage Queue Data Contributor | Storage account | Required by the Functions webjobs runtime for internal runtime queues and poison queues |
+| `id-apim-functions-*` | Monitoring Metrics Publisher | Application Insights | Allows tfs-functions to send telemetry via managed identity |
 | Both | AcrPull | Container registry | Allows both apps to pull images from ACR |
+
+### Authentication to tfs-api
+
+The functions app calls tfs-api using three environment variables that behave differently depending on environment:
+
+| Variable | Local (Docker) | Dev / Staging / Production |
+|---|---|---|
+| `APIM_TFS_URL` | `http://host.docker.internal:3001` — calls tfs-api directly | APIM gateway URL (e.g. `https://apim-infrastructure-dev-v1.azure-api.net/tfs`) |
+| `APIM_TFS_KEY` | `x-api-key` — tfs-api's own auth header | APIM's subscription key header |
+| `APIM_TFS_VALUE` | Must match the `API_KEY` value set on the local tfs-api instance | APIM subscription key — stored as a GitHub secret and injected as a container app secret |
+
+Locally, the functions app calls tfs-api directly and authenticates with its `x-api-key` header. In deployed environments, all traffic is routed through APIM using an APIM subscription key.
 
 ### Authentication to the storage queue
 
