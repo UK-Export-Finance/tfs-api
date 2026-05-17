@@ -26,9 +26,9 @@ import {
 import { GiftFacilitiesController } from './gift.facilities.controller';
 
 const mockResponseGetMany = [
-  mockResponse200(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA),
-  mockResponse200(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA),
-  mockResponse200(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA),
+  mockResponse200(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA).data,
+  mockResponse200(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA).data,
+  mockResponse200(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA).data,
 ];
 
 describe('GiftFacilitiesController', () => {
@@ -103,6 +103,7 @@ describe('GiftFacilitiesController', () => {
     mockServiceGetMany = jest.fn().mockResolvedValueOnce(mockResponseGetMany);
 
     giftFacilityService.getMany = mockServiceGetMany;
+
     controller = new GiftFacilitiesController(giftFacilityService);
   });
 

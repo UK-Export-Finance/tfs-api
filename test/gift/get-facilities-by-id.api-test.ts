@@ -24,7 +24,7 @@ describe('GET /gift/facilities/{ids}', () => {
 
   const mockFacilityIdsPathParam = mockFacilityIds.join(',');
 
-  const url = `/api/${prefixAndVersion}/gift${FACILITIES}/${mockFacilityIdsPathParam}`;
+  const url = `/api/${prefixAndVersion}/gift${FACILITIES}?ids=${mockFacilityIdsPathParam}`;
 
   let api: Api;
 

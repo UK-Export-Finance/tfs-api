@@ -85,9 +85,9 @@ export class GiftFacilityService {
   /**
    * Get multiple GIFT facilities by their IDs
    * @param {UkefId[]} facilityIds
-   * @returns {Promise<AxiosResponse[]>}
+   * @returns {Promise<AxiosResponse['data'][]>}
    */
-  async getMany(facilityIds: UkefId[]): Promise<AxiosResponse[]> {
+  async getMany(facilityIds: UkefId[]): Promise<AxiosResponse['data'][]> {
     try {
       this.logger.info('Getting multiple GIFT facilities %o', facilityIds);
 

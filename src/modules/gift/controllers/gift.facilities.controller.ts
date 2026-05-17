@@ -2,9 +2,8 @@ import { Controller, Get, Param } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiInternalServerErrorResponse, ApiOkResponse, ApiOperation, ApiParam, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import AppConfig from '@ukef/config/app.config';
 import { EXAMPLES, GIFT } from '@ukef/constants';
-import { AxiosResponse } from 'axios';
 
-import { FacilityIdsOperationParamsDto, GiftFacilityOverviewRequestDto } from '../dto';
+import { FacilityIdsOperationParamsDto, GiftFacilityResponseDto } from '../dto';
 import { GiftFacilityService } from '../services';
 
 const { PATH } = GIFT;
@@ -29,7 +28,7 @@ export class GiftFacilitiesController {
   })
   @ApiOkResponse({
     description: 'The facilities',
-    type: GiftFacilityOverviewRequestDto,
+    type: GiftFacilityResponseDto,
     isArray: true,
   })
   @ApiBadRequestResponse({
@@ -41,7 +40,7 @@ export class GiftFacilitiesController {
   @ApiInternalServerErrorResponse({
     description: 'An internal server error has occurred',
   })
-  getMany(@Param() { ids }: FacilityIdsOperationParamsDto): Promise<AxiosResponse[]> {
+  getMany(@Param() { ids }: FacilityIdsOperationParamsDto): Promise<GiftFacilityResponseDto[]> {
     return this.giftFacilityService.getMany(ids);
   }
 }
