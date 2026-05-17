@@ -30,6 +30,6 @@ export const ValidatedFacilityIdentifiersApiProperty = ({ description }: Options
     IsArray(),
     ArrayNotEmpty(),
     IsString({ each: true }),
-    Length(10, 10, { each: true }),
-    Matches(UKEFID.MAIN_ID.TEN_DIGIT_REGEX, { each: true, message: "For 'ids': Value must follow pattern ^00\\d{8}$." }),
+    Length(UKEFID.VALIDATION.MIN_LENGTH, UKEFID.VALIDATION.MAX_LENGTH, { each: true }),
+    Matches(UKEFID.MAIN_ID.TEN_DIGIT_REGEX, { each: true, message: `For 'ids': Value must follow pattern ${UKEFID.MAIN_ID.TEN_DIGIT_REGEX}.` }),
   );
