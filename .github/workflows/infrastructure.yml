@@ -250,7 +250,7 @@ jobs:
           ALERT_NAME=alert-${{ env.PRODUCT }}-poison-queue-${{ env.TARGET }}-${{ vars.VERSION }}
           SCOPE="/subscriptions/$(az account show --query id -o tsv)/resourceGroups/rg-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }}/providers/Microsoft.Storage/storageAccounts/${STORAGE_ACCOUNT}/queueServices/default"
 
-          if az monitor metrics alert show --name $ALERT_NAME >/dev/null 2>&1; then
+          if az monitor metrics alert show --name $ALERT_NAME --resource-group rg-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} >/dev/null 2>&1; then
             echo "Poison queue alert $ALERT_NAME already exists, skipping"
           else
             az monitor metrics alert create \
