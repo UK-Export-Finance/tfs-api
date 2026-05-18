@@ -155,7 +155,7 @@ jobs:
           --name log-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
           --resource-group rg-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
           --capacity-reservation-level 100 \
-          --query-access Disabled \
+          --query-access Enabled \
           --quota 0.05 \
           --retention-time ${{ vars.LOG_RETENTION_DAY }} \
           --sku ${{ vars.LOG_PLAN }} \
@@ -608,10 +608,10 @@ jobs:
           --next-hop-type VirtualAppliance
 
       - name: Container app environment 🗃️
-        if: ${{ '1' == vars.NEW }}
         run: |
           az containerapp env create \
           --name cae-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
+          --resource-group rg-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
           --infrastructure-subnet-resource-id $(az network vnet subnet show --name snet-${{ env.PRODUCT }}-${{ vars.VERSION }} --vnet-name vnet-${{ env.PRODUCT }}-${{ vars.VERSION }} --query 'id' -o tsv) \
           --logs-workspace-id $(az monitor log-analytics workspace show --name log-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} --query customerId -o tsv) \
           --logs-workspace-key $(az monitor log-analytics workspace get-shared-keys --name log-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} --query primarySharedKey -o tsv) \
