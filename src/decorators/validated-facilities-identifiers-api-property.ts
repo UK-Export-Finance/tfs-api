@@ -8,7 +8,7 @@ interface Options {
   description: string;
 }
 
-export const ValidatedFacilityIdentifiersApiProperty = ({ description }: Options) =>
+export const ValidatedFacilitiesIdentifiersApiProperty = ({ description }: Options) =>
   applyDecorators(
     ApiProperty({
       type: 'string',
