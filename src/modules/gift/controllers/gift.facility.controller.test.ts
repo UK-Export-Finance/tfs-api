@@ -142,6 +142,7 @@ describe('GiftFacilityController', () => {
   });
 
   describe('GET :facilityId', () => {
+    // Arrange
     const mockParams = { facilityId: mockFacilityId };
 
     it('should call giftFacilityService.getFacility', async () => {

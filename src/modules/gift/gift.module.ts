@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MdmModule } from '@ukef/modules/mdm/mdm.module';
 
-import { GiftCurrencyController, GiftFacilityController, GiftFeeTypeController } from './controllers';
+import { GiftCurrencyController, GiftFacilitiesController, GiftFacilityController, GiftFeeTypeController } from './controllers';
 import {
   GiftAccrualScheduleService,
   GiftBusinessCalendarsConventionService,
@@ -47,6 +47,6 @@ import {
     GiftStatusService,
     GiftWorkPackageService,
   ],
-  controllers: [GiftCurrencyController, GiftFacilityController, GiftFeeTypeController],
+  controllers: [GiftCurrencyController, GiftFacilitiesController, GiftFacilityController, GiftFeeTypeController],
 })
 export class GiftModule {}

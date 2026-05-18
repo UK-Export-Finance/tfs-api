@@ -83,6 +83,35 @@ export class GiftFacilityService {
   }
 
   /**
+   * Get multiple GIFT facilities by their IDs
+   * @param {UkefId[]} facilityIds
+   * @returns {Promise<AxiosResponse['data'][]>}
+   */
+  async getMany(facilityIds: UkefId[]): Promise<AxiosResponse['data'][]> {
+    try {
+      this.logger.info('Getting multiple GIFT facilities %o', facilityIds);
+
+      const responses: AxiosResponse[] = [];
+
+      /**
+       * NOTE: We need to use a for loop instead of Promise.all, to ensure that the calls are sequential.
+       * Promise.all is not sequential.
+       */
+      for (const facilityId of facilityIds) {
+        const response = await this.get(facilityId);
+
+        responses.push(response);
+      }
+
+      return responses.map(({ data }) => data);
+    } catch (error) {
+      this.logger.error('Error getting multiple GIFT facilities %o %o', facilityIds, error);
+
+      throw new Error(`Error getting multiple GIFT facilities ${facilityIds}`, { cause: error });
+    }
+  }
+
+  /**
    * Create a GIFT facility - initial/overview data
    * @param {GiftFacilityOverviewRequestDto} overviewData: Facility overview data
    * @returns {Promise<AxiosResponse>}
