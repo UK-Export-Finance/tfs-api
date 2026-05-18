@@ -244,7 +244,27 @@ jobs:
           --name gift-requests \
           --account-name st${{ env.PRODUCT }}fn${{ env.TARGET }}${{ vars.VERSION }}
 
-      
+      - name: Poison queue alert 🚨
+        run: |
+          STORAGE_ACCOUNT=st${{ env.PRODUCT }}fn${{ env.TARGET }}${{ vars.VERSION }}
+          ALERT_NAME=alert-${{ env.PRODUCT }}-poison-queue-${{ env.TARGET }}-${{ vars.VERSION }}
+          SCOPE="/subscriptions/$(az account show --query id -o tsv)/resourceGroups/rg-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }}/providers/Microsoft.Storage/storageAccounts/${STORAGE_ACCOUNT}/queueServices/default"
+
+          if az monitor metrics alert show --name $ALERT_NAME >/dev/null 2>&1; then
+            echo "Poison queue alert $ALERT_NAME already exists, skipping"
+          else
+            az monitor metrics alert create \
+            --name $ALERT_NAME \
+            --resource-group rg-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
+            --scopes $SCOPE \
+            --description "Triggers when gift-requests-poison queue exceeds 10 messages" \
+            --condition "avg QueueMessageCount > 10 where QueueName includes gift-requests-poison" \
+            --evaluation-frequency 5m \
+            --window-size 5m \
+            --severity 2 \
+            --tags ${{ env.TAGS }}
+          fi
+
       - name: Storage queue role assignments 🔐
         run: |
           STORAGE_ID=$(az storage account show \
