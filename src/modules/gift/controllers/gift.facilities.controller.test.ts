@@ -111,7 +111,7 @@ describe('GiftFacilitiesController', () => {
     jest.resetAllMocks();
   });
 
-  describe('GET :facilityId', () => {
+  describe('GET ?ids=:ids', () => {
     // Arrange
     const mockIds = EXAMPLES.GIFT.FACILITY_IDS_QUERY_PARAM.split(',') as UkefId[];
 

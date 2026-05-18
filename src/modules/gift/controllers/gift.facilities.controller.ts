@@ -1,5 +1,5 @@
-import { Controller, Get, Param } from '@nestjs/common';
-import { ApiBadRequestResponse, ApiInternalServerErrorResponse, ApiOkResponse, ApiOperation, ApiParam, ApiUnauthorizedResponse } from '@nestjs/swagger';
+import { Controller, Get, Query } from '@nestjs/common';
+import { ApiBadRequestResponse, ApiInternalServerErrorResponse, ApiOkResponse, ApiOperation, ApiQuery, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import AppConfig from '@ukef/config/app.config';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 
@@ -17,9 +17,9 @@ const { giftVersioning } = AppConfig();
 export class GiftFacilitiesController {
   constructor(private readonly giftFacilityService: GiftFacilityService) {}
 
-  @Get(':ids')
+  @Get()
   @ApiOperation({ summary: 'Get multiple GIFT facilities by ID' })
-  @ApiParam({
+  @ApiQuery({
     name: 'ids',
     required: true,
     type: 'string',
@@ -40,7 +40,7 @@ export class GiftFacilitiesController {
   @ApiInternalServerErrorResponse({
     description: 'An internal server error has occurred',
   })
-  getMany(@Param() { ids }: FacilityIdsOperationParamsDto): Promise<GiftFacilityResponseDto[]> {
+  getMany(@Query() { ids }: FacilityIdsOperationParamsDto): Promise<GiftFacilityResponseDto[]> {
     return this.giftFacilityService.getMany(ids);
   }
 }
