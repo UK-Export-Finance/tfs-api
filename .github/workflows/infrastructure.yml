@@ -122,6 +122,14 @@ jobs:
         if: ${{ 'production' == env.TARGET }}
         run: echo "TYPE=Production" >> $GITHUB_ENV
 
+      - name: Storage PE subnet - dev 🔒️
+        if: ${{ 'dev' == env.TARGET }}
+        run: echo "STORAGE_PE_SUBNET_PREFIX=${{ vars.DEV_STORAGE_PE_SUBNET_PREFIX }}" >> $GITHUB_ENV
+
+      - name: Storage PE subnet - staging 🔒️
+        if: ${{ 'staging' == env.TARGET }}
+        run: echo "STORAGE_PE_SUBNET_PREFIX=${{ vars.STAGING_STORAGE_PE_SUBNET_PREFIX }}" >> $GITHUB_ENV
+
       - name: Tags 🏷️
         run: echo TAGS='Environment=${{ env.TYPE }}' \
           'Product=${{ env.PRODUCT }}' \
@@ -289,7 +297,7 @@ jobs:
             --assignee-object-id $FUNCTIONS_PRINCIPAL_ID \
             --assignee-principal-type ServicePrincipal \
             --role $PROCESSOR_ROLE \
-            --scope $STORAGE_ID
+            --scope $STORAGE_ID 
           else
             echo 'Storage Queue Data Message Processor role assignment already exists, skipping'
           fi
@@ -356,7 +364,7 @@ jobs:
             az network vnet subnet create \
             --name snet-pep-${{ env.PRODUCT }}-${{ vars.VERSION }} \
             --vnet-name vnet-${{ env.PRODUCT }}-${{ vars.VERSION }} \
-            --address-prefixes ${{ vars.STORAGE_PE_SUBNET_PREFIX }} \
+            --address-prefixes ${{ env.STORAGE_PE_SUBNET_PREFIX }} \
             --private-endpoint-network-policies Disabled
           else
             echo 'Storage private endpoint subnet already exists, skipping'
