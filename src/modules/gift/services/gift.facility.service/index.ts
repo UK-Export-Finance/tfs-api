@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { GIFT } from '@ukef/constants';
 import { UkefId } from '@ukef/helpers';
 import { AxiosResponse } from 'axios';
@@ -103,8 +103,22 @@ export class GiftFacilityService {
         responses.push(response);
       }
 
-      return responses.map(({ data }) => data);
+      const mappedResponses = responses.map((response) => response.data);
+
+      const noFacilitiesFound = mappedResponses.every((response) => response.statusCode === HttpStatus.NOT_FOUND);
+
+      if (noFacilitiesFound) {
+        this.logger.info('No GIFT facilities found for IDs %o', facilityIds);
+
+        throw new NotFoundException(`No GIFT facilities found for IDs ${facilityIds}`);
+      }
+
+      return mappedResponses;
     } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw new NotFoundException(error.message);
+      }
+
       this.logger.error('Error getting multiple GIFT facilities %o %o', facilityIds, error);
 
       throw new Error(`Error getting multiple GIFT facilities ${facilityIds}`, { cause: error });

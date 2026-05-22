@@ -122,6 +122,53 @@ describe('GET /gift/facilities?ids={ids}', () => {
     });
   });
 
+  describe(`when ${HttpStatus.NOT_FOUND} responses are returned by GIFT for all facilities`, () => {
+    it(`should return a ${HttpStatus.NOT_FOUND} response`, async () => {
+      // Arrange
+      const notFoundResponse = {
+        statusCode: HttpStatus.NOT_FOUND,
+        message: 'not found',
+      };
+
+      nock(GIFT_API_URL).get(`${FACILITY}/${mockFacilityIds[0]}`).reply(HttpStatus.NOT_FOUND, notFoundResponse);
+      nock(GIFT_API_URL).get(`${FACILITY}/${mockFacilityIds[1]}`).reply(HttpStatus.NOT_FOUND, notFoundResponse);
+      nock(GIFT_API_URL).get(`${FACILITY}/${mockFacilityIds[2]}`).reply(HttpStatus.NOT_FOUND, notFoundResponse);
+
+      // Act
+      const { status, body } = await api.get(url);
+
+      // Assert
+      expect(status).toEqual(HttpStatus.NOT_FOUND);
+      expect(body.statusCode).toEqual(HttpStatus.NOT_FOUND);
+      expect(body.message).toBe(`No GIFT facilities found for IDs ${mockFacilityIdsPathParam}`);
+    });
+  });
+
+  describe(`when a ${HttpStatus.NOT_FOUND} response is returned by GIFT for one facility`, () => {
+    it(`should return a ${HttpStatus.OK} response containing the mixed facility responses`, async () => {
+      // Arrange
+      const mockNotFoundResponse = {
+        statusCode: HttpStatus.NOT_FOUND,
+        message: 'not found',
+      };
+
+      nock(GIFT_API_URL).get(`${FACILITY}/${mockFacilityIds[0]}`).reply(HttpStatus.OK, { facilityId: mockFacilityIds[0], aMockFacility: true });
+      nock(GIFT_API_URL).get(`${FACILITY}/${mockFacilityIds[1]}`).reply(HttpStatus.NOT_FOUND, mockNotFoundResponse);
+      nock(GIFT_API_URL).get(`${FACILITY}/${mockFacilityIds[2]}`).reply(HttpStatus.OK, { facilityId: mockFacilityIds[2], aMockFacility: true });
+
+      // Act
+      const { status, body } = await api.get(url);
+
+      // Assert
+      expect(status).toEqual(HttpStatus.OK);
+      expect(body).toHaveLength(mockFacilityIds.length);
+
+      expect(body[0]).toStrictEqual({ facilityId: mockFacilityIds[0], aMockFacility: true });
+      expect(body[1]).toStrictEqual(mockNotFoundResponse);
+      expect(body[2]).toStrictEqual({ facilityId: mockFacilityIds[2], aMockFacility: true });
+    });
+  });
+
   describe(`when a ${HttpStatus.INTERNAL_SERVER_ERROR} response is returned by GIFT`, () => {
     it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
       // Arrange
