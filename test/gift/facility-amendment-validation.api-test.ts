@@ -5,7 +5,7 @@ import { Api } from '@ukef-test/support/api';
 import nock from 'nock';
 
 import { amendmentTypeStringValidation } from './assertions';
-import { amendmentTypeValidationMessage, apimFacilityAmendmentUrl } from './test-helpers';
+import { amendmentTypeValidationMessage, apimFacilityAmendmentInternalUrl } from './test-helpers';
 
 const {
   AMEND_FACILITY_TYPES: { AMEND_FACILITY_INCREASE_AMOUNT, AMEND_FACILITY_DECREASE_AMOUNT, AMEND_FACILITY_REPLACE_EXPIRY_DATE },
@@ -34,7 +34,7 @@ describe('POST /gift/facility/:facilityId/amendment - validation', () => {
       const mockPayload = {};
 
       // Act
-      const { status, body } = await api.post(apimFacilityAmendmentUrl, mockPayload);
+      const { status, body } = await api.post(apimFacilityAmendmentInternalUrl, mockPayload);
 
       // Assert
       expect(status).toBe(HttpStatus.BAD_REQUEST);
@@ -62,7 +62,7 @@ describe('POST /gift/facility/:facilityId/amendment - validation', () => {
       const mockPayload = [];
 
       // Act
-      const { status, body } = await api.post(apimFacilityAmendmentUrl, mockPayload);
+      const { status, body } = await api.post(apimFacilityAmendmentInternalUrl, mockPayload);
 
       // Assert
       expect(status).toBe(HttpStatus.BAD_REQUEST);
@@ -90,7 +90,7 @@ describe('POST /gift/facility/:facilityId/amendment - validation', () => {
       const mockPayload = { invalidField: true };
 
       // Act
-      const { status, body } = await api.post(apimFacilityAmendmentUrl, mockPayload);
+      const { status, body } = await api.post(apimFacilityAmendmentInternalUrl, mockPayload);
 
       // Assert
       expect(status).toBe(HttpStatus.BAD_REQUEST);
@@ -115,7 +115,7 @@ describe('POST /gift/facility/:facilityId/amendment - validation', () => {
 
   describe('amendmentType', () => {
     amendmentTypeStringValidation({
-      url: apimFacilityAmendmentUrl,
+      url: apimFacilityAmendmentInternalUrl,
       initialPayload: {},
       min: VALIDATION.FACILITY.AMENDMENT_TYPE.MIN_LENGTH,
       max: VALIDATION.FACILITY.AMENDMENT_TYPE.MAX_LENGTH,
@@ -139,7 +139,7 @@ describe('POST /gift/facility/:facilityId/amendment - validation', () => {
         };
 
         // Act
-        const { status, body } = await api.post(apimFacilityAmendmentUrl, mockPayload);
+        const { status, body } = await api.post(apimFacilityAmendmentInternalUrl, mockPayload);
 
         // Assert
         expect(status).toBe(HttpStatus.BAD_REQUEST);
@@ -163,7 +163,7 @@ describe('POST /gift/facility/:facilityId/amendment - validation', () => {
         };
 
         // Act
-        const { status, body } = await api.post(apimFacilityAmendmentUrl, mockPayload);
+        const { status, body } = await api.post(apimFacilityAmendmentInternalUrl, mockPayload);
 
         // Assert
         expect(status).toBe(HttpStatus.BAD_REQUEST);

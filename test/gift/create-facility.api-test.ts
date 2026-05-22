@@ -9,7 +9,7 @@ import nock from 'nock';
 
 import {
   accrualScheduleUrl,
-  apimFacilityUrl,
+  apimFacilityInternalUrl,
   apimMdmObligationSubtypesUrl,
   approveStatusUrl,
   businessCalendarsConventionUrl,
@@ -97,7 +97,7 @@ describe('POST /gift/facility', () => {
   withClientAuthenticationTests({
     givenTheRequestWouldOtherwiseSucceed: () => {},
     makeRequestWithoutAuth: (incorrectAuth?: IncorrectAuthArg) =>
-      api.postWithoutAuth(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD, incorrectAuth?.headerName, incorrectAuth?.headerValue),
+      api.postWithoutAuth(apimFacilityInternalUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD, incorrectAuth?.headerName, incorrectAuth?.headerValue),
   });
 
   describe(`when the payload is valid and a ${HttpStatus.CREATED} response is returned by all GIFT endpoints`, () => {
@@ -106,7 +106,7 @@ describe('POST /gift/facility', () => {
       setupMocks();
 
       // Act
-      const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
+      const { status, body } = await api.post(apimFacilityInternalUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
       // Assert
       expect(status).toBe(HttpStatus.CREATED);
@@ -146,7 +146,7 @@ describe('POST /gift/facility', () => {
         };
 
         // Act
-        const { status } = await api.post(apimFacilityUrl, mockPayload);
+        const { status } = await api.post(apimFacilityInternalUrl, mockPayload);
 
         // Assert
         expect(status).toBe(HttpStatus.CREATED);
@@ -173,7 +173,7 @@ describe('POST /gift/facility', () => {
         };
 
         // Act
-        const { status } = await api.post(apimFacilityUrl, mockPayload);
+        const { status } = await api.post(apimFacilityInternalUrl, mockPayload);
 
         // Assert
         expect(status).toBe(HttpStatus.CREATED);
@@ -200,7 +200,7 @@ describe('POST /gift/facility', () => {
         };
 
         // Act
-        const { status } = await api.post(apimFacilityUrl, mockPayload);
+        const { status } = await api.post(apimFacilityInternalUrl, mockPayload);
 
         // Assert
         expect(status).toBe(HttpStatus.CREATED);
@@ -214,7 +214,7 @@ describe('POST /gift/facility', () => {
       setupMocks();
 
       // Act
-      const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD_NO_FIXED_FEES);
+      const { status, body } = await api.post(apimFacilityInternalUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD_NO_FIXED_FEES);
 
       // Assert
       expect(status).toBe(HttpStatus.CREATED);
@@ -241,7 +241,7 @@ describe('POST /gift/facility', () => {
       setupMocks();
 
       // Act
-      const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD_NO_REPAYMENT_PROFILES);
+      const { status, body } = await api.post(apimFacilityInternalUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD_NO_REPAYMENT_PROFILES);
 
       // Assert
       expect(status).toBe(HttpStatus.CREATED);

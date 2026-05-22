@@ -6,7 +6,7 @@ import { MockGiftResponse } from '@ukef-test/support/interfaces/mock-gift-respon
 import nock from 'nock';
 
 import {
-  apimFacilityUrl,
+  apimFacilityInternalUrl,
   apimMdmObligationSubtypesUrl,
   counterpartyRolesUrl,
   currencyUrl,
@@ -62,7 +62,7 @@ describe('POST /gift/facility - facility creation error handling', () => {
       setupMocks(mockResponses.badRequest);
 
       // Act
-      const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
+      const { status, body } = await api.post(apimFacilityInternalUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
       // Assert
       expect(status).toBe(HttpStatus.BAD_REQUEST);
@@ -79,7 +79,7 @@ describe('POST /gift/facility - facility creation error handling', () => {
       setupMocks(mockResponses.forbidden);
 
       // Act
-      const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
+      const { status, body } = await api.post(apimFacilityInternalUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
       // Assert
       expect(status).toBe(HttpStatus.FORBIDDEN);
@@ -94,7 +94,7 @@ describe('POST /gift/facility - facility creation error handling', () => {
       setupMocks(mockResponses.unauthorized);
 
       // Act
-      const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
+      const { status, body } = await api.post(apimFacilityInternalUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
       // Assert
       expect(status).toBe(HttpStatus.UNAUTHORIZED);
@@ -109,7 +109,7 @@ describe('POST /gift/facility - facility creation error handling', () => {
       setupMocks(mockResponses.iAmATeapot);
 
       // Act
-      const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
+      const { status, body } = await api.post(apimFacilityInternalUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
       // Assert
       expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -124,7 +124,7 @@ describe('POST /gift/facility - facility creation error handling', () => {
       setupMocks(mockResponses.internalServerError);
 
       // Act
-      const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
+      const { status, body } = await api.post(apimFacilityInternalUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
       // Assert
       expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);

@@ -98,7 +98,9 @@ export const mockResponses = {
 };
 
 export const apimFacilityUrl = `/api/${prefixAndVersion}/gift${PATH.FACILITY}`;
+export const apimFacilityInternalUrl = `/api/${prefixAndVersion}/gift${PATH.FACILITY}/internal`;
 export const apimFacilityAmendmentUrl = `/api/${prefixAndVersion}/gift${PATH.FACILITY}/${mockFacilityId}${PATH.AMENDMENT}`;
+export const apimFacilityAmendmentInternalUrl = `/api/${prefixAndVersion}/gift${PATH.FACILITY}/${mockFacilityId}${PATH.AMENDMENT}/internal`;
 export const currencyUrl = PATH.CURRENCY;
 export const counterpartyRolesUrl = PATH.COUNTERPARTY_ROLES;
 export const facilityCreationUrl = PATH.CREATE_FACILITY;
