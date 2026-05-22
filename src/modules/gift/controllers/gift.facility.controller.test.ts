@@ -210,7 +210,7 @@ describe('GiftFacilityController', () => {
     });
   });
 
-  describe('POST :facilityId/amendment/internal', () => {
+  describe('POST :facilityId/amendment/without-queue', () => {
     const mockParams = { facilityId: mockFacilityId };
     const mockBody = FACILITY_AMENDMENT_REQUEST_PAYLOAD;
 

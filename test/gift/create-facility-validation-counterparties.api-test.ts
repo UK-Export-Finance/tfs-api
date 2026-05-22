@@ -6,7 +6,7 @@ import nock from 'nock';
 
 import { arrayOfObjectsDateStringValidation, arrayOfObjectsRoleIdStringValidation, arrayOfObjectsStringValidation } from './assertions';
 import {
-  apimFacilityInternalUrl,
+  apimFacilityWithoutQueueUrl,
   apimMdmObligationSubtypesUrl,
   counterpartyRolesUrl,
   currencyUrl,
@@ -22,7 +22,7 @@ const {
 } = GIFT;
 
 describe('POST /gift/facility - validation - counterparties', () => {
-  const url = apimFacilityInternalUrl;
+  const url = apimFacilityWithoutQueueUrl;
 
   let api: Api;
 

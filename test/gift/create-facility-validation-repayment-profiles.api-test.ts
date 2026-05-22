@@ -6,7 +6,7 @@ import nock from 'nock';
 
 import { arrayOfNestedObjectsDateStringValidation, arrayOfNestedObjectsNumberValidation, arrayOfObjectsStringValidation } from './assertions';
 import {
-  apimFacilityInternalUrl,
+  apimFacilityWithoutQueueUrl,
   apimMdmObligationSubtypesUrl,
   counterpartyRolesUrl,
   currencyUrl,
@@ -26,7 +26,7 @@ const [firstRepaymentProfile, secondRepaymentProfile] = EXAMPLES.GIFT.FACILITY_C
 const [firstAllocation, secondAllocation] = firstRepaymentProfile.allocations;
 
 describe('POST /gift/facility - validation - repayment profiles', () => {
-  const url = apimFacilityInternalUrl;
+  const url = apimFacilityWithoutQueueUrl;
 
   let api: Api;
 

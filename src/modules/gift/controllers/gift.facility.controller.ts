@@ -135,8 +135,8 @@ export class GiftFacilityController {
     res.status(HttpStatus.ACCEPTED);
   }
 
-  @Post('internal')
-  @ApiOperation({ summary: 'Internal: Create a GIFT facility (called by tfs-functions)' })
+  @Post('without-queue')
+  @ApiOperation({ summary: 'Without queue: Create a GIFT facility (called by tfs-functions)' })
   @ApiBody({
     required: true,
     type: GiftFacilityCreationRequestDto,
@@ -169,8 +169,8 @@ export class GiftFacilityController {
     res.status(status).send(data);
   }
 
-  @Post(':facilityId/amendment/internal')
-  @ApiOperation({ summary: 'Internal: Amend a GIFT facility (called by tfs-functions) - supports a subset of specific amendments available in GIFT' })
+  @Post(':facilityId/amendment/without-queue')
+  @ApiOperation({ summary: 'Without queue: Amend a GIFT facility (called by tfs-functions) - supports a subset of specific amendments available in GIFT' })
   @ApiParam({
     required: true,
     name: 'facilityId',

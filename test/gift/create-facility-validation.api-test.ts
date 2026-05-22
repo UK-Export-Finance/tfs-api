@@ -15,7 +15,7 @@ import {
   ukefIdValidation,
 } from './assertions';
 import {
-  apimFacilityInternalUrl,
+  apimFacilityWithoutQueueUrl,
   apimMdmObligationSubtypesUrl,
   counterpartyRolesUrl,
   currencyUrl,
@@ -31,7 +31,7 @@ const { VALIDATION } = GIFT;
 const UNSUPPORTED_CONSUMER = 'Unsupported consumer';
 
 describe('POST /gift/facility - validation', () => {
-  const url = apimFacilityInternalUrl;
+  const url = apimFacilityWithoutQueueUrl;
 
   let api: Api;
 

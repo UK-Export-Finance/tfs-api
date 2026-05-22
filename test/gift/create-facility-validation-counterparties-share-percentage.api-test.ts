@@ -6,7 +6,7 @@ import nock from 'nock';
 
 import { arrayOfObjectsSharePercentageValidation } from './assertions';
 import {
-  apimFacilityInternalUrl,
+  apimFacilityWithoutQueueUrl,
   apimMdmObligationSubtypesUrl,
   counterpartyRolesUrl,
   currencyUrl,
@@ -21,7 +21,7 @@ const mockFirstCounterparty = EXAMPLES.GIFT.COUNTERPARTY({ withSharePercentage: 
 const mockSecondCounterparty = EXAMPLES.GIFT.COUNTERPARTY({ withSharePercentage: true });
 
 describe('POST /gift/facility - validation - counterparties - share percentage', () => {
-  const url = apimFacilityInternalUrl;
+  const url = apimFacilityWithoutQueueUrl;
 
   let api: Api;
 

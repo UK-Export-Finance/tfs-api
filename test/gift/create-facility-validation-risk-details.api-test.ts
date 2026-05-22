@@ -6,7 +6,7 @@ import nock from 'nock';
 
 import { numberStringValidation, optionalStringValidation, stringValidation, ukefIdValidation } from './assertions';
 import {
-  apimFacilityInternalUrl,
+  apimFacilityWithoutQueueUrl,
   apimMdmObligationSubtypesUrl,
   counterpartyRolesUrl,
   currencyUrl,
@@ -20,7 +20,7 @@ const { APIM_MDM_KEY, APIM_MDM_URL, APIM_MDM_VALUE, GIFT_API_URL } = ENVIRONMENT
 const { VALIDATION } = GIFT;
 
 describe('POST /gift/facility - validation - risk details', () => {
-  const url = apimFacilityInternalUrl;
+  const url = apimFacilityWithoutQueueUrl;
 
   let api: Api;
 

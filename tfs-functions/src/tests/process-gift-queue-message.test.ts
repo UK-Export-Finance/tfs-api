@@ -37,7 +37,7 @@ describe('processGiftQueueMessage', () => {
       // Assert
       expect(postToTfsApi).toHaveBeenCalledTimes(1);
       expect(postToTfsApi).toHaveBeenCalledWith(
-        `${apimTfsUrl}/api/v2/gift/facility/internal`,
+        `${apimTfsUrl}/api/v2/gift/facility/without-queue`,
         queueItem.payload,
         `Failed to create GIFT facility ${TEST_FACILITY_ID}`,
         context,
@@ -101,7 +101,7 @@ describe('processGiftQueueMessage', () => {
       // Assert
       expect(postToTfsApi).toHaveBeenCalledTimes(1);
       expect(postToTfsApi).toHaveBeenCalledWith(
-        `${apimTfsUrl}/api/v2/gift/facility/${TEST_FACILITY_ID}/amendment/internal`,
+        `${apimTfsUrl}/api/v2/gift/facility/${TEST_FACILITY_ID}/amendment/without-queue`,
         queueItem.payload,
         `Failed to amend GIFT facility ${TEST_FACILITY_ID}`,
         context,

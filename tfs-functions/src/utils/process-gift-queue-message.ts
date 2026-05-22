@@ -10,8 +10,8 @@ const baseUrl = requireEnv('APIM_TFS_URL');
 const maxNumberOfRetries = requireEnvInt('GIFT_MAX_NUMBER_OF_RETRIES');
 
 const TFS_GIFT_INTERNAL_URLS = {
-  facilityCreation: `${baseUrl}/api/v2/gift/facility/internal`,
-  facilityAmendment: (facilityId: string) => `${baseUrl}/api/v2/gift/facility/${facilityId}/amendment/internal`,
+  facilityCreation: `${baseUrl}/api/v2/gift/facility/without-queue`,
+  facilityAmendment: (facilityId: string) => `${baseUrl}/api/v2/gift/facility/${facilityId}/amendment/without-queue`,
 } as const;
 
 /**
