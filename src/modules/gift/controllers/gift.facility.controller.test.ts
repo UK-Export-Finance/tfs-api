@@ -176,7 +176,7 @@ describe('GiftFacilityController', () => {
     });
   });
 
-  describe('POST internal', () => {
+  describe('POST /without-queue', () => {
     const mockBody = FACILITY_CREATION_PAYLOAD;
 
     it('should call giftFacilityService.create', async () => {
