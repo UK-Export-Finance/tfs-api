@@ -1,3 +1,4 @@
+import { HttpStatus, NotFoundException } from '@nestjs/common';
 import { EXAMPLES } from '@ukef/constants';
 import { mockGiftFacilityCreationErrorService } from '@ukef-test/gift/mock-services';
 import { mockResponse200 } from '@ukef-test/http-response';
@@ -126,6 +127,48 @@ describe('GiftFacilityService.getMany', () => {
       const expected = [mockResponseGet1.data, mockResponseGet2.data, mockResponseGet3.data];
 
       expect(response).toEqual(expected);
+    });
+
+    describe(`when all facilities return ${HttpStatus.NOT_FOUND}`, () => {
+      beforeEach(() => {
+        mockGet = jest
+          .fn()
+          .mockResolvedValueOnce(mockResponse200({ statusCode: HttpStatus.NOT_FOUND }))
+          .mockResolvedValueOnce(mockResponse200({ statusCode: HttpStatus.NOT_FOUND }))
+          .mockResolvedValueOnce(mockResponse200({ statusCode: HttpStatus.NOT_FOUND }));
+
+        service.get = mockGet;
+      });
+
+      it('should throw a NotFoundException with the facility IDs', async () => {
+        // Act
+        const promise = service.getMany(mockFacilityIds);
+
+        // Assert
+        await expect(promise).rejects.toThrow(NotFoundException);
+
+        await expect(promise).rejects.toThrow(`No GIFT facilities found for IDs ${mockFacilityIds}`);
+      });
+    });
+
+    describe(`when at least one facility does not return ${HttpStatus.NOT_FOUND}`, () => {
+      beforeEach(() => {
+        mockGet = jest
+          .fn()
+          .mockResolvedValueOnce(mockResponse200({ statusCode: HttpStatus.NOT_FOUND }))
+          .mockResolvedValueOnce(mockResponse200({ statusCode: HttpStatus.OK }))
+          .mockResolvedValueOnce(mockResponse200({ statusCode: HttpStatus.NOT_FOUND }));
+
+        service.get = mockGet;
+      });
+
+      it('should return mapped responses', async () => {
+        // Act
+        const response = await service.getMany(mockFacilityIds);
+
+        // Assert
+        expect(response).toEqual([{ statusCode: HttpStatus.NOT_FOUND }, { statusCode: HttpStatus.OK }, { statusCode: HttpStatus.NOT_FOUND }]);
+      });
     });
   });
 
