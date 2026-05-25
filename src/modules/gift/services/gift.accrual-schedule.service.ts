@@ -39,6 +39,7 @@ export class GiftAccrualScheduleService {
         baseRateTypeCode: null,
         additionalRateTypeCode: null,
         acbsInterestScheduleId: INTEGRATION_DEFAULTS.ACBS_INTEREST_SCHEDULE_ID,
+        accrualEffectiveDate: accrualScheduleData.accrualEffectiveDate || INTEGRATION_DEFAULTS.ACCRUAL_EFFECTIVE_DATE,
         accrualMaturityDate: accrualScheduleData.accrualMaturityDate || INTEGRATION_DEFAULTS.ACCRUAL_MATURITY_DATE,
         firstCycleAccrualEndDate: accrualScheduleData.firstCycleAccrualEndDate || INTEGRATION_DEFAULTS.FIRST_CYCLE_ACCRUAL_END_DATE,
       };

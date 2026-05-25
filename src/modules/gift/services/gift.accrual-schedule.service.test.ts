@@ -42,6 +42,7 @@ describe('GiftAccrualScheduleService', () => {
         // Arrange
         const mockPayload = {
           ...mockAccrualSchedule,
+          accrualEffectiveDate: '2024-02-01',
           accrualMaturityDate: '2024-01-01',
           firstCycleAccrualEndDate: '2024-02-01',
         };
@@ -60,6 +61,7 @@ describe('GiftAccrualScheduleService', () => {
             baseRateTypeCode: null,
             additionalRateTypeCode: null,
             acbsInterestScheduleId: INTEGRATION_DEFAULTS.ACBS_INTEREST_SCHEDULE_ID,
+            accrualEffectiveDate: mockPayload.accrualEffectiveDate,
             accrualMaturityDate: mockPayload.accrualMaturityDate,
             firstCycleAccrualEndDate: mockPayload.firstCycleAccrualEndDate,
           },
@@ -92,6 +94,7 @@ describe('GiftAccrualScheduleService', () => {
             baseRateTypeCode: null,
             additionalRateTypeCode: null,
             acbsInterestScheduleId: INTEGRATION_DEFAULTS.ACBS_INTEREST_SCHEDULE_ID,
+            accrualEffectiveDate: INTEGRATION_DEFAULTS.ACCRUAL_EFFECTIVE_DATE,
             accrualMaturityDate: INTEGRATION_DEFAULTS.ACCRUAL_MATURITY_DATE,
             firstCycleAccrualEndDate: INTEGRATION_DEFAULTS.FIRST_CYCLE_ACCRUAL_END_DATE,
           },

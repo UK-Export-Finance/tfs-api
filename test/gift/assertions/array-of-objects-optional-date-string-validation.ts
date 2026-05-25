@@ -272,7 +272,7 @@ export const arrayOfObjectsOptionalDateStringValidation = ({ fieldName, initialP
     });
   });
 
-  describe(`when ${fieldName} is NOT a valid ISO_639-1 date string`, () => {
+  describe(`when ${fieldName} is NOT a valid ISO 8601 date string`, () => {
     let mockPayload;
 
     const value = '01-02-2025';
