@@ -76,6 +76,7 @@ describe('GiftAccrualScheduleService', () => {
         // Arrange
         const mockPayload = {
           ...mockAccrualSchedule,
+          accrualEffectiveDate: undefined,
           accrualMaturityDate: undefined,
           firstCycleAccrualEndDate: undefined,
         };
