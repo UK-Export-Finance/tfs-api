@@ -86,7 +86,7 @@
     "@types/jest": "30.0.0",
     "@types/jest-when": "^3.5.5",
     "@types/luxon": "^3.7.1",
-    "@types/node": "^25.6.0",
+    "@types/node": "^25.9.1",
     "@types/supertest": "^2.0.16",
     "@typescript-eslint/eslint-plugin": "^8.58.1",
     "@typescript-eslint/parser": "^8.58.1",
