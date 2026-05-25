@@ -5,7 +5,14 @@ import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import nock from 'nock';
 
-import { apimFacilityAmendmentUrl, approveStatusUrl, facilityAmendmentUrl, facilityWorkPackageUrl, mockResponses, workPackageUrl } from './test-helpers';
+import {
+  apimFacilityAmendmentWithoutQueueUrl,
+  approveStatusUrl,
+  facilityAmendmentUrl,
+  facilityWorkPackageUrl,
+  mockResponses,
+  workPackageUrl,
+} from './test-helpers';
 
 const { GIFT_API_URL } = ENVIRONMENT_VARIABLES;
 
@@ -41,7 +48,7 @@ describe('POST /gift/facility/:facilityId/amendment - error handling', () => {
         nock(GIFT_API_URL).persist().post(facilityWorkPackageUrl).reply(HttpStatus.BAD_REQUEST, mockResponses.badRequest);
 
         // Act
-        const { status, body } = await api.post(apimFacilityAmendmentUrl, GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD);
+        const { status, body } = await api.post(apimFacilityAmendmentWithoutQueueUrl, GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD);
 
         // Assert
         expect(status).toBe(HttpStatus.BAD_REQUEST);
@@ -58,7 +65,7 @@ describe('POST /gift/facility/:facilityId/amendment - error handling', () => {
         nock(GIFT_API_URL).persist().post(facilityWorkPackageUrl).reply(HttpStatus.UNAUTHORIZED, mockResponses.unauthorized);
 
         // Act
-        const { status, body } = await api.post(apimFacilityAmendmentUrl, GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD);
+        const { status, body } = await api.post(apimFacilityAmendmentWithoutQueueUrl, GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD);
 
         // Assert
         expect(status).toBe(HttpStatus.UNAUTHORIZED);
@@ -75,7 +82,7 @@ describe('POST /gift/facility/:facilityId/amendment - error handling', () => {
         nock(GIFT_API_URL).persist().post(facilityWorkPackageUrl).reply(HttpStatus.FORBIDDEN, mockResponses.forbidden);
 
         // Act
-        const { status, body } = await api.post(apimFacilityAmendmentUrl, GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD);
+        const { status, body } = await api.post(apimFacilityAmendmentWithoutQueueUrl, GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD);
 
         // Assert
         expect(status).toBe(HttpStatus.FORBIDDEN);
@@ -92,7 +99,7 @@ describe('POST /gift/facility/:facilityId/amendment - error handling', () => {
         nock(GIFT_API_URL).persist().post(facilityWorkPackageUrl).reply(HttpStatus.INTERNAL_SERVER_ERROR, mockResponses.internalServerError);
 
         // Act
-        const { status, body } = await api.post(apimFacilityAmendmentUrl, GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD);
+        const { status, body } = await api.post(apimFacilityAmendmentWithoutQueueUrl, GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD);
 
         // Assert
         expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -109,7 +116,7 @@ describe('POST /gift/facility/:facilityId/amendment - error handling', () => {
         nock(GIFT_API_URL).persist().post(facilityWorkPackageUrl).reply(HttpStatus.INTERNAL_SERVER_ERROR, mockResponses.iAmATeapot);
 
         // Act
-        const { status, body } = await api.post(apimFacilityAmendmentUrl, GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD);
+        const { status, body } = await api.post(apimFacilityAmendmentWithoutQueueUrl, GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD);
 
         // Assert
         expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -130,7 +137,7 @@ describe('POST /gift/facility/:facilityId/amendment - error handling', () => {
         nock(GIFT_API_URL).persist().post(approveStatusUrl).reply(HttpStatus.BAD_REQUEST, mockResponses.badRequest);
 
         // Act
-        const { status, body } = await api.post(apimFacilityAmendmentUrl, GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD);
+        const { status, body } = await api.post(apimFacilityAmendmentWithoutQueueUrl, GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD);
 
         // Assert
         expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -149,7 +156,7 @@ describe('POST /gift/facility/:facilityId/amendment - error handling', () => {
         nock(GIFT_API_URL).persist().post(approveStatusUrl).reply(HttpStatus.UNAUTHORIZED, mockResponses.unauthorized);
 
         // Act
-        const { status, body } = await api.post(apimFacilityAmendmentUrl, GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD);
+        const { status, body } = await api.post(apimFacilityAmendmentWithoutQueueUrl, GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD);
 
         // Assert
         expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -168,7 +175,7 @@ describe('POST /gift/facility/:facilityId/amendment - error handling', () => {
         nock(GIFT_API_URL).persist().post(approveStatusUrl).reply(HttpStatus.FORBIDDEN, mockResponses.forbidden);
 
         // Act
-        const { status, body } = await api.post(apimFacilityAmendmentUrl, GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD);
+        const { status, body } = await api.post(apimFacilityAmendmentWithoutQueueUrl, GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD);
 
         // Assert
         expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -187,7 +194,7 @@ describe('POST /gift/facility/:facilityId/amendment - error handling', () => {
         nock(GIFT_API_URL).persist().post(approveStatusUrl).reply(HttpStatus.INTERNAL_SERVER_ERROR, mockResponses.internalServerError);
 
         // Act
-        const { status, body } = await api.post(apimFacilityAmendmentUrl, GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD);
+        const { status, body } = await api.post(apimFacilityAmendmentWithoutQueueUrl, GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD);
 
         // Assert
         expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -206,7 +213,7 @@ describe('POST /gift/facility/:facilityId/amendment - error handling', () => {
         nock(GIFT_API_URL).persist().post(approveStatusUrl).reply(HttpStatus.INTERNAL_SERVER_ERROR, mockResponses.iAmATeapot);
 
         // Act
-        const { status, body } = await api.post(apimFacilityAmendmentUrl, GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD);
+        const { status, body } = await api.post(apimFacilityAmendmentWithoutQueueUrl, GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD);
 
         // Assert
         expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -227,7 +234,7 @@ describe('POST /gift/facility/:facilityId/amendment - error handling', () => {
         nock(GIFT_API_URL).persist().delete(workPackageUrl).reply(HttpStatus.BAD_REQUEST, mockResponses.badRequest);
 
         // Act
-        const { status, body } = await api.post(apimFacilityAmendmentUrl, GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD);
+        const { status, body } = await api.post(apimFacilityAmendmentWithoutQueueUrl, GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD);
 
         // Assert
         expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -246,7 +253,7 @@ describe('POST /gift/facility/:facilityId/amendment - error handling', () => {
         nock(GIFT_API_URL).persist().delete(workPackageUrl).reply(HttpStatus.UNAUTHORIZED, mockResponses.unauthorized);
 
         // Act
-        const { status, body } = await api.post(apimFacilityAmendmentUrl, GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD);
+        const { status, body } = await api.post(apimFacilityAmendmentWithoutQueueUrl, GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD);
 
         // Assert
         expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -265,7 +272,7 @@ describe('POST /gift/facility/:facilityId/amendment - error handling', () => {
         nock(GIFT_API_URL).persist().delete(workPackageUrl).reply(HttpStatus.FORBIDDEN, mockResponses.forbidden);
 
         // Act
-        const { status, body } = await api.post(apimFacilityAmendmentUrl, GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD);
+        const { status, body } = await api.post(apimFacilityAmendmentWithoutQueueUrl, GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD);
 
         // Assert
         expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -284,7 +291,7 @@ describe('POST /gift/facility/:facilityId/amendment - error handling', () => {
         nock(GIFT_API_URL).persist().delete(workPackageUrl).reply(HttpStatus.INTERNAL_SERVER_ERROR, mockResponses.internalServerError);
 
         // Act
-        const { status, body } = await api.post(apimFacilityAmendmentUrl, GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD);
+        const { status, body } = await api.post(apimFacilityAmendmentWithoutQueueUrl, GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD);
 
         // Assert
         expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -303,7 +310,7 @@ describe('POST /gift/facility/:facilityId/amendment - error handling', () => {
         nock(GIFT_API_URL).persist().delete(workPackageUrl).reply(HttpStatus.INTERNAL_SERVER_ERROR, mockResponses.iAmATeapot);
 
         // Act
-        const { status, body } = await api.post(apimFacilityAmendmentUrl, GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD);
+        const { status, body } = await api.post(apimFacilityAmendmentWithoutQueueUrl, GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD);
 
         // Assert
         expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);

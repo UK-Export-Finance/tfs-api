@@ -6,7 +6,7 @@ import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import nock from 'nock';
 
-import { apimFacilityAmendmentUrl, approveStatusUrl, facilityAmendmentUrl, facilityWorkPackageUrl, mockResponses } from './test-helpers';
+import { apimFacilityAmendmentWithoutQueueUrl, approveStatusUrl, facilityAmendmentUrl, facilityWorkPackageUrl, mockResponses } from './test-helpers';
 
 const { GIFT_API_URL } = ENVIRONMENT_VARIABLES;
 
@@ -33,7 +33,12 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
   withClientAuthenticationTests({
     givenTheRequestWouldOtherwiseSucceed: () => {},
     makeRequestWithoutAuth: (incorrectAuth?: IncorrectAuthArg) =>
-      api.postWithoutAuth(apimFacilityAmendmentUrl, GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD, incorrectAuth?.headerName, incorrectAuth?.headerValue),
+      api.postWithoutAuth(
+        apimFacilityAmendmentWithoutQueueUrl,
+        GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD,
+        incorrectAuth?.headerName,
+        incorrectAuth?.headerValue,
+      ),
   });
 
   beforeEach(() => {
@@ -59,7 +64,7 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
         };
 
         // Act
-        const { status, body } = await api.post(apimFacilityAmendmentUrl, mockPayload);
+        const { status, body } = await api.post(apimFacilityAmendmentWithoutQueueUrl, mockPayload);
 
         // Assert
         expect(status).toBe(HttpStatus.CREATED);
@@ -81,7 +86,7 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
         };
 
         // Act
-        const { status, body } = await api.post(apimFacilityAmendmentUrl, mockPayload);
+        const { status, body } = await api.post(apimFacilityAmendmentWithoutQueueUrl, mockPayload);
 
         // Assert
         expect(status).toBe(HttpStatus.CREATED);
@@ -103,7 +108,7 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
         };
 
         // Act
-        const { status, body } = await api.post(apimFacilityAmendmentUrl, mockPayload);
+        const { status, body } = await api.post(apimFacilityAmendmentWithoutQueueUrl, mockPayload);
 
         // Assert
         expect(status).toBe(HttpStatus.CREATED);

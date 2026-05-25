@@ -1,5 +1,4 @@
 import { HttpStatus } from '@nestjs/common';
-import AppConfig from '@ukef/config/app.config';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
@@ -15,23 +14,24 @@ import {
   stringValidation,
   ukefIdValidation,
 } from './assertions';
-import { apimMdmObligationSubtypesUrl, counterpartyRolesUrl, currencyUrl, feeTypeUrl, mockResponses, productTypeUrl } from './test-helpers';
-
-const {
-  giftVersioning: { prefixAndVersion },
-} = AppConfig();
+import {
+  apimFacilityWithoutQueueUrl,
+  apimMdmObligationSubtypesUrl,
+  counterpartyRolesUrl,
+  currencyUrl,
+  feeTypeUrl,
+  mockResponses,
+  productTypeUrl,
+} from './test-helpers';
 
 const { APIM_MDM_KEY, APIM_MDM_URL, APIM_MDM_VALUE, GIFT_API_URL } = ENVIRONMENT_VARIABLES;
 
-const {
-  PATH: { FACILITY },
-  VALIDATION,
-} = GIFT;
+const { VALIDATION } = GIFT;
 
 const UNSUPPORTED_CONSUMER = 'Unsupported consumer';
 
 describe('POST /gift/facility - validation', () => {
-  const url = `/api/${prefixAndVersion}/gift${FACILITY}`;
+  const url = apimFacilityWithoutQueueUrl;
 
   let api: Api;
 

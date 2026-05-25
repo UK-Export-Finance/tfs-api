@@ -7,7 +7,7 @@ import nock from 'nock';
 
 import {
   accrualScheduleUrl,
-  apimFacilityUrl,
+  apimFacilityWithoutQueueUrl,
   apimMdmObligationSubtypesUrl,
   approveStatusUrl,
   businessCalendarsConventionUrl,
@@ -96,7 +96,7 @@ describe('POST /gift/facility - approve status error handling', () => {
       setupMocks(mockResponses.badRequest);
 
       // Act
-      const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
+      const { status, body } = await api.post(apimFacilityWithoutQueueUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
       // Assert
       expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -111,7 +111,7 @@ describe('POST /gift/facility - approve status error handling', () => {
       setupMocks(mockResponses.unauthorized);
 
       // Act
-      const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
+      const { status, body } = await api.post(apimFacilityWithoutQueueUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
       // Assert
       expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -126,7 +126,7 @@ describe('POST /gift/facility - approve status error handling', () => {
       setupMocks(mockResponses.forbidden);
 
       // Act
-      const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
+      const { status, body } = await api.post(apimFacilityWithoutQueueUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
       // Assert
       expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -141,7 +141,7 @@ describe('POST /gift/facility - approve status error handling', () => {
       setupMocks(mockResponses.internalServerError);
 
       // Act
-      const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
+      const { status, body } = await api.post(apimFacilityWithoutQueueUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
       // Assert
       expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -156,7 +156,7 @@ describe('POST /gift/facility - approve status error handling', () => {
       setupMocks(mockResponses.iAmATeapot);
 
       // Act
-      const { status, body } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
+      const { status, body } = await api.post(apimFacilityWithoutQueueUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
       // Assert
       expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);

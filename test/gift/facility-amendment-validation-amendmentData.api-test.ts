@@ -5,7 +5,7 @@ import { Api } from '@ukef-test/support/api';
 import nock from 'nock';
 
 import { dateStringValidation, numberValidation } from './assertions';
-import { apimFacilityAmendmentUrl } from './test-helpers';
+import { apimFacilityAmendmentWithoutQueueUrl } from './test-helpers';
 
 const {
   AMEND_FACILITY_TYPES: { AMEND_FACILITY_INCREASE_AMOUNT, AMEND_FACILITY_DECREASE_AMOUNT, AMEND_FACILITY_REPLACE_EXPIRY_DATE },
@@ -38,7 +38,7 @@ describe('POST /gift/facility/:facilityId/amendment - validation - amendmentData
         };
 
         // Act
-        const { status, body } = await api.post(apimFacilityAmendmentUrl, mockPayload);
+        const { status, body } = await api.post(apimFacilityAmendmentWithoutQueueUrl, mockPayload);
 
         // Assert
         expect(status).toBe(HttpStatus.BAD_REQUEST);
@@ -69,7 +69,7 @@ describe('POST /gift/facility/:facilityId/amendment - validation - amendmentData
         };
 
         // Act
-        const { status, body } = await api.post(apimFacilityAmendmentUrl, mockPayload);
+        const { status, body } = await api.post(apimFacilityAmendmentWithoutQueueUrl, mockPayload);
 
         // Assert
         expect(status).toBe(HttpStatus.BAD_REQUEST);
@@ -95,7 +95,7 @@ describe('POST /gift/facility/:facilityId/amendment - validation - amendmentData
         };
 
         // Act
-        const { status, body } = await api.post(apimFacilityAmendmentUrl, mockPayload);
+        const { status, body } = await api.post(apimFacilityAmendmentWithoutQueueUrl, mockPayload);
 
         // Assert
         expect(status).toBe(HttpStatus.BAD_REQUEST);
@@ -121,7 +121,7 @@ describe('POST /gift/facility/:facilityId/amendment - validation - amendmentData
         };
 
         // Act
-        const { status, body } = await api.post(apimFacilityAmendmentUrl, mockPayload);
+        const { status, body } = await api.post(apimFacilityAmendmentWithoutQueueUrl, mockPayload);
 
         // Assert
         expect(status).toBe(HttpStatus.BAD_REQUEST);
@@ -153,7 +153,7 @@ describe('POST /gift/facility/:facilityId/amendment - validation - amendmentData
         };
 
         // Act
-        const { status, body } = await api.post(apimFacilityAmendmentUrl, mockPayload);
+        const { status, body } = await api.post(apimFacilityAmendmentWithoutQueueUrl, mockPayload);
 
         // Assert
         expect(status).toBe(HttpStatus.BAD_REQUEST);
@@ -175,7 +175,7 @@ describe('POST /gift/facility/:facilityId/amendment - validation - amendmentData
         min: VALIDATION.FACILITY.AMENDMENT.AMOUNT.MIN,
         max: VALIDATION.FACILITY.AMENDMENT.AMOUNT.MAX,
         parentFieldName: 'amendmentData',
-        url: apimFacilityAmendmentUrl,
+        url: apimFacilityAmendmentWithoutQueueUrl,
       });
     });
 
@@ -184,7 +184,7 @@ describe('POST /gift/facility/:facilityId/amendment - validation - amendmentData
         fieldName: 'date',
         initialPayload: GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD,
         parentFieldName: 'amendmentData',
-        url: apimFacilityAmendmentUrl,
+        url: apimFacilityAmendmentWithoutQueueUrl,
       });
     });
   });
@@ -199,7 +199,7 @@ describe('POST /gift/facility/:facilityId/amendment - validation - amendmentData
         };
 
         // Act
-        const { status, body } = await api.post(apimFacilityAmendmentUrl, mockPayload);
+        const { status, body } = await api.post(apimFacilityAmendmentWithoutQueueUrl, mockPayload);
 
         // Assert
         expect(status).toBe(HttpStatus.BAD_REQUEST);
@@ -223,7 +223,7 @@ describe('POST /gift/facility/:facilityId/amendment - validation - amendmentData
         };
 
         // Act
-        const { status, body } = await api.post(apimFacilityAmendmentUrl, mockPayload);
+        const { status, body } = await api.post(apimFacilityAmendmentWithoutQueueUrl, mockPayload);
 
         // Assert
         expect(status).toBe(HttpStatus.BAD_REQUEST);
@@ -250,7 +250,7 @@ describe('POST /gift/facility/:facilityId/amendment - validation - amendmentData
         };
 
         // Act
-        const { status, body } = await api.post(apimFacilityAmendmentUrl, mockPayload);
+        const { status, body } = await api.post(apimFacilityAmendmentWithoutQueueUrl, mockPayload);
 
         // Assert
         expect(status).toBe(HttpStatus.BAD_REQUEST);
@@ -273,7 +273,7 @@ describe('POST /gift/facility/:facilityId/amendment - validation - amendmentData
           amendmentData: GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA.REPLACE_EXPIRY_DATE,
         },
         parentFieldName: 'amendmentData',
-        url: apimFacilityAmendmentUrl,
+        url: apimFacilityAmendmentWithoutQueueUrl,
       });
     });
   });

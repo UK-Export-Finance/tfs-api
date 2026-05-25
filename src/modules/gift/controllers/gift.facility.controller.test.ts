@@ -176,7 +176,7 @@ describe('GiftFacilityController', () => {
     });
   });
 
-  describe('POST :facilityId', () => {
+  describe('POST /without-queue', () => {
     const mockBody = FACILITY_CREATION_PAYLOAD;
 
     it('should call giftFacilityService.create', async () => {
@@ -210,7 +210,7 @@ describe('GiftFacilityController', () => {
     });
   });
 
-  describe('POST :facilityId/amendment', () => {
+  describe('POST :facilityId/amendment/without-queue', () => {
     const mockParams = { facilityId: mockFacilityId };
     const mockBody = FACILITY_AMENDMENT_REQUEST_PAYLOAD;
 
@@ -245,7 +245,7 @@ describe('GiftFacilityController', () => {
     });
   });
 
-  describe('POST queue', () => {
+  describe('POST /', () => {
     const mockBody = FACILITY_CREATION_PAYLOAD;
 
     it('should call giftQueueService.enqueue with the facility creation message and message type', async () => {
@@ -267,7 +267,7 @@ describe('GiftFacilityController', () => {
     });
   });
 
-  describe('POST :facilityId/amendment/queue', () => {
+  describe('POST :facilityId/amendment', () => {
     const mockParams = { facilityId: mockFacilityId };
     const mockBody = FACILITY_AMENDMENT_REQUEST_PAYLOAD;
 

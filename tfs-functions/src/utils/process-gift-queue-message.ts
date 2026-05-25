@@ -9,9 +9,9 @@ import { postToTfsApi } from './post-to-tfs-api';
 const baseUrl = requireEnv('APIM_TFS_URL');
 const maxNumberOfRetries = requireEnvInt('GIFT_MAX_NUMBER_OF_RETRIES');
 
-const GIFT_API_URL = {
-  facilityCreation: `${baseUrl}/api/v2/gift/facility`,
-  facilityAmendment: (facilityId: string) => `${baseUrl}/api/v2/gift/facility/${facilityId}/amendment`,
+const TFS_GIFT_INTERNAL_URLS = {
+  facilityCreation: `${baseUrl}/api/v2/gift/facility/without-queue`,
+  facilityAmendment: (facilityId: string) => `${baseUrl}/api/v2/gift/facility/${facilityId}/amendment/without-queue`,
 } as const;
 
 /**
@@ -41,14 +41,14 @@ export async function processGiftQueueMessage(queueItem: unknown, context: Invoc
   try {
     switch (messageType) {
       case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION:
-        await postToTfsApi(GIFT_API_URL.facilityCreation, item.payload, `Failed to create GIFT facility ${facilityId}`, context);
+        await postToTfsApi(TFS_GIFT_INTERNAL_URLS.facilityCreation, item.payload, `Failed to create GIFT facility ${facilityId}`, context);
         context.log('GIFT facility creation succeeded for facilityId:', facilityId);
         break;
       case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_AMENDMENT:
         if (!item.facilityId) {
           throw new Error('Failed to amend GIFT facility: facilityId is missing from queue message');
         }
-        await postToTfsApi(GIFT_API_URL.facilityAmendment(item.facilityId), item.payload, `Failed to amend GIFT facility ${facilityId}`, context);
+        await postToTfsApi(TFS_GIFT_INTERNAL_URLS.facilityAmendment(item.facilityId), item.payload, `Failed to amend GIFT facility ${facilityId}`, context);
         context.log('GIFT facility amendment succeeded for facilityId:', facilityId);
         break;
       default:
