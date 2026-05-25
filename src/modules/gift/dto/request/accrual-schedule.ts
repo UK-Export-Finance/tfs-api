@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { EXAMPLES, GIFT } from '@ukef/constants';
-import { IsDateString, IsDefined, IsNumber, IsString, Length, Min } from 'class-validator';
+import { IsDateString, IsDefined, IsNumber, IsOptional, IsString, Length, Min } from 'class-validator';
 
 const {
   GIFT: { ACCRUAL_SCHEDULE: EXAMPLE },
@@ -25,14 +25,14 @@ export class GiftAccrualScheduleRequestDto {
   })
   accrualDayBasisCode: string;
 
-  @IsDefined()
+  @IsOptional()
   @IsDateString()
   @ApiProperty({
     example: EXAMPLE.accrualEffectiveDate,
-    description: 'The effective date',
-    required: true,
+    description: 'The effective date (optional)',
+    required: false,
   })
-  accrualEffectiveDate: string;
+  accrualEffectiveDate?: string;
 
   @IsDefined()
   @IsString()
@@ -44,14 +44,14 @@ export class GiftAccrualScheduleRequestDto {
   })
   accrualFrequencyCode: string;
 
-  @IsDefined()
+  @IsOptional()
   @IsDateString()
   @ApiProperty({
     example: EXAMPLE.accrualMaturityDate,
-    description: 'The maturity date',
-    required: true,
+    description: 'The maturity date (optional)',
+    required: false,
   })
-  accrualMaturityDate: string;
+  accrualMaturityDate?: string;
 
   @IsDefined()
   @IsString()
@@ -82,14 +82,14 @@ export class GiftAccrualScheduleRequestDto {
   })
   baseRate: number;
 
-  @IsDefined()
+  @IsOptional()
   @IsDateString()
   @ApiProperty({
     example: EXAMPLE.firstCycleAccrualEndDate,
-    description: 'The first cycle accrual end date',
-    required: true,
+    description: 'The first cycle accrual end date (optional)',
+    required: false,
   })
-  firstCycleAccrualEndDate: string;
+  firstCycleAccrualEndDate?: string;
 
   @IsDefined()
   @IsNumber()

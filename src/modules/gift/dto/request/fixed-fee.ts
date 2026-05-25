@@ -21,6 +21,7 @@ export class GiftFixedFeeRequestDto {
   @Min(VALIDATION.AMOUNT_DUE.MIN)
   @ApiProperty({
     required: true,
+    description: 'The amount of the fixed fee',
     example: FIXED_FEE().amount,
   })
   amount: number;
@@ -30,6 +31,7 @@ export class GiftFixedFeeRequestDto {
   @Length(VALIDATION.CURRENCY.MIN_LENGTH, VALIDATION.CURRENCY.MAX_LENGTH)
   @ApiProperty({
     required: true,
+    description: 'The currency of the fixed fee amount, in ISO 4217 format',
     example: FIXED_FEE().currency,
   })
   currency: string;
@@ -38,6 +40,7 @@ export class GiftFixedFeeRequestDto {
   @IsDateString()
   @ApiProperty({
     required: true,
+    description: 'The effective date',
     example: FIXED_FEE().effectiveDate,
   })
   effectiveDate: string;
@@ -47,6 +50,7 @@ export class GiftFixedFeeRequestDto {
   @Length(VALIDATION.FEE_TYPE_CODE.MIN_LENGTH, VALIDATION.FEE_TYPE_CODE.MAX_LENGTH)
   @ApiProperty({
     required: true,
+    description: 'The fee type code',
     example: FIXED_FEE().feeTypeCode,
   })
   feeTypeCode: string;

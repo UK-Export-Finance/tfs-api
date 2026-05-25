@@ -41,7 +41,9 @@ export class GiftObligationService {
       const payload = {
         ...obligationData,
         acbsObligationId: INTEGRATION_DEFAULTS.ACBS_OBLIGATION_ID,
+        effectiveDate: obligationData.effectiveDate || INTEGRATION_DEFAULTS.OBLIGATION_EFFECTIVE_DATE,
         linkedRepaymentProfileId: INTEGRATION_DEFAULTS.LINKED_REPAYMENT_PROFILE_ID,
+        maturityDate: obligationData.maturityDate || INTEGRATION_DEFAULTS.OBLIGATION_MATURITY_DATE,
         subtypeCode: obligationData.subtypeCode || INTEGRATION_DEFAULTS.OBLIGATION_SUBTYPE_CODE,
       };
 

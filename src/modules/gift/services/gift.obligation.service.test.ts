@@ -39,11 +39,13 @@ describe('GiftObligationService', () => {
   describe('createOne', () => {
     const mockObligation = OBLIGATION();
 
-    describe('when subtypeCode is provided', () => {
-      it('should call giftHttpService.post with the provided subtypeCode and acbsObligationId as null', async () => {
+    describe('when optional fields are provided', () => {
+      it('should call giftHttpService.post with the provided optional fields', async () => {
         // Arrange
         const mockPayload = {
           ...mockObligation,
+          effectiveDate: '2024-01-01',
+          maturityDate: '2024-02-01',
           subtypeCode: 'Mock subtype code',
         };
 
@@ -58,7 +60,9 @@ describe('GiftObligationService', () => {
           payload: {
             ...mockPayload,
             acbsObligationId: INTEGRATION_DEFAULTS.ACBS_OBLIGATION_ID,
+            effectiveDate: mockPayload.effectiveDate,
             linkedRepaymentProfileId: INTEGRATION_DEFAULTS.LINKED_REPAYMENT_PROFILE_ID,
+            maturityDate: mockPayload.maturityDate,
           },
         };
 
@@ -66,11 +70,13 @@ describe('GiftObligationService', () => {
       });
     });
 
-    describe('when subtypeCode is NOT provided', () => {
-      it('should call giftHttpService.post with subtypeCode and acbsObligationId as null', async () => {
+    describe('when optional fields are NOT provided', () => {
+      it('should call giftHttpService.post with default field values', async () => {
         // Arrange
         const mockPayload = {
           ...mockObligation,
+          effectiveDate: undefined,
+          maturityDate: undefined,
           subtypeCode: undefined,
         };
 
@@ -85,7 +91,9 @@ describe('GiftObligationService', () => {
           payload: {
             ...mockPayload,
             acbsObligationId: INTEGRATION_DEFAULTS.ACBS_OBLIGATION_ID,
+            effectiveDate: INTEGRATION_DEFAULTS.OBLIGATION_EFFECTIVE_DATE,
             linkedRepaymentProfileId: INTEGRATION_DEFAULTS.LINKED_REPAYMENT_PROFILE_ID,
+            maturityDate: INTEGRATION_DEFAULTS.OBLIGATION_MATURITY_DATE,
             subtypeCode: INTEGRATION_DEFAULTS.OBLIGATION_SUBTYPE_CODE,
           },
         };
