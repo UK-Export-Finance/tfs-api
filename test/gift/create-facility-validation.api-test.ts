@@ -354,8 +354,6 @@ describe('POST /gift/facility - validation', () => {
           `counterparties.counterpartyUrn should not be null or undefined`,
           `counterparties.counterpartyUrn must be longer than or equal to ${VALIDATION.COUNTERPARTY.COUNTERPARTY_URN.MIN_LENGTH} characters`,
           `counterparties.counterpartyUrn must be a string`,
-          `counterparties.exitDate should not be null or undefined`,
-          'counterparties.exitDate must be a valid ISO 8601 date string',
           `counterparties.roleCode should not be null or undefined`,
           `counterparties.roleCode must be longer than or equal to ${VALIDATION.COUNTERPARTY.ROLE_CODE.MIN_LENGTH} characters`,
           `counterparties.roleCode must be a string`,
