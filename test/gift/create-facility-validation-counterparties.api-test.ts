@@ -4,7 +4,7 @@ import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import nock from 'nock';
 
-import { arrayOfObjectsDateStringValidation, arrayOfObjectsRoleIdStringValidation, arrayOfObjectsStringValidation } from './assertions';
+import { arrayOfObjectsOptionalDateStringValidation, arrayOfObjectsRoleIdStringValidation, arrayOfObjectsStringValidation } from './assertions';
 import {
   apimFacilityWithoutQueueUrl,
   apimMdmObligationSubtypesUrl,
@@ -80,13 +80,9 @@ describe('POST /gift/facility - validation - counterparties', () => {
           `counterparties.0.counterpartyUrn should not be null or undefined`,
           `counterparties.0.counterpartyUrn must be longer than or equal to ${COUNTERPARTY_VALIDATION.COUNTERPARTY_URN.MIN_LENGTH} characters`,
           `counterparties.0.counterpartyUrn must be a string`,
-          `counterparties.0.exitDate should not be null or undefined`,
-          'counterparties.0.exitDate must be a valid ISO 8601 date string',
           `counterparties.0.roleCode should not be null or undefined`,
           `counterparties.0.roleCode must be longer than or equal to ${COUNTERPARTY_VALIDATION.ROLE_CODE.MIN_LENGTH} characters`,
           `counterparties.0.roleCode must be a string`,
-          `counterparties.0.startDate should not be null or undefined`,
-          'counterparties.0.startDate must be a valid ISO 8601 date string',
         ],
         statusCode: HttpStatus.BAD_REQUEST,
       };
@@ -105,7 +101,7 @@ describe('POST /gift/facility - validation - counterparties', () => {
   });
 
   describe('exitDate', () => {
-    arrayOfObjectsDateStringValidation({
+    arrayOfObjectsOptionalDateStringValidation({
       ...baseParams,
       fieldName: 'exitDate',
     });
@@ -116,7 +112,7 @@ describe('POST /gift/facility - validation - counterparties', () => {
   });
 
   describe('startDate', () => {
-    arrayOfObjectsDateStringValidation({
+    arrayOfObjectsOptionalDateStringValidation({
       ...baseParams,
       fieldName: 'startDate',
     });

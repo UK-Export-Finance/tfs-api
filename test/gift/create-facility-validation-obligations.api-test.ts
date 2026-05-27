@@ -6,8 +6,8 @@ import nock from 'nock';
 
 import {
   arrayOfObjectsCurrencyStringValidation,
-  arrayOfObjectsDateStringValidation,
   arrayOfObjectsNumberValidation,
+  arrayOfObjectsOptionalDateStringValidation,
   arrayOfObjectsOptionalNumberValidation,
   arrayOfObjectsOptionalStringValidation,
   arrayOfObjectsStringValidation,
@@ -96,10 +96,6 @@ describe('POST /gift/facility - validation - obligations', () => {
           'obligations.0.currency should not be null or undefined',
           `obligations.0.currency must be longer than or equal to ${OBLIGATION_VALIDATION.CURRENCY.MIN_LENGTH} characters`,
           'obligations.0.currency must be a string',
-          'obligations.0.effectiveDate should not be null or undefined',
-          'obligations.0.effectiveDate must be a valid ISO 8601 date string',
-          'obligations.0.maturityDate should not be null or undefined',
-          'obligations.0.maturityDate must be a valid ISO 8601 date string',
           'obligations.0.repaymentType should not be null or undefined',
           `obligations.0.repaymentType must be longer than or equal to ${OBLIGATION_VALIDATION.REPAYMENT_TYPE.MIN_LENGTH} characters`,
           'obligations.0.repaymentType must be a string',
@@ -125,14 +121,14 @@ describe('POST /gift/facility - validation - obligations', () => {
   });
 
   describe('effectiveDate', () => {
-    arrayOfObjectsDateStringValidation({
+    arrayOfObjectsOptionalDateStringValidation({
       ...baseParams,
       fieldName: 'effectiveDate',
     });
   });
 
   describe('maturityDate', () => {
-    arrayOfObjectsDateStringValidation({
+    arrayOfObjectsOptionalDateStringValidation({
       ...baseParams,
       fieldName: 'maturityDate',
     });

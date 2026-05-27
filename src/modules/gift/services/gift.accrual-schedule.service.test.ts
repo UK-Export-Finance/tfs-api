@@ -37,25 +37,72 @@ describe('GiftAccrualScheduleService', () => {
   describe('createOne', () => {
     const mockAccrualSchedule = ACCRUAL_SCHEDULE;
 
-    it('should call giftHttpService.post', async () => {
-      // Act
-      await service.createOne(mockAccrualSchedule, mockFacilityId, mockWorkPackageId);
-
-      // Assert
-      expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
-
-      const expected = {
-        path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_ACCRUAL_SCHEDULE_FIXED_RATE}`,
-        payload: {
+    describe('when optional date fields are provided', () => {
+      it('should call giftHttpService.post with the provided date fields', async () => {
+        // Arrange
+        const mockPayload = {
           ...mockAccrualSchedule,
-          dateSnapBackOverride: INTEGRATION_DEFAULTS.DATE_SNAP_BACK_OVERRIDE,
-          baseRateTypeCode: null,
-          additionalRateTypeCode: null,
-          acbsInterestScheduleId: INTEGRATION_DEFAULTS.ACBS_INTEREST_SCHEDULE_ID,
-        },
-      };
+          accrualEffectiveDate: '2024-02-01',
+          accrualMaturityDate: '2024-01-01',
+          firstCycleAccrualEndDate: '2024-02-01',
+        };
 
-      expect(mockHttpServicePost).toHaveBeenCalledWith(expected);
+        // Act
+        await service.createOne(mockPayload, mockFacilityId, mockWorkPackageId);
+
+        // Assert
+        expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
+
+        const expected = {
+          path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_ACCRUAL_SCHEDULE_FIXED_RATE}`,
+          payload: {
+            ...mockPayload,
+            dateSnapBackOverride: INTEGRATION_DEFAULTS.DATE_SNAP_BACK_OVERRIDE,
+            baseRateTypeCode: null,
+            additionalRateTypeCode: null,
+            acbsInterestScheduleId: INTEGRATION_DEFAULTS.ACBS_INTEREST_SCHEDULE_ID,
+            accrualEffectiveDate: mockPayload.accrualEffectiveDate,
+            accrualMaturityDate: mockPayload.accrualMaturityDate,
+            firstCycleAccrualEndDate: mockPayload.firstCycleAccrualEndDate,
+          },
+        };
+
+        expect(mockHttpServicePost).toHaveBeenCalledWith(expected);
+      });
+    });
+
+    describe('when optional date fields are NOT provided', () => {
+      it('should call giftHttpService.post with default date field values', async () => {
+        // Arrange
+        const mockPayload = {
+          ...mockAccrualSchedule,
+          accrualEffectiveDate: undefined,
+          accrualMaturityDate: undefined,
+          firstCycleAccrualEndDate: undefined,
+        };
+
+        // Act
+        await service.createOne(mockPayload, mockFacilityId, mockWorkPackageId);
+
+        // Assert
+        expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
+
+        const expected = {
+          path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_ACCRUAL_SCHEDULE_FIXED_RATE}`,
+          payload: {
+            ...mockPayload,
+            dateSnapBackOverride: INTEGRATION_DEFAULTS.DATE_SNAP_BACK_OVERRIDE,
+            baseRateTypeCode: null,
+            additionalRateTypeCode: null,
+            acbsInterestScheduleId: INTEGRATION_DEFAULTS.ACBS_INTEREST_SCHEDULE_ID,
+            accrualEffectiveDate: INTEGRATION_DEFAULTS.ACCRUAL_EFFECTIVE_DATE,
+            accrualMaturityDate: INTEGRATION_DEFAULTS.ACCRUAL_MATURITY_DATE,
+            firstCycleAccrualEndDate: INTEGRATION_DEFAULTS.FIRST_CYCLE_ACCRUAL_END_DATE,
+          },
+        };
+
+        expect(mockHttpServicePost).toHaveBeenCalledWith(expected);
+      });
     });
 
     describe('when giftHttpService.post is successful', () => {

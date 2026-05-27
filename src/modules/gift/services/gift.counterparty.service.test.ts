@@ -9,7 +9,7 @@ const {
   GIFT: { COUNTERPARTY, COUNTERPARTY_ROLE, FACILITY_ID: mockFacilityId, WORK_PACKAGE_ID: mockWorkPackageId },
 } = EXAMPLES;
 
-const { EVENT_TYPES, PATH } = GIFT;
+const { EVENT_TYPES, INTEGRATION_DEFAULTS, PATH } = GIFT;
 
 describe('GiftCounterpartyService', () => {
   const logger = new PinoLogger({});
@@ -24,7 +24,6 @@ describe('GiftCounterpartyService', () => {
 
   beforeEach(() => {
     // Arrange
-
     mockGetResponse = mockResponse200([COUNTERPARTY_ROLE, COUNTERPARTY_ROLE]);
     mockCreateOneResponse = mockResponse201(COUNTERPARTY());
 
@@ -46,19 +45,60 @@ describe('GiftCounterpartyService', () => {
   describe('createOne', () => {
     const mockCounterparty = COUNTERPARTY();
 
-    it('should call giftHttpService.post', async () => {
-      // Act
-      await service.createOne(mockCounterparty, mockFacilityId, mockWorkPackageId);
+    describe('when optional date fields are provided', () => {
+      it('should call giftHttpService.post with the provided date fields', async () => {
+        // Arrange
+        const mockPayload = {
+          ...mockCounterparty,
+          exitDate: '2024-01-01',
+          startDate: '2024-02-01',
+        };
 
-      // Assert
-      expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
+        // Act
+        await service.createOne(mockPayload, mockFacilityId, mockWorkPackageId);
 
-      const expected = {
-        path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_COUNTERPARTY}`,
-        payload: mockCounterparty,
-      };
+        // Assert
+        expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
 
-      expect(mockHttpServicePost).toHaveBeenCalledWith(expected);
+        const expected = {
+          path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_COUNTERPARTY}`,
+          payload: {
+            ...mockPayload,
+            exitDate: mockPayload.exitDate,
+            startDate: mockPayload.startDate,
+          },
+        };
+
+        expect(mockHttpServicePost).toHaveBeenCalledWith(expected);
+      });
+    });
+
+    describe('when optional date fields are NOT provided', () => {
+      it('should call giftHttpService.post with default date field values', async () => {
+        // Arrange
+        const mockPayload = {
+          ...mockCounterparty,
+          exitDate: undefined,
+          startDate: undefined,
+        };
+
+        // Act
+        await service.createOne(mockPayload, mockFacilityId, mockWorkPackageId);
+
+        // Assert
+        expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
+
+        const expected = {
+          path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_COUNTERPARTY}`,
+          payload: {
+            ...mockPayload,
+            exitDate: INTEGRATION_DEFAULTS.COUNTERPARTY_EXIT_DATE,
+            startDate: INTEGRATION_DEFAULTS.COUNTERPARTY_START_DATE,
+          },
+        };
+
+        expect(mockHttpServicePost).toHaveBeenCalledWith(expected);
+      });
     });
 
     describe('when giftHttpService.post is successful', () => {

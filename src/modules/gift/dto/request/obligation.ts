@@ -46,14 +46,14 @@ export class GiftObligationRequestDto {
   })
   currency: string;
 
-  @IsDefined()
+  @IsOptional()
   @IsDateString()
   @ApiProperty({
     example: EXAMPLE.effectiveDate,
-    description: 'The effective date of the obligation',
-    required: true,
+    description: 'The effective date of the obligation (optional)',
+    required: false,
   })
-  effectiveDate: string;
+  effectiveDate?: string;
 
   @IsOptional()
   @IsNumber()
@@ -66,14 +66,14 @@ export class GiftObligationRequestDto {
   })
   linkedRepaymentProfileId?: number;
 
-  @IsDefined()
+  @IsOptional()
   @IsDateString()
   @ApiProperty({
     example: EXAMPLE.maturityDate,
-    description: 'The maturity date of the obligation',
-    required: true,
+    description: 'The maturity date of the obligation (optional)',
+    required: false,
   })
-  maturityDate: string;
+  maturityDate?: string;
 
   @IsDefined()
   @IsString()

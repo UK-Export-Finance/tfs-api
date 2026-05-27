@@ -7,7 +7,7 @@ import { GiftFacilityCounterpartyRequestDto, GiftFacilityCounterpartyRoleRespons
 import { mapCounterpartiesRequestData } from '../helpers';
 import { GiftHttpService } from './gift.http.service';
 
-const { EVENT_TYPES, PATH } = GIFT;
+const { EVENT_TYPES, INTEGRATION_DEFAULTS, PATH } = GIFT;
 
 /**
  * GIFT counterparty service.
@@ -36,9 +36,15 @@ export class GiftCounterpartyService {
 
       const path = `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_COUNTERPARTY}`;
 
+      const payload = {
+        ...counterpartyData,
+        exitDate: counterpartyData.exitDate || INTEGRATION_DEFAULTS.COUNTERPARTY_EXIT_DATE,
+        startDate: counterpartyData.startDate || INTEGRATION_DEFAULTS.COUNTERPARTY_START_DATE,
+      };
+
       const response = await this.giftHttpService.post<GiftFacilityCounterpartyRequestDto>({
         path,
-        payload: counterpartyData,
+        payload,
       });
 
       return response;

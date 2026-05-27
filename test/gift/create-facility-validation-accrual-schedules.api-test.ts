@@ -4,7 +4,7 @@ import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import nock from 'nock';
 
-import { arrayOfObjectsDateStringValidation, arrayOfObjectsNumberValidation, arrayOfObjectsStringValidation } from './assertions';
+import { arrayOfObjectsNumberValidation, arrayOfObjectsOptionalDateStringValidation, arrayOfObjectsStringValidation } from './assertions';
 import {
   apimFacilityWithoutQueueUrl,
   apimMdmObligationSubtypesUrl,
@@ -80,13 +80,9 @@ describe('POST /gift/facility - validation - accrual schedules', () => {
           'accrualSchedules.0.accrualDayBasisCode should not be null or undefined',
           `accrualSchedules.0.accrualDayBasisCode must be longer than or equal to ${ACCRUAL_SCHEDULE_VALIDATION.ACCRUAL_DAY_BASIS_CODE.MIN_LENGTH} characters`,
           'accrualSchedules.0.accrualDayBasisCode must be a string',
-          'accrualSchedules.0.accrualEffectiveDate should not be null or undefined',
-          'accrualSchedules.0.accrualEffectiveDate must be a valid ISO 8601 date string',
           'accrualSchedules.0.accrualFrequencyCode should not be null or undefined',
           `accrualSchedules.0.accrualFrequencyCode must be longer than or equal to ${ACCRUAL_SCHEDULE_VALIDATION.ACCRUAL_FREQUENCY_CODE.MIN_LENGTH} characters`,
           'accrualSchedules.0.accrualFrequencyCode must be a string',
-          'accrualSchedules.0.accrualMaturityDate should not be null or undefined',
-          'accrualSchedules.0.accrualMaturityDate must be a valid ISO 8601 date string',
           'accrualSchedules.0.accrualScheduleTypeCode should not be null or undefined',
           `accrualSchedules.0.accrualScheduleTypeCode must be longer than or equal to ${ACCRUAL_SCHEDULE_VALIDATION.ACCRUAL_SCHEDULE_TYPE_CODE.MIN_LENGTH} characters`,
           'accrualSchedules.0.accrualScheduleTypeCode must be a string',
@@ -95,8 +91,6 @@ describe('POST /gift/facility - validation - accrual schedules', () => {
           'accrualSchedules.0.additionalRate must be a number conforming to the specified constraints',
           'accrualSchedules.0.baseRate should not be null or undefined',
           'accrualSchedules.0.baseRate must be a number conforming to the specified constraints',
-          'accrualSchedules.0.firstCycleAccrualEndDate should not be null or undefined',
-          'accrualSchedules.0.firstCycleAccrualEndDate must be a valid ISO 8601 date string',
           'accrualSchedules.0.spreadRate should not be null or undefined',
           `accrualSchedules.0.spreadRate must not be less than ${ACCRUAL_SCHEDULE_VALIDATION.SPREAD_RATE.MIN}`,
           'accrualSchedules.0.spreadRate must be a number conforming to the specified constraints',
@@ -118,7 +112,7 @@ describe('POST /gift/facility - validation - accrual schedules', () => {
   });
 
   describe('accrualEffectiveDate', () => {
-    arrayOfObjectsDateStringValidation({
+    arrayOfObjectsOptionalDateStringValidation({
       ...baseParams,
       fieldName: 'accrualEffectiveDate',
     });
@@ -134,7 +128,7 @@ describe('POST /gift/facility - validation - accrual schedules', () => {
   });
 
   describe('accrualMaturityDate', () => {
-    arrayOfObjectsDateStringValidation({
+    arrayOfObjectsOptionalDateStringValidation({
       ...baseParams,
       fieldName: 'accrualMaturityDate',
     });
@@ -165,7 +159,7 @@ describe('POST /gift/facility - validation - accrual schedules', () => {
   });
 
   describe('firstCycleAccrualEndDate', () => {
-    arrayOfObjectsDateStringValidation({
+    arrayOfObjectsOptionalDateStringValidation({
       ...baseParams,
       fieldName: 'firstCycleAccrualEndDate',
     });
