@@ -59,6 +59,9 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
           .get(facilityUrl)
           .reply(HttpStatus.OK, {
             obligations: [{ id: 'obligation-1' }],
+            riskDetails: {
+              facilityCategoryCode: GIFT.FACILITY_CATEGORY_CODES.CASH,
+            },
           });
 
         nock(GIFT_API_URL)
@@ -98,7 +101,7 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
         // Assert
         expect(status).toBe(HttpStatus.CREATED);
         expect(body).toStrictEqual({
-          ...mockResponses.approveStatus,
+          ...mockResponses.facilityAmendment,
           isApproved: true,
         });
 
@@ -117,6 +120,9 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
           .get(facilityUrl)
           .reply(HttpStatus.OK, {
             obligations: [{ id: 'obligation-1' }],
+            riskDetails: {
+              facilityCategoryCode: GIFT.FACILITY_CATEGORY_CODES.CASH,
+            },
           });
 
         nock(GIFT_API_URL)
@@ -157,7 +163,7 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
         expect(status).toBe(HttpStatus.CREATED);
 
         expect(body).toStrictEqual({
-          ...mockResponses.approveStatus,
+          ...mockResponses.facilityAmendment,
           isApproved: true,
         });
 
@@ -174,6 +180,9 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
           .get(facilityUrl)
           .reply(HttpStatus.OK, {
             obligations: [{ id: 'obligation-1' }],
+            riskDetails: {
+              facilityCategoryCode: GIFT.FACILITY_CATEGORY_CODES.CASH,
+            },
           });
 
         nock(GIFT_API_URL).post(facilityWorkPackageUrl).reply(HttpStatus.CREATED, mockResponses.workPackageCreation);

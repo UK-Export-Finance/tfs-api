@@ -204,7 +204,7 @@ describe('GiftAmountAmendmentService', () => {
       // Assert
       expect(mockHttpServicePost).toHaveBeenCalledTimes(3);
 
-      const expectedAmount = 128;
+      const expectedAmount = 105;
       const expectedPath = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${AMEND_FACILITY_PREFIX_TYPES.AMEND_OBLIGATION}${AMEND_FACILITY_INCREASE_AMOUNT}`;
 
       expect(mockHttpServicePost).toHaveBeenNthCalledWith(1, {

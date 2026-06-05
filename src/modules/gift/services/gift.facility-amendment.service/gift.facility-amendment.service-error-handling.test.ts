@@ -1,5 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
-import { EXAMPLES } from '@ukef/constants';
+import { EXAMPLES, GIFT } from '@ukef/constants';
 import { mockResponse200, mockResponse201, mockResponse500 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
@@ -19,7 +19,16 @@ const {
   },
 } = EXAMPLES;
 
+const { FACILITY_CATEGORY_CODES } = GIFT;
+
 const mockWorkPackageServiceCreateResponse = mockResponse201(WORK_PACKAGE_CREATION_RESPONSE_DATA);
+const mockFacilityResponseData = {
+  ...FACILITY_RESPONSE_DATA,
+  obligations: [{ id: 'obligation-1' }],
+  riskDetails: {
+    facilityCategoryCode: FACILITY_CATEGORY_CODES.CONTINGENT,
+  },
+};
 
 describe('GiftFacilityAmendmentService - error handling', () => {
   const logger = new PinoLogger({});
@@ -50,7 +59,7 @@ describe('GiftFacilityAmendmentService - error handling', () => {
     amountAmendmentService = {} as GiftAmountAmendmentService;
     statusService = new GiftStatusService(giftHttpService, logger);
 
-    mockFacilityServiceGet = jest.fn().mockResolvedValueOnce(mockResponse200(FACILITY_RESPONSE_DATA));
+    mockFacilityServiceGet = jest.fn().mockResolvedValueOnce(mockResponse200(mockFacilityResponseData));
     mockWorkPackageServiceCreate = jest.fn().mockResolvedValueOnce(mockWorkPackageServiceCreateResponse);
     mockAmountAmendmentFacility = jest.fn().mockResolvedValueOnce(mockResponse201({}));
     mockAmountAmendmentObligations = jest.fn().mockResolvedValueOnce([]);
