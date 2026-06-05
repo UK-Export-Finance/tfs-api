@@ -11,7 +11,6 @@ const {
 
 const {
   AMEND_FACILITY_TYPES: { AMEND_FACILITY_INCREASE_AMOUNT },
-  AMEND_OBLIGATION_AMOUNT: { PERCENTAGE_OF_FACILITY_AMOUNT },
   PATH,
 } = GIFT;
 
@@ -137,7 +136,7 @@ describe('GiftAmountAmendmentService', () => {
           });
 
           // Assert
-          expect(response).toEqual(mockDeleteResponse);
+          expect(response).toEqual(mockPostResponse);
         });
       });
     });
@@ -202,7 +201,7 @@ describe('GiftAmountAmendmentService', () => {
       // Assert
       expect(mockHttpServicePost).toHaveBeenCalledTimes(3);
 
-      const expectedAmount = mockNewFacilityAmount * (PERCENTAGE_OF_FACILITY_AMOUNT / 100);
+      const expectedAmount = 128;
       const expectedPath = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${AMEND_FACILITY_PREFIX_TYPES.AMEND_OBLIGATION}${AMEND_FACILITY_INCREASE_AMOUNT}`;
 
       expect(mockHttpServicePost).toHaveBeenNthCalledWith(1, {
@@ -256,6 +255,28 @@ describe('GiftAmountAmendmentService', () => {
 
       // Assert
       expect(response).toEqual([responseOne, responseTwo]);
+    });
+
+    it('should throw an error when the facility amount is not an integer', async () => {
+      // Act
+      const promise = service.obligations({
+        amendmentType: AMEND_FACILITY_INCREASE_AMOUNT,
+        date: mockDate,
+        facilityId: mockFacilityId,
+        newFacilityAmount: 100.5,
+        obligations: [{ id: '1' }],
+        workPackageId: mockWorkPackageId,
+      });
+
+      // Assert
+      const expected = new Error(
+        `Error amending facility obligation amounts ${AMEND_FACILITY_INCREASE_AMOUNT} for facility ${mockFacilityId} work package ${mockWorkPackageId}`,
+        {
+          cause: new Error('calculatePercentageAmount - amount must be a safe integer. Received: 100.5'),
+        },
+      );
+
+      await expect(promise).rejects.toThrow(expected);
     });
 
     describe('when giftHttpService.post throws an error', () => {

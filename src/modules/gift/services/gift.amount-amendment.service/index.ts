@@ -5,6 +5,7 @@ import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 
 import { GiftWorkPackageResponseDto } from '../../dto';
+import { calculatePercentageAmount } from '../../helpers';
 import { GiftHttpService } from '../gift.http.service';
 
 const {
@@ -103,7 +104,7 @@ export class GiftAmountAmendmentService {
        * NOTE: currently only 1x obligation will exist for a facility.
        * Need to update this logic if an integration has more than 1x obligation.
        */
-      const newObligationAmount = newFacilityAmount * (PERCENTAGE_OF_FACILITY_AMOUNT / 100);
+      const newObligationAmount = calculatePercentageAmount(newFacilityAmount, PERCENTAGE_OF_FACILITY_AMOUNT);
 
       /**
        * NOTE: We need to use a for loop instead of Promise.all, to ensure that the calls are sequential.

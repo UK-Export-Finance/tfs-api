@@ -2,6 +2,7 @@ export * from './array-contains-string';
 export * from './array-has-unique-strings';
 export * from './array-of-objects-has-value';
 export * from './async-validation';
+export * from './calculate-percentage-amount';
 export * from './generate-obligation-subtype-code-errors';
 export * from './get-amendment-data-dto';
 export * from './get-obligation-ids';
