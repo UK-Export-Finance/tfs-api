@@ -97,7 +97,10 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
 
         // Assert
         expect(status).toBe(HttpStatus.CREATED);
-        expect(body).toStrictEqual({});
+        expect(body).toStrictEqual({
+          ...mockResponses.approveStatus,
+          isApproved: true,
+        });
 
         expect(callOrder).toStrictEqual(['workPackage', 'facilityAmendment', 'obligationAmendment']);
       });
@@ -152,7 +155,10 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
 
         // Assert
         expect(status).toBe(HttpStatus.CREATED);
-        expect(body).toStrictEqual({});
+        expect(body).toStrictEqual({
+          ...mockResponses.approveStatus,
+          isApproved: true,
+        });
 
         expect(callOrder).toStrictEqual(['workPackage', 'obligationAmendment', 'facilityAmendment']);
       });
@@ -183,7 +189,10 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
 
         // Assert
         expect(status).toBe(HttpStatus.CREATED);
-        expect(body).toStrictEqual({});
+        expect(body).toStrictEqual({
+          ...mockResponses.approveStatus,
+          isApproved: true,
+        });
       });
     });
   });

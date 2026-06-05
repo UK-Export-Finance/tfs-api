@@ -245,7 +245,7 @@ describe('GiftFacilityController', () => {
       // Assert
       expect(mockResSend).toHaveBeenCalledTimes(1);
 
-      expect(mockResSend).toHaveBeenCalledWith();
+      expect(mockResSend).toHaveBeenCalledWith(mockAmendmentServiceCreate);
     });
   });
 
