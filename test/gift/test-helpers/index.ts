@@ -51,7 +51,7 @@ const iAmATeapot: MockGiftResponse = {
 };
 
 export const mockResponses = {
-  approveStatus: { data: { aStatusUpdate: true } },
+  approveStatus: GIFT_EXAMPLES.WORK_PACKAGE_APPROVE_RESPONSE_DATA,
   accrualSchedule: { data: GIFT_EXAMPLES.ACCRUAL_SCHEDULE },
   businessCalendar: { data: GIFT_EXAMPLES.BUSINESS_CALENDAR },
   businessCalendarsConvention: { data: GIFT_EXAMPLES.BUSINESS_CALENDARS_CONVENTION },
@@ -70,10 +70,7 @@ export const mockResponses = {
       },
     },
   },
-  facilityAmendment: {
-    anAmendedFacility: true,
-    isApproved: true,
-  },
+  facilityAmendment: GIFT_EXAMPLES.WORK_PACKAGE_CREATION_RESPONSE_DATA,
   feeTypes: GIFT_EXAMPLES.FEE_TYPES_RESPONSE_DATA,
   fixedFee: { data: { aFixedFee: true } },
   obligation: { data: { anObligation: true } },
@@ -117,8 +114,11 @@ export const repaymentProfileUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WOR
 export const riskDetailsUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_RISK_DETAILS}`;
 export const approveStatusUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.APPROVE}`;
 export const facilityWorkPackageUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}`;
+export const facilityUrl = `${PATH.FACILITY}/${mockFacilityId}`;
 export const facilityAmendmentUrl = (amendmentType: string = AMEND_FACILITY_TYPES.AMEND_FACILITY_INCREASE_AMOUNT) =>
   `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/AmendFacility_${amendmentType}`;
+export const obligationAmendmentUrl = (amendmentType: string = AMEND_FACILITY_TYPES.AMEND_FACILITY_INCREASE_AMOUNT) =>
+  `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/AmendObligation_${amendmentType}`;
 export const workPackageUrl = `${PATH.WORK_PACKAGE}/${mockWorkPackageId}`;
 
 export const businessCalendar = GIFT_EXAMPLES.BUSINESS_CALENDAR;

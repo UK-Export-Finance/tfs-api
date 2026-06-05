@@ -121,6 +121,7 @@ describe('POST /gift/facility', () => {
         obligations: Array(payloadObligations.length).fill(mockResponses.obligation.data),
         repaymentProfiles: Array(payloadRepaymentProfiles.length).fill(mockResponses.repaymentProfile.data),
         riskDetails: mockResponses.riskDetails.data,
+        state: mockResponses.approveStatus.state,
       };
 
       expect(body).toStrictEqual(expected);
@@ -229,6 +230,7 @@ describe('POST /gift/facility', () => {
         obligations: Array(payloadObligations.length).fill(mockResponses.obligation.data),
         repaymentProfiles: Array(payloadRepaymentProfiles.length).fill(mockResponses.repaymentProfile.data),
         riskDetails: mockResponses.riskDetails.data,
+        state: mockResponses.approveStatus.state,
       };
 
       expect(body).toStrictEqual(expected);
@@ -256,6 +258,7 @@ describe('POST /gift/facility', () => {
         obligations: Array(payloadObligations.length).fill(mockResponses.obligation.data),
         repaymentProfiles: [],
         riskDetails: mockResponses.riskDetails.data,
+        state: mockResponses.approveStatus.state,
       };
 
       expect(body).toStrictEqual(expected);
