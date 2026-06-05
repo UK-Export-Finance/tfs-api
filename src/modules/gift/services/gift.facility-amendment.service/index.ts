@@ -34,17 +34,6 @@ export class GiftFacilityAmendmentService {
     this.giftStatusService = giftStatusService;
   }
 
-  // TODO - combine this documentation with documentation below.
-  // this is for amendmentResponse.status !== HttpStatus.CREATED
-  /**
-   * If an amendment has failed to be created,
-   * For example if GIFT returns a 400 Bad Request due to invalid payload, or a 500 Internal Server Error due to an issue in GIFT,
-   * Then the work package that was created in step 1 needs to be deleted, as it will be empty and unused without the amendment.
-   *
-   * Additionally, there is no need to manually handle any deletion response error - only 1x status is acceptable (GIFT_API_ACCEPTABLE_DELETE_STATUSES).
-   * If that status isn't returned, an error will be thrown, caught in the catch block, and logged accordingly.
-   */
-
   /**
    * Create a GIFT facility amendment
    * 1) Create a new GIFT work package
