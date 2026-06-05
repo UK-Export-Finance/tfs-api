@@ -45,6 +45,8 @@ describe('GiftFacilityAmendmentService', () => {
 
   beforeEach(() => {
     // Arrange
+    giftHttpService = {};
+
     workPackageService = new GiftWorkPackageService(giftHttpService, logger);
     facilityService = {} as GiftFacilityService;
     amountAmendmentService = {} as GiftAmountAmendmentService;

@@ -49,11 +49,21 @@ export class GiftFacilityAmendmentService {
    */
   async create(facilityId: UkefId, amendment: CreateGiftFacilityAmendmentRequestDto): Promise<CreateGiftFacilityAmendmentResponseDto> {
     const { amendmentType } = amendment;
+    let createdAmendmentData: GiftWorkPackageResponseDto | null = null;
 
     try {
       this.logger.info('Creating amendment %s for facility %s', amendmentType, facilityId);
 
-      const { data: facility } = await this.giftFacilityService.get(facilityId);
+      const facilityResponse = await this.giftFacilityService.get(facilityId);
+
+      if (facilityResponse.status !== HttpStatus.OK) {
+        return {
+          status: facilityResponse.status,
+          data: facilityResponse.data,
+        };
+      }
+
+      const { data: facility } = facilityResponse;
 
       /**
        * Generate a GIFT work package.
@@ -91,7 +101,9 @@ export class GiftFacilityAmendmentService {
           amendmentData: { amount: newFacilityAmount, date },
         } = amendment;
 
-        await this.giftAmountAmendmentService.facility({ ...amendment, facilityId, workPackageId });
+        const facilityAmendmentResponse = await this.giftAmountAmendmentService.facility({ ...amendment, facilityId, workPackageId });
+
+        createdAmendmentData = facilityAmendmentResponse.data;
 
         await this.giftAmountAmendmentService.obligations({ ...baseObligationParams, date, newFacilityAmount });
       }
@@ -109,7 +121,9 @@ export class GiftFacilityAmendmentService {
 
         await this.giftAmountAmendmentService.obligations({ ...baseObligationParams, date, newFacilityAmount });
 
-        await this.giftAmountAmendmentService.facility({ ...amendment, facilityId, workPackageId });
+        const facilityAmendmentResponse = await this.giftAmountAmendmentService.facility({ ...amendment, facilityId, workPackageId });
+
+        createdAmendmentData = facilityAmendmentResponse.data;
       }
 
       const approvalResponse = await this.approveWorkPackage(facilityId, workPackageId);
@@ -119,7 +133,7 @@ export class GiftFacilityAmendmentService {
       const returnResponse = {
         status: HttpStatus.CREATED,
         data: {
-          ...approvalResponse.data,
+          ...(createdAmendmentData ?? approvalResponse.data),
           isApproved: true,
         },
       };
@@ -141,12 +155,12 @@ export class GiftFacilityAmendmentService {
    */
   async approveWorkPackage(facilityId: UkefId, workPackageId: number) {
     try {
-      this.logger.info('Approving amendmentwork package %s for facility %s', workPackageId, facilityId);
+      this.logger.info('Approving amendment work package %s for facility %s', workPackageId, facilityId);
 
       const approvalResponse = await this.giftStatusService.approved(facilityId, workPackageId);
 
       if (approvalResponse.status !== HttpStatus.OK) {
-        this.logger.error('Error approving amendment work package %s for facility %s amendment %s', workPackageId, facilityId, approvalResponse.data);
+        this.logger.error('Error approving amendment work package %s for facility %s %o', workPackageId, facilityId, approvalResponse.data);
 
         throw new Error(`Error approving amendment work package ${workPackageId} for facility ${facilityId} amendment`, {
           cause: {
@@ -158,9 +172,9 @@ export class GiftFacilityAmendmentService {
 
       return approvalResponse;
     } catch (error) {
-      this.logger.error('Error approving amendment work package %s for facility %s amendment %o', workPackageId, facilityId, error);
+      this.logger.error('Error approving amendment work package %s for facility %s %o', workPackageId, facilityId, error);
 
-      throw new Error(`Error approving amendment work package ${workPackageId} for facility ${facilityId} amendment`, { cause: error });
+      throw new Error(`Error approving amendment work package ${workPackageId} for facility ${facilityId}`, { cause: error });
     }
   }
 }

@@ -51,7 +51,7 @@ const iAmATeapot: MockGiftResponse = {
 };
 
 export const mockResponses = {
-  approveStatus: { data: { aStatusUpdate: true } },
+  approveStatus: GIFT_EXAMPLES.WORK_PACKAGE_APPROVE_RESPONSE_DATA,
   accrualSchedule: { data: GIFT_EXAMPLES.ACCRUAL_SCHEDULE },
   businessCalendar: { data: GIFT_EXAMPLES.BUSINESS_CALENDAR },
   businessCalendarsConvention: { data: GIFT_EXAMPLES.BUSINESS_CALENDARS_CONVENTION },
@@ -70,10 +70,7 @@ export const mockResponses = {
       },
     },
   },
-  facilityAmendment: {
-    anAmendedFacility: true,
-    isApproved: true,
-  },
+  facilityAmendment: GIFT_EXAMPLES.WORK_PACKAGE_CREATION_RESPONSE_DATA,
   feeTypes: GIFT_EXAMPLES.FEE_TYPES_RESPONSE_DATA,
   fixedFee: { data: { aFixedFee: true } },
   obligation: { data: { anObligation: true } },

@@ -72,9 +72,11 @@ export class GiftAmountAmendmentService {
       if (facilityAmendmentResponse.status !== HttpStatus.CREATED) {
         this.logger.error('Error creating amendment %s for work package %s facility %s. Deleting work package', amendmentType, workPackageId, facilityId);
 
-        return await this.giftHttpService.delete<GiftWorkPackageResponseDto>({
+        await this.giftHttpService.delete<GiftWorkPackageResponseDto>({
           path: `${PATH.WORK_PACKAGE}/${workPackageId}`,
         });
+
+        return facilityAmendmentResponse;
       }
 
       return facilityAmendmentResponse;
@@ -116,7 +118,6 @@ export class GiftAmountAmendmentService {
           amount: newObligationAmount,
         };
 
-        // TODO: constant
         const response = await this.giftHttpService.post<GiftWorkPackageResponseDto>({
           path: `${basePath}/${AMEND_FACILITY_PREFIX_TYPES.AMEND_OBLIGATION}${amendmentType}`,
           payload,

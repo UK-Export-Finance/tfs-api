@@ -155,6 +155,7 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
 
         // Assert
         expect(status).toBe(HttpStatus.CREATED);
+
         expect(body).toStrictEqual({
           ...mockResponses.approveStatus,
           isApproved: true,
@@ -176,6 +177,8 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
           });
 
         nock(GIFT_API_URL).post(facilityWorkPackageUrl).reply(HttpStatus.CREATED, mockResponses.workPackageCreation);
+
+        nock(GIFT_API_URL).post(facilityAmendmentUrl(AMEND_FACILITY_REPLACE_EXPIRY_DATE)).reply(HttpStatus.CREATED, mockResponses.facilityAmendment);
 
         nock(GIFT_API_URL).post(approveStatusUrl).reply(HttpStatus.OK, mockResponses.approveStatus);
 
