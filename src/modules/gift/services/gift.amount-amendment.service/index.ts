@@ -1,5 +1,5 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { AmendFacilityType, GIFT } from '@ukef/constants';
+import { AMEND_FACILITY_PREFIX_TYPES, AmendFacilityType, GIFT } from '@ukef/constants';
 import { UkefId } from '@ukef/helpers/ukef-id.type';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
@@ -118,7 +118,7 @@ export class GiftAmountAmendmentService {
 
         // TODO: constant
         const response = await this.giftHttpService.post<GiftWorkPackageResponseDto>({
-          path: `${basePath}/AmendObligation_${amendmentType}`,
+          path: `${basePath}/${AMEND_FACILITY_PREFIX_TYPES.AMEND_OBLIGATION}${amendmentType}`,
           payload,
         });
 

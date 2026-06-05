@@ -1,35 +1,14 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { GIFT } from '@ukef/constants';
 import { UkefId } from '@ukef/helpers/ukef-id.type';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 
-import { CreateGiftFacilityAmendmentRequestDto, DecreaseAmountDto, GiftWorkPackageResponseDto, IncreaseAmountDto } from '../../dto';
+import { CreateGiftFacilityAmendmentRequestDto, GiftWorkPackageResponseDto } from '../../dto';
+import { isDecreaseAmountAmendment, isIncreaseAmountAmendment } from '../../helpers';
 import { GiftAmountAmendmentService } from '../gift.amount-amendment.service';
 import { GiftFacilityService } from '../gift.facility.service';
-import { GiftHttpService } from '../gift.http.service';
 import { GiftStatusService } from '../gift.status.service';
 import { GiftWorkPackageService } from '../gift.work-package.service';
-
-const {
-  AMEND_FACILITY_TYPES: { AMEND_FACILITY_INCREASE_AMOUNT, AMEND_FACILITY_DECREASE_AMOUNT },
-} = GIFT;
-
-type IncreaseAmountAmendmentRequest = CreateGiftFacilityAmendmentRequestDto & {
-  amendmentType: typeof AMEND_FACILITY_INCREASE_AMOUNT;
-  amendmentData: IncreaseAmountDto;
-};
-
-type DecreaseAmountAmendmentRequest = CreateGiftFacilityAmendmentRequestDto & {
-  amendmentType: typeof AMEND_FACILITY_DECREASE_AMOUNT;
-  amendmentData: DecreaseAmountDto;
-};
-
-const isIncreaseAmountAmendment = (amendment: CreateGiftFacilityAmendmentRequestDto): amendment is IncreaseAmountAmendmentRequest =>
-  amendment.amendmentType === AMEND_FACILITY_INCREASE_AMOUNT;
-
-const isDecreaseAmountAmendment = (amendment: CreateGiftFacilityAmendmentRequestDto): amendment is DecreaseAmountAmendmentRequest =>
-  amendment.amendmentType === AMEND_FACILITY_DECREASE_AMOUNT;
 
 interface CreateGiftFacilityAmendmentResponseDto {
   status: AxiosResponse['status'];
@@ -43,14 +22,12 @@ interface CreateGiftFacilityAmendmentResponseDto {
 @Injectable()
 export class GiftFacilityAmendmentService {
   constructor(
-    private readonly giftHttpService: GiftHttpService,
     private readonly logger: PinoLogger,
     private readonly giftWorkPackageService: GiftWorkPackageService,
     private readonly giftFacilityService: GiftFacilityService,
     private readonly giftAmountAmendmentService: GiftAmountAmendmentService,
     private readonly giftStatusService: GiftStatusService,
   ) {
-    this.giftHttpService = giftHttpService;
     this.giftWorkPackageService = giftWorkPackageService;
     this.giftFacilityService = giftFacilityService;
     this.giftAmountAmendmentService = giftAmountAmendmentService;

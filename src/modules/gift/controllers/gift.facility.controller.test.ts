@@ -116,14 +116,7 @@ describe('GiftFacilityController', () => {
       creationErrorService,
     );
 
-    giftFacilityAmendmentService = new GiftFacilityAmendmentService(
-      giftHttpService,
-      logger,
-      giftWorkPackageService,
-      giftFacilityService,
-      amountAmendmentService,
-      statusService,
-    );
+    giftFacilityAmendmentService = new GiftFacilityAmendmentService(logger, giftWorkPackageService, giftFacilityService, amountAmendmentService, statusService);
 
     mockResSend = jest.fn();
 

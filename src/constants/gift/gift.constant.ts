@@ -1,6 +1,10 @@
 import { CONSUMER } from './consumer.constant';
 import { VALIDATION } from './validation.constant';
 
+export const AMEND_FACILITY_PREFIX_TYPES = {
+  AMEND_OBLIGATION: 'AmendObligation_',
+};
+
 export const AMEND_FACILITY_TYPES = {
   AMEND_FACILITY_INCREASE_AMOUNT: 'IncreaseAmount',
   AMEND_FACILITY_DECREASE_AMOUNT: 'DecreaseAmount',

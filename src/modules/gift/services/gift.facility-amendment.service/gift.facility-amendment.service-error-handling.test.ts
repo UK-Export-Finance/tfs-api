@@ -39,7 +39,7 @@ describe('GiftFacilityAmendmentService - error handling', () => {
   let mockStatusServiceApproved: jest.Mock;
 
   const buildService = () => {
-    service = new GiftFacilityAmendmentService(giftHttpService, logger, workPackageService, facilityService, amountAmendmentService, statusService);
+    service = new GiftFacilityAmendmentService(logger, workPackageService, facilityService, amountAmendmentService, statusService);
   };
 
   beforeEach(() => {

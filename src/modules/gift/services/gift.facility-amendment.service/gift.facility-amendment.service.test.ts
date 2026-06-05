@@ -45,8 +45,6 @@ describe('GiftFacilityAmendmentService', () => {
 
   beforeEach(() => {
     // Arrange
-    giftHttpService = {};
-
     workPackageService = new GiftWorkPackageService(giftHttpService, logger);
     facilityService = {} as GiftFacilityService;
     amountAmendmentService = {} as GiftAmountAmendmentService;
@@ -64,7 +62,7 @@ describe('GiftFacilityAmendmentService', () => {
     workPackageService.create = mockWorkPackageServiceCreate;
     statusService.approved = mockStatusServiceApproved;
 
-    service = new GiftFacilityAmendmentService(giftHttpService, logger, workPackageService, facilityService, amountAmendmentService, statusService);
+    service = new GiftFacilityAmendmentService(logger, workPackageService, facilityService, amountAmendmentService, statusService);
   });
 
   afterAll(() => {

@@ -1,5 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
-import { EXAMPLES, GIFT } from '@ukef/constants';
+import { AMEND_FACILITY_PREFIX_TYPES, EXAMPLES, GIFT } from '@ukef/constants';
 import { mockResponse201, mockResponse204, mockResponse500 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
@@ -203,7 +203,7 @@ describe('GiftAmountAmendmentService', () => {
       expect(mockHttpServicePost).toHaveBeenCalledTimes(3);
 
       const expectedAmount = mockNewFacilityAmount * (PERCENTAGE_OF_FACILITY_AMOUNT / 100);
-      const expectedPath = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/AmendObligation_${AMEND_FACILITY_INCREASE_AMOUNT}`;
+      const expectedPath = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${AMEND_FACILITY_PREFIX_TYPES.AMEND_OBLIGATION}${AMEND_FACILITY_INCREASE_AMOUNT}`;
 
       expect(mockHttpServicePost).toHaveBeenNthCalledWith(1, {
         path: expectedPath,
