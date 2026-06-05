@@ -15,10 +15,34 @@ export const AMEND_FACILITY_TYPES_ARRAY = Object.values(AMEND_FACILITY_TYPES);
 
 export type AmendFacilityType = (typeof AMEND_FACILITY_TYPES)[keyof typeof AMEND_FACILITY_TYPES];
 
+const FACILITY_CATEGORY_CODES = {
+  CONTINGENT: 'FCT006',
+  CASH: 'FCT007',
+} as const;
+
+export type FacilityCategoryCode = (typeof FACILITY_CATEGORY_CODES)[keyof typeof FACILITY_CATEGORY_CODES];
+
+const PRODUCT_TYPE_CODES = {
+  BIP: 'PRT001',
+  EXIP: 'PRT002',
+  BSS: 'PRT003',
+  GEF: 'PRT004',
+} as const;
+
+const PRODUCT_TYPE_NAMES = {
+  BIP: 'Bond Insurance Policy (BIP)',
+  EXIP: 'Export Insurance Policy (EXIP)',
+  BSS: 'Bond Support Scheme (BSS)',
+  GEF: 'General Export Facility (GEF)',
+} as const;
+
 export const GIFT = {
   AMEND_FACILITY_TYPES,
   AMEND_OBLIGATION_AMOUNT: {
-    PERCENTAGE_OF_FACILITY_AMOUNT: 85,
+    PERCENTAGE_OF_FACILITY_AMOUNT: {
+      [FACILITY_CATEGORY_CODES.CONTINGENT]: 70,
+      [FACILITY_CATEGORY_CODES.CASH]: 85,
+    },
   },
   API_RESPONSE_MESSAGES: {
     ASYNC_FACILITY_VALIDATION_ERRORS: 'Async validation errors with facility entity(s)',
@@ -75,6 +99,7 @@ export const GIFT = {
     BOND_SUPPLEMENTAL_TO_CASH: 'BOND: SUPPLEMENTAL TO CASH',
     BOND_SUPPLEMENTAL_TO_CREDIT: 'BOND: SUPPLEMENTAL TO CREDIT',
   },
+  FACILITY_CATEGORY_CODES,
   FEE_TYPE_CODES: {
     BEX: 'BEX',
     CMF: 'CMF',
@@ -129,18 +154,8 @@ export const GIFT = {
     SUPPORTED: '/supported',
     WORK_PACKAGE: '/work-package',
   },
-  PRODUCT_TYPE_CODES: {
-    BIP: 'PRT001',
-    EXIP: 'PRT002',
-    BSS: 'PRT003',
-    GEF: 'PRT004',
-  },
-  PRODUCT_TYPE_NAMES: {
-    BIP: 'Bond Insurance Policy (BIP)',
-    EXIP: 'Export Insurance Policy (EXIP)',
-    BSS: 'Bond Support Scheme (BSS)',
-    GEF: 'General Export Facility (GEF)',
-  },
+  PRODUCT_TYPE_CODES,
+  PRODUCT_TYPE_NAMES,
   REPAYMENT_TYPE: {
     BULLET: 'Bullet',
     SCHEDULED: 'Scheduled',

@@ -81,12 +81,16 @@ export class GiftFacilityAmendmentService {
       }
 
       const { id: workPackageId } = workPackage;
-      const { obligations } = facility;
+      const {
+        obligations,
+        riskDetails: { facilityCategoryCode },
+      } = facility;
 
       const baseObligationParams = {
         amendmentType,
         facilityId,
         obligations,
+        facilityCategoryCode,
         workPackageId,
       };
 

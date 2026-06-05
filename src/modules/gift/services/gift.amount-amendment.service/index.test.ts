@@ -11,11 +11,13 @@ const {
 
 const {
   AMEND_FACILITY_TYPES: { AMEND_FACILITY_INCREASE_AMOUNT },
+  FACILITY_CATEGORY_CODES,
   PATH,
 } = GIFT;
 
 describe('GiftAmountAmendmentService', () => {
   const logger = new PinoLogger({});
+  const mockFacilityCategoryCode = FACILITY_CATEGORY_CODES.CONTINGENT;
 
   let service: GiftAmountAmendmentService;
 
@@ -193,6 +195,7 @@ describe('GiftAmountAmendmentService', () => {
         amendmentType: AMEND_FACILITY_INCREASE_AMOUNT,
         date: mockDate,
         facilityId: mockFacilityId,
+        facilityCategoryCode: mockFacilityCategoryCode,
         newFacilityAmount: mockNewFacilityAmount,
         obligations: mockObligations,
         workPackageId: mockWorkPackageId,
@@ -248,6 +251,7 @@ describe('GiftAmountAmendmentService', () => {
         amendmentType: AMEND_FACILITY_INCREASE_AMOUNT,
         date: mockDate,
         facilityId: mockFacilityId,
+        facilityCategoryCode: mockFacilityCategoryCode,
         newFacilityAmount: mockNewFacilityAmount,
         obligations: [{ id: '1' }, { id: '2' }],
         workPackageId: mockWorkPackageId,
@@ -263,6 +267,7 @@ describe('GiftAmountAmendmentService', () => {
         amendmentType: AMEND_FACILITY_INCREASE_AMOUNT,
         date: mockDate,
         facilityId: mockFacilityId,
+        facilityCategoryCode: mockFacilityCategoryCode,
         newFacilityAmount: 100.5,
         obligations: [{ id: '1' }],
         workPackageId: mockWorkPackageId,
@@ -295,6 +300,7 @@ describe('GiftAmountAmendmentService', () => {
           amendmentType: AMEND_FACILITY_INCREASE_AMOUNT,
           date: mockDate,
           facilityId: mockFacilityId,
+          facilityCategoryCode: mockFacilityCategoryCode,
           newFacilityAmount: mockNewFacilityAmount,
           obligations: [{ id: '1' }],
           workPackageId: mockWorkPackageId,

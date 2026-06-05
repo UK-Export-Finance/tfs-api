@@ -22,12 +22,23 @@ const {
 
 const {
   AMEND_FACILITY_TYPES: { AMEND_FACILITY_DECREASE_AMOUNT, AMEND_FACILITY_INCREASE_AMOUNT },
+  FACILITY_CATEGORY_CODES,
 } = GIFT;
 
 const mockWorkPackageServiceCreateResponse = mockResponse201(WORK_PACKAGE_CREATION_RESPONSE_DATA);
 
 describe('GiftFacilityAmendmentService', () => {
   const logger = new PinoLogger({});
+  const mockFacilityCategoryCode = FACILITY_CATEGORY_CODES.CONTINGENT;
+  const mockObligations = [{ id: 'obligation-1' }];
+
+  const mockFacilityResponseData = {
+    ...FACILITY_RESPONSE_DATA,
+    obligations: mockObligations,
+    riskDetails: {
+      facilityCategoryCode: mockFacilityCategoryCode,
+    },
+  };
 
   let mockAmountAmendmentServiceFacility: jest.Mock;
   let mockAmountAmendmentServiceObligations: jest.Mock;
@@ -52,8 +63,8 @@ describe('GiftFacilityAmendmentService', () => {
     amountAmendmentService = {} as GiftAmountAmendmentService;
     statusService = new GiftStatusService(giftHttpService, logger);
 
-    mockFacilityServiceGet = jest.fn().mockResolvedValueOnce(mockResponse200(FACILITY_RESPONSE_DATA));
-    mockAmountAmendmentServiceFacility = jest.fn().mockResolvedValueOnce(mockResponse201({}));
+    mockFacilityServiceGet = jest.fn().mockResolvedValueOnce(mockResponse200(mockFacilityResponseData));
+    mockAmountAmendmentServiceFacility = jest.fn().mockResolvedValueOnce(mockResponse201(WORK_PACKAGE_CREATION_RESPONSE_DATA));
     mockAmountAmendmentServiceObligations = jest.fn().mockResolvedValueOnce([]);
     mockWorkPackageServiceCreate = jest.fn().mockResolvedValueOnce(mockWorkPackageServiceCreateResponse);
     mockStatusServiceApproved = jest.fn().mockResolvedValueOnce(mockResponse200(WORK_PACKAGE_APPROVE_RESPONSE_DATA));
@@ -104,8 +115,10 @@ describe('GiftFacilityAmendmentService', () => {
         1,
         expect.objectContaining({
           amendmentType: increasePayload.amendmentType,
+          facilityCategoryCode: mockFacilityCategoryCode,
           facilityId: mockFacilityId,
           newFacilityAmount: increasePayload.amendmentData.amount,
+          obligations: mockObligations,
           workPackageId: mockWorkPackageId,
         }),
       );
@@ -132,8 +145,10 @@ describe('GiftFacilityAmendmentService', () => {
         1,
         expect.objectContaining({
           amendmentType: decreasePayload.amendmentType,
+          facilityCategoryCode: mockFacilityCategoryCode,
           facilityId: mockFacilityId,
           newFacilityAmount: decreasePayload.amendmentData.amount,
+          obligations: mockObligations,
           workPackageId: mockWorkPackageId,
         }),
       );
@@ -166,7 +181,7 @@ describe('GiftFacilityAmendmentService', () => {
       const expected = {
         status: HttpStatus.CREATED,
         data: {
-          ...WORK_PACKAGE_APPROVE_RESPONSE_DATA,
+          ...WORK_PACKAGE_CREATION_RESPONSE_DATA,
           isApproved: true,
         },
       };

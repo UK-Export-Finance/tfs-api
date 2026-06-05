@@ -1,5 +1,5 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { AMEND_FACILITY_PREFIX_TYPES, AmendFacilityType, GIFT } from '@ukef/constants';
+import { AMEND_FACILITY_PREFIX_TYPES, AmendFacilityType, FacilityCategoryCode, GIFT } from '@ukef/constants';
 import { UkefId } from '@ukef/helpers/ukef-id.type';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
@@ -27,6 +27,7 @@ type AmendObligationsParams = {
   amendmentType: AmendFacilityType;
   date: string;
   facilityId: UkefId;
+  facilityCategoryCode: FacilityCategoryCode;
   newFacilityAmount: number;
   obligations: { id: string }[];
   workPackageId: number;
@@ -94,7 +95,7 @@ export class GiftAmountAmendmentService {
    * @returns {Promise<void>}
    * @throws {Error}
    */
-  async obligations({ amendmentType, newFacilityAmount, date, facilityId, obligations, workPackageId }: AmendObligationsParams) {
+  async obligations({ amendmentType, newFacilityAmount, date, facilityId, obligations, facilityCategoryCode, workPackageId }: AmendObligationsParams) {
     try {
       this.logger.info('Amending facility obligation amounts %s for facility %s work package %s', amendmentType, facilityId, workPackageId);
 
@@ -104,7 +105,9 @@ export class GiftAmountAmendmentService {
        * NOTE: currently only 1x obligation will exist for a facility.
        * Need to update this logic if an integration has more than 1x obligation.
        */
-      const newObligationAmount = calculatePercentageAmount(newFacilityAmount, PERCENTAGE_OF_FACILITY_AMOUNT);
+      const percentage = PERCENTAGE_OF_FACILITY_AMOUNT[`${facilityCategoryCode}`];
+
+      const newObligationAmount = calculatePercentageAmount(newFacilityAmount, percentage);
 
       /**
        * NOTE: We need to use a for loop instead of Promise.all, to ensure that the calls are sequential.
