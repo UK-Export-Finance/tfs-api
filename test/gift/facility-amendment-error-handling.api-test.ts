@@ -9,8 +9,10 @@ import {
   apimFacilityAmendmentWithoutQueueUrl,
   approveStatusUrl,
   facilityAmendmentUrl,
+  facilityUrl,
   facilityWorkPackageUrl,
   mockResponses,
+  obligationAmendmentUrl,
   workPackageUrl,
 } from './test-helpers';
 
@@ -38,7 +40,16 @@ describe('POST /gift/facility/:facilityId/amendment - error handling', () => {
 
   beforeEach(() => {
     // Arrange
+    nock(GIFT_API_URL)
+      .persist()
+      .get(facilityUrl)
+      .reply(HttpStatus.OK, {
+        obligations: [{ id: 'obligation-1' }],
+      });
+
     nock(GIFT_API_URL).persist().post(facilityAmendmentUrl(AMEND_FACILITY_INCREASE_AMOUNT)).reply(HttpStatus.CREATED, mockResponses.facilityAmendment);
+
+    nock(GIFT_API_URL).persist().post(obligationAmendmentUrl(AMEND_FACILITY_INCREASE_AMOUNT)).reply(HttpStatus.CREATED, mockResponses.facilityAmendment);
   });
 
   describe('GIFT "create work package - configuration event" endpoint', () => {

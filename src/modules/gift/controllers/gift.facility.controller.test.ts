@@ -6,6 +6,7 @@ import { PinoLogger } from 'nestjs-pino';
 
 import {
   GiftAccrualScheduleService,
+  GiftAmountAmendmentService,
   GiftBusinessCalendarsConventionService,
   GiftBusinessCalendarService,
   GiftCounterpartyService,
@@ -55,6 +56,7 @@ describe('GiftFacilityController', () => {
   let giftWorkPackageService: GiftWorkPackageService;
   let creationErrorService: GiftFacilityCreationErrorService;
   let giftQueueService: GiftQueueService;
+  let amountAmendmentService: GiftAmountAmendmentService;
   let controller: GiftFacilityController;
 
   let mockRes;
@@ -96,7 +98,7 @@ describe('GiftFacilityController', () => {
     riskDetailsService = new GiftRiskDetailsService(giftHttpService, logger);
     statusService = new GiftStatusService(giftHttpService, logger);
     creationErrorService = new GiftFacilityCreationErrorService(giftWorkPackageService, logger);
-    giftFacilityAmendmentService = new GiftFacilityAmendmentService(giftHttpService, logger, giftWorkPackageService, statusService);
+    amountAmendmentService = new GiftAmountAmendmentService(giftHttpService, logger);
 
     giftFacilityService = new GiftFacilityService(
       giftHttpService,
@@ -112,6 +114,15 @@ describe('GiftFacilityController', () => {
       riskDetailsService,
       statusService,
       creationErrorService,
+    );
+
+    giftFacilityAmendmentService = new GiftFacilityAmendmentService(
+      giftHttpService,
+      logger,
+      giftWorkPackageService,
+      giftFacilityService,
+      amountAmendmentService,
+      statusService,
     );
 
     mockResSend = jest.fn();
@@ -241,7 +252,7 @@ describe('GiftFacilityController', () => {
       // Assert
       expect(mockResSend).toHaveBeenCalledTimes(1);
 
-      expect(mockResSend).toHaveBeenCalledWith(mockResponseAmendmentPost.data);
+      expect(mockResSend).toHaveBeenCalledWith();
     });
   });
 

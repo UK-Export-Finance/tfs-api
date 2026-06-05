@@ -205,8 +205,12 @@ export class GiftFacilityController {
     @Body(new ValidationPipe({ transform: true })) amendmentData: CreateGiftFacilityAmendmentRequestDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const { status, data } = await this.giftFacilityAmendmentService.create(facilityId, amendmentData);
+    // const { status, data } = await this.giftFacilityAmendmentService.create(facilityId, amendmentData);
 
-    res.status(status).send(data);
+    // res.status(status).send(data);
+
+    const { status } = await this.giftFacilityAmendmentService.create(facilityId, amendmentData);
+
+    res.status(status).send();
   }
 }

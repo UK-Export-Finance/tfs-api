@@ -13,6 +13,9 @@ export type AmendFacilityType = (typeof AMEND_FACILITY_TYPES)[keyof typeof AMEND
 
 export const GIFT = {
   AMEND_FACILITY_TYPES,
+  AMEND_OBLIGATION_AMOUNT: {
+    PERCENTAGE_OF_FACILITY_AMOUNT: 85,
+  },
   API_RESPONSE_MESSAGES: {
     ASYNC_FACILITY_VALIDATION_ERRORS: 'Async validation errors with facility entity(s)',
     GIFT_FACILITY_VALIDATION_ERRORS: 'GIFT validation errors with facility entity(s)',

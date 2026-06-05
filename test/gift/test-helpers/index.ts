@@ -117,8 +117,11 @@ export const repaymentProfileUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WOR
 export const riskDetailsUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_RISK_DETAILS}`;
 export const approveStatusUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.APPROVE}`;
 export const facilityWorkPackageUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}`;
+export const facilityUrl = `${PATH.FACILITY}/${mockFacilityId}`;
 export const facilityAmendmentUrl = (amendmentType: string = AMEND_FACILITY_TYPES.AMEND_FACILITY_INCREASE_AMOUNT) =>
   `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/AmendFacility_${amendmentType}`;
+export const obligationAmendmentUrl = (amendmentType: string = AMEND_FACILITY_TYPES.AMEND_FACILITY_INCREASE_AMOUNT) =>
+  `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/AmendObligation_${amendmentType}`;
 export const workPackageUrl = `${PATH.WORK_PACKAGE}/${mockWorkPackageId}`;
 
 export const businessCalendar = GIFT_EXAMPLES.BUSINESS_CALENDAR;
