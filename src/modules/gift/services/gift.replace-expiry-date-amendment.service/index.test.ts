@@ -13,7 +13,7 @@ const {
 } = EXAMPLES;
 
 const {
-  AMEND_FACILITY_TYPES: { AMEND_FACILITY_REPLACE_EXPIRY_DATE },
+  AMEND_FACILITY_TYPES: { AMEND_FACILITY_REPLACE_EXPIRY_DATE, AMEND_OBLIGATION_REPLACE_MATURITY_DATE },
   PATH,
 } = GIFT;
 
@@ -110,7 +110,7 @@ describe('GiftReplaceExpiryDateAmendmentService', () => {
       // Assert
       expect(mockHttpServicePost).toHaveBeenCalledTimes(3);
 
-      const expectedPath = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${AMEND_FACILITY_PREFIX_TYPES.AMEND_OBLIGATION}ReplaceMaturityDate`;
+      const expectedPath = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${AMEND_FACILITY_PREFIX_TYPES.AMEND_OBLIGATION}${AMEND_OBLIGATION_REPLACE_MATURITY_DATE}`;
 
       expect(mockHttpServicePost).toHaveBeenNthCalledWith(1, {
         path: expectedPath,

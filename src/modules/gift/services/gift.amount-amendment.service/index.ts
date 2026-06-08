@@ -1,6 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { AMEND_FACILITY_PREFIX_TYPES, AmendFacilityType, FacilityCategoryCode, GIFT } from '@ukef/constants';
-import { UkefId } from '@ukef/helpers/ukef-id.type';
+import { AMEND_FACILITY_PREFIX_TYPES, FacilityCategoryCode, GIFT } from '@ukef/constants';
+import { GiftAmendmentBaseParams } from '@ukef/types';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 
@@ -13,17 +13,11 @@ const {
   PATH,
 } = GIFT;
 
-type ParamsBase = {
-  amendmentType: AmendFacilityType;
-  facilityId: UkefId;
-  workPackageId: number;
-};
-
-type AmendFacilityAmountParams = ParamsBase & {
+type AmendFacilityAmountParams = GiftAmendmentBaseParams & {
   amendmentData: IncreaseAmountDto | DecreaseAmountDto | ReplaceExpiryDateDto;
 };
 
-type AmendObligationsParams = ParamsBase & {
+type AmendObligationsParams = GiftAmendmentBaseParams & {
   date: string;
   facilityCategoryCode: FacilityCategoryCode;
   newFacilityAmount: number;

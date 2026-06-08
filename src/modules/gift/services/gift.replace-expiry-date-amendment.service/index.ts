@@ -1,29 +1,24 @@
 import { Injectable } from '@nestjs/common';
-import { AMEND_FACILITY_PREFIX_TYPES, AmendFacilityType, GIFT } from '@ukef/constants';
-import { UkefId } from '@ukef/helpers/ukef-id.type';
+import { GIFT } from '@ukef/constants';
+import { GiftAmendmentBaseParams } from '@ukef/types';
 import { PinoLogger } from 'nestjs-pino';
 
 import { GiftWorkPackageResponseDto } from '../../dto';
 import { GiftHttpService } from '../gift.http.service';
 
 const {
+  AMEND_FACILITY_PREFIX_TYPES,
+  AMEND_FACILITY_TYPES: { AMEND_OBLIGATION_REPLACE_MATURITY_DATE },
   EVENT_TYPES: { AMEND_FACILITY_REPLACE_EXPIRY_DATE },
   PATH,
 } = GIFT;
 
-// TODO - DRY - see amount amendment service
-type ParamsBase = {
-  amendmentType: AmendFacilityType;
-  facilityId: UkefId;
-  workPackageId: number;
-};
-
-type BlaParams = ParamsBase & {
+type ObligationsParams = GiftAmendmentBaseParams & {
   facilityExpiryDate: string;
   obligations: { id: string }[];
 };
 
-type FlaParams = ParamsBase & {
+type FacilityParams = GiftAmendmentBaseParams & {
   expiryDate: string;
 };
 
@@ -41,7 +36,7 @@ export class GiftReplaceExpiryDateAmendmentService {
     this.logger = logger;
   }
 
-  async obligations({ amendmentType, facilityExpiryDate, facilityId, obligations, workPackageId }: BlaParams) {
+  async obligations({ amendmentType, facilityExpiryDate, facilityId, obligations, workPackageId }: ObligationsParams) {
     try {
       this.logger.info('Amending facility obligations maturity dates %s for facility %s work package %s', amendmentType, facilityId, workPackageId);
 
@@ -59,9 +54,8 @@ export class GiftReplaceExpiryDateAmendmentService {
           maturityDate: facilityExpiryDate,
         };
 
-        // TODO: constant
         const response = await this.giftHttpService.post<GiftWorkPackageResponseDto>({
-          path: `${basePath}/${AMEND_FACILITY_PREFIX_TYPES.AMEND_OBLIGATION}ReplaceMaturityDate`,
+          path: `${basePath}/${AMEND_FACILITY_PREFIX_TYPES.AMEND_OBLIGATION}${AMEND_OBLIGATION_REPLACE_MATURITY_DATE}`,
           payload,
         });
 
@@ -84,7 +78,7 @@ export class GiftReplaceExpiryDateAmendmentService {
     }
   }
 
-  async facility({ amendmentType, expiryDate, facilityId, workPackageId }: FlaParams) {
+  async facility({ amendmentType, expiryDate, facilityId, workPackageId }: FacilityParams) {
     try {
       this.logger.info('Amending facility expiry date %s for facility %s work package %s', amendmentType, facilityId, workPackageId);
 

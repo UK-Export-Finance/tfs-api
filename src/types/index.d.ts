@@ -4,12 +4,18 @@ export interface ExternalServiceConfig {
   timeout: number;
 }
 
+export interface GiftAmendmentBaseParams {
+  amendmentType: AmendFacilityType;
+  facilityId: UkefId;
+  workPackageId: number;
+}
+
 interface GiftValidationError {
   path: string[];
   message: string;
 }
 
-interface ValidationErrorResponse {
+export interface ValidationErrorResponse {
   entityName: string;
   index: number;
   message: string;
@@ -18,7 +24,7 @@ interface ValidationErrorResponse {
   validationErrors: GiftValidationError[];
 }
 
-interface GiftFacilityCreationValidationStrippedPayload {
+export interface GiftFacilityCreationValidationStrippedPayload {
   overview: string;
   fixedFees: string[];
   obligations: string[];
