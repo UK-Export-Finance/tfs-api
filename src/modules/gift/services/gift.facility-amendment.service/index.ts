@@ -7,6 +7,7 @@ import { CreateGiftFacilityAmendmentRequestDto, GiftWorkPackageResponseDto } fro
 import { isDecreaseAmountAmendment, isIncreaseAmountAmendment, isReplaceExpiryDateAmendment } from '../../helpers';
 import { GiftAmountAmendmentService } from '../gift.amount-amendment.service';
 import { GiftFacilityService } from '../gift.facility.service';
+import { GiftReplaceExpiryDateAmendmentService } from '../gift.replace-expiry-date-amendment.service';
 import { GiftStatusService } from '../gift.status.service';
 import { GiftWorkPackageService } from '../gift.work-package.service';
 
@@ -26,20 +27,22 @@ export class GiftFacilityAmendmentService {
     private readonly giftWorkPackageService: GiftWorkPackageService,
     private readonly giftFacilityService: GiftFacilityService,
     private readonly giftAmountAmendmentService: GiftAmountAmendmentService,
+    private readonly giftReplaceExpiryDateAmendmentService: GiftReplaceExpiryDateAmendmentService,
     private readonly giftStatusService: GiftStatusService,
   ) {
     this.giftWorkPackageService = giftWorkPackageService;
     this.giftFacilityService = giftFacilityService;
     this.giftAmountAmendmentService = giftAmountAmendmentService;
+    this.giftReplaceExpiryDateAmendmentService = giftReplaceExpiryDateAmendmentService;
     this.giftStatusService = giftStatusService;
   }
 
   /**
    * Create a GIFT facility amendment
-   * 1) Create a new GIFT work package
-   * 2) Create a new GIFT "configuration event" for the amendment.
+   * 1) Create a new GIFT work package.
+   * 2) Create the appropriate GIFT "configuration events" for the amendment.
    * 3) Approve the GIFT work package.
-   * As a result, GIFT will have a new, approved work package in the facility, with an amendment in the work package.
+   * As a result, GIFT will have a new, approved work package in the facility, with multiple amendments in the work package.
    *
    * If there is an error creating the amendment, the previous created work package will be deleted.
    * @param {UkefId} facilityId: Facility ID
@@ -131,15 +134,28 @@ export class GiftFacilityAmendmentService {
       }
 
       /**
-       * If the amendment is "replace expiry date"
-       * TODO
+       * If the amendment is "replace expiry date", the new facility expiry date will impact the obligation maturity dates.
+       * Execute in the following order:
+       * 1) Amend the facility
+       * 2) Amend obligations maturity dates
        */
       if (isReplaceExpiryDateAmendment(amendment)) {
-        const facilityAmendmentResponse = await this.giftAmountAmendmentService.facility({ ...amendment, facilityId, workPackageId });
+        const {
+          amendmentData: { expiryDate },
+        } = amendment;
 
-        createdAmendmentData = facilityAmendmentResponse.data;
+        const baseParams = {
+          amendmentType,
+          facilityId,
+          obligations,
+          workPackageId,
+        };
 
-        // TODO: GIFT-24489
+        const facilityResponse = await this.giftReplaceExpiryDateAmendmentService.facility({ ...baseParams, expiryDate });
+
+        await this.giftReplaceExpiryDateAmendmentService.obligations({ ...baseParams, facilityExpiryDate: expiryDate });
+
+        createdAmendmentData = facilityResponse.data;
       }
 
       const approvalResponse = await this.approveWorkPackage(facilityId, workPackageId);

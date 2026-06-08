@@ -13,25 +13,25 @@ const {
   PATH,
 } = GIFT;
 
-type AmendFacilityAmountParams = {
+type ParamsBase = {
   amendmentType: AmendFacilityType;
-  amendmentData: IncreaseAmountDto | DecreaseAmountDto | ReplaceExpiryDateDto;
   facilityId: UkefId;
   workPackageId: number;
 };
 
-type AmendObligationsParams = {
-  amendmentType: AmendFacilityType;
+type AmendFacilityAmountParams = ParamsBase & {
+  amendmentData: IncreaseAmountDto | DecreaseAmountDto | ReplaceExpiryDateDto;
+};
+
+type AmendObligationsParams = ParamsBase & {
   date: string;
-  facilityId: UkefId;
   facilityCategoryCode: FacilityCategoryCode;
   newFacilityAmount: number;
   obligations: { id: string }[];
-  workPackageId: number;
 };
 
 /**
- * GIFT amount amendment service.
+ * GIFT "amount" amendment service.
  * This is responsible for all "amount" amendment operations that call the GIFT API.
  */
 @Injectable()
