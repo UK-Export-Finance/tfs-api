@@ -3,7 +3,7 @@ import { GIFT } from '@ukef/constants';
 import { CreateGiftFacilityAmendmentRequestDto, IncreaseAmountDto } from '../../dto';
 
 const {
-  AMEND_FACILITY_TYPES: { AMEND_FACILITY_INCREASE_AMOUNT },
+  AMEND_FACILITY_TYPES_CONSUMER: { AMEND_FACILITY_INCREASE_AMOUNT },
 } = GIFT;
 
 export type IncreaseAmountAmendmentRequest = CreateGiftFacilityAmendmentRequestDto & {

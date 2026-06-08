@@ -147,13 +147,12 @@ export class GiftFacilityAmendmentService {
         const baseParams = {
           amendmentType,
           facilityId,
-          obligations,
           workPackageId,
         };
 
         const facilityResponse = await this.giftReplaceExpiryDateAmendmentService.facility({ ...baseParams, expiryDate });
 
-        await this.giftReplaceExpiryDateAmendmentService.obligations({ ...baseParams, facilityExpiryDate: expiryDate });
+        await this.giftReplaceExpiryDateAmendmentService.obligations({ ...baseParams, facilityExpiryDate: expiryDate, obligations });
 
         createdAmendmentData = facilityResponse.data;
       }

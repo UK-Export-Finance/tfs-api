@@ -4,7 +4,7 @@ import { GiftAmendmentBaseParams } from '@ukef/types';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 
-import { DecreaseAmountDto, GiftWorkPackageResponseDto, IncreaseAmountDto, ReplaceExpiryDateDto } from '../../dto';
+import { DecreaseAmountDto, GiftWorkPackageResponseDto, IncreaseAmountDto } from '../../dto';
 import { calculatePercentageAmount } from '../../helpers';
 import { GiftHttpService } from '../gift.http.service';
 
@@ -14,7 +14,7 @@ const {
 } = GIFT;
 
 type AmendFacilityAmountParams = GiftAmendmentBaseParams & {
-  amendmentData: IncreaseAmountDto | DecreaseAmountDto | ReplaceExpiryDateDto;
+  amendmentData: IncreaseAmountDto | DecreaseAmountDto;
 };
 
 type AmendObligationsParams = GiftAmendmentBaseParams & {

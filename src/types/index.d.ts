@@ -5,7 +5,7 @@ export interface ExternalServiceConfig {
 }
 
 export interface GiftAmendmentBaseParams {
-  amendmentType: AmendFacilityType;
+  amendmentType: AmendFacilityTypeConsumer;
   facilityId: UkefId;
   workPackageId: number;
 }

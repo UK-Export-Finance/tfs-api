@@ -1,10 +1,10 @@
-import { AmendFacilityType, GIFT } from '@ukef/constants';
+import { AmendFacilityTypeConsumer, GIFT } from '@ukef/constants';
 
 import { DecreaseAmountDto, IncreaseAmountDto, ReplaceExpiryDateDto } from '../../dto';
 import { getAmendmentDataDto } from '.';
 
 const {
-  AMEND_FACILITY_TYPES: { AMEND_FACILITY_DECREASE_AMOUNT, AMEND_FACILITY_INCREASE_AMOUNT, AMEND_FACILITY_REPLACE_EXPIRY_DATE },
+  AMEND_FACILITY_TYPES_CONSUMER: { AMEND_FACILITY_DECREASE_AMOUNT, AMEND_FACILITY_INCREASE_AMOUNT, AMEND_FACILITY_REPLACE_EXPIRY_DATE },
 } = GIFT;
 
 describe('modules/gift/helpers/get-amendment-data-dto', () => {
@@ -34,7 +34,7 @@ describe('modules/gift/helpers/get-amendment-data-dto', () => {
 
   describe('when the provided amendmentType is invalid', () => {
     it('should return null', () => {
-      const invalidAmendmentType = 'invalid-amendment-type' as AmendFacilityType;
+      const invalidAmendmentType = 'invalid-amendment-type' as AmendFacilityTypeConsumer;
 
       const result = getAmendmentDataDto(invalidAmendmentType);
 

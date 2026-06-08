@@ -9,7 +9,7 @@ import { Chance } from 'chance';
 
 import { SUPPORTED_CURRENCIES } from '../currencies.constant';
 import { CONSUMER } from '../gift/consumer.constant';
-import { AMEND_FACILITY_TYPES, GIFT } from '../gift/gift.constant';
+import { AMEND_FACILITY_TYPES_CONSUMER, GIFT } from '../gift/gift.constant';
 import { MDM_EXAMPLES } from './mdm.examples.constant';
 
 const {
@@ -277,7 +277,7 @@ const FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA = {
 };
 
 const FACILITY_AMENDMENT_REQUEST_PAYLOAD = {
-  amendmentType: AMEND_FACILITY_TYPES.AMEND_FACILITY_INCREASE_AMOUNT,
+  amendmentType: AMEND_FACILITY_TYPES_CONSUMER.AMEND_FACILITY_INCREASE_AMOUNT,
   amendmentData: FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA.INCREASE_AMOUNT,
 };
 
