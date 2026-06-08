@@ -4,7 +4,7 @@ import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 
 import { CreateGiftFacilityAmendmentRequestDto, GiftWorkPackageResponseDto } from '../../dto';
-import { isDecreaseAmountAmendment, isIncreaseAmountAmendment } from '../../helpers';
+import { isDecreaseAmountAmendment, isIncreaseAmountAmendment, isReplaceExpiryDateAmendment } from '../../helpers';
 import { GiftAmountAmendmentService } from '../gift.amount-amendment.service';
 import { GiftFacilityService } from '../gift.facility.service';
 import { GiftStatusService } from '../gift.status.service';
@@ -128,6 +128,18 @@ export class GiftFacilityAmendmentService {
         const facilityAmendmentResponse = await this.giftAmountAmendmentService.facility({ ...amendment, facilityId, workPackageId });
 
         createdAmendmentData = facilityAmendmentResponse.data;
+      }
+
+      /**
+       * If the amendment is "replace expiry date"
+       * TODO
+       */
+      if (isReplaceExpiryDateAmendment(amendment)) {
+        const facilityAmendmentResponse = await this.giftAmountAmendmentService.facility({ ...amendment, facilityId, workPackageId });
+
+        createdAmendmentData = facilityAmendmentResponse.data;
+
+        // TODO: GIFT-24489
       }
 
       const approvalResponse = await this.approveWorkPackage(facilityId, workPackageId);

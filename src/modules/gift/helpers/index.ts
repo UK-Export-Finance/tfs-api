@@ -11,6 +11,7 @@ export * from './get-repayment-profile-names';
 export * from './has-valid-obligation-subtype-code-formats';
 export * from './is-decrease-amount-amendment';
 export * from './is-increase-amount-amendment';
+export * from './is-replace-expiry-date-amendment';
 export * from './is-supported-consumer';
 export * from './is-valid-counterparty-role-id-format';
 export * from './is-valid-product-type-code-format';

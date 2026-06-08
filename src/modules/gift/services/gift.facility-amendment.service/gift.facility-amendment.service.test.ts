@@ -21,7 +21,7 @@ const {
 } = EXAMPLES;
 
 const {
-  AMEND_FACILITY_TYPES: { AMEND_FACILITY_DECREASE_AMOUNT, AMEND_FACILITY_INCREASE_AMOUNT },
+  AMEND_FACILITY_TYPES: { AMEND_FACILITY_DECREASE_AMOUNT, AMEND_FACILITY_INCREASE_AMOUNT, AMEND_FACILITY_REPLACE_EXPIRY_DATE },
   FACILITY_CATEGORY_CODES,
 } = GIFT;
 
@@ -92,7 +92,7 @@ describe('GiftFacilityAmendmentService', () => {
     expect(mockWorkPackageServiceCreate).toHaveBeenCalledWith(mockFacilityId);
   });
 
-  describe('when amendment is increase amount', () => {
+  describe(`when the amendment is ${AMEND_FACILITY_INCREASE_AMOUNT}`, () => {
     const increasePayload = {
       ...mockPayload,
       amendmentType: AMEND_FACILITY_INCREASE_AMOUNT,
@@ -127,7 +127,7 @@ describe('GiftFacilityAmendmentService', () => {
     });
   });
 
-  describe('when amendment is decrease amount', () => {
+  describe(`when the amendment is ${AMEND_FACILITY_DECREASE_AMOUNT}`, () => {
     const decreasePayload = {
       ...mockPayload,
       amendmentType: AMEND_FACILITY_DECREASE_AMOUNT,
@@ -159,6 +159,29 @@ describe('GiftFacilityAmendmentService', () => {
       });
 
       expect(mockAmountAmendmentServiceObligations.mock.invocationCallOrder[0]).toBeLessThan(mockAmountAmendmentServiceFacility.mock.invocationCallOrder[0]);
+    });
+  });
+
+  describe(`when the amendment is ${AMEND_FACILITY_REPLACE_EXPIRY_DATE}`, () => {
+    const replaceExpiryDatePayload = {
+      ...mockPayload,
+      amendmentType: AMEND_FACILITY_REPLACE_EXPIRY_DATE,
+      amendmentData: EXAMPLES.GIFT.FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA.REPLACE_EXPIRY_DATE,
+    };
+
+    it('should call giftAmountAmendmentService.facility only', async () => {
+      // Act
+      await service.create(mockFacilityId, replaceExpiryDatePayload);
+
+      // Assert
+      expect(mockAmountAmendmentServiceFacility).toHaveBeenCalledTimes(1);
+      expect(mockAmountAmendmentServiceObligations).toHaveBeenCalledTimes(0);
+
+      expect(mockAmountAmendmentServiceFacility).toHaveBeenCalledWith({
+        ...replaceExpiryDatePayload,
+        facilityId: mockFacilityId,
+        workPackageId: mockWorkPackageId,
+      });
     });
   });
 

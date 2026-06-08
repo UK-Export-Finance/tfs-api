@@ -4,7 +4,7 @@ import { UkefId } from '@ukef/helpers/ukef-id.type';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 
-import { GiftWorkPackageResponseDto } from '../../dto';
+import { DecreaseAmountDto, GiftWorkPackageResponseDto, IncreaseAmountDto, ReplaceExpiryDateDto } from '../../dto';
 import { calculatePercentageAmount } from '../../helpers';
 import { GiftHttpService } from '../gift.http.service';
 
@@ -15,10 +15,7 @@ const {
 
 type AmendFacilityAmountParams = {
   amendmentType: AmendFacilityType;
-  amendmentData: {
-    date: string;
-    amount: number;
-  };
+  amendmentData: IncreaseAmountDto | DecreaseAmountDto | ReplaceExpiryDateDto;
   facilityId: UkefId;
   workPackageId: number;
 };
