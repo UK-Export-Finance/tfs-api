@@ -4,9 +4,10 @@ import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 
 import { CreateGiftFacilityAmendmentRequestDto, GiftWorkPackageResponseDto } from '../../dto';
-import { isDecreaseAmountAmendment, isIncreaseAmountAmendment } from '../../helpers';
+import { isDecreaseAmountAmendment, isIncreaseAmountAmendment, isReplaceExpiryDateAmendment } from '../../helpers';
 import { GiftAmountAmendmentService } from '../gift.amount-amendment.service';
 import { GiftFacilityService } from '../gift.facility.service';
+import { GiftReplaceExpiryDateAmendmentService } from '../gift.replace-expiry-date-amendment.service';
 import { GiftStatusService } from '../gift.status.service';
 import { GiftWorkPackageService } from '../gift.work-package.service';
 
@@ -26,20 +27,22 @@ export class GiftFacilityAmendmentService {
     private readonly giftWorkPackageService: GiftWorkPackageService,
     private readonly giftFacilityService: GiftFacilityService,
     private readonly giftAmountAmendmentService: GiftAmountAmendmentService,
+    private readonly giftReplaceExpiryDateAmendmentService: GiftReplaceExpiryDateAmendmentService,
     private readonly giftStatusService: GiftStatusService,
   ) {
     this.giftWorkPackageService = giftWorkPackageService;
     this.giftFacilityService = giftFacilityService;
     this.giftAmountAmendmentService = giftAmountAmendmentService;
+    this.giftReplaceExpiryDateAmendmentService = giftReplaceExpiryDateAmendmentService;
     this.giftStatusService = giftStatusService;
   }
 
   /**
    * Create a GIFT facility amendment
-   * 1) Create a new GIFT work package
-   * 2) Create a new GIFT "configuration event" for the amendment.
+   * 1) Create a new GIFT work package.
+   * 2) Create the appropriate GIFT "configuration events" for the amendment.
    * 3) Approve the GIFT work package.
-   * As a result, GIFT will have a new, approved work package in the facility, with an amendment in the work package.
+   * As a result, GIFT will have a new, approved work package in the facility, with multiple amendments in the work package.
    *
    * If there is an error creating the amendment, the previous created work package will be deleted.
    * @param {UkefId} facilityId: Facility ID
@@ -128,6 +131,44 @@ export class GiftFacilityAmendmentService {
         const facilityAmendmentResponse = await this.giftAmountAmendmentService.facility({ ...amendment, facilityId, workPackageId });
 
         createdAmendmentData = facilityAmendmentResponse.data;
+      }
+
+      /**
+       * If the amendment is "replace expiry date", the new facility expiry date will impact the obligation maturity dates.
+       * If the new expiry date is greater than the current expiry date, execute in the following order:
+       * 1) Amend the facility
+       * 2) Amend obligations maturity dates
+       *
+       * If the new expiry date is less than the current expiry date, the order is reversed.
+       */
+      if (isReplaceExpiryDateAmendment(amendment)) {
+        const {
+          amendmentData: { expiryDate },
+        } = amendment;
+
+        const { expiryDate: originalFacilityExpiryDate } = facility;
+
+        const shouldAmendObligationsFirst = new Date(expiryDate).getTime() < new Date(originalFacilityExpiryDate).getTime();
+
+        const baseParams = {
+          amendmentType,
+          facilityId,
+          workPackageId,
+        };
+
+        if (shouldAmendObligationsFirst) {
+          await this.giftReplaceExpiryDateAmendmentService.obligations({ ...baseParams, facilityExpiryDate: expiryDate, obligations });
+
+          const facilityResponse = await this.giftReplaceExpiryDateAmendmentService.facility({ ...baseParams, expiryDate });
+
+          createdAmendmentData = facilityResponse.data;
+        } else {
+          const facilityResponse = await this.giftReplaceExpiryDateAmendmentService.facility({ ...baseParams, expiryDate });
+
+          await this.giftReplaceExpiryDateAmendmentService.obligations({ ...baseParams, facilityExpiryDate: expiryDate, obligations });
+
+          createdAmendmentData = facilityResponse.data;
+        }
       }
 
       const approvalResponse = await this.approveWorkPackage(facilityId, workPackageId);

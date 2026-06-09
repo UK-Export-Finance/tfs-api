@@ -1,5 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
-import { GIFT } from '@ukef/constants';
+import { AMEND_FACILITY_PREFIX_TYPES, GIFT } from '@ukef/constants';
 import { GIFT_EXAMPLES } from '@ukef/constants/examples/gift.examples.constant';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
 import { Api } from '@ukef-test/support/api';
@@ -12,14 +12,16 @@ import {
   facilityAmendmentUrl,
   facilityUrl,
   facilityWorkPackageUrl,
+  mockFacilityId,
   mockResponses,
+  mockWorkPackageId,
   obligationAmendmentUrl,
 } from './test-helpers';
 
 const { GIFT_API_URL } = ENVIRONMENT_VARIABLES;
 
 const {
-  AMEND_FACILITY_TYPES: { AMEND_FACILITY_INCREASE_AMOUNT, AMEND_FACILITY_DECREASE_AMOUNT, AMEND_FACILITY_REPLACE_EXPIRY_DATE },
+  AMEND_FACILITY_TYPES_CONSUMER: { AMEND_FACILITY_INCREASE_AMOUNT, AMEND_FACILITY_DECREASE_AMOUNT, AMEND_FACILITY_REPLACE_EXPIRY_DATE },
 } = GIFT;
 
 describe('POST /gift/facility/:facilityId/amendment', () => {
@@ -176,6 +178,10 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
     describe(`when the payload is valid and a ${HttpStatus.CREATED} response is returned by all GIFT endpoints`, () => {
       it(`should return a ${HttpStatus.CREATED} response with a facility and the created amendment`, async () => {
         // Arrange
+        const callOrder: string[] = [];
+
+        const replaceMaturityDateUrl = `${GIFT.PATH.FACILITY}/${mockFacilityId}${GIFT.PATH.WORK_PACKAGE}/${mockWorkPackageId}${GIFT.PATH.CONFIGURATION_EVENT}/${AMEND_FACILITY_PREFIX_TYPES.AMEND_OBLIGATION}ReplaceMaturityDate`;
+
         nock(GIFT_API_URL)
           .get(facilityUrl)
           .reply(HttpStatus.OK, {
@@ -185,9 +191,29 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
             },
           });
 
-        nock(GIFT_API_URL).post(facilityWorkPackageUrl).reply(HttpStatus.CREATED, mockResponses.workPackageCreation);
+        nock(GIFT_API_URL)
+          .post(facilityWorkPackageUrl)
+          .reply(() => {
+            callOrder.push('workPackage');
 
-        nock(GIFT_API_URL).post(facilityAmendmentUrl(AMEND_FACILITY_REPLACE_EXPIRY_DATE)).reply(HttpStatus.CREATED, mockResponses.facilityAmendment);
+            return [HttpStatus.CREATED, mockResponses.workPackageCreation];
+          });
+
+        nock(GIFT_API_URL)
+          .post(facilityAmendmentUrl(AMEND_FACILITY_REPLACE_EXPIRY_DATE))
+          .reply(() => {
+            callOrder.push('facilityAmendment');
+
+            return [HttpStatus.CREATED, mockResponses.facilityAmendment];
+          });
+
+        nock(GIFT_API_URL)
+          .post(replaceMaturityDateUrl)
+          .reply(() => {
+            callOrder.push('obligationMaturityDateAmendment');
+
+            return [HttpStatus.CREATED, mockResponses.facilityAmendment];
+          });
 
         nock(GIFT_API_URL).post(approveStatusUrl).reply(HttpStatus.OK, mockResponses.approveStatus);
 
@@ -202,8 +228,72 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
         // Assert
         expect(status).toBe(HttpStatus.CREATED);
         expect(body).toStrictEqual({
-          ...mockResponses.approveStatus,
+          ...mockResponses.facilityAmendment,
           isApproved: true,
+        });
+
+        expect(callOrder).toStrictEqual(['workPackage', 'facilityAmendment', 'obligationMaturityDateAmendment']);
+      });
+
+      describe('when new facility expiry date is before the existing expiry date', () => {
+        it('should call obligation maturity date amendment before facility amendment', async () => {
+          // Arrange
+          const callOrder: string[] = [];
+
+          const replaceMaturityDateUrl = `${GIFT.PATH.FACILITY}/${mockFacilityId}${GIFT.PATH.WORK_PACKAGE}/${mockWorkPackageId}${GIFT.PATH.CONFIGURATION_EVENT}/${AMEND_FACILITY_PREFIX_TYPES.AMEND_OBLIGATION}ReplaceMaturityDate`;
+
+          nock(GIFT_API_URL)
+            .get(facilityUrl)
+            .reply(HttpStatus.OK, {
+              expiryDate: '2035-01-01',
+              obligations: [{ id: 'obligation-1' }],
+              riskDetails: {
+                facilityCategoryCode: GIFT.FACILITY_CATEGORY_CODES.CASH,
+              },
+            });
+
+          nock(GIFT_API_URL)
+            .post(facilityWorkPackageUrl)
+            .reply(() => {
+              callOrder.push('workPackage');
+
+              return [HttpStatus.CREATED, mockResponses.workPackageCreation];
+            });
+
+          nock(GIFT_API_URL)
+            .post(replaceMaturityDateUrl)
+            .reply(() => {
+              callOrder.push('obligationMaturityDateAmendment');
+
+              return [HttpStatus.CREATED, mockResponses.facilityAmendment];
+            });
+
+          nock(GIFT_API_URL)
+            .post(facilityAmendmentUrl(AMEND_FACILITY_REPLACE_EXPIRY_DATE))
+            .reply(() => {
+              callOrder.push('facilityAmendment');
+
+              return [HttpStatus.CREATED, mockResponses.facilityAmendment];
+            });
+
+          nock(GIFT_API_URL).post(approveStatusUrl).reply(HttpStatus.OK, mockResponses.approveStatus);
+
+          const mockPayload = {
+            amendmentType: AMEND_FACILITY_REPLACE_EXPIRY_DATE,
+            amendmentData: GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA.REPLACE_EXPIRY_DATE,
+          };
+
+          // Act
+          const { status, body } = await api.post(apimFacilityAmendmentWithoutQueueUrl, mockPayload);
+
+          // Assert
+          expect(status).toBe(HttpStatus.CREATED);
+          expect(body).toStrictEqual({
+            ...mockResponses.facilityAmendment,
+            isApproved: true,
+          });
+
+          expect(callOrder).toStrictEqual(['workPackage', 'obligationMaturityDateAmendment', 'facilityAmendment']);
         });
       });
     });

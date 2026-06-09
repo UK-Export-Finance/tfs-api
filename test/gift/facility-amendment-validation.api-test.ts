@@ -8,7 +8,7 @@ import { amendmentTypeStringValidation } from './assertions';
 import { amendmentTypeValidationMessage, apimFacilityAmendmentWithoutQueueUrl } from './test-helpers';
 
 const {
-  AMEND_FACILITY_TYPES: { AMEND_FACILITY_INCREASE_AMOUNT, AMEND_FACILITY_DECREASE_AMOUNT, AMEND_FACILITY_REPLACE_EXPIRY_DATE },
+  AMEND_FACILITY_TYPES_CONSUMER: { AMEND_FACILITY_INCREASE_AMOUNT, AMEND_FACILITY_DECREASE_AMOUNT, AMEND_FACILITY_REPLACE_EXPIRY_DATE },
   VALIDATION,
 } = GIFT;
 

@@ -15,6 +15,7 @@ export * from './gift.obligation.service';
 export * from './gift.product-type.service';
 export * from './gift.queue.service';
 export * from './gift.repayment-profile.service';
+export * from './gift.replace-expiry-date-amendment.service';
 export * from './gift.risk-details.service';
 export * from './gift.status.service';
 export * from './gift.work-package.service';

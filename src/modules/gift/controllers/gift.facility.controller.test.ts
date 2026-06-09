@@ -22,6 +22,7 @@ import {
   GiftProductTypeService,
   GiftQueueService,
   GiftRepaymentProfileService,
+  GiftReplaceExpiryDateAmendmentService,
   GiftRiskDetailsService,
   GiftStatusService,
   GiftWorkPackageService,
@@ -57,6 +58,7 @@ describe('GiftFacilityController', () => {
   let creationErrorService: GiftFacilityCreationErrorService;
   let giftQueueService: GiftQueueService;
   let amountAmendmentService: GiftAmountAmendmentService;
+  let replaceExpiryDateAmendmentService: GiftReplaceExpiryDateAmendmentService;
   let controller: GiftFacilityController;
 
   let mockRes;
@@ -99,6 +101,7 @@ describe('GiftFacilityController', () => {
     statusService = new GiftStatusService(giftHttpService, logger);
     creationErrorService = new GiftFacilityCreationErrorService(giftWorkPackageService, logger);
     amountAmendmentService = new GiftAmountAmendmentService(giftHttpService, logger);
+    replaceExpiryDateAmendmentService = new GiftReplaceExpiryDateAmendmentService(giftHttpService, logger);
 
     giftFacilityService = new GiftFacilityService(
       giftHttpService,
@@ -116,7 +119,14 @@ describe('GiftFacilityController', () => {
       creationErrorService,
     );
 
-    giftFacilityAmendmentService = new GiftFacilityAmendmentService(logger, giftWorkPackageService, giftFacilityService, amountAmendmentService, statusService);
+    giftFacilityAmendmentService = new GiftFacilityAmendmentService(
+      logger,
+      giftWorkPackageService,
+      giftFacilityService,
+      amountAmendmentService,
+      replaceExpiryDateAmendmentService,
+      statusService,
+    );
 
     mockResSend = jest.fn();
 

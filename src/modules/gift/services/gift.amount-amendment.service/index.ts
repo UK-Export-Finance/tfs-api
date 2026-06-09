@@ -1,10 +1,10 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { AMEND_FACILITY_PREFIX_TYPES, AmendFacilityType, FacilityCategoryCode, GIFT } from '@ukef/constants';
-import { UkefId } from '@ukef/helpers/ukef-id.type';
+import { AMEND_FACILITY_PREFIX_TYPES, FacilityCategoryCode, GIFT } from '@ukef/constants';
+import { GiftAmendmentBaseParams } from '@ukef/types';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 
-import { GiftWorkPackageResponseDto } from '../../dto';
+import { DecreaseAmountDto, GiftWorkPackageResponseDto, IncreaseAmountDto } from '../../dto';
 import { calculatePercentageAmount } from '../../helpers';
 import { GiftHttpService } from '../gift.http.service';
 
@@ -13,28 +13,19 @@ const {
   PATH,
 } = GIFT;
 
-type AmendFacilityAmountParams = {
-  amendmentType: AmendFacilityType;
-  amendmentData: {
-    date: string;
-    amount: number;
-  };
-  facilityId: UkefId;
-  workPackageId: number;
+type AmendFacilityAmountParams = GiftAmendmentBaseParams & {
+  amendmentData: IncreaseAmountDto | DecreaseAmountDto;
 };
 
-type AmendObligationsParams = {
-  amendmentType: AmendFacilityType;
+type AmendObligationsParams = GiftAmendmentBaseParams & {
   date: string;
-  facilityId: UkefId;
   facilityCategoryCode: FacilityCategoryCode;
   newFacilityAmount: number;
   obligations: { id: string }[];
-  workPackageId: number;
 };
 
 /**
- * GIFT amount amendment service.
+ * GIFT "amount" amendment service.
  * This is responsible for all "amount" amendment operations that call the GIFT API.
  */
 @Injectable()

@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 import AppConfig from '@ukef/config/app.config';
-import { AMEND_FACILITY_TYPES_ARRAY, GIFT } from '@ukef/constants';
+import { AMEND_FACILITY_TYPES_CONSUMER_ARRAY, GIFT } from '@ukef/constants';
 import { GIFT_EXAMPLES } from '@ukef/constants/examples/gift.examples.constant';
 import { MDM_EXAMPLES } from '@ukef/constants/examples/mdm.examples.constant';
 import { MockGiftResponse } from '@ukef-test/support/interfaces/mock-gift-response.interface';
@@ -9,7 +9,7 @@ const {
   giftVersioning: { prefixAndVersion },
 } = AppConfig();
 
-const { AMEND_FACILITY_TYPES, EVENT_TYPES, INTEGRATION_DEFAULTS, PATH, PRODUCT_TYPE_CODES, API_RESPONSE_TYPES } = GIFT;
+const { AMEND_FACILITY_TYPES_CONSUMER, EVENT_TYPES, INTEGRATION_DEFAULTS, PATH, PRODUCT_TYPE_CODES, API_RESPONSE_TYPES } = GIFT;
 
 export const mockFacilityId = GIFT_EXAMPLES.FACILITY_ID;
 export const mockWorkPackageId = GIFT_EXAMPLES.WORK_PACKAGE_ID;
@@ -115,9 +115,9 @@ export const riskDetailsUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PAC
 export const approveStatusUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.APPROVE}`;
 export const facilityWorkPackageUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}`;
 export const facilityUrl = `${PATH.FACILITY}/${mockFacilityId}`;
-export const facilityAmendmentUrl = (amendmentType: string = AMEND_FACILITY_TYPES.AMEND_FACILITY_INCREASE_AMOUNT) =>
+export const facilityAmendmentUrl = (amendmentType: string = AMEND_FACILITY_TYPES_CONSUMER.AMEND_FACILITY_INCREASE_AMOUNT) =>
   `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/AmendFacility_${amendmentType}`;
-export const obligationAmendmentUrl = (amendmentType: string = AMEND_FACILITY_TYPES.AMEND_FACILITY_INCREASE_AMOUNT) =>
+export const obligationAmendmentUrl = (amendmentType: string = AMEND_FACILITY_TYPES_CONSUMER.AMEND_FACILITY_INCREASE_AMOUNT) =>
   `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/AmendObligation_${amendmentType}`;
 export const workPackageUrl = `${PATH.WORK_PACKAGE}/${mockWorkPackageId}`;
 
@@ -156,4 +156,4 @@ export const getExpectedValidationErrors = (payload, expectedResponse, entityNam
   return expected;
 };
 
-export const amendmentTypeValidationMessage = `amendmentType must be one of the following values: ${AMEND_FACILITY_TYPES_ARRAY.join(', ')}`;
+export const amendmentTypeValidationMessage = `amendmentType must be one of the following values: ${AMEND_FACILITY_TYPES_CONSUMER_ARRAY.join(', ')}`;

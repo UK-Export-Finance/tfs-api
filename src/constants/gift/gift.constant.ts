@@ -5,15 +5,28 @@ export const AMEND_FACILITY_PREFIX_TYPES = {
   AMEND_OBLIGATION: 'AmendObligation_',
 };
 
-export const AMEND_FACILITY_TYPES = {
+/**
+ * The types of facility amendments that can be made by the consumer.
+ * These are used to determine the type of amendment being made,
+ * and therefore the order of operations to execute the amendment.
+ */
+export const AMEND_FACILITY_TYPES_CONSUMER = {
   AMEND_FACILITY_INCREASE_AMOUNT: 'IncreaseAmount',
   AMEND_FACILITY_DECREASE_AMOUNT: 'DecreaseAmount',
   AMEND_FACILITY_REPLACE_EXPIRY_DATE: 'ReplaceExpiryDate',
 } as const;
 
-export const AMEND_FACILITY_TYPES_ARRAY = Object.values(AMEND_FACILITY_TYPES);
+export const AMEND_FACILITY_TYPES_CONSUMER_ARRAY = Object.values(AMEND_FACILITY_TYPES_CONSUMER);
 
-export type AmendFacilityType = (typeof AMEND_FACILITY_TYPES)[keyof typeof AMEND_FACILITY_TYPES];
+export type AmendFacilityTypeConsumer = (typeof AMEND_FACILITY_TYPES_CONSUMER)[keyof typeof AMEND_FACILITY_TYPES_CONSUMER];
+
+/**
+ * GIFT facility amendment types that are used internally.
+ * E.g. "ReplaceMaturityDate" amendment, which is triggered when a consumer requests a "ReplaceExpiryDate" amendment.
+ */
+export const AMEND_FACILITY_TYPES_GIFT = {
+  AMEND_OBLIGATION_REPLACE_MATURITY_DATE: 'ReplaceMaturityDate',
+} as const;
 
 const FACILITY_CATEGORY_CODES = {
   CONTINGENT: 'FCT006',
@@ -37,7 +50,9 @@ const PRODUCT_TYPE_NAMES = {
 } as const;
 
 export const GIFT = {
-  AMEND_FACILITY_TYPES,
+  AMEND_FACILITY_PREFIX_TYPES,
+  AMEND_FACILITY_TYPES_CONSUMER,
+  AMEND_FACILITY_TYPES_GIFT,
   AMEND_OBLIGATION_AMOUNT: {
     PERCENTAGE_OF_FACILITY_AMOUNT: {
       [FACILITY_CATEGORY_CODES.CONTINGENT]: 70,
