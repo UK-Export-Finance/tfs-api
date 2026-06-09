@@ -11,7 +11,7 @@ run-name: Executing various SCAs on ${{ github.repository }} 🔍️
 
 on:
   pull_request:
-    branches: [main, main-*]
+    branches: [main]
 
 env:
   environment: 'qa'
