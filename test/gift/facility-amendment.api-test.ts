@@ -235,7 +235,7 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
         expect(callOrder).toStrictEqual(['workPackage', 'facilityAmendment', 'obligationMaturityDateAmendment']);
       });
 
-      describe('when existing facility expiry date is before the new expiry date', () => {
+      describe('when new facility expiry date is before the existing expiry date', () => {
         it('should call obligation maturity date amendment before facility amendment', async () => {
           // Arrange
           const callOrder: string[] = [];
@@ -245,7 +245,7 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
           nock(GIFT_API_URL)
             .get(facilityUrl)
             .reply(HttpStatus.OK, {
-              expiryDate: '2025-01-01',
+              expiryDate: '2035-01-01',
               obligations: [{ id: 'obligation-1' }],
               riskDetails: {
                 facilityCategoryCode: GIFT.FACILITY_CATEGORY_CODES.CASH,

@@ -187,7 +187,7 @@ describe('GiftFacilityAmendmentService', () => {
     };
 
     describe('when the existing expiry date is before the new expiry date', () => {
-      it('should call giftReplaceExpiryDateAmendmentService.obligations then giftReplaceExpiryDateAmendmentService.facility', async () => {
+      it('should call giftReplaceExpiryDateAmendmentService.facility then giftReplaceExpiryDateAmendmentService.obligations', async () => {
         // Act
         await service.create(mockFacilityId, replaceExpiryDatePayload);
 
@@ -210,14 +210,14 @@ describe('GiftFacilityAmendmentService', () => {
           facilityExpiryDate: replaceExpiryDatePayload.amendmentData.expiryDate,
         });
 
-        expect(mockReplaceExpiryDateAmendmentServiceObligations.mock.invocationCallOrder[0]).toBeLessThan(
-          mockReplaceExpiryDateAmendmentServiceFacility.mock.invocationCallOrder[0],
+        expect(mockReplaceExpiryDateAmendmentServiceFacility.mock.invocationCallOrder[0]).toBeLessThan(
+          mockReplaceExpiryDateAmendmentServiceObligations.mock.invocationCallOrder[0],
         );
       });
     });
 
-    describe('when the existing expiry date is not before the new expiry date', () => {
-      it('should call giftReplaceExpiryDateAmendmentService.facility then giftReplaceExpiryDateAmendmentService.obligations', async () => {
+    describe('when the new expiry date is before the existing expiry date', () => {
+      it('should call giftReplaceExpiryDateAmendmentService.obligations then giftReplaceExpiryDateAmendmentService.facility', async () => {
         // Arrange
         const earlierExpiryDatePayload = {
           ...replaceExpiryDatePayload,
@@ -248,8 +248,8 @@ describe('GiftFacilityAmendmentService', () => {
           facilityExpiryDate: earlierExpiryDatePayload.amendmentData.expiryDate,
         });
 
-        expect(mockReplaceExpiryDateAmendmentServiceFacility.mock.invocationCallOrder[0]).toBeLessThan(
-          mockReplaceExpiryDateAmendmentServiceObligations.mock.invocationCallOrder[0],
+        expect(mockReplaceExpiryDateAmendmentServiceObligations.mock.invocationCallOrder[0]).toBeLessThan(
+          mockReplaceExpiryDateAmendmentServiceFacility.mock.invocationCallOrder[0],
         );
       });
     });

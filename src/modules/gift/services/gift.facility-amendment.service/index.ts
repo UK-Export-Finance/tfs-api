@@ -148,7 +148,7 @@ export class GiftFacilityAmendmentService {
 
         const { expiryDate: originalFacilityExpiryDate } = facility;
 
-        const shouldAmendObligationsFirst = new Date(originalFacilityExpiryDate).getTime() < new Date(expiryDate).getTime();
+        const shouldAmendObligationsFirst = new Date(expiryDate).getTime() < new Date(originalFacilityExpiryDate).getTime();
 
         const baseParams = {
           amendmentType,
