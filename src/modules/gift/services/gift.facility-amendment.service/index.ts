@@ -135,14 +135,20 @@ export class GiftFacilityAmendmentService {
 
       /**
        * If the amendment is "replace expiry date", the new facility expiry date will impact the obligation maturity dates.
-       * Execute in the following order:
+       * If the new expiry date is greater than the current expiry date, execute in the following order:
        * 1) Amend the facility
        * 2) Amend obligations maturity dates
+       *
+       * If the new expiry date is less than the current expiry date, the order is reversed.
        */
       if (isReplaceExpiryDateAmendment(amendment)) {
         const {
           amendmentData: { expiryDate },
         } = amendment;
+
+        const { expiryDate: originalFacilityExpiryDate } = facility;
+
+        const shouldAmendObligationsFirst = new Date(originalFacilityExpiryDate).getTime() < new Date(expiryDate).getTime();
 
         const baseParams = {
           amendmentType,
@@ -150,11 +156,19 @@ export class GiftFacilityAmendmentService {
           workPackageId,
         };
 
-        const facilityResponse = await this.giftReplaceExpiryDateAmendmentService.facility({ ...baseParams, expiryDate });
+        if (shouldAmendObligationsFirst) {
+          await this.giftReplaceExpiryDateAmendmentService.obligations({ ...baseParams, facilityExpiryDate: expiryDate, obligations });
 
-        await this.giftReplaceExpiryDateAmendmentService.obligations({ ...baseParams, facilityExpiryDate: expiryDate, obligations });
+          const facilityResponse = await this.giftReplaceExpiryDateAmendmentService.facility({ ...baseParams, expiryDate });
 
-        createdAmendmentData = facilityResponse.data;
+          createdAmendmentData = facilityResponse.data;
+        } else {
+          const facilityResponse = await this.giftReplaceExpiryDateAmendmentService.facility({ ...baseParams, expiryDate });
+
+          await this.giftReplaceExpiryDateAmendmentService.obligations({ ...baseParams, facilityExpiryDate: expiryDate, obligations });
+
+          createdAmendmentData = facilityResponse.data;
+        }
       }
 
       const approvalResponse = await this.approveWorkPackage(facilityId, workPackageId);

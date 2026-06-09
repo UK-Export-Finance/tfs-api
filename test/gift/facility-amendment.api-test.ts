@@ -234,6 +234,68 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
 
         expect(callOrder).toStrictEqual(['workPackage', 'facilityAmendment', 'obligationMaturityDateAmendment']);
       });
+
+      describe('when existing facility expiry date is before the new expiry date', () => {
+        it('should call obligation maturity date amendment before facility amendment', async () => {
+          // Arrange
+          const callOrder: string[] = [];
+
+          const replaceMaturityDateUrl = `${GIFT.PATH.FACILITY}/${mockFacilityId}${GIFT.PATH.WORK_PACKAGE}/${mockWorkPackageId}${GIFT.PATH.CONFIGURATION_EVENT}/${AMEND_FACILITY_PREFIX_TYPES.AMEND_OBLIGATION}ReplaceMaturityDate`;
+
+          nock(GIFT_API_URL)
+            .get(facilityUrl)
+            .reply(HttpStatus.OK, {
+              expiryDate: '2025-01-01',
+              obligations: [{ id: 'obligation-1' }],
+              riskDetails: {
+                facilityCategoryCode: GIFT.FACILITY_CATEGORY_CODES.CASH,
+              },
+            });
+
+          nock(GIFT_API_URL)
+            .post(facilityWorkPackageUrl)
+            .reply(() => {
+              callOrder.push('workPackage');
+
+              return [HttpStatus.CREATED, mockResponses.workPackageCreation];
+            });
+
+          nock(GIFT_API_URL)
+            .post(replaceMaturityDateUrl)
+            .reply(() => {
+              callOrder.push('obligationMaturityDateAmendment');
+
+              return [HttpStatus.CREATED, mockResponses.facilityAmendment];
+            });
+
+          nock(GIFT_API_URL)
+            .post(facilityAmendmentUrl(AMEND_FACILITY_REPLACE_EXPIRY_DATE))
+            .reply(() => {
+              callOrder.push('facilityAmendment');
+
+              return [HttpStatus.CREATED, mockResponses.facilityAmendment];
+            });
+
+          nock(GIFT_API_URL).post(approveStatusUrl).reply(HttpStatus.OK, mockResponses.approveStatus);
+
+          const mockPayload = {
+            amendmentType: AMEND_FACILITY_REPLACE_EXPIRY_DATE,
+            amendmentData: GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA.REPLACE_EXPIRY_DATE,
+          };
+
+          // Act
+          const { status, body } = await api.post(apimFacilityAmendmentWithoutQueueUrl, mockPayload);
+
+          // Assert
+          expect(status).toBe(HttpStatus.CREATED);
+          expect(body).toStrictEqual({
+            ...mockResponses.facilityAmendment,
+            isApproved: true,
+          });
+
+          expect(callOrder).toStrictEqual(['workPackage', 'obligationMaturityDateAmendment', 'facilityAmendment']);
+        });
+      });
     });
   });
 });
