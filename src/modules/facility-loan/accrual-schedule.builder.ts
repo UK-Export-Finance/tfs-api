@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ENUMS, PROPERTIES } from '@ukef/constants';
-import { CURRENCIES } from '@ukef/constants/currencies.constant';
+import { SUPPORTED_CURRENCIES } from '@ukef/constants/currencies.constant';
 import { LOAN_RATE_INDEX } from '@ukef/constants/loan-rate-index.constant';
 import { AccrualScheduleExtended } from '@ukef/modules/acbs/dto/bundle-actions/accrual-schedule.interface';
 import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
@@ -17,7 +17,7 @@ export class AccrualScheduleBuilder {
 
   getAccrualSchedules(facilityLoan: CreateFacilityLoanRequestItem): AccrualScheduleExtended[] {
     if (facilityLoan.productTypeGroup === ENUMS.PRODUCT_TYPE_GROUPS.EWCS) {
-      if (facilityLoan.currency === CURRENCIES.USD) {
+      if (facilityLoan.currency === SUPPORTED_CURRENCIES.USD) {
         return [this.getAccrualPac(facilityLoan), this.getAccrualNonRfr(facilityLoan)];
       }
       return [this.getAccrualPac(facilityLoan), this.getAccrualRfr(facilityLoan)];
@@ -105,7 +105,7 @@ export class AccrualScheduleBuilder {
           CalculationFeatureCode: PROPERTIES.ACCRUAL.INT_RFR.accrualScheduleIBORDetails.calculationFeature.calculationFeatureCode,
         },
         NextRatePeriod: issueDatePlusThreeMonths,
-        UseObservationShiftIndicator: facilityLoan.currency === CURRENCIES.EUR,
+        UseObservationShiftIndicator: facilityLoan.currency === SUPPORTED_CURRENCIES.EUR,
         RateSetLagDays: PROPERTIES.ACCRUAL.INT_RFR.accrualScheduleIBORDetails.rateSetLagDays,
         LagDaysType: {
           CompoundingDateTypeCode: PROPERTIES.ACCRUAL.INT_RFR.accrualScheduleIBORDetails.compoundingDateType.compoundingDateTypeCode,
@@ -152,11 +152,11 @@ export class AccrualScheduleBuilder {
 
   private getLoanRateIndexCode(facilityLoan: CreateFacilityLoanRequestItem): string {
     switch (facilityLoan.currency) {
-      case CURRENCIES.EUR:
+      case SUPPORTED_CURRENCIES.EUR:
         return LOAN_RATE_INDEX.EUR;
-      case CURRENCIES.USD:
+      case SUPPORTED_CURRENCIES.USD:
         return LOAN_RATE_INDEX.USD;
-      case CURRENCIES.JPY:
+      case SUPPORTED_CURRENCIES.JPY:
         return LOAN_RATE_INDEX.JPY;
       default:
         return LOAN_RATE_INDEX.OTHER;

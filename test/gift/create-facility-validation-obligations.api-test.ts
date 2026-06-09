@@ -1,0 +1,216 @@
+import { HttpStatus } from '@nestjs/common';
+import { EXAMPLES, GIFT } from '@ukef/constants';
+import { Api } from '@ukef-test/support/api';
+import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
+import nock from 'nock';
+
+import {
+  arrayOfObjectsCurrencyStringValidation,
+  arrayOfObjectsNumberValidation,
+  arrayOfObjectsOptionalDateStringValidation,
+  arrayOfObjectsOptionalNumberValidation,
+  arrayOfObjectsOptionalStringValidation,
+  arrayOfObjectsStringValidation,
+  assert400Response,
+  generatePayloadArrayOfObjects,
+} from './assertions';
+import {
+  apimFacilityWithoutQueueUrl,
+  apimMdmObligationSubtypesUrl,
+  counterpartyRolesUrl,
+  currencyUrl,
+  feeTypeUrl,
+  mockResponses,
+  productTypeUrl,
+} from './test-helpers';
+
+const { APIM_MDM_KEY, APIM_MDM_URL, APIM_MDM_VALUE, GIFT_API_URL } = ENVIRONMENT_VARIABLES;
+
+const {
+  API_RESPONSE_MESSAGES,
+  VALIDATION: { OBLIGATION: OBLIGATION_VALIDATION },
+} = GIFT;
+
+describe('POST /gift/facility - validation - obligations', () => {
+  const url = apimFacilityWithoutQueueUrl;
+
+  let api: Api;
+
+  beforeAll(async () => {
+    api = await Api.create();
+  });
+
+  beforeEach(() => {
+    nock(GIFT_API_URL).persist().get(productTypeUrl()).reply(HttpStatus.OK, mockResponses.productType);
+
+    nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
+
+    nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
+
+    nock(GIFT_API_URL).persist().get(counterpartyRolesUrl).reply(HttpStatus.OK, mockResponses.counterpartyRoles);
+
+    nock(APIM_MDM_URL)
+      .persist()
+      .get(apimMdmObligationSubtypesUrl)
+      .matchHeader(APIM_MDM_KEY, APIM_MDM_VALUE)
+      .reply(HttpStatus.OK, mockResponses.obligationSubtypes);
+  });
+
+  afterAll(async () => {
+    await api.destroy();
+  });
+
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+
+  const parentFieldName = 'obligations';
+
+  const baseParams = {
+    initialPayload: EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD,
+    parentFieldName,
+    url,
+  };
+
+  describe('when an empty obligations object is provided', () => {
+    it(`should return a ${HttpStatus.BAD_REQUEST} response with validation errors for all required fields`, async () => {
+      // Arrange
+      const mockPayload = {
+        ...EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD,
+        obligations: [{}],
+      };
+
+      // Act
+      const { status, body } = await api.post(url, mockPayload);
+
+      // Assert
+      expect(status).toBe(HttpStatus.BAD_REQUEST);
+
+      const expected = {
+        error: 'Bad Request',
+        message: [
+          'obligations.0.amount should not be null or undefined',
+          `obligations.0.amount must not be greater than ${OBLIGATION_VALIDATION.OBLIGATION_AMOUNT.MAX}`,
+          'obligations.0.amount must not be less than 1',
+          'obligations.0.amount must be a number conforming to the specified constraints',
+          'obligations.0.currency should not be null or undefined',
+          `obligations.0.currency must be longer than or equal to ${OBLIGATION_VALIDATION.CURRENCY.MIN_LENGTH} characters`,
+          'obligations.0.currency must be a string',
+          'obligations.0.repaymentType should not be null or undefined',
+          `obligations.0.repaymentType must be longer than or equal to ${OBLIGATION_VALIDATION.REPAYMENT_TYPE.MIN_LENGTH} characters`,
+          'obligations.0.repaymentType must be a string',
+        ],
+        statusCode: HttpStatus.BAD_REQUEST,
+      };
+
+      expect(body).toStrictEqual(expected);
+    });
+  });
+
+  describe('amount', () => {
+    arrayOfObjectsNumberValidation({
+      ...baseParams,
+      fieldName: 'amount',
+      min: OBLIGATION_VALIDATION.OBLIGATION_AMOUNT.MIN,
+      max: OBLIGATION_VALIDATION.OBLIGATION_AMOUNT.MAX,
+    });
+  });
+
+  describe('currency', () => {
+    arrayOfObjectsCurrencyStringValidation(baseParams);
+  });
+
+  describe('effectiveDate', () => {
+    arrayOfObjectsOptionalDateStringValidation({
+      ...baseParams,
+      fieldName: 'effectiveDate',
+    });
+  });
+
+  describe('maturityDate', () => {
+    arrayOfObjectsOptionalDateStringValidation({
+      ...baseParams,
+      fieldName: 'maturityDate',
+    });
+  });
+
+  describe('repaymentType', () => {
+    arrayOfObjectsStringValidation({
+      ...baseParams,
+      fieldName: 'repaymentType',
+      min: OBLIGATION_VALIDATION.REPAYMENT_TYPE.MIN_LENGTH,
+      max: OBLIGATION_VALIDATION.REPAYMENT_TYPE.MAX_LENGTH,
+    });
+  });
+
+  describe('linkedRepaymentProfileId', () => {
+    const fieldName = 'linkedRepaymentProfileId';
+
+    arrayOfObjectsOptionalNumberValidation({
+      ...baseParams,
+      fieldName,
+      min: OBLIGATION_VALIDATION.LINKED_REPAYMENT_PROFILE_ID.MIN,
+      max: OBLIGATION_VALIDATION.LINKED_REPAYMENT_PROFILE_ID.MAX,
+    });
+  });
+
+  describe('subtypeCode', () => {
+    const fieldName = 'subtypeCode';
+
+    arrayOfObjectsOptionalStringValidation({
+      ...baseParams,
+      fieldName,
+      min: OBLIGATION_VALIDATION.OBLIGATION_SUBTYPE_CODE.MIN_LENGTH,
+      max: OBLIGATION_VALIDATION.OBLIGATION_SUBTYPE_CODE.MAX_LENGTH,
+    });
+
+    describe('when the provided subtype code is not supported', () => {
+      const UNSUPPORTED_SUBTYPE_CODE = 'UNSUPPORTED';
+
+      let mockPayload;
+
+      const value = UNSUPPORTED_SUBTYPE_CODE;
+
+      beforeAll(() => {
+        // Arrange
+        mockPayload = generatePayloadArrayOfObjects({
+          initialPayload: baseParams.initialPayload,
+          fieldName,
+          parentFieldName,
+          value,
+        });
+      });
+
+      it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
+        // Act
+        const response = await api.post(url, mockPayload);
+
+        // Assert
+        assert400Response(response);
+      });
+
+      it('should return the correct body.message', async () => {
+        // Act
+        const { body } = await api.post(url, mockPayload);
+
+        // Assert
+        const expected = API_RESPONSE_MESSAGES.ASYNC_FACILITY_VALIDATION_ERRORS;
+
+        expect(body.message).toStrictEqual(expected);
+      });
+
+      it('should return the correct body.validationErrors', async () => {
+        // Act
+        const { body } = await api.post(url, mockPayload);
+
+        // Assert
+        const expected = [
+          `${parentFieldName}.0.${fieldName} is not supported by product type ${EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD.overview.productTypeCode}`,
+          `${parentFieldName}.1.${fieldName} is not supported by product type ${EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD.overview.productTypeCode}`,
+        ];
+
+        expect(body.validationErrors).toStrictEqual(expected);
+      });
+    });
+  });
+});

@@ -20,8 +20,11 @@ export class App {
     process.env.NODE_ENV = env;
 
     const globalPrefix: string = this.getConfig<string>('app.globalPrefix');
+
     const version: string = this.getConfig<string>('app.versioning.version');
+
     const versioningPrefix: string = this.getConfig<string>('app.versioning.prefix');
+
     app.enableVersioning({
       type: VersioningType.URI,
       defaultVersion: version,
@@ -33,8 +36,9 @@ export class App {
     app.useGlobalPipes(
       new InputCharacterValidationPipe(),
       new ValidationPipe({
-        whitelist: true,
-        transform: true,
+        whitelist: true, // strips properties that do not have any decorators
+        forbidNonWhitelisted: true, // if non-whitelisted properties are present, validation will fail
+        transform: true, // automatically transform payloads to be objects typed according to their DTO classes
       }),
     );
 

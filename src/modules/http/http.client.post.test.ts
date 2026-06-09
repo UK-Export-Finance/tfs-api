@@ -1,7 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { AxiosResponse, InternalAxiosRequestConfig } from 'axios';
-import { when } from 'jest-when';
 import { ObservableInput, of, throwError } from 'rxjs';
 
 import { HttpClient } from './http.client';
@@ -22,16 +21,11 @@ describe('HttpClient', () => {
 
   describe('post', () => {
     const path = `/${valueGenerator.word()}/${valueGenerator.word()}`;
-    const headers = {
-      [valueGenerator.word()]: valueGenerator.string(),
-      [valueGenerator.word()]: valueGenerator.string(),
-    };
+
     const requestBody = {
       field1: 'data1',
       field2: 'data2',
     };
-
-    const expectedHttpServicePostArgs: [string, object, object] = [path, requestBody, { headers }];
 
     const response: AxiosResponse = {
       data: {
@@ -54,27 +48,34 @@ describe('HttpClient', () => {
 
     describe('when the HttpService succeeds', () => {
       beforeEach(() => {
-        when(httpServicePost)
-          .calledWith(...expectedHttpServicePostArgs)
-          .mockReturnValueOnce(of(response));
+        httpServicePost.mockReturnValueOnce(of(response));
       });
 
-      it('resolves with the same response', async () => {
+      it('should call HttpService.post', async () => {
+        await client.post({
+          path,
+          requestBody,
+          onError,
+        });
+
+        expect(httpServicePost).toHaveBeenCalledTimes(1);
+        expect(httpServicePost).toHaveBeenCalledWith(path, requestBody, expect.any(Object));
+      });
+
+      it('should return the same response', async () => {
         const result = await client.post({
           path,
           requestBody,
-          headers,
           onError,
         });
 
         expect(result).toBe(response);
       });
 
-      it('does not call onError', async () => {
+      it('should NOT call onError', async () => {
         await client.post({
           path,
           requestBody,
-          headers,
           onError,
         });
 
@@ -87,20 +88,15 @@ describe('HttpClient', () => {
       const errorThatOnErrorThrows = new Error('Test error from onError');
 
       beforeEach(() => {
-        when(httpServicePost)
-          .calledWith(...expectedHttpServicePostArgs)
-          .mockReturnValueOnce(throwError(() => errorFromHttpService));
-        when(onError)
-          .calledWith(errorFromHttpService)
-          .mockImplementationOnce(() => throwError(() => errorThatOnErrorThrows));
+        httpServicePost.mockReturnValueOnce(throwError(() => errorFromHttpService));
+        onError = jest.fn().mockImplementation(() => throwError(() => errorThatOnErrorThrows));
       });
 
-      it('calls onError with the error that HttpService errored with', async () => {
+      it('should call onError with the error that HttpService errored with', async () => {
         await client
           .post({
             path,
             requestBody,
-            headers,
             onError,
           })
           .catch(() => {
@@ -111,11 +107,10 @@ describe('HttpClient', () => {
         expect(onError).toHaveBeenCalledTimes(1);
       });
 
-      it('rejects with the error that onError throws', async () => {
+      it('should reject with the error that onError throws', async () => {
         const clientPostPromise = client.post({
           path,
           requestBody,
-          headers,
           onError,
         });
 

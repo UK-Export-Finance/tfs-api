@@ -1,5 +1,5 @@
 import { ENUMS } from '@ukef/constants';
-import { CURRENCIES } from '@ukef/constants/currencies.constant';
+import { SUPPORTED_CURRENCIES } from '@ukef/constants/currencies.constant';
 import { LOAN_RATE_INDEX } from '@ukef/constants/loan-rate-index.constant';
 import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
@@ -95,7 +95,7 @@ describe('AccrualScheduleBuilder', () => {
         const newLoanWithProductTypeGroupEwcsCurrencyEur = {
           ...newLoanNonGbp,
           productTypeGroup: ENUMS.PRODUCT_TYPE_GROUPS.EWCS,
-          currency: CURRENCIES.EUR,
+          currency: SUPPORTED_CURRENCIES.EUR,
         };
         const ewcsAccrualSchedulesEur = [
           {
@@ -122,7 +122,7 @@ describe('AccrualScheduleBuilder', () => {
         const newLoanWithProductTypeGroupEwcsCurrencyJpy = {
           ...newLoanNonGbp,
           productTypeGroup: ENUMS.PRODUCT_TYPE_GROUPS.EWCS,
-          currency: CURRENCIES.JPY,
+          currency: SUPPORTED_CURRENCIES.JPY,
         };
         const ewcsAccrualSchedulesJpy = [
           {
@@ -145,7 +145,7 @@ describe('AccrualScheduleBuilder', () => {
         const newLoanWithProductTypeGroupEwcsCurrencyUsd = {
           ...newLoanNonGbp,
           productTypeGroup: ENUMS.PRODUCT_TYPE_GROUPS.EWCS,
-          currency: CURRENCIES.USD,
+          currency: SUPPORTED_CURRENCIES.USD,
         };
 
         const accrualSchedules = accrualScheduleBuilder.getAccrualSchedules(newLoanWithProductTypeGroupEwcsCurrencyUsd);

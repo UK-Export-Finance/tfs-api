@@ -2,6 +2,8 @@ import AcbsConfig from './acbs.config';
 import AcbsAuthenticationConfig from './acbs-authentication.config';
 import AppConfig from './app.config';
 import DocConfig from './doc.config';
+import GiftConfig from './gift.config';
+import GiftQueueConfig from './gift-queue.config';
 import MdmConfig from './mdm.config';
 
-export default [AcbsConfig, AcbsAuthenticationConfig, AppConfig, DocConfig, MdmConfig];
+export default [AcbsConfig, AcbsAuthenticationConfig, AppConfig, DocConfig, GiftConfig, GiftQueueConfig, MdmConfig];
