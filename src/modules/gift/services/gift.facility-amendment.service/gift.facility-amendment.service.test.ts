@@ -35,6 +35,7 @@ describe('GiftFacilityAmendmentService', () => {
 
   const mockFacilityResponseData = {
     ...FACILITY_RESPONSE_DATA,
+    expiryDate: '2027-02-01',
     obligations: mockObligations,
     riskDetails: {
       facilityCategoryCode: mockFacilityCategoryCode,
@@ -185,68 +186,72 @@ describe('GiftFacilityAmendmentService', () => {
       amendmentData: EXAMPLES.GIFT.FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA.REPLACE_EXPIRY_DATE,
     };
 
-    it('should call giftReplaceExpiryDateAmendmentService.obligations then giftReplaceExpiryDateAmendmentService.facility when existing expiry date is before the new expiry date', async () => {
-      // Act
-      await service.create(mockFacilityId, replaceExpiryDatePayload);
+    describe('when the existing expiry date is before the new expiry date', () => {
+      it('should call giftReplaceExpiryDateAmendmentService.obligations then giftReplaceExpiryDateAmendmentService.facility', async () => {
+        // Act
+        await service.create(mockFacilityId, replaceExpiryDatePayload);
 
-      // Assert
-      expect(mockReplaceExpiryDateAmendmentServiceFacility).toHaveBeenCalledTimes(1);
-      expect(mockReplaceExpiryDateAmendmentServiceObligations).toHaveBeenCalledTimes(1);
+        // Assert
+        expect(mockReplaceExpiryDateAmendmentServiceFacility).toHaveBeenCalledTimes(1);
+        expect(mockReplaceExpiryDateAmendmentServiceObligations).toHaveBeenCalledTimes(1);
 
-      expect(mockReplaceExpiryDateAmendmentServiceFacility).toHaveBeenNthCalledWith(1, {
-        amendmentType: replaceExpiryDatePayload.amendmentType,
-        facilityId: mockFacilityId,
-        workPackageId: mockWorkPackageId,
-        expiryDate: replaceExpiryDatePayload.amendmentData.expiryDate,
+        expect(mockReplaceExpiryDateAmendmentServiceFacility).toHaveBeenNthCalledWith(1, {
+          amendmentType: replaceExpiryDatePayload.amendmentType,
+          facilityId: mockFacilityId,
+          workPackageId: mockWorkPackageId,
+          expiryDate: replaceExpiryDatePayload.amendmentData.expiryDate,
+        });
+
+        expect(mockReplaceExpiryDateAmendmentServiceObligations).toHaveBeenNthCalledWith(1, {
+          amendmentType: replaceExpiryDatePayload.amendmentType,
+          facilityId: mockFacilityId,
+          obligations: mockObligations,
+          workPackageId: mockWorkPackageId,
+          facilityExpiryDate: replaceExpiryDatePayload.amendmentData.expiryDate,
+        });
+
+        expect(mockReplaceExpiryDateAmendmentServiceObligations.mock.invocationCallOrder[0]).toBeLessThan(
+          mockReplaceExpiryDateAmendmentServiceFacility.mock.invocationCallOrder[0],
+        );
       });
-
-      expect(mockReplaceExpiryDateAmendmentServiceObligations).toHaveBeenNthCalledWith(1, {
-        amendmentType: replaceExpiryDatePayload.amendmentType,
-        facilityId: mockFacilityId,
-        obligations: mockObligations,
-        workPackageId: mockWorkPackageId,
-        facilityExpiryDate: replaceExpiryDatePayload.amendmentData.expiryDate,
-      });
-
-      expect(mockReplaceExpiryDateAmendmentServiceObligations.mock.invocationCallOrder[0]).toBeLessThan(
-        mockReplaceExpiryDateAmendmentServiceFacility.mock.invocationCallOrder[0],
-      );
     });
 
-    it('should call giftReplaceExpiryDateAmendmentService.facility then giftReplaceExpiryDateAmendmentService.obligations when existing expiry date is not before the new expiry date', async () => {
-      // Arrange
-      const earlierExpiryDatePayload = {
-        ...replaceExpiryDatePayload,
-        amendmentData: {
-          expiryDate: '2026-01-01',
-        },
-      };
+    describe('when the existing expiry date is not before the new expiry date', () => {
+      it('should call giftReplaceExpiryDateAmendmentService.facility then giftReplaceExpiryDateAmendmentService.obligations', async () => {
+        // Arrange
+        const earlierExpiryDatePayload = {
+          ...replaceExpiryDatePayload,
+          amendmentData: {
+            expiryDate: '2026-01-01',
+          },
+        };
 
-      // Act
-      await service.create(mockFacilityId, earlierExpiryDatePayload);
+        // Act
+        await service.create(mockFacilityId, earlierExpiryDatePayload);
 
-      // Assert
-      expect(mockReplaceExpiryDateAmendmentServiceFacility).toHaveBeenCalledTimes(1);
-      expect(mockReplaceExpiryDateAmendmentServiceObligations).toHaveBeenCalledTimes(1);
+        // Assert
+        expect(mockReplaceExpiryDateAmendmentServiceFacility).toHaveBeenCalledTimes(1);
+        expect(mockReplaceExpiryDateAmendmentServiceObligations).toHaveBeenCalledTimes(1);
 
-      expect(mockReplaceExpiryDateAmendmentServiceFacility).toHaveBeenNthCalledWith(1, {
-        amendmentType: earlierExpiryDatePayload.amendmentType,
-        facilityId: mockFacilityId,
-        workPackageId: mockWorkPackageId,
-        expiryDate: earlierExpiryDatePayload.amendmentData.expiryDate,
+        expect(mockReplaceExpiryDateAmendmentServiceFacility).toHaveBeenNthCalledWith(1, {
+          amendmentType: earlierExpiryDatePayload.amendmentType,
+          facilityId: mockFacilityId,
+          workPackageId: mockWorkPackageId,
+          expiryDate: earlierExpiryDatePayload.amendmentData.expiryDate,
+        });
+
+        expect(mockReplaceExpiryDateAmendmentServiceObligations).toHaveBeenNthCalledWith(1, {
+          amendmentType: earlierExpiryDatePayload.amendmentType,
+          facilityId: mockFacilityId,
+          obligations: mockObligations,
+          workPackageId: mockWorkPackageId,
+          facilityExpiryDate: earlierExpiryDatePayload.amendmentData.expiryDate,
+        });
+
+        expect(mockReplaceExpiryDateAmendmentServiceFacility.mock.invocationCallOrder[0]).toBeLessThan(
+          mockReplaceExpiryDateAmendmentServiceObligations.mock.invocationCallOrder[0],
+        );
       });
-
-      expect(mockReplaceExpiryDateAmendmentServiceObligations).toHaveBeenNthCalledWith(1, {
-        amendmentType: earlierExpiryDatePayload.amendmentType,
-        facilityId: mockFacilityId,
-        obligations: mockObligations,
-        workPackageId: mockWorkPackageId,
-        facilityExpiryDate: earlierExpiryDatePayload.amendmentData.expiryDate,
-      });
-
-      expect(mockReplaceExpiryDateAmendmentServiceFacility.mock.invocationCallOrder[0]).toBeLessThan(
-        mockReplaceExpiryDateAmendmentServiceObligations.mock.invocationCallOrder[0],
-      );
     });
 
     it('should return only the facility amendment response data', async () => {
