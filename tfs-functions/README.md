@@ -52,7 +52,12 @@ The Functions host will be available on `http://localhost:7071`.
 
 ## Testing the queue
 
-After building the container, run the `seed-azurite.sh` script; this will create the queue.
+After building the container, run the `seed-azurite.sh` script; this will create the queue:
+
+```sh
+cd /scripts
+sh ./seed-azurite.sh
+```
 
 To test the function in isolation (without running tfs-api), encode a valid JSON
 payload matching the `GiftFacilityCreationRequestDto` or
