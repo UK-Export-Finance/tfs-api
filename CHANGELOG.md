@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.0.0 (2026-06-10)
+## 2.0.0 (2026-06-10)
 
 
 ### ⚠ BREAKING CHANGES
@@ -155,7 +155,7 @@
 * **637:** use env setup in tests ([217d30c](https://github.com/UK-Export-Finance/tfs-api/commit/217d30c8b08b33abfe6dc89390ab1692f73bf989))
 * **642:** add azure/identity ([8ca7095](https://github.com/UK-Export-Finance/tfs-api/commit/8ca7095d3d1f7668fbd3922f59bcea0fa0d76740))
 * **642:** add env variable locally ([b00e9be](https://github.com/UK-Export-Finance/tfs-api/commit/b00e9bee328fe1abbcbded28518c64dcfe4b440f))
-* **642:** add env variable to deploymenty ([d819d5b](https://github.com/UK-Export-Finance/tfs-api/commit/d819d5b13e2b1b9818193c5e275573514d9bc808))
+* **642:** add env variable to deployment ([d819d5b](https://github.com/UK-Export-Finance/tfs-api/commit/d819d5b13e2b1b9818193c5e275573514d9bc808))
 * **642:** add poison queue alert ([11895fc](https://github.com/UK-Export-Finance/tfs-api/commit/11895fc4b7747e784f143a3bdb5528ab9ae476b2))
 * **642:** add resource group to show command ([b97e477](https://github.com/UK-Export-Finance/tfs-api/commit/b97e4773f5da04a2e62f4e2bc03b2bacbafd572c))
 * **642:** draft app insights logging ([ae2769b](https://github.com/UK-Export-Finance/tfs-api/commit/ae2769be114a6a2f89707b7d3f49432e0e4736de))
