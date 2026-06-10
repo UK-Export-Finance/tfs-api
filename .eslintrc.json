@@ -168,6 +168,7 @@
     ".eslintrc.js",
     "dist/**",
     "coverage/**",
-    "report/**"
+    "report/**",
+    "tfs-functions/**"
   ]
 }

@@ -1,14 +1,12 @@
 import { registerAs } from '@nestjs/config';
 import { getIntConfig } from '@ukef/helpers/get-int-config';
+import { ExternalServiceConfig } from '@ukef/types';
 
 export const KEY = 'mdm';
 
-export interface MdmConfig {
-  baseUrl: string;
+export interface MdmConfig extends ExternalServiceConfig {
   apiKeyHeaderName: string;
   apiKeyHeaderValue: string;
-  maxRedirects: number;
-  timeout: number;
 }
 
 export default registerAs(

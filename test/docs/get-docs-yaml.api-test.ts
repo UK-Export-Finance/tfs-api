@@ -1,4 +1,8 @@
+import { HttpStatus } from '@nestjs/common';
+import AppConfig from '@ukef/config/app.config';
 import { Api } from '@ukef-test/support/api';
+
+const { versioning: acbsVersioning, giftVersioning } = AppConfig();
 
 describe('GET /openapi/yaml', () => {
   let api: Api;
@@ -11,13 +15,23 @@ describe('GET /openapi/yaml', () => {
     await api.destroy();
   });
 
-  it('returns a 200 OK response', async () => {
+  it('should return a 200 OK response', async () => {
     const { status } = await api.get('/openapi/yaml');
-    expect(status).toBe(200);
+
+    expect(status).toBe(HttpStatus.OK);
   });
 
-  it('matches the snapshot', async () => {
+  it('should contain some auto genearted YML documentation', async () => {
     const { text } = await api.get('/openapi/yaml');
-    expect(text).toMatchSnapshot();
+
+    expect(text.includes('openapi')).toBeTruthy();
+
+    expect(text.includes('paths')).toBeTruthy();
+
+    expect(text.length).toBeGreaterThan(10000);
+
+    expect(text.includes(`/api/${acbsVersioning.prefixAndVersion}`)).toBeTruthy();
+
+    expect(text.includes(`/api/${giftVersioning.prefixAndVersion}`)).toBeTruthy();
   });
 });

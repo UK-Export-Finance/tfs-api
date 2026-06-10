@@ -1,0 +1,197 @@
+import { EXAMPLES, GIFT } from '@ukef/constants';
+import { mockResponse201, mockResponse500 } from '@ukef-test/http-response';
+import { PinoLogger } from 'nestjs-pino';
+
+import { GiftRiskDetailsService } from './gift.risk-details.service';
+
+const {
+  GIFT: { FACILITY_ID: mockFacilityId, WORK_PACKAGE_ID: mockWorkPackageId, RISK_DETAILS },
+} = EXAMPLES;
+
+const { EVENT_TYPES, INTEGRATION_DEFAULTS, PATH } = GIFT;
+
+describe('GiftRiskDetailsService', () => {
+  const logger = new PinoLogger({});
+
+  let service: GiftRiskDetailsService;
+
+  let giftHttpService;
+  let mockCreateOneResponse;
+  let mockHttpServiceGet: jest.Mock;
+  let mockHttpServicePost: jest.Mock;
+
+  beforeEach(() => {
+    // Arrange
+    mockCreateOneResponse = mockResponse201(RISK_DETAILS);
+
+    mockHttpServicePost = jest.fn().mockResolvedValueOnce(mockCreateOneResponse);
+
+    giftHttpService = {
+      get: mockHttpServiceGet,
+      post: mockHttpServicePost,
+    };
+
+    service = new GiftRiskDetailsService(giftHttpService, logger);
+  });
+
+  afterAll(() => {
+    jest.resetAllMocks();
+  });
+
+  describe('createOne', () => {
+    describe('when facilityCategoryCode is NOT provided', () => {
+      it('should call giftHttpService.post with facilityCategoryCode as null', async () => {
+        // Act
+        await service.createOne(RISK_DETAILS, mockFacilityId, mockWorkPackageId);
+
+        // Assert
+        expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
+
+        const expected = {
+          path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_RISK_DETAILS}`,
+          payload: {
+            ...RISK_DETAILS,
+            overrideRiskRating: INTEGRATION_DEFAULTS.OVERRIDE_RISK_RATING,
+            overrideLossGivenDefault: INTEGRATION_DEFAULTS.OVERRIDE_LOSS_GIVEN_DEFAULT,
+            riskReassessmentDate: INTEGRATION_DEFAULTS.RISK_REASSESSMENT_DATE,
+            riskMarketCode: INTEGRATION_DEFAULTS.RISK_MARKET_CODE,
+            projectFinance: INTEGRATION_DEFAULTS.PROJECT_FINANCE,
+            linkedFacilityId: INTEGRATION_DEFAULTS.LINKED_FACILITY_ID,
+            originalFacilityEffectiveDate: INTEGRATION_DEFAULTS.ORIGINAL_FACILITY_EFFECTIVE_DATE,
+            facilityCategoryCode: null,
+          },
+        };
+
+        expect(mockHttpServicePost).toHaveBeenCalledWith(expected);
+      });
+    });
+
+    describe('when facilityCategoryCode is provided', () => {
+      it('should call giftHttpService.post with the provided facilityCategoryCode', async () => {
+        // Arrange
+        const mockPayload = {
+          ...RISK_DETAILS,
+          facilityCategoryCode: 'Mock facility category code',
+        };
+
+        // Act
+        await service.createOne(mockPayload, mockFacilityId, mockWorkPackageId);
+
+        // Assert
+        expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
+
+        const expected = {
+          path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_RISK_DETAILS}`,
+          payload: {
+            ...mockPayload,
+            overrideRiskRating: INTEGRATION_DEFAULTS.OVERRIDE_RISK_RATING,
+            overrideLossGivenDefault: INTEGRATION_DEFAULTS.OVERRIDE_LOSS_GIVEN_DEFAULT,
+            riskReassessmentDate: INTEGRATION_DEFAULTS.RISK_REASSESSMENT_DATE,
+            riskMarketCode: INTEGRATION_DEFAULTS.RISK_MARKET_CODE,
+            projectFinance: INTEGRATION_DEFAULTS.PROJECT_FINANCE,
+            linkedFacilityId: INTEGRATION_DEFAULTS.LINKED_FACILITY_ID,
+            originalFacilityEffectiveDate: INTEGRATION_DEFAULTS.ORIGINAL_FACILITY_EFFECTIVE_DATE,
+          },
+        };
+
+        expect(mockHttpServicePost).toHaveBeenCalledWith(expected);
+      });
+    });
+
+    describe('when facilityCreditRating is NOT provided', () => {
+      it('should call giftHttpService.post with facilityCreditRating as null', async () => {
+        // Arrange
+        const mockPayload = {
+          ...RISK_DETAILS,
+          facilityCreditRating: undefined,
+          facilityCategoryCode: 'Mock facility category code',
+        };
+
+        // Act
+        await service.createOne(mockPayload, mockFacilityId, mockWorkPackageId);
+
+        // Assert
+        expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
+
+        expect(mockHttpServicePost).toHaveBeenCalledWith({
+          path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_RISK_DETAILS}`,
+          payload: {
+            ...mockPayload,
+            overrideRiskRating: INTEGRATION_DEFAULTS.OVERRIDE_RISK_RATING,
+            overrideLossGivenDefault: INTEGRATION_DEFAULTS.OVERRIDE_LOSS_GIVEN_DEFAULT,
+            riskReassessmentDate: INTEGRATION_DEFAULTS.RISK_REASSESSMENT_DATE,
+            facilityCreditRating: INTEGRATION_DEFAULTS.FACILITY_CREDIT_RATING,
+            riskMarketCode: INTEGRATION_DEFAULTS.RISK_MARKET_CODE,
+            projectFinance: INTEGRATION_DEFAULTS.PROJECT_FINANCE,
+            linkedFacilityId: INTEGRATION_DEFAULTS.LINKED_FACILITY_ID,
+            originalFacilityEffectiveDate: INTEGRATION_DEFAULTS.ORIGINAL_FACILITY_EFFECTIVE_DATE,
+          },
+        });
+      });
+    });
+
+    describe('when facilityCreditRating is provided', () => {
+      it('should call giftHttpService.post with the provided facilityCreditRating', async () => {
+        // Arrange
+        const mockPayload = {
+          ...RISK_DETAILS,
+          facilityCreditRating: 'Mock facility credit rating',
+          facilityCategoryCode: 'Mock facility category code',
+        };
+
+        // Act
+        await service.createOne(mockPayload, mockFacilityId, mockWorkPackageId);
+
+        // Assert
+        expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
+
+        expect(mockHttpServicePost).toHaveBeenCalledWith({
+          path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_RISK_DETAILS}`,
+          payload: {
+            ...mockPayload,
+            overrideRiskRating: INTEGRATION_DEFAULTS.OVERRIDE_RISK_RATING,
+            overrideLossGivenDefault: INTEGRATION_DEFAULTS.OVERRIDE_LOSS_GIVEN_DEFAULT,
+            riskReassessmentDate: INTEGRATION_DEFAULTS.RISK_REASSESSMENT_DATE,
+            riskMarketCode: INTEGRATION_DEFAULTS.RISK_MARKET_CODE,
+            projectFinance: INTEGRATION_DEFAULTS.PROJECT_FINANCE,
+            linkedFacilityId: INTEGRATION_DEFAULTS.LINKED_FACILITY_ID,
+            originalFacilityEffectiveDate: INTEGRATION_DEFAULTS.ORIGINAL_FACILITY_EFFECTIVE_DATE,
+          },
+        });
+      });
+    });
+
+    describe('when giftHttpService.post is successful', () => {
+      it('should return the response of giftHttpService.post', async () => {
+        // Act
+        const response = await service.createOne(RISK_DETAILS, mockFacilityId, mockWorkPackageId);
+
+        // Assert
+        expect(response).toEqual(mockCreateOneResponse);
+      });
+    });
+
+    describe('when giftHttpService.post returns an error', () => {
+      const mockError = mockResponse500();
+
+      beforeEach(() => {
+        // Arrange
+        mockHttpServicePost = jest.fn().mockRejectedValueOnce(mockError);
+
+        giftHttpService.post = mockHttpServicePost;
+
+        service = new GiftRiskDetailsService(giftHttpService, logger);
+      });
+
+      it('should throw an error', async () => {
+        // Act
+        const promise = service.createOne(RISK_DETAILS, mockFacilityId, mockWorkPackageId);
+
+        // Assert
+        const expected = new Error(`Error creating risk details for facility ${mockFacilityId}`, { cause: mockError });
+
+        await expect(promise).rejects.toThrow(expected);
+      });
+    });
+  });
+});

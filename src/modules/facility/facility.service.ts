@@ -371,7 +371,7 @@ export class FacilityService {
     } = existingFacilityData;
 
     const transactionAmount = this.getUpdatedTransactionAmount(newTransactionValue, oldTransactionValue);
-    const typeCode = this.getAmendFacilityTypeCode(newTransactionValue, oldTransactionValue);
+    const typeCode = this.getAmendFacilityTypeConsumerCode(newTransactionValue, oldTransactionValue);
 
     return {
       PortfolioIdentifier: portfolioIdentifier,
@@ -432,7 +432,7 @@ export class FacilityService {
     return facilityStageCode === '06';
   }
 
-  private getAmendFacilityTypeCode(newTransactionValue: number, oldTransactionValue: number) {
+  private getAmendFacilityTypeConsumerCode(newTransactionValue: number, oldTransactionValue: number) {
     return newTransactionValue > oldTransactionValue ? ENUMS.FACILITY_TRANSACTION_TYPE_CODES.PLUS : ENUMS.FACILITY_TRANSACTION_TYPE_CODES.MINUS;
   }
 

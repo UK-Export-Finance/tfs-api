@@ -1,0 +1,97 @@
+import { ApiProperty } from '@nestjs/swagger';
+import { EXAMPLES, GIFT } from '@ukef/constants';
+import { IsDateString, IsDefined, IsNumber, IsOptional, IsString, Length, Max, Min } from 'class-validator';
+
+const {
+  GIFT: { OBLIGATION, REPAYMENT_PROFILE_ID, REPAYMENT_TYPE },
+} = EXAMPLES;
+
+const {
+  VALIDATION: { OBLIGATION: VALIDATION },
+} = GIFT;
+
+const EXAMPLE = OBLIGATION() as {
+  amount: number;
+  currency: string;
+  effectiveDate: string;
+  linkedRepaymentProfileId: number;
+  maturityDate: string;
+  repaymentType: string;
+  subtypeCode: string;
+};
+
+/**
+ * GIFT "obligation" request DTO.
+ * These fields are required for APIM to create an "obligation" in GIFT.
+ */
+export class GiftObligationRequestDto {
+  @IsDefined()
+  @IsNumber()
+  @Min(VALIDATION.OBLIGATION_AMOUNT.MIN)
+  @Max(VALIDATION.OBLIGATION_AMOUNT.MAX)
+  @ApiProperty({
+    example: EXAMPLE.amount,
+    description: 'The amount of the obligation',
+    required: true,
+  })
+  amount: number;
+
+  @IsDefined()
+  @IsString()
+  @Length(VALIDATION.CURRENCY.MIN_LENGTH, VALIDATION.CURRENCY.MAX_LENGTH)
+  @ApiProperty({
+    example: EXAMPLE.currency,
+    description: 'The currency of the obligation amount, in ISO 4217 format',
+    required: true,
+  })
+  currency: string;
+
+  @IsOptional()
+  @IsDateString()
+  @ApiProperty({
+    example: EXAMPLE.effectiveDate,
+    description: 'The effective date of the obligation (optional)',
+    required: false,
+  })
+  effectiveDate?: string;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(VALIDATION.LINKED_REPAYMENT_PROFILE_ID.MIN)
+  @Max(VALIDATION.LINKED_REPAYMENT_PROFILE_ID.MAX)
+  @ApiProperty({
+    example: REPAYMENT_PROFILE_ID,
+    description: `Optional linked repayment profile ID. overview.repaymentType is "${REPAYMENT_TYPE.BULLET}" (and therefore repayment profiles are required) Note that this currently always defaults to null`,
+    required: false,
+  })
+  linkedRepaymentProfileId?: number;
+
+  @IsOptional()
+  @IsDateString()
+  @ApiProperty({
+    example: EXAMPLE.maturityDate,
+    description: 'The maturity date of the obligation (optional)',
+    required: false,
+  })
+  maturityDate?: string;
+
+  @IsDefined()
+  @IsString()
+  @Length(VALIDATION.REPAYMENT_TYPE.MIN_LENGTH, VALIDATION.REPAYMENT_TYPE.MAX_LENGTH)
+  @ApiProperty({
+    example: EXAMPLE.repaymentType,
+    description: 'The repayment type of the obligation',
+    required: true,
+  })
+  repaymentType: string;
+
+  @IsOptional()
+  @IsString()
+  @Length(VALIDATION.OBLIGATION_SUBTYPE_CODE.MIN_LENGTH, VALIDATION.OBLIGATION_SUBTYPE_CODE.MAX_LENGTH)
+  @ApiProperty({
+    example: EXAMPLE.subtypeCode,
+    description: "Optional obligation subtype code. Required if the product's configuration (APIM MDM/DOM) 'obligationSubtypeCodes' field is populated",
+    required: false,
+  })
+  subtypeCode?: string;
+}
