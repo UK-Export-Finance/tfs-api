@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { Type } from 'class-transformer';
-import { ArrayNotEmpty, IsArray, IsDefined, IsNotEmptyObject, IsOptional, IsString, ValidateNested } from 'class-validator';
+import { ArrayNotEmpty, IsArray, IsBoolean, IsDefined, IsNotEmptyObject, IsOptional, IsString, ValidateNested } from 'class-validator';
 
 import { IsSupportedConsumer, UniqueRepaymentProfileAllocationDates, UniqueRepaymentProfileNames } from '../../custom-decorators';
 import { GiftAccrualScheduleRequestDto } from './accrual-schedule';
@@ -104,4 +104,14 @@ export class GiftFacilityCreationGenericRequestDto {
   @Type(() => GiftRepaymentProfileRequestDto)
   @ValidateNested()
   repaymentProfiles?: GiftRepaymentProfileRequestDto[];
+
+  @IsOptional()
+  @IsBoolean()
+  @ApiProperty({
+    required: false,
+    description:
+      'Indicates whether the creation of the facility should be delayed. For example, if new data was created that ODS/GIFT depends on, ODS needs time to process that data before GIFT can successfully create the facility with it.',
+    example: true,
+  })
+  delayCreation?: boolean;
 }
