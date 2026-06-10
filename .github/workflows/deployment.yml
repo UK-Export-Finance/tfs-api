@@ -47,17 +47,6 @@ on:
       - "tsconfig.build.json"
       - ".github/workflows/deployment.yml"
 
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Deployment target environment'
-        required: true
-        type: choice
-        options:
-          - dev
-          - staging
-          - production
-
 env:
   PRODUCT: apim
   ENVIRONMENT: ${{ inputs.environment || github.ref_name }}
