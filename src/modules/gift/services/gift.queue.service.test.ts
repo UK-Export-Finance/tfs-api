@@ -2,7 +2,7 @@ import { DefaultAzureCredential } from '@azure/identity';
 import { QueueServiceClient } from '@azure/storage-queue';
 import { ConfigService } from '@nestjs/config';
 import { GiftQueueConfig, KEY as GIFT_QUEUE_CONFIG_KEY } from '@ukef/config/gift-queue.config';
-import { GIFT } from '@ukef/constants';
+import { EXAMPLES, GIFT } from '@ukef/constants';
 import { PinoLogger } from 'nestjs-pino';
 
 import { GiftQueueService } from './gift.queue.service';
@@ -15,6 +15,11 @@ const mockStorageAccountName = 'mystorageaccount';
 const mockQueueName = 'gift-requests';
 const mockClientId = 'mock-client-id';
 const { QUEUE_DELAY } = GIFT;
+const { GIFT: GIFT_EXAMPLES } = EXAMPLES;
+
+type EnqueueMessage = Parameters<GiftQueueService['enqueue']>[0];
+type FacilityCreationMessage = Extract<EnqueueMessage, { messageType: 'FACILITY_CREATION' }>;
+type FacilityAmendmentMessage = Extract<EnqueueMessage, { messageType: 'FACILITY_AMENDMENT' }>;
 
 const mockQueueConfig: GiftQueueConfig = {
   storageAccountName: undefined,
@@ -23,20 +28,15 @@ const mockQueueConfig: GiftQueueConfig = {
   queueName: mockQueueName,
 };
 
-const mockCreationMessage = {
+const mockCreationMessage: FacilityCreationMessage = {
   messageType: 'FACILITY_CREATION' as const,
-  payload: {
-    overview: { facilityId: '0030000321' },
-  },
+  payload: GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD,
 };
 
-const mockAmendmentMessage = {
+const mockAmendmentMessage: FacilityAmendmentMessage = {
   messageType: 'FACILITY_AMENDMENT' as const,
-  facilityId: '0030000321',
-  payload: {
-    amendmentType: 'INCREASE_AMOUNT',
-    amendmentData: { amount: 100, date: '2026-01-01' },
-  },
+  facilityId: GIFT_EXAMPLES.FACILITY_ID,
+  payload: GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD,
 };
 
 describe('GiftQueueService', () => {
@@ -150,7 +150,7 @@ describe('GiftQueueService', () => {
       const expectedMessage = Buffer.from(JSON.stringify(mockCreationMessage)).toString('base64');
 
       // Act
-      await service.enqueue(mockCreationMessage as any);
+      await service.enqueue(mockCreationMessage);
 
       // Assert
       expect(mockSendMessage).toHaveBeenCalledTimes(1);
@@ -169,7 +169,7 @@ describe('GiftQueueService', () => {
         const expectedMessage = Buffer.from(JSON.stringify(delayedCreationMessage)).toString('base64');
 
         // Act
-        await service.enqueue(delayedCreationMessage as any);
+        await service.enqueue(delayedCreationMessage);
 
         // Assert
         expect(mockSendMessage).toHaveBeenCalledTimes(1);
@@ -189,7 +189,7 @@ describe('GiftQueueService', () => {
         const expectedMessage = Buffer.from(JSON.stringify(nonDelayedCreationMessage)).toString('base64');
 
         // Act
-        await service.enqueue(nonDelayedCreationMessage as any);
+        await service.enqueue(nonDelayedCreationMessage);
 
         // Assert
         expect(mockSendMessage).toHaveBeenCalledTimes(1);
@@ -202,7 +202,7 @@ describe('GiftQueueService', () => {
         const expectedMessage = Buffer.from(JSON.stringify(mockAmendmentMessage)).toString('base64');
 
         // Act
-        await service.enqueue(mockAmendmentMessage as any);
+        await service.enqueue(mockAmendmentMessage);
 
         // Assert
         expect(mockSendMessage).toHaveBeenCalledTimes(1);
@@ -213,7 +213,7 @@ describe('GiftQueueService', () => {
     describe('when queueClient.sendMessage is successful', () => {
       it('should resolve without returning a value', async () => {
         // Act
-        const result = await service.enqueue(mockCreationMessage as any);
+        const result = await service.enqueue(mockCreationMessage);
 
         // Assert
         expect(result).toBeUndefined();
@@ -236,7 +236,7 @@ describe('GiftQueueService', () => {
 
       it('should throw the error', async () => {
         // Act
-        const promise = service.enqueue(mockCreationMessage as any);
+        const promise = service.enqueue(mockCreationMessage);
 
         // Assert
         await expect(promise).rejects.toThrow(mockError);
