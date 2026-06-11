@@ -60,7 +60,7 @@ export class GiftQueueService {
    * @param message - The message payload to enqueue.
    */
   async enqueue(messageInput: GiftQueueMessage): Promise<void> {
-    this.logger.info('Enqueuing GIFT request message');
+    this.logger.info('Attempting to enqueue GIFT request message %s', messageInput.messageType);
 
     const message = Buffer.from(JSON.stringify(messageInput)).toString('base64');
 
@@ -68,12 +68,16 @@ export class GiftQueueService {
 
     const options: { visibilityTimeout?: number } = {};
 
-    if (messageType === MESSAGE_TYPES.FACILITY_CREATION && payload.delayCreation) {
+    const isFacilityCreationWithDelay = messageType === MESSAGE_TYPES.FACILITY_CREATION && payload.delayCreation;
+
+    if (isFacilityCreationWithDelay) {
       options['visibilityTimeout'] = QUEUE_DELAY;
     }
 
     await this.queueClient.sendMessage(message, options);
 
-    this.logger.info('GIFT request message enqueued');
+    const delayCopy = isFacilityCreationWithDelay ? `with delay` : '';
+
+    this.logger.info('GIFT request message %s enqueued %s', messageInput.messageType, delayCopy);
   }
 }
