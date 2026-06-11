@@ -83,7 +83,7 @@ export class GiftFacilityController {
     type: GiftFacilityCreationRequestDto,
   })
   @ApiAcceptedResponse({
-    description: 'The facility creation request has been accepted and queued',
+    description: 'The facility creation request has been accepted and added to the queue',
   })
   @ApiBadRequestResponse({
     description: 'Bad request',
@@ -114,7 +114,7 @@ export class GiftFacilityController {
     type: CreateGiftFacilityAmendmentRequestDto,
   })
   @ApiAcceptedResponse({
-    description: 'The facility amendment request has been accepted and queued',
+    description: 'The facility amendment request has been accepted and added to the queue',
   })
   @ApiBadRequestResponse({
     description: 'Bad request',

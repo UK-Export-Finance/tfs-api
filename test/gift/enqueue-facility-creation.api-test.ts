@@ -37,7 +37,7 @@ describe('POST /gift/facility', () => {
   });
 
   describe('when the payload is valid', () => {
-    it('should return 202', async () => {
+    it(`should return ${HttpStatus.ACCEPTED}`, async () => {
       const { status } = await api.post(apimFacilityUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
 
       expect(status).toBe(HttpStatus.ACCEPTED);
@@ -48,6 +48,18 @@ describe('POST /gift/facility', () => {
 
       expect(enqueueSpy).toHaveBeenCalledTimes(1);
       expect(enqueueSpy).toHaveBeenCalledWith({ messageType: 'FACILITY_CREATION', payload: GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD });
+    });
+
+    it('should call giftQueueService.enqueue with delayCreation when provided', async () => {
+      const payloadWithDelayedCreation = {
+        ...GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD,
+        delayCreation: true,
+      };
+
+      await api.post(apimFacilityUrl, payloadWithDelayedCreation);
+
+      expect(enqueueSpy).toHaveBeenCalledTimes(1);
+      expect(enqueueSpy).toHaveBeenCalledWith({ messageType: 'FACILITY_CREATION', payload: payloadWithDelayedCreation });
     });
   });
 });

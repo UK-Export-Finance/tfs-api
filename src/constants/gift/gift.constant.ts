@@ -155,6 +155,7 @@ export const GIFT = {
     LINKED_FACILITY_ID: null,
     ORIGINAL_FACILITY_EFFECTIVE_DATE: null,
   },
+  QUEUE_DELAY: 5 * 60 * 60, // 5 hours
   PATH: {
     AMENDMENT: '/amendment',
     APPROVE: '/approve',
