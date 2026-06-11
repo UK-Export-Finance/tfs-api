@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/UK-Export-Finance/tfs-api/compare/v2.0.0...v2.1.0) (2026-06-11)
+
+
+### Features
+
+* **DTFS2-8437:** create a gift facility - optional queue delay ([#1391](https://github.com/UK-Export-Finance/tfs-api/issues/1391)) ([33201db](https://github.com/UK-Export-Finance/tfs-api/commit/33201db4ec11587f7f108a108e85f733ee052753))
+
 ## [2.0.0](https://github.com/UK-Export-Finance/tfs-api/compare/v1.0.0...v2.0.0) (2026-06-10)
 
 
