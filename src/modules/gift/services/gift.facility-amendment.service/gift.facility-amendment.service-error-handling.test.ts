@@ -43,11 +43,6 @@ const mockFacilityResponseData = {
 describe('GiftFacilityAmendmentService - error handling', () => {
   const logger = new PinoLogger({});
 
-  const unsupportedAmendmentPayload = {
-    ...mockPayload,
-    amendmentType: 'UnsupportedAmendmentType',
-  };
-
   let giftHttpService;
   let service: GiftFacilityAmendmentService;
 
@@ -292,10 +287,10 @@ describe('GiftFacilityAmendmentService - error handling', () => {
 
         it('should throw an error', async () => {
           // Act
-          const response = service.create(mockFacilityId, unsupportedAmendmentPayload);
+          const response = service.create(mockFacilityId, mockPayload);
 
           // Assert
-          await expect(response).rejects.toThrow(`Error creating amendment ${unsupportedAmendmentPayload.amendmentType} for facility ${mockFacilityId}`);
+          await expect(response).rejects.toThrow(`Error creating amendment ${mockPayload.amendmentType} for facility ${mockFacilityId}`);
         });
       });
     });
@@ -312,10 +307,10 @@ describe('GiftFacilityAmendmentService - error handling', () => {
         buildService();
 
         // Act
-        const response = service.create(mockFacilityId, unsupportedAmendmentPayload);
+        const response = service.create(mockFacilityId, mockPayload);
 
         // Assert
-        await expect(response).rejects.toThrow(`Error creating amendment ${unsupportedAmendmentPayload.amendmentType} for facility ${mockFacilityId}`);
+        await expect(response).rejects.toThrow(`Error creating amendment ${mockPayload.amendmentType} for facility ${mockFacilityId}`);
       });
     });
   });
