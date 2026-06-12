@@ -94,8 +94,8 @@ export class GiftFacilityController {
   @ApiInternalServerErrorResponse({
     description: 'An internal server error has occurred',
   })
-  async postQueue(@Body(new ValidationPipe({ transform: true })) facilityData: GiftFacilityCreationRequestDto, @Res({ passthrough: true }) res: Response) {
-    await this.giftQueueService.enqueue({ messageType: 'FACILITY_CREATION', payload: facilityData });
+  async postQueue(@Body() facilityData: Record<string, unknown>, @Res({ passthrough: true }) res: Response) {
+    await this.giftQueueService.enqueue({ messageType: 'FACILITY_CREATION', payload: facilityData as unknown as GiftFacilityCreationRequestDto });
 
     res.status(HttpStatus.ACCEPTED);
   }
@@ -127,10 +127,14 @@ export class GiftFacilityController {
   })
   async postAmendmentQueue(
     @Param() { facilityId }: FacilityIdOperationParamsDto,
-    @Body(new ValidationPipe({ transform: true })) amendmentData: CreateGiftFacilityAmendmentRequestDto,
+    @Body() amendmentData: Record<string, unknown>,
     @Res({ passthrough: true }) res: Response,
   ) {
-    await this.giftQueueService.enqueue({ messageType: 'FACILITY_AMENDMENT', facilityId, payload: amendmentData });
+    await this.giftQueueService.enqueue({
+      messageType: 'FACILITY_AMENDMENT',
+      facilityId,
+      payload: amendmentData as unknown as CreateGiftFacilityAmendmentRequestDto,
+    });
 
     res.status(HttpStatus.ACCEPTED);
   }
