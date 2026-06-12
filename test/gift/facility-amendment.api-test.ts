@@ -90,7 +90,13 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
             return [HttpStatus.CREATED, mockResponses.facilityAmendment];
           });
 
-        nock(GIFT_API_URL).post(approveStatusUrl).reply(HttpStatus.OK, mockResponses.approveStatus);
+        nock(GIFT_API_URL)
+          .post(approveStatusUrl)
+          .reply(() => {
+            callOrder.push('approveStatus');
+
+            return [HttpStatus.OK, mockResponses.approveStatus];
+          });
 
         const mockPayload = {
           amendmentType: AMEND_FACILITY_INCREASE_AMOUNT,
@@ -107,7 +113,7 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
           isApproved: true,
         });
 
-        expect(callOrder).toStrictEqual(['workPackage', 'facilityAmendment', 'obligationAmendment']);
+        expect(callOrder).toStrictEqual(['workPackage', 'facilityAmendment', 'obligationAmendment', 'approveStatus']);
       });
     });
   });
@@ -151,7 +157,13 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
             return [HttpStatus.CREATED, mockResponses.facilityAmendment];
           });
 
-        nock(GIFT_API_URL).post(approveStatusUrl).reply(HttpStatus.OK, mockResponses.approveStatus);
+        nock(GIFT_API_URL)
+          .post(approveStatusUrl)
+          .reply(() => {
+            callOrder.push('approveStatus');
+
+            return [HttpStatus.OK, mockResponses.approveStatus];
+          });
 
         const mockPayload = {
           amendmentType: AMEND_FACILITY_DECREASE_AMOUNT,
@@ -169,7 +181,7 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
           isApproved: true,
         });
 
-        expect(callOrder).toStrictEqual(['workPackage', 'obligationAmendment', 'facilityAmendment']);
+        expect(callOrder).toStrictEqual(['workPackage', 'obligationAmendment', 'facilityAmendment', 'approveStatus']);
       });
     });
   });
@@ -215,7 +227,13 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
             return [HttpStatus.CREATED, mockResponses.facilityAmendment];
           });
 
-        nock(GIFT_API_URL).post(approveStatusUrl).reply(HttpStatus.OK, mockResponses.approveStatus);
+        nock(GIFT_API_URL)
+          .post(approveStatusUrl)
+          .reply(() => {
+            callOrder.push('approveStatus');
+
+            return [HttpStatus.OK, mockResponses.approveStatus];
+          });
 
         const mockPayload = {
           amendmentType: AMEND_FACILITY_REPLACE_EXPIRY_DATE,
@@ -232,7 +250,7 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
           isApproved: true,
         });
 
-        expect(callOrder).toStrictEqual(['workPackage', 'facilityAmendment', 'obligationMaturityDateAmendment']);
+        expect(callOrder).toStrictEqual(['workPackage', 'facilityAmendment', 'obligationMaturityDateAmendment', 'approveStatus']);
       });
 
       describe('when new facility expiry date is before the existing expiry date', () => {
@@ -276,7 +294,13 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
               return [HttpStatus.CREATED, mockResponses.facilityAmendment];
             });
 
-          nock(GIFT_API_URL).post(approveStatusUrl).reply(HttpStatus.OK, mockResponses.approveStatus);
+          nock(GIFT_API_URL)
+            .post(approveStatusUrl)
+            .reply(() => {
+              callOrder.push('approveStatus');
+
+              return [HttpStatus.OK, mockResponses.approveStatus];
+            });
 
           const mockPayload = {
             amendmentType: AMEND_FACILITY_REPLACE_EXPIRY_DATE,
@@ -293,7 +317,7 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
             isApproved: true,
           });
 
-          expect(callOrder).toStrictEqual(['workPackage', 'obligationMaturityDateAmendment', 'facilityAmendment']);
+          expect(callOrder).toStrictEqual(['workPackage', 'obligationMaturityDateAmendment', 'facilityAmendment', 'approveStatus']);
         });
       });
     });

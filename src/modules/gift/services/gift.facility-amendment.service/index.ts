@@ -171,19 +171,17 @@ export class GiftFacilityAmendmentService {
         }
       }
 
-      const approvalResponse = await this.approveWorkPackage(facilityId, workPackageId);
-
       // TODO: GIFT-20331 - validation handling
 
-      const returnResponse = {
+      const approvalResponse = await this.approveWorkPackage(facilityId, workPackageId);
+
+      return {
         status: HttpStatus.CREATED,
         data: {
           ...(createdAmendmentData ?? approvalResponse.data),
           isApproved: true,
         },
       };
-
-      return returnResponse;
     } catch (error) {
       this.logger.error('Error creating amendment %s for facility %s %o', amendmentType, facilityId, error);
 

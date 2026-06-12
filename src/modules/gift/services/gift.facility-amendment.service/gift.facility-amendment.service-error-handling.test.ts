@@ -42,6 +42,10 @@ const mockFacilityResponseData = {
 
 describe('GiftFacilityAmendmentService - error handling', () => {
   const logger = new PinoLogger({});
+  const unsupportedAmendmentPayload = {
+    ...mockPayload,
+    amendmentType: 'UnsupportedAmendmentType',
+  } as any;
 
   let giftHttpService;
   let service: GiftFacilityAmendmentService;
@@ -250,6 +254,15 @@ describe('GiftFacilityAmendmentService - error handling', () => {
   });
 
   describe('giftStatusService.approved', () => {
+    it('should call giftStatusService.approved for amount amendments', async () => {
+      // Act
+      await service.create(mockFacilityId, mockPayload);
+
+      // Assert
+      expect(mockStatusServiceApproved).toHaveBeenCalledTimes(1);
+      expect(mockStatusServiceApproved).toHaveBeenCalledWith(mockFacilityId, WORK_PACKAGE_CREATION_RESPONSE_DATA.id);
+    });
+
     describe(`when giftStatusService.approved does NOT return a ${HttpStatus.OK} status`, () => {
       describe.each([
         HttpStatus.ACCEPTED,
@@ -278,10 +291,10 @@ describe('GiftFacilityAmendmentService - error handling', () => {
 
         it('should throw an error', async () => {
           // Act
-          const response = service.create(mockFacilityId, mockPayload);
+          const response = service.create(mockFacilityId, unsupportedAmendmentPayload);
 
           // Assert
-          await expect(response).rejects.toThrow(`Error creating amendment ${mockPayload.amendmentType} for facility ${mockFacilityId}`);
+          await expect(response).rejects.toThrow(`Error creating amendment ${unsupportedAmendmentPayload.amendmentType} for facility ${mockFacilityId}`);
         });
       });
     });
@@ -298,10 +311,10 @@ describe('GiftFacilityAmendmentService - error handling', () => {
         buildService();
 
         // Act
-        const response = service.create(mockFacilityId, mockPayload);
+        const response = service.create(mockFacilityId, unsupportedAmendmentPayload);
 
         // Assert
-        await expect(response).rejects.toThrow(`Error creating amendment ${mockPayload.amendmentType} for facility ${mockFacilityId}`);
+        await expect(response).rejects.toThrow(`Error creating amendment ${unsupportedAmendmentPayload.amendmentType} for facility ${mockFacilityId}`);
       });
     });
   });
