@@ -42,10 +42,11 @@ const mockFacilityResponseData = {
 
 describe('GiftFacilityAmendmentService - error handling', () => {
   const logger = new PinoLogger({});
+
   const unsupportedAmendmentPayload = {
     ...mockPayload,
     amendmentType: 'UnsupportedAmendmentType',
-  } as any;
+  };
 
   let giftHttpService;
   let service: GiftFacilityAmendmentService;
