@@ -261,6 +261,38 @@ describe('GiftAmountAmendmentService', () => {
       expect(response).toEqual([responseOne, responseTwo]);
     });
 
+    describe('when facilityCategoryCode is not provided', () => {
+      it('should use the default obligation percentage', async () => {
+        // Arrange
+        const response = mockResponse201({ id: 'obligation-amendment' });
+
+        mockHttpServicePost = jest.fn().mockResolvedValueOnce(response);
+        giftHttpService.post = mockHttpServicePost;
+
+        service = new GiftAmountAmendmentService(giftHttpService, logger);
+
+        // Act
+        await service.obligations({
+          amendmentType: AMEND_FACILITY_INCREASE_AMOUNT,
+          date: mockDate,
+          facilityId: mockFacilityId,
+          newFacilityAmount: mockNewFacilityAmount,
+          obligations: [{ id: '1' }],
+          workPackageId: mockWorkPackageId,
+        });
+
+        // Assert
+        expect(mockHttpServicePost).toHaveBeenCalledWith({
+          path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${AMEND_FACILITY_PREFIX_TYPES.AMEND_OBLIGATION}${AMEND_FACILITY_INCREASE_AMOUNT}`,
+          payload: {
+            obligationId: '1',
+            date: mockDate,
+            amount: mockNewFacilityAmount,
+          },
+        });
+      });
+    });
+
     it('should throw an error when the facility amount is not an integer', async () => {
       // Act
       const promise = service.obligations({

@@ -250,6 +250,15 @@ describe('GiftFacilityAmendmentService - error handling', () => {
   });
 
   describe('giftStatusService.approved', () => {
+    it('should call giftStatusService.approved for amount amendments', async () => {
+      // Act
+      await service.create(mockFacilityId, mockPayload);
+
+      // Assert
+      expect(mockStatusServiceApproved).toHaveBeenCalledTimes(1);
+      expect(mockStatusServiceApproved).toHaveBeenCalledWith(mockFacilityId, WORK_PACKAGE_CREATION_RESPONSE_DATA.id);
+    });
+
     describe(`when giftStatusService.approved does NOT return a ${HttpStatus.OK} status`, () => {
       describe.each([
         HttpStatus.ACCEPTED,

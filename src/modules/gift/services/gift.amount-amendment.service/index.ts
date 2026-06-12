@@ -19,7 +19,7 @@ type AmendFacilityAmountParams = GiftAmendmentBaseParams & {
 
 type AmendObligationsParams = GiftAmendmentBaseParams & {
   date: string;
-  facilityCategoryCode: FacilityCategoryCode;
+  facilityCategoryCode?: FacilityCategoryCode | null;
   newFacilityAmount: number;
   obligations: { id: string }[];
 };
@@ -95,8 +95,11 @@ export class GiftAmountAmendmentService {
       /**
        * NOTE: currently only 1x obligation will exist for a facility.
        * Need to update this logic if an integration has more than 1x obligation.
+       *
+       * Some facilities do not have facility category codes.
+       * In this instance, the percentage should be 100%.
        */
-      const percentage = PERCENTAGE_OF_FACILITY_AMOUNT[`${facilityCategoryCode}`];
+      const percentage = (facilityCategoryCode ? PERCENTAGE_OF_FACILITY_AMOUNT[`${facilityCategoryCode}`] : undefined) ?? PERCENTAGE_OF_FACILITY_AMOUNT.OTHER;
 
       const newObligationAmount = calculatePercentageAmount(newFacilityAmount, percentage);
 

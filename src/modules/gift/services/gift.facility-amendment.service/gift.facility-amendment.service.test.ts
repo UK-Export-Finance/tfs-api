@@ -142,6 +142,15 @@ describe('GiftFacilityAmendmentService', () => {
 
       expect(mockAmountAmendmentServiceFacility.mock.invocationCallOrder[0]).toBeLessThan(mockAmountAmendmentServiceObligations.mock.invocationCallOrder[0]);
     });
+
+    it('should call giftStatusService.approved', async () => {
+      // Act
+      await service.create(mockFacilityId, increasePayload);
+
+      // Assert
+      expect(mockStatusServiceApproved).toHaveBeenCalledTimes(1);
+      expect(mockStatusServiceApproved).toHaveBeenCalledWith(mockFacilityId, mockWorkPackageId);
+    });
   });
 
   describe(`when the amendment is ${AMEND_FACILITY_DECREASE_AMOUNT}`, () => {
@@ -176,6 +185,15 @@ describe('GiftFacilityAmendmentService', () => {
       });
 
       expect(mockAmountAmendmentServiceObligations.mock.invocationCallOrder[0]).toBeLessThan(mockAmountAmendmentServiceFacility.mock.invocationCallOrder[0]);
+    });
+
+    it('should call giftStatusService.approved', async () => {
+      // Act
+      await service.create(mockFacilityId, decreasePayload);
+
+      // Assert
+      expect(mockStatusServiceApproved).toHaveBeenCalledTimes(1);
+      expect(mockStatusServiceApproved).toHaveBeenCalledWith(mockFacilityId, mockWorkPackageId);
     });
   });
 
@@ -287,16 +305,40 @@ describe('GiftFacilityAmendmentService', () => {
 
       expect(response).toStrictEqual(expected);
     });
+
+    it('should call giftStatusService.approved', async () => {
+      // Act
+      await service.create(mockFacilityId, replaceExpiryDatePayload);
+
+      // Assert
+      expect(mockStatusServiceApproved).toHaveBeenCalledTimes(1);
+      expect(mockStatusServiceApproved).toHaveBeenCalledWith(mockFacilityId, mockWorkPackageId);
+    });
   });
 
-  it('should call giftStatusService.approved', async () => {
-    // Act
-    await service.create(mockFacilityId, mockPayload);
+  describe('giftStatusService.approved', () => {
+    it('should call giftStatusService.approved when no amendment response data is created before approval', async () => {
+      // Arrange
+      const unsupportedAmendmentPayload = {
+        ...mockPayload,
+        amendmentType: 'UnsupportedAmendmentType',
+      } as unknown as Parameters<GiftFacilityAmendmentService['create']>[1];
 
-    // Assert
-    expect(mockStatusServiceApproved).toHaveBeenCalledTimes(1);
+      // Act
+      const response = await service.create(mockFacilityId, unsupportedAmendmentPayload);
 
-    expect(mockStatusServiceApproved).toHaveBeenCalledWith(mockFacilityId, mockWorkPackageId);
+      // Assert
+      expect(mockStatusServiceApproved).toHaveBeenCalledTimes(1);
+      expect(mockStatusServiceApproved).toHaveBeenCalledWith(mockFacilityId, mockWorkPackageId);
+
+      expect(response).toEqual({
+        status: HttpStatus.CREATED,
+        data: {
+          ...WORK_PACKAGE_APPROVE_RESPONSE_DATA,
+          isApproved: true,
+        },
+      });
+    });
   });
 
   describe('when all calls are successful', () => {

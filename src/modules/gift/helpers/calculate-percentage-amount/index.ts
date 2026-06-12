@@ -19,6 +19,10 @@ const PERCENT_DENOMINATOR = 100n;
  * @example
  * calculatePercentageAmount(152, 85);
  * // 129
+ *
+ * @example
+ * calculatePercentageAmount(150, 100);
+ * // 150
  */
 export const calculatePercentageAmount = (amount: number, percentage: number): number => {
   if (!Number.isSafeInteger(amount)) {
