@@ -260,7 +260,7 @@ describe('GiftFacilityController', () => {
   });
 
   describe('POST /', () => {
-    const mockBody = FACILITY_CREATION_PAYLOAD as unknown as Record<string, unknown>;
+    const mockBody = FACILITY_CREATION_PAYLOAD;
 
     it('should call giftQueueService.enqueue with the facility creation message and message type', async () => {
       // Act
@@ -283,7 +283,7 @@ describe('GiftFacilityController', () => {
 
   describe('POST :facilityId/amendment', () => {
     const mockParams = { facilityId: mockFacilityId };
-    const mockBody = FACILITY_AMENDMENT_REQUEST_PAYLOAD as unknown as Record<string, unknown>;
+    const mockBody = FACILITY_AMENDMENT_REQUEST_PAYLOAD;
 
     it('should call giftQueueService.enqueue with the facility amendment message and message type', async () => {
       // Act
