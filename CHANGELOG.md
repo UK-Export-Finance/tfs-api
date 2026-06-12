@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.1](https://github.com/UK-Export-Finance/tfs-api/compare/v2.1.0...v2.1.1) (2026-06-12)
+
+
+### Bug Fixes
+
+* **DTFS2-8478:** remove validation from queue endpoints ([#1394](https://github.com/UK-Export-Finance/tfs-api/issues/1394)) ([a02ee68](https://github.com/UK-Export-Finance/tfs-api/commit/a02ee68258ca4fd3ae321dad46995031bf985cf2))
+
 ## [2.1.0](https://github.com/UK-Export-Finance/tfs-api/compare/v2.0.0...v2.1.0) (2026-06-11)
 
 
