@@ -1,6 +1,6 @@
 {
   "name": "tfs-api",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "private": true,
   "description": "Trade Finance Services API",
   "license": "MIT",

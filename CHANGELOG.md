@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.2](https://github.com/UK-Export-Finance/tfs-api/compare/v2.1.1...v2.1.2) (2026-06-12)
+
+
+### Bug Fixes
+
+* **DTFS2-8432:** amend a gift facility amount - percentage ([#1393](https://github.com/UK-Export-Finance/tfs-api/issues/1393)) ([22419b1](https://github.com/UK-Export-Finance/tfs-api/commit/22419b16069fee9f1cb060691d53f41ea1162acf))
+
 ## [2.1.1](https://github.com/UK-Export-Finance/tfs-api/compare/v2.1.0...v2.1.1) (2026-06-12)
 
 
