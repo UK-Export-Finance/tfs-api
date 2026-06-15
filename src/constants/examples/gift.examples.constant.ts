@@ -273,6 +273,7 @@ const FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA = {
   },
   REPLACE_EXPIRY_DATE: {
     expiryDate: '2030-03-20',
+    updateObligationDates: true,
   },
 };
 

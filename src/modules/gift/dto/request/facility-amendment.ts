@@ -2,7 +2,7 @@ import { ApiExtraModels, ApiProperty, getSchemaPath } from '@nestjs/swagger';
 import { AMEND_FACILITY_TYPES_CONSUMER_ARRAY, AmendFacilityTypeConsumer, GIFT } from '@ukef/constants';
 import { GIFT_EXAMPLES } from '@ukef/constants/examples/gift.examples.constant';
 import { plainToInstance, Transform } from 'class-transformer';
-import { IsDateString, IsDefined, IsIn, IsNumber, IsObject, IsString, Length, Max, Min, ValidateNested } from 'class-validator';
+import { IsBoolean, IsDateString, IsDefined, IsIn, IsNumber, IsObject, IsOptional, IsString, Length, Max, Min, ValidateNested } from 'class-validator';
 
 import { getAmendmentDataDto } from '../../helpers';
 
@@ -37,9 +37,19 @@ export class ReplaceExpiryDateDto {
   @IsDateString()
   @ApiProperty({
     required: true,
+    description: 'The new expiry date for the facility.',
     example: GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA.REPLACE_EXPIRY_DATE.expiryDate,
   })
   expiryDate: string;
+
+  @IsOptional()
+  @IsBoolean()
+  @ApiProperty({
+    required: false,
+    description: 'Indicates whether the obligation dates should be updated when the expiry date is replaced.',
+    example: true,
+  })
+  updateObligationDates?: boolean;
 }
 
 @ApiExtraModels(DecreaseAmountDto, IncreaseAmountDto, ReplaceExpiryDateDto)

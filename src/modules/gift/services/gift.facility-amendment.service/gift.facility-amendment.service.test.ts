@@ -240,6 +240,7 @@ describe('GiftFacilityAmendmentService', () => {
         const earlierExpiryDatePayload = {
           ...replaceExpiryDatePayload,
           amendmentData: {
+            ...EXAMPLES.GIFT.FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA.REPLACE_EXPIRY_DATE,
             expiryDate: '2026-01-01',
           },
         };
@@ -269,6 +270,32 @@ describe('GiftFacilityAmendmentService', () => {
         expect(mockReplaceExpiryDateAmendmentServiceObligations.mock.invocationCallOrder[0]).toBeLessThan(
           mockReplaceExpiryDateAmendmentServiceFacility.mock.invocationCallOrder[0],
         );
+      });
+    });
+
+    describe('when updateObligationDates is NOT passed', () => {
+      it('should call only giftReplaceExpiryDateAmendmentService.facility', async () => {
+        // Arrange
+        const payloadWithoutUpdateObligationDates = {
+          ...replaceExpiryDatePayload,
+          amendmentData: {
+            expiryDate: replaceExpiryDatePayload.amendmentData.expiryDate,
+          },
+        };
+
+        // Act
+        await service.create(mockFacilityId, payloadWithoutUpdateObligationDates);
+
+        // Assert
+        expect(mockReplaceExpiryDateAmendmentServiceFacility).toHaveBeenCalledTimes(1);
+        expect(mockReplaceExpiryDateAmendmentServiceObligations).toHaveBeenCalledTimes(0);
+
+        expect(mockReplaceExpiryDateAmendmentServiceFacility).toHaveBeenNthCalledWith(1, {
+          amendmentType: payloadWithoutUpdateObligationDates.amendmentType,
+          facilityId: mockFacilityId,
+          workPackageId: mockWorkPackageId,
+          expiryDate: payloadWithoutUpdateObligationDates.amendmentData.expiryDate,
+        });
       });
     });
 

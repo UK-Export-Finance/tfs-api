@@ -134,21 +134,27 @@ export class GiftFacilityAmendmentService {
       }
 
       /**
-       * If the amendment is "replace expiry date", the new facility expiry date will impact the obligation maturity dates.
+       * If the amendment is "replace expiry date",
+       * and a "updateObligationDates" flag is passed,
+       * the new facility expiry date will impact the obligation maturity dates.
+       *
        * If the new expiry date is greater than the current expiry date, execute in the following order:
        * 1) Amend the facility
        * 2) Amend obligations maturity dates
        *
        * If the new expiry date is less than the current expiry date, the order is reversed.
+       *
+       * Otherwise, if "updateObligationDates" is not passed,
+       * the obligation dates automatically follow the facility dates in GIFT, so no need to udpate.
        */
       if (isReplaceExpiryDateAmendment(amendment)) {
         const {
-          amendmentData: { expiryDate },
+          amendmentData: { expiryDate, updateObligationDates },
         } = amendment;
 
         const { expiryDate: originalFacilityExpiryDate } = facility;
 
-        const shouldAmendObligationsFirst = new Date(expiryDate).getTime() < new Date(originalFacilityExpiryDate).getTime();
+        const shouldAmendObligationsFirst = updateObligationDates && new Date(expiryDate).getTime() < new Date(originalFacilityExpiryDate).getTime();
 
         const baseParams = {
           amendmentType,
@@ -156,7 +162,11 @@ export class GiftFacilityAmendmentService {
           workPackageId,
         };
 
-        if (shouldAmendObligationsFirst) {
+        if (!updateObligationDates) {
+          const facilityResponse = await this.giftReplaceExpiryDateAmendmentService.facility({ ...baseParams, expiryDate });
+
+          createdAmendmentData = facilityResponse.data;
+        } else if (shouldAmendObligationsFirst) {
           await this.giftReplaceExpiryDateAmendmentService.obligations({ ...baseParams, facilityExpiryDate: expiryDate, obligations });
 
           const facilityResponse = await this.giftReplaceExpiryDateAmendmentService.facility({ ...baseParams, expiryDate });
