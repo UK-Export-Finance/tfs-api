@@ -142,7 +142,10 @@ export class GiftFacilityAmendmentService {
       /**
        * If the amendment is "replace expiry date",
        * and any obligation has maturityDateFollowsFacility=true,
-       * the new facility expiry date will impact the obligation maturity dates.
+       * GIFT will automatically update the obligation maturity dates to match the new facility expiry date.
+       *
+       * However, if any obligation has maturityDateFollowsFacility=false,
+       * GIFT will not update the obligation maturity dates, so we need to udpate them manually.
        *
        * If the new expiry date is greater than the current expiry date, execute in the following order:
        * 1) Amend the facility
