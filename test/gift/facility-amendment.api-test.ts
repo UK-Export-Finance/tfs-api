@@ -60,7 +60,7 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
         nock(GIFT_API_URL)
           .get(facilityUrl)
           .reply(HttpStatus.OK, {
-            obligations: [{ id: 'obligation-1' }],
+            obligations: [{ id: 'obligation-1', maturityDateFollowsFacility: true }],
             riskDetails: {
               facilityCategoryCode: GIFT.FACILITY_CATEGORY_CODES.CASH,
             },
@@ -127,7 +127,7 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
         nock(GIFT_API_URL)
           .get(facilityUrl)
           .reply(HttpStatus.OK, {
-            obligations: [{ id: 'obligation-1' }],
+            obligations: [{ id: 'obligation-1', maturityDateFollowsFacility: true }],
             riskDetails: {
               facilityCategoryCode: GIFT.FACILITY_CATEGORY_CODES.CASH,
             },
@@ -197,7 +197,7 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
         nock(GIFT_API_URL)
           .get(facilityUrl)
           .reply(HttpStatus.OK, {
-            obligations: [{ id: 'obligation-1' }],
+            obligations: [{ id: 'obligation-1', maturityDateFollowsFacility: true }],
             riskDetails: {
               facilityCategoryCode: GIFT.FACILITY_CATEGORY_CODES.CASH,
             },
@@ -264,7 +264,7 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
             .get(facilityUrl)
             .reply(HttpStatus.OK, {
               expiryDate: '2035-01-01',
-              obligations: [{ id: 'obligation-1' }],
+              obligations: [{ id: 'obligation-1', maturityDateFollowsFacility: true }],
               riskDetails: {
                 facilityCategoryCode: GIFT.FACILITY_CATEGORY_CODES.CASH,
               },
@@ -321,7 +321,7 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
         });
       });
 
-      describe('when updateObligationDates is not provided', () => {
+      describe('when no obligations have maturityDateFollowsFacility set to true', () => {
         it('should not call obligation maturity date amendment endpoint', async () => {
           // Arrange
           const callOrder: string[] = [];
@@ -330,7 +330,7 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
             .get(facilityUrl)
             .reply(HttpStatus.OK, {
               expiryDate: '2035-01-01',
-              obligations: [{ id: 'obligation-1' }],
+              obligations: [{ id: 'obligation-1', maturityDateFollowsFacility: false }],
               riskDetails: {
                 facilityCategoryCode: GIFT.FACILITY_CATEGORY_CODES.CASH,
               },
@@ -364,6 +364,138 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
             amendmentType: AMEND_FACILITY_REPLACE_EXPIRY_DATE,
             amendmentData: {
               expiryDate: GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA.REPLACE_EXPIRY_DATE.expiryDate,
+            },
+          };
+
+          // Act
+          const { status, body } = await api.post(apimFacilityAmendmentWithoutQueueUrl, mockPayload);
+
+          // Assert
+          expect(status).toBe(HttpStatus.CREATED);
+          expect(body).toStrictEqual({
+            ...mockResponses.facilityAmendment,
+            isApproved: true,
+          });
+
+          expect(callOrder).toStrictEqual(['workPackage', 'facilityAmendment', 'approveStatus']);
+        });
+      });
+
+      describe('when obligations follow facility maturity dates', () => {
+        it('should call obligation maturity date amendment endpoint', async () => {
+          // Arrange
+          const callOrder: string[] = [];
+
+          const replaceMaturityDateUrl = `${GIFT.PATH.FACILITY}/${mockFacilityId}${GIFT.PATH.WORK_PACKAGE}/${mockWorkPackageId}${GIFT.PATH.CONFIGURATION_EVENT}/${AMEND_FACILITY_PREFIX_TYPES.AMEND_OBLIGATION}ReplaceMaturityDate`;
+
+          nock(GIFT_API_URL)
+            .get(facilityUrl)
+            .reply(HttpStatus.OK, {
+              expiryDate: '2035-01-01',
+              obligations: [{ id: 'obligation-1', maturityDateFollowsFacility: true }],
+              riskDetails: {
+                facilityCategoryCode: GIFT.FACILITY_CATEGORY_CODES.CASH,
+              },
+            });
+
+          nock(GIFT_API_URL)
+            .post(facilityWorkPackageUrl)
+            .reply(() => {
+              callOrder.push('workPackage');
+
+              return [HttpStatus.CREATED, mockResponses.workPackageCreation];
+            });
+
+          nock(GIFT_API_URL)
+            .post(facilityAmendmentUrl(AMEND_FACILITY_REPLACE_EXPIRY_DATE))
+            .reply(() => {
+              callOrder.push('facilityAmendment');
+
+              return [HttpStatus.CREATED, mockResponses.facilityAmendment];
+            });
+
+          nock(GIFT_API_URL)
+            .post(replaceMaturityDateUrl)
+            .reply(() => {
+              callOrder.push('obligationMaturityDateAmendment');
+
+              return [HttpStatus.CREATED, mockResponses.facilityAmendment];
+            });
+
+          nock(GIFT_API_URL)
+            .post(approveStatusUrl)
+            .reply(() => {
+              callOrder.push('approveStatus');
+
+              return [HttpStatus.OK, mockResponses.approveStatus];
+            });
+
+          const mockPayload = {
+            amendmentType: AMEND_FACILITY_REPLACE_EXPIRY_DATE,
+            amendmentData: {
+              ...GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA.REPLACE_EXPIRY_DATE,
+              updateObligationDates: false,
+            },
+          };
+
+          // Act
+          const { status, body } = await api.post(apimFacilityAmendmentWithoutQueueUrl, mockPayload);
+
+          // Assert
+          expect(status).toBe(HttpStatus.CREATED);
+          expect(body).toStrictEqual({
+            ...mockResponses.facilityAmendment,
+            isApproved: true,
+          });
+
+          expect(callOrder).toStrictEqual(['workPackage', 'obligationMaturityDateAmendment', 'facilityAmendment', 'approveStatus']);
+        });
+      });
+
+      describe('when no obligations follow facility maturity dates', () => {
+        it('should not call obligation maturity date amendment endpoint', async () => {
+          // Arrange
+          const callOrder: string[] = [];
+
+          nock(GIFT_API_URL)
+            .get(facilityUrl)
+            .reply(HttpStatus.OK, {
+              expiryDate: '2035-01-01',
+              obligations: [{ id: 'obligation-1', maturityDateFollowsFacility: false }],
+              riskDetails: {
+                facilityCategoryCode: GIFT.FACILITY_CATEGORY_CODES.CASH,
+              },
+            });
+
+          nock(GIFT_API_URL)
+            .post(facilityWorkPackageUrl)
+            .reply(() => {
+              callOrder.push('workPackage');
+
+              return [HttpStatus.CREATED, mockResponses.workPackageCreation];
+            });
+
+          nock(GIFT_API_URL)
+            .post(facilityAmendmentUrl(AMEND_FACILITY_REPLACE_EXPIRY_DATE))
+            .reply(() => {
+              callOrder.push('facilityAmendment');
+
+              return [HttpStatus.CREATED, mockResponses.facilityAmendment];
+            });
+
+          nock(GIFT_API_URL)
+            .post(approveStatusUrl)
+            .reply(() => {
+              callOrder.push('approveStatus');
+
+              return [HttpStatus.OK, mockResponses.approveStatus];
+            });
+
+          const mockPayload = {
+            amendmentType: AMEND_FACILITY_REPLACE_EXPIRY_DATE,
+            amendmentData: {
+              ...GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA.REPLACE_EXPIRY_DATE,
+              updateObligationDates: true,
             },
           };
 

@@ -8,6 +8,7 @@ export * from './get-amendment-data-dto';
 export * from './get-obligation-ids';
 export * from './get-repayment-profile-allocation-dates';
 export * from './get-repayment-profile-names';
+export * from './has-obligations-with-maturity-date-following-facility';
 export * from './has-valid-obligation-subtype-code-formats';
 export * from './is-decrease-amount-amendment';
 export * from './is-increase-amount-amendment';

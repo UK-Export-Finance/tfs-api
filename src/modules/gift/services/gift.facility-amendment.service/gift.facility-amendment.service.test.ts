@@ -31,7 +31,7 @@ const mockWorkPackageServiceCreateResponse = mockResponse201(WORK_PACKAGE_CREATI
 describe('GiftFacilityAmendmentService', () => {
   const logger = new PinoLogger({});
   const mockFacilityCategoryCode = FACILITY_CATEGORY_CODES.CONTINGENT;
-  const mockObligations = [{ id: 'obligation-1' }];
+  const mockObligations = [{ id: 'obligation-1', maturityDateFollowsFacility: true }];
 
   const mockFacilityResponseData = {
     ...FACILITY_RESPONSE_DATA,
@@ -273,10 +273,28 @@ describe('GiftFacilityAmendmentService', () => {
       });
     });
 
-    describe('when updateObligationDates is NOT passed', () => {
+    describe('when no obligations have maturityDateFollowsFacility set to true', () => {
       it('should call only giftReplaceExpiryDateAmendmentService.facility', async () => {
         // Arrange
-        const payloadWithoutUpdateObligationDates = {
+        mockFacilityServiceGet = jest.fn().mockResolvedValueOnce(
+          mockResponse200({
+            ...mockFacilityResponseData,
+            obligations: [{ id: 'obligation-1', maturityDateFollowsFacility: false }],
+          }),
+        );
+
+        facilityService.get = mockFacilityServiceGet;
+
+        service = new GiftFacilityAmendmentService(
+          logger,
+          workPackageService,
+          facilityService,
+          amountAmendmentService,
+          replaceExpiryDateAmendmentService,
+          statusService,
+        );
+
+        const payloadWithoutObligationMaturityDateFollowingFacility = {
           ...replaceExpiryDatePayload,
           amendmentData: {
             expiryDate: replaceExpiryDatePayload.amendmentData.expiryDate,
@@ -284,18 +302,68 @@ describe('GiftFacilityAmendmentService', () => {
         };
 
         // Act
-        await service.create(mockFacilityId, payloadWithoutUpdateObligationDates);
+        await service.create(mockFacilityId, payloadWithoutObligationMaturityDateFollowingFacility);
 
         // Assert
         expect(mockReplaceExpiryDateAmendmentServiceFacility).toHaveBeenCalledTimes(1);
         expect(mockReplaceExpiryDateAmendmentServiceObligations).toHaveBeenCalledTimes(0);
 
         expect(mockReplaceExpiryDateAmendmentServiceFacility).toHaveBeenNthCalledWith(1, {
-          amendmentType: payloadWithoutUpdateObligationDates.amendmentType,
+          amendmentType: payloadWithoutObligationMaturityDateFollowingFacility.amendmentType,
           facilityId: mockFacilityId,
           workPackageId: mockWorkPackageId,
-          expiryDate: payloadWithoutUpdateObligationDates.amendmentData.expiryDate,
+          expiryDate: payloadWithoutObligationMaturityDateFollowingFacility.amendmentData.expiryDate,
         });
+      });
+    });
+
+    describe('when obligations follow facility maturity dates', () => {
+      it('should still amend obligations', async () => {
+        // Arrange
+        const payloadWithUpdateObligationDatesFalse = {
+          ...replaceExpiryDatePayload,
+          amendmentData: {
+            ...replaceExpiryDatePayload.amendmentData,
+            updateObligationDates: false,
+          },
+        };
+
+        // Act
+        await service.create(mockFacilityId, payloadWithUpdateObligationDatesFalse);
+
+        // Assert
+        expect(mockReplaceExpiryDateAmendmentServiceFacility).toHaveBeenCalledTimes(1);
+        expect(mockReplaceExpiryDateAmendmentServiceObligations).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe('when no obligations follow facility maturity dates', () => {
+      it('should not amend obligations', async () => {
+        // Arrange
+        mockFacilityServiceGet = jest.fn().mockResolvedValueOnce(
+          mockResponse200({
+            ...mockFacilityResponseData,
+            obligations: [{ id: 'obligation-1', maturityDateFollowsFacility: false }],
+          }),
+        );
+
+        facilityService.get = mockFacilityServiceGet;
+
+        service = new GiftFacilityAmendmentService(
+          logger,
+          workPackageService,
+          facilityService,
+          amountAmendmentService,
+          replaceExpiryDateAmendmentService,
+          statusService,
+        );
+
+        // Act
+        await service.create(mockFacilityId, replaceExpiryDatePayload);
+
+        // Assert
+        expect(mockReplaceExpiryDateAmendmentServiceFacility).toHaveBeenCalledTimes(1);
+        expect(mockReplaceExpiryDateAmendmentServiceObligations).toHaveBeenCalledTimes(0);
       });
     });
 
