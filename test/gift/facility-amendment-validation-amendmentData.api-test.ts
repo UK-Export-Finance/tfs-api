@@ -4,7 +4,7 @@ import { GIFT_EXAMPLES } from '@ukef/constants/examples/gift.examples.constant';
 import { Api } from '@ukef-test/support/api';
 import nock from 'nock';
 
-import { dateStringValidation, numberValidation, optionalBooleanValidation } from './assertions';
+import { dateStringValidation, numberValidation } from './assertions';
 import { apimFacilityAmendmentWithoutQueueUrl } from './test-helpers';
 
 const {
@@ -268,18 +268,6 @@ describe('POST /gift/facility/:facilityId/amendment - validation - amendmentData
     describe('expiryDate', () => {
       dateStringValidation({
         fieldName: 'expiryDate',
-        initialPayload: {
-          amendmentType: AMEND_FACILITY_REPLACE_EXPIRY_DATE,
-          amendmentData: GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA.REPLACE_EXPIRY_DATE,
-        },
-        parentFieldName: 'amendmentData',
-        url: apimFacilityAmendmentWithoutQueueUrl,
-      });
-    });
-
-    describe('updateObligationDates', () => {
-      optionalBooleanValidation({
-        fieldName: 'updateObligationDates',
         initialPayload: {
           amendmentType: AMEND_FACILITY_REPLACE_EXPIRY_DATE,
           amendmentData: GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA.REPLACE_EXPIRY_DATE,

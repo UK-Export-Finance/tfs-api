@@ -7,7 +7,7 @@ import { assert400Response } from './response-assertion';
 /**
  * Validation tests for a nested, optional boolean field with invalid values
  * When the field is provided, it must be a boolean. When omitted, it is valid.
- * @param {string} fieldName: The name of a field. E.g, updateObligationDates
+ * @param {string} fieldName: The name of a field. E.g myBooleanField
  * @param {object} initialPayload: The payload to use before adding a field value
  * @param {string} parentFieldName: The name of a parent field. E.g amendmentData
  * @param {string} url: The URL the tests will call.

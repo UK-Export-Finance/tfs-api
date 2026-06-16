@@ -432,10 +432,7 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
 
           const mockPayload = {
             amendmentType: AMEND_FACILITY_REPLACE_EXPIRY_DATE,
-            amendmentData: {
-              ...GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA.REPLACE_EXPIRY_DATE,
-              updateObligationDates: false,
-            },
+            amendmentData: GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA.REPLACE_EXPIRY_DATE,
           };
 
           // Act
@@ -493,10 +490,7 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
 
           const mockPayload = {
             amendmentType: AMEND_FACILITY_REPLACE_EXPIRY_DATE,
-            amendmentData: {
-              ...GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA.REPLACE_EXPIRY_DATE,
-              updateObligationDates: true,
-            },
+            amendmentData: GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA.REPLACE_EXPIRY_DATE,
           };
 
           // Act

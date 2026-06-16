@@ -322,10 +322,7 @@ describe('GiftFacilityAmendmentService', () => {
         // Arrange
         const payloadWithUpdateObligationDatesFalse = {
           ...replaceExpiryDatePayload,
-          amendmentData: {
-            ...replaceExpiryDatePayload.amendmentData,
-            updateObligationDates: false,
-          },
+          amendmentData: replaceExpiryDatePayload.amendmentData,
         };
 
         // Act
