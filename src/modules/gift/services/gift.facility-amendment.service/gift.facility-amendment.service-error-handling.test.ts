@@ -231,6 +231,14 @@ describe('GiftFacilityAmendmentService - error handling', () => {
         // Arrange
         const mockError = mockResponse500();
 
+        mockFacilityServiceGet = jest.fn().mockResolvedValueOnce(
+          mockResponse200({
+            ...mockFacilityResponseData,
+            obligations: [{ id: 'obligation-1', maturityDateFollowsFacility: false }],
+          }),
+        );
+        facilityService.get = mockFacilityServiceGet;
+
         mockReplaceExpiryDateAmendmentObligations = jest.fn().mockRejectedValueOnce(mockError);
         replaceExpiryDateAmendmentService.obligations = mockReplaceExpiryDateAmendmentObligations;
 

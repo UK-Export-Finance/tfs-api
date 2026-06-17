@@ -31,7 +31,7 @@ const mockWorkPackageServiceCreateResponse = mockResponse201(WORK_PACKAGE_CREATI
 describe('GiftFacilityAmendmentService', () => {
   const logger = new PinoLogger({});
   const mockFacilityCategoryCode = FACILITY_CATEGORY_CODES.CONTINGENT;
-  const mockObligations = [{ id: 'obligation-1' }];
+  const mockObligations = [{ id: 'obligation-1', maturityDateFollowsFacility: false }];
 
   const mockFacilityResponseData = {
     ...FACILITY_RESPONSE_DATA,
@@ -240,6 +240,7 @@ describe('GiftFacilityAmendmentService', () => {
         const earlierExpiryDatePayload = {
           ...replaceExpiryDatePayload,
           amendmentData: {
+            ...EXAMPLES.GIFT.FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA.REPLACE_EXPIRY_DATE,
             expiryDate: '2026-01-01',
           },
         };
@@ -269,6 +270,53 @@ describe('GiftFacilityAmendmentService', () => {
         expect(mockReplaceExpiryDateAmendmentServiceObligations.mock.invocationCallOrder[0]).toBeLessThan(
           mockReplaceExpiryDateAmendmentServiceFacility.mock.invocationCallOrder[0],
         );
+      });
+    });
+
+    describe('when obligations do not follow facility maturity dates', () => {
+      it('should still amend obligations', async () => {
+        // Arrange
+        const payloadWithUpdateObligationDatesFalse = {
+          ...replaceExpiryDatePayload,
+          amendmentData: replaceExpiryDatePayload.amendmentData,
+        };
+
+        // Act
+        await service.create(mockFacilityId, payloadWithUpdateObligationDatesFalse);
+
+        // Assert
+        expect(mockReplaceExpiryDateAmendmentServiceFacility).toHaveBeenCalledTimes(1);
+        expect(mockReplaceExpiryDateAmendmentServiceObligations).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe('when all obligations follow facility maturity dates', () => {
+      it('should not amend obligations', async () => {
+        // Arrange
+        mockFacilityServiceGet = jest.fn().mockResolvedValueOnce(
+          mockResponse200({
+            ...mockFacilityResponseData,
+            obligations: [{ id: 'obligation-1', maturityDateFollowsFacility: true }],
+          }),
+        );
+
+        facilityService.get = mockFacilityServiceGet;
+
+        service = new GiftFacilityAmendmentService(
+          logger,
+          workPackageService,
+          facilityService,
+          amountAmendmentService,
+          replaceExpiryDateAmendmentService,
+          statusService,
+        );
+
+        // Act
+        await service.create(mockFacilityId, replaceExpiryDatePayload);
+
+        // Assert
+        expect(mockReplaceExpiryDateAmendmentServiceFacility).toHaveBeenCalledTimes(1);
+        expect(mockReplaceExpiryDateAmendmentServiceObligations).toHaveBeenCalledTimes(0);
       });
     });
 

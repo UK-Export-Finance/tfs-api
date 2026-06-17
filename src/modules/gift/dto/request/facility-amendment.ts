@@ -37,6 +37,7 @@ export class ReplaceExpiryDateDto {
   @IsDateString()
   @ApiProperty({
     required: true,
+    description: 'The new expiry date for the facility.',
     example: GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA.REPLACE_EXPIRY_DATE.expiryDate,
   })
   expiryDate: string;
