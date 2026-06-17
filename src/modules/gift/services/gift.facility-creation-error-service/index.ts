@@ -9,6 +9,13 @@ interface FinallyHandlerParams {
   creationCatchError?: unknown;
 }
 
+interface HandleFinallyHandlerErrorParams {
+  facilityId: string;
+  workPackageId?: number;
+  creationCatchError: unknown;
+  deletionError: unknown;
+}
+
 /**
  * GIFT facility creation error service.
  * This service is responsible for handling errors during the GIFT facility creation process.
@@ -37,7 +44,7 @@ export class GiftFacilityCreationErrorService {
    *
    * 2) Logging and populating error messages from facility creation and the deletion response, for debugging purposes.
    *
-   * @param {CreationFinallyHandlerParams} params - The parameters object.
+   * @param {FinallyHandlerParams} params - The parameters object.
    * @param {number} [params.workPackageId] - Work package ID (optional).
    * @param {string} params.facilityId - Facility ID.
    * @param {unknown} [params.creationCatchError] - Optional catch error thrown during facility creation.
@@ -46,22 +53,53 @@ export class GiftFacilityCreationErrorService {
    * @throws {Error} If no work package ID is provided.
    */
   async finallyHandler({ workPackageId, facilityId, creationCatchError = false }: FinallyHandlerParams) {
+    this.logger.info('Error creating a GIFT facility (finally handler) %s %s', facilityId, workPackageId);
+
+    if (!workPackageId) {
+      this.handleFinallyHandlerError({
+        facilityId,
+        creationCatchError,
+        deletionError: new Error(`Severe error creating a GIFT facility ${facilityId} and deleting work package. No workPackageId available`),
+      });
+    }
+
     try {
-      this.logger.info('Error creating a GIFT facility (finally handler) %s %s', facilityId, workPackageId);
-
-      if (!workPackageId) {
-        throw new Error(`Severe error creating a GIFT facility ${facilityId} and deleting work package. No workPackageId available`);
-      }
-
       await this.giftWorkPackageService.delete(workPackageId, facilityId);
     } catch (deletionError) {
-      this.logger.error('Severe error creating a GIFT facility %s and deleting GIFT facility work package %s', facilityId, workPackageId);
+      this.handleFinallyHandlerError({
+        facilityId,
+        workPackageId,
+        creationCatchError,
+        deletionError,
+      });
+    }
+  }
 
-      const populatedCause = `Creation error: ${JSON.stringify(creationCatchError)} \n Work package deletion error: ${deletionError}`;
+  /**
+   * Handles errors that occur during the finally handler.
+   * @param {HandleFinallyHandlerErrorParams} params - The parameters object.
+   * @param {number} params.facilityId - The facility ID.
+   * @param {number} [params.workPackageId] - The work package ID (optional).
+   * @param {unknown} params.creationCatchError - The error thrown during facility creation.
+   * @param {unknown} params.deletionError - The error thrown during work package deletion.
+   * @throws {Error} Throws an error with a detailed message and cause.
+   */
+  private handleFinallyHandlerError({ facilityId, workPackageId, creationCatchError, deletionError }: HandleFinallyHandlerErrorParams): never {
+    this.logger.error('Severe error creating a GIFT facility %s and deleting GIFT facility work package %s %o', facilityId, workPackageId, deletionError);
 
-      throw new Error(`Severe error creating a GIFT facility ${facilityId} and deleting GIFT facility work package ${workPackageId}`, {
+    const populatedCause = {
+      creationCatchError,
+      deletionError,
+    };
+
+    if (!workPackageId) {
+      throw new Error(`Severe error creating a GIFT facility ${facilityId} and deleting work package. No workPackageId available`, {
         cause: populatedCause,
       });
     }
+
+    throw new Error(`Severe error creating a GIFT facility ${facilityId} and deleting GIFT facility work package ${workPackageId}`, {
+      cause: populatedCause,
+    });
   }
 }

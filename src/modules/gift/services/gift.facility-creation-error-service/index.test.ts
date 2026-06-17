@@ -61,18 +61,24 @@ describe('GiftFacilityCreationErrorService', () => {
 
       it('should throw an error', async () => {
         // Act
-        const promise = service.finallyHandler({
-          facilityId: mockFacilityId,
-        });
+        let thrownError: unknown;
+        try {
+          await service.finallyHandler({
+            facilityId: mockFacilityId,
+          });
+        } catch (error) {
+          thrownError = error;
+        }
 
         // Assert
-        const expectedCause = `Creation error: false \n Work package deletion error: Error: Severe error creating a GIFT facility ${mockFacilityId} and deleting work package. No workPackageId available`;
-
-        const expected = new Error(`Severe error creating a GIFT facility ${mockFacilityId} and deleting GIFT facility work package undefined`, {
-          cause: expectedCause,
+        expect(thrownError).toBeInstanceOf(Error);
+        expect((thrownError as Error).message).toBe(
+          `Severe error creating a GIFT facility ${mockFacilityId} and deleting work package. No workPackageId available`,
+        );
+        expect((thrownError as Error).cause).toMatchObject({
+          creationCatchError: false,
+          deletionError: expect.any(Error),
         });
-
-        await expect(promise).rejects.toThrow(expected);
       });
     });
 
@@ -88,19 +94,25 @@ describe('GiftFacilityCreationErrorService', () => {
 
       it('should throw an error', async () => {
         // Act
-        const promise = service.finallyHandler({
-          facilityId: mockFacilityId,
-          workPackageId: mockWorkPackageId,
-        });
+        let thrownError: unknown;
+        try {
+          await service.finallyHandler({
+            facilityId: mockFacilityId,
+            workPackageId: mockWorkPackageId,
+          });
+        } catch (error) {
+          thrownError = error;
+        }
 
         // Assert
-        const expectedCause = `Creation error: false \n Work package deletion error: ${mockResponse400()}`;
-
-        const expected = new Error(`Severe error creating a GIFT facility ${mockFacilityId} and deleting GIFT facility work package ${mockWorkPackageId}`, {
-          cause: expectedCause,
+        expect(thrownError).toBeInstanceOf(Error);
+        expect((thrownError as Error).message).toBe(
+          `Severe error creating a GIFT facility ${mockFacilityId} and deleting GIFT facility work package ${mockWorkPackageId}`,
+        );
+        expect((thrownError as Error).cause).toMatchObject({
+          creationCatchError: false,
+          deletionError: mockResponse400(),
         });
-
-        await expect(promise).rejects.toThrow(expected);
       });
     });
 
@@ -116,19 +128,25 @@ describe('GiftFacilityCreationErrorService', () => {
 
       it('should throw an error', async () => {
         // Act
-        const promise = service.finallyHandler({
-          facilityId: mockFacilityId,
-          workPackageId: mockWorkPackageId,
-        });
+        let thrownError: unknown;
+        try {
+          await service.finallyHandler({
+            facilityId: mockFacilityId,
+            workPackageId: mockWorkPackageId,
+          });
+        } catch (error) {
+          thrownError = error;
+        }
 
         // Assert
-        const expectedCause = `Creation error: false \n Work package deletion error: ${mockResponse500()}`;
-
-        const expected = new Error(`Severe error creating a GIFT facility ${mockFacilityId} and deleting GIFT facility work package ${mockWorkPackageId}`, {
-          cause: expectedCause,
+        expect(thrownError).toBeInstanceOf(Error);
+        expect((thrownError as Error).message).toBe(
+          `Severe error creating a GIFT facility ${mockFacilityId} and deleting GIFT facility work package ${mockWorkPackageId}`,
+        );
+        expect((thrownError as Error).cause).toMatchObject({
+          creationCatchError: false,
+          deletionError: mockResponse500(),
         });
-
-        await expect(promise).rejects.toThrow(expected);
       });
     });
 
@@ -147,20 +165,26 @@ describe('GiftFacilityCreationErrorService', () => {
         const mockCreationCatchError = new Error('Mock creation catch error');
 
         // Act
-        const promise = service.finallyHandler({
-          facilityId: mockFacilityId,
-          workPackageId: mockWorkPackageId,
-          creationCatchError: mockCreationCatchError,
-        });
+        let thrownError: unknown;
+        try {
+          await service.finallyHandler({
+            facilityId: mockFacilityId,
+            workPackageId: mockWorkPackageId,
+            creationCatchError: mockCreationCatchError,
+          });
+        } catch (error) {
+          thrownError = error;
+        }
 
         // Assert
-        const expectedCause = `Creation error: ${JSON.stringify(mockCreationCatchError)} \n Work package deletion error: ${mockResponse500()}`;
-
-        const expected = new Error(`Severe error creating a GIFT facility ${mockFacilityId} and deleting GIFT facility work package ${mockWorkPackageId}`, {
-          cause: expectedCause,
+        expect(thrownError).toBeInstanceOf(Error);
+        expect((thrownError as Error).message).toBe(
+          `Severe error creating a GIFT facility ${mockFacilityId} and deleting GIFT facility work package ${mockWorkPackageId}`,
+        );
+        expect((thrownError as Error).cause).toMatchObject({
+          creationCatchError: mockCreationCatchError,
+          deletionError: mockResponse500(),
         });
-
-        await expect(promise).rejects.toThrow(expected);
       });
     });
   });
