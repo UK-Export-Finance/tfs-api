@@ -4,7 +4,12 @@ import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 
 import { CreateGiftFacilityAmendmentRequestDto, GiftWorkPackageResponseDto } from '../../dto';
-import { isDecreaseAmountAmendment, isIncreaseAmountAmendment, isReplaceExpiryDateAmendment } from '../../helpers';
+import {
+  hasObligationsWithMaturityDateNotFollowingFacility,
+  isDecreaseAmountAmendment,
+  isIncreaseAmountAmendment,
+  isReplaceExpiryDateAmendment,
+} from '../../helpers';
 import { GiftAmountAmendmentService } from '../gift.amount-amendment.service';
 import { GiftFacilityService } from '../gift.facility.service';
 import { GiftReplaceExpiryDateAmendmentService } from '../gift.replace-expiry-date-amendment.service';
@@ -84,6 +89,7 @@ export class GiftFacilityAmendmentService {
       }
 
       const { id: workPackageId } = workPackage;
+
       const {
         obligations,
         riskDetails: { facilityCategoryCode },
@@ -134,12 +140,20 @@ export class GiftFacilityAmendmentService {
       }
 
       /**
-       * If the amendment is "replace expiry date", the new facility expiry date will impact the obligation maturity dates.
+       * If the amendment is "replace expiry date",
+       * and any obligation has maturityDateFollowsFacility=true,
+       * GIFT will automatically update the obligation maturity dates to match the new facility expiry date.
+       *
+       * However, if any obligation has maturityDateFollowsFacility=false,
+       * GIFT will not update the obligation maturity dates, so we need to update them manually.
+       *
        * If the new expiry date is greater than the current expiry date, execute in the following order:
        * 1) Amend the facility
        * 2) Amend obligations maturity dates
        *
        * If the new expiry date is less than the current expiry date, the order is reversed.
+       *
+       * Otherwise, there is no need to update obligations maturity dates.
        */
       if (isReplaceExpiryDateAmendment(amendment)) {
         const {
@@ -148,7 +162,10 @@ export class GiftFacilityAmendmentService {
 
         const { expiryDate: originalFacilityExpiryDate } = facility;
 
-        const shouldAmendObligationsFirst = new Date(expiryDate).getTime() < new Date(originalFacilityExpiryDate).getTime();
+        const shouldUpdateObligationsMaturityDates = hasObligationsWithMaturityDateNotFollowingFacility(obligations);
+
+        const shouldAmendObligationsFirst =
+          shouldUpdateObligationsMaturityDates && new Date(expiryDate).getTime() < new Date(originalFacilityExpiryDate).getTime();
 
         const baseParams = {
           amendmentType,
@@ -156,7 +173,11 @@ export class GiftFacilityAmendmentService {
           workPackageId,
         };
 
-        if (shouldAmendObligationsFirst) {
+        if (!shouldUpdateObligationsMaturityDates) {
+          const facilityResponse = await this.giftReplaceExpiryDateAmendmentService.facility({ ...baseParams, expiryDate });
+
+          createdAmendmentData = facilityResponse.data;
+        } else if (shouldAmendObligationsFirst) {
           await this.giftReplaceExpiryDateAmendmentService.obligations({ ...baseParams, facilityExpiryDate: expiryDate, obligations });
 
           const facilityResponse = await this.giftReplaceExpiryDateAmendmentService.facility({ ...baseParams, expiryDate });
