@@ -39,7 +39,7 @@ const { PRODUCT_TYPE_CODES, PRODUCT_TYPE_NAMES } = GIFT;
 
 const { FACILITY_CREATION_PAYLOAD: initPayload } = GIFT_EXAMPLES;
 
-const setupMocks = (options?: { expectedBusinessCalendarPayload?: { centreCode: string; startDate: string; exitDate: string } }) => {
+const setupMocks = (options?: { expectedBusinessCalendarPayload?: { centreCode: string; startDate: string | null; exitDate: string | null } }) => {
   nock(GIFT_API_URL).persist().get(productTypeUrl(PRODUCT_TYPE_CODES.BIP)).reply(HttpStatus.OK, mockResponses.productType);
   nock(GIFT_API_URL).persist().get(productTypeUrl(PRODUCT_TYPE_CODES.EXIP)).reply(HttpStatus.OK, mockResponses.productType);
   nock(GIFT_API_URL).persist().get(productTypeUrl(PRODUCT_TYPE_CODES.BSS)).reply(HttpStatus.OK, mockResponses.productType);
@@ -213,14 +213,14 @@ describe('POST /gift/facility', () => {
     });
   });
 
-  describe('when business calendar startDate, exitDate are provided in the payload', () => {
-    it('should post those dates to the GIFT business calendar endpoint', async () => {
+  describe('when business calendar startDate, exitDate are NOT explicitly provided to GIFT', () => {
+    it('should post null startDate/exitDate to the GIFT business calendar endpoint', async () => {
       // Arrange
       setupMocks({
         expectedBusinessCalendarPayload: {
           centreCode: GIFT_EXAMPLES.BUSINESS_CALENDAR.centreCode,
-          startDate: initPayload.overview.effectiveDate,
-          exitDate: initPayload.overview.expiryDate,
+          startDate: null,
+          exitDate: null,
         },
       });
 
@@ -229,34 +229,6 @@ describe('POST /gift/facility', () => {
 
       // Assert
       expect(status).toBe(HttpStatus.CREATED);
-    });
-  });
-
-  describe('when business calendar startDate, exitDate are NOT provided in the payload', () => {
-    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
-      // Arrange
-      const payloadWithoutBusinessCalendarDates = {
-        ...initPayload,
-        overview: {
-          ...initPayload.overview,
-          effectiveDate: undefined,
-          expiryDate: undefined,
-        },
-      };
-
-      // Act
-      const { status, body } = await api.post(apimFacilityWithoutQueueUrl, payloadWithoutBusinessCalendarDates);
-
-      // Assert
-      const expectedMessages = [
-        'overview.effectiveDate should not be null or undefined',
-        'overview.effectiveDate must be a valid ISO 8601 date string',
-        'overview.expiryDate should not be null or undefined',
-        'overview.expiryDate must be a valid ISO 8601 date string',
-      ];
-
-      expect(status).toBe(HttpStatus.BAD_REQUEST);
-      expect(body.message).toEqual(expect.arrayContaining(expectedMessages));
     });
   });
 
