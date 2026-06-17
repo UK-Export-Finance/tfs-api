@@ -46,20 +46,22 @@ export class GiftFacilityCreationErrorService {
    * @throws {Error} If no work package ID is provided.
    */
   async finallyHandler({ workPackageId, facilityId, creationCatchError = false }: FinallyHandlerParams) {
-    if (workPackageId) {
-      try {
-        this.logger.info('Error creating a GIFT facility (finally handler) %s %s', facilityId, workPackageId);
+    try {
+      this.logger.info('Error creating a GIFT facility (finally handler) %s %s', facilityId, workPackageId);
 
-        await this.giftWorkPackageService.delete(workPackageId, facilityId);
-      } catch (deletionError) {
-        this.logger.error('Error creating a GIFT facility %s and deleting GIFT work package %s', facilityId, workPackageId);
-
-        const populatedCause = `Creation error: ${JSON.stringify(creationCatchError)} \n Work package deletion error: ${deletionError}`;
-
-        throw new Error(`Error creating a GIFT facility ${facilityId} and deleting work package ${workPackageId}`, { cause: populatedCause });
+      if (!workPackageId) {
+        throw new Error(`Severe error creating a GIFT facility ${facilityId} and deleting work package. No workPackageId available`);
       }
-    } else {
-      throw new Error(`Severe error creating a GIFT facility ${facilityId} and deleting work package. No workPackageId available`);
+
+      await this.giftWorkPackageService.delete(workPackageId, facilityId);
+    } catch (deletionError) {
+      this.logger.error('Severe error creating a GIFT facility %s and deleting GIFT facility work package %s', facilityId, workPackageId);
+
+      const populatedCause = `Creation error: ${JSON.stringify(creationCatchError)} \n Work package deletion error: ${deletionError}`;
+
+      throw new Error(`Severe error creating a GIFT facility ${facilityId} and deleting GIFT facility work package ${workPackageId}`, {
+        cause: populatedCause,
+      });
     }
   }
 }

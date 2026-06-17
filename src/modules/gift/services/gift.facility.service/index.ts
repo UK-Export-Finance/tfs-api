@@ -196,7 +196,7 @@ export class GiftFacilityService {
        * If the initial facility creation fails and we attempt to create a counterparty, a work package ID error will be returned.
        */
       if (status !== HttpStatus.CREATED) {
-        this.logger.error('Creating a GIFT facility - initial creation failed %s', facilityId);
+        this.logger.error('Creating a GIFT facility - initial creation failed %s', facilityId, status, facility);
 
         return {
           status,
@@ -264,7 +264,7 @@ export class GiftFacilityService {
       });
 
       if (giftValidationErrors.length) {
-        this.logger.info('Creating a GIFT facility - returning validation errors %s', facilityId);
+        this.logger.info('Creating a GIFT facility - validation errors received from GIFT %s %s', facilityId, JSON.stringify(giftValidationErrors));
 
         const [firstError] = giftValidationErrors;
 

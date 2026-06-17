@@ -14,6 +14,7 @@ import {
   feeTypeUrl,
   mockResponses,
   productTypeUrl,
+  workPackageUrl,
 } from './test-helpers';
 
 const { APIM_MDM_KEY, APIM_MDM_URL, APIM_MDM_VALUE, GIFT_API_URL } = ENVIRONMENT_VARIABLES;
@@ -70,6 +71,19 @@ describe('POST /gift/facility - facility creation error handling', () => {
       const expected = mockResponses.badRequest;
 
       expect(body).toStrictEqual(expected);
+    });
+
+    it('should not call the GIFT delete work package endpoint', async () => {
+      // Arrange
+      setupMocks(mockResponses.badRequest);
+
+      const deleteWorkPackageScope = nock(GIFT_API_URL).delete(workPackageUrl).reply(HttpStatus.NO_CONTENT);
+
+      // Act
+      await api.post(apimFacilityWithoutQueueUrl, GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD);
+
+      // Assert
+      expect(deleteWorkPackageScope.isDone()).toBe(false);
     });
   });
 

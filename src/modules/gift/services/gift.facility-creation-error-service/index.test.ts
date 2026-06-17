@@ -1,4 +1,3 @@
-import { HttpStatus } from '@nestjs/common';
 import { EXAMPLES } from '@ukef/constants';
 import { mockResponse204, mockResponse400, mockResponse500 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
@@ -67,13 +66,17 @@ describe('GiftFacilityCreationErrorService', () => {
         });
 
         // Assert
-        const expected = new Error(`Severe error creating a GIFT facility ${mockFacilityId} and deleting work package. No workPackageId available`);
+        const expectedCause = `Creation error: false \n Work package deletion error: Error: Severe error creating a GIFT facility ${mockFacilityId} and deleting work package. No workPackageId available`;
+
+        const expected = new Error(`Severe error creating a GIFT facility ${mockFacilityId} and deleting GIFT facility work package undefined`, {
+          cause: expectedCause,
+        });
 
         await expect(promise).rejects.toThrow(expected);
       });
     });
 
-    describe(`when workPackageService.delete returns a status that is NOT ${HttpStatus.NO_CONTENT}`, () => {
+    describe('when workPackageService.delete throws an error', () => {
       beforeEach(() => {
         // Arrange
         mockWorkPackageDelete = jest.fn().mockRejectedValueOnce(mockResponse400());
@@ -93,7 +96,7 @@ describe('GiftFacilityCreationErrorService', () => {
         // Assert
         const expectedCause = `Creation error: false \n Work package deletion error: ${mockResponse400()}`;
 
-        const expected = new Error(`Error creating a GIFT facility ${mockFacilityId} and deleting work package ${mockWorkPackageId}`, {
+        const expected = new Error(`Severe error creating a GIFT facility ${mockFacilityId} and deleting GIFT facility work package ${mockWorkPackageId}`, {
           cause: expectedCause,
         });
 
@@ -121,7 +124,7 @@ describe('GiftFacilityCreationErrorService', () => {
         // Assert
         const expectedCause = `Creation error: false \n Work package deletion error: ${mockResponse500()}`;
 
-        const expected = new Error(`Error creating a GIFT facility ${mockFacilityId} and deleting work package ${mockWorkPackageId}`, {
+        const expected = new Error(`Severe error creating a GIFT facility ${mockFacilityId} and deleting GIFT facility work package ${mockWorkPackageId}`, {
           cause: expectedCause,
         });
 
@@ -153,7 +156,7 @@ describe('GiftFacilityCreationErrorService', () => {
         // Assert
         const expectedCause = `Creation error: ${JSON.stringify(mockCreationCatchError)} \n Work package deletion error: ${mockResponse500()}`;
 
-        const expected = new Error(`Error creating a GIFT facility ${mockFacilityId} and deleting work package ${mockWorkPackageId}`, {
+        const expected = new Error(`Severe error creating a GIFT facility ${mockFacilityId} and deleting GIFT facility work package ${mockWorkPackageId}`, {
           cause: expectedCause,
         });
 
