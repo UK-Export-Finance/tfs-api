@@ -197,7 +197,7 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
         nock(GIFT_API_URL)
           .get(facilityUrl)
           .reply(HttpStatus.OK, {
-            obligations: [{ id: 'obligation-1', maturityDateFollowsFacility: true }],
+            obligations: [{ id: 'obligation-1', maturityDateFollowsFacility: false }],
             riskDetails: {
               facilityCategoryCode: GIFT.FACILITY_CATEGORY_CODES.CASH,
             },
@@ -264,7 +264,7 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
             .get(facilityUrl)
             .reply(HttpStatus.OK, {
               expiryDate: '2035-01-01',
-              obligations: [{ id: 'obligation-1', maturityDateFollowsFacility: true }],
+              obligations: [{ id: 'obligation-1', maturityDateFollowsFacility: false }],
               riskDetails: {
                 facilityCategoryCode: GIFT.FACILITY_CATEGORY_CODES.CASH,
               },
@@ -321,7 +321,7 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
         });
       });
 
-      describe('when no obligations have maturityDateFollowsFacility set to true', () => {
+      describe('when no obligations have maturityDateFollowsFacility set to false', () => {
         it('should not call obligation maturity date amendment endpoint', async () => {
           // Arrange
           const callOrder: string[] = [];
@@ -330,7 +330,7 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
             .get(facilityUrl)
             .reply(HttpStatus.OK, {
               expiryDate: '2035-01-01',
-              obligations: [{ id: 'obligation-1', maturityDateFollowsFacility: false }],
+              obligations: [{ id: 'obligation-1', maturityDateFollowsFacility: true }],
               riskDetails: {
                 facilityCategoryCode: GIFT.FACILITY_CATEGORY_CODES.CASH,
               },
@@ -381,7 +381,7 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
         });
       });
 
-      describe('when obligations follow facility maturity dates', () => {
+      describe('when obligations do not follow facility maturity dates', () => {
         it('should call obligation maturity date amendment endpoint', async () => {
           // Arrange
           const callOrder: string[] = [];
@@ -392,7 +392,7 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
             .get(facilityUrl)
             .reply(HttpStatus.OK, {
               expiryDate: '2035-01-01',
-              obligations: [{ id: 'obligation-1', maturityDateFollowsFacility: true }],
+              obligations: [{ id: 'obligation-1', maturityDateFollowsFacility: false }],
               riskDetails: {
                 facilityCategoryCode: GIFT.FACILITY_CATEGORY_CODES.CASH,
               },
@@ -449,7 +449,7 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
         });
       });
 
-      describe('when no obligations follow facility maturity dates', () => {
+      describe('when all obligations follow facility maturity dates', () => {
         it('should not call obligation maturity date amendment endpoint', async () => {
           // Arrange
           const callOrder: string[] = [];
@@ -458,7 +458,7 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
             .get(facilityUrl)
             .reply(HttpStatus.OK, {
               expiryDate: '2035-01-01',
-              obligations: [{ id: 'obligation-1', maturityDateFollowsFacility: false }],
+              obligations: [{ id: 'obligation-1', maturityDateFollowsFacility: true }],
               riskDetails: {
                 facilityCategoryCode: GIFT.FACILITY_CATEGORY_CODES.CASH,
               },

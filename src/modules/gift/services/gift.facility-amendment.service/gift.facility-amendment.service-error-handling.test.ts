@@ -234,7 +234,7 @@ describe('GiftFacilityAmendmentService - error handling', () => {
         mockFacilityServiceGet = jest.fn().mockResolvedValueOnce(
           mockResponse200({
             ...mockFacilityResponseData,
-            obligations: [{ id: 'obligation-1', maturityDateFollowsFacility: true }],
+            obligations: [{ id: 'obligation-1', maturityDateFollowsFacility: false }],
           }),
         );
         facilityService.get = mockFacilityServiceGet;

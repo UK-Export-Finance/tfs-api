@@ -5,7 +5,7 @@ import { PinoLogger } from 'nestjs-pino';
 
 import { CreateGiftFacilityAmendmentRequestDto, GiftWorkPackageResponseDto } from '../../dto';
 import {
-  hasObligationsWithMaturityDateFollowingFacility,
+  hasObligationsWithMaturityDateNotFollowingFacility,
   isDecreaseAmountAmendment,
   isIncreaseAmountAmendment,
   isReplaceExpiryDateAmendment,
@@ -145,7 +145,7 @@ export class GiftFacilityAmendmentService {
        * GIFT will automatically update the obligation maturity dates to match the new facility expiry date.
        *
        * However, if any obligation has maturityDateFollowsFacility=false,
-       * GIFT will not update the obligation maturity dates, so we need to udpate them manually.
+       * GIFT will not update the obligation maturity dates, so we need to update them manually.
        *
        * If the new expiry date is greater than the current expiry date, execute in the following order:
        * 1) Amend the facility
@@ -162,7 +162,7 @@ export class GiftFacilityAmendmentService {
 
         const { expiryDate: originalFacilityExpiryDate } = facility;
 
-        const shouldUpdateObligationsMaturityDates = hasObligationsWithMaturityDateFollowingFacility(obligations);
+        const shouldUpdateObligationsMaturityDates = hasObligationsWithMaturityDateNotFollowingFacility(obligations);
 
         const shouldAmendObligationsFirst =
           shouldUpdateObligationsMaturityDates && new Date(expiryDate).getTime() < new Date(originalFacilityExpiryDate).getTime();

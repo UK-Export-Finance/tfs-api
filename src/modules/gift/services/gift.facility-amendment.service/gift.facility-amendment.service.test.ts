@@ -31,7 +31,7 @@ const mockWorkPackageServiceCreateResponse = mockResponse201(WORK_PACKAGE_CREATI
 describe('GiftFacilityAmendmentService', () => {
   const logger = new PinoLogger({});
   const mockFacilityCategoryCode = FACILITY_CATEGORY_CODES.CONTINGENT;
-  const mockObligations = [{ id: 'obligation-1', maturityDateFollowsFacility: true }];
+  const mockObligations = [{ id: 'obligation-1', maturityDateFollowsFacility: false }];
 
   const mockFacilityResponseData = {
     ...FACILITY_RESPONSE_DATA,
@@ -273,13 +273,13 @@ describe('GiftFacilityAmendmentService', () => {
       });
     });
 
-    describe('when no obligations have maturityDateFollowsFacility set to true', () => {
+    describe('when no obligations have maturityDateFollowsFacility set to false', () => {
       it('should call only giftReplaceExpiryDateAmendmentService.facility', async () => {
         // Arrange
         mockFacilityServiceGet = jest.fn().mockResolvedValueOnce(
           mockResponse200({
             ...mockFacilityResponseData,
-            obligations: [{ id: 'obligation-1', maturityDateFollowsFacility: false }],
+            obligations: [{ id: 'obligation-1', maturityDateFollowsFacility: true }],
           }),
         );
 
@@ -317,7 +317,7 @@ describe('GiftFacilityAmendmentService', () => {
       });
     });
 
-    describe('when obligations follow facility maturity dates', () => {
+    describe('when obligations do not follow facility maturity dates', () => {
       it('should still amend obligations', async () => {
         // Arrange
         const payloadWithUpdateObligationDatesFalse = {
@@ -334,13 +334,13 @@ describe('GiftFacilityAmendmentService', () => {
       });
     });
 
-    describe('when no obligations follow facility maturity dates', () => {
+    describe('when all obligations follow facility maturity dates', () => {
       it('should not amend obligations', async () => {
         // Arrange
         mockFacilityServiceGet = jest.fn().mockResolvedValueOnce(
           mockResponse200({
             ...mockFacilityResponseData,
-            obligations: [{ id: 'obligation-1', maturityDateFollowsFacility: false }],
+            obligations: [{ id: 'obligation-1', maturityDateFollowsFacility: true }],
           }),
         );
 
