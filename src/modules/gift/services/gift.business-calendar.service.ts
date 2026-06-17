@@ -6,13 +6,13 @@ import { PinoLogger } from 'nestjs-pino';
 import { GiftBusinessCalendarResponseDto } from '../dto';
 import { GiftHttpService } from './gift.http.service';
 
-const { EVENT_TYPES, PATH } = GIFT;
+const { EVENT_TYPES, INTEGRATION_DEFAULTS, PATH } = GIFT;
 
 interface CreateOneParams {
   facilityId: string;
   workPackageId: number;
-  startDate: string;
-  exitDate: string;
+  startDate?: string;
+  exitDate?: string;
 }
 
 /**
@@ -42,8 +42,8 @@ export class GiftBusinessCalendarService {
 
       const payload = {
         centreCode: BUSINESS_CALENDAR.LONDON.CODE,
-        startDate,
-        exitDate,
+        exitDate: exitDate || INTEGRATION_DEFAULTS.BUSINESS_CALENDAR_EXIT_DATE,
+        startDate: startDate || INTEGRATION_DEFAULTS.BUSINESS_CALENDAR_START_DATE,
       };
 
       const response = await this.giftHttpService.post<GiftBusinessCalendarResponseDto>({
