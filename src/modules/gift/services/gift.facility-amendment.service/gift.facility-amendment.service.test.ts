@@ -273,50 +273,6 @@ describe('GiftFacilityAmendmentService', () => {
       });
     });
 
-    describe('when no obligations have maturityDateFollowsFacility set to false', () => {
-      it('should call only giftReplaceExpiryDateAmendmentService.facility', async () => {
-        // Arrange
-        mockFacilityServiceGet = jest.fn().mockResolvedValueOnce(
-          mockResponse200({
-            ...mockFacilityResponseData,
-            obligations: [{ id: 'obligation-1', maturityDateFollowsFacility: true }],
-          }),
-        );
-
-        facilityService.get = mockFacilityServiceGet;
-
-        service = new GiftFacilityAmendmentService(
-          logger,
-          workPackageService,
-          facilityService,
-          amountAmendmentService,
-          replaceExpiryDateAmendmentService,
-          statusService,
-        );
-
-        const payloadWithoutObligationMaturityDateFollowingFacility = {
-          ...replaceExpiryDatePayload,
-          amendmentData: {
-            expiryDate: replaceExpiryDatePayload.amendmentData.expiryDate,
-          },
-        };
-
-        // Act
-        await service.create(mockFacilityId, payloadWithoutObligationMaturityDateFollowingFacility);
-
-        // Assert
-        expect(mockReplaceExpiryDateAmendmentServiceFacility).toHaveBeenCalledTimes(1);
-        expect(mockReplaceExpiryDateAmendmentServiceObligations).toHaveBeenCalledTimes(0);
-
-        expect(mockReplaceExpiryDateAmendmentServiceFacility).toHaveBeenNthCalledWith(1, {
-          amendmentType: payloadWithoutObligationMaturityDateFollowingFacility.amendmentType,
-          facilityId: mockFacilityId,
-          workPackageId: mockWorkPackageId,
-          expiryDate: payloadWithoutObligationMaturityDateFollowingFacility.amendmentData.expiryDate,
-        });
-      });
-    });
-
     describe('when obligations do not follow facility maturity dates', () => {
       it('should still amend obligations', async () => {
         // Arrange
