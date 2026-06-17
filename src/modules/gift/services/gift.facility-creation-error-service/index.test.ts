@@ -60,25 +60,16 @@ describe('GiftFacilityCreationErrorService', () => {
       });
 
       it('should throw an error', async () => {
-        // Act
-        let thrownError: unknown;
-        try {
-          await service.finallyHandler({
-            facilityId: mockFacilityId,
-          });
-        } catch (error) {
-          thrownError = error;
-        }
+        const expected = {
+          message: `Severe error creating a GIFT facility ${mockFacilityId} and deleting work package. No workPackageId available`,
+          cause: {
+            creationCatchError: false,
+            deletionError: expect.any(Error),
+          },
+        };
 
-        // Assert
-        expect(thrownError).toBeInstanceOf(Error);
-        expect((thrownError as Error).message).toBe(
-          `Severe error creating a GIFT facility ${mockFacilityId} and deleting work package. No workPackageId available`,
-        );
-        expect((thrownError as Error).cause).toMatchObject({
-          creationCatchError: false,
-          deletionError: expect.any(Error),
-        });
+        // Act & Assert
+        await expect(service.finallyHandler({ facilityId: mockFacilityId })).rejects.toMatchObject(expected);
       });
     });
 
@@ -93,26 +84,21 @@ describe('GiftFacilityCreationErrorService', () => {
       });
 
       it('should throw an error', async () => {
-        // Act
-        let thrownError: unknown;
-        try {
-          await service.finallyHandler({
+        const expected = {
+          message: `Severe error creating a GIFT facility ${mockFacilityId} and deleting GIFT facility work package ${mockWorkPackageId}`,
+          cause: {
+            creationCatchError: false,
+            deletionError: mockResponse400(),
+          },
+        };
+
+        // Act & Assert
+        await expect(
+          service.finallyHandler({
             facilityId: mockFacilityId,
             workPackageId: mockWorkPackageId,
-          });
-        } catch (error) {
-          thrownError = error;
-        }
-
-        // Assert
-        expect(thrownError).toBeInstanceOf(Error);
-        expect((thrownError as Error).message).toBe(
-          `Severe error creating a GIFT facility ${mockFacilityId} and deleting GIFT facility work package ${mockWorkPackageId}`,
-        );
-        expect((thrownError as Error).cause).toMatchObject({
-          creationCatchError: false,
-          deletionError: mockResponse400(),
-        });
+          }),
+        ).rejects.toMatchObject(expected);
       });
     });
 
@@ -127,26 +113,21 @@ describe('GiftFacilityCreationErrorService', () => {
       });
 
       it('should throw an error', async () => {
-        // Act
-        let thrownError: unknown;
-        try {
-          await service.finallyHandler({
+        const expected = {
+          message: `Severe error creating a GIFT facility ${mockFacilityId} and deleting GIFT facility work package ${mockWorkPackageId}`,
+          cause: {
+            creationCatchError: false,
+            deletionError: mockResponse500(),
+          },
+        };
+
+        // Act & Assert
+        await expect(
+          service.finallyHandler({
             facilityId: mockFacilityId,
             workPackageId: mockWorkPackageId,
-          });
-        } catch (error) {
-          thrownError = error;
-        }
-
-        // Assert
-        expect(thrownError).toBeInstanceOf(Error);
-        expect((thrownError as Error).message).toBe(
-          `Severe error creating a GIFT facility ${mockFacilityId} and deleting GIFT facility work package ${mockWorkPackageId}`,
-        );
-        expect((thrownError as Error).cause).toMatchObject({
-          creationCatchError: false,
-          deletionError: mockResponse500(),
-        });
+          }),
+        ).rejects.toMatchObject(expected);
       });
     });
 
@@ -164,27 +145,22 @@ describe('GiftFacilityCreationErrorService', () => {
         // Arrange
         const mockCreationCatchError = new Error('Mock creation catch error');
 
-        // Act
-        let thrownError: unknown;
-        try {
-          await service.finallyHandler({
+        const expected = {
+          message: `Severe error creating a GIFT facility ${mockFacilityId} and deleting GIFT facility work package ${mockWorkPackageId}`,
+          cause: {
+            creationCatchError: mockCreationCatchError,
+            deletionError: mockResponse500(),
+          },
+        };
+
+        // Act & Assert
+        await expect(
+          service.finallyHandler({
             facilityId: mockFacilityId,
             workPackageId: mockWorkPackageId,
             creationCatchError: mockCreationCatchError,
-          });
-        } catch (error) {
-          thrownError = error;
-        }
-
-        // Assert
-        expect(thrownError).toBeInstanceOf(Error);
-        expect((thrownError as Error).message).toBe(
-          `Severe error creating a GIFT facility ${mockFacilityId} and deleting GIFT facility work package ${mockWorkPackageId}`,
-        );
-        expect((thrownError as Error).cause).toMatchObject({
-          creationCatchError: mockCreationCatchError,
-          deletionError: mockResponse500(),
-        });
+          }),
+        ).rejects.toMatchObject(expected);
       });
     });
   });
