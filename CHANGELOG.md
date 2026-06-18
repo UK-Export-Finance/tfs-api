@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.3](https://github.com/UK-Export-Finance/tfs-api/compare/v2.1.2...v2.1.3) (2026-06-18)
+
+
+### Bug Fixes
+
+* **DTFS2-8484:** gift error handling - finally, delete work package ([#1398](https://github.com/UK-Export-Finance/tfs-api/issues/1398)) ([2bfaebb](https://github.com/UK-Export-Finance/tfs-api/commit/2bfaebb014eee8c63984af5fb8f72bc12fb0a4b7))
+
 ## [2.1.2](https://github.com/UK-Export-Finance/tfs-api/compare/v2.1.1...v2.1.2) (2026-06-12)
 
 
