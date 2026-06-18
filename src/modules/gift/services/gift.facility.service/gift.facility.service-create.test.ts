@@ -209,8 +209,6 @@ describe('GiftFacilityService.create - happy path', () => {
     const expected = {
       facilityId: mockPayload.overview.facilityId,
       workPackageId: FACILITY_RESPONSE_DATA.workPackageId,
-      startDate: mockPayload.overview.effectiveDate,
-      exitDate: mockPayload.overview.expiryDate,
     };
 
     expect(createBusinessCalendarSpy).toHaveBeenCalledWith(expected);

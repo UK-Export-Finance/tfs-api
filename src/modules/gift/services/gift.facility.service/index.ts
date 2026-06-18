@@ -208,13 +208,9 @@ export class GiftFacilityService {
 
       facilityWorkPackageId = workPackageId;
 
-      const { effectiveDate, expiryDate } = overview;
-
       const defaultBusinessCalendar = await this.giftBusinessCalendarService.createOne({
         facilityId,
         workPackageId,
-        startDate: effectiveDate,
-        exitDate: expiryDate,
       });
 
       const defaultBusinessCalendarsConvention = await this.giftBusinessCalendarsConventionService.createOne({ facilityId, workPackageId });
