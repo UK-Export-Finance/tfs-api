@@ -1,6 +1,6 @@
 import { ENUMS } from '@ukef/constants';
 import { CALENDAR_IDENTIFIERS } from '@ukef/constants/calendar-identifiers.constant';
-import { CURRENCIES } from '@ukef/constants/currencies.constant';
+import { SUPPORTED_CURRENCIES } from '@ukef/constants/currencies.constant';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { CreateFacilityLoanGenerator } from '@ukef-test/support/generator/create-facility-loan-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
@@ -49,7 +49,7 @@ describe('RepaymentScheduleBuilder', () => {
         const newLoanWithProductTypeGroupBondCurrencyEur = {
           ...newLoanNonGbp,
           productTypeGroup: ENUMS.PRODUCT_TYPE_GROUPS.BOND,
-          currency: CURRENCIES.EUR,
+          currency: SUPPORTED_CURRENCIES.EUR,
         };
         const bondRepaymentSchedulesEur = [
           {
@@ -69,7 +69,7 @@ describe('RepaymentScheduleBuilder', () => {
         const newLoanWithProductTypeGroupBondCurrencyUsd = {
           ...newLoanNonGbp,
           productTypeGroup: ENUMS.PRODUCT_TYPE_GROUPS.BOND,
-          currency: CURRENCIES.USD,
+          currency: SUPPORTED_CURRENCIES.USD,
         };
         const bondRepaymentSchedulesUsd = [
           {
@@ -102,7 +102,7 @@ describe('RepaymentScheduleBuilder', () => {
         const newLoanWithProductTypeGroupGefCurrencyEur = {
           ...newLoanNonGbp,
           productTypeGroup: ENUMS.PRODUCT_TYPE_GROUPS.GEF,
-          currency: CURRENCIES.EUR,
+          currency: SUPPORTED_CURRENCIES.EUR,
         };
         const gefRepaymentSchedulesEur = [
           {
@@ -122,7 +122,7 @@ describe('RepaymentScheduleBuilder', () => {
         const newLoanWithProductTypeGroupGefCurrencyUsd = {
           ...newLoanNonGbp,
           productTypeGroup: ENUMS.PRODUCT_TYPE_GROUPS.GEF,
-          currency: CURRENCIES.USD,
+          currency: SUPPORTED_CURRENCIES.USD,
         };
         const gefRepaymentSchedulesUsd = [
           {
@@ -155,7 +155,7 @@ describe('RepaymentScheduleBuilder', () => {
         const newLoanWithProductTypeGroupEwcsCurrencyEur = {
           ...newLoanNonGbp,
           productTypeGroup: ENUMS.PRODUCT_TYPE_GROUPS.EWCS,
-          currency: CURRENCIES.EUR,
+          currency: SUPPORTED_CURRENCIES.EUR,
         };
         const ewcsRepaymentSchedulesEur = [
           {
@@ -181,7 +181,7 @@ describe('RepaymentScheduleBuilder', () => {
         const newLoanWithProductTypeGroupEwcsCurrencyUsd = {
           ...newLoanNonGbp,
           productTypeGroup: ENUMS.PRODUCT_TYPE_GROUPS.EWCS,
-          currency: CURRENCIES.USD,
+          currency: SUPPORTED_CURRENCIES.USD,
         };
         const ewcsRepaymentSchedulesUsd = [
           {

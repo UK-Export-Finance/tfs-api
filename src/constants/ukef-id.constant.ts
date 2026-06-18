@@ -7,6 +7,7 @@ export const UKEFID = {
       PROD: '0020',
     },
     TEN_DIGIT_REGEX: /^00\d{8}$/,
+    MULTIPLE_TEN_DIGIT_REGEX: String.raw`^00\d{8}(,00\d{8})*$`,
   },
   // Prefix is used for 10 digit Covenant record id
   COVENANT_ID: {
@@ -20,4 +21,5 @@ export const UKEFID = {
   PARTY_ID: {
     REGEX: /^\d{8}$/,
   },
+  VALIDATION: { MIN_LENGTH: 10, MAX_LENGTH: 10 },
 };

@@ -1,0 +1,183 @@
+import { CONSUMER } from './consumer.constant';
+import { VALIDATION } from './validation.constant';
+
+export const AMEND_FACILITY_PREFIX_TYPES = {
+  AMEND_OBLIGATION: 'AmendObligation_',
+};
+
+/**
+ * The types of facility amendments that can be made by the consumer.
+ * These are used to determine the type of amendment being made,
+ * and therefore the order of operations to execute the amendment.
+ */
+export const AMEND_FACILITY_TYPES_CONSUMER = {
+  AMEND_FACILITY_INCREASE_AMOUNT: 'IncreaseAmount',
+  AMEND_FACILITY_DECREASE_AMOUNT: 'DecreaseAmount',
+  AMEND_FACILITY_REPLACE_EXPIRY_DATE: 'ReplaceExpiryDate',
+} as const;
+
+export const AMEND_FACILITY_TYPES_CONSUMER_ARRAY = Object.values(AMEND_FACILITY_TYPES_CONSUMER);
+
+export type AmendFacilityTypeConsumer = (typeof AMEND_FACILITY_TYPES_CONSUMER)[keyof typeof AMEND_FACILITY_TYPES_CONSUMER];
+
+/**
+ * GIFT facility amendment types that are used internally.
+ * E.g. "ReplaceMaturityDate" amendment, which is triggered when a consumer requests a "ReplaceExpiryDate" amendment.
+ */
+export const AMEND_FACILITY_TYPES_GIFT = {
+  AMEND_OBLIGATION_REPLACE_MATURITY_DATE: 'ReplaceMaturityDate',
+} as const;
+
+const FACILITY_CATEGORY_CODES = {
+  CONTINGENT: 'FCT006',
+  CASH: 'FCT007',
+} as const;
+
+export type FacilityCategoryCode = (typeof FACILITY_CATEGORY_CODES)[keyof typeof FACILITY_CATEGORY_CODES];
+
+const PRODUCT_TYPE_CODES = {
+  BIP: 'PRT001',
+  EXIP: 'PRT002',
+  BSS: 'PRT003',
+  GEF: 'PRT004',
+} as const;
+
+const PRODUCT_TYPE_NAMES = {
+  BIP: 'Bond Insurance Policy (BIP)',
+  EXIP: 'Export Insurance Policy (EXIP)',
+  BSS: 'Bond Support Scheme (BSS)',
+  GEF: 'General Export Facility (GEF)',
+} as const;
+
+export const GIFT = {
+  AMEND_FACILITY_PREFIX_TYPES,
+  AMEND_FACILITY_TYPES_CONSUMER,
+  AMEND_FACILITY_TYPES_GIFT,
+  AMEND_OBLIGATION_AMOUNT: {
+    PERCENTAGE_OF_FACILITY_AMOUNT: {
+      [FACILITY_CATEGORY_CODES.CONTINGENT]: 70,
+      [FACILITY_CATEGORY_CODES.CASH]: 85,
+      OTHER: 100,
+    },
+  },
+  API_RESPONSE_MESSAGES: {
+    ASYNC_FACILITY_VALIDATION_ERRORS: 'Async validation errors with facility entity(s)',
+    GIFT_FACILITY_VALIDATION_ERRORS: 'GIFT validation errors with facility entity(s)',
+  },
+  API_RESPONSE_TYPES: {
+    ERROR: 'api-error-response',
+  },
+  CONSUMER,
+  COUNTERPARTY_ROLE_CODES: {
+    EXPORTER: 'CRT001',
+    BOND_GIVER: 'CRT005',
+    GUARANTOR: 'CRT013',
+    ISSUING_BANK: 'CRT043',
+  },
+  CREDIT_TYPES: {
+    REVOLVER: 'Revolver',
+    TERM: 'Term',
+  },
+  DAY_BASIS_CODES: {
+    ACTUAL_365: 'ACTUAL_365',
+    ACTUAL_360: 'ACTUAL_360',
+    ACTUAL_365_366: 'ACTUAL_365_366',
+    '30E_360': '30E_360',
+    '30E_365': '30E_365',
+    '30E_365_366': '30E_365_366',
+  },
+  ENTITY_NAMES: {
+    ACCRUAL_SCHEDULE: 'Accrual schedule',
+    BUSINESS_CALENDAR: 'Business calendar',
+    BUSINESS_CALENDARS_CONVENTION: 'Business calendars convention',
+    COUNTERPARTY: 'Counterparty',
+    FIXED_FEE: 'Fixed fee',
+    OBLIGATION: 'Obligation',
+    REPAYMENT_PROFILE: 'Repayment profile',
+    RISK_DETAILS: 'Risk details',
+  },
+  EVENT_TYPES: {
+    ADD_BUSINESS_CALENDAR: 'AddFacilityBusinessCalendar',
+    ADD_BUSINESS_CALENDARS_CONVENTION: 'AddFacilityBusinessCalendarsConvention',
+    ADD_COUNTERPARTY: 'AddFacilityCounterparty',
+    ADD_REPAYMENT_PROFILE: 'AddRepaymentProfile',
+    CREATE_FACILITY: 'CreateFacility',
+    ADD_ACCRUAL_SCHEDULE_FIXED_RATE: 'AddFixedRateAccrualSchedule',
+    ADD_FIXED_FEE: 'AddFixedFee',
+    ADD_OBLIGATION: 'AddObligation',
+    ADD_RISK_DETAILS: 'AddRiskDetails',
+    AMEND_FACILITY_INCREASE_AMOUNT: 'AmendFacility_IncreaseAmount',
+    AMEND_FACILITY_DECREASE_AMOUNT: 'AmendFacility_DecreaseAmount',
+    AMEND_FACILITY_REPLACE_EXPIRY_DATE: 'AmendFacility_ReplaceExpiryDate',
+  },
+  FACILITY_CATEGORIES: {
+    BOND_STAND_ALONE: 'BOND: STAND ALONE',
+    BOND_SUPPLEMENTAL_TO_CASH: 'BOND: SUPPLEMENTAL TO CASH',
+    BOND_SUPPLEMENTAL_TO_CREDIT: 'BOND: SUPPLEMENTAL TO CREDIT',
+  },
+  FACILITY_CATEGORY_CODES,
+  FEE_TYPE_CODES: {
+    BEX: 'BEX',
+    CMF: 'CMF',
+    PLA: 'PLA',
+  },
+  FEE_TYPE_DESCRIPTIONS: {
+    BEX: 'BROKERAGE EXPENSE',
+    CMF: 'COMMITMENT FEES',
+    PLA: 'PREMIUM LESS ADMIN',
+  },
+  INTEGRATION_DEFAULTS: {
+    ACBS_FEE_SEGMENT_ID: null,
+    ACBS_INTEREST_SCHEDULE_ID: null,
+    ACBS_OBLIGATION_ID: null,
+    ACCOUNT: '2',
+    ACCRUAL_EFFECTIVE_DATE: null,
+    ACCRUAL_MATURITY_DATE: null,
+    BUSINESS_CALENDAR_EXIT_DATE: null,
+    BUSINESS_CALENDAR_START_DATE: null,
+    BUSINESS_CALENDARS_CONVENTION: 'UNADJUSTED',
+    COUNTERPARTY_EXIT_DATE: null,
+    COUNTERPARTY_START_DATE: null,
+    DATE_SNAP_BACK: false,
+    DATE_SNAP_BACK_OVERRIDE: null,
+    DUE_ON_LAST_WORKING_DAY_EACH_MONTH: false,
+    FIRST_CYCLE_ACCRUAL_END_DATE: null,
+    GIFT_AMENDMENT_WORK_PACKAGE_NAME: 'Amendments',
+    LINKED_REPAYMENT_PROFILE_ID: null,
+    OBLIGATION_EFFECTIVE_DATE: null,
+    OBLIGATION_MATURITY_DATE: null,
+    OVERRIDE_RISK_RATING: null,
+    OVERRIDE_LOSS_GIVEN_DEFAULT: null,
+    RISK_REASSESSMENT_DATE: null,
+    RISK_STATUS: 'Corporate',
+    FACILITY_CATEGORY_CODE: null,
+    FACILITY_CREDIT_RATING: null,
+    OBLIGATION_SUBTYPE_CODE: null,
+    RISK_MARKET_CODE: 'GBR',
+    PROJECT_FINANCE: false,
+    LINKED_FACILITY_ID: null,
+    ORIGINAL_FACILITY_EFFECTIVE_DATE: null,
+  },
+  QUEUE_DELAY: 5 * 60 * 60, // 5 hours
+  PATH: {
+    AMENDMENT: '/amendment',
+    APPROVE: '/approve',
+    COUNTERPARTY_ROLES: '/counterparty-role',
+    CURRENCY: '/currency',
+    CONFIGURATION_EVENT: '/configuration-event/type',
+    CREATE_FACILITY: '/work-package/create-facility',
+    FACILITY: '/facility',
+    FACILITIES: '/facilities',
+    FEE_TYPE: '/fee-type',
+    PRODUCT_TYPE: '/product-type',
+    SUPPORTED: '/supported',
+    WORK_PACKAGE: '/work-package',
+  },
+  PRODUCT_TYPE_CODES,
+  PRODUCT_TYPE_NAMES,
+  REPAYMENT_TYPE: {
+    BULLET: 'Bullet',
+    SCHEDULED: 'Scheduled',
+  },
+  VALIDATION,
+};

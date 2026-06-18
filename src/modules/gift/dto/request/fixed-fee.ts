@@ -1,0 +1,57 @@
+import { ApiProperty } from '@nestjs/swagger';
+import { EXAMPLES, GIFT } from '@ukef/constants';
+import { IsDateString, IsDefined, IsNumber, IsString, Length, Max, Min } from 'class-validator';
+
+const {
+  GIFT: { FIXED_FEE },
+} = EXAMPLES;
+
+const {
+  VALIDATION: { FIXED_FEE: VALIDATION },
+} = GIFT;
+
+/**
+ * GIFT "fixed fee" request DTO.
+ * These fields are required for APIM to create a "fixed fee" in GIFT.
+ */
+export class GiftFixedFeeRequestDto {
+  @IsDefined()
+  @IsNumber()
+  @Max(VALIDATION.AMOUNT_DUE.MAX)
+  @Min(VALIDATION.AMOUNT_DUE.MIN)
+  @ApiProperty({
+    required: true,
+    description: 'The amount of the fixed fee',
+    example: FIXED_FEE().amount,
+  })
+  amount: number;
+
+  @IsDefined()
+  @IsString()
+  @Length(VALIDATION.CURRENCY.MIN_LENGTH, VALIDATION.CURRENCY.MAX_LENGTH)
+  @ApiProperty({
+    required: true,
+    description: 'The currency of the fixed fee amount, in ISO 4217 format',
+    example: FIXED_FEE().currency,
+  })
+  currency: string;
+
+  @IsDefined()
+  @IsDateString()
+  @ApiProperty({
+    required: true,
+    description: 'The effective date',
+    example: FIXED_FEE().effectiveDate,
+  })
+  effectiveDate: string;
+
+  @IsDefined()
+  @IsString()
+  @Length(VALIDATION.FEE_TYPE_CODE.MIN_LENGTH, VALIDATION.FEE_TYPE_CODE.MAX_LENGTH)
+  @ApiProperty({
+    required: true,
+    description: 'The fee type code',
+    example: FIXED_FEE().feeTypeCode,
+  })
+  feeTypeCode: string;
+}

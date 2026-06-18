@@ -49,7 +49,7 @@ on:
 
 env:
   PRODUCT: apim
-  ENVIRONMENT: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || github.ref_name }}
+  ENVIRONMENT: ${{ inputs.environment || github.ref_name }}
   timezone: ${{ vars.TIMEZONE }}
   # Base artifact
   FROM: latest
@@ -104,6 +104,7 @@ jobs:
           echo CA_NAME=$(az resource list --resource-type 'Microsoft.App/containerApps' --query '[?contains(name, `${{ env.NAME }}`)].name' -o tsv) >> $GITHUB_ENV
           echo APIM=$(az resource list --resource-type 'Microsoft.ApiManagement/service' --query '[0].name' -o tsv) >> $GITHUB_ENV
           echo API_ID=$(az apim api list --service-name $(az resource list --resource-type 'Microsoft.ApiManagement/service' --query '[0].name' -o tsv) --query '[?contains(displayName, `${{ env.NAME_UPPERCASE }}`)].name' -o tsv) >> $GITHUB_ENV
+          echo TFS_CLIENT_ID=$(az identity show --name id-${{ env.PRODUCT }}-tfs-${{ env.ENVIRONMENT }}-${{ vars.VERSION }} --query clientId -o tsv) >> $GITHUB_ENV
 
       - name: ACR 🔐
         uses: azure/docker-login@v2
@@ -126,6 +127,7 @@ jobs:
           inlineScript: |
             az containerapp update \
             --name ${{ env.CA_NAME }} \
+            --resource-group rg-${{ env.PRODUCT }}-${{ env.ENVIRONMENT }}-${{ vars.VERSION }} \
             --container-name ${{ env.CA_NAME }} \
             --image ${{ env.ACR }}/${{ env.NAME }}:${{ env.FROM }} \
             --revision-suffix v${{ github.run_id }} \
@@ -158,7 +160,15 @@ jobs:
               "APIM_MDM_KEY=${{ secrets.APIM_MDM_KEY }}" \
               "APIM_MDM_VALUE=${{ secrets.APIM_MDM_VALUE }}" \
               "APIM_MDM_MAX_REDIRECTS=${{ secrets.APIM_MDM_MAX_REDIRECTS }}" \
-              "APIM_MDM_TIMEOUT=${{ secrets.APIM_MDM_TIMEOUT }}"
+              "APIM_MDM_TIMEOUT=${{ secrets.APIM_MDM_TIMEOUT }}" \
+              "GIFT_API_URL=${{ secrets.GIFT_API_URL }}" \
+              "GIFT_API_KEY=${{ secrets.GIFT_API_KEY }}" \
+              "GIFT_API_MAX_REDIRECTS=${{ secrets.GIFT_API_MAX_REDIRECTS }}" \
+              "GIFT_API_TIMEOUT=${{ secrets.GIFT_API_TIMEOUT }}" \
+              "GIFT_HTTP_VERSION=${{ vars.GIFT_HTTP_VERSION }}" \
+              "GIFT_QUEUE_NAME=${{ vars.GIFT_QUEUE_NAME }}" \
+              "AZURE_CLIENT_ID=${{ env.TFS_CLIENT_ID }}" \
+              "GIFT_QUEUE_STORAGE_ACCOUNT_NAME=st${{ env.PRODUCT }}fn${{ env.ENVIRONMENT }}${{ vars.VERSION }}"
 
       - name: Import ⬇️
         if: ${{ env.API_ID != '' }}
@@ -202,7 +212,6 @@ jobs:
                 --service-url "https://$FQDN" \
                 --protocols https \
                 --subscription-required true
-
 
               if [ $? -eq 0 ]; then
                 echo "✅ API import succeeded"

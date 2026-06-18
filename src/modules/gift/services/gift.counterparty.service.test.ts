@@ -1,0 +1,297 @@
+import { EXAMPLES, GIFT } from '@ukef/constants';
+import { mockResponse200, mockResponse201, mockResponse400, mockResponse418, mockResponse500 } from '@ukef-test/http-response';
+import { PinoLogger } from 'nestjs-pino';
+
+import { mapCounterpartiesRequestData } from '../helpers';
+import { GiftCounterpartyService } from './gift.counterparty.service';
+
+const {
+  GIFT: { COUNTERPARTY, COUNTERPARTY_ROLE, FACILITY_ID: mockFacilityId, WORK_PACKAGE_ID: mockWorkPackageId },
+} = EXAMPLES;
+
+const { EVENT_TYPES, INTEGRATION_DEFAULTS, PATH } = GIFT;
+
+describe('GiftCounterpartyService', () => {
+  const logger = new PinoLogger({});
+
+  let service: GiftCounterpartyService;
+
+  let giftHttpService;
+  let mockGetResponse;
+  let mockCreateOneResponse;
+  let mockHttpServiceGet: jest.Mock;
+  let mockHttpServicePost: jest.Mock;
+
+  beforeEach(() => {
+    // Arrange
+    mockGetResponse = mockResponse200([COUNTERPARTY_ROLE, COUNTERPARTY_ROLE]);
+    mockCreateOneResponse = mockResponse201(COUNTERPARTY());
+
+    mockHttpServiceGet = jest.fn().mockResolvedValueOnce(mockGetResponse);
+    mockHttpServicePost = jest.fn().mockResolvedValueOnce(mockCreateOneResponse);
+
+    giftHttpService = {
+      get: mockHttpServiceGet,
+      post: mockHttpServicePost,
+    };
+
+    service = new GiftCounterpartyService(giftHttpService, logger);
+  });
+
+  afterAll(() => {
+    jest.resetAllMocks();
+  });
+
+  describe('createOne', () => {
+    const mockCounterparty = COUNTERPARTY();
+
+    describe('when optional date fields are provided', () => {
+      it('should call giftHttpService.post with the provided date fields', async () => {
+        // Arrange
+        const mockPayload = {
+          ...mockCounterparty,
+          exitDate: '2024-01-01',
+          startDate: '2024-02-01',
+        };
+
+        // Act
+        await service.createOne(mockPayload, mockFacilityId, mockWorkPackageId);
+
+        // Assert
+        expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
+
+        const expected = {
+          path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_COUNTERPARTY}`,
+          payload: {
+            ...mockPayload,
+            exitDate: mockPayload.exitDate,
+            startDate: mockPayload.startDate,
+          },
+        };
+
+        expect(mockHttpServicePost).toHaveBeenCalledWith(expected);
+      });
+    });
+
+    describe('when optional date fields are NOT provided', () => {
+      it('should call giftHttpService.post with default date field values', async () => {
+        // Arrange
+        const mockPayload = {
+          ...mockCounterparty,
+          exitDate: undefined,
+          startDate: undefined,
+        };
+
+        // Act
+        await service.createOne(mockPayload, mockFacilityId, mockWorkPackageId);
+
+        // Assert
+        expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
+
+        const expected = {
+          path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_COUNTERPARTY}`,
+          payload: {
+            ...mockPayload,
+            exitDate: INTEGRATION_DEFAULTS.COUNTERPARTY_EXIT_DATE,
+            startDate: INTEGRATION_DEFAULTS.COUNTERPARTY_START_DATE,
+          },
+        };
+
+        expect(mockHttpServicePost).toHaveBeenCalledWith(expected);
+      });
+    });
+
+    describe('when giftHttpService.post is successful', () => {
+      it('should return the response of giftHttpService.post', async () => {
+        // Act
+        const response = await service.createOne(mockCounterparty, mockFacilityId, mockWorkPackageId);
+
+        // Assert
+        expect(response).toEqual(mockCreateOneResponse);
+      });
+    });
+
+    describe('when giftHttpService.post returns an error', () => {
+      beforeEach(() => {
+        // Arrange
+        mockHttpServicePost = jest.fn().mockRejectedValueOnce(mockResponse500());
+        giftHttpService.post = mockHttpServicePost;
+
+        service = new GiftCounterpartyService(giftHttpService, logger);
+      });
+
+      it('should throw an error', async () => {
+        // Act
+        const promise = service.createOne(mockCounterparty, mockFacilityId, mockWorkPackageId);
+
+        // Assert
+        const expected = new Error(`Error creating a counterparty with URN ${mockCounterparty.counterpartyUrn} for facility ${mockFacilityId}`);
+
+        await expect(promise).rejects.toThrow(expected);
+      });
+    });
+  });
+
+  describe('createMany', () => {
+    const counterpartiesLength = 3;
+
+    const mockCounterparties = Array(counterpartiesLength).fill(COUNTERPARTY());
+
+    let mockCreateOne = jest.fn().mockResolvedValue(mockResponse201(mockCounterparties));
+
+    beforeEach(() => {
+      // Arrange
+      mockCreateOneResponse = mockResponse201(mockCounterparties);
+
+      giftHttpService.post = jest
+        .fn()
+        .mockResolvedValueOnce(mockResponse201(mockCounterparties[0]))
+        .mockResolvedValueOnce(mockResponse201(mockCounterparties[1]))
+        .mockResolvedValueOnce(mockResponse201(mockCounterparties[2]));
+
+      service = new GiftCounterpartyService(giftHttpService, logger);
+
+      service.createOne = mockCreateOne;
+    });
+
+    it('should call service.createOne with mapped data for each provided counterparty', async () => {
+      // Act
+      await service.createMany(mockCounterparties, mockFacilityId, mockWorkPackageId);
+
+      // Assert
+      expect(mockCreateOne).toHaveBeenCalledTimes(counterpartiesLength);
+
+      const mappedCounterpartiesData = mapCounterpartiesRequestData(mockCounterparties);
+
+      expect(mockCreateOne).toHaveBeenCalledWith(mappedCounterpartiesData[0], mockFacilityId, mockWorkPackageId);
+      expect(mockCreateOne).toHaveBeenCalledWith(mappedCounterpartiesData[1], mockFacilityId, mockWorkPackageId);
+      expect(mockCreateOne).toHaveBeenCalledWith(mappedCounterpartiesData[2], mockFacilityId, mockWorkPackageId);
+    });
+
+    describe('when service.createOne is successful', () => {
+      it('should return the response of multiple calls to service.createOne', async () => {
+        // Act
+        const response = await service.createMany(mockCounterparties, mockFacilityId, mockWorkPackageId);
+
+        // Assert
+        const expected = [mockCreateOneResponse, mockCreateOneResponse, mockCreateOneResponse];
+
+        expect(response).toEqual(expected);
+      });
+    });
+
+    describe('when service.createOne returns an error', () => {
+      const mockError = mockResponse500();
+
+      beforeEach(() => {
+        // Arrange
+        mockCreateOne = jest.fn().mockRejectedValueOnce(mockError);
+
+        service = new GiftCounterpartyService(giftHttpService, logger);
+
+        service.createOne = mockCreateOne;
+      });
+
+      it('should throw an error', async () => {
+        // Act
+        const promise = service.createMany(mockCounterparties, mockFacilityId, mockWorkPackageId);
+
+        // Assert
+        const expected = new Error(`Error creating counterparties for facility ${mockFacilityId}`, { cause: mockError });
+
+        await expect(promise).rejects.toThrow(expected);
+      });
+    });
+
+    describe('when service.createOne returns multiple unacceptable and acceptable error statuses', () => {
+      beforeEach(() => {
+        // Arrange
+        mockCreateOneResponse = mockResponse201(mockCounterparties);
+
+        service = new GiftCounterpartyService(giftHttpService, logger);
+
+        mockCreateOne = jest.fn().mockResolvedValueOnce(mockResponse418()).mockResolvedValueOnce(mockResponse500()).mockResolvedValueOnce(mockResponse400());
+
+        service.createOne = mockCreateOne;
+      });
+
+      it('should continue to call service.createOne with mapped data for each provided counterparty', async () => {
+        // Act
+        await service.createMany(mockCounterparties, mockFacilityId, mockWorkPackageId);
+
+        // Assert
+        expect(mockCreateOne).toHaveBeenCalledTimes(counterpartiesLength);
+
+        const mappedCounterpartiesData = mapCounterpartiesRequestData(mockCounterparties);
+
+        expect(mockCreateOne).toHaveBeenCalledWith(mappedCounterpartiesData[0], mockFacilityId, mockWorkPackageId);
+        expect(mockCreateOne).toHaveBeenCalledWith(mappedCounterpartiesData[1], mockFacilityId, mockWorkPackageId);
+        expect(mockCreateOne).toHaveBeenCalledWith(mappedCounterpartiesData[2], mockFacilityId, mockWorkPackageId);
+      });
+    });
+  });
+
+  describe('getAllRoles', () => {
+    it('should call giftHttpService.get', async () => {
+      // Act
+      await service.getAllRoles();
+
+      // Assert
+      expect(mockHttpServiceGet).toHaveBeenCalledTimes(1);
+
+      const expected = {
+        path: PATH.COUNTERPARTY_ROLES,
+      };
+
+      expect(mockHttpServiceGet).toHaveBeenCalledWith(expected);
+    });
+
+    describe('when giftHttpService.get is successful', () => {
+      it('should return the response of giftHttpService.get', async () => {
+        // Act
+        const response = await service.getAllRoles();
+
+        // Assert
+        expect(response).toEqual(mockGetResponse);
+      });
+    });
+
+    describe('when giftHttpService.get returns an error', () => {
+      const mockError = mockResponse500();
+
+      beforeEach(() => {
+        // Arrange
+        mockHttpServiceGet = jest.fn().mockRejectedValueOnce(mockError);
+
+        giftHttpService.get = mockHttpServiceGet;
+
+        service = new GiftCounterpartyService(giftHttpService, logger);
+      });
+
+      it('should throw an error', async () => {
+        // Act
+        const promise = service.getAllRoles();
+
+        // Assert
+        const expected = new Error('Error getting all counterparty roles', { cause: mockError });
+
+        await expect(promise).rejects.toThrow(expected);
+      });
+    });
+  });
+
+  describe('getAllRoleCodes', () => {
+    it('should return an array of codes from the response of service.getAllRoles', async () => {
+      // Arrange
+      const mockRoles = [COUNTERPARTY_ROLE.EXPORTER, COUNTERPARTY_ROLE.GUARANTOR];
+
+      // Act
+      const response = await service.getAllRoleCodes(mockRoles);
+
+      // Assert
+      const expected = [mockRoles[0].code, mockRoles[1].code];
+
+      expect(response).toEqual(expected);
+    });
+  });
+});

@@ -1,8 +1,6 @@
 import { HttpService } from '@nestjs/axios';
-import { AxiosResponse } from 'axios';
+import { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { catchError, lastValueFrom, Observable, ObservableInput } from 'rxjs';
-
-import { RequestHeaders } from './type/headers.type';
 
 // TODO APIM-336: commonise with AcbsHttpService
 export class HttpClient {
@@ -11,29 +9,33 @@ export class HttpClient {
   post<RequestBody, ResponseBody>({
     path,
     requestBody,
-    headers,
     onError,
   }: {
     path: string;
     requestBody: RequestBody;
-    headers: RequestHeaders;
     onError: (error: Error) => ObservableInput<never>;
   }): Promise<AxiosResponse<ResponseBody, RequestBody>> {
-    return this.responseFrom({ request: this.httpService.post<ResponseBody>(path, requestBody, { headers }), onError });
+    const config: AxiosRequestConfig<RequestBody> = {};
+
+    return this.responseFrom({ request: this.httpService.post<ResponseBody>(path, requestBody, config), onError });
   }
 
   get<QueryParams, ResponseBody>({
     path,
     queryParams,
-    headers,
     onError,
   }: {
     path: string;
-    queryParams: QueryParams;
-    headers: RequestHeaders;
+    queryParams?: QueryParams;
     onError: (error: Error) => ObservableInput<never>;
   }): Promise<AxiosResponse<ResponseBody>> {
-    return this.responseFrom({ request: this.httpService.get<ResponseBody>(path, { headers, params: queryParams }), onError });
+    const config: AxiosRequestConfig = {};
+
+    if (queryParams) {
+      config.params = queryParams;
+    }
+
+    return this.responseFrom({ request: this.httpService.get<ResponseBody>(path, config), onError });
   }
 
   private async responseFrom<RequestBody, ResponseBody>({
