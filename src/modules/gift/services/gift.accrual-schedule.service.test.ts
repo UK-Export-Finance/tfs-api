@@ -116,7 +116,7 @@ describe('GiftAccrualScheduleService', () => {
         expect(payload).not.toHaveProperty('dateSnapBack');
       });
 
-      it('should keep dateSnapBack as undefined in payload when it is explicitly undefined', async () => {
+      it('should not include dateSnapBack in payload when it is explicitly undefined', async () => {
         // Arrange
         const mockPayload = {
           ...mockAccrualSchedule,
@@ -132,7 +132,26 @@ describe('GiftAccrualScheduleService', () => {
         const [firstCall] = mockHttpServicePost.mock.calls;
         const [{ payload }] = firstCall;
 
-        expect(payload).toHaveProperty('dateSnapBack', undefined);
+        expect(payload).not.toHaveProperty('dateSnapBack');
+      });
+
+      it('should not include dateSnapBack in payload when it is null', async () => {
+        // Arrange
+        const mockPayload = {
+          ...mockAccrualSchedule,
+          dateSnapBack: null,
+        };
+
+        // Act
+        await service.createOne(mockPayload as any, mockFacilityId, mockWorkPackageId);
+
+        // Assert
+        expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
+
+        const [firstCall] = mockHttpServicePost.mock.calls;
+        const [{ payload }] = firstCall;
+
+        expect(payload).not.toHaveProperty('dateSnapBack');
       });
     });
 

@@ -39,7 +39,10 @@ const { PRODUCT_TYPE_CODES, PRODUCT_TYPE_NAMES } = GIFT;
 
 const { FACILITY_CREATION_PAYLOAD: initPayload } = GIFT_EXAMPLES;
 
-const setupMocks = (options?: { expectedBusinessCalendarPayload?: { centreCode: string; startDate: string | null; exitDate: string | null } }) => {
+const setupMocks = (options?: {
+  expectedBusinessCalendarPayload?: { centreCode: string; startDate: string | null; exitDate: string | null };
+  expectedAccrualScheduleDateSnapBack?: boolean;
+}) => {
   nock(GIFT_API_URL).persist().get(productTypeUrl(PRODUCT_TYPE_CODES.BIP)).reply(HttpStatus.OK, mockResponses.productType);
   nock(GIFT_API_URL).persist().get(productTypeUrl(PRODUCT_TYPE_CODES.EXIP)).reply(HttpStatus.OK, mockResponses.productType);
   nock(GIFT_API_URL).persist().get(productTypeUrl(PRODUCT_TYPE_CODES.BSS)).reply(HttpStatus.OK, mockResponses.productType);
@@ -59,7 +62,14 @@ const setupMocks = (options?: { expectedBusinessCalendarPayload?: { centreCode: 
 
   nock(GIFT_API_URL).persist().post(facilityCreationUrl).reply(HttpStatus.CREATED, mockResponses.facility);
 
-  nock(GIFT_API_URL).persist().post(accrualScheduleUrl).reply(HttpStatus.CREATED, mockResponses.accrualSchedule);
+  if (typeof options?.expectedAccrualScheduleDateSnapBack === 'boolean') {
+    nock(GIFT_API_URL)
+      .persist()
+      .post(accrualScheduleUrl, (body: any) => body?.dateSnapBack === options.expectedAccrualScheduleDateSnapBack)
+      .reply(HttpStatus.CREATED, mockResponses.accrualSchedule);
+  } else {
+    nock(GIFT_API_URL).persist().post(accrualScheduleUrl).reply(HttpStatus.CREATED, mockResponses.accrualSchedule);
+  }
 
   if (options?.expectedBusinessCalendarPayload) {
     nock(GIFT_API_URL).persist().post(businessCalendarUrl, options.expectedBusinessCalendarPayload).reply(HttpStatus.CREATED, mockResponses.businessCalendar);
@@ -216,7 +226,7 @@ describe('POST /gift/facility', () => {
   describe('when accrual schedule dateSnapBack is true in the payload', () => {
     it('should post dateSnapBack true to the GIFT accrual schedule endpoint', async () => {
       // Arrange
-      setupMocks();
+      setupMocks({ expectedAccrualScheduleDateSnapBack: true });
 
       const mockPayload = {
         ...initPayload,
@@ -237,7 +247,7 @@ describe('POST /gift/facility', () => {
   describe('when accrual schedule dateSnapBack is false in the payload', () => {
     it('should post dateSnapBack false to the GIFT accrual schedule endpoint', async () => {
       // Arrange
-      setupMocks();
+      setupMocks({ expectedAccrualScheduleDateSnapBack: false });
 
       const mockPayload = {
         ...initPayload,

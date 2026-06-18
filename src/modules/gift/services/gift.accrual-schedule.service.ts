@@ -33,8 +33,15 @@ export class GiftAccrualScheduleService {
     try {
       this.logger.info('Creating an accrual schedule with schedule type code %s for facility %s', accrualScheduleData.accrualScheduleTypeCode, facilityId);
 
+      /**
+       * Only include dateSnapBack in the payload if it is provided in the request body. Otherwise, GIFT will throw a 400 Bad Request error.
+       * This is because GIFT expects dateSnapBack to be a boolean value, and if it is not provided, it will be undefined.
+       * GIFT does not accept an undefined value for this boolean field.
+       */
+      const { dateSnapBack, ...accrualSchedulePayload } = accrualScheduleData;
+
       const payload = {
-        ...accrualScheduleData,
+        ...accrualSchedulePayload,
         dateSnapBackOverride: INTEGRATION_DEFAULTS.DATE_SNAP_BACK_OVERRIDE,
         baseRateTypeCode: null,
         additionalRateTypeCode: null,
@@ -42,16 +49,8 @@ export class GiftAccrualScheduleService {
         accrualEffectiveDate: accrualScheduleData.accrualEffectiveDate || INTEGRATION_DEFAULTS.ACCRUAL_EFFECTIVE_DATE,
         accrualMaturityDate: accrualScheduleData.accrualMaturityDate || INTEGRATION_DEFAULTS.ACCRUAL_MATURITY_DATE,
         firstCycleAccrualEndDate: accrualScheduleData.firstCycleAccrualEndDate || INTEGRATION_DEFAULTS.FIRST_CYCLE_ACCRUAL_END_DATE,
+        ...(typeof dateSnapBack === 'boolean' ? { dateSnapBack } : {}),
       };
-
-      /**
-       * Only include dateSnapBack in the payload if it is provided in the request body. Otherwise, GIFT will throw a 400 Bad Request error.
-       * This is because GIFT expects dateSnapBack to be a boolean value, and if it is not provided, it will be undefined.
-       * GIFT does not accept an undefined value for this boolean field.
-       */
-      if (accrualScheduleData.dateSnapBack !== undefined) {
-        payload.dateSnapBack = accrualScheduleData.dateSnapBack;
-      }
 
       const path = `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_ACCRUAL_SCHEDULE_FIXED_RATE}`;
 
