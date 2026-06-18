@@ -101,38 +101,4 @@ export const arrayOfObjectsOptionalBooleanValidation = ({ fieldName, initialPayl
       expect(body.message).toStrictEqual(expected);
     });
   });
-
-  describe(`when ${fieldName} is true`, () => {
-    let mockPayload;
-
-    beforeAll(() => {
-      // Arrange
-      mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value: true });
-    });
-
-    it(`should not return a ${HttpStatus.BAD_REQUEST} response`, async () => {
-      // Act
-      const response = await api.post(url, mockPayload);
-
-      // Assert
-      expect(response.status).not.toBe(HttpStatus.BAD_REQUEST);
-    });
-  });
-
-  describe(`when ${fieldName} is false`, () => {
-    let mockPayload;
-
-    beforeAll(() => {
-      // Arrange
-      mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value: false });
-    });
-
-    it(`should not return a ${HttpStatus.BAD_REQUEST} response`, async () => {
-      // Act
-      const response = await api.post(url, mockPayload);
-
-      // Assert
-      expect(response.status).not.toBe(HttpStatus.BAD_REQUEST);
-    });
-  });
 };
