@@ -44,7 +44,12 @@ export class GiftAccrualScheduleService {
         firstCycleAccrualEndDate: accrualScheduleData.firstCycleAccrualEndDate || INTEGRATION_DEFAULTS.FIRST_CYCLE_ACCRUAL_END_DATE,
       };
 
-      if (accrualScheduleData.dateSnapBack) {
+      /**
+       * Only include dateSnapBack in the payload if it is provided in the request body. Otherwise, GIFT will throw a 400 Bad Request error.
+       * This is because GIFT expects dateSnapBack to be a boolean value, and if it is not provided, it will be undefined.
+       * GIFT does not accept an undefined value for this boolean field.
+       */
+      if (accrualScheduleData.dateSnapBack !== undefined) {
         payload.dateSnapBack = accrualScheduleData.dateSnapBack;
       }
 
