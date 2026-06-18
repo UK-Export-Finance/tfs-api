@@ -143,7 +143,7 @@ describe('GiftAccrualScheduleService', () => {
         };
 
         // Act
-        await service.createOne(mockPayload as any, mockFacilityId, mockWorkPackageId);
+        await service.createOne(mockPayload, mockFacilityId, mockWorkPackageId);
 
         // Assert
         expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
