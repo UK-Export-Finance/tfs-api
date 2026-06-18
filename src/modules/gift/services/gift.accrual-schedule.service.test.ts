@@ -37,6 +37,86 @@ describe('GiftAccrualScheduleService', () => {
   describe('createOne', () => {
     const mockAccrualSchedule = ACCRUAL_SCHEDULE;
 
+    describe('when optional dateSnapBack is provided', () => {
+      it('should call giftHttpService.post with dateSnapBack true', async () => {
+        // Arrange
+        const mockPayload = {
+          ...mockAccrualSchedule,
+          dateSnapBack: true,
+        };
+
+        // Act
+        await service.createOne(mockPayload, mockFacilityId, mockWorkPackageId);
+
+        // Assert
+        expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
+
+        const expected = {
+          path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_ACCRUAL_SCHEDULE_FIXED_RATE}`,
+          payload: {
+            ...mockPayload,
+            dateSnapBackOverride: INTEGRATION_DEFAULTS.DATE_SNAP_BACK_OVERRIDE,
+            baseRateTypeCode: null,
+            additionalRateTypeCode: null,
+            acbsInterestScheduleId: INTEGRATION_DEFAULTS.ACBS_INTEREST_SCHEDULE_ID,
+            accrualEffectiveDate: mockPayload.accrualEffectiveDate,
+            accrualMaturityDate: mockPayload.accrualMaturityDate,
+            firstCycleAccrualEndDate: mockPayload.firstCycleAccrualEndDate,
+          },
+        };
+
+        expect(mockHttpServicePost).toHaveBeenCalledWith(expected);
+      });
+
+      it('should call giftHttpService.post with dateSnapBack false', async () => {
+        // Arrange
+        const mockPayload = {
+          ...mockAccrualSchedule,
+          dateSnapBack: false,
+        };
+
+        // Act
+        await service.createOne(mockPayload, mockFacilityId, mockWorkPackageId);
+
+        // Assert
+        expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
+
+        const expected = {
+          path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_ACCRUAL_SCHEDULE_FIXED_RATE}`,
+          payload: {
+            ...mockPayload,
+            dateSnapBackOverride: INTEGRATION_DEFAULTS.DATE_SNAP_BACK_OVERRIDE,
+            baseRateTypeCode: null,
+            additionalRateTypeCode: null,
+            acbsInterestScheduleId: INTEGRATION_DEFAULTS.ACBS_INTEREST_SCHEDULE_ID,
+            accrualEffectiveDate: mockPayload.accrualEffectiveDate,
+            accrualMaturityDate: mockPayload.accrualMaturityDate,
+            firstCycleAccrualEndDate: mockPayload.firstCycleAccrualEndDate,
+          },
+        };
+
+        expect(mockHttpServicePost).toHaveBeenCalledWith(expected);
+      });
+
+      it('should not include dateSnapBack in payload when it is not provided', async () => {
+        // Arrange
+        const mockPayload = {
+          ...mockAccrualSchedule,
+        };
+
+        // Act
+        await service.createOne(mockPayload, mockFacilityId, mockWorkPackageId);
+
+        // Assert
+        expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
+
+        const [firstCall] = mockHttpServicePost.mock.calls;
+        const [{ payload }] = firstCall;
+
+        expect(payload).not.toHaveProperty('dateSnapBack');
+      });
+    });
+
     describe('when optional date fields are provided', () => {
       it('should call giftHttpService.post with the provided date fields', async () => {
         // Arrange

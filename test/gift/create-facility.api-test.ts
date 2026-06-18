@@ -213,6 +213,48 @@ describe('POST /gift/facility', () => {
     });
   });
 
+  describe('when accrual schedule dateSnapBack is true in the payload', () => {
+    it('should post dateSnapBack true to the GIFT accrual schedule endpoint', async () => {
+      // Arrange
+      setupMocks();
+
+      const mockPayload = {
+        ...initPayload,
+        accrualSchedules: initPayload.accrualSchedules.map((accrualSchedule) => ({
+          ...accrualSchedule,
+          dateSnapBack: true,
+        })),
+      };
+
+      // Act
+      const { status } = await api.post(apimFacilityWithoutQueueUrl, mockPayload);
+
+      // Assert
+      expect(status).toBe(HttpStatus.CREATED);
+    });
+  });
+
+  describe('when accrual schedule dateSnapBack is false in the payload', () => {
+    it('should post dateSnapBack false to the GIFT accrual schedule endpoint', async () => {
+      // Arrange
+      setupMocks();
+
+      const mockPayload = {
+        ...initPayload,
+        accrualSchedules: initPayload.accrualSchedules.map((accrualSchedule) => ({
+          ...accrualSchedule,
+          dateSnapBack: false,
+        })),
+      };
+
+      // Act
+      const { status } = await api.post(apimFacilityWithoutQueueUrl, mockPayload);
+
+      // Assert
+      expect(status).toBe(HttpStatus.CREATED);
+    });
+  });
+
   describe('when business calendar startDate, exitDate are NOT explicitly provided to GIFT', () => {
     it('should post null startDate/exitDate to the GIFT business calendar endpoint', async () => {
       // Arrange

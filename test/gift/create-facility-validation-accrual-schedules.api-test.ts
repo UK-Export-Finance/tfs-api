@@ -4,7 +4,12 @@ import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import nock from 'nock';
 
-import { arrayOfObjectsNumberValidation, arrayOfObjectsOptionalDateStringValidation, arrayOfObjectsStringValidation } from './assertions';
+import {
+  arrayOfObjectsNumberValidation,
+  arrayOfObjectsOptionalBooleanValidation,
+  arrayOfObjectsOptionalDateStringValidation,
+  arrayOfObjectsStringValidation,
+} from './assertions';
 import {
   apimFacilityWithoutQueueUrl,
   apimMdmObligationSubtypesUrl,
@@ -155,6 +160,13 @@ describe('POST /gift/facility - validation - accrual schedules', () => {
     arrayOfObjectsNumberValidation({
       ...baseParams,
       fieldName: 'baseRate',
+    });
+  });
+
+  describe('dateSnapBack', () => {
+    arrayOfObjectsOptionalBooleanValidation({
+      ...baseParams,
+      fieldName: 'dateSnapBack',
     });
   });
 

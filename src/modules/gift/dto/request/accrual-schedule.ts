@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { EXAMPLES, GIFT } from '@ukef/constants';
-import { IsDateString, IsDefined, IsNumber, IsOptional, IsString, Length, Min } from 'class-validator';
+import { IsBoolean, IsDateString, IsDefined, IsNumber, IsOptional, IsString, Length, Min } from 'class-validator';
 
 const {
   GIFT: { ACCRUAL_SCHEDULE: EXAMPLE },
@@ -81,6 +81,15 @@ export class GiftAccrualScheduleRequestDto {
     required: true,
   })
   baseRate: number;
+
+  @IsOptional()
+  @IsBoolean()
+  @ApiProperty({
+    example: true,
+    description: 'Whether to enable date snap back (optional)',
+    required: false,
+  })
+  dateSnapBack?: boolean;
 
   @IsOptional()
   @IsDateString()
