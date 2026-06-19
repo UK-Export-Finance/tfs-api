@@ -131,6 +131,9 @@ This tests the full flow: `POST /gift/facility/queue` → Azurite queue → func
 - After `maxDequeueCount` failed attempts (set in `host.json`), the Azure
    Functions host moves the message to `gift-requests-poison` and the poison
    queue function logs it.
+- Queue trigger concurrency is intentionally throttled in `host.json` using
+   `batchSize: 1` and `newBatchThreshold: 0` to reduce parallel calls to GIFT
+   per function host instance.
 - **Important:** `host.json` does not support environment variable substitution,
   so `maxDequeueCount` in `host.json` and `GIFT_MAX_NUMBER_OF_RETRIES` in the
   environment must be kept in sync manually; they should always be the same value.
