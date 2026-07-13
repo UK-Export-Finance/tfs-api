@@ -19,7 +19,7 @@ import { GiftRepaymentProfileService } from '../gift.repayment-profile.service';
 import { GiftRiskDetailsService } from '../gift.risk-details.service';
 import { GiftStatusService } from '../gift.status.service';
 
-const { API_RESPONSE_MESSAGES, PATH } = GIFT;
+const { API_RESPONSE_MESSAGES, PATH, INTEGRATION_DEFAULTS } = GIFT;
 
 interface CreateFacilityResponse {
   status: AxiosResponse['status'];
@@ -134,9 +134,15 @@ export class GiftFacilityService {
     try {
       this.logger.info('Creating an initial GIFT facility %s', overviewData.facilityId);
 
+      const giftFacilityCreationRequest = {
+        signedDate: INTEGRATION_DEFAULTS.SIGNED_DATE,
+        availabilityEndDate: INTEGRATION_DEFAULTS.AVAILABILITY_END_DATE,
+        ...overviewData,
+      };
+
       const response = await this.giftHttpService.post<GiftFacilityCreationRequestDto>({
         path: PATH.CREATE_FACILITY,
-        payload: overviewData,
+        payload: giftFacilityCreationRequest,
       });
 
       return response;
