@@ -115,7 +115,11 @@ describe('GiftFacilityService.createInitialFacility', () => {
 
     const expected = {
       path: PATH.CREATE_FACILITY,
-      payload: mockPayload.overview,
+      payload: {
+        ...mockPayload.overview,
+        signedDate: null,
+        availabilityEndDate: null,
+      },
     };
 
     expect(mockHttpServicePost).toHaveBeenCalledWith(expected);
