@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.2.0](https://github.com/UK-Export-Finance/tfs-api/compare/v2.1.3...v2.2.0) (2026-07-14)
+
+
+### Features
+
+* **GIFT-24692:** add signed date and availability end date ([6c6766a](https://github.com/UK-Export-Finance/tfs-api/commit/6c6766a15401eead4b8896b691173d0c8b9f2ba8))
+* **GIFT-24692:** add signed date and availability end date ([#1410](https://github.com/UK-Export-Finance/tfs-api/issues/1410)) ([2f8ce4e](https://github.com/UK-Export-Finance/tfs-api/commit/2f8ce4e1825d2943612ac2a1b2c44177b5ac060c))
+
 ## [2.1.3](https://github.com/UK-Export-Finance/tfs-api/compare/v2.1.2...v2.1.3) (2026-06-18)
 
 
