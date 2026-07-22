@@ -1,4 +1,8 @@
+import { GIFT } from '@ukef/constants';
+
 import { GiftFacilityCounterpartyRequestDto } from '../../dto';
+
+const { INTEGRATION_DEFAULTS } = GIFT;
 
 /**
  * Map counterparties request data into a structure required to be sent to GIFT.
@@ -11,4 +15,5 @@ export const mapCounterpartiesRequestData = (counterparties: GiftFacilityCounter
   counterparties.map((counterparty) => ({
     ...counterparty,
     sharePercentage: counterparty.sharePercentage || null,
+    paymentCode: INTEGRATION_DEFAULTS.COUNTERPARTY_PAYMENT_CODE,
   }));
