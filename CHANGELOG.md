@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.1](https://github.com/UK-Export-Finance/tfs-api/compare/v2.2.0...v2.2.1) (2026-07-22)
+
+
+### Bug Fixes
+
+* **GIFT-26571:** obligations - default originalObligationId ([#1413](https://github.com/UK-Export-Finance/tfs-api/issues/1413)) ([8ff5ade](https://github.com/UK-Export-Finance/tfs-api/commit/8ff5ade3e60f61f0edb83394bf3aa33c0a84b150))
+
 ## [2.2.0](https://github.com/UK-Export-Finance/tfs-api/compare/v2.1.3...v2.2.0) (2026-07-14)
 
 
