@@ -63,6 +63,7 @@ describe('GiftObligationService', () => {
             effectiveDate: mockPayload.effectiveDate,
             linkedRepaymentProfileId: INTEGRATION_DEFAULTS.LINKED_REPAYMENT_PROFILE_ID,
             maturityDate: mockPayload.maturityDate,
+            originalObligationId: INTEGRATION_DEFAULTS.ORIGINAL_OBLIGATION_ID,
           },
         };
 
@@ -94,6 +95,7 @@ describe('GiftObligationService', () => {
             effectiveDate: INTEGRATION_DEFAULTS.OBLIGATION_EFFECTIVE_DATE,
             linkedRepaymentProfileId: INTEGRATION_DEFAULTS.LINKED_REPAYMENT_PROFILE_ID,
             maturityDate: INTEGRATION_DEFAULTS.OBLIGATION_MATURITY_DATE,
+            originalObligationId: INTEGRATION_DEFAULTS.ORIGINAL_OBLIGATION_ID,
             subtypeCode: INTEGRATION_DEFAULTS.OBLIGATION_SUBTYPE_CODE,
           },
         };
