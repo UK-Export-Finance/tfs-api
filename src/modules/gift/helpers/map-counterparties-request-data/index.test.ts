@@ -28,15 +28,23 @@ describe('modules/gift/helpers/map-counterparties-request-data', () => {
 
     // Assert
     const expected = [
-      mockCounterparties[0],
+      {
+        ...mockCounterparties[0],
+        paymentCode: null,
+      },
       {
         ...mockCounterparties[1],
         sharePercentage: null,
+        paymentCode: null,
       },
-      mockCounterparties[2],
+      {
+        ...mockCounterparties[2],
+        paymentCode: null,
+      },
       {
         ...mockCounterparties[3],
         sharePercentage: null,
+        paymentCode: null,
       },
     ];
 
