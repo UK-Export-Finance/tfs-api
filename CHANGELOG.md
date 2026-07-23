@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.3.0](https://github.com/UK-Export-Finance/tfs-api/compare/v2.2.1...v2.3.0) (2026-07-23)
+
+
+### Features
+
+* **GIFT-26552:** set payment code on counterparty ([2322c28](https://github.com/UK-Export-Finance/tfs-api/commit/2322c28240069a046425d4fc5778a0254e7c5578))
+* **GIFT-26552:** set payment code on counterparty ([#1415](https://github.com/UK-Export-Finance/tfs-api/issues/1415)) ([54da0c3](https://github.com/UK-Export-Finance/tfs-api/commit/54da0c35828567e29f03b253949ebe34db1f7ec6))
+
 ## [2.2.1](https://github.com/UK-Export-Finance/tfs-api/compare/v2.2.0...v2.2.1) (2026-07-22)
 
 
