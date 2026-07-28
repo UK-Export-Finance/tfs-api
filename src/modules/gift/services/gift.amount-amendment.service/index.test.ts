@@ -40,7 +40,7 @@ describe('GiftAmountAmendmentService', () => {
       delete: mockWorkPackageServiceDelete,
     } as unknown as GiftWorkPackageService;
 
-    service = new GiftAmountAmendmentService(giftHttpService, logger, giftWorkPackageService);
+    service = new GiftAmountAmendmentService(giftHttpService, giftWorkPackageService, logger);
   });
 
   afterAll(() => {
@@ -80,7 +80,7 @@ describe('GiftAmountAmendmentService', () => {
         mockHttpServicePost = jest.fn().mockResolvedValueOnce(mockPostResponse);
         giftHttpService.post = mockHttpServicePost;
 
-        service = new GiftAmountAmendmentService(giftHttpService, logger, giftWorkPackageService);
+        service = new GiftAmountAmendmentService(giftHttpService, giftWorkPackageService, logger);
 
         // Act
         const response = await service.facility({
@@ -110,7 +110,7 @@ describe('GiftAmountAmendmentService', () => {
         giftHttpService.post = mockHttpServicePost;
         giftWorkPackageService.delete = mockWorkPackageServiceDelete;
 
-        service = new GiftAmountAmendmentService(giftHttpService, logger, giftWorkPackageService);
+        service = new GiftAmountAmendmentService(giftHttpService, giftWorkPackageService, logger);
       });
 
       describe('delete behaviour', () => {
@@ -153,7 +153,7 @@ describe('GiftAmountAmendmentService', () => {
         mockHttpServicePost = jest.fn().mockRejectedValueOnce(mockError);
         giftHttpService.post = mockHttpServicePost;
 
-        service = new GiftAmountAmendmentService(giftHttpService, logger, giftWorkPackageService);
+        service = new GiftAmountAmendmentService(giftHttpService, giftWorkPackageService, logger);
 
         // Act
         const promise = service.facility({
@@ -189,7 +189,7 @@ describe('GiftAmountAmendmentService', () => {
 
       giftHttpService.post = mockHttpServicePost;
 
-      service = new GiftAmountAmendmentService(giftHttpService, logger, giftWorkPackageService);
+      service = new GiftAmountAmendmentService(giftHttpService, giftWorkPackageService, logger);
 
       // Act
       await service.obligations({
@@ -244,7 +244,7 @@ describe('GiftAmountAmendmentService', () => {
       mockHttpServicePost = jest.fn().mockResolvedValueOnce(responseOne).mockResolvedValueOnce(responseTwo);
       giftHttpService.post = mockHttpServicePost;
 
-      service = new GiftAmountAmendmentService(giftHttpService, logger, giftWorkPackageService);
+      service = new GiftAmountAmendmentService(giftHttpService, giftWorkPackageService, logger);
 
       // Act
       const response = await service.obligations({
@@ -269,7 +269,7 @@ describe('GiftAmountAmendmentService', () => {
         mockHttpServicePost = jest.fn().mockResolvedValueOnce(response);
         giftHttpService.post = mockHttpServicePost;
 
-        service = new GiftAmountAmendmentService(giftHttpService, logger, giftWorkPackageService);
+        service = new GiftAmountAmendmentService(giftHttpService, giftWorkPackageService, logger);
 
         // Act
         await service.obligations({
@@ -324,7 +324,7 @@ describe('GiftAmountAmendmentService', () => {
         mockHttpServicePost = jest.fn().mockRejectedValueOnce(mockError);
         giftHttpService.post = mockHttpServicePost;
 
-        service = new GiftAmountAmendmentService(giftHttpService, logger, giftWorkPackageService);
+        service = new GiftAmountAmendmentService(giftHttpService, giftWorkPackageService, logger);
 
         // Act
         const promise = service.obligations({
@@ -356,7 +356,7 @@ describe('GiftAmountAmendmentService', () => {
         giftHttpService.post = mockHttpServicePost;
         giftWorkPackageService.delete = mockWorkPackageServiceDelete;
 
-        service = new GiftAmountAmendmentService(giftHttpService, logger, giftWorkPackageService);
+        service = new GiftAmountAmendmentService(giftHttpService, giftWorkPackageService, logger);
 
         // Act
         const promise = service.obligations({

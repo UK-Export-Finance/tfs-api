@@ -33,12 +33,12 @@ type AmendObligationsParams = GiftAmendmentBaseParams & {
 export class GiftAmountAmendmentService {
   constructor(
     private readonly giftHttpService: GiftHttpService,
-    private readonly logger: PinoLogger,
     private readonly giftWorkPackageService: GiftWorkPackageService,
+    private readonly logger: PinoLogger,
   ) {
     this.giftHttpService = giftHttpService;
-    this.logger = logger;
     this.giftWorkPackageService = giftWorkPackageService;
+    this.logger = logger;
   }
 
   /**

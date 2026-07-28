@@ -100,7 +100,7 @@ describe('GiftFacilityController', () => {
     riskDetailsService = new GiftRiskDetailsService(giftHttpService, logger);
     statusService = new GiftStatusService(giftHttpService, logger);
     creationErrorService = new GiftFacilityCreationErrorService(giftWorkPackageService, logger);
-    amountAmendmentService = new GiftAmountAmendmentService(giftHttpService, logger, giftWorkPackageService);
+    amountAmendmentService = new GiftAmountAmendmentService(giftHttpService, giftWorkPackageService, logger);
     replaceExpiryDateAmendmentService = new GiftReplaceExpiryDateAmendmentService(giftHttpService, giftWorkPackageService, logger);
 
     giftFacilityService = new GiftFacilityService(
