@@ -347,5 +347,33 @@ describe('GiftAmountAmendmentService', () => {
         await expect(promise).rejects.toThrow(expected);
       });
     });
+
+    describe(`when giftHttpService.post does NOT return a ${HttpStatus.CREATED} status`, () => {
+      it('should stop processing obligations and throw an error', async () => {
+        // Arrange
+        mockHttpServicePost = jest.fn().mockResolvedValueOnce({ status: HttpStatus.BAD_REQUEST, data: { badRequest: true } });
+
+        giftHttpService.post = mockHttpServicePost;
+
+        service = new GiftAmountAmendmentService(giftHttpService, logger);
+
+        // Act
+        const promise = service.obligations({
+          amendmentType: AMEND_FACILITY_INCREASE_AMOUNT,
+          date: mockDate,
+          facilityId: mockFacilityId,
+          facilityCategoryCode: mockFacilityCategoryCode,
+          newFacilityAmount: mockNewFacilityAmount,
+          obligations: [{ id: '1' }, { id: '2' }],
+          workPackageId: mockWorkPackageId,
+        });
+
+        // Assert
+        await expect(promise).rejects.toThrow(
+          `Error amending facility obligation amounts ${AMEND_FACILITY_INCREASE_AMOUNT} for facility ${mockFacilityId} work package ${mockWorkPackageId}`,
+        );
+        expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
+      });
+    });
   });
 });

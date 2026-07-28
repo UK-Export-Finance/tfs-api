@@ -164,6 +164,28 @@ describe('GiftFacilityAmendmentService - error handling', () => {
   });
 
   describe('giftAmountAmendmentService', () => {
+    describe(`when giftAmountAmendmentService.facility does NOT return a ${HttpStatus.CREATED} status`, () => {
+      it('should return the amendment response and not approve the work package', async () => {
+        // Arrange
+        const mockErrorResponse = {
+          status: HttpStatus.BAD_REQUEST,
+          data: { badRequest: true },
+        };
+
+        mockAmountAmendmentFacility = jest.fn().mockResolvedValueOnce(mockErrorResponse);
+        amountAmendmentService.facility = mockAmountAmendmentFacility;
+
+        buildService();
+
+        // Act
+        const response = await service.create(mockFacilityId, mockPayload);
+
+        // Assert
+        expect(response).toEqual(mockErrorResponse);
+        expect(mockStatusServiceApproved).not.toHaveBeenCalled();
+      });
+    });
+
     describe('when giftAmountAmendmentService.facility throws an error', () => {
       it('should throw an error', async () => {
         // Arrange
@@ -206,6 +228,28 @@ describe('GiftFacilityAmendmentService - error handling', () => {
   });
 
   describe('giftReplaceExpiryDateAmendmentService', () => {
+    describe(`when giftReplaceExpiryDateAmendmentService.facility does NOT return a ${HttpStatus.CREATED} status`, () => {
+      it('should return the amendment response and not approve the work package', async () => {
+        // Arrange
+        const mockErrorResponse = {
+          status: HttpStatus.BAD_REQUEST,
+          data: { badRequest: true },
+        };
+
+        mockReplaceExpiryDateAmendmentFacility = jest.fn().mockResolvedValueOnce(mockErrorResponse);
+        replaceExpiryDateAmendmentService.facility = mockReplaceExpiryDateAmendmentFacility;
+
+        buildService();
+
+        // Act
+        const response = await service.create(mockFacilityId, replaceExpiryDatePayload);
+
+        // Assert
+        expect(response).toEqual(mockErrorResponse);
+        expect(mockStatusServiceApproved).not.toHaveBeenCalled();
+      });
+    });
+
     describe('when giftReplaceExpiryDateAmendmentService.facility throws an error', () => {
       it('should throw an error', async () => {
         // Arrange

@@ -1,3 +1,4 @@
+import { HttpStatus } from '@nestjs/common';
 import { AMEND_FACILITY_PREFIX_TYPES, EXAMPLES, GIFT } from '@ukef/constants';
 import { mockResponse201, mockResponse500 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
@@ -216,6 +217,31 @@ describe('GiftReplaceExpiryDateAmendmentService', () => {
         );
 
         expect(mockHttpServicePost).toHaveBeenCalledTimes(2);
+      });
+    });
+
+    describe(`when giftHttpService.post does NOT return a ${HttpStatus.CREATED} status`, () => {
+      it('should stop processing obligations and throw an error', async () => {
+        // Arrange
+        mockHttpServicePost = jest.fn().mockResolvedValueOnce({ status: HttpStatus.BAD_REQUEST, data: { badRequest: true } });
+        giftHttpService.post = mockHttpServicePost;
+
+        service = new GiftReplaceExpiryDateAmendmentService(giftHttpService, logger);
+
+        // Act
+        const response = service.obligations({
+          amendmentType: AMEND_FACILITY_REPLACE_EXPIRY_DATE,
+          facilityExpiryDate: REPLACE_EXPIRY_DATE.expiryDate,
+          facilityId: mockFacilityId,
+          obligations: [{ id: '1' }, { id: '2' }],
+          workPackageId: mockWorkPackageId,
+        });
+
+        // Assert
+        await expect(response).rejects.toThrow(
+          `Error amending facility obligations maturity dates ${AMEND_FACILITY_REPLACE_EXPIRY_DATE} for facility ${mockFacilityId} work package ${mockWorkPackageId}`,
+        );
+        expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
       });
     });
   });

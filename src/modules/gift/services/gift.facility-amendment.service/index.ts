@@ -42,6 +42,10 @@ export class GiftFacilityAmendmentService {
     this.giftStatusService = giftStatusService;
   }
 
+  private wasAmendmentSuccessful(response: AxiosResponse<GiftWorkPackageResponseDto>): boolean {
+    return response.status === HttpStatus.CREATED;
+  }
+
   /**
    * Create a GIFT facility amendment
    * 1) Create a new GIFT work package.
@@ -116,6 +120,13 @@ export class GiftFacilityAmendmentService {
 
         const facilityAmendmentResponse = await this.giftAmountAmendmentService.facility({ ...amendment, facilityId, workPackageId });
 
+        if (!this.wasAmendmentSuccessful(facilityAmendmentResponse)) {
+          return {
+            status: facilityAmendmentResponse.status,
+            data: facilityAmendmentResponse.data,
+          };
+        }
+
         createdAmendmentData = facilityAmendmentResponse.data;
 
         await this.giftAmountAmendmentService.obligations({ ...baseObligationParams, date, newFacilityAmount });
@@ -135,6 +146,13 @@ export class GiftFacilityAmendmentService {
         await this.giftAmountAmendmentService.obligations({ ...baseObligationParams, date, newFacilityAmount });
 
         const facilityAmendmentResponse = await this.giftAmountAmendmentService.facility({ ...amendment, facilityId, workPackageId });
+
+        if (!this.wasAmendmentSuccessful(facilityAmendmentResponse)) {
+          return {
+            status: facilityAmendmentResponse.status,
+            data: facilityAmendmentResponse.data,
+          };
+        }
 
         createdAmendmentData = facilityAmendmentResponse.data;
       }
@@ -176,20 +194,45 @@ export class GiftFacilityAmendmentService {
         if (!shouldUpdateObligationsMaturityDates) {
           const facilityResponse = await this.giftReplaceExpiryDateAmendmentService.facility({ ...baseParams, expiryDate });
 
+          if (!this.wasAmendmentSuccessful(facilityResponse)) {
+            return {
+              status: facilityResponse.status,
+              data: facilityResponse.data,
+            };
+          }
+
           createdAmendmentData = facilityResponse.data;
         } else if (shouldAmendObligationsFirst) {
           await this.giftReplaceExpiryDateAmendmentService.obligations({ ...baseParams, facilityExpiryDate: expiryDate, obligations });
 
           const facilityResponse = await this.giftReplaceExpiryDateAmendmentService.facility({ ...baseParams, expiryDate });
 
+          if (!this.wasAmendmentSuccessful(facilityResponse)) {
+            return {
+              status: facilityResponse.status,
+              data: facilityResponse.data,
+            };
+          }
+
           createdAmendmentData = facilityResponse.data;
         } else {
           const facilityResponse = await this.giftReplaceExpiryDateAmendmentService.facility({ ...baseParams, expiryDate });
+
+          if (!this.wasAmendmentSuccessful(facilityResponse)) {
+            return {
+              status: facilityResponse.status,
+              data: facilityResponse.data,
+            };
+          }
 
           await this.giftReplaceExpiryDateAmendmentService.obligations({ ...baseParams, facilityExpiryDate: expiryDate, obligations });
 
           createdAmendmentData = facilityResponse.data;
         }
+      }
+
+      if (!createdAmendmentData) {
+        throw new Error(`Unsupported amendment type: ${amendmentType}`);
       }
 
       // TODO: GIFT-20331 - validation handling

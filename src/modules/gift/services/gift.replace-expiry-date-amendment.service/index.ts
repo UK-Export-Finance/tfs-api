@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { GIFT } from '@ukef/constants';
 import { GiftAmendmentBaseParams } from '@ukef/types';
 import { PinoLogger } from 'nestjs-pino';
@@ -58,6 +58,15 @@ export class GiftReplaceExpiryDateAmendmentService {
           path: `${basePath}/${AMEND_FACILITY_PREFIX_TYPES.AMEND_OBLIGATION}${AMEND_OBLIGATION_REPLACE_MATURITY_DATE}`,
           payload,
         });
+
+        if (response.status !== HttpStatus.CREATED) {
+          throw new Error(
+            `Unexpected status ${response.status} amending facility obligations maturity dates ${amendmentType} for facility ${facilityId} work package ${workPackageId}`,
+            {
+              cause: response.data,
+            },
+          );
+        }
 
         responses.push(response.data);
       }

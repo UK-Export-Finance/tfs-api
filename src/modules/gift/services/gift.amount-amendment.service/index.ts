@@ -121,6 +121,15 @@ export class GiftAmountAmendmentService {
           payload,
         });
 
+        if (response.status !== HttpStatus.CREATED) {
+          throw new Error(
+            `Unexpected status ${response.status} amending facility obligation amounts ${amendmentType} for facility ${facilityId} work package ${workPackageId}`,
+            {
+              cause: response.data,
+            },
+          );
+        }
+
         responses.push(response);
       }
 
