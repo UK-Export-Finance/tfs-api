@@ -7,6 +7,7 @@ import { PinoLogger } from 'nestjs-pino';
 import { DecreaseAmountDto, GiftWorkPackageResponseDto, IncreaseAmountDto } from '../../dto';
 import { calculatePercentageAmount } from '../../helpers';
 import { GiftHttpService } from '../gift.http.service';
+import { GiftWorkPackageService } from '../gift.work-package.service';
 
 const {
   AMEND_OBLIGATION_AMOUNT: { PERCENTAGE_OF_FACILITY_AMOUNT },
@@ -32,9 +33,11 @@ type AmendObligationsParams = GiftAmendmentBaseParams & {
 export class GiftAmountAmendmentService {
   constructor(
     private readonly giftHttpService: GiftHttpService,
+    private readonly giftWorkPackageService: GiftWorkPackageService,
     private readonly logger: PinoLogger,
   ) {
     this.giftHttpService = giftHttpService;
+    this.giftWorkPackageService = giftWorkPackageService;
     this.logger = logger;
   }
 
@@ -65,9 +68,7 @@ export class GiftAmountAmendmentService {
       if (facilityAmendmentResponse.status !== HttpStatus.CREATED) {
         this.logger.error('Error creating amendment %s for work package %s facility %s. Deleting work package', amendmentType, workPackageId, facilityId);
 
-        await this.giftHttpService.delete<GiftWorkPackageResponseDto>({
-          path: `${PATH.WORK_PACKAGE}/${workPackageId}`,
-        });
+        await this.giftWorkPackageService.delete(workPackageId, facilityId);
 
         return facilityAmendmentResponse;
       }
@@ -120,6 +121,19 @@ export class GiftAmountAmendmentService {
           path: `${basePath}/${AMEND_FACILITY_PREFIX_TYPES.AMEND_OBLIGATION}${amendmentType}`,
           payload,
         });
+
+        if (response.status !== HttpStatus.CREATED) {
+          this.logger.error('Error creating amendment %s for work package %s facility %s. Deleting work package', amendmentType, workPackageId, facilityId);
+
+          await this.giftWorkPackageService.delete(workPackageId, facilityId);
+
+          throw new Error(
+            `Unexpected status ${response.status} amending facility obligation amounts ${amendmentType} for facility ${facilityId} work package ${workPackageId}`,
+            {
+              cause: response.data,
+            },
+          );
+        }
 
         responses.push(response);
       }

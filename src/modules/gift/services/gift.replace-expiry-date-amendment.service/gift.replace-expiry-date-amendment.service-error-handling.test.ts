@@ -1,7 +1,9 @@
+import { HttpStatus } from '@nestjs/common';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { mockResponse500 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
+import { GiftWorkPackageService } from '../gift.work-package.service';
 import { GiftReplaceExpiryDateAmendmentService } from '.';
 
 const {
@@ -22,18 +24,23 @@ describe('GiftReplaceExpiryDateAmendmentService - error handling', () => {
   let service: GiftReplaceExpiryDateAmendmentService;
 
   let giftHttpService;
+  let giftWorkPackageService;
   let mockHttpServicePost: jest.Mock;
+  let mockWorkPackageServiceDelete: jest.Mock;
 
   const buildService = () => {
-    service = new GiftReplaceExpiryDateAmendmentService(giftHttpService, logger);
+    service = new GiftReplaceExpiryDateAmendmentService(giftHttpService, giftWorkPackageService as GiftWorkPackageService, logger);
   };
 
   beforeEach(() => {
     giftHttpService = {};
+    giftWorkPackageService = {};
 
     mockHttpServicePost = jest.fn();
+    mockWorkPackageServiceDelete = jest.fn();
 
     giftHttpService.post = mockHttpServicePost;
+    giftWorkPackageService.delete = mockWorkPackageServiceDelete;
 
     buildService();
   });
@@ -134,7 +141,7 @@ describe('GiftReplaceExpiryDateAmendmentService - error handling', () => {
 
         mockHttpServicePost = jest
           .fn()
-          .mockResolvedValueOnce({ data: { one: true } })
+          .mockResolvedValueOnce({ status: HttpStatus.CREATED, data: { one: true } })
           .mockRejectedValueOnce(mockError);
 
         giftHttpService.post = mockHttpServicePost;

@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { GIFT } from '@ukef/constants';
 import { GiftAmendmentBaseParams } from '@ukef/types';
 import { PinoLogger } from 'nestjs-pino';
 
 import { GiftWorkPackageResponseDto } from '../../dto';
 import { GiftHttpService } from '../gift.http.service';
+import { GiftWorkPackageService } from '../gift.work-package.service';
 
 const {
   AMEND_FACILITY_PREFIX_TYPES,
@@ -30,12 +31,26 @@ type FacilityParams = GiftAmendmentBaseParams & {
 export class GiftReplaceExpiryDateAmendmentService {
   constructor(
     private readonly giftHttpService: GiftHttpService,
+    private readonly giftWorkPackageService: GiftWorkPackageService,
     private readonly logger: PinoLogger,
   ) {
     this.giftHttpService = giftHttpService;
+    this.giftWorkPackageService = giftWorkPackageService;
     this.logger = logger;
   }
 
+  /**
+   * Amend the obligations maturity dates for a given facility and work package.
+   * @param {ObligationsParams} params - Parameters for the amendment.
+   * @param {string} params.amendmentType - The type of amendment being made.
+   * @param {string} params.facilityExpiryDate - The new expiry date for the facility.
+   * @param {string} params.facilityId - The ID of the facility being amended.
+   * @param {Array<{ id: string }>} params.obligations - An array of obligations to be amended.
+   * @param {number} params.workPackageId - The ID of the work package associated with the amendment.
+   * @returns {Promise<Array<GiftWorkPackageResponseDto>>} - A promise that resolves to an array of responses from the GIFT API for each obligation amended.
+   * @throws {Error} - Throws an error if the amendment fails for any obligation, including details about the failure.
+   * @returns {Promise<Array<GiftWorkPackageResponseDto>>} - A promise that resolves to an array of responses from the GIFT API for each obligation amended.
+   */
   async obligations({ amendmentType, facilityExpiryDate, facilityId, obligations, workPackageId }: ObligationsParams) {
     try {
       this.logger.info('Amending facility obligations maturity dates %s for facility %s work package %s', amendmentType, facilityId, workPackageId);
@@ -59,6 +74,19 @@ export class GiftReplaceExpiryDateAmendmentService {
           payload,
         });
 
+        if (response.status !== HttpStatus.CREATED) {
+          this.logger.error('Error creating amendment %s for work package %s facility %s. Deleting work package', amendmentType, workPackageId, facilityId);
+
+          await this.giftWorkPackageService.delete(workPackageId, facilityId);
+
+          throw new Error(
+            `Unexpected status ${response.status} amending facility obligations maturity dates ${amendmentType} for facility ${facilityId} work package ${workPackageId}`,
+            {
+              cause: response.data,
+            },
+          );
+        }
+
         responses.push(response.data);
       }
 
@@ -78,6 +106,16 @@ export class GiftReplaceExpiryDateAmendmentService {
     }
   }
 
+  /**
+   * Amend the expiry date for a given facility and work package.
+   * @param {FacilityParams} params - Parameters for the amendment.
+   * @param {string} params.amendmentType - The type of amendment being made.
+   * @param {string} params.expiryDate - The new expiry date for the facility.
+   * @param {string} params.facilityId - The ID of the facility being amended.
+   * @param {number} params.workPackageId - The ID of the work package associated with the amendment.
+   * @throws {Error} - Throws an error if the amendment fails, including details about the failure.
+   * @returns {Promise<GiftWorkPackageResponseDto>} - A promise that resolves to the response from the GIFT API for the facility amendment.
+   */
   async facility({ amendmentType, expiryDate, facilityId, workPackageId }: FacilityParams) {
     try {
       this.logger.info('Amending facility expiry date %s for facility %s work package %s', amendmentType, facilityId, workPackageId);

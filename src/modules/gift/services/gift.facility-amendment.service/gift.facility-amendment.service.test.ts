@@ -364,8 +364,8 @@ describe('GiftFacilityAmendmentService', () => {
     });
   });
 
-  describe('giftStatusService.approved', () => {
-    it('should call giftStatusService.approved when no amendment response data is created before approval', async () => {
+  describe('when no amendment response data is created before approval', () => {
+    it('should throw and not call statusService.approved', async () => {
       // Arrange
       const unsupportedAmendmentPayload = {
         ...mockPayload,
@@ -373,19 +373,11 @@ describe('GiftFacilityAmendmentService', () => {
       } as unknown as Parameters<GiftFacilityAmendmentService['create']>[1];
 
       // Act
-      const response = await service.create(mockFacilityId, unsupportedAmendmentPayload);
+      const response = service.create(mockFacilityId, unsupportedAmendmentPayload);
 
       // Assert
-      expect(mockStatusServiceApproved).toHaveBeenCalledTimes(1);
-      expect(mockStatusServiceApproved).toHaveBeenCalledWith(mockFacilityId, mockWorkPackageId);
-
-      expect(response).toEqual({
-        status: HttpStatus.CREATED,
-        data: {
-          ...WORK_PACKAGE_APPROVE_RESPONSE_DATA,
-          isApproved: true,
-        },
-      });
+      await expect(response).rejects.toThrow(`Error creating amendment UnsupportedAmendmentType for facility ${mockFacilityId}`);
+      expect(mockStatusServiceApproved).not.toHaveBeenCalled();
     });
   });
 
