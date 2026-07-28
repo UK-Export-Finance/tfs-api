@@ -42,6 +42,11 @@ export class GiftFacilityAmendmentService {
     this.giftStatusService = giftStatusService;
   }
 
+  /**
+   * Check if a GIFT amendment was successful based on the response status.
+   * @param {AxiosResponse<GiftWorkPackageResponseDto>} response
+   * @returns {Boolean} true if the amendment was successful, false otherwise.
+   */
   private wasAmendmentSuccessful(response: AxiosResponse<GiftWorkPackageResponseDto>): boolean {
     return response.status === HttpStatus.CREATED;
   }
