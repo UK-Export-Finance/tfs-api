@@ -1,8 +1,9 @@
 import { HttpStatus } from '@nestjs/common';
 import { AMEND_FACILITY_PREFIX_TYPES, EXAMPLES, GIFT } from '@ukef/constants';
-import { mockResponse201, mockResponse500 } from '@ukef-test/http-response';
+import { mockResponse201, mockResponse204, mockResponse500 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
+import { GiftWorkPackageService } from '../gift.work-package.service';
 import { GiftReplaceExpiryDateAmendmentService } from '.';
 
 const {
@@ -26,16 +27,23 @@ describe('GiftReplaceExpiryDateAmendmentService', () => {
 
   let giftHttpService;
   let mockHttpServicePost: jest.Mock;
+  let giftWorkPackageService;
+  let mockWorkPackageServiceDelete: jest.Mock;
 
   beforeEach(() => {
     // Arrange
     mockHttpServicePost = jest.fn().mockResolvedValue(mockResponse201({ id: 'mock-amendment-response' }));
+    mockWorkPackageServiceDelete = jest.fn().mockResolvedValue(mockResponse204());
 
     giftHttpService = {
       post: mockHttpServicePost,
     };
 
-    service = new GiftReplaceExpiryDateAmendmentService(giftHttpService, logger);
+    giftWorkPackageService = {
+      delete: mockWorkPackageServiceDelete,
+    } as unknown as GiftWorkPackageService;
+
+    service = new GiftReplaceExpiryDateAmendmentService(giftHttpService, giftWorkPackageService, logger);
   });
 
   afterAll(() => {
@@ -70,7 +78,7 @@ describe('GiftReplaceExpiryDateAmendmentService', () => {
       mockHttpServicePost = jest.fn().mockResolvedValueOnce(mockResponse);
       giftHttpService.post = mockHttpServicePost;
 
-      service = new GiftReplaceExpiryDateAmendmentService(giftHttpService, logger);
+      service = new GiftReplaceExpiryDateAmendmentService(giftHttpService, giftWorkPackageService, logger);
 
       // Act
       const response = await service.facility({
@@ -98,7 +106,7 @@ describe('GiftReplaceExpiryDateAmendmentService', () => {
 
       giftHttpService.post = mockHttpServicePost;
 
-      service = new GiftReplaceExpiryDateAmendmentService(giftHttpService, logger);
+      service = new GiftReplaceExpiryDateAmendmentService(giftHttpService, giftWorkPackageService, logger);
 
       // Act
       await service.obligations({
@@ -147,7 +155,7 @@ describe('GiftReplaceExpiryDateAmendmentService', () => {
       mockHttpServicePost = jest.fn().mockResolvedValueOnce(responseOne).mockResolvedValueOnce(responseTwo);
       giftHttpService.post = mockHttpServicePost;
 
-      service = new GiftReplaceExpiryDateAmendmentService(giftHttpService, logger);
+      service = new GiftReplaceExpiryDateAmendmentService(giftHttpService, giftWorkPackageService, logger);
 
       // Act
       const response = await service.obligations({
@@ -170,7 +178,7 @@ describe('GiftReplaceExpiryDateAmendmentService', () => {
         mockHttpServicePost = jest.fn().mockRejectedValueOnce(mockError);
         giftHttpService.post = mockHttpServicePost;
 
-        service = new GiftReplaceExpiryDateAmendmentService(giftHttpService, logger);
+        service = new GiftReplaceExpiryDateAmendmentService(giftHttpService, giftWorkPackageService, logger);
 
         // Act
         const response = service.obligations({
@@ -200,7 +208,7 @@ describe('GiftReplaceExpiryDateAmendmentService', () => {
           .mockRejectedValueOnce(mockError);
         giftHttpService.post = mockHttpServicePost;
 
-        service = new GiftReplaceExpiryDateAmendmentService(giftHttpService, logger);
+        service = new GiftReplaceExpiryDateAmendmentService(giftHttpService, giftWorkPackageService, logger);
 
         // Act
         const response = service.obligations({
@@ -224,9 +232,11 @@ describe('GiftReplaceExpiryDateAmendmentService', () => {
       it('should stop processing obligations and throw an error', async () => {
         // Arrange
         mockHttpServicePost = jest.fn().mockResolvedValueOnce({ status: HttpStatus.BAD_REQUEST, data: { badRequest: true } });
+        mockWorkPackageServiceDelete = jest.fn().mockResolvedValueOnce(mockResponse204());
         giftHttpService.post = mockHttpServicePost;
+        giftWorkPackageService.delete = mockWorkPackageServiceDelete;
 
-        service = new GiftReplaceExpiryDateAmendmentService(giftHttpService, logger);
+        service = new GiftReplaceExpiryDateAmendmentService(giftHttpService, giftWorkPackageService, logger);
 
         // Act
         const response = service.obligations({
@@ -242,6 +252,8 @@ describe('GiftReplaceExpiryDateAmendmentService', () => {
           `Error amending facility obligations maturity dates ${AMEND_FACILITY_REPLACE_EXPIRY_DATE} for facility ${mockFacilityId} work package ${mockWorkPackageId}`,
         );
         expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
+        expect(mockWorkPackageServiceDelete).toHaveBeenCalledTimes(1);
+        expect(mockWorkPackageServiceDelete).toHaveBeenCalledWith(mockWorkPackageId, mockFacilityId);
       });
     });
   });

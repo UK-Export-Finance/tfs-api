@@ -11,7 +11,9 @@ import {
   facilityAmendmentUrl,
   facilityUrl,
   facilityWorkPackageUrl,
+  mockFacilityId,
   mockResponses,
+  mockWorkPackageId,
   obligationAmendmentUrl,
   workPackageUrl,
 } from './test-helpers';
@@ -144,6 +146,79 @@ describe('POST /gift/facility/:facilityId/amendment - error handling', () => {
   });
 
   describe('GIFT "approve work package status" endpoint', () => {
+    describe(`when a prior amount obligation amendment step returns ${HttpStatus.BAD_REQUEST}`, () => {
+      it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response, delete the work package, and not call the approve endpoint`, async () => {
+        // Arrange
+        nock.cleanAll();
+
+        nock(GIFT_API_URL)
+          .get(facilityUrl)
+          .reply(HttpStatus.OK, {
+            expiryDate: '2035-01-01',
+            obligations: [{ id: 'obligation-1', maturityDateFollowsFacility: true }],
+            riskDetails: {
+              facilityCategoryCode: GIFT.FACILITY_CATEGORY_CODES.CASH,
+            },
+          });
+
+        nock(GIFT_API_URL).post(facilityWorkPackageUrl).reply(HttpStatus.CREATED, mockResponses.workPackageCreation);
+        nock(GIFT_API_URL).post(facilityAmendmentUrl(AMEND_FACILITY_INCREASE_AMOUNT)).reply(HttpStatus.CREATED, mockResponses.facilityAmendment);
+        nock(GIFT_API_URL).post(obligationAmendmentUrl(AMEND_FACILITY_INCREASE_AMOUNT)).reply(HttpStatus.BAD_REQUEST, mockResponses.badRequest);
+
+        const deleteScope = nock(GIFT_API_URL).delete(workPackageUrl).reply(HttpStatus.NO_CONTENT);
+        const approveStatusScope = nock(GIFT_API_URL).post(approveStatusUrl).reply(HttpStatus.OK, mockResponses.approveStatus);
+
+        // Act
+        const { status, body } = await api.post(apimFacilityAmendmentWithoutQueueUrl, GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD);
+
+        // Assert
+        expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
+        expect(body).toStrictEqual(mockResponses.internalServerError);
+        expect(deleteScope.isDone()).toBe(true);
+        expect(approveStatusScope.isDone()).toBe(false);
+      });
+    });
+
+    describe(`when a prior replace expiry date obligation amendment step returns ${HttpStatus.BAD_REQUEST}`, () => {
+      it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response, delete the work package, and not call the approve endpoint`, async () => {
+        // Arrange
+        nock.cleanAll();
+
+        const replaceMaturityDateUrl = `${GIFT.PATH.FACILITY}/${mockFacilityId}${GIFT.PATH.WORK_PACKAGE}/${mockWorkPackageId}${GIFT.PATH.CONFIGURATION_EVENT}/${GIFT.AMEND_FACILITY_PREFIX_TYPES.AMEND_OBLIGATION}ReplaceMaturityDate`;
+
+        nock(GIFT_API_URL)
+          .get(facilityUrl)
+          .reply(HttpStatus.OK, {
+            expiryDate: '2020-01-01',
+            obligations: [{ id: 'obligation-1', maturityDateFollowsFacility: false }],
+            riskDetails: {
+              facilityCategoryCode: GIFT.FACILITY_CATEGORY_CODES.CASH,
+            },
+          });
+
+        nock(GIFT_API_URL).post(facilityWorkPackageUrl).reply(HttpStatus.CREATED, mockResponses.workPackageCreation);
+        nock(GIFT_API_URL).post(facilityAmendmentUrl(AMEND_FACILITY_REPLACE_EXPIRY_DATE)).reply(HttpStatus.CREATED, mockResponses.facilityAmendment);
+        nock(GIFT_API_URL).post(replaceMaturityDateUrl).reply(HttpStatus.BAD_REQUEST, mockResponses.badRequest);
+
+        const deleteScope = nock(GIFT_API_URL).delete(workPackageUrl).reply(HttpStatus.NO_CONTENT);
+        const approveStatusScope = nock(GIFT_API_URL).post(approveStatusUrl).reply(HttpStatus.OK, mockResponses.approveStatus);
+
+        const payload = {
+          amendmentType: AMEND_FACILITY_REPLACE_EXPIRY_DATE,
+          amendmentData: GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA.REPLACE_EXPIRY_DATE,
+        };
+
+        // Act
+        const { status, body } = await api.post(apimFacilityAmendmentWithoutQueueUrl, payload);
+
+        // Assert
+        expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
+        expect(body).toStrictEqual(mockResponses.internalServerError);
+        expect(deleteScope.isDone()).toBe(true);
+        expect(approveStatusScope.isDone()).toBe(false);
+      });
+    });
+
     describe(`when a prior amount amendment step returns ${HttpStatus.BAD_REQUEST}`, () => {
       it(`should return a ${HttpStatus.BAD_REQUEST} response and not call the approve endpoint`, async () => {
         // Arrange

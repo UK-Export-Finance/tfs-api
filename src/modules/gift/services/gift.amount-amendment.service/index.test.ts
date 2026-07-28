@@ -3,6 +3,7 @@ import { AMEND_FACILITY_PREFIX_TYPES, EXAMPLES, GIFT } from '@ukef/constants';
 import { mockResponse201, mockResponse204, mockResponse500 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
+import { GiftWorkPackageService } from '../gift.work-package.service';
 import { GiftAmountAmendmentService } from '.';
 
 const {
@@ -22,20 +23,24 @@ describe('GiftAmountAmendmentService', () => {
   let service: GiftAmountAmendmentService;
 
   let giftHttpService;
+  let giftWorkPackageService;
   let mockHttpServicePost: jest.Mock;
-  let mockHttpServiceDelete: jest.Mock;
+  let mockWorkPackageServiceDelete: jest.Mock;
 
   beforeEach(() => {
     // Arrange
     mockHttpServicePost = jest.fn().mockResolvedValue(mockResponse201({ id: 'mock-amendment-response' }));
-    mockHttpServiceDelete = jest.fn().mockResolvedValue(mockResponse204());
+    mockWorkPackageServiceDelete = jest.fn().mockResolvedValue(mockResponse204());
 
     giftHttpService = {
       post: mockHttpServicePost,
-      delete: mockHttpServiceDelete,
     };
 
-    service = new GiftAmountAmendmentService(giftHttpService, logger);
+    giftWorkPackageService = {
+      delete: mockWorkPackageServiceDelete,
+    } as unknown as GiftWorkPackageService;
+
+    service = new GiftAmountAmendmentService(giftHttpService, logger, giftWorkPackageService);
   });
 
   afterAll(() => {
@@ -73,10 +78,9 @@ describe('GiftAmountAmendmentService', () => {
         const mockPostResponse = mockResponse201({ id: 'mock-amendment-response' });
 
         mockHttpServicePost = jest.fn().mockResolvedValueOnce(mockPostResponse);
-
         giftHttpService.post = mockHttpServicePost;
 
-        service = new GiftAmountAmendmentService(giftHttpService, logger);
+        service = new GiftAmountAmendmentService(giftHttpService, logger, giftWorkPackageService);
 
         // Act
         const response = await service.facility({
@@ -101,16 +105,16 @@ describe('GiftAmountAmendmentService', () => {
       beforeEach(() => {
         // Arrange
         mockHttpServicePost = jest.fn().mockResolvedValueOnce(mockPostResponse);
-        mockHttpServiceDelete = jest.fn().mockResolvedValueOnce(mockDeleteResponse);
+        mockWorkPackageServiceDelete = jest.fn().mockResolvedValueOnce(mockDeleteResponse);
 
         giftHttpService.post = mockHttpServicePost;
-        giftHttpService.delete = mockHttpServiceDelete;
+        giftWorkPackageService.delete = mockWorkPackageServiceDelete;
 
-        service = new GiftAmountAmendmentService(giftHttpService, logger);
+        service = new GiftAmountAmendmentService(giftHttpService, logger, giftWorkPackageService);
       });
 
       describe('delete behaviour', () => {
-        it('should call giftHttpService.delete', async () => {
+        it('should call giftWorkPackageService.delete', async () => {
           // Act
           await service.facility({
             amendmentType: AMEND_FACILITY_INCREASE_AMOUNT,
@@ -120,10 +124,8 @@ describe('GiftAmountAmendmentService', () => {
           });
 
           // Assert
-          expect(mockHttpServiceDelete).toHaveBeenCalledTimes(1);
-          expect(mockHttpServiceDelete).toHaveBeenCalledWith({
-            path: `${PATH.WORK_PACKAGE}/${mockWorkPackageId}`,
-          });
+          expect(mockWorkPackageServiceDelete).toHaveBeenCalledTimes(1);
+          expect(mockWorkPackageServiceDelete).toHaveBeenCalledWith(mockWorkPackageId, mockFacilityId);
         });
       });
 
@@ -149,10 +151,9 @@ describe('GiftAmountAmendmentService', () => {
         const mockError = mockResponse500();
 
         mockHttpServicePost = jest.fn().mockRejectedValueOnce(mockError);
-
         giftHttpService.post = mockHttpServicePost;
 
-        service = new GiftAmountAmendmentService(giftHttpService, logger);
+        service = new GiftAmountAmendmentService(giftHttpService, logger, giftWorkPackageService);
 
         // Act
         const promise = service.facility({
@@ -188,7 +189,7 @@ describe('GiftAmountAmendmentService', () => {
 
       giftHttpService.post = mockHttpServicePost;
 
-      service = new GiftAmountAmendmentService(giftHttpService, logger);
+      service = new GiftAmountAmendmentService(giftHttpService, logger, giftWorkPackageService);
 
       // Act
       await service.obligations({
@@ -241,10 +242,9 @@ describe('GiftAmountAmendmentService', () => {
       const responseTwo = mockResponse201({ two: true });
 
       mockHttpServicePost = jest.fn().mockResolvedValueOnce(responseOne).mockResolvedValueOnce(responseTwo);
-
       giftHttpService.post = mockHttpServicePost;
 
-      service = new GiftAmountAmendmentService(giftHttpService, logger);
+      service = new GiftAmountAmendmentService(giftHttpService, logger, giftWorkPackageService);
 
       // Act
       const response = await service.obligations({
@@ -269,7 +269,7 @@ describe('GiftAmountAmendmentService', () => {
         mockHttpServicePost = jest.fn().mockResolvedValueOnce(response);
         giftHttpService.post = mockHttpServicePost;
 
-        service = new GiftAmountAmendmentService(giftHttpService, logger);
+        service = new GiftAmountAmendmentService(giftHttpService, logger, giftWorkPackageService);
 
         // Act
         await service.obligations({
@@ -322,10 +322,9 @@ describe('GiftAmountAmendmentService', () => {
         const mockError = mockResponse500();
 
         mockHttpServicePost = jest.fn().mockRejectedValueOnce(mockError);
-
         giftHttpService.post = mockHttpServicePost;
 
-        service = new GiftAmountAmendmentService(giftHttpService, logger);
+        service = new GiftAmountAmendmentService(giftHttpService, logger, giftWorkPackageService);
 
         // Act
         const promise = service.obligations({
@@ -352,10 +351,12 @@ describe('GiftAmountAmendmentService', () => {
       it('should stop processing obligations and throw an error', async () => {
         // Arrange
         mockHttpServicePost = jest.fn().mockResolvedValueOnce({ status: HttpStatus.BAD_REQUEST, data: { badRequest: true } });
+        mockWorkPackageServiceDelete = jest.fn().mockResolvedValueOnce(mockResponse204());
 
         giftHttpService.post = mockHttpServicePost;
+        giftWorkPackageService.delete = mockWorkPackageServiceDelete;
 
-        service = new GiftAmountAmendmentService(giftHttpService, logger);
+        service = new GiftAmountAmendmentService(giftHttpService, logger, giftWorkPackageService);
 
         // Act
         const promise = service.obligations({
@@ -373,6 +374,8 @@ describe('GiftAmountAmendmentService', () => {
           `Error amending facility obligation amounts ${AMEND_FACILITY_INCREASE_AMOUNT} for facility ${mockFacilityId} work package ${mockWorkPackageId}`,
         );
         expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
+        expect(mockWorkPackageServiceDelete).toHaveBeenCalledTimes(1);
+        expect(mockWorkPackageServiceDelete).toHaveBeenCalledWith(mockWorkPackageId, mockFacilityId);
       });
     });
   });
