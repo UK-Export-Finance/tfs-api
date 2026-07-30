@@ -123,7 +123,6 @@ export class GiftReplaceExpiryDateAmendmentService {
     try {
       this.logger.info('Amending facility expiry date %s for facility %s work package %s', amendmentType, facilityId, workPackageId);
 
-      // TODO constant
       const accrualScheduleAmendmentTypeString = `${AMEND_FACILITY_PREFIX_TYPES.AMEND_ACCRUAL_SCHEDULE}${AMEND_ACCRUAL_SCHEDULE_REPLACE_FIRST_CYCLE_ACCRUAL_END_DATE}`;
 
       const accrualPath = `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${accrualScheduleAmendmentTypeString}`;
