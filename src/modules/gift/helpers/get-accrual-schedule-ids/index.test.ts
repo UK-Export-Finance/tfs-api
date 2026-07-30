@@ -43,7 +43,7 @@ describe('modules/gift/helpers/get-accrual-schedule-ids', () => {
   describe('when obligations include fixed rate accrual schedules only', () => {
     it('should return an array of accrual schedule IDs', () => {
       // Act
-      const result = getAccrualScheduleIds([{ fixedRateAccrualSchedules: [{ accrualScheduleId: 4 }] }]);
+      const result = getAccrualScheduleIds([{ accrualSchedules: [{ accrualScheduleId: 4 }] }]);
 
       // Assert
       expect(result).toStrictEqual([4]);
