@@ -62,7 +62,6 @@ describe('GiftReplaceExpiryDateAmendmentService - error handling', () => {
 
         // Act
         const response = service.facility({
-          accrualScheduleIds: [1],
           amendmentType: AMEND_FACILITY_REPLACE_EXPIRY_DATE,
           expiryDate: REPLACE_EXPIRY_DATE.expiryDate,
           facilityId: mockFacilityId,
@@ -91,7 +90,6 @@ describe('GiftReplaceExpiryDateAmendmentService - error handling', () => {
 
         // Act
         const response = service.facility({
-          accrualScheduleIds: [1],
           amendmentType: AMEND_FACILITY_REPLACE_EXPIRY_DATE,
           expiryDate: REPLACE_EXPIRY_DATE.expiryDate,
           facilityId: mockFacilityId,

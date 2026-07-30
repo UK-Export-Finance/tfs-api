@@ -43,8 +43,6 @@ describe('GiftFacilityAmendmentService', () => {
       accrualSchedules: [{ accrualScheduleId: 103 }],
     },
   ];
-  const mockAccrualScheduleIds = [101, 102, 103];
-
   const mockFacilityResponseData = {
     ...FACILITY_RESPONSE_DATA,
     expiryDate: '2027-02-01',
@@ -66,6 +64,7 @@ describe('GiftFacilityAmendmentService', () => {
   let mockStatusServiceApproved: jest.Mock;
   let mockReplaceExpiryDateAmendmentServiceFacility: jest.Mock;
   let mockReplaceExpiryDateAmendmentServiceObligations: jest.Mock;
+  let mockReplaceExpiryDateAmendmentServiceAccrualSchedules: jest.Mock;
 
   let service: GiftFacilityAmendmentService;
 
@@ -88,12 +87,14 @@ describe('GiftFacilityAmendmentService', () => {
     mockStatusServiceApproved = jest.fn().mockResolvedValueOnce(mockResponse200(WORK_PACKAGE_APPROVE_RESPONSE_DATA));
     mockReplaceExpiryDateAmendmentServiceFacility = jest.fn().mockResolvedValueOnce(mockResponse201(WORK_PACKAGE_CREATION_RESPONSE_DATA));
     mockReplaceExpiryDateAmendmentServiceObligations = jest.fn().mockResolvedValueOnce(WORK_PACKAGE_CREATION_RESPONSE_DATA);
+    mockReplaceExpiryDateAmendmentServiceAccrualSchedules = jest.fn().mockResolvedValueOnce(undefined);
 
     facilityService.get = mockFacilityServiceGet;
     amountAmendmentService.facility = mockAmountAmendmentServiceFacility;
     amountAmendmentService.obligations = mockAmountAmendmentServiceObligations;
     replaceExpiryDateAmendmentService.facility = mockReplaceExpiryDateAmendmentServiceFacility;
     replaceExpiryDateAmendmentService.obligations = mockReplaceExpiryDateAmendmentServiceObligations;
+    replaceExpiryDateAmendmentService.accrualSchedules = mockReplaceExpiryDateAmendmentServiceAccrualSchedules;
     workPackageService.create = mockWorkPackageServiceCreate;
     statusService.approved = mockStatusServiceApproved;
 
@@ -217,16 +218,24 @@ describe('GiftFacilityAmendmentService', () => {
     };
 
     describe('when the existing expiry date is before the new expiry date', () => {
-      it('should call giftReplaceExpiryDateAmendmentService.facility then giftReplaceExpiryDateAmendmentService.obligations', async () => {
+      it('should call giftReplaceExpiryDateAmendmentService.facility, then obligations, then accrual schedules', async () => {
         // Act
         await service.create(mockFacilityId, replaceExpiryDatePayload);
 
         // Assert
+        expect(mockReplaceExpiryDateAmendmentServiceAccrualSchedules).toHaveBeenCalledTimes(1);
         expect(mockReplaceExpiryDateAmendmentServiceFacility).toHaveBeenCalledTimes(1);
         expect(mockReplaceExpiryDateAmendmentServiceObligations).toHaveBeenCalledTimes(1);
 
+        expect(mockReplaceExpiryDateAmendmentServiceAccrualSchedules).toHaveBeenNthCalledWith(1, {
+          amendmentType: replaceExpiryDatePayload.amendmentType,
+          expiryDate: replaceExpiryDatePayload.amendmentData.expiryDate,
+          facilityId: mockFacilityId,
+          obligations: mockObligations,
+          workPackageId: mockWorkPackageId,
+        });
+
         expect(mockReplaceExpiryDateAmendmentServiceFacility).toHaveBeenNthCalledWith(1, {
-          accrualScheduleIds: mockAccrualScheduleIds,
           amendmentType: replaceExpiryDatePayload.amendmentType,
           facilityId: mockFacilityId,
           workPackageId: mockWorkPackageId,
@@ -234,7 +243,6 @@ describe('GiftFacilityAmendmentService', () => {
         });
 
         expect(mockReplaceExpiryDateAmendmentServiceObligations).toHaveBeenNthCalledWith(1, {
-          accrualScheduleIds: mockAccrualScheduleIds,
           amendmentType: replaceExpiryDatePayload.amendmentType,
           facilityId: mockFacilityId,
           obligations: mockObligations,
@@ -245,11 +253,14 @@ describe('GiftFacilityAmendmentService', () => {
         expect(mockReplaceExpiryDateAmendmentServiceFacility.mock.invocationCallOrder[0]).toBeLessThan(
           mockReplaceExpiryDateAmendmentServiceObligations.mock.invocationCallOrder[0],
         );
+        expect(mockReplaceExpiryDateAmendmentServiceObligations.mock.invocationCallOrder[0]).toBeLessThan(
+          mockReplaceExpiryDateAmendmentServiceAccrualSchedules.mock.invocationCallOrder[0],
+        );
       });
     });
 
     describe('when the new expiry date is before the existing expiry date', () => {
-      it('should call giftReplaceExpiryDateAmendmentService.obligations then giftReplaceExpiryDateAmendmentService.facility', async () => {
+      it('should call giftReplaceExpiryDateAmendmentService.accrual schedules, then obligations, then facility', async () => {
         // Arrange
         const earlierExpiryDatePayload = {
           ...replaceExpiryDatePayload,
@@ -263,11 +274,19 @@ describe('GiftFacilityAmendmentService', () => {
         await service.create(mockFacilityId, earlierExpiryDatePayload);
 
         // Assert
+        expect(mockReplaceExpiryDateAmendmentServiceAccrualSchedules).toHaveBeenCalledTimes(1);
         expect(mockReplaceExpiryDateAmendmentServiceFacility).toHaveBeenCalledTimes(1);
         expect(mockReplaceExpiryDateAmendmentServiceObligations).toHaveBeenCalledTimes(1);
 
+        expect(mockReplaceExpiryDateAmendmentServiceAccrualSchedules).toHaveBeenNthCalledWith(1, {
+          amendmentType: earlierExpiryDatePayload.amendmentType,
+          expiryDate: earlierExpiryDatePayload.amendmentData.expiryDate,
+          facilityId: mockFacilityId,
+          obligations: mockObligations,
+          workPackageId: mockWorkPackageId,
+        });
+
         expect(mockReplaceExpiryDateAmendmentServiceFacility).toHaveBeenNthCalledWith(1, {
-          accrualScheduleIds: mockAccrualScheduleIds,
           amendmentType: earlierExpiryDatePayload.amendmentType,
           facilityId: mockFacilityId,
           workPackageId: mockWorkPackageId,
@@ -275,7 +294,6 @@ describe('GiftFacilityAmendmentService', () => {
         });
 
         expect(mockReplaceExpiryDateAmendmentServiceObligations).toHaveBeenNthCalledWith(1, {
-          accrualScheduleIds: mockAccrualScheduleIds,
           amendmentType: earlierExpiryDatePayload.amendmentType,
           facilityId: mockFacilityId,
           obligations: mockObligations,
@@ -283,6 +301,9 @@ describe('GiftFacilityAmendmentService', () => {
           facilityExpiryDate: earlierExpiryDatePayload.amendmentData.expiryDate,
         });
 
+        expect(mockReplaceExpiryDateAmendmentServiceAccrualSchedules.mock.invocationCallOrder[0]).toBeLessThan(
+          mockReplaceExpiryDateAmendmentServiceObligations.mock.invocationCallOrder[0],
+        );
         expect(mockReplaceExpiryDateAmendmentServiceObligations.mock.invocationCallOrder[0]).toBeLessThan(
           mockReplaceExpiryDateAmendmentServiceFacility.mock.invocationCallOrder[0],
         );
@@ -301,6 +322,7 @@ describe('GiftFacilityAmendmentService', () => {
         await service.create(mockFacilityId, payloadWithUpdateObligationDatesFalse);
 
         // Assert
+        expect(mockReplaceExpiryDateAmendmentServiceAccrualSchedules).toHaveBeenCalledTimes(1);
         expect(mockReplaceExpiryDateAmendmentServiceFacility).toHaveBeenCalledTimes(1);
         expect(mockReplaceExpiryDateAmendmentServiceObligations).toHaveBeenCalledTimes(1);
       });
@@ -331,6 +353,7 @@ describe('GiftFacilityAmendmentService', () => {
         await service.create(mockFacilityId, replaceExpiryDatePayload);
 
         // Assert
+        expect(mockReplaceExpiryDateAmendmentServiceAccrualSchedules).toHaveBeenCalledTimes(1);
         expect(mockReplaceExpiryDateAmendmentServiceFacility).toHaveBeenCalledTimes(1);
         expect(mockReplaceExpiryDateAmendmentServiceObligations).toHaveBeenCalledTimes(0);
       });

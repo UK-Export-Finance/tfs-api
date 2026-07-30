@@ -4,6 +4,7 @@ import { GiftAmendmentBaseParams } from '@ukef/types';
 import { PinoLogger } from 'nestjs-pino';
 
 import { GiftWorkPackageResponseDto } from '../../dto';
+import { getAccrualScheduleIds } from '../../helpers';
 import { GiftHttpService } from '../gift.http.service';
 import { GiftWorkPackageService } from '../gift.work-package.service';
 
@@ -21,7 +22,11 @@ type ObligationsParams = GiftAmendmentBaseParams & {
 
 type FacilityParams = GiftAmendmentBaseParams & {
   expiryDate: string;
-  accrualScheduleIds: number[];
+};
+
+type AccrualSchedulesParams = GiftAmendmentBaseParams & {
+  expiryDate: string;
+  obligations: { accrualSchedules?: { accrualScheduleId: number }[]; fixedRateAccrualSchedules?: { accrualScheduleId: number }[] }[];
 };
 
 /**
@@ -108,24 +113,25 @@ export class GiftReplaceExpiryDateAmendmentService {
   }
 
   /**
-   * Amend the expiry date for a given facility and work package.
-   * Also updates the first cycle accrual end date for all accrual schedules associated with the facility.
-   * @param {FacilityParams} params - Parameters for the amendment.
-   * @param {number[]} params.accrualScheduleIds - An array of accrual schedule IDs associated with the facility.
+   * Amend accrual schedules for a given facility and work package.
+   * @param {AccrualSchedulesParams} params - Parameters for the amendment.
    * @param {string} params.amendmentType - The type of amendment being made.
    * @param {string} params.expiryDate - The new expiry date for the facility.
    * @param {string} params.facilityId - The ID of the facility being amended.
+   * @param {Array<{ accrualSchedules?: { accrualScheduleId: number }[] }>} params.obligations - Facility obligations.
    * @param {number} params.workPackageId - The ID of the work package associated with the amendment.
    * @throws {Error} - Throws an error if the amendment fails, including details about the failure.
-   * @returns {Promise<GiftWorkPackageResponseDto>} - A promise that resolves to the response from the GIFT API for the facility amendment.
+   * @returns {Promise<void>} - A promise that resolves when all accrual schedules are amended.
    */
-  async facility({ accrualScheduleIds, amendmentType, expiryDate, facilityId, workPackageId }: FacilityParams) {
+  async accrualSchedules({ amendmentType, expiryDate, facilityId, obligations, workPackageId }: AccrualSchedulesParams): Promise<void> {
     try {
-      this.logger.info('Amending facility expiry date %s for facility %s work package %s', amendmentType, facilityId, workPackageId);
+      this.logger.info('Amending accrual schedules %s for facility %s work package %s', amendmentType, facilityId, workPackageId);
+
+      const accrualScheduleIds = getAccrualScheduleIds(obligations);
 
       const accrualScheduleAmendmentTypeString = `${AMEND_FACILITY_PREFIX_TYPES.AMEND_ACCRUAL_SCHEDULE}${AMEND_ACCRUAL_SCHEDULE_REPLACE_FIRST_CYCLE_ACCRUAL_END_DATE}`;
 
-      const accrualPath = `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${accrualScheduleAmendmentTypeString}`;
+      const path = `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${accrualScheduleAmendmentTypeString}`;
 
       /**
        * NOTE: We need to use a for loop instead of Promise.all, to ensure that the calls are sequential.
@@ -133,7 +139,7 @@ export class GiftReplaceExpiryDateAmendmentService {
        */
       for (const accrualScheduleId of accrualScheduleIds) {
         const response = await this.giftHttpService.post<GiftWorkPackageResponseDto>({
-          path: accrualPath,
+          path,
           payload: {
             accrualScheduleId,
             firstCycleAccrualEndDate: expiryDate,
@@ -158,6 +164,28 @@ export class GiftReplaceExpiryDateAmendmentService {
           );
         }
       }
+    } catch (error) {
+      this.logger.error('Error amending accrual schedules %s for facility %s work package %s %o', amendmentType, facilityId, workPackageId, error);
+
+      throw new Error(`Error amending accrual schedules ${amendmentType} for facility ${facilityId} work package ${workPackageId}`, {
+        cause: error,
+      });
+    }
+  }
+
+  /**
+   * Amend the expiry date for a given facility and work package.
+   * @param {FacilityParams} params - Parameters for the amendment.
+   * @param {string} params.amendmentType - The type of amendment being made.
+   * @param {string} params.expiryDate - The new expiry date for the facility.
+   * @param {string} params.facilityId - The ID of the facility being amended.
+   * @param {number} params.workPackageId - The ID of the work package associated with the amendment.
+   * @throws {Error} - Throws an error if the amendment fails, including details about the failure.
+   * @returns {Promise<GiftWorkPackageResponseDto>} - A promise that resolves to the response from the GIFT API for the facility amendment.
+   */
+  async facility({ amendmentType, expiryDate, facilityId, workPackageId }: FacilityParams) {
+    try {
+      this.logger.info('Amending facility expiry date %s for facility %s work package %s', amendmentType, facilityId, workPackageId);
 
       const facilityPath = `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${AMEND_FACILITY_REPLACE_EXPIRY_DATE}`;
 

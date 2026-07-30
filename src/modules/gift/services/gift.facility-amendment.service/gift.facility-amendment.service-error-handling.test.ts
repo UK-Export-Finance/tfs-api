@@ -58,6 +58,7 @@ describe('GiftFacilityAmendmentService - error handling', () => {
   let mockAmountAmendmentObligations: jest.Mock;
   let mockReplaceExpiryDateAmendmentFacility: jest.Mock;
   let mockReplaceExpiryDateAmendmentObligations: jest.Mock;
+  let mockReplaceExpiryDateAmendmentAccrualSchedules: jest.Mock;
   let mockStatusServiceApproved: jest.Mock;
 
   const buildService = () => {
@@ -86,6 +87,7 @@ describe('GiftFacilityAmendmentService - error handling', () => {
     mockAmountAmendmentObligations = jest.fn().mockResolvedValueOnce([]);
     mockReplaceExpiryDateAmendmentFacility = jest.fn().mockResolvedValueOnce(mockResponse201({}));
     mockReplaceExpiryDateAmendmentObligations = jest.fn().mockResolvedValueOnce({});
+    mockReplaceExpiryDateAmendmentAccrualSchedules = jest.fn().mockResolvedValueOnce(undefined);
     mockStatusServiceApproved = jest.fn().mockResolvedValueOnce(mockResponse200(WORK_PACKAGE_APPROVE_RESPONSE_DATA));
 
     facilityService.get = mockFacilityServiceGet;
@@ -94,6 +96,7 @@ describe('GiftFacilityAmendmentService - error handling', () => {
     amountAmendmentService.obligations = mockAmountAmendmentObligations;
     replaceExpiryDateAmendmentService.facility = mockReplaceExpiryDateAmendmentFacility;
     replaceExpiryDateAmendmentService.obligations = mockReplaceExpiryDateAmendmentObligations;
+    replaceExpiryDateAmendmentService.accrualSchedules = mockReplaceExpiryDateAmendmentAccrualSchedules;
     statusService.approved = mockStatusServiceApproved;
 
     buildService();

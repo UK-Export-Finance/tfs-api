@@ -5,7 +5,6 @@ import { PinoLogger } from 'nestjs-pino';
 
 import { CreateGiftFacilityAmendmentRequestDto, GiftWorkPackageResponseDto } from '../../dto';
 import {
-  getAccrualScheduleIds,
   hasObligationsWithMaturityDateNotFollowingFacility,
   isDecreaseAmountAmendment,
   isIncreaseAmountAmendment,
@@ -186,33 +185,22 @@ export class GiftFacilityAmendmentService {
 
         const { expiryDate: originalFacilityExpiryDate } = facility;
 
-        const accrualScheduleIds = getAccrualScheduleIds(obligations);
-
         const shouldUpdateObligationsMaturityDates = hasObligationsWithMaturityDateNotFollowingFacility(obligations);
 
-        const shouldAmendObligationsFirst =
-          shouldUpdateObligationsMaturityDates && new Date(expiryDate).getTime() < new Date(originalFacilityExpiryDate).getTime();
+        const isExpiryDateEarlierThanOriginal = new Date(expiryDate).getTime() < new Date(originalFacilityExpiryDate).getTime();
 
         const baseParams = {
-          accrualScheduleIds,
           amendmentType,
           facilityId,
           workPackageId,
         };
 
-        if (!shouldUpdateObligationsMaturityDates) {
-          const facilityResponse = await this.giftReplaceExpiryDateAmendmentService.facility({ ...baseParams, expiryDate });
+        if (isExpiryDateEarlierThanOriginal) {
+          await this.giftReplaceExpiryDateAmendmentService.accrualSchedules({ ...baseParams, expiryDate, obligations });
 
-          if (!this.wasAmendmentSuccessful(facilityResponse)) {
-            return {
-              status: facilityResponse.status,
-              data: facilityResponse.data,
-            };
+          if (shouldUpdateObligationsMaturityDates) {
+            await this.giftReplaceExpiryDateAmendmentService.obligations({ ...baseParams, facilityExpiryDate: expiryDate, obligations });
           }
-
-          createdAmendmentData = facilityResponse.data;
-        } else if (shouldAmendObligationsFirst) {
-          await this.giftReplaceExpiryDateAmendmentService.obligations({ ...baseParams, facilityExpiryDate: expiryDate, obligations });
 
           const facilityResponse = await this.giftReplaceExpiryDateAmendmentService.facility({ ...baseParams, expiryDate });
 
@@ -234,7 +222,11 @@ export class GiftFacilityAmendmentService {
             };
           }
 
-          await this.giftReplaceExpiryDateAmendmentService.obligations({ ...baseParams, facilityExpiryDate: expiryDate, obligations });
+          if (shouldUpdateObligationsMaturityDates) {
+            await this.giftReplaceExpiryDateAmendmentService.obligations({ ...baseParams, facilityExpiryDate: expiryDate, obligations });
+          }
+
+          await this.giftReplaceExpiryDateAmendmentService.accrualSchedules({ ...baseParams, expiryDate, obligations });
 
           createdAmendmentData = facilityResponse.data;
         }

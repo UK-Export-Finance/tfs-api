@@ -268,7 +268,7 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
           isApproved: true,
         });
 
-        expect(callOrder).toStrictEqual(['workPackage', 'accrualScheduleAmendment', 'facilityAmendment', 'obligationMaturityDateAmendment', 'approveStatus']);
+        expect(callOrder).toStrictEqual(['workPackage', 'facilityAmendment', 'obligationMaturityDateAmendment', 'accrualScheduleAmendment', 'approveStatus']);
       });
 
       it('should call accrual schedule amendment for each accrual schedule ID', async () => {
@@ -444,7 +444,7 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
             isApproved: true,
           });
 
-          expect(callOrder).toStrictEqual(['workPackage', 'obligationMaturityDateAmendment', 'accrualScheduleAmendment', 'facilityAmendment', 'approveStatus']);
+          expect(callOrder).toStrictEqual(['workPackage', 'accrualScheduleAmendment', 'obligationMaturityDateAmendment', 'facilityAmendment', 'approveStatus']);
         });
       });
 

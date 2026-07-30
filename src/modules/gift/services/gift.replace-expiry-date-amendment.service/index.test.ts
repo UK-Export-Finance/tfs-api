@@ -16,7 +16,6 @@ const {
 } = EXAMPLES;
 
 const {
-  // AMEND_FACILITY,
   AMEND_FACILITY_PREFIX_TYPES,
   AMEND_FACILITY_TYPES_CONSUMER: { AMEND_FACILITY_REPLACE_EXPIRY_DATE },
   AMEND_FACILITY_TYPES_GIFT: { AMEND_ACCRUAL_SCHEDULE_REPLACE_FIRST_CYCLE_ACCRUAL_END_DATE, AMEND_OBLIGATION_REPLACE_MATURITY_DATE },
@@ -57,7 +56,6 @@ describe('GiftReplaceExpiryDateAmendmentService', () => {
     it('should call giftHttpService.post', async () => {
       // Act
       await service.facility({
-        accrualScheduleIds: [mockAccrualScheduleId],
         amendmentType: AMEND_FACILITY_REPLACE_EXPIRY_DATE,
         expiryDate: REPLACE_EXPIRY_DATE.expiryDate,
         facilityId: mockFacilityId,
@@ -65,18 +63,10 @@ describe('GiftReplaceExpiryDateAmendmentService', () => {
       });
 
       // Assert
-      expect(mockHttpServicePost).toHaveBeenCalledTimes(2);
+      expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
 
       expect(mockHttpServicePost).toHaveBeenNthCalledWith(1, {
-        path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${AMEND_FACILITY_PREFIX_TYPES.AMEND_ACCRUAL_SCHEDULE}${AMEND_ACCRUAL_SCHEDULE_REPLACE_FIRST_CYCLE_ACCRUAL_END_DATE}`,
-        payload: {
-          accrualScheduleId: mockAccrualScheduleId,
-          firstCycleAccrualEndDate: REPLACE_EXPIRY_DATE.expiryDate,
-        },
-      });
-
-      expect(mockHttpServicePost).toHaveBeenNthCalledWith(2, {
-        path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${AMEND_FACILITY_REPLACE_EXPIRY_DATE}`,
+        path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${AMEND_FACILITY_PREFIX_TYPES.AMEND_FACILITY}${AMEND_FACILITY_REPLACE_EXPIRY_DATE}`,
         payload: {
           expiryDate: REPLACE_EXPIRY_DATE.expiryDate,
         },
@@ -86,16 +76,14 @@ describe('GiftReplaceExpiryDateAmendmentService', () => {
     it('should return the response from giftHttpService.post', async () => {
       // Arrange
       const mockResponse = mockResponse201({ facility: true });
-      const mockAccrualScheduleResponse = mockResponse201({ accrualSchedule: true });
 
-      mockHttpServicePost = jest.fn().mockResolvedValueOnce(mockAccrualScheduleResponse).mockResolvedValueOnce(mockResponse);
+      mockHttpServicePost = jest.fn().mockResolvedValueOnce(mockResponse);
       giftHttpService.post = mockHttpServicePost;
 
       service = new GiftReplaceExpiryDateAmendmentService(giftHttpService, giftWorkPackageService, logger);
 
       // Act
       const response = await service.facility({
-        accrualScheduleIds: [1],
         amendmentType: AMEND_FACILITY_REPLACE_EXPIRY_DATE,
         expiryDate: REPLACE_EXPIRY_DATE.expiryDate,
         facilityId: mockFacilityId,
@@ -104,6 +92,82 @@ describe('GiftReplaceExpiryDateAmendmentService', () => {
 
       // Assert
       expect(response).toEqual(mockResponse);
+    });
+  });
+
+  describe('accrualSchedules', () => {
+    const mockObligationsWithAccrualSchedules = [
+      {
+        accrualSchedules: [{ accrualScheduleId: mockAccrualScheduleId }, { accrualScheduleId: 222 }],
+      },
+    ];
+
+    it('should call giftHttpService.post for each accrual schedule', async () => {
+      // Arrange
+      mockHttpServicePost = jest
+        .fn()
+        .mockResolvedValueOnce(mockResponse201({ one: true }))
+        .mockResolvedValueOnce(mockResponse201({ two: true }));
+
+      giftHttpService.post = mockHttpServicePost;
+
+      service = new GiftReplaceExpiryDateAmendmentService(giftHttpService, giftWorkPackageService, logger);
+
+      // Act
+      await service.accrualSchedules({
+        amendmentType: AMEND_FACILITY_REPLACE_EXPIRY_DATE,
+        expiryDate: REPLACE_EXPIRY_DATE.expiryDate,
+        facilityId: mockFacilityId,
+        obligations: mockObligationsWithAccrualSchedules,
+        workPackageId: mockWorkPackageId,
+      });
+
+      // Assert
+      expect(mockHttpServicePost).toHaveBeenCalledTimes(2);
+
+      const expectedPath = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${AMEND_FACILITY_PREFIX_TYPES.AMEND_ACCRUAL_SCHEDULE}${AMEND_ACCRUAL_SCHEDULE_REPLACE_FIRST_CYCLE_ACCRUAL_END_DATE}`;
+
+      expect(mockHttpServicePost).toHaveBeenNthCalledWith(1, {
+        path: expectedPath,
+        payload: {
+          accrualScheduleId: mockAccrualScheduleId,
+          firstCycleAccrualEndDate: REPLACE_EXPIRY_DATE.expiryDate,
+        },
+      });
+
+      expect(mockHttpServicePost).toHaveBeenNthCalledWith(2, {
+        path: expectedPath,
+        payload: {
+          accrualScheduleId: 222,
+          firstCycleAccrualEndDate: REPLACE_EXPIRY_DATE.expiryDate,
+        },
+      });
+    });
+
+    it(`should throw and delete work package when post does NOT return ${HttpStatus.CREATED}`, async () => {
+      // Arrange
+      mockHttpServicePost = jest.fn().mockResolvedValueOnce({ status: HttpStatus.BAD_REQUEST, data: { badRequest: true } });
+      mockWorkPackageServiceDelete = jest.fn().mockResolvedValueOnce(mockResponse204());
+      giftHttpService.post = mockHttpServicePost;
+      giftWorkPackageService.delete = mockWorkPackageServiceDelete;
+
+      service = new GiftReplaceExpiryDateAmendmentService(giftHttpService, giftWorkPackageService, logger);
+
+      // Act
+      const response = service.accrualSchedules({
+        amendmentType: AMEND_FACILITY_REPLACE_EXPIRY_DATE,
+        expiryDate: REPLACE_EXPIRY_DATE.expiryDate,
+        facilityId: mockFacilityId,
+        obligations: [{ accrualSchedules: [{ accrualScheduleId: mockAccrualScheduleId }] }],
+        workPackageId: mockWorkPackageId,
+      });
+
+      // Assert
+      await expect(response).rejects.toThrow(
+        `Error amending accrual schedules ${AMEND_FACILITY_REPLACE_EXPIRY_DATE} for facility ${mockFacilityId} work package ${mockWorkPackageId}`,
+      );
+      expect(mockWorkPackageServiceDelete).toHaveBeenCalledTimes(1);
+      expect(mockWorkPackageServiceDelete).toHaveBeenCalledWith(mockWorkPackageId, mockFacilityId);
     });
   });
 
