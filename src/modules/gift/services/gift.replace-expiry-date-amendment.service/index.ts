@@ -133,13 +133,31 @@ export class GiftReplaceExpiryDateAmendmentService {
        * Promise.all is not sequential.
        */
       for (const accrualScheduleId of accrualScheduleIds) {
-        await this.giftHttpService.post<GiftWorkPackageResponseDto>({
+        const response = await this.giftHttpService.post<GiftWorkPackageResponseDto>({
           path: accrualPath,
           payload: {
             accrualScheduleId,
             firstCycleAccrualEndDate: expiryDate,
           },
         });
+
+        if (response.status !== HttpStatus.CREATED) {
+          this.logger.error(
+            'Error creating accrual schedule amendment %s for work package %s facility %s. Deleting work package',
+            amendmentType,
+            workPackageId,
+            facilityId,
+          );
+
+          await this.giftWorkPackageService.delete(workPackageId, facilityId);
+
+          throw new Error(
+            `Unexpected status ${response.status} amending accrual schedule ${accrualScheduleId} for facility ${facilityId} work package ${workPackageId}`,
+            {
+              cause: response.data,
+            },
+          );
+        }
       }
 
       const facilityPath = `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${AMEND_FACILITY_REPLACE_EXPIRY_DATE}`;

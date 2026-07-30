@@ -31,7 +31,19 @@ const mockWorkPackageServiceCreateResponse = mockResponse201(WORK_PACKAGE_CREATI
 describe('GiftFacilityAmendmentService', () => {
   const logger = new PinoLogger({});
   const mockFacilityCategoryCode = FACILITY_CATEGORY_CODES.CONTINGENT;
-  const mockObligations = [{ id: 'obligation-1', maturityDateFollowsFacility: false }];
+  const mockObligations = [
+    {
+      id: 'obligation-1',
+      maturityDateFollowsFacility: false,
+      accrualSchedules: [{ accrualScheduleId: 101 }, { accrualScheduleId: 102 }],
+    },
+    {
+      id: 'obligation-2',
+      maturityDateFollowsFacility: true,
+      accrualSchedules: [{ accrualScheduleId: 103 }],
+    },
+  ];
+  const mockAccrualScheduleIds = [101, 102, 103];
 
   const mockFacilityResponseData = {
     ...FACILITY_RESPONSE_DATA,
@@ -214,6 +226,7 @@ describe('GiftFacilityAmendmentService', () => {
         expect(mockReplaceExpiryDateAmendmentServiceObligations).toHaveBeenCalledTimes(1);
 
         expect(mockReplaceExpiryDateAmendmentServiceFacility).toHaveBeenNthCalledWith(1, {
+          accrualScheduleIds: mockAccrualScheduleIds,
           amendmentType: replaceExpiryDatePayload.amendmentType,
           facilityId: mockFacilityId,
           workPackageId: mockWorkPackageId,
@@ -221,6 +234,7 @@ describe('GiftFacilityAmendmentService', () => {
         });
 
         expect(mockReplaceExpiryDateAmendmentServiceObligations).toHaveBeenNthCalledWith(1, {
+          accrualScheduleIds: mockAccrualScheduleIds,
           amendmentType: replaceExpiryDatePayload.amendmentType,
           facilityId: mockFacilityId,
           obligations: mockObligations,
@@ -253,6 +267,7 @@ describe('GiftFacilityAmendmentService', () => {
         expect(mockReplaceExpiryDateAmendmentServiceObligations).toHaveBeenCalledTimes(1);
 
         expect(mockReplaceExpiryDateAmendmentServiceFacility).toHaveBeenNthCalledWith(1, {
+          accrualScheduleIds: mockAccrualScheduleIds,
           amendmentType: earlierExpiryDatePayload.amendmentType,
           facilityId: mockFacilityId,
           workPackageId: mockWorkPackageId,
@@ -260,6 +275,7 @@ describe('GiftFacilityAmendmentService', () => {
         });
 
         expect(mockReplaceExpiryDateAmendmentServiceObligations).toHaveBeenNthCalledWith(1, {
+          accrualScheduleIds: mockAccrualScheduleIds,
           amendmentType: earlierExpiryDatePayload.amendmentType,
           facilityId: mockFacilityId,
           obligations: mockObligations,
