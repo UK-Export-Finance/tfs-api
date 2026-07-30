@@ -111,7 +111,7 @@ export class GiftReplaceExpiryDateAmendmentService {
    * Amend the expiry date for a given facility and work package.
    * Also updates the first cycle accrual end date for all accrual schedules associated with the facility.
    * @param {FacilityParams} params - Parameters for the amendment.
-   * @param {string[]} params.accrualScheduleIds - An array of accrual schedule IDs associated with the facility.
+   * @param {number[]} params.accrualScheduleIds - An array of accrual schedule IDs associated with the facility.
    * @param {string} params.amendmentType - The type of amendment being made.
    * @param {string} params.expiryDate - The new expiry date for the facility.
    * @param {string} params.facilityId - The ID of the facility being amended.
@@ -143,7 +143,7 @@ export class GiftReplaceExpiryDateAmendmentService {
         if (response.status !== HttpStatus.CREATED) {
           this.logger.error(
             'Error creating accrual schedule amendment %s for work package %s facility %s. Deleting work package',
-            amendmentType,
+            accrualScheduleAmendmentTypeString,
             workPackageId,
             facilityId,
           );

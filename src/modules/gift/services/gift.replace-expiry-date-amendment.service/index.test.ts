@@ -68,7 +68,7 @@ describe('GiftReplaceExpiryDateAmendmentService', () => {
       expect(mockHttpServicePost).toHaveBeenCalledTimes(2);
 
       expect(mockHttpServicePost).toHaveBeenNthCalledWith(1, {
-        path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${AMEND_ACCRUAL_SCHEDULE_REPLACE_FIRST_CYCLE_ACCRUAL_END_DATE}`,
+        path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${AMEND_FACILITY_PREFIX_TYPES.AMEND_ACCRUAL_SCHEDULE}${AMEND_ACCRUAL_SCHEDULE_REPLACE_FIRST_CYCLE_ACCRUAL_END_DATE}`,
         payload: {
           accrualScheduleId: mockAccrualScheduleId,
           firstCycleAccrualEndDate: REPLACE_EXPIRY_DATE.expiryDate,

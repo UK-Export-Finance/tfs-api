@@ -4,7 +4,6 @@ type AccrualSchedule = {
 
 type Obligation = {
   accrualSchedules?: AccrualSchedule[];
-  fixedRateAccrualSchedules?: AccrualSchedule[];
 };
 
 /**
@@ -13,6 +12,4 @@ type Obligation = {
  * @returns {number[]} An array of accrual schedule IDs.
  */
 export const getAccrualScheduleIds = (obligations: Obligation[]) =>
-  obligations
-    .flatMap((obligation) => obligation.accrualSchedules ?? obligation.fixedRateAccrualSchedules ?? [])
-    .map((accrualSchedule) => accrualSchedule.accrualScheduleId);
+  obligations.flatMap((obligation) => obligation.accrualSchedules ?? []).map((accrualSchedule) => accrualSchedule.accrualScheduleId);
