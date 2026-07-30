@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.1](https://github.com/UK-Export-Finance/tfs-api/compare/v2.3.0...v2.3.1) (2026-07-30)
+
+
+### Bug Fixes
+
+* **DTFS2-8530:** amend a gift facility - expiry date - accrual schedule ([#1418](https://github.com/UK-Export-Finance/tfs-api/issues/1418)) ([6c3b756](https://github.com/UK-Export-Finance/tfs-api/commit/6c3b756e8e4a355e8da0eb484125bf2cd6ab178e))
+
 ## [2.3.0](https://github.com/UK-Export-Finance/tfs-api/compare/v2.2.1...v2.3.0) (2026-07-23)
 
 
