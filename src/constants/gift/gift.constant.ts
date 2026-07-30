@@ -3,6 +3,8 @@ import { VALIDATION } from './validation.constant';
 
 export const AMEND_FACILITY_PREFIX_TYPES = {
   AMEND_OBLIGATION: 'AmendObligation_',
+  AMEND_FACILITY: 'AmendFacility_',
+  AMEND_ACCRUAL_SCHEDULE: 'AmendAccrualSchedule_',
 };
 
 /**
@@ -26,6 +28,7 @@ export type AmendFacilityTypeConsumer = (typeof AMEND_FACILITY_TYPES_CONSUMER)[k
  */
 export const AMEND_FACILITY_TYPES_GIFT = {
   AMEND_OBLIGATION_REPLACE_MATURITY_DATE: 'ReplaceMaturityDate',
+  AMEND_ACCRUAL_SCHEDULE_REPLACE_FIRST_CYCLE_ACCRUAL_END_DATE: 'ReplaceFirstCycleAccrualEndDate',
 } as const;
 
 const FACILITY_CATEGORY_CODES = {
