@@ -9,7 +9,7 @@ import { GiftWorkPackageService } from '../gift.work-package.service';
 
 const {
   AMEND_FACILITY_PREFIX_TYPES,
-  AMEND_FACILITY_TYPES_GIFT: { AMEND_OBLIGATION_REPLACE_MATURITY_DATE },
+  AMEND_FACILITY_TYPES_GIFT: { AMEND_ACCRUAL_SCHEDULE_REPLACE_FIRST_CYCLE_ACCRUAL_END_DATE, AMEND_OBLIGATION_REPLACE_MATURITY_DATE },
   EVENT_TYPES: { AMEND_FACILITY_REPLACE_EXPIRY_DATE },
   PATH,
 } = GIFT;
@@ -21,6 +21,7 @@ type ObligationsParams = GiftAmendmentBaseParams & {
 
 type FacilityParams = GiftAmendmentBaseParams & {
   expiryDate: string;
+  accrualScheduleIds: number[];
 };
 
 /**
@@ -108,7 +109,9 @@ export class GiftReplaceExpiryDateAmendmentService {
 
   /**
    * Amend the expiry date for a given facility and work package.
+   * Also updates the first cycle accrual end date for all accrual schedules associated with the facility.
    * @param {FacilityParams} params - Parameters for the amendment.
+   * @param {string[]} params.accrualScheduleIds - An array of accrual schedule IDs associated with the facility.
    * @param {string} params.amendmentType - The type of amendment being made.
    * @param {string} params.expiryDate - The new expiry date for the facility.
    * @param {string} params.facilityId - The ID of the facility being amended.
@@ -116,16 +119,35 @@ export class GiftReplaceExpiryDateAmendmentService {
    * @throws {Error} - Throws an error if the amendment fails, including details about the failure.
    * @returns {Promise<GiftWorkPackageResponseDto>} - A promise that resolves to the response from the GIFT API for the facility amendment.
    */
-  async facility({ amendmentType, expiryDate, facilityId, workPackageId }: FacilityParams) {
+  async facility({ accrualScheduleIds, amendmentType, expiryDate, facilityId, workPackageId }: FacilityParams) {
     try {
       this.logger.info('Amending facility expiry date %s for facility %s work package %s', amendmentType, facilityId, workPackageId);
 
-      const path = `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${AMEND_FACILITY_REPLACE_EXPIRY_DATE}`;
+      // TODO constant
+      const accrualScheduleAmendmentTypeString = `${AMEND_FACILITY_PREFIX_TYPES.AMEND_ACCRUAL_SCHEDULE}${AMEND_ACCRUAL_SCHEDULE_REPLACE_FIRST_CYCLE_ACCRUAL_END_DATE}`;
+
+      const accrualPath = `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${accrualScheduleAmendmentTypeString}`;
+
+      /**
+       * NOTE: We need to use a for loop instead of Promise.all, to ensure that the calls are sequential.
+       * Promise.all is not sequential.
+       */
+      for (const accrualScheduleId of accrualScheduleIds) {
+        await this.giftHttpService.post<GiftWorkPackageResponseDto>({
+          path: accrualPath,
+          payload: {
+            accrualScheduleId,
+            firstCycleAccrualEndDate: expiryDate,
+          },
+        });
+      }
+
+      const facilityPath = `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${AMEND_FACILITY_REPLACE_EXPIRY_DATE}`;
 
       const payload = { expiryDate };
 
       const response = await this.giftHttpService.post<GiftWorkPackageResponseDto>({
-        path,
+        path: facilityPath,
         payload,
       });
 

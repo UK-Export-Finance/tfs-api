@@ -4,6 +4,7 @@ export * from './array-of-objects-has-value';
 export * from './async-validation';
 export * from './calculate-percentage-amount';
 export * from './generate-obligation-subtype-code-errors';
+export * from './get-accrual-schedule-ids';
 export * from './get-amendment-data-dto';
 export * from './get-obligation-ids';
 export * from './get-repayment-profile-allocation-dates';

@@ -56,7 +56,7 @@ export class GiftAmountAmendmentService {
        * By doing this in APIM, it provides consumers with a simpler payload requirement.
        * I.e, "IncreaseAmount" rather than "AmendFacility_IncreaseAmount".
        */
-      const facilityAmendmentTypeString = `AmendFacility_${amendmentType}`;
+      const facilityAmendmentTypeString = `${AMEND_FACILITY_PREFIX_TYPES.AMEND_FACILITY}${amendmentType}`;
 
       const path = `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${facilityAmendmentTypeString}`;
 

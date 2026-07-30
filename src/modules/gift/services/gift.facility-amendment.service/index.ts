@@ -5,6 +5,7 @@ import { PinoLogger } from 'nestjs-pino';
 
 import { CreateGiftFacilityAmendmentRequestDto, GiftWorkPackageResponseDto } from '../../dto';
 import {
+  getAccrualScheduleIds,
   hasObligationsWithMaturityDateNotFollowingFacility,
   isDecreaseAmountAmendment,
   isIncreaseAmountAmendment,
@@ -185,12 +186,15 @@ export class GiftFacilityAmendmentService {
 
         const { expiryDate: originalFacilityExpiryDate } = facility;
 
+        const accrualScheduleIds = getAccrualScheduleIds(obligations);
+
         const shouldUpdateObligationsMaturityDates = hasObligationsWithMaturityDateNotFollowingFacility(obligations);
 
         const shouldAmendObligationsFirst =
           shouldUpdateObligationsMaturityDates && new Date(expiryDate).getTime() < new Date(originalFacilityExpiryDate).getTime();
 
         const baseParams = {
+          accrualScheduleIds,
           amendmentType,
           facilityId,
           workPackageId,

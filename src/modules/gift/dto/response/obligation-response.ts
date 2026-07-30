@@ -108,5 +108,5 @@ export class GiftObligationResponseDto {
     isArray: true,
     type: GiftFacilityAccrualScheduleResponseDto,
   })
-  readonly fixedRateAccrualSchedules: GiftFacilityAccrualScheduleResponseDto[];
+  readonly accrualSchedules: GiftFacilityAccrualScheduleResponseDto[];
 }

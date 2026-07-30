@@ -193,11 +193,18 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
         const callOrder: string[] = [];
 
         const replaceMaturityDateUrl = `${GIFT.PATH.FACILITY}/${mockFacilityId}${GIFT.PATH.WORK_PACKAGE}/${mockWorkPackageId}${GIFT.PATH.CONFIGURATION_EVENT}/${AMEND_FACILITY_PREFIX_TYPES.AMEND_OBLIGATION}ReplaceMaturityDate`;
+        const replaceFirstCycleAccrualEndDateUrl = `${GIFT.PATH.FACILITY}/${mockFacilityId}${GIFT.PATH.WORK_PACKAGE}/${mockWorkPackageId}${GIFT.PATH.CONFIGURATION_EVENT}/${AMEND_FACILITY_PREFIX_TYPES.AMEND_ACCRUAL_SCHEDULE}${GIFT.AMEND_FACILITY_TYPES_GIFT.AMEND_ACCRUAL_SCHEDULE_REPLACE_FIRST_CYCLE_ACCRUAL_END_DATE}`;
 
         nock(GIFT_API_URL)
           .get(facilityUrl)
           .reply(HttpStatus.OK, {
-            obligations: [{ id: 'obligation-1', maturityDateFollowsFacility: false }],
+            obligations: [
+              {
+                id: 'obligation-1',
+                maturityDateFollowsFacility: false,
+                accrualSchedules: [{ accrualScheduleId: 501 }],
+              },
+            ],
             riskDetails: {
               facilityCategoryCode: GIFT.FACILITY_CATEGORY_CODES.CASH,
             },
@@ -209,6 +216,17 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
             callOrder.push('workPackage');
 
             return [HttpStatus.CREATED, mockResponses.workPackageCreation];
+          });
+
+        nock(GIFT_API_URL)
+          .post(replaceFirstCycleAccrualEndDateUrl, {
+            accrualScheduleId: 501,
+            firstCycleAccrualEndDate: GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA.REPLACE_EXPIRY_DATE.expiryDate,
+          })
+          .reply(() => {
+            callOrder.push('accrualScheduleAmendment');
+
+            return [HttpStatus.CREATED, mockResponses.facilityAmendment];
           });
 
         nock(GIFT_API_URL)
@@ -250,7 +268,98 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
           isApproved: true,
         });
 
-        expect(callOrder).toStrictEqual(['workPackage', 'facilityAmendment', 'obligationMaturityDateAmendment', 'approveStatus']);
+        expect(callOrder).toStrictEqual(['workPackage', 'accrualScheduleAmendment', 'facilityAmendment', 'obligationMaturityDateAmendment', 'approveStatus']);
+      });
+
+      it('should call accrual schedule amendment for each accrual schedule ID', async () => {
+        // Arrange
+        const callOrder: string[] = [];
+
+        const replaceFirstCycleAccrualEndDateUrl = `${GIFT.PATH.FACILITY}/${mockFacilityId}${GIFT.PATH.WORK_PACKAGE}/${mockWorkPackageId}${GIFT.PATH.CONFIGURATION_EVENT}/${AMEND_FACILITY_PREFIX_TYPES.AMEND_ACCRUAL_SCHEDULE}${GIFT.AMEND_FACILITY_TYPES_GIFT.AMEND_ACCRUAL_SCHEDULE_REPLACE_FIRST_CYCLE_ACCRUAL_END_DATE}`;
+
+        nock(GIFT_API_URL)
+          .get(facilityUrl)
+          .reply(HttpStatus.OK, {
+            expiryDate: '2035-01-01',
+            obligations: [
+              {
+                id: 'obligation-1',
+                maturityDateFollowsFacility: true,
+                accrualSchedules: [{ accrualScheduleId: 801 }, { accrualScheduleId: 802 }],
+              },
+            ],
+            riskDetails: {
+              facilityCategoryCode: GIFT.FACILITY_CATEGORY_CODES.CASH,
+            },
+          });
+
+        nock(GIFT_API_URL)
+          .post(facilityWorkPackageUrl)
+          .reply(() => {
+            callOrder.push('workPackage');
+
+            return [HttpStatus.CREATED, mockResponses.workPackageCreation];
+          });
+
+        nock(GIFT_API_URL)
+          .post(replaceFirstCycleAccrualEndDateUrl, {
+            accrualScheduleId: 801,
+            firstCycleAccrualEndDate: GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA.REPLACE_EXPIRY_DATE.expiryDate,
+          })
+          .reply(() => {
+            callOrder.push('accrualScheduleAmendment-801');
+
+            return [HttpStatus.CREATED, mockResponses.facilityAmendment];
+          });
+
+        nock(GIFT_API_URL)
+          .post(replaceFirstCycleAccrualEndDateUrl, {
+            accrualScheduleId: 802,
+            firstCycleAccrualEndDate: GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA.REPLACE_EXPIRY_DATE.expiryDate,
+          })
+          .reply(() => {
+            callOrder.push('accrualScheduleAmendment-802');
+
+            return [HttpStatus.CREATED, mockResponses.facilityAmendment];
+          });
+
+        nock(GIFT_API_URL)
+          .post(facilityAmendmentUrl(AMEND_FACILITY_REPLACE_EXPIRY_DATE))
+          .reply(() => {
+            callOrder.push('facilityAmendment');
+
+            return [HttpStatus.CREATED, mockResponses.facilityAmendment];
+          });
+
+        nock(GIFT_API_URL)
+          .post(approveStatusUrl)
+          .reply(() => {
+            callOrder.push('approveStatus');
+
+            return [HttpStatus.OK, mockResponses.approveStatus];
+          });
+
+        const mockPayload = {
+          amendmentType: AMEND_FACILITY_REPLACE_EXPIRY_DATE,
+          amendmentData: GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA.REPLACE_EXPIRY_DATE,
+        };
+
+        // Act
+        const { status, body } = await api.post(apimFacilityAmendmentWithoutQueueUrl, mockPayload);
+
+        // Assert
+        expect(status).toBe(HttpStatus.CREATED);
+
+        const expected = {
+          ...mockResponses.facilityAmendment,
+          isApproved: true,
+        };
+
+        expect(body).toStrictEqual(expected);
+
+        const expectedCallOrder = ['workPackage', 'accrualScheduleAmendment-801', 'accrualScheduleAmendment-802', 'facilityAmendment', 'approveStatus'];
+
+        expect(callOrder).toStrictEqual(expectedCallOrder);
       });
 
       describe('when new facility expiry date is before the existing expiry date', () => {
@@ -259,12 +368,19 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
           const callOrder: string[] = [];
 
           const replaceMaturityDateUrl = `${GIFT.PATH.FACILITY}/${mockFacilityId}${GIFT.PATH.WORK_PACKAGE}/${mockWorkPackageId}${GIFT.PATH.CONFIGURATION_EVENT}/${AMEND_FACILITY_PREFIX_TYPES.AMEND_OBLIGATION}ReplaceMaturityDate`;
+          const replaceFirstCycleAccrualEndDateUrl = `${GIFT.PATH.FACILITY}/${mockFacilityId}${GIFT.PATH.WORK_PACKAGE}/${mockWorkPackageId}${GIFT.PATH.CONFIGURATION_EVENT}/${AMEND_FACILITY_PREFIX_TYPES.AMEND_ACCRUAL_SCHEDULE}${GIFT.AMEND_FACILITY_TYPES_GIFT.AMEND_ACCRUAL_SCHEDULE_REPLACE_FIRST_CYCLE_ACCRUAL_END_DATE}`;
 
           nock(GIFT_API_URL)
             .get(facilityUrl)
             .reply(HttpStatus.OK, {
               expiryDate: '2035-01-01',
-              obligations: [{ id: 'obligation-1', maturityDateFollowsFacility: false }],
+              obligations: [
+                {
+                  id: 'obligation-1',
+                  maturityDateFollowsFacility: false,
+                  accrualSchedules: [{ accrualScheduleId: 601 }],
+                },
+              ],
               riskDetails: {
                 facilityCategoryCode: GIFT.FACILITY_CATEGORY_CODES.CASH,
               },
@@ -282,6 +398,17 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
             .post(replaceMaturityDateUrl)
             .reply(() => {
               callOrder.push('obligationMaturityDateAmendment');
+
+              return [HttpStatus.CREATED, mockResponses.facilityAmendment];
+            });
+
+          nock(GIFT_API_URL)
+            .post(replaceFirstCycleAccrualEndDateUrl, {
+              accrualScheduleId: 601,
+              firstCycleAccrualEndDate: GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA.REPLACE_EXPIRY_DATE.expiryDate,
+            })
+            .reply(() => {
+              callOrder.push('accrualScheduleAmendment');
 
               return [HttpStatus.CREATED, mockResponses.facilityAmendment];
             });
@@ -317,7 +444,7 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
             isApproved: true,
           });
 
-          expect(callOrder).toStrictEqual(['workPackage', 'obligationMaturityDateAmendment', 'facilityAmendment', 'approveStatus']);
+          expect(callOrder).toStrictEqual(['workPackage', 'obligationMaturityDateAmendment', 'accrualScheduleAmendment', 'facilityAmendment', 'approveStatus']);
         });
       });
 
@@ -325,12 +452,19 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
         it('should not call obligation maturity date amendment endpoint', async () => {
           // Arrange
           const callOrder: string[] = [];
+          const replaceFirstCycleAccrualEndDateUrl = `${GIFT.PATH.FACILITY}/${mockFacilityId}${GIFT.PATH.WORK_PACKAGE}/${mockWorkPackageId}${GIFT.PATH.CONFIGURATION_EVENT}/${AMEND_FACILITY_PREFIX_TYPES.AMEND_ACCRUAL_SCHEDULE}${GIFT.AMEND_FACILITY_TYPES_GIFT.AMEND_ACCRUAL_SCHEDULE_REPLACE_FIRST_CYCLE_ACCRUAL_END_DATE}`;
 
           nock(GIFT_API_URL)
             .get(facilityUrl)
             .reply(HttpStatus.OK, {
               expiryDate: '2035-01-01',
-              obligations: [{ id: 'obligation-1', maturityDateFollowsFacility: true }],
+              obligations: [
+                {
+                  id: 'obligation-1',
+                  maturityDateFollowsFacility: true,
+                  accrualSchedules: [{ accrualScheduleId: 701 }],
+                },
+              ],
               riskDetails: {
                 facilityCategoryCode: GIFT.FACILITY_CATEGORY_CODES.CASH,
               },
@@ -342,6 +476,17 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
               callOrder.push('workPackage');
 
               return [HttpStatus.CREATED, mockResponses.workPackageCreation];
+            });
+
+          nock(GIFT_API_URL)
+            .post(replaceFirstCycleAccrualEndDateUrl, {
+              accrualScheduleId: 701,
+              firstCycleAccrualEndDate: GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA.REPLACE_EXPIRY_DATE.expiryDate,
+            })
+            .reply(() => {
+              callOrder.push('accrualScheduleAmendment');
+
+              return [HttpStatus.CREATED, mockResponses.facilityAmendment];
             });
 
           nock(GIFT_API_URL)
@@ -377,7 +522,7 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
             isApproved: true,
           });
 
-          expect(callOrder).toStrictEqual(['workPackage', 'facilityAmendment', 'approveStatus']);
+          expect(callOrder).toStrictEqual(['workPackage', 'accrualScheduleAmendment', 'facilityAmendment', 'approveStatus']);
         });
       });
 
