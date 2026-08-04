@@ -105,7 +105,7 @@ export const GIFT = {
     ADD_COUNTERPARTY: 'AddFacilityCounterparty',
     ADD_REPAYMENT_PROFILE: 'AddRepaymentProfile',
     CREATE_FACILITY: 'CreateFacility',
-    ADD_ACCRUAL_SCHEDULE_FIXED_RATE: 'AddFixedRateAccrualSchedule',
+    ADD_ACCRUAL_SCHEDULE_NON_INDEXED: 'AddNonIndexedAccrualSchedule',
     ADD_FIXED_FEE: 'AddFixedFee',
     ADD_OBLIGATION: 'AddObligation',
     ADD_RISK_DETAILS: 'AddRiskDetails',

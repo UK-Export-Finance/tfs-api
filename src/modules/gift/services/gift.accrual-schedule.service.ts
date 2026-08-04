@@ -44,7 +44,7 @@ export class GiftAccrualScheduleService {
         firstCycleAccrualEndDate: accrualScheduleData.firstCycleAccrualEndDate || INTEGRATION_DEFAULTS.FIRST_CYCLE_ACCRUAL_END_DATE,
       };
 
-      const path = `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_ACCRUAL_SCHEDULE_FIXED_RATE}`;
+      const path = `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_ACCRUAL_SCHEDULE_NON_INDEXED}`;
 
       const response = await this.giftHttpService.post<GiftAccrualScheduleRequestDto>({
         path,
