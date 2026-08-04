@@ -82,9 +82,9 @@ describe('GET /gift/facilities?ids={ids}', () => {
         aMockFacility: true,
       }));
 
-      nock(GIFT_API_URL).get(`${FACILITY}/${mockFacilityIds[0]}`).reply(HttpStatus.OK, mockFacilityResponses[0]);
-      nock(GIFT_API_URL).get(`${FACILITY}/${mockFacilityIds[1]}`).reply(HttpStatus.OK, mockFacilityResponses[1]);
-      nock(GIFT_API_URL).get(`${FACILITY}/${mockFacilityIds[2]}`).reply(HttpStatus.OK, mockFacilityResponses[2]);
+      nock(GIFT_API_URL).get(`${FACILITY}/${mockFacilityIds[0]}?projectionVersion=main`).reply(HttpStatus.OK, mockFacilityResponses[0]);
+      nock(GIFT_API_URL).get(`${FACILITY}/${mockFacilityIds[1]}?projectionVersion=main`).reply(HttpStatus.OK, mockFacilityResponses[1]);
+      nock(GIFT_API_URL).get(`${FACILITY}/${mockFacilityIds[2]}?projectionVersion=main`).reply(HttpStatus.OK, mockFacilityResponses[2]);
 
       // Act
       const { status, body } = await api.get(url);
@@ -105,9 +105,13 @@ describe('GET /gift/facilities?ids={ids}', () => {
         message: 'Validation error',
       };
 
-      nock(GIFT_API_URL).get(`${FACILITY}/${mockFacilityIds[0]}`).reply(HttpStatus.OK, { facilityId: mockFacilityIds[0], aMockFacility: true });
-      nock(GIFT_API_URL).get(`${FACILITY}/${mockFacilityIds[1]}`).reply(HttpStatus.BAD_REQUEST, badRequestResponse);
-      nock(GIFT_API_URL).get(`${FACILITY}/${mockFacilityIds[2]}`).reply(HttpStatus.OK, { facilityId: mockFacilityIds[2], aMockFacility: true });
+      nock(GIFT_API_URL)
+        .get(`${FACILITY}/${mockFacilityIds[0]}?projectionVersion=main`)
+        .reply(HttpStatus.OK, { facilityId: mockFacilityIds[0], aMockFacility: true });
+      nock(GIFT_API_URL).get(`${FACILITY}/${mockFacilityIds[1]}?projectionVersion=main`).reply(HttpStatus.BAD_REQUEST, badRequestResponse);
+      nock(GIFT_API_URL)
+        .get(`${FACILITY}/${mockFacilityIds[2]}?projectionVersion=main`)
+        .reply(HttpStatus.OK, { facilityId: mockFacilityIds[2], aMockFacility: true });
 
       // Act
       const { status, body } = await api.get(url);
@@ -130,9 +134,9 @@ describe('GET /gift/facilities?ids={ids}', () => {
         message: 'not found',
       };
 
-      nock(GIFT_API_URL).get(`${FACILITY}/${mockFacilityIds[0]}`).reply(HttpStatus.NOT_FOUND, notFoundResponse);
-      nock(GIFT_API_URL).get(`${FACILITY}/${mockFacilityIds[1]}`).reply(HttpStatus.NOT_FOUND, notFoundResponse);
-      nock(GIFT_API_URL).get(`${FACILITY}/${mockFacilityIds[2]}`).reply(HttpStatus.NOT_FOUND, notFoundResponse);
+      nock(GIFT_API_URL).get(`${FACILITY}/${mockFacilityIds[0]}?projectionVersion=main`).reply(HttpStatus.NOT_FOUND, notFoundResponse);
+      nock(GIFT_API_URL).get(`${FACILITY}/${mockFacilityIds[1]}?projectionVersion=main`).reply(HttpStatus.NOT_FOUND, notFoundResponse);
+      nock(GIFT_API_URL).get(`${FACILITY}/${mockFacilityIds[2]}?projectionVersion=main`).reply(HttpStatus.NOT_FOUND, notFoundResponse);
 
       // Act
       const { status, body } = await api.get(url);
@@ -152,9 +156,13 @@ describe('GET /gift/facilities?ids={ids}', () => {
         message: 'not found',
       };
 
-      nock(GIFT_API_URL).get(`${FACILITY}/${mockFacilityIds[0]}`).reply(HttpStatus.OK, { facilityId: mockFacilityIds[0], aMockFacility: true });
-      nock(GIFT_API_URL).get(`${FACILITY}/${mockFacilityIds[1]}`).reply(HttpStatus.NOT_FOUND, mockNotFoundResponse);
-      nock(GIFT_API_URL).get(`${FACILITY}/${mockFacilityIds[2]}`).reply(HttpStatus.OK, { facilityId: mockFacilityIds[2], aMockFacility: true });
+      nock(GIFT_API_URL)
+        .get(`${FACILITY}/${mockFacilityIds[0]}?projectionVersion=main`)
+        .reply(HttpStatus.OK, { facilityId: mockFacilityIds[0], aMockFacility: true });
+      nock(GIFT_API_URL).get(`${FACILITY}/${mockFacilityIds[1]}?projectionVersion=main`).reply(HttpStatus.NOT_FOUND, mockNotFoundResponse);
+      nock(GIFT_API_URL)
+        .get(`${FACILITY}/${mockFacilityIds[2]}?projectionVersion=main`)
+        .reply(HttpStatus.OK, { facilityId: mockFacilityIds[2], aMockFacility: true });
 
       // Act
       const { status, body } = await api.get(url);
@@ -172,7 +180,7 @@ describe('GET /gift/facilities?ids={ids}', () => {
   describe(`when a ${HttpStatus.INTERNAL_SERVER_ERROR} response is returned by GIFT`, () => {
     it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
       // Arrange
-      nock(GIFT_API_URL).get(`${FACILITY}/${mockFacilityIds[0]}`).reply(HttpStatus.INTERNAL_SERVER_ERROR);
+      nock(GIFT_API_URL).get(`${FACILITY}/${mockFacilityIds[0]}?projectionVersion=main`).reply(HttpStatus.INTERNAL_SERVER_ERROR);
 
       // Act
       const { status } = await api.get(url);

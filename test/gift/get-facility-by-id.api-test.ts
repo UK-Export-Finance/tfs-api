@@ -23,7 +23,7 @@ describe('GET /gift/facility/{facilityId}', () => {
 
   const mockFacilityId = valueGenerator.ukefId();
 
-  const url = `/api/${prefixAndVersion}/gift${FACILITY}/${mockFacilityId}`;
+  const url = `/api/${prefixAndVersion}/gift${FACILITY}/${mockFacilityId}?projectionVersion=main`;
 
   let api: Api;
 
@@ -48,9 +48,9 @@ describe('GET /gift/facility/{facilityId}', () => {
   describe('validation', () => {
     withFacilityIdentifierUrlValidationApiTests({
       givenRequestWouldOtherwiseSucceedForFacilityId: (facilityId) => {
-        nock(GIFT_API_URL).get(`${FACILITY}/${facilityId}`).reply(200);
+        nock(GIFT_API_URL).get(`${FACILITY}/${facilityId}?projectionVersion=main`).reply(200);
       },
-      makeRequestWithFacilityId: (facilityId) => api.get(`/api/${prefixAndVersion}/gift${FACILITY}/${facilityId}`),
+      makeRequestWithFacilityId: (facilityId) => api.get(`/api/${prefixAndVersion}/gift${FACILITY}/${facilityId}?projectionVersion=main`),
       idName: 'facilityId',
     });
   });
@@ -63,7 +63,7 @@ describe('GET /gift/facility/{facilityId}', () => {
         aMockFacility: true,
       };
 
-      nock(GIFT_API_URL).get(`${FACILITY}/${mockFacilityId}`).reply(200, mockResponse);
+      nock(GIFT_API_URL).get(`${FACILITY}/${mockFacilityId}?projectionVersion=main`).reply(200, mockResponse);
 
       // Act
       const { status, body } = await api.get(url);
@@ -89,7 +89,7 @@ describe('GET /gift/facility/{facilityId}', () => {
         ],
       };
 
-      nock(GIFT_API_URL).get(`${FACILITY}/${mockFacilityId}`).reply(400, mockResponse);
+      nock(GIFT_API_URL).get(`${FACILITY}/${mockFacilityId}?projectionVersion=main`).reply(400, mockResponse);
 
       // Act
       const { status, body } = await api.get(url);
@@ -109,7 +109,7 @@ describe('GET /gift/facility/{facilityId}', () => {
         message: 'No Facility was found',
       };
 
-      nock(GIFT_API_URL).get(`${FACILITY}/${mockFacilityId}`).reply(404, mockResponse);
+      nock(GIFT_API_URL).get(`${FACILITY}/${mockFacilityId}?projectionVersion=main`).reply(404, mockResponse);
 
       // Act
       const { status, body } = await api.get(url);
@@ -124,7 +124,7 @@ describe('GET /gift/facility/{facilityId}', () => {
   describe(`when a ${HttpStatus.UNAUTHORIZED} response is returned by GIFT`, () => {
     it(`should return a ${HttpStatus.UNAUTHORIZED} response`, async () => {
       // Arrange
-      nock(GIFT_API_URL).get(`${FACILITY}/${mockFacilityId}`).reply(HttpStatus.UNAUTHORIZED);
+      nock(GIFT_API_URL).get(`${FACILITY}/${mockFacilityId}?projectionVersion=main`).reply(HttpStatus.UNAUTHORIZED);
 
       // Act
       const { status } = await api.get(url);
@@ -137,7 +137,7 @@ describe('GET /gift/facility/{facilityId}', () => {
   describe(`when a ${HttpStatus.INTERNAL_SERVER_ERROR} response is returned by GIFT`, () => {
     it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
       // Arrange
-      nock(GIFT_API_URL).get(`${FACILITY}/${mockFacilityId}`).reply(HttpStatus.INTERNAL_SERVER_ERROR);
+      nock(GIFT_API_URL).get(`${FACILITY}/${mockFacilityId}?projectionVersion=main`).reply(HttpStatus.INTERNAL_SERVER_ERROR);
 
       // Act
       const { status } = await api.get(url);
