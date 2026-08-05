@@ -114,7 +114,7 @@ describe('GiftFacilityService.get', () => {
     expect(mockHttpServiceGet).toHaveBeenCalledTimes(1);
 
     const expected = {
-      path: `${PATH.FACILITY}/${mockFacilityId}`,
+      path: `${PATH.FACILITY}/${mockFacilityId}?projectionVersion=main`,
     };
 
     expect(mockHttpServiceGet).toHaveBeenCalledWith(expected);
