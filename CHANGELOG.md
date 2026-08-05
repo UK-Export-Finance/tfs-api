@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.4.0](https://github.com/UK-Export-Finance/tfs-api/compare/v2.3.1...v2.4.0) (2026-08-05)
+
+
+### Features
+
+* **GIFT-19396:** add projection version when getting facility ([bdc666c](https://github.com/UK-Export-Finance/tfs-api/commit/bdc666c32282c3588ca362b31318de89267fafe6))
+* **GIFT-19396:** add projection version when getting facility ([#1422](https://github.com/UK-Export-Finance/tfs-api/issues/1422)) ([a8160b0](https://github.com/UK-Export-Finance/tfs-api/commit/a8160b0fc74b284bae2da7b80d5b7b9d519e66ad))
+
 ## [2.3.1](https://github.com/UK-Export-Finance/tfs-api/compare/v2.3.0...v2.3.1) (2026-07-30)
 
 
