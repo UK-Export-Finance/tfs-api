@@ -2,17 +2,13 @@ import { calculatePercentageAmount } from '.';
 
 describe('modules/gift/helpers/calculate-percentage-amount', () => {
   describe('rounding behaviour', () => {
-    describe('when rounding is exactly half or close to half', () => {
-      it('should round half up to the nearest integer', () => {
+    describe('when the third decimal place is exactly half', () => {
+      it('should round half up to 2 decimal places', () => {
         // Act
-        const resultOne = calculatePercentageAmount(150, 85);
-        const resultTwo = calculatePercentageAmount(151, 85);
-        const resultThree = calculatePercentageAmount(152, 85);
+        const result = calculatePercentageAmount(10, 33.35);
 
         // Assert
-        expect(resultOne).toBe(128);
-        expect(resultTwo).toBe(128);
-        expect(resultThree).toBe(129);
+        expect(result).toBe(3.34);
       });
     });
 
@@ -29,27 +25,23 @@ describe('modules/gift/helpers/calculate-percentage-amount', () => {
     });
   });
 
-  describe('when amount is not a safe integer', () => {
-    it('should throw an error', () => {
+  describe('when amount has 2 decimal places', () => {
+    it('should calculate correctly', () => {
       // Act
-      const result = () => calculatePercentageAmount(100.5, 85);
+      const result = calculatePercentageAmount(100.5, 85);
 
       // Assert
-      const expected = 'calculatePercentageAmount - amount must be a safe integer. Received: 100.5';
-
-      expect(result).toThrow(expected);
+      expect(result).toBe(85.43);
     });
   });
 
-  describe('when percentage is not a safe integer', () => {
-    it('should throw an error', () => {
+  describe('when percentage has 2 decimal places', () => {
+    it('should calculate correctly', () => {
       // Act
-      const result = () => calculatePercentageAmount(100, 85.5);
+      const result = calculatePercentageAmount(100, 85.5);
 
       // Assert
-      const expected = 'calculatePercentageAmount - percentage must be a safe integer. Received: 85.5';
-
-      expect(result).toThrow(expected);
+      expect(result).toBe(85.5);
     });
   });
 });

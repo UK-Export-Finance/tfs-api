@@ -12,9 +12,8 @@ import { assert400Response } from './response-assertion';
  * @param {number} max: The maximum
  * @param {string} parentFieldName: The name of a parent field. E.g parentObject
  * @param {string} url: The URL the tests will call.
- * @param {boolean} [requireInteger=false]: Whether integer validation is expected for this field.
  */
-export const numberValidation = ({ fieldName, initialPayload, min, max, parentFieldName, url, requireInteger = false }) => {
+export const numberValidation = ({ fieldName, initialPayload, min, max, parentFieldName, url }) => {
   let api: Api;
 
   beforeAll(async () => {
@@ -26,27 +25,6 @@ export const numberValidation = ({ fieldName, initialPayload, min, max, parentFi
   });
 
   const fieldPath = `${parentFieldName}.${fieldName}`;
-  const integerValidationMessage = `${fieldPath} must be an integer number`;
-
-  /**
-   * Appends the integer-validation message when integer validation is enabled for the field.
-   * This keeps expected message construction centralized across all number-validation scenarios.
-   */
-  const withIntegerMessage = (messages: string[]): string[] => (requireInteger ? [...messages, integerValidationMessage] : messages);
-
-  /**
-   * Asserts validation messages.
-   * When integer validation is enabled, message order is compared order-insensitively because
-   * class-validator does not guarantee deterministic ordering across constraint decorators.
-   */
-  const assertMessages = (actual: string[], expected: string[]) => {
-    if (requireInteger) {
-      expect([...actual].sort()).toStrictEqual([...expected].sort());
-      return;
-    }
-
-    expect(actual).toStrictEqual(expected);
-  };
 
   const mockPayload = generatePayload({ initialPayload, fieldName, parentFieldName });
 
@@ -69,14 +47,14 @@ export const numberValidation = ({ fieldName, initialPayload, min, max, parentFi
       const { body } = await api.post(url, mockPayload);
 
       // Assert
-      const expected = withIntegerMessage([
+      const expected = [
         `${fieldPath} should not be null or undefined`,
         `${fieldPath} must not be greater than ${max}`,
         `${fieldPath} must not be less than ${min}`,
         `${fieldPath} must be a number conforming to the specified constraints`,
-      ]);
+      ];
 
-      assertMessages(body.message, expected);
+      expect(body.message).toStrictEqual(expected);
     });
   });
 
@@ -99,14 +77,14 @@ export const numberValidation = ({ fieldName, initialPayload, min, max, parentFi
       const { body } = await api.post(url, mockPayload);
 
       // Assert
-      const expected = withIntegerMessage([
+      const expected = [
         `${fieldPath} should not be null or undefined`,
         `${fieldPath} must not be greater than ${max}`,
         `${fieldPath} must not be less than ${min}`,
         `${fieldPath} must be a number conforming to the specified constraints`,
-      ]);
+      ];
 
-      assertMessages(body.message, expected);
+      expect(body.message).toStrictEqual(expected);
     });
   });
 
@@ -129,13 +107,13 @@ export const numberValidation = ({ fieldName, initialPayload, min, max, parentFi
       const { body } = await api.post(url, mockPayload);
 
       // Assert
-      const expected = withIntegerMessage([
+      const expected = [
         `${fieldPath} must not be greater than ${max}`,
         `${fieldPath} must not be less than ${min}`,
         `${fieldPath} must be a number conforming to the specified constraints`,
-      ]);
+      ];
 
-      assertMessages(body.message, expected);
+      expect(body.message).toStrictEqual(expected);
     });
   });
 
@@ -158,13 +136,13 @@ export const numberValidation = ({ fieldName, initialPayload, min, max, parentFi
       const { body } = await api.post(url, mockPayload);
 
       // Assert
-      const expected = withIntegerMessage([
+      const expected = [
         `${fieldPath} must not be greater than ${max}`,
         `${fieldPath} must not be less than ${min}`,
         `${fieldPath} must be a number conforming to the specified constraints`,
-      ]);
+      ];
 
-      assertMessages(body.message, expected);
+      expect(body.message).toStrictEqual(expected);
     });
   });
 
@@ -187,13 +165,13 @@ export const numberValidation = ({ fieldName, initialPayload, min, max, parentFi
       const { body } = await api.post(url, mockPayload);
 
       // Assert
-      const expected = withIntegerMessage([
+      const expected = [
         `${fieldPath} must not be greater than ${max}`,
         `${fieldPath} must not be less than ${min}`,
         `${fieldPath} must be a number conforming to the specified constraints`,
-      ]);
+      ];
 
-      assertMessages(body.message, expected);
+      expect(body.message).toStrictEqual(expected);
     });
   });
 
@@ -216,13 +194,13 @@ export const numberValidation = ({ fieldName, initialPayload, min, max, parentFi
       const { body } = await api.post(url, mockPayload);
 
       // Assert
-      const expected = withIntegerMessage([
+      const expected = [
         `${fieldPath} must not be greater than ${max}`,
         `${fieldPath} must not be less than ${min}`,
         `${fieldPath} must be a number conforming to the specified constraints`,
-      ]);
+      ];
 
-      assertMessages(body.message, expected);
+      expect(body.message).toStrictEqual(expected);
     });
   });
 
@@ -247,13 +225,14 @@ export const numberValidation = ({ fieldName, initialPayload, min, max, parentFi
       // Assert
       const expected = [`${fieldPath} must not be less than ${min}`];
 
-      assertMessages(body.message, expected);
+      expect(body.message).toStrictEqual(expected);
     });
   });
 
   describe(`when ${fieldName} is above the maximum`, () => {
     beforeAll(() => {
       // Arrange
+
       const value = max + 1;
 
       mockPayload[`${parentFieldName}`][`${fieldName}`] = value;
@@ -274,7 +253,7 @@ export const numberValidation = ({ fieldName, initialPayload, min, max, parentFi
       // Assert
       const expected = [`${fieldPath} must not be greater than ${max}`];
 
-      assertMessages(body.message, expected);
+      expect(body.message).toStrictEqual(expected);
     });
   });
 };

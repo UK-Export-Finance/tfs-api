@@ -49,7 +49,6 @@ describe('POST /gift/facility/:facilityId/amendment - validation - amendmentData
             'amendmentData.amount should not be null or undefined',
             `amendmentData.amount must not be greater than ${VALIDATION.FACILITY.AMENDMENT.AMOUNT.MAX}`,
             `amendmentData.amount must not be less than ${VALIDATION.FACILITY.AMENDMENT.AMOUNT.MIN}`,
-            'amendmentData.amount must be an integer number',
             'amendmentData.amount must be a number conforming to the specified constraints',
             'amendmentData.date should not be null or undefined',
             'amendmentData.date must be a valid ISO 8601 date string',
@@ -133,7 +132,6 @@ describe('POST /gift/facility/:facilityId/amendment - validation - amendmentData
             'amendmentData.amount should not be null or undefined',
             `amendmentData.amount must not be greater than ${VALIDATION.FACILITY.AMENDMENT.AMOUNT.MAX}`,
             `amendmentData.amount must not be less than ${VALIDATION.FACILITY.AMENDMENT.AMOUNT.MIN}`,
-            'amendmentData.amount must be an integer number',
             'amendmentData.amount must be a number conforming to the specified constraints',
           ],
           statusCode: HttpStatus.BAD_REQUEST,
@@ -171,33 +169,6 @@ describe('POST /gift/facility/:facilityId/amendment - validation - amendmentData
     });
 
     describe('amount', () => {
-      describe('when amount is a decimal number', () => {
-        it(`should return a ${HttpStatus.BAD_REQUEST} response with validation errors`, async () => {
-          // Arrange
-          const mockPayload = {
-            amendmentType,
-            amendmentData: {
-              ...GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA.INCREASE_AMOUNT,
-              amount: 232000.2,
-            },
-          };
-
-          // Act
-          const { status, body } = await api.post(apimFacilityAmendmentWithoutQueueUrl, mockPayload);
-
-          // Assert
-          expect(status).toBe(HttpStatus.BAD_REQUEST);
-
-          const expected = {
-            error: 'Bad Request',
-            message: ['amendmentData.amount must be an integer number'],
-            statusCode: HttpStatus.BAD_REQUEST,
-          };
-
-          expect(body).toStrictEqual(expected);
-        });
-      });
-
       numberValidation({
         fieldName: 'amount',
         initialPayload: GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD,
@@ -205,7 +176,6 @@ describe('POST /gift/facility/:facilityId/amendment - validation - amendmentData
         max: VALIDATION.FACILITY.AMENDMENT.AMOUNT.MAX,
         parentFieldName: 'amendmentData',
         url: apimFacilityAmendmentWithoutQueueUrl,
-        requireInteger: true,
       });
     });
 

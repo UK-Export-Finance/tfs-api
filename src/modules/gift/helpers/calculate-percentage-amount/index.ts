@@ -1,45 +1,46 @@
+const SCALE = 100n; // supports up to 2 decimal places
 const PERCENT_DENOMINATOR = 100n;
 
+const toScaledBigInt = (value: number): bigint => {
+  const [intPart, fracPart = ''] = value.toFixed(2).split('.');
+  return BigInt(intPart) * SCALE + BigInt(fracPart);
+};
+
 /**
- * Calculates an integer percentage amount using BigInt arithmetic to avoid floating-point precision drift.
- * Rounding policy: round half up to the nearest integer.
+ * Calculates a percentage amount with up to 2 decimal places using BigInt arithmetic to avoid floating-point precision drift.
+ * Rounding policy: round half up to 2 decimal places.
  *
- * @param {number} amount - The base amount to calculate from. Must be a safe integer.
- * @param {number} percentage - The percentage value to apply. Must be a safe integer.
- * @returns {number} The rounded percentage amount as an integer.
+ * @param {number} amount - The base amount to calculate from. Supports up to 2 decimal places.
+ * @param {number} percentage - The percentage value to apply. Supports up to 2 decimal places.
+ * @returns {number} The percentage amount rounded to 2 decimal places.
  *
  * @example
  * calculatePercentageAmount(150, 85);
- * // 128
+ * // 127.5
  *
  * @example
- * calculatePercentageAmount(151, 85);
- * // 128
- *
- * @example
- * calculatePercentageAmount(152, 85);
- * // 129
+ * calculatePercentageAmount(10, 33.35);
+ * // 3.34
  *
  * @example
  * calculatePercentageAmount(150, 100);
  * // 150
  */
 export const calculatePercentageAmount = (amount: number, percentage: number): number => {
-  if (!Number.isSafeInteger(amount)) {
-    throw new Error(`calculatePercentageAmount - amount must be a safe integer. Received: ${amount}`);
-  }
+  const scaledAmount = toScaledBigInt(amount);
+  const scaledPercentage = toScaledBigInt(percentage);
 
-  if (!Number.isSafeInteger(percentage)) {
-    throw new Error(`calculatePercentageAmount - percentage must be a safe integer. Received: ${percentage}`);
-  }
+  const numerator = scaledAmount * scaledPercentage;
+  const scaledDenominator = PERCENT_DENOMINATOR * SCALE;
 
-  const numerator = BigInt(amount) * BigInt(percentage);
+  const quotient = numerator / scaledDenominator;
+  const remainder = numerator % scaledDenominator;
 
-  const quotient = numerator / PERCENT_DENOMINATOR;
-  const remainder = numerator % PERCENT_DENOMINATOR;
-
-  const shouldRoundUp = remainder * 2n >= PERCENT_DENOMINATOR;
+  const shouldRoundUp = remainder * 2n >= scaledDenominator;
   const rounded = shouldRoundUp ? quotient + 1n : quotient;
 
-  return Number(rounded);
+  const integerPart = Number(rounded / SCALE);
+  const decimalPart = Number(rounded % SCALE);
+
+  return integerPart + decimalPart / Number(SCALE);
 };
