@@ -2,7 +2,7 @@ import { ApiExtraModels, ApiProperty, getSchemaPath } from '@nestjs/swagger';
 import { AMEND_FACILITY_TYPES_CONSUMER_ARRAY, AmendFacilityTypeConsumer, GIFT } from '@ukef/constants';
 import { GIFT_EXAMPLES } from '@ukef/constants/examples/gift.examples.constant';
 import { plainToInstance, Transform } from 'class-transformer';
-import { IsDateString, IsDefined, IsIn, IsNumber, IsObject, IsString, Length, Max, Min, ValidateNested } from 'class-validator';
+import { IsDateString, IsDefined, IsIn, IsInt, IsNumber, IsObject, IsString, Length, Max, Min, ValidateNested } from 'class-validator';
 
 import { getAmendmentDataDto } from '../../helpers';
 
@@ -11,6 +11,7 @@ const { VALIDATION } = GIFT;
 export class AmountDto {
   @IsDefined()
   @IsNumber()
+  @IsInt()
   @Min(VALIDATION.FACILITY.AMENDMENT.AMOUNT.MIN)
   @Max(VALIDATION.FACILITY.AMENDMENT.AMOUNT.MAX)
   @ApiProperty({
