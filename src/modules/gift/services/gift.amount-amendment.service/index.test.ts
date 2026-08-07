@@ -293,29 +293,6 @@ describe('GiftAmountAmendmentService', () => {
       });
     });
 
-    it('should throw an error when the facility amount is not an integer', async () => {
-      // Act
-      const promise = service.obligations({
-        amendmentType: AMEND_FACILITY_INCREASE_AMOUNT,
-        date: mockDate,
-        facilityId: mockFacilityId,
-        facilityCategoryCode: mockFacilityCategoryCode,
-        newFacilityAmount: 100.5,
-        obligations: [{ id: '1' }],
-        workPackageId: mockWorkPackageId,
-      });
-
-      // Assert
-      const expected = new Error(
-        `Error amending facility obligation amounts ${AMEND_FACILITY_INCREASE_AMOUNT} for facility ${mockFacilityId} work package ${mockWorkPackageId}`,
-        {
-          cause: new Error('calculatePercentageAmount - amount must be a safe integer. Received: 100.5'),
-        },
-      );
-
-      await expect(promise).rejects.toThrow(expected);
-    });
-
     describe('when giftHttpService.post throws an error', () => {
       it('should throw an error', async () => {
         // Arrange

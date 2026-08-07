@@ -44,7 +44,11 @@ export const VALIDATION = {
   FACILITY: {
     AMENDMENT_TYPE: { MIN_LENGTH: 1, MAX_LENGTH: 40 },
     AMENDMENT: {
-      AMOUNT: { MIN: 1, MAX: MAX_MONETARY_AMOUNT },
+      AMOUNT: {
+        MIN: 1,
+        MAX: MAX_MONETARY_AMOUNT,
+        MAX_DECIMAL_PLACES: 2,
+      },
     },
     OVERVIEW: {
       CREDIT_TYPE: { MIN_LENGTH: 1, MAX_LENGTH: 120 },

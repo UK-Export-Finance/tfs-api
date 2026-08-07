@@ -10,7 +10,7 @@ const { VALIDATION } = GIFT;
 
 export class AmountDto {
   @IsDefined()
-  @IsNumber()
+  @IsNumber({ maxDecimalPlaces: VALIDATION.FACILITY.AMENDMENT.AMOUNT.MAX_DECIMAL_PLACES })
   @Min(VALIDATION.FACILITY.AMENDMENT.AMOUNT.MIN)
   @Max(VALIDATION.FACILITY.AMENDMENT.AMOUNT.MAX)
   @ApiProperty({
