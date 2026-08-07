@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.4.1](https://github.com/UK-Export-Finance/tfs-api/compare/v2.4.0...v2.4.1) (2026-08-07)
+
+
+### Bug Fixes
+
+* **DTFS2-8558:** amend a gift facility - amount validation ([#1425](https://github.com/UK-Export-Finance/tfs-api/issues/1425)) ([0e4a8d3](https://github.com/UK-Export-Finance/tfs-api/commit/0e4a8d390dfc305f550ec927ae2341c2ef667385))
+
 ## [2.4.0](https://github.com/UK-Export-Finance/tfs-api/compare/v2.3.1...v2.4.0) (2026-08-05)
 
 
