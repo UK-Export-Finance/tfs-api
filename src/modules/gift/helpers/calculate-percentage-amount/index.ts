@@ -1,8 +1,27 @@
 const SCALE = 100n; // supports up to 2 decimal places
 const PERCENT_DENOMINATOR = 100n;
 
-const toScaledBigInt = (value: number): bigint => {
+/**
+ * Converts a number with up to 2 decimal places to a scaled BigInt (multiplied by 100).
+ *
+ * @param {number} value - The value to convert. Supports up to 2 decimal places.
+ * @returns {bigint} The value multiplied by 100 as a BigInt.
+ *
+ * @example
+ * toScaledBigInt(150);
+ * // 15000n
+ *
+ * @example
+ * toScaledBigInt(100.5);
+ * // 10050n
+ *
+ * @example
+ * toScaledBigInt(85.25);
+ * // 8525n
+ */
+export const toScaledBigInt = (value: number): bigint => {
   const [intPart, fracPart = ''] = value.toFixed(2).split('.');
+
   return BigInt(intPart) * SCALE + BigInt(fracPart);
 };
 
