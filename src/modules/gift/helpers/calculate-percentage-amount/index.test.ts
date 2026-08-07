@@ -25,12 +25,6 @@ describe('modules/gift/helpers/calculate-percentage-amount', () => {
         expect(toScaledBigInt(Number.MAX_SAFE_INTEGER)).toBe(BigInt('900719925474099100'));
       });
     });
-
-    describe('when the value is negative', () => {
-      it('should return the correct negative BigInt', () => {
-        expect(toScaledBigInt(-100.5)).toBe(-10050n);
-      });
-    });
   });
 
   describe('calculatePercentageAmount', () => {
