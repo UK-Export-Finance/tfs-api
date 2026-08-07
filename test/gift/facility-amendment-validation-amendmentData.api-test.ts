@@ -169,6 +169,33 @@ describe('POST /gift/facility/:facilityId/amendment - validation - amendmentData
     });
 
     describe('amount', () => {
+      describe(`when amount has more than ${VALIDATION.FACILITY.AMENDMENT.AMOUNT.MAX_DECIMAL_PLACES} decimal places`, () => {
+        it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
+          // Arrange
+          const mockPayload = {
+            amendmentType,
+            amendmentData: {
+              ...GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA.INCREASE_AMOUNT,
+              amount: 232000.123,
+            },
+          };
+
+          // Act
+          const { status, body } = await api.post(apimFacilityAmendmentWithoutQueueUrl, mockPayload);
+
+          // Assert
+          expect(status).toBe(HttpStatus.BAD_REQUEST);
+
+          const expected = {
+            error: 'Bad Request',
+            message: ['amendmentData.amount must be a number conforming to the specified constraints'],
+            statusCode: HttpStatus.BAD_REQUEST,
+          };
+
+          expect(body).toStrictEqual(expected);
+        });
+      });
+
       numberValidation({
         fieldName: 'amount',
         initialPayload: GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD,
