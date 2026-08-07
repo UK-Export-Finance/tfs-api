@@ -114,7 +114,7 @@ export const repaymentProfileUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WOR
 export const riskDetailsUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_RISK_DETAILS}`;
 export const approveStatusUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.APPROVE}`;
 export const facilityWorkPackageUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}`;
-export const facilityUrl = `${PATH.FACILITY}/${mockFacilityId}`;
+export const facilityUrl = `${PATH.FACILITY}/${mockFacilityId}?projectionVersion=main`;
 export const facilityAmendmentUrl = (amendmentType: string = AMEND_FACILITY_TYPES_CONSUMER.AMEND_FACILITY_INCREASE_AMOUNT) =>
   `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/AmendFacility_${amendmentType}`;
 export const obligationAmendmentUrl = (amendmentType: string = AMEND_FACILITY_TYPES_CONSUMER.AMEND_FACILITY_INCREASE_AMOUNT) =>

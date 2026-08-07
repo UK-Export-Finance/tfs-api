@@ -71,7 +71,7 @@ export class GiftFacilityService {
       this.logger.info('Getting a GIFT facility %s', facilityId);
 
       const response = await this.giftHttpService.get<GiftFacilityOverviewRequestDto>({
-        path: `${PATH.FACILITY}/${facilityId}`,
+        path: `${PATH.FACILITY}/${facilityId}?projectionVersion=main`,
       });
 
       return response;
