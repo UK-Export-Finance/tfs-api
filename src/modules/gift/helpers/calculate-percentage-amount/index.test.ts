@@ -25,6 +25,12 @@ describe('modules/gift/helpers/calculate-percentage-amount', () => {
         expect(toScaledBigInt(Number.MAX_SAFE_INTEGER)).toBe(BigInt('900719925474099100'));
       });
     });
+
+    describe('when the value is negative', () => {
+      it('should return the correct negative BigInt', () => {
+        expect(toScaledBigInt(-100.5)).toBe(-10050n);
+      });
+    });
   });
 
   describe('calculatePercentageAmount', () => {
@@ -55,20 +61,36 @@ describe('modules/gift/helpers/calculate-percentage-amount', () => {
     describe('when amount has 2 decimal places', () => {
       it('should calculate correctly', () => {
         // Act
-        const result = calculatePercentageAmount(100.5, 85);
+        const result = calculatePercentageAmount(100.25, 85);
 
         // Assert
-        expect(result).toBe(85.43);
+        expect(result).toBe(85.21);
       });
     });
 
     describe('when percentage has 2 decimal places', () => {
       it('should calculate correctly', () => {
         // Act
-        const result = calculatePercentageAmount(100, 85.5);
+        const result = calculatePercentageAmount(100, 85.25);
 
         // Assert
-        expect(result).toBe(85.5);
+        expect(result).toBe(85.25);
+      });
+    });
+
+    describe('when amount is negative', () => {
+      it('should throw an error', () => {
+        expect(() => calculatePercentageAmount(-1, 85)).toThrow(
+          'calculatePercentageAmount - amount/percentage must be a positive number. Received: amount=-1, percentage=85',
+        );
+      });
+    });
+
+    describe('when percentage is negative', () => {
+      it('should throw an error', () => {
+        expect(() => calculatePercentageAmount(100, -1)).toThrow(
+          'calculatePercentageAmount - amount/percentage must be a positive number. Received: amount=100, percentage=-1',
+        );
       });
     });
   });

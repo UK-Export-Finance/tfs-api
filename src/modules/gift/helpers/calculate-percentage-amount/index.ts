@@ -46,6 +46,10 @@ export const toScaledBigInt = (value: number): bigint => {
  * // 150
  */
 export const calculatePercentageAmount = (amount: number, percentage: number): number => {
+  if (amount < 0 || percentage < 0) {
+    throw new Error(`calculatePercentageAmount - amount/percentage must be a positive number. Received: amount=${amount}, percentage=${percentage}`);
+  }
+
   const scaledAmount = toScaledBigInt(amount);
   const scaledPercentage = toScaledBigInt(percentage);
 

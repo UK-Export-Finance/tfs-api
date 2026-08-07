@@ -117,7 +117,7 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
       });
     });
 
-    describe(`when the payload is valid and amount has 2 decimal places and a ${HttpStatus.CREATED} response is returned by all GIFT endpoints`, () => {
+    describe(`when the payload is valid and amount has 1 decimal point and a ${HttpStatus.CREATED} response is returned by all GIFT endpoints`, () => {
       it(`should return a ${HttpStatus.CREATED} response with a facility and the created amendment`, async () => {
         // Arrange
         const callOrder: string[] = [];
@@ -168,6 +168,74 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
           amendmentData: {
             ...GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA.INCREASE_AMOUNT,
             amount: 232000.2,
+          },
+        };
+
+        // Act
+        const { status, body } = await api.post(apimFacilityAmendmentWithoutQueueUrl, mockPayload);
+
+        // Assert
+        expect(status).toBe(HttpStatus.CREATED);
+        expect(body).toStrictEqual({
+          ...mockResponses.facilityAmendment,
+          isApproved: true,
+        });
+
+        expect(callOrder).toStrictEqual(['workPackage', 'facilityAmendment', 'obligationAmendment', 'approveStatus']);
+      });
+    });
+
+    describe(`when the payload is valid and amount has 2 decimal points and a ${HttpStatus.CREATED} response is returned by all GIFT endpoints`, () => {
+      it(`should return a ${HttpStatus.CREATED} response with a facility and the created amendment`, async () => {
+        // Arrange
+        const callOrder: string[] = [];
+
+        nock(GIFT_API_URL)
+          .get(facilityUrl)
+          .reply(HttpStatus.OK, {
+            obligations: [{ id: 'obligation-1', maturityDateFollowsFacility: true }],
+            riskDetails: {
+              facilityCategoryCode: GIFT.FACILITY_CATEGORY_CODES.CASH,
+            },
+          });
+
+        nock(GIFT_API_URL)
+          .post(facilityWorkPackageUrl)
+          .reply(() => {
+            callOrder.push('workPackage');
+
+            return [HttpStatus.CREATED, mockResponses.workPackageCreation];
+          });
+
+        nock(GIFT_API_URL)
+          .post(facilityAmendmentUrl(AMEND_FACILITY_INCREASE_AMOUNT))
+          .reply(() => {
+            callOrder.push('facilityAmendment');
+
+            return [HttpStatus.CREATED, mockResponses.facilityAmendment];
+          });
+
+        nock(GIFT_API_URL)
+          .post(obligationAmendmentUrl(AMEND_FACILITY_INCREASE_AMOUNT))
+          .reply(() => {
+            callOrder.push('obligationAmendment');
+
+            return [HttpStatus.CREATED, mockResponses.facilityAmendment];
+          });
+
+        nock(GIFT_API_URL)
+          .post(approveStatusUrl)
+          .reply(() => {
+            callOrder.push('approveStatus');
+
+            return [HttpStatus.OK, mockResponses.approveStatus];
+          });
+
+        const mockPayload = {
+          amendmentType: AMEND_FACILITY_INCREASE_AMOUNT,
+          amendmentData: {
+            ...GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA.INCREASE_AMOUNT,
+            amount: 232000.25,
           },
         };
 
@@ -244,74 +312,6 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
         // Assert
         expect(status).toBe(HttpStatus.CREATED);
 
-        expect(body).toStrictEqual({
-          ...mockResponses.facilityAmendment,
-          isApproved: true,
-        });
-
-        expect(callOrder).toStrictEqual(['workPackage', 'obligationAmendment', 'facilityAmendment', 'approveStatus']);
-      });
-    });
-
-    describe(`when the payload is valid and amount has 2 decimal places and a ${HttpStatus.CREATED} response is returned by all GIFT endpoints`, () => {
-      it(`should return a ${HttpStatus.CREATED} response with a facility and the created amendment`, async () => {
-        // Arrange
-        const callOrder: string[] = [];
-
-        nock(GIFT_API_URL)
-          .get(facilityUrl)
-          .reply(HttpStatus.OK, {
-            obligations: [{ id: 'obligation-1', maturityDateFollowsFacility: true }],
-            riskDetails: {
-              facilityCategoryCode: GIFT.FACILITY_CATEGORY_CODES.CASH,
-            },
-          });
-
-        nock(GIFT_API_URL)
-          .post(facilityWorkPackageUrl)
-          .reply(() => {
-            callOrder.push('workPackage');
-
-            return [HttpStatus.CREATED, mockResponses.workPackageCreation];
-          });
-
-        nock(GIFT_API_URL)
-          .post(obligationAmendmentUrl(AMEND_FACILITY_DECREASE_AMOUNT))
-          .reply(() => {
-            callOrder.push('obligationAmendment');
-
-            return [HttpStatus.CREATED, mockResponses.facilityAmendment];
-          });
-
-        nock(GIFT_API_URL)
-          .post(facilityAmendmentUrl(AMEND_FACILITY_DECREASE_AMOUNT))
-          .reply(() => {
-            callOrder.push('facilityAmendment');
-
-            return [HttpStatus.CREATED, mockResponses.facilityAmendment];
-          });
-
-        nock(GIFT_API_URL)
-          .post(approveStatusUrl)
-          .reply(() => {
-            callOrder.push('approveStatus');
-
-            return [HttpStatus.OK, mockResponses.approveStatus];
-          });
-
-        const mockPayload = {
-          amendmentType: AMEND_FACILITY_DECREASE_AMOUNT,
-          amendmentData: {
-            ...GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA.DECREASE_AMOUNT,
-            amount: 232000.2,
-          },
-        };
-
-        // Act
-        const { status, body } = await api.post(apimFacilityAmendmentWithoutQueueUrl, mockPayload);
-
-        // Assert
-        expect(status).toBe(HttpStatus.CREATED);
         expect(body).toStrictEqual({
           ...mockResponses.facilityAmendment,
           isApproved: true,
