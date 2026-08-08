@@ -54,7 +54,7 @@ describe('GiftAccrualScheduleService', () => {
         expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
 
         const expected = {
-          path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_ACCRUAL_SCHEDULE_FIXED_RATE}`,
+          path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_ACCRUAL_SCHEDULE_NON_INDEXED}`,
           payload: {
             ...mockPayload,
             dateSnapBackOverride: INTEGRATION_DEFAULTS.DATE_SNAP_BACK_OVERRIDE,
@@ -88,7 +88,7 @@ describe('GiftAccrualScheduleService', () => {
         expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
 
         const expected = {
-          path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_ACCRUAL_SCHEDULE_FIXED_RATE}`,
+          path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_ACCRUAL_SCHEDULE_NON_INDEXED}`,
           payload: {
             ...mockPayload,
             dateSnapBackOverride: INTEGRATION_DEFAULTS.DATE_SNAP_BACK_OVERRIDE,
