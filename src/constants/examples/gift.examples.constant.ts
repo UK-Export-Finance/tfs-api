@@ -52,6 +52,7 @@ const ACCRUAL_SCHEDULE = {
   accrualMaturityDate: maturityDate,
   accrualFrequencyCode: MDM_EXAMPLES.ACCRUAL_FREQUENCY_CODES.FREQ12MON.code,
   firstCycleAccrualEndDate: maturityDate,
+  indexRateCode: 'USD003',
   accrualDayBasisCode: DAY_BASIS_CODES.ACTUAL_365,
   baseRate: 0,
   spreadRate: 0,

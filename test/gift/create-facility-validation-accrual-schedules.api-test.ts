@@ -4,7 +4,12 @@ import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import nock from 'nock';
 
-import { arrayOfObjectsNumberValidation, arrayOfObjectsOptionalDateStringValidation, arrayOfObjectsStringValidation } from './assertions';
+import {
+  arrayOfObjectsNumberValidation,
+  arrayOfObjectsOptionalDateStringValidation,
+  arrayOfObjectsOptionalStringValidation,
+  arrayOfObjectsStringValidation,
+} from './assertions';
 import {
   apimFacilityWithoutQueueUrl,
   apimMdmObligationSubtypesUrl,
@@ -162,6 +167,15 @@ describe('POST /gift/facility - validation - accrual schedules', () => {
     arrayOfObjectsOptionalDateStringValidation({
       ...baseParams,
       fieldName: 'firstCycleAccrualEndDate',
+    });
+  });
+
+  describe('indexRateCode', () => {
+    arrayOfObjectsOptionalStringValidation({
+      ...baseParams,
+      fieldName: 'indexRateCode',
+      min: ACCRUAL_SCHEDULE_VALIDATION.ACCRUAL_SCHEDULE_INDEX_RATE_CODE.MIN_LENGTH,
+      max: ACCRUAL_SCHEDULE_VALIDATION.ACCRUAL_SCHEDULE_INDEX_RATE_CODE.MAX_LENGTH,
     });
   });
 
