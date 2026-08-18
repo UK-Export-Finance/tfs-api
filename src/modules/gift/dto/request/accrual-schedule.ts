@@ -93,7 +93,7 @@ export class GiftAccrualScheduleRequestDto {
 
   @IsOptional()
   @IsString()
-  @Length(VALIDATION.ACCRUAL_SCHEDULE_INDEX_RATE_CODE.MIN_LENGTH, VALIDATION.ACCRUAL_SCHEDULE_INDEX_RATE_CODE.MAX_LENGTH)
+  @Length(VALIDATION.INDEX_RATE_CODE.MIN_LENGTH, VALIDATION.INDEX_RATE_CODE.MAX_LENGTH)
   @ApiProperty({
     example: EXAMPLE.indexRateCode,
     description: 'The index rate code (optional)',
