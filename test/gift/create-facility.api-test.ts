@@ -8,7 +8,7 @@ import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables'
 import nock from 'nock';
 
 import {
-  accrualScheduleUrl,
+  accrualScheduleIndexedRateUrl,
   apimFacilityWithoutQueueUrl,
   apimMdmObligationSubtypesUrl,
   approveStatusUrl,
@@ -59,7 +59,7 @@ const setupMocks = (options?: { expectedBusinessCalendarPayload?: { centreCode: 
 
   nock(GIFT_API_URL).persist().post(facilityCreationUrl).reply(HttpStatus.CREATED, mockResponses.facility);
 
-  nock(GIFT_API_URL).persist().post(accrualScheduleUrl).reply(HttpStatus.CREATED, mockResponses.accrualSchedule);
+  nock(GIFT_API_URL).persist().post(accrualScheduleIndexedRateUrl).reply(HttpStatus.CREATED, mockResponses.accrualSchedule);
 
   if (options?.expectedBusinessCalendarPayload) {
     nock(GIFT_API_URL).persist().post(businessCalendarUrl, options.expectedBusinessCalendarPayload).reply(HttpStatus.CREATED, mockResponses.businessCalendar);
