@@ -117,13 +117,13 @@ describe('POST /gift/facility', () => {
 
       const expected = {
         ...mockResponses.facility.configurationEvent.data,
-        accrualSchedules: Array(payloadAccrualSchedules.length).fill(mockResponses.accrualSchedule.data),
+        accrualSchedules: new Array(payloadAccrualSchedules.length).fill(mockResponses.accrualSchedule.data),
         businessCalendars: [mockResponses.businessCalendar.data],
         businessCalendarsConvention: mockResponses.businessCalendarsConvention.data,
-        counterparties: Array(payloadCounterparties.length).fill(mockResponses.counterparty.data),
-        fixedFees: Array(payloadFixedFees.length).fill(mockResponses.fixedFee.data),
-        obligations: Array(payloadObligations.length).fill(mockResponses.obligation.data),
-        repaymentProfiles: Array(payloadRepaymentProfiles.length).fill(mockResponses.repaymentProfile.data),
+        counterparties: new Array(payloadCounterparties.length).fill(mockResponses.counterparty.data),
+        fixedFees: new Array(payloadFixedFees.length).fill(mockResponses.fixedFee.data),
+        obligations: new Array(payloadObligations.length).fill(mockResponses.obligation.data),
+        repaymentProfiles: new Array(payloadRepaymentProfiles.length).fill(mockResponses.repaymentProfile.data),
         riskDetails: mockResponses.riskDetails.data,
         state: mockResponses.approveStatus.state,
       };
@@ -245,13 +245,13 @@ describe('POST /gift/facility', () => {
 
       const expected = {
         ...mockResponses.facility.configurationEvent.data,
-        accrualSchedules: Array(payloadAccrualSchedules.length).fill(mockResponses.accrualSchedule.data),
+        accrualSchedules: new Array(payloadAccrualSchedules.length).fill(mockResponses.accrualSchedule.data),
         businessCalendars: [mockResponses.businessCalendar.data],
         businessCalendarsConvention: mockResponses.businessCalendarsConvention.data,
-        counterparties: Array(payloadCounterparties.length).fill(mockResponses.counterparty.data),
+        counterparties: new Array(payloadCounterparties.length).fill(mockResponses.counterparty.data),
         fixedFees: [],
-        obligations: Array(payloadObligations.length).fill(mockResponses.obligation.data),
-        repaymentProfiles: Array(payloadRepaymentProfiles.length).fill(mockResponses.repaymentProfile.data),
+        obligations: new Array(payloadObligations.length).fill(mockResponses.obligation.data),
+        repaymentProfiles: new Array(payloadRepaymentProfiles.length).fill(mockResponses.repaymentProfile.data),
         riskDetails: mockResponses.riskDetails.data,
         state: mockResponses.approveStatus.state,
       };
@@ -273,12 +273,12 @@ describe('POST /gift/facility', () => {
 
       const expected = {
         ...mockResponses.facility.configurationEvent.data,
-        accrualSchedules: Array(payloadAccrualSchedules.length).fill(mockResponses.accrualSchedule.data),
+        accrualSchedules: new Array(payloadAccrualSchedules.length).fill(mockResponses.accrualSchedule.data),
         businessCalendars: [mockResponses.businessCalendar.data],
         businessCalendarsConvention: mockResponses.businessCalendarsConvention.data,
-        counterparties: Array(payloadCounterparties.length).fill(mockResponses.counterparty.data),
-        fixedFees: Array(payloadFixedFees.length).fill(mockResponses.fixedFee.data),
-        obligations: Array(payloadObligations.length).fill(mockResponses.obligation.data),
+        counterparties: new Array(payloadCounterparties.length).fill(mockResponses.counterparty.data),
+        fixedFees: new Array(payloadFixedFees.length).fill(mockResponses.fixedFee.data),
+        obligations: new Array(payloadObligations.length).fill(mockResponses.obligation.data),
         repaymentProfiles: [],
         riskDetails: mockResponses.riskDetails.data,
         state: mockResponses.approveStatus.state,
@@ -301,13 +301,13 @@ describe('POST /gift/facility', () => {
 
       const expected = {
         ...mockResponses.facility.configurationEvent.data,
-        accrualSchedules: Array(payloadAccrualSchedules.length).fill(mockResponses.accrualSchedule.data),
+        accrualSchedules: new Array(payloadAccrualSchedules.length).fill(mockResponses.accrualSchedule.data),
         businessCalendars: [mockResponses.businessCalendar.data],
         businessCalendarsConvention: mockResponses.businessCalendarsConvention.data,
-        counterparties: Array(payloadCounterparties.length).fill(mockResponses.counterparty.data),
-        fixedFees: Array(payloadFixedFees.length).fill(mockResponses.fixedFee.data),
-        obligations: Array(payloadObligations.length).fill(mockResponses.obligation.data),
-        repaymentProfiles: Array(payloadRepaymentProfiles.length).fill(mockResponses.repaymentProfile.data),
+        counterparties: new Array(payloadCounterparties.length).fill(mockResponses.counterparty.data),
+        fixedFees: new Array(payloadFixedFees.length).fill(mockResponses.fixedFee.data),
+        obligations: new Array(payloadObligations.length).fill(mockResponses.obligation.data),
+        repaymentProfiles: new Array(payloadRepaymentProfiles.length).fill(mockResponses.repaymentProfile.data),
         riskDetails: mockResponses.riskDetails.data,
         state: mockResponses.approveStatus.state,
       };
