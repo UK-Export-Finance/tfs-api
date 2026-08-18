@@ -174,8 +174,8 @@ describe('POST /gift/facility - validation - accrual schedules', () => {
     arrayOfObjectsOptionalStringValidation({
       ...baseParams,
       fieldName: 'indexRateCode',
-      min: ACCRUAL_SCHEDULE_VALIDATION.ACCRUAL_SCHEDULE_INDEX_RATE_CODE.MIN_LENGTH,
-      max: ACCRUAL_SCHEDULE_VALIDATION.ACCRUAL_SCHEDULE_INDEX_RATE_CODE.MAX_LENGTH,
+      min: ACCRUAL_SCHEDULE_VALIDATION.INDEX_RATE_CODE.MIN_LENGTH,
+      max: ACCRUAL_SCHEDULE_VALIDATION.INDEX_RATE_CODE.MAX_LENGTH,
     });
   });
 
