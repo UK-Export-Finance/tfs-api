@@ -33,18 +33,51 @@ export class GiftAccrualScheduleService {
     try {
       this.logger.info('Creating an accrual schedule with schedule type code %s for facility %s', accrualScheduleData.accrualScheduleTypeCode, facilityId);
 
-      const payload = {
-        ...accrualScheduleData,
+      let path;
+      let payload;
+
+      const basePayload = {
         dateSnapBackOverride: INTEGRATION_DEFAULTS.DATE_SNAP_BACK_OVERRIDE,
-        baseRateTypeCode: null,
-        additionalRateTypeCode: null,
         acbsInterestScheduleId: INTEGRATION_DEFAULTS.ACBS_INTEREST_SCHEDULE_ID,
         accrualEffectiveDate: accrualScheduleData.accrualEffectiveDate || INTEGRATION_DEFAULTS.ACCRUAL_EFFECTIVE_DATE,
         accrualMaturityDate: accrualScheduleData.accrualMaturityDate || INTEGRATION_DEFAULTS.ACCRUAL_MATURITY_DATE,
         firstCycleAccrualEndDate: accrualScheduleData.firstCycleAccrualEndDate || INTEGRATION_DEFAULTS.FIRST_CYCLE_ACCRUAL_END_DATE,
       };
 
-      const path = `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_ACCRUAL_SCHEDULE_FIXED_RATE}`;
+      const basePath = `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}`;
+
+      /**
+       * NOTE: The GIFT API has two different endpoints for creating an accrual schedule, one for fixed rate and one for indexed rate.
+       * The "fixed rate" endpoint requires the baseRate and additionalRate to be provided,
+       * while the "indexed rate" endpoint requires the indexRateCode to be provided.
+       *
+       * Therefore, we need to check if the indexRateCode is provided in the request data, and call the appropriate endpoint accordingly:
+       * - If the indexRateCode is provided, we will call the indexed rate endpoint and remove the baseRate from the payload.
+       * - If the indexRateCode is not provided, we will call the fixed rate endpoint and remove the indexRateCode from the payload.
+       */
+      if (accrualScheduleData.indexRateCode) {
+        this.logger.info('Creating an "indexed rate" accrual schedule for facility %s', facilityId);
+
+        path = `${basePath}/${EVENT_TYPES.ADD_ACCRUAL_SCHEDULE_INDEXED_RATE}`;
+
+        payload = {
+          ...basePayload,
+          ...accrualScheduleData,
+        };
+
+        delete payload.baseRate;
+      } else {
+        this.logger.info('Creating a "fixed rate" accrual schedule for facility %s', facilityId);
+
+        path = `${basePath}/${EVENT_TYPES.ADD_ACCRUAL_SCHEDULE_FIXED_RATE}`;
+
+        payload = {
+          ...basePayload,
+          ...accrualScheduleData,
+          additionalRateTypeCode: null,
+          baseRateTypeCode: null,
+        };
+      }
 
       const response = await this.giftHttpService.post<GiftAccrualScheduleRequestDto>({
         path,
