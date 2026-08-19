@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.0](https://github.com/UK-Export-Finance/tfs-api/compare/v2.4.1...v2.5.0) (2026-08-19)
+
+
+### Features
+
+* **DTFS2-8553:** create a gift facility - accrual index rate ([#1428](https://github.com/UK-Export-Finance/tfs-api/issues/1428)) ([96d89fd](https://github.com/UK-Export-Finance/tfs-api/commit/96d89fdec0e8b883336ce686f046ba91fcec0447))
+
 ## [2.4.1](https://github.com/UK-Export-Finance/tfs-api/compare/v2.4.0...v2.4.1) (2026-08-07)
 
 
