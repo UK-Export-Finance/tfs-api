@@ -42,6 +42,7 @@ describe('GiftAccrualScheduleService', () => {
       acbsInterestScheduleId: INTEGRATION_DEFAULTS.ACBS_INTEREST_SCHEDULE_ID,
       accrualEffectiveDate: mockPayload.accrualEffectiveDate,
       accrualMaturityDate: mockPayload.accrualMaturityDate,
+      additionalRateTypeCode: null,
       dateSnapBackOverride: INTEGRATION_DEFAULTS.DATE_SNAP_BACK_OVERRIDE,
       firstCycleAccrualEndDate: mockPayload.firstCycleAccrualEndDate,
     });
