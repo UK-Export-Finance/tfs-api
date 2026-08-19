@@ -66,7 +66,6 @@ describe('GiftAccrualScheduleService', () => {
           path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_ACCRUAL_SCHEDULE_FIXED_RATE}`,
           payload: {
             ...baseExpectedPayload(mockPayload),
-            additionalRateTypeCode: null,
             baseRateTypeCode: null,
           },
         };
@@ -95,7 +94,6 @@ describe('GiftAccrualScheduleService', () => {
           path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_ACCRUAL_SCHEDULE_FIXED_RATE}`,
           payload: {
             ...baseExpectedPayload(mockPayload),
-            additionalRateTypeCode: null,
             baseRateTypeCode: null,
           },
         };
@@ -145,7 +143,6 @@ describe('GiftAccrualScheduleService', () => {
           path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_ACCRUAL_SCHEDULE_FIXED_RATE}`,
           payload: {
             ...baseExpectedPayload(mockPayload),
-            additionalRateTypeCode: null,
             baseRateTypeCode: null,
           },
         };

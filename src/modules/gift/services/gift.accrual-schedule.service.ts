@@ -37,10 +37,11 @@ export class GiftAccrualScheduleService {
       let payload;
 
       const basePayload = {
-        dateSnapBackOverride: INTEGRATION_DEFAULTS.DATE_SNAP_BACK_OVERRIDE,
         acbsInterestScheduleId: INTEGRATION_DEFAULTS.ACBS_INTEREST_SCHEDULE_ID,
         accrualEffectiveDate: accrualScheduleData.accrualEffectiveDate || INTEGRATION_DEFAULTS.ACCRUAL_EFFECTIVE_DATE,
         accrualMaturityDate: accrualScheduleData.accrualMaturityDate || INTEGRATION_DEFAULTS.ACCRUAL_MATURITY_DATE,
+        additionalRateTypeCode: null,
+        dateSnapBackOverride: INTEGRATION_DEFAULTS.DATE_SNAP_BACK_OVERRIDE,
         firstCycleAccrualEndDate: accrualScheduleData.firstCycleAccrualEndDate || INTEGRATION_DEFAULTS.FIRST_CYCLE_ACCRUAL_END_DATE,
       };
 
@@ -48,12 +49,12 @@ export class GiftAccrualScheduleService {
 
       /**
        * NOTE: The GIFT API has two different endpoints for creating an accrual schedule, one for fixed rate and one for indexed rate.
-       * The "fixed rate" endpoint requires the baseRate and additionalRate to be provided,
+       * The "fixed rate" endpoint requires a baseRate and baseRateTypeCode to be provided,
        * while the "indexed rate" endpoint requires the indexRateCode to be provided.
        *
        * Therefore, we need to check if the indexRateCode is provided in the request data, and call the appropriate endpoint accordingly:
        * - If the indexRateCode is provided, we will call the indexed rate endpoint and remove the baseRate from the payload.
-       * - If the indexRateCode is not provided, we will call the fixed rate endpoint and remove the indexRateCode from the payload.
+       * - If the indexRateCode is not provided, we will call the fixed rate endpoint.
        */
       if (accrualScheduleData.indexRateCode) {
         this.logger.info('Creating an "indexed rate" accrual schedule for facility %s', facilityId);
@@ -74,7 +75,6 @@ export class GiftAccrualScheduleService {
         payload = {
           ...basePayload,
           ...accrualScheduleData,
-          additionalRateTypeCode: null,
           baseRateTypeCode: null,
         };
       }
