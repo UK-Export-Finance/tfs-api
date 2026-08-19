@@ -5,7 +5,7 @@ import { PinoLogger } from 'nestjs-pino';
 import { GiftAccrualScheduleService } from './gift.accrual-schedule.service';
 
 const {
-  GIFT: { ACCRUAL_SCHEDULE, FACILITY_ID: mockFacilityId, WORK_PACKAGE_ID: mockWorkPackageId },
+  GIFT: { ACCRUAL_SCHEDULE, ACCRUAL_SCHEDULE_WITHOUT_INDEX_RATE_CODE, FACILITY_ID: mockFacilityId, WORK_PACKAGE_ID: mockWorkPackageId },
 } = EXAMPLES;
 
 const { EVENT_TYPES, INTEGRATION_DEFAULTS, PATH } = GIFT;
@@ -35,7 +35,17 @@ describe('GiftAccrualScheduleService', () => {
   });
 
   describe('createOne', () => {
-    const mockAccrualSchedule = ACCRUAL_SCHEDULE;
+    const { indexRateCode, ...mockAccrualSchedule } = ACCRUAL_SCHEDULE;
+
+    const baseExpectedPayload = (mockPayload) => ({
+      ...mockPayload,
+      acbsInterestScheduleId: INTEGRATION_DEFAULTS.ACBS_INTEREST_SCHEDULE_ID,
+      accrualEffectiveDate: mockPayload.accrualEffectiveDate,
+      accrualMaturityDate: mockPayload.accrualMaturityDate,
+      additionalRateTypeCode: null,
+      dateSnapBackOverride: INTEGRATION_DEFAULTS.DATE_SNAP_BACK_OVERRIDE,
+      firstCycleAccrualEndDate: mockPayload.firstCycleAccrualEndDate,
+    });
 
     describe('when optional date fields are provided', () => {
       it('should call giftHttpService.post with the provided date fields', async () => {
@@ -56,14 +66,8 @@ describe('GiftAccrualScheduleService', () => {
         const expected = {
           path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_ACCRUAL_SCHEDULE_FIXED_RATE}`,
           payload: {
-            ...mockPayload,
-            dateSnapBackOverride: INTEGRATION_DEFAULTS.DATE_SNAP_BACK_OVERRIDE,
+            ...baseExpectedPayload(mockPayload),
             baseRateTypeCode: null,
-            additionalRateTypeCode: null,
-            acbsInterestScheduleId: INTEGRATION_DEFAULTS.ACBS_INTEREST_SCHEDULE_ID,
-            accrualEffectiveDate: mockPayload.accrualEffectiveDate,
-            accrualMaturityDate: mockPayload.accrualMaturityDate,
-            firstCycleAccrualEndDate: mockPayload.firstCycleAccrualEndDate,
           },
         };
 
@@ -90,14 +94,57 @@ describe('GiftAccrualScheduleService', () => {
         const expected = {
           path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_ACCRUAL_SCHEDULE_FIXED_RATE}`,
           payload: {
-            ...mockPayload,
-            dateSnapBackOverride: INTEGRATION_DEFAULTS.DATE_SNAP_BACK_OVERRIDE,
+            ...baseExpectedPayload(mockPayload),
             baseRateTypeCode: null,
-            additionalRateTypeCode: null,
-            acbsInterestScheduleId: INTEGRATION_DEFAULTS.ACBS_INTEREST_SCHEDULE_ID,
-            accrualEffectiveDate: INTEGRATION_DEFAULTS.ACCRUAL_EFFECTIVE_DATE,
-            accrualMaturityDate: INTEGRATION_DEFAULTS.ACCRUAL_MATURITY_DATE,
-            firstCycleAccrualEndDate: INTEGRATION_DEFAULTS.FIRST_CYCLE_ACCRUAL_END_DATE,
+          },
+        };
+
+        expect(mockHttpServicePost).toHaveBeenCalledWith(expected);
+      });
+    });
+
+    describe('when indexRateCode is provided', () => {
+      it('should call giftHttpService.post with ADD_ACCRUAL_SCHEDULE_INDEXED_RATE endpoint without baseRate', async () => {
+        // Arrange
+        const mockPayload = {
+          ...mockAccrualSchedule,
+          indexRateCode,
+        };
+
+        // Act
+        await service.createOne(mockPayload, mockFacilityId, mockWorkPackageId);
+
+        // Assert
+        expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
+
+        const expectedPayload = mockPayload;
+        delete expectedPayload.baseRate;
+
+        const expected = {
+          path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_ACCRUAL_SCHEDULE_INDEXED_RATE}`,
+          payload: baseExpectedPayload(expectedPayload),
+        };
+
+        expect(mockHttpServicePost).toHaveBeenCalledWith(expected);
+      });
+    });
+
+    describe('when indexRateCode is NOT provided', () => {
+      it('should call giftHttpService.post with ADD_ACCRUAL_SCHEDULE_FIXED_RATE endpoint', async () => {
+        // Arrange
+        const mockPayload = ACCRUAL_SCHEDULE_WITHOUT_INDEX_RATE_CODE;
+
+        // Act
+        await service.createOne(mockPayload, mockFacilityId, mockWorkPackageId);
+
+        // Assert
+        expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
+
+        const expected = {
+          path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_ACCRUAL_SCHEDULE_FIXED_RATE}`,
+          payload: {
+            ...baseExpectedPayload(mockPayload),
+            baseRateTypeCode: null,
           },
         };
 

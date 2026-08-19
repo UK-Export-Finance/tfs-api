@@ -91,6 +91,16 @@ export class GiftAccrualScheduleRequestDto {
   })
   firstCycleAccrualEndDate?: string;
 
+  @IsOptional()
+  @IsString()
+  @Length(VALIDATION.INDEX_RATE_CODE.MIN_LENGTH, VALIDATION.INDEX_RATE_CODE.MAX_LENGTH)
+  @ApiProperty({
+    example: EXAMPLE.indexRateCode,
+    description: 'The index rate code (optional)',
+    required: false,
+  })
+  indexRateCode?: string;
+
   @IsDefined()
   @IsNumber()
   @Min(VALIDATION.SPREAD_RATE.MIN)

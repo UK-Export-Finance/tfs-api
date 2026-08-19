@@ -6,7 +6,7 @@ import { MockGiftResponse } from '@ukef-test/support/interfaces/mock-gift-respon
 import nock from 'nock';
 
 import {
-  accrualScheduleUrl,
+  accrualScheduleIndexedRateUrl,
   apimFacilityWithoutQueueUrl,
   apimMdmObligationSubtypesUrl,
   approveStatusUrl,
@@ -49,7 +49,7 @@ const setupMocks = (deleteWorkPackageResponse: MockGiftResponse) => {
 
   nock(GIFT_API_URL).post(facilityCreationUrl).reply(HttpStatus.CREATED, mockResponses.facility);
 
-  nock(GIFT_API_URL).persist().post(accrualScheduleUrl).reply(HttpStatus.CREATED, mockResponses.accrualSchedule);
+  nock(GIFT_API_URL).persist().post(accrualScheduleIndexedRateUrl).reply(HttpStatus.CREATED, mockResponses.accrualSchedule);
 
   nock(GIFT_API_URL).persist().post(businessCalendarUrl).reply(HttpStatus.CREATED, mockResponses.businessCalendar);
 
