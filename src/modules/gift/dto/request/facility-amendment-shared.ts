@@ -44,7 +44,7 @@ export class IncreaseAmountDto extends AmountDto {}
 
 /**
  * ReplaceExpiryDateDto is the DTO for an amendment that replaces the expiry date of a facility.
- * It contains the new expiry date, which is validated.s
+ * It contains the new expiry date, which is validated.
  */
 export class ReplaceExpiryDateDto {
   @IsDefined()

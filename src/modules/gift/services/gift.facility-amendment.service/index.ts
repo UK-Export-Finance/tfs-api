@@ -16,6 +16,13 @@ import { GiftReplaceExpiryDateAmendmentService } from '../gift.replace-expiry-da
 import { GiftStatusService } from '../gift.status.service';
 import { GiftWorkPackageService } from '../gift.work-package.service';
 
+interface HandleCreateAmendmentsParams {
+  amendment: CreateGiftFacilityAmendmentRequestDto;
+  facility: any;
+  facilityId: UkefId;
+  workPackageId: number;
+}
+
 interface CreateGiftFacilityAmendmentResponseDto {
   status: AxiosResponse['status'];
   data: GiftWorkPackageResponseDto;
@@ -52,6 +59,160 @@ export class GiftFacilityAmendmentService {
   }
 
   /**
+   * Handle the creation of GIFT facility amendments.
+   * @param {HandleCreateAmendmentsParams} params - The parameters for creating the amendment.
+   * @param {number} params.workPackageId - The work package ID for the amendment.
+   * @param {any} params.facility - The facility data for the amendment.
+   * @param {UkefId} params.facilityId - The facility ID for the amendment.
+   * @param {CreateGiftFacilityAmendmentRequestDto} params.amendment - The amendment data.
+   * @returns {Promise<GiftWorkPackageResponseDto | { status: number; data: GiftWorkPackageResponseDto }>} The result of the amendment operation.
+   */
+  async handleAmendmentCreation({ workPackageId, facility, facilityId, amendment }: HandleCreateAmendmentsParams) {
+    let createdAmendmentData: GiftWorkPackageResponseDto | null = null;
+
+    const { amendmentType } = amendment;
+
+    const {
+      obligations,
+      riskDetails: { facilityCategoryCode },
+    } = facility;
+
+    const baseObligationParams = {
+      amendmentType,
+      facilityId,
+      obligations,
+      facilityCategoryCode,
+      workPackageId,
+    };
+
+    /**
+     * If the amendment is "increase amount", the new facility amount will impact the obligation amounts.
+     * Execute in the following order:
+     * 1) Amend the facility
+     * 2) Amend obligations
+     */
+    if (isIncreaseAmountAmendment(amendment)) {
+      const {
+        amendmentData: { amount: newFacilityAmount, date },
+      } = amendment;
+
+      const facilityAmendmentResponse = await this.giftAmountAmendmentService.facility({ ...amendment, facilityId, workPackageId });
+
+      if (!this.wasAmendmentSuccessful(facilityAmendmentResponse)) {
+        return {
+          status: facilityAmendmentResponse.status,
+          data: facilityAmendmentResponse.data,
+        };
+      }
+
+      createdAmendmentData = facilityAmendmentResponse.data;
+
+      await this.giftAmountAmendmentService.obligations({ ...baseObligationParams, date, newFacilityAmount });
+    }
+
+    /**
+     * If the amendment is "decrease amount", the new facility amount will impact the obligation amounts.
+     * Execute in the following order:
+     * 1) Amend obligations
+     * 2) Amend the facility
+     */
+    if (isDecreaseAmountAmendment(amendment)) {
+      const {
+        amendmentData: { amount: newFacilityAmount, date },
+      } = amendment;
+
+      await this.giftAmountAmendmentService.obligations({ ...baseObligationParams, date, newFacilityAmount });
+
+      const facilityAmendmentResponse = await this.giftAmountAmendmentService.facility({ ...amendment, facilityId, workPackageId });
+
+      if (!this.wasAmendmentSuccessful(facilityAmendmentResponse)) {
+        return {
+          status: facilityAmendmentResponse.status,
+          data: facilityAmendmentResponse.data,
+        };
+      }
+
+      createdAmendmentData = facilityAmendmentResponse.data;
+    }
+
+    /**
+     * If the amendment is "replace expiry date",
+     * and any obligation has maturityDateFollowsFacility=true,
+     * GIFT will automatically update the obligation maturity dates to match the new facility expiry date.
+     *
+     * However, if any obligation has maturityDateFollowsFacility=false,
+     * GIFT will not update the obligation maturity dates, so we need to update them manually.
+     *
+     * If the new expiry date is greater than the current expiry date, execute in the following order:
+     * 1) Amend the facility
+     * 2) Amend obligations maturity dates
+     *
+     * If the new expiry date is less than the current expiry date, the order is reversed.
+     *
+     * Otherwise, there is no need to update obligations maturity dates.
+     */
+    if (isReplaceExpiryDateAmendment(amendment)) {
+      const {
+        amendmentData: { expiryDate },
+      } = amendment;
+
+      const { expiryDate: originalFacilityExpiryDate } = facility;
+
+      const shouldUpdateObligationsMaturityDates = hasObligationsWithMaturityDateNotFollowingFacility(obligations);
+
+      const isExpiryDateEarlierThanOriginal = new Date(expiryDate).getTime() < new Date(originalFacilityExpiryDate).getTime();
+
+      const baseParams = {
+        amendmentType,
+        facilityId,
+        workPackageId,
+      };
+
+      if (isExpiryDateEarlierThanOriginal) {
+        await this.giftReplaceExpiryDateAmendmentService.accrualSchedules({ ...baseParams, expiryDate, obligations });
+
+        if (shouldUpdateObligationsMaturityDates) {
+          await this.giftReplaceExpiryDateAmendmentService.obligations({ ...baseParams, facilityExpiryDate: expiryDate, obligations });
+        }
+
+        const facilityResponse = await this.giftReplaceExpiryDateAmendmentService.facility({ ...baseParams, expiryDate });
+
+        if (!this.wasAmendmentSuccessful(facilityResponse)) {
+          return {
+            status: facilityResponse.status,
+            data: facilityResponse.data,
+          };
+        }
+
+        createdAmendmentData = facilityResponse.data;
+      } else {
+        const facilityResponse = await this.giftReplaceExpiryDateAmendmentService.facility({ ...baseParams, expiryDate });
+
+        if (!this.wasAmendmentSuccessful(facilityResponse)) {
+          return {
+            status: facilityResponse.status,
+            data: facilityResponse.data,
+          };
+        }
+
+        if (shouldUpdateObligationsMaturityDates) {
+          await this.giftReplaceExpiryDateAmendmentService.obligations({ ...baseParams, facilityExpiryDate: expiryDate, obligations });
+        }
+
+        await this.giftReplaceExpiryDateAmendmentService.accrualSchedules({ ...baseParams, expiryDate, obligations });
+
+        createdAmendmentData = facilityResponse.data;
+      }
+    }
+
+    if (!createdAmendmentData) {
+      throw new Error(`Unsupported amendment type: ${amendmentType}`);
+    }
+
+    return createdAmendmentData;
+  }
+
+  /**
    * Create a GIFT facility amendment
    * 1) Create a new GIFT work package.
    * 2) Create the appropriate GIFT "configuration events" for the amendment.
@@ -66,7 +227,6 @@ export class GiftFacilityAmendmentService {
    */
   async create(facilityId: UkefId, amendment: CreateGiftFacilityAmendmentRequestDto): Promise<CreateGiftFacilityAmendmentResponseDto> {
     const { amendmentType } = amendment;
-    let createdAmendmentData: GiftWorkPackageResponseDto | null = null;
 
     try {
       this.logger.info('Creating amendment %s for facility %s', amendmentType, facilityId);
@@ -84,7 +244,7 @@ export class GiftFacilityAmendmentService {
 
       /**
        * Generate a GIFT work package.
-       * All amendments will be in this work package.
+       * The amendment will be in this work package.
        */
       const { data: workPackage, status } = await this.giftWorkPackageService.create(facilityId);
 
@@ -99,144 +259,7 @@ export class GiftFacilityAmendmentService {
 
       const { id: workPackageId } = workPackage;
 
-      const {
-        obligations,
-        riskDetails: { facilityCategoryCode },
-      } = facility;
-
-      const baseObligationParams = {
-        amendmentType,
-        facilityId,
-        obligations,
-        facilityCategoryCode,
-        workPackageId,
-      };
-
-      /**
-       * If the amendment is "increase amount", the new facility amount will impact the obligation amounts.
-       * Execute in the following order:
-       * 1) Amend the facility
-       * 2) Amend obligations
-       */
-      if (isIncreaseAmountAmendment(amendment)) {
-        const {
-          amendmentData: { amount: newFacilityAmount, date },
-        } = amendment;
-
-        const facilityAmendmentResponse = await this.giftAmountAmendmentService.facility({ ...amendment, facilityId, workPackageId });
-
-        if (!this.wasAmendmentSuccessful(facilityAmendmentResponse)) {
-          return {
-            status: facilityAmendmentResponse.status,
-            data: facilityAmendmentResponse.data,
-          };
-        }
-
-        createdAmendmentData = facilityAmendmentResponse.data;
-
-        await this.giftAmountAmendmentService.obligations({ ...baseObligationParams, date, newFacilityAmount });
-      }
-
-      /**
-       * If the amendment is "decrease amount", the new facility amount will impact the obligation amounts.
-       * Execute in the following order:
-       * 1) Amend obligations
-       * 2) Amend the facility
-       */
-      if (isDecreaseAmountAmendment(amendment)) {
-        const {
-          amendmentData: { amount: newFacilityAmount, date },
-        } = amendment;
-
-        await this.giftAmountAmendmentService.obligations({ ...baseObligationParams, date, newFacilityAmount });
-
-        const facilityAmendmentResponse = await this.giftAmountAmendmentService.facility({ ...amendment, facilityId, workPackageId });
-
-        if (!this.wasAmendmentSuccessful(facilityAmendmentResponse)) {
-          return {
-            status: facilityAmendmentResponse.status,
-            data: facilityAmendmentResponse.data,
-          };
-        }
-
-        createdAmendmentData = facilityAmendmentResponse.data;
-      }
-
-      /**
-       * If the amendment is "replace expiry date",
-       * and any obligation has maturityDateFollowsFacility=true,
-       * GIFT will automatically update the obligation maturity dates to match the new facility expiry date.
-       *
-       * However, if any obligation has maturityDateFollowsFacility=false,
-       * GIFT will not update the obligation maturity dates, so we need to update them manually.
-       *
-       * If the new expiry date is greater than the current expiry date, execute in the following order:
-       * 1) Amend the facility
-       * 2) Amend obligations maturity dates
-       *
-       * If the new expiry date is less than the current expiry date, the order is reversed.
-       *
-       * Otherwise, there is no need to update obligations maturity dates.
-       */
-      if (isReplaceExpiryDateAmendment(amendment)) {
-        const {
-          amendmentData: { expiryDate },
-        } = amendment;
-
-        const { expiryDate: originalFacilityExpiryDate } = facility;
-
-        const shouldUpdateObligationsMaturityDates = hasObligationsWithMaturityDateNotFollowingFacility(obligations);
-
-        const isExpiryDateEarlierThanOriginal = new Date(expiryDate).getTime() < new Date(originalFacilityExpiryDate).getTime();
-
-        const baseParams = {
-          amendmentType,
-          facilityId,
-          workPackageId,
-        };
-
-        if (isExpiryDateEarlierThanOriginal) {
-          await this.giftReplaceExpiryDateAmendmentService.accrualSchedules({ ...baseParams, expiryDate, obligations });
-
-          if (shouldUpdateObligationsMaturityDates) {
-            await this.giftReplaceExpiryDateAmendmentService.obligations({ ...baseParams, facilityExpiryDate: expiryDate, obligations });
-          }
-
-          const facilityResponse = await this.giftReplaceExpiryDateAmendmentService.facility({ ...baseParams, expiryDate });
-
-          if (!this.wasAmendmentSuccessful(facilityResponse)) {
-            return {
-              status: facilityResponse.status,
-              data: facilityResponse.data,
-            };
-          }
-
-          createdAmendmentData = facilityResponse.data;
-        } else {
-          const facilityResponse = await this.giftReplaceExpiryDateAmendmentService.facility({ ...baseParams, expiryDate });
-
-          if (!this.wasAmendmentSuccessful(facilityResponse)) {
-            return {
-              status: facilityResponse.status,
-              data: facilityResponse.data,
-            };
-          }
-
-          if (shouldUpdateObligationsMaturityDates) {
-            await this.giftReplaceExpiryDateAmendmentService.obligations({ ...baseParams, facilityExpiryDate: expiryDate, obligations });
-          }
-
-          await this.giftReplaceExpiryDateAmendmentService.accrualSchedules({ ...baseParams, expiryDate, obligations });
-
-          createdAmendmentData = facilityResponse.data;
-        }
-      }
-
-      if (!createdAmendmentData) {
-        throw new Error(`Unsupported amendment type: ${amendmentType}`);
-      }
-
-      // TODO: GIFT-20331 - validation handling
+      const createdAmendmentData = await this.handleAmendmentCreation({ workPackageId, facility, facilityId, amendment });
 
       const approvalResponse = await this.approveWorkPackage(facilityId, workPackageId);
 
@@ -274,6 +297,8 @@ export class GiftFacilityAmendmentService {
         };
       }
 
+      const { data: facility } = facilityResponse;
+
       /**
        * Generate a GIFT work package.
        * All amendments will be in this work package.
@@ -292,7 +317,7 @@ export class GiftFacilityAmendmentService {
       const { id: workPackageId } = workPackage;
 
       for (const amendment of payload.amendments) {
-        await this.create(facilityId, amendment);
+        await this.handleAmendmentCreation({ workPackageId, facility, facilityId, amendment });
       }
 
       const approvalResponse = await this.approveWorkPackage(facilityId, workPackageId);

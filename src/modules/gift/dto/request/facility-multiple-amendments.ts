@@ -1,6 +1,6 @@
 import { ApiExtraModels, ApiProperty, getSchemaPath } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsArray, IsDefined, ValidateNested } from 'class-validator';
+import { ArrayNotEmpty, IsArray, IsDefined, ValidateNested } from 'class-validator';
 
 import { CreateGiftFacilityAmendmentRequestDto } from './facility-amendment';
 import { DecreaseAmountDto, IncreaseAmountDto, ReplaceExpiryDateDto } from './facility-amendment-shared';
@@ -12,9 +12,10 @@ import { DecreaseAmountDto, IncreaseAmountDto, ReplaceExpiryDateDto } from './fa
 @ApiExtraModels(DecreaseAmountDto, IncreaseAmountDto, ReplaceExpiryDateDto)
 export class CreateGiftFacilityMultipleAmendmentsRequestDto {
   @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => CreateGiftFacilityAmendmentRequestDto)
+  @ArrayNotEmpty()
   @IsDefined()
+  @Type(() => CreateGiftFacilityAmendmentRequestDto)
+  @ValidateNested()
   @ApiProperty({
     required: true,
     type: 'array',
