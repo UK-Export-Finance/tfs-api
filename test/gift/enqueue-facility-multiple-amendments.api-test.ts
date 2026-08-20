@@ -5,9 +5,9 @@ import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/comm
 import { Api } from '@ukef-test/support/api';
 import nock from 'nock';
 
-import { apimFacilityAmendmentUrl } from './test-helpers';
+import { apimFacilityMultipleAmendmentsUrl } from './test-helpers';
 
-describe('POST /gift/facility/:facilityId/amendment', () => {
+describe('POST /gift/facility/:facilityId/multiple-amendments', () => {
   let api: Api;
   let enqueueSpy: jest.SpyInstance;
 
@@ -33,8 +33,8 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
     givenTheRequestWouldOtherwiseSucceed: () => {},
     makeRequestWithoutAuth: (incorrectAuth?: IncorrectAuthArg) => {
       return api.postWithoutAuth(
-        apimFacilityAmendmentUrl,
-        GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD,
+        apimFacilityMultipleAmendmentsUrl,
+        GIFT_EXAMPLES.FACILITY_MULTIPLE_AMENDMENTS_REQUEST_PAYLOAD,
         incorrectAuth?.headerName,
         incorrectAuth?.headerValue,
       );
@@ -43,19 +43,19 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
 
   describe('when the payload is valid', () => {
     it(`should return ${HttpStatus.ACCEPTED}`, async () => {
-      const { status } = await api.post(apimFacilityAmendmentUrl, GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD);
+      const { status } = await api.post(apimFacilityMultipleAmendmentsUrl, GIFT_EXAMPLES.FACILITY_MULTIPLE_AMENDMENTS_REQUEST_PAYLOAD);
 
       expect(status).toBe(HttpStatus.ACCEPTED);
     });
 
     it('should call giftQueueService.enqueue with the facility amendment message', async () => {
-      await api.post(apimFacilityAmendmentUrl, GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD);
+      await api.post(apimFacilityMultipleAmendmentsUrl, GIFT_EXAMPLES.FACILITY_MULTIPLE_AMENDMENTS_REQUEST_PAYLOAD);
 
       expect(enqueueSpy).toHaveBeenCalledTimes(1);
       expect(enqueueSpy).toHaveBeenCalledWith({
-        messageType: 'FACILITY_AMENDMENT',
+        messageType: 'FACILITY_MULTIPLE_AMENDMENTS',
         facilityId: GIFT_EXAMPLES.FACILITY_ID,
-        payload: GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD,
+        payload: GIFT_EXAMPLES.FACILITY_MULTIPLE_AMENDMENTS_REQUEST_PAYLOAD,
       });
     });
   });

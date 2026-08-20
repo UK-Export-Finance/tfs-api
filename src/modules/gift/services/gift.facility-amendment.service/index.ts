@@ -3,7 +3,7 @@ import { UkefId } from '@ukef/helpers/ukef-id.type';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 
-import { CreateGiftFacilityAmendmentRequestDto, GiftWorkPackageResponseDto } from '../../dto';
+import { CreateGiftFacilityAmendmentRequestDto, CreateGiftFacilityMultipleAmendmentsRequestDto, GiftWorkPackageResponseDto } from '../../dto';
 import {
   hasObligationsWithMaturityDateNotFollowingFacility,
   isDecreaseAmountAmendment,
@@ -251,6 +251,63 @@ export class GiftFacilityAmendmentService {
       this.logger.error('Error creating amendment %s for facility %s %o', amendmentType, facilityId, error);
 
       throw new Error(`Error creating amendment ${amendmentType} for facility ${facilityId}`, { cause: error });
+    }
+  }
+
+  /**
+   * Create multiple GIFT facility amendments in one work package.
+   * @param {UkefId} facilityId: Facility ID
+   * @param {CreateGiftFacilityMultipleAmendmentsRequestDto} amendments: Amendments data
+   * @throws {Error} If there is an error creating the amendments or the work package.
+   * @returns {Promise<CreateGiftFacilityAmendmentResponseDto>}
+   */
+  async createMultiple(facilityId: UkefId, payload: CreateGiftFacilityMultipleAmendmentsRequestDto): Promise<CreateGiftFacilityAmendmentResponseDto> {
+    try {
+      this.logger.info('Creating multiple amendments for facility %s', facilityId);
+
+      const facilityResponse = await this.giftFacilityService.get(facilityId);
+
+      if (facilityResponse.status !== HttpStatus.OK) {
+        return {
+          status: facilityResponse.status,
+          data: facilityResponse.data,
+        };
+      }
+
+      /**
+       * Generate a GIFT work package.
+       * All amendments will be in this work package.
+       */
+      const { data: workPackage, status } = await this.giftWorkPackageService.create(facilityId);
+
+      if (status !== HttpStatus.CREATED) {
+        this.logger.error('Error creating work package for facility %s multiple amendments', facilityId);
+
+        return {
+          status,
+          data: workPackage,
+        };
+      }
+
+      const { id: workPackageId } = workPackage;
+
+      for (const amendment of payload.amendments) {
+        await this.create(facilityId, amendment);
+      }
+
+      const approvalResponse = await this.approveWorkPackage(facilityId, workPackageId);
+
+      return {
+        status: HttpStatus.CREATED,
+        data: {
+          ...(approvalResponse.data ?? {}),
+          isApproved: true,
+        },
+      };
+    } catch (error) {
+      this.logger.error('Error creating multiple amendments for facility %s %o', facilityId, error);
+
+      throw new Error(`Error creating multiple amendments for facility ${facilityId}`, { cause: error });
     }
   }
 

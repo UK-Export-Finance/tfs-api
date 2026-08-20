@@ -1,48 +1,20 @@
 import { ApiExtraModels, ApiProperty, getSchemaPath } from '@nestjs/swagger';
 import { AMEND_FACILITY_TYPES_CONSUMER_ARRAY, AmendFacilityTypeConsumer, GIFT } from '@ukef/constants';
-import { GIFT_EXAMPLES } from '@ukef/constants/examples/gift.examples.constant';
 import { plainToInstance, Transform } from 'class-transformer';
-import { IsDateString, IsDefined, IsIn, IsNumber, IsObject, IsString, Length, Max, Min, ValidateNested } from 'class-validator';
+import { IsDefined, IsIn, IsObject, IsString, Length, ValidateNested } from 'class-validator';
 
 import { getAmendmentDataDto } from '../../helpers';
+import { DecreaseAmountDto, IncreaseAmountDto, ReplaceExpiryDateDto } from './facility-amendment-shared';
 
 const { VALIDATION } = GIFT;
 
-export class AmountDto {
-  @IsDefined()
-  @IsNumber({ maxDecimalPlaces: VALIDATION.FACILITY.AMENDMENT.AMOUNT.MAX_DECIMAL_PLACES })
-  @Min(VALIDATION.FACILITY.AMENDMENT.AMOUNT.MIN)
-  @Max(VALIDATION.FACILITY.AMENDMENT.AMOUNT.MAX)
-  @ApiProperty({
-    required: true,
-    example: GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA.INCREASE_AMOUNT.amount,
-    type: 'number',
-  })
-  amount: number;
-
-  @IsDefined()
-  @IsDateString()
-  @ApiProperty({
-    required: true,
-    example: GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA.INCREASE_AMOUNT.date,
-  })
-  date: string;
-}
-
-export class DecreaseAmountDto extends AmountDto {}
-export class IncreaseAmountDto extends AmountDto {}
-
-export class ReplaceExpiryDateDto {
-  @IsDefined()
-  @IsDateString()
-  @ApiProperty({
-    required: true,
-    description: 'The new expiry date for the facility.',
-    example: GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA.REPLACE_EXPIRY_DATE.expiryDate,
-  })
-  expiryDate: string;
-}
-
+/**
+ * CreateGiftFacilityAmendmentRequestDto is the DTO for a request to create a facility amendment in GIFT.
+ * It contains the amendment type and the amendment data, which is validated based on the amendment type.
+ * The amendment data is transformed into the correct DTO type based on the amendment type, so that the correct validation rules are applied.
+ * The amendment data can be one of DecreaseAmountDto, IncreaseAmountDto, or ReplaceExpiryDateDto.
+ * The amendment type and data is validated.
+ */
 @ApiExtraModels(DecreaseAmountDto, IncreaseAmountDto, ReplaceExpiryDateDto)
 export class CreateGiftFacilityAmendmentRequestDto {
   @IsDefined()
