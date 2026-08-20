@@ -48,7 +48,7 @@ describe('POST /gift/facility/:facilityId/multiple-amendments', () => {
       expect(status).toBe(HttpStatus.ACCEPTED);
     });
 
-    it('should call giftQueueService.enqueue with the facility amendment message', async () => {
+    it('should call giftQueueService.enqueue with the facility multiple amendments message', async () => {
       await api.post(apimFacilityMultipleAmendmentsUrl, GIFT_EXAMPLES.FACILITY_MULTIPLE_AMENDMENTS_REQUEST_PAYLOAD);
 
       expect(enqueueSpy).toHaveBeenCalledTimes(1);

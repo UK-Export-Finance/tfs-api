@@ -15,6 +15,7 @@ const {
   GIFT: {
     FACILITY_ID: mockFacilityId,
     FACILITY_AMENDMENT_REQUEST_PAYLOAD: mockPayload,
+    FACILITY_MULTIPLE_AMENDMENTS_REQUEST_PAYLOAD: mockMultipleAmendmentsPayload,
     FACILITY_RESPONSE_DATA,
     WORK_PACKAGE_APPROVE_RESPONSE_DATA,
     WORK_PACKAGE_CREATION_RESPONSE_DATA,
@@ -435,6 +436,109 @@ describe('GiftFacilityAmendmentService', () => {
       };
 
       expect(response).toEqual(expected);
+    });
+  });
+
+  describe('createMultiple', () => {
+    describe('when facility get returns a non-OK status', () => {
+      it('should return the facility error response', async () => {
+        // Arrange
+        mockFacilityServiceGet = jest.fn().mockResolvedValueOnce(mockResponse200({ error: 'Facility not found' }));
+        facilityService.get = mockFacilityServiceGet;
+        service = new GiftFacilityAmendmentService(
+          logger,
+          workPackageService,
+          facilityService,
+          amountAmendmentService,
+          replaceExpiryDateAmendmentService,
+          statusService,
+        );
+
+        // Act
+        const response = await service.createMultiple(mockFacilityId, mockMultipleAmendmentsPayload);
+
+        // Assert
+        expect(response.status).toBe(HttpStatus.OK);
+      });
+    });
+
+    describe('when work package creation returns a non-CREATED status', () => {
+      it('should return the work package error response', async () => {
+        // Arrange
+        mockWorkPackageServiceCreate = jest.fn().mockResolvedValueOnce(mockResponse200({}));
+        workPackageService.create = mockWorkPackageServiceCreate;
+        service = new GiftFacilityAmendmentService(
+          logger,
+          workPackageService,
+          facilityService,
+          amountAmendmentService,
+          replaceExpiryDateAmendmentService,
+          statusService,
+        );
+
+        // Act
+        const response = await service.createMultiple(mockFacilityId, mockMultipleAmendmentsPayload);
+
+        // Assert
+        expect(response.status).toBe(HttpStatus.OK);
+      });
+    });
+
+    describe('when all amendments are created successfully', () => {
+      it('should call service.create for each amendment in the payload', async () => {
+        // Arrange
+        const spy = jest.spyOn(service, 'create' as any);
+
+        // Act
+        await service.createMultiple(mockFacilityId, mockMultipleAmendmentsPayload);
+
+        // Assert
+        expect(spy).toHaveBeenCalledTimes(mockMultipleAmendmentsPayload.amendments.length);
+      });
+
+      it('should call approveWorkPackage after all amendments are created', async () => {
+        // Arrange
+        const approveSpy = jest.spyOn(service, 'approveWorkPackage' as any);
+
+        // Act
+        await service.createMultiple(mockFacilityId, mockMultipleAmendmentsPayload);
+
+        // Assert
+        expect(approveSpy).toHaveBeenCalledTimes(1);
+        expect(approveSpy).toHaveBeenCalledWith(mockFacilityId, mockWorkPackageId);
+      });
+
+      it('should return a response with status CREATED and isApproved true', async () => {
+        // Act
+        const response = await service.createMultiple(mockFacilityId, mockMultipleAmendmentsPayload);
+
+        // Assert
+        expect(response.status).toBe(HttpStatus.CREATED);
+        expect(response.data.isApproved).toBe(true);
+      });
+    });
+
+    describe('when an error occurs', () => {
+      it('should throw an error with a descriptive message', async () => {
+        // Arrange
+        const mockError = new Error('API error');
+        mockFacilityServiceGet = jest.fn().mockRejectedValueOnce(mockError);
+        facilityService.get = mockFacilityServiceGet;
+        service = new GiftFacilityAmendmentService(
+          logger,
+          workPackageService,
+          facilityService,
+          amountAmendmentService,
+          replaceExpiryDateAmendmentService,
+          statusService,
+        );
+
+        // Act
+        const promise = service.createMultiple(mockFacilityId, mockMultipleAmendmentsPayload);
+
+        // Assert
+        await expect(promise).rejects.toThrow(`Error creating multiple amendments for facility ${mockFacilityId}`);
+      });
     });
   });
 });
