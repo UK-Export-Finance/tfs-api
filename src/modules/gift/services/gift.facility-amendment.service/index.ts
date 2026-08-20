@@ -67,7 +67,7 @@ export class GiftFacilityAmendmentService {
    * @param {CreateGiftFacilityAmendmentRequestDto} params.amendment - The amendment data.
    * @returns {Promise<GiftWorkPackageResponseDto | { status: number; data: GiftWorkPackageResponseDto }>} The result of the amendment operation.
    */
-  async handleAmendmentCreation({ workPackageId, facility, facilityId, amendment }: HandleCreateAmendmentsParams) {
+  async handleCreateAmendments({ workPackageId, facility, facilityId, amendment }: HandleCreateAmendmentsParams) {
     let createdAmendmentData: GiftWorkPackageResponseDto | null = null;
 
     const { amendmentType } = amendment;
@@ -259,7 +259,12 @@ export class GiftFacilityAmendmentService {
 
       const { id: workPackageId } = workPackage;
 
-      const createdAmendmentData = await this.handleAmendmentCreation({ workPackageId, facility, facilityId, amendment });
+      const createdAmendmentData = await this.handleCreateAmendments({ workPackageId, facility, facilityId, amendment });
+
+      // If amendment failed, return the error response without wrapping
+      if (createdAmendmentData && 'status' in createdAmendmentData && createdAmendmentData.status !== HttpStatus.CREATED) {
+        return createdAmendmentData;
+      }
 
       const approvalResponse = await this.approveWorkPackage(facilityId, workPackageId);
 
@@ -317,7 +322,7 @@ export class GiftFacilityAmendmentService {
       const { id: workPackageId } = workPackage;
 
       for (const amendment of payload.amendments) {
-        await this.handleAmendmentCreation({ workPackageId, facility, facilityId, amendment });
+        await this.handleCreateAmendments({ workPackageId, facility, facilityId, amendment });
       }
 
       const approvalResponse = await this.approveWorkPackage(facilityId, workPackageId);

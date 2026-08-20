@@ -88,14 +88,14 @@ describe('GiftFacilityAmendmentService', () => {
     replaceExpiryDateAmendmentService = {} as GiftReplaceExpiryDateAmendmentService;
     statusService = new GiftStatusService(giftHttpService, logger);
 
-    mockFacilityServiceGet = jest.fn().mockResolvedValueOnce(mockResponse200(mockFacilityResponseData));
-    mockAmountAmendmentServiceFacility = jest.fn().mockResolvedValueOnce(mockResponse201(WORK_PACKAGE_CREATION_RESPONSE_DATA));
-    mockAmountAmendmentServiceObligations = jest.fn().mockResolvedValueOnce([]);
-    mockWorkPackageServiceCreate = jest.fn().mockResolvedValueOnce(mockWorkPackageServiceCreateResponse);
-    mockStatusServiceApproved = jest.fn().mockResolvedValueOnce(mockResponse200(WORK_PACKAGE_APPROVE_RESPONSE_DATA));
-    mockReplaceExpiryDateAmendmentServiceFacility = jest.fn().mockResolvedValueOnce(mockResponse201(WORK_PACKAGE_CREATION_RESPONSE_DATA));
-    mockReplaceExpiryDateAmendmentServiceObligations = jest.fn().mockResolvedValueOnce(WORK_PACKAGE_CREATION_RESPONSE_DATA);
-    mockReplaceExpiryDateAmendmentServiceAccrualSchedules = jest.fn().mockResolvedValueOnce(undefined);
+    mockFacilityServiceGet = jest.fn().mockResolvedValue(mockResponse200(mockFacilityResponseData));
+    mockAmountAmendmentServiceFacility = jest.fn().mockResolvedValue(mockResponse201(WORK_PACKAGE_CREATION_RESPONSE_DATA));
+    mockAmountAmendmentServiceObligations = jest.fn().mockResolvedValue([]);
+    mockWorkPackageServiceCreate = jest.fn().mockResolvedValue(mockWorkPackageServiceCreateResponse);
+    mockStatusServiceApproved = jest.fn().mockResolvedValue(mockResponse200(WORK_PACKAGE_APPROVE_RESPONSE_DATA));
+    mockReplaceExpiryDateAmendmentServiceFacility = jest.fn().mockResolvedValue(mockResponse201(WORK_PACKAGE_CREATION_RESPONSE_DATA));
+    mockReplaceExpiryDateAmendmentServiceObligations = jest.fn().mockResolvedValue(WORK_PACKAGE_CREATION_RESPONSE_DATA);
+    mockReplaceExpiryDateAmendmentServiceAccrualSchedules = jest.fn().mockResolvedValue(undefined);
 
     facilityService.get = mockFacilityServiceGet;
     amountAmendmentService.facility = mockAmountAmendmentServiceFacility;
@@ -130,9 +130,9 @@ describe('GiftFacilityAmendmentService', () => {
       expect(mockWorkPackageServiceCreate).toHaveBeenCalledWith(mockFacilityId);
     });
 
-    it('should call handleAmendmentCreation with the amendment', async () => {
+    it('should call handleCreateAmendments with the amendment', async () => {
       // Arrange
-      const spy = jest.spyOn(service, 'handleAmendmentCreation' as any);
+      const spy = jest.spyOn(service, 'handleCreateAmendments' as any);
 
       // Act
       await service.create(mockFacilityId, mockPayload);
@@ -240,7 +240,7 @@ describe('GiftFacilityAmendmentService', () => {
     });
   });
 
-  describe('handleAmendmentCreation', () => {
+  describe('handleCreateAmendments', () => {
     describe(`when the amendment is ${AMEND_FACILITY_INCREASE_AMOUNT}`, () => {
       const increasePayload = {
         ...mockPayload,
@@ -249,7 +249,7 @@ describe('GiftFacilityAmendmentService', () => {
 
       it('should call giftAmountAmendmentService.facility,  then giftAmountAmendmentService.obligations', async () => {
         // Act
-        await service.handleAmendmentCreation({
+        await service.handleCreateAmendments({
           workPackageId: mockWorkPackageId,
           facility: mockFacilityResponseData,
           facilityId: mockFacilityId,
@@ -289,7 +289,7 @@ describe('GiftFacilityAmendmentService', () => {
 
       it('should call giftAmountAmendmentService.obligations then facility', async () => {
         // Act
-        await service.handleAmendmentCreation({
+        await service.handleCreateAmendments({
           workPackageId: mockWorkPackageId,
           facility: mockFacilityResponseData,
           facilityId: mockFacilityId,
@@ -325,7 +325,7 @@ describe('GiftFacilityAmendmentService', () => {
       describe('when the existing expiry date is before the new expiry date', () => {
         it('should call giftReplaceExpiryDateAmendmentService.facility, then obligations, then accrual schedules', async () => {
           // Act
-          await service.handleAmendmentCreation({
+          await service.handleCreateAmendments({
             workPackageId: mockWorkPackageId,
             facility: mockFacilityResponseData,
             facilityId: mockFacilityId,
@@ -381,7 +381,7 @@ describe('GiftFacilityAmendmentService', () => {
           };
 
           // Act
-          await service.handleAmendmentCreation({
+          await service.handleCreateAmendments({
             workPackageId: mockWorkPackageId,
             facility: mockFacilityResponseData,
             facilityId: mockFacilityId,
@@ -434,7 +434,7 @@ describe('GiftFacilityAmendmentService', () => {
           };
 
           // Act
-          await service.handleAmendmentCreation({
+          await service.handleCreateAmendments({
             workPackageId: mockWorkPackageId,
             facility: mockFacilityResponseData,
             facilityId: mockFacilityId,
@@ -458,7 +458,7 @@ describe('GiftFacilityAmendmentService', () => {
         };
 
         // Act
-        await service.handleAmendmentCreation({
+        await service.handleCreateAmendments({
           workPackageId: mockWorkPackageId,
           facility: facilityWithFollowingDates,
           facilityId: mockFacilityId,
@@ -519,9 +519,9 @@ describe('GiftFacilityAmendmentService', () => {
     });
 
     describe('when all amendments are created successfully', () => {
-      it('should call handleAmendmentCreation for each amendment in the payload', async () => {
+      it('should call handleCreateAmendments for each amendment in the payload', async () => {
         // Arrange
-        const spy = jest.spyOn(service, 'handleAmendmentCreation' as any);
+        const spy = jest.spyOn(service, 'handleCreateAmendments' as any);
 
         // Act
         await service.createMultiple(mockFacilityId, mockMultipleAmendmentsPayload);

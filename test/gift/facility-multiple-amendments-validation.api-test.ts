@@ -40,7 +40,7 @@ describe('POST /gift/facility/:facilityId/multiple-amendments/without-queue - va
 
       const expected = {
         error: 'Bad Request',
-        message: ['amendments should not be null or undefined', 'amendments must be an array'],
+        message: ['amendments should not be null or undefined', 'amendments should not be empty', 'amendments must be an array'],
         statusCode: HttpStatus.BAD_REQUEST,
       };
 
@@ -63,7 +63,7 @@ describe('POST /gift/facility/:facilityId/multiple-amendments/without-queue - va
 
       const expected = {
         error: 'Bad Request',
-        message: ['amendments must contain at least 1 elements'],
+        message: ['amendments should not be empty'],
         statusCode: HttpStatus.BAD_REQUEST,
       };
 
@@ -118,7 +118,7 @@ describe('POST /gift/facility/:facilityId/multiple-amendments/without-queue - va
           error: 'Bad Request',
           message: [
             'amendments.0.amendmentType should not be null or undefined',
-            amendmentTypeValidationMessage,
+            `amendments.0.${amendmentTypeValidationMessage}`,
             `amendments.0.amendmentType must be longer than or equal to ${VALIDATION.FACILITY.AMENDMENT_TYPE.MIN_LENGTH} characters`,
             'amendments.0.amendmentType must be a string',
             'amendments.0.amendmentData should not be null or undefined',
