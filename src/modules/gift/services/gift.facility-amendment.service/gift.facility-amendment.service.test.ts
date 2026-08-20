@@ -4,7 +4,6 @@ import { mockWorkPackageId } from '@ukef-test/gift/test-helpers';
 import { mockResponse200, mockResponse201, mockResponse404 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
-import { DecreaseAmountDto } from '../../dto';
 import { GiftAmountAmendmentService } from '../gift.amount-amendment.service';
 import { GiftFacilityService } from '../gift.facility.service';
 import { GiftReplaceExpiryDateAmendmentService } from '../gift.replace-expiry-date-amendment.service';
@@ -29,6 +28,12 @@ const {
 } = GIFT;
 
 const mockWorkPackageServiceCreateResponse = mockResponse201(WORK_PACKAGE_CREATION_RESPONSE_DATA);
+
+const replaceExpiryDatePayload = {
+  ...mockPayload,
+  amendmentType: AMEND_FACILITY_REPLACE_EXPIRY_DATE,
+  amendmentData: EXAMPLES.GIFT.FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA.REPLACE_EXPIRY_DATE,
+};
 
 describe('GiftFacilityAmendmentService', () => {
   const logger = new PinoLogger({});
@@ -317,12 +322,6 @@ describe('GiftFacilityAmendmentService', () => {
     });
 
     describe(`when the amendment is ${AMEND_FACILITY_REPLACE_EXPIRY_DATE}`, () => {
-      const replaceExpiryDatePayload = {
-        ...mockPayload,
-        amendmentType: AMEND_FACILITY_REPLACE_EXPIRY_DATE,
-        amendmentData: EXAMPLES.GIFT.FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA.REPLACE_EXPIRY_DATE,
-      };
-
       describe('when the existing expiry date is before the new expiry date', () => {
         it('should call giftReplaceExpiryDateAmendmentService.facility, then obligations, then accrual schedules', async () => {
           // Act
@@ -463,10 +462,7 @@ describe('GiftFacilityAmendmentService', () => {
           workPackageId: mockWorkPackageId,
           facility: facilityWithFollowingDates,
           facilityId: mockFacilityId,
-          amendment: {
-            amendmentType: 'IncreaseAmount',
-            amendmentData: new DecreaseAmountDto(),
-          },
+          amendment: replaceExpiryDatePayload,
         });
 
         // Assert

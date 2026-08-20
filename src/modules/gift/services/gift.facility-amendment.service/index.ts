@@ -325,7 +325,7 @@ export class GiftFacilityAmendmentService {
       return {
         status: HttpStatus.CREATED,
         data: {
-          ...(approvalResponse.data ?? {}),
+          ...approvalResponse.data,
           isApproved: true,
         },
       };

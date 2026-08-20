@@ -184,6 +184,8 @@ describe('POST /gift/facility/:facilityId/multiple-amendments/without-queue - va
           error: 'Bad Request',
           message: [
             `amendments.0.amendmentType must be one of the following values: ${AMEND_FACILITY_INCREASE_AMOUNT}, ${AMEND_FACILITY_DECREASE_AMOUNT}, ${AMEND_FACILITY_REPLACE_EXPIRY_DATE}`,
+            'amendments.0.amendmentData.property amount should not exist',
+            'amendments.0.amendmentData.property date should not exist',
           ],
           statusCode: HttpStatus.BAD_REQUEST,
         };
@@ -214,9 +216,7 @@ describe('POST /gift/facility/:facilityId/multiple-amendments/without-queue - va
 
             // Assert
             expect(status).toBe(HttpStatus.BAD_REQUEST);
-            expect(body.message).toContain(
-              `amendments.0.amendmentData.amount must not have more than ${VALIDATION.FACILITY.AMENDMENT.AMOUNT.MAX_DECIMAL_PLACES} decimal places`,
-            );
+            expect(body.message).toContain('amendments.0.amendmentData.amount must be a number conforming to the specified constraints');
           });
         });
       });
