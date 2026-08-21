@@ -118,7 +118,7 @@ describe('POST /gift/facility/:facilityId/multiple-amendments/without-queue', ()
         // Assert
         expect(status).toBe(HttpStatus.CREATED);
         expect(body).toStrictEqual({
-          ...mockResponses.facilityAmendment,
+          ...mockResponses.approveStatus,
           isApproved: true,
         });
 
@@ -209,7 +209,7 @@ describe('POST /gift/facility/:facilityId/multiple-amendments/without-queue', ()
         // Assert
         expect(status).toBe(HttpStatus.CREATED);
         expect(body).toStrictEqual({
-          ...mockResponses.facilityAmendment,
+          ...mockResponses.approveStatus,
           isApproved: true,
         });
 
@@ -324,7 +324,7 @@ describe('POST /gift/facility/:facilityId/multiple-amendments/without-queue', ()
         // Assert
         expect(status).toBe(HttpStatus.CREATED);
         expect(body).toStrictEqual({
-          ...mockResponses.facilityAmendment,
+          ...mockResponses.approveStatus,
           isApproved: true,
         });
 
