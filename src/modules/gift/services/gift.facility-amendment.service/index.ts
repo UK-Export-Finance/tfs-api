@@ -68,7 +68,7 @@ export class GiftFacilityAmendmentService {
    * @returns {Promise<GiftWorkPackageResponseDto | { status: number; data: GiftWorkPackageResponseDto }>} The result of the amendment operation.
    */
   async handleCreateAmendments({ workPackageId, facility, facilityId, amendment }: HandleCreateAmendmentsParams) {
-    let createdAmendmentData: GiftWorkPackageResponseDto | null = null;
+    let createdAmendmentData: AxiosResponse<GiftWorkPackageResponseDto>;
 
     const { amendmentType } = amendment;
 
@@ -105,7 +105,7 @@ export class GiftFacilityAmendmentService {
         };
       }
 
-      createdAmendmentData = facilityAmendmentResponse.data;
+      createdAmendmentData = facilityAmendmentResponse;
 
       await this.giftAmountAmendmentService.obligations({ ...baseObligationParams, date, newFacilityAmount });
     }
@@ -132,7 +132,7 @@ export class GiftFacilityAmendmentService {
         };
       }
 
-      createdAmendmentData = facilityAmendmentResponse.data;
+      createdAmendmentData = facilityAmendmentResponse;
     }
 
     /**
@@ -175,23 +175,23 @@ export class GiftFacilityAmendmentService {
           await this.giftReplaceExpiryDateAmendmentService.obligations({ ...baseParams, facilityExpiryDate: expiryDate, obligations });
         }
 
-        const facilityResponse = await this.giftReplaceExpiryDateAmendmentService.facility({ ...baseParams, expiryDate });
+        const dateResponse = await this.giftReplaceExpiryDateAmendmentService.facility({ ...baseParams, expiryDate });
 
-        if (!this.wasAmendmentSuccessful(facilityResponse)) {
+        if (!this.wasAmendmentSuccessful(dateResponse)) {
           return {
-            status: facilityResponse.status,
-            data: facilityResponse.data,
+            status: dateResponse.status,
+            data: dateResponse.data,
           };
         }
 
-        createdAmendmentData = facilityResponse.data;
+        createdAmendmentData = dateResponse;
       } else {
-        const facilityResponse = await this.giftReplaceExpiryDateAmendmentService.facility({ ...baseParams, expiryDate });
+        const dateResponse = await this.giftReplaceExpiryDateAmendmentService.facility({ ...baseParams, expiryDate });
 
-        if (!this.wasAmendmentSuccessful(facilityResponse)) {
+        if (!this.wasAmendmentSuccessful(dateResponse)) {
           return {
-            status: facilityResponse.status,
-            data: facilityResponse.data,
+            status: dateResponse.status,
+            data: dateResponse.data,
           };
         }
 
@@ -201,7 +201,7 @@ export class GiftFacilityAmendmentService {
 
         await this.giftReplaceExpiryDateAmendmentService.accrualSchedules({ ...baseParams, expiryDate, obligations });
 
-        createdAmendmentData = facilityResponse.data;
+        createdAmendmentData = dateResponse;
       }
     }
 
@@ -283,15 +283,29 @@ export class GiftFacilityAmendmentService {
       } catch (approvalError) {
         this.logger.error('Error approving work package %s for facility %s amendment - deleting work package %o', workPackageId, facilityId, approvalError);
 
+        // Extract status from approvalError - might be nested in cause
+        let errorStatus: number | undefined;
+        let errorData: any;
+
+        const errorWithStatus = approvalError as Error & { status?: number; data?: any; cause?: any };
+
+        // First try direct access (error is directly thrown with status)
+        if (errorWithStatus.status) {
+          errorStatus = errorWithStatus.status;
+          errorData = (errorWithStatus.cause as any)?.data;
+        }
+
         try {
           await this.giftWorkPackageService.delete(workPackageId, facilityId);
         } catch (deleteError) {
           this.logger.error('Error deleting work package %s for facility amendment %s %o', workPackageId, facilityId, deleteError);
         }
-      }
 
-      if (approvalResponse.status !== HttpStatus.OK) {
-        throw new Error(`Error approving work package $${workPackageId} for facility ${facilityId} amendment`);
+        // Return the approval error regardless of delete result
+        return {
+          status: errorStatus ?? HttpStatus.INTERNAL_SERVER_ERROR,
+          data: errorData ?? { statusCode: HttpStatus.INTERNAL_SERVER_ERROR, message: 'Internal server error' },
+        };
       }
 
       return {
@@ -350,17 +364,26 @@ export class GiftFacilityAmendmentService {
       for (const amendment of payload.amendments) {
         const amendmentResponse = await this.handleCreateAmendments({ workPackageId, facility, facilityId, amendment });
 
-        // if an amendment is not created, delete the work package and return the error response
+        // if an amendment is not created, delete the work package.
         if (amendmentResponse && 'status' in amendmentResponse && amendmentResponse.status !== HttpStatus.CREATED) {
           this.logger.error('Error creating amendment %s for facility %s in multiple amendments', amendment.amendmentType, facilityId);
+
+          let hasDeleteError = false;
 
           try {
             await this.giftWorkPackageService.delete(workPackageId, facilityId);
           } catch (deleteError) {
-            this.logger.error('Error deleting work package %s for facility %s in multiple amendments %o', workPackageId, facilityId, deleteError);
-          }
+            hasDeleteError = true;
 
-          return amendmentResponse;
+            this.logger.error('Error deleting work package %s for facility %s in multiple amendments %o', workPackageId, facilityId, deleteError);
+          } finally {
+            if (hasDeleteError) {
+              return {
+                status: amendmentResponse.status,
+                data: amendmentResponse.data,
+              };
+            }
+          }
         }
       }
 
@@ -376,11 +399,26 @@ export class GiftFacilityAmendmentService {
           approvalError,
         );
 
+        let errorStatus: number | undefined;
+        let errorData: any;
+
+        const errorWithStatus = approvalError as Error & { status?: number; data?: any; cause?: any };
+
+        if (errorWithStatus.status) {
+          errorStatus = errorWithStatus.status;
+          errorData = errorWithStatus.data;
+        }
+
         try {
           await this.giftWorkPackageService.delete(workPackageId, facilityId);
         } catch (deleteError) {
           this.logger.error('Error deleting work package %s for facility %s in multiple amendments %o', workPackageId, facilityId, deleteError);
         }
+
+        return {
+          status: errorStatus ?? HttpStatus.INTERNAL_SERVER_ERROR,
+          data: errorData ?? { statusCode: HttpStatus.INTERNAL_SERVER_ERROR, message: 'Internal server error' },
+        };
       }
 
       return {
@@ -413,17 +451,31 @@ export class GiftFacilityAmendmentService {
       if (approvalResponse.status !== HttpStatus.OK) {
         this.logger.error('Error approving amendment work package %s for facility %s %o', workPackageId, facilityId, approvalResponse.data);
 
-        throw new Error(`Error approving amendment work package ${workPackageId} for facility ${facilityId} amendment`, {
+        const error = new Error(`Error approving amendment work package ${workPackageId} for facility ${facilityId} amendment`, {
           cause: {
             data: approvalResponse.data,
             status: approvalResponse.status,
           },
         });
+
+        (error as any).status = approvalResponse.status;
+
+        throw error;
       }
 
       return approvalResponse;
     } catch (error) {
       this.logger.error('Error approving amendment work package %s for facility %s %o', workPackageId, facilityId, error);
+
+      /**
+       * Intentionally throw error with a status property
+       * so that the status can be surfaced.
+       */
+      const errorWithStatus = error as any;
+
+      if (errorWithStatus.status) {
+        throw error;
+      }
 
       throw new Error(`Error approving amendment work package ${workPackageId} for facility ${facilityId}`, { cause: error });
     }
