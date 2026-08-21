@@ -290,6 +290,10 @@ export class GiftFacilityAmendmentService {
         }
       }
 
+      if (approvalResponse.status !== HttpStatus.OK) {
+        throw new Error(`Error approving work package $${workPackageId} for facility ${facilityId} amendment`);
+      }
+
       return {
         status: HttpStatus.CREATED,
         data: {

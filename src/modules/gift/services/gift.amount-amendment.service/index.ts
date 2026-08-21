@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { AMEND_FACILITY_PREFIX_TYPES, FacilityCategoryCode, GIFT } from '@ukef/constants';
 import { GiftAmendmentBaseParams } from '@ukef/types';
 import { AxiosResponse } from 'axios';
@@ -65,6 +65,12 @@ export class GiftAmountAmendmentService {
         payload: amendmentData,
       });
 
+      if (facilityAmendmentResponse.status !== HttpStatus.CREATED) {
+        this.logger.error('Error creating amendment %s for work package %s facility %s', amendmentType, workPackageId, facilityId);
+
+        return facilityAmendmentResponse;
+      }
+
       return facilityAmendmentResponse;
     } catch (error) {
       this.logger.error('Error amending facility amount %s for facility %s work package %s %o', amendmentType, facilityId, workPackageId, error);
@@ -113,6 +119,17 @@ export class GiftAmountAmendmentService {
           path: `${basePath}/${AMEND_FACILITY_PREFIX_TYPES.AMEND_OBLIGATION}${amendmentType}`,
           payload,
         });
+
+        if (response.status !== HttpStatus.CREATED) {
+          this.logger.error('Error creating amendment %s for work package %s facility %s', amendmentType, workPackageId, facilityId);
+
+          throw new Error(
+            `Unexpected status ${response.status} amending facility obligation amounts ${amendmentType} for facility ${facilityId} work package ${workPackageId}`,
+            {
+              cause: response.data,
+            },
+          );
+        }
 
         responses.push(response);
       }

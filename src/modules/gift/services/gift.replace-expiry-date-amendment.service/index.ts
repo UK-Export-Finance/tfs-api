@@ -80,6 +80,17 @@ export class GiftReplaceExpiryDateAmendmentService {
           payload,
         });
 
+        if (response.status !== HttpStatus.CREATED) {
+          this.logger.error('Error creating amendment %s for work package %s facility %s', amendmentType, workPackageId, facilityId);
+
+          throw new Error(
+            `Unexpected status ${response.status} amending facility obligations maturity dates ${amendmentType} for facility ${facilityId} work package ${workPackageId}`,
+            {
+              cause: response.data,
+            },
+          );
+        }
+
         responses.push(response.data);
       }
 
