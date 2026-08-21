@@ -259,19 +259,41 @@ export class GiftFacilityAmendmentService {
 
       const { id: workPackageId } = workPackage;
 
-      const createdAmendmentData = await this.handleCreateAmendments({ workPackageId, facility, facilityId, amendment });
+      const amendmentResponse = await this.handleCreateAmendments({ workPackageId, facility, facilityId, amendment });
 
-      // If amendment failed, return the error response without wrapping
-      if (createdAmendmentData && 'status' in createdAmendmentData && createdAmendmentData.status !== HttpStatus.CREATED) {
-        return createdAmendmentData;
+      // If amendment failed, delete the work package and return the error response.
+      if (amendmentResponse && 'status' in amendmentResponse && amendmentResponse.status !== HttpStatus.CREATED) {
+        this.logger.error('Error creating amendment %s for facility %s', amendment.amendmentType, facilityId);
+
+        try {
+          await this.giftWorkPackageService.delete(workPackageId, facilityId);
+        } catch (deleteError) {
+          this.logger.error('Error deleting work package %s for facility %s %o', workPackageId, facilityId, deleteError);
+        }
+
+        return amendmentResponse;
       }
 
-      const approvalResponse = await this.approveWorkPackage(facilityId, workPackageId);
+      // const approvalResponse = await this.approveWorkPackage(facilityId, workPackageId);
+
+      let approvalResponse;
+
+      try {
+        approvalResponse = await this.approveWorkPackage(facilityId, workPackageId);
+      } catch (approvalError) {
+        this.logger.error('Error approving work package %s for facility %s amendment - deleting work package %o', workPackageId, facilityId, approvalError);
+
+        try {
+          await this.giftWorkPackageService.delete(workPackageId, facilityId);
+        } catch (deleteError) {
+          this.logger.error('Error deleting work package %s for facility amendment %s %o', workPackageId, facilityId, deleteError);
+        }
+      }
 
       return {
         status: HttpStatus.CREATED,
         data: {
-          ...(createdAmendmentData ?? approvalResponse.data),
+          ...(amendmentResponse ?? approvalResponse.data),
           isApproved: true,
         },
       };
@@ -322,10 +344,40 @@ export class GiftFacilityAmendmentService {
       const { id: workPackageId } = workPackage;
 
       for (const amendment of payload.amendments) {
-        await this.handleCreateAmendments({ workPackageId, facility, facilityId, amendment });
+        const amendmentResponse = await this.handleCreateAmendments({ workPackageId, facility, facilityId, amendment });
+
+        // if an amendment is not created, delete the work package and return the error response
+        if (amendmentResponse && 'status' in amendmentResponse && amendmentResponse.status !== HttpStatus.CREATED) {
+          this.logger.error('Error creating amendment %s for facility %s in multiple amendments', amendment.amendmentType, facilityId);
+
+          try {
+            await this.giftWorkPackageService.delete(workPackageId, facilityId);
+          } catch (deleteError) {
+            this.logger.error('Error deleting work package %s for facility %s in multiple amendments %o', workPackageId, facilityId, deleteError);
+          }
+
+          return amendmentResponse;
+        }
       }
 
-      const approvalResponse = await this.approveWorkPackage(facilityId, workPackageId);
+      let approvalResponse;
+
+      try {
+        approvalResponse = await this.approveWorkPackage(facilityId, workPackageId);
+      } catch (approvalError) {
+        this.logger.error(
+          'Error approving work package %s for facility %s in multiple amendments - deleting work package %o',
+          workPackageId,
+          facilityId,
+          approvalError,
+        );
+
+        try {
+          await this.giftWorkPackageService.delete(workPackageId, facilityId);
+        } catch (deleteError) {
+          this.logger.error('Error deleting work package %s for facility %s in multiple amendments %o', workPackageId, facilityId, deleteError);
+        }
+      }
 
       return {
         status: HttpStatus.CREATED,

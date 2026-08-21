@@ -1,5 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 import { EXAMPLES, GIFT } from '@ukef/constants';
+import { mockWorkPackageId } from '@ukef-test/gift/test-helpers';
 import { mockResponse200, mockResponse201, mockResponse500 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
@@ -14,6 +15,7 @@ const {
   GIFT: {
     FACILITY_AMENDMENT_REQUEST_PAYLOAD: mockPayload,
     FACILITY_ID: mockFacilityId,
+    FACILITY_MULTIPLE_AMENDMENTS_REQUEST_PAYLOAD: mockMultipleAmendmentsPayload,
     FACILITY_RESPONSE_DATA,
     WORK_PACKAGE_APPROVE_RESPONSE_DATA,
     WORK_PACKAGE_CREATION_RESPONSE_DATA,
@@ -73,7 +75,9 @@ describe('GiftFacilityAmendmentService - error handling', () => {
   };
 
   beforeEach(() => {
-    giftHttpService = {};
+    giftHttpService = {
+      delete: jest.fn().mockResolvedValue(mockResponse200({})),
+    };
 
     workPackageService = new GiftWorkPackageService(giftHttpService, logger);
     facilityService = {} as GiftFacilityService;
@@ -162,6 +166,45 @@ describe('GiftFacilityAmendmentService - error handling', () => {
         const expected = new Error(`Error creating amendment ${mockPayload.amendmentType} for facility ${mockFacilityId}`, { cause: mockError });
 
         await expect(response).rejects.toThrow(expected);
+      });
+    });
+  });
+
+  describe('giftWorkPackageService.createMultiple', () => {
+    describe('when an amendment fails to create', () => {
+      it('should delete the work package when an amendment fails', async () => {
+        // Arrange
+        const mockHttpServiceDelete = jest.fn().mockResolvedValue(mockResponse200({}));
+        giftHttpService.delete = mockHttpServiceDelete;
+        workPackageService = new GiftWorkPackageService(giftHttpService, logger);
+        workPackageService.create = mockWorkPackageServiceCreate;
+
+        jest.spyOn(service, 'handleCreateAmendments' as any).mockResolvedValueOnce({
+          status: HttpStatus.BAD_REQUEST,
+          data: { error: 'Invalid amendment' },
+        });
+
+        // Act
+        await service.createMultiple(mockFacilityId, mockMultipleAmendmentsPayload);
+
+        // Assert
+        expect(mockHttpServiceDelete).toHaveBeenCalledTimes(1);
+        expect(mockHttpServiceDelete).toHaveBeenCalledWith({ path: `/work-package/${mockWorkPackageId}` });
+      });
+
+      it('should return the amendment error response when an amendment fails', async () => {
+        // Arrange
+        const mockErrorResponse = {
+          status: HttpStatus.BAD_REQUEST,
+          data: { error: 'Invalid amendment' },
+        };
+        jest.spyOn(service, 'handleCreateAmendments' as any).mockResolvedValueOnce(mockErrorResponse);
+
+        // Act
+        const response = await service.createMultiple(mockFacilityId, mockMultipleAmendmentsPayload);
+
+        // Assert
+        expect(response).toEqual(mockErrorResponse);
       });
     });
   });

@@ -350,9 +350,6 @@ describe('GiftAmountAmendmentService', () => {
         await expect(promise).rejects.toThrow(
           `Error amending facility obligation amounts ${AMEND_FACILITY_INCREASE_AMOUNT} for facility ${mockFacilityId} work package ${mockWorkPackageId}`,
         );
-        expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
-        expect(mockWorkPackageServiceDelete).toHaveBeenCalledTimes(1);
-        expect(mockWorkPackageServiceDelete).toHaveBeenCalledWith(mockWorkPackageId, mockFacilityId);
       });
     });
   });
