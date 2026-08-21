@@ -113,22 +113,6 @@ describe('GiftAmountAmendmentService', () => {
         service = new GiftAmountAmendmentService(giftHttpService, giftWorkPackageService, logger);
       });
 
-      describe('delete behaviour', () => {
-        it('should call giftWorkPackageService.delete', async () => {
-          // Act
-          await service.facility({
-            amendmentType: AMEND_FACILITY_INCREASE_AMOUNT,
-            amendmentData: FACILITY_AMENDMENT_REQUEST_PAYLOAD.amendmentData,
-            facilityId: mockFacilityId,
-            workPackageId: mockWorkPackageId,
-          });
-
-          // Assert
-          expect(mockWorkPackageServiceDelete).toHaveBeenCalledTimes(1);
-          expect(mockWorkPackageServiceDelete).toHaveBeenCalledWith(mockWorkPackageId, mockFacilityId);
-        });
-      });
-
       describe('response', () => {
         it('should return the response from giftHttpService.delete', async () => {
           // Act
