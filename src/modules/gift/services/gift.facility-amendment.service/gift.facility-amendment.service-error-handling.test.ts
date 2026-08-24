@@ -1,7 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { mockWorkPackageId } from '@ukef-test/gift/test-helpers';
-import { mockResponse200, mockResponse201, mockResponse500 } from '@ukef-test/http-response';
+import { mockResponse200, mockResponse201, mockResponse204, mockResponse500 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
 import { GiftAmountAmendmentService } from '../gift.amount-amendment.service';
@@ -171,19 +171,27 @@ describe('GiftFacilityAmendmentService - error handling', () => {
   });
 
   describe('giftWorkPackageService.createMultiple', () => {
-    describe('when an amendment fails to create', () => {
-      it('should delete the work package when an amendment fails', async () => {
+    describe('when amendments fail to be created', () => {
+      let mockHttpServiceDelete;
+      let mockErrorResponse;
+
+      beforeEach(() => {
         // Arrange
-        const mockHttpServiceDelete = jest.fn().mockResolvedValue(mockResponse200({}));
+        mockHttpServiceDelete = jest.fn().mockResolvedValue(mockResponse204());
+
         giftHttpService.delete = mockHttpServiceDelete;
         workPackageService = new GiftWorkPackageService(giftHttpService, logger);
         workPackageService.create = mockWorkPackageServiceCreate;
 
-        jest.spyOn(service, 'handleCreateAmendments' as any).mockResolvedValueOnce({
+        mockErrorResponse = {
           status: HttpStatus.BAD_REQUEST,
-          data: { error: 'Invalid amendment' },
-        });
+          data: { error: 'Mock amendment error' },
+        };
 
+        jest.spyOn(service, 'handleCreateAmendments' as any).mockResolvedValue(mockErrorResponse);
+      });
+
+      it('should call giftWorkPackageService.delete', async () => {
         // Act
         await service.createMultiple(mockFacilityId, mockMultipleAmendmentsPayload);
 
@@ -192,42 +200,32 @@ describe('GiftFacilityAmendmentService - error handling', () => {
         expect(mockHttpServiceDelete).toHaveBeenCalledWith({ path: `/work-package/${mockWorkPackageId}` });
       });
 
-      it('should return the amendment error response when an amendment fails', async () => {
-        // Arrange
-        const mockErrorResponse = {
-          status: HttpStatus.BAD_REQUEST,
-          data: { error: 'Invalid amendment' },
-        };
-        jest.spyOn(service, 'handleCreateAmendments' as any).mockResolvedValueOnce(mockErrorResponse);
-
+      it('should return the amendment error response', async () => {
         // Act
         const response = await service.createMultiple(mockFacilityId, mockMultipleAmendmentsPayload);
 
         // Assert
         expect(response).toEqual(mockErrorResponse);
       });
+    });
 
-      it('should return the amendment error response when delete fails', async () => {
+    describe('when amendments are successful, but work package deletion fails', () => {
+      it('should return the work package deletion response', async () => {
         // Arrange
-        const mockHttpServiceDelete = jest.fn().mockRejectedValue(new Error('Delete failed'));
+        const mockHttpServiceDelete = jest.fn().mockResolvedValue(mockResponse500());
+
         giftHttpService.delete = mockHttpServiceDelete;
         workPackageService = new GiftWorkPackageService(giftHttpService, logger);
-        workPackageService.create = mockWorkPackageServiceCreate;
 
-        const mockErrorResponse = {
-          status: HttpStatus.BAD_REQUEST,
-          data: { error: 'Invalid amendment' },
-        };
-
-        jest.spyOn(service, 'handleCreateAmendments' as any).mockResolvedValueOnce(mockErrorResponse);
-
-        buildService();
+        jest.spyOn(service, 'handleCreateAmendments' as any).mockResolvedValue({ status: HttpStatus.ACCEPTED });
 
         // Act
         const response = await service.createMultiple(mockFacilityId, mockMultipleAmendmentsPayload);
 
         // Assert
-        expect(response).toEqual(mockErrorResponse);
+        const expected = mockResponse500();
+
+        expect(response).toEqual(expected);
       });
     });
   });

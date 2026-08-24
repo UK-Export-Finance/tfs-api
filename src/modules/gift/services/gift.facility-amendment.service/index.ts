@@ -55,7 +55,7 @@ export class GiftFacilityAmendmentService {
    * @returns {Boolean} true if the amendment was successful, false otherwise.
    */
   private wasAmendmentSuccessful(response: AxiosResponse<GiftWorkPackageResponseDto>): boolean {
-    return response.status === HttpStatus.CREATED;
+    return response?.status === HttpStatus.CREATED;
   }
 
   /**
@@ -100,8 +100,8 @@ export class GiftFacilityAmendmentService {
 
       if (!this.wasAmendmentSuccessful(facilityAmendmentResponse)) {
         return {
-          status: facilityAmendmentResponse.status,
-          data: facilityAmendmentResponse.data,
+          status: facilityAmendmentResponse?.status,
+          data: facilityAmendmentResponse?.data,
         };
       }
 
@@ -127,8 +127,8 @@ export class GiftFacilityAmendmentService {
 
       if (!this.wasAmendmentSuccessful(facilityAmendmentResponse)) {
         return {
-          status: facilityAmendmentResponse.status,
-          data: facilityAmendmentResponse.data,
+          status: facilityAmendmentResponse?.status,
+          data: facilityAmendmentResponse?.data,
         };
       }
 
@@ -283,13 +283,13 @@ export class GiftFacilityAmendmentService {
       } catch (approvalError) {
         this.logger.error('Error approving work package %s for facility %s amendment - deleting work package %o', workPackageId, facilityId, approvalError);
 
-        // Extract status from approvalError - might be nested in cause
+        // extract status from approvalError - might be nested in cause
         let errorStatus: number | undefined;
         let errorData: any;
 
         const errorWithStatus = approvalError as Error & { status?: number; data?: any; cause?: any };
 
-        // First try direct access (error is directly thrown with status)
+        // first try direct access (error is directly thrown with status)
         if (errorWithStatus.status) {
           errorStatus = errorWithStatus.status;
           errorData = (errorWithStatus.cause as any)?.data;
@@ -311,7 +311,7 @@ export class GiftFacilityAmendmentService {
       return {
         status: HttpStatus.CREATED,
         data: {
-          ...(amendmentResponse ?? approvalResponse.data),
+          ...(amendmentResponse.data ?? approvalResponse.data),
           isApproved: true,
         },
       };
@@ -361,29 +361,19 @@ export class GiftFacilityAmendmentService {
 
       const { id: workPackageId } = workPackage;
 
+      let amendmentResponse;
+      let amendmentError = false;
+      const approvalError = false;
+
       for (const amendment of payload.amendments) {
-        const amendmentResponse = await this.handleCreateAmendments({ workPackageId, facility, facilityId, amendment });
+        const response = await this.handleCreateAmendments({ workPackageId, facility, facilityId, amendment });
 
-        // if an amendment is not created, delete the work package.
-        if (amendmentResponse && 'status' in amendmentResponse && amendmentResponse.status !== HttpStatus.CREATED) {
+        if (response?.status !== HttpStatus.CREATED) {
+          amendmentError = true;
+
+          amendmentResponse = response;
+
           this.logger.error('Error creating amendment %s for facility %s in multiple amendments', amendment.amendmentType, facilityId);
-
-          let hasDeleteError = false;
-
-          try {
-            await this.giftWorkPackageService.delete(workPackageId, facilityId);
-          } catch (deleteError) {
-            hasDeleteError = true;
-
-            this.logger.error('Error deleting work package %s for facility %s in multiple amendments %o', workPackageId, facilityId, deleteError);
-          } finally {
-            if (hasDeleteError) {
-              return {
-                status: amendmentResponse.status,
-                data: amendmentResponse.data,
-              };
-            }
-          }
         }
       }
 
@@ -392,41 +382,50 @@ export class GiftFacilityAmendmentService {
       try {
         approvalResponse = await this.approveWorkPackage(facilityId, workPackageId);
       } catch (approvalError) {
+        approvalError = true;
+
         this.logger.error(
           'Error approving work package %s for facility %s in multiple amendments - deleting work package %o',
           workPackageId,
           facilityId,
           approvalError,
         );
+      }
 
-        let errorStatus: number | undefined;
-        let errorData: any;
-
-        const errorWithStatus = approvalError as Error & { status?: number; data?: any; cause?: any };
-
-        if (errorWithStatus.status) {
-          errorStatus = errorWithStatus.status;
-          errorData = errorWithStatus.data;
-        }
+      if (amendmentError || approvalError) {
+        let hasDeleteError = false;
+        let deleteError;
 
         try {
-          await this.giftWorkPackageService.delete(workPackageId, facilityId);
-        } catch (deleteError) {
-          this.logger.error('Error deleting work package %s for facility %s in multiple amendments %o', workPackageId, facilityId, deleteError);
-        }
+          const response = await this.giftWorkPackageService.delete(workPackageId, facilityId);
 
-        return {
-          status: errorStatus ?? HttpStatus.INTERNAL_SERVER_ERROR,
-          data: errorData ?? { statusCode: HttpStatus.INTERNAL_SERVER_ERROR, message: 'Internal server error' },
-        };
+          if (response?.status !== HttpStatus.NO_CONTENT) {
+            hasDeleteError = true;
+            deleteError = response;
+          }
+        } catch (error) {
+          hasDeleteError = true;
+          deleteError = error;
+
+          this.logger.error('Error deleting work package %s for facility %s in multiple amendments %o', workPackageId, facilityId, deleteError);
+        } finally {
+          if (hasDeleteError) {
+            return {
+              status: deleteError?.status,
+              data: deleteError?.data,
+            };
+          }
+
+          return {
+            status: amendmentError ? amendmentResponse?.status : approvalResponse?.status,
+            data: amendmentError ? amendmentResponse?.data : approvalResponse?.data,
+          };
+        }
       }
 
       return {
         status: HttpStatus.CREATED,
-        data: {
-          ...approvalResponse.data,
-          isApproved: true,
-        },
+        data: approvalResponse.data,
       };
     } catch (error) {
       this.logger.error('Error creating multiple amendments for facility %s %o', facilityId, error);
