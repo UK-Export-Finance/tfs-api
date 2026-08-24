@@ -542,12 +542,13 @@ describe('GiftFacilityAmendmentService', () => {
         expect(approveSpy).toHaveBeenCalledWith(mockFacilityId, mockWorkPackageId);
       });
 
-      it(`should return a response with ${HttpStatus.CREATED} status`, async () => {
+      it(`should return a response with the status and data returned by service.approveWorkPackage`, async () => {
         // Act
         const response = await service.createMultiple(mockFacilityId, mockMultipleAmendmentsPayload);
 
         // Assert
-        expect(response.status).toBe(HttpStatus.CREATED);
+        expect(response.status).toBe(HttpStatus.OK);
+        expect(response.data).toBe(WORK_PACKAGE_APPROVE_RESPONSE_DATA);
       });
     });
 
