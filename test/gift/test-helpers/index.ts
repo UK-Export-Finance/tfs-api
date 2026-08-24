@@ -25,14 +25,24 @@ const badRequest: MockGiftResponse = {
   ],
 };
 
+const forbidden: MockGiftResponse = {
+  statusCode: HttpStatus.FORBIDDEN,
+  message: 'Forbidden',
+};
+
+const iAmATeapot: MockGiftResponse = {
+  statusCode: HttpStatus.I_AM_A_TEAPOT,
+  message: 'Teapot',
+};
+
 const internalServerError: MockGiftResponse = {
   statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
   message: 'Internal server error',
 };
 
-const forbidden: MockGiftResponse = {
-  statusCode: HttpStatus.FORBIDDEN,
-  message: 'Forbidden',
+const noContent: MockGiftResponse = {
+  statusCode: HttpStatus.NO_CONTENT,
+  message: 'No content',
 };
 
 const notFound: MockGiftResponse = {
@@ -43,11 +53,6 @@ const notFound: MockGiftResponse = {
 const unauthorized: MockGiftResponse = {
   statusCode: HttpStatus.UNAUTHORIZED,
   message: 'Unauthorized',
-};
-
-const iAmATeapot: MockGiftResponse = {
-  statusCode: HttpStatus.I_AM_A_TEAPOT,
-  message: 'Teapot',
 };
 
 export const mockResponses = {
@@ -87,11 +92,12 @@ export const mockResponses = {
   },
   workPackageCreation: GIFT_EXAMPLES.WORK_PACKAGE_CREATION_RESPONSE_DATA,
   badRequest,
-  internalServerError,
   forbidden,
+  iAmATeapot,
+  internalServerError,
+  noContent,
   notFound,
   unauthorized,
-  iAmATeapot,
 };
 
 export const apimFacilityUrl = `/api/${prefixAndVersion}/gift${PATH.FACILITY}`;

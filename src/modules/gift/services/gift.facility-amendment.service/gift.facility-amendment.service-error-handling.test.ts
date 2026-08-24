@@ -404,15 +404,20 @@ describe('GiftFacilityAmendmentService - error handling', () => {
           buildService();
         });
 
-        it('should delete the work package and return the approval error response', async () => {
+        it(`should return ${HttpStatus.INTERNAL_SERVER_ERROR}`, async () => {
           // Act
           const response = await service.create(mockFacilityId, mockPayload);
 
           // Assert
-          expect(response).toEqual({
-            status,
-            data: mockResponseData,
-          });
+          const expected = {
+            status: HttpStatus.INTERNAL_SERVER_ERROR,
+            data: {
+              message: 'Internal server error',
+              statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+            },
+          };
+
+          expect(response).toEqual(expected);
         });
       });
     });

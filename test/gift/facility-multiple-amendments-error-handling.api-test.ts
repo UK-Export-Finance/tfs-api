@@ -185,7 +185,9 @@ describe('POST /gift/facility/:facilityId/multiple-amendments/without-queue - er
 
         nock(GIFT_API_URL).post(facilityAmendmentUrl(AMEND_FACILITY_INCREASE_AMOUNT)).reply(HttpStatus.BAD_REQUEST, mockResponses.badRequest);
 
-        nock(GIFT_API_URL).delete(`${GIFT.PATH.WORK_PACKAGE}/${mockWorkPackageId}`).reply(HttpStatus.OK);
+        nock(GIFT_API_URL).post(approveStatusUrl).reply(HttpStatus.OK);
+
+        nock(GIFT_API_URL).delete(`${GIFT.PATH.WORK_PACKAGE}/${mockWorkPackageId}`).reply(HttpStatus.NO_CONTENT);
 
         const mockPayload = {
           amendments: [
@@ -206,7 +208,7 @@ describe('POST /gift/facility/:facilityId/multiple-amendments/without-queue - er
     });
 
     describe(`when a ${HttpStatus.BAD_REQUEST} response is returned`, () => {
-      it(`should return a ${HttpStatus.BAD_REQUEST} response with the GIFT error`, async () => {
+      it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response with the GIFT error`, async () => {
         // Arrange
         nock(GIFT_API_URL)
           .get(facilityUrl)
@@ -225,7 +227,7 @@ describe('POST /gift/facility/:facilityId/multiple-amendments/without-queue - er
 
         nock(GIFT_API_URL).post(approveStatusUrl).reply(HttpStatus.BAD_REQUEST, mockResponses.badRequest);
 
-        nock(GIFT_API_URL).delete(`${GIFT.PATH.WORK_PACKAGE}/${mockWorkPackageId}`).reply(HttpStatus.OK);
+        nock(GIFT_API_URL).delete(`${GIFT.PATH.WORK_PACKAGE}/${mockWorkPackageId}`).reply(HttpStatus.NO_CONTENT);
 
         const mockPayload = {
           amendments: [
@@ -240,8 +242,8 @@ describe('POST /gift/facility/:facilityId/multiple-amendments/without-queue - er
         const { status, body } = await api.post(apimFacilityMultipleAmendmentsWithoutQueueUrl, mockPayload);
 
         // Assert
-        expect(status).toBe(HttpStatus.BAD_REQUEST);
-        expect(body).toStrictEqual(mockResponses.badRequest);
+        expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
+        expect(body).toStrictEqual(mockResponses.internalServerError);
       });
     });
 

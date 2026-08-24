@@ -213,26 +213,28 @@ describe('POST /gift/facility/:facilityId/amendment - error handling', () => {
     });
 
     describe(`when a ${HttpStatus.BAD_REQUEST} response is returned`, () => {
-      it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
+      it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
         // Arrange
         nock(GIFT_API_URL).persist().post(facilityWorkPackageUrl).reply(HttpStatus.CREATED, mockResponses.workPackageCreation);
 
         nock(GIFT_API_URL).persist().post(approveStatusUrl).reply(HttpStatus.BAD_REQUEST, mockResponses.badRequest);
 
+        nock(GIFT_API_URL).persist().delete(workPackageUrl).reply(HttpStatus.NO_CONTENT, mockResponses.noContent);
+
         // Act
         const { status, body } = await api.post(apimFacilityAmendmentWithoutQueueUrl, GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD);
 
         // Assert
-        expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
+        expect(status).toBe(HttpStatus.BAD_REQUEST);
 
-        const expected = mockResponses.internalServerError;
+        const expected = mockResponses.badRequest;
 
         expect(body).toStrictEqual(expected);
       });
     });
 
     describe(`when a ${HttpStatus.UNAUTHORIZED} response is returned`, () => {
-      it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
+      it(`should return a ${HttpStatus.UNAUTHORIZED} response`, async () => {
         // Arrange
         nock(GIFT_API_URL).persist().post(facilityWorkPackageUrl).reply(HttpStatus.CREATED, mockResponses.workPackageCreation);
 
@@ -242,16 +244,16 @@ describe('POST /gift/facility/:facilityId/amendment - error handling', () => {
         const { status, body } = await api.post(apimFacilityAmendmentWithoutQueueUrl, GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD);
 
         // Assert
-        expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
+        expect(status).toBe(HttpStatus.UNAUTHORIZED);
 
-        const expected = mockResponses.internalServerError;
+        const expected = mockResponses.unauthorized;
 
         expect(body).toStrictEqual(expected);
       });
     });
 
     describe(`when a ${HttpStatus.FORBIDDEN} response is returned`, () => {
-      it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
+      it(`should return a ${HttpStatus.FORBIDDEN} response`, async () => {
         // Arrange
         nock(GIFT_API_URL).persist().post(facilityWorkPackageUrl).reply(HttpStatus.CREATED, mockResponses.workPackageCreation);
 
@@ -261,9 +263,9 @@ describe('POST /gift/facility/:facilityId/amendment - error handling', () => {
         const { status, body } = await api.post(apimFacilityAmendmentWithoutQueueUrl, GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD);
 
         // Assert
-        expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
+        expect(status).toBe(HttpStatus.FORBIDDEN);
 
-        const expected = mockResponses.internalServerError;
+        const expected = mockResponses.forbidden;
 
         expect(body).toStrictEqual(expected);
       });

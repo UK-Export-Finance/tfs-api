@@ -117,10 +117,7 @@ describe('POST /gift/facility/:facilityId/multiple-amendments/without-queue', ()
 
         // Assert
         expect(status).toBe(HttpStatus.CREATED);
-        expect(body).toStrictEqual({
-          ...mockResponses.approveStatus,
-          isApproved: true,
-        });
+        expect(body).toStrictEqual(mockResponses.approveStatus);
 
         expect(callOrder).toStrictEqual(['workPackage', 'facilityAmendment', 'obligationAmendment', 'approveStatus']);
       });
@@ -208,10 +205,7 @@ describe('POST /gift/facility/:facilityId/multiple-amendments/without-queue', ()
 
         // Assert
         expect(status).toBe(HttpStatus.CREATED);
-        expect(body).toStrictEqual({
-          ...mockResponses.approveStatus,
-          isApproved: true,
-        });
+        expect(body).toStrictEqual(mockResponses.approveStatus);
 
         expect(callOrder).toStrictEqual([
           'workPackage',
@@ -323,10 +317,7 @@ describe('POST /gift/facility/:facilityId/multiple-amendments/without-queue', ()
 
         // Assert
         expect(status).toBe(HttpStatus.CREATED);
-        expect(body).toStrictEqual({
-          ...mockResponses.approveStatus,
-          isApproved: true,
-        });
+        expect(body).toStrictEqual(mockResponses.approveStatus);
 
         expect(callOrder).toStrictEqual([
           'workPackage',

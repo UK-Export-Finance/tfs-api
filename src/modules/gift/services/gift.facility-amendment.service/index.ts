@@ -424,8 +424,8 @@ export class GiftFacilityAmendmentService {
       }
 
       return {
-        status: HttpStatus.CREATED,
-        data: approvalResponse.data,
+        status: approvalResponse?.status,
+        data: approvalResponse?.data,
       };
     } catch (error) {
       this.logger.error('Error creating multiple amendments for facility %s %o', facilityId, error);
@@ -450,16 +450,7 @@ export class GiftFacilityAmendmentService {
       if (approvalResponse.status !== HttpStatus.OK) {
         this.logger.error('Error approving amendment work package %s for facility %s %o', workPackageId, facilityId, approvalResponse.data);
 
-        const error = new Error(`Error approving amendment work package ${workPackageId} for facility ${facilityId} amendment`, {
-          cause: {
-            data: approvalResponse.data,
-            status: approvalResponse.status,
-          },
-        });
-
-        (error as any).status = approvalResponse.status;
-
-        throw error;
+        throw new Error(`Error approving amendment work package ${workPackageId} for facility ${facilityId}`, { cause: approvalResponse });
       }
 
       return approvalResponse;
