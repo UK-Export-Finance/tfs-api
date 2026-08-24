@@ -1,7 +1,7 @@
 import { GiftObligationRequestDto } from '../../dto';
 import { getObligationSubtypeCodes } from '.';
 
-describe('modules/gift/helpers/map-obligation-subtype-codes', () => {
+describe('modules/gift/helpers/get-obligation-subtype-codes', () => {
   describe('getObligationSubtypeCodes', () => {
     it('should return an array of obligation subtype codes', () => {
       // Arrange
