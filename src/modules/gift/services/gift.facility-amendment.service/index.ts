@@ -23,7 +23,22 @@ interface HandleCreateAmendmentsParams {
   workPackageId: number;
 }
 
+// interface CreateGiftFacilityAmendmentResponseDataDto extends GiftWorkPackageResponseDto {
+//   statusCode: number;
+//   message: string;
+// }
+
+interface CreateGiftFacilityAmendmentResponseDataDto {
+  statusCode: number;
+  message: string;
+}
+
 interface CreateGiftFacilityAmendmentResponseDto {
+  status: AxiosResponse['status'];
+  data: CreateGiftFacilityAmendmentResponseDataDto;
+}
+
+interface CreateGiftFacilityAmendmentGiftResponseDto {
   status: AxiosResponse['status'];
   data: GiftWorkPackageResponseDto;
 }
@@ -225,7 +240,11 @@ export class GiftFacilityAmendmentService {
    * @throws {Error} If there is an error creating the amendment or the work package.
    * @returns {Promise<CreateGiftFacilityAmendmentResponseDto>}
    */
-  async create(facilityId: UkefId, amendment: CreateGiftFacilityAmendmentRequestDto): Promise<CreateGiftFacilityAmendmentResponseDto> {
+  // eslint-disable-next-line max-len
+  async create(
+    facilityId: UkefId,
+    amendment: CreateGiftFacilityAmendmentRequestDto,
+  ): Promise<CreateGiftFacilityAmendmentResponseDto | CreateGiftFacilityAmendmentGiftResponseDto> {
     const { amendmentType } = amendment;
 
     try {
@@ -274,8 +293,6 @@ export class GiftFacilityAmendmentService {
         return amendmentResponse;
       }
 
-      // const approvalResponse = await this.approveWorkPackage(facilityId, workPackageId);
-
       let approvalResponse;
 
       try {
@@ -284,15 +301,13 @@ export class GiftFacilityAmendmentService {
         this.logger.error('Error approving work package %s for facility %s amendment - deleting work package %o', workPackageId, facilityId, approvalError);
 
         // extract status from approvalError - might be nested in cause
-        let errorStatus: number | undefined;
-        let errorData: any;
+        let errorStatus: number;
 
         const errorWithStatus = approvalError as Error & { status?: number; data?: any; cause?: any };
 
         // first try direct access (error is directly thrown with status)
         if (errorWithStatus.status) {
           errorStatus = errorWithStatus.status;
-          errorData = (errorWithStatus.cause as any)?.data;
         }
 
         try {
@@ -302,9 +317,14 @@ export class GiftFacilityAmendmentService {
         }
 
         // Return the approval error regardless of delete result
+        const responseStatus = errorStatus ?? HttpStatus.INTERNAL_SERVER_ERROR;
+
         return {
-          status: errorStatus ?? HttpStatus.INTERNAL_SERVER_ERROR,
-          data: errorData ?? { statusCode: HttpStatus.INTERNAL_SERVER_ERROR, message: 'Internal server error' },
+          status: responseStatus,
+          data: {
+            statusCode: responseStatus,
+            message: 'Unable to approve work package',
+          },
         };
       }
 
@@ -329,7 +349,11 @@ export class GiftFacilityAmendmentService {
    * @throws {Error} If there is an error creating the amendments or the work package.
    * @returns {Promise<CreateGiftFacilityAmendmentResponseDto>}
    */
-  async createMultiple(facilityId: UkefId, payload: CreateGiftFacilityMultipleAmendmentsRequestDto): Promise<CreateGiftFacilityAmendmentResponseDto> {
+  // eslint-disable-next-line max-len
+  async createMultiple(
+    facilityId: UkefId,
+    payload: CreateGiftFacilityMultipleAmendmentsRequestDto,
+  ): Promise<CreateGiftFacilityAmendmentResponseDto | CreateGiftFacilityAmendmentGiftResponseDto> {
     try {
       this.logger.info('Creating multiple amendments for facility %s', facilityId);
 
