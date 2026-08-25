@@ -74,7 +74,7 @@ export class GiftFacilityController {
   async get(@Param() { facilityId }: FacilityIdOperationParamsDto, @Res({ passthrough: true }) res: Response) {
     const { status, data } = await this.giftFacilityService.get(facilityId);
 
-    res.status(status).send(data);
+    res.status(status).json(data);
   }
 
   @Post()
@@ -167,7 +167,7 @@ export class GiftFacilityController {
 
     const { status, data } = await this.giftFacilityService.create(facilityData, facilityId);
 
-    res.status(status).send(data);
+    res.status(status).json(data);
   }
 
   @Post(':facilityId/amendment/without-queue')
@@ -208,7 +208,7 @@ export class GiftFacilityController {
   ) {
     const { status, data } = await this.giftFacilityAmendmentService.create(facilityId, amendmentData);
 
-    res.status(status).send(data);
+    res.status(status).json(data);
   }
 
   @Post(':facilityId/multiple-amendments')
@@ -274,6 +274,6 @@ export class GiftFacilityController {
   ) {
     const { status, data } = await this.giftFacilityAmendmentService.createMultiple(facilityId, multipleAmendmentsData);
 
-    res.status(status).send(data);
+    res.status(status).json(data);
   }
 }

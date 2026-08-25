@@ -267,7 +267,7 @@ describe('POST /gift/facility/:facilityId/multiple-amendments/without-queue - er
 
         nock(GIFT_API_URL).post(approveStatusUrl).reply(HttpStatus.INTERNAL_SERVER_ERROR, mockResponses.internalServerError);
 
-        nock(GIFT_API_URL).delete(`${GIFT.PATH.WORK_PACKAGE}/${mockWorkPackageId}`).reply(HttpStatus.OK);
+        nock(GIFT_API_URL).delete(`${GIFT.PATH.WORK_PACKAGE}/${mockWorkPackageId}`).reply(HttpStatus.NO_CONTENT);
 
         const mockPayload = {
           amendments: [

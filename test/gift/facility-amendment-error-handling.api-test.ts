@@ -213,7 +213,7 @@ describe('POST /gift/facility/:facilityId/amendment - error handling', () => {
     });
 
     describe(`when a ${HttpStatus.BAD_REQUEST} response is returned`, () => {
-      it(`should return a an ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
+      it(`should return an ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
         // Arrange
         nock(GIFT_API_URL).persist().post(facilityWorkPackageUrl).reply(HttpStatus.CREATED, mockResponses.workPackageCreation);
 
