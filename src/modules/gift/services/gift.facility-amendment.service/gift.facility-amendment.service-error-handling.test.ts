@@ -412,7 +412,7 @@ describe('GiftFacilityAmendmentService - error handling', () => {
           const expected = {
             status: HttpStatus.INTERNAL_SERVER_ERROR,
             data: {
-              message: 'Internal server error',
+              message: 'Unable to approve work package',
               statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
             },
           };
@@ -428,7 +428,7 @@ describe('GiftFacilityAmendmentService - error handling', () => {
         const mockError = new Error('Approval service error');
         (mockError as any).status = HttpStatus.INTERNAL_SERVER_ERROR;
         (mockError as any).cause = {
-          data: { statusCode: HttpStatus.INTERNAL_SERVER_ERROR, message: 'Internal server error' },
+          data: { statusCode: HttpStatus.INTERNAL_SERVER_ERROR, message: 'Unable to approve work package' },
           status: HttpStatus.INTERNAL_SERVER_ERROR,
         };
 
