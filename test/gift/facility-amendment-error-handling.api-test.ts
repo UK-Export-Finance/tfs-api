@@ -227,7 +227,7 @@ describe('POST /gift/facility/:facilityId/amendment - error handling', () => {
         // Assert
         expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
 
-        const expected = mockResponses.internalServerError;
+        const expected = mockResponses.internalServerErrorWorkPackage;
 
         expect(body).toStrictEqual(expected);
       });
@@ -246,7 +246,7 @@ describe('POST /gift/facility/:facilityId/amendment - error handling', () => {
         // Assert
         expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
 
-        const expected = mockResponses.internalServerError;
+        const expected = mockResponses.internalServerErrorWorkPackage;
 
         expect(body).toStrictEqual(expected);
       });
@@ -265,7 +265,7 @@ describe('POST /gift/facility/:facilityId/amendment - error handling', () => {
         // Assert
         expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
 
-        const expected = mockResponses.internalServerError;
+        const expected = mockResponses.internalServerErrorWorkPackage;
 
         expect(body).toStrictEqual(expected);
       });
@@ -284,7 +284,7 @@ describe('POST /gift/facility/:facilityId/amendment - error handling', () => {
         // Assert
         expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
 
-        const expected = mockResponses.internalServerError;
+        const expected = mockResponses.internalServerErrorWorkPackage;
 
         expect(body).toStrictEqual(expected);
       });
@@ -303,7 +303,7 @@ describe('POST /gift/facility/:facilityId/amendment - error handling', () => {
         // Assert
         expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
 
-        const expected = mockResponses.internalServerError;
+        const expected = mockResponses.internalServerErrorWorkPackage;
 
         expect(body).toStrictEqual(expected);
       });

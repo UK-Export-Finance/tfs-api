@@ -40,6 +40,11 @@ const internalServerError: MockGiftResponse = {
   message: 'Internal server error',
 };
 
+const internalServerErrorWorkPackage: MockGiftResponse = {
+  statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+  message: 'Unable to approve work package',
+};
+
 const noContent: MockGiftResponse = {
   statusCode: HttpStatus.NO_CONTENT,
   message: 'No content',
@@ -95,6 +100,7 @@ export const mockResponses = {
   forbidden,
   iAmATeapot,
   internalServerError,
+  internalServerErrorWorkPackage,
   noContent,
   notFound,
   unauthorized,
