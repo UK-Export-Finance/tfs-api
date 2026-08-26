@@ -23,11 +23,6 @@ interface HandleCreateAmendmentsParams {
   workPackageId: number;
 }
 
-// interface CreateGiftFacilityAmendmentResponseDataDto extends GiftWorkPackageResponseDto {
-//   statusCode: number;
-//   message: string;
-// }
-
 interface CreateGiftFacilityAmendmentResponseDataDto {
   statusCode: number;
   message: string;
@@ -281,7 +276,7 @@ export class GiftFacilityAmendmentService {
       const amendmentResponse = await this.handleCreateAmendments({ workPackageId, facility, facilityId, amendment });
 
       // If amendment failed, delete the work package and return the error response.
-      if (amendmentResponse && 'status' in amendmentResponse && amendmentResponse.status !== HttpStatus.CREATED) {
+      if (amendmentResponse.status !== HttpStatus.CREATED) {
         this.logger.error('Error creating amendment %s for facility %s', amendment.amendmentType, facilityId);
 
         try {
