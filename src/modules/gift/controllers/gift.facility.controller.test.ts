@@ -30,7 +30,7 @@ import {
 import { GiftFacilityController } from './gift.facility.controller';
 
 const {
-  GIFT: { FACILITY_ID: mockFacilityId, FACILITY_CREATION_PAYLOAD, FACILITY_AMENDMENT_REQUEST_PAYLOAD },
+  GIFT: { FACILITY_ID: mockFacilityId, FACILITY_CREATION_PAYLOAD, FACILITY_AMENDMENT_REQUEST_PAYLOAD, FACILITY_MULTIPLE_AMENDMENTS_REQUEST_PAYLOAD },
 } = EXAMPLES;
 
 const mockResponseGet = mockResponse200(EXAMPLES.GIFT.FACILITY_RESPONSE_DATA);
@@ -63,7 +63,7 @@ describe('GiftFacilityController', () => {
 
   let mockRes;
   let mockResStatus;
-  let mockResSend;
+  let mockResJson;
 
   let mockServiceGetFacility;
   let mockServiceCreateFacility;
@@ -128,10 +128,10 @@ describe('GiftFacilityController', () => {
       statusService,
     );
 
-    mockResSend = jest.fn();
+    mockResJson = jest.fn();
 
     mockRes = {
-      send: mockResSend,
+      json: mockResJson,
     };
 
     mockResStatus = jest.fn(() => mockRes);
@@ -179,14 +179,14 @@ describe('GiftFacilityController', () => {
       expect(mockResStatus).toHaveBeenCalledWith(mockResponseGet.status);
     });
 
-    it('should call res.status.send with data obtained from the service call', async () => {
+    it('should call res.status.json with data obtained from the service call', async () => {
       // Act
       await controller.get(mockParams, mockRes);
 
       // Assert
-      expect(mockResSend).toHaveBeenCalledTimes(1);
+      expect(mockResJson).toHaveBeenCalledTimes(1);
 
-      expect(mockResSend).toHaveBeenCalledWith(mockResponseGet.data);
+      expect(mockResJson).toHaveBeenCalledWith(mockResponseGet.data);
     });
   });
 
@@ -213,14 +213,14 @@ describe('GiftFacilityController', () => {
       expect(mockResStatus).toHaveBeenCalledWith(mockResponsePost.status);
     });
 
-    it('should call res.status.send with data obtained from the service call', async () => {
+    it('should call res.status.json with data obtained from the service call', async () => {
       // Act
       await controller.post(mockBody, mockRes);
 
       // Assert
-      expect(mockResSend).toHaveBeenCalledTimes(1);
+      expect(mockResJson).toHaveBeenCalledTimes(1);
 
-      expect(mockResSend).toHaveBeenCalledWith(mockResponsePost.data);
+      expect(mockResJson).toHaveBeenCalledWith(mockResponsePost.data);
     });
   });
 
@@ -248,14 +248,14 @@ describe('GiftFacilityController', () => {
       expect(mockResStatus).toHaveBeenCalledWith(mockResponseAmendmentPost.status);
     });
 
-    it('should call res.status.send with data obtained from the service call', async () => {
+    it('should call res.status.json with data obtained from the service call', async () => {
       // Act
       await controller.postAmendment(mockParams, mockBody, mockRes);
 
       // Assert
-      expect(mockResSend).toHaveBeenCalledTimes(1);
+      expect(mockResJson).toHaveBeenCalledTimes(1);
 
-      expect(mockResSend).toHaveBeenCalledWith(mockResponseAmendmentPost.data);
+      expect(mockResJson).toHaveBeenCalledWith(mockResponseAmendmentPost.data);
     });
   });
 
@@ -301,6 +301,67 @@ describe('GiftFacilityController', () => {
       // Assert
       expect(mockResStatus).toHaveBeenCalledTimes(1);
       expect(mockResStatus).toHaveBeenCalledWith(HttpStatus.ACCEPTED);
+    });
+  });
+
+  describe('POST :facilityId/multiple-amendments', () => {
+    const mockParams = { facilityId: mockFacilityId };
+    const mockBody = FACILITY_MULTIPLE_AMENDMENTS_REQUEST_PAYLOAD;
+
+    it('should call giftQueueService.enqueue with the facility multiple amendments message and message type', async () => {
+      // Act
+      await controller.postMultipleAmendmentsQueue(mockParams, mockBody, mockRes);
+
+      // Assert
+      expect(giftQueueService.enqueue).toHaveBeenCalledTimes(1);
+      expect(giftQueueService.enqueue).toHaveBeenCalledWith({
+        messageType: 'FACILITY_MULTIPLE_AMENDMENTS',
+        facilityId: mockFacilityId,
+        payload: mockBody,
+      });
+    });
+
+    it('should call res.status with HttpStatus.ACCEPTED', async () => {
+      // Act
+      await controller.postMultipleAmendmentsQueue(mockParams, mockBody, mockRes);
+
+      // Assert
+      expect(mockResStatus).toHaveBeenCalledTimes(1);
+      expect(mockResStatus).toHaveBeenCalledWith(HttpStatus.ACCEPTED);
+    });
+  });
+
+  describe('POST :facilityId/multiple-amendments/without-queue', () => {
+    const mockParams = { facilityId: mockFacilityId };
+    const mockBody = FACILITY_MULTIPLE_AMENDMENTS_REQUEST_PAYLOAD;
+
+    it('should call giftFacilityAmendmentService.createMultiple with facility id and amendments data', async () => {
+      // Arrange
+      giftFacilityAmendmentService.createMultiple = jest
+        .fn()
+        .mockResolvedValue({ status: HttpStatus.CREATED, data: EXAMPLES.GIFT.WORK_PACKAGE_CREATION_RESPONSE_DATA });
+
+      // Act
+      await controller.postMultipleAmendments(mockParams, mockBody, mockRes);
+
+      // Assert
+      expect(giftFacilityAmendmentService.createMultiple).toHaveBeenCalledTimes(1);
+      expect(giftFacilityAmendmentService.createMultiple).toHaveBeenCalledWith(mockFacilityId, mockBody);
+    });
+
+    it('should call res.status and res.json with the response from giftFacilityAmendmentService', async () => {
+      // Arrange
+      const mockResponseData = { id: 1, isApproved: true };
+      giftFacilityAmendmentService.createMultiple = jest.fn().mockResolvedValue({ status: HttpStatus.CREATED, data: mockResponseData });
+
+      // Act
+      await controller.postMultipleAmendments(mockParams, mockBody, mockRes);
+
+      // Assert
+      expect(mockResStatus).toHaveBeenCalledTimes(1);
+      expect(mockResStatus).toHaveBeenCalledWith(HttpStatus.CREATED);
+      expect(mockResJson).toHaveBeenCalledTimes(1);
+      expect(mockResJson).toHaveBeenCalledWith(mockResponseData);
     });
   });
 });

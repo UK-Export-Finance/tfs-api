@@ -6,13 +6,14 @@ import { GiftQueueConfig, KEY as GIFT_QUEUE_CONFIG_KEY } from '@ukef/config/gift
 import { GIFT } from '@ukef/constants';
 import { PinoLogger } from 'nestjs-pino';
 
-import { CreateGiftFacilityAmendmentRequestDto, GiftFacilityCreationRequestDto } from '../dto';
+import { CreateGiftFacilityAmendmentRequestDto, CreateGiftFacilityMultipleAmendmentsRequestDto, GiftFacilityCreationRequestDto } from '../dto';
 
 const { QUEUE_DELAY } = GIFT;
 
 const MESSAGE_TYPES = {
   FACILITY_CREATION: 'FACILITY_CREATION',
   FACILITY_AMENDMENT: 'FACILITY_AMENDMENT',
+  FACILITY_MULTIPLE_AMENDMENTS: 'FACILITY_MULTIPLE_AMENDMENTS',
 } as const;
 
 type GiftFacilityCreationQueueMessage = {
@@ -26,11 +27,20 @@ type GiftFacilityAmendmentQueueMessage = {
   payload: CreateGiftFacilityAmendmentRequestDto;
 };
 
-type GiftQueueMessage = GiftFacilityCreationQueueMessage | GiftFacilityAmendmentQueueMessage;
+type GiftFacilityMultipleAmendmentsQueueMessage = {
+  messageType: typeof MESSAGE_TYPES.FACILITY_MULTIPLE_AMENDMENTS;
+  facilityId: string;
+  payload: CreateGiftFacilityMultipleAmendmentsRequestDto;
+};
+
+type GiftQueueMessage = GiftFacilityCreationQueueMessage | GiftFacilityAmendmentQueueMessage | GiftFacilityMultipleAmendmentsQueueMessage;
 
 /**
  * Service for interacting with the GIFT Azure Storage Queue.
- * Handles encoding and enqueuing of GIFT facility request messages.
+ * Handles encoding and enqueuing of GIFT facility request messages:
+ * - Create a GIFT facility
+ * - Make an amendment to a GIFT facility
+ * - Make multiple amendments to a GIFT facility
  */
 @Injectable()
 export class GiftQueueService {

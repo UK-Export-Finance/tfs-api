@@ -20,6 +20,7 @@ const { GIFT: GIFT_EXAMPLES } = EXAMPLES;
 type EnqueueMessage = Parameters<GiftQueueService['enqueue']>[0];
 type FacilityCreationMessage = Extract<EnqueueMessage, { messageType: 'FACILITY_CREATION' }>;
 type FacilityAmendmentMessage = Extract<EnqueueMessage, { messageType: 'FACILITY_AMENDMENT' }>;
+type FacilityMultipleAmendmentsMessage = Extract<EnqueueMessage, { messageType: 'FACILITY_MULTIPLE_AMENDMENTS' }>;
 
 const mockQueueConfig: GiftQueueConfig = {
   storageAccountName: undefined,
@@ -37,6 +38,12 @@ const mockAmendmentMessage: FacilityAmendmentMessage = {
   messageType: 'FACILITY_AMENDMENT' as const,
   facilityId: GIFT_EXAMPLES.FACILITY_ID,
   payload: GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD,
+};
+
+const mockMultipleAmendmentsMessage: FacilityMultipleAmendmentsMessage = {
+  messageType: 'FACILITY_MULTIPLE_AMENDMENTS' as const,
+  facilityId: GIFT_EXAMPLES.FACILITY_ID,
+  payload: GIFT_EXAMPLES.FACILITY_MULTIPLE_AMENDMENTS_REQUEST_PAYLOAD,
 };
 
 describe('GiftQueueService', () => {
@@ -206,6 +213,29 @@ describe('GiftQueueService', () => {
 
         // Assert
         expect(mockSendMessage).toHaveBeenCalledTimes(1);
+        expect(mockSendMessage).toHaveBeenCalledWith(expectedMessage, {});
+      });
+    });
+
+    describe('when message is FACILITY_MULTIPLE_AMENDMENTS', () => {
+      it('should not set visibilityTimeout when message is FACILITY_MULTIPLE_AMENDMENTS', async () => {
+        const expectedMessage = Buffer.from(JSON.stringify(mockMultipleAmendmentsMessage)).toString('base64');
+
+        // Act
+        await service.enqueue(mockMultipleAmendmentsMessage);
+
+        // Assert
+        expect(mockSendMessage).toHaveBeenCalledTimes(1);
+        expect(mockSendMessage).toHaveBeenCalledWith(expectedMessage, {});
+      });
+
+      it('should encode the multiple amendments message correctly with facility ID and amendments payload', async () => {
+        // Act
+        await service.enqueue(mockMultipleAmendmentsMessage);
+
+        // Assert
+        const expectedMessage = Buffer.from(JSON.stringify(mockMultipleAmendmentsMessage)).toString('base64');
+
         expect(mockSendMessage).toHaveBeenCalledWith(expectedMessage, {});
       });
     });

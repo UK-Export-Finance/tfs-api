@@ -18,6 +18,7 @@ import { Response } from 'express';
 import {
   CreateGiftFacilityAmendmentRequestDto,
   CreateGiftFacilityAmendmentResponseDto,
+  CreateGiftFacilityMultipleAmendmentsRequestDto,
   FacilityIdOperationParamsDto,
   GiftFacilityCreationRequestDto,
   GiftFacilityCreationResponseDto,
@@ -73,7 +74,7 @@ export class GiftFacilityController {
   async get(@Param() { facilityId }: FacilityIdOperationParamsDto, @Res({ passthrough: true }) res: Response) {
     const { status, data } = await this.giftFacilityService.get(facilityId);
 
-    res.status(status).send(data);
+    res.status(status).json(data);
   }
 
   @Post()
@@ -101,7 +102,7 @@ export class GiftFacilityController {
   }
 
   @Post(':facilityId/amendment')
-  @ApiOperation({ summary: 'Amend a GIFT facility - supports a subset of specific amendments available in GIFT' })
+  @ApiOperation({ summary: 'Make a single amendment to a GIFT facility, in one GIFT work package. Supports a subset of specific amendments available in GIFT' })
   @ApiParam({
     required: true,
     name: 'facilityId',
@@ -166,7 +167,7 @@ export class GiftFacilityController {
 
     const { status, data } = await this.giftFacilityService.create(facilityData, facilityId);
 
-    res.status(status).send(data);
+    res.status(status).json(data);
   }
 
   @Post(':facilityId/amendment/without-queue')
@@ -207,6 +208,72 @@ export class GiftFacilityController {
   ) {
     const { status, data } = await this.giftFacilityAmendmentService.create(facilityId, amendmentData);
 
-    res.status(status).send(data);
+    res.status(status).json(data);
+  }
+
+  @Post(':facilityId/multiple-amendments')
+  @ApiOperation({
+    summary: 'Make multiple amendments to a GIFT facility, in one GIFT work package. Supports a subset of specific amendments available in GIFT',
+  })
+  @ApiParam({
+    required: true,
+    name: 'facilityId',
+    type: 'string',
+    description: 'The facility ID',
+    example: EXAMPLES.GIFT.FACILITY_ID,
+  })
+  @ApiBody({
+    required: true,
+    type: CreateGiftFacilityMultipleAmendmentsRequestDto,
+  })
+  @ApiAcceptedResponse({
+    description: 'The facility amendment request has been accepted and added to the queue',
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad request',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized',
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'An internal server error has occurred',
+  })
+  async postMultipleAmendmentsQueue(
+    @Param() { facilityId }: FacilityIdOperationParamsDto,
+    @Body() amendmentsData: unknown,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    await this.giftQueueService.enqueue({
+      messageType: 'FACILITY_MULTIPLE_AMENDMENTS',
+      facilityId,
+      payload: amendmentsData as unknown as CreateGiftFacilityMultipleAmendmentsRequestDto,
+    });
+
+    res.status(HttpStatus.ACCEPTED);
+  }
+
+  @Post(':facilityId/multiple-amendments/without-queue')
+  @ApiOperation({
+    summary: 'Make multiple amendments to a GIFT facility, grouped into one GIFT work package. Supports a subset of specific amendments available in GIFT',
+  })
+  @ApiParam({
+    required: true,
+    name: 'facilityId',
+    type: 'string',
+    description: 'The facility ID',
+    example: EXAMPLES.GIFT.FACILITY_ID,
+  })
+  @ApiBody({
+    required: true,
+    type: CreateGiftFacilityMultipleAmendmentsRequestDto,
+  })
+  async postMultipleAmendments(
+    @Param() { facilityId }: FacilityIdOperationParamsDto,
+    @Body(new ValidationPipe({ transform: true })) multipleAmendmentsData: CreateGiftFacilityMultipleAmendmentsRequestDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const { status, data } = await this.giftFacilityAmendmentService.createMultiple(facilityId, multipleAmendmentsData);
+
+    res.status(status).json(data);
   }
 }

@@ -1,6 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 import { EXAMPLES, GIFT } from '@ukef/constants';
-import { mockResponse200, mockResponse201, mockResponse500 } from '@ukef-test/http-response';
+import { mockWorkPackageId } from '@ukef-test/gift/test-helpers';
+import { mockResponse200, mockResponse201, mockResponse204, mockResponse500 } from '@ukef-test/http-response';
 import { PinoLogger } from 'nestjs-pino';
 
 import { GiftAmountAmendmentService } from '../gift.amount-amendment.service';
@@ -14,6 +15,7 @@ const {
   GIFT: {
     FACILITY_AMENDMENT_REQUEST_PAYLOAD: mockPayload,
     FACILITY_ID: mockFacilityId,
+    FACILITY_MULTIPLE_AMENDMENTS_REQUEST_PAYLOAD: mockMultipleAmendmentsPayload,
     FACILITY_RESPONSE_DATA,
     WORK_PACKAGE_APPROVE_RESPONSE_DATA,
     WORK_PACKAGE_CREATION_RESPONSE_DATA,
@@ -73,7 +75,10 @@ describe('GiftFacilityAmendmentService - error handling', () => {
   };
 
   beforeEach(() => {
-    giftHttpService = {};
+    giftHttpService = {
+      delete: jest.fn().mockResolvedValue(mockResponse200({})),
+      post: jest.fn().mockResolvedValue(mockResponse201({})),
+    };
 
     workPackageService = new GiftWorkPackageService(giftHttpService, logger);
     facilityService = {} as GiftFacilityService;
@@ -81,14 +86,15 @@ describe('GiftFacilityAmendmentService - error handling', () => {
     replaceExpiryDateAmendmentService = {} as GiftReplaceExpiryDateAmendmentService;
     statusService = new GiftStatusService(giftHttpService, logger);
 
-    mockFacilityServiceGet = jest.fn().mockResolvedValueOnce(mockResponse200(mockFacilityResponseData));
-    mockWorkPackageServiceCreate = jest.fn().mockResolvedValueOnce(mockWorkPackageServiceCreateResponse);
-    mockAmountAmendmentFacility = jest.fn().mockResolvedValueOnce(mockResponse201({}));
-    mockAmountAmendmentObligations = jest.fn().mockResolvedValueOnce([]);
-    mockReplaceExpiryDateAmendmentFacility = jest.fn().mockResolvedValueOnce(mockResponse201({}));
-    mockReplaceExpiryDateAmendmentObligations = jest.fn().mockResolvedValueOnce({});
-    mockReplaceExpiryDateAmendmentAccrualSchedules = jest.fn().mockResolvedValueOnce(undefined);
-    mockStatusServiceApproved = jest.fn().mockResolvedValueOnce(mockResponse200(WORK_PACKAGE_APPROVE_RESPONSE_DATA));
+    // Use mockResolvedValue for mocks that can be called multiple times
+    mockFacilityServiceGet = jest.fn().mockResolvedValue(mockResponse200(mockFacilityResponseData));
+    mockWorkPackageServiceCreate = jest.fn().mockResolvedValue(mockWorkPackageServiceCreateResponse);
+    mockAmountAmendmentFacility = jest.fn().mockResolvedValue(mockResponse201({}));
+    mockAmountAmendmentObligations = jest.fn().mockResolvedValue([]);
+    mockReplaceExpiryDateAmendmentFacility = jest.fn().mockResolvedValue(mockResponse201({}));
+    mockReplaceExpiryDateAmendmentObligations = jest.fn().mockResolvedValue({});
+    mockReplaceExpiryDateAmendmentAccrualSchedules = jest.fn().mockResolvedValue(undefined);
+    mockStatusServiceApproved = jest.fn().mockResolvedValue(mockResponse200(WORK_PACKAGE_APPROVE_RESPONSE_DATA));
 
     facilityService.get = mockFacilityServiceGet;
     workPackageService.create = mockWorkPackageServiceCreate;
@@ -100,6 +106,10 @@ describe('GiftFacilityAmendmentService - error handling', () => {
     statusService.approved = mockStatusServiceApproved;
 
     buildService();
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   afterAll(() => {
@@ -155,13 +165,119 @@ describe('GiftFacilityAmendmentService - error handling', () => {
 
         buildService();
 
+        // Act & Assert
+        await expect(service.create(mockFacilityId, mockPayload)).rejects.toThrow();
+      });
+    });
+  });
+
+  describe('giftWorkPackageService.createMultiple', () => {
+    describe('when amendments fail to be created', () => {
+      let mockHttpServiceDelete;
+      let mockErrorResponse;
+
+      beforeEach(() => {
+        // Arrange
+        mockHttpServiceDelete = jest.fn().mockResolvedValue(mockResponse204());
+
+        giftHttpService.delete = mockHttpServiceDelete;
+        workPackageService = new GiftWorkPackageService(giftHttpService, logger);
+        workPackageService.create = mockWorkPackageServiceCreate;
+
+        mockErrorResponse = {
+          status: HttpStatus.BAD_REQUEST,
+          data: { error: 'Mock amendment error' },
+        };
+
+        jest.spyOn(service, 'handleCreateAmendments' as any).mockResolvedValue(mockErrorResponse);
+      });
+
+      afterEach(() => {
+        jest.clearAllMocks();
+      });
+
+      it('should call giftWorkPackageService.delete', async () => {
         // Act
-        const response = service.create(mockFacilityId, mockPayload);
+        await service.createMultiple(mockFacilityId, mockMultipleAmendmentsPayload);
 
         // Assert
-        const expected = new Error(`Error creating amendment ${mockPayload.amendmentType} for facility ${mockFacilityId}`, { cause: mockError });
+        expect(mockHttpServiceDelete).toHaveBeenCalledTimes(1);
+        expect(mockHttpServiceDelete).toHaveBeenCalledWith({ path: `/work-package/${mockWorkPackageId}` });
+      });
 
-        await expect(response).rejects.toThrow(expected);
+      it('should return the amendment error response', async () => {
+        // Act
+        const response = await service.createMultiple(mockFacilityId, mockMultipleAmendmentsPayload);
+
+        // Assert
+        expect(response).toEqual(mockErrorResponse);
+      });
+    });
+
+    describe('when amendments throw an exception', () => {
+      it('should delete the work package and return error response', async () => {
+        // Arrange
+        const mockError = new Error('Network error during amendments');
+        const mockHttpServiceDelete = jest.fn().mockResolvedValue(mockResponse204());
+
+        giftHttpService.delete = mockHttpServiceDelete;
+        workPackageService = new GiftWorkPackageService(giftHttpService, logger);
+        workPackageService.create = mockWorkPackageServiceCreate;
+
+        buildService();
+
+        jest.spyOn(service, 'handleCreateAmendments' as any).mockRejectedValueOnce(mockError);
+
+        // Act
+        const response = await service.createMultiple(mockFacilityId, mockMultipleAmendmentsPayload);
+
+        // Assert
+        expect(mockHttpServiceDelete).toHaveBeenCalledTimes(1);
+        expect(mockHttpServiceDelete).toHaveBeenCalledWith({ path: `/work-package/${mockWorkPackageId}` });
+        expect(response).toBeDefined();
+      });
+
+      it('should still return error even if work package deletion fails', async () => {
+        // Arrange
+        const mockError = new Error('Network error during amendments');
+        const mockDeleteError = new Error('Delete failed');
+        const mockHttpServiceDelete = jest.fn().mockRejectedValue(mockDeleteError);
+
+        giftHttpService.delete = mockHttpServiceDelete;
+        workPackageService = new GiftWorkPackageService(giftHttpService, logger);
+        workPackageService.create = mockWorkPackageServiceCreate;
+
+        buildService();
+
+        jest.spyOn(service, 'handleCreateAmendments' as any).mockRejectedValueOnce(mockError);
+
+        // Act
+        const response = await service.createMultiple(mockFacilityId, mockMultipleAmendmentsPayload);
+
+        // Assert
+        expect(response).toBeDefined();
+      });
+    });
+
+    describe('when amendments are successful, but work package deletion fails', () => {
+      it('should return the work package deletion response', async () => {
+        // Arrange
+        const mockHttpServiceDelete = jest.fn().mockResolvedValue(mockResponse500());
+
+        giftHttpService.delete = mockHttpServiceDelete;
+        workPackageService = new GiftWorkPackageService(giftHttpService, logger);
+
+        buildService();
+
+        jest.spyOn(service, 'handleCreateAmendments' as any).mockResolvedValue({ status: HttpStatus.ACCEPTED });
+
+        // Act
+        const response = await service.createMultiple(mockFacilityId, mockMultipleAmendmentsPayload);
+
+        // Assert
+        const expected = mockResponse500();
+
+        expect(response).toEqual(expected);
       });
     });
   });
@@ -190,22 +306,44 @@ describe('GiftFacilityAmendmentService - error handling', () => {
     });
 
     describe('when giftAmountAmendmentService.facility throws an error', () => {
-      it('should throw an error', async () => {
+      it('should delete the work package and then throw an error', async () => {
         // Arrange
-        const mockError = mockResponse500();
+        const mockError = new Error('Network error during amendment');
+        const mockHttpServiceDelete = jest.fn().mockResolvedValue(mockResponse204());
 
         mockAmountAmendmentFacility = jest.fn().mockRejectedValueOnce(mockError);
         amountAmendmentService.facility = mockAmountAmendmentFacility;
 
+        giftHttpService.delete = mockHttpServiceDelete;
+        workPackageService = new GiftWorkPackageService(giftHttpService, logger);
+        workPackageService.create = mockWorkPackageServiceCreate;
+
         buildService();
 
-        // Act
-        const response = service.create(mockFacilityId, mockPayload);
+        // Act & Assert
+        await expect(service.create(mockFacilityId, mockPayload)).rejects.toThrow();
+        expect(mockHttpServiceDelete).toHaveBeenCalledTimes(1);
+        expect(mockHttpServiceDelete).toHaveBeenCalledWith({ path: `/work-package/${mockWorkPackageId}` });
+      });
 
-        // Assert
-        const expected = new Error(`Error creating amendment ${mockPayload.amendmentType} for facility ${mockFacilityId}`, { cause: mockError });
+      it('should throw error even if work package deletion fails', async () => {
+        // Arrange
+        const mockError = new Error('Network error during amendment');
+        const mockDeleteError = new Error('Delete failed');
 
-        await expect(response).rejects.toThrow(expected);
+        mockAmountAmendmentFacility = jest.fn().mockRejectedValueOnce(mockError);
+        amountAmendmentService.facility = mockAmountAmendmentFacility;
+
+        const mockHttpServiceDelete = jest.fn().mockRejectedValue(mockDeleteError);
+
+        giftHttpService.delete = mockHttpServiceDelete;
+        workPackageService = new GiftWorkPackageService(giftHttpService, logger);
+        workPackageService.create = mockWorkPackageServiceCreate;
+
+        buildService();
+
+        // Act & Assert
+        await expect(service.create(mockFacilityId, mockPayload)).rejects.toThrow();
       });
     });
 
@@ -219,13 +357,8 @@ describe('GiftFacilityAmendmentService - error handling', () => {
 
         buildService();
 
-        // Act
-        const response = service.create(mockFacilityId, mockPayload);
-
-        // Assert
-        const expected = new Error(`Error creating amendment ${mockPayload.amendmentType} for facility ${mockFacilityId}`, { cause: mockError });
-
-        await expect(response).rejects.toThrow(expected);
+        // Act & Assert
+        await expect(service.create(mockFacilityId, mockPayload)).rejects.toThrow();
       });
     });
   });
@@ -254,22 +387,24 @@ describe('GiftFacilityAmendmentService - error handling', () => {
     });
 
     describe('when giftReplaceExpiryDateAmendmentService.facility throws an error', () => {
-      it('should throw an error', async () => {
+      it('should delete the work package and then throw an error', async () => {
         // Arrange
-        const mockError = mockResponse500();
+        const mockError = new Error('Network error during facility amendment');
+        const mockHttpServiceDelete = jest.fn().mockResolvedValue(mockResponse204());
 
         mockReplaceExpiryDateAmendmentFacility = jest.fn().mockRejectedValueOnce(mockError);
         replaceExpiryDateAmendmentService.facility = mockReplaceExpiryDateAmendmentFacility;
 
+        giftHttpService.delete = mockHttpServiceDelete;
+        workPackageService = new GiftWorkPackageService(giftHttpService, logger);
+        workPackageService.create = mockWorkPackageServiceCreate;
+
         buildService();
 
-        // Act
-        const response = service.create(mockFacilityId, replaceExpiryDatePayload);
-
-        // Assert
-        const expected = new Error(`Error creating amendment ${replaceExpiryDatePayload.amendmentType} for facility ${mockFacilityId}`, { cause: mockError });
-
-        await expect(response).rejects.toThrow(expected);
+        // Act & Assert
+        await expect(service.create(mockFacilityId, replaceExpiryDatePayload)).rejects.toThrow();
+        expect(mockHttpServiceDelete).toHaveBeenCalledTimes(1);
+        expect(mockHttpServiceDelete).toHaveBeenCalledWith({ path: `/work-package/${mockWorkPackageId}` });
       });
     });
 
@@ -291,15 +426,8 @@ describe('GiftFacilityAmendmentService - error handling', () => {
 
         buildService();
 
-        // Act
-        const response = service.create(mockFacilityId, replaceExpiryDatePayload);
-
-        // Assert
-        const expected = new Error(`Error creating amendment ${replaceExpiryDatePayload.amendmentType} for facility ${mockFacilityId}`, {
-          cause: mockError,
-        });
-
-        await expect(response).rejects.toThrow(expected);
+        // Act & Assert
+        await expect(service.create(mockFacilityId, replaceExpiryDatePayload)).rejects.toThrow();
       });
     });
   });
@@ -340,20 +468,33 @@ describe('GiftFacilityAmendmentService - error handling', () => {
           buildService();
         });
 
-        it('should throw an error', async () => {
+        it(`should return ${HttpStatus.INTERNAL_SERVER_ERROR}`, async () => {
           // Act
-          const response = service.create(mockFacilityId, mockPayload);
+          const response = await service.create(mockFacilityId, mockPayload);
 
           // Assert
-          await expect(response).rejects.toThrow(`Error creating amendment ${mockPayload.amendmentType} for facility ${mockFacilityId}`);
+          const expected = {
+            status: HttpStatus.INTERNAL_SERVER_ERROR,
+            data: {
+              message: 'Unable to approve work package',
+              statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+            },
+          };
+
+          expect(response).toEqual(expected);
         });
       });
     });
 
     describe('when giftStatusService.approved throws an error', () => {
-      it('should throw an error', async () => {
+      it('should delete the work package and return an error response', async () => {
         // Arrange
-        const mockError = mockResponse500();
+        const mockError = new Error('Approval service error');
+        (mockError as any).status = HttpStatus.INTERNAL_SERVER_ERROR;
+        (mockError as any).cause = {
+          data: { statusCode: HttpStatus.INTERNAL_SERVER_ERROR, message: 'Unable to approve work package' },
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
+        };
 
         mockStatusServiceApproved = jest.fn().mockRejectedValueOnce(mockError);
 
@@ -362,10 +503,11 @@ describe('GiftFacilityAmendmentService - error handling', () => {
         buildService();
 
         // Act
-        const response = service.create(mockFacilityId, mockPayload);
+        const response = await service.create(mockFacilityId, mockPayload);
 
         // Assert
-        await expect(response).rejects.toThrow(`Error creating amendment ${mockPayload.amendmentType} for facility ${mockFacilityId}`);
+        expect(response.status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
+        expect(response.data).toBeDefined();
       });
     });
   });

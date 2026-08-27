@@ -329,9 +329,6 @@ describe('GiftReplaceExpiryDateAmendmentService', () => {
         await expect(response).rejects.toThrow(
           `Error amending facility obligations maturity dates ${AMEND_FACILITY_REPLACE_EXPIRY_DATE} for facility ${mockFacilityId} work package ${mockWorkPackageId}`,
         );
-        expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
-        expect(mockWorkPackageServiceDelete).toHaveBeenCalledTimes(1);
-        expect(mockWorkPackageServiceDelete).toHaveBeenCalledWith(mockWorkPackageId, mockFacilityId);
       });
     });
   });

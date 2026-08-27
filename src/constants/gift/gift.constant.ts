@@ -177,6 +177,7 @@ export const GIFT = {
     FACILITY: '/facility',
     FACILITIES: '/facilities',
     FEE_TYPE: '/fee-type',
+    MULTIPLE_AMENDMENTS: '/multiple-amendments',
     PRODUCT_TYPE: '/product-type',
     SUPPORTED: '/supported',
     WORK_PACKAGE: '/work-package',

@@ -3,7 +3,7 @@ import { UkefId } from '@ukef/helpers/ukef-id.type';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 
-import { CreateGiftFacilityAmendmentRequestDto, GiftWorkPackageResponseDto } from '../../dto';
+import { CreateGiftFacilityAmendmentRequestDto, CreateGiftFacilityMultipleAmendmentsRequestDto, GiftWorkPackageResponseDto } from '../../dto';
 import {
   hasObligationsWithMaturityDateNotFollowingFacility,
   isDecreaseAmountAmendment,
@@ -16,7 +16,24 @@ import { GiftReplaceExpiryDateAmendmentService } from '../gift.replace-expiry-da
 import { GiftStatusService } from '../gift.status.service';
 import { GiftWorkPackageService } from '../gift.work-package.service';
 
+interface HandleCreateAmendmentsParams {
+  amendment: CreateGiftFacilityAmendmentRequestDto;
+  facility: any;
+  facilityId: UkefId;
+  workPackageId: number;
+}
+
+interface CreateGiftFacilityAmendmentResponseDataDto {
+  statusCode: number;
+  message: string;
+}
+
 interface CreateGiftFacilityAmendmentResponseDto {
+  status: AxiosResponse['status'];
+  data: CreateGiftFacilityAmendmentResponseDataDto;
+}
+
+interface CreateGiftFacilityAmendmentGiftResponseDto {
   status: AxiosResponse['status'];
   data: GiftWorkPackageResponseDto;
 }
@@ -48,7 +65,161 @@ export class GiftFacilityAmendmentService {
    * @returns {Boolean} true if the amendment was successful, false otherwise.
    */
   private wasAmendmentSuccessful(response: AxiosResponse<GiftWorkPackageResponseDto>): boolean {
-    return response.status === HttpStatus.CREATED;
+    return response?.status === HttpStatus.CREATED;
+  }
+
+  /**
+   * Handle the creation of GIFT facility amendments.
+   * @param {HandleCreateAmendmentsParams} params - The parameters for creating the amendment.
+   * @param {number} params.workPackageId - The work package ID for the amendment.
+   * @param {any} params.facility - The facility data for the amendment.
+   * @param {UkefId} params.facilityId - The facility ID for the amendment.
+   * @param {CreateGiftFacilityAmendmentRequestDto} params.amendment - The amendment data.
+   * @returns {Promise<GiftWorkPackageResponseDto | { status: number; data: GiftWorkPackageResponseDto }>} The result of the amendment operation.
+   */
+  async handleCreateAmendments({ workPackageId, facility, facilityId, amendment }: HandleCreateAmendmentsParams) {
+    let createdAmendmentData: AxiosResponse<GiftWorkPackageResponseDto>;
+
+    const { amendmentType } = amendment;
+
+    const {
+      obligations,
+      riskDetails: { facilityCategoryCode },
+    } = facility;
+
+    const baseObligationParams = {
+      amendmentType,
+      facilityId,
+      obligations,
+      facilityCategoryCode,
+      workPackageId,
+    };
+
+    /**
+     * If the amendment is "increase amount", the new facility amount will impact the obligation amounts.
+     * Execute in the following order:
+     * 1) Amend the facility
+     * 2) Amend obligations
+     */
+    if (isIncreaseAmountAmendment(amendment)) {
+      const {
+        amendmentData: { amount: newFacilityAmount, date },
+      } = amendment;
+
+      const facilityAmendmentResponse = await this.giftAmountAmendmentService.facility({ ...amendment, facilityId, workPackageId });
+
+      if (!this.wasAmendmentSuccessful(facilityAmendmentResponse)) {
+        return {
+          status: facilityAmendmentResponse?.status,
+          data: facilityAmendmentResponse?.data,
+        };
+      }
+
+      createdAmendmentData = facilityAmendmentResponse;
+
+      await this.giftAmountAmendmentService.obligations({ ...baseObligationParams, date, newFacilityAmount });
+    }
+
+    /**
+     * If the amendment is "decrease amount", the new facility amount will impact the obligation amounts.
+     * Execute in the following order:
+     * 1) Amend obligations
+     * 2) Amend the facility
+     */
+    if (isDecreaseAmountAmendment(amendment)) {
+      const {
+        amendmentData: { amount: newFacilityAmount, date },
+      } = amendment;
+
+      await this.giftAmountAmendmentService.obligations({ ...baseObligationParams, date, newFacilityAmount });
+
+      const facilityAmendmentResponse = await this.giftAmountAmendmentService.facility({ ...amendment, facilityId, workPackageId });
+
+      if (!this.wasAmendmentSuccessful(facilityAmendmentResponse)) {
+        return {
+          status: facilityAmendmentResponse?.status,
+          data: facilityAmendmentResponse?.data,
+        };
+      }
+
+      createdAmendmentData = facilityAmendmentResponse;
+    }
+
+    /**
+     * If the amendment is "replace expiry date",
+     * and any obligation has maturityDateFollowsFacility=true,
+     * GIFT will automatically update the obligation maturity dates to match the new facility expiry date.
+     *
+     * However, if any obligation has maturityDateFollowsFacility=false,
+     * GIFT will not update the obligation maturity dates, so we need to update them manually.
+     *
+     * If the new expiry date is greater than the current expiry date, execute in the following order:
+     * 1) Amend the facility
+     * 2) Amend obligations maturity dates
+     *
+     * If the new expiry date is less than the current expiry date, the order is reversed.
+     *
+     * Otherwise, there is no need to update obligations maturity dates.
+     */
+    if (isReplaceExpiryDateAmendment(amendment)) {
+      const {
+        amendmentData: { expiryDate },
+      } = amendment;
+
+      const { expiryDate: originalFacilityExpiryDate } = facility;
+
+      const shouldUpdateObligationsMaturityDates = hasObligationsWithMaturityDateNotFollowingFacility(obligations);
+
+      const isExpiryDateEarlierThanOriginal = new Date(expiryDate).getTime() < new Date(originalFacilityExpiryDate).getTime();
+
+      const baseParams = {
+        amendmentType,
+        facilityId,
+        workPackageId,
+      };
+
+      if (isExpiryDateEarlierThanOriginal) {
+        await this.giftReplaceExpiryDateAmendmentService.accrualSchedules({ ...baseParams, expiryDate, obligations });
+
+        if (shouldUpdateObligationsMaturityDates) {
+          await this.giftReplaceExpiryDateAmendmentService.obligations({ ...baseParams, facilityExpiryDate: expiryDate, obligations });
+        }
+
+        const dateResponse = await this.giftReplaceExpiryDateAmendmentService.facility({ ...baseParams, expiryDate });
+
+        if (!this.wasAmendmentSuccessful(dateResponse)) {
+          return {
+            status: dateResponse.status,
+            data: dateResponse.data,
+          };
+        }
+
+        createdAmendmentData = dateResponse;
+      } else {
+        const dateResponse = await this.giftReplaceExpiryDateAmendmentService.facility({ ...baseParams, expiryDate });
+
+        if (!this.wasAmendmentSuccessful(dateResponse)) {
+          return {
+            status: dateResponse.status,
+            data: dateResponse.data,
+          };
+        }
+
+        if (shouldUpdateObligationsMaturityDates) {
+          await this.giftReplaceExpiryDateAmendmentService.obligations({ ...baseParams, facilityExpiryDate: expiryDate, obligations });
+        }
+
+        await this.giftReplaceExpiryDateAmendmentService.accrualSchedules({ ...baseParams, expiryDate, obligations });
+
+        createdAmendmentData = dateResponse;
+      }
+    }
+
+    if (!createdAmendmentData) {
+      throw new Error(`Unsupported amendment type: ${amendmentType}`);
+    }
+
+    return createdAmendmentData;
   }
 
   /**
@@ -64,12 +235,136 @@ export class GiftFacilityAmendmentService {
    * @throws {Error} If there is an error creating the amendment or the work package.
    * @returns {Promise<CreateGiftFacilityAmendmentResponseDto>}
    */
-  async create(facilityId: UkefId, amendment: CreateGiftFacilityAmendmentRequestDto): Promise<CreateGiftFacilityAmendmentResponseDto> {
+  // eslint-disable-next-line max-len
+  async create(
+    facilityId: UkefId,
+    amendment: CreateGiftFacilityAmendmentRequestDto,
+  ): Promise<CreateGiftFacilityAmendmentResponseDto | CreateGiftFacilityAmendmentGiftResponseDto> {
     const { amendmentType } = amendment;
-    let createdAmendmentData: GiftWorkPackageResponseDto | null = null;
 
     try {
       this.logger.info('Creating amendment %s for facility %s', amendmentType, facilityId);
+
+      const facilityResponse = await this.giftFacilityService.get(facilityId);
+
+      if (facilityResponse.status !== HttpStatus.OK) {
+        return {
+          status: facilityResponse.status,
+          data: facilityResponse.data,
+        };
+      }
+
+      const { data: facility } = facilityResponse;
+
+      /**
+       * Generate a GIFT work package.
+       * The amendment will be in this work package.
+       */
+      const { data: workPackage, status } = await this.giftWorkPackageService.create(facilityId);
+
+      if (status !== HttpStatus.CREATED) {
+        this.logger.error('Error creating work package for facility %s amendment %o', facilityId, amendmentType);
+
+        return {
+          status,
+          data: workPackage,
+        };
+      }
+
+      const { id: workPackageId } = workPackage;
+
+      let amendmentResponse;
+
+      try {
+        amendmentResponse = await this.handleCreateAmendments({ workPackageId, facility, facilityId, amendment });
+      } catch (amendmentError) {
+        this.logger.error('Error creating amendment %s for facility %s - deleting work package %o', amendment.amendmentType, facilityId, amendmentError);
+
+        try {
+          await this.giftWorkPackageService.delete(workPackageId, facilityId);
+        } catch (deleteError) {
+          this.logger.error('Error deleting work package %s for facility %s %o', workPackageId, facilityId, deleteError);
+        }
+
+        throw amendmentError;
+      }
+
+      // If amendment failed, delete the work package and return the error response.
+      if (amendmentResponse.status !== HttpStatus.CREATED) {
+        this.logger.error('Error creating amendment %s for facility %s', amendment.amendmentType, facilityId);
+
+        try {
+          await this.giftWorkPackageService.delete(workPackageId, facilityId);
+        } catch (deleteError) {
+          this.logger.error('Error deleting work package %s for facility %s %o', workPackageId, facilityId, deleteError);
+        }
+
+        return amendmentResponse;
+      }
+
+      let approvalResponse;
+
+      try {
+        approvalResponse = await this.approveWorkPackage(facilityId, workPackageId);
+      } catch (approvalError) {
+        this.logger.error('Error approving work package %s for facility %s amendment - deleting work package %o', workPackageId, facilityId, approvalError);
+
+        // extract status from approvalError - might be nested in cause
+        let errorStatus: number;
+
+        const errorWithStatus = approvalError as Error & { status?: number; data?: any; cause?: any };
+
+        // first try direct access (error is directly thrown with status)
+        if (errorWithStatus.status) {
+          errorStatus = errorWithStatus.status;
+        }
+
+        try {
+          await this.giftWorkPackageService.delete(workPackageId, facilityId);
+        } catch (deleteError) {
+          this.logger.error('Error deleting work package %s for facility amendment %s %o', workPackageId, facilityId, deleteError);
+        }
+
+        // Return the approval error regardless of delete result
+        const responseStatus = errorStatus ?? HttpStatus.INTERNAL_SERVER_ERROR;
+
+        return {
+          status: responseStatus,
+          data: {
+            statusCode: responseStatus,
+            message: 'Unable to approve work package',
+          },
+        };
+      }
+
+      return {
+        status: HttpStatus.CREATED,
+        data: {
+          ...(amendmentResponse.data ?? approvalResponse.data),
+          isApproved: true,
+        },
+      };
+    } catch (error) {
+      this.logger.error('Error creating amendment %s for facility %s %o', amendmentType, facilityId, error);
+
+      throw new Error(`Error creating amendment ${amendmentType} for facility ${facilityId}`, { cause: error });
+    }
+  }
+
+  /**
+   * Create multiple GIFT facility amendments in one work package.
+   * @param {UkefId} facilityId: Facility ID
+   * @param {CreateGiftFacilityMultipleAmendmentsRequestDto} amendments: Amendments data
+   * @throws {Error} If there is an error creating the amendments or the work package.
+   * @returns {Promise<CreateGiftFacilityAmendmentResponseDto>}
+   */
+  // eslint-disable-next-line max-len
+  async createMultiple(
+    facilityId: UkefId,
+    payload: CreateGiftFacilityMultipleAmendmentsRequestDto,
+  ): Promise<CreateGiftFacilityAmendmentResponseDto | CreateGiftFacilityAmendmentGiftResponseDto> {
+    try {
+      this.logger.info('Creating multiple amendments for facility %s', facilityId);
 
       const facilityResponse = await this.giftFacilityService.get(facilityId);
 
@@ -89,7 +384,7 @@ export class GiftFacilityAmendmentService {
       const { data: workPackage, status } = await this.giftWorkPackageService.create(facilityId);
 
       if (status !== HttpStatus.CREATED) {
-        this.logger.error('Error creating work package for facility %s amendment %o', facilityId, amendmentType);
+        this.logger.error('Error creating work package for facility %s multiple amendments', facilityId);
 
         return {
           status,
@@ -99,158 +394,82 @@ export class GiftFacilityAmendmentService {
 
       const { id: workPackageId } = workPackage;
 
-      const {
-        obligations,
-        riskDetails: { facilityCategoryCode },
-      } = facility;
+      let amendmentResponse;
+      let amendmentError = false;
+      let approvalError = false;
 
-      const baseObligationParams = {
-        amendmentType,
-        facilityId,
-        obligations,
-        facilityCategoryCode,
-        workPackageId,
-      };
+      try {
+        for (const amendment of payload.amendments) {
+          const response = await this.handleCreateAmendments({ workPackageId, facility, facilityId, amendment });
 
-      /**
-       * If the amendment is "increase amount", the new facility amount will impact the obligation amounts.
-       * Execute in the following order:
-       * 1) Amend the facility
-       * 2) Amend obligations
-       */
-      if (isIncreaseAmountAmendment(amendment)) {
-        const {
-          amendmentData: { amount: newFacilityAmount, date },
-        } = amendment;
+          if (response?.status !== HttpStatus.CREATED) {
+            amendmentError = true;
 
-        const facilityAmendmentResponse = await this.giftAmountAmendmentService.facility({ ...amendment, facilityId, workPackageId });
+            amendmentResponse = response;
 
-        if (!this.wasAmendmentSuccessful(facilityAmendmentResponse)) {
-          return {
-            status: facilityAmendmentResponse.status,
-            data: facilityAmendmentResponse.data,
-          };
+            this.logger.error('Error creating amendment %s for facility %s in multiple amendments', amendment.amendmentType, facilityId);
+          }
         }
+      } catch (error) {
+        amendmentError = true;
 
-        createdAmendmentData = facilityAmendmentResponse.data;
-
-        await this.giftAmountAmendmentService.obligations({ ...baseObligationParams, date, newFacilityAmount });
+        this.logger.error('Error creating amendments for facility %s in multiple amendments (catch handler) %o', facilityId, error);
       }
 
-      /**
-       * If the amendment is "decrease amount", the new facility amount will impact the obligation amounts.
-       * Execute in the following order:
-       * 1) Amend obligations
-       * 2) Amend the facility
-       */
-      if (isDecreaseAmountAmendment(amendment)) {
-        const {
-          amendmentData: { amount: newFacilityAmount, date },
-        } = amendment;
+      let approvalResponse;
 
-        await this.giftAmountAmendmentService.obligations({ ...baseObligationParams, date, newFacilityAmount });
+      try {
+        approvalResponse = await this.approveWorkPackage(facilityId, workPackageId);
+      } catch (approvalErrorCaught) {
+        approvalError = true;
 
-        const facilityAmendmentResponse = await this.giftAmountAmendmentService.facility({ ...amendment, facilityId, workPackageId });
-
-        if (!this.wasAmendmentSuccessful(facilityAmendmentResponse)) {
-          return {
-            status: facilityAmendmentResponse.status,
-            data: facilityAmendmentResponse.data,
-          };
-        }
-
-        createdAmendmentData = facilityAmendmentResponse.data;
-      }
-
-      /**
-       * If the amendment is "replace expiry date",
-       * and any obligation has maturityDateFollowsFacility=true,
-       * GIFT will automatically update the obligation maturity dates to match the new facility expiry date.
-       *
-       * However, if any obligation has maturityDateFollowsFacility=false,
-       * GIFT will not update the obligation maturity dates, so we need to update them manually.
-       *
-       * If the new expiry date is greater than the current expiry date, execute in the following order:
-       * 1) Amend the facility
-       * 2) Amend obligations maturity dates
-       *
-       * If the new expiry date is less than the current expiry date, the order is reversed.
-       *
-       * Otherwise, there is no need to update obligations maturity dates.
-       */
-      if (isReplaceExpiryDateAmendment(amendment)) {
-        const {
-          amendmentData: { expiryDate },
-        } = amendment;
-
-        const { expiryDate: originalFacilityExpiryDate } = facility;
-
-        const shouldUpdateObligationsMaturityDates = hasObligationsWithMaturityDateNotFollowingFacility(obligations);
-
-        const isExpiryDateEarlierThanOriginal = new Date(expiryDate).getTime() < new Date(originalFacilityExpiryDate).getTime();
-
-        const baseParams = {
-          amendmentType,
-          facilityId,
+        this.logger.error(
+          'Error approving work package %s for facility %s in multiple amendments - deleting work package %o',
           workPackageId,
-        };
+          facilityId,
+          approvalErrorCaught,
+        );
+      }
 
-        if (isExpiryDateEarlierThanOriginal) {
-          await this.giftReplaceExpiryDateAmendmentService.accrualSchedules({ ...baseParams, expiryDate, obligations });
+      if (amendmentError || approvalError) {
+        let hasDeleteError = false;
+        let deleteError;
 
-          if (shouldUpdateObligationsMaturityDates) {
-            await this.giftReplaceExpiryDateAmendmentService.obligations({ ...baseParams, facilityExpiryDate: expiryDate, obligations });
+        try {
+          const response = await this.giftWorkPackageService.delete(workPackageId, facilityId);
+
+          if (response?.status !== HttpStatus.NO_CONTENT) {
+            hasDeleteError = true;
+            deleteError = response;
           }
+        } catch (error) {
+          hasDeleteError = true;
+          deleteError = error;
 
-          const facilityResponse = await this.giftReplaceExpiryDateAmendmentService.facility({ ...baseParams, expiryDate });
-
-          if (!this.wasAmendmentSuccessful(facilityResponse)) {
+          this.logger.error('Error deleting work package %s for facility %s in multiple amendments %o', workPackageId, facilityId, deleteError);
+        } finally {
+          if (hasDeleteError) {
             return {
-              status: facilityResponse.status,
-              data: facilityResponse.data,
+              status: deleteError?.status,
+              data: deleteError?.data,
             };
           }
 
-          createdAmendmentData = facilityResponse.data;
-        } else {
-          const facilityResponse = await this.giftReplaceExpiryDateAmendmentService.facility({ ...baseParams, expiryDate });
-
-          if (!this.wasAmendmentSuccessful(facilityResponse)) {
-            return {
-              status: facilityResponse.status,
-              data: facilityResponse.data,
-            };
-          }
-
-          if (shouldUpdateObligationsMaturityDates) {
-            await this.giftReplaceExpiryDateAmendmentService.obligations({ ...baseParams, facilityExpiryDate: expiryDate, obligations });
-          }
-
-          await this.giftReplaceExpiryDateAmendmentService.accrualSchedules({ ...baseParams, expiryDate, obligations });
-
-          createdAmendmentData = facilityResponse.data;
+          return {
+            status: amendmentError ? amendmentResponse?.status : approvalResponse?.status,
+            data: amendmentError ? amendmentResponse?.data : approvalResponse?.data,
+          };
         }
       }
-
-      if (!createdAmendmentData) {
-        throw new Error(`Unsupported amendment type: ${amendmentType}`);
-      }
-
-      // TODO: GIFT-20331 - validation handling
-
-      const approvalResponse = await this.approveWorkPackage(facilityId, workPackageId);
 
       return {
-        status: HttpStatus.CREATED,
-        data: {
-          ...(createdAmendmentData ?? approvalResponse.data),
-          isApproved: true,
-        },
+        status: approvalResponse?.status,
+        data: approvalResponse?.data,
       };
     } catch (error) {
-      this.logger.error('Error creating amendment %s for facility %s %o', amendmentType, facilityId, error);
+      this.logger.error('Error creating multiple amendments for facility %s %o', facilityId, error);
 
-      throw new Error(`Error creating amendment ${amendmentType} for facility ${facilityId}`, { cause: error });
+      throw new Error(`Error creating multiple amendments for facility ${facilityId}`, { cause: error });
     }
   }
 
@@ -270,17 +489,22 @@ export class GiftFacilityAmendmentService {
       if (approvalResponse.status !== HttpStatus.OK) {
         this.logger.error('Error approving amendment work package %s for facility %s %o', workPackageId, facilityId, approvalResponse.data);
 
-        throw new Error(`Error approving amendment work package ${workPackageId} for facility ${facilityId} amendment`, {
-          cause: {
-            data: approvalResponse.data,
-            status: approvalResponse.status,
-          },
-        });
+        throw new Error(`Error approving amendment work package ${workPackageId} for facility ${facilityId}`, { cause: approvalResponse });
       }
 
       return approvalResponse;
     } catch (error) {
       this.logger.error('Error approving amendment work package %s for facility %s %o', workPackageId, facilityId, error);
+
+      /**
+       * Intentionally throw error with a status property
+       * so that the status can be surfaced.
+       */
+      const errorWithStatus = error as any;
+
+      if (errorWithStatus.status) {
+        throw error;
+      }
 
       throw new Error(`Error approving amendment work package ${workPackageId} for facility ${facilityId}`, { cause: error });
     }

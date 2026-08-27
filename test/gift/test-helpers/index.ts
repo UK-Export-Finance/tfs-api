@@ -25,14 +25,29 @@ const badRequest: MockGiftResponse = {
   ],
 };
 
+const forbidden: MockGiftResponse = {
+  statusCode: HttpStatus.FORBIDDEN,
+  message: 'Forbidden',
+};
+
+const iAmATeapot: MockGiftResponse = {
+  statusCode: HttpStatus.I_AM_A_TEAPOT,
+  message: 'Teapot',
+};
+
 const internalServerError: MockGiftResponse = {
   statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
   message: 'Internal server error',
 };
 
-const forbidden: MockGiftResponse = {
-  statusCode: HttpStatus.FORBIDDEN,
-  message: 'Forbidden',
+const internalServerErrorWorkPackage: MockGiftResponse = {
+  statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+  message: 'Unable to approve work package',
+};
+
+const noContent: MockGiftResponse = {
+  statusCode: HttpStatus.NO_CONTENT,
+  message: 'No content',
 };
 
 const notFound: MockGiftResponse = {
@@ -43,11 +58,6 @@ const notFound: MockGiftResponse = {
 const unauthorized: MockGiftResponse = {
   statusCode: HttpStatus.UNAUTHORIZED,
   message: 'Unauthorized',
-};
-
-const iAmATeapot: MockGiftResponse = {
-  statusCode: HttpStatus.I_AM_A_TEAPOT,
-  message: 'Teapot',
 };
 
 export const mockResponses = {
@@ -87,17 +97,21 @@ export const mockResponses = {
   },
   workPackageCreation: GIFT_EXAMPLES.WORK_PACKAGE_CREATION_RESPONSE_DATA,
   badRequest,
-  internalServerError,
   forbidden,
+  iAmATeapot,
+  internalServerError,
+  internalServerErrorWorkPackage,
+  noContent,
   notFound,
   unauthorized,
-  iAmATeapot,
 };
 
 export const apimFacilityUrl = `/api/${prefixAndVersion}/gift${PATH.FACILITY}`;
 export const apimFacilityWithoutQueueUrl = `/api/${prefixAndVersion}/gift${PATH.FACILITY}/without-queue`;
 export const apimFacilityAmendmentUrl = `/api/${prefixAndVersion}/gift${PATH.FACILITY}/${mockFacilityId}${PATH.AMENDMENT}`;
+export const apimFacilityMultipleAmendmentsUrl = `/api/${prefixAndVersion}/gift${PATH.FACILITY}/${mockFacilityId}${PATH.MULTIPLE_AMENDMENTS}`;
 export const apimFacilityAmendmentWithoutQueueUrl = `/api/${prefixAndVersion}/gift${PATH.FACILITY}/${mockFacilityId}${PATH.AMENDMENT}/without-queue`;
+export const apimFacilityMultipleAmendmentsWithoutQueueUrl = `/api/${prefixAndVersion}/gift${PATH.FACILITY}/${mockFacilityId}${PATH.MULTIPLE_AMENDMENTS}/without-queue`;
 export const currencyUrl = PATH.CURRENCY;
 export const counterpartyRolesUrl = PATH.COUNTERPARTY_ROLES;
 export const facilityCreationUrl = PATH.CREATE_FACILITY;
