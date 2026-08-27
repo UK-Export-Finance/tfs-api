@@ -106,6 +106,11 @@ describe('GiftFacilityAmendmentService - error handling', () => {
     buildService();
   });
 
+  afterEach(() => {
+    jest.clearAllMocks();
+    jest.restoreAllMocks();
+  });
+
   afterAll(() => {
     jest.resetAllMocks();
   });
@@ -189,6 +194,11 @@ describe('GiftFacilityAmendmentService - error handling', () => {
         };
 
         jest.spyOn(service, 'handleCreateAmendments' as any).mockResolvedValue(mockErrorResponse);
+      });
+
+      afterEach(() => {
+        jest.clearAllMocks();
+        jest.restoreAllMocks();
       });
 
       it('should call giftWorkPackageService.delete', async () => {
