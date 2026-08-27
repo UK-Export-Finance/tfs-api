@@ -219,9 +219,9 @@ describe('GiftFacilityAmendmentService - error handling', () => {
         workPackageService = new GiftWorkPackageService(giftHttpService, logger);
         workPackageService.create = mockWorkPackageServiceCreate;
 
-        jest.spyOn(service, 'handleCreateAmendments' as any).mockRejectedValueOnce(mockError);
-
         buildService();
+
+        jest.spyOn(service, 'handleCreateAmendments' as any).mockRejectedValueOnce(mockError);
 
         // Act
         const response = await service.createMultiple(mockFacilityId, mockMultipleAmendmentsPayload);
@@ -242,9 +242,9 @@ describe('GiftFacilityAmendmentService - error handling', () => {
         workPackageService = new GiftWorkPackageService(giftHttpService, logger);
         workPackageService.create = mockWorkPackageServiceCreate;
 
-        jest.spyOn(service, 'handleCreateAmendments' as any).mockRejectedValueOnce(mockError);
-
         buildService();
+
+        jest.spyOn(service, 'handleCreateAmendments' as any).mockRejectedValueOnce(mockError);
 
         // Act
         const response = await service.createMultiple(mockFacilityId, mockMultipleAmendmentsPayload);
@@ -261,6 +261,8 @@ describe('GiftFacilityAmendmentService - error handling', () => {
 
         giftHttpService.delete = mockHttpServiceDelete;
         workPackageService = new GiftWorkPackageService(giftHttpService, logger);
+
+        buildService();
 
         jest.spyOn(service, 'handleCreateAmendments' as any).mockResolvedValue({ status: HttpStatus.ACCEPTED });
 
