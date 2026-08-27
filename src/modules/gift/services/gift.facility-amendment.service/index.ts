@@ -273,7 +273,21 @@ export class GiftFacilityAmendmentService {
 
       const { id: workPackageId } = workPackage;
 
-      const amendmentResponse = await this.handleCreateAmendments({ workPackageId, facility, facilityId, amendment });
+      let amendmentResponse;
+
+      try {
+        amendmentResponse = await this.handleCreateAmendments({ workPackageId, facility, facilityId, amendment });
+      } catch (amendmentError) {
+        this.logger.error('Error creating amendment %s for facility %s - deleting work package %o', amendment.amendmentType, facilityId, amendmentError);
+
+        try {
+          await this.giftWorkPackageService.delete(workPackageId, facilityId);
+        } catch (deleteError) {
+          this.logger.error('Error deleting work package %s for facility %s %o', workPackageId, facilityId, deleteError);
+        }
+
+        throw amendmentError;
+      }
 
       // If amendment failed, delete the work package and return the error response.
       if (amendmentResponse.status !== HttpStatus.CREATED) {
@@ -382,32 +396,38 @@ export class GiftFacilityAmendmentService {
 
       let amendmentResponse;
       let amendmentError = false;
-      const approvalError = false;
+      let approvalError = false;
 
-      for (const amendment of payload.amendments) {
-        const response = await this.handleCreateAmendments({ workPackageId, facility, facilityId, amendment });
+      try {
+        for (const amendment of payload.amendments) {
+          const response = await this.handleCreateAmendments({ workPackageId, facility, facilityId, amendment });
 
-        if (response?.status !== HttpStatus.CREATED) {
-          amendmentError = true;
+          if (response?.status !== HttpStatus.CREATED) {
+            amendmentError = true;
 
-          amendmentResponse = response;
+            amendmentResponse = response;
 
-          this.logger.error('Error creating amendment %s for facility %s in multiple amendments', amendment.amendmentType, facilityId);
+            this.logger.error('Error creating amendment %s for facility %s in multiple amendments', amendment.amendmentType, facilityId);
+          }
         }
+      } catch (error) {
+        amendmentError = true;
+
+        this.logger.error('Error creating amendments for facility %s in multiple amendments (catch handler) %o', facilityId, error);
       }
 
       let approvalResponse;
 
       try {
         approvalResponse = await this.approveWorkPackage(facilityId, workPackageId);
-      } catch (approvalError) {
+      } catch (approvalErrorCaught) {
         approvalError = true;
 
         this.logger.error(
           'Error approving work package %s for facility %s in multiple amendments - deleting work package %o',
           workPackageId,
           facilityId,
-          approvalError,
+          approvalErrorCaught,
         );
       }
 

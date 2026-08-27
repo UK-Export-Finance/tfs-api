@@ -209,6 +209,51 @@ describe('GiftFacilityAmendmentService - error handling', () => {
       });
     });
 
+    describe('when amendments throw an exception', () => {
+      it('should delete the work package and return error response', async () => {
+        // Arrange
+        const mockError = new Error('Network error during amendments');
+        const mockHttpServiceDelete = jest.fn().mockResolvedValue(mockResponse204());
+
+        giftHttpService.delete = mockHttpServiceDelete;
+        workPackageService = new GiftWorkPackageService(giftHttpService, logger);
+        workPackageService.create = mockWorkPackageServiceCreate;
+
+        jest.spyOn(service, 'handleCreateAmendments' as any).mockRejectedValueOnce(mockError);
+
+        buildService();
+
+        // Act
+        const response = await service.createMultiple(mockFacilityId, mockMultipleAmendmentsPayload);
+
+        // Assert
+        expect(mockHttpServiceDelete).toHaveBeenCalledTimes(1);
+        expect(mockHttpServiceDelete).toHaveBeenCalledWith({ path: `/work-package/${mockWorkPackageId}` });
+        expect(response.status).toBeDefined();
+      });
+
+      it('should still return error even if work package deletion fails', async () => {
+        // Arrange
+        const mockError = new Error('Network error during amendments');
+        const mockDeleteError = new Error('Delete failed');
+        const mockHttpServiceDelete = jest.fn().mockRejectedValue(mockDeleteError);
+
+        giftHttpService.delete = mockHttpServiceDelete;
+        workPackageService = new GiftWorkPackageService(giftHttpService, logger);
+        workPackageService.create = mockWorkPackageServiceCreate;
+
+        jest.spyOn(service, 'handleCreateAmendments' as any).mockRejectedValueOnce(mockError);
+
+        buildService();
+
+        // Act
+        const response = await service.createMultiple(mockFacilityId, mockMultipleAmendmentsPayload);
+
+        // Assert
+        expect(response.status).toBeDefined();
+      });
+    });
+
     describe('when amendments are successful, but work package deletion fails', () => {
       it('should return the work package deletion response', async () => {
         // Arrange
@@ -254,12 +299,45 @@ describe('GiftFacilityAmendmentService - error handling', () => {
     });
 
     describe('when giftAmountAmendmentService.facility throws an error', () => {
-      it('should throw an error', async () => {
+      it('should delete the work package and then throw an error', async () => {
         // Arrange
-        const mockError = mockResponse500();
+        const mockError = new Error('Network error during amendment');
+        const mockHttpServiceDelete = jest.fn().mockResolvedValue(mockResponse204());
 
         mockAmountAmendmentFacility = jest.fn().mockRejectedValueOnce(mockError);
         amountAmendmentService.facility = mockAmountAmendmentFacility;
+
+        giftHttpService.delete = mockHttpServiceDelete;
+        workPackageService = new GiftWorkPackageService(giftHttpService, logger);
+        workPackageService.create = mockWorkPackageServiceCreate;
+
+        buildService();
+
+        // Act
+        const response = service.create(mockFacilityId, mockPayload);
+
+        // Assert
+        expect(mockHttpServiceDelete).toHaveBeenCalledTimes(1);
+        expect(mockHttpServiceDelete).toHaveBeenCalledWith({ path: `/work-package/${mockWorkPackageId}` });
+
+        const expected = new Error(`Error creating amendment ${mockPayload.amendmentType} for facility ${mockFacilityId}`, { cause: mockError });
+
+        await expect(response).rejects.toThrow(expected);
+      });
+
+      it('should throw error even if work package deletion fails', async () => {
+        // Arrange
+        const mockError = new Error('Network error during amendment');
+        const mockDeleteError = new Error('Delete failed');
+
+        mockAmountAmendmentFacility = jest.fn().mockRejectedValueOnce(mockError);
+        amountAmendmentService.facility = mockAmountAmendmentFacility;
+
+        const mockHttpServiceDelete = jest.fn().mockRejectedValue(mockDeleteError);
+
+        giftHttpService.delete = mockHttpServiceDelete;
+        workPackageService = new GiftWorkPackageService(giftHttpService, logger);
+        workPackageService.create = mockWorkPackageServiceCreate;
 
         buildService();
 
@@ -318,12 +396,17 @@ describe('GiftFacilityAmendmentService - error handling', () => {
     });
 
     describe('when giftReplaceExpiryDateAmendmentService.facility throws an error', () => {
-      it('should throw an error', async () => {
+      it('should delete the work package and then throw an error', async () => {
         // Arrange
-        const mockError = mockResponse500();
+        const mockError = new Error('Network error during facility amendment');
+        const mockHttpServiceDelete = jest.fn().mockResolvedValue(mockResponse204());
 
         mockReplaceExpiryDateAmendmentFacility = jest.fn().mockRejectedValueOnce(mockError);
         replaceExpiryDateAmendmentService.facility = mockReplaceExpiryDateAmendmentFacility;
+
+        giftHttpService.delete = mockHttpServiceDelete;
+        workPackageService = new GiftWorkPackageService(giftHttpService, logger);
+        workPackageService.create = mockWorkPackageServiceCreate;
 
         buildService();
 
@@ -331,6 +414,9 @@ describe('GiftFacilityAmendmentService - error handling', () => {
         const response = service.create(mockFacilityId, replaceExpiryDatePayload);
 
         // Assert
+        expect(mockHttpServiceDelete).toHaveBeenCalledTimes(1);
+        expect(mockHttpServiceDelete).toHaveBeenCalledWith({ path: `/work-package/${mockWorkPackageId}` });
+
         const expected = new Error(`Error creating amendment ${replaceExpiryDatePayload.amendmentType} for facility ${mockFacilityId}`, { cause: mockError });
 
         await expect(response).rejects.toThrow(expected);
