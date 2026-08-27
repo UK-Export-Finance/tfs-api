@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.6.0](https://github.com/UK-Export-Finance/tfs-api/compare/v2.5.0...v2.6.0) (2026-08-27)
+
+
+### Features
+
+* **DTFS2-8542:** amend a gift facility - multiple amendments ([#1430](https://github.com/UK-Export-Finance/tfs-api/issues/1430)) ([5594c31](https://github.com/UK-Export-Finance/tfs-api/commit/5594c3157f3d98b4102589615e4d93009a2c53ce))
+
 ## [2.5.0](https://github.com/UK-Export-Finance/tfs-api/compare/v2.4.1...v2.5.0) (2026-08-19)
 
 
