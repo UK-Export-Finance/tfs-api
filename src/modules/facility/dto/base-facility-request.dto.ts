@@ -7,6 +7,7 @@ import { ValidatedNumberApiProperty } from '@ukef/decorators/validated-number-ap
 import { ValidatedPartyIdentifierApiProperty } from '@ukef/decorators/validated-party-identifier-api-property.decorator';
 import { ValidatedStringApiProperty } from '@ukef/decorators/validated-string-api-property.decorator';
 import { DateOnlyString } from '@ukef/helpers';
+import { Exclude } from 'class-transformer';
 
 export class BaseFacilityRequestItem {
   @ValidatedDealIdentifierApiProperty({
@@ -165,6 +166,61 @@ export class BaseFacilityRequestItem {
     default: null,
   })
   readonly issueDate?: DateOnlyString | null;
+
+  /**
+   * Read-only properties returned by GET endpoint that may be sent back in amendment requests.
+   * These are accepted for client convenience (when re-sending GET response) but excluded from ACBS updates.
+   * See: GetFacilityByIdentifierResponseDto
+   */
+  @Exclude()
+  @ValidatedStringApiProperty({
+    description: 'Read-only field returned from GET endpoint. Portfolio identifier for the facility.',
+    required: false,
+  })
+  readonly portfolioIdentifier?: string;
+
+  @Exclude()
+  @ValidatedStringApiProperty({
+    description: 'Read-only field returned from GET endpoint. The initial status of the facility.',
+    required: false,
+  })
+  readonly facilityInitialStatus?: string;
+
+  @Exclude()
+  @ValidatedStringApiProperty({
+    description: 'Read-only field returned from GET endpoint. The overall status of the facility.',
+    required: false,
+  })
+  readonly facilityOverallStatus?: string;
+
+  @Exclude()
+  @ValidatedNumberApiProperty({
+    description: 'Read-only field returned from GET endpoint. The guarantee percentage for the facility.',
+    required: false,
+    minimum: 0,
+  })
+  readonly guaranteePercentage?: number;
+
+  @Exclude()
+  @ValidatedStringApiProperty({
+    description: 'Read-only field returned from GET endpoint. Description of the facility.',
+    required: false,
+  })
+  readonly description?: string;
+
+  @Exclude()
+  @ValidatedStringApiProperty({
+    description: 'Read-only field returned from GET endpoint. The name of the obligor.',
+    required: false,
+  })
+  readonly obligorName?: string;
+
+  @Exclude()
+  @ValidatedDateOnlyApiProperty({
+    description: 'Read-only field returned from GET endpoint. The commencement date of the guarantee.',
+    required: false,
+  })
+  readonly guaranteeCommencementDate?: DateOnlyString;
 }
 
 export class BaseFacilityRequestItemWithFacilityIdentifier extends BaseFacilityRequestItem {
