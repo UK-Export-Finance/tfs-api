@@ -26,7 +26,7 @@ export class UpdateFacilityGenerator extends AbstractGenerator<FacilityValues, G
       dealIdentifier: this.valueGenerator.dealId(),
       premiumFrequencyCode: this.valueGenerator.string({ maxLength: 1 }),
       riskCountryCode: this.valueGenerator.string({ maxLength: 3 }),
-      obligorIndustryClassification: this.valueGenerator.string(),
+      obligorIndustryClassification: this.valueGenerator.string({ maxLength: 10 }),
       agentBankIdentifier: this.valueGenerator.acbsPartyId(),
       maximumLiability: this.valueGenerator.nonnegativeFloat(),
       exposurePeriod: this.valueGenerator.string({ maxLength: 12 }),
