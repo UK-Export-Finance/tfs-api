@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.6.1](https://github.com/UK-Export-Finance/tfs-api/compare/v2.6.0...v2.6.1) (2026-09-01)
+
+
+### Bug Fixes
+
+* **DTFS2-8585:** amend/get an acbs facility - validation ([#1432](https://github.com/UK-Export-Finance/tfs-api/issues/1432)) ([c6154fe](https://github.com/UK-Export-Finance/tfs-api/commit/c6154feae3173674861785d3965b0f009b720247))
+
 ## [2.6.0](https://github.com/UK-Export-Finance/tfs-api/compare/v2.5.0...v2.6.0) (2026-08-27)
 
 
