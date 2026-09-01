@@ -1,33 +1,50 @@
 import { applyDecorators } from '@nestjs/common';
 import { ApiProperty, ApiPropertyOptions } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsNumber, Min, NotEquals, ValidateIf } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsNumber, Min, NotEquals } from 'class-validator';
+
+import { NullableOption, parseRequiredAndNullable, RequiredOption } from './parse-required-and-nullable-validation.helper';
 
 interface Options {
   description: string;
   minimum?: number;
   enum?: any;
-  required?: boolean;
+  required?: RequiredOption;
+  nullable?: NullableOption;
   example?: number;
   default?: number;
   forbidZero?: boolean;
 }
 
 export const ValidatedNumberApiProperty = (options: Options) => {
-  const decoratorsToApply = [ApiProperty(buildSwaggerPropertyOptions(options)), IsNumber()];
+  const { description, minimum, enum: theEnum, required, nullable, example, default: theDefault, forbidZero } = options;
 
-  const { minimum, enum: theEnum, required, forbidZero } = options;
+  const { shouldPropertyBeDocumentedAsRequired, shouldPropertyBeDocumentedAsNullable, validationDecoratorsToApply } = parseRequiredAndNullable({
+    required,
+    nullable,
+  });
+
+  const decoratorsToApply = [
+    ApiProperty(
+      buildSwaggerPropertyOptions({
+        description,
+        minimum,
+        enum: theEnum,
+        required: shouldPropertyBeDocumentedAsRequired,
+        nullable: shouldPropertyBeDocumentedAsNullable,
+        example,
+        default: theDefault,
+        forbidZero,
+      }),
+    ),
+    IsNumber(),
+  ];
 
   if (minimum || minimum === 0) {
     decoratorsToApply.push(Min(minimum));
   }
 
-  const isRequiredProperty = required ?? true;
-
   decoratorsToApply.push(IsNotEmpty());
-
-  if (!isRequiredProperty) {
-    decoratorsToApply.push(ValidateIf((_object, value) => value !== undefined));
-  }
+  decoratorsToApply.push(...validationDecoratorsToApply);
 
   if (theEnum) {
     decoratorsToApply.push(IsEnum(theEnum));
@@ -45,6 +62,7 @@ const buildSwaggerPropertyOptions = ({
   minimum,
   enum: theEnum,
   required,
+  nullable,
   example,
   default: theDefault,
   forbidZero,
@@ -56,7 +74,7 @@ const buildSwaggerPropertyOptions = ({
     example,
     enum: theEnum,
     required,
-    nullable: false,
+    nullable,
     default: theDefault,
   };
 

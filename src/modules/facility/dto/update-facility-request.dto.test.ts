@@ -2,13 +2,24 @@ import { DateStringTransformations } from '@ukef/modules/date/date-string.transf
 import { UpdateFacilityRequest } from '@ukef/modules/facility/dto/update-facility-request.dto';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { UpdateFacilityGenerator } from '@ukef-test/support/generator/update-facility-generator';
-import { plainToClass, plainToInstance } from 'class-transformer';
+import { instanceToPlain, plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 
 describe('UpdateFacilityRequest DTO', () => {
   const valueGenerator = new RandomValueGenerator();
   const dateStringTransformations = new DateStringTransformations();
   const facilityIdentifier = valueGenerator.ukefId();
+
+  const readOnlyPropertiesFromGetEndpoint = {
+    facilityIdentifier: valueGenerator.ukefId(),
+    portfolioIdentifier: valueGenerator.string({ maxLength: 10 }),
+    guaranteeCommencementDate: valueGenerator.dateOnlyString(),
+    facilityInitialStatus: valueGenerator.string({ maxLength: 1 }),
+    facilityOverallStatus: valueGenerator.string({ maxLength: 1 }),
+    guaranteePercentage: valueGenerator.nonnegativeFloat(),
+    description: valueGenerator.string({ maxLength: 35 }),
+    obligorName: valueGenerator.string({ maxLength: 50 }),
+  };
 
   describe('Validation of read-only properties', () => {
     it('accepts read-only properties in the DTO for client convenience (re-sending GET response)', async () => {
@@ -21,30 +32,19 @@ describe('UpdateFacilityRequest DTO', () => {
         facilityIdentifier,
       });
 
-      const readOnlyPropertiesFromGetEndpoint = {
-        facilityIdentifier: valueGenerator.ukefId(),
-        portfolioIdentifier: valueGenerator.string({ maxLength: 10 }),
-        guaranteeCommencementDate: valueGenerator.dateOnlyString(),
-        facilityInitialStatus: valueGenerator.string({ maxLength: 1 }),
-        facilityOverallStatus: valueGenerator.string({ maxLength: 1 }),
-        guaranteePercentage: valueGenerator.nonnegativeFloat(),
-        description: valueGenerator.string({ maxLength: 35 }),
-        obligorName: valueGenerator.string({ maxLength: 50 }),
-      };
-
       const requestWithReadOnlyProperties = {
         ...updateFacilityRequest,
         ...readOnlyPropertiesFromGetEndpoint,
       };
 
       const dtoInstance = plainToInstance(UpdateFacilityRequest, requestWithReadOnlyProperties);
-      const validationErrors = await validate(dtoInstance);
+      const validationErrors = await validate(dtoInstance, { whitelist: true, forbidNonWhitelisted: true });
 
       // Validation should pass because all read-only properties are properly decorated
       expect(validationErrors).toHaveLength(0);
     });
 
-    it('serializes the DTO without read-only properties when @Exclude() is respected', () => {
+    it('serializes the DTO without read-only properties when @Exclude() is respected', async () => {
       /**
        * Scenario: When the DTO is transformed for sending to ACBS, the @Exclude() decorator
        * should prevent read-only properties from being included.
@@ -54,51 +54,40 @@ describe('UpdateFacilityRequest DTO', () => {
         facilityIdentifier,
       });
 
-      const readOnlyPropertiesFromGetEndpoint = {
-        facilityIdentifier: valueGenerator.ukefId(),
-        portfolioIdentifier: valueGenerator.string({ maxLength: 10 }),
-        guaranteeCommencementDate: valueGenerator.dateOnlyString(),
-        facilityInitialStatus: valueGenerator.string({ maxLength: 1 }),
-        facilityOverallStatus: valueGenerator.string({ maxLength: 1 }),
-        guaranteePercentage: valueGenerator.nonnegativeFloat(),
-        description: valueGenerator.string({ maxLength: 35 }),
-        obligorName: valueGenerator.string({ maxLength: 50 }),
-      };
-
       const requestWithReadOnlyProperties = {
         ...updateFacilityRequest,
         ...readOnlyPropertiesFromGetEndpoint,
       };
 
       /**
-       * When serialized back to plain object with excludePrefixes (which @Exclude() uses),
-       * the read-only properties should be excluded from the resulting object.
+       * Create a DTO instance from the request that includes read-only properties.
+       * The @Exclude() decorator should prevent them from being set on the instance.
        */
-      const serialized = plainToClass(UpdateFacilityRequest, requestWithReadOnlyProperties, {
-        excludeExtraneousValues: false,
-      });
-
-      // Verify that the instance was created with the read-only properties
-      expect((serialized as any).facilityIdentifier).toBeDefined();
+      const dtoInstance = plainToInstance(UpdateFacilityRequest, requestWithReadOnlyProperties);
 
       /**
-       * When transformed back (simulating what NestJS does before sending to ACBS),
-       * @Exclude() should prevent them from appearing
+       * Validate that the instance passes validation despite the @Exclude() properties.
+       * This verifies that @Exclude() properties are accepted during validation.
        */
-      const transformed = plainToClass(UpdateFacilityRequest, serialized, {
-        excludeExtraneousValues: true,
-        excludePrefixes: ['__'],
-      });
+      const validationErrors = await validate(dtoInstance, { whitelist: true, forbidNonWhitelisted: true });
 
-      // After transformation, the object should not contain the read-only properties (they should be filtered by @Exclude()).
-      expect(Object.keys(transformed)).not.toContain('facilityIdentifier');
-      expect(Object.keys(transformed)).not.toContain('portfolioIdentifier');
-      expect(Object.keys(transformed)).not.toContain('guaranteeCommencementDate');
-      expect(Object.keys(transformed)).not.toContain('facilityInitialStatus');
-      expect(Object.keys(transformed)).not.toContain('facilityOverallStatus');
-      expect(Object.keys(transformed)).not.toContain('guaranteePercentage');
-      expect(Object.keys(transformed)).not.toContain('description');
-      expect(Object.keys(transformed)).not.toContain('obligorName');
+      expect(validationErrors).toHaveLength(0);
+
+      /**
+       * When we serialize the DTO back to a plain object using instanceToPlain,
+       * the @Exclude() decorator should prevent the read-only properties from appearing
+       */
+      const serializedToPlain = instanceToPlain(dtoInstance);
+
+      // After serialization, the object should not contain the read-only properties
+      expect(Object.keys(serializedToPlain)).not.toContain('facilityIdentifier');
+      expect(Object.keys(serializedToPlain)).not.toContain('portfolioIdentifier');
+      expect(Object.keys(serializedToPlain)).not.toContain('guaranteeCommencementDate');
+      expect(Object.keys(serializedToPlain)).not.toContain('facilityInitialStatus');
+      expect(Object.keys(serializedToPlain)).not.toContain('facilityOverallStatus');
+      expect(Object.keys(serializedToPlain)).not.toContain('guaranteePercentage');
+      expect(Object.keys(serializedToPlain)).not.toContain('description');
+      expect(Object.keys(serializedToPlain)).not.toContain('obligorName');
     });
 
     it('fails validation if required properties are missing', async () => {
@@ -111,7 +100,7 @@ describe('UpdateFacilityRequest DTO', () => {
       };
 
       const dtoInstance = plainToInstance(UpdateFacilityRequest, incompleteRequest);
-      const validationErrors = await validate(dtoInstance);
+      const validationErrors = await validate(dtoInstance, { whitelist: true, forbidNonWhitelisted: true });
 
       // Should have validation errors for missing required properties
       expect(validationErrors.length).toBeGreaterThan(0);
@@ -127,7 +116,7 @@ describe('UpdateFacilityRequest DTO', () => {
       });
 
       const dtoInstance = plainToInstance(UpdateFacilityRequest, updateFacilityRequest);
-      const validationErrors = await validate(dtoInstance);
+      const validationErrors = await validate(dtoInstance, { whitelist: true, forbidNonWhitelisted: true });
 
       // Should validate successfully without read-only properties
       expect(validationErrors).toHaveLength(0);

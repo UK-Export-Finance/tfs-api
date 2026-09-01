@@ -166,64 +166,86 @@ export class BaseFacilityRequestItem {
     default: null,
   })
   readonly issueDate?: DateOnlyString | null;
+}
 
-  /**
-   * Read-only properties returned by GET endpoint that may be sent back in amendment requests.
-   * These are accepted for client convenience (when re-sending GET response) but excluded from ACBS updates.
-   * See: GetFacilityByIdentifierResponseDto
-   */
+/**
+ * Base class for facility update/amendment requests.
+ * Extends BaseFacilityRequestItem and includes read-only properties returned by GET endpoint.
+ * These properties are accepted for client convenience when re-sending GET responses,
+ * but are excluded from ACBS updates via the @Exclude() decorator.
+ * See: GetFacilityByIdentifierResponseDto
+ */
+export class BaseUpdateFacilityRequestItem extends BaseFacilityRequestItem {
   @Exclude()
   @ValidatedStringApiProperty({
     description: 'Read-only field returned from GET endpoint. Portfolio identifier for the facility.',
     required: false,
+    nullable: true,
   })
-  readonly portfolioIdentifier?: string;
+  readonly portfolioIdentifier?: string | null;
 
   @Exclude()
   @ValidatedStringApiProperty({
     description: 'Read-only field returned from GET endpoint. The initial status of the facility.',
     required: false,
+    nullable: true,
   })
-  readonly facilityInitialStatus?: string;
+  readonly facilityInitialStatus?: string | null;
 
   @Exclude()
   @ValidatedStringApiProperty({
     description: 'Read-only field returned from GET endpoint. The overall status of the facility.',
     required: false,
+    nullable: true,
   })
-  readonly facilityOverallStatus?: string;
+  readonly facilityOverallStatus?: string | null;
 
   @Exclude()
   @ValidatedNumberApiProperty({
     description: 'Read-only field returned from GET endpoint. The guarantee percentage for the facility.',
     required: false,
+    nullable: true,
     minimum: 0,
   })
-  readonly guaranteePercentage?: number;
+  readonly guaranteePercentage?: number | null;
 
   @Exclude()
   @ValidatedStringApiProperty({
     description: 'Read-only field returned from GET endpoint. Description of the facility.',
     required: false,
+    nullable: true,
   })
-  readonly description?: string;
+  readonly description?: string | null;
 
   @Exclude()
   @ValidatedStringApiProperty({
     description: 'Read-only field returned from GET endpoint. The name of the obligor.',
     required: false,
+    nullable: true,
   })
-  readonly obligorName?: string;
+  readonly obligorName?: string | null;
 
   @Exclude()
   @ValidatedDateOnlyApiProperty({
     description: 'Read-only field returned from GET endpoint. The commencement date of the guarantee.',
     required: false,
+    nullable: true,
   })
-  readonly guaranteeCommencementDate?: DateOnlyString;
+  readonly guaranteeCommencementDate?: DateOnlyString | null;
 }
 
 export class BaseFacilityRequestItemWithFacilityIdentifier extends BaseFacilityRequestItem {
+  @ValidatedFacilityIdentifierApiProperty({
+    description: 'The identifier of the facility.',
+  })
+  readonly facilityIdentifier: string;
+}
+
+/**
+ * Base class for facility update/amendment requests with facility identifier.
+ * Extends BaseUpdateFacilityRequestItem (which includes read-only properties from GET responses).
+ */
+export class BaseUpdateFacilityRequestItemWithFacilityIdentifier extends BaseUpdateFacilityRequestItem {
   @ValidatedFacilityIdentifierApiProperty({
     description: 'The identifier of the facility.',
   })
