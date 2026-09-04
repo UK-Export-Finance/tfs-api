@@ -38,11 +38,12 @@ export class GiftAccrualScheduleService {
 
       const basePayload = {
         acbsInterestScheduleId: INTEGRATION_DEFAULTS.ACBS_INTEREST_SCHEDULE_ID,
-        accrualEffectiveDate: accrualScheduleData.accrualEffectiveDate || INTEGRATION_DEFAULTS.ACCRUAL_EFFECTIVE_DATE,
-        accrualMaturityDate: accrualScheduleData.accrualMaturityDate || INTEGRATION_DEFAULTS.ACCRUAL_MATURITY_DATE,
-        additionalRateTypeCode: null,
+        additionalRateTypeCode: INTEGRATION_DEFAULTS.ADDITIONAL_RATE_TYPE_CODE,
         dateSnapBackOverride: INTEGRATION_DEFAULTS.DATE_SNAP_BACK_OVERRIDE,
-        firstCycleAccrualEndDate: accrualScheduleData.firstCycleAccrualEndDate || INTEGRATION_DEFAULTS.FIRST_CYCLE_ACCRUAL_END_DATE,
+        ...accrualScheduleData,
+        accrualEffectiveDate: accrualScheduleData.accrualEffectiveDate ?? INTEGRATION_DEFAULTS.ACCRUAL_EFFECTIVE_DATE,
+        accrualMaturityDate: accrualScheduleData.accrualMaturityDate ?? INTEGRATION_DEFAULTS.ACCRUAL_MATURITY_DATE,
+        firstCycleAccrualEndDate: accrualScheduleData.firstCycleAccrualEndDate ?? INTEGRATION_DEFAULTS.FIRST_CYCLE_ACCRUAL_END_DATE,
       };
 
       const basePath = `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}`;
@@ -61,10 +62,7 @@ export class GiftAccrualScheduleService {
 
         path = `${basePath}/${EVENT_TYPES.ADD_ACCRUAL_SCHEDULE_INDEXED_RATE}`;
 
-        payload = {
-          ...basePayload,
-          ...accrualScheduleData,
-        };
+        payload = basePayload;
 
         delete payload.baseRate;
       } else {
@@ -74,7 +72,6 @@ export class GiftAccrualScheduleService {
 
         payload = {
           ...basePayload,
-          ...accrualScheduleData,
           baseRateTypeCode: null,
         };
       }
