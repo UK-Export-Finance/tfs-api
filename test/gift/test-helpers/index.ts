@@ -63,6 +63,7 @@ const unauthorized: MockGiftResponse = {
 export const mockResponses = {
   approveStatus: GIFT_EXAMPLES.WORK_PACKAGE_APPROVE_RESPONSE_DATA,
   accrualSchedule: { data: GIFT_EXAMPLES.ACCRUAL_SCHEDULE },
+  accrualScheduleNoOptionalDates: { data: GIFT_EXAMPLES.ACCRUAL_SCHEDULE_WITHOUT_OPTIONAL_DATES },
   businessCalendar: { data: GIFT_EXAMPLES.BUSINESS_CALENDAR },
   businessCalendarsConvention: { data: GIFT_EXAMPLES.BUSINESS_CALENDARS_CONVENTION },
   counterparty: { data: { aCounterparty: true } },
