@@ -44,7 +44,7 @@ describe('GiftAccrualScheduleService', () => {
       accrualMaturityDate: mockPayload.accrualMaturityDate ?? INTEGRATION_DEFAULTS.ACCRUAL_MATURITY_DATE,
       additionalRateTypeCode: INTEGRATION_DEFAULTS.ADDITIONAL_RATE_TYPE_CODE,
       dateSnapBackOverride: INTEGRATION_DEFAULTS.DATE_SNAP_BACK_OVERRIDE,
-      firstCycleAccrualEndDate: mockPayload.firstCycleAccrualEndDate || INTEGRATION_DEFAULTS.FIRST_CYCLE_ACCRUAL_END_DATE,
+      firstCycleAccrualEndDate: mockPayload.firstCycleAccrualEndDate ?? INTEGRATION_DEFAULTS.FIRST_CYCLE_ACCRUAL_END_DATE,
     });
 
     describe('when optional date fields are provided', () => {
