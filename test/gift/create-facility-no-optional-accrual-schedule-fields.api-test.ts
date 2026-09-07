@@ -6,8 +6,8 @@ import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables'
 import nock from 'nock';
 
 import {
-  accrualScheduleFixedRateUrl,
   accrualScheduleIndexedRateUrl,
+  accrualScheduleNonIndexedRateUrl,
   apimFacilityWithoutQueueUrl,
   apimMdmObligationSubtypesUrl,
   approveStatusUrl,
@@ -57,7 +57,7 @@ const setupMocks = () => {
    * These matchers must be first so they take precedence
    */
   const accrualScheduleFixedRateMatcher = nock(GIFT_API_URL)
-    .post(accrualScheduleFixedRateUrl)
+    .post(accrualScheduleNonIndexedRateUrl)
     .reply(HttpStatus.CREATED, mockResponses.accrualScheduleNoOptionalDates);
 
   const accrualScheduleIndexedRateMatcher = nock(GIFT_API_URL).post(accrualScheduleIndexedRateUrl).reply(HttpStatus.CREATED, mockResponses.accrualSchedule);
