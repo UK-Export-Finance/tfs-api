@@ -60,7 +60,6 @@ const setupMocks = (options?: { expectedBusinessCalendarPayload?: { centreCode: 
 
   nock(GIFT_API_URL).persist().post(facilityCreationUrl).reply(HttpStatus.CREATED, mockResponses.facility);
 
-  // accrualScheduleIndexedRateUrl,
   nock(GIFT_API_URL).persist().post(accrualScheduleFixedRateUrl).reply(HttpStatus.CREATED, mockResponses.accrualSchedule);
 
   nock(GIFT_API_URL).persist().post(accrualScheduleIndexedRateUrl).reply(HttpStatus.CREATED, mockResponses.accrualSchedule);

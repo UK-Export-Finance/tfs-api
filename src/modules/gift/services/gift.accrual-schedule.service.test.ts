@@ -40,11 +40,11 @@ describe('GiftAccrualScheduleService', () => {
     const baseExpectedPayload = (mockPayload) => ({
       ...mockPayload,
       acbsInterestScheduleId: INTEGRATION_DEFAULTS.ACBS_INTEREST_SCHEDULE_ID,
-      accrualEffectiveDate: mockPayload.accrualEffectiveDate,
-      accrualMaturityDate: mockPayload.accrualMaturityDate,
-      additionalRateTypeCode: null,
+      accrualEffectiveDate: mockPayload.accrualEffectiveDate ?? INTEGRATION_DEFAULTS.ACCRUAL_EFFECTIVE_DATE,
+      accrualMaturityDate: mockPayload.accrualMaturityDate ?? INTEGRATION_DEFAULTS.ACCRUAL_MATURITY_DATE,
+      additionalRateTypeCode: INTEGRATION_DEFAULTS.ADDITIONAL_RATE_TYPE_CODE,
       dateSnapBackOverride: INTEGRATION_DEFAULTS.DATE_SNAP_BACK_OVERRIDE,
-      firstCycleAccrualEndDate: mockPayload.firstCycleAccrualEndDate,
+      firstCycleAccrualEndDate: mockPayload.firstCycleAccrualEndDate ?? INTEGRATION_DEFAULTS.FIRST_CYCLE_ACCRUAL_END_DATE,
     });
 
     describe('when optional date fields are provided', () => {
