@@ -64,7 +64,7 @@ describe('GiftAccrualScheduleService', () => {
         expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
 
         const expected = {
-          path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_ACCRUAL_SCHEDULE_FIXED_RATE}`,
+          path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_ACCRUAL_SCHEDULE_NON_INDEXED_RATE}`,
           payload: {
             ...baseExpectedPayload(mockPayload),
             baseRateTypeCode: null,
@@ -92,7 +92,7 @@ describe('GiftAccrualScheduleService', () => {
         expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
 
         const expected = {
-          path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_ACCRUAL_SCHEDULE_FIXED_RATE}`,
+          path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_ACCRUAL_SCHEDULE_NON_INDEXED_RATE}`,
           payload: {
             ...baseExpectedPayload(mockPayload),
             baseRateTypeCode: null,
@@ -130,7 +130,7 @@ describe('GiftAccrualScheduleService', () => {
     });
 
     describe('when indexRateCode is NOT provided', () => {
-      it('should call giftHttpService.post with ADD_ACCRUAL_SCHEDULE_FIXED_RATE endpoint', async () => {
+      it('should call giftHttpService.post with ADD_ACCRUAL_SCHEDULE_NON_INDEXED_RATE endpoint', async () => {
         // Arrange
         const mockPayload = ACCRUAL_SCHEDULE_WITHOUT_INDEX_RATE_CODE;
 
@@ -141,7 +141,7 @@ describe('GiftAccrualScheduleService', () => {
         expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
 
         const expected = {
-          path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_ACCRUAL_SCHEDULE_FIXED_RATE}`,
+          path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_ACCRUAL_SCHEDULE_NON_INDEXED_RATE}`,
           payload: {
             ...baseExpectedPayload(mockPayload),
             baseRateTypeCode: null,

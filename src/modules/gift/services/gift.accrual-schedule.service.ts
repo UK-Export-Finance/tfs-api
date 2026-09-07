@@ -68,7 +68,7 @@ export class GiftAccrualScheduleService {
       } else {
         this.logger.info('Creating a "fixed rate" accrual schedule for facility %s', facilityId);
 
-        path = `${basePath}/${EVENT_TYPES.ADD_ACCRUAL_SCHEDULE_FIXED_RATE}`;
+        path = `${basePath}/${EVENT_TYPES.ADD_ACCRUAL_SCHEDULE_NON_INDEXED_RATE}`;
 
         payload = {
           ...basePayload,
