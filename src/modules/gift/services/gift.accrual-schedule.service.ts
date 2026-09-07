@@ -49,13 +49,13 @@ export class GiftAccrualScheduleService {
       const basePath = `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}`;
 
       /**
-       * NOTE: The GIFT API has two different endpoints for creating an accrual schedule, one for fixed rate and one for indexed rate.
-       * The "fixed rate" endpoint requires a baseRate and baseRateTypeCode to be provided,
+       * NOTE: The GIFT API has two different endpoints for creating an accrual schedule, one for "non indexed rate" and one for indexed rate.
+       * The "non indexed rate" endpoint requires a baseRate and baseRateTypeCode to be provided,
        * while the "indexed rate" endpoint requires the indexRateCode to be provided.
        *
        * Therefore, we need to check if the indexRateCode is provided in the request data, and call the appropriate endpoint accordingly:
        * - If the indexRateCode is provided, we will call the indexed rate endpoint and remove the baseRate from the payload.
-       * - If the indexRateCode is not provided, we will call the fixed rate endpoint.
+       * - If the indexRateCode is not provided, we will call the "non indexed rate" endpoint.
        */
       if (accrualScheduleData.indexRateCode) {
         this.logger.info('Creating an "indexed rate" accrual schedule for facility %s', facilityId);
@@ -66,7 +66,7 @@ export class GiftAccrualScheduleService {
 
         delete payload.baseRate;
       } else {
-        this.logger.info('Creating a "fixed rate" accrual schedule for facility %s', facilityId);
+        this.logger.info('Creating a "non indexed rate" accrual schedule for facility %s', facilityId);
 
         path = `${basePath}/${EVENT_TYPES.ADD_ACCRUAL_SCHEDULE_NON_INDEXED_RATE}`;
 
