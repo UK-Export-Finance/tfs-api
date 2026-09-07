@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.7.0](https://github.com/UK-Export-Finance/tfs-api/compare/v2.6.1...v2.7.0) (2026-09-07)
+
+
+### Features
+
+* **DTFS2-8591:** create a gift facility - accrual schedule defaults ([#1434](https://github.com/UK-Export-Finance/tfs-api/issues/1434)) ([e3cc9b5](https://github.com/UK-Export-Finance/tfs-api/commit/e3cc9b59f506e46aa80e5083f042a6dabf9ff47e))
+
 ## [2.6.1](https://github.com/UK-Export-Finance/tfs-api/compare/v2.6.0...v2.6.1) (2026-09-01)
 
 
