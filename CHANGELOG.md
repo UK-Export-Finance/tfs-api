@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.8.0](https://github.com/UK-Export-Finance/tfs-api/compare/v2.7.0...v2.8.0) (2026-09-15)
+
+
+### Features
+
+* **APIM-647:** gift integration - feature flag ([#1437](https://github.com/UK-Export-Finance/tfs-api/issues/1437)) ([8bc89c9](https://github.com/UK-Export-Finance/tfs-api/commit/8bc89c9474bd89e154dd8b09f27d625c8a17b16a))
+
 ## [2.7.0](https://github.com/UK-Export-Finance/tfs-api/compare/v2.6.1...v2.7.0) (2026-09-07)
 
 
