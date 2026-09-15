@@ -47,8 +47,10 @@ jobs:
 
   # 2. API unit tests
   unit-tests-ff-enabled:
-    name: Unit (Feature Flag Enabled) 👷
+    name: Unit (Feature flag enabled) 👷
     needs: setup
+    env:
+      FF_GIFT_ENABLED: 'true'
     environment:
       name: ${{ needs.setup.outputs.environment }}
     runs-on: ubuntu-latest
@@ -76,8 +78,10 @@ jobs:
 
   # 3. Unit tests with feature flag disabled
   unit-tests-ff-disabled:
-    name: Unit (Feature Flag Disabled) 👷
+    name: Unit (Feature flag disabled) 👷
     needs: setup
+    env:
+      FF_GIFT_ENABLED: 'false'
     environment:
       name: ${{ needs.setup.outputs.environment }}
     runs-on: ubuntu-latest
@@ -163,8 +167,10 @@ jobs:
 
   # 6. GIFT API tests
   api-tests-gift:
-    name: API (GIFT) 👷
+    name: API (GIFT, feature flag enabled) 👷
     needs: setup
+    env:
+      FF_GIFT_ENABLED: 'true'
     environment:
       name: ${{ needs.setup.outputs.environment }}
     strategy:
@@ -195,7 +201,7 @@ jobs:
       - name: Execute
         working-directory: ./
         env:
-          FF_GIFT_ENABLED: ${{ secrets.FF_GIFT_ENABLED }}
+          FF_GIFT_ENABLED: 'false'
           GIFT_HTTP_VERSION: ${{ vars.GIFT_HTTP_VERSION }}
         run: |
           if [[ "${{ matrix.test_file }}" == "test/gift" ]]; then
@@ -206,7 +212,7 @@ jobs:
 
   # 7. Feature Flag Disabled API tests
   api-tests-ff-disabled:
-    name: API (Feature Flag Disabled) 👷
+    name: API (Feature flag disabled) 👷
     needs: setup
     environment:
       name: ${{ needs.setup.outputs.environment }}
