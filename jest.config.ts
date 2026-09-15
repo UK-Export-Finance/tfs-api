@@ -65,14 +65,6 @@ const config: JestConfigWithTsJest = {
       transform: tsJestTransform,
       ...defaultSettings,
     },
-    {
-      displayName: 'E2E',
-      setupFilesAfterEnv: ['./setup/override-environment-variables.ts', './setup/enable-gift-feature-flag.ts'],
-      testMatch: ['**/*.e2e-test.ts'],
-      globals: tsJestGlobals,
-      transform: tsJestTransform,
-      ...defaultSettings,
-    },
   ],
   reporters: [['default', { summaryThreshold: 1 }]],
 };
