@@ -68,7 +68,7 @@ jobs:
 
       - name: Dependencies
         working-directory: ./
-        run: npm ci --legacy-peer-deps --ignore-scripts
+        run: npm ci --legacy-peer-deps
 
       - name: Execute
         working-directory: ./
@@ -97,7 +97,7 @@ jobs:
 
       - name: Dependencies
         working-directory: ./
-        run: npm ci --legacy-peer-deps --ignore-scripts
+        run: npm ci --legacy-peer-deps
 
       - name: Execute
         working-directory: ./
@@ -126,7 +126,7 @@ jobs:
 
       - name: Dependencies
         working-directory: ./
-        run: npm ci --legacy-peer-deps --ignore-scripts
+        run: npm ci --legacy-peer-deps
 
       - name: Execute
         working-directory: ./tfs-functions
@@ -155,7 +155,7 @@ jobs:
 
       - name: Dependencies
         working-directory: ./
-        run: npm ci --legacy-peer-deps --ignore-scripts
+        run: npm ci --legacy-peer-deps
 
       - name: Execute
         working-directory: ./
@@ -190,7 +190,7 @@ jobs:
 
       - name: Dependencies
         working-directory: ./
-        run: npm ci --legacy-peer-deps --ignore-scripts
+        run: npm ci --legacy-peer-deps
 
       - name: Execute
         working-directory: ./
@@ -227,7 +227,7 @@ jobs:
 
       - name: Dependencies
         working-directory: ./
-        run: npm ci --legacy-peer-deps --ignore-scripts
+        run: npm ci --legacy-peer-deps
 
       - name: Execute
         working-directory: ./

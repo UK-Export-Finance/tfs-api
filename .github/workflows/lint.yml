@@ -80,7 +80,7 @@ jobs:
 
       - name: Dependencies
         working-directory: ./
-        run: npm ci --legacy-peer-deps --ignore-scripts
+        run: npm ci --legacy-peer-deps
 
       - name: Linting
         working-directory: ./
@@ -108,7 +108,7 @@ jobs:
 
       - name: Dependencies
         working-directory: ./
-        run: npm ci --legacy-peer-deps --ignore-scripts
+        run: npm ci --legacy-peer-deps
 
       - name: Linting
         working-directory: ./
@@ -136,7 +136,7 @@ jobs:
 
       - name: Dependencies
         working-directory: ./
-        run: npm ci --legacy-peer-deps --ignore-scripts
+        run: npm ci --legacy-peer-deps
 
       - name: Validate
         working-directory: ./
@@ -164,7 +164,7 @@ jobs:
 
       - name: Dependencies
         working-directory: ./
-        run: npm ci --legacy-peer-deps --ignore-scripts
+        run: npm ci --legacy-peer-deps
 
       - name: Validate
         working-directory: ./
@@ -192,7 +192,7 @@ jobs:
 
       - name: Dependencies
         working-directory: ./
-        run: npm ci --legacy-peer-deps --ignore-scripts
+        run: npm ci --legacy-peer-deps
 
       - name: Validate
         working-directory: ./

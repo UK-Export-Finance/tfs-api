@@ -7,7 +7,7 @@ WORKDIR /build
 
 COPY package.json package-lock.json ./
 COPY tfs-functions/package.json ./tfs-functions/
-RUN npm ci --legacy-peer-deps --ignore-scripts
+RUN npm ci --legacy-peer-deps
 
 COPY tfs-functions/ ./tfs-functions/
 RUN npm run build -w tfs-functions

@@ -13,7 +13,7 @@ WORKDIR /app
 # NPM
 COPY --chown=node:node package.json .
 COPY --chown=node:node package-lock.json .
-RUN npm ci --legacy-peer-deps --ignore-scripts
+RUN npm ci --legacy-peer-deps
 
 COPY --chown=node:node src src
 COPY --chown=node:node nest-cli.json .
