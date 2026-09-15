@@ -169,6 +169,44 @@ describe('appConfig', () => {
     });
   });
 
+  describe('giftFeatureEnabled', () => {
+    describe('when FF_GIFT_ENABLED is not set or false', () => {
+      it('should return giftFeatureEnabled as false', () => {
+        replaceEnvironmentVariables({
+          FF_GIFT_ENABLED: undefined,
+        });
+
+        const config = appConfig();
+
+        expect(config.giftFeatureEnabled).toBe(false);
+      });
+    });
+
+    describe('when FF_GIFT_ENABLED is set to true', () => {
+      it('should return giftFeatureEnabled as true', () => {
+        replaceEnvironmentVariables({
+          FF_GIFT_ENABLED: 'true',
+        });
+
+        const config = appConfig();
+
+        expect(config.giftFeatureEnabled).toBe(true);
+      });
+    });
+
+    describe('when FF_GIFT_ENABLED is set to any value other than "true"', () => {
+      it('should return giftFeatureEnabled as false', () => {
+        replaceEnvironmentVariables({
+          FF_GIFT_ENABLED: 'false',
+        });
+
+        const config = appConfig();
+
+        expect(config.giftFeatureEnabled).toBe(false);
+      });
+    });
+  });
+
   const replaceEnvironmentVariables = (newEnvVariables: Record<string, string>): void => {
     process.env = newEnvVariables;
   };

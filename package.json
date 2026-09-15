@@ -9,9 +9,10 @@
     "tfs-functions"
   ],
   "scripts": {
-    "api-test": "jest --coverage --selectProjects=API",
-    "api-test:acbs": "jest --coverage --selectProjects=API --testPathIgnorePatterns=\"gift\"",
-    "api-test:gift": "jest --coverage --selectProjects=API --testPathPatterns=\"gift\"",
+    "api-test": "jest --coverage --selectProjects=API-FF=true",
+    "api-test:acbs": "jest --coverage --selectProjects=API-FF=true --testPathIgnorePatterns=\"gift\"",
+    "api-test:ff-false": "jest --coverage --selectProjects=API-FF=false",
+    "api-test:gift": "jest --coverage --selectProjects=API-FF=true --testPathPatterns=\"gift\"",
     "audit:fix": "npm audit --fix",
     "build": "nest build -p tsconfig.build.json",
     "e2e-test": "jest --passWithNoTests --coverage --selectProjects=E2E",
@@ -27,7 +28,8 @@
     "start:dev": "nest start --tsc --watch",
     "start:prod": "node dist/src/main",
     "type-check": "tsc --noEmit --pretty",
-    "unit-test": "jest --selectProjects=Unit",
+    "unit-test": "jest src/modules/tfs.module.test.ts --selectProjects=Unit",
+    "unit-test:ff-false": "jest --selectProjects=Unit-FF=false",
     "unit-test-dev": "jest --verbose --config=jest.config.ts",
     "validate:all": "npm run lint:fix && npm run prettier:fix && npm run type-check && npm run validate:yml && npm run validate:md",
     "validate:md": "npx markdownlint-cli --config .markdownlint.json \"**/*.md\"",

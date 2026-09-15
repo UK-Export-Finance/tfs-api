@@ -72,7 +72,36 @@ jobs:
         working-directory: ./
         run: npm run unit-test
 
-  # 3. Functions unit tests
+  # 3. Unit tests with feature flag disabled
+  unit-tests-ff-disabled:
+    name: Unit (Feature Flag Disabled) 👷
+    needs: setup
+    environment:
+      name: ${{ needs.setup.outputs.environment }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Timezone
+        uses: szenius/set-timezone@v2.0
+        with:
+          timezoneLinux: ${{ needs.setup.outputs.timezone }}
+
+      - name: Repository
+        uses: actions/checkout@v6
+
+      - name: Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ vars.NODE_VERSION }}
+
+      - name: Dependencies
+        working-directory: ./
+        run: npm ci --legacy-peer-deps
+
+      - name: Execute
+        working-directory: ./
+        run: npm run unit-test:ff-false
+
+  # 4. Functions unit tests
   functions-unit-tests:
     name: Functions Unit 👷
     needs: setup
@@ -101,7 +130,7 @@ jobs:
         working-directory: ./tfs-functions
         run: npm run unit-test
 
-  # 4. API tests
+  # 5. API tests
   api-tests:
     name: API (ACBS) 👷
     needs: setup
@@ -130,7 +159,7 @@ jobs:
         working-directory: ./
         run: npm run api-test:acbs
 
-  # 5. GIFT API tests
+  # 6. GIFT API tests
   api-tests-gift:
     name: API (GIFT) 👷
     needs: setup
@@ -172,7 +201,36 @@ jobs:
             npx jest --coverage --selectProjects=API --runTestsByPath "${{ matrix.test_file }}"
           fi
 
-  # 6. E2E tests
+  # 7. Feature Flag Disabled API tests
+  api-tests-ff-disabled:
+    name: API (Feature Flag Disabled) 👷
+    needs: setup
+    environment:
+      name: ${{ needs.setup.outputs.environment }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Timezone
+        uses: szenius/set-timezone@v2.0
+        with:
+          timezoneLinux: ${{ needs.setup.outputs.timezone }}
+
+      - name: Repository
+        uses: actions/checkout@v6
+
+      - name: Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ vars.NODE_VERSION }}
+
+      - name: Dependencies
+        working-directory: ./
+        run: npm ci --legacy-peer-deps
+
+      - name: Execute
+        working-directory: ./
+        run: npm run api-test:ff-false
+
+  # 8. E2E tests
   e2e-tests:
     name: E2E 🧑‍💻
     needs: setup
