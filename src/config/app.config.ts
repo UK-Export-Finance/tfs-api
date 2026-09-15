@@ -15,6 +15,7 @@ const validLogLevels = ['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'sil
 export interface AppConfig {
   apiKey: string;
   env: string;
+  giftFeatureEnabled: boolean;
   giftVersioning: {
     enable: boolean;
     prefix: string;
@@ -70,6 +71,7 @@ export default registerAs('app', (): Record<string, any> => {
   return {
     apiKey: process.env.API_KEY,
     env: NODE_ENV,
+    giftFeatureEnabled: process.env.FF_GIFT_ENABLED === 'true',
     giftVersioning,
     globalPrefix: '/api',
     logLevel: process.env.LOG_LEVEL || 'info',

@@ -4,7 +4,6 @@
 # upon a PR creation. Following test suites are executed:
 # 1. Unit tests (Jest)
 # 2. API tests (Jest)
-# 3. E2E tests (Jest)
 
 name: Quality Assurance - Tests
 run-name: Executing test QA on ${{ github.repository }} 🚀
@@ -23,6 +22,9 @@ on:
       - "tsconfig*"
       - "jest.config.ts"
       - "nest.cli.json"
+
+permissions:
+  contents: read
 
 env:
   environment: "qa"
@@ -44,9 +46,11 @@ jobs:
         run: echo "Timezone set to ${{ env.timezone }}"
 
   # 2. API unit tests
-  unit-tests:
-    name: Unit 👷
+  unit-tests-ff-enabled:
+    name: Unit (Feature flag enabled) 👷
     needs: setup
+    env:
+      FF_GIFT_ENABLED: 'true'
     environment:
       name: ${{ needs.setup.outputs.environment }}
     runs-on: ubuntu-latest
@@ -70,9 +74,40 @@ jobs:
 
       - name: Execute
         working-directory: ./
-        run: npm run unit-test
+        run: npm run unit-test:ff-true
 
-  # 3. Functions unit tests
+  # 3. Unit tests with feature flag disabled
+  unit-tests-ff-disabled:
+    name: Unit (Feature flag disabled) 👷
+    needs: setup
+    env:
+      FF_GIFT_ENABLED: 'false'
+    environment:
+      name: ${{ needs.setup.outputs.environment }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Timezone
+        uses: szenius/set-timezone@v2.0
+        with:
+          timezoneLinux: ${{ needs.setup.outputs.timezone }}
+
+      - name: Repository
+        uses: actions/checkout@v6
+
+      - name: Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ vars.NODE_VERSION }}
+
+      - name: Dependencies
+        working-directory: ./
+        run: npm ci --legacy-peer-deps
+
+      - name: Execute
+        working-directory: ./
+        run: npm run unit-test:ff-false
+
+  # 4. Functions unit tests
   functions-unit-tests:
     name: Functions Unit 👷
     needs: setup
@@ -101,7 +136,7 @@ jobs:
         working-directory: ./tfs-functions
         run: npm run unit-test
 
-  # 4. API tests
+  # 5. API tests
   api-tests:
     name: API (ACBS) 👷
     needs: setup
@@ -130,10 +165,12 @@ jobs:
         working-directory: ./
         run: npm run api-test:acbs
 
-  # 5. GIFT API tests
+  # 6. GIFT API tests
   api-tests-gift:
-    name: API (GIFT) 👷
+    name: API (GIFT, feature flag enabled) 👷
     needs: setup
+    env:
+      FF_GIFT_ENABLED: 'true'
     environment:
       name: ${{ needs.setup.outputs.environment }}
     strategy:
@@ -164,17 +201,18 @@ jobs:
       - name: Execute
         working-directory: ./
         env:
+          FF_GIFT_ENABLED: 'false'
           GIFT_HTTP_VERSION: ${{ vars.GIFT_HTTP_VERSION }}
         run: |
           if [[ "${{ matrix.test_file }}" == "test/gift" ]]; then
-            npx jest --coverage --selectProjects=API --testPathPatterns="gift" --testPathIgnorePatterns="create-facility-business-calendars-convention-error-handling.api-test.ts|create-facility-validation-fixed-fees.api-test.ts"
+            npx jest --coverage --selectProjects=API-FF=true --testPathPatterns="gift" --testPathIgnorePatterns="create-facility-business-calendars-convention-error-handling.api-test.ts|create-facility-validation-fixed-fees.api-test.ts"
           else
-            npx jest --coverage --selectProjects=API --runTestsByPath "${{ matrix.test_file }}"
+            npx jest --coverage --selectProjects=API-FF=true --runTestsByPath "${{ matrix.test_file }}"
           fi
 
-  # 6. E2E tests
-  e2e-tests:
-    name: E2E 🧑‍💻
+  # 7. Feature Flag Disabled API tests
+  api-tests-ff-disabled:
+    name: API (Feature flag disabled) 👷
     needs: setup
     environment:
       name: ${{ needs.setup.outputs.environment }}
@@ -197,47 +235,6 @@ jobs:
         working-directory: ./
         run: npm ci --legacy-peer-deps
 
-      - name: Docker
-        working-directory: ./
-        env:
-          PORT: ${{ secrets.PORT }}
-          NODE_ENV: ${{ secrets.NODE_ENV }}
-          TZ: ${{ secrets.TZ }}
-          LOG_LEVEL: ${{ vars.LOG_LEVEL }}
-          REDACT_LOGS: ${{ vars.REDACT_LOGS }}
-          SINGLE_LINE_LOG_FORMAT: ${{ vars.SINGLE_LINE_LOG_FORMAT }}
-          SWAGGER_USER: ${{ secrets.SWAGGER_USER }}
-          SWAGGER_PASSWORD: ${{ secrets.SWAGGER_PASSWORD }}
-          ACBS_BASE_URL: ${{ secrets.ACBS_BASE_URL }}
-          ACBS_MAX_REDIRECTS: ${{ secrets.ACBS_MAX_REDIRECTS }}
-          ACBS_TIMEOUT: ${{ secrets.ACBS_TIMEOUT }}
-          ACBS_USE_RETURN_EXCEPTION_HEADER: ${{ vars.ACBS_USE_RETURN_EXCEPTION_HEADER }}
-          ACBS_AUTHENTICATION_API_KEY: ${{ secrets.ACBS_AUTHENTICATION_API_KEY }}
-          ACBS_AUTHENTICATION_API_KEY_HEADER_NAME: ${{ secrets.ACBS_AUTHENTICATION_API_KEY_HEADER_NAME }}
-          ACBS_AUTHENTICATION_BASE_URL: ${{ secrets.ACBS_AUTHENTICATION_BASE_URL }}
-          ACBS_AUTHENTICATION_CLIENT_ID: ${{ secrets.ACBS_AUTHENTICATION_CLIENT_ID }}
-          ACBS_AUTHENTICATION_ID_TOKEN_CACHE_TTL_IN_MILLISECONDS: ${{ secrets.ACBS_AUTHENTICATION_ID_TOKEN_CACHE_TTL_IN_MILLISECONDS }}
-          ACBS_AUTHENTICATION_LOGIN_NAME: ${{ secrets.ACBS_AUTHENTICATION_LOGIN_NAME }}
-          ACBS_AUTHENTICATION_MAX_REDIRECTS: ${{ secrets.ACBS_AUTHENTICATION_MAX_REDIRECTS }}
-          ACBS_AUTHENTICATION_PASSWORD: ${{ secrets.ACBS_AUTHENTICATION_PASSWORD }}
-          ACBS_AUTHENTICATION_RETRY_DELAY_IN_MILLISECONDS: ${{ secrets.ACBS_AUTHENTICATION_RETRY_DELAY_IN_MILLISECONDS }}
-          ACBS_AUTHENTICATION_TIMEOUT: ${{ secrets.ACBS_AUTHENTICATION_TIMEOUT }}
-          ACBS_AUTHENTICATION_MAX_NUMBER_OF_RETRIES: ${{ secrets.ACBS_AUTHENTICATION_MAX_NUMBER_OF_RETRIES }}
-          API_KEY: ${{ secrets.API_KEY }}
-          APIM_MDM_URL: ${{ secrets.APIM_MDM_URL }}
-          APIM_MDM_KEY: ${{ secrets.APIM_MDM_KEY }}
-          APIM_MDM_VALUE: ${{ secrets.APIM_MDM_VALUE }}
-          APIM_MDM_MAX_REDIRECTS: ${{ secrets.APIM_MDM_MAX_REDIRECTS }}
-          APIM_MDM_TIMEOUT: ${{ secrets.APIM_MDM_TIMEOUT }}
-          GIFT_API_URL: ${{ secrets.GIFT_API_URL }}
-          GIFT_API_KEY: ${{ secrets.GIFT_API_KEY }}
-          GIFT_API_MAX_REDIRECTS: ${{ secrets.GIFT_API_MAX_REDIRECTS }}
-          GIFT_API_TIMEOUT: ${{ secrets.GIFT_API_TIMEOUT }}
-          GIFT_HTTP_VERSION: ${{ secrets.GIFT_HTTP_VERSION }}
-          GIFT_QUEUE_NAME: ${{ vars.GIFT_QUEUE_NAME }}
-          GIFT_QUEUE_STORAGE_CONNECTION_STRING: ${{ secrets.GIFT_QUEUE_STORAGE_CONNECTION_STRING }}
-        run: docker compose up --build -d
-
       - name: Execute
         working-directory: ./
-        run: npm run e2e-test
+        run: npm run api-test:ff-false
