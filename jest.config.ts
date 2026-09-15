@@ -30,7 +30,8 @@ const config: JestConfigWithTsJest = {
   projects: [
     {
       displayName: 'Unit-FF=true',
-      setupFilesAfterEnv: ['../test/setup/mock-nestjs-axios.ts', '../test/setup/enable-gift-feature-flag.ts'],
+      setupFiles: ['../test/setup/enable-gift-feature-flag.ts'],
+      setupFilesAfterEnv: ['../test/setup/mock-nestjs-axios.ts'],
       testMatch: ['**/*.test.ts'],
       globals: tsJestGlobals,
       transform: tsJestTransform,
@@ -39,7 +40,8 @@ const config: JestConfigWithTsJest = {
     },
     {
       displayName: 'Unit-FF=false',
-      setupFilesAfterEnv: ['../test/setup/mock-nestjs-axios.ts', '../test/setup/disable-gift-feature-flag.ts'],
+      setupFiles: ['../test/setup/disable-gift-feature-flag.ts'],
+      setupFilesAfterEnv: ['../test/setup/mock-nestjs-axios.ts'],
       testMatch: ['**/*.test.ts'],
       globals: tsJestGlobals,
       transform: tsJestTransform,
