@@ -23,6 +23,9 @@ on:
       - "jest.config.ts"
       - "nest.cli.json"
 
+permissions:
+  contents: read
+
 env:
   environment: "qa"
   timezone: ${{ vars.TIMEZONE }}
@@ -43,8 +46,8 @@ jobs:
         run: echo "Timezone set to ${{ env.timezone }}"
 
   # 2. API unit tests
-  unit-tests:
-    name: Unit 👷
+  unit-tests-ff-enabled:
+    name: Unit (Feature Flag Enabled) 👷
     needs: setup
     environment:
       name: ${{ needs.setup.outputs.environment }}
@@ -65,11 +68,11 @@ jobs:
 
       - name: Dependencies
         working-directory: ./
-        run: npm ci --legacy-peer-deps
+        run: npm ci --legacy-peer-deps --ignore-scripts
 
       - name: Execute
         working-directory: ./
-        run: npm run unit-test
+        run: npm run unit-test:ff-true
 
   # 3. Unit tests with feature flag disabled
   unit-tests-ff-disabled:
@@ -94,7 +97,7 @@ jobs:
 
       - name: Dependencies
         working-directory: ./
-        run: npm ci --legacy-peer-deps
+        run: npm ci --legacy-peer-deps --ignore-scripts
 
       - name: Execute
         working-directory: ./
@@ -123,7 +126,7 @@ jobs:
 
       - name: Dependencies
         working-directory: ./
-        run: npm ci --legacy-peer-deps
+        run: npm ci --legacy-peer-deps --ignore-scripts
 
       - name: Execute
         working-directory: ./tfs-functions
@@ -152,7 +155,7 @@ jobs:
 
       - name: Dependencies
         working-directory: ./
-        run: npm ci --legacy-peer-deps
+        run: npm ci --legacy-peer-deps --ignore-scripts
 
       - name: Execute
         working-directory: ./
@@ -187,7 +190,7 @@ jobs:
 
       - name: Dependencies
         working-directory: ./
-        run: npm ci --legacy-peer-deps
+        run: npm ci --legacy-peer-deps --ignore-scripts
 
       - name: Execute
         working-directory: ./
@@ -224,7 +227,7 @@ jobs:
 
       - name: Dependencies
         working-directory: ./
-        run: npm ci --legacy-peer-deps
+        run: npm ci --legacy-peer-deps --ignore-scripts
 
       - name: Execute
         working-directory: ./

@@ -1,5 +1,14 @@
 import { JestConfigWithTsJest } from 'ts-jest';
 
+const tsJestGlobals = {
+  'ts-jest': {
+    useESM: true,
+    tsconfig: { module: 'esnext', target: 'ES2022' },
+  },
+};
+
+const tsJestTransform = { '^.+\\.(ts|tsx)?$': ['ts-jest', { useESM: true }] };
+
 const defaultSettings = {
   rootDir: 'test',
   extensionsToTreatAsEsm: ['.ts'],
@@ -20,30 +29,20 @@ const defaultSettings = {
 const config: JestConfigWithTsJest = {
   projects: [
     {
-      displayName: 'Unit',
+      displayName: 'Unit-FF=true',
       setupFilesAfterEnv: ['../test/setup/mock-nestjs-axios.ts', '../test/setup/enable-gift-feature-flag.ts'],
-      testMatch: ['**/*.test.ts', '!**/feature-flag-disabled/**/*.test.ts'],
-      globals: {
-        'ts-jest': {
-          useESM: true,
-          tsconfig: { module: 'esnext', target: 'ES2022' },
-        },
-      },
-      transform: { '^.+\\.(ts|tsx)?$': ['ts-jest', { useESM: true }] },
+      testMatch: ['**/*.test.ts'],
+      globals: tsJestGlobals,
+      transform: tsJestTransform,
       ...defaultSettings,
       rootDir: 'src',
     },
     {
       displayName: 'Unit-FF=false',
       setupFilesAfterEnv: ['../test/setup/mock-nestjs-axios.ts', '../test/setup/disable-gift-feature-flag.ts'],
-      testMatch: ['**/feature-flag-disabled/*.test.ts'],
-      globals: {
-        'ts-jest': {
-          useESM: true,
-          tsconfig: { module: 'esnext', target: 'ES2022' },
-        },
-      },
-      transform: { '^.+\\.(ts|tsx)?$': ['ts-jest', { useESM: true }] },
+      testMatch: ['**/*.test.ts'],
+      globals: tsJestGlobals,
+      transform: tsJestTransform,
       ...defaultSettings,
       rootDir: 'src',
     },
@@ -51,14 +50,24 @@ const config: JestConfigWithTsJest = {
       displayName: 'API-FF=true',
       setupFilesAfterEnv: ['./setup/override-environment-variables.ts', './setup/enable-gift-feature-flag.ts'],
       testMatch: ['**/*.api-test.ts', '!**/feature-flag-disabled/**/*.api-test.ts'],
-      transform: { '^.+\\.(ts|tsx)?$': ['ts-jest', { useESM: true }] },
+      globals: tsJestGlobals,
+      transform: tsJestTransform,
       ...defaultSettings,
     },
     {
       displayName: 'API-FF=false',
       setupFilesAfterEnv: ['./setup/override-environment-variables.ts', './setup/disable-gift-feature-flag.ts'],
       testMatch: ['**/feature-flag-disabled/*.api-test.ts'],
-      transform: { '^.+\\.(ts|tsx)?$': ['ts-jest', { useESM: true }] },
+      globals: tsJestGlobals,
+      transform: tsJestTransform,
+      ...defaultSettings,
+    },
+    {
+      displayName: 'E2E',
+      setupFilesAfterEnv: ['./setup/override-environment-variables.ts', './setup/enable-gift-feature-flag.ts'],
+      testMatch: ['**/*.e2e-test.ts'],
+      globals: tsJestGlobals,
+      transform: tsJestTransform,
       ...defaultSettings,
     },
   ],

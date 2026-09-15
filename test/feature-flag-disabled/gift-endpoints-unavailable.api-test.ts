@@ -29,120 +29,67 @@ describe('GIFT Endpoints - Feature Flag disabled', () => {
   });
 
   describe('when FF_GIFT_ENABLED is false', () => {
-    it(`GET /gift/currency should return ${HttpStatus.NOT_FOUND}`, async () => {
-      // Arrange
-      const endpointUrl = `/api/${prefixAndVersion}/gift${PATH.CURRENCY}`;
+    const getEndpoints = [
+      { description: 'GET /gift/currency', endpointUrl: `/api/${prefixAndVersion}/gift${PATH.CURRENCY}` },
+      { description: 'GET /gift/fee-type', endpointUrl: `/api/${prefixAndVersion}/gift${PATH.FEE_TYPE}` },
+      { description: 'GET /gift/facilities', endpointUrl: `/api/${prefixAndVersion}/gift${PATH.FACILITIES}` },
+      {
+        description: 'GET /gift/facility/:facilityId',
+        endpointUrl: `/api/${prefixAndVersion}/gift${PATH.FACILITIES}/${mockFacilityId}`,
+      },
+    ];
 
-      // Act
-      const response = await api.getWithoutAuth(endpointUrl);
+    describe.each(getEndpoints)('$description should return 404', ({ endpointUrl }) => {
+      it(`returns ${HttpStatus.NOT_FOUND}`, async () => {
+        // Act
+        const response = await api.getWithoutAuth(endpointUrl);
 
-      // Assert
-      expect(response.status).toBe(HttpStatus.NOT_FOUND);
+        // Assert
+        expect(response.status).toBe(HttpStatus.NOT_FOUND);
+      });
     });
 
-    it(`GET /gift/fee-type should return ${HttpStatus.NOT_FOUND}`, async () => {
-      // Arrange
-      const endpointUrl = `/api/${prefixAndVersion}/gift${PATH.FEE_TYPE}`;
+    const postEndpoints = [
+      {
+        description: 'POST /gift/facility',
+        endpointUrl: `/api/${prefixAndVersion}/gift${PATH.FACILITY}`,
+        payload: GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD,
+      },
+      {
+        description: 'POST /gift/facility/without-queue',
+        endpointUrl: `/api/${prefixAndVersion}/gift${PATH.FACILITY}/without-queue`,
+        payload: GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD,
+      },
+      {
+        description: 'POST /gift/facility/:facilityId/amendment',
+        endpointUrl: `/api/${prefixAndVersion}/gift${PATH.FACILITY}/${mockFacilityId}/amendment`,
+        payload: GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD,
+      },
+      {
+        description: 'POST /gift/facility/:facilityId/amendment/without-queue',
+        endpointUrl: `/api/${prefixAndVersion}/gift${PATH.FACILITY}/${mockFacilityId}/amendment/without-queue`,
+        payload: GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD,
+      },
+      {
+        description: 'POST /gift/facility/:facilityId/multiple-amendments',
+        endpointUrl: `/api/${prefixAndVersion}/gift${PATH.FACILITY}/${mockFacilityId}/multiple-amendments`,
+        payload: GIFT_EXAMPLES.FACILITY_MULTIPLE_AMENDMENTS_REQUEST_PAYLOAD,
+      },
+      {
+        description: 'POST /gift/facility/:facilityId/multiple-amendments/without-queue',
+        endpointUrl: `/api/${prefixAndVersion}/gift${PATH.FACILITY}/${mockFacilityId}/multiple-amendments/without-queue`,
+        payload: GIFT_EXAMPLES.FACILITY_MULTIPLE_AMENDMENTS_REQUEST_PAYLOAD,
+      },
+    ];
 
-      // Act
-      const response = await api.getWithoutAuth(endpointUrl);
+    describe.each(postEndpoints)('$description should return 404', ({ endpointUrl, payload }) => {
+      it(`returns ${HttpStatus.NOT_FOUND}`, async () => {
+        // Act
+        const response = await api.postWithoutAuth(endpointUrl, payload);
 
-      // Assert
-      expect(response.status).toBe(HttpStatus.NOT_FOUND);
-    });
-
-    it(`GET /gift/facilities should return ${HttpStatus.NOT_FOUND}`, async () => {
-      // Arrange
-      const endpointUrl = `/api/${prefixAndVersion}/gift${PATH.FACILITIES}`;
-
-      // Act
-      const response = await api.getWithoutAuth(endpointUrl);
-
-      // Assert
-      expect(response.status).toBe(HttpStatus.NOT_FOUND);
-    });
-
-    it(`GET /gift/facility/:facilityId should return ${HttpStatus.NOT_FOUND}`, async () => {
-      // Arrange
-      const endpointUrl = `/api/${prefixAndVersion}/gift${PATH.FACILITIES}/${mockFacilityId}`;
-
-      // Act
-      const response = await api.getWithoutAuth(endpointUrl);
-
-      // Assert
-      expect(response.status).toBe(HttpStatus.NOT_FOUND);
-    });
-
-    it(`POST /gift/facility should return ${HttpStatus.NOT_FOUND}`, async () => {
-      // Arrange
-      const endpointUrl = `/api/${prefixAndVersion}/gift${PATH.FACILITY}`;
-      const payload = GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD;
-
-      // Act
-      const response = await api.postWithoutAuth(endpointUrl, payload);
-
-      // Assert
-      expect(response.status).toBe(HttpStatus.NOT_FOUND);
-    });
-
-    it(`POST /gift/facility/:facilityId/amendment should return ${HttpStatus.NOT_FOUND}`, async () => {
-      // Arrange
-      const endpointUrl = `/api/${prefixAndVersion}/gift${PATH.FACILITY}/${mockFacilityId}/amendment`;
-      const payload = GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD;
-
-      // Act
-      const response = await api.postWithoutAuth(endpointUrl, payload);
-
-      // Assert
-      expect(response.status).toBe(HttpStatus.NOT_FOUND);
-    });
-
-    it(`POST /gift/facility/:facilityId/amendment/without-queue should return ${HttpStatus.NOT_FOUND}`, async () => {
-      // Arrange
-      const endpointUrl = `/api/${prefixAndVersion}/gift${PATH.FACILITY}/${mockFacilityId}/amendment/without-queue`;
-      const payload = GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD;
-
-      // Act
-      const response = await api.postWithoutAuth(endpointUrl, payload);
-
-      // Assert
-      expect(response.status).toBe(HttpStatus.NOT_FOUND);
-    });
-
-    it(`POST /gift/facility/:facilityId/multiple-amendments should return ${HttpStatus.NOT_FOUND}`, async () => {
-      // Arrange
-      const endpointUrl = `/api/${prefixAndVersion}/gift${PATH.FACILITY}/${mockFacilityId}/multiple-amendments`;
-      const payload = GIFT_EXAMPLES.FACILITY_MULTIPLE_AMENDMENTS_REQUEST_PAYLOAD;
-
-      // Arrange
-      const response = await api.postWithoutAuth(endpointUrl, payload);
-
-      // Act
-      expect(response.status).toBe(HttpStatus.NOT_FOUND);
-    });
-
-    it(`POST /gift/facility/:facilityId/multiple-amendments/without-queue should return ${HttpStatus.NOT_FOUND}`, async () => {
-      // Arrange
-      const endpointUrl = `/api/${prefixAndVersion}/gift${PATH.FACILITY}/${mockFacilityId}/multiple-amendments/without-queue`;
-      const payload = GIFT_EXAMPLES.FACILITY_MULTIPLE_AMENDMENTS_REQUEST_PAYLOAD;
-
-      // Act
-      const response = await api.postWithoutAuth(endpointUrl, payload);
-
-      // Assert
-      expect(response.status).toBe(HttpStatus.NOT_FOUND);
-    });
-
-    it(`POST /gift/facility/without-queue should return ${HttpStatus.NOT_FOUND}`, async () => {
-      // Arrange
-      const endpointUrl = `/api/${prefixAndVersion}/gift${PATH.FACILITY}/without-queue`;
-      const payload = GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD;
-
-      // Act
-      const response = await api.postWithoutAuth(endpointUrl, payload);
-
-      // Assert
-      expect(response.status).toBe(HttpStatus.NOT_FOUND);
+        // Assert
+        expect(response.status).toBe(HttpStatus.NOT_FOUND);
+      });
     });
   });
 });
