@@ -9,7 +9,7 @@
     "tfs-functions"
   ],
   "scripts": {
-    "api-test": "jest --coverage --selectProjects=API-FF=true",
+    "api-test": "jest --coverage --selectProjects=API-FF=true --testPathIgnorePatterns=\"gift\"",
     "api-test:acbs": "jest --coverage --selectProjects=API-FF=true --testPathIgnorePatterns=\"gift\"",
     "api-test:ff-false": "jest --coverage --selectProjects=API-FF=false",
     "api-test:gift": "jest --coverage --selectProjects=API-FF=true --testPathPatterns=\"gift\"",

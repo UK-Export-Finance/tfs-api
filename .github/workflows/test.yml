@@ -199,9 +199,9 @@ jobs:
           GIFT_HTTP_VERSION: ${{ vars.GIFT_HTTP_VERSION }}
         run: |
           if [[ "${{ matrix.test_file }}" == "test/gift" ]]; then
-            npx jest --coverage --selectProjects=API --testPathPatterns="gift" --testPathIgnorePatterns="create-facility-business-calendars-convention-error-handling.api-test.ts|create-facility-validation-fixed-fees.api-test.ts"
+            npx jest --coverage --selectProjects=API-FF=true --testPathPatterns="gift" --testPathIgnorePatterns="create-facility-business-calendars-convention-error-handling.api-test.ts|create-facility-validation-fixed-fees.api-test.ts"
           else
-            npx jest --coverage --selectProjects=API --runTestsByPath "${{ matrix.test_file }}"
+            npx jest --coverage --selectProjects=API-FF=true --runTestsByPath "${{ matrix.test_file }}"
           fi
 
   # 7. Feature Flag Disabled API tests
