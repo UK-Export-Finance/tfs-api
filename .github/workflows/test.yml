@@ -79,13 +79,13 @@ jobs:
 
       - name: Start (timeout after 10 seconds)
         working-directory: ./
-        run: timeout 10 npm start || if [ $? -ne 124 ]; then exit $?; fi
+        run: timeout 30 npm start || [ $? -eq 124 ]
         continue-on-error: false
 
   # 3. API unit tests
   unit-tests-ff-enabled:
     name: Unit (Feature flag enabled) 👷
-    needs: build-and-start-check
+    needs: [setup, build-and-start-check]
     env:
       FF_GIFT_ENABLED: 'true'
     environment:
@@ -116,7 +116,7 @@ jobs:
   # 4. Unit tests with feature flag disabled
   unit-tests-ff-disabled:
     name: Unit (Feature flag disabled) 👷
-    needs: build-and-start-check
+    needs: [setup, build-and-start-check]
     env:
       FF_GIFT_ENABLED: 'false'
     environment:
@@ -147,7 +147,7 @@ jobs:
   # 5. Functions unit tests
   functions-unit-tests:
     name: Functions Unit 👷
-    needs: build-and-start-check
+    needs: [setup, build-and-start-check]
     environment:
       name: ${{ needs.setup.outputs.environment }}
     runs-on: ubuntu-latest
@@ -176,7 +176,7 @@ jobs:
   # 6. API tests
   api-tests:
     name: API (ACBS) 👷
-    needs: build-and-start-check
+    needs: [setup, build-and-start-check]
     environment:
       name: ${{ needs.setup.outputs.environment }}
     runs-on: ubuntu-latest
@@ -205,7 +205,7 @@ jobs:
   # 7. GIFT API tests
   api-tests-gift:
     name: API (GIFT, feature flag enabled) 👷
-    needs: build-and-start-check
+    needs: [setup, build-and-start-check]
     env:
       FF_GIFT_ENABLED: 'true'
     environment:
@@ -250,7 +250,7 @@ jobs:
   # 8. Feature Flag Disabled API tests
   api-tests-ff-disabled:
     name: API (Feature flag disabled) 👷
-    needs: build-and-start-check
+    needs: [setup, build-and-start-check]
     environment:
       name: ${{ needs.setup.outputs.environment }}
     runs-on: ubuntu-latest
