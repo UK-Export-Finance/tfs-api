@@ -45,10 +45,46 @@ jobs:
       - name: Timezone 🌐
         run: echo "Timezone set to ${{ env.timezone }}"
 
-  # 2. API unit tests
+  # 2. Build and start check
+  build-and-start-check:
+    name: Build and Start Check 🔨
+    needs: setup
+    env:
+      FF_GIFT_ENABLED: 'true'
+    environment:
+      name: ${{ needs.setup.outputs.environment }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Timezone
+        uses: szenius/set-timezone@v2.0
+        with:
+          timezoneLinux: ${{ needs.setup.outputs.timezone }}
+
+      - name: Repository
+        uses: actions/checkout@v6
+
+      - name: Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ vars.NODE_VERSION }}
+
+      - name: Dependencies
+        working-directory: ./
+        run: npm ci --legacy-peer-deps
+
+      - name: Build
+        working-directory: ./
+        run: npm run build
+
+      - name: Start (timeout after 10 seconds)
+        working-directory: ./
+        run: timeout 10 npm start || if [ $? -ne 124 ]; then exit $?; fi
+        continue-on-error: false
+
+  # 3. API unit tests
   unit-tests-ff-enabled:
     name: Unit (Feature flag enabled) 👷
-    needs: setup
+    needs: build-and-start-check
     env:
       FF_GIFT_ENABLED: 'true'
     environment:
@@ -76,10 +112,10 @@ jobs:
         working-directory: ./
         run: npm run unit-test:ff-true
 
-  # 3. Unit tests with feature flag disabled
+  # 4. Unit tests with feature flag disabled
   unit-tests-ff-disabled:
     name: Unit (Feature flag disabled) 👷
-    needs: setup
+    needs: build-and-start-check
     env:
       FF_GIFT_ENABLED: 'false'
     environment:
@@ -107,10 +143,10 @@ jobs:
         working-directory: ./
         run: npm run unit-test:ff-false
 
-  # 4. Functions unit tests
+  # 5. Functions unit tests
   functions-unit-tests:
     name: Functions Unit 👷
-    needs: setup
+    needs: build-and-start-check
     environment:
       name: ${{ needs.setup.outputs.environment }}
     runs-on: ubuntu-latest
@@ -136,10 +172,10 @@ jobs:
         working-directory: ./tfs-functions
         run: npm run unit-test
 
-  # 5. API tests
+  # 6. API tests
   api-tests:
     name: API (ACBS) 👷
-    needs: setup
+    needs: build-and-start-check
     environment:
       name: ${{ needs.setup.outputs.environment }}
     runs-on: ubuntu-latest
@@ -165,10 +201,10 @@ jobs:
         working-directory: ./
         run: npm run api-test:acbs
 
-  # 6. GIFT API tests
+  # 7. GIFT API tests
   api-tests-gift:
     name: API (GIFT, feature flag enabled) 👷
-    needs: setup
+    needs: build-and-start-check
     env:
       FF_GIFT_ENABLED: 'true'
     environment:
@@ -210,10 +246,10 @@ jobs:
             npx jest --coverage --selectProjects=API-FF=true --runTestsByPath "${{ matrix.test_file }}"
           fi
 
-  # 7. Feature Flag Disabled API tests
+  # 8. Feature Flag Disabled API tests
   api-tests-ff-disabled:
     name: API (Feature flag disabled) 👷
-    needs: setup
+    needs: build-and-start-check
     environment:
       name: ${{ needs.setup.outputs.environment }}
     runs-on: ubuntu-latest
