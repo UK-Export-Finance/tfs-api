@@ -85,7 +85,7 @@ jobs:
   # 3. API unit tests
   unit-tests-ff-enabled:
     name: Unit (Feature flag enabled) 👷
-    needs: [setup, build-and-start-check]
+    needs: setup
     env:
       FF_GIFT_ENABLED: 'true'
     environment:
@@ -116,7 +116,7 @@ jobs:
   # 4. Unit tests with feature flag disabled
   unit-tests-ff-disabled:
     name: Unit (Feature flag disabled) 👷
-    needs: [setup, build-and-start-check]
+    needs: setup
     env:
       FF_GIFT_ENABLED: 'false'
     environment:
