@@ -259,7 +259,8 @@ Deployments are executed using the deployment script:
 ./deploy.sh
 ```
 
-Automatic deployments are triggered when commits are pushed to any of the deployment branches (`dev`, `staging`, `production`). These are handled by the GitHub Actions CI/CD pipeline (`.github/workflows/deployment.yml`).
+Automatic deployments are triggered when commits are pushed to any of the deployment branches (`dev`, `staging`, `production`).
+These are handled by the GitHub Actions CI/CD pipeline (`.github/workflows/deployment.yml`).
 
 ### Environment-Specific Deployments
 
