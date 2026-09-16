@@ -156,7 +156,7 @@ npx jest --testPathPatterns="gift"
 
 GIFT endpoints require an API key header for authentication. Include the following in your requests:
 
-```
+```http
 X-API-KEY: your-api-key-value
 ```
 
@@ -286,14 +286,13 @@ Automatic deployments are triggered when commits are pushed to any of the deploy
    git checkout dev
    git pull origin dev
    git checkout -b chore/merge
-   git merge staging
+   git merge production
    git push origin chore/merge
    ```
 
 3. **Post-hotfix sync - dev deployment** - After the dev merge PR is merged - trigger a deployment to dev environment
 
 4. **Post-hotfix sync - staging** - After the dev deployment is complete - trigger a deployment to staging environment. This will update the staging branch.
-
 
 ## Code ⌨️
 
