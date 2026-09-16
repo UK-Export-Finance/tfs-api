@@ -2,8 +2,9 @@
 #####################################
 # This GHA is responsible for initiating various test suites
 # upon a PR creation. Following test suites are executed:
-# 1. Unit tests (Jest)
-# 2. API tests (Jest)
+# 1. Build and start check
+# 2. Unit tests (Jest)
+# 3. API tests (Jest)
 
 name: Quality Assurance - Tests
 run-name: Executing test QA on ${{ github.repository }} 🚀
