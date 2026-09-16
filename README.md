@@ -278,17 +278,7 @@ Automatic deployments are triggered when commits are pushed to any of the deploy
    git log staging..production --oneline
    ```
 
-2. **Resolve merge conflicts** - If merging features from main back to production after a hotfix:
-   - Create a feature branch from the desired base
-   - Cherry-pick commits as needed
-   - Test thoroughly before merging to production
-
-3. **Coordinate merges** - Communicate with the team to:
-   - Avoid conflicting deployments
-   - Ensure hotfixes from production are back-merged to dev/staging
-   - Keep branches in sync after production releases
-
-4. **Post-hotfix sync - dev** - After a production hotfix is complete - create a PR
+2. **Hotfix/branch sync - dev branch** - After a production hotfix is complete - create a PR
 
    ```bash
    # Back-merge production changes to dev branch
@@ -300,9 +290,9 @@ Automatic deployments are triggered when commits are pushed to any of the deploy
    git push origin chore/merge
    ```
 
-5. **Post-hotfix sync - dev deployment** - After the dev merge PR is merged - trigger a deployment to dev environment
+3. **Post-hotfix sync - dev deployment** - After the dev merge PR is merged - trigger a deployment to dev environment
 
-6. **Post-hotfix sync - staging** - After the dev deployment is complete - trigger a deployment to staging environment. This will update the staging branch.
+4. **Post-hotfix sync - staging** - After the dev deployment is complete - trigger a deployment to staging environment. This will update the staging branch.
 
 
 ## Code ⌨️
