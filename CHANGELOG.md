@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.8.1](https://github.com/UK-Export-Finance/tfs-api/compare/v2.8.0...v2.8.1) (2026-09-16)
+
+
+### Bug Fixes
+
+* **APIM-647:** fix build, add build check ([#1439](https://github.com/UK-Export-Finance/tfs-api/issues/1439)) ([3f0370d](https://github.com/UK-Export-Finance/tfs-api/commit/3f0370d4dfc04c534a6787d54c5a73ac59c8b776))
+
 ## [2.8.0](https://github.com/UK-Export-Finance/tfs-api/compare/v2.7.0...v2.8.0) (2026-09-15)
 
 
