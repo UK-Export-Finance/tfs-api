@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.8.2](https://github.com/UK-Export-Finance/tfs-api/compare/v2.8.1...v2.8.2) (2026-09-16)
+
+
+### Bug Fixes
+
+* **APIM-647:** deployment.yml typo ([#1441](https://github.com/UK-Export-Finance/tfs-api/issues/1441)) ([967f9dd](https://github.com/UK-Export-Finance/tfs-api/commit/967f9dd09dd99e535ea4fe1058a8d98a6919e613))
+
 ## [2.8.1](https://github.com/UK-Export-Finance/tfs-api/compare/v2.8.0...v2.8.1) (2026-09-16)
 
 
