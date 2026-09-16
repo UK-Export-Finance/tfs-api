@@ -51,7 +51,9 @@ jobs:
     name: Build and Start Check 🔨
     needs: setup
     env:
-      FF_GIFT_ENABLED: 'true'
+      FF_GIFT_ENABLED: ${{ vars.FF_GIFT_ENABLED }}
+      GIFT_QUEUE_STORAGE_ACCOUNT_NAME: ${{ vars.GIFT_QUEUE_STORAGE_ACCOUNT_NAME }}
+      GIFT_QUEUE_STORAGE_CONNECTION_STRING: ${{ vars.GIFT_QUEUE_STORAGE_CONNECTION_STRING }}
     environment:
       name: ${{ needs.setup.outputs.environment }}
     runs-on: ubuntu-latest
