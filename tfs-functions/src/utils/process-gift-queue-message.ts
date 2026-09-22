@@ -12,6 +12,7 @@ const maxNumberOfRetries = requireEnvInt('GIFT_MAX_NUMBER_OF_RETRIES');
 const TFS_GIFT_INTERNAL_URLS = {
   facilityCreation: `${baseUrl}/api/v2/gift/facility/without-queue`,
   facilityAmendment: (facilityId: string) => `${baseUrl}/api/v2/gift/facility/${facilityId}/amendment/without-queue`,
+  facilityMultipleAmendments: (facilityId: string) => `${baseUrl}/api/v2/gift/facility/${facilityId}/multiple-amendments/without-queue`,
 } as const;
 
 /**
@@ -23,7 +24,7 @@ const TFS_GIFT_INTERNAL_URLS = {
  * @throws {Error} Always — with a message containing the unhandled value.
  */
 const throwIfNotExhaustive = (value: never): never => {
-  throw new Error(`Unhandled message type: ${value}`);
+  throw new Error(`APIM TFS - Unhandled message type: ${value}`);
 };
 
 /**
@@ -42,14 +43,28 @@ export async function processGiftQueueMessage(queueItem: unknown, context: Invoc
     switch (messageType) {
       case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION:
         await postToTfsApi(TFS_GIFT_INTERNAL_URLS.facilityCreation, item.payload, `Failed to create GIFT facility ${facilityId}`, context);
-        context.log('GIFT facility creation succeeded for facilityId:', facilityId);
+        context.log('GIFT facility creation succeeded for facilityId: ', facilityId);
         break;
       case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_AMENDMENT:
         if (!item.facilityId) {
           throw new Error('Failed to amend GIFT facility: facilityId is missing from queue message');
         }
+
         await postToTfsApi(TFS_GIFT_INTERNAL_URLS.facilityAmendment(item.facilityId), item.payload, `Failed to amend GIFT facility ${facilityId}`, context);
-        context.log('GIFT facility amendment succeeded for facilityId:', facilityId);
+        context.log('GIFT facility amendment succeeded for facilityId: ', facilityId);
+        break;
+      case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_MULTIPLE_AMENDMENTS:
+        if (!item.facilityId) {
+          throw new Error('Failed to amend GIFT facility (multiple amendments): facilityId is missing from queue message');
+        }
+
+        await postToTfsApi(
+          TFS_GIFT_INTERNAL_URLS.facilityMultipleAmendments(item.facilityId),
+          item.payload,
+          `Failed to amend GIFT facility (multiple amendments) ${facilityId}`,
+          context,
+        );
+        context.log('GIFT facility amendment (multiple amendments) succeeded for facilityId: ', facilityId);
         break;
       default:
         throwIfNotExhaustive(messageType);
@@ -57,6 +72,7 @@ export async function processGiftQueueMessage(queueItem: unknown, context: Invoc
   } catch (error) {
     if (context.triggerMetadata.dequeueCount === maxNumberOfRetries) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+
       await createHaloTicket(facilityId, queueItem, errorMessage, messageType, context);
     }
     throw error;
