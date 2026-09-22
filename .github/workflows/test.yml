@@ -249,7 +249,7 @@ jobs:
             npx jest --coverage --selectProjects=API-FF=true --runTestsByPath "${{ matrix.test_file }}"
           fi
 
-  # 8. Feature Flag Disabled API tests
+  # 8. Feature flag disabled API tests
   api-tests-ff-disabled:
     name: API (Feature flag disabled) 👷
     needs: [setup, build-and-start-check]
