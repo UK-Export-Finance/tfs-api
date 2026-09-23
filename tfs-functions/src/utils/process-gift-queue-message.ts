@@ -43,7 +43,7 @@ export async function processGiftQueueMessage(queueItem: unknown, context: Invoc
     switch (messageType) {
       case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION:
         await postToTfsApi(TFS_GIFT_INTERNAL_URLS.facilityCreation, item.payload, `Failed to create GIFT facility ${facilityId}`, context);
-        context.log('GIFT facility creation succeeded for facilityId: ', facilityId);
+        context.log('GIFT facility creation succeeded for facilityId:', facilityId);
         break;
       case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_AMENDMENT:
         if (!item.facilityId) {
@@ -51,7 +51,7 @@ export async function processGiftQueueMessage(queueItem: unknown, context: Invoc
         }
 
         await postToTfsApi(TFS_GIFT_INTERNAL_URLS.facilityAmendment(item.facilityId), item.payload, `Failed to amend GIFT facility ${facilityId}`, context);
-        context.log('GIFT facility amendment succeeded for facilityId: ', facilityId);
+        context.log('GIFT facility amendment succeeded for facilityId:', facilityId);
         break;
       case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_MULTIPLE_AMENDMENTS:
         if (!item.facilityId) {
@@ -64,7 +64,7 @@ export async function processGiftQueueMessage(queueItem: unknown, context: Invoc
           `Failed to amend GIFT facility (multiple amendments) ${facilityId}`,
           context,
         );
-        context.log('GIFT facility amendment (multiple amendments) succeeded for facilityId: ', facilityId);
+        context.log('GIFT facility amendment (multiple amendments) succeeded for facilityId:', facilityId);
         break;
       default:
         throwIfNotExhaustive(messageType);

@@ -207,7 +207,7 @@ describe('processGiftQueueMessage', () => {
       expect(postToTfsApi).toHaveBeenCalledWith(
         `${apimTfsUrl}/api/v2/gift/facility/${mockFacilityId}/multiple-amendments/without-queue`,
         queueItem.payload,
-        `Failed to amend GIFT facility ${mockFacilityId}`,
+        `Failed to amend GIFT facility (multiple amendments) ${mockFacilityId}`,
         context,
       );
       expect(context.log).toHaveBeenCalledWith('GIFT facility amendment (multiple amendments) succeeded for facilityId: ', mockFacilityId);
@@ -235,7 +235,7 @@ describe('processGiftQueueMessage', () => {
         // Act & Assert
         await expect(processGiftQueueMessage(queueItem, context as any)).rejects.toThrow(error);
         expect(createHaloTicket).toHaveBeenCalledTimes(1);
-        expect(createHaloTicket).toHaveBeenCalledWith(mockFacilityId, queueItem, error.message, FACILITY_AMENDMENT, context);
+        expect(createHaloTicket).toHaveBeenCalledWith(mockFacilityId, queueItem, error.message, FACILITY_MULTIPLE_AMENDMENTS, context);
       });
 
       it(`should not call createHaloTicket and rethrows when dequeueCount is less than ${GIFT_MAX_NUMBER_OF_RETRIES}`, async () => {
