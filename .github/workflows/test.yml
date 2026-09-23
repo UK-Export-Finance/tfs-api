@@ -240,7 +240,6 @@ jobs:
       - name: Execute
         working-directory: ./
         env:
-          FF_GIFT_ENABLED: 'false'
           GIFT_HTTP_VERSION: ${{ vars.GIFT_HTTP_VERSION }}
         run: |
           if [[ "${{ matrix.test_file }}" == "test/gift" ]]; then
@@ -249,7 +248,7 @@ jobs:
             npx jest --coverage --selectProjects=API-FF=true --runTestsByPath "${{ matrix.test_file }}"
           fi
 
-  # 8. Feature Flag Disabled API tests
+  # 8. Feature flag disabled API tests
   api-tests-ff-disabled:
     name: API (Feature flag disabled) 👷
     needs: [setup, build-and-start-check]
