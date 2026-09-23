@@ -1,6 +1,13 @@
-import { GIFT_QUEUE_MESSAGE_TYPE, GiftFacilityAmendmentMessage, GiftFacilityCreationMessage, GiftQueueMessage } from '../types/queue-message.type';
+import {
+  GIFT_QUEUE_MESSAGE_TYPE,
+  GiftFacilityAmendmentMessage,
+  GiftFacilityCreationMessage,
+  GiftFacilityMultipleAmendmentsMessage,
+  GiftQueueMessage,
+} from '../types/queue-message.type';
 
-const extractAmendmentFacilityId = (message: GiftFacilityAmendmentMessage): string => message.facilityId ?? 'UNKNOWN_FACILITY_ID';
+const extractAmendmentFacilityId = (message: GiftFacilityAmendmentMessage | GiftFacilityMultipleAmendmentsMessage): string =>
+  message.facilityId ?? 'UNKNOWN_FACILITY_ID';
 
 const extractCreationFacilityId = (message: GiftFacilityCreationMessage): string =>
   (message.payload as Record<string, Record<string, string>>)?.overview?.facilityId ?? 'UNKNOWN_FACILITY_ID';
@@ -23,6 +30,8 @@ export const extractFacilityId = (item: unknown): string => {
       return extractAmendmentFacilityId(message);
     case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION:
       return extractCreationFacilityId(message);
+    case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_MULTIPLE_AMENDMENTS:
+      return extractAmendmentFacilityId(message);
     default:
       return 'UNKNOWN_FACILITY_ID';
   }

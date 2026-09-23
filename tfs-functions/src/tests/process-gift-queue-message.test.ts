@@ -50,7 +50,7 @@ describe('processGiftQueueMessage', () => {
         `Failed to create GIFT facility ${mockFacilityId}`,
         context,
       );
-      expect(context.log).toHaveBeenCalledWith('GIFT facility creation succeeded for facilityId: ', mockFacilityId);
+      expect(context.log).toHaveBeenCalledWith('GIFT facility creation succeeded for facilityId:', mockFacilityId);
     });
 
     it('should not call createHaloTicket when postToTfsApi succeeds', async () => {
@@ -125,7 +125,7 @@ describe('processGiftQueueMessage', () => {
         `Failed to amend GIFT facility ${mockFacilityId}`,
         context,
       );
-      expect(context.log).toHaveBeenCalledWith('GIFT facility amendment succeeded for facilityId: ', mockFacilityId);
+      expect(context.log).toHaveBeenCalledWith('GIFT facility amendment succeeded for facilityId:', mockFacilityId);
     });
 
     it('should not call createHaloTicket when postToTfsApi succeeds', async () => {
@@ -210,7 +210,7 @@ describe('processGiftQueueMessage', () => {
         `Failed to amend GIFT facility (multiple amendments) ${mockFacilityId}`,
         context,
       );
-      expect(context.log).toHaveBeenCalledWith('GIFT facility amendment (multiple amendments) succeeded for facilityId: ', mockFacilityId);
+      expect(context.log).toHaveBeenCalledWith('GIFT facility amendment (multiple amendments) succeeded for facilityId:', mockFacilityId);
     });
 
     it('should not call createHaloTicket when postToTfsApi succeeds', async () => {
