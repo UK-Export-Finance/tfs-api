@@ -1,7 +1,7 @@
 import { InvocationContext } from '@azure/functions';
-import { HttpStatus } from '@nestjs/common';
 import axios from 'axios';
 
+import { HttpStatus } from '../constants/http-status.constant';
 import { requireEnv } from './env';
 
 const apimKeyHeaderName = requireEnv('APIM_TFS_KEY');

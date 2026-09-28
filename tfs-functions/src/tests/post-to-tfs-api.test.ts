@@ -1,6 +1,6 @@
-import { HttpStatus } from '@nestjs/common';
 import axios from 'axios';
 
+import { HttpStatus } from '../constants/http-status.constant';
 import { postToTfsApi } from '../utils/post-to-tfs-api';
 
 const apimTfsKey = process.env.APIM_TFS_KEY;
