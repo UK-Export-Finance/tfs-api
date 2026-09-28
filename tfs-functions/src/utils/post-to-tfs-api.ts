@@ -1,4 +1,5 @@
 import { InvocationContext } from '@azure/functions';
+import { HttpStatus } from '@nestjs/common';
 import axios from 'axios';
 
 import { requireEnv } from './env';
@@ -44,7 +45,7 @@ export async function postToTfsApi(url: string, payload: unknown, errorPrefix: s
     throw new Error(message);
   }
 
-  if (response.status !== 201) {
+  if (response.status !== HttpStatus.CREATED) {
     const message = `${errorPrefix}, status: ${response.status}, response: ${JSON.stringify(response.data)}`;
     context.error(message);
     throw new Error(message);
