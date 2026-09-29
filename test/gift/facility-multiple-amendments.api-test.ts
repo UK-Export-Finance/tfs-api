@@ -58,7 +58,7 @@ describe('POST /gift/facility/:facilityId/multiple-amendments/without-queue', ()
 
   describe('when a single amendment is provided', () => {
     describe(`when the payload is valid and an OK response is returned by all GIFT endpoints`, () => {
-      it(`should return a ${HttpStatus.OK} response with a facility and the created amendment`, async () => {
+      it(`should return a ${HttpStatus.CREATED} response with a facility and the created amendment`, async () => {
         // Arrange
         const callOrder: string[] = [];
 
@@ -116,8 +116,8 @@ describe('POST /gift/facility/:facilityId/multiple-amendments/without-queue', ()
         const { status, body } = await api.post(apimFacilityMultipleAmendmentsWithoutQueueUrl, mockPayload);
 
         // Assert
-        expect(status).toBe(HttpStatus.OK);
-        expect(body).toStrictEqual(mockResponses.approveStatus);
+        expect(status).toBe(HttpStatus.CREATED);
+        expect(body).toStrictEqual({ ...mockResponses.approveStatus, isApproved: true });
 
         expect(callOrder).toStrictEqual(['workPackage', 'facilityAmendment', 'obligationAmendment', 'approveStatus']);
       });
@@ -126,7 +126,7 @@ describe('POST /gift/facility/:facilityId/multiple-amendments/without-queue', ()
 
   describe('when multiple amendments are provided', () => {
     describe('when amendments include INCREASE_AMOUNT and DECREASE_AMOUNT', () => {
-      it(`should return a ${HttpStatus.OK} response with a facility and all created amendments`, async () => {
+      it(`should return a ${HttpStatus.CREATED} response with a facility and all created amendments`, async () => {
         // Arrange
         const callOrder: string[] = [];
 
@@ -204,8 +204,8 @@ describe('POST /gift/facility/:facilityId/multiple-amendments/without-queue', ()
         const { status, body } = await api.post(apimFacilityMultipleAmendmentsWithoutQueueUrl, mockPayload);
 
         // Assert
-        expect(status).toBe(HttpStatus.OK);
-        expect(body).toStrictEqual(mockResponses.approveStatus);
+        expect(status).toBe(HttpStatus.CREATED);
+        expect(body).toStrictEqual({ ...mockResponses.approveStatus, isApproved: true });
 
         expect(callOrder).toStrictEqual([
           'workPackage',
@@ -219,7 +219,7 @@ describe('POST /gift/facility/:facilityId/multiple-amendments/without-queue', ()
     });
 
     describe('when amendments include INCREASE_AMOUNT and REPLACE_EXPIRY_DATE', () => {
-      it(`should return a ${HttpStatus.OK} response with a facility and all created amendments`, async () => {
+      it(`should return a ${HttpStatus.CREATED} response with a facility and all created amendments`, async () => {
         // Arrange
         const callOrder: string[] = [];
 
@@ -316,8 +316,8 @@ describe('POST /gift/facility/:facilityId/multiple-amendments/without-queue', ()
         const { status, body } = await api.post(apimFacilityMultipleAmendmentsWithoutQueueUrl, mockPayload);
 
         // Assert
-        expect(status).toBe(HttpStatus.OK);
-        expect(body).toStrictEqual(mockResponses.approveStatus);
+        expect(status).toBe(HttpStatus.CREATED);
+        expect(body).toStrictEqual({ ...mockResponses.approveStatus, isApproved: true });
 
         expect(callOrder).toStrictEqual([
           'workPackage',

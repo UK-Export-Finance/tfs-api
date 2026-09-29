@@ -462,9 +462,19 @@ export class GiftFacilityAmendmentService {
         }
       }
 
+      /**
+       * NOTE: GIFT's "approve" call returns a 200 (OK) status on success.
+       * However, the caller of this method (e.g `postToTfsApi` in tfs-functions) expects a 201 (Created) status
+       * to indicate that the multiple amendments were successfully created - consistent with `create` (single amendment).
+       * Without this, the caller will treat a successful response as a failure and retry,
+       * resulting in the same amendments being sent to GIFT multiple times.
+       */
       return {
-        status: approvalResponse?.status,
-        data: approvalResponse?.data,
+        status: HttpStatus.CREATED,
+        data: {
+          ...approvalResponse?.data,
+          isApproved: true,
+        },
       };
     } catch (error) {
       this.logger.error('Error creating multiple amendments for facility %s %o', facilityId, error);

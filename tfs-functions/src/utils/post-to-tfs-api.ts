@@ -1,6 +1,7 @@
 import { InvocationContext } from '@azure/functions';
 import axios from 'axios';
 
+import { HttpStatus } from '../constants/http-status.constant';
 import { requireEnv } from './env';
 
 const apimKeyHeaderName = requireEnv('APIM_TFS_KEY');
@@ -44,7 +45,7 @@ export async function postToTfsApi(url: string, payload: unknown, errorPrefix: s
     throw new Error(message);
   }
 
-  if (response.status !== 201) {
+  if (response.status !== HttpStatus.CREATED) {
     const message = `${errorPrefix}, status: ${response.status}, response: ${JSON.stringify(response.data)}`;
     context.error(message);
     throw new Error(message);

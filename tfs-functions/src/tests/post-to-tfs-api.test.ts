@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+import { HttpStatus } from '../constants/http-status.constant';
 import { postToTfsApi } from '../utils/post-to-tfs-api';
 
 const apimTfsKey = process.env.APIM_TFS_KEY;
@@ -24,7 +25,7 @@ describe('postToTfsApi', () => {
     // Arrange
     const payload = { some: 'data' };
 
-    axios.post = jest.fn().mockResolvedValue({ status: 201, data: {} });
+    axios.post = jest.fn().mockResolvedValue({ status: HttpStatus.CREATED, data: {} });
 
     // Act
     await postToTfsApi(url, payload, errorPrefix, context as any);
@@ -39,9 +40,9 @@ describe('postToTfsApi', () => {
     });
   });
 
-  it('does not throw or log an error when the API responds with status 201', async () => {
+  it(`does not throw or log an error when the API responds with status ${HttpStatus.CREATED}`, async () => {
     // Arrange
-    axios.post = jest.fn().mockResolvedValue({ status: 201, data: {} });
+    axios.post = jest.fn().mockResolvedValue({ status: HttpStatus.CREATED, data: {} });
 
     // Act
     await postToTfsApi(url, {}, errorPrefix, context as any);
@@ -50,11 +51,11 @@ describe('postToTfsApi', () => {
     expect(context.error).not.toHaveBeenCalled();
   });
 
-  it('logs an error and throws if the API responds with a non-201 status', async () => {
+  it(`logs an error and throws if the API responds with a non-${HttpStatus.CREATED} status`, async () => {
     // Arrange
     const responseData = { error: 'Bad Request' };
 
-    axios.post = jest.fn().mockResolvedValue({ status: 400, data: responseData });
+    axios.post = jest.fn().mockResolvedValue({ status: HttpStatus.BAD_REQUEST, data: responseData });
 
     // Act
     const call = () => postToTfsApi(url, {}, errorPrefix, context as any);
