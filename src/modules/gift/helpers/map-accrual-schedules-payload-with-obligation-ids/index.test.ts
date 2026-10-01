@@ -20,4 +20,19 @@ describe('modules/gift/helpers/map-accrual-schedules-payload-with-obligation-ids
 
     expect(result).toStrictEqual(expected);
   });
+
+  describe('when there is only one obligation', () => {
+    it('should map all accrual schedules to the single obligation ID', () => {
+      // Arrange
+      const mockSingleObligationId = [1];
+
+      // Act
+      const result = mapAccrualSchedulesPayload(mockAccrualSchedules, mockSingleObligationId);
+
+      // Assert
+      const expected = mockAccrualSchedules.map((schedule) => ({ ...schedule, obligationId: mockSingleObligationId[0] }));
+
+      expect(result).toStrictEqual(expected);
+    });
+  });
 });
