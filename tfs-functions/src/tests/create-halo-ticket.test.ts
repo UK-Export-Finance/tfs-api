@@ -218,7 +218,7 @@ describe('createHaloTicket', () => {
         // Assert
         const expectedTicketBody = [
           {
-            summary: `APIM TFS Error retrieving and creating facility ${facilityId} in GIFT`,
+            summary: `APIM TFS Error retrieving facility ${facilityId} in GIFT - preventing facility creation`,
             details: `Error: ${errorMessage}\n\nOriginal payload:\n${JSON.stringify(payload, null, 2)}`,
             tickettype_id: ticketTypeId,
             client_id: ticketClientId,
@@ -259,7 +259,7 @@ describe('createHaloTicket', () => {
         // Assert
         const expectedTicketBody = [
           {
-            summary: `APIM TFS Error retrieving and creating facilities ${facilityIds} in GIFT`,
+            summary: `APIM TFS Error retrieving facilities ${facilityIds} in GIFT - preventing facility creation`,
             details: `Error: ${errorMessage}\n\nOriginal payload:\n${JSON.stringify(payload, null, 2)}`,
             tickettype_id: ticketTypeId,
             client_id: ticketClientId,
