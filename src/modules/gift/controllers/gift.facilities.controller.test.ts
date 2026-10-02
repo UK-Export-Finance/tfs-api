@@ -1,3 +1,4 @@
+import { HttpStatus } from '@nestjs/common';
 import { EXAMPLES } from '@ukef/constants';
 import { UkefId } from '@ukef/helpers';
 import { MdmService } from '@ukef/modules/mdm/mdm.service';
@@ -18,6 +19,7 @@ import {
   GiftHttpService,
   GiftObligationService,
   GiftProductTypeService,
+  GiftQueueService,
   GiftRepaymentProfileService,
   GiftRiskDetailsService,
   GiftStatusService,
@@ -48,9 +50,13 @@ describe('GiftFacilitiesController', () => {
   let giftFacilityService: GiftFacilityService;
   let giftWorkPackageService: GiftWorkPackageService;
   let creationErrorService: GiftFacilityCreationErrorService;
+  let giftQueueService: GiftQueueService;
   let controller: GiftFacilitiesController;
 
   let mockServiceGetMany;
+
+  let mockRes;
+  let mockResStatus;
 
   beforeEach(() => {
     // Arrange
@@ -104,7 +110,11 @@ describe('GiftFacilitiesController', () => {
 
     giftFacilityService.getMany = mockServiceGetMany;
 
-    controller = new GiftFacilitiesController(giftFacilityService);
+    mockResStatus = jest.fn();
+    mockRes = { status: mockResStatus };
+
+    giftQueueService = { enqueue: jest.fn() } as unknown as GiftQueueService;
+    controller = new GiftFacilitiesController(giftFacilityService, giftQueueService);
   });
 
   afterAll(() => {
@@ -119,22 +129,22 @@ describe('GiftFacilitiesController', () => {
       ids: mockIds,
     };
 
-    it('should call giftFacilityService.getMany', async () => {
+    it('should call giftQueueService.enqueue with the facility get many message and message type', async () => {
       // Act
-      await controller.getMany(mockParams);
+      await controller.getManyQueue(mockParams, mockRes);
 
       // Assert
-      expect(mockServiceGetMany).toHaveBeenCalledTimes(1);
-
-      expect(mockServiceGetMany).toHaveBeenCalledWith(mockIds);
+      expect(giftQueueService.enqueue).toHaveBeenCalledTimes(1);
+      expect(giftQueueService.enqueue).toHaveBeenCalledWith({ messageType: 'FACILITY_GET_MANY', ids: mockIds });
     });
 
-    it('should return data obtained from the service call', async () => {
+    it('should call res.status with HttpStatus.ACCEPTED', async () => {
       // Act
-      const result = await controller.getMany(mockParams);
+      await controller.getManyQueue(mockParams, mockRes);
 
       // Assert
-      expect(result).toEqual(mockResponseGetMany);
+      expect(mockResStatus).toHaveBeenCalledTimes(1);
+      expect(mockResStatus).toHaveBeenCalledWith(HttpStatus.ACCEPTED);
     });
   });
 

@@ -1,10 +1,19 @@
-import { Controller, Get, Query } from '@nestjs/common';
-import { ApiBadRequestResponse, ApiInternalServerErrorResponse, ApiOkResponse, ApiOperation, ApiQuery, ApiUnauthorizedResponse } from '@nestjs/swagger';
+import { Controller, Get, HttpStatus, Query, Res } from '@nestjs/common';
+import {
+  ApiAcceptedResponse,
+  ApiBadRequestResponse,
+  ApiInternalServerErrorResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiQuery,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 import AppConfig from '@ukef/config/app.config';
 import { EXAMPLES, GIFT } from '@ukef/constants';
+import { Response } from 'express';
 
 import { FacilityIdsOperationParamsDto, GiftFacilityResponseDto } from '../dto';
-import { GiftFacilityService } from '../services';
+import { GiftFacilityService, GiftQueueService } from '../services';
 
 const { PATH } = GIFT;
 
@@ -15,10 +24,13 @@ const { giftVersioning } = AppConfig();
   version: giftVersioning.version,
 })
 export class GiftFacilitiesController {
-  constructor(private readonly giftFacilityService: GiftFacilityService) {}
+  constructor(
+    private readonly giftFacilityService: GiftFacilityService,
+    private readonly giftQueueService: GiftQueueService,
+  ) {}
 
   @Get()
-  @ApiOperation({ summary: 'Get multiple GIFT facilities by ID (called by tfs-functions)' })
+  @ApiOperation({ summary: 'Get multiple GIFT facilities by ID' })
   @ApiQuery({
     name: 'ids',
     required: true,
@@ -26,10 +38,8 @@ export class GiftFacilitiesController {
     description: 'Facility IDs, comma separated',
     example: EXAMPLES.GIFT.FACILITY_IDS_QUERY_PARAM,
   })
-  @ApiOkResponse({
-    description: 'The facilities',
-    type: GiftFacilityResponseDto,
-    isArray: true,
+  @ApiAcceptedResponse({
+    description: 'The facilities get request has been accepted and added to the queue',
   })
   @ApiBadRequestResponse({
     description: 'Bad request',
@@ -40,8 +50,10 @@ export class GiftFacilitiesController {
   @ApiInternalServerErrorResponse({
     description: 'An internal server error has occurred',
   })
-  getMany(@Query() { ids }: FacilityIdsOperationParamsDto): Promise<GiftFacilityResponseDto[]> {
-    return this.giftFacilityService.getMany(ids);
+  async getManyQueue(@Query() { ids }: FacilityIdsOperationParamsDto, @Res({ passthrough: true }) res: Response) {
+    await this.giftQueueService.enqueue({ messageType: 'FACILITY_GET_MANY', ids });
+
+    res.status(HttpStatus.ACCEPTED);
   }
 
   @Get('without-queue')

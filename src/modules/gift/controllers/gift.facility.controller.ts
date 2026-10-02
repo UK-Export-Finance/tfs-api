@@ -42,7 +42,7 @@ export class GiftFacilityController {
   ) {}
 
   @Get(':facilityId')
-  @ApiOperation({ summary: 'Get a GIFT facility by ID (called by tfs-functions)' })
+  @ApiOperation({ summary: 'Get a GIFT facility by ID' })
   @ApiParam({
     name: 'facilityId',
     required: true,
@@ -50,12 +50,8 @@ export class GiftFacilityController {
     description: 'The facility ID',
     example: EXAMPLES.GIFT.FACILITY_ID,
   })
-  @ApiOkResponse({
-    description: 'The facility',
-    type: GiftFacilityOverviewRequestDto,
-  })
-  @ApiNotFoundResponse({
-    description: 'The facility was not found',
+  @ApiAcceptedResponse({
+    description: 'The facility get request has been accepted and added to the queue',
   })
   @ApiBadRequestResponse({
     description: 'Bad request',
@@ -66,15 +62,10 @@ export class GiftFacilityController {
   @ApiInternalServerErrorResponse({
     description: 'An internal server error has occurred',
   })
-  /**
-   * NOTE: Because we need to return custom responses (instead of NestJS doing this for us), we lose some response handling that NestJS provides by default.
-   * Therefore, we use passthrough: true to ensure that NestJS provides some additional response handling.
-   * Further information: https://docs.nestjs.com/controllers#library-specific-approach
-   */
-  async get(@Param() { facilityId }: FacilityIdOperationParamsDto, @Res({ passthrough: true }) res: Response) {
-    const { status, data } = await this.giftFacilityService.get(facilityId);
+  async getQueue(@Param() { facilityId }: FacilityIdOperationParamsDto, @Res({ passthrough: true }) res: Response) {
+    await this.giftQueueService.enqueue({ messageType: 'FACILITY_GET', facilityId });
 
-    res.status(status).json(data);
+    res.status(HttpStatus.ACCEPTED);
   }
 
   @Get(':facilityId/without-queue')

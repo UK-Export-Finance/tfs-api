@@ -159,34 +159,22 @@ describe('GiftFacilityController', () => {
     // Arrange
     const mockParams = { facilityId: mockFacilityId };
 
-    it('should call giftFacilityService.getFacility', async () => {
+    it('should call giftQueueService.enqueue with the facility get message and message type', async () => {
       // Act
-      await controller.get(mockParams, mockRes);
+      await controller.getQueue(mockParams, mockRes);
 
       // Assert
-      expect(mockServiceGetFacility).toHaveBeenCalledTimes(1);
-
-      expect(mockServiceGetFacility).toHaveBeenCalledWith(mockFacilityId);
+      expect(giftQueueService.enqueue).toHaveBeenCalledTimes(1);
+      expect(giftQueueService.enqueue).toHaveBeenCalledWith({ messageType: 'FACILITY_GET', facilityId: mockFacilityId });
     });
 
-    it('should call res.status with a status', async () => {
+    it('should call res.status with HttpStatus.ACCEPTED', async () => {
       // Act
-      await controller.get(mockParams, mockRes);
+      await controller.getQueue(mockParams, mockRes);
 
       // Assert
       expect(mockResStatus).toHaveBeenCalledTimes(1);
-
-      expect(mockResStatus).toHaveBeenCalledWith(mockResponseGet.status);
-    });
-
-    it('should call res.status.json with data obtained from the service call', async () => {
-      // Act
-      await controller.get(mockParams, mockRes);
-
-      // Assert
-      expect(mockResJson).toHaveBeenCalledTimes(1);
-
-      expect(mockResJson).toHaveBeenCalledWith(mockResponseGet.data);
+      expect(mockResStatus).toHaveBeenCalledWith(HttpStatus.ACCEPTED);
     });
   });
 
