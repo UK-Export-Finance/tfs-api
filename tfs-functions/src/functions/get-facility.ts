@@ -17,7 +17,7 @@ export async function getFacility(request: HttpRequest, context: InvocationConte
   context.log('Getting a GIFT facility, facilityId:', facilityId);
 
   try {
-    const path = `/api/v2/gift/facility/without-queue/${encodeURIComponent(facilityId)}`;
+    const path = `/api/v2/gift/facility/${encodeURIComponent(facilityId)}/without-queue`;
 
     const data = await getFromTfsApi(path, {}, `Failed to get GIFT facility ${facilityId}`, context);
 

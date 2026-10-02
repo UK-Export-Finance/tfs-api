@@ -4,6 +4,7 @@ import { GIFT_QUEUE_MESSAGE_TYPE, GiftQueueMessage } from '../types/queue-messag
 import { createHaloTicket } from './create-halo-ticket';
 import { requireEnv, requireEnvInt } from './env';
 import { extractFacilityId } from './extract-facility-id';
+import { getFromTfsApi } from './get-from-tfs-api';
 import { postToTfsApi } from './post-to-tfs-api';
 
 const baseUrl = requireEnv('APIM_TFS_URL');
@@ -13,6 +14,14 @@ const TFS_GIFT_INTERNAL_URLS = {
   facilityCreation: `${baseUrl}/api/v2/gift/facility/without-queue`,
   facilityAmendment: (facilityId: string) => `${baseUrl}/api/v2/gift/facility/${facilityId}/amendment/without-queue`,
   facilityMultipleAmendments: (facilityId: string) => `${baseUrl}/api/v2/gift/facility/${facilityId}/multiple-amendments/without-queue`,
+} as const;
+
+/**
+ * Paths (relative to the TFS API base URL) for GET operations, resolved internally by getFromTfsApi.
+ */
+const TFS_GIFT_INTERNAL_PATHS = {
+  facilityGet: (facilityId: string) => `/api/v2/gift/facility/${facilityId}/without-queue`,
+  facilitiesGet: '/api/v2/gift/facilities/without-queue',
 } as const;
 
 /**
@@ -65,6 +74,22 @@ export async function processGiftQueueMessage(queueItem: unknown, context: Invoc
           context,
         );
         context.log('GIFT facility amendment (multiple amendments) succeeded for facilityId:', facilityId);
+        break;
+      case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_GET:
+        if (!item.facilityId) {
+          throw new Error('Failed to get GIFT facility: facilityId is missing from queue message');
+        }
+
+        await getFromTfsApi(TFS_GIFT_INTERNAL_PATHS.facilityGet(item.facilityId), {}, `Failed to get GIFT facility ${facilityId}`, context);
+        context.log('GIFT facility retrieval succeeded for facilityId:', facilityId);
+        break;
+      case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_GET_MANY:
+        if (!item.ids?.length) {
+          throw new Error('Failed to get GIFT facilities: ids is missing from queue message');
+        }
+
+        await getFromTfsApi(TFS_GIFT_INTERNAL_PATHS.facilitiesGet, { ids: item.ids.join(',') }, `Failed to get GIFT facilities ${facilityId}`, context);
+        context.log('GIFT facilities retrieval succeeded for ids:', facilityId);
         break;
       default:
         throwIfNotExhaustive(messageType);

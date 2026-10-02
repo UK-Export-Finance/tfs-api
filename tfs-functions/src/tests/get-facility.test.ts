@@ -34,7 +34,7 @@ describe('getFacility', () => {
     // Assert
     expect(getFromTfsApi).toHaveBeenCalledTimes(1);
     expect(getFromTfsApi).toHaveBeenCalledWith(
-      `/api/v2/gift/facility/without-queue/${mockFacilityId}`,
+      `/api/v2/gift/facility/${mockFacilityId}/without-queue`,
       {},
       `Failed to get GIFT facility ${mockFacilityId}`,
       context,
@@ -53,7 +53,7 @@ describe('getFacility', () => {
 
     // Assert
     expect(getFromTfsApi).toHaveBeenCalledWith(
-      `/api/v2/gift/facility/without-queue/${encodeURIComponent(unsafeFacilityId)}`,
+      `/api/v2/gift/facility/${encodeURIComponent(unsafeFacilityId)}/without-queue`,
       {},
       `Failed to get GIFT facility ${unsafeFacilityId}`,
       context,

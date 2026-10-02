@@ -2,10 +2,6 @@ export const GIFT_QUEUE_MESSAGE_TYPE = {
   FACILITY_CREATION: 'FACILITY_CREATION',
   FACILITY_AMENDMENT: 'FACILITY_AMENDMENT',
   FACILITY_MULTIPLE_AMENDMENTS: 'FACILITY_MULTIPLE_AMENDMENTS',
-  /**
-   * NOTE: These 2 types are not queued messages - they're used by the HTTP-triggered
-   * get-facility/get-facilities functions, purely to label Halo tickets consistently.
-   */
   FACILITY_GET: 'FACILITY_GET',
   FACILITY_GET_MANY: 'FACILITY_GET_MANY',
 } as const;
@@ -37,4 +33,19 @@ export type GiftFacilityMultipleAmendmentsMessage = {
   payload: unknown;
 };
 
-export type GiftQueueMessage = GiftFacilityCreationMessage | GiftFacilityAmendmentMessage | GiftFacilityMultipleAmendmentsMessage;
+export type GiftFacilityGetMessage = {
+  messageType: typeof GIFT_QUEUE_MESSAGE_TYPE.FACILITY_GET;
+  facilityId: string;
+};
+
+export type GiftFacilityGetManyMessage = {
+  messageType: typeof GIFT_QUEUE_MESSAGE_TYPE.FACILITY_GET_MANY;
+  ids: string[];
+};
+
+export type GiftQueueMessage =
+  | GiftFacilityCreationMessage
+  | GiftFacilityAmendmentMessage
+  | GiftFacilityMultipleAmendmentsMessage
+  | GiftFacilityGetMessage
+  | GiftFacilityGetManyMessage;

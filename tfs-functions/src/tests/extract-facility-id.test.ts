@@ -38,6 +38,34 @@ describe('extractFacilityId', () => {
     });
   });
 
+  describe('when messageType is facility-get', () => {
+    it('returns the facilityId from the message', () => {
+      const item = { messageType: GIFT_QUEUE_MESSAGE_TYPE.FACILITY_GET, facilityId: MOCK_FACILITY_ID };
+
+      expect(extractFacilityId(item)).toBe(MOCK_FACILITY_ID);
+    });
+
+    it('returns UNKNOWN_FACILITY_ID when facilityId is missing', () => {
+      const item = { messageType: GIFT_QUEUE_MESSAGE_TYPE.FACILITY_GET, facilityId: undefined as any };
+
+      expect(extractFacilityId(item)).toBe('UNKNOWN_FACILITY_ID');
+    });
+  });
+
+  describe('when messageType is facility-get-many', () => {
+    it('returns the comma-joined ids from the message', () => {
+      const item = { messageType: GIFT_QUEUE_MESSAGE_TYPE.FACILITY_GET_MANY, ids: [MOCK_FACILITY_ID, '00222222222'] };
+
+      expect(extractFacilityId(item)).toBe(`${MOCK_FACILITY_ID},00222222222`);
+    });
+
+    it('returns UNKNOWN_FACILITY_ID when ids is empty', () => {
+      const item = { messageType: GIFT_QUEUE_MESSAGE_TYPE.FACILITY_GET_MANY, ids: [] };
+
+      expect(extractFacilityId(item)).toBe('UNKNOWN_FACILITY_ID');
+    });
+  });
+
   describe('when messageType is unknown', () => {
     it('returns UNKNOWN_FACILITY_ID', () => {
       const item = { messageType: 'UNEXPECTED_TYPE' as any, payload: {} };
