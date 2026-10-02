@@ -33,9 +33,14 @@ describe('GIFT Endpoints - Feature Flag disabled', () => {
       { description: 'GET /gift/currency', endpointUrl: `/api/${prefixAndVersion}/gift${PATH.CURRENCY}` },
       { description: 'GET /gift/fee-type', endpointUrl: `/api/${prefixAndVersion}/gift${PATH.FEE_TYPE}` },
       { description: 'GET /gift/facilities', endpointUrl: `/api/${prefixAndVersion}/gift${PATH.FACILITIES}` },
+      { description: 'GET /gift/facilities/without-queue', endpointUrl: `/api/${prefixAndVersion}/gift${PATH.FACILITIES}/without-queue` },
       {
         description: 'GET /gift/facility/:facilityId',
-        endpointUrl: `/api/${prefixAndVersion}/gift${PATH.FACILITIES}/${mockFacilityId}`,
+        endpointUrl: `/api/${prefixAndVersion}/gift${PATH.FACILITY}/${mockFacilityId}`,
+      },
+      {
+        description: 'GET /gift/facility/:facilityId/without-queue',
+        endpointUrl: `/api/${prefixAndVersion}/gift${PATH.FACILITY}/${mockFacilityId}/without-queue`,
       },
     ];
 

@@ -190,6 +190,41 @@ describe('GiftFacilityController', () => {
     });
   });
 
+  describe('GET :facilityId/without-queue', () => {
+    // Arrange
+    const mockParams = { facilityId: mockFacilityId };
+
+    it('should call giftFacilityService.getFacility', async () => {
+      // Act
+      await controller.getWithoutQueue(mockParams, mockRes);
+
+      // Assert
+      expect(mockServiceGetFacility).toHaveBeenCalledTimes(1);
+
+      expect(mockServiceGetFacility).toHaveBeenCalledWith(mockFacilityId);
+    });
+
+    it('should call res.status with a status', async () => {
+      // Act
+      await controller.getWithoutQueue(mockParams, mockRes);
+
+      // Assert
+      expect(mockResStatus).toHaveBeenCalledTimes(1);
+
+      expect(mockResStatus).toHaveBeenCalledWith(mockResponseGet.status);
+    });
+
+    it('should call res.status.json with data obtained from the service call', async () => {
+      // Act
+      await controller.getWithoutQueue(mockParams, mockRes);
+
+      // Assert
+      expect(mockResJson).toHaveBeenCalledTimes(1);
+
+      expect(mockResJson).toHaveBeenCalledWith(mockResponseGet.data);
+    });
+  });
+
   describe('POST /without-queue', () => {
     const mockBody = FACILITY_CREATION_PAYLOAD;
 

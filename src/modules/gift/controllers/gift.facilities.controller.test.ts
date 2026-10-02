@@ -137,4 +137,31 @@ describe('GiftFacilitiesController', () => {
       expect(result).toEqual(mockResponseGetMany);
     });
   });
+
+  describe('GET without-queue?ids=:ids', () => {
+    // Arrange
+    const mockIds = EXAMPLES.GIFT.FACILITY_IDS_QUERY_PARAM.split(',') as UkefId[];
+
+    const mockParams = {
+      ids: mockIds,
+    };
+
+    it('should call giftFacilityService.getMany', async () => {
+      // Act
+      await controller.getManyWithoutQueue(mockParams);
+
+      // Assert
+      expect(mockServiceGetMany).toHaveBeenCalledTimes(1);
+
+      expect(mockServiceGetMany).toHaveBeenCalledWith(mockIds);
+    });
+
+    it('should return data obtained from the service call', async () => {
+      // Act
+      const result = await controller.getManyWithoutQueue(mockParams);
+
+      // Assert
+      expect(result).toEqual(mockResponseGetMany);
+    });
+  });
 });

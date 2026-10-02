@@ -18,7 +18,7 @@ export class GiftFacilitiesController {
   constructor(private readonly giftFacilityService: GiftFacilityService) {}
 
   @Get()
-  @ApiOperation({ summary: 'Get multiple GIFT facilities by ID' })
+  @ApiOperation({ summary: 'Get multiple GIFT facilities by ID (called by tfs-functions)' })
   @ApiQuery({
     name: 'ids',
     required: true,
@@ -41,6 +41,33 @@ export class GiftFacilitiesController {
     description: 'An internal server error has occurred',
   })
   getMany(@Query() { ids }: FacilityIdsOperationParamsDto): Promise<GiftFacilityResponseDto[]> {
+    return this.giftFacilityService.getMany(ids);
+  }
+
+  @Get('without-queue')
+  @ApiOperation({ summary: 'Without queue: Get multiple GIFT facilities by ID' })
+  @ApiQuery({
+    name: 'ids',
+    required: true,
+    type: 'string',
+    description: 'Facility IDs, comma separated',
+    example: EXAMPLES.GIFT.FACILITY_IDS_QUERY_PARAM,
+  })
+  @ApiOkResponse({
+    description: 'The facilities',
+    type: GiftFacilityResponseDto,
+    isArray: true,
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad request',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized',
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'An internal server error has occurred',
+  })
+  getManyWithoutQueue(@Query() { ids }: FacilityIdsOperationParamsDto): Promise<GiftFacilityResponseDto[]> {
     return this.giftFacilityService.getMany(ids);
   }
 }
