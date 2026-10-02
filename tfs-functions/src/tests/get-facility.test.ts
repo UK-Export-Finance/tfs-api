@@ -3,7 +3,6 @@ import { GIFT_QUEUE_MESSAGE_TYPE } from '../types/queue-message.type';
 import { createHaloTicket } from '../utils/create-halo-ticket';
 import { getFromTfsApi } from '../utils/get-from-tfs-api';
 
-const apimTfsUrl = process.env.APIM_TFS_URL;
 const mockFacilityId = '0011111111';
 
 jest.mock('../utils/get-from-tfs-api');
@@ -23,7 +22,7 @@ describe('getFacility', () => {
     jest.resetAllMocks();
   });
 
-  it('calls getFromTfsApi with the facility URL and returns a 200 response with the data', async () => {
+  it('calls getFromTfsApi with the facility path and returns a 200 response with the data', async () => {
     // Arrange
     const mockFacilityData = { facilityId: mockFacilityId };
 
@@ -35,11 +34,30 @@ describe('getFacility', () => {
     // Assert
     expect(getFromTfsApi).toHaveBeenCalledTimes(1);
     expect(getFromTfsApi).toHaveBeenCalledWith(
-      `${apimTfsUrl}/api/v2/gift/facility/${mockFacilityId}`,
+      `/api/v2/gift/facility/without-queue/${mockFacilityId}`,
+      {},
       `Failed to get GIFT facility ${mockFacilityId}`,
       context,
     );
     expect(response).toStrictEqual({ status: 200, jsonBody: mockFacilityData });
+  });
+
+  it('URL-encodes the facilityId when building the path', async () => {
+    // Arrange
+    const unsafeFacilityId = '../../evil';
+
+    (getFromTfsApi as jest.Mock).mockResolvedValue({});
+
+    // Act
+    await getFacility({ params: { facilityId: unsafeFacilityId } } as any, context as any);
+
+    // Assert
+    expect(getFromTfsApi).toHaveBeenCalledWith(
+      `/api/v2/gift/facility/without-queue/${encodeURIComponent(unsafeFacilityId)}`,
+      {},
+      `Failed to get GIFT facility ${unsafeFacilityId}`,
+      context,
+    );
   });
 
   it('does not call createHaloTicket when getFromTfsApi succeeds', async () => {

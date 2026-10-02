@@ -3,7 +3,6 @@ import { GIFT_QUEUE_MESSAGE_TYPE } from '../types/queue-message.type';
 import { createHaloTicket } from '../utils/create-halo-ticket';
 import { getFromTfsApi } from '../utils/get-from-tfs-api';
 
-const apimTfsUrl = process.env.APIM_TFS_URL;
 const mockIds = '0011111111,0022222222';
 
 jest.mock('../utils/get-from-tfs-api');
@@ -24,7 +23,7 @@ describe('getFacilities', () => {
     jest.resetAllMocks();
   });
 
-  it('calls getFromTfsApi with the facilities URL and returns a 200 response with the data', async () => {
+  it('calls getFromTfsApi with the facilities path and ids param, returning a 200 response with the data', async () => {
     // Arrange
     const mockFacilitiesData = [{ facilityId: '0011111111' }, { facilityId: '0022222222' }];
 
@@ -35,7 +34,7 @@ describe('getFacilities', () => {
 
     // Assert
     expect(getFromTfsApi).toHaveBeenCalledTimes(1);
-    expect(getFromTfsApi).toHaveBeenCalledWith(`${apimTfsUrl}/api/v2/gift/facilities?ids=${mockIds}`, `Failed to get GIFT facilities ${mockIds}`, context);
+    expect(getFromTfsApi).toHaveBeenCalledWith('/api/v2/gift/facilities/without-queue', { ids: mockIds }, `Failed to get GIFT facilities ${mockIds}`, context);
     expect(response).toStrictEqual({ status: 200, jsonBody: mockFacilitiesData });
   });
 
@@ -47,7 +46,7 @@ describe('getFacilities', () => {
     await getFacilities(buildRequest(null), context as any);
 
     // Assert
-    expect(getFromTfsApi).toHaveBeenCalledWith(`${apimTfsUrl}/api/v2/gift/facilities?ids=`, 'Failed to get GIFT facilities ', context);
+    expect(getFromTfsApi).toHaveBeenCalledWith('/api/v2/gift/facilities/without-queue', { ids: '' }, 'Failed to get GIFT facilities ', context);
   });
 
   it('does not call createHaloTicket when getFromTfsApi succeeds', async () => {

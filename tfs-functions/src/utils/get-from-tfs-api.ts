@@ -1,9 +1,9 @@
 import { InvocationContext } from '@azure/functions';
 import axios from 'axios';
 
-import { HttpStatus } from '../constants/http-status.constant';
 import { requireEnv } from './env';
 
+const baseUrl = requireEnv('APIM_TFS_URL');
 const apimKeyHeaderName = requireEnv('APIM_TFS_KEY');
 const apimKeyHeaderValue = requireEnv('APIM_TFS_VALUE');
 
@@ -11,16 +11,24 @@ const apimKeyHeaderValue = requireEnv('APIM_TFS_VALUE');
  * Gets a resource from the TFS API, handling errors consistently.
  * Throws a descriptive Error on any failure.
  *
- * @param url - The full URL to GET.
+ * @param path - The path to GET, relative to the TFS API base URL (e.g. '/api/v2/gift/facility/0011111111').
+ * @param params - Query string parameters, passed to axios so values are safely encoded.
  * @param errorPrefix - Prefix for all error messages, e.g. 'Failed to get GIFT facility'.
  * @param context - The Azure Functions invocation context for logging.
  * @returns the response body from the TFS API.
  */
-export async function getFromTfsApi(url: string, errorPrefix: string, context: InvocationContext): Promise<unknown> {
+export async function getFromTfsApi(path: string, params: Record<string, string>, errorPrefix: string, context: InvocationContext): Promise<unknown> {
   let response;
+
+  /**
+   * NOTE: path is resolved against baseUrl (rather than concatenated), so that user-controlled
+   * path segments cannot be used to escape the TFS API host/path.
+   */
+  const url = new URL(path, baseUrl).toString();
 
   try {
     response = await axios.get(url, {
+      params,
       headers: {
         [apimKeyHeaderName]: apimKeyHeaderValue,
         accept: 'application/json',
@@ -41,12 +49,6 @@ export async function getFromTfsApi(url: string, errorPrefix: string, context: I
     }
 
     const message = `${errorPrefix}, unknown error`;
-    context.error(message);
-    throw new Error(message);
-  }
-
-  if (response.status !== HttpStatus.OK) {
-    const message = `${errorPrefix}, status: ${response.status}, response: ${JSON.stringify(response.data)}`;
     context.error(message);
     throw new Error(message);
   }

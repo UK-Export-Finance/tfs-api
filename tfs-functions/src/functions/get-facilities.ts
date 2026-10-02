@@ -2,10 +2,7 @@ import { app, HttpRequest, HttpResponseInit, InvocationContext } from '@azure/fu
 
 import { GIFT_QUEUE_MESSAGE_TYPE } from '../types/queue-message.type';
 import { createHaloTicket } from '../utils/create-halo-ticket';
-import { requireEnv } from '../utils/env';
 import { getFromTfsApi } from '../utils/get-from-tfs-api';
-
-const baseUrl = requireEnv('APIM_TFS_URL');
 
 /**
  * HTTP-triggered function that fetches multiple GIFT facilities from tfs-api.
@@ -20,7 +17,7 @@ export async function getFacilities(request: HttpRequest, context: InvocationCon
   context.log('Getting multiple GIFT facilities, ids:', ids);
 
   try {
-    const data = await getFromTfsApi(`${baseUrl}/api/v2/gift/facilities?ids=${ids}`, `Failed to get GIFT facilities ${ids}`, context);
+    const data = await getFromTfsApi('/api/v2/gift/facilities/without-queue', { ids }, `Failed to get GIFT facilities ${ids}`, context);
 
     return { status: 200, jsonBody: data };
   } catch (error) {

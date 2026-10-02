@@ -54,9 +54,9 @@ async function getHaloAccessToken(): Promise<string> {
 function buildSummary(facilityId: string, messageType: GiftQueueMessageType | undefined): string {
   switch (messageType) {
     case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_GET:
-      return `APIM TFS Error retrieving and creating facility ${facilityId} in GIFT`;
+      return `APIM TFS Error retrieving facility ${facilityId} in GIFT - preventing facility creation`;
     case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_GET_MANY:
-      return `APIM TFS Error retrieving and creating facilities ${facilityId} in GIFT`;
+      return `APIM TFS Error retrieving facilities ${facilityId} in GIFT - preventing facility creation`;
     default:
       return `APIM TFS Error sending facility ${facilityId} ${GIFT_QUEUE_OPERATION_LABEL[messageType]} to GIFT`;
   }
