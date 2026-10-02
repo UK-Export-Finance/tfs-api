@@ -2,6 +2,8 @@ export const GIFT_QUEUE_MESSAGE_TYPE = {
   FACILITY_CREATION: 'FACILITY_CREATION',
   FACILITY_AMENDMENT: 'FACILITY_AMENDMENT',
   FACILITY_MULTIPLE_AMENDMENTS: 'FACILITY_MULTIPLE_AMENDMENTS',
+  FACILITY_GET: 'FACILITY_GET',
+  FACILITY_GET_MANY: 'FACILITY_GET_MANY',
 } as const;
 
 export type GiftQueueMessageType = (typeof GIFT_QUEUE_MESSAGE_TYPE)[keyof typeof GIFT_QUEUE_MESSAGE_TYPE];
@@ -10,6 +12,8 @@ export const GIFT_QUEUE_OPERATION_LABEL: Record<GiftQueueMessageType, string> = 
   [GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION]: 'creation',
   [GIFT_QUEUE_MESSAGE_TYPE.FACILITY_AMENDMENT]: 'amendment',
   [GIFT_QUEUE_MESSAGE_TYPE.FACILITY_MULTIPLE_AMENDMENTS]: 'multiple amendments',
+  [GIFT_QUEUE_MESSAGE_TYPE.FACILITY_GET]: 'retrieval',
+  [GIFT_QUEUE_MESSAGE_TYPE.FACILITY_GET_MANY]: 'retrieval (multiple)',
 };
 
 export type GiftFacilityCreationMessage = {
@@ -29,4 +33,19 @@ export type GiftFacilityMultipleAmendmentsMessage = {
   payload: unknown;
 };
 
-export type GiftQueueMessage = GiftFacilityCreationMessage | GiftFacilityAmendmentMessage | GiftFacilityMultipleAmendmentsMessage;
+export type GiftFacilityGetMessage = {
+  messageType: typeof GIFT_QUEUE_MESSAGE_TYPE.FACILITY_GET;
+  facilityId: string;
+};
+
+export type GiftFacilityGetManyMessage = {
+  messageType: typeof GIFT_QUEUE_MESSAGE_TYPE.FACILITY_GET_MANY;
+  ids: string[];
+};
+
+export type GiftQueueMessage =
+  | GiftFacilityCreationMessage
+  | GiftFacilityAmendmentMessage
+  | GiftFacilityMultipleAmendmentsMessage
+  | GiftFacilityGetMessage
+  | GiftFacilityGetManyMessage;

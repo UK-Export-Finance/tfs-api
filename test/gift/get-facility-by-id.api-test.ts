@@ -1,10 +1,10 @@
 import { HttpStatus } from '@nestjs/common';
 import AppConfig from '@ukef/config/app.config';
 import { GIFT } from '@ukef/constants';
+import { GiftQueueService } from '@ukef/modules/gift/services';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
 import { withFacilityIdentifierUrlValidationApiTests } from '@ukef-test/common-tests/request-url-param-validation-api-tests/facility-identifier-url-validation-api-tests';
 import { Api } from '@ukef-test/support/api';
-import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import nock from 'nock';
 
@@ -16,16 +16,15 @@ const {
   PATH: { FACILITY },
 } = GIFT;
 
-const { GIFT_API_URL } = ENVIRONMENT_VARIABLES;
-
 describe('GET /gift/facility/{facilityId}', () => {
   const valueGenerator = new RandomValueGenerator();
 
   const mockFacilityId = valueGenerator.ukefId();
 
-  const url = `/api/${prefixAndVersion}/gift${FACILITY}/${mockFacilityId}?projectionVersion=main`;
+  const url = `/api/${prefixAndVersion}/gift${FACILITY}/${mockFacilityId}`;
 
   let api: Api;
+  let enqueueSpy: jest.SpyInstance;
 
   beforeAll(async () => {
     api = await Api.create();
@@ -35,7 +34,12 @@ describe('GET /gift/facility/{facilityId}', () => {
     await api.destroy();
   });
 
+  beforeEach(() => {
+    enqueueSpy = jest.spyOn(GiftQueueService.prototype, 'enqueue').mockResolvedValue(undefined);
+  });
+
   afterEach(() => {
+    enqueueSpy.mockRestore();
     nock.abortPendingRequests();
     nock.cleanAll();
   });
@@ -47,103 +51,29 @@ describe('GET /gift/facility/{facilityId}', () => {
 
   describe('validation', () => {
     withFacilityIdentifierUrlValidationApiTests({
-      givenRequestWouldOtherwiseSucceedForFacilityId: (facilityId) => {
-        nock(GIFT_API_URL).get(`${FACILITY}/${facilityId}?projectionVersion=main`).reply(200);
-      },
-      makeRequestWithFacilityId: (facilityId) => api.get(`/api/${prefixAndVersion}/gift${FACILITY}/${facilityId}?projectionVersion=main`),
+      givenRequestWouldOtherwiseSucceedForFacilityId: () => {},
+      makeRequestWithFacilityId: (facilityId) => api.get(`/api/${prefixAndVersion}/gift${FACILITY}/${facilityId}`),
       idName: 'facilityId',
+      successStatusCode: HttpStatus.ACCEPTED,
     });
   });
 
-  describe(`when a ${HttpStatus.OK} response is returned by GIFT`, () => {
-    it(`should return a ${HttpStatus.OK} response with the received data`, async () => {
-      // Arrange
-      const mockResponse = {
-        facilityId: mockFacilityId,
-        aMockFacility: true,
-      };
-
-      nock(GIFT_API_URL).get(`${FACILITY}/${mockFacilityId}?projectionVersion=main`).reply(200, mockResponse);
-
-      // Act
-      const { status, body } = await api.get(url);
-
-      // Assert
-      expect(status).toBe(HttpStatus.OK);
-
-      expect(body).toStrictEqual(mockResponse);
-    });
-  });
-
-  describe(`when a ${HttpStatus.BAD_REQUEST} response is returned by GIFT`, () => {
-    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
-      // Arrange
-      const mockResponse = {
-        statusCode: HttpStatus.BAD_REQUEST,
-        message: 'Validation error',
-        validationErrors: [
-          {
-            path: ['facilityId'],
-            message: 'Invalid facilityId',
-          },
-        ],
-      };
-
-      nock(GIFT_API_URL).get(`${FACILITY}/${mockFacilityId}?projectionVersion=main`).reply(400, mockResponse);
-
-      // Act
-      const { status, body } = await api.get(url);
-
-      // Assert
-      expect(status).toBe(HttpStatus.BAD_REQUEST);
-
-      expect(body).toStrictEqual(mockResponse);
-    });
-  });
-
-  describe(`when a ${HttpStatus.NOT_FOUND} response is returned by GIFT`, () => {
-    it(`should return a ${HttpStatus.NOT_FOUND} response`, async () => {
-      // Arrange
-      const mockResponse = {
-        statusCode: HttpStatus.NOT_FOUND,
-        message: 'No Facility was found',
-      };
-
-      nock(GIFT_API_URL).get(`${FACILITY}/${mockFacilityId}?projectionVersion=main`).reply(404, mockResponse);
-
-      // Act
-      const { status, body } = await api.get(url);
-
-      // Assert
-      expect(status).toBe(HttpStatus.NOT_FOUND);
-
-      expect(body).toStrictEqual(mockResponse);
-    });
-  });
-
-  describe(`when a ${HttpStatus.UNAUTHORIZED} response is returned by GIFT`, () => {
-    it(`should return a ${HttpStatus.UNAUTHORIZED} response`, async () => {
-      // Arrange
-      nock(GIFT_API_URL).get(`${FACILITY}/${mockFacilityId}?projectionVersion=main`).reply(HttpStatus.UNAUTHORIZED);
-
+  describe('when the facilityId is valid', () => {
+    it(`should return ${HttpStatus.ACCEPTED}`, async () => {
       // Act
       const { status } = await api.get(url);
 
       // Assert
-      expect(status).toBe(HttpStatus.UNAUTHORIZED);
+      expect(status).toBe(HttpStatus.ACCEPTED);
     });
-  });
 
-  describe(`when a ${HttpStatus.INTERNAL_SERVER_ERROR} response is returned by GIFT`, () => {
-    it(`should return a ${HttpStatus.INTERNAL_SERVER_ERROR} response`, async () => {
-      // Arrange
-      nock(GIFT_API_URL).get(`${FACILITY}/${mockFacilityId}?projectionVersion=main`).reply(HttpStatus.INTERNAL_SERVER_ERROR);
-
+    it('should call giftQueueService.enqueue with the facility get message', async () => {
       // Act
-      const { status } = await api.get(url);
+      await api.get(url);
 
       // Assert
-      expect(status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
+      expect(enqueueSpy).toHaveBeenCalledTimes(1);
+      expect(enqueueSpy).toHaveBeenCalledWith({ messageType: 'FACILITY_GET', facilityId: mockFacilityId });
     });
   });
 });
