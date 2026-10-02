@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.8.5](https://github.com/UK-Export-Finance/tfs-api/compare/v2.8.4...v2.8.5) (2026-10-01)
+
+
+### Bug Fixes
+
+* **DTFS2-8603:** gift accrual schedules - obligation id mapping ([#1448](https://github.com/UK-Export-Finance/tfs-api/issues/1448)) ([a577415](https://github.com/UK-Export-Finance/tfs-api/commit/a577415c689440f6ce18a7e768e35a163b5a9651))
+
 ## [2.8.4](https://github.com/UK-Export-Finance/tfs-api/compare/v2.8.3...v2.8.4) (2026-09-29)
 
 
