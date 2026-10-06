@@ -3,7 +3,8 @@ import { Type } from 'class-transformer';
 import { IsDefined, IsNotEmptyObject, ValidateNested } from 'class-validator';
 import { EXAMPLES } from '@ukef/constants';
 
-import type { GiftFacilityCreationGenericRequestDto, GiftFacilityRiskDetailsRequestDto } from '@ukef/modules/gift/dto';
+import { GiftFacilityCreationGenericRequestDto } from '@ukef/modules/gift/dto/request/facility-creation-generic';
+import { GiftFacilityRiskDetailsRequestDto } from '@ukef/modules/gift/dto/request/risk-details';
 
 const {
   GIFT: { RISK_DETAILS },
@@ -25,5 +26,5 @@ export class GiftFacilityCreationRequestDto extends GiftFacilityCreationGenericR
   @IsDefined()
   @Type(() => GiftFacilityRiskDetailsRequestDto)
   @ValidateNested()
-  riskDetails: GiftFacilityRiskDetailsRequestDto;
+  riskDetails!: GiftFacilityRiskDetailsRequestDto;
 }

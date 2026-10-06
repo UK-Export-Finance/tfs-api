@@ -34,7 +34,7 @@ export class GiftObligationRequestDto {
     description: 'The amount of the obligation',
     required: true,
   })
-  amount: number;
+  amount!: number;
 
   @IsDefined()
   @IsString()
@@ -44,7 +44,7 @@ export class GiftObligationRequestDto {
     description: 'The currency of the obligation amount, in ISO 4217 format',
     required: true,
   })
-  currency: string;
+  currency!: string;
 
   @IsOptional()
   @IsDateString()
@@ -83,7 +83,7 @@ export class GiftObligationRequestDto {
     description: 'The repayment type of the obligation',
     required: true,
   })
-  repaymentType: string;
+  repaymentType!: string;
 
   @IsOptional()
   @IsString()

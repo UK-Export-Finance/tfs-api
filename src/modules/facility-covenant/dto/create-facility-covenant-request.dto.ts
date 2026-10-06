@@ -13,7 +13,7 @@ export class CreateFacilityCovenantRequestItem {
     length: 10,
     pattern: UKEFID.COVENANT_ID.REGEX,
   })
-  readonly covenantIdentifier: string;
+  readonly covenantIdentifier!: string;
 
   @ValidatedStringApiProperty({
     description:
@@ -22,13 +22,13 @@ export class CreateFacilityCovenantRequestItem {
     example: '43',
     enum: ENUMS.COVENANT_TYPE_CODES,
   })
-  readonly covenantType: string;
+  readonly covenantType!: string;
 
   @ValidatedNumberApiProperty({
     description: 'The amount used to determine if the covenant is in compliance or not. It is called target amount in ACBS.',
     minimum: 0,
   })
-  readonly maximumLiability: number;
+  readonly maximumLiability!: number;
 
   @ValidatedStringApiProperty({
     description: 'The covenant currency type code. The maximum number of characters allowed is 1. It is called pledge type code in ACBS.',
@@ -36,17 +36,17 @@ export class CreateFacilityCovenantRequestItem {
     minLength: 0,
     maxLength: 1,
   })
-  readonly currency: string;
+  readonly currency!: string;
 
   @ValidatedDateOnlyApiProperty({
     description: 'The expiration date of the covenant. It is called expiration date in ACBS.',
     example: '2023-04-19',
   })
-  readonly guaranteeExpiryDate: DateOnlyString;
+  readonly guaranteeExpiryDate!: DateOnlyString;
 
   @ValidatedDateOnlyApiProperty({
     description: 'The effective date of the covenant.',
     example: '2023-04-19',
   })
-  readonly effectiveDate: DateOnlyString;
+  readonly effectiveDate!: DateOnlyString;
 }

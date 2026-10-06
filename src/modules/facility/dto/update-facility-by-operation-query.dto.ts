@@ -6,5 +6,5 @@ import { FacilityUpdateOperationEnum } from '@ukef/constants/enums/facility-upda
 export class UpdateFacilityByOperationQueryDto {
   @ApiProperty({ description: 'Update operation', enum: FacilityUpdateOperationEnum, example: ENUMS.FACILITY_UPDATE_OPERATIONS.ISSUE })
   @IsEnum(FacilityUpdateOperationEnum)
-  op: FacilityUpdateOperationEnum;
+  op!: FacilityUpdateOperationEnum;
 }

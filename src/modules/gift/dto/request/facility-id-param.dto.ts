@@ -8,5 +8,5 @@ export class FacilityIdOperationParamsDto {
   @ValidatedFacilityIdentifierApiProperty({
     description: 'The facility ID',
   })
-  readonly facilityId: UkefId;
+  readonly facilityId!: UkefId;
 }

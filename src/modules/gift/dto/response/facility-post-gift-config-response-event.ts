@@ -3,7 +3,7 @@ import { Type } from 'class-transformer';
 import { IsObject } from 'class-validator';
 import { EXAMPLES } from '@ukef/constants';
 
-import type { GiftFacilityResponseDto } from '@ukef/modules/gift/dto';
+import { GiftFacilityResponseDto } from '@ukef/modules/gift/dto/response/facility-get-gift-response';
 
 const {
   GIFT: { FACILITY_RESPONSE_DATA: EXAMPLE },
@@ -21,5 +21,5 @@ export class GiftFacilityConfigPostResponseDto {
     type: GiftFacilityResponseDto,
   })
   @Type(() => GiftFacilityResponseDto)
-  readonly data: GiftFacilityResponseDto;
+  readonly data!: GiftFacilityResponseDto;
 }

@@ -13,102 +13,102 @@ export class BaseFacilityRequestItem {
   @ValidatedDealIdentifierApiProperty({
     description: 'The identifier of the deal for the facility.',
   })
-  readonly dealIdentifier: string;
+  readonly dealIdentifier!: string;
 
   @ValidatedPartyIdentifierApiProperty({
     description:
       'Look up the Obligors ACBS Customer record using Party URN on the Deal = Alternate Customer Id (J$MSZI). Use ACBS Customer Id (J$MRUI) Note there may be multiple customers in ACBS with the same Party URN. Use the first record found.',
   })
-  readonly dealBorrowerIdentifier: string;
+  readonly dealBorrowerIdentifier!: string;
 
   @ValidatedStringApiProperty({
     description: `The facility type, e.g. '250' for BOND.`,
     example: ENUMS.FACILITY_TYPE_IDS.BSS,
     enum: ENUMS.FACILITY_TYPE_IDS,
   })
-  readonly productTypeId: string;
+  readonly productTypeId!: string;
 
   @ValidatedStringApiProperty({
     description: 'The name or description of the facility type.',
     example: 'BOND',
     maxLength: 13,
   })
-  readonly productTypeName: string;
+  readonly productTypeName!: string;
 
   @ValidatedStringApiProperty({
     description: 'Credit Period',
     example: '1',
     maxLength: 12,
   })
-  readonly exposurePeriod: string;
+  readonly exposurePeriod!: string;
 
   @ValidatedCurrencyApiProperty({
     description: 'Facility Currency Code e.g. CAD, USD.',
   })
-  readonly currency: string;
+  readonly currency!: string;
 
   @ValidatedStringApiProperty({
     description: 'The industry classification code of the obligor.',
     example: '0116',
     maxLength: 10,
   })
-  readonly obligorIndustryClassification: string;
+  readonly obligorIndustryClassification!: string;
 
   @ValidatedDateOnlyApiProperty({
     description: `The date from which the borrower can draw funds from the facility. If this is a future date then it will be replaced with today's date.`,
   })
-  readonly effectiveDate: DateOnlyString;
+  readonly effectiveDate!: DateOnlyString;
 
   @ValidatedDateOnlyApiProperty({
     description: 'The expiration date of the facility.',
   })
-  readonly guaranteeExpiryDate: DateOnlyString;
+  readonly guaranteeExpiryDate!: DateOnlyString;
 
   @ValidatedDateOnlyApiProperty({
     description: 'The end date of the next quarter.',
   })
-  readonly nextQuarterEndDate: DateOnlyString;
+  readonly nextQuarterEndDate!: DateOnlyString;
 
   @ValidatedNumberApiProperty({
     description: 'The overall limit for the facility.',
     minimum: 0,
   })
-  readonly maximumLiability: number;
+  readonly maximumLiability!: number;
 
   @ValidatedStringApiProperty({
     description: 'The party identifier of the Agent Bank for this facility.',
     example: '00000000',
     maxLength: 10,
   })
-  readonly agentBankIdentifier: string;
+  readonly agentBankIdentifier!: string;
 
   @ValidatedStringApiProperty({
     description: 'The code of the primary country of risk designated for this credit arrangement.',
     example: EXAMPLES.COUNTRY_CODE,
     maxLength: 3,
   })
-  readonly riskCountryCode: string;
+  readonly riskCountryCode!: string;
 
   @ValidatedStringApiProperty({
     description: 'Pre-Issue Est. Payment Frequency QUARTERLY(2)',
     example: '2',
     maxLength: 1,
   })
-  readonly premiumFrequencyCode: string;
+  readonly premiumFrequencyCode!: string;
 
   @ValidatedStringApiProperty({
     description: 'CORPORATE(03)',
     example: '03',
     maxLength: 2,
   })
-  readonly riskStatusCode: string;
+  readonly riskStatusCode!: string;
 
   @ValidatedStringApiProperty({
     description: 'Credit Review Risk Code',
     example: '13',
     maxLength: 2,
   })
-  readonly creditRatingCode: string;
+  readonly creditRatingCode!: string;
 
   @ValidatedStringApiProperty({
     description: 'Case Stage this can be 06 Commitment and 07 Issued',
@@ -116,31 +116,31 @@ export class BaseFacilityRequestItem {
     enum: ENUMS.FACILITY_STAGES,
     maxLength: 2,
   })
-  readonly facilityStageCode: string;
+  readonly facilityStageCode!: string;
 
   @ValidatedStringApiProperty({
     description: 'Derive values A, M or N',
     example: 'A',
     maxLength: 4,
   })
-  readonly delegationType: string;
+  readonly delegationType!: string;
 
   @ValidatedNumberApiProperty({
     description: 'Bank Rate, this can be for Bond facility corresponding fee rate or for Loan/EWCS interest rate.',
     minimum: 0,
   })
-  readonly interestOrFeeRate: number;
+  readonly interestOrFeeRate!: number;
 
   @ValidatedPartyIdentifierApiProperty({
     description: 'The party identifier of the obligor.',
   })
-  readonly obligorPartyIdentifier: string;
+  readonly obligorPartyIdentifier!: string;
 
   @ValidatedNumberApiProperty({
     description: 'Forecast % Derive from FACILITY:Stage, i.e. Commitment or Issued',
     minimum: 0,
   })
-  readonly forecastPercentage: number;
+  readonly forecastPercentage!: number;
 
   @ValidatedNumberApiProperty({
     description: 'A percentage indicating how likely it is that a default on the credit will occur. This should be specified for GEF.',
@@ -238,7 +238,7 @@ export class BaseFacilityRequestItemWithFacilityIdentifier extends BaseFacilityR
   @ValidatedFacilityIdentifierApiProperty({
     description: 'The identifier of the facility.',
   })
-  readonly facilityIdentifier: string;
+  readonly facilityIdentifier!: string;
 }
 
 /**
@@ -249,5 +249,5 @@ export class BaseUpdateFacilityRequestItemWithFacilityIdentifier extends BaseUpd
   @ValidatedFacilityIdentifierApiProperty({
     description: 'The identifier of the facility.',
   })
-  readonly facilityIdentifier: string;
+  readonly facilityIdentifier!: string;
 }

@@ -3,7 +3,7 @@ import { Type } from 'class-transformer';
 import { IsNumber, IsObject } from 'class-validator';
 import { EXAMPLES } from '@ukef/constants';
 
-import type { GiftFacilityConfigPostResponseDto } from '@ukef/modules/gift/dto';
+import { GiftFacilityConfigPostResponseDto } from '@ukef/modules/gift/dto/response/facility-post-gift-config-response-event';
 
 const {
   GIFT: { FACILITY_RESPONSE_DATA },
@@ -28,11 +28,11 @@ export class GiftFacilityPostResponseDto {
     type: GiftFacilityConfigPostResponseDto,
   })
   @Type(() => GiftFacilityConfigPostResponseDto)
-  readonly configurationEvent: GiftFacilityConfigPostResponseDto;
+  readonly configurationEvent!: GiftFacilityConfigPostResponseDto;
 
   @IsNumber()
   @ApiProperty({
     example: EXAMPLE.workPackageId,
   })
-  readonly workPackageId: number;
+  readonly workPackageId!: number;
 }

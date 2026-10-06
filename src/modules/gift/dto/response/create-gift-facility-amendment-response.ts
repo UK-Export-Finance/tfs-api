@@ -14,11 +14,11 @@ export class CreateGiftFacilityAmendmentResponseDto {
   @ApiProperty({
     example: HttpStatus.CREATED,
   })
-  readonly status: number;
+  readonly status!: number;
 
   @IsObject()
   @ApiProperty({
     example: WORK_PACKAGE_CREATION_RESPONSE_DATA,
   })
-  readonly data: GiftWorkPackageResponseDto;
+  readonly data!: GiftWorkPackageResponseDto;
 }

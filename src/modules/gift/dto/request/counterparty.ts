@@ -31,7 +31,7 @@ export class GiftFacilityCounterpartyRequestDto {
     description: 'The counterparty URN',
     required: true,
   })
-  counterpartyUrn: string;
+  counterpartyUrn!: string;
 
   @IsOptional()
   @IsDateString()
@@ -50,7 +50,7 @@ export class GiftFacilityCounterpartyRequestDto {
     description: 'The role code',
     required: true,
   })
-  roleCode: string;
+  roleCode!: string;
 
   @IsOptional()
   @IsNumber()

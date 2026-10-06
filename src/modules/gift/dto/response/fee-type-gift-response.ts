@@ -20,12 +20,12 @@ export class GiftFeeTypeResponseDto {
     example: FEE_TYPES.BEX.code,
     required: true,
   })
-  readonly code: string;
+  readonly code!: string;
 
   @IsString()
   @ApiProperty({
     example: FEE_TYPES.BEX.description,
     required: true,
   })
-  readonly description: string;
+  readonly description!: string;
 }

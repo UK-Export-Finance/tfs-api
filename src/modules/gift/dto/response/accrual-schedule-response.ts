@@ -15,65 +15,65 @@ export class GiftFacilityAccrualScheduleResponseDto {
   @ApiProperty({
     example: EXAMPLE.accrualDayBasisCode,
   })
-  readonly accrualDayBasisCode: string;
+  readonly accrualDayBasisCode!: string;
 
   @IsDateString()
   @ApiProperty({
     example: EXAMPLE.accrualEffectiveDate,
   })
-  readonly accrualEffectiveDate: string;
+  readonly accrualEffectiveDate!: string;
 
   @IsString()
   @ApiProperty({
     example: EXAMPLE.accrualFrequencyCode,
   })
-  readonly accrualFrequencyCode: string;
+  readonly accrualFrequencyCode!: string;
 
   @IsDateString()
   @ApiProperty({
     example: EXAMPLE.accrualMaturityDate,
   })
-  readonly accrualMaturityDate: string;
+  readonly accrualMaturityDate!: string;
 
   @IsString()
   @ApiProperty({
     example: EXAMPLE.accrualScheduleTypeCode,
   })
-  readonly accrualScheduleTypeCode: string;
+  readonly accrualScheduleTypeCode!: string;
 
   @IsNumber()
   @ApiProperty({
     example: EXAMPLE.additionalRate,
   })
-  readonly additionalRate: number;
+  readonly additionalRate!: number;
 
   @IsString()
-  readonly additionalRateTypeCode: string;
+  readonly additionalRateTypeCode!: string;
 
   @IsNumber()
   @ApiProperty({
     example: EXAMPLE.baseRate,
   })
-  readonly baseRate: number;
+  readonly baseRate!: number;
 
   @IsString()
-  readonly baseRateTypeCode: string;
+  readonly baseRateTypeCode!: string;
 
   @IsDateString()
   @ApiProperty({
     example: EXAMPLE.firstCycleAccrualEndDate,
   })
-  readonly firstCycleAccrualEndDate: string;
+  readonly firstCycleAccrualEndDate!: string;
 
   @IsNumber()
   @ApiProperty({
     example: OBLIGATION_ID,
   })
-  readonly obligationId: number;
+  readonly obligationId!: number;
 
   @IsNumber()
   @ApiProperty({
     example: EXAMPLE.spreadRate,
   })
-  readonly spreadRate: number;
+  readonly spreadRate!: number;
 }

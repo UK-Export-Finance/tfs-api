@@ -25,7 +25,7 @@ export class GiftRepaymentProfileAllocationRequestDto {
     example: REPAYMENT_PROFILE_ALLOCATION().amount,
     required: true,
   })
-  amount: number;
+  amount!: number;
 
   @IsDefined()
   @IsDateString()
@@ -33,5 +33,5 @@ export class GiftRepaymentProfileAllocationRequestDto {
     example: REPAYMENT_PROFILE_ALLOCATION().dueDate,
     required: true,
   })
-  dueDate: string;
+  dueDate!: string;
 }

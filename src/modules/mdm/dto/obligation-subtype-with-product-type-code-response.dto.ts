@@ -13,5 +13,5 @@ export class ObligationSubtypeWithProductTypeCodeResponseDto extends ObligationS
   @ApiProperty({
     example: MDM_EXAMPLES.OBLIGATION_SUBTYPES_WITH_PRODUCT_CODES.OST001.productTypeCode,
   })
-  readonly productTypeCode: string;
+  readonly productTypeCode!: string;
 }

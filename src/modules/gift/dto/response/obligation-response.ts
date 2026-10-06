@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsBoolean, IsDateString, IsNumber, IsOptional, IsString } from 'class-validator';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 
-import type { GiftFacilityAccrualScheduleResponseDto } from '@ukef/modules/gift/dto';
+import { GiftFacilityAccrualScheduleResponseDto } from '@ukef/modules/gift/dto/response/accrual-schedule-response';
 
 const {
   GIFT: { ACCRUAL_SCHEDULE, OBLIGATION, OBLIGATION_ID },
@@ -30,55 +30,55 @@ export class GiftObligationResponseDto {
   @ApiProperty({
     example: OBLIGATION_ID,
   })
-  readonly id: number;
+  readonly id!: number;
 
   @IsDateString()
   @ApiProperty({
     example: OBLIGATION_EXAMPLE.effectiveDate,
   })
-  readonly effectiveDate: string;
+  readonly effectiveDate!: string;
 
   @IsDateString()
   @ApiProperty({
     example: OBLIGATION_EXAMPLE.maturityDate,
   })
-  readonly maturityDate: string;
+  readonly maturityDate!: string;
 
   @IsBoolean()
   @ApiProperty({
     example: false,
   })
-  readonly effectiveDateFollowsFacility: boolean;
+  readonly effectiveDateFollowsFacility!: boolean;
 
   @IsBoolean()
   @ApiProperty({
     example: false,
   })
-  readonly maturityDateFollowsFacility: boolean;
+  readonly maturityDateFollowsFacility!: boolean;
 
   @IsString()
   @ApiProperty({
     example: OBLIGATION_EXAMPLE.currency,
   })
-  readonly currency: string;
+  readonly currency!: string;
 
   @IsNumber()
   @ApiProperty({
     example: OBLIGATION_EXAMPLE.amount,
   })
-  readonly originalAmount: number;
+  readonly originalAmount!: number;
 
   @IsNumber()
   @ApiProperty({
     example: OBLIGATION_EXAMPLE.amount,
   })
-  readonly outstandingAmount: number;
+  readonly outstandingAmount!: number;
 
   @IsString()
   @ApiProperty({
     example: OBLIGATION_EXAMPLE.repaymentType,
   })
-  readonly repaymentType: string;
+  readonly repaymentType!: string;
 
   @IsOptional()
   @IsNumber()
@@ -86,13 +86,13 @@ export class GiftObligationResponseDto {
     example: LINKED_REPAYMENT_PROFILE_ID,
     nullable: true,
   })
-  readonly linkedRepaymentProfileId: number | null;
+  readonly linkedRepaymentProfileId!: number | null;
 
   @IsString()
   @ApiProperty({
     example: OBLIGATION_EXAMPLE.subtypeCode,
   })
-  readonly subtypeCode: string;
+  readonly subtypeCode!: string;
 
   @IsOptional()
   @IsNumber()
@@ -100,7 +100,7 @@ export class GiftObligationResponseDto {
     example: ACBS_OBLIGATION_ID,
     nullable: true,
   })
-  readonly acbsObligationId: number | null;
+  readonly acbsObligationId!: number | null;
 
   @IsArray()
   @ApiProperty({
@@ -108,5 +108,5 @@ export class GiftObligationResponseDto {
     isArray: true,
     type: GiftFacilityAccrualScheduleResponseDto,
   })
-  readonly accrualSchedules: GiftFacilityAccrualScheduleResponseDto[];
+  readonly accrualSchedules!: GiftFacilityAccrualScheduleResponseDto[];
 }

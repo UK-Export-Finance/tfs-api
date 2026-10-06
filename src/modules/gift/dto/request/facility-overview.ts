@@ -27,7 +27,7 @@ export class GiftFacilityOverviewRequestDto {
     example: EXAMPLE.amount,
     required: true,
   })
-  amount: number;
+  amount!: number;
 
   @IsDefined()
   @IsString()
@@ -36,7 +36,7 @@ export class GiftFacilityOverviewRequestDto {
     example: EXAMPLE.creditType,
     required: true,
   })
-  creditType: string;
+  creditType!: string;
 
   @IsDefined()
   @IsString()
@@ -45,7 +45,7 @@ export class GiftFacilityOverviewRequestDto {
     example: EXAMPLE.currency,
     required: true,
   })
-  currency: string;
+  currency!: string;
 
   @IsDefined()
   @IsDateString()
@@ -53,7 +53,7 @@ export class GiftFacilityOverviewRequestDto {
     example: EXAMPLE.effectiveDate,
     required: true,
   })
-  effectiveDate: string;
+  effectiveDate!: string;
 
   @IsDefined()
   @IsDateString()
@@ -61,7 +61,7 @@ export class GiftFacilityOverviewRequestDto {
     example: EXAMPLE.expiryDate,
     required: true,
   })
-  expiryDate: string;
+  expiryDate!: string;
 
   @ValidatedFacilityIdentifierApiProperty({
     description: 'The facility ID',
@@ -72,7 +72,7 @@ export class GiftFacilityOverviewRequestDto {
     maxLength: VALIDATION.FACILITY_ID.MAX_LENGTH,
     required: true,
   })
-  facilityId: UkefId;
+  facilityId!: UkefId;
 
   @IsDefined()
   @IsString()
@@ -81,7 +81,7 @@ export class GiftFacilityOverviewRequestDto {
     example: EXAMPLE.name,
     required: true,
   })
-  name: string;
+  name!: string;
 
   @IsDefined()
   @IsNumberString()
@@ -90,7 +90,7 @@ export class GiftFacilityOverviewRequestDto {
     example: EXAMPLE.obligorUrn,
     required: true,
   })
-  obligorUrn: string;
+  obligorUrn!: string;
 
   @IsDefined()
   @IsString()
@@ -99,7 +99,7 @@ export class GiftFacilityOverviewRequestDto {
     example: EXAMPLE.productTypeCode,
     required: true,
   })
-  productTypeCode: string;
+  productTypeCode!: string;
 
   @IsDefined()
   @IsString()
@@ -109,5 +109,5 @@ export class GiftFacilityOverviewRequestDto {
     description: 'The repayment type of the facility',
     required: true,
   })
-  repaymentType: string;
+  repaymentType!: string;
 }

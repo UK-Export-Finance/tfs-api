@@ -26,7 +26,7 @@ export class GiftFacilityRiskDetailsRequestDto {
     description: 'The account number',
     required: true,
   })
-  account: string;
+  account!: string;
 
   @ValidatedFacilityIdentifierApiProperty({
     description: 'The deal ID',
@@ -37,7 +37,7 @@ export class GiftFacilityRiskDetailsRequestDto {
     maxLength: VALIDATION.DEAL_ID.MAX_LENGTH,
     required: true,
   })
-  dealId: UkefId;
+  dealId!: UkefId;
 
   @IsOptional()
   @IsString()
@@ -69,7 +69,7 @@ export class GiftFacilityRiskDetailsRequestDto {
     description: "The facility's risk status",
     required: true,
   })
-  riskStatus: string;
+  riskStatus!: string;
 
   @IsDefined()
   @IsNumberString()
@@ -79,5 +79,5 @@ export class GiftFacilityRiskDetailsRequestDto {
     description: 'The UKEF industry code',
     required: true,
   })
-  ukefIndustryCode: string;
+  ukefIndustryCode!: string;
 }
