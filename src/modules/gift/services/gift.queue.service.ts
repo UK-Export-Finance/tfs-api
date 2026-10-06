@@ -2,11 +2,11 @@ import { DefaultAzureCredential } from '@azure/identity';
 import { QueueClient, QueueServiceClient } from '@azure/storage-queue';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { PinoLogger } from 'nestjs-pino';
 import { GiftQueueConfig, KEY as GIFT_QUEUE_CONFIG_KEY } from '@ukef/config/gift-queue.config';
 import { GIFT } from '@ukef/constants';
-import { PinoLogger } from 'nestjs-pino';
 
-import { CreateGiftFacilityAmendmentRequestDto, CreateGiftFacilityMultipleAmendmentsRequestDto, GiftFacilityCreationRequestDto } from '../dto';
+import { CreateGiftFacilityAmendmentRequestDto, CreateGiftFacilityMultipleAmendmentsRequestDto, GiftFacilityCreationRequestDto } from '@ukef/modules/gift/dto';
 
 const { QUEUE_DELAY } = GIFT;
 

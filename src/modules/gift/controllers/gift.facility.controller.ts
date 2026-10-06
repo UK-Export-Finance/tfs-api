@@ -11,9 +11,9 @@ import {
   ApiParam,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import { Response } from 'express';
 import AppConfig from '@ukef/config/app.config';
 import { EXAMPLES, GIFT } from '@ukef/constants';
-import { Response } from 'express';
 
 import {
   CreateGiftFacilityAmendmentRequestDto,
@@ -24,7 +24,7 @@ import {
   GiftFacilityCreationResponseDto,
   GiftFacilityOverviewRequestDto,
 } from '../dto';
-import { GiftFacilityAmendmentService, GiftFacilityService, GiftQueueService } from '../services';
+import { GiftFacilityAmendmentService, GiftFacilityService, GiftQueueService } from '@ukef/modules/gift/services';
 
 const { PATH } = GIFT;
 

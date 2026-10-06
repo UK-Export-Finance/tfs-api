@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { MDM_EXAMPLES } from '@ukef/constants/examples/mdm.examples.constant';
 import { IsBoolean, IsString } from 'class-validator';
+import { MDM_EXAMPLES } from '@ukef/constants/examples/mdm.examples.constant';
 
 const { OBLIGATION_SUBTYPES } = MDM_EXAMPLES;
 

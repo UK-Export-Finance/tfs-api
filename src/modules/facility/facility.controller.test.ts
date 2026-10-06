@@ -1,3 +1,4 @@
+import { when } from 'jest-when';
 import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { UpdateFacilityByOperationQueryDto } from '@ukef/modules/facility/dto/update-facility-by-operation-query.dto';
@@ -9,7 +10,6 @@ import { CreateFacilityGenerator } from '@ukef-test/support/generator/create-fac
 import { GetFacilityGenerator } from '@ukef-test/support/generator/get-facility-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { UpdateFacilityGenerator } from '@ukef-test/support/generator/update-facility-generator';
-import { when } from 'jest-when';
 
 jest.mock('./facility.service');
 

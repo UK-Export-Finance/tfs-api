@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { EXAMPLES } from '@ukef/constants';
 import { IsString } from 'class-validator';
+import { EXAMPLES } from '@ukef/constants';
 
 const {
   GIFT: { FEE_TYPES },

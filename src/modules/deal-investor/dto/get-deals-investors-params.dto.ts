@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Matches } from 'class-validator';
 import { EXAMPLES, UKEFID } from '@ukef/constants';
 import { UkefId } from '@ukef/helpers';
-import { Matches } from 'class-validator';
 
 export class GetDealsInvestorsParamsDto {
   @ApiProperty({ description: 'UKEF id for deal', example: EXAMPLES.DEAL_ID })

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { MdmService } from '@ukef/modules/mdm/mdm.service';
 import { PinoLogger } from 'nestjs-pino';
+import { MdmService } from '@ukef/modules/mdm/mdm.service';
 
-import { GiftFacilityCreationRequestDto } from '../dto';
+import { GiftFacilityCreationRequestDto } from '@ukef/modules/gift/dto';
 import {
   generateArrayOfErrors,
   generateCounterpartySharePercentageErrors,

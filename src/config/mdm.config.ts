@@ -2,14 +2,14 @@ import { registerAs } from '@nestjs/config';
 import { getIntConfig } from '@ukef/helpers/get-int-config';
 import { ExternalServiceConfig } from '@ukef/types';
 
-export const KEY = 'mdm';
+const KEY = 'mdm';
 
 export interface MdmConfig extends ExternalServiceConfig {
   apiKeyHeaderName: string;
   apiKeyHeaderValue: string;
 }
 
-export default registerAs(
+export const MdmConfig = registerAs(
   KEY,
   (): MdmConfig => ({
     baseUrl: process.env.APIM_MDM_URL,

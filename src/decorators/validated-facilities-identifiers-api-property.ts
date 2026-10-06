@@ -1,8 +1,8 @@
 import { applyDecorators } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
-import { EXAMPLES, UKEFID } from '@ukef/constants';
 import { Transform } from 'class-transformer';
 import { ArrayNotEmpty, IsArray, IsString, Length, Matches } from 'class-validator';
+import { EXAMPLES, UKEFID } from '@ukef/constants';
 
 interface Options {
   description: string;
@@ -16,9 +16,9 @@ export const ValidatedFacilitiesIdentifiersApiProperty = ({ description }: Optio
       pattern: UKEFID.MAIN_ID.MULTIPLE_TEN_DIGIT_REGEX,
       example: EXAMPLES.GIFT.FACILITY_IDS_QUERY_PARAM,
     }),
-    Transform(({ value }) => {
+    Transform(({ value }: { value: unknown }) => {
       if (Array.isArray(value)) {
-        return value;
+        return value as string[];
       }
 
       if (typeof value === 'string') {

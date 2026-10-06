@@ -1,11 +1,11 @@
+import { Chance } from 'chance';
 import { UkefId } from '@ukef/helpers';
-import {
+import type {
   GiftFacilityCounterpartyRequestDto,
   GiftFacilityCreationRequestDto,
   GiftFacilityPostResponseDto,
   GiftObligationRequestDto,
 } from '@ukef/modules/gift/dto';
-import { Chance } from 'chance';
 
 import { SUPPORTED_CURRENCIES } from '../currencies.constant';
 import { CONSUMER } from '../gift/consumer.constant';

@@ -1,4 +1,5 @@
 import { BadRequestException } from '@nestjs/common';
+import { when } from 'jest-when';
 import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { AcbsFacilityFixedFeeService } from '@ukef/modules/acbs/acbs-facility-fixed-fee.service';
 import { AcbsCreateFacilityFixedFeeRequestDto } from '@ukef/modules/acbs/dto/acbs-create-facility-fixed-fee-request.dto';
@@ -10,7 +11,6 @@ import { CreateFacilityFixedFeeGenerator } from '@ukef-test/support/generator/cr
 import { CreateFacilityFixedFeesAmountAmendmentGenerator } from '@ukef-test/support/generator/create-facility-fixed-fees-amount-amendment.generator';
 import { GetFacilityFixedFeeGenerator } from '@ukef-test/support/generator/get-facility-fixed-fee-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { when } from 'jest-when';
 
 import { AcbsBundleInformationService } from '../acbs/acbs-bundle-information.service';
 import { AcbsCreateBundleInformationRequestDto } from '../acbs/dto/acbs-create-bundle-information-request.dto';

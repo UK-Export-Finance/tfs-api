@@ -1,10 +1,10 @@
 import { HttpService } from '@nestjs/axios';
 import { HttpStatus } from '@nestjs/common';
-import { EXAMPLES } from '@ukef/constants';
-import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { AxiosError } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 import { of, throwError } from 'rxjs';
+import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
+import { EXAMPLES } from '@ukef/constants';
 
 import { MdmCustomersResponse } from './dto/mdm-customers-response.dto';
 import { MdmException } from './exception/mdm.exception';

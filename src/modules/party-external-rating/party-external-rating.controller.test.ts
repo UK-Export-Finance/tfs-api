@@ -1,6 +1,6 @@
+import { when } from 'jest-when';
 import { GetPartyExternalRatingGenerator } from '@ukef-test/support/generator/get-party-external-rating-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { when } from 'jest-when';
 
 import { PartyExternalRatingController } from './party-external-rating.controller';
 import { PartyExternalRatingService } from './party-external-rating.service';

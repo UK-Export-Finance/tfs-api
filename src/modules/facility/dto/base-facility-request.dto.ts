@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import { ENUMS, EXAMPLES, PROPERTIES } from '@ukef/constants';
 import { ValidatedCurrencyApiProperty } from '@ukef/decorators/validated-currency-api-property-decorator';
 import { ValidatedDateOnlyApiProperty } from '@ukef/decorators/validated-date-only-api-property.decorator';
@@ -7,7 +8,6 @@ import { ValidatedNumberApiProperty } from '@ukef/decorators/validated-number-ap
 import { ValidatedPartyIdentifierApiProperty } from '@ukef/decorators/validated-party-identifier-api-property.decorator';
 import { ValidatedStringApiProperty } from '@ukef/decorators/validated-string-api-property.decorator';
 import { DateOnlyString } from '@ukef/helpers';
-import { Exclude } from 'class-transformer';
 
 export class BaseFacilityRequestItem {
   @ValidatedDealIdentifierApiProperty({

@@ -1,6 +1,6 @@
+import { AxiosResponse } from 'axios';
 import { GIFT } from '@ukef/constants';
 import { ValidationErrorResponse } from '@ukef/types';
-import { AxiosResponse } from 'axios';
 
 import { mapValidationErrorResponses } from '../map-validation-error-responses';
 

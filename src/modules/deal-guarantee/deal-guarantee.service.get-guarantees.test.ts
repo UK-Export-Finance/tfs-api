@@ -1,3 +1,4 @@
+import { when } from 'jest-when';
 import { PROPERTIES } from '@ukef/constants';
 import { AcbsDealGuaranteeService } from '@ukef/modules/acbs/acbs-deal-guarantee.service';
 import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
@@ -5,7 +6,6 @@ import { DateStringTransformations } from '@ukef/modules/date/date-string.transf
 import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
 import { GetDealGuaranteeGenerator } from '@ukef-test/support/generator/get-deal-guarantee-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { when } from 'jest-when';
 
 import { DealGuaranteeService } from './deal-guarantee.service';
 

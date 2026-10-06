@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsDefined, IsNumberString, IsOptional, IsString, Length } from 'class-validator';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { ValidatedFacilityIdentifierApiProperty } from '@ukef/decorators/validated-facility-identifier-api-property';
 import { UkefId } from '@ukef/helpers';
-import { IsDefined, IsNumberString, IsOptional, IsString, Length } from 'class-validator';
 
 const {
   GIFT: { RISK_DETAILS: EXAMPLE },

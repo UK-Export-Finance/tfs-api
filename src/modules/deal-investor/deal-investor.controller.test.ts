@@ -1,10 +1,10 @@
+import { when } from 'jest-when';
 import { UkefId } from '@ukef/helpers';
 import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { CreateDealInvestorGenerator } from '@ukef-test/support/generator/create-deal-investor-generator';
 import { GetDealInvestorGenerator } from '@ukef-test/support/generator/get-deal-investor-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { when } from 'jest-when';
 
 import { DealInvestorController } from './deal-investor.controller';
 import { DealInvestorService } from './deal-investor.service';

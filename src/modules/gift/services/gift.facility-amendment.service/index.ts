@@ -1,9 +1,9 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { UkefId } from '@ukef/helpers/ukef-id.type';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
+import { UkefId } from '@ukef/helpers/ukef-id.type';
 
-import { CreateGiftFacilityAmendmentRequestDto, CreateGiftFacilityMultipleAmendmentsRequestDto, GiftWorkPackageResponseDto } from '../../dto';
+import { CreateGiftFacilityAmendmentRequestDto, CreateGiftFacilityMultipleAmendmentsRequestDto, GiftWorkPackageResponseDto } from '@ukef/modules/gift/dto';
 import {
   hasObligationsWithMaturityDateNotFollowingFacility,
   isDecreaseAmountAmendment,

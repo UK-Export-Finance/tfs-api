@@ -1,4 +1,4 @@
-import { GiftFacilityOverviewRequestDto } from '../../../dto';
+import type { GiftFacilityOverviewRequestDto } from '@ukef/modules/gift/dto';
 
 interface GenerateOverviewValidationErrorsParams {
   isSupportedProductType: boolean;

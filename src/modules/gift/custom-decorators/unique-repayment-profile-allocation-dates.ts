@@ -1,6 +1,6 @@
 import { registerDecorator, ValidationOptions } from 'class-validator';
 
-import { GiftRepaymentProfileRequestDto } from '../dto';
+import { GiftRepaymentProfileRequestDto } from '@ukef/modules/gift/dto';
 import { arrayHasUniqueStrings, getRepaymentProfileAllocationDates } from '../helpers';
 
 /**

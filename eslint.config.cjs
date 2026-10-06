@@ -1,0 +1,250 @@
+const { defineConfig } = require('eslint/config');
+const tseslint = require('typescript-eslint');
+
+const tsParser = require('@typescript-eslint/parser');
+const typescriptEslint = require('@typescript-eslint/eslint-plugin');
+const noRelativeImportPaths = require('eslint-plugin-no-relative-import-paths');
+const checkFile = require('eslint-plugin-check-file');
+const eslintConfigAirbnbExtended = require('eslint-config-airbnb-extended');
+
+const { configs, plugins, rules } = eslintConfigAirbnbExtended;
+const prettierConfig = require('eslint-config-prettier');
+const prettierPlugin = require('eslint-plugin-prettier');
+
+const { rules: prettierConfigRules } = prettierConfig;
+
+const js = require('@eslint/js');
+
+const { createTypeScriptImportResolver } = require('eslint-import-resolver-typescript');
+
+module.exports = defineConfig([
+  {
+    ignores: [
+      '**/src/modules/acbs',
+      '**/coverage/',
+      '**/dist/',
+      '**/node_modules/',
+      '**/package*.json',
+      '**/test/', // TODO: fix
+      '**/tfs-functions/', // TODO: fix
+    ],
+  },
+
+  // Base configs
+  {
+    name: 'js/config',
+    ...js.configs.recommended,
+  },
+  plugins.stylistic,
+  plugins.importX,
+  ...configs.base.recommended,
+  rules.base.importsStrict,
+  plugins.node,
+  ...configs.node.recommended,
+  plugins.typescriptEslint,
+  ...configs.base.typescript,
+  rules.typescript.typescriptEslintStrict,
+  {
+    name: 'prettier/plugin/config',
+    plugins: {
+      prettier: prettierPlugin,
+    },
+  },
+  {
+    name: 'prettier/config',
+    rules: {
+      ...prettierConfigRules,
+      'prettier/prettier': 'error',
+    },
+  },
+
+  // Type-checking only for TypeScript files (including tests)
+  {
+    files: ['**/*.ts'],
+    languageOptions: {
+      parser: tsParser,
+      parserOptions: {
+        tsconfigRootDir: __dirname,
+        // projectService removed - type-checking done via 'npm run type-check' instead
+      },
+    },
+  },
+
+  // JavaScript files: disable type-checking entirely
+  {
+    files: ['**/*.js', '**/*.cjs'],
+    extends: [tseslint.configs.disableTypeChecked],
+    languageOptions: {
+      parser: tsParser,
+      parserOptions: {
+        ecmaVersion: 2022,
+        sourceType: 'module',
+      },
+    },
+    rules: {
+      'n/no-sync': 'off',
+      '@typescript-eslint/no-floating-promises': 'off',
+      '@typescript-eslint/no-misused-promises': 'off',
+      '@typescript-eslint/await-thenable': 'off',
+    },
+  },
+
+  // Global overrides
+  {
+    languageOptions: {
+      parser: tsParser,
+      ecmaVersion: 2022,
+      sourceType: 'module',
+      parserOptions: {
+        tsconfigRootDir: __dirname,
+      },
+    },
+
+    plugins: {
+      '@typescript-eslint': typescriptEslint,
+      'no-relative-import-paths': noRelativeImportPaths,
+      'check-file': checkFile,
+    },
+
+    rules: {
+      curly: ['error', 'all'],
+      'no-underscore-dangle': 'off',
+      'class-methods-use-this': 'off',
+
+      'no-relative-import-paths/no-relative-import-paths': ['warn', { allowSameFolder: true }],
+
+      'no-case-declarations': 'off',
+
+      'no-param-reassign': [
+        'error',
+        {
+          props: true,
+          ignorePropertyModificationsFor: ['req', 'res', 'session'],
+        },
+      ],
+      'max-classes-per-file': 'off',
+      'no-restricted-syntax': 'off',
+      'no-await-in-loop': 'off',
+      'no-new': 'off',
+      'no-void': 'off',
+      'padding-line-between-statements': ['error', { blankLine: 'always', prev: '*', next: 'if' }, { blankLine: 'always', prev: 'if', next: '*' }],
+
+      'check-file/filename-naming-convention': [
+        'error',
+        {
+          // Note that this uses a glob pattern, not a regex
+          // This enforces kebab case but allows . or - to be used as a separator
+          // This means file names such as service-name.service.test.ts work
+          '**/*': '[a-z]*([a-z0-9])*([-.]+([a-z0-9]))',
+        },
+      ],
+
+      'check-file/folder-naming-convention': [
+        'error',
+        {
+          // Note that this uses a glob pattern, not a regex
+          // This enforces kebab case but allows a single _ at the front
+          // and allows . or - to be used as a separator in folder names
+          // This means that folder names such as dashboard.service or _macros work
+          '**/*/': '?(_)[a-z]*([a-z0-9])*([-.]+([a-z0-9]))',
+        },
+      ],
+
+      '@typescript-eslint/no-non-null-assertion': 'off',
+      '@typescript-eslint/promise-function-async': 'off',
+      '@typescript-eslint/consistent-type-imports': 'off',
+      '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
+      '@typescript-eslint/no-misused-spread': 'off',
+      '@typescript-eslint/explicit-module-boundary-types': 'off',
+      '@typescript-eslint/no-unsafe-enum-comparison': 'off',
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', ignoreRestSiblings: true, caughtErrors: 'none' }],
+      '@typescript-eslint/method-signature-style': 'off',
+      '@typescript-eslint/no-floating-promises': 'off',
+      '@typescript-eslint/no-misused-promises': 'off',
+      '@typescript-eslint/await-thenable': 'off',
+      '@typescript-eslint/no-unnecessary-condition': 'off',
+      '@typescript-eslint/strict-boolean-expressions': 'off',
+      '@typescript-eslint/no-unnecessary-boolean-literal-compare': 'off',
+      '@typescript-eslint/prefer-nullish-coalescing': 'off',
+      '@typescript-eslint/return-await': ['error', 'always'],
+
+      'import-x/no-namespace': 'off',
+      'import-x/namespace': ['error', { allowComputed: true }],
+      'import-x/no-extraneous-dependencies': [
+        'error',
+        {
+          devDependencies: ['**/*.test.ts', '**/test/**', '**/test-utils/**', '**/setup-test.ts', 'eslint.config.cjs'],
+        },
+      ],
+      'import-x/prefer-default-export': 'off',
+      'import-x/no-default-export': 'error',
+
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['@ukef/gift-test-utils/*'],
+              message: "Import from '@ukef/gift-test-utils' (root) instead of subpaths. All exports are available from the main package.",
+            },
+          ],
+        },
+      ],
+
+      'import-x/order': [
+        'error',
+        {
+          groups: [
+            ['builtin', 'external'],
+            ['internal', 'parent', 'sibling', 'index'],
+          ],
+          pathGroupsExcludedImportTypes: ['builtin'],
+        },
+      ],
+      'import-x/consistent-type-specifier-style': 'off',
+      '@typescript-eslint/no-import-type-side-effects': 'off',
+      'import-x/no-useless-path-segments': 'off',
+      'n/prefer-node-protocol': 'off',
+
+      // disable all stylistic rules in favor of Prettier, except for a few that we want to enforce
+      '@stylistic/max-len': 'off',
+      '@stylistic/implicit-arrow-linebreak': 'off',
+      '@stylistic/quotes': 'off',
+      '@stylistic/operator-linebreak': 'off',
+      '@stylistic/object-curly-newline': 'off',
+      '@stylistic/indent': 'off',
+      '@stylistic/function-paren-newline': 'off',
+      '@stylistic/no-confusing-arrow': 'off',
+      '@stylistic/newline-per-chained-call': 'off',
+      '@stylistic/generator-star-spacing': 'off',
+    },
+
+    settings: {
+      'import-x/resolver-next': [
+        createTypeScriptImportResolver({
+          project: [
+            './libs/gift-api-client/tsconfig.json',
+            './libs/gift-common/tsconfig.json',
+            './libs/gift-test-utils/tsconfig.json',
+            './packages/gift-api/tsconfig.json',
+            './packages/gift-functions/tsconfig.json',
+            './packages/gift-ui/tsconfig.json',
+            './test/e2e/tsconfig.json',
+            './test/packages/gift-mock-data-seeder/tsconfig.json',
+            './test/packages/login-microsoftonline-com-mock/tsconfig.json',
+          ],
+        }),
+      ],
+    },
+  },
+
+  // JavaScript files: re-disable typed rules that "Global overrides" re-enables for all files.
+  // Must stay last so it wins over "Global overrides" for the same rule/file combination.
+  {
+    files: ['**/*.js', '**/*.cjs'],
+
+    rules: {
+      '@typescript-eslint/return-await': 'off',
+    },
+  },
+]);

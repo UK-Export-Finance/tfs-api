@@ -3,14 +3,14 @@ import { HEADERS } from '@ukef/constants';
 import { getIntConfig } from '@ukef/helpers/get-int-config';
 import { ExternalServiceConfig } from '@ukef/types';
 
-export const KEY = 'gift';
+const KEY = 'gift';
 
 export interface GiftConfig extends ExternalServiceConfig {
   apiKeyHeaderName: string;
   apiKeyHeaderValue: string;
 }
 
-export default registerAs(
+export const GiftConfig = registerAs(
   KEY,
   (): GiftConfig => ({
     baseUrl: process.env.GIFT_API_URL,

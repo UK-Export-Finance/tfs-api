@@ -1,6 +1,6 @@
 import { GIFT } from '@ukef/constants';
 
-import { GiftFacilityCounterpartyRequestDto, GiftFacilityCounterpartyRoleResponseDto } from '../../../dto';
+import type { GiftFacilityCounterpartyRequestDto, GiftFacilityCounterpartyRoleResponseDto } from '@ukef/modules/gift/dto';
 
 const {
   VALIDATION: {

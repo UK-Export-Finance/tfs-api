@@ -1,8 +1,8 @@
 import { withEnvironmentVariableParsingUnitTests } from '@ukef-test/common-tests/environment-variable-parsing-unit-tests';
 
-import acbsConfig, { AcbsConfig } from './acbs.config';
+import { AcbsConfig } from './acbs.config';
 
-describe('acbsConfig', () => {
+describe('AcbsConfig', () => {
   let originalProcessEnv: NodeJS.ProcessEnv;
 
   beforeEach(() => {
@@ -53,6 +53,6 @@ describe('acbsConfig', () => {
     configDirectlyFromEnvironmentVariables,
     configParsedBooleanFromEnvironmentVariablesWithDefault,
     configParsedAsIntFromEnvironmentVariablesWithDefault,
-    getConfig: () => acbsConfig(),
+    getConfig: () => AcbsConfig(),
   });
 });

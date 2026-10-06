@@ -1,3 +1,4 @@
+import { when } from 'jest-when';
 import { ENUMS } from '@ukef/constants';
 import { AcbsBundleInformationService } from '@ukef/modules/acbs/acbs-bundle-information.service';
 import { AcbsFacilityLoanService } from '@ukef/modules/acbs/acbs-facility-loan.service';
@@ -8,7 +9,6 @@ import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authen
 import { TEST_DATES } from '@ukef-test/support/constants/test-date.constant';
 import { CreateFacilityLoanGenerator } from '@ukef-test/support/generator/create-facility-loan-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { when } from 'jest-when';
 
 import { AccrualScheduleBuilder } from './accrual-schedule.builder';
 import { FacilityLoanService } from './facility-loan.service';

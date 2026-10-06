@@ -1,10 +1,10 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { AMEND_FACILITY_PREFIX_TYPES, FacilityCategoryCode, GIFT } from '@ukef/constants';
-import { GiftAmendmentBaseParams } from '@ukef/types';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
+import { AMEND_FACILITY_PREFIX_TYPES, FacilityCategoryCode, GIFT } from '@ukef/constants';
+import { GiftAmendmentBaseParams } from '@ukef/types';
 
-import { DecreaseAmountDto, GiftWorkPackageResponseDto, IncreaseAmountDto } from '../../dto';
+import { DecreaseAmountDto, GiftWorkPackageResponseDto, IncreaseAmountDto } from '@ukef/modules/gift/dto';
 import { calculatePercentageAmount } from '../../helpers';
 import { GiftHttpService } from '../gift.http.service';
 import { GiftWorkPackageService } from '../gift.work-package.service';

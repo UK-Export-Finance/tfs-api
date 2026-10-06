@@ -1,15 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { EXAMPLES, GIFT } from '@ukef/constants';
 import { Type } from 'class-transformer';
 import { ArrayNotEmpty, IsArray, IsBoolean, IsDefined, IsNotEmptyObject, IsOptional, IsString, ValidateNested } from 'class-validator';
+import { EXAMPLES, GIFT } from '@ukef/constants';
 
 import { IsSupportedConsumer, UniqueRepaymentProfileAllocationDates, UniqueRepaymentProfileNames } from '../../custom-decorators';
-import { GiftAccrualScheduleRequestDto } from './accrual-schedule';
-import { GiftFacilityCounterpartyRequestDto } from './counterparty';
-import { GiftFacilityOverviewRequestDto } from './facility-overview';
-import { GiftFixedFeeRequestDto } from './fixed-fee';
-import { GiftObligationRequestDto } from './obligation';
-import { GiftRepaymentProfileRequestDto } from './repayment-profile';
+import type {
+  GiftAccrualScheduleRequestDto,
+  GiftFacilityCounterpartyRequestDto,
+  GiftFacilityOverviewRequestDto,
+  GiftFixedFeeRequestDto,
+  GiftObligationRequestDto,
+  GiftRepaymentProfileRequestDto,
+} from '@ukef/modules/gift/dto';
 
 const {
   GIFT: { ACCRUAL_SCHEDULE, COUNTERPARTY, FACILITY_OVERVIEW, FIXED_FEE, OBLIGATION, REPAYMENT_PROFILE },

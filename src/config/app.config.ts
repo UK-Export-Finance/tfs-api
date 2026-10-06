@@ -36,7 +36,7 @@ export interface AppConfig {
   };
 }
 
-export default registerAs('app', (): Record<string, any> => {
+export const AppConfig = registerAs('app', (): Record<string, any> => {
   const logLevel = process.env.LOG_LEVEL || 'info';
 
   if (!validLogLevels.includes(logLevel)) {

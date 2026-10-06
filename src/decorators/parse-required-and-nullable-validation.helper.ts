@@ -24,7 +24,7 @@ export const parseRequiredAndNullable = ({ required, nullable }: RequiredAndNull
 const asBooleanDependingOnCurrentObject = (x: BooleanOrBooleanDependingOnCurrentObject): BooleanDependingOnCurrentObject =>
   typeof x === 'function' ? x : () => x;
 
-const getAllowedNullishValuesForProperty = (currentObject: Record<string, unknown>, { required, nullable }: RequiredAndNullable): (undefined | null)[] => {
+const getAllowedNullishValuesForProperty = (currentObject: Record<string, unknown>, { required, nullable }: DefaultedRequiredAndNullable): (undefined | null)[] => {
   const propertyIsRequiredOnCurrentObject = asBooleanDependingOnCurrentObject(required);
   const propertyIsNullableOnCurrentObject = asBooleanDependingOnCurrentObject(nullable);
   const allowedNullishValues: (undefined | null)[] = [];
@@ -43,6 +43,12 @@ const getAllowedNullishValuesForProperty = (currentObject: Record<string, unknow
 interface RequiredAndNullable {
   required: RequiredOption;
   nullable: NullableOption;
+}
+
+// required/nullable are always defaulted (non-undefined) by the time they reach getAllowedNullishValuesForProperty
+interface DefaultedRequiredAndNullable {
+  required: BooleanOrBooleanDependingOnCurrentObject;
+  nullable: BooleanOrBooleanDependingOnCurrentObject;
 }
 
 interface ParsedRequiredAndNullableOptions {

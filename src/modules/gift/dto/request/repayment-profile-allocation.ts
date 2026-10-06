@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { EXAMPLES, GIFT } from '@ukef/constants';
 import { IsDateString, IsDefined, IsNumber, Max, Min } from 'class-validator';
+import { EXAMPLES, GIFT } from '@ukef/constants';
 
 const {
   GIFT: { REPAYMENT_PROFILE_ALLOCATION },

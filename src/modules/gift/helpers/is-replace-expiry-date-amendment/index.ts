@@ -1,6 +1,6 @@
 import { GIFT } from '@ukef/constants';
 
-import { CreateGiftFacilityAmendmentRequestDto, ReplaceExpiryDateDto } from '../../dto';
+import { CreateGiftFacilityAmendmentRequestDto, ReplaceExpiryDateDto } from '@ukef/modules/gift/dto';
 
 const {
   AMEND_FACILITY_TYPES_CONSUMER: { AMEND_FACILITY_REPLACE_EXPIRY_DATE },

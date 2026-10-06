@@ -1,9 +1,9 @@
+import { instanceToPlain, plainToInstance } from 'class-transformer';
+import { validate } from 'class-validator';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { UpdateFacilityRequest } from '@ukef/modules/facility/dto/update-facility-request.dto';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { UpdateFacilityGenerator } from '@ukef-test/support/generator/update-facility-generator';
-import { instanceToPlain, plainToInstance } from 'class-transformer';
-import { validate } from 'class-validator';
 
 describe('UpdateFacilityRequest DTO', () => {
   const valueGenerator = new RandomValueGenerator();

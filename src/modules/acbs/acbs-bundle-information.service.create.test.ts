@@ -1,4 +1,7 @@
 import { HttpService } from '@nestjs/axios';
+import { AxiosError } from 'axios';
+import { when } from 'jest-when';
+import { of, throwError } from 'rxjs';
 import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { AcbsBundleInformationService } from '@ukef/modules/acbs/acbs-bundle-information.service';
 import { AcbsCreateBundleInformationRequestDto } from '@ukef/modules/acbs/dto/acbs-create-bundle-information-request.dto';
@@ -11,9 +14,6 @@ import { CreateFacilityActivationTransactionGenerator } from '@ukef-test/support
 import { CreateFacilityFixedFeesAmountAmendmentGenerator } from '@ukef-test/support/generator/create-facility-fixed-fees-amount-amendment.generator';
 import { CreateFacilityLoanGenerator } from '@ukef-test/support/generator/create-facility-loan-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { AxiosError } from 'axios';
-import { when } from 'jest-when';
-import { of, throwError } from 'rxjs';
 
 describe('AcbsBundleInformationService', () => {
   const valueGenerator = new RandomValueGenerator();

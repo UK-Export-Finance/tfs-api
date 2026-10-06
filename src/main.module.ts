@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { LoggerModule } from 'nestjs-pino';
 import config from '@ukef/config';
 import { BODY_LOG_KEY, HEADERS_LOG_KEY, INCOMING_RESPONSE_LOG_KEY, OUTGOING_REQUEST_LOG_KEY } from '@ukef/modules/http/http.constants';
 import { TfsModule } from '@ukef/modules/tfs.module';
-import { LoggerModule } from 'nestjs-pino';
 
 import { logKeysToRedact } from './logging/log-keys-to-redact';
 import { LoggingInterceptor } from './logging/logging-interceptor.helper';

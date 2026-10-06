@@ -1,3 +1,4 @@
+import { when } from 'jest-when';
 import { PROPERTIES } from '@ukef/constants';
 import { UkefId } from '@ukef/helpers';
 import { AcbsDealPartyService } from '@ukef/modules/acbs/acbs-deal-party.service';
@@ -8,7 +9,6 @@ import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authen
 import { TEST_DATES } from '@ukef-test/support/constants/test-date.constant';
 import { CreateDealInvestorGenerator } from '@ukef-test/support/generator/create-deal-investor-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { when } from 'jest-when';
 
 import { DealInvestorService } from './deal-investor.service';
 

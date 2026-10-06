@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { EXAMPLES } from '@ukef/constants';
 import { IsBoolean, IsNumber, IsString } from 'class-validator';
+import { EXAMPLES } from '@ukef/constants';
 
-import { GiftFacilityOverviewRequestDto } from '../request/facility-overview';
+import type { GiftFacilityOverviewRequestDto } from '@ukef/modules/gift/dto';
 
 const {
   GIFT: { FACILITY_RESPONSE_DATA: EXAMPLE },

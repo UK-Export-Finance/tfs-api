@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { MDM_EXAMPLES } from '@ukef/constants/examples/mdm.examples.constant';
 import { IsString } from 'class-validator';
+import { MDM_EXAMPLES } from '@ukef/constants/examples/mdm.examples.constant';
 
-import { ObligationSubtypeMdmResponseDto } from './obligation-subtype-mdm-response';
+import { ObligationSubtypeMdmResponseDto } from './obligation-subtype-mdm-response.dto';
 
 /**
  * APIM TFS "obligation subtype with product type code" response DTO.

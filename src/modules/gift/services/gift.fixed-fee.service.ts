@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { GIFT } from '@ukef/constants';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
+import { GIFT } from '@ukef/constants';
 
-import { GiftFixedFeeRequestDto } from '../dto';
+import { GiftFixedFeeRequestDto } from '@ukef/modules/gift/dto';
 import { GiftHttpService } from './gift.http.service';
 
 const { EVENT_TYPES, INTEGRATION_DEFAULTS, PATH } = GIFT;

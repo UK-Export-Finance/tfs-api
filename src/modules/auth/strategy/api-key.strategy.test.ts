@@ -1,9 +1,9 @@
 import { UnauthorizedException } from '@nestjs/common';
-import { AUTH } from '@ukef/constants';
-import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { Request } from 'express';
 import { when } from 'jest-when';
 import { BadRequestError } from 'passport-headerapikey';
+import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
+import { AUTH } from '@ukef/constants';
 
 import { AuthService } from '../auth.service';
 import { ApiKeyStrategy } from './api-key.strategy';

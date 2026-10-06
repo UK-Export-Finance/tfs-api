@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsNumberString, IsString } from 'class-validator';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { UkefId } from '@ukef/helpers';
-import { IsNumberString, IsString } from 'class-validator';
 
 const {
   GIFT: { RISK_DETAILS: EXAMPLE },

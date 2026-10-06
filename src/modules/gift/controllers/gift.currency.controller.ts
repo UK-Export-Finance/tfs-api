@@ -1,10 +1,10 @@
 import { Controller, Get, Res } from '@nestjs/common';
 import { ApiInternalServerErrorResponse, ApiOkResponse, ApiOperation, ApiUnauthorizedResponse } from '@nestjs/swagger';
+import { Response } from 'express';
 import AppConfig from '@ukef/config/app.config';
 import { GIFT } from '@ukef/constants';
-import { Response } from 'express';
 
-import { GiftCurrencyService } from '../services';
+import { GiftCurrencyService } from '@ukef/modules/gift/services';
 
 const { PATH } = GIFT;
 

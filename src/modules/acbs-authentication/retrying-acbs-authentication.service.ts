@@ -1,8 +1,8 @@
 import { Inject } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
+import { PinoLogger } from 'nestjs-pino';
 import AcbsAuthenticationConfig from '@ukef/config/acbs-authentication.config';
 import { waitFor } from '@ukef/helpers/wait-for.helper';
-import { PinoLogger } from 'nestjs-pino';
 
 import { AcbsAuthenticationService } from './acbs-authentication.service';
 import { BaseAcbsAuthenticationServiceInjectionKey } from './base-acbs-authentication.service';

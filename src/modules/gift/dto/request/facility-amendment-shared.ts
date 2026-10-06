@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsDateString, IsDefined, IsNumber, Max, Min } from 'class-validator';
 import { GIFT } from '@ukef/constants';
 import { GIFT_EXAMPLES } from '@ukef/constants/examples/gift.examples.constant';
-import { IsDateString, IsDefined, IsNumber, Max, Min } from 'class-validator';
 
 const { VALIDATION } = GIFT;
 

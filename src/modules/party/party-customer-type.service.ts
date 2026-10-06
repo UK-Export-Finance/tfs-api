@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { MdmService } from '@ukef/modules/mdm/mdm.service';
 import { PinoLogger } from 'nestjs-pino';
+import { MdmService } from '@ukef/modules/mdm/mdm.service';
 
 import { MdmResourceNotFoundException } from '../mdm/exception/mdm-resource-not-found.exception';
 

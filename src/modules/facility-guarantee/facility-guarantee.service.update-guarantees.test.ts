@@ -1,8 +1,8 @@
+import { when } from 'jest-when';
 import { PROPERTIES } from '@ukef/constants';
 import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
 import { GetFacilityGuaranteeGenerator } from '@ukef-test/support/generator/get-facility-guarantee-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { when } from 'jest-when';
 
 import { AcbsFacilityGuaranteeService } from '../acbs/acbs-facility-guarantee.service';
 import { CurrentDateProvider } from '../date/current-date.provider';

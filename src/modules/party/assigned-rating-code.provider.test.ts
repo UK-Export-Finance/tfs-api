@@ -1,7 +1,7 @@
+import { when } from 'jest-when';
 import { ENUMS } from '@ukef/constants';
 import { SOVEREIGN_ACCOUNT_TYPES } from '@ukef/constants/sovereign-account-types.constant';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { when } from 'jest-when';
 
 import { AssignedRatingCodeProvider } from './assigned-rating-code.provider';
 import { PartyCustomerTypeService } from './party-customer-type.service';

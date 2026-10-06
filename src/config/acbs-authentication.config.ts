@@ -15,7 +15,7 @@ export interface AcbsAuthenticationConfig {
   timeout: number;
 }
 
-export default registerAs(
+export const AcbsAuthenticationConfig = registerAs(
   'acbsAuthentication',
   (): AcbsAuthenticationConfig => ({
     apiKey: process.env.ACBS_AUTHENTICATION_API_KEY,

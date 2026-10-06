@@ -1,10 +1,10 @@
 import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
-import { GIFT } from '@ukef/constants';
-import { UkefId } from '@ukef/helpers';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
+import { GIFT } from '@ukef/constants';
+import { UkefId } from '@ukef/helpers';
 
-import { GiftFacilityCreationRequestDto, GiftFacilityOverviewRequestDto } from '../../dto';
+import { GiftFacilityCreationRequestDto, GiftFacilityOverviewRequestDto } from '@ukef/modules/gift/dto';
 import { getObligationIds, mapAccrualSchedulesPayload, mapAllValidationErrorResponses, mapResponseData, mapResponsesData } from '../../helpers';
 import { GiftAccrualScheduleService } from '../gift.accrual-schedule.service';
 import { GiftBusinessCalendarService } from '../gift.business-calendar.service';

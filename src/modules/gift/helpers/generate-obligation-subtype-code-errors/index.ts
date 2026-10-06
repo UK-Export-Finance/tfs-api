@@ -1,4 +1,4 @@
-import { ObligationSubtypeMdmResponseDto } from '@ukef/modules/mdm/dto/obligation-subtype-mdm-response';
+import type { ObligationSubtypeMdmResponseDto } from '@ukef/modules/mdm/dto';
 
 interface GenerateObligationSubtypeCodeErrorsParams {
   subtypes: ObligationSubtypeMdmResponseDto[];

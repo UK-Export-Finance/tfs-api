@@ -1,7 +1,7 @@
+import { PinoLogger } from 'nestjs-pino';
 import { EXAMPLES } from '@ukef/constants';
 import { MdmService } from '@ukef/modules/mdm/mdm.service';
 import { mockResponse200, mockResponse500 } from '@ukef-test/http-response';
-import { PinoLogger } from 'nestjs-pino';
 
 import {
   generateArrayOfErrors,

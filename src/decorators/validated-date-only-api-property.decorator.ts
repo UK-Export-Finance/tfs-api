@@ -1,8 +1,8 @@
 import { applyDecorators } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsISO8601, Matches } from 'class-validator';
 import { DATE_FORMATS } from '@ukef/constants';
 import { DateOnlyString } from '@ukef/helpers';
-import { IsISO8601, Matches } from 'class-validator';
 
 import { NullableOption, parseRequiredAndNullable, RequiredOption } from './parse-required-and-nullable-validation.helper';
 

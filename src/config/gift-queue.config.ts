@@ -1,6 +1,6 @@
 import { registerAs } from '@nestjs/config';
 
-export const KEY = 'giftQueue';
+const KEY = 'giftQueue';
 
 export interface GiftQueueConfig {
   storageAccountName?: string;
@@ -9,7 +9,7 @@ export interface GiftQueueConfig {
   queueName: string;
 }
 
-export default registerAs(
+export const GiftQueueConfig = registerAs(
   KEY,
   (): GiftQueueConfig => ({
     storageAccountName: process.env.GIFT_QUEUE_STORAGE_ACCOUNT_NAME,

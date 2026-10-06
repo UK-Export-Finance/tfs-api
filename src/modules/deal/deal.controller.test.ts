@@ -1,7 +1,7 @@
+import { when } from 'jest-when';
 import { TEST_CURRENCIES } from '@ukef-test/support/constants/test-currency.constant';
 import { TEST_DATES } from '@ukef-test/support/constants/test-date.constant';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { when } from 'jest-when';
 
 import { DealController } from './deal.controller';
 import { Deal } from './deal.interface';

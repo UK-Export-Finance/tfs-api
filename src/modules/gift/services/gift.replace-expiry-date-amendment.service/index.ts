@@ -1,9 +1,9 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
+import { PinoLogger } from 'nestjs-pino';
 import { GIFT } from '@ukef/constants';
 import { GiftAmendmentBaseParams } from '@ukef/types';
-import { PinoLogger } from 'nestjs-pino';
 
-import { GiftWorkPackageResponseDto } from '../../dto';
+import { GiftWorkPackageResponseDto } from '@ukef/modules/gift/dto';
 import { getAccrualScheduleIds } from '../../helpers';
 import { GiftHttpService } from '../gift.http.service';
 import { GiftWorkPackageService } from '../gift.work-package.service';

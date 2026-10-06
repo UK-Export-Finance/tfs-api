@@ -222,8 +222,8 @@ export const PROPERTIES = {
         purposeTypeCode: '   ',
         capitalClassCode: 'A',
         capitalConversionFactorCode: {
-          '250': '1',
-          '260': '5',
+          250: '1',
+          260: '5',
         },
         capitalConversionFactorCodeFallback: '1',
         financialFXRate: 1,

@@ -1,9 +1,9 @@
 import { HttpStatus } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
-import { EXAMPLES } from '@ukef/constants';
 import { IsObject, IsString } from 'class-validator';
+import { EXAMPLES } from '@ukef/constants';
 
-import { GiftWorkPackageResponseDto } from './work-package-response';
+import type { GiftWorkPackageResponseDto } from '@ukef/modules/gift/dto';
 
 const {
   GIFT: { WORK_PACKAGE_CREATION_RESPONSE_DATA },

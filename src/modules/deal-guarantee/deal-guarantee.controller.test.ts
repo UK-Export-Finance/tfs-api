@@ -1,6 +1,6 @@
+import { when } from 'jest-when';
 import { GetDealGuaranteeGenerator } from '@ukef-test/support/generator/get-deal-guarantee-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { when } from 'jest-when';
 
 import { DealGuaranteeController } from './deal-guarantee.controller';
 import { DealGuaranteeService } from './deal-guarantee.service';

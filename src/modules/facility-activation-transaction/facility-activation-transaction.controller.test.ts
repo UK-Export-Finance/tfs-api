@@ -1,3 +1,4 @@
+import { when } from 'jest-when';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { FacilityService } from '@ukef/modules/facility/facility.service';
 import { FacilityActivationTransactionController } from '@ukef/modules/facility-activation-transaction/facility-activation-transaction.controller';
@@ -5,7 +6,6 @@ import { FacilityActivationTransactionService } from '@ukef/modules/facility-act
 import { CreateFacilityActivationTransactionGenerator } from '@ukef-test/support/generator/create-facility-activation-transaction-generator';
 import { GetFacilityActivationTransactionGenerator } from '@ukef-test/support/generator/get-facility-activation-transaction-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { when } from 'jest-when';
 
 describe('FacilityActivationTransactionController', () => {
   const valueGenerator = new RandomValueGenerator();

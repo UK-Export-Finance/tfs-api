@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { EXAMPLES } from '@ukef/constants';
 import { Type } from 'class-transformer';
 import { IsNumber, IsObject } from 'class-validator';
+import { EXAMPLES } from '@ukef/constants';
 
-import { GiftFacilityConfigPostResponseDto } from './facility-post-gift-config-response-event';
+import type { GiftFacilityConfigPostResponseDto } from '@ukef/modules/gift/dto';
 
 const {
   GIFT: { FACILITY_RESPONSE_DATA },

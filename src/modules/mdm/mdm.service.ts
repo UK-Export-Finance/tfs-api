@@ -1,13 +1,13 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
-import { HttpClient } from '@ukef/modules/http/http.client';
 import { AxiosError } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 import { throwError } from 'rxjs';
+import { HttpClient } from '@ukef/modules/http/http.client';
 
 import { MdmCustomersParams } from './dto/mdm-customers-params.dto';
 import { MdmCustomersResponse } from './dto/mdm-customers-response.dto';
-import { ObligationSubtypeWithProductTypeCodeResponseDto } from './dto/obligation-subtype-with-product-type-code-response';
+import { ObligationSubtypeWithProductTypeCodeResponseDto } from './dto/obligation-subtype-with-product-type-code-response.dto';
 import { MdmException } from './exception/mdm.exception';
 import { MdmResourceNotFoundException } from './exception/mdm-resource-not-found.exception';
 

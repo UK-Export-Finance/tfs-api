@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { EXAMPLES, GIFT } from '@ukef/constants';
 import { IsDateString, IsDefined, IsNumber, IsOptional, IsString, Length, Min } from 'class-validator';
+import { EXAMPLES, GIFT } from '@ukef/constants';
 
 const {
   GIFT: { ACCRUAL_SCHEDULE: EXAMPLE },

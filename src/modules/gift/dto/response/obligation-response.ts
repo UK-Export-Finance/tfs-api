@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { EXAMPLES, GIFT } from '@ukef/constants';
 import { IsArray, IsBoolean, IsDateString, IsNumber, IsOptional, IsString } from 'class-validator';
+import { EXAMPLES, GIFT } from '@ukef/constants';
 
-import { GiftFacilityAccrualScheduleResponseDto } from './accrual-schedule-response';
+import type { GiftFacilityAccrualScheduleResponseDto } from '@ukef/modules/gift/dto';
 
 const {
   GIFT: { ACCRUAL_SCHEDULE, OBLIGATION, OBLIGATION_ID },

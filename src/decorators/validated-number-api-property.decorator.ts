@@ -7,13 +7,37 @@ import { NullableOption, parseRequiredAndNullable, RequiredOption } from './pars
 interface Options {
   description: string;
   minimum?: number;
-  enum?: any;
+  enum?: Record<string, string | number> | (string | number)[];
   required?: RequiredOption;
   nullable?: NullableOption;
   example?: number;
   default?: number;
   forbidZero?: boolean;
 }
+
+const buildSwaggerPropertyOptions = ({
+  description,
+  minimum,
+  enum: theEnum,
+  required,
+  nullable,
+  example,
+  default: theDefault,
+  forbidZero,
+}: Options): ApiPropertyOptions => {
+  const baseOptions = {
+    type: 'number',
+    description,
+    minimum,
+    example,
+    enum: theEnum,
+    required,
+    nullable,
+    default: theDefault,
+  };
+
+  return (forbidZero ? { ...baseOptions, not: { enum: [0] } } : baseOptions) as ApiPropertyOptions;
+};
 
 export const ValidatedNumberApiProperty = (options: Options) => {
   const { description, minimum, enum: theEnum, required, nullable, example, default: theDefault, forbidZero } = options;
@@ -55,28 +79,4 @@ export const ValidatedNumberApiProperty = (options: Options) => {
   }
 
   return applyDecorators(...decoratorsToApply);
-};
-
-const buildSwaggerPropertyOptions = ({
-  description,
-  minimum,
-  enum: theEnum,
-  required,
-  nullable,
-  example,
-  default: theDefault,
-  forbidZero,
-}: Options): ApiPropertyOptions => {
-  const baseOptions = {
-    type: 'number',
-    description,
-    minimum,
-    example,
-    enum: theEnum,
-    required,
-    nullable,
-    default: theDefault,
-  };
-
-  return (forbidZero ? { ...baseOptions, not: { enum: [0] } } : baseOptions) as ApiPropertyOptions;
 };

@@ -1,6 +1,6 @@
 import { GiftFacilityCreationValidationStrippedPayload } from '@ukef/types';
 
-import { GiftFacilityCreationRequestDto } from '../../../dto';
+import type { GiftFacilityCreationRequestDto } from '@ukef/modules/gift/dto';
 
 /**
  * Get a single array from multiple entity field values

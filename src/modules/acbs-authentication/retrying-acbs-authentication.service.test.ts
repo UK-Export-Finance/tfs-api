@@ -1,7 +1,7 @@
-import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
-import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
 import { PinoLogger } from 'nestjs-pino';
+import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
+import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 
 import { AcbsAuthenticationService } from './acbs-authentication.service';
 import { RetryingAcbsAuthenticationService } from './retrying-acbs-authentication.service';

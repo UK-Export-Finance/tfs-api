@@ -1,4 +1,5 @@
 import { BadRequestException } from '@nestjs/common';
+import { when } from 'jest-when';
 import { PROPERTIES } from '@ukef/constants';
 import { AcbsBundleInformationService } from '@ukef/modules/acbs/acbs-bundle-information.service';
 import { AcbsFacilityService } from '@ukef/modules/acbs/acbs-facility.service';
@@ -14,7 +15,6 @@ import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authen
 import { TEST_FACILITY_STAGE_CODE } from '@ukef-test/support/constants/test-issue-code.constant';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { UpdateFacilityGenerator } from '@ukef-test/support/generator/update-facility-generator';
-import { when } from 'jest-when';
 
 describe('FacilityService', () => {
   const valueGenerator = new RandomValueGenerator();

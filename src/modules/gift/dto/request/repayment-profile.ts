@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { EXAMPLES, GIFT } from '@ukef/constants';
 import { Type } from 'class-transformer';
 import { ArrayNotEmpty, IsArray, IsDefined, IsString, Length, ValidateNested } from 'class-validator';
+import { EXAMPLES, GIFT } from '@ukef/constants';
 
-import { GiftRepaymentProfileAllocationRequestDto } from './repayment-profile-allocation';
+import type { GiftRepaymentProfileAllocationRequestDto } from '@ukef/modules/gift/dto';
 
 const {
   GIFT: { REPAYMENT_PROFILE, REPAYMENT_PROFILE_ALLOCATION },

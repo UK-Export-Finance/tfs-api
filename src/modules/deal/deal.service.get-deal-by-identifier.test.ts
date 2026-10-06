@@ -1,3 +1,4 @@
+import { when } from 'jest-when';
 import { PROPERTIES } from '@ukef/constants';
 import { AcbsDealService } from '@ukef/modules/acbs/acbs-deal.service';
 import { AcbsGetDealResponseDto } from '@ukef/modules/acbs/dto/acbs-get-deal-response.dto';
@@ -6,7 +7,6 @@ import { DateStringTransformations } from '@ukef/modules/date/date-string.transf
 import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
 import { TEST_CURRENCIES } from '@ukef-test/support/constants/test-currency.constant';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { when } from 'jest-when';
 
 import { Deal } from './deal.interface';
 import { DealService } from './deal.service';

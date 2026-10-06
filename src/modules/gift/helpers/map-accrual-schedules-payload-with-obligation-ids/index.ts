@@ -1,4 +1,4 @@
-import { GiftAccrualScheduleRequestDto } from '../../dto';
+import { GiftAccrualScheduleRequestDto } from '@ukef/modules/gift/dto';
 
 /**
  * Maps accrual schedules payload with corresponding obligation IDs.

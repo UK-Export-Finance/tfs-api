@@ -1,10 +1,10 @@
 import { ApiExtraModels, ApiProperty, getSchemaPath } from '@nestjs/swagger';
-import { AMEND_FACILITY_TYPES_CONSUMER_ARRAY, AmendFacilityTypeConsumer, GIFT } from '@ukef/constants';
 import { plainToInstance, Transform } from 'class-transformer';
 import { IsDefined, IsIn, IsObject, IsString, Length, ValidateNested } from 'class-validator';
+import { AMEND_FACILITY_TYPES_CONSUMER_ARRAY, AmendFacilityTypeConsumer, GIFT } from '@ukef/constants';
 
-import { getAmendmentDataDto } from '../../helpers';
-import { DecreaseAmountDto, IncreaseAmountDto, ReplaceExpiryDateDto } from './facility-amendment-shared';
+import type { DecreaseAmountDto, IncreaseAmountDto, ReplaceExpiryDateDto } from '@ukef/modules/gift/dto';
+import type { getAmendmentDataDto } from '@ukef/modules/gift/helpers';
 
 const { VALIDATION } = GIFT;
 

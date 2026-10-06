@@ -1,12 +1,14 @@
 import { ApiProperty, OmitType } from '@nestjs/swagger';
-import { EXAMPLES } from '@ukef/constants';
 import { IsString } from 'class-validator';
+import { EXAMPLES } from '@ukef/constants';
 
-import { GiftFacilityCreationGenericRequestDto } from '../request/facility-creation-generic';
-import { GiftBusinessCalendarResponseDto } from './business-calendar-response';
-import { GiftBusinessCalendarsConventionResponseDto } from './business-calendars-convention-response';
-import { GiftObligationResponseDto } from './obligation-response';
-import { GiftFacilityRiskDetailsResponseDto } from './risk-details-response';
+import type {
+  GiftFacilityCreationGenericRequestDto,
+  GiftBusinessCalendarResponseDto,
+  GiftBusinessCalendarsConventionResponseDto,
+  GiftObligationResponseDto,
+  GiftFacilityRiskDetailsResponseDto,
+} from '@ukef/modules/gift/dto';
 
 /**
  * GIFT facility creation response DTO.
