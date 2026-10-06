@@ -6,7 +6,7 @@ import { AcbsCreateDealInvestorRequest } from '@ukef/modules/acbs/dto/acbs-creat
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 
-import { CurrentDateProvider } from '../date/current-date.provider';
+import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
 import { CreateDealInvestorRequestItem } from './dto/create-deal-investor-request.dto';
 import { GetDealInvestorResponseDto } from './dto/deal-investor-response.dto';
 

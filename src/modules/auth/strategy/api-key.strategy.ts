@@ -3,7 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { HeaderAPIKeyStrategy } from 'passport-headerapikey';
 import { AUTH } from '@ukef/constants';
 
-import { AuthService } from '../auth.service';
+import { AuthService } from '@ukef/modules/auth/auth.service';
 
 @Injectable()
 export class ApiKeyStrategy extends PassportStrategy(HeaderAPIKeyStrategy, AUTH.STRATEGY) {

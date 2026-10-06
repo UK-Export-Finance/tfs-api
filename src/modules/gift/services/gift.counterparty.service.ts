@@ -3,8 +3,8 @@ import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 import { GIFT } from '@ukef/constants';
 
-import { GiftFacilityCounterpartyRequestDto, GiftFacilityCounterpartyRoleResponseDto, GiftFacilityCounterpartyRolesResponse } from '../dto';
-import { mapCounterpartiesRequestData } from '../helpers';
+import { GiftFacilityCounterpartyRequestDto, GiftFacilityCounterpartyRoleResponseDto, GiftFacilityCounterpartyRolesResponse } from '@ukef/modules/gift/dto';
+import { mapCounterpartiesRequestData } from '@ukef/modules/gift/helpers';
 import { GiftHttpService } from './gift.http.service';
 
 const { EVENT_TYPES, INTEGRATION_DEFAULTS, PATH } = GIFT;

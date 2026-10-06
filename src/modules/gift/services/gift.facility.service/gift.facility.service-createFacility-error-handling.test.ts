@@ -20,7 +20,7 @@ import {
   GiftRepaymentProfileService,
   GiftRiskDetailsService,
   GiftStatusService,
-} from '../';
+} from '@ukef/modules/gift/services';
 import { GiftFacilityService } from './';
 
 const {

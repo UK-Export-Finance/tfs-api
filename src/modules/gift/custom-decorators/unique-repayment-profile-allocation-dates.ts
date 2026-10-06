@@ -1,7 +1,7 @@
 import { registerDecorator, ValidationOptions } from 'class-validator';
 
 import { GiftRepaymentProfileRequestDto } from '@ukef/modules/gift/dto';
-import { arrayHasUniqueStrings, getRepaymentProfileAllocationDates } from '../helpers';
+import { arrayHasUniqueStrings, getRepaymentProfileAllocationDates } from '@ukef/modules/gift/helpers';
 
 /**
  * Custom decorator to check if a provided repayment profile's allocation date is unique.

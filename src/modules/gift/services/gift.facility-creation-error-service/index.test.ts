@@ -2,7 +2,7 @@ import { PinoLogger } from 'nestjs-pino';
 import { EXAMPLES } from '@ukef/constants';
 import { mockResponse204, mockResponse400, mockResponse500 } from '@ukef-test/http-response';
 
-import { GiftWorkPackageService } from '../gift.work-package.service';
+import { GiftWorkPackageService } from '@ukef/modules/gift/services/gift.work-package.service';
 import { GiftFacilityCreationErrorService } from '.';
 
 const {

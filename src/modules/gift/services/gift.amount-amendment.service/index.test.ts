@@ -3,7 +3,7 @@ import { PinoLogger } from 'nestjs-pino';
 import { AMEND_FACILITY_PREFIX_TYPES, EXAMPLES, GIFT } from '@ukef/constants';
 import { mockResponse201, mockResponse204, mockResponse500 } from '@ukef-test/http-response';
 
-import { GiftWorkPackageService } from '../gift.work-package.service';
+import { GiftWorkPackageService } from '@ukef/modules/gift/services/gift.work-package.service';
 import { GiftAmountAmendmentService } from '.';
 
 const {

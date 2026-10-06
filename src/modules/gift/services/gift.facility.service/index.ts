@@ -5,19 +5,19 @@ import { GIFT } from '@ukef/constants';
 import { UkefId } from '@ukef/helpers';
 
 import { GiftFacilityCreationRequestDto, GiftFacilityOverviewRequestDto } from '@ukef/modules/gift/dto';
-import { getObligationIds, mapAccrualSchedulesPayload, mapAllValidationErrorResponses, mapResponseData, mapResponsesData } from '../../helpers';
-import { GiftAccrualScheduleService } from '../gift.accrual-schedule.service';
-import { GiftBusinessCalendarService } from '../gift.business-calendar.service';
-import { GiftBusinessCalendarsConventionService } from '../gift.business-calendars-convention.service';
-import { GiftCounterpartyService } from '../gift.counterparty.service';
-import { GiftFacilityAsyncValidationService } from '../gift.facility-async-validation.service';
-import { GiftFacilityCreationErrorService } from '../gift.facility-creation-error-service';
-import { GiftFixedFeeService } from '../gift.fixed-fee.service';
-import { GiftHttpService } from '../gift.http.service';
-import { GiftObligationService } from '../gift.obligation.service';
-import { GiftRepaymentProfileService } from '../gift.repayment-profile.service';
-import { GiftRiskDetailsService } from '../gift.risk-details.service';
-import { GiftStatusService } from '../gift.status.service';
+import { getObligationIds, mapAccrualSchedulesPayload, mapAllValidationErrorResponses, mapResponseData, mapResponsesData } from '@ukef/modules/gift/helpers';
+import { GiftAccrualScheduleService } from '@ukef/modules/gift/services/gift.accrual-schedule.service';
+import { GiftBusinessCalendarService } from '@ukef/modules/gift/services/gift.business-calendar.service';
+import { GiftBusinessCalendarsConventionService } from '@ukef/modules/gift/services/gift.business-calendars-convention.service';
+import { GiftCounterpartyService } from '@ukef/modules/gift/services/gift.counterparty.service';
+import { GiftFacilityAsyncValidationService } from '@ukef/modules/gift/services/gift.facility-async-validation.service';
+import { GiftFacilityCreationErrorService } from '@ukef/modules/gift/services/gift.facility-creation-error-service';
+import { GiftFixedFeeService } from '@ukef/modules/gift/services/gift.fixed-fee.service';
+import { GiftHttpService } from '@ukef/modules/gift/services/gift.http.service';
+import { GiftObligationService } from '@ukef/modules/gift/services/gift.obligation.service';
+import { GiftRepaymentProfileService } from '@ukef/modules/gift/services/gift.repayment-profile.service';
+import { GiftRiskDetailsService } from '@ukef/modules/gift/services/gift.risk-details.service';
+import { GiftStatusService } from '@ukef/modules/gift/services/gift.status.service';
 
 const { API_RESPONSE_MESSAGES, PATH, INTEGRATION_DEFAULTS } = GIFT;
 

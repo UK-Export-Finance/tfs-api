@@ -6,7 +6,7 @@ import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authen
 import { CreateFacilityCovenantGenerator } from '@ukef-test/support/generator/create-facility-covenant-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 
-import { DateStringTransformations } from '../date/date-string.transformations';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { FacilityCovenantService } from './facility-covenant.service';
 
 jest.mock('@ukef/modules/date/current-date.provider');
@@ -48,6 +48,8 @@ describe('FacilityCovenantService', () => {
       facilityTypeCode,
       limitKeyValue,
     });
+
+    const getCovenantCreatedInAcbs = (): AcbsCreateFacilityCovenantRequestDto => acbsFacilityCovenantServiceCreateCovenantForFacility.mock.calls[0][1];
 
     const [newCovenantWithAllFields] = requestBodyToCreateFacilityCovenant;
 
@@ -116,7 +118,5 @@ describe('FacilityCovenantService', () => {
 
       expect(covenantCreatedInAcbs.CovenantName).toBe('270');
     });
-
-    const getCovenantCreatedInAcbs = (): AcbsCreateFacilityCovenantRequestDto => acbsFacilityCovenantServiceCreateCovenantForFacility.mock.calls[0][1];
   });
 });

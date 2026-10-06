@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
 
-import { GiftWorkPackageService } from '../gift.work-package.service';
+import { GiftWorkPackageService } from '@ukef/modules/gift/services/gift.work-package.service';
 
 interface FinallyHandlerParams {
   workPackageId?: number;

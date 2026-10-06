@@ -23,7 +23,7 @@ import {
   GiftFacilityCreationRequestDto,
   GiftFacilityCreationResponseDto,
   GiftFacilityOverviewRequestDto,
-} from '../dto';
+} from '@ukef/modules/gift/dto';
 import { GiftFacilityAmendmentService, GiftFacilityService, GiftQueueService } from '@ukef/modules/gift/services';
 
 const { PATH } = GIFT;

@@ -12,7 +12,7 @@ import {
   getObligationSubtypeCodes,
   mapEntitiesByField,
   stripPayload,
-} from '../helpers';
+} from '@ukef/modules/gift/helpers';
 import { GiftCounterpartyService } from './gift.counterparty.service';
 import { GiftCurrencyService } from './gift.currency.service';
 import { GiftFeeTypeService } from './gift.fee-type.service';

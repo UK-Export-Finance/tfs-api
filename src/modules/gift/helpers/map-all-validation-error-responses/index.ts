@@ -2,7 +2,7 @@ import { AxiosResponse } from 'axios';
 import { GIFT } from '@ukef/constants';
 import { ValidationErrorResponse } from '@ukef/types';
 
-import { mapValidationErrorResponses } from '../map-validation-error-responses';
+import { mapValidationErrorResponses } from '@ukef/modules/gift/helpers/map-validation-error-responses';
 
 const { ENTITY_NAMES } = GIFT;
 

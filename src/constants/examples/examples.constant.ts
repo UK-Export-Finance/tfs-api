@@ -1,5 +1,5 @@
-import { COUNTRIES } from '../countries.constant';
-import { SUPPORTED_CURRENCIES } from '../currencies.constant';
+import { COUNTRIES } from '@ukef/constants/countries.constant';
+import { SUPPORTED_CURRENCIES } from '@ukef/constants/currencies.constant';
 import { GIFT_EXAMPLES } from './gift.examples.constant';
 import { MDM_EXAMPLES } from './mdm.examples.constant';
 

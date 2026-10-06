@@ -85,6 +85,41 @@ describe('BaseAcbsAuthenticationService', () => {
     );
   });
 
+  const mockSuccessfulCreateSessionRequestReturningCookies = (cookies: string[]): void => {
+    const headers = new AxiosHeaders();
+    headers['set-cookie'] = cookies;
+
+    when(httpServicePost)
+      .calledWith(...expectedPostSessionsArguments)
+      .mockReturnValueOnce(
+        of({
+          data: '',
+          status: 200,
+          statusText: 'OK',
+          config: undefined,
+          headers: headers,
+        }),
+      );
+  };
+
+  const mockSuccessfulCreateSessionRequest = (): void => mockSuccessfulCreateSessionRequestReturningCookies([cookie1, sessionIdCookie, cookie2]);
+
+  const mockSuccessfulGetTokenForSessionRequestReturning = (data: any): void => {
+    when(httpServiceGet)
+      .calledWith(...expectedGetTokenArguments)
+      .mockReturnValueOnce(
+        of({
+          data,
+          status: 200,
+          statusText: 'OK',
+          config: undefined,
+          headers: undefined,
+        }),
+      );
+  };
+
+  const mockSuccessfulGetTokenForSessionRequest = (): void => mockSuccessfulGetTokenForSessionRequestReturning({ id_token: idToken });
+
   describe('successful authentication', () => {
     it('returns a token from the IdP if authentication is successful', async () => {
       mockSuccessfulCreateSessionRequest();
@@ -266,39 +301,4 @@ describe('BaseAcbsAuthenticationService', () => {
       await expect(getTokenPromise).rejects.toHaveProperty('innerError', undefined);
     });
   });
-
-  const mockSuccessfulCreateSessionRequest = (): void => mockSuccessfulCreateSessionRequestReturningCookies([cookie1, sessionIdCookie, cookie2]);
-
-  const mockSuccessfulCreateSessionRequestReturningCookies = (cookies: string[]): void => {
-    const headers = new AxiosHeaders();
-    headers['set-cookie'] = cookies;
-
-    when(httpServicePost)
-      .calledWith(...expectedPostSessionsArguments)
-      .mockReturnValueOnce(
-        of({
-          data: '',
-          status: 200,
-          statusText: 'OK',
-          config: undefined,
-          headers: headers,
-        }),
-      );
-  };
-
-  const mockSuccessfulGetTokenForSessionRequest = (): void => mockSuccessfulGetTokenForSessionRequestReturning({ id_token: idToken });
-
-  const mockSuccessfulGetTokenForSessionRequestReturning = (data: any): void => {
-    when(httpServiceGet)
-      .calledWith(...expectedGetTokenArguments)
-      .mockReturnValueOnce(
-        of({
-          data,
-          status: 200,
-          statusText: 'OK',
-          config: undefined,
-          headers: undefined,
-        }),
-      );
-  };
 });

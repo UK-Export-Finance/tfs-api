@@ -4,7 +4,7 @@ import { AcbsPartyExternalRatingService } from '@ukef/modules/acbs/acbs-party-ex
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 import { GetPartyExternalRating } from '@ukef/modules/party-external-rating/get-party-external-rating.interface';
 
-import { DateStringTransformations } from '../date/date-string.transformations';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { CreatePartyExternalRating } from './create-party-external-rating.interface';
 
 @Injectable()

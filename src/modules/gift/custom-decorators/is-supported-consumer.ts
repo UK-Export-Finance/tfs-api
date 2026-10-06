@@ -1,6 +1,6 @@
 import { registerDecorator, ValidationArguments, ValidationOptions } from 'class-validator';
 
-import { isSupportedConsumer } from '../helpers';
+import { isSupportedConsumer } from '@ukef/modules/gift/helpers';
 
 interface ObjectWithConsumer {
   consumer: string;

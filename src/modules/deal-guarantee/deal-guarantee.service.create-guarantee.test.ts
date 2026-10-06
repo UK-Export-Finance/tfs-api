@@ -7,7 +7,7 @@ import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authen
 import { TEST_DATES } from '@ukef-test/support/constants/test-date.constant';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 
-import { DateStringTransformations } from '../date/date-string.transformations';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { DealGuaranteeService } from './deal-guarantee.service';
 import { CreateDealGuaranteeRequestItem } from './dto/create-deal-guarantee-request.dto';
 
@@ -54,6 +54,8 @@ describe('DealGuaranteeService', () => {
       guaranteeExpiryDate: expirationDate,
       maximumLiability: maximumLiabilityWithOneDecimalPlace,
     };
+
+    const getGuaranteeCreatedInAcbs = (): AcbsCreateDealGuaranteeDto => acbsDealGuaranteeServiceCreateGuaranteeForDeal.mock.calls[0][1];
 
     it('creates a guarantee in ACBS with a transformation of the requested new guarantee', async () => {
       const expectedNewGuaranteeToCreate: AcbsCreateDealGuaranteeDto = {
@@ -124,7 +126,5 @@ describe('DealGuaranteeService', () => {
 
       expect(guaranteeCreatedInAcbs.GuaranteedLimit).toBeCloseTo(maximumLiabilityRoundedToTwoDecimalPlaces, 8);
     });
-
-    const getGuaranteeCreatedInAcbs = (): AcbsCreateDealGuaranteeDto => acbsDealGuaranteeServiceCreateGuaranteeForDeal.mock.calls[0][1];
   });
 });

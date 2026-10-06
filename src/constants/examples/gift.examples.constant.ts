@@ -7,9 +7,9 @@ import type {
   GiftObligationRequestDto,
 } from '@ukef/modules/gift/dto';
 
-import { SUPPORTED_CURRENCIES } from '../currencies.constant';
-import { CONSUMER } from '../gift/consumer.constant';
-import { AMEND_FACILITY_TYPES_CONSUMER, GIFT } from '../gift/gift.constant';
+import { SUPPORTED_CURRENCIES } from '@ukef/constants/currencies.constant';
+import { CONSUMER } from '@ukef/constants/gift/consumer.constant';
+import { AMEND_FACILITY_TYPES_CONSUMER, GIFT } from '@ukef/constants/gift/gift.constant';
 import { MDM_EXAMPLES } from './mdm.examples.constant';
 
 const {

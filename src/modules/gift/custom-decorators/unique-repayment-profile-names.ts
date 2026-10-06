@@ -1,7 +1,7 @@
 import { registerDecorator, ValidationOptions } from 'class-validator';
 
 import { GiftRepaymentProfileRequestDto } from '@ukef/modules/gift/dto';
-import { arrayHasUniqueStrings, getRepaymentProfileNames } from '../helpers';
+import { arrayHasUniqueStrings, getRepaymentProfileNames } from '@ukef/modules/gift/helpers';
 
 /**
  * Custom decorator to check if a provided repayment profile's name is unique.

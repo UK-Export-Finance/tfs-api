@@ -5,7 +5,7 @@ import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authen
 import { CreatePartyExternalRatingGenerator } from '@ukef-test/support/generator/create-party-external-rating-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 
-import { DateStringTransformations } from '../date/date-string.transformations';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { PartyExternalRatingService } from './party-external-rating.service';
 
 jest.mock('@ukef/modules/acbs/acbs-party-external-rating.service');

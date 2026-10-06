@@ -6,7 +6,7 @@ import { MdmService } from '@ukef/modules/mdm/mdm.service';
 import { mockGiftFacilityCreationErrorService } from '@ukef-test/gift/mock-services';
 import { mockResponse200, mockResponse201, mockResponse204 } from '@ukef-test/http-response';
 
-import { getObligationIds, mapAccrualSchedulesPayload } from '../../helpers';
+import { getObligationIds, mapAccrualSchedulesPayload } from '@ukef/modules/gift/helpers';
 import {
   GiftAccrualScheduleService,
   GiftBusinessCalendarsConventionService,
@@ -22,7 +22,7 @@ import {
   GiftRepaymentProfileService,
   GiftRiskDetailsService,
   GiftStatusService,
-} from '../';
+} from '@ukef/modules/gift/services';
 import { GiftFacilityService } from './';
 
 const {

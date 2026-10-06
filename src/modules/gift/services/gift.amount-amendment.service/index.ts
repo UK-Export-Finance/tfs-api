@@ -5,9 +5,9 @@ import { AMEND_FACILITY_PREFIX_TYPES, FacilityCategoryCode, GIFT } from '@ukef/c
 import { GiftAmendmentBaseParams } from '@ukef/types';
 
 import { DecreaseAmountDto, GiftWorkPackageResponseDto, IncreaseAmountDto } from '@ukef/modules/gift/dto';
-import { calculatePercentageAmount } from '../../helpers';
-import { GiftHttpService } from '../gift.http.service';
-import { GiftWorkPackageService } from '../gift.work-package.service';
+import { calculatePercentageAmount } from '@ukef/modules/gift/helpers';
+import { GiftHttpService } from '@ukef/modules/gift/services/gift.http.service';
+import { GiftWorkPackageService } from '@ukef/modules/gift/services/gift.work-package.service';
 
 const {
   AMEND_OBLIGATION_AMOUNT: { PERCENTAGE_OF_FACILITY_AMOUNT },

@@ -4,9 +4,9 @@ import { GIFT } from '@ukef/constants';
 import { GiftAmendmentBaseParams } from '@ukef/types';
 
 import { GiftWorkPackageResponseDto } from '@ukef/modules/gift/dto';
-import { getAccrualScheduleIds } from '../../helpers';
-import { GiftHttpService } from '../gift.http.service';
-import { GiftWorkPackageService } from '../gift.work-package.service';
+import { getAccrualScheduleIds } from '@ukef/modules/gift/helpers';
+import { GiftHttpService } from '@ukef/modules/gift/services/gift.http.service';
+import { GiftWorkPackageService } from '@ukef/modules/gift/services/gift.work-package.service';
 
 const {
   AMEND_FACILITY_PREFIX_TYPES,

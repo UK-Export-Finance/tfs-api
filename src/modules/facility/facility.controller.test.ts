@@ -112,15 +112,6 @@ describe('FacilityController', () => {
 
       const expectedResponse = op === ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_AMOUNT ? { bundleIdentifier, warningErrors: errorString } : { facilityIdentifier };
 
-      withUpdateFacilityControllerGeneralTests({
-        updateFacilityRequest,
-        serviceMethod,
-        facilityIdentifier,
-        expectedResponse,
-        getGivenUpdateRequestWouldOtherwiseSucceed: () => givenUpdateRequestWouldOtherwiseSucceed(),
-        makeRequest: () => controller.updateFacilityByOperation(query, updateFacilityByOperationParams, updateFacilityRequest),
-      });
-
       const givenUpdateRequestWouldOtherwiseSucceed = () => {
         if (op === ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_AMOUNT) {
           return when(serviceMethod)
@@ -129,6 +120,15 @@ describe('FacilityController', () => {
         }
         return () => {};
       };
+
+      withUpdateFacilityControllerGeneralTests({
+        updateFacilityRequest,
+        serviceMethod,
+        facilityIdentifier,
+        expectedResponse,
+        getGivenUpdateRequestWouldOtherwiseSucceed: () => givenUpdateRequestWouldOtherwiseSucceed(),
+        makeRequest: () => controller.updateFacilityByOperation(query, updateFacilityByOperationParams, updateFacilityRequest),
+      });
     });
 
     describe('amendAmount', () => {

@@ -5,7 +5,7 @@ import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authen
 import { GetFacilityCovenantGenerator } from '@ukef-test/support/generator/get-facility-covenant-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 
-import { DateStringTransformations } from '../date/date-string.transformations';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { FacilityCovenantService } from './facility-covenant.service';
 
 jest.mock('@ukef/modules/date/current-date.provider');

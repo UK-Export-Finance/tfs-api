@@ -3,7 +3,7 @@ import { Type } from 'class-transformer';
 import { ArrayNotEmpty, IsArray, IsBoolean, IsDefined, IsNotEmptyObject, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 
-import { IsSupportedConsumer, UniqueRepaymentProfileAllocationDates, UniqueRepaymentProfileNames } from '../../custom-decorators';
+import { IsSupportedConsumer, UniqueRepaymentProfileAllocationDates, UniqueRepaymentProfileNames } from '@ukef/modules/gift/custom-decorators';
 import type {
   GiftAccrualScheduleRequestDto,
   GiftFacilityCounterpartyRequestDto,

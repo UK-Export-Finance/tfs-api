@@ -7,7 +7,7 @@ import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authen
 import { GetDealInvestorGenerator } from '@ukef-test/support/generator/get-deal-investor-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 
-import { CurrentDateProvider } from '../date/current-date.provider';
+import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
 import { DealInvestorService } from './deal-investor.service';
 
 jest.mock('@ukef/modules/acbs/acbs-deal-party.service');

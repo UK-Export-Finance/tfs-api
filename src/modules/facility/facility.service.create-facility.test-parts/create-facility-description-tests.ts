@@ -1,4 +1,4 @@
-import { CreateFacilityRequestItem } from '../dto/create-facility-request.dto';
+import { CreateFacilityRequestItem } from '@ukef/modules/facility/dto/create-facility-request.dto';
 import { CreateFacilityTestPartsArgs } from './create-facility-test-parts-args.interface';
 
 export const withCreateFacilityDescriptionTests = ({

@@ -54,6 +54,8 @@ describe('DealInvestorService', () => {
     });
     const [requestItemToCreateDealInvestor] = requestBodyToCreateDealInvestor;
 
+    const getInvestorCreatedInAcbs = (): AcbsCreateDealInvestorRequest => acbsDealPartyServiceCreateInvestorForDeal.mock.calls[0][1];
+
     it('creates an investor in ACBS with a transformation of the requested new investor', async () => {
       await service.createInvestorForDeal(dealIdentifier, requestItemToCreateDealInvestor);
 
@@ -105,7 +107,5 @@ describe('DealInvestorService', () => {
 
       expect(investorCreatedInAcbs.EffectiveDate).toBe(dateStringTransformations.addTimeToDateOnlyString(TEST_DATES.A_PAST_EFFECTIVE_DATE_ONLY));
     });
-
-    const getInvestorCreatedInAcbs = (): AcbsCreateDealInvestorRequest => acbsDealPartyServiceCreateInvestorForDeal.mock.calls[0][1];
   });
 });

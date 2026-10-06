@@ -57,6 +57,8 @@ describe('DealService', () => {
       guaranteeCommencementDateForDescription,
     } = new CreateDealGenerator(valueGenerator, dateStringTransformations).generate({ numberToGenerate: 1 });
 
+    const getDealCreatedInAcbs = (): AcbsCreateDealDto => acbsDealServiceCreateDeal.mock.calls[0][1];
+
     beforeEach(() => {
       when(currentDateProviderGetEarliestDateFromTodayAnd).calledWith(guaranteeCommencementDateAsDate).mockReturnValueOnce(guaranteeCommencementDateAsDate);
     });
@@ -203,7 +205,5 @@ describe('DealService', () => {
         );
       });
     });
-
-    const getDealCreatedInAcbs = (): AcbsCreateDealDto => acbsDealServiceCreateDeal.mock.calls[0][1];
   });
 });

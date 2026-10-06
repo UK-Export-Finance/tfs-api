@@ -2,7 +2,7 @@ import { PinoLogger } from 'nestjs-pino';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { mockResponse200, mockResponse201, mockResponse400, mockResponse418, mockResponse500 } from '@ukef-test/http-response';
 
-import { mapCounterpartiesRequestData } from '../helpers';
+import { mapCounterpartiesRequestData } from '@ukef/modules/gift/helpers';
 import { GiftCounterpartyService } from './gift.counterparty.service';
 
 const {

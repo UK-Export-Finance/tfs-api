@@ -62,6 +62,9 @@ describe('FacilityLoanService', () => {
     const [increaseAmendment] = increaseAmountRequest;
     const [decreaseAmendment] = decreaseAmountRequest;
 
+    const getBundleCreatedInAcbs = (): AcbsCreateBundleInformationRequestDto<LoanAdvanceTransaction> =>
+      createBundleInformation.mock.calls[0][0] as AcbsCreateBundleInformationRequestDto<LoanAdvanceTransaction>;
+
     describe('when creating a loan amendment bundle in ACBS that increases the amount', () => {
       const { transactionTypeCode } = PROPERTIES.LOAN_AMOUNT_AMENDMENT.DEFAULT.bundleMessageList;
 
@@ -143,8 +146,5 @@ describe('FacilityLoanService', () => {
         expect(bundleIdentifier).toEqual({ responseBody: { bundleIdentifier: createdBundleIdentifier }, warningErrors: errorString });
       });
     });
-
-    const getBundleCreatedInAcbs = (): AcbsCreateBundleInformationRequestDto<LoanAdvanceTransaction> =>
-      createBundleInformation.mock.calls[0][0] as AcbsCreateBundleInformationRequestDto<LoanAdvanceTransaction>;
   });
 });

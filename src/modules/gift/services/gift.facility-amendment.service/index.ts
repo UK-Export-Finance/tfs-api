@@ -9,12 +9,12 @@ import {
   isDecreaseAmountAmendment,
   isIncreaseAmountAmendment,
   isReplaceExpiryDateAmendment,
-} from '../../helpers';
-import { GiftAmountAmendmentService } from '../gift.amount-amendment.service';
-import { GiftFacilityService } from '../gift.facility.service';
-import { GiftReplaceExpiryDateAmendmentService } from '../gift.replace-expiry-date-amendment.service';
-import { GiftStatusService } from '../gift.status.service';
-import { GiftWorkPackageService } from '../gift.work-package.service';
+} from '@ukef/modules/gift/helpers';
+import { GiftAmountAmendmentService } from '@ukef/modules/gift/services/gift.amount-amendment.service';
+import { GiftFacilityService } from '@ukef/modules/gift/services/gift.facility.service';
+import { GiftReplaceExpiryDateAmendmentService } from '@ukef/modules/gift/services/gift.replace-expiry-date-amendment.service';
+import { GiftStatusService } from '@ukef/modules/gift/services/gift.status.service';
+import { GiftWorkPackageService } from '@ukef/modules/gift/services/gift.work-package.service';
 
 interface HandleCreateAmendmentsParams {
   amendment: CreateGiftFacilityAmendmentRequestDto;

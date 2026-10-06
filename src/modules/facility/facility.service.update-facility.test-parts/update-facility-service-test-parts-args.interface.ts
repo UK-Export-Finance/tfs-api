@@ -4,7 +4,7 @@ import { AcbsGetFacilityResponseDto } from '@ukef/modules/acbs/dto/acbs-get-faci
 import { UpdateFacilityRequest } from '@ukef/modules/facility/dto/update-facility-request.dto';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 
-import { UpdateFacilityBundleIdentifierResponse } from '../dto/update-facility-response.dto';
+import { UpdateFacilityBundleIdentifierResponse } from '@ukef/modules/facility/dto/update-facility-response.dto';
 
 export interface UpdateFacilityServiceTestPartsArgs<T> {
   valueGenerator: RandomValueGenerator;

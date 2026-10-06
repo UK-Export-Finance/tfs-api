@@ -4,9 +4,9 @@ import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authen
 import { GetFacilityGuaranteeGenerator } from '@ukef-test/support/generator/get-facility-guarantee-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 
-import { AcbsFacilityGuaranteeService } from '../acbs/acbs-facility-guarantee.service';
-import { CurrentDateProvider } from '../date/current-date.provider';
-import { DateStringTransformations } from '../date/date-string.transformations';
+import { AcbsFacilityGuaranteeService } from '@ukef/modules/acbs/acbs-facility-guarantee.service';
+import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { FacilityGuaranteeService } from './facility-guarantee.service';
 
 describe('FacilityGuaranteeService', () => {

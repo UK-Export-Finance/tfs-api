@@ -5,7 +5,7 @@ import { BadRequestError } from 'passport-headerapikey';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { AUTH } from '@ukef/constants';
 
-import { AuthService } from '../auth.service';
+import { AuthService } from '@ukef/modules/auth/auth.service';
 import { ApiKeyStrategy } from './api-key.strategy';
 
 jest.mock('../auth.service');
@@ -49,6 +49,8 @@ describe('ApiKeyStrategy', () => {
     redirect = strategy['redirect'] = jest.fn();
     success = strategy['success'] = jest.fn();
   });
+
+  const createRequestWithHeaders = (headers: Record<string, string>): Request => ({ headers }) as unknown as Request;
 
   describe('authenticate', () => {
     describe('when the api key header is not present', () => {
@@ -142,6 +144,4 @@ describe('ApiKeyStrategy', () => {
       });
     });
   });
-
-  const createRequestWithHeaders = (headers: Record<string, string>): Request => ({ headers }) as unknown as Request;
 });

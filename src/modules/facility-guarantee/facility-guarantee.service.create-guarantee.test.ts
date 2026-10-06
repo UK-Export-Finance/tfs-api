@@ -55,6 +55,8 @@ describe('FacilityGuaranteeService', () => {
       guaranteeTypeCode,
     };
 
+    const getGuaranteeCreatedInAcbs = (): AcbsCreateFacilityGuaranteeDto => createFacilityGuaranteesAcbsService.mock.calls[0][1];
+
     it('creates a guarantee in ACBS with a transformation of the requested new guarantee', async () => {
       const expectedNewGuaranteeToCreate: AcbsCreateFacilityGuaranteeDto = {
         LenderType: {
@@ -113,7 +115,5 @@ describe('FacilityGuaranteeService', () => {
 
       expect(guaranteeCreatedInAcbs.GuaranteedLimit).toBeCloseTo(maximumLiabilityRoundedToTwoDecimalPlaces, 8);
     });
-
-    const getGuaranteeCreatedInAcbs = (): AcbsCreateFacilityGuaranteeDto => createFacilityGuaranteesAcbsService.mock.calls[0][1];
   });
 });

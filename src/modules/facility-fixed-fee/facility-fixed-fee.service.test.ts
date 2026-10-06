@@ -12,10 +12,10 @@ import { CreateFacilityFixedFeesAmountAmendmentGenerator } from '@ukef-test/supp
 import { GetFacilityFixedFeeGenerator } from '@ukef-test/support/generator/get-facility-fixed-fee-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 
-import { AcbsBundleInformationService } from '../acbs/acbs-bundle-information.service';
-import { AcbsCreateBundleInformationRequestDto } from '../acbs/dto/acbs-create-bundle-information-request.dto';
-import { AcbsCreateBundleInformationResponseHeadersDto } from '../acbs/dto/acbs-create-bundle-information-response.dto';
-import { FacilityFeeAmountTransaction } from '../acbs/dto/bundle-actions/facility-fee-amount-transaction.bundle-action';
+import { AcbsBundleInformationService } from '@ukef/modules/acbs/acbs-bundle-information.service';
+import { AcbsCreateBundleInformationRequestDto } from '@ukef/modules/acbs/dto/acbs-create-bundle-information-request.dto';
+import { AcbsCreateBundleInformationResponseHeadersDto } from '@ukef/modules/acbs/dto/acbs-create-bundle-information-response.dto';
+import { FacilityFeeAmountTransaction } from '@ukef/modules/acbs/dto/bundle-actions/facility-fee-amount-transaction.bundle-action';
 import { FacilityFixedFeeService } from './facility-fixed-fee.service';
 
 describe('FacilityFixedFeeService', () => {
@@ -94,6 +94,8 @@ describe('FacilityFixedFeeService', () => {
     });
 
     const [newFixedFeeWithAllFields] = requestBodyToCreateFacilityFixedFee;
+
+    const getFixedFeeAcbsPayload = (): AcbsCreateFacilityFixedFeeRequestDto => createFacilityFixedFeesAcbsService.mock.calls[0][2];
 
     it('creates a fixed fee in ACBS with a transformation of the requested new fixed fee', async () => {
       await service.createFixedFeeForFacility(
@@ -232,6 +234,9 @@ describe('FacilityFixedFeeService', () => {
     const { increaseAmountRequest, decreaseAmountRequest, acbsFixedFeesAmendmentForIncrease, acbsFixedFeesAmendmentForDecrease } =
       new CreateFacilityFixedFeesAmountAmendmentGenerator(valueGenerator, dateStringTransformations).generate({ numberToGenerate: 3, facilityIdentifier });
 
+    const getBundleCreatedInAcbs = (): AcbsCreateBundleInformationRequestDto<FacilityFeeAmountTransaction> =>
+      createBundleInformation.mock.calls[0][0] as AcbsCreateBundleInformationRequestDto<FacilityFeeAmountTransaction>;
+
     describe('when creating a fixed fees amendment bundle in ACBS that increases the amount', () => {
       describe('with no header error', () => {
         beforeEach(() => {
@@ -309,10 +314,5 @@ describe('FacilityFixedFeeService', () => {
         expect(response.warningErrors).toBe(errorString);
       });
     });
-
-    const getBundleCreatedInAcbs = (): AcbsCreateBundleInformationRequestDto<FacilityFeeAmountTransaction> =>
-      createBundleInformation.mock.calls[0][0] as AcbsCreateBundleInformationRequestDto<FacilityFeeAmountTransaction>;
   });
-
-  const getFixedFeeAcbsPayload = (): AcbsCreateFacilityFixedFeeRequestDto => createFacilityFixedFeesAcbsService.mock.calls[0][2];
 });

@@ -31,6 +31,24 @@ describe('LoggingInterceptor', () => {
     debug.mockReset();
   });
 
+  const runInterceptor = (requestBody: unknown, responseBody: unknown, next = { handle: () => of(responseBody) }): Promise<unknown> => {
+    const context = {
+      switchToHttp: () =>
+        ({
+          getRequest: <T>() =>
+            ({
+              body: requestBody,
+            }) as T,
+        }) as HttpArgumentsHost,
+    } as ExecutionContext;
+    try {
+      const interceptObservable = interceptor.intercept(context, next);
+      return lastValueFrom(interceptObservable);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   describe('intercept', () => {
     describe('when the intercepted data contains neither responseBody nor warningErrors', () => {
       const requestMessage = 'Handling the following request from the client.';
@@ -122,22 +140,4 @@ describe('LoggingInterceptor', () => {
       });
     });
   });
-
-  const runInterceptor = (requestBody: unknown, responseBody: unknown, next = { handle: () => of(responseBody) }): Promise<unknown> => {
-    const context = {
-      switchToHttp: () =>
-        ({
-          getRequest: <T>() =>
-            ({
-              body: requestBody,
-            }) as T,
-        }) as HttpArgumentsHost,
-    } as ExecutionContext;
-    try {
-      const interceptObservable = interceptor.intercept(context, next);
-      return lastValueFrom(interceptObservable);
-    } catch (error) {
-      console.error(error);
-    }
-  };
 });

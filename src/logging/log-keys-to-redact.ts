@@ -25,18 +25,6 @@ export interface LogKeysToRedactOptions {
   };
 }
 
-export const logKeysToRedact = ({ redactLogs, clientRequest, outgoingRequest, incomingResponse, error }: LogKeysToRedactOptions): string[] => {
-  if (!redactLogs) {
-    return [];
-  }
-  return [
-    ...getClientRequestLogKeysToRedact(clientRequest),
-    ...getOutgoingRequestLogKeysToRedact(outgoingRequest),
-    ...getIncomingResponseLogKeysToRedact(incomingResponse),
-    ...getErrorLogKeysToRedact(error),
-  ];
-};
-
 const getClientRequestLogKeysToRedact = ({ logKey, headersLogKey }: LogKeysToRedactOptions['clientRequest']): string[] => [
   // We redact the client request headers as they contain the secret API key that the client uses to authenticate with our API.
   buildKeyToRedact([logKey, headersLogKey]),
@@ -78,4 +66,17 @@ const getErrorLogKeysToRedact = ({ logKey, sensitiveChildKeys }: LogKeysToRedact
     buildKeyToRedact([logKey, ...causeNestedErrorKey, childKey]),
     buildKeyToRedact([logKey, ...causeNestedErrorKey, innerErrorKey, childKey]),
   ]);
+};
+
+export const logKeysToRedact = ({ redactLogs, clientRequest, outgoingRequest, incomingResponse, error }: LogKeysToRedactOptions): string[] => {
+  if (!redactLogs) {
+    return [];
+  }
+
+  return [
+    ...getClientRequestLogKeysToRedact(clientRequest),
+    ...getOutgoingRequestLogKeysToRedact(outgoingRequest),
+    ...getIncomingResponseLogKeysToRedact(incomingResponse),
+    ...getErrorLogKeysToRedact(error),
+  ];
 };

@@ -27,13 +27,13 @@ describe('FacilityService', () => {
 
   const expectedResult = { responseBody: { bundleIdentifier }, warningErrors: errorString };
 
-  const amendAmountByIdentifier = (updateFacilityRequest: UpdateFacilityRequest): Promise<WithWarningErrors<UpdateFacilityBundleIdentifierResponse>> =>
-    service.amendFacilityAmountByIdentifier(facilityIdentifier, updateFacilityRequest);
-
   let acbsBundleInformationServiceCreateBundleInformation: jest.Mock;
   let acbsFacilityServiceUpdateFacilityByIdentifier: jest.Mock;
   let acbsFacilityServiceGetFacilityByIdentifier: jest.Mock;
   let service: FacilityService;
+
+  const amendAmountByIdentifier = (updateFacilityRequest: UpdateFacilityRequest): Promise<WithWarningErrors<UpdateFacilityBundleIdentifierResponse>> =>
+    service.amendFacilityAmountByIdentifier(facilityIdentifier, updateFacilityRequest);
 
   beforeEach(() => {
     acbsFacilityServiceUpdateFacilityByIdentifier = jest.fn();
@@ -67,6 +67,23 @@ describe('FacilityService', () => {
   ).generate({ numberToGenerate: 1, facilityIdentifier });
 
   describe('amendFacilityAmountByIdentifier', () => {
+    const getAcbsFacilityServiceGetFacilityByIdentifierMock = () => acbsFacilityServiceGetFacilityByIdentifier;
+    const getAcbsBundleInformationServiceCreateBundleInformationMock = () => acbsBundleInformationServiceCreateBundleInformation;
+
+    const getAcbsGetFacilityRequestCalledCorrectlyMock = () => when(acbsFacilityServiceGetFacilityByIdentifier).calledWith(facilityIdentifier, idToken);
+
+    const mockSuccessfulAcbsCreateBundleInformation = (acbsBundleInformationRequest: AcbsCreateBundleInformationRequestDto<FacilityAmountTransaction>) =>
+      when(acbsBundleInformationServiceCreateBundleInformation)
+        .calledWith(acbsBundleInformationRequest, idToken)
+        .mockReturnValueOnce({ BundleIdentifier: bundleIdentifier, WarningErrors: errorString });
+
+    const expectAcbsCreateBundleInformationToBeCalledOnceWith = (
+      bundleInformationToCreateInAcbs: AcbsCreateBundleInformationRequestDto<FacilityAmountTransaction>,
+    ) => {
+      expect(acbsBundleInformationServiceCreateBundleInformation).toHaveBeenCalledWith(bundleInformationToCreateInAcbs, idToken);
+      expect(acbsBundleInformationServiceCreateBundleInformation).toHaveBeenCalledTimes(1);
+    };
+
     it.each([
       { newTransactionValue: 100, oldTransactionValue: 200, expectedTypeCode: ENUMS.FACILITY_TRANSACTION_TYPE_CODES.MINUS, description: 'less than' },
       { newTransactionValue: 200, oldTransactionValue: 100, expectedTypeCode: ENUMS.FACILITY_TRANSACTION_TYPE_CODES.PLUS, description: 'more than' },
@@ -128,22 +145,5 @@ describe('FacilityService', () => {
     };
 
     withUpdateFacilityServiceGeneralTests(testArgs);
-
-    const getAcbsFacilityServiceGetFacilityByIdentifierMock = () => acbsFacilityServiceGetFacilityByIdentifier;
-    const getAcbsBundleInformationServiceCreateBundleInformationMock = () => acbsBundleInformationServiceCreateBundleInformation;
-
-    const getAcbsGetFacilityRequestCalledCorrectlyMock = () => when(acbsFacilityServiceGetFacilityByIdentifier).calledWith(facilityIdentifier, idToken);
-
-    const mockSuccessfulAcbsCreateBundleInformation = (acbsBundleInformationRequest: AcbsCreateBundleInformationRequestDto<FacilityAmountTransaction>) =>
-      when(acbsBundleInformationServiceCreateBundleInformation)
-        .calledWith(acbsBundleInformationRequest, idToken)
-        .mockReturnValueOnce({ BundleIdentifier: bundleIdentifier, WarningErrors: errorString });
-
-    const expectAcbsCreateBundleInformationToBeCalledOnceWith = (
-      bundleInformationToCreateInAcbs: AcbsCreateBundleInformationRequestDto<FacilityAmountTransaction>,
-    ) => {
-      expect(acbsBundleInformationServiceCreateBundleInformation).toHaveBeenCalledWith(bundleInformationToCreateInAcbs, idToken);
-      expect(acbsBundleInformationServiceCreateBundleInformation).toHaveBeenCalledTimes(1);
-    };
   });
 });

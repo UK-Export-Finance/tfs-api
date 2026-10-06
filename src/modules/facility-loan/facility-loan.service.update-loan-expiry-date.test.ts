@@ -9,9 +9,9 @@ import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authen
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { UpdateLoanGenerator } from '@ukef-test/support/generator/update-loan-generator';
 
-import { AcbsLoanService } from '../acbs/acbs-loan-service';
-import { AcbsGetLoanByLoanIdentifierResponseDto } from '../acbs/dto/acbs-get-loan-by-loan-identifier-response.dto';
-import { AcbsException } from '../acbs/exception/acbs.exception';
+import { AcbsLoanService } from '@ukef/modules/acbs/acbs-loan-service';
+import { AcbsGetLoanByLoanIdentifierResponseDto } from '@ukef/modules/acbs/dto/acbs-get-loan-by-loan-identifier-response.dto';
+import { AcbsException } from '@ukef/modules/acbs/exception/acbs.exception';
 import { UpdateLoanExpiryDateRequest } from './dto/update-loan-expiry-date-request.dto';
 import { FacilityLoanService } from './facility-loan.service';
 
