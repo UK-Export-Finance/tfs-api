@@ -60,8 +60,8 @@ describe('AcbsLoanService', () => {
     const badRequestAcbsResponseWithoutDataField = {
       status: 400,
       statusText: 'Bad Request',
-      headers: undefined,
-      config: undefined,
+      headers: undefined!,
+      config: undefined!,
     };
 
     it('returns the loan by loan identifier from ACBS if ACBS responds with the loan', async () => {

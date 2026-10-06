@@ -80,8 +80,8 @@ describe('AcbsPartyService', () => {
         data: 'Party not found or user does not have access',
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServiceGet)
@@ -104,8 +104,8 @@ describe('AcbsPartyService', () => {
         data: 'some error string',
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServiceGet)
@@ -128,8 +128,8 @@ describe('AcbsPartyService', () => {
         data: { errorMessage: valueGenerator.string() },
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServiceGet)

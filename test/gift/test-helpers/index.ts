@@ -142,9 +142,9 @@ export const businessCalendarsConvention = GIFT_EXAMPLES.BUSINESS_CALENDARS_CONV
 
 export const payloadAccrualSchedules = Object.keys(GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD.accrualSchedules);
 export const payloadCounterparties = Object.keys(GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD.counterparties);
-export const payloadFixedFees = Object.keys(GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD.fixedFees);
+export const payloadFixedFees = Object.keys(GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD.fixedFees!);
 export const payloadObligations = Object.keys(GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD.obligations);
-export const payloadRepaymentProfiles = Object.keys(GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD.repaymentProfiles);
+export const payloadRepaymentProfiles = Object.keys(GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD.repaymentProfiles!);
 
 /**
  * Generate expected validation errors

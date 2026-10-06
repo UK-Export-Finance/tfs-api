@@ -130,8 +130,8 @@ describe('AcbsBundleInformationService', () => {
         data: errorString,
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePost)
@@ -153,8 +153,8 @@ describe('AcbsBundleInformationService', () => {
         data: errorBody,
         status: 401,
         statusText: 'Unauthorized',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePost)
@@ -175,8 +175,8 @@ describe('AcbsBundleInformationService', () => {
           data: `Facility does not exist or user does not have access to it: '${facilityIdentifier}'`,
           status: 400,
           statusText: 'Bad Request',
-          headers: undefined,
-          config: undefined,
+          headers: undefined!,
+          config: undefined!,
         };
 
         when(httpServicePost)
@@ -196,8 +196,8 @@ describe('AcbsBundleInformationService', () => {
           data: errorString,
           status: 400,
           statusText: 'Bad Request',
-          headers: undefined,
-          config: undefined,
+          headers: undefined!,
+          config: undefined!,
         };
 
         when(httpServicePost)
@@ -219,8 +219,8 @@ describe('AcbsBundleInformationService', () => {
           data: errorBody,
           status: 400,
           statusText: 'Bad Request',
-          headers: undefined,
-          config: undefined,
+          headers: undefined!,
+          config: undefined!,
         };
 
         when(httpServicePost)
@@ -260,8 +260,8 @@ describe('AcbsBundleInformationService', () => {
           data: `Loan does not exist or user does not have access to it: '${loanIdentifier}'`,
           status: 400,
           statusText: 'Bad Request',
-          headers: undefined,
-          config: undefined,
+          headers: undefined!,
+          config: undefined!,
         };
 
         when(httpServicePost)
@@ -281,8 +281,8 @@ describe('AcbsBundleInformationService', () => {
           data: errorString,
           status: 400,
           statusText: 'Bad Request',
-          headers: undefined,
-          config: undefined,
+          headers: undefined!,
+          config: undefined!,
         };
 
         when(httpServicePost)
@@ -304,8 +304,8 @@ describe('AcbsBundleInformationService', () => {
           data: errorBody,
           status: 400,
           statusText: 'Bad Request',
-          headers: undefined,
-          config: undefined,
+          headers: undefined!,
+          config: undefined!,
         };
 
         when(httpServicePost)
@@ -335,8 +335,8 @@ describe('AcbsBundleInformationService', () => {
           data: `Facility does not exist or user does not have access to it: '${facilityIdentifier}'`,
           status: 400,
           statusText: 'Bad Request',
-          headers: undefined,
-          config: undefined,
+          headers: undefined!,
+          config: undefined!,
         };
 
         when(httpServicePost)
@@ -356,8 +356,8 @@ describe('AcbsBundleInformationService', () => {
           data: errorString,
           status: 400,
           statusText: 'Bad Request',
-          headers: undefined,
-          config: undefined,
+          headers: undefined!,
+          config: undefined!,
         };
 
         when(httpServicePost)
@@ -379,8 +379,8 @@ describe('AcbsBundleInformationService', () => {
           data: errorBody,
           status: 400,
           statusText: 'Bad Request',
-          headers: undefined,
-          config: undefined,
+          headers: undefined!,
+          config: undefined!,
         };
 
         when(httpServicePost)
@@ -412,8 +412,8 @@ describe('AcbsBundleInformationService', () => {
           data: `Facility does not exist or user does not have access to it: '${facilityIdentifier}'`,
           status: 400,
           statusText: 'Bad Request',
-          headers: undefined,
-          config: undefined,
+          headers: undefined!,
+          config: undefined!,
         };
 
         when(httpServicePost)
@@ -433,8 +433,8 @@ describe('AcbsBundleInformationService', () => {
           data: errorString,
           status: 400,
           statusText: 'Bad Request',
-          headers: undefined,
-          config: undefined,
+          headers: undefined!,
+          config: undefined!,
         };
 
         when(httpServicePost)
@@ -456,8 +456,8 @@ describe('AcbsBundleInformationService', () => {
           data: errorBody,
           status: 400,
           statusText: 'Bad Request',
-          headers: undefined,
-          config: undefined,
+          headers: undefined!,
+          config: undefined!,
         };
 
         when(httpServicePost)

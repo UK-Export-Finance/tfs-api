@@ -57,7 +57,7 @@ describe('DealService', () => {
   let acbsDealServiceGetDealByIdentifier: jest.Mock;
 
   beforeEach(() => {
-    const acbsDealService = new AcbsDealService(null, null);
+    const acbsDealService = new AcbsDealService(null!, null!);
     acbsDealServiceGetDealByIdentifier = jest.fn();
     acbsDealService.getDealByIdentifier = acbsDealServiceGetDealByIdentifier;
 
@@ -66,7 +66,7 @@ describe('DealService', () => {
     const acbsAuthenticationServiceGetIdToken = mockAcbsAuthenticationService.getIdToken;
     when(acbsAuthenticationServiceGetIdToken).calledWith().mockResolvedValueOnce(idToken);
 
-    service = new DealService(acbsAuthenticationService, acbsDealService, dateStringTransformations, new CurrentDateProvider(), null);
+    service = new DealService(acbsAuthenticationService, acbsDealService, dateStringTransformations, new CurrentDateProvider(), null!);
   });
 
   describe('getDealByIdentifier', () => {
@@ -79,7 +79,7 @@ describe('DealService', () => {
     });
 
     it('returns a null guarantee commencement date if it is null in the ACBS response', async () => {
-      const dealInAcbsWithNullOriginalEffectiveDate: AcbsGetDealResponseDto = { ...dealInAcbs, OriginalEffectiveDate: null };
+      const dealInAcbsWithNullOriginalEffectiveDate: AcbsGetDealResponseDto = { ...dealInAcbs, OriginalEffectiveDate: null! };
       when(acbsDealServiceGetDealByIdentifier)
         .calledWith(portfolioIdentifier, dealIdentifier, idToken)
         .mockResolvedValueOnce(dealInAcbsWithNullOriginalEffectiveDate);
@@ -92,7 +92,7 @@ describe('DealService', () => {
     it('returns the obligor industry classification as an empty string if it is null in the ACBS response', async () => {
       const dealInAcbsWithNullIndustryClassificationCode: AcbsGetDealResponseDto = {
         ...dealInAcbs,
-        IndustryClassification: { IndustryClassificationCode: null },
+        IndustryClassification: { IndustryClassificationCode: null! },
       };
       when(acbsDealServiceGetDealByIdentifier)
         .calledWith(portfolioIdentifier, dealIdentifier, idToken)
@@ -104,7 +104,7 @@ describe('DealService', () => {
     });
 
     it('returns the obligor party name as an empty string if it is null in the ACBS response', async () => {
-      const dealInAcbsWithNullPartyName: AcbsGetDealResponseDto = { ...dealInAcbs, BorrowerParty: { ...dealInAcbs.BorrowerParty, PartyName1: null } };
+      const dealInAcbsWithNullPartyName: AcbsGetDealResponseDto = { ...dealInAcbs, BorrowerParty: { ...dealInAcbs.BorrowerParty, PartyName1: null! } };
       when(acbsDealServiceGetDealByIdentifier).calledWith(portfolioIdentifier, dealIdentifier, idToken).mockResolvedValueOnce(dealInAcbsWithNullPartyName);
 
       const deal = await service.getDealByIdentifier(dealIdentifier);

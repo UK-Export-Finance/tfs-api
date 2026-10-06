@@ -65,7 +65,7 @@ export class App {
   }
 
   private getConfig<T = any>(key: string): T {
-    return this.configService.get<T>(key);
+    return this.configService.get<T>(key)!;
   }
 
   listen(): Promise<void> {

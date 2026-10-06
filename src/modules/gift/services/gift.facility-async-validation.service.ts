@@ -85,7 +85,7 @@ export class GiftFacilityAsyncValidationService {
         providedCounterparties: payload.counterparties,
       });
 
-      let feeTypeCodeErrors = [];
+      let feeTypeCodeErrors: string[] = [];
 
       if (Array.isArray(payload.fixedFees) && payload.fixedFees.length) {
         const feeTypeCodes = await this.feeTypeService.getAllFeeTypeCodes();
@@ -98,7 +98,7 @@ export class GiftFacilityAsyncValidationService {
         });
       }
 
-      let obligationSubtypeCodeErrors = [];
+      let obligationSubtypeCodeErrors: string[] = [];
 
       const providedObligationSubtypeCodes = getObligationSubtypeCodes(payload.obligations);
 

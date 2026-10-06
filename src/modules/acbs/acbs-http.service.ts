@@ -16,13 +16,13 @@ export class AcbsHttpService {
       headers: { Authorization: `Bearer ${idToken}` },
     };
     if (this.config.useReturnExceptionHeader) {
-      baseRequestConfig.headers.ReturnException = true;
+      baseRequestConfig.headers!.ReturnException = true;
     }
     switch (method) {
       case 'get':
         return baseRequestConfig;
       default:
-        baseRequestConfig.headers['Content-Type'] = 'application/json';
+        baseRequestConfig.headers!['Content-Type'] = 'application/json';
         return baseRequestConfig;
     }
   }

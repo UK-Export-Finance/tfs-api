@@ -32,11 +32,11 @@ describe('FacilityLoanService', () => {
     const acbsAuthenticationServiceGetIdToken = mockAcbsAuthenticationService.getIdToken;
     when(acbsAuthenticationServiceGetIdToken).calledWith().mockResolvedValueOnce(idToken);
 
-    const acbsFacilityLoanService = new AcbsFacilityLoanService(null, null);
+    const acbsFacilityLoanService = new AcbsFacilityLoanService(null!, null!);
     getFacilityLoansAcbsService = jest.fn();
     acbsFacilityLoanService.getLoansForFacility = getFacilityLoansAcbsService;
 
-    const acbsBundleService = new AcbsBundleInformationService(null, null);
+    const acbsBundleService = new AcbsBundleInformationService(null!, null!);
     createBundleInformation = jest.fn();
     acbsBundleService.createBundleInformation = createBundleInformation;
 
@@ -46,16 +46,16 @@ describe('FacilityLoanService', () => {
       acbsBundleService,
       new DateStringTransformations(),
       new CurrentDateProvider(),
-      null,
-      null,
-      null,
+      null!,
+      null!,
+      null!,
     );
   });
 
   describe('createAmountAmendmentForLoan', () => {
     const loanIdentifier = valueGenerator.loanId();
     const createdBundleIdentifier = valueGenerator.acbsBundleId();
-    const acbsBundleCreatedResponse: AcbsCreateBundleInformationResponseHeadersDto = { BundleIdentifier: createdBundleIdentifier, WarningErrors: undefined };
+    const acbsBundleCreatedResponse: AcbsCreateBundleInformationResponseHeadersDto = { BundleIdentifier: createdBundleIdentifier, WarningErrors: undefined! };
 
     const { increaseAmountRequest, decreaseAmountRequest, acbsLoanAmendmentForIncrease, acbsLoanAmendmentForDecrease } =
       new CreateFacilityLoanAmountAmendmentGenerator(valueGenerator, dateStringTransformations).generate({ numberToGenerate: 1, loanIdentifier });

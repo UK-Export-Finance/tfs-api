@@ -103,12 +103,12 @@ export class PartyController {
     if (!getPartyIdBySearchTextResponse) {
       const { partyIdentifier } = await this.partyService.createParty(partyToCreate);
 
-      return { partyIdentifier, partyWasCreated: true };
+      return { partyIdentifier: partyIdentifier!, partyWasCreated: true };
     }
 
     const { partyIdentifier } = getPartyIdBySearchTextResponse;
 
-    return { partyIdentifier, partyWasCreated: false };
+    return { partyIdentifier: partyIdentifier!, partyWasCreated: false };
   }
 
   @Get(':partyIdentifier')

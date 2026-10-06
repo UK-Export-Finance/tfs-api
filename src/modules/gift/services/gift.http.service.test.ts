@@ -2,7 +2,7 @@ import { HttpStatus } from '@nestjs/common';
 import axios from 'axios';
 import * as dotenv from 'dotenv';
 import { PinoLogger } from 'nestjs-pino';
-import giftConfig from '@ukef/config/gift.config';
+import { GiftConfig as giftConfig } from '@ukef/config/gift.config';
 import { HEADERS } from '@ukef/constants';
 import { mockResponse200, mockResponse201, mockResponse204, mockResponse500 } from '@ukef-test/http-response';
 

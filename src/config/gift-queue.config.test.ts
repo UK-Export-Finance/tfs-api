@@ -1,6 +1,6 @@
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 
-import giftQueueConfig from './gift-queue.config';
+import { GiftQueueConfig as giftQueueConfig } from './gift-queue.config';
 
 describe('giftQueueConfig', () => {
   const valueGenerator = new RandomValueGenerator();

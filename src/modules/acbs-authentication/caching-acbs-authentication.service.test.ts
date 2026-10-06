@@ -40,8 +40,9 @@ describe('CachingAcbsAuthenticationService', () => {
       del: jest.fn(),
       reset: jest.fn(),
       wrap: jest.fn(),
-      store: null,
-      on: null,
+      store: null!,
+      on: null!,
+      removeListener: null!,
     };
 
     const logger = new PinoLogger({});

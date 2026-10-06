@@ -49,7 +49,7 @@ describe('LoggingInterceptor', () => {
       const interceptObservable = interceptor.intercept(context, next);
       return lastValueFrom(interceptObservable);
     } catch {
-      return undefined;
+      return Promise.resolve(undefined);
     }
   };
 

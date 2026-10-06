@@ -25,6 +25,7 @@ describe('GiftBusinessCalendarService', () => {
 
     mockCreateOneResponse = mockResponse201(BUSINESS_CALENDAR);
 
+    mockHttpServiceGet = jest.fn();
     mockHttpServicePost = jest.fn().mockResolvedValueOnce(mockCreateOneResponse);
 
     giftHttpService = {

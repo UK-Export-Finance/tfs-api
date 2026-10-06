@@ -72,7 +72,7 @@ export class GiftFacilityAmendmentService {
    * @returns {Promise<GiftWorkPackageResponseDto | { status: number; data: GiftWorkPackageResponseDto }>} The result of the amendment operation.
    */
   async handleCreateAmendments({ workPackageId, facility, facilityId, amendment }: HandleCreateAmendmentsParams) {
-    let createdAmendmentData: AxiosResponse<GiftWorkPackageResponseDto>;
+    let createdAmendmentData: AxiosResponse<GiftWorkPackageResponseDto> | undefined;
 
     const { amendmentType } = amendment;
 
@@ -303,7 +303,7 @@ export class GiftFacilityAmendmentService {
         this.logger.error('Error approving work package %s for facility %s amendment - deleting work package %o', workPackageId, facilityId, approvalError);
 
         // extract status from approvalError - might be nested in cause
-        let errorStatus: number;
+        let errorStatus: number | undefined;
 
         const errorWithStatus = approvalError as Error & { status?: number; data?: any; cause?: any };
 

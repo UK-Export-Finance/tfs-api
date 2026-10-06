@@ -25,7 +25,7 @@ describe('FacilityActivationTransactionService', () => {
   let acbsBundleInformationServiceCreateBundleInformation: jest.Mock;
 
   beforeEach(() => {
-    const acbsBundleInformationService = new AcbsBundleInformationService(null, null);
+    const acbsBundleInformationService = new AcbsBundleInformationService(null!, null!);
     acbsBundleInformationServiceCreateBundleInformation = jest.fn(() => ({
       BundleIdentifier: bundleIdentifier,
       WarningErrors: errorString,

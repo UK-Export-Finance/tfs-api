@@ -28,7 +28,7 @@ describe('DealInvestorService', () => {
   let acbsDealPartyServiceCreateInvestorForDeal: jest.Mock;
 
   beforeEach(() => {
-    acbsDealPartyService = new AcbsDealPartyService(null, null);
+    acbsDealPartyService = new AcbsDealPartyService(null!, null!);
 
     acbsDealPartyServiceCreateInvestorForDeal = jest.fn();
     acbsDealPartyService.createInvestorForDeal = acbsDealPartyServiceCreateInvestorForDeal;

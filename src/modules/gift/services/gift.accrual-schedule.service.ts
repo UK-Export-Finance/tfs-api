@@ -108,7 +108,7 @@ export class GiftAccrualScheduleService {
        * NOTE: We need to use a for loop instead of Promise.all, to ensure that the calls are sequential.
        * Promise.all is not sequential.
        */
-      const responses = [];
+      const responses: AxiosResponse[] = [];
 
       for (const accrualSchedule of accrualSchedulesData) {
         const response = await this.createOne(accrualSchedule, facilityId, workPackageId);

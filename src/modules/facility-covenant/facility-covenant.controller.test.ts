@@ -23,8 +23,8 @@ describe('FacilityCovenantController', () => {
   let facilityServiceGetFacilityByIdentifier: jest.Mock;
 
   beforeEach(() => {
-    facilityCovenantService = new FacilityCovenantService(null, null, null);
-    facilityService = new FacilityService(null, null, null, null, null);
+    facilityCovenantService = new FacilityCovenantService(null!, null!, null!);
+    facilityService = new FacilityService(null!, null!, null!, null!, null!);
 
     facilityCovenantServiceCreateCovenantForFacility = jest.fn();
     facilityCovenantServiceGetCovenantsForFacility = jest.fn();

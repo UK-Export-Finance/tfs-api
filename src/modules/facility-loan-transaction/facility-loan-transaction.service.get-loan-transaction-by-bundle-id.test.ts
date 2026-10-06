@@ -33,7 +33,7 @@ describe('FacilityLoanTransactionService', () => {
     const acbsAuthenticationServiceGetIdToken = mockAcbsAuthenticationService.getIdToken;
     when(acbsAuthenticationServiceGetIdToken).calledWith().mockResolvedValueOnce(idToken);
 
-    const acbsService = new AcbsBundleInformationService(null, null);
+    const acbsService = new AcbsBundleInformationService(null!, null!);
     getBundleInformationAcbsService = jest.fn();
     acbsService.getBundleInformationByIdentifier = getBundleInformationAcbsService;
 

@@ -1,6 +1,6 @@
 import { withEnvironmentVariableParsingUnitTests } from '@ukef-test/common-tests/environment-variable-parsing-unit-tests';
 
-import mdmConfig, { MdmConfig } from './mdm.config';
+import { MdmConfig, MdmConfig as mdmConfig } from './mdm.config';
 
 describe('mdmConfig', () => {
   const configDirectlyFromEnvironmentVariables: { configPropertyName: keyof MdmConfig; environmentVariableName: string }[] = [

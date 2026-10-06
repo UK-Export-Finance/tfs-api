@@ -35,8 +35,8 @@ export const arrayOfObjectsNumberValidation = ({
   fieldName,
   parentFieldName,
   initialPayload,
-  min = null,
-  max = null,
+  min = null!,
+  max = null!,
   url,
 }: ArrayOfObjectsNumberValidationParams) => {
   let api: Api;

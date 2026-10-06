@@ -13,7 +13,7 @@ describe('AcbsExceptionTransformInterceptor', () => {
     const acbsResourceNotFoundException = new AcbsResourceNotFoundException('Test exception message');
     const interceptor = new AcbsExceptionTransformInterceptor();
 
-    const interceptPromise = lastValueFrom(interceptor.intercept(null, { handle: () => throwError(() => acbsResourceNotFoundException) }));
+    const interceptPromise = lastValueFrom(interceptor.intercept(null!, { handle: () => throwError(() => acbsResourceNotFoundException) }));
 
     await expect(interceptPromise).rejects.toBeInstanceOf(NotFoundException);
     await expect(interceptPromise).rejects.toHaveProperty('message', 'Not found');
@@ -26,7 +26,7 @@ describe('AcbsExceptionTransformInterceptor', () => {
     const acbsBadRequestException = new AcbsBadRequestException('Test exception message', innerError, errorBody);
     const interceptor = new AcbsExceptionTransformInterceptor();
 
-    const interceptPromise = lastValueFrom(interceptor.intercept(null, { handle: () => throwError(() => acbsBadRequestException) }));
+    const interceptPromise = lastValueFrom(interceptor.intercept(null!, { handle: () => throwError(() => acbsBadRequestException) }));
 
     await expect(interceptPromise).rejects.toBeInstanceOf(BadRequestException);
     await expect(interceptPromise).rejects.toHaveProperty('message', 'Bad request');
@@ -38,7 +38,7 @@ describe('AcbsExceptionTransformInterceptor', () => {
     const exceptionThatShouldNotBeTransformed = new Error('Test exception');
     const interceptor = new AcbsExceptionTransformInterceptor();
 
-    const interceptPromise = lastValueFrom(interceptor.intercept(null, { handle: () => throwError(() => exceptionThatShouldNotBeTransformed) }));
+    const interceptPromise = lastValueFrom(interceptor.intercept(null!, { handle: () => throwError(() => exceptionThatShouldNotBeTransformed) }));
 
     await expect(interceptPromise).rejects.toThrow(exceptionThatShouldNotBeTransformed);
   });

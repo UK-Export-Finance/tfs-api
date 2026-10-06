@@ -24,6 +24,7 @@ describe('GiftRiskDetailsService', () => {
     // Arrange
     mockCreateOneResponse = mockResponse201(RISK_DETAILS);
 
+    mockHttpServiceGet = jest.fn();
     mockHttpServicePost = jest.fn().mockResolvedValueOnce(mockCreateOneResponse);
 
     giftHttpService = {

@@ -29,14 +29,14 @@ describe('FacilityService', () => {
     service.amendFacilityExpiryDateByIdentifier(facilityIdentifier, updateFacilityRequest);
 
   beforeEach(() => {
-    const acbsFacilityService = new AcbsFacilityService(null, null);
+    const acbsFacilityService = new AcbsFacilityService(null!, null!);
 
     const mockAcbsAuthenticationService = getMockAcbsAuthenticationService();
     const acbsAuthenticationService = mockAcbsAuthenticationService.service;
     const acbsAuthenticationServiceGetIdToken = mockAcbsAuthenticationService.getIdToken;
     when(acbsAuthenticationServiceGetIdToken).calledWith().mockResolvedValueOnce(idToken);
 
-    const acbsBundleInformationService = new AcbsBundleInformationService(null, null);
+    const acbsBundleInformationService = new AcbsBundleInformationService(null!, null!);
 
     acbsFacilityServiceUpdateFacilityByIdentifier = jest.fn();
     acbsFacilityService.updateFacilityByIdentifier = acbsFacilityServiceUpdateFacilityByIdentifier;

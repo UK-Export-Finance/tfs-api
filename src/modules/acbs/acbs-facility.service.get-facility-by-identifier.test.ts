@@ -86,8 +86,8 @@ describe('AcbsFacilityService', () => {
         data: 'The facility not found or user does not have access',
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServiceGet)
@@ -110,8 +110,8 @@ describe('AcbsFacilityService', () => {
         data: 'some error string',
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServiceGet)
@@ -134,8 +134,8 @@ describe('AcbsFacilityService', () => {
         data: { errorMessage: valueGenerator.string() },
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServiceGet)

@@ -57,7 +57,7 @@ export class FacilityService {
       riskStatusCode: facilityInAcbs.CreditReviewRiskType.CreditReviewRiskTypeCode,
       effectiveDate: this.dateStringTransformations.removeTimeIfExists(facilityInAcbs.OriginalEffectiveDate),
       forecastPercentage: facilityInAcbs.CompBalPctAmount ?? PROPERTIES.FACILITY.DEFAULT.GET.compBalPctAmount,
-      issueDate: this.dateStringTransformations.removeTimeIfExists(facilityInAcbs.UserDefinedDate1),
+      issueDate: this.dateStringTransformations.removeTimeIfExists(facilityInAcbs.UserDefinedDate1!),
       description: facilityInAcbs.Description,
       agentBankIdentifier: facilityInAcbs.AgentBankPartyIdentifier,
       obligorPartyIdentifier: facilityInAcbs.BorrowerParty.PartyIdentifier,
@@ -404,7 +404,7 @@ export class FacilityService {
 
   private buildFacilityStageDerivedValuesToCreate(
     facilityStageCode: string,
-    issueDate: string,
+    issueDate: string | null | undefined,
   ): {
     compBalPctReserve: number;
     userDefinedDate1: DateString;
@@ -414,12 +414,12 @@ export class FacilityService {
     return this.isFacilityUnissued(facilityStageCode)
       ? {
           compBalPctReserve: defaultValues.compBalPctReserveUnissued,
-          userDefinedDate1: null,
+          userDefinedDate1: null!,
           isUserDefinedDate1Zero: true,
         }
       : {
           compBalPctReserve: defaultValues.compBalPctReserveIssued,
-          userDefinedDate1: issueDate ? this.dateStringTransformations.addTimeToDateOnlyString(issueDate) : null,
+          userDefinedDate1: issueDate ? this.dateStringTransformations.addTimeToDateOnlyString(issueDate) : null!,
           isUserDefinedDate1Zero: false,
         };
   }

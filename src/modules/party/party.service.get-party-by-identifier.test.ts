@@ -25,7 +25,7 @@ describe('PartyService', () => {
   let acbsPartyServiceGetPartyByIdentifier: jest.Mock;
 
   beforeEach(() => {
-    acbsPartyService = new AcbsPartyService(null, null);
+    acbsPartyService = new AcbsPartyService(null!, null!);
 
     acbsPartyServiceGetPartyByIdentifier = jest.fn();
     acbsPartyService.getPartyByIdentifier = acbsPartyServiceGetPartyByIdentifier;
@@ -64,11 +64,11 @@ describe('PartyService', () => {
       const { acbsParties, parties } = new GetPartyGenerator(valueGenerator, dateStringTransformations).generate({ numberToGenerate: 1 });
       const acbsParty: AcbsGetPartyResponseDto = {
         ...acbsParties[0],
-        OfficerRiskDate: null,
+        OfficerRiskDate: null!,
       };
       const expectedParty: Party = {
         ...parties[0],
-        officerRiskDate: null,
+        officerRiskDate: null!,
       };
       when(acbsPartyServiceGetPartyByIdentifier).calledWith(partyIdentifier, idToken).mockResolvedValueOnce(acbsParty);
 

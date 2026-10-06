@@ -86,8 +86,8 @@ describe('AcbsBundleInformationService', () => {
         data: 'BundleInformation not found or user does not have access to it.',
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServiceGet)
@@ -110,8 +110,8 @@ describe('AcbsBundleInformationService', () => {
         data: 'some error string',
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServiceGet)
@@ -134,8 +134,8 @@ describe('AcbsBundleInformationService', () => {
         data: { errorMessage: valueGenerator.string() },
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServiceGet)

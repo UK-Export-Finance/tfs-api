@@ -25,7 +25,7 @@ describe('DealGuaranteeService', () => {
   let acbsDealGuaranteeServiceCreateGuaranteeForDeal: jest.Mock;
 
   beforeEach(() => {
-    const acbsDealGuaranteeService = new AcbsDealGuaranteeService(null, null);
+    const acbsDealGuaranteeService = new AcbsDealGuaranteeService(null!, null!);
     acbsDealGuaranteeServiceCreateGuaranteeForDeal = jest.fn();
     acbsDealGuaranteeService.createGuaranteeForDeal = acbsDealGuaranteeServiceCreateGuaranteeForDeal;
 

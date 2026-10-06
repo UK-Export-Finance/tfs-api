@@ -28,7 +28,7 @@ describe('PartyService', () => {
     httpServicePost = jest.fn();
     httpService.post = httpServicePost;
 
-    const acbsPartyService = new AcbsPartyService(null, null);
+    const acbsPartyService = new AcbsPartyService(null!, null!);
     acbsPartyServiceCreateParty = jest.fn();
     acbsPartyService.createParty = acbsPartyServiceCreateParty;
 

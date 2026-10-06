@@ -26,7 +26,7 @@ describe('FacilityCovenantService', () => {
   let acbsFacilityCovenantServiceCreateCovenantForFacility: jest.Mock;
 
   beforeEach(() => {
-    const acbsFacilityCovenantService = new AcbsFacilityCovenantService(null, null);
+    const acbsFacilityCovenantService = new AcbsFacilityCovenantService(null!, null!);
     acbsFacilityCovenantServiceCreateCovenantForFacility = jest.fn();
     acbsFacilityCovenantService.createCovenantForFacility = acbsFacilityCovenantServiceCreateCovenantForFacility;
 

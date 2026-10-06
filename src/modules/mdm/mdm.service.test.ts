@@ -59,7 +59,7 @@ describe('MdmService', () => {
 
     it('throws an MdmResourceNotFoundException if the request in APIM MDM fails with a 404 response', async () => {
       const axios404Error = new AxiosError();
-      axios404Error.response = { data: valueGenerator.string(), status: 404, statusText: 'Not Found', headers: undefined, config: undefined };
+      axios404Error.response = { data: valueGenerator.string(), status: 404, statusText: 'Not Found', headers: undefined!, config: undefined! };
       httpServiceGet.mockReturnValueOnce(throwError(() => axios404Error));
 
       const findCustomersPromise = service.findCustomersByPartyUrn(partyUrnToSearch);
@@ -73,7 +73,7 @@ describe('MdmService', () => {
 
     it('throws an MdmException that is not an MdmResourceNotFoundException if the request to APIM MDM fails with a 500 response', async () => {
       const axios500Error = new AxiosError();
-      axios500Error.response = { data: valueGenerator.string(), status: 500, statusText: 'Internal Server Error', headers: undefined, config: undefined };
+      axios500Error.response = { data: valueGenerator.string(), status: 500, statusText: 'Internal Server Error', headers: undefined!, config: undefined! };
       httpServiceGet.mockReturnValueOnce(throwError(() => axios500Error));
 
       const findCustomersPromise = service.findCustomersByPartyUrn(partyUrnToSearch);

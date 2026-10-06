@@ -23,7 +23,7 @@ describe('DealService', () => {
   let updateDealBorrowingRestriction: jest.Mock;
 
   beforeEach(() => {
-    const acbsDealService = new AcbsDealService(null, null);
+    const acbsDealService = new AcbsDealService(null!, null!);
     acbsDealServiceCreateDeal = jest.fn();
     acbsDealService.createDeal = acbsDealServiceCreateDeal;
 
@@ -37,7 +37,7 @@ describe('DealService', () => {
     currentDateProvider.getEarliestDateFromTodayAnd = currentDateProviderGetEarliestDateFromTodayAnd;
 
     updateDealBorrowingRestriction = jest.fn();
-    const dealBorrowingRestrictionService = new DealBorrowingRestrictionService(null, null);
+    const dealBorrowingRestrictionService = new DealBorrowingRestrictionService(null!, null!);
     dealBorrowingRestrictionService.updateBorrowingRestrictionForDeal = updateDealBorrowingRestriction;
 
     service = new DealService(acbsAuthenticationService, acbsDealService, dateStringTransformations, currentDateProvider, dealBorrowingRestrictionService);

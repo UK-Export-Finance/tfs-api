@@ -92,7 +92,7 @@ export const withCreateFacilityDescriptionTests = ({
         exposurePeriod,
       };
 
-      const createFacilityPromise = createFacility(facilityToCreateWithNullProductTypeName as CreateFacilityRequestItem);
+      const createFacilityPromise = createFacility(facilityToCreateWithNullProductTypeName as unknown as CreateFacilityRequestItem);
 
       await expect(createFacilityPromise).rejects.toBeInstanceOf(TypeError);
     });

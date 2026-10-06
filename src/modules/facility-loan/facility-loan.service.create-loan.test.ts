@@ -40,18 +40,20 @@ describe('FacilityLoanService', () => {
     const acbsAuthenticationServiceGetIdToken = mockAcbsAuthenticationService.getIdToken;
     when(acbsAuthenticationServiceGetIdToken).calledWith().mockResolvedValueOnce(idToken);
 
-    acbsBundleInformationService = new AcbsBundleInformationService(null, null);
+    acbsFacilityLoanService = null!;
+
+    acbsBundleInformationService = new AcbsBundleInformationService(null!, null!);
     acbsBundleInformationServiceCreateBundleInformation = jest.fn(() => ({
       BundleIdentifier: bundleIdentifier,
       WarningErrors: errorString,
     }));
     acbsBundleInformationService.createBundleInformation = acbsBundleInformationServiceCreateBundleInformation;
 
-    repaymentScheduleBuilder = new RepaymentScheduleBuilder(null);
+    repaymentScheduleBuilder = new RepaymentScheduleBuilder(null!);
     repaymentScheduleBuilderGetRepaymentSchedules = jest.fn();
     repaymentScheduleBuilder.getRepaymentSchedules = repaymentScheduleBuilderGetRepaymentSchedules;
 
-    accrualScheduleBuilder = new AccrualScheduleBuilder(null, currentDateProvider);
+    accrualScheduleBuilder = new AccrualScheduleBuilder(null!, currentDateProvider);
     accrualScheduleBuilderGetAccrualSchedules = jest.fn();
     accrualScheduleBuilder.getAccrualSchedules = accrualScheduleBuilderGetAccrualSchedules;
 
@@ -62,7 +64,7 @@ describe('FacilityLoanService', () => {
       dateStringTransformations,
       currentDateProvider,
       repaymentScheduleBuilder,
-      null,
+      null!,
       accrualScheduleBuilder,
     );
   });

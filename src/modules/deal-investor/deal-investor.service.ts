@@ -29,7 +29,7 @@ export class DealInvestorService {
       portfolioIdentifier,
       lenderType: { LenderTypeCode: investorInAcbs.LenderType.LenderTypeCode },
       effectiveDate: this.dateStringTransformations.removeTimeIfExists(investorInAcbs.EffectiveDate),
-      expiryDate: this.dateStringTransformations.removeTimeIfExists(investorInAcbs.ExpirationDate),
+      expiryDate: this.dateStringTransformations.removeTimeIfExists(investorInAcbs.ExpirationDate!),
       isExpiryDateMaximum: investorInAcbs.IsExpirationDateMaximum,
       maximumLiability: investorInAcbs.LimitAmount,
     }));

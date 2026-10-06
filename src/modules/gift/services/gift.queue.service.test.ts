@@ -2,7 +2,7 @@ import { DefaultAzureCredential } from '@azure/identity';
 import { QueueServiceClient } from '@azure/storage-queue';
 import { ConfigService } from '@nestjs/config';
 import { PinoLogger } from 'nestjs-pino';
-import { GiftQueueConfig, KEY as GIFT_QUEUE_CONFIG_KEY } from '@ukef/config/gift-queue.config';
+import { GiftQueueConfig, GIFT_QUEUE_CONFIG_KEY } from '@ukef/config/gift-queue.config';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 
 import { GiftQueueService } from './gift.queue.service';

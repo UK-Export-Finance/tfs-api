@@ -95,8 +95,8 @@ describe('AcbsPartyService', () => {
         data: errorString,
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePost)
@@ -118,8 +118,8 @@ describe('AcbsPartyService', () => {
         data: errorBody,
         status: 401,
         statusText: 'Unauthorized',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePost)

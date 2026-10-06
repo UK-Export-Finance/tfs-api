@@ -22,7 +22,7 @@ describe('DealBorrowingRestrictionService', () => {
   let updateBorrowingRestrictionForDealInAcbs: jest.Mock;
 
   beforeEach(() => {
-    const acbsDealBorrowingRestrictionService = new AcbsDealBorrowingRestrictionService(null, null);
+    const acbsDealBorrowingRestrictionService = new AcbsDealBorrowingRestrictionService(null!, null!);
     updateBorrowingRestrictionForDealInAcbs = jest.fn();
     acbsDealBorrowingRestrictionService.updateBorrowingRestrictionForDeal = updateBorrowingRestrictionForDealInAcbs;
 

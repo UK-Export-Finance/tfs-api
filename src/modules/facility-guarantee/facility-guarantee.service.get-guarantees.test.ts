@@ -33,7 +33,7 @@ describe('FacilityGuaranteeService', () => {
     const acbsAuthenticationServiceGetIdToken = mockAcbsAuthenticationService.getIdToken;
     when(acbsAuthenticationServiceGetIdToken).calledWith().mockResolvedValueOnce(idToken);
 
-    const acbsService = new AcbsFacilityGuaranteeService(null, null);
+    const acbsService = new AcbsFacilityGuaranteeService(null!, null!);
     getFacilityGuaranteesAcbsService = jest.fn();
     acbsService.getGuaranteesForFacility = getFacilityGuaranteesAcbsService;
 

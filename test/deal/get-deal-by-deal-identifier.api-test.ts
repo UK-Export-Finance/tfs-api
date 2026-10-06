@@ -94,7 +94,7 @@ describe('GET /deals/{dealIdentifier}', () => {
     givenAuthenticationWithTheIdpSucceeds();
     const dealInAcbsWithNullPartyName: AcbsGetDealResponseDto = {
       ...dealInAcbs,
-      BorrowerParty: { ...dealInAcbs.BorrowerParty, PartyName1: null },
+      BorrowerParty: { ...dealInAcbs.BorrowerParty, PartyName1: null! },
     };
     requestToGetDeal().reply(200, dealInAcbsWithNullPartyName);
 
@@ -108,7 +108,7 @@ describe('GET /deals/{dealIdentifier}', () => {
     givenAuthenticationWithTheIdpSucceeds();
     const dealInAcbsWithNullIndustryClassification: AcbsGetDealResponseDto = {
       ...dealInAcbs,
-      IndustryClassification: { IndustryClassificationCode: null },
+      IndustryClassification: { IndustryClassificationCode: null! },
     };
     requestToGetDeal().reply(200, dealInAcbsWithNullIndustryClassification);
 
@@ -122,7 +122,7 @@ describe('GET /deals/{dealIdentifier}', () => {
     givenAuthenticationWithTheIdpSucceeds();
     const dealInAcbsWithNullCommencementDate: AcbsGetDealResponseDto = {
       ...dealInAcbs,
-      OriginalEffectiveDate: null,
+      OriginalEffectiveDate: null!,
     };
     requestToGetDeal().reply(200, dealInAcbsWithNullCommencementDate);
 
@@ -134,7 +134,7 @@ describe('GET /deals/{dealIdentifier}', () => {
 
   it('returns a 404 response if ACBS returns a 200 response with null as the response body', async () => {
     givenAuthenticationWithTheIdpSucceeds();
-    requestToGetDeal().reply(200, null);
+    requestToGetDeal().reply(200, null!);
 
     const { status, body } = await api.get(getDealUrl);
 

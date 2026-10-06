@@ -32,9 +32,9 @@ describe('PartyController', () => {
   let assignedRatingCodeProviderGetAssignedRatingCode: jest.Mock;
 
   beforeEach(() => {
-    partyService = new PartyService(null, null, null);
-    partyExternalRatingService = new PartyExternalRatingService(null, null, null);
-    assignedRatingCodeProvider = new AssignedRatingCodeProvider(null);
+    partyService = new PartyService(null!, null!, null!);
+    partyExternalRatingService = new PartyExternalRatingService(null!, null!, null!);
+    assignedRatingCodeProvider = new AssignedRatingCodeProvider(null!);
 
     partyServiceGetPartyByIdentifier = jest.fn();
     partyService.getPartyByIdentifier = partyServiceGetPartyByIdentifier;

@@ -174,7 +174,7 @@ describe('PATCH /facilities/{facilityIdentifier}/guarantees', () => {
     });
 
     it('returns a 404 response if ACBS returns a 200 response with null as the response body when getting the facility guarantees', async () => {
-      requestToGetGuaranteesForFacilityWithId(facilityIdentifier).reply(200, null);
+      requestToGetGuaranteesForFacilityWithId(facilityIdentifier).reply(200, null!);
 
       const { status, body } = await api.patch(updateFacilityGuaranteesUrl, requestBodyToUpdateFacilityGuarantees);
 

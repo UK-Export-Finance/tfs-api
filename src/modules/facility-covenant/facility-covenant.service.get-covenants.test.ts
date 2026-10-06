@@ -31,7 +31,7 @@ describe('FacilityCovenantService', () => {
     const acbsAuthenticationServiceGetIdToken = mockAcbsAuthenticationService.getIdToken;
     when(acbsAuthenticationServiceGetIdToken).calledWith().mockResolvedValueOnce(idToken);
 
-    const acbsService = new AcbsFacilityCovenantService(null, null);
+    const acbsService = new AcbsFacilityCovenantService(null!, null!);
     getFacilityCovenantsAcbsService = jest.fn();
     acbsService.getCovenantsForFacility = getFacilityCovenantsAcbsService;
 

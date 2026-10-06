@@ -44,12 +44,12 @@ describe('FacilityFixedFeeService', () => {
     const acbsAuthenticationServiceGetIdToken = mockAcbsAuthenticationService.getIdToken;
     when(acbsAuthenticationServiceGetIdToken).calledWith().mockResolvedValueOnce(idToken);
 
-    const acbsService = new AcbsFacilityFixedFeeService(null, null);
+    const acbsService = new AcbsFacilityFixedFeeService(null!, null!);
     getFacilityFixedFeesAcbsService = jest.fn();
     acbsService.getFixedFeesForFacility = getFacilityFixedFeesAcbsService;
     createFacilityFixedFeesAcbsService = jest.fn();
     acbsService.createFixedFeeForFacility = createFacilityFixedFeesAcbsService;
-    const acbsBundleInformationService = new AcbsBundleInformationService(null, null);
+    const acbsBundleInformationService = new AcbsBundleInformationService(null!, null!);
     createBundleInformation = jest.fn();
     acbsBundleInformationService.createBundleInformation = createBundleInformation;
 
@@ -227,7 +227,7 @@ describe('FacilityFixedFeeService', () => {
 
   describe('createAmountAmendmentForFixedFees', () => {
     const createdBundleIdentifier = valueGenerator.acbsBundleId();
-    const acbsBundleCreatedResponse: AcbsCreateBundleInformationResponseHeadersDto = { BundleIdentifier: createdBundleIdentifier, WarningErrors: undefined };
+    const acbsBundleCreatedResponse: AcbsCreateBundleInformationResponseHeadersDto = { BundleIdentifier: createdBundleIdentifier, WarningErrors: undefined! };
     const { facilityFeeTransactionType } = PROPERTIES.FACILITY_FEE_AMOUNT_TRANSACTION.DEFAULT.bundleMessageList;
 
     const { increaseAmountRequest, decreaseAmountRequest, acbsFixedFeesAmendmentForIncrease, acbsFixedFeesAmendmentForDecrease } =

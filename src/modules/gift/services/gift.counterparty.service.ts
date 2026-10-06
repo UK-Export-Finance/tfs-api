@@ -71,7 +71,7 @@ export class GiftCounterpartyService {
        * NOTE: We need to use a for loop instead of Promise.all, to ensure that the calls are sequential.
        * Promise.all is not sequential.
        */
-      const responses = [];
+      const responses: AxiosResponse[] = [];
 
       for (const counterparty of mappedCounterparties) {
         const response = await this.createOne(counterparty, facilityId, workPackageId);

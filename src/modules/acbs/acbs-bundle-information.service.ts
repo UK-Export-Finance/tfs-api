@@ -1,6 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { Inject, Injectable } from '@nestjs/common';
-import AcbsConfig from '@ukef/config/acbs.config';
+import { AcbsConfig } from '@ukef/config/acbs.config';
 import { PROPERTIES } from '@ukef/constants';
 import { AcbsConfigBaseUrlAndUseReturnExceptionHeader } from '@ukef/modules/acbs/acbs-config-base-url.type';
 import { AcbsHttpService } from '@ukef/modules/acbs/acbs-http.service';

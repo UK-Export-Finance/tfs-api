@@ -33,7 +33,7 @@ export const hasValidFormat = (obligation?: GiftObligationRequestDto) => {
  * @returns {boolean}
  */
 export const hasValidObligationSubtypeCodeFormats = (obligations?: GiftObligationRequestDto[]): boolean => {
-  const invalidFormats = [];
+  const invalidFormats: GiftObligationRequestDto[] = [];
 
   if (!Array.isArray(obligations) || !obligations.length) {
     return false;

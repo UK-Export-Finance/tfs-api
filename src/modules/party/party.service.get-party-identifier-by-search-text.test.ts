@@ -31,7 +31,7 @@ describe('PartyService', () => {
     httpServiceGet = jest.fn();
     httpService.get = httpServiceGet;
 
-    const acbsPartyService = new AcbsPartyService(null, null);
+    const acbsPartyService = new AcbsPartyService(null!, null!);
     acbsPartyServiceGetPartyBySearchText = jest.fn();
     acbsPartyService.getPartyBySearchText = acbsPartyServiceGetPartyBySearchText;
 
@@ -81,7 +81,7 @@ describe('PartyService', () => {
     });
 
     it('throws a GetPartiesBySearchTextException if the required query parameter searchText is not specified', async () => {
-      const responsePromise = partyService.getPartyIdentifierBySearchText(null);
+      const responsePromise = partyService.getPartyIdentifierBySearchText(null!);
 
       await expect(responsePromise).rejects.toBeInstanceOf(GetPartiesBySearchTextException);
       await expect(responsePromise).rejects.toThrow('The required query parameter searchText was not specified.');

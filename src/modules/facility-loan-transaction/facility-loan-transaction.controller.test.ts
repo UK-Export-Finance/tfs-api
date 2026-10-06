@@ -20,7 +20,7 @@ describe('FacilityLoanTransactionController', () => {
   let facilityLoanTransactionServiceGetLoanTransactionByBundleIdentifier: jest.Mock;
 
   beforeEach(() => {
-    facilityLoanTransactionService = new FacilityLoanTransactionService(null, null, null);
+    facilityLoanTransactionService = new FacilityLoanTransactionService(null!, null!, null!);
 
     facilityLoanTransactionServiceGetLoanTransactionByBundleIdentifier = jest.fn();
     facilityLoanTransactionService.getLoanTransactionsByBundleIdentifier = facilityLoanTransactionServiceGetLoanTransactionByBundleIdentifier;

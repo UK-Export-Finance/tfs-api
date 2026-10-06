@@ -22,7 +22,7 @@ describe('FacilityInvestorService', () => {
   let acbsFacilityPartyServiceCreatePartyForFacility: jest.Mock;
 
   beforeEach(() => {
-    const acbsFacilityPartyService = new AcbsFacilityPartyService(null, null);
+    const acbsFacilityPartyService = new AcbsFacilityPartyService(null!, null!);
     acbsFacilityPartyServiceCreatePartyForFacility = jest.fn();
     acbsFacilityPartyService.createPartyForFacility = acbsFacilityPartyServiceCreatePartyForFacility;
 

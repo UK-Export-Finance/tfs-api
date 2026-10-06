@@ -28,7 +28,7 @@ describe('PartyExternalRatingService', () => {
     const acbsAuthenticationServiceGetIdToken = mockAcbsAuthenticationService.getIdToken;
     when(acbsAuthenticationServiceGetIdToken).calledWith().mockResolvedValueOnce(authToken);
 
-    acbsService = new AcbsPartyExternalRatingService(null, null);
+    acbsService = new AcbsPartyExternalRatingService(null!, null!);
     acbsPartyExternalRatingServiceGetExternalRatingsForParty = jest.fn();
     acbsService.getExternalRatingsForParty = acbsPartyExternalRatingServiceGetExternalRatingsForParty;
 

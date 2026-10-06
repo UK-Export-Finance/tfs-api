@@ -39,7 +39,7 @@ describe('AppConfig', () => {
     describe('when LOG_LEVEL is not specified', () => {
       it('should return `logLevel` as `info`', () => {
         replaceEnvironmentVariables({
-          LOG_LEVEL: undefined,
+          LOG_LEVEL: undefined!,
         });
 
         const config = AppConfig();
@@ -95,10 +95,10 @@ describe('AppConfig', () => {
 
   describe('versioning', () => {
     it('should return an object with default properties', () => {
-      const mockHttpVersion = undefined;
+      const mockHttpVersion = undefined!;
 
       replaceEnvironmentVariables({
-        HTTP_VERSIONING_ENABLE: undefined,
+        HTTP_VERSIONING_ENABLE: undefined!,
         HTTP_VERSION: mockHttpVersion,
       });
 
@@ -177,7 +177,7 @@ describe('AppConfig', () => {
     describe('when FF_GIFT_ENABLED is not set or false', () => {
       it('should return giftFeatureEnabled as false', () => {
         replaceEnvironmentVariables({
-          FF_GIFT_ENABLED: undefined,
+          FF_GIFT_ENABLED: undefined!,
         });
 
         const config = AppConfig();

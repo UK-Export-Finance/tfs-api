@@ -271,7 +271,7 @@ describe('GiftFacilityAsyncValidationService', () => {
         });
 
         const feeTypeCodeErrors = generateArrayOfErrors({
-          fieldValues: mapEntitiesByField(mockBasePayload.fixedFees, 'feeTypeCode'),
+          fieldValues: mapEntitiesByField(mockBasePayload.fixedFees ?? [], 'feeTypeCode'),
           supportedValues: [],
           fieldName: 'feeTypeCode',
           parentEntityName: 'fixedFees',

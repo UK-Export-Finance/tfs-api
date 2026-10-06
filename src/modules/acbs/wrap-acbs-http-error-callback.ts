@@ -39,12 +39,10 @@ export const createWrapAcbsHttpPostOrPutErrorCallback =
       });
     }
 
+    const { data } = error.response;
+
     return throwError(
       () =>
-        new AcbsBadRequestException(
-          messageForUnknownError,
-          error,
-          typeof error.response.data === 'string' ? error.response.data : JSON.stringify(error.response.data),
-        ),
+        new AcbsBadRequestException(messageForUnknownError, error, typeof data === 'string' ? data : JSON.stringify(data)),
     );
   };

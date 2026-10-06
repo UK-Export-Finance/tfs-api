@@ -22,7 +22,7 @@ describe('FacilityController', () => {
 
   let controller: FacilityController;
 
-  const facilityService = new FacilityService(null, null, null, null, null);
+  const facilityService = new FacilityService(null!, null!, null!, null!, null!);
 
   const facilityServiceGetFacilityByIdentifier = jest.fn();
   facilityService.getFacilityByIdentifier = facilityServiceGetFacilityByIdentifier;

@@ -117,8 +117,7 @@ describe('GiftAccrualScheduleService', () => {
         // Assert
         expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
 
-        const expectedPayload = mockPayload;
-        delete expectedPayload.baseRate;
+        const { baseRate, ...expectedPayload } = mockPayload;
 
         const expected = {
           path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_ACCRUAL_SCHEDULE_INDEXED_RATE}`,

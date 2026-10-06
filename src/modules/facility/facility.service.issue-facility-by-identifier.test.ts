@@ -33,10 +33,10 @@ describe('FacilityService', () => {
 
   beforeEach(() => {
     acbsFacilityServiceUpdateFacilityByIdentifier = jest.fn();
-    const acbsFacilityService = new AcbsFacilityService(null, null);
+    const acbsFacilityService = new AcbsFacilityService(null!, null!);
     acbsFacilityService.updateFacilityByIdentifier = acbsFacilityServiceUpdateFacilityByIdentifier;
 
-    const acbsBundleInformationService = new AcbsBundleInformationService(null, null);
+    const acbsBundleInformationService = new AcbsBundleInformationService(null!, null!);
 
     const mockAcbsAuthenticationService = getMockAcbsAuthenticationService();
     const acbsAuthenticationService = mockAcbsAuthenticationService.service;

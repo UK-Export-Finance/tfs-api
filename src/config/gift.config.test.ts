@@ -1,7 +1,7 @@
 import { HEADERS } from '@ukef/constants';
 import { withEnvironmentVariableParsingUnitTests } from '@ukef-test/common-tests/environment-variable-parsing-unit-tests';
 
-import giftConfig, { GiftConfig } from './gift.config';
+import { GiftConfig, GiftConfig as giftConfig } from './gift.config';
 
 describe('giftConfig', () => {
   const configDirectlyFromEnvironmentVariables: { configPropertyName: keyof GiftConfig; environmentVariableName: string }[] = [

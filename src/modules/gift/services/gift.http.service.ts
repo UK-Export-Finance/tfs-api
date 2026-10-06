@@ -1,7 +1,7 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
-import giftConfig, { GiftConfig } from '@ukef/config/gift.config';
+import { GiftConfig, GiftConfig as giftConfig } from '@ukef/config/gift.config';
 import { HEADERS } from '@ukef/constants';
 
 const { CONTENT_TYPE } = HEADERS;

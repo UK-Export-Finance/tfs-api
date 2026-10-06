@@ -158,7 +158,7 @@ export class GiftFacilityService {
      * the "finally" block can log out as much detail as possible for debugging.
      */
     let success = false;
-    let facilityWorkPackageId: number;
+    let facilityWorkPackageId: number | undefined;
     let catchError: unknown;
 
     try {
@@ -213,7 +213,7 @@ export class GiftFacilityService {
 
       const counterparties = await this.giftCounterpartyService.createMany(counterpartiesPayload, facilityId, workPackageId);
 
-      let fixedFeesResponse = [];
+      let fixedFeesResponse: AxiosResponse[] = [];
 
       if (Array.isArray(data.fixedFees) && data.fixedFees.length) {
         fixedFeesResponse = await this.giftFixedFeeService.createMany(data.fixedFees, facilityId, workPackageId);
@@ -231,7 +231,7 @@ export class GiftFacilityService {
 
       const accrualSchedules = await this.giftAccrualScheduleService.createMany(mappedAccrualSchedulesPayload, facilityId, workPackageId);
 
-      let repaymentProfilesResponse = [];
+      let repaymentProfilesResponse: AxiosResponse[] = [];
 
       if (Array.isArray(data.repaymentProfiles) && data.repaymentProfiles.length) {
         repaymentProfilesResponse = await this.giftRepaymentProfileService.createMany(data.repaymentProfiles, facilityId, workPackageId);

@@ -14,7 +14,7 @@ describe('AssignedRatingCodeProvider', () => {
   let provider: AssignedRatingCodeProvider;
 
   beforeEach(() => {
-    const partyCustomerTypeService = new PartyCustomerTypeService(null, null);
+    const partyCustomerTypeService = new PartyCustomerTypeService(null!, null!);
     getCustomerTypeForPartyAlternateIdentifier = jest.fn();
     partyCustomerTypeService.getCustomerTypeForPartyFromAlternateIdentifier = getCustomerTypeForPartyAlternateIdentifier;
 

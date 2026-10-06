@@ -13,9 +13,9 @@ export type GiftConfig = ExternalServiceConfig & {
 export const GiftConfig = registerAs(
   KEY,
   (): GiftConfig => ({
-    baseUrl: process.env.GIFT_API_URL,
+    baseUrl: process.env.GIFT_API_URL!,
     apiKeyHeaderName: HEADERS.X_API_KEY,
-    apiKeyHeaderValue: process.env.GIFT_API_KEY,
+    apiKeyHeaderValue: process.env.GIFT_API_KEY!,
     maxRedirects: getIntConfig(process.env.GIFT_API_MAX_REDIRECTS, 5),
     timeout: getIntConfig(process.env.GIFT_API_TIMEOUT, 30000),
   }),

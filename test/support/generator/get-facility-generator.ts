@@ -165,7 +165,7 @@ export class GetFacilityGenerator extends AbstractGenerator<AcbsGetFacilityRespo
       riskStatusCode: v.CreditReviewRiskType.CreditReviewRiskTypeCode,
       effectiveDate: this.dateStringTransformations.removeTimeIfExists(v.OriginalEffectiveDate),
       forecastPercentage: v.CompBalPctAmount ?? PROPERTIES.FACILITY.DEFAULT.GET.compBalPctAmount,
-      issueDate: this.dateStringTransformations.removeTimeIfExists(v.UserDefinedDate1),
+      issueDate: this.dateStringTransformations.removeTimeIfExists(v.UserDefinedDate1!),
       description: v.Description,
       agentBankIdentifier: v.AgentBankPartyIdentifier,
       obligorPartyIdentifier: v.BorrowerParty.PartyIdentifier,

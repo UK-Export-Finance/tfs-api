@@ -49,7 +49,7 @@ export class GiftFacilityRiskDetailsRequestDto {
     description: "Optional facility category code. Required if the product's configuration (APIM MDM/DOM) 'facilityCategoryTypes' field is populated",
     required: false,
   })
-  facilityCategoryCode?: string;
+  facilityCategoryCode?: string | null;
 
   @IsOptional()
   @IsString()

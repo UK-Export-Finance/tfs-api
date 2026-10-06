@@ -113,6 +113,8 @@ describe('GiftFacilityService.create - happy path', () => {
     const mdmService = new MdmService(httpService, logger);
     const productTypeService = new GiftProductTypeService(giftHttpService, logger);
 
+    currencyService = new GiftCurrencyService(giftHttpService, logger);
+
     asyncValidationService = new GiftFacilityAsyncValidationService(
       logger,
       counterpartyService,

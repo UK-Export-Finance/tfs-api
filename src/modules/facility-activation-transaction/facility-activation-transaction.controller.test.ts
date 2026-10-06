@@ -26,8 +26,8 @@ describe('FacilityActivationTransactionController', () => {
   let facilityServiceGetFacilityByIdentifier: jest.Mock;
 
   beforeEach(() => {
-    facilityActivationTransactionService = new FacilityActivationTransactionService(null, null, null);
-    facilityService = new FacilityService(null, null, null, null, null);
+    facilityActivationTransactionService = new FacilityActivationTransactionService(null!, null!, null!);
+    facilityService = new FacilityService(null!, null!, null!, null!, null!);
 
     facilityActivationTransactionServiceCreateActivationTransactionForFacility = jest.fn(() => ({
       bundleIdentifier,

@@ -31,7 +31,7 @@ export const generateObligationSubtypeCodeErrors = ({
   productTypeCode,
   providedSubtypeCodes,
 }: GenerateObligationSubtypeCodeErrorsParams): string[] => {
-  const validationErrors = [];
+  const validationErrors: string[] = [];
 
   providedSubtypeCodes.forEach((providedSubtypeCode: string, index: number) => {
     const matchedSubtypeCode = subtypes.find((subtype: ObligationSubtypeMdmResponseDto) => subtype.code === providedSubtypeCode);

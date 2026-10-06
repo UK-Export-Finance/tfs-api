@@ -29,7 +29,7 @@ describe('FacilityFixedFeeController', () => {
   let controller: FacilityFixedFeeController;
 
   beforeEach(() => {
-    const facilityFixedFeeService = new FacilityFixedFeeService(null, null, null, null, null);
+    const facilityFixedFeeService = new FacilityFixedFeeService(null!, null!, null!, null!, null!);
     getFacilityFixedFeesService = jest.fn();
     createFacilityFixedFeesService = jest.fn();
     createAmountAmendmentForFixedFeesService = jest.fn();
@@ -37,7 +37,7 @@ describe('FacilityFixedFeeController', () => {
     facilityFixedFeeService.createFixedFeeForFacility = createFacilityFixedFeesService;
     facilityFixedFeeService.createAmountAmendmentForFixedFees = createAmountAmendmentForFixedFeesService;
 
-    const facilityService = new FacilityService(null, null, null, null, null);
+    const facilityService = new FacilityService(null!, null!, null!, null!, null!);
     getFacilityByIdentifierFacilityService = jest.fn();
     facilityService.getFacilityByIdentifier = getFacilityByIdentifierFacilityService;
 

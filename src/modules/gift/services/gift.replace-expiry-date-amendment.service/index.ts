@@ -63,7 +63,7 @@ export class GiftReplaceExpiryDateAmendmentService {
        * NOTE: We need to use a for loop instead of Promise.all, to ensure that the calls are sequential.
        * Promise.all is not sequential.
        */
-      const responses = [];
+      const responses: GiftWorkPackageResponseDto[] = [];
 
       for (const obligation of obligations) {
         const payload = {

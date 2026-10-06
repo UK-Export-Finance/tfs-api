@@ -80,8 +80,8 @@ describe('AcbsFacilityCovenantService', () => {
         data: errorString,
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePost)
@@ -105,8 +105,8 @@ describe('AcbsFacilityCovenantService', () => {
         data: errorString,
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePost)
@@ -131,8 +131,8 @@ describe('AcbsFacilityCovenantService', () => {
         data: errorBody,
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePost)
@@ -157,8 +157,8 @@ describe('AcbsFacilityCovenantService', () => {
         data: errorBody,
         status: 401,
         statusText: 'Unauthorized',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePost)

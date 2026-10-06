@@ -36,7 +36,7 @@ describe('ApiKeyStrategy', () => {
   let strategy: StrategyWithAugmentedCallbacks;
 
   beforeEach(() => {
-    authService = new AuthService(null);
+    authService = new AuthService(null!);
     const authServiceValidateApiKey = jest.fn();
     authService.validateApiKey = authServiceValidateApiKey;
 

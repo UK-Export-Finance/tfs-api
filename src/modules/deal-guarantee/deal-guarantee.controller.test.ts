@@ -17,7 +17,7 @@ describe('DealGuaranteeController', () => {
   let dealGuaranteeServiceGetGuaranteesForDeal: jest.Mock;
 
   beforeEach(() => {
-    dealGuaranteeService = new DealGuaranteeService(null, null, null, null);
+    dealGuaranteeService = new DealGuaranteeService(null!, null!, null!, null!);
 
     dealGuaranteeServiceCreateGuaranteeForDeal = jest.fn();
     dealGuaranteeServiceGetGuaranteesForDeal = jest.fn();

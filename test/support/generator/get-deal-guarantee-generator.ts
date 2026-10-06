@@ -27,11 +27,11 @@ export class GetDealGuaranteeGenerator extends AbstractGenerator<GetDealGuarante
   ): GenerateResult {
     const dealGuaranteesInAcbs: AcbsGetDealGuaranteeResponseDto[] = values.map((v) => ({
       EffectiveDate: this.dateStringTransformations.addTimeToDateOnlyString(v.effectiveDate),
-      GuarantorParty: { PartyIdentifier: v.guarantorParty },
+      GuarantorParty: { PartyIdentifier: v.guarantorParty! },
       LimitKey: v.limitKey,
       ExpirationDate: this.dateStringTransformations.addTimeToDateOnlyString(v.guaranteeExpiryDate),
       GuaranteedLimit: v.maximumLiability,
-      GuaranteeType: { GuaranteeTypeCode: v.guaranteeTypeCode },
+      GuaranteeType: { GuaranteeTypeCode: v.guaranteeTypeCode! },
     }));
 
     const dealGuaranteesFromService = values.map((v) => ({

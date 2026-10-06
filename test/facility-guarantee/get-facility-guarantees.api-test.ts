@@ -82,7 +82,7 @@ describe('GET /facilities/{facilityIdentifier}/guarantees', () => {
 
   it('returns a 404 response if ACBS returns a 200 response with null as the response body', async () => {
     givenAuthenticationWithTheIdpSucceeds();
-    requestToGetGuaranteesForFacility().reply(200, null);
+    requestToGetGuaranteesForFacility().reply(200, null!);
 
     const { status, body } = await api.get(getFacilityGuaranteesUrl);
 

@@ -23,7 +23,7 @@ describe('FacilityGuaranteeService', () => {
   let replaceGuaranteeForFacilityInAcbs: jest.Mock;
 
   beforeEach(() => {
-    const acbsFacilityGuaranteeService = new AcbsFacilityGuaranteeService(null, null);
+    const acbsFacilityGuaranteeService = new AcbsFacilityGuaranteeService(null!, null!);
     getGuaranteesForFacilityFromAcbs = jest.fn();
     acbsFacilityGuaranteeService.getGuaranteesForFacility = getGuaranteesForFacilityFromAcbs;
     replaceGuaranteeForFacilityInAcbs = jest.fn();

@@ -58,7 +58,7 @@ export class GiftFacilityCounterpartyRequestDto {
     example: EXAMPLE.sharePercentage,
     description: "Required if a counterparty's role's hasSharePercentage field is true",
   })
-  sharePercentage?: number;
+  sharePercentage?: number | null;
 
   @IsOptional()
   @IsDateString()
