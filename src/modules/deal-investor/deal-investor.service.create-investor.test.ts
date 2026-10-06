@@ -50,7 +50,7 @@ describe('DealInvestorService', () => {
       dateStringTransformations,
     ).generate({
       numberToGenerate: 2,
-      dealIdentifier: dealIdentifier,
+      dealIdentifier,
     });
     const [requestItemToCreateDealInvestor] = requestBodyToCreateDealInvestor;
 

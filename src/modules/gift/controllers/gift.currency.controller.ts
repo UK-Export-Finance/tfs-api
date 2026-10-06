@@ -1,7 +1,7 @@
 import { Controller, Get, Res } from '@nestjs/common';
 import { ApiInternalServerErrorResponse, ApiOkResponse, ApiOperation, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { Response } from 'express';
-import AppConfig from '@ukef/config/app.config';
+import { AppConfig } from '@ukef/config/app.config';
 import { GIFT } from '@ukef/constants';
 
 import { GiftCurrencyService } from '@ukef/modules/gift/services';

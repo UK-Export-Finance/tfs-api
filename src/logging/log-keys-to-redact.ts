@@ -30,16 +30,14 @@ const getClientRequestLogKeysToRedact = ({ logKey, headersLogKey }: LogKeysToRed
   buildKeyToRedact([logKey, headersLogKey]),
 ];
 
-const getOutgoingRequestLogKeysToRedact = ({ logKey, headersLogKey, bodyLogKey, sensitiveBodyFields }: LogKeysToRedactOptions['outgoingRequest']): string[] => {
-  return [
-    ...sensitiveBodyFields.map((field) => buildKeyToRedact([logKey, bodyLogKey, field])),
-    // We redact the outgoing request headers as they contain:
-    //  - our temporary authentication token for ACBS,
-    //  - our secret API key for the authentication process with FIS IdP,
-    //  - our client ID for the authentication process with FIS IdP.
-    buildKeyToRedact([logKey, headersLogKey]),
-  ];
-};
+const getOutgoingRequestLogKeysToRedact = ({ logKey, headersLogKey, bodyLogKey, sensitiveBodyFields }: LogKeysToRedactOptions['outgoingRequest']): string[] => [
+  ...sensitiveBodyFields.map((field) => buildKeyToRedact([logKey, bodyLogKey, field])),
+  // We redact the outgoing request headers as they contain:
+  //  - our temporary authentication token for ACBS,
+  //  - our secret API key for the authentication process with FIS IdP,
+  //  - our client ID for the authentication process with FIS IdP.
+  buildKeyToRedact([logKey, headersLogKey]),
+];
 
 const getIncomingResponseLogKeysToRedact = ({
   logKey,
@@ -47,12 +45,10 @@ const getIncomingResponseLogKeysToRedact = ({
   sensitiveHeaders,
   bodyLogKey,
   sensitiveBodyFields,
-}: LogKeysToRedactOptions['incomingResponse']): string[] => {
-  return [
-    ...sensitiveHeaders.map((header) => buildKeyToRedact([logKey, headersLogKey, header])),
-    ...sensitiveBodyFields.map((field) => buildKeyToRedact([logKey, bodyLogKey, field])),
-  ];
-};
+}: LogKeysToRedactOptions['incomingResponse']): string[] => [
+  ...sensitiveHeaders.map((header) => buildKeyToRedact([logKey, headersLogKey, header])),
+  ...sensitiveBodyFields.map((field) => buildKeyToRedact([logKey, bodyLogKey, field])),
+];
 
 const getErrorLogKeysToRedact = ({ logKey, sensitiveChildKeys }: LogKeysToRedactOptions['error']): string[] => {
   const innerErrorKey = 'innerError';

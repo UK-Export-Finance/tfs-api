@@ -81,7 +81,7 @@ export class GiftQueueService {
     const isFacilityCreationWithDelay = messageType === MESSAGE_TYPES.FACILITY_CREATION && payload.delayCreation;
 
     if (isFacilityCreationWithDelay) {
-      options['visibilityTimeout'] = QUEUE_DELAY;
+      options.visibilityTimeout = QUEUE_DELAY;
     }
 
     await this.queueClient.sendMessage(message, options);

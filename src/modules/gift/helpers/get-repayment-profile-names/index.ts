@@ -1,4 +1,4 @@
-import { GiftRepaymentProfileRequestDto } from '@ukef/modules/gift/dto';
+import type { GiftRepaymentProfileRequestDto } from '@ukef/modules/gift/dto';
 
 /**
  * Get all names from GIFT repayment profiles

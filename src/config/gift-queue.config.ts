@@ -2,12 +2,12 @@ import { registerAs } from '@nestjs/config';
 
 const KEY = 'giftQueue';
 
-export interface GiftQueueConfig {
+export type GiftQueueConfig = {
   storageAccountName?: string;
   connectionString?: string;
   clientId?: string;
   queueName: string;
-}
+};
 
 export const GiftQueueConfig = registerAs(
   KEY,

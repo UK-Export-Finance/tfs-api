@@ -14,6 +14,7 @@ import { MdmResourceNotFoundException } from './exception/mdm-resource-not-found
 @Injectable()
 export class MdmService {
   private readonly httpClient: HttpClient;
+
   private readonly logger: PinoLogger;
 
   constructor(httpService: HttpService, logger: PinoLogger) {

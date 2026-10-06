@@ -8,12 +8,14 @@ import { AuthService } from '@ukef/modules/auth/auth.service';
 @Injectable()
 export class ApiKeyStrategy extends PassportStrategy(HeaderAPIKeyStrategy, AUTH.STRATEGY) {
   constructor(private readonly authService: AuthService) {
-    super({ header: AUTH.STRATEGY, prefix: '' }, true, (apiKey: string, done: (arg0: UnauthorizedException, arg1: boolean) => void) => {
+    super({ header: AUTH.STRATEGY, prefix: '' }, true, (apiKey: string, done: (arg0: UnauthorizedException | null, arg1: boolean | null) => void) => {
       const hasValidKey = this.authService.validateApiKey(apiKey);
+
       if (hasValidKey) {
-        return done(null, true);
+        return void done(null, true);
       }
-      done(new UnauthorizedException(), null);
+
+      return void done(new UnauthorizedException(), null);
     });
   }
 }

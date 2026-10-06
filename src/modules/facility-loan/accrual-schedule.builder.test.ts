@@ -43,7 +43,7 @@ describe('AccrualScheduleBuilder', () => {
     ])('generates $productTypeGroup accrual schedule', ({ productTypeGroup, expectedResult }) => {
       const newLoanWithProductTypeGroup = {
         ...newLoanGbp,
-        productTypeGroup: productTypeGroup,
+        productTypeGroup,
       };
       const accrualSchedules = accrualScheduleBuilder.getAccrualSchedules(newLoanWithProductTypeGroup);
 

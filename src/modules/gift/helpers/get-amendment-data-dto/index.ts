@@ -1,6 +1,6 @@
 import { AmendFacilityTypeConsumer, GIFT } from '@ukef/constants';
 
-import { DecreaseAmountDto, IncreaseAmountDto, ReplaceExpiryDateDto } from '@ukef/modules/gift/dto';
+import { DecreaseAmountDto, IncreaseAmountDto, ReplaceExpiryDateDto } from '@ukef/modules/gift/dto/request/facility-amendment-shared';
 
 const {
   AMEND_FACILITY_TYPES_CONSUMER: { AMEND_FACILITY_DECREASE_AMOUNT, AMEND_FACILITY_INCREASE_AMOUNT, AMEND_FACILITY_REPLACE_EXPIRY_DATE },

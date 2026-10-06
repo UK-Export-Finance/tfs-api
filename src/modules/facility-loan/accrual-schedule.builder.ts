@@ -20,8 +20,10 @@ export class AccrualScheduleBuilder {
       if (facilityLoan.currency === SUPPORTED_CURRENCIES.USD) {
         return [this.getAccrualPac(facilityLoan), this.getAccrualNonRfr(facilityLoan)];
       }
+
       return [this.getAccrualPac(facilityLoan), this.getAccrualRfr(facilityLoan)];
     }
+
     return [this.getAccrualPac(facilityLoan)];
   }
 

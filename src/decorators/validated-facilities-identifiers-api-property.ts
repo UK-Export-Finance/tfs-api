@@ -4,9 +4,9 @@ import { Transform } from 'class-transformer';
 import { ArrayNotEmpty, IsArray, IsString, Length, Matches } from 'class-validator';
 import { EXAMPLES, UKEFID } from '@ukef/constants';
 
-interface Options {
+type Options = {
   description: string;
-}
+};
 
 export const ValidatedFacilitiesIdentifiersApiProperty = ({ description }: Options) =>
   applyDecorators(

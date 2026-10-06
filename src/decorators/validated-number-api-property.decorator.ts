@@ -4,7 +4,7 @@ import { IsEnum, IsNotEmpty, IsNumber, Min, NotEquals } from 'class-validator';
 
 import { NullableOption, parseRequiredAndNullable, RequiredOption } from './parse-required-and-nullable-validation.helper';
 
-interface Options {
+type Options = {
   description: string;
   minimum?: number;
   enum?: Record<string, string | number> | (string | number)[];
@@ -13,7 +13,7 @@ interface Options {
   example?: number;
   default?: number;
   forbidZero?: boolean;
-}
+};
 
 const buildSwaggerPropertyOptions = ({
   description,

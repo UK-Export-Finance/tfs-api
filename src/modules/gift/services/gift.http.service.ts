@@ -35,6 +35,7 @@ export const GIFT_API_ACCEPTABLE_DELETE_STATUSES = [HttpStatus.NO_CONTENT];
 @Injectable()
 export class GiftHttpService {
   private axiosInstance: AxiosInstance;
+
   private readonly config: GiftConfig;
 
   constructor(private readonly logger: PinoLogger) {

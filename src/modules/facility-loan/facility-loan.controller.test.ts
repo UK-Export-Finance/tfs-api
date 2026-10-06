@@ -31,7 +31,7 @@ describe('FacilityLoanController', () => {
     facilityLoanService.getLoansForFacility = facilityLoanServiceGetLoansForFacility;
 
     facilityLoanServiceCreateLoanForFacility = jest.fn(() => ({
-      bundleIdentifier: bundleIdentifier,
+      bundleIdentifier,
     }));
     facilityLoanService.createLoanForFacility = facilityLoanServiceCreateLoanForFacility;
 

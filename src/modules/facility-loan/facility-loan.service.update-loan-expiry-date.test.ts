@@ -84,8 +84,8 @@ describe('FacilityLoanService', () => {
         .mockRejectedValue(new AcbsException(`Failed to update loan with identifier ${loanIdentifier} in ACBS.`));
     };
 
-    const makeUpdateLoanExpiryDateRequestWithRequest = async (updateLoanExpiryDateRequest: UpdateLoanExpiryDateRequest) => {
-      await service.updateLoanExpiryDate(loanIdentifier, updateLoanExpiryDateRequest);
+    const makeUpdateLoanExpiryDateRequestWithRequest = async (expiryDateRequest: UpdateLoanExpiryDateRequest) => {
+      await service.updateLoanExpiryDate(loanIdentifier, expiryDateRequest);
     };
 
     const getRequestsAndResponsesWithKnownDateParameters = ({

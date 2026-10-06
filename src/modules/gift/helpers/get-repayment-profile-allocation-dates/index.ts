@@ -1,4 +1,4 @@
-import { GiftRepaymentProfileRequestDto } from '@ukef/modules/gift/dto';
+import type { GiftRepaymentProfileRequestDto } from '@ukef/modules/gift/dto';
 
 /**
  * Get all allocation dates from GIFT repayment profile allocations

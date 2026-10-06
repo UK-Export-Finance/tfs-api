@@ -4,9 +4,9 @@ import { registerAs } from '@nestjs/config';
 import { getIntConfig } from '@ukef/helpers/get-int-config';
 import { ExternalServiceConfig } from '@ukef/types';
 
-export interface AcbsConfig extends ExternalServiceConfig {
+export type AcbsConfig = ExternalServiceConfig & {
   useReturnExceptionHeader: boolean;
-}
+};
 
 export const AcbsConfig = registerAs(
   'acbs',

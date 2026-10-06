@@ -5,7 +5,7 @@ import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 import { catchError, lastValueFrom } from 'rxjs';
 import { ACBS } from '@ukef/constants';
-import AcbsAuthenticationConfig from '@ukef/config/acbs-authentication.config';
+import { AcbsAuthenticationConfig } from '@ukef/config/acbs-authentication.config';
 
 import {
   ID_TOKEN_RESPONSE_FIELD_NAME,
@@ -22,7 +22,9 @@ type RequiredConfigKeys = 'apiKey' | 'apiKeyHeaderName' | 'baseUrl' | 'clientId'
 @Injectable()
 export class BaseAcbsAuthenticationService extends AcbsAuthenticationService {
   private static readonly sessionsPath = '/sessions';
+
   private static readonly connectPath = '/idptoken/openid-connect';
+
   private static readonly sessionIdCookieSeparator = ';';
 
   constructor(
@@ -36,7 +38,8 @@ export class BaseAcbsAuthenticationService extends AcbsAuthenticationService {
 
   async getIdToken(): Promise<string> {
     const sessionId = await this.createSession();
-    return this.getIdTokenForSession(sessionId);
+
+    return await this.getIdTokenForSession(sessionId);
   }
 
   private async createSession(): Promise<string> {
@@ -64,7 +67,7 @@ export class BaseAcbsAuthenticationService extends AcbsAuthenticationService {
   }
 
   private extractSessionIdFromCreateSessionResponse(response: AxiosResponse): string {
-    const sessionIdCookie = response.headers[SET_COOKIE_HEADER_NAME].find((cookie) => cookie.startsWith(ACBS.AUTHENTICATION.SESSION_ID_COOKIE_NAME));
+    const sessionIdCookie = response?.headers?.[SET_COOKIE_HEADER_NAME]?.find((cookie) => cookie.startsWith(ACBS.AUTHENTICATION.SESSION_ID_COOKIE_NAME));
 
     if (!sessionIdCookie) {
       throw new AcbsAuthenticationFailedException('Session cookie was not returned by the IdP.');
@@ -104,6 +107,7 @@ export class BaseAcbsAuthenticationService extends AcbsAuthenticationService {
     if (!idToken || typeof idToken !== 'string') {
       throw new AcbsAuthenticationFailedException('ID token was not returned by the IdP.');
     }
+
     return idToken;
   }
 }

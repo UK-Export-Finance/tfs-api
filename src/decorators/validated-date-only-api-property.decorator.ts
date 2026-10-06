@@ -6,13 +6,13 @@ import { DateOnlyString } from '@ukef/helpers';
 
 import { NullableOption, parseRequiredAndNullable, RequiredOption } from './parse-required-and-nullable-validation.helper';
 
-interface Options {
+type Options = {
   description: string;
   example?: DateOnlyString;
   required?: RequiredOption;
   default?: DateOnlyString | null;
   nullable?: NullableOption;
-}
+};
 
 export const ValidatedDateOnlyApiProperty = ({ description, example, required, default: theDefault, nullable }: Options) => {
   const { shouldPropertyBeDocumentedAsRequired, shouldPropertyBeDocumentedAsNullable, validationDecoratorsToApply } = parseRequiredAndNullable({

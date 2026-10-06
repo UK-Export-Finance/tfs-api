@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import { Cache } from 'cache-manager';
 import { PinoLogger } from 'nestjs-pino';
-import AcbsAuthenticationConfig from '@ukef/config/acbs-authentication.config';
+import { AcbsAuthenticationConfig } from '@ukef/config/acbs-authentication.config';
 
 import { AcbsAuthenticationService } from './acbs-authentication.service';
 import { ACBS_ID_TOKEN_CACHE_KEY } from './acbs-id-token.cache-key';

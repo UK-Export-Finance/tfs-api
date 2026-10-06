@@ -17,12 +17,12 @@ export class DealBorrowingRestrictionService {
     const borrowingRestrictionToUpdateInAcbs = this.buildBorrowingRestrictionToUpdateInAcbs();
     const idToken = await this.acbsAuthenticationService.getIdToken();
 
-    return this.acbsDealBorrowingRestrictionService.updateBorrowingRestrictionForDeal(
+    return void (await this.acbsDealBorrowingRestrictionService.updateBorrowingRestrictionForDeal(
       portfolioIdentifier,
       dealIdentifier,
       borrowingRestrictionToUpdateInAcbs,
       idToken,
-    );
+    ));
   }
 
   private buildBorrowingRestrictionToUpdateInAcbs(): AcbsUpdateDealBorrowingRestrictionRequest {

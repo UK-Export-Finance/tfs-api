@@ -1,6 +1,6 @@
 import { GIFT } from '@ukef/constants';
 
-import { GiftFacilityCounterpartyRequestDto } from '@ukef/modules/gift/dto';
+import type { GiftFacilityCounterpartyRequestDto } from '@ukef/modules/gift/dto';
 
 const { INTEGRATION_DEFAULTS } = GIFT;
 

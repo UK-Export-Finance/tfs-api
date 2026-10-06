@@ -30,7 +30,7 @@ describe('FacilityActivationTransactionController', () => {
     facilityService = new FacilityService(null, null, null, null, null);
 
     facilityActivationTransactionServiceCreateActivationTransactionForFacility = jest.fn(() => ({
-      bundleIdentifier: bundleIdentifier,
+      bundleIdentifier,
     }));
     facilityActivationTransactionServiceGetActivationTransactionByBundleIdentifier = jest.fn();
     facilityServiceGetFacilityByIdentifier = jest.fn();
@@ -59,7 +59,7 @@ describe('FacilityActivationTransactionController', () => {
       });
       when(facilityActivationTransactionServiceCreateActivationTransactionForFacility)
         .calledWith(facilityIdentifier, obligorPartyIdentifier, effectiveDate, requestBodyToCreateFacilityActivationTransaction[0])
-        .mockResolvedValueOnce({ bundleIdentifier: bundleIdentifier, warningErrors: undefined });
+        .mockResolvedValueOnce({ bundleIdentifier, warningErrors: undefined });
 
       const response = await controller.createActivationTransactionForFacility({ facilityIdentifier }, requestBodyToCreateFacilityActivationTransaction);
 
@@ -73,11 +73,11 @@ describe('FacilityActivationTransactionController', () => {
       });
       when(facilityActivationTransactionServiceCreateActivationTransactionForFacility)
         .calledWith(facilityIdentifier, obligorPartyIdentifier, effectiveDate, requestBodyToCreateFacilityActivationTransaction[0])
-        .mockResolvedValueOnce({ bundleIdentifier: bundleIdentifier, warningErrors: errorString });
+        .mockResolvedValueOnce({ bundleIdentifier, warningErrors: errorString });
 
       const response = await controller.createActivationTransactionForFacility({ facilityIdentifier }, requestBodyToCreateFacilityActivationTransaction);
 
-      expect(response).toStrictEqual({ bundleIdentifier: bundleIdentifier, warningErrors: errorString });
+      expect(response).toStrictEqual({ bundleIdentifier, warningErrors: errorString });
     });
   });
 

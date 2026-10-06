@@ -4,10 +4,10 @@ import { ExternalServiceConfig } from '@ukef/types';
 
 const KEY = 'mdm';
 
-export interface MdmConfig extends ExternalServiceConfig {
+export type MdmConfig = ExternalServiceConfig & {
   apiKeyHeaderName: string;
   apiKeyHeaderValue: string;
-}
+};
 
 export const MdmConfig = registerAs(
   KEY,

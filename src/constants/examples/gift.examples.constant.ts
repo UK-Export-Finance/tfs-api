@@ -188,7 +188,7 @@ const PRODUCT_TYPE_RESPONSE_DATA = {
  * NOTE: The total of all amounts should not be greater than the facility amount.
  * NOTE: Each due date is unique.
  */
-const REPAYMENT_PROFILE_ALLOCATION = (index: number = 0) => {
+const REPAYMENT_PROFILE_ALLOCATION = (index = 0) => {
   const today = new Date();
 
   const day = '01';

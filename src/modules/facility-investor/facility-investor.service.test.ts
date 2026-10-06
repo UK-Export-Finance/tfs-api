@@ -48,8 +48,8 @@ describe('FacilityInvestorService', () => {
     const maximumLiability = 12345.6;
 
     const newFacilityInvestorWithAllFields: CreateFacilityInvestorRequestItem = {
-      effectiveDate: effectiveDate,
-      guaranteeExpiryDate: guaranteeExpiryDate,
+      effectiveDate,
+      guaranteeExpiryDate,
       lenderType,
       currency,
       maximumLiability,

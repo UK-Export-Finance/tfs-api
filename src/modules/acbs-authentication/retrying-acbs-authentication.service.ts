@@ -1,7 +1,7 @@
 import { Inject } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import { PinoLogger } from 'nestjs-pino';
-import AcbsAuthenticationConfig from '@ukef/config/acbs-authentication.config';
+import { AcbsAuthenticationConfig } from '@ukef/config/acbs-authentication.config';
 import { waitFor } from '@ukef/helpers/wait-for.helper';
 
 import { AcbsAuthenticationService } from './acbs-authentication.service';
@@ -24,22 +24,26 @@ export class RetryingAcbsAuthenticationService extends AcbsAuthenticationService
     return this.getIdTokenWithRetry();
   }
 
-  private async getIdTokenWithRetry(retryNumber = 0): Promise<string> {
+  private async getIdTokenWithRetry(retryCountParam = 0): Promise<string> {
+    let retryCount = retryCountParam;
+
     try {
       return await this.acbsAuthenticationService.getIdToken();
     } catch (error) {
-      retryNumber += 1;
-      if (retryNumber > this.config.maxNumberOfRetries) {
+      retryCount += 1;
+
+      if (retryCount > this.config.maxNumberOfRetries) {
         throw error;
       }
-      this.logRetryAttempt({ error, retryNumber });
+
+      this.logRetryAttempt({ error, retryCount });
       await waitFor(this.config.retryDelayInMilliseconds);
-      return await this.getIdTokenWithRetry(retryNumber);
+      return await this.getIdTokenWithRetry(retryCount);
     }
   }
 
-  private logRetryAttempt({ error, retryNumber }: { error: unknown; retryNumber: number }): void {
-    this.logger.warn(error, `Failed to get an ACBS authentication id token - retrying the request now (retry attempt ${retryNumber}).`);
+  private logRetryAttempt({ error, retryCount }: { error: unknown; retryCount: number }): void {
+    this.logger.warn(error, `Failed to get an ACBS authentication id token - retrying the request now (retry attempt ${retryCount}).`);
   }
 }
 

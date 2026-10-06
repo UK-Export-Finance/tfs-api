@@ -133,9 +133,9 @@ module.exports = defineConfig([
         'error',
         {
           // Note that this uses a glob pattern, not a regex
-          // This enforces kebab case but allows . or - to be used as a separator
-          // This means file names such as service-name.service.test.ts work
-          '**/*': '[a-z]*([a-z0-9])*([-.]+([a-z0-9]))',
+          // This enforces kebab case but allows . or - to be used as a separator, and camelCase within a segment
+          // This means file names such as service-name.service.test.ts and gift.facility.service-getMany.test.ts work
+          '**/*': '[a-z]*([a-zA-Z0-9])*([-.]+([a-zA-Z0-9]))',
         },
       ],
 
@@ -150,10 +150,12 @@ module.exports = defineConfig([
         },
       ],
 
+      '@typescript-eslint/no-explicit-any': 'off', // TODO: new ticket.
+      '@typescript-eslint/no-unsafe-return': 'off', // TODO: new ticket.
       '@typescript-eslint/no-non-null-assertion': 'off',
       '@typescript-eslint/promise-function-async': 'off',
       '@typescript-eslint/consistent-type-imports': 'off',
-      '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
+      '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
       '@typescript-eslint/no-misused-spread': 'off',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
       '@typescript-eslint/no-unsafe-enum-comparison': 'off',

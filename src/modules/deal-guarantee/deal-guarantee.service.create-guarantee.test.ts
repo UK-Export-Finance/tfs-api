@@ -55,6 +55,13 @@ describe('DealGuaranteeService', () => {
       maximumLiability: maximumLiabilityWithOneDecimalPlace,
     };
 
+    const newGuaranteeWithoutGuarantorParty: CreateDealGuaranteeRequestItem = {
+      effectiveDate,
+      limitKey,
+      guaranteeExpiryDate: expirationDate,
+      maximumLiability: maximumLiabilityWithOneDecimalPlace,
+    };
+
     const getGuaranteeCreatedInAcbs = (): AcbsCreateDealGuaranteeDto => acbsDealGuaranteeServiceCreateGuaranteeForDeal.mock.calls[0][1];
 
     it('creates a guarantee in ACBS with a transformation of the requested new guarantee', async () => {
@@ -85,8 +92,6 @@ describe('DealGuaranteeService', () => {
     });
 
     it('adds a default value for guarantorParty before creating the new guarantee if it is not specified', async () => {
-      const { guarantorParty: _removed, ...newGuaranteeWithoutGuarantorParty } = newGuaranteeWithAllFields;
-
       await service.createGuaranteeForDeal(dealIdentifier, newGuaranteeWithoutGuarantorParty);
 
       const guaranteeCreatedInAcbs = getGuaranteeCreatedInAcbs();

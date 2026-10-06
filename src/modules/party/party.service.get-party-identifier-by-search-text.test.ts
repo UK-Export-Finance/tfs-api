@@ -57,9 +57,7 @@ describe('PartyService', () => {
 
       const response = await partyService.getPartyIdentifierBySearchText(searchText);
 
-      expect(response).toStrictEqual({
-        partyIdentifier: partyIdentifier,
-      });
+      expect(response).toStrictEqual({ partyIdentifier });
     });
 
     it('returns the party identifier of the first matching party if the query parameter searchText is exactly 3 characters and the request is successful', async () => {
@@ -69,9 +67,7 @@ describe('PartyService', () => {
 
       const response = await partyService.getPartyIdentifierBySearchText(searchText);
 
-      expect(response).toStrictEqual({
-        partyIdentifier: partyIdentifier,
-      });
+      expect(response).toStrictEqual({ partyIdentifier });
     });
 
     it('returns undefined if the request is successful and there are no matching parties', async () => {

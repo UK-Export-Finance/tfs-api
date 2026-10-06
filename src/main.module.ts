@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { LoggerModule } from 'nestjs-pino';
-import config from '@ukef/config';
+import { AcbsAuthenticationConfig, AcbsConfig, AppConfig, DocConfig, GiftConfig, GiftQueueConfig, MdmConfig } from '@ukef/config';
 import { BODY_LOG_KEY, HEADERS_LOG_KEY, INCOMING_RESPONSE_LOG_KEY, OUTGOING_REQUEST_LOG_KEY } from '@ukef/modules/http/http.constants';
 import { TfsModule } from '@ukef/modules/tfs.module';
 
@@ -18,7 +18,7 @@ import {
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [...config],
+      load: [AcbsAuthenticationConfig, AcbsConfig, AppConfig, DocConfig, GiftConfig, GiftQueueConfig, MdmConfig],
     }),
     LoggerModule.forRootAsync({
       imports: [ConfigModule],

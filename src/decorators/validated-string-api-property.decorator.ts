@@ -5,7 +5,7 @@ import { regexToString } from '@ukef/helpers';
 
 import { NullableOption, parseRequiredAndNullable, RequiredOption } from './parse-required-and-nullable-validation.helper';
 
-interface Options {
+type Options = {
   description: string;
   length?: number;
   minLength?: number;
@@ -16,7 +16,7 @@ interface Options {
   enum?: Record<string, string | number> | (string | number)[];
   example?: string;
   default?: string;
-}
+};
 
 export const ValidatedStringApiProperty = ({
   description,

@@ -150,14 +150,17 @@ export class FacilityController {
   ): Promise<UpdateFacilityFacilityIdentifierResponse | WithWarningErrors<UpdateFacilityBundleIdentifierResponse>> {
     if (query.op === ENUMS.FACILITY_UPDATE_OPERATIONS.ISSUE) {
       await this.facilityService.issueFacilityByIdentifier(params.facilityIdentifier, updateFacilityDto);
+
       return { facilityIdentifier: params.facilityIdentifier };
     }
+
     if (query.op === ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_EXPIRY_DATE) {
       await this.facilityService.amendFacilityExpiryDateByIdentifier(params.facilityIdentifier, updateFacilityDto);
       return { facilityIdentifier: params.facilityIdentifier };
     }
+
     if (query.op === ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_AMOUNT) {
-      return this.facilityService.amendFacilityAmountByIdentifier(params.facilityIdentifier, updateFacilityDto);
+      return await this.facilityService.amendFacilityAmountByIdentifier(params.facilityIdentifier, updateFacilityDto);
     }
   }
 }

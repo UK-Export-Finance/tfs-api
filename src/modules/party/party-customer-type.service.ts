@@ -35,6 +35,7 @@ export class PartyCustomerTypeService {
         this.logThatNoCustomersWereFound({ alternateIdentifier, fallbackIfNotFound });
         return fallbackIfNotFound;
       }
+
       throw error;
     }
   }

@@ -104,7 +104,7 @@ export class FacilityService {
 
     const existingFacilityData = await this.acbsFacilityService.getFacilityByIdentifier(facilityIdentifier, idToken);
 
-    return this.buildAmendFacilityAmountBundleInformationRequestAndCreateBundleInformation(updateFacilityRequest, existingFacilityData, idToken);
+    return await this.buildAmendFacilityAmountBundleInformationRequestAndCreateBundleInformation(updateFacilityRequest, existingFacilityData, idToken);
   }
 
   private async buildRequestAndUpdateFacility(
@@ -128,9 +128,9 @@ export class FacilityService {
     const existingAcbsFacilityData = await this.acbsFacilityService.getFacilityByIdentifier(facilityIdentifier, idToken);
     // Remove AdministrativeUserIdentifier as its a depreciated field and
     // causes issue with old facilities which were manually created using old administrative profile.
-    delete existingAcbsFacilityData.AdministrativeUserIdentifier;
+    delete (existingAcbsFacilityData as Partial<typeof existingAcbsFacilityData>).AdministrativeUserIdentifier;
 
-    delete existingAcbsFacilityData.FacilityOverallStatus;
+    delete (existingAcbsFacilityData as Partial<typeof existingAcbsFacilityData>).FacilityOverallStatus;
 
     const acbsMergedUpdateFacilityRequest: AcbsUpdateFacilityRequest = {
       ...existingAcbsFacilityData,

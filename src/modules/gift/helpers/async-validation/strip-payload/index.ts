@@ -16,7 +16,7 @@ import type { GiftFacilityCreationRequestDto } from '@ukef/modules/gift/dto';
  * ['GBP', 'USD']
  * ```
  */
-export const mapEntitiesByField = (entities: object[], fieldName: string) => entities.map((obj) => obj[`${fieldName}`]);
+export const mapEntitiesByField = (entities: object[], fieldName: string) => entities.map((obj) => obj[fieldName]);
 
 /**
  * Based on a field name, strip a GIFT facility creation payload into an object,
@@ -41,7 +41,7 @@ export const stripPayload = (payload: GiftFacilityCreationRequestDto, fieldName:
   const { overview, fixedFees = [], obligations } = payload;
 
   return {
-    overview: overview[`${fieldName}`],
+    overview: overview[fieldName],
     fixedFees: mapEntitiesByField(fixedFees, fieldName),
     obligations: mapEntitiesByField(obligations, fieldName),
   };

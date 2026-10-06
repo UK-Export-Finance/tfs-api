@@ -44,19 +44,19 @@ export const parseRequiredAndNullable = ({ required, nullable }: RequiredAndNull
   };
 };
 
-interface RequiredAndNullable {
+type RequiredAndNullable = {
   required: RequiredOption;
   nullable: NullableOption;
-}
+};
 
 // required/nullable are always defaulted (non-undefined) by the time they reach getAllowedNullishValuesForProperty
-interface DefaultedRequiredAndNullable {
+type DefaultedRequiredAndNullable = {
   required: BooleanOrBooleanDependingOnCurrentObject;
   nullable: BooleanOrBooleanDependingOnCurrentObject;
-}
+};
 
-interface ParsedRequiredAndNullableOptions {
+type ParsedRequiredAndNullableOptions = {
   shouldPropertyBeDocumentedAsRequired: boolean;
   shouldPropertyBeDocumentedAsNullable: boolean;
   validationDecoratorsToApply: PropertyDecorator[];
-}
+};

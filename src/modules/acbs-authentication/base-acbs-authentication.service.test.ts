@@ -48,7 +48,7 @@ describe('BaseAcbsAuthenticationService', () => {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         [apiKeyHeaderName]: apiKey,
-        Cookie: `${sessionIdWithCookieName}`,
+        Cookie: sessionIdWithCookieName,
       },
     },
   ];
@@ -97,14 +97,14 @@ describe('BaseAcbsAuthenticationService', () => {
           status: 200,
           statusText: 'OK',
           config: undefined,
-          headers: headers,
+          headers,
         }),
       );
   };
 
   const mockSuccessfulCreateSessionRequest = (): void => mockSuccessfulCreateSessionRequestReturningCookies([cookie1, sessionIdCookie, cookie2]);
 
-  const mockSuccessfulGetTokenForSessionRequestReturning = (data: any): void => {
+  const mockSuccessfulGetTokenForSessionRequestReturning = (data: object): void => {
     when(httpServiceGet)
       .calledWith(...expectedGetTokenArguments)
       .mockReturnValueOnce(

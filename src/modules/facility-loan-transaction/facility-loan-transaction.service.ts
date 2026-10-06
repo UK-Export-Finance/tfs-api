@@ -25,6 +25,7 @@ export class FacilityLoanTransactionService {
     if (!isNewLoanRequest(loan)) {
       throw new BadRequestException('Bad request', 'The provided bundleIdentifier does not correspond to a loan transaction.');
     }
+
     return this.mapLoanTransaction(loanTransaction, loan);
   }
 

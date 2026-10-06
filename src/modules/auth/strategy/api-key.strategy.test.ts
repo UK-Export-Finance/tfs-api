@@ -10,6 +10,14 @@ import { ApiKeyStrategy } from './api-key.strategy';
 
 jest.mock('../auth.service');
 
+type StrategyWithAugmentedCallbacks = ApiKeyStrategy & {
+  error: jest.Mock;
+  fail: jest.Mock;
+  pass: jest.Mock;
+  redirect: jest.Mock;
+  success: jest.Mock;
+};
+
 describe('ApiKeyStrategy', () => {
   const valueGenerator = new RandomValueGenerator();
   const apiKeyHeaderName = AUTH.STRATEGY.toLowerCase();
@@ -25,7 +33,7 @@ describe('ApiKeyStrategy', () => {
 
   let authService: AuthService;
 
-  let strategy: ApiKeyStrategy;
+  let strategy: StrategyWithAugmentedCallbacks;
 
   beforeEach(() => {
     authService = new AuthService(null);
@@ -35,7 +43,7 @@ describe('ApiKeyStrategy', () => {
     when(authServiceValidateApiKey).mockReturnValue(false);
     when(authServiceValidateApiKey).calledWith(validApiKey).mockReturnValue(true);
 
-    strategy = new ApiKeyStrategy(authService);
+    strategy = new ApiKeyStrategy(authService) as StrategyWithAugmentedCallbacks;
 
     // When Passport uses the strategy to authenticate the request, it will
     // augment the strategy with the below callbacks. The strategy should
@@ -43,11 +51,16 @@ describe('ApiKeyStrategy', () => {
     // authentication.
     // See https://github.com/jaredhanson/passport-strategy#augmented-methods
     // for more details.
-    error = strategy['error'] = jest.fn();
-    fail = strategy['fail'] = jest.fn();
-    pass = strategy['pass'] = jest.fn();
-    redirect = strategy['redirect'] = jest.fn();
-    success = strategy['success'] = jest.fn();
+    error = jest.fn();
+    strategy.error = error;
+    fail = jest.fn();
+    strategy.fail = fail;
+    pass = jest.fn();
+    strategy.pass = pass;
+    redirect = jest.fn();
+    strategy.redirect = redirect;
+    success = jest.fn();
+    strategy.success = success;
   });
 
   const createRequestWithHeaders = (headers: Record<string, string>): Request => ({ headers }) as unknown as Request;

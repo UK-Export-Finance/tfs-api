@@ -94,7 +94,7 @@ describe('InputCharacterValidationPipe', () => {
       it('throws an error if URL flat param dto has unsupported characters', () => {
         const functionToTest = () => {
           try {
-            pipe.transform(urlDto['field2'], flatParamMeta);
+            pipe.transform(urlDto.field2, flatParamMeta);
             return new NoErrorThrownError();
           } catch (error) {
             return error;

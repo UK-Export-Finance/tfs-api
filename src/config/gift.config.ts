@@ -5,10 +5,10 @@ import { ExternalServiceConfig } from '@ukef/types';
 
 const KEY = 'gift';
 
-export interface GiftConfig extends ExternalServiceConfig {
+export type GiftConfig = ExternalServiceConfig & {
   apiKeyHeaderName: string;
   apiKeyHeaderValue: string;
-}
+};
 
 export const GiftConfig = registerAs(
   KEY,

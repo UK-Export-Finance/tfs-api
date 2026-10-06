@@ -64,7 +64,7 @@ describe('DealGuaranteeController', () => {
     it('returns the deal guarantees from the service', async () => {
       when(dealGuaranteeServiceGetGuaranteesForDeal).calledWith(dealIdentifier).mockResolvedValueOnce(dealGuaranteesFromService);
 
-      const dealGuarantees = await controller.getGuaranteesForDeal({ dealIdentifier: dealIdentifier });
+      const dealGuarantees = await controller.getGuaranteesForDeal({ dealIdentifier });
 
       expect(dealGuarantees).toStrictEqual(expectedDealGuarantees);
     });
@@ -82,7 +82,7 @@ describe('DealGuaranteeController', () => {
 
       when(dealGuaranteeServiceGetGuaranteesForDeal).calledWith(dealIdentifier).mockResolvedValueOnce(dealGuaranteesWithUnexpectedKey);
 
-      const dealGuarantees = await controller.getGuaranteesForDeal({ dealIdentifier: dealIdentifier });
+      const dealGuarantees = await controller.getGuaranteesForDeal({ dealIdentifier });
 
       expect(dealGuarantees).toStrictEqual(expectedDealGuaranteesWithNewKey);
     });

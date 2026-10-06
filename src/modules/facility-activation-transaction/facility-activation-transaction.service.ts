@@ -77,6 +77,7 @@ export class FacilityActivationTransactionService {
     if (!isFacilityCodeValueTransaction(codeValueTransaction)) {
       throw new BadRequestException('Bad request', 'The provided bundleIdentifier does not correspond to an activation transaction.');
     }
+
     return this.mapActivationTransaction(activationTransaction, codeValueTransaction);
   }
 

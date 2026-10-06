@@ -39,12 +39,12 @@ export const generateCounterpartySharePercentageErrors = ({
   counterpartyRoles,
   providedCounterparties,
 }: GenerateCounterpartySharePercentageErrorsParams): string[] => {
-  const validationErrors = [];
+  const validationErrors: string[] = [];
 
-  providedCounterparties.forEach((role: GiftFacilityCounterpartyRequestDto, index: number) => {
-    const { roleCode: providedRoleCode, sharePercentage } = role;
+  providedCounterparties.forEach((counterparty: GiftFacilityCounterpartyRequestDto, index: number) => {
+    const { roleCode: providedRoleCode, sharePercentage } = counterparty;
 
-    const giftRole = counterpartyRoles.find((giftRole: GiftFacilityCounterpartyRoleResponseDto) => giftRole.code === providedRoleCode);
+    const giftRole = counterpartyRoles.find((role: GiftFacilityCounterpartyRoleResponseDto) => role.code === providedRoleCode);
 
     /**
      * If the GIFT role hasSharePercentage flag is true,
@@ -53,8 +53,8 @@ export const generateCounterpartySharePercentageErrors = ({
      * return a validation error.
      */
     const sharePercentageRequired = giftRole?.hasSharePercentage;
-    const sharePercentageLessThanMin = sharePercentage < MIN;
-    const sharePercentageGreaterThanMax = sharePercentage > MAX;
+    const sharePercentageLessThanMin = sharePercentage && sharePercentage < MIN;
+    const sharePercentageGreaterThanMax = sharePercentage && sharePercentage > MAX;
     const invalidSharePercentage = !sharePercentage || sharePercentageLessThanMin || sharePercentageGreaterThanMax;
 
     if (sharePercentageRequired && invalidSharePercentage) {

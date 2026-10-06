@@ -1,6 +1,6 @@
 import { GiftFacilityCreationValidationStrippedPayload } from '@ukef/types';
 
-interface GenerateErrorMessageParams {
+type GenerateErrorMessageParams = {
   fieldName: string;
   fieldValue: string;
   index: number;
@@ -8,14 +8,14 @@ interface GenerateErrorMessageParams {
   supportedValues: string[];
 }
 
-interface GenerateArrayOfErrorsParams {
+type GenerateArrayOfErrorsParams = {
   fieldName: string;
   fieldValues: string[];
   parentEntityName: string;
   supportedValues: string[];
 }
 
-interface GenerateHighLevelErrorsParams {
+type GenerateHighLevelErrorsParams = {
   fieldName: string;
   payload: GiftFacilityCreationValidationStrippedPayload;
   supportedValues: string[];
@@ -29,7 +29,7 @@ interface GenerateHighLevelErrorsParams {
  * @example
  * ```ts
  * const fieldName = 'fieldX';
- * const fieldValue 'ABC';
+ * const fieldValue = 'ABC';
  * const index = 1;
  * const parentEntityName = 'fixedFees';
  * const supportedValues = ['X', 'Y', 'Z'];
@@ -52,7 +52,7 @@ export const generateErrorMessage = ({ fieldName, fieldValue, index, parentEntit
  * @example
  * ```ts
  * const fieldName = 'fieldX';
- * const fieldValues ['ABC', 'DEF'];
+ * const fieldValues = ['ABC', 'DEF'];
  * const parentEntityName = 'fixedFees';
  * const supportedValues = ['X', 'Y', 'Z'];
  *
@@ -65,7 +65,7 @@ export const generateErrorMessage = ({ fieldName, fieldValue, index, parentEntit
  * ```
  */
 export const generateArrayOfErrors = ({ fieldName, fieldValues, parentEntityName, supportedValues }: GenerateArrayOfErrorsParams): string[] => {
-  const validationErrors = [];
+  const validationErrors: string[] = [];
 
   fieldValues.forEach((fieldValue: string, index: number) => {
     const validationError = generateErrorMessage({
@@ -111,10 +111,10 @@ export const generateArrayOfErrors = ({ fieldName, fieldValues, parentEntityName
  * ```
  */
 export const generateHighLevelErrors = ({ fieldName, payload, supportedValues }: GenerateHighLevelErrorsParams): string[] => {
-  const highlevelErrors = [];
+  const highlevelErrors: string[] = [];
 
   Object.keys(payload).forEach((parentEntityName) => {
-    const entity = payload[`${parentEntityName}`];
+    const entity = payload[parentEntityName];
 
     if (Array.isArray(entity)) {
       const errors = generateArrayOfErrors({

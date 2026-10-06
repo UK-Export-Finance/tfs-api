@@ -21,10 +21,10 @@ import { GiftStatusService } from '@ukef/modules/gift/services/gift.status.servi
 
 const { API_RESPONSE_MESSAGES, PATH, INTEGRATION_DEFAULTS } = GIFT;
 
-interface CreateFacilityResponse {
+type CreateFacilityResponse = {
   status: AxiosResponse['status'];
   data: AxiosResponse['data'];
-}
+};
 
 /**
  * GIFT facility service.
@@ -275,18 +275,18 @@ export class GiftFacilityService {
          * We can only return one status.
          * Therefore, we return the status and message of the first entity response.
          */
-        const { status, message: firstMessage } = firstError;
+        const { status: firstErrorStatus, message: firstMessage } = firstError;
 
         let message = firstMessage;
 
-        if (status === HttpStatus.BAD_REQUEST) {
+        if (firstErrorStatus === HttpStatus.BAD_REQUEST) {
           message = API_RESPONSE_MESSAGES.GIFT_FACILITY_VALIDATION_ERRORS;
         }
 
         return {
-          status,
+          status: firstErrorStatus,
           data: {
-            statusCode: status,
+            statusCode: firstErrorStatus,
             message,
             validationErrors: giftValidationErrors,
           },

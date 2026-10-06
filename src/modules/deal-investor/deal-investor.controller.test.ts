@@ -49,7 +49,7 @@ describe('DealInvestorController', () => {
     it('returns the deal investors from the service', async () => {
       when(dealInvestorServiceGetDealInvestors).calledWith(dealIdentifier).mockResolvedValueOnce(dealInvestorsFromService);
 
-      const dealInvestors = await controller.getDealInvestors({ dealIdentifier: dealIdentifier });
+      const dealInvestors = await controller.getDealInvestors({ dealIdentifier });
 
       expect(dealInvestors).toStrictEqual(expectedDealInvestors);
     });
@@ -67,7 +67,7 @@ describe('DealInvestorController', () => {
 
       when(dealInvestorServiceGetDealInvestors).calledWith(dealIdentifier).mockResolvedValueOnce(dealInvestorsWithUnexpectedKey);
 
-      const dealInvestors = await controller.getDealInvestors({ dealIdentifier: dealIdentifier });
+      const dealInvestors = await controller.getDealInvestors({ dealIdentifier });
 
       expect(dealInvestors).toStrictEqual(expectedDealInvestorsWithNewKey);
     });
@@ -78,7 +78,7 @@ describe('DealInvestorController', () => {
 
     const { requestBodyToCreateDealInvestor } = new CreateDealInvestorGenerator(valueGenerator, currentDateProvider, dateStringTransformations).generate({
       numberToGenerate: 2,
-      dealIdentifier: dealIdentifier,
+      dealIdentifier,
     });
 
     it('creates an investor for the deal with the service from the request body', async () => {

@@ -3,11 +3,12 @@ import { EXAMPLES, UKEFID } from '@ukef/constants';
 import { NullableOption, RequiredOption } from './parse-required-and-nullable-validation.helper';
 import { ValidatedStringApiProperty } from './validated-string-api-property.decorator';
 
-interface Options {
+type Options = {
   description: string;
   required?: RequiredOption;
   nullable?: NullableOption;
-}
+};
+
 /**
  * Decorator for validating a facility identifier string.
  * @param {string} params.description - The description of the facility identifier.

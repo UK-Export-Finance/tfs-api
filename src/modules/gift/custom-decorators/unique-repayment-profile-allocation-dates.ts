@@ -1,6 +1,6 @@
 import { registerDecorator, ValidationOptions } from 'class-validator';
 
-import { GiftRepaymentProfileRequestDto } from '@ukef/modules/gift/dto';
+import type { GiftRepaymentProfileRequestDto } from '@ukef/modules/gift/dto';
 import { arrayHasUniqueStrings, getRepaymentProfileAllocationDates } from '@ukef/modules/gift/helpers';
 
 /**
@@ -9,11 +9,11 @@ import { arrayHasUniqueStrings, getRepaymentProfileAllocationDates } from '@ukef
  * @returns {Boolean | string}
  */
 export function UniqueRepaymentProfileAllocationDates(validationOptions?: ValidationOptions) {
-  return function (object: object, propertyName: string) {
+  return function uniqueRepaymentProfileAllocationDates(object: object, propertyName: string) {
     registerDecorator({
       name: 'uniqueRepaymentProfileAllocationDates',
       target: object.constructor,
-      propertyName: propertyName,
+      propertyName,
       options: validationOptions,
       validator: {
         validate(repaymentProfiles: GiftRepaymentProfileRequestDto[]) {

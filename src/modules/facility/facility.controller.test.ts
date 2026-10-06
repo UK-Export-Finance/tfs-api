@@ -116,8 +116,9 @@ describe('FacilityController', () => {
         if (op === ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_AMOUNT) {
           return when(serviceMethod)
             .calledWith(facilityIdentifier, updateFacilityRequest)
-            .mockResolvedValueOnce({ bundleIdentifier: bundleIdentifier, warningErrors: errorString });
+            .mockResolvedValueOnce({ bundleIdentifier, warningErrors: errorString });
         }
+
         return () => {};
       };
 
@@ -135,7 +136,7 @@ describe('FacilityController', () => {
       it(`warningErrors is undefined if they're undefined on the service response`, async () => {
         when(facilityServiceAmendFacilityAmountByIdentifier)
           .calledWith(facilityIdentifier, updateFacilityRequest)
-          .mockResolvedValueOnce({ bundleIdentifier: bundleIdentifier, warningErrors: undefined });
+          .mockResolvedValueOnce({ bundleIdentifier, warningErrors: undefined });
 
         const response = await controller.updateFacilityByOperation(
           { op: ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_AMOUNT },
@@ -143,7 +144,7 @@ describe('FacilityController', () => {
           updateFacilityRequest,
         );
 
-        expect(response).toStrictEqual({ bundleIdentifier: bundleIdentifier, warningErrors: undefined });
+        expect(response).toStrictEqual({ bundleIdentifier, warningErrors: undefined });
       });
     });
 
