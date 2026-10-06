@@ -70,8 +70,6 @@ describe('DealService', () => {
   });
 
   describe('getDealByIdentifier', () => {
-    const { portfolioIdentifier } = PROPERTIES.GLOBAL;
-
     it('returns a transformation of the deal from ACBS', async () => {
       when(acbsDealServiceGetDealByIdentifier).calledWith(portfolioIdentifier, dealIdentifier, idToken).mockResolvedValueOnce(dealInAcbs);
 

@@ -35,13 +35,7 @@ export class GiftFacilityAsyncValidationService {
     private readonly feeTypeService: GiftFeeTypeService,
     private readonly mdmService: MdmService,
     private readonly productTypeService: GiftProductTypeService,
-  ) {
-    this.counterpartyService = counterpartyService;
-    this.currencyService = currencyService;
-    this.feeTypeService = feeTypeService;
-    this.mdmService = mdmService;
-    this.productTypeService = productTypeService;
-  }
+  ) {}
 
   /**
    * Custom async validation for GIFT facility creation

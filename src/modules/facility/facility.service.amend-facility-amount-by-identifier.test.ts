@@ -72,9 +72,11 @@ describe('FacilityService', () => {
 
     const getAcbsGetFacilityRequestCalledCorrectlyMock = () => when(acbsFacilityServiceGetFacilityByIdentifier).calledWith(facilityIdentifier, idToken);
 
-    const mockSuccessfulAcbsCreateBundleInformation = (acbsBundleInformationRequest: AcbsCreateBundleInformationRequestDto<FacilityAmountTransaction>) =>
+    const mockSuccessfulAcbsCreateBundleInformation = (
+      bundleInformationRequestToCreateInAcbs: AcbsCreateBundleInformationRequestDto<FacilityAmountTransaction>,
+    ) =>
       when(acbsBundleInformationServiceCreateBundleInformation)
-        .calledWith(acbsBundleInformationRequest, idToken)
+        .calledWith(bundleInformationRequestToCreateInAcbs, idToken)
         .mockReturnValueOnce({ BundleIdentifier: bundleIdentifier, WarningErrors: errorString });
 
     const expectAcbsCreateBundleInformationToBeCalledOnceWith = (

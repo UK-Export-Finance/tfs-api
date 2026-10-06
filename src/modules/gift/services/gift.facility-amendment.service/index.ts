@@ -16,27 +16,27 @@ import { GiftReplaceExpiryDateAmendmentService } from '@ukef/modules/gift/servic
 import { GiftStatusService } from '@ukef/modules/gift/services/gift.status.service';
 import { GiftWorkPackageService } from '@ukef/modules/gift/services/gift.work-package.service';
 
-interface HandleCreateAmendmentsParams {
+type HandleCreateAmendmentsParams = {
   amendment: CreateGiftFacilityAmendmentRequestDto;
   facility: any;
   facilityId: UkefId;
   workPackageId: number;
-}
+};
 
-interface CreateGiftFacilityAmendmentResponseDataDto {
+type CreateGiftFacilityAmendmentResponseDataDto = {
   statusCode: number;
   message: string;
-}
+};
 
-interface CreateGiftFacilityAmendmentResponseDto {
+type CreateGiftFacilityAmendmentResponseDto = {
   status: AxiosResponse['status'];
   data: CreateGiftFacilityAmendmentResponseDataDto;
-}
+};
 
-interface CreateGiftFacilityAmendmentGiftResponseDto {
+type CreateGiftFacilityAmendmentGiftResponseDto = {
   status: AxiosResponse['status'];
   data: GiftWorkPackageResponseDto;
-}
+};
 
 /**
  * GIFT facility amendment service.
@@ -51,13 +51,7 @@ export class GiftFacilityAmendmentService {
     private readonly giftAmountAmendmentService: GiftAmountAmendmentService,
     private readonly giftReplaceExpiryDateAmendmentService: GiftReplaceExpiryDateAmendmentService,
     private readonly giftStatusService: GiftStatusService,
-  ) {
-    this.giftWorkPackageService = giftWorkPackageService;
-    this.giftFacilityService = giftFacilityService;
-    this.giftAmountAmendmentService = giftAmountAmendmentService;
-    this.giftReplaceExpiryDateAmendmentService = giftReplaceExpiryDateAmendmentService;
-    this.giftStatusService = giftStatusService;
-  }
+  ) {}
 
   /**
    * Check if a GIFT amendment was successful based on the response status.
@@ -235,7 +229,6 @@ export class GiftFacilityAmendmentService {
    * @throws {Error} If there is an error creating the amendment or the work package.
    * @returns {Promise<CreateGiftFacilityAmendmentResponseDto>}
    */
-  // eslint-disable-next-line max-len
   async create(
     facilityId: UkefId,
     amendment: CreateGiftFacilityAmendmentRequestDto,
@@ -358,7 +351,6 @@ export class GiftFacilityAmendmentService {
    * @throws {Error} If there is an error creating the amendments or the work package.
    * @returns {Promise<CreateGiftFacilityAmendmentResponseDto>}
    */
-  // eslint-disable-next-line max-len
   async createMultiple(
     facilityId: UkefId,
     payload: CreateGiftFacilityMultipleAmendmentsRequestDto,
@@ -447,19 +439,19 @@ export class GiftFacilityAmendmentService {
           deleteError = error;
 
           this.logger.error('Error deleting work package %s for facility %s in multiple amendments %o', workPackageId, facilityId, deleteError);
-        } finally {
-          if (hasDeleteError) {
-            return {
-              status: deleteError?.status,
-              data: deleteError?.data,
-            };
-          }
+        }
 
+        if (hasDeleteError) {
           return {
-            status: amendmentError ? amendmentResponse?.status : approvalResponse?.status,
-            data: amendmentError ? amendmentResponse?.data : approvalResponse?.data,
+            status: deleteError?.status,
+            data: deleteError?.data,
           };
         }
+
+        return {
+          status: amendmentError ? amendmentResponse?.status : approvalResponse?.status,
+          data: amendmentError ? amendmentResponse?.data : approvalResponse?.data,
+        };
       }
 
       /**

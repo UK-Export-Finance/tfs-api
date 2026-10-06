@@ -74,7 +74,7 @@ export const withCreateFacilityDescriptionTests = ({
 
     it('throws if the productTypeName is not defined', async () => {
       const exposurePeriod = valueGenerator.string();
-      const { productTypeName: _removed, ...facilityToCreateWithoutProductTypeName } = {
+      const { productTypeName: removed, ...facilityToCreateWithoutProductTypeName } = {
         ...facilityToCreate,
         exposurePeriod,
       };

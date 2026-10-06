@@ -12,6 +12,8 @@ export const getRepaymentProfileAllocationDates = (repaymentProfiles?: GiftRepay
         if (Array.isArray(profile.allocations)) {
           return profile.allocations.map((allocation) => allocation.dueDate);
         }
+
+        return [];
       })
       .flat();
   }

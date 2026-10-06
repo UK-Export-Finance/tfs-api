@@ -8,10 +8,10 @@ import { GiftHttpService } from './gift.http.service';
 
 const { INTEGRATION_DEFAULTS, EVENT_TYPES, PATH } = GIFT;
 
-interface CreateOneParams {
+type CreateOneParams = {
   facilityId: string;
   workPackageId: number;
-}
+};
 
 /**
  * GIFT "business calendars convention" service.
@@ -22,9 +22,7 @@ export class GiftBusinessCalendarsConventionService {
   constructor(
     private readonly giftHttpService: GiftHttpService,
     private readonly logger: PinoLogger,
-  ) {
-    this.giftHttpService = giftHttpService;
-  }
+  ) {}
 
   /**
    * Create a GIFT "business calendars convention".

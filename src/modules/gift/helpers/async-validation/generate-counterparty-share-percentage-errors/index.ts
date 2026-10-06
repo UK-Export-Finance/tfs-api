@@ -10,10 +10,10 @@ const {
   },
 } = GIFT;
 
-interface GenerateCounterpartySharePercentageErrorsParams {
+type GenerateCounterpartySharePercentageErrorsParams = {
   counterpartyRoles: GiftFacilityCounterpartyRoleResponseDto[];
   providedCounterparties: GiftFacilityCounterpartyRequestDto[];
-}
+};
 
 /**
  * Check all provided counterparties share percentages.

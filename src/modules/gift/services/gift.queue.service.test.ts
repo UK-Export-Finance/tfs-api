@@ -243,10 +243,10 @@ describe('GiftQueueService', () => {
     describe('when queueClient.sendMessage is successful', () => {
       it('should resolve without returning a value', async () => {
         // Act
-        const result = await service.enqueue(mockCreationMessage);
+        const result = service.enqueue(mockCreationMessage);
 
         // Assert
-        expect(result).toBeUndefined();
+        await expect(result).resolves.toBeUndefined();
       });
     });
 

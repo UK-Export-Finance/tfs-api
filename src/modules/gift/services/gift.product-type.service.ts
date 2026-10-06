@@ -16,9 +16,7 @@ export class GiftProductTypeService {
   constructor(
     private readonly giftHttpService: GiftHttpService,
     private readonly logger: PinoLogger,
-  ) {
-    this.giftHttpService = giftHttpService;
-  }
+  ) {}
 
   /**
    * Get a GIFT product type

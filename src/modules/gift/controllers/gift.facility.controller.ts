@@ -130,7 +130,7 @@ export class GiftFacilityController {
     await this.giftQueueService.enqueue({
       messageType: 'FACILITY_AMENDMENT',
       facilityId,
-      payload: amendmentData as unknown as CreateGiftFacilityAmendmentRequestDto,
+      payload: amendmentData as CreateGiftFacilityAmendmentRequestDto,
     });
 
     res.status(HttpStatus.ACCEPTED);
@@ -246,7 +246,7 @@ export class GiftFacilityController {
     await this.giftQueueService.enqueue({
       messageType: 'FACILITY_MULTIPLE_AMENDMENTS',
       facilityId,
-      payload: amendmentsData as unknown as CreateGiftFacilityMultipleAmendmentsRequestDto,
+      payload: amendmentsData as CreateGiftFacilityMultipleAmendmentsRequestDto,
     });
 
     res.status(HttpStatus.ACCEPTED);

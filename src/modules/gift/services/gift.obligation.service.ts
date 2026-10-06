@@ -17,9 +17,7 @@ export class GiftObligationService {
   constructor(
     private readonly giftHttpService: GiftHttpService,
     private readonly logger: PinoLogger,
-  ) {
-    this.giftHttpService = giftHttpService;
-  }
+  ) {}
 
   /**
    * Create a GIFT obligation
@@ -71,7 +69,7 @@ export class GiftObligationService {
    * @returns {Promise<Array<AxiosResponse>>}
    * @throws {Error}
    */
-  async createMany(obligationsData: GiftObligationRequestDto[], facilityId: string, workPackageId: number): Promise<Array<AxiosResponse>> {
+  async createMany(obligationsData: GiftObligationRequestDto[], facilityId: string, workPackageId: number): Promise<AxiosResponse[]> {
     try {
       this.logger.info('Creating obligations for facility %s', facilityId);
 

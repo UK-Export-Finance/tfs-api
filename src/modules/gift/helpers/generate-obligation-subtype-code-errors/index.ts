@@ -1,10 +1,10 @@
 import type { ObligationSubtypeMdmResponseDto } from '@ukef/modules/mdm/dto';
 
-interface GenerateObligationSubtypeCodeErrorsParams {
+type GenerateObligationSubtypeCodeErrorsParams = {
   subtypes: ObligationSubtypeMdmResponseDto[];
   productTypeCode: string;
   providedSubtypeCodes: string[];
-}
+};
 
 /**
  * Check all provided obligation subtype codes are supported by the product type.

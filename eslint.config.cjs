@@ -160,6 +160,21 @@ module.exports = defineConfig([
       '@typescript-eslint/explicit-module-boundary-types': 'off',
       '@typescript-eslint/no-unsafe-enum-comparison': 'off',
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', ignoreRestSiblings: true, caughtErrors: 'none' }],
+      '@typescript-eslint/naming-convention': [
+        'error',
+        {
+          selector: 'variable',
+          format: ['camelCase', 'PascalCase', 'UPPER_CASE'],
+        },
+        {
+          selector: 'function',
+          format: ['camelCase', 'PascalCase'],
+        },
+        {
+          selector: 'typeLike',
+          format: ['PascalCase'],
+        },
+      ],
       '@typescript-eslint/method-signature-style': 'off',
       '@typescript-eslint/no-floating-promises': 'off',
       '@typescript-eslint/no-misused-promises': 'off',
@@ -247,6 +262,15 @@ module.exports = defineConfig([
 
     rules: {
       '@typescript-eslint/return-await': 'off',
+    },
+  },
+
+  // jest.config.ts must have a default export - that's how Jest loads it
+  {
+    files: ['**/jest.config.ts'],
+
+    rules: {
+      'import-x/no-default-export': 'off',
     },
   },
 ]);

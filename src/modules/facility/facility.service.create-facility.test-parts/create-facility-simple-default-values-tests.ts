@@ -28,7 +28,7 @@ export const withCreateFacilitySimpleDefaultValuesTests = ({
     it.each(defaultValueTests)(
       'sets a default of $defaultValueForAcbs for $keyAffectedInAcbs if $keyInRequest is not specified',
       async ({ keyInRequest, keyAffectedInAcbs, defaultValueForAcbs }) => {
-        const { [keyInRequest]: _removed, ...facilityToCreateWithoutKey } = facilityToCreate;
+        const { [keyInRequest]: removed, ...facilityToCreateWithoutKey } = facilityToCreate;
 
         await createFacility(facilityToCreateWithoutKey as CreateFacilityRequestItem);
 

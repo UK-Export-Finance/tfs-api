@@ -87,7 +87,7 @@ describe('FacilityInvestorService', () => {
     });
 
     it('adds a default value for lenderType before creating the facility party if it is not specified', async () => {
-      const { lenderType: _removed, ...newInvestorWithoutLenderType } = newFacilityInvestorWithAllFields;
+      const { lenderType: removed, ...newInvestorWithoutLenderType } = newFacilityInvestorWithAllFields;
 
       await service.createInvestorForFacility(facilityIdentifier, newInvestorWithoutLenderType);
 

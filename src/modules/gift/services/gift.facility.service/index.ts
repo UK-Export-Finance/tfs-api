@@ -46,20 +46,7 @@ export class GiftFacilityService {
     private readonly giftRiskDetailsService: GiftRiskDetailsService,
     private readonly giftStatusService: GiftStatusService,
     private readonly giftFacilityCreationErrorService: GiftFacilityCreationErrorService,
-  ) {
-    this.giftHttpService = giftHttpService;
-    this.asyncValidationService = asyncValidationService;
-    this.giftAccrualScheduleService = giftAccrualScheduleService;
-    this.giftBusinessCalendarService = giftBusinessCalendarService;
-    this.giftBusinessCalendarsConventionService = giftBusinessCalendarsConventionService;
-    this.giftCounterpartyService = giftCounterpartyService;
-    this.giftFixedFeeService = giftFixedFeeService;
-    this.giftObligationService = giftObligationService;
-    this.giftRepaymentProfileService = giftRepaymentProfileService;
-    this.giftRiskDetailsService = giftRiskDetailsService;
-    this.giftStatusService = giftStatusService;
-    this.giftFacilityCreationErrorService = giftFacilityCreationErrorService;
-  }
+  ) {}
 
   /**
    * Get a GIFT facility by ID

@@ -99,7 +99,6 @@ describe('FacilityFixedFeeController', () => {
   });
 
   describe('createAmountAmendmentForFixedFees', () => {
-    const facilityIdentifier = valueGenerator.facilityId();
     const { increaseAmountRequest } = new CreateFacilityFixedFeesAmountAmendmentGenerator(valueGenerator, new DateStringTransformations()).generate({
       numberToGenerate: 3,
       facilityIdentifier,

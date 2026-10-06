@@ -100,7 +100,6 @@ describe('FacilityLoanController', () => {
   });
 
   describe('createAmountAmendmentForLoan', () => {
-    const loanIdentifier = valueGenerator.loanId();
     const { increaseAmountRequest: loanAmountAmendmentRequest } = new CreateFacilityLoanAmountAmendmentGenerator(
       valueGenerator,
       new DateStringTransformations(),

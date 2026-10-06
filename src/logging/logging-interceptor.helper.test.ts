@@ -31,21 +31,25 @@ describe('LoggingInterceptor', () => {
     debug.mockReset();
   });
 
-  const runInterceptor = (requestBody: unknown, responseBody: unknown, next = { handle: () => of(responseBody) }): Promise<unknown> => {
+  const runInterceptor = (
+    requestBodyToIntercept: unknown,
+    responseBodyToIntercept: unknown,
+    next = { handle: () => of(responseBodyToIntercept) },
+  ): Promise<unknown> => {
     const context = {
       switchToHttp: () =>
         ({
           getRequest: <T>() =>
             ({
-              body: requestBody,
+              body: requestBodyToIntercept,
             }) as T,
         }) as HttpArgumentsHost,
     } as ExecutionContext;
     try {
       const interceptObservable = interceptor.intercept(context, next);
       return lastValueFrom(interceptObservable);
-    } catch (error) {
-      console.error(error);
+    } catch {
+      return undefined;
     }
   };
 

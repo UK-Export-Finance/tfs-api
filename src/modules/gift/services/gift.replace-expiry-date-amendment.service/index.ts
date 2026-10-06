@@ -39,11 +39,7 @@ export class GiftReplaceExpiryDateAmendmentService {
     private readonly giftHttpService: GiftHttpService,
     private readonly giftWorkPackageService: GiftWorkPackageService,
     private readonly logger: PinoLogger,
-  ) {
-    this.giftHttpService = giftHttpService;
-    this.giftWorkPackageService = giftWorkPackageService;
-    this.logger = logger;
-  }
+  ) {}
 
   /**
    * Amend the obligations maturity dates for a given facility and work package.

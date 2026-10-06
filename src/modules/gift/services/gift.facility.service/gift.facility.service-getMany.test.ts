@@ -58,7 +58,7 @@ describe('GiftFacilityService.getMany', () => {
       get: mockGet,
     };
 
-    const counterpartyService = new GiftCounterpartyService(giftHttpService, logger);
+    counterpartyService = new GiftCounterpartyService(giftHttpService, logger);
     const currencyService = new GiftCurrencyService(giftHttpService, logger);
     const feeTypeService = new GiftFeeTypeService(giftHttpService, logger);
     const mdmService = {};

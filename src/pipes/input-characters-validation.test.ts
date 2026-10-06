@@ -190,31 +190,28 @@ describe('InputCharacterValidationPipe', () => {
     });
 
     describe('Validate that known ASCII characters pass', () => {
-      for (let i = 32; i <= 126; i++) {
-        it('no error for ascii ' + i, () => {
-          const bodyToTest = { ...bodyDto, field1: String.fromCharCode(i) };
-          const functionToTest = () => {
-            pipe.transform(bodyToTest, bodyMeta);
-          };
+      const printableAsciiCodes = Array.from({ length: 126 - 32 + 1 }, (_value, index) => 32 + index);
 
-          expect(functionToTest).not.toThrow();
-        });
-      }
+      it.each(printableAsciiCodes)('no error for ascii %i', (i) => {
+        const bodyToTest = { ...bodyDto, field1: String.fromCharCode(i) };
+        const functionToTest = () => {
+          pipe.transform(bodyToTest, bodyMeta);
+        };
+
+        expect(functionToTest).not.toThrow();
+      });
+
       // ACBS doesn't support characters 181 µ and 255 ÿ
-      for (let i = 160; i <= 254; i++) {
-        if (i === 181) {
-          continue;
-        }
+      const extendedAsciiCodesExcludingMu = Array.from({ length: 254 - 160 + 1 }, (_value, index) => 160 + index).filter((i) => i !== 181);
 
-        it('no error for ascii ' + i, () => {
-          const bodyToTest = { ...bodyDto, field1: String.fromCharCode(i) };
-          const functionToTest = () => {
-            pipe.transform(bodyToTest, bodyMeta);
-          };
+      it.each(extendedAsciiCodesExcludingMu)('no error for ascii %i', (i) => {
+        const bodyToTest = { ...bodyDto, field1: String.fromCharCode(i) };
+        const functionToTest = () => {
+          pipe.transform(bodyToTest, bodyMeta);
+        };
 
-          expect(functionToTest).not.toThrow();
-        });
-      }
+        expect(functionToTest).not.toThrow();
+      });
     });
 
     describe('Validate that known unsupported ASCII characters throw an error', () => {

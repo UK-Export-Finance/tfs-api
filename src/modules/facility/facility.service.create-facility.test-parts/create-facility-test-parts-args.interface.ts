@@ -4,10 +4,10 @@ import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-
 
 import { CreateFacilityRequestItem } from '@ukef/modules/facility/dto/create-facility-request.dto';
 
-export interface CreateFacilityTestPartsArgs {
+export type CreateFacilityTestPartsArgs = {
   valueGenerator: RandomValueGenerator;
   dateStringTransformations: DateStringTransformations;
   facilityToCreate: CreateFacilityRequestItem;
   createFacility: (newFacility: CreateFacilityRequestItem) => Promise<void>;
   getFacilityCreatedInAcbs: () => AcbsCreateFacilityRequest;
-}
+};

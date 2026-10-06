@@ -6,7 +6,7 @@ import { mapValidationErrorResponses } from '@ukef/modules/gift/helpers/map-vali
 
 const { ENTITY_NAMES } = GIFT;
 
-interface MapAllValidationErrorResponsesParams {
+type MapAllValidationErrorResponsesParams = {
   accrualSchedules: AxiosResponse[];
   businessCalendars: AxiosResponse[];
   businessCalendarsConvention: AxiosResponse[];
@@ -15,7 +15,7 @@ interface MapAllValidationErrorResponsesParams {
   obligations: AxiosResponse[];
   repaymentProfiles: AxiosResponse[];
   riskDetails: AxiosResponse[];
-}
+};
 
 /**
  * Map multiple responses with an invalid status.

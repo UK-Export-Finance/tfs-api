@@ -17,9 +17,7 @@ export class GiftRepaymentProfileService {
   constructor(
     private readonly giftHttpService: GiftHttpService,
     private readonly logger: PinoLogger,
-  ) {
-    this.giftHttpService = giftHttpService;
-  }
+  ) {}
 
   /**
    * Create a GIFT repayment profile
@@ -56,7 +54,7 @@ export class GiftRepaymentProfileService {
    * @returns {Promise<Array<AxiosResponse>>}
    * @throws {Error}
    */
-  async createMany(repaymentProfilesData: GiftRepaymentProfileRequestDto[], facilityId: string, workPackageId: number): Promise<Array<AxiosResponse>> {
+  async createMany(repaymentProfilesData: GiftRepaymentProfileRequestDto[], facilityId: string, workPackageId: number): Promise<AxiosResponse[]> {
     try {
       this.logger.info('Creating repayment profiles for facility %s', facilityId);
 

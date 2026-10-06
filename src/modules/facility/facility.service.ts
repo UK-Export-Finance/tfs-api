@@ -383,7 +383,7 @@ export class FacilityService {
           $type: type,
           AccountOwnerIdentifier: accountOwnerIdentifier,
           EffectiveDate: effectiveDate,
-          FacilityIdentifier: facilityIdentifier as UkefId,
+          FacilityIdentifier: facilityIdentifier,
           FacilityTransactionType: {
             TypeCode: typeCode,
           },

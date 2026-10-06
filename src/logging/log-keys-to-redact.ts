@@ -1,6 +1,6 @@
 import { buildKeyToRedact } from './build-key-to-redact';
 
-export interface LogKeysToRedactOptions {
+export type LogKeysToRedactOptions = {
   redactLogs: boolean;
   clientRequest: {
     logKey: string;
@@ -23,7 +23,7 @@ export interface LogKeysToRedactOptions {
     logKey: string;
     sensitiveChildKeys: string[];
   };
-}
+};
 
 const getClientRequestLogKeysToRedact = ({ logKey, headersLogKey }: LogKeysToRedactOptions['clientRequest']): string[] => [
   // We redact the client request headers as they contain the secret API key that the client uses to authenticate with our API.

@@ -158,7 +158,7 @@ describe('FacilityLoanService', () => {
         }),
       },
     ])('updates a loan in ACBS with the expected request', ({ description, requestsAndResponses }) => {
-      it(`${description}`, async () => {
+      it(description, async () => {
         const { modifiedUpdateLoanExpiryDateRequest, modifiedAcbsGetExistingLoanResponse, modifiedAcbsUpdateLoanRequest } = requestsAndResponses;
         mockSuccessfulAcbsGetLoanRequestWithResponse(modifiedAcbsGetExistingLoanResponse);
 

@@ -1,10 +1,10 @@
 import type { GiftFacilityOverviewRequestDto } from '@ukef/modules/gift/dto';
 
-interface GenerateOverviewValidationErrorsParams {
+type GenerateOverviewValidationErrorsParams = {
   isSupportedProductType: boolean;
   payload: GiftFacilityOverviewRequestDto;
   supportedCurrencies: string[];
-}
+};
 
 /**
  * Generate validation errors for the "overview" object in a GIFT facility creation payload

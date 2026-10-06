@@ -16,9 +16,7 @@ export class GiftStatusService {
   constructor(
     private readonly giftHttpService: GiftHttpService,
     private readonly logger: PinoLogger,
-  ) {
-    this.giftHttpService = giftHttpService;
-  }
+  ) {}
 
   /**
    * Set a GIFT facility work package as approved

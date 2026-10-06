@@ -8,12 +8,12 @@ import { GiftHttpService } from './gift.http.service';
 
 const { EVENT_TYPES, INTEGRATION_DEFAULTS, PATH } = GIFT;
 
-interface CreateOneParams {
+type CreateOneParams = {
   facilityId: string;
   workPackageId: number;
   startDate?: string;
   exitDate?: string;
-}
+};
 
 /**
  * GIFT business calendar service.
@@ -24,9 +24,7 @@ export class GiftBusinessCalendarService {
   constructor(
     private readonly giftHttpService: GiftHttpService,
     private readonly logger: PinoLogger,
-  ) {
-    this.giftHttpService = giftHttpService;
-  }
+  ) {}
 
   /**
    * Create a GIFT business calendar. Currently defaults to a London.

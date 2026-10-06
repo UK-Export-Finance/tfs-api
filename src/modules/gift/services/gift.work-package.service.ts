@@ -12,9 +12,7 @@ export class GiftWorkPackageService {
   constructor(
     private readonly giftHttpService: GiftHttpService,
     private readonly logger: PinoLogger,
-  ) {
-    this.giftHttpService = giftHttpService;
-  }
+  ) {}
 
   /**
    * Create a GIFT work package for a facility

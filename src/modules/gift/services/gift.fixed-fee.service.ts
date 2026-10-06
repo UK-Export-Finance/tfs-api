@@ -17,9 +17,7 @@ export class GiftFixedFeeService {
   constructor(
     private readonly giftHttpService: GiftHttpService,
     private readonly logger: PinoLogger,
-  ) {
-    this.giftHttpService = giftHttpService;
-  }
+  ) {}
 
   /**
    * Create a GIFT fixed fee
@@ -66,7 +64,7 @@ export class GiftFixedFeeService {
    * @returns {Promise<Array<AxiosResponse>>}
    * @throws {Error}
    */
-  async createMany(fixedFeesData: GiftFixedFeeRequestDto[], facilityId: string, workPackageId: number): Promise<Array<AxiosResponse>> {
+  async createMany(fixedFeesData: GiftFixedFeeRequestDto[], facilityId: string, workPackageId: number): Promise<AxiosResponse[]> {
     try {
       this.logger.info('Creating fixed fees for facility %s', facilityId);
 

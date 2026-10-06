@@ -6,20 +6,20 @@ type GenerateErrorMessageParams = {
   index: number;
   parentEntityName: string;
   supportedValues: string[];
-}
+};
 
 type GenerateArrayOfErrorsParams = {
   fieldName: string;
   fieldValues: string[];
   parentEntityName: string;
   supportedValues: string[];
-}
+};
 
 type GenerateHighLevelErrorsParams = {
   fieldName: string;
   payload: GiftFacilityCreationValidationStrippedPayload;
   supportedValues: string[];
-}
+};
 
 /**
  * If a field value is not in the provided supported values,
@@ -43,6 +43,8 @@ export const generateErrorMessage = ({ fieldName, fieldValue, index, parentEntit
   if (!supportedValues.includes(fieldValue)) {
     return `${parentEntityName}.${index}.${fieldName} is not supported - ${fieldValue}`;
   }
+
+  return undefined;
 };
 
 /**

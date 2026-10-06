@@ -12,7 +12,7 @@ const { NAME, VERSION_PREFIX } = APPLICATION;
 
 const validLogLevels = ['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent'];
 
-export interface AppConfig {
+export type AppConfig = {
   apiKey: string;
   env: string;
   giftFeatureEnabled: boolean;
@@ -34,7 +34,7 @@ export interface AppConfig {
     prefix: string;
     version: string;
   };
-}
+};
 
 export const AppConfig = registerAs('app', (): Record<string, any> => {
   const logLevel = process.env.LOG_LEVEL || 'info';

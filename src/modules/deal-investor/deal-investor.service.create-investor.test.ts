@@ -63,7 +63,7 @@ describe('DealInvestorService', () => {
     });
 
     it('adds a default value for lenderType before creating the new investor if it is not specified', async () => {
-      const { lenderType: _removed, ...newInvestorWithoutLenderType } = requestItemToCreateDealInvestor;
+      const { lenderType: removed, ...newInvestorWithoutLenderType } = requestItemToCreateDealInvestor;
 
       await service.createInvestorForDeal(dealIdentifier, newInvestorWithoutLenderType);
 
@@ -73,7 +73,7 @@ describe('DealInvestorService', () => {
     });
 
     it('adds a default value for expiryDate before creating the new investor if it is not specified', async () => {
-      const { expiryDate: _removed, ...newInvestorWithoutExpiryDate } = requestItemToCreateDealInvestor;
+      const { expiryDate: removed, ...newInvestorWithoutExpiryDate } = requestItemToCreateDealInvestor;
 
       await service.createInvestorForDeal(dealIdentifier, newInvestorWithoutExpiryDate);
 
@@ -83,7 +83,7 @@ describe('DealInvestorService', () => {
     });
 
     it('adds a default value for dealStatus before creating the new investor if it is not specified', async () => {
-      const { dealStatus: _removed, ...newInvestorWithoutDealStatus } = requestItemToCreateDealInvestor;
+      const { dealStatus: removed, ...newInvestorWithoutDealStatus } = requestItemToCreateDealInvestor;
 
       await service.createInvestorForDeal(dealIdentifier, newInvestorWithoutDealStatus);
 

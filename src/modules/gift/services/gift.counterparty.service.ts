@@ -18,9 +18,7 @@ export class GiftCounterpartyService {
   constructor(
     private readonly giftHttpService: GiftHttpService,
     private readonly logger: PinoLogger,
-  ) {
-    this.giftHttpService = giftHttpService;
-  }
+  ) {}
 
   /**
    * Create a GIFT counterparty
@@ -63,7 +61,7 @@ export class GiftCounterpartyService {
    * @returns {Promise<Array<AxiosResponse>>}
    * @throws {Error}
    */
-  async createMany(counterpartiesData: GiftFacilityCounterpartyRequestDto[], facilityId: string, workPackageId: number): Promise<Array<AxiosResponse>> {
+  async createMany(counterpartiesData: GiftFacilityCounterpartyRequestDto[], facilityId: string, workPackageId: number): Promise<AxiosResponse[]> {
     try {
       this.logger.info('Creating counterparties for facility %s', facilityId);
 

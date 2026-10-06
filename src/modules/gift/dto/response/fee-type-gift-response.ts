@@ -6,9 +6,9 @@ const {
   GIFT: { FEE_TYPES },
 } = EXAMPLES;
 
-export interface GiftFacilityFeeTypeResponse {
+export type GiftFacilityFeeTypeResponse = {
   feeTypes: GiftFeeTypeResponseDto[];
-}
+};
 
 /**
  * GIFT facility "fee type" response DTO.

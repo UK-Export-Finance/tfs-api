@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, Query, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query, UseInterceptors, InternalServerErrorException } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -162,5 +162,7 @@ export class FacilityController {
     if (query.op === ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_AMOUNT) {
       return await this.facilityService.amendFacilityAmountByIdentifier(params.facilityIdentifier, updateFacilityDto);
     }
+
+    throw new InternalServerErrorException(`Unknown operation '${query.op}'.`);
   }
 }

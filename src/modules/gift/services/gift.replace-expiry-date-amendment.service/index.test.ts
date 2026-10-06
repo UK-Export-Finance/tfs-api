@@ -3,7 +3,6 @@ import { PinoLogger } from 'nestjs-pino';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { mockResponse201, mockResponse204, mockResponse500 } from '@ukef-test/http-response';
 
-import { GiftWorkPackageService } from '@ukef/modules/gift/services/gift.work-package.service';
 import { GiftReplaceExpiryDateAmendmentService } from '.';
 
 const {
@@ -43,7 +42,7 @@ describe('GiftReplaceExpiryDateAmendmentService', () => {
 
     giftWorkPackageService = {
       delete: mockWorkPackageServiceDelete,
-    } as unknown as GiftWorkPackageService;
+    };
 
     service = new GiftReplaceExpiryDateAmendmentService(giftHttpService, giftWorkPackageService, logger);
   });

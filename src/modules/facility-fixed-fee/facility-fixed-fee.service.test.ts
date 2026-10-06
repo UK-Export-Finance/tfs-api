@@ -226,7 +226,6 @@ describe('FacilityFixedFeeService', () => {
   });
 
   describe('createAmountAmendmentForFixedFees', () => {
-    const facilityIdentifier = valueGenerator.facilityId();
     const createdBundleIdentifier = valueGenerator.acbsBundleId();
     const acbsBundleCreatedResponse: AcbsCreateBundleInformationResponseHeadersDto = { BundleIdentifier: createdBundleIdentifier, WarningErrors: undefined };
     const { facilityFeeTransactionType } = PROPERTIES.FACILITY_FEE_AMOUNT_TRANSACTION.DEFAULT.bundleMessageList;

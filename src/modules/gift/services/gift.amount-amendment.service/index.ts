@@ -33,13 +33,9 @@ type AmendObligationsParams = GiftAmendmentBaseParams & {
 export class GiftAmountAmendmentService {
   constructor(
     private readonly giftHttpService: GiftHttpService,
-    private readonly giftWorkPackageService: GiftWorkPackageService,
+    private readonly giftWorkPackageService: GiftWorkPackageService, // TODO: remove
     private readonly logger: PinoLogger,
-  ) {
-    this.giftHttpService = giftHttpService;
-    this.giftWorkPackageService = giftWorkPackageService;
-    this.logger = logger;
-  }
+  ) {}
 
   /**
    * Amend the facility amount for a given facility and work package.
@@ -98,7 +94,7 @@ export class GiftAmountAmendmentService {
        * Some facilities do not have facility category codes.
        * In this instance, the percentage should be 100%.
        */
-      const percentage = (facilityCategoryCode ? PERCENTAGE_OF_FACILITY_AMOUNT[`${facilityCategoryCode}`] : undefined) ?? PERCENTAGE_OF_FACILITY_AMOUNT.OTHER;
+      const percentage = (facilityCategoryCode ? PERCENTAGE_OF_FACILITY_AMOUNT[facilityCategoryCode] : undefined) ?? PERCENTAGE_OF_FACILITY_AMOUNT.OTHER;
 
       const newObligationAmount = calculatePercentageAmount(newFacilityAmount, percentage);
 

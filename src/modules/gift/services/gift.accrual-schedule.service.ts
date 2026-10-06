@@ -17,9 +17,7 @@ export class GiftAccrualScheduleService {
   constructor(
     private readonly giftHttpService: GiftHttpService,
     private readonly logger: PinoLogger,
-  ) {
-    this.giftHttpService = giftHttpService;
-  }
+  ) {}
 
   /**
    * Create a GIFT accrual schedule
@@ -102,7 +100,7 @@ export class GiftAccrualScheduleService {
    * @returns {Promise<Array<AxiosResponse>>}
    * @throws {Error}
    */
-  async createMany(accrualSchedulesData: GiftAccrualScheduleRequestDto[], facilityId: string, workPackageId: number): Promise<Array<AxiosResponse>> {
+  async createMany(accrualSchedulesData: GiftAccrualScheduleRequestDto[], facilityId: string, workPackageId: number): Promise<AxiosResponse[]> {
     try {
       this.logger.info('Creating accrual schedules for facility %s', facilityId);
 
