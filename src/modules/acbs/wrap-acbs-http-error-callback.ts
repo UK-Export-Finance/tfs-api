@@ -40,7 +40,7 @@ export const createWrapAcbsHttpPostOrPutErrorCallback =
       });
     }
 
-    const { data } = error.response;
+    const data = error.response?.data;
 
     return throwError(() => new AcbsBadRequestException(messageForUnknownError, error, typeof data === 'string' ? data : JSON.stringify(data)));
   };

@@ -1,6 +1,6 @@
 import { withEnvironmentVariableParsingUnitTests } from '@ukef-test/common-tests/environment-variable-parsing-unit-tests';
 
-import { AcbsConfig } from './acbs.config';
+import { AcbsConfig, AcbsConfigType } from './acbs.config';
 
 describe('AcbsConfig', () => {
   let originalProcessEnv: NodeJS.ProcessEnv;
@@ -13,7 +13,7 @@ describe('AcbsConfig', () => {
     process.env = originalProcessEnv;
   });
 
-  const configDirectlyFromEnvironmentVariables: { configPropertyName: keyof AcbsConfig; environmentVariableName: string }[] = [
+  const configDirectlyFromEnvironmentVariables: { configPropertyName: keyof AcbsConfigType; environmentVariableName: string }[] = [
     {
       configPropertyName: 'baseUrl',
       environmentVariableName: 'ACBS_BASE_URL',
@@ -21,7 +21,7 @@ describe('AcbsConfig', () => {
   ];
 
   const configParsedBooleanFromEnvironmentVariablesWithDefault: {
-    configPropertyName: keyof AcbsConfig;
+    configPropertyName: keyof AcbsConfigType;
     environmentVariableName: string;
     defaultConfigValue: boolean;
   }[] = [
@@ -33,7 +33,7 @@ describe('AcbsConfig', () => {
   ];
 
   const configParsedAsIntFromEnvironmentVariablesWithDefault: {
-    configPropertyName: keyof AcbsConfig;
+    configPropertyName: keyof AcbsConfigType;
     environmentVariableName: string;
     defaultConfigValue: number;
   }[] = [

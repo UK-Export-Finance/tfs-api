@@ -33,6 +33,7 @@ export type AppConfigType = {
     enable: boolean;
     prefix: string;
     version: string;
+    prefixAndVersion: string;
   };
 };
 
@@ -60,17 +61,18 @@ export const AppConfig = registerAs('app', (): AppConfigType => {
    * NOTE: This is versioning for our APIM TFS GIFT endpoints,
    * as opposed to the external GIFT API endpoints.
    */
-  const giftVersion = process.env.GIFT_HTTP_VERSION;
+  const giftVersion = process.env.GIFT_HTTP_VERSION!;
 
   const giftVersioning = {
+    enable: process.env.GIFT_HTTP_VERSIONING_ENABLE === 'true',
     prefix: VERSION_PREFIX,
     prefixAndVersion: `${VERSION_PREFIX}${giftVersion}`,
     version: giftVersion,
   };
 
   return {
-    apiKey: process.env.API_KEY,
-    env: NODE_ENV,
+    apiKey: process.env.API_KEY!,
+    env: NODE_ENV!,
     giftFeatureEnabled: process.env.FF_GIFT_ENABLED === 'true',
     giftVersioning,
     globalPrefix: '/api',

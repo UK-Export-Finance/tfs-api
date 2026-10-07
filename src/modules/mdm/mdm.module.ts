@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { MDM_CONFIG_KEY, MdmConfig } from '@ukef/config/mdm.config';
+import { MDM_CONFIG_KEY, MdmConfigType } from '@ukef/config/mdm.config';
 import { HttpModule } from '@ukef/modules/http/http.module';
 
 import { MdmService } from './mdm.service';
@@ -11,7 +11,7 @@ import { MdmService } from './mdm.service';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
-        const { baseUrl, apiKeyHeaderName, apiKeyHeaderValue, maxRedirects, timeout } = configService.get<MdmConfig>(MDM_CONFIG_KEY)!;
+        const { baseUrl, apiKeyHeaderName, apiKeyHeaderValue, maxRedirects, timeout } = configService.get<MdmConfigType>(MDM_CONFIG_KEY)!;
         return {
           baseURL: baseUrl,
           maxRedirects,

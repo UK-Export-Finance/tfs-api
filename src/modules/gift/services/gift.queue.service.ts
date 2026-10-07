@@ -3,7 +3,7 @@ import { QueueClient, QueueServiceClient } from '@azure/storage-queue';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PinoLogger } from 'nestjs-pino';
-import { GiftQueueConfig, GIFT_QUEUE_CONFIG_KEY } from '@ukef/config/gift-queue.config';
+import { GiftQueueConfigType, GIFT_QUEUE_CONFIG_KEY } from '@ukef/config/gift-queue.config';
 import { GIFT } from '@ukef/constants';
 
 import { CreateGiftFacilityAmendmentRequestDto, CreateGiftFacilityMultipleAmendmentsRequestDto, GiftFacilityCreationRequestDto } from '@ukef/modules/gift/dto';
@@ -50,7 +50,7 @@ export class GiftQueueService {
     private readonly logger: PinoLogger,
     private readonly configService: ConfigService,
   ) {
-    const { storageAccountName, connectionString, clientId, queueName } = this.configService.get<GiftQueueConfig>(GIFT_QUEUE_CONFIG_KEY)!;
+    const { storageAccountName, connectionString, clientId, queueName } = this.configService.get<GiftQueueConfigType>(GIFT_QUEUE_CONFIG_KEY)!;
 
     if (!connectionString && !storageAccountName) {
       throw new Error('Either GIFT_QUEUE_STORAGE_CONNECTION_STRING or GIFT_QUEUE_STORAGE_ACCOUNT_NAME must be set');

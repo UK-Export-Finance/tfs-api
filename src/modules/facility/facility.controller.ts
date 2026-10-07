@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, Query, UseInterceptors, InternalServerErrorException } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query, UseInterceptors, BadRequestException } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -163,6 +163,6 @@ export class FacilityController {
       return await this.facilityService.amendFacilityAmountByIdentifier(params.facilityIdentifier, updateFacilityDto);
     }
 
-    throw new InternalServerErrorException(`Unknown operation '${query.op}'.`);
+    throw new BadRequestException(`Unknown operation '${query.op}'.`);
   }
 }
