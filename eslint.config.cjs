@@ -20,13 +20,13 @@ const { createTypeScriptImportResolver } = require('eslint-import-resolver-types
 module.exports = defineConfig([
   {
     ignores: [
-      '**/src/modules/acbs',
+      // '**/src/modules/acbs',
       '**/coverage/',
       '**/dist/',
       '**/node_modules/',
       '**/package*.json',
-      '**/test/', // TODO: fix
-      '**/tfs-functions/', // TODO: fix
+      '**/test/', // TODO: APIM-643
+      '**/tfs-functions/', // TODO: APIM-655
     ],
   },
 
