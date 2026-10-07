@@ -1,7 +1,7 @@
 import { APPLICATION } from '@ukef/constants';
 import { withEnvironmentVariableParsingUnitTests } from '@ukef-test/common-tests/environment-variable-parsing-unit-tests';
 
-import { AppConfig } from './app.config';
+import { AppConfig, AppConfigType } from './app.config';
 import { InvalidConfigException } from './invalid-config.exception';
 
 const { VERSION_PREFIX } = APPLICATION;
@@ -212,7 +212,7 @@ describe('AppConfig', () => {
   });
 
   const configParsedAsIntFromEnvironmentVariablesWithDefault: {
-    configPropertyName: keyof AppConfig;
+    configPropertyName: keyof AppConfigType;
     environmentVariableName: string;
     defaultConfigValue: number;
   }[] = [
@@ -224,7 +224,7 @@ describe('AppConfig', () => {
   ];
 
   const configParsedBooleanFromEnvironmentVariablesWithDefault: {
-    configPropertyName: keyof AppConfig;
+    configPropertyName: keyof AppConfigType;
     environmentVariableName: string;
     defaultConfigValue: boolean;
   }[] = [
