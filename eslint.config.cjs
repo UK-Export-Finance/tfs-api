@@ -147,8 +147,8 @@ module.exports = defineConfig([
         },
       ],
 
-      '@typescript-eslint/no-explicit-any': 'off', // TODO: new ticket.
-      '@typescript-eslint/no-unsafe-return': 'off', // TODO: new ticket.
+      '@typescript-eslint/no-explicit-any': 'off', // TODO: APIM-659
+      '@typescript-eslint/no-unsafe-return': 'off', // TODO: APIM-660
       '@typescript-eslint/no-non-null-assertion': 'off',
       '@typescript-eslint/promise-function-async': 'off',
       '@typescript-eslint/consistent-type-imports': 'off',
