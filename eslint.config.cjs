@@ -187,23 +187,11 @@ module.exports = defineConfig([
       'import-x/no-extraneous-dependencies': [
         'error',
         {
-          devDependencies: ['**/*.test.ts', '**/test/**', '**/test-utils/**', '**/setup-test.ts', 'eslint.config.cjs'],
+          devDependencies: ['**/*.test.ts', '**/test/**', 'eslint.config.cjs'],
         },
       ],
       'import-x/prefer-default-export': 'off',
       'import-x/no-default-export': 'error',
-
-      'no-restricted-imports': [
-        'error',
-        {
-          patterns: [
-            {
-              group: ['@ukef/gift-test-utils/*'],
-              message: "Import from '@ukef/gift-test-utils' (root) instead of subpaths. All exports are available from the main package.",
-            },
-          ],
-        },
-      ],
 
       'import-x/order': [
         'error',
