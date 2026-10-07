@@ -42,10 +42,7 @@ export const createWrapAcbsHttpPostOrPutErrorCallback =
 
     const { data } = error.response;
 
-    return throwError(
-      () =>
-        new AcbsBadRequestException(messageForUnknownError, error, typeof data === 'string' ? data : JSON.stringify(data)),
-    );
+    return throwError(() => new AcbsBadRequestException(messageForUnknownError, error, typeof data === 'string' ? data : JSON.stringify(data)));
   };
 
 /* eslint-enable */
