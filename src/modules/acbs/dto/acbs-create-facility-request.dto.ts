@@ -1,5 +1,5 @@
 import { AcbsBaseFacilityRequest } from './acbs-base-facility-request.dto';
 
-export interface AcbsCreateFacilityRequest extends AcbsBaseFacilityRequest {
+export type AcbsCreateFacilityRequest = AcbsBaseFacilityRequest & {
   FacilityInitialStatus: { FacilityInitialStatusCode: string };
-}
+};

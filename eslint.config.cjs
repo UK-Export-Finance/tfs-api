@@ -20,7 +20,6 @@ const { createTypeScriptImportResolver } = require('eslint-import-resolver-types
 module.exports = defineConfig([
   {
     ignores: [
-      // '**/src/modules/acbs',
       '**/coverage/',
       '**/dist/',
       '**/node_modules/',

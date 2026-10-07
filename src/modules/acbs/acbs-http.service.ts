@@ -15,9 +15,11 @@ export class AcbsHttpService {
       baseURL: this.config.baseUrl,
       headers: { Authorization: `Bearer ${idToken}` },
     };
+
     if (this.config.useReturnExceptionHeader) {
       baseRequestConfig.headers!.ReturnException = true;
     }
+
     switch (method) {
       case 'get':
         return baseRequestConfig;
@@ -26,13 +28,14 @@ export class AcbsHttpService {
         return baseRequestConfig;
     }
   }
+
   private async responseFrom<ResponseBody = never>({
     request,
     onError,
   }: {
-    request: Observable<AxiosResponse<ResponseBody, any>>;
+    request: Observable<AxiosResponse<ResponseBody>>;
     onError: (error: Error) => ObservableInput<never>;
-  }): Promise<AxiosResponse<ResponseBody, any>> {
+  }): Promise<AxiosResponse<ResponseBody>> {
     return await lastValueFrom(request.pipe(catchError(onError)));
   }
 

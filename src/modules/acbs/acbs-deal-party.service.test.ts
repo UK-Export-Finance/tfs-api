@@ -136,7 +136,7 @@ describe('AcbsDealPartyService', () => {
 
     const { acbsRequestBodyToCreateDealInvestor } = new CreateDealInvestorGenerator(valueGenerator, currentDateProvider, dateStringTransformations).generate({
       numberToGenerate: 1,
-      dealIdentifier: dealIdentifier,
+      dealIdentifier,
     });
 
     it('sends a POST to ACBS with the specified parameters', async () => {

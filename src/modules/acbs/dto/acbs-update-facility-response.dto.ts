@@ -1,3 +1,3 @@
-export interface AcbsUpdateFacilityResponseDto {
+export type AcbsUpdateFacilityResponseDto = {
   FacilityIdentifier: string;
-}
+};

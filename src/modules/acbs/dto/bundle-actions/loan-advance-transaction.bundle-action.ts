@@ -1,7 +1,7 @@
 import { BundleInformationType } from '@ukef/constants/enums/bundle-information-type';
 import { DateString } from '@ukef/helpers';
 
-export interface LoanAdvanceTransaction {
+export type LoanAdvanceTransaction = {
   $type: BundleInformationType.LOAN_ADVANCE_TRANSACTION;
   EffectiveDate: DateString;
   LoanIdentifier: string;
@@ -9,4 +9,4 @@ export interface LoanAdvanceTransaction {
   IsDraftIndicator: boolean;
   LoanAdvanceAmount: number;
   CashOffsetTypeCode: string;
-}
+};

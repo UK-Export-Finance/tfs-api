@@ -62,7 +62,7 @@ export class AcbsPartyService {
         const indexOfLastSlash = locationHeader.lastIndexOf('/');
         const partyIdentifier = locationHeader.substring(indexOfLastSlash + 1);
         return {
-          partyIdentifier: partyIdentifier,
+          partyIdentifier,
         };
       });
 

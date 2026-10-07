@@ -32,7 +32,7 @@ export class AcbsLoanService {
 
   async updateLoanByIdentifier(portfolioIdentifier: string, acbsUpdateLoanRequest: AcbsUpdateLoanRequest, idToken: string) {
     const { LoanIdentifier: loanIdentifier } = acbsUpdateLoanRequest;
-    await this.acbsHttpService.put<AcbsUpdateLoanRequest, void>({
+    await this.acbsHttpService.put<AcbsUpdateLoanRequest, null>({
       path: `/Portfolio/${portfolioIdentifier}/Loan/${loanIdentifier}`,
       requestBody: acbsUpdateLoanRequest,
       idToken,

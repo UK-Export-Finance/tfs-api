@@ -1,6 +1,6 @@
 import { DateString } from '@ukef/helpers/date-string.type';
 
-export interface AcbsCreateFacilityPartyDto {
+export type AcbsCreateFacilityPartyDto = {
   FacilityStatus: {
     FacilityStatusCode: string;
   };
@@ -19,4 +19,4 @@ export interface AcbsCreateFacilityPartyDto {
   LimitAmount: number;
   CustomerAdvisedIndicator: boolean;
   LimitRevolvingIndicator: boolean;
-}
+};

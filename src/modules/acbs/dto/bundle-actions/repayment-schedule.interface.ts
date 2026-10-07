@@ -1,6 +1,6 @@
 import { DateString } from '@ukef/helpers';
 
-export interface RepaymentSchedule {
+export type RepaymentSchedule = {
   PrimaryScheduleIndicator: boolean;
   InvolvedParty: {
     PartyIdentifier: string;
@@ -51,4 +51,4 @@ export interface RepaymentSchedule {
   PercentageOfBalance?: number;
   PaymentAmount?: number;
   BillingSequenceNumber: number;
-}
+};

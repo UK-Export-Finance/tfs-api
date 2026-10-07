@@ -21,7 +21,7 @@ describe('AcbsBundleInformationService', () => {
   const baseUrl = valueGenerator.httpsUrl();
   const useReturnExceptionHeader = false;
   const { servicingQueueIdentifier } = PROPERTIES.GLOBAL;
-  const facilityIdentifier = valueGenerator.ukefId();
+  let facilityIdentifier = valueGenerator.ukefId();
   const bundleIdentifier = valueGenerator.acbsBundleId();
   const borrowerPartyIdentifier = valueGenerator.acbsPartyId();
   const effectiveDate = valueGenerator.dateOnlyString();
@@ -397,7 +397,7 @@ describe('AcbsBundleInformationService', () => {
     });
 
     describe('creating a FacilityFeeAmountTransaction', () => {
-      const facilityIdentifier = valueGenerator.facilityId();
+      facilityIdentifier = valueGenerator.facilityId();
 
       const { acbsFixedFeesAmendmentForIncrease } = new CreateFacilityFixedFeesAmountAmendmentGenerator(
         valueGenerator,
