@@ -11,14 +11,20 @@ const baseUrl = requireEnv('APIM_TFS_URL');
 const maxNumberOfRetries = requireEnvInt('GIFT_MAX_NUMBER_OF_RETRIES');
 
 /**
- * Paths (relative to the TFS API base URL) for GET operations, resolved internally by getFromTfsApi.
+ * Absolute URLs for POST operations, as required by postToTfsApi.
  */
-const TFS_GIFT_INTERNAL_URLS = {
+const TFS_GIFT_POST_URLS = {
   facilityCreation: `${baseUrl}/api/v2/gift/facility/without-queue`,
   facilityAmendment: (facilityId: string) => `${baseUrl}/api/v2/gift/facility/${facilityId}/amendment/without-queue`,
   facilityMultipleAmendments: (facilityId: string) => `${baseUrl}/api/v2/gift/facility/${facilityId}/multiple-amendments/without-queue`,
-  facilityGet: (facilityId: string) => `${baseUrl}/api/v2/gift/facility/${facilityId}/without-queue`,
-  facilitiesGet: `${baseUrl}/api/v2/gift/facilities/without-queue`,
+} as const;
+
+/**
+ * Paths (relative to the TFS API base URL) for GET operations, resolved internally by getFromTfsApi.
+ */
+const TFS_GIFT_GET_PATHS = {
+  facilityGet: (facilityId: string) => `/api/v2/gift/facility/${facilityId}/without-queue`,
+  facilitiesGet: '/api/v2/gift/facilities/without-queue',
 } as const;
 
 /**
@@ -48,7 +54,7 @@ export async function processGiftQueueMessage(queueItem: unknown, context: Invoc
   try {
     switch (messageType) {
       case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION:
-        await postToTfsApi(TFS_GIFT_INTERNAL_URLS.facilityCreation, item.payload, `Failed to create GIFT facility ${facilityId}`, context);
+        await postToTfsApi(TFS_GIFT_POST_URLS.facilityCreation, item.payload, `Failed to create GIFT facility ${facilityId}`, context);
         context.log('GIFT facility creation succeeded for facilityId:', facilityId);
         break;
       case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_AMENDMENT:
@@ -56,7 +62,7 @@ export async function processGiftQueueMessage(queueItem: unknown, context: Invoc
           throw new Error('Failed to amend GIFT facility: facilityId is missing from queue message');
         }
 
-        await postToTfsApi(TFS_GIFT_INTERNAL_URLS.facilityAmendment(item.facilityId), item.payload, `Failed to amend GIFT facility ${facilityId}`, context);
+        await postToTfsApi(TFS_GIFT_POST_URLS.facilityAmendment(item.facilityId), item.payload, `Failed to amend GIFT facility ${facilityId}`, context);
         context.log('GIFT facility amendment succeeded for facilityId:', facilityId);
         break;
       case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_MULTIPLE_AMENDMENTS:
@@ -65,7 +71,7 @@ export async function processGiftQueueMessage(queueItem: unknown, context: Invoc
         }
 
         await postToTfsApi(
-          TFS_GIFT_INTERNAL_URLS.facilityMultipleAmendments(item.facilityId),
+          TFS_GIFT_POST_URLS.facilityMultipleAmendments(item.facilityId),
           item.payload,
           `Failed to amend GIFT facility (multiple amendments) ${facilityId}`,
           context,
@@ -77,7 +83,7 @@ export async function processGiftQueueMessage(queueItem: unknown, context: Invoc
           throw new Error('Failed to get GIFT facility: facilityId is missing from queue message');
         }
 
-        await getFromTfsApi(TFS_GIFT_INTERNAL_URLS.facilityGet(item.facilityId), {}, `Failed to get GIFT facility ${facilityId}`, context);
+        await getFromTfsApi(TFS_GIFT_GET_PATHS.facilityGet(item.facilityId), {}, `Failed to get GIFT facility ${facilityId}`, context);
         context.log('GIFT facility retrieval succeeded for facilityId:', facilityId);
         break;
       case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_GET_MANY:
@@ -85,7 +91,7 @@ export async function processGiftQueueMessage(queueItem: unknown, context: Invoc
           throw new Error('Failed to get GIFT facilities: ids is missing from queue message');
         }
 
-        await getFromTfsApi(TFS_GIFT_INTERNAL_URLS.facilitiesGet, { ids: item.ids.join(',') }, `Failed to get GIFT facilities ${facilityId}`, context);
+        await getFromTfsApi(TFS_GIFT_GET_PATHS.facilitiesGet, { ids: item.ids.join(',') }, `Failed to get GIFT facilities ${facilityId}`, context);
         context.log('GIFT facilities retrieval succeeded for ids:', facilityId);
         break;
       default:
