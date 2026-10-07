@@ -2,7 +2,7 @@ import { HttpStatus } from '@nestjs/common';
 import axios from 'axios';
 import * as dotenv from 'dotenv';
 import { PinoLogger } from 'nestjs-pino';
-import { GiftConfig as giftConfig } from '@ukef/config/gift.config';
+import { GiftConfig } from '@ukef/config/gift.config';
 import { HEADERS } from '@ukef/constants';
 import { mockResponse200, mockResponse201, mockResponse204, mockResponse500 } from '@ukef-test/http-response';
 
@@ -68,7 +68,7 @@ describe('GiftHttpService', () => {
       new GiftHttpService(logger).createAxiosInstance();
 
       // Assert
-      const { baseUrl, apiKeyHeaderName, apiKeyHeaderValue } = giftConfig();
+      const { baseUrl, apiKeyHeaderName, apiKeyHeaderValue } = GiftConfig();
 
       expect(mockAxiosCreate).toHaveBeenCalled();
 
