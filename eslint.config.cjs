@@ -15,8 +15,6 @@ const { rules: prettierConfigRules } = prettierConfig;
 
 const js = require('@eslint/js');
 
-const { createTypeScriptImportResolver } = require('eslint-import-resolver-typescript');
-
 module.exports = defineConfig([
   {
     ignores: [
@@ -233,24 +231,6 @@ module.exports = defineConfig([
       '@stylistic/no-confusing-arrow': 'off',
       '@stylistic/newline-per-chained-call': 'off',
       '@stylistic/generator-star-spacing': 'off',
-    },
-
-    settings: {
-      'import-x/resolver-next': [
-        createTypeScriptImportResolver({
-          project: [
-            './libs/gift-api-client/tsconfig.json',
-            './libs/gift-common/tsconfig.json',
-            './libs/gift-test-utils/tsconfig.json',
-            './packages/gift-api/tsconfig.json',
-            './packages/gift-functions/tsconfig.json',
-            './packages/gift-ui/tsconfig.json',
-            './test/e2e/tsconfig.json',
-            './test/packages/gift-mock-data-seeder/tsconfig.json',
-            './test/packages/login-microsoftonline-com-mock/tsconfig.json',
-          ],
-        }),
-      ],
     },
   },
 
