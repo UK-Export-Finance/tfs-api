@@ -5,14 +5,14 @@ import { ExternalServiceConfig } from '@ukef/types';
 
 const KEY = 'gift';
 
-export type GiftConfig = ExternalServiceConfig & {
+export type GiftConfigType = ExternalServiceConfig & {
   apiKeyHeaderName: string;
   apiKeyHeaderValue: string;
 };
 
 export const GiftConfig = registerAs(
   KEY,
-  (): GiftConfig => ({
+  (): GiftConfigType => ({
     baseUrl: process.env.GIFT_API_URL!,
     apiKeyHeaderName: HEADERS.X_API_KEY,
     apiKeyHeaderValue: process.env.GIFT_API_KEY!,

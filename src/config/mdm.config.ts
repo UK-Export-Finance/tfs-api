@@ -6,14 +6,14 @@ const KEY = 'mdm';
 
 export { KEY as MDM_CONFIG_KEY };
 
-export type MdmConfig = ExternalServiceConfig & {
+export type MdmConfigType = ExternalServiceConfig & {
   apiKeyHeaderName: string;
   apiKeyHeaderValue: string;
 };
 
 export const MdmConfig = registerAs(
   KEY,
-  (): MdmConfig => ({
+  (): MdmConfigType => ({
     baseUrl: process.env.APIM_MDM_URL!,
     apiKeyHeaderName: process.env.APIM_MDM_KEY!,
     apiKeyHeaderValue: process.env.APIM_MDM_VALUE!,

@@ -1,9 +1,9 @@
 import { withEnvironmentVariableParsingUnitTests } from '@ukef-test/common-tests/environment-variable-parsing-unit-tests';
 
-import { MdmConfig, MdmConfig as mdmConfig } from './mdm.config';
+import { MdmConfigType, MdmConfig } from './mdm.config';
 
 describe('mdmConfig', () => {
-  const configDirectlyFromEnvironmentVariables: { configPropertyName: keyof MdmConfig; environmentVariableName: string }[] = [
+  const configDirectlyFromEnvironmentVariables: { configPropertyName: keyof MdmConfigType; environmentVariableName: string }[] = [
     {
       configPropertyName: 'baseUrl',
       environmentVariableName: 'APIM_MDM_URL',
@@ -19,7 +19,7 @@ describe('mdmConfig', () => {
   ];
 
   const configParsedAsIntFromEnvironmentVariablesWithDefault: {
-    configPropertyName: keyof MdmConfig;
+    configPropertyName: keyof MdmConfigType;
     environmentVariableName: string;
     defaultConfigValue: number;
   }[] = [
@@ -38,6 +38,6 @@ describe('mdmConfig', () => {
   withEnvironmentVariableParsingUnitTests({
     configDirectlyFromEnvironmentVariables,
     configParsedAsIntFromEnvironmentVariablesWithDefault,
-    getConfig: () => mdmConfig(),
+    getConfig: () => MdmConfig(),
   });
 });

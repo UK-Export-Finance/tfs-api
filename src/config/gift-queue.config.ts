@@ -4,7 +4,7 @@ const KEY = 'giftQueue';
 
 export { KEY as GIFT_QUEUE_CONFIG_KEY };
 
-export type GiftQueueConfig = {
+export type GiftQueueConfigType = {
   storageAccountName?: string;
   connectionString?: string;
   clientId?: string;
@@ -13,7 +13,7 @@ export type GiftQueueConfig = {
 
 export const GiftQueueConfig = registerAs(
   KEY,
-  (): GiftQueueConfig => ({
+  (): GiftQueueConfigType => ({
     storageAccountName: process.env.GIFT_QUEUE_STORAGE_ACCOUNT_NAME,
     connectionString: process.env.GIFT_QUEUE_STORAGE_CONNECTION_STRING,
     clientId: process.env.AZURE_CLIENT_ID,
