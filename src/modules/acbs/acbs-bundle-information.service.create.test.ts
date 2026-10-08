@@ -21,7 +21,7 @@ describe('AcbsBundleInformationService', () => {
   const baseUrl = valueGenerator.httpsUrl();
   const useReturnExceptionHeader = false;
   const { servicingQueueIdentifier } = PROPERTIES.GLOBAL;
-  let facilityIdentifier = valueGenerator.ukefId();
+  const facilityIdentifier = valueGenerator.ukefId();
   const bundleIdentifier = valueGenerator.acbsBundleId();
   const borrowerPartyIdentifier = valueGenerator.acbsPartyId();
   const effectiveDate = valueGenerator.dateOnlyString();
@@ -397,19 +397,19 @@ describe('AcbsBundleInformationService', () => {
     });
 
     describe('creating a FacilityFeeAmountTransaction', () => {
-      facilityIdentifier = valueGenerator.facilityId();
+      const facilityFeeAmountTransactionFacilityIdentifier = valueGenerator.facilityId();
 
       const { acbsFixedFeesAmendmentForIncrease } = new CreateFacilityFixedFeesAmountAmendmentGenerator(
         valueGenerator,
         new DateStringTransformations(),
-      ).generate({ numberToGenerate: 1, facilityIdentifier });
+      ).generate({ numberToGenerate: 1, facilityIdentifier: facilityFeeAmountTransactionFacilityIdentifier });
 
       const expectedHttpServicePostArgsForFacilityFeeAmountTransaction = expectedHttpServicePostArgsWithBody(acbsFixedFeesAmendmentForIncrease);
 
       it('throws an AcbsResourceNotFoundException if ACBS responds with a 400 error that is a string containing "Facility does not exist"', async () => {
         const axiosError = new AxiosError();
         axiosError.response = {
-          data: `Facility does not exist or user does not have access to it: '${facilityIdentifier}'`,
+          data: `Facility does not exist or user does not have access to it: '${facilityFeeAmountTransactionFacilityIdentifier}'`,
           status: 400,
           statusText: 'Bad Request',
           headers: undefined!,
@@ -423,7 +423,9 @@ describe('AcbsBundleInformationService', () => {
         const createBundleInformationPromise = service.createBundleInformation(acbsFixedFeesAmendmentForIncrease, idToken);
 
         await expect(createBundleInformationPromise).rejects.toBeInstanceOf(AcbsResourceNotFoundException);
-        await expect(createBundleInformationPromise).rejects.toThrow(`Facility with identifier ${facilityIdentifier} was not found by ACBS.`);
+        await expect(createBundleInformationPromise).rejects.toThrow(
+          `Facility with identifier ${facilityFeeAmountTransactionFacilityIdentifier} was not found by ACBS.`,
+        );
         await expect(createBundleInformationPromise).rejects.toHaveProperty('innerError', axiosError);
       });
 

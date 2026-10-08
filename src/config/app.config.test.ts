@@ -164,6 +164,7 @@ describe('AppConfig', () => {
       const config = AppConfig();
 
       const expected = {
+        enable: false,
         prefix: VERSION_PREFIX,
         prefixAndVersion: `${VERSION_PREFIX}${mockHttpVersion}`,
         version: mockHttpVersion,
