@@ -33,7 +33,7 @@ type AmendObligationsParams = GiftAmendmentBaseParams & {
 export class GiftAmountAmendmentService {
   constructor(
     private readonly giftHttpService: GiftHttpService,
-    private readonly giftWorkPackageService: GiftWorkPackageService, // TODO: remove
+    private readonly giftWorkPackageService: GiftWorkPackageService,
     private readonly logger: PinoLogger,
   ) {}
 
