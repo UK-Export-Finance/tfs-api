@@ -14,11 +14,13 @@ import {
   SENSITIVE_RESPONSE_HEADER_NAMES,
 } from './modules/acbs-authentication/acbs-authentication.constants';
 
+const CONFIGS = [AcbsAuthenticationConfig, AcbsConfig, AppConfig, DocConfig, GiftConfig, GiftQueueConfig, MdmConfig];
+
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [AcbsAuthenticationConfig, AcbsConfig, AppConfig, DocConfig, GiftConfig, GiftQueueConfig, MdmConfig],
+      load: CONFIGS,
     }),
     LoggerModule.forRootAsync({
       imports: [ConfigModule],
