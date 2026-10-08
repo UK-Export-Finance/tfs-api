@@ -7,6 +7,7 @@ import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
 import { GetFacilityGuaranteeGenerator } from '@ukef-test/support/generator/get-facility-guarantee-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
+import { NOCK_NULL_RESPONSE_BODY } from '@ukef-test/support/helpers/nock-null-response-body.helper';
 import nock from 'nock';
 
 describe('GET /facilities/{facilityIdentifier}/guarantees', () => {
@@ -82,7 +83,7 @@ describe('GET /facilities/{facilityIdentifier}/guarantees', () => {
 
   it('returns a 404 response if ACBS returns a 200 response with null as the response body', async () => {
     givenAuthenticationWithTheIdpSucceeds();
-    requestToGetGuaranteesForFacility().reply(200, null!);
+    requestToGetGuaranteesForFacility().reply(200, {});
 
     const { status, body } = await api.get(getFacilityGuaranteesUrl);
 

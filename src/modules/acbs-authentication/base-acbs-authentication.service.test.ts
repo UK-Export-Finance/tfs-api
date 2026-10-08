@@ -281,7 +281,7 @@ describe('BaseAcbsAuthenticationService', () => {
 
     it('throws an AcbsAuthenticationFailedException if the IdP returns undefined data', async () => {
       mockSuccessfulCreateSessionRequest();
-      mockSuccessfulGetTokenForSessionRequestReturning(undefined!);
+      mockSuccessfulGetTokenForSessionRequestReturning({});
 
       const getTokenPromise = service.getIdToken();
 
@@ -292,7 +292,7 @@ describe('BaseAcbsAuthenticationService', () => {
 
     it('throws an AcbsAuthenticationFailedException if the IdP returns null data', async () => {
       mockSuccessfulCreateSessionRequest();
-      mockSuccessfulGetTokenForSessionRequestReturning(null!);
+      mockSuccessfulGetTokenForSessionRequestReturning({});
 
       const getTokenPromise = service.getIdToken();
 

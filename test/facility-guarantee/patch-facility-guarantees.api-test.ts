@@ -11,6 +11,7 @@ import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
 import { GetFacilityGuaranteeGenerator } from '@ukef-test/support/generator/get-facility-guarantee-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
+import { NOCK_NULL_RESPONSE_BODY } from '@ukef-test/support/helpers/nock-null-response-body.helper';
 import nock from 'nock';
 
 describe('PATCH /facilities/{facilityIdentifier}/guarantees', () => {
@@ -174,7 +175,7 @@ describe('PATCH /facilities/{facilityIdentifier}/guarantees', () => {
     });
 
     it('returns a 404 response if ACBS returns a 200 response with null as the response body when getting the facility guarantees', async () => {
-      requestToGetGuaranteesForFacilityWithId(facilityIdentifier).reply(200, null!);
+      requestToGetGuaranteesForFacilityWithId(facilityIdentifier).reply(200, NOCK_NULL_RESPONSE_BODY);
 
       const { status, body } = await api.patch(updateFacilityGuaranteesUrl, requestBodyToUpdateFacilityGuarantees);
 
