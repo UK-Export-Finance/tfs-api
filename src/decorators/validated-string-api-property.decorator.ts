@@ -1,11 +1,11 @@
 import { applyDecorators } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
-import { regexToString } from '@ukef/helpers';
 import { IsEnum, IsString, Length, Matches } from 'class-validator';
+import { regexToString } from '@ukef/helpers';
 
 import { NullableOption, parseRequiredAndNullable, RequiredOption } from './parse-required-and-nullable-validation.helper';
 
-interface Options {
+type Options = {
   description: string;
   length?: number;
   minLength?: number;
@@ -13,16 +13,16 @@ interface Options {
   required?: RequiredOption;
   nullable?: NullableOption;
   pattern?: RegExp;
-  enum?: any;
+  enum?: Record<string, string | number> | (string | number)[];
   example?: string;
   default?: string;
-}
+};
 
 export const ValidatedStringApiProperty = ({
   description,
   length,
-  minLength,
-  maxLength,
+  minLength: minLengthOption,
+  maxLength: maxLengthOption,
   required,
   nullable,
   pattern,
@@ -30,8 +30,8 @@ export const ValidatedStringApiProperty = ({
   example,
   default: theDefault,
 }: Options) => {
-  minLength = length ?? minLength ?? 0;
-  maxLength = length ?? maxLength;
+  const minLength = length ?? minLengthOption ?? 0;
+  const maxLength = length ?? maxLengthOption;
 
   const { shouldPropertyBeDocumentedAsRequired, shouldPropertyBeDocumentedAsNullable, validationDecoratorsToApply } = parseRequiredAndNullable({
     required,
@@ -59,8 +59,10 @@ export const ValidatedStringApiProperty = ({
   if (pattern) {
     decoratorsToApply.push(Matches(pattern));
   }
+
   if (theEnum) {
     decoratorsToApply.push(IsEnum(theEnum));
   }
+
   return applyDecorators(...decoratorsToApply);
 };

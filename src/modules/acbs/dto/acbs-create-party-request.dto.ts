@@ -1,6 +1,6 @@
 import { DateString } from '@ukef/helpers/date-string.type';
 
-export interface AcbsCreatePartyRequestDto {
+export type AcbsCreatePartyRequestDto = {
   PartyAlternateIdentifier: string;
   IndustryClassification: {
     IndustryClassificationCode: string;
@@ -66,4 +66,4 @@ export interface AcbsCreatePartyRequestDto {
   WatchListReason: {
     WatchListReasonCode: string;
   };
-}
+};

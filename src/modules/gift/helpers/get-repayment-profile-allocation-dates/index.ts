@@ -1,4 +1,4 @@
-import { GiftRepaymentProfileRequestDto } from '../../dto';
+import type { GiftRepaymentProfileRequestDto } from '@ukef/modules/gift/dto';
 
 /**
  * Get all allocation dates from GIFT repayment profile allocations
@@ -12,6 +12,8 @@ export const getRepaymentProfileAllocationDates = (repaymentProfiles?: GiftRepay
         if (Array.isArray(profile.allocations)) {
           return profile.allocations.map((allocation) => allocation.dueDate);
         }
+
+        return [];
       })
       .flat();
   }

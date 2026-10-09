@@ -1,11 +1,11 @@
+import { when } from 'jest-when';
 import { AcbsPartyExternalRatingService } from '@ukef/modules/acbs/acbs-party-external-rating.service';
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
 import { CreatePartyExternalRatingGenerator } from '@ukef-test/support/generator/create-party-external-rating-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { when } from 'jest-when';
 
-import { DateStringTransformations } from '../date/date-string.transformations';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { PartyExternalRatingService } from './party-external-rating.service';
 
 jest.mock('@ukef/modules/acbs/acbs-party-external-rating.service');
@@ -28,7 +28,7 @@ describe('PartyExternalRatingService', () => {
     const acbsAuthenticationServiceGetIdToken = mockAcbsAuthenticationService.getIdToken;
     when(acbsAuthenticationServiceGetIdToken).calledWith().mockResolvedValueOnce(idToken);
 
-    acbsService = new AcbsPartyExternalRatingService(null, null);
+    acbsService = new AcbsPartyExternalRatingService(null!, null!);
     acbsPartyExternalRatingServiceCreateExternalRatingForParty = jest.fn();
     acbsService.createExternalRatingForParty = acbsPartyExternalRatingServiceCreateExternalRatingForParty;
 

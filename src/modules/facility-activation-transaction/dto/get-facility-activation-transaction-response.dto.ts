@@ -9,7 +9,7 @@ export class GetFacilityActivationTransactionResponseDto {
     maxLength: 2,
     example: PROPERTIES.GLOBAL.portfolioIdentifier,
   })
-  readonly portfolioIdentifier: string;
+  readonly portfolioIdentifier!: string;
 
   @ApiProperty({
     description: 'The identifier of the facility in ACBS.',
@@ -17,7 +17,7 @@ export class GetFacilityActivationTransactionResponseDto {
     maxLength: 10,
     example: EXAMPLES.FACILITY_ID,
   })
-  readonly facilityIdentifier: string;
+  readonly facilityIdentifier!: string;
 
   @ApiProperty({
     description: 'A numeric code denoting the status of the bundle.',
@@ -26,7 +26,7 @@ export class GetFacilityActivationTransactionResponseDto {
     enum: ENUMS.BUNDLE_STATUS_CODES,
     example: EXAMPLES.BUNDLE_STATUS_CODE,
   })
-  readonly bundleStatusCode: string;
+  readonly bundleStatusCode!: string;
 
   @ApiProperty({
     description: 'A description of the status of the bundle corresponding to the bundle status code.',
@@ -34,7 +34,7 @@ export class GetFacilityActivationTransactionResponseDto {
     maxLength: 20,
     example: EXAMPLES.BUNDLE_STATUS_DESC,
   })
-  readonly bundleStatusDesc: string;
+  readonly bundleStatusDesc!: string;
 
   @ApiProperty({
     description: 'In most situations the value should be 100, it means first level obligor.',
@@ -42,14 +42,14 @@ export class GetFacilityActivationTransactionResponseDto {
     minLength: 3,
     maxLength: 3,
   })
-  readonly lenderTypeCode: string;
+  readonly lenderTypeCode!: string;
 
   @ApiProperty({
     description: 'In most situations the value should be 3, it means auto approval.',
     example: ENUMS.INITIAL_BUNDLE_STATUS_CODES.SUBMIT_FOR_POSTING,
     enum: ENUMS.INITIAL_BUNDLE_STATUS_CODES,
   })
-  readonly initialBundleStatusCode: number;
+  readonly initialBundleStatusCode!: number;
 
   @ApiProperty({
     description: `A value used to populate the Bundle Properties 'Initiated By' field.`,
@@ -58,7 +58,7 @@ export class GetFacilityActivationTransactionResponseDto {
     example: EXAMPLES.INITIATING_USERNAME,
     required: false,
   })
-  readonly initiatingUserName: string;
+  readonly initiatingUserName!: string;
 
   @ApiProperty({
     description: `The identifier of the account owner in ACBS.`,
@@ -67,7 +67,7 @@ export class GetFacilityActivationTransactionResponseDto {
     example: PROPERTIES.FACILITY_ACTIVATION_TRANSACTION.DEFAULT.bundleMessageList.accountOwnerIdentifier,
     required: false,
   })
-  readonly accountOwnerIdentifier: AcbsPartyId;
+  readonly accountOwnerIdentifier!: AcbsPartyId;
 
   @ApiProperty({
     description: 'The effective date of the facility.',
@@ -75,7 +75,7 @@ export class GetFacilityActivationTransactionResponseDto {
     format: 'date',
     required: false,
   })
-  readonly effectiveDate: DateOnlyString;
+  readonly effectiveDate!: DateOnlyString;
 
   @ApiProperty({
     description: `'A' for 'Active' to activate facility or 'C' to cancel.`,
@@ -84,7 +84,7 @@ export class GetFacilityActivationTransactionResponseDto {
     example: PROPERTIES.FACILITY_ACTIVATION_TRANSACTION.DEFAULT.bundleMessageList.facilityTransactionCodeValue.facilityTransactionCodeValueCode,
     required: false,
   })
-  readonly facilityTransactionCodeValueCode: string;
+  readonly facilityTransactionCodeValueCode!: string;
 
   @ApiProperty({
     description: 'A numeric code denoting the credit arrangement payment transaction type.',
@@ -93,13 +93,13 @@ export class GetFacilityActivationTransactionResponseDto {
     example: PROPERTIES.FACILITY_ACTIVATION_TRANSACTION.DEFAULT.bundleMessageList.facilityTransactionCodeValue.facilityTransactionCodeValueCode,
     required: false,
   })
-  readonly facilityTransactionTypeCode: number;
+  readonly facilityTransactionTypeCode!: number;
 
   @ApiProperty({
     description: 'If this value is true, it sets the bundle to draft.',
     required: false,
   })
-  readonly isDraftIndicator: boolean;
+  readonly isDraftIndicator!: boolean;
 
   @ApiProperty({
     description: 'The party identifier of the obligor.',
@@ -108,7 +108,7 @@ export class GetFacilityActivationTransactionResponseDto {
     example: EXAMPLES.PARTY_ID,
     required: false,
   })
-  readonly limitKeyValue: AcbsPartyId;
+  readonly limitKeyValue!: AcbsPartyId;
 
   @ApiProperty({
     description: `A numeric code denoting the type of limit established for the involved fee. '00' is 'overall limit'.`,
@@ -118,7 +118,7 @@ export class GetFacilityActivationTransactionResponseDto {
     example: PROPERTIES.FACILITY_ACTIVATION_TRANSACTION.DEFAULT.bundleMessageList.limitType.limitTypeCode,
     required: false,
   })
-  readonly limitTypeCode: string;
+  readonly limitTypeCode!: string;
 
   @ApiProperty({
     description: `The section identifier to which the limit is associated. For example, if the limit is created under the overall facility, this value is '00'; if created under a section, this is the ID of that section.`,
@@ -127,5 +127,5 @@ export class GetFacilityActivationTransactionResponseDto {
     example: PROPERTIES.FACILITY_ACTIVATION_TRANSACTION.DEFAULT.bundleMessageList.sectionIdentifier,
     required: false,
   })
-  readonly sectionIdentifier: string;
+  readonly sectionIdentifier!: string;
 }

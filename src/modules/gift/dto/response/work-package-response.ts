@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { EXAMPLES } from '@ukef/constants';
 import { IsBoolean, IsNumber, IsObject, IsString } from 'class-validator';
+import { EXAMPLES } from '@ukef/constants';
 
 const {
   GIFT: { WORK_PACKAGE_CREATION_RESPONSE_DATA },
@@ -17,29 +17,29 @@ export class GiftWorkPackageResponseDto {
   @ApiProperty({
     example: WORK_PACKAGE_CREATION_RESPONSE_DATA.id,
   })
-  readonly id: number;
+  readonly id!: number;
 
   @IsString()
   @ApiProperty({
     example: WORK_PACKAGE_CREATION_RESPONSE_DATA.type,
   })
-  readonly type: string;
+  readonly type!: string;
 
   @IsBoolean()
   @ApiProperty({
     example: WORK_PACKAGE_CREATION_RESPONSE_DATA.isApproved,
   })
-  readonly isApproved: boolean;
+  readonly isApproved!: boolean;
 
   @IsString()
   @ApiProperty({
     example: WORK_PACKAGE_CREATION_RESPONSE_DATA.createdByUserId,
   })
-  readonly createdByUserId: string;
+  readonly createdByUserId!: string;
 
   @IsObject()
   @ApiProperty({
     example: WORK_PACKAGE_CREATION_RESPONSE_DATA.data,
   })
-  readonly data: object;
+  readonly data!: object;
 }

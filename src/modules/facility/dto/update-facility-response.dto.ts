@@ -7,7 +7,7 @@ export class UpdateFacilityFacilityIdentifierResponse {
   @ValidatedFacilityIdentifierApiProperty({
     description: 'The identifier of the updated facility.',
   })
-  readonly facilityIdentifier: UkefId;
+  readonly facilityIdentifier!: UkefId;
 }
 
 export class UpdateFacilityBundleIdentifierResponse {
@@ -15,5 +15,5 @@ export class UpdateFacilityBundleIdentifierResponse {
     description: 'The ID of the created loan amendment bundle.',
     example: EXAMPLES.ACBS_BUNDLE_ID,
   })
-  readonly bundleIdentifier: AcbsBundleId;
+  readonly bundleIdentifier!: AcbsBundleId;
 }

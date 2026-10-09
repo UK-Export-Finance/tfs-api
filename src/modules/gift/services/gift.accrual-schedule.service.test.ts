@@ -1,6 +1,6 @@
+import { PinoLogger } from 'nestjs-pino';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { mockResponse201, mockResponse400, mockResponse418, mockResponse500 } from '@ukef-test/http-response';
-import { PinoLogger } from 'nestjs-pino';
 
 import { GiftAccrualScheduleService } from './gift.accrual-schedule.service';
 
@@ -117,8 +117,7 @@ describe('GiftAccrualScheduleService', () => {
         // Assert
         expect(mockHttpServicePost).toHaveBeenCalledTimes(1);
 
-        const expectedPayload = mockPayload;
-        delete expectedPayload.baseRate;
+        const { baseRate, ...expectedPayload } = mockPayload;
 
         const expected = {
           path: `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_ACCRUAL_SCHEDULE_INDEXED_RATE}`,

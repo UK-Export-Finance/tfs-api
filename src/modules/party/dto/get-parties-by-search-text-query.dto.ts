@@ -9,5 +9,5 @@ export class GetPartiesBySearchTextQuery {
     minLength: 3,
     pattern: endsInAWhitespaceCharacter,
   })
-  searchText: string;
+  searchText!: string;
 }

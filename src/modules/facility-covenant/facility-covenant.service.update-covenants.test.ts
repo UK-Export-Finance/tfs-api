@@ -1,11 +1,11 @@
+import { when } from 'jest-when';
 import { PROPERTIES } from '@ukef/constants';
 import { AcbsFacilityCovenantService } from '@ukef/modules/acbs/acbs-facility-covenant.service';
 import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
 import { GetFacilityCovenantGenerator } from '@ukef-test/support/generator/get-facility-covenant-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { when } from 'jest-when';
 
-import { DateStringTransformations } from '../date/date-string.transformations';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { FacilityCovenantService } from './facility-covenant.service';
 
 jest.mock('@ukef/modules/date/current-date.provider');
@@ -25,7 +25,7 @@ describe('FacilityCovenantService', () => {
   let acbsFacilityCovenantServiceReplaceCovenantForFacility: jest.Mock;
 
   beforeEach(() => {
-    const acbsFacilityCovenantService = new AcbsFacilityCovenantService(null, null);
+    const acbsFacilityCovenantService = new AcbsFacilityCovenantService(null!, null!);
     acbsFacilityCovenantServiceGetCovenantsForFacility = jest.fn();
     acbsFacilityCovenantService.getCovenantsForFacility = acbsFacilityCovenantServiceGetCovenantsForFacility;
     acbsFacilityCovenantServiceReplaceCovenantForFacility = jest.fn();

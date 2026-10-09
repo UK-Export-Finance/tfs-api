@@ -1,9 +1,9 @@
 import { DefaultAzureCredential } from '@azure/identity';
 import { QueueServiceClient } from '@azure/storage-queue';
 import { ConfigService } from '@nestjs/config';
-import { GiftQueueConfig, KEY as GIFT_QUEUE_CONFIG_KEY } from '@ukef/config/gift-queue.config';
-import { EXAMPLES, GIFT } from '@ukef/constants';
 import { PinoLogger } from 'nestjs-pino';
+import { GiftQueueConfigType, GIFT_QUEUE_CONFIG_KEY } from '@ukef/config/gift-queue.config';
+import { EXAMPLES, GIFT } from '@ukef/constants';
 
 import { GiftQueueService } from './gift.queue.service';
 
@@ -22,7 +22,7 @@ type FacilityCreationMessage = Extract<EnqueueMessage, { messageType: 'FACILITY_
 type FacilityAmendmentMessage = Extract<EnqueueMessage, { messageType: 'FACILITY_AMENDMENT' }>;
 type FacilityMultipleAmendmentsMessage = Extract<EnqueueMessage, { messageType: 'FACILITY_MULTIPLE_AMENDMENTS' }>;
 
-const mockQueueConfig: GiftQueueConfig = {
+const mockQueueConfig: GiftQueueConfigType = {
   storageAccountName: undefined,
   connectionString: mockConnectionString,
   clientId: undefined,
@@ -103,7 +103,7 @@ describe('GiftQueueService', () => {
         mockQueueServiceClientConstructor = jest.fn().mockReturnValue({ getQueueClient: mockGetQueueClient });
         (QueueServiceClient as unknown as jest.Mock).mockImplementation(mockQueueServiceClientConstructor);
 
-        const managedIdentityConfig: GiftQueueConfig = {
+        const managedIdentityConfig: GiftQueueConfigType = {
           storageAccountName: mockStorageAccountName,
           connectionString: undefined,
           clientId: mockClientId,
@@ -133,7 +133,7 @@ describe('GiftQueueService', () => {
     describe('when neither connectionString nor storageAccountName is provided', () => {
       it('should throw an error', () => {
         // Arrange
-        const invalidConfig: GiftQueueConfig = {
+        const invalidConfig: GiftQueueConfigType = {
           storageAccountName: undefined,
           connectionString: undefined,
           clientId: undefined,
@@ -243,10 +243,10 @@ describe('GiftQueueService', () => {
     describe('when queueClient.sendMessage is successful', () => {
       it('should resolve without returning a value', async () => {
         // Act
-        const result = await service.enqueue(mockCreationMessage);
+        const result = service.enqueue(mockCreationMessage);
 
         // Assert
-        expect(result).toBeUndefined();
+        await expect(result).resolves.toBeUndefined();
       });
     });
 

@@ -1,6 +1,6 @@
 import { DateString } from '@ukef/helpers';
 
-export interface AcbsCreateFacilityCovenantRequestDto {
+export type AcbsCreateFacilityCovenantRequestDto = {
   AccountOwnerIdentifier: string;
   ComplianceEvaluationMode: {
     CovenantEvaluationModeCode: string;
@@ -34,4 +34,4 @@ export interface AcbsCreateFacilityCovenantRequestDto {
   InComplianceIndicator: boolean;
   WaivedIndicator: boolean;
   NextReviewDate: DateString;
-}
+};

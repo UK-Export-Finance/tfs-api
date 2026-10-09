@@ -29,13 +29,13 @@ describe('AuthService', () => {
   });
 
   it('should return `false` when API Key is `null`', () => {
-    const result = authService.validateApiKey(null);
+    const result = authService.validateApiKey(null!);
 
     expect(result).toBe(false);
   });
 
   it('should return `false` when API Key is `undefined`', () => {
-    const result = authService.validateApiKey(undefined);
+    const result = authService.validateApiKey(undefined!);
 
     expect(result).toBe(false);
   });

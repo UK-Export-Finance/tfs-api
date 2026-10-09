@@ -1,9 +1,9 @@
 import { HttpService } from '@nestjs/axios';
-import { PROPERTIES } from '@ukef/constants';
-import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { AxiosError } from 'axios';
 import { when } from 'jest-when';
 import { of, throwError } from 'rxjs';
+import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
+import { PROPERTIES } from '@ukef/constants';
 
 import { AcbsFacilityGuaranteeService } from './acbs-facility-guarantee.service';
 import { AcbsGetFacilityGuaranteeDto, AcbsGetFacilityGuaranteesResponseDto } from './dto/acbs-get-facility-guarantees-response.dto';

@@ -1,8 +1,8 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import giftConfig, { GiftConfig } from '@ukef/config/gift.config';
-import { HEADERS } from '@ukef/constants';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
+import { GiftConfigType, GiftConfig } from '@ukef/config/gift.config';
+import { HEADERS } from '@ukef/constants';
 
 const { CONTENT_TYPE } = HEADERS;
 
@@ -35,10 +35,11 @@ export const GIFT_API_ACCEPTABLE_DELETE_STATUSES = [HttpStatus.NO_CONTENT];
 @Injectable()
 export class GiftHttpService {
   private axiosInstance: AxiosInstance;
-  private readonly config: GiftConfig;
+
+  private readonly config: GiftConfigType;
 
   constructor(private readonly logger: PinoLogger) {
-    this.config = giftConfig();
+    this.config = GiftConfig();
 
     this.axiosInstance = this.createAxiosInstance();
   }

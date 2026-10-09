@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { GIFT } from '@ukef/constants';
 import { PinoLogger } from 'nestjs-pino';
+import { GIFT } from '@ukef/constants';
 
-import { GiftWorkPackageResponseDto } from '../dto';
+import { GiftWorkPackageResponseDto } from '@ukef/modules/gift/dto';
 import { GiftHttpService } from './gift.http.service';
 
 const { INTEGRATION_DEFAULTS, PATH } = GIFT;
@@ -12,9 +12,7 @@ export class GiftWorkPackageService {
   constructor(
     private readonly giftHttpService: GiftHttpService,
     private readonly logger: PinoLogger,
-  ) {
-    this.giftHttpService = giftHttpService;
-  }
+  ) {}
 
   /**
    * Create a GIFT work package for a facility

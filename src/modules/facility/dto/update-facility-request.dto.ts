@@ -1,5 +1,5 @@
-import { ValidatedFacilityIdentifierApiProperty } from '@ukef/decorators/validated-facility-identifier-api-property';
 import { Exclude } from 'class-transformer';
+import { ValidatedFacilityIdentifierApiProperty } from '@ukef/decorators/validated-facility-identifier-api-property';
 
 import { BaseUpdateFacilityRequestItem, BaseUpdateFacilityRequestItemWithFacilityIdentifier } from './base-facility-request.dto';
 

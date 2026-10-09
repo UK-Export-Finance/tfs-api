@@ -222,8 +222,8 @@ export const PROPERTIES = {
         purposeTypeCode: '   ',
         capitalClassCode: 'A',
         capitalConversionFactorCode: {
-          '250': '1',
-          '260': '5',
+          250: '1',
+          260: '5',
         },
         capitalConversionFactorCodeFallback: '1',
         financialFXRate: 1,
@@ -322,9 +322,9 @@ export const PROPERTIES = {
         fixedFeeChargeTypeCode: '1',
       },
       description: {
-        '250': 'Bond Support Premium',
-        '260': 'EWCS Premium',
-        '280': 'Financial Guarantee Fee',
+        250: 'Bond Support Premium',
+        260: 'EWCS Premium',
+        280: 'Financial Guarantee Fee',
       },
       fixedFeeEarningMethod: {
         fixedFeeEarningMethodCode: 'A',

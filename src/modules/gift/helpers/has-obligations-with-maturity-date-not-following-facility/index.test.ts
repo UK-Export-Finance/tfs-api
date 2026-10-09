@@ -3,7 +3,7 @@ import { hasObligationsWithMaturityDateNotFollowingFacility } from '.';
 describe('modules/gift/helpers/has-obligations-with-maturity-date-not-following-facility', () => {
   it('should return false when obligations is undefined', () => {
     // Act
-    const result = hasObligationsWithMaturityDateNotFollowingFacility(undefined);
+    const result = hasObligationsWithMaturityDateNotFollowingFacility(undefined!);
 
     // Assert
     expect(result).toBe(false);

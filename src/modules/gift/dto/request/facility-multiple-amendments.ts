@@ -2,8 +2,8 @@ import { ApiExtraModels, ApiProperty, getSchemaPath } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { ArrayNotEmpty, IsArray, IsDefined, ValidateNested } from 'class-validator';
 
-import { CreateGiftFacilityAmendmentRequestDto } from './facility-amendment';
-import { DecreaseAmountDto, IncreaseAmountDto, ReplaceExpiryDateDto } from './facility-amendment-shared';
+import { CreateGiftFacilityAmendmentRequestDto } from '@ukef/modules/gift/dto/request/facility-amendment';
+import { DecreaseAmountDto, IncreaseAmountDto, ReplaceExpiryDateDto } from '@ukef/modules/gift/dto/request/facility-amendment-shared';
 
 /**
  * CreateGiftFacilityMultipleAmendmentsRequestDto is the DTO for a request to create multiple facility amendments in GIFT.
@@ -24,5 +24,5 @@ export class CreateGiftFacilityMultipleAmendmentsRequestDto {
       $ref: getSchemaPath(CreateGiftFacilityAmendmentRequestDto),
     },
   })
-  amendments: CreateGiftFacilityAmendmentRequestDto[];
+  amendments!: CreateGiftFacilityAmendmentRequestDto[];
 }

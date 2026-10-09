@@ -1,7 +1,7 @@
 import { GIFT } from '@ukef/constants';
 import { GIFT_EXAMPLES } from '@ukef/constants/examples/gift.examples.constant';
 
-import { GiftObligationRequestDto } from '../../dto';
+import { GiftObligationRequestDto } from '@ukef/modules/gift/dto';
 import { hasValidFormat, hasValidObligationSubtypeCodeFormats } from '.';
 
 const {

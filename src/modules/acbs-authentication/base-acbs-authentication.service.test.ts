@@ -1,10 +1,10 @@
 import { HttpService } from '@nestjs/axios';
-import { ACBS } from '@ukef/constants';
-import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { AxiosError, AxiosHeaders } from 'axios';
 import { when } from 'jest-when';
 import { PinoLogger } from 'nestjs-pino';
 import { of, throwError } from 'rxjs';
+import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
+import { ACBS } from '@ukef/constants';
 
 import { BaseAcbsAuthenticationService } from './base-acbs-authentication.service';
 import { AcbsAuthenticationFailedException } from './exception/acbs-authentication-failed.exception';
@@ -48,7 +48,7 @@ describe('BaseAcbsAuthenticationService', () => {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         [apiKeyHeaderName]: apiKey,
-        Cookie: `${sessionIdWithCookieName}`,
+        Cookie: sessionIdWithCookieName,
       },
     },
   ];
@@ -84,6 +84,41 @@ describe('BaseAcbsAuthenticationService', () => {
       logger,
     );
   });
+
+  const mockSuccessfulCreateSessionRequestReturningCookies = (cookies: string[]): void => {
+    const headers = new AxiosHeaders();
+    headers['set-cookie'] = cookies;
+
+    when(httpServicePost)
+      .calledWith(...expectedPostSessionsArguments)
+      .mockReturnValueOnce(
+        of({
+          data: '',
+          status: 200,
+          statusText: 'OK',
+          config: undefined,
+          headers,
+        }),
+      );
+  };
+
+  const mockSuccessfulCreateSessionRequest = (): void => mockSuccessfulCreateSessionRequestReturningCookies([cookie1, sessionIdCookie, cookie2]);
+
+  const mockSuccessfulGetTokenForSessionRequestReturning = (data: unknown): void => {
+    when(httpServiceGet)
+      .calledWith(...expectedGetTokenArguments)
+      .mockReturnValueOnce(
+        of({
+          data,
+          status: 200,
+          statusText: 'OK',
+          config: undefined,
+          headers: undefined,
+        }),
+      );
+  };
+
+  const mockSuccessfulGetTokenForSessionRequest = (): void => mockSuccessfulGetTokenForSessionRequestReturning({ id_token: idToken });
 
   describe('successful authentication', () => {
     it('returns a token from the IdP if authentication is successful', async () => {
@@ -246,7 +281,7 @@ describe('BaseAcbsAuthenticationService', () => {
 
     it('throws an AcbsAuthenticationFailedException if the IdP returns undefined data', async () => {
       mockSuccessfulCreateSessionRequest();
-      mockSuccessfulGetTokenForSessionRequestReturning(undefined);
+      mockSuccessfulGetTokenForSessionRequestReturning({});
 
       const getTokenPromise = service.getIdToken();
 
@@ -257,7 +292,7 @@ describe('BaseAcbsAuthenticationService', () => {
 
     it('throws an AcbsAuthenticationFailedException if the IdP returns null data', async () => {
       mockSuccessfulCreateSessionRequest();
-      mockSuccessfulGetTokenForSessionRequestReturning(null);
+      mockSuccessfulGetTokenForSessionRequestReturning({});
 
       const getTokenPromise = service.getIdToken();
 
@@ -266,39 +301,4 @@ describe('BaseAcbsAuthenticationService', () => {
       await expect(getTokenPromise).rejects.toHaveProperty('innerError', undefined);
     });
   });
-
-  const mockSuccessfulCreateSessionRequest = (): void => mockSuccessfulCreateSessionRequestReturningCookies([cookie1, sessionIdCookie, cookie2]);
-
-  const mockSuccessfulCreateSessionRequestReturningCookies = (cookies: string[]): void => {
-    const headers = new AxiosHeaders();
-    headers['set-cookie'] = cookies;
-
-    when(httpServicePost)
-      .calledWith(...expectedPostSessionsArguments)
-      .mockReturnValueOnce(
-        of({
-          data: '',
-          status: 200,
-          statusText: 'OK',
-          config: undefined,
-          headers: headers,
-        }),
-      );
-  };
-
-  const mockSuccessfulGetTokenForSessionRequest = (): void => mockSuccessfulGetTokenForSessionRequestReturning({ id_token: idToken });
-
-  const mockSuccessfulGetTokenForSessionRequestReturning = (data: any): void => {
-    when(httpServiceGet)
-      .calledWith(...expectedGetTokenArguments)
-      .mockReturnValueOnce(
-        of({
-          data,
-          status: 200,
-          statusText: 'OK',
-          config: undefined,
-          headers: undefined,
-        }),
-      );
-  };
 });

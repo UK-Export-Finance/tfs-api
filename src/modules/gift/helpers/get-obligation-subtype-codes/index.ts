@@ -1,4 +1,4 @@
-import { GiftObligationRequestDto } from '../../dto';
+import type { GiftObligationRequestDto } from '@ukef/modules/gift/dto';
 
 /**
  * Get all obligation subtype codes from the payload.
@@ -16,4 +16,4 @@ import { GiftObligationRequestDto } from '../../dto';
  * [ 'A', 'B', 'C' ]
  */
 export const getObligationSubtypeCodes = (obligations: GiftObligationRequestDto[]): string[] =>
-  obligations.map((obligation) => obligation.subtypeCode).filter((subtypeCode) => Boolean(subtypeCode?.trim()));
+  obligations.map((obligation) => obligation.subtypeCode).filter((subtypeCode): subtypeCode is string => Boolean(subtypeCode?.trim()));

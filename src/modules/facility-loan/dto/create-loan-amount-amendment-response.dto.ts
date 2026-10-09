@@ -7,5 +7,5 @@ export class CreateLoanAmountAmendmentResponse {
     description: 'The ID of the created loan amendment bundle.',
     example: EXAMPLES.ACBS_BUNDLE_ID,
   })
-  readonly bundleIdentifier: AcbsBundleId;
+  readonly bundleIdentifier!: AcbsBundleId;
 }

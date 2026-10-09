@@ -2,7 +2,7 @@ import { DateString } from '@ukef/helpers';
 
 import { BundleAction } from './bundle-actions/bundle-action.type';
 
-export interface AcbsGetBundleInformationResponseDto<BundleMessageListItem extends BundleAction = BundleAction> {
+export type AcbsGetBundleInformationResponseDto<BundleMessageListItem extends BundleAction = BundleAction> = {
   PortfolioIdentifier: string;
   InitialBundleStatusCode: number;
   BundleStatus: {
@@ -12,4 +12,4 @@ export interface AcbsGetBundleInformationResponseDto<BundleMessageListItem exten
   InitiatingUserName: string;
   PostingDate: DateString;
   BundleMessageList: BundleMessageListItem[];
-}
+};

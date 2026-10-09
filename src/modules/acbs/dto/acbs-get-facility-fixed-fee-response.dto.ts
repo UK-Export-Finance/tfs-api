@@ -2,7 +2,7 @@ import { DateString } from '@ukef/helpers';
 
 export type AcbsGetFacilityFixedFeeResponseDto = AcbsGetFacilityFixedFeeResponseItem[];
 
-export interface AcbsGetFacilityFixedFeeResponseItem {
+export type AcbsGetFacilityFixedFeeResponseItem = {
   FixedFeeAmount: number;
   CurrentPayoffAmount: number;
   EffectiveDate: DateString;
@@ -20,4 +20,4 @@ export interface AcbsGetFacilityFixedFeeResponseItem {
   IncomeClass: {
     IncomeClassCode: string;
   };
-}
+};

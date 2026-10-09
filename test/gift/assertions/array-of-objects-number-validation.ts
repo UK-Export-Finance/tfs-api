@@ -8,8 +8,8 @@ type ArrayOfObjectsNumberValidationParams = {
   fieldName: string;
   parentFieldName: string;
   initialPayload: object;
-  min?: number;
-  max?: number;
+  min?: null | number;
+  max?: null | number;
   url: string;
 };
 

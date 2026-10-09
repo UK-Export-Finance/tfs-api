@@ -43,8 +43,10 @@ export class DealService {
     const { portfolioIdentifier } = PROPERTIES.GLOBAL;
     const idToken = await this.getIdToken();
     const requestBody: AcbsCreateDealDto = this.buildAcbsRequestBodyToCreateDeal(dealToCreate, portfolioIdentifier);
+
     await this.acbsDealService.createDeal(portfolioIdentifier, requestBody, idToken);
-    return this.updateBorrowingRestrictionForNewDeal(dealToCreate.dealIdentifier);
+
+    return void (await this.updateBorrowingRestrictionForNewDeal(dealToCreate.dealIdentifier));
   }
 
   private getIdToken(): Promise<string> {
@@ -74,7 +76,7 @@ export class DealService {
   }
 
   private createDealDescription(obligorName: string, currency: string, effectiveDate: Date): string {
-    return 'D: ' + obligorName.substring(0, 19) + ' ' + currency + ' ' + this.dateStringTransformations.getDisplayDateFromDate(effectiveDate);
+    return `D: ${obligorName.substring(0, 19)} ${currency} ${this.dateStringTransformations.getDisplayDateFromDate(effectiveDate)}`;
   }
 
   private buildAcbsRequestBodyToCreateDealFromDefaults({

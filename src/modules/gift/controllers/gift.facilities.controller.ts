@@ -1,10 +1,10 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiInternalServerErrorResponse, ApiOkResponse, ApiOperation, ApiQuery, ApiUnauthorizedResponse } from '@nestjs/swagger';
-import AppConfig from '@ukef/config/app.config';
+import { AppConfig } from '@ukef/config/app.config';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 
-import { FacilityIdsOperationParamsDto, GiftFacilityResponseDto } from '../dto';
-import { GiftFacilityService } from '../services';
+import { FacilityIdsOperationParamsDto, GiftFacilityResponseDto } from '@ukef/modules/gift/dto';
+import { GiftFacilityService } from '@ukef/modules/gift/services';
 
 const { PATH } = GIFT;
 

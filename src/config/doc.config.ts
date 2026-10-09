@@ -2,7 +2,7 @@ import './load-dotenv';
 
 import { registerAs } from '@nestjs/config';
 
-export default registerAs(
+export const DocConfig = registerAs(
   'doc',
   (): Record<string, any> => ({
     name: process.env.DOC_NAME || 'TFS API Specification',

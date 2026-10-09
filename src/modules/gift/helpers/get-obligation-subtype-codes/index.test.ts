@@ -1,4 +1,4 @@
-import { GiftObligationRequestDto } from '../../dto';
+import { GiftObligationRequestDto } from '@ukef/modules/gift/dto';
 import { getObligationSubtypeCodes } from '.';
 
 describe('modules/gift/helpers/get-obligation-subtype-codes', () => {

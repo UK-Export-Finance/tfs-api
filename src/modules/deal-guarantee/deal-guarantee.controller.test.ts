@@ -1,6 +1,6 @@
+import { when } from 'jest-when';
 import { GetDealGuaranteeGenerator } from '@ukef-test/support/generator/get-deal-guarantee-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { when } from 'jest-when';
 
 import { DealGuaranteeController } from './deal-guarantee.controller';
 import { DealGuaranteeService } from './deal-guarantee.service';
@@ -17,7 +17,7 @@ describe('DealGuaranteeController', () => {
   let dealGuaranteeServiceGetGuaranteesForDeal: jest.Mock;
 
   beforeEach(() => {
-    dealGuaranteeService = new DealGuaranteeService(null, null, null, null);
+    dealGuaranteeService = new DealGuaranteeService(null!, null!, null!, null!);
 
     dealGuaranteeServiceCreateGuaranteeForDeal = jest.fn();
     dealGuaranteeServiceGetGuaranteesForDeal = jest.fn();
@@ -64,7 +64,7 @@ describe('DealGuaranteeController', () => {
     it('returns the deal guarantees from the service', async () => {
       when(dealGuaranteeServiceGetGuaranteesForDeal).calledWith(dealIdentifier).mockResolvedValueOnce(dealGuaranteesFromService);
 
-      const dealGuarantees = await controller.getGuaranteesForDeal({ dealIdentifier: dealIdentifier });
+      const dealGuarantees = await controller.getGuaranteesForDeal({ dealIdentifier });
 
       expect(dealGuarantees).toStrictEqual(expectedDealGuarantees);
     });
@@ -82,7 +82,7 @@ describe('DealGuaranteeController', () => {
 
       when(dealGuaranteeServiceGetGuaranteesForDeal).calledWith(dealIdentifier).mockResolvedValueOnce(dealGuaranteesWithUnexpectedKey);
 
-      const dealGuarantees = await controller.getGuaranteesForDeal({ dealIdentifier: dealIdentifier });
+      const dealGuarantees = await controller.getGuaranteesForDeal({ dealIdentifier });
 
       expect(dealGuarantees).toStrictEqual(expectedDealGuaranteesWithNewKey);
     });

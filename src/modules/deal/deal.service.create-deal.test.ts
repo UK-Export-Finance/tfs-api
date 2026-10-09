@@ -1,4 +1,5 @@
 import { InternalServerErrorException } from '@nestjs/common';
+import { when } from 'jest-when';
 import { PROPERTIES } from '@ukef/constants';
 import { AcbsDealService } from '@ukef/modules/acbs/acbs-deal.service';
 import { AcbsCreateDealDto } from '@ukef/modules/acbs/dto/acbs-create-deal.dto';
@@ -7,7 +8,6 @@ import { DateStringTransformations } from '@ukef/modules/date/date-string.transf
 import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
 import { CreateDealGenerator } from '@ukef-test/support/generator/create-deal-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { when } from 'jest-when';
 
 import { DealService } from './deal.service';
 import { DealBorrowingRestrictionService } from './deal-borrowing-restriction.service';
@@ -23,7 +23,7 @@ describe('DealService', () => {
   let updateDealBorrowingRestriction: jest.Mock;
 
   beforeEach(() => {
-    const acbsDealService = new AcbsDealService(null, null);
+    const acbsDealService = new AcbsDealService(null!, null!);
     acbsDealServiceCreateDeal = jest.fn();
     acbsDealService.createDeal = acbsDealServiceCreateDeal;
 
@@ -37,7 +37,7 @@ describe('DealService', () => {
     currentDateProvider.getEarliestDateFromTodayAnd = currentDateProviderGetEarliestDateFromTodayAnd;
 
     updateDealBorrowingRestriction = jest.fn();
-    const dealBorrowingRestrictionService = new DealBorrowingRestrictionService(null, null);
+    const dealBorrowingRestrictionService = new DealBorrowingRestrictionService(null!, null!);
     dealBorrowingRestrictionService.updateBorrowingRestrictionForDeal = updateDealBorrowingRestriction;
 
     service = new DealService(acbsAuthenticationService, acbsDealService, dateStringTransformations, currentDateProvider, dealBorrowingRestrictionService);
@@ -56,6 +56,8 @@ describe('DealService', () => {
       guaranteeCommencementDateString,
       guaranteeCommencementDateForDescription,
     } = new CreateDealGenerator(valueGenerator, dateStringTransformations).generate({ numberToGenerate: 1 });
+
+    const getDealCreatedInAcbs = (): AcbsCreateDealDto => acbsDealServiceCreateDeal.mock.calls[0][1];
 
     beforeEach(() => {
       when(currentDateProviderGetEarliestDateFromTodayAnd).calledWith(guaranteeCommencementDateAsDate).mockReturnValueOnce(guaranteeCommencementDateAsDate);
@@ -203,7 +205,5 @@ describe('DealService', () => {
         );
       });
     });
-
-    const getDealCreatedInAcbs = (): AcbsCreateDealDto => acbsDealServiceCreateDeal.mock.calls[0][1];
   });
 });

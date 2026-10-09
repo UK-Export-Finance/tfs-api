@@ -1,3 +1,3 @@
-export interface MdmCustomersParams {
+export type MdmCustomersParams = {
   partyUrn: string;
-}
+};

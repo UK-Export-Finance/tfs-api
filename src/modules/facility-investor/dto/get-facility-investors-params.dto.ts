@@ -9,5 +9,5 @@ export class GetFacilityInvestorsParamsDto {
     length: 10,
     pattern: UKEFID.MAIN_ID.TEN_DIGIT_REGEX,
   })
-  facilityIdentifier: UkefId;
+  facilityIdentifier!: UkefId;
 }

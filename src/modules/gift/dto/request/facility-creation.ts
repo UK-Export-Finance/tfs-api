@@ -1,10 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { EXAMPLES } from '@ukef/constants';
 import { Type } from 'class-transformer';
 import { IsDefined, IsNotEmptyObject, ValidateNested } from 'class-validator';
+import { EXAMPLES } from '@ukef/constants';
 
-import { GiftFacilityCreationGenericRequestDto } from './facility-creation-generic';
-import { GiftFacilityRiskDetailsRequestDto } from './risk-details';
+import { GiftFacilityCreationGenericRequestDto } from '@ukef/modules/gift/dto/request/facility-creation-generic';
+import { GiftFacilityRiskDetailsRequestDto } from '@ukef/modules/gift/dto/request/risk-details';
 
 const {
   GIFT: { RISK_DETAILS },
@@ -26,5 +26,5 @@ export class GiftFacilityCreationRequestDto extends GiftFacilityCreationGenericR
   @IsDefined()
   @Type(() => GiftFacilityRiskDetailsRequestDto)
   @ValidateNested()
-  riskDetails: GiftFacilityRiskDetailsRequestDto;
+  riskDetails!: GiftFacilityRiskDetailsRequestDto;
 }

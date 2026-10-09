@@ -116,82 +116,84 @@ export const withEnvironmentVariableParsingUnitTests = <ConfigUnderTest>({
     );
   }
 
-  describe.each(configParsedAsIntFromEnvironmentVariablesWithDefault)(
-    '$configPropertyName',
-    ({ configPropertyName, environmentVariableName, defaultConfigValue }) => {
-      it(`is the env variable ${environmentVariableName} parsed as a number if ${environmentVariableName} is specified`, () => {
-        const expectedConfigValue = valueGenerator.nonnegativeInteger();
+  if (configParsedAsIntFromEnvironmentVariablesWithDefault) {
+    describe.each(configParsedAsIntFromEnvironmentVariablesWithDefault)(
+      '$configPropertyName',
+      ({ configPropertyName, environmentVariableName, defaultConfigValue }) => {
+        it(`is the env variable ${environmentVariableName} parsed as a number if ${environmentVariableName} is specified`, () => {
+          const expectedConfigValue = valueGenerator.nonnegativeInteger();
 
-        const environmentVariableValue = expectedConfigValue.toString();
+          const environmentVariableValue = expectedConfigValue.toString();
 
-        process.env = {
-          [environmentVariableName]: environmentVariableValue,
-        };
+          process.env = {
+            [environmentVariableName]: environmentVariableValue,
+          };
 
-        const { [configPropertyName]: configPropertyValue } = getConfig();
+          const { [configPropertyName]: configPropertyValue } = getConfig();
 
-        expect(configPropertyValue).toBe(expectedConfigValue);
-      });
+          expect(configPropertyValue).toBe(expectedConfigValue);
+        });
 
-      it(`is the default value ${defaultConfigValue} if ${environmentVariableName} is not specified`, () => {
-        process.env = {};
+        it(`is the default value ${defaultConfigValue} if ${environmentVariableName} is not specified`, () => {
+          process.env = {};
 
-        const { [configPropertyName]: configPropertyValue } = getConfig();
+          const { [configPropertyName]: configPropertyValue } = getConfig();
 
-        expect(configPropertyValue).toBe(defaultConfigValue);
-      });
+          expect(configPropertyValue).toBe(defaultConfigValue);
+        });
 
-      it(`throws InvalidConfigException if ${environmentVariableName} is not parseable as an integer`, () => {
-        const environmentVariableValue = 'abc';
+        it(`throws InvalidConfigException if ${environmentVariableName} is not parseable as an integer`, () => {
+          const environmentVariableValue = 'abc';
 
-        process.env = {
-          [environmentVariableName]: environmentVariableValue,
-        };
+          process.env = {
+            [environmentVariableName]: environmentVariableValue,
+          };
 
-        const gettingTheConfig = () => getConfig();
+          const gettingTheConfig = () => getConfig();
 
-        expect(gettingTheConfig).toThrow(InvalidConfigException);
-        expect(gettingTheConfig).toThrow(`Invalid integer value "${environmentVariableValue}" for configuration property.`);
-      });
+          expect(gettingTheConfig).toThrow(InvalidConfigException);
+          expect(gettingTheConfig).toThrow(`Invalid integer value "${environmentVariableValue}" for configuration property.`);
+        });
 
-      it(`throws InvalidConfigException if ${environmentVariableName} is float number`, () => {
-        const environmentVariableValue = valueGenerator.nonnegativeFloat().toString();
+        it(`throws InvalidConfigException if ${environmentVariableName} is float number`, () => {
+          const environmentVariableValue = valueGenerator.nonnegativeFloat().toString();
 
-        process.env = {
-          [environmentVariableName]: environmentVariableValue,
-        };
+          process.env = {
+            [environmentVariableName]: environmentVariableValue,
+          };
 
-        const gettingTheConfig = () => getConfig();
+          const gettingTheConfig = () => getConfig();
 
-        expect(gettingTheConfig).toThrow(InvalidConfigException);
-        expect(gettingTheConfig).toThrow(`Invalid integer value "${environmentVariableValue}" for configuration property.`);
-      });
+          expect(gettingTheConfig).toThrow(InvalidConfigException);
+          expect(gettingTheConfig).toThrow(`Invalid integer value "${environmentVariableValue}" for configuration property.`);
+        });
 
-      it(`throws InvalidConfigException if ${environmentVariableName} is hex number`, () => {
-        const environmentVariableValue = '0xFF';
+        it(`throws InvalidConfigException if ${environmentVariableName} is hex number`, () => {
+          const environmentVariableValue = '0xFF';
 
-        process.env = {
-          [environmentVariableName]: environmentVariableValue,
-        };
+          process.env = {
+            [environmentVariableName]: environmentVariableValue,
+          };
 
-        const gettingTheConfig = () => getConfig();
+          const gettingTheConfig = () => getConfig();
 
-        expect(gettingTheConfig).toThrow(InvalidConfigException);
-        expect(gettingTheConfig).toThrow(`Invalid integer value "${environmentVariableValue}" for configuration property.`);
-      });
+          expect(gettingTheConfig).toThrow(InvalidConfigException);
+          expect(gettingTheConfig).toThrow(`Invalid integer value "${environmentVariableValue}" for configuration property.`);
+        });
 
-      it(`throws InvalidConfigException if ${environmentVariableName} is binary number`, () => {
-        const environmentVariableValue = '0b101';
+        it(`throws InvalidConfigException if ${environmentVariableName} is binary number`, () => {
+          const environmentVariableValue = '0b101';
 
-        process.env = {
-          [environmentVariableName]: environmentVariableValue,
-        };
+          process.env = {
+            [environmentVariableName]: environmentVariableValue,
+          };
 
-        const gettingTheConfig = () => getConfig();
+          const gettingTheConfig = () => getConfig();
 
-        expect(gettingTheConfig).toThrow(InvalidConfigException);
-        expect(gettingTheConfig).toThrow(`Invalid integer value "${environmentVariableValue}" for configuration property.`);
-      });
-    },
-  );
+          expect(gettingTheConfig).toThrow(InvalidConfigException);
+          expect(gettingTheConfig).toThrow(`Invalid integer value "${environmentVariableValue}" for configuration property.`);
+        });
+      },
+    );
+  }
 };

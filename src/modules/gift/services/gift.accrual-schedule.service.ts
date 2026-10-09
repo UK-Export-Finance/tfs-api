@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { GIFT } from '@ukef/constants';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
+import { GIFT } from '@ukef/constants';
 
-import { GiftAccrualScheduleRequestDto } from '../dto';
+import { GiftAccrualScheduleRequestDto } from '@ukef/modules/gift/dto';
 import { GiftHttpService } from './gift.http.service';
 
 const { EVENT_TYPES, INTEGRATION_DEFAULTS, PATH } = GIFT;
@@ -17,9 +17,7 @@ export class GiftAccrualScheduleService {
   constructor(
     private readonly giftHttpService: GiftHttpService,
     private readonly logger: PinoLogger,
-  ) {
-    this.giftHttpService = giftHttpService;
-  }
+  ) {}
 
   /**
    * Create a GIFT accrual schedule
@@ -102,7 +100,7 @@ export class GiftAccrualScheduleService {
    * @returns {Promise<Array<AxiosResponse>>}
    * @throws {Error}
    */
-  async createMany(accrualSchedulesData: GiftAccrualScheduleRequestDto[], facilityId: string, workPackageId: number): Promise<Array<AxiosResponse>> {
+  async createMany(accrualSchedulesData: GiftAccrualScheduleRequestDto[], facilityId: string, workPackageId: number): Promise<AxiosResponse[]> {
     try {
       this.logger.info('Creating accrual schedules for facility %s', facilityId);
 
@@ -110,7 +108,7 @@ export class GiftAccrualScheduleService {
        * NOTE: We need to use a for loop instead of Promise.all, to ensure that the calls are sequential.
        * Promise.all is not sequential.
        */
-      const responses = [];
+      const responses: AxiosResponse[] = [];
 
       for (const accrualSchedule of accrualSchedulesData) {
         const response = await this.createOne(accrualSchedule, facilityId, workPackageId);

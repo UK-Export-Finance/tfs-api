@@ -1,3 +1,4 @@
+import { when } from 'jest-when';
 import { ENUMS } from '@ukef/constants';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { FacilityService } from '@ukef/modules/facility/facility.service';
@@ -7,7 +8,6 @@ import { CreateFacilityFixedFeeGenerator } from '@ukef-test/support/generator/cr
 import { CreateFacilityFixedFeesAmountAmendmentGenerator } from '@ukef-test/support/generator/create-facility-fixed-fees-amount-amendment.generator';
 import { GetFacilityFixedFeeGenerator } from '@ukef-test/support/generator/get-facility-fixed-fee-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { when } from 'jest-when';
 
 describe('FacilityFixedFeeController', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -29,7 +29,7 @@ describe('FacilityFixedFeeController', () => {
   let controller: FacilityFixedFeeController;
 
   beforeEach(() => {
-    const facilityFixedFeeService = new FacilityFixedFeeService(null, null, null, null, null);
+    const facilityFixedFeeService = new FacilityFixedFeeService(null!, null!, null!, null!, null!);
     getFacilityFixedFeesService = jest.fn();
     createFacilityFixedFeesService = jest.fn();
     createAmountAmendmentForFixedFeesService = jest.fn();
@@ -37,7 +37,7 @@ describe('FacilityFixedFeeController', () => {
     facilityFixedFeeService.createFixedFeeForFacility = createFacilityFixedFeesService;
     facilityFixedFeeService.createAmountAmendmentForFixedFees = createAmountAmendmentForFixedFeesService;
 
-    const facilityService = new FacilityService(null, null, null, null, null);
+    const facilityService = new FacilityService(null!, null!, null!, null!, null!);
     getFacilityByIdentifierFacilityService = jest.fn();
     facilityService.getFacilityByIdentifier = getFacilityByIdentifierFacilityService;
 
@@ -99,7 +99,6 @@ describe('FacilityFixedFeeController', () => {
   });
 
   describe('createAmountAmendmentForFixedFees', () => {
-    const facilityIdentifier = valueGenerator.facilityId();
     const { increaseAmountRequest } = new CreateFacilityFixedFeesAmountAmendmentGenerator(valueGenerator, new DateStringTransformations()).generate({
       numberToGenerate: 3,
       facilityIdentifier,

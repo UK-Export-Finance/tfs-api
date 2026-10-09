@@ -1,9 +1,10 @@
+import { PinoLogger } from 'nestjs-pino';
+import { Response } from 'express';
 import { GIFT } from '@ukef/constants';
 import { GIFT_EXAMPLES } from '@ukef/constants/examples/gift.examples.constant';
 import { mockResponse200 } from '@ukef-test/http-response';
-import { PinoLogger } from 'nestjs-pino';
 
-import { GiftFeeTypeService, GiftHttpService } from '../services';
+import { GiftFeeTypeService, GiftHttpService } from '@ukef/modules/gift/services';
 import { GiftFeeTypeController } from './gift.fee-type.controller';
 
 const { PATH } = GIFT;
@@ -17,7 +18,7 @@ describe('GiftFeeTypeController', () => {
   let feeTypeService: GiftFeeTypeService;
   let controller: GiftFeeTypeController;
 
-  let mockRes;
+  let mockRes: Response;
   let mockResStatus;
   let mockResSend;
 
@@ -33,7 +34,7 @@ describe('GiftFeeTypeController', () => {
 
     mockRes = {
       send: mockResSend,
-    };
+    } as Response;
 
     mockResStatus = jest.fn(() => mockRes);
 

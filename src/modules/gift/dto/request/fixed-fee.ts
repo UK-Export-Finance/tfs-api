@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { EXAMPLES, GIFT } from '@ukef/constants';
 import { IsDateString, IsDefined, IsNumber, IsString, Length, Max, Min } from 'class-validator';
+import { EXAMPLES, GIFT } from '@ukef/constants';
 
 const {
   GIFT: { FIXED_FEE },
@@ -24,7 +24,7 @@ export class GiftFixedFeeRequestDto {
     description: 'The amount of the fixed fee',
     example: FIXED_FEE().amount,
   })
-  amount: number;
+  amount!: number;
 
   @IsDefined()
   @IsString()
@@ -34,7 +34,7 @@ export class GiftFixedFeeRequestDto {
     description: 'The currency of the fixed fee amount, in ISO 4217 format',
     example: FIXED_FEE().currency,
   })
-  currency: string;
+  currency!: string;
 
   @IsDefined()
   @IsDateString()
@@ -43,7 +43,7 @@ export class GiftFixedFeeRequestDto {
     description: 'The effective date',
     example: FIXED_FEE().effectiveDate,
   })
-  effectiveDate: string;
+  effectiveDate!: string;
 
   @IsDefined()
   @IsString()
@@ -53,5 +53,5 @@ export class GiftFixedFeeRequestDto {
     description: 'The fee type code',
     example: FIXED_FEE().feeTypeCode,
   })
-  feeTypeCode: string;
+  feeTypeCode!: string;
 }

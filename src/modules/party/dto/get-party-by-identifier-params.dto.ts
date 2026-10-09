@@ -5,5 +5,5 @@ export class GetPartyByIdentifierParamsDto {
   @ValidatedPartyIdentifierApiProperty({
     description: 'The ACBS identifier for the party.',
   })
-  readonly partyIdentifier: AcbsPartyId;
+  readonly partyIdentifier!: AcbsPartyId;
 }

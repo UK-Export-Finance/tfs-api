@@ -117,7 +117,7 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
       },
     ];
 
-    const createBundleInformationResponseFromAcbs = { BundleIdentifier: bundleIdentifier, WarningErrors: undefined };
+    const createBundleInformationResponseFromAcbs = { BundleIdentifier: bundleIdentifier, WarningErrors: undefined! };
     const createFacilityLoanResponseFromService = { bundleIdentifier, warningErrors: undefined };
     const createFacilityLoanResponseFromEndpoint = { bundleIdentifier };
     const bondRepaymentSchedulesGbp = this.getBondRepaymentSchedules(firstFacilityLoan);
@@ -221,7 +221,7 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
       },
       DealCustomerUsageRate: facilityLoan.dealCustomerUsageRate,
       DealCustomerUsageOperationType: {
-        OperationTypeCode: facilityLoan.dealCustomerUsageOperationType,
+        OperationTypeCode: facilityLoan.dealCustomerUsageOperationType ?? null,
       },
       AccrualScheduleList: accrualSchedules,
       RepaymentScheduleList: repaymentSchedules,

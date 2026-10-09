@@ -12,7 +12,7 @@ const { NAME, VERSION_PREFIX } = APPLICATION;
 
 const validLogLevels = ['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent'];
 
-export interface AppConfig {
+export type AppConfigType = {
   apiKey: string;
   env: string;
   giftFeatureEnabled: boolean;
@@ -33,10 +33,11 @@ export interface AppConfig {
     enable: boolean;
     prefix: string;
     version: string;
+    prefixAndVersion: string;
   };
-}
+};
 
-export default registerAs('app', (): Record<string, any> => {
+export const AppConfig = registerAs('app', (): AppConfigType => {
   const logLevel = process.env.LOG_LEVEL || 'info';
 
   if (!validLogLevels.includes(logLevel)) {
@@ -60,17 +61,18 @@ export default registerAs('app', (): Record<string, any> => {
    * NOTE: This is versioning for our APIM TFS GIFT endpoints,
    * as opposed to the external GIFT API endpoints.
    */
-  const giftVersion = process.env.GIFT_HTTP_VERSION;
+  const giftVersion = process.env.GIFT_HTTP_VERSION!;
 
   const giftVersioning = {
+    enable: process.env.GIFT_HTTP_VERSIONING_ENABLE === 'true',
     prefix: VERSION_PREFIX,
     prefixAndVersion: `${VERSION_PREFIX}${giftVersion}`,
     version: giftVersion,
   };
 
   return {
-    apiKey: process.env.API_KEY,
-    env: NODE_ENV,
+    apiKey: process.env.API_KEY!,
+    env: NODE_ENV!,
     giftFeatureEnabled: process.env.FF_GIFT_ENABLED === 'true',
     giftVersioning,
     globalPrefix: '/api',

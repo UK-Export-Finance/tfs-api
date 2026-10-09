@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { EXAMPLES, GIFT } from '@ukef/constants';
 import { IsDateString, IsDefined, IsNumber, IsOptional, IsString, Length } from 'class-validator';
+import { EXAMPLES, GIFT } from '@ukef/constants';
 
 const {
   GIFT: { COUNTERPARTY },
@@ -31,7 +31,7 @@ export class GiftFacilityCounterpartyRequestDto {
     description: 'The counterparty URN',
     required: true,
   })
-  counterpartyUrn: string;
+  counterpartyUrn!: string;
 
   @IsOptional()
   @IsDateString()
@@ -50,7 +50,7 @@ export class GiftFacilityCounterpartyRequestDto {
     description: 'The role code',
     required: true,
   })
-  roleCode: string;
+  roleCode!: string;
 
   @IsOptional()
   @IsNumber()
@@ -58,7 +58,7 @@ export class GiftFacilityCounterpartyRequestDto {
     example: EXAMPLE.sharePercentage,
     description: "Required if a counterparty's role's hasSharePercentage field is true",
   })
-  sharePercentage?: number;
+  sharePercentage?: number | null;
 
   @IsOptional()
   @IsDateString()

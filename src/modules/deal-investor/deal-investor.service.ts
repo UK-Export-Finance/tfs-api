@@ -6,7 +6,7 @@ import { AcbsCreateDealInvestorRequest } from '@ukef/modules/acbs/dto/acbs-creat
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 
-import { CurrentDateProvider } from '../date/current-date.provider';
+import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
 import { CreateDealInvestorRequestItem } from './dto/create-deal-investor-request.dto';
 import { GetDealInvestorResponseDto } from './dto/deal-investor-response.dto';
 
@@ -29,7 +29,7 @@ export class DealInvestorService {
       portfolioIdentifier,
       lenderType: { LenderTypeCode: investorInAcbs.LenderType.LenderTypeCode },
       effectiveDate: this.dateStringTransformations.removeTimeIfExists(investorInAcbs.EffectiveDate),
-      expiryDate: this.dateStringTransformations.removeTimeIfExists(investorInAcbs.ExpirationDate),
+      expiryDate: this.dateStringTransformations.removeTimeIfExists(investorInAcbs.ExpirationDate!),
       isExpiryDateMaximum: investorInAcbs.IsExpirationDateMaximum,
       maximumLiability: investorInAcbs.LimitAmount,
     }));
@@ -52,7 +52,7 @@ export class DealInvestorService {
       SectionIdentifier: PROPERTIES.DEAL_INVESTOR.DEFAULT.sectionIdentifier,
       EffectiveDate: effectiveDateString,
       ExpirationDate: expirationDateString,
-      IsExpirationDateMaximum: newInvestor.expiryDate ? false : true,
+      IsExpirationDateMaximum: !newInvestor.expiryDate,
       LenderType: {
         LenderTypeCode: newInvestor.lenderType ?? PROPERTIES.DEAL_INVESTOR.DEFAULT.lenderType.lenderTypeCode,
       },

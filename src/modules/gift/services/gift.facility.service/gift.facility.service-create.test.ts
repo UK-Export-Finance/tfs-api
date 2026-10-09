@@ -1,12 +1,12 @@
 import { HttpStatus } from '@nestjs/common';
+import { AxiosResponse } from 'axios';
+import { PinoLogger } from 'nestjs-pino';
 import { EXAMPLES } from '@ukef/constants';
 import { MdmService } from '@ukef/modules/mdm/mdm.service';
 import { mockGiftFacilityCreationErrorService } from '@ukef-test/gift/mock-services';
 import { mockResponse200, mockResponse201, mockResponse204 } from '@ukef-test/http-response';
-import { AxiosResponse } from 'axios';
-import { PinoLogger } from 'nestjs-pino';
 
-import { getObligationIds, mapAccrualSchedulesPayload } from '../../helpers';
+import { getObligationIds, mapAccrualSchedulesPayload } from '@ukef/modules/gift/helpers';
 import {
   GiftAccrualScheduleService,
   GiftBusinessCalendarsConventionService,
@@ -22,7 +22,7 @@ import {
   GiftRepaymentProfileService,
   GiftRiskDetailsService,
   GiftStatusService,
-} from '../';
+} from '@ukef/modules/gift/services';
 import { GiftFacilityService } from './';
 
 const {
@@ -112,6 +112,8 @@ describe('GiftFacilityService.create - happy path', () => {
     const feeTypeService = new GiftFeeTypeService(giftHttpService, logger);
     const mdmService = new MdmService(httpService, logger);
     const productTypeService = new GiftProductTypeService(giftHttpService, logger);
+
+    currencyService = new GiftCurrencyService(giftHttpService, logger);
 
     asyncValidationService = new GiftFacilityAsyncValidationService(
       logger,

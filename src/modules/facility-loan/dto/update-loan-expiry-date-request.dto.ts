@@ -5,5 +5,5 @@ export class UpdateLoanExpiryDateRequest {
   @ValidatedDateOnlyApiProperty({
     description: 'The new expiry date of the loan.',
   })
-  readonly expiryDate: DateOnlyString;
+  readonly expiryDate!: DateOnlyString;
 }

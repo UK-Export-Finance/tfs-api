@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { EXAMPLES } from '@ukef/constants';
 import { Type } from 'class-transformer';
 import { IsNumber, IsObject } from 'class-validator';
+import { EXAMPLES } from '@ukef/constants';
 
-import { GiftFacilityConfigPostResponseDto } from './facility-post-gift-config-response-event';
+import { GiftFacilityConfigPostResponseDto } from '@ukef/modules/gift/dto/response/facility-post-gift-config-response-event';
 
 const {
   GIFT: { FACILITY_RESPONSE_DATA },
@@ -28,11 +28,11 @@ export class GiftFacilityPostResponseDto {
     type: GiftFacilityConfigPostResponseDto,
   })
   @Type(() => GiftFacilityConfigPostResponseDto)
-  readonly configurationEvent: GiftFacilityConfigPostResponseDto;
+  readonly configurationEvent!: GiftFacilityConfigPostResponseDto;
 
   @IsNumber()
   @ApiProperty({
     example: EXAMPLE.workPackageId,
   })
-  readonly workPackageId: number;
+  readonly workPackageId!: number;
 }

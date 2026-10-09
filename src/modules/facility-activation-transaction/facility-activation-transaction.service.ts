@@ -8,8 +8,8 @@ import { FacilityCodeValueTransaction } from '@ukef/modules/acbs/dto/bundle-acti
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 
-import { AcbsGetBundleInformationResponseDto } from '../acbs/dto/acbs-get-bundle-information-response.dto';
-import { isFacilityCodeValueTransaction } from '../acbs/dto/bundle-actions/bundle-action.type';
+import { AcbsGetBundleInformationResponseDto } from '@ukef/modules/acbs/dto/acbs-get-bundle-information-response.dto';
+import { isFacilityCodeValueTransaction } from '@ukef/modules/acbs/dto/bundle-actions/bundle-action.type';
 import { CreateFacilityActivationTransactionRequestItem } from './dto/create-facility-activation-transaction-request.dto';
 import { CreateFacilityActivationTransactionResponse } from './dto/create-facility-activation-transaction-response.dto';
 import { GetFacilityActivationTransactionResponseDto } from './dto/get-facility-activation-transaction-response.dto';
@@ -77,6 +77,7 @@ export class FacilityActivationTransactionService {
     if (!isFacilityCodeValueTransaction(codeValueTransaction)) {
       throw new BadRequestException('Bad request', 'The provided bundleIdentifier does not correspond to an activation transaction.');
     }
+
     return this.mapActivationTransaction(activationTransaction, codeValueTransaction);
   }
 

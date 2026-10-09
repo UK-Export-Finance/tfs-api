@@ -1,10 +1,10 @@
 import { HEADERS } from '@ukef/constants';
 import { withEnvironmentVariableParsingUnitTests } from '@ukef-test/common-tests/environment-variable-parsing-unit-tests';
 
-import giftConfig, { GiftConfig } from './gift.config';
+import { GiftConfigType, GiftConfig } from './gift.config';
 
 describe('giftConfig', () => {
-  const configDirectlyFromEnvironmentVariables: { configPropertyName: keyof GiftConfig; environmentVariableName: string }[] = [
+  const configDirectlyFromEnvironmentVariables: { configPropertyName: keyof GiftConfigType; environmentVariableName: string }[] = [
     {
       configPropertyName: 'baseUrl',
       environmentVariableName: 'GIFT_API_URL',
@@ -16,7 +16,7 @@ describe('giftConfig', () => {
   ];
 
   const configParsedAsIntFromEnvironmentVariablesWithDefault: {
-    configPropertyName: keyof GiftConfig;
+    configPropertyName: keyof GiftConfigType;
     environmentVariableName: string;
     defaultConfigValue: number;
   }[] = [
@@ -35,10 +35,10 @@ describe('giftConfig', () => {
   withEnvironmentVariableParsingUnitTests({
     configDirectlyFromEnvironmentVariables,
     configParsedAsIntFromEnvironmentVariablesWithDefault,
-    getConfig: () => giftConfig(),
+    getConfig: () => GiftConfig(),
   });
 
   it('should have an apiKeyHeaderName defined', () => {
-    expect(giftConfig().apiKeyHeaderName).toBe(HEADERS.X_API_KEY);
+    expect(GiftConfig().apiKeyHeaderName).toBe(HEADERS.X_API_KEY);
   });
 });

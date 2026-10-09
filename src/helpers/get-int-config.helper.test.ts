@@ -20,7 +20,7 @@ describe('Get integer configuration value Helper', () => {
 
   describe('getIntConfig throws invalid integer exception', () => {
     it.each(['abc', '12.5', '20th', '0xFF', '0b101'])(`throws InvalidConfigException for "%s" because it is not valid integer`, (value) => {
-      const gettingTheConfig = () => getIntConfig(value as unknown as string);
+      const gettingTheConfig = () => getIntConfig(value);
 
       expect(gettingTheConfig).toThrow(InvalidConfigException);
       expect(gettingTheConfig).toThrow(`Invalid integer value "${value}" for configuration property.`);

@@ -1,10 +1,10 @@
-import { ObligationSubtypeMdmResponseDto } from '@ukef/modules/mdm/dto/obligation-subtype-mdm-response';
+import type { ObligationSubtypeMdmResponseDto } from '@ukef/modules/mdm/dto';
 
-interface GenerateObligationSubtypeCodeErrorsParams {
+type GenerateObligationSubtypeCodeErrorsParams = {
   subtypes: ObligationSubtypeMdmResponseDto[];
   productTypeCode: string;
   providedSubtypeCodes: string[];
-}
+};
 
 /**
  * Check all provided obligation subtype codes are supported by the product type.
@@ -31,7 +31,7 @@ export const generateObligationSubtypeCodeErrors = ({
   productTypeCode,
   providedSubtypeCodes,
 }: GenerateObligationSubtypeCodeErrorsParams): string[] => {
-  const validationErrors = [];
+  const validationErrors: string[] = [];
 
   providedSubtypeCodes.forEach((providedSubtypeCode: string, index: number) => {
     const matchedSubtypeCode = subtypes.find((subtype: ObligationSubtypeMdmResponseDto) => subtype.code === providedSubtypeCode);

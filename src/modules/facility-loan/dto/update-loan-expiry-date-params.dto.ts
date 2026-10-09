@@ -5,10 +5,10 @@ export class UpdateLoanExpiryDateParamsDto {
   @ValidatedLoanIdentifierApiProperty({
     description: 'The identifier of the loan in ACBS.',
   })
-  readonly loanIdentifier: string;
+  readonly loanIdentifier!: string;
 
   @ValidatedFacilityIdentifierApiProperty({
     description: 'The identifier of the facility in ACBS.',
   })
-  readonly facilityIdentifier: string;
+  readonly facilityIdentifier!: string;
 }

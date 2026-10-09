@@ -7,7 +7,7 @@ import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acb
 import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 
-import { AcbsUpdateFacilityGuaranteeRequest } from '../acbs/dto/acbs-update-facility-guarantee-request.dto';
+import { AcbsUpdateFacilityGuaranteeRequest } from '@ukef/modules/acbs/dto/acbs-update-facility-guarantee-request.dto';
 import { CreateFacilityGuaranteeRequestItem } from './dto/create-facility-guarantee-request.dto';
 import { GetFacilityGuaranteesResponse } from './dto/get-facility-guarantees-response.dto';
 import { UpdateFacilityGuaranteesRequestDto } from './dto/update-facility-guarantees-request.dto';

@@ -1,6 +1,6 @@
 import { DateString } from '@ukef/helpers/date-string.type';
 
-export interface Party {
+export type Party = {
   alternateIdentifier: string;
   industryClassification: string;
   name1: string;
@@ -10,4 +10,4 @@ export interface Party {
   citizenshipClass: string;
   officerRiskDate: DateString;
   countryCode: string;
-}
+};

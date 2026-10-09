@@ -1,8 +1,8 @@
 import { HttpService } from '@nestjs/axios';
-import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { AxiosError } from 'axios';
 import { when } from 'jest-when';
 import { of, throwError } from 'rxjs';
+import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 
 import { AcbsFacilityGuaranteeService } from './acbs-facility-guarantee.service';
 import { AcbsUpdateFacilityGuaranteeRequest } from './dto/acbs-update-facility-guarantee-request.dto';
@@ -89,8 +89,8 @@ describe('AcbsFacilityGuaranteeService', () => {
         data: errorString,
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePut)
@@ -116,8 +116,8 @@ describe('AcbsFacilityGuaranteeService', () => {
         data: errorString,
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePut)
@@ -144,8 +144,8 @@ describe('AcbsFacilityGuaranteeService', () => {
         data: errorBody,
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePut)
@@ -172,8 +172,8 @@ describe('AcbsFacilityGuaranteeService', () => {
         data: errorBody,
         status: 401,
         statusText: 'Unauthorized',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePut)

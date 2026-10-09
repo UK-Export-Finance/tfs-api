@@ -1,9 +1,9 @@
 import { ExecutionContext } from '@nestjs/common';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
-import { AcbsBadRequestException } from '@ukef/modules/acbs/exception/acbs-bad-request.exception';
-import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { PinoLogger } from 'nestjs-pino';
 import { lastValueFrom, of } from 'rxjs';
+import { AcbsBadRequestException } from '@ukef/modules/acbs/exception/acbs-bad-request.exception';
+import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 
 import { LoggingInterceptor } from './logging-interceptor.helper';
 
@@ -30,6 +30,28 @@ describe('LoggingInterceptor', () => {
   beforeEach(() => {
     debug.mockReset();
   });
+
+  const runInterceptor = (
+    requestBodyToIntercept: unknown,
+    responseBodyToIntercept: unknown,
+    next = { handle: () => of(responseBodyToIntercept) },
+  ): Promise<unknown> => {
+    const context = {
+      switchToHttp: () =>
+        ({
+          getRequest: <T>() =>
+            ({
+              body: requestBodyToIntercept,
+            }) as T,
+        }) as HttpArgumentsHost,
+    } as ExecutionContext;
+    try {
+      const interceptObservable = interceptor.intercept(context, next);
+      return lastValueFrom(interceptObservable);
+    } catch {
+      return Promise.resolve(undefined);
+    }
+  };
 
   describe('intercept', () => {
     describe('when the intercepted data contains neither responseBody nor warningErrors', () => {
@@ -122,22 +144,4 @@ describe('LoggingInterceptor', () => {
       });
     });
   });
-
-  const runInterceptor = (requestBody: unknown, responseBody: unknown, next = { handle: () => of(responseBody) }): Promise<unknown> => {
-    const context = {
-      switchToHttp: () =>
-        ({
-          getRequest: <T>() =>
-            ({
-              body: requestBody,
-            }) as T,
-        }) as HttpArgumentsHost,
-    } as ExecutionContext;
-    try {
-      const interceptObservable = interceptor.intercept(context, next);
-      return lastValueFrom(interceptObservable);
-    } catch (error) {
-      console.error(error);
-    }
-  };
 });
