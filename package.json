@@ -93,6 +93,7 @@
     "@nestjs/testing": "^12.1.2",
     "@tsconfig/node21": "^21.0.9",
     "@types/chance": "^1.1.8",
+    "@types/express": "^5.0.6",
     "@types/compression": "^1.8.1",
     "@types/jest": "30.0.0",
     "@types/jest-when": "^3.5.5",
