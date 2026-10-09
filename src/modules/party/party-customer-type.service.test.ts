@@ -1,12 +1,12 @@
-import { MdmService } from '@ukef/modules/mdm/mdm.service';
-import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { AxiosError } from 'axios';
 import { when } from 'jest-when';
 import { PinoLogger } from 'nestjs-pino';
+import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
+import { MdmService } from '@ukef/modules/mdm/mdm.service';
 
-import { HttpService } from '../http/http.module';
-import { MdmException } from '../mdm/exception/mdm.exception';
-import { MdmResourceNotFoundException } from '../mdm/exception/mdm-resource-not-found.exception';
+import { HttpService } from '@ukef/modules/http/http.module';
+import { MdmException } from '@ukef/modules/mdm/exception/mdm.exception';
+import { MdmResourceNotFoundException } from '@ukef/modules/mdm/exception/mdm-resource-not-found.exception';
 import { PartyCustomerTypeService } from './party-customer-type.service';
 
 describe('PartyCustomerTypeService', () => {

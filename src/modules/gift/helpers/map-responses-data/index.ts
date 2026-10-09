@@ -1,6 +1,6 @@
 import { AxiosResponse } from 'axios';
 
-import { mapResponseData } from '../map-response-data';
+import { mapResponseData } from '@ukef/modules/gift/helpers/map-response-data';
 
 /**
  * Map an array of axios responses into an array of data objects (data.data)

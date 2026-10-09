@@ -3,95 +3,95 @@ import { AcbsPartyId, DateOnlyString } from '@ukef/helpers';
 
 export class GetFacilityByIdentifierResponseDto {
   @ApiResponseProperty()
-  dealIdentifier: string;
+  dealIdentifier!: string;
 
   @ApiResponseProperty()
-  facilityIdentifier: string;
+  facilityIdentifier!: string;
 
   @ApiResponseProperty()
-  portfolioIdentifier: string;
+  portfolioIdentifier!: string;
 
   @ApiResponseProperty()
-  dealBorrowerIdentifier: string;
+  dealBorrowerIdentifier!: string;
 
   @ApiResponseProperty()
-  maximumLiability: number;
+  maximumLiability!: number;
 
   @ApiResponseProperty()
-  productTypeId: string;
+  productTypeId!: string;
 
   @ApiResponseProperty()
-  capitalConversionFactorCode: string;
+  capitalConversionFactorCode!: string;
 
   @ApiResponseProperty()
-  currency: string;
+  currency!: string;
 
   @ApiProperty({ readOnly: true, type: Date, nullable: false, format: 'date' })
-  guaranteeCommencementDate: DateOnlyString;
+  guaranteeCommencementDate!: DateOnlyString;
 
   @ApiProperty({ readOnly: true, type: Date, nullable: false, format: 'date' })
-  guaranteeExpiryDate: DateOnlyString;
+  guaranteeExpiryDate!: DateOnlyString;
 
   @ApiProperty({ readOnly: true, type: Date, nullable: false, format: 'date' })
-  nextQuarterEndDate: DateOnlyString;
+  nextQuarterEndDate!: DateOnlyString;
 
   @ApiResponseProperty()
-  facilityInitialStatus: string;
+  facilityInitialStatus!: string;
 
   @ApiResponseProperty()
-  facilityOverallStatus: string;
+  facilityOverallStatus!: string;
 
   @ApiResponseProperty()
-  delegationType: string;
+  delegationType!: string;
 
   @ApiResponseProperty()
-  interestOrFeeRate: number;
+  interestOrFeeRate!: number;
 
   @ApiResponseProperty()
-  facilityStageCode: string;
+  facilityStageCode!: string;
 
   @ApiResponseProperty()
-  exposurePeriod: string;
+  exposurePeriod!: string;
 
   @ApiResponseProperty()
-  creditRatingCode: string;
+  creditRatingCode!: string;
 
   @ApiResponseProperty()
-  guaranteePercentage: number;
+  guaranteePercentage!: number;
 
   @ApiResponseProperty()
-  premiumFrequencyCode: string;
+  premiumFrequencyCode!: string;
 
   @ApiResponseProperty()
-  riskCountryCode: string;
+  riskCountryCode!: string;
 
   @ApiResponseProperty()
-  riskStatusCode: string;
+  riskStatusCode!: string;
 
   @ApiProperty({ readOnly: true, type: Date, nullable: false, format: 'date' })
-  effectiveDate: DateOnlyString;
+  effectiveDate!: DateOnlyString;
 
   @ApiResponseProperty()
-  forecastPercentage: number;
+  forecastPercentage!: number;
 
   @ApiProperty({ readOnly: true, type: Date, nullable: true, format: 'date' })
-  issueDate: DateOnlyString | null;
+  issueDate!: DateOnlyString | null;
 
   @ApiResponseProperty()
-  description: string;
+  description!: string;
 
   @ApiResponseProperty()
-  agentBankIdentifier: AcbsPartyId;
+  agentBankIdentifier!: AcbsPartyId;
 
   @ApiResponseProperty()
-  obligorPartyIdentifier: AcbsPartyId;
+  obligorPartyIdentifier!: AcbsPartyId;
 
   @ApiResponseProperty()
-  obligorName: string;
+  obligorName!: string;
 
   @ApiResponseProperty()
-  obligorIndustryClassification: string;
+  obligorIndustryClassification!: string;
 
   @ApiResponseProperty()
-  probabilityOfDefault: number;
+  probabilityOfDefault!: number;
 }

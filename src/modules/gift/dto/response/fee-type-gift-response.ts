@@ -1,14 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { EXAMPLES } from '@ukef/constants';
 import { IsString } from 'class-validator';
+import { EXAMPLES } from '@ukef/constants';
 
 const {
   GIFT: { FEE_TYPES },
 } = EXAMPLES;
 
-export interface GiftFacilityFeeTypeResponse {
+export type GiftFacilityFeeTypeResponse = {
   feeTypes: GiftFeeTypeResponseDto[];
-}
+};
 
 /**
  * GIFT facility "fee type" response DTO.
@@ -20,12 +20,12 @@ export class GiftFeeTypeResponseDto {
     example: FEE_TYPES.BEX.code,
     required: true,
   })
-  readonly code: string;
+  readonly code!: string;
 
   @IsString()
   @ApiProperty({
     example: FEE_TYPES.BEX.description,
     required: true,
   })
-  readonly description: string;
+  readonly description!: string;
 }

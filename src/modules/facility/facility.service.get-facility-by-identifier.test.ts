@@ -1,3 +1,4 @@
+import { when } from 'jest-when';
 import { PROPERTIES } from '@ukef/constants';
 import { AcbsBundleInformationService } from '@ukef/modules/acbs/acbs-bundle-information.service';
 import { AcbsFacilityService } from '@ukef/modules/acbs/acbs-facility.service';
@@ -10,7 +11,6 @@ import { FacilityService } from '@ukef/modules/facility/facility.service';
 import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
 import { GetFacilityGenerator } from '@ukef-test/support/generator/get-facility-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { when } from 'jest-when';
 
 jest.mock('@ukef/modules/acbs/acbs-facility.service');
 jest.mock('@ukef/modules/acbs-authentication/acbs-authentication.service');
@@ -28,12 +28,12 @@ describe('FacilityService', () => {
   let acbsFacilityServiceGetFacilityByIdentifier: jest.Mock;
 
   beforeEach(() => {
-    acbsFacilityService = new AcbsFacilityService(null, null);
+    acbsFacilityService = new AcbsFacilityService(null!, null!);
 
     acbsFacilityServiceGetFacilityByIdentifier = jest.fn();
     acbsFacilityService.getFacilityByIdentifier = acbsFacilityServiceGetFacilityByIdentifier;
 
-    acbsBundleInformationService = new AcbsBundleInformationService(null, null);
+    acbsBundleInformationService = new AcbsBundleInformationService(null!, null!);
 
     const mockAcbsAuthenticationService = getMockAcbsAuthenticationService();
     acbsAuthenticationService = mockAcbsAuthenticationService.service;
@@ -79,11 +79,11 @@ describe('FacilityService', () => {
     it('returns a transformation of the facility from ACBS when OriginalEffectiveDate IS null', async () => {
       const facilityInAcbs: AcbsGetFacilityResponseDto = {
         ...facilitiesInAcbs[0],
-        OriginalEffectiveDate: null,
+        OriginalEffectiveDate: null!,
       };
       const expectedFacility: GetFacilityByIdentifierResponseDto = {
         ...facilitiesFromApi[0],
-        effectiveDate: null,
+        effectiveDate: null!,
       };
       when(acbsFacilityServiceGetFacilityByIdentifier).calledWith(facilityIdentifier, idToken).mockResolvedValueOnce(facilityInAcbs);
 
@@ -113,11 +113,11 @@ describe('FacilityService', () => {
     it('returns a transformation of the facility from ACBS when ExpirationDate IS null', async () => {
       const facilityInAcbs: AcbsGetFacilityResponseDto = {
         ...facilitiesInAcbs[0],
-        ExpirationDate: null,
+        ExpirationDate: null!,
       };
       const expectedFacility: GetFacilityByIdentifierResponseDto = {
         ...facilitiesFromApi[0],
-        guaranteeExpiryDate: null,
+        guaranteeExpiryDate: null!,
       };
       when(acbsFacilityServiceGetFacilityByIdentifier).calledWith(facilityIdentifier, idToken).mockResolvedValueOnce(facilityInAcbs);
 
@@ -183,12 +183,12 @@ describe('FacilityService', () => {
     it('returns a transformation of the facility from ACBS when UserDefinedDate2 IS null', async () => {
       const facilityInAcbs: AcbsGetFacilityResponseDto = {
         ...facilitiesInAcbs[0],
-        UserDefinedDate2: null,
+        UserDefinedDate2: null!,
       };
       const expectedFacility: GetFacilityByIdentifierResponseDto = {
         ...facilitiesFromApi[0],
-        guaranteeCommencementDate: null,
-        nextQuarterEndDate: null,
+        guaranteeCommencementDate: null!,
+        nextQuarterEndDate: null!,
       };
       when(acbsFacilityServiceGetFacilityByIdentifier).calledWith(facilityIdentifier, idToken).mockResolvedValueOnce(facilityInAcbs);
 

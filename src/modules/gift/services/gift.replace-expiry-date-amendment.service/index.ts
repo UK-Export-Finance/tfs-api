@@ -1,12 +1,12 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
+import { PinoLogger } from 'nestjs-pino';
 import { GIFT } from '@ukef/constants';
 import { GiftAmendmentBaseParams } from '@ukef/types';
-import { PinoLogger } from 'nestjs-pino';
 
-import { GiftWorkPackageResponseDto } from '../../dto';
-import { getAccrualScheduleIds } from '../../helpers';
-import { GiftHttpService } from '../gift.http.service';
-import { GiftWorkPackageService } from '../gift.work-package.service';
+import { GiftWorkPackageResponseDto } from '@ukef/modules/gift/dto';
+import { getAccrualScheduleIds } from '@ukef/modules/gift/helpers';
+import { GiftHttpService } from '@ukef/modules/gift/services/gift.http.service';
+import { GiftWorkPackageService } from '@ukef/modules/gift/services/gift.work-package.service';
 
 const {
   AMEND_FACILITY_PREFIX_TYPES,
@@ -39,11 +39,7 @@ export class GiftReplaceExpiryDateAmendmentService {
     private readonly giftHttpService: GiftHttpService,
     private readonly giftWorkPackageService: GiftWorkPackageService,
     private readonly logger: PinoLogger,
-  ) {
-    this.giftHttpService = giftHttpService;
-    this.giftWorkPackageService = giftWorkPackageService;
-    this.logger = logger;
-  }
+  ) {}
 
   /**
    * Amend the obligations maturity dates for a given facility and work package.
@@ -67,7 +63,7 @@ export class GiftReplaceExpiryDateAmendmentService {
        * NOTE: We need to use a for loop instead of Promise.all, to ensure that the calls are sequential.
        * Promise.all is not sequential.
        */
-      const responses = [];
+      const responses: GiftWorkPackageResponseDto[] = [];
 
       for (const obligation of obligations) {
         const payload = {

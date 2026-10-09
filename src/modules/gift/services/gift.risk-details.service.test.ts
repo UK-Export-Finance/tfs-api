@@ -1,6 +1,6 @@
+import { PinoLogger } from 'nestjs-pino';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { mockResponse201, mockResponse500 } from '@ukef-test/http-response';
-import { PinoLogger } from 'nestjs-pino';
 
 import { GiftRiskDetailsService } from './gift.risk-details.service';
 
@@ -24,6 +24,7 @@ describe('GiftRiskDetailsService', () => {
     // Arrange
     mockCreateOneResponse = mockResponse201(RISK_DETAILS);
 
+    mockHttpServiceGet = jest.fn();
     mockHttpServicePost = jest.fn().mockResolvedValueOnce(mockCreateOneResponse);
 
     giftHttpService = {

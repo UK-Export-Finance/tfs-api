@@ -7,6 +7,7 @@ import { Api } from '@ukef-test/support/api';
 import { TEST_CURRENCIES } from '@ukef-test/support/constants/test-currency.constant';
 import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
+import { NOCK_NULL_RESPONSE_BODY } from '@ukef-test/support/helpers/nock-null-response-body.helper';
 import nock from 'nock';
 
 describe('GET /deals/{dealIdentifier}', () => {
@@ -94,7 +95,7 @@ describe('GET /deals/{dealIdentifier}', () => {
     givenAuthenticationWithTheIdpSucceeds();
     const dealInAcbsWithNullPartyName: AcbsGetDealResponseDto = {
       ...dealInAcbs,
-      BorrowerParty: { ...dealInAcbs.BorrowerParty, PartyName1: null },
+      BorrowerParty: { ...dealInAcbs.BorrowerParty, PartyName1: null! },
     };
     requestToGetDeal().reply(200, dealInAcbsWithNullPartyName);
 
@@ -108,7 +109,7 @@ describe('GET /deals/{dealIdentifier}', () => {
     givenAuthenticationWithTheIdpSucceeds();
     const dealInAcbsWithNullIndustryClassification: AcbsGetDealResponseDto = {
       ...dealInAcbs,
-      IndustryClassification: { IndustryClassificationCode: null },
+      IndustryClassification: { IndustryClassificationCode: null! },
     };
     requestToGetDeal().reply(200, dealInAcbsWithNullIndustryClassification);
 
@@ -122,7 +123,7 @@ describe('GET /deals/{dealIdentifier}', () => {
     givenAuthenticationWithTheIdpSucceeds();
     const dealInAcbsWithNullCommencementDate: AcbsGetDealResponseDto = {
       ...dealInAcbs,
-      OriginalEffectiveDate: null,
+      OriginalEffectiveDate: null!,
     };
     requestToGetDeal().reply(200, dealInAcbsWithNullCommencementDate);
 
@@ -134,7 +135,7 @@ describe('GET /deals/{dealIdentifier}', () => {
 
   it('returns a 404 response if ACBS returns a 200 response with null as the response body', async () => {
     givenAuthenticationWithTheIdpSucceeds();
-    requestToGetDeal().reply(200, null);
+    requestToGetDeal().reply(200, NOCK_NULL_RESPONSE_BODY);
 
     const { status, body } = await api.get(getDealUrl);
 

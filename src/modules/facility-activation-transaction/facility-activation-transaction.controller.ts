@@ -70,7 +70,7 @@ export class FacilityActivationTransactionController {
 
     const [newFacilityActivationTransaction] = newFacilityActivationTransactionRequest;
 
-    return this.facilityActivationTransactionService.createActivationTransactionForFacility(
+    return await this.facilityActivationTransactionService.createActivationTransactionForFacility(
       params.facilityIdentifier,
       facility.obligorPartyIdentifier,
       facility.effectiveDate,

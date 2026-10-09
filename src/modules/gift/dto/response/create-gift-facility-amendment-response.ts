@@ -1,9 +1,9 @@
 import { HttpStatus } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
-import { EXAMPLES } from '@ukef/constants';
 import { IsObject, IsString } from 'class-validator';
+import { EXAMPLES } from '@ukef/constants';
 
-import { GiftWorkPackageResponseDto } from './work-package-response';
+import type { GiftWorkPackageResponseDto } from '@ukef/modules/gift/dto';
 
 const {
   GIFT: { WORK_PACKAGE_CREATION_RESPONSE_DATA },
@@ -14,11 +14,11 @@ export class CreateGiftFacilityAmendmentResponseDto {
   @ApiProperty({
     example: HttpStatus.CREATED,
   })
-  readonly status: number;
+  readonly status!: number;
 
   @IsObject()
   @ApiProperty({
     example: WORK_PACKAGE_CREATION_RESPONSE_DATA,
   })
-  readonly data: GiftWorkPackageResponseDto;
+  readonly data!: GiftWorkPackageResponseDto;
 }

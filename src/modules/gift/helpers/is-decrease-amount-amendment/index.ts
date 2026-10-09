@@ -1,6 +1,6 @@
 import { GIFT } from '@ukef/constants';
 
-import { CreateGiftFacilityAmendmentRequestDto, DecreaseAmountDto } from '../../dto';
+import type { CreateGiftFacilityAmendmentRequestDto, DecreaseAmountDto } from '@ukef/modules/gift/dto';
 
 const {
   AMEND_FACILITY_TYPES_CONSUMER: { AMEND_FACILITY_DECREASE_AMOUNT },

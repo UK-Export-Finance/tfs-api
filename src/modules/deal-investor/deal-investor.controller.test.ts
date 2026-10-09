@@ -1,10 +1,10 @@
+import { when } from 'jest-when';
 import { UkefId } from '@ukef/helpers';
 import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { CreateDealInvestorGenerator } from '@ukef-test/support/generator/create-deal-investor-generator';
 import { GetDealInvestorGenerator } from '@ukef-test/support/generator/get-deal-investor-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { when } from 'jest-when';
 
 import { DealInvestorController } from './deal-investor.controller';
 import { DealInvestorService } from './deal-investor.service';
@@ -24,7 +24,7 @@ describe('DealInvestorController', () => {
   let dealInvestorServiceCreateInvestorForDeal: jest.Mock;
 
   beforeEach(() => {
-    dealInvestorService = new DealInvestorService(null, null, null, null);
+    dealInvestorService = new DealInvestorService(null!, null!, null!, null!);
 
     dealInvestorServiceGetDealInvestors = jest.fn();
     dealInvestorService.getDealInvestors = dealInvestorServiceGetDealInvestors;
@@ -49,7 +49,7 @@ describe('DealInvestorController', () => {
     it('returns the deal investors from the service', async () => {
       when(dealInvestorServiceGetDealInvestors).calledWith(dealIdentifier).mockResolvedValueOnce(dealInvestorsFromService);
 
-      const dealInvestors = await controller.getDealInvestors({ dealIdentifier: dealIdentifier });
+      const dealInvestors = await controller.getDealInvestors({ dealIdentifier });
 
       expect(dealInvestors).toStrictEqual(expectedDealInvestors);
     });
@@ -67,7 +67,7 @@ describe('DealInvestorController', () => {
 
       when(dealInvestorServiceGetDealInvestors).calledWith(dealIdentifier).mockResolvedValueOnce(dealInvestorsWithUnexpectedKey);
 
-      const dealInvestors = await controller.getDealInvestors({ dealIdentifier: dealIdentifier });
+      const dealInvestors = await controller.getDealInvestors({ dealIdentifier });
 
       expect(dealInvestors).toStrictEqual(expectedDealInvestorsWithNewKey);
     });
@@ -78,7 +78,7 @@ describe('DealInvestorController', () => {
 
     const { requestBodyToCreateDealInvestor } = new CreateDealInvestorGenerator(valueGenerator, currentDateProvider, dateStringTransformations).generate({
       numberToGenerate: 2,
-      dealIdentifier: dealIdentifier,
+      dealIdentifier,
     });
 
     it('creates an investor for the deal with the service from the request body', async () => {

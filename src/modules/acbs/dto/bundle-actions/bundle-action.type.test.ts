@@ -18,7 +18,7 @@ const valueGenerator = new RandomValueGenerator();
   { type: ENUMS.BUNDLE_INFORMATION_TYPES.NEW_LOAN_REQUEST, typeGuard: isNewLoanRequest },
   { type: ENUMS.BUNDLE_INFORMATION_TYPES.FACILITY_FEE_AMOUNT_TRANSACTION, typeGuard: isFacilityFeeAmountTransaction },
 ].forEach(({ type, typeGuard }) => {
-  describe(`${typeGuard.name}`, () => {
+  describe(typeGuard.name, () => {
     it(`returns true if $type is ${type}`, () => {
       const action = {
         $type: type,

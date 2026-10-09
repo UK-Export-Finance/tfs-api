@@ -1,10 +1,10 @@
 import { HttpService } from '@nestjs/axios';
-import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
-import { GetFacilityLoanGenerator } from '@ukef-test/support/generator/get-facility-loan-generator';
-import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { AxiosError } from 'axios';
 import { when } from 'jest-when';
 import { of, throwError } from 'rxjs';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
+import { GetFacilityLoanGenerator } from '@ukef-test/support/generator/get-facility-loan-generator';
+import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 
 import { AcbsFacilityLoanService } from './acbs-facility-loan.service';
 import { AcbsException } from './exception/acbs.exception';
@@ -90,8 +90,8 @@ describe('AcbsFacilityLoanService', () => {
         data: 'Facility not found or user does not have access to it.',
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServiceGet)
@@ -111,8 +111,8 @@ describe('AcbsFacilityLoanService', () => {
         data: 'some error string',
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServiceGet)
@@ -132,8 +132,8 @@ describe('AcbsFacilityLoanService', () => {
         data: { errorMessage: valueGenerator.string() },
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServiceGet)

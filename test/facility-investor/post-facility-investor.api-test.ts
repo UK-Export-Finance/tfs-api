@@ -94,7 +94,7 @@ describe('POST /facilities/{facilityIdentifier}/investors', () => {
       givenAuthenticationWithTheIdpSucceeds();
       givenRequestToCreateFacilityPartyInAcbsSucceeds();
     },
-    makeRequestWithoutAuth: (incorrectAuth: IncorrectAuthArg) =>
+    makeRequestWithoutAuth: (incorrectAuth?: IncorrectAuthArg) =>
       api.postWithoutAuth(createFacilityInvestorUrl, requestBodyToCreateFacilityInvestor, incorrectAuth?.headerName, incorrectAuth?.headerValue),
   });
 

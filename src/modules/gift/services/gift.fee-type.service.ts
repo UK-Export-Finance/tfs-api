@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { GIFT } from '@ukef/constants';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
+import { GIFT } from '@ukef/constants';
 
-import { GiftFacilityFeeTypeResponse, GiftFeeTypeResponseDto } from '../dto';
+import { GiftFacilityFeeTypeResponse, GiftFeeTypeResponseDto } from '@ukef/modules/gift/dto';
 import { GiftHttpService } from './gift.http.service';
 
 const { PATH } = GIFT;
@@ -17,9 +17,7 @@ export class GiftFeeTypeService {
   constructor(
     private readonly giftHttpService: GiftHttpService,
     private readonly logger: PinoLogger,
-  ) {
-    this.giftHttpService = giftHttpService;
-  }
+  ) {}
 
   /**
    * Get supported GIFT fee types

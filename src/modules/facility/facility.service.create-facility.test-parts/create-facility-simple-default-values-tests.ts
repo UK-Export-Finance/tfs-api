@@ -1,7 +1,7 @@
 import { PROPERTIES } from '@ukef/constants';
 import { AcbsCreateFacilityRequest } from '@ukef/modules/acbs/dto/acbs-create-facility-request.dto';
 
-import { CreateFacilityRequestItem } from '../dto/create-facility-request.dto';
+import { CreateFacilityRequestItem } from '@ukef/modules/facility/dto/create-facility-request.dto';
 import { CreateFacilityTestPartsArgs } from './create-facility-test-parts-args.interface';
 
 export const withCreateFacilitySimpleDefaultValuesTests = ({
@@ -28,7 +28,7 @@ export const withCreateFacilitySimpleDefaultValuesTests = ({
     it.each(defaultValueTests)(
       'sets a default of $defaultValueForAcbs for $keyAffectedInAcbs if $keyInRequest is not specified',
       async ({ keyInRequest, keyAffectedInAcbs, defaultValueForAcbs }) => {
-        const { [keyInRequest]: _removed, ...facilityToCreateWithoutKey } = facilityToCreate;
+        const { [keyInRequest]: removed, ...facilityToCreateWithoutKey } = facilityToCreate;
 
         await createFacility(facilityToCreateWithoutKey as CreateFacilityRequestItem);
 

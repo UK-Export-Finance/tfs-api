@@ -1,3 +1,4 @@
+import { when } from 'jest-when';
 import { PROPERTIES } from '@ukef/constants';
 import { UkefId } from '@ukef/helpers';
 import { AcbsDealPartyService } from '@ukef/modules/acbs/acbs-deal-party.service';
@@ -8,7 +9,6 @@ import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authen
 import { TEST_DATES } from '@ukef-test/support/constants/test-date.constant';
 import { CreateDealInvestorGenerator } from '@ukef-test/support/generator/create-deal-investor-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { when } from 'jest-when';
 
 import { DealInvestorService } from './deal-investor.service';
 
@@ -28,7 +28,7 @@ describe('DealInvestorService', () => {
   let acbsDealPartyServiceCreateInvestorForDeal: jest.Mock;
 
   beforeEach(() => {
-    acbsDealPartyService = new AcbsDealPartyService(null, null);
+    acbsDealPartyService = new AcbsDealPartyService(null!, null!);
 
     acbsDealPartyServiceCreateInvestorForDeal = jest.fn();
     acbsDealPartyService.createInvestorForDeal = acbsDealPartyServiceCreateInvestorForDeal;
@@ -50,9 +50,11 @@ describe('DealInvestorService', () => {
       dateStringTransformations,
     ).generate({
       numberToGenerate: 2,
-      dealIdentifier: dealIdentifier,
+      dealIdentifier,
     });
     const [requestItemToCreateDealInvestor] = requestBodyToCreateDealInvestor;
+
+    const getInvestorCreatedInAcbs = (): AcbsCreateDealInvestorRequest => acbsDealPartyServiceCreateInvestorForDeal.mock.calls[0][1];
 
     it('creates an investor in ACBS with a transformation of the requested new investor', async () => {
       await service.createInvestorForDeal(dealIdentifier, requestItemToCreateDealInvestor);
@@ -61,7 +63,7 @@ describe('DealInvestorService', () => {
     });
 
     it('adds a default value for lenderType before creating the new investor if it is not specified', async () => {
-      const { lenderType: _removed, ...newInvestorWithoutLenderType } = requestItemToCreateDealInvestor;
+      const { lenderType: removed, ...newInvestorWithoutLenderType } = requestItemToCreateDealInvestor;
 
       await service.createInvestorForDeal(dealIdentifier, newInvestorWithoutLenderType);
 
@@ -71,7 +73,7 @@ describe('DealInvestorService', () => {
     });
 
     it('adds a default value for expiryDate before creating the new investor if it is not specified', async () => {
-      const { expiryDate: _removed, ...newInvestorWithoutExpiryDate } = requestItemToCreateDealInvestor;
+      const { expiryDate: removed, ...newInvestorWithoutExpiryDate } = requestItemToCreateDealInvestor;
 
       await service.createInvestorForDeal(dealIdentifier, newInvestorWithoutExpiryDate);
 
@@ -81,7 +83,7 @@ describe('DealInvestorService', () => {
     });
 
     it('adds a default value for dealStatus before creating the new investor if it is not specified', async () => {
-      const { dealStatus: _removed, ...newInvestorWithoutDealStatus } = requestItemToCreateDealInvestor;
+      const { dealStatus: removed, ...newInvestorWithoutDealStatus } = requestItemToCreateDealInvestor;
 
       await service.createInvestorForDeal(dealIdentifier, newInvestorWithoutDealStatus);
 
@@ -105,7 +107,5 @@ describe('DealInvestorService', () => {
 
       expect(investorCreatedInAcbs.EffectiveDate).toBe(dateStringTransformations.addTimeToDateOnlyString(TEST_DATES.A_PAST_EFFECTIVE_DATE_ONLY));
     });
-
-    const getInvestorCreatedInAcbs = (): AcbsCreateDealInvestorRequest => acbsDealPartyServiceCreateInvestorForDeal.mock.calls[0][1];
   });
 });

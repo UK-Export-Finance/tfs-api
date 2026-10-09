@@ -1,6 +1,6 @@
+import { PinoLogger } from 'nestjs-pino';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { mockResponse201, mockResponse500 } from '@ukef-test/http-response';
-import { PinoLogger } from 'nestjs-pino';
 
 import { GiftStatusService } from './gift.status.service';
 

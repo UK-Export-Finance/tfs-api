@@ -1,3 +1,4 @@
+import { when } from 'jest-when';
 import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { LenderTypeCodeEnum } from '@ukef/constants/enums/lender-type-code';
 import { AcbsFacilityPartyService } from '@ukef/modules/acbs/acbs-facility-party.service';
@@ -7,7 +8,6 @@ import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authen
 import { TEST_CURRENCIES } from '@ukef-test/support/constants/test-currency.constant';
 import { TEST_DATES } from '@ukef-test/support/constants/test-date.constant';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { when } from 'jest-when';
 
 import { CreateFacilityInvestorRequestItem } from './dto/create-facility-investor-request.dto';
 import { FacilityInvestorService } from './facility-investor.service';
@@ -22,7 +22,7 @@ describe('FacilityInvestorService', () => {
   let acbsFacilityPartyServiceCreatePartyForFacility: jest.Mock;
 
   beforeEach(() => {
-    const acbsFacilityPartyService = new AcbsFacilityPartyService(null, null);
+    const acbsFacilityPartyService = new AcbsFacilityPartyService(null!, null!);
     acbsFacilityPartyServiceCreatePartyForFacility = jest.fn();
     acbsFacilityPartyService.createPartyForFacility = acbsFacilityPartyServiceCreatePartyForFacility;
 
@@ -48,8 +48,8 @@ describe('FacilityInvestorService', () => {
     const maximumLiability = 12345.6;
 
     const newFacilityInvestorWithAllFields: CreateFacilityInvestorRequestItem = {
-      effectiveDate: effectiveDate,
-      guaranteeExpiryDate: guaranteeExpiryDate,
+      effectiveDate,
+      guaranteeExpiryDate,
       lenderType,
       currency,
       maximumLiability,
@@ -87,7 +87,7 @@ describe('FacilityInvestorService', () => {
     });
 
     it('adds a default value for lenderType before creating the facility party if it is not specified', async () => {
-      const { lenderType: _removed, ...newInvestorWithoutLenderType } = newFacilityInvestorWithAllFields;
+      const { lenderType: removed, ...newInvestorWithoutLenderType } = newFacilityInvestorWithAllFields;
 
       await service.createInvestorForFacility(facilityIdentifier, newInvestorWithoutLenderType);
 

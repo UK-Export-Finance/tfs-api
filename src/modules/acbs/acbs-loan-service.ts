@@ -1,6 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { Inject, Injectable } from '@nestjs/common';
-import AcbsConfig from '@ukef/config/acbs.config';
+import { AcbsConfig } from '@ukef/config/acbs.config';
 
 import { AcbsConfigBaseUrlAndUseReturnExceptionHeader } from './acbs-config-base-url.type';
 import { AcbsHttpService } from './acbs-http.service';
@@ -32,7 +32,7 @@ export class AcbsLoanService {
 
   async updateLoanByIdentifier(portfolioIdentifier: string, acbsUpdateLoanRequest: AcbsUpdateLoanRequest, idToken: string) {
     const { LoanIdentifier: loanIdentifier } = acbsUpdateLoanRequest;
-    await this.acbsHttpService.put<AcbsUpdateLoanRequest, void>({
+    await this.acbsHttpService.put<AcbsUpdateLoanRequest, null>({
       path: `/Portfolio/${portfolioIdentifier}/Loan/${loanIdentifier}`,
       requestBody: acbsUpdateLoanRequest,
       idToken,

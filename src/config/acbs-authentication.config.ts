@@ -1,7 +1,7 @@
 import { registerAs } from '@nestjs/config';
 import { getIntConfig } from '@ukef/helpers/get-int-config';
 
-export interface AcbsAuthenticationConfig {
+export type AcbsAuthenticationConfig = {
   apiKey: string;
   apiKeyHeaderName: string;
   baseUrl: string;
@@ -13,20 +13,20 @@ export interface AcbsAuthenticationConfig {
   password: string;
   retryDelayInMilliseconds: number;
   timeout: number;
-}
+};
 
-export default registerAs(
+export const AcbsAuthenticationConfig = registerAs(
   'acbsAuthentication',
   (): AcbsAuthenticationConfig => ({
-    apiKey: process.env.ACBS_AUTHENTICATION_API_KEY,
-    apiKeyHeaderName: process.env.ACBS_AUTHENTICATION_API_KEY_HEADER_NAME,
-    baseUrl: process.env.ACBS_AUTHENTICATION_BASE_URL,
-    clientId: process.env.ACBS_AUTHENTICATION_CLIENT_ID,
+    apiKey: process.env.ACBS_AUTHENTICATION_API_KEY!,
+    apiKeyHeaderName: process.env.ACBS_AUTHENTICATION_API_KEY_HEADER_NAME!,
+    baseUrl: process.env.ACBS_AUTHENTICATION_BASE_URL!,
+    clientId: process.env.ACBS_AUTHENTICATION_CLIENT_ID!,
     idTokenCacheTtlInMilliseconds: getIntConfig(process.env.ACBS_AUTHENTICATION_ID_TOKEN_CACHE_TTL_IN_MILLISECONDS, 60000),
-    loginName: process.env.ACBS_AUTHENTICATION_LOGIN_NAME,
+    loginName: process.env.ACBS_AUTHENTICATION_LOGIN_NAME!,
     maxRedirects: getIntConfig(process.env.ACBS_AUTHENTICATION_MAX_REDIRECTS, 5),
     maxNumberOfRetries: getIntConfig(process.env.ACBS_AUTHENTICATION_MAX_NUMBER_OF_RETRIES, 1),
-    password: process.env.ACBS_AUTHENTICATION_PASSWORD,
+    password: process.env.ACBS_AUTHENTICATION_PASSWORD!,
     retryDelayInMilliseconds: getIntConfig(process.env.ACBS_AUTHENTICATION_RETRY_DELAY_IN_MILLISECONDS, 500),
     timeout: getIntConfig(process.env.ACBS_AUTHENTICATION_TIMEOUT, 30000),
   }),

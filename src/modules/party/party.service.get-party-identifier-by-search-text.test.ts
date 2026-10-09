@@ -1,12 +1,12 @@
 import { HttpService } from '@nestjs/axios';
+import { when } from 'jest-when';
 import { AcbsPartyService } from '@ukef/modules/acbs/acbs-party.service';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
 import { GetPartyGenerator } from '@ukef-test/support/generator/get-party-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { when } from 'jest-when';
 
-import { AcbsGetPartiesBySearchTextResponseDto } from '../acbs/dto/acbs-get-parties-by-search-text-response.dto';
+import { AcbsGetPartiesBySearchTextResponseDto } from '@ukef/modules/acbs/dto/acbs-get-parties-by-search-text-response.dto';
 import { GetPartiesBySearchTextException } from './exception/get-parties-by-search-text.exception';
 import { PartyService } from './party.service';
 
@@ -31,7 +31,7 @@ describe('PartyService', () => {
     httpServiceGet = jest.fn();
     httpService.get = httpServiceGet;
 
-    const acbsPartyService = new AcbsPartyService(null, null);
+    const acbsPartyService = new AcbsPartyService(null!, null!);
     acbsPartyServiceGetPartyBySearchText = jest.fn();
     acbsPartyService.getPartyBySearchText = acbsPartyServiceGetPartyBySearchText;
 
@@ -57,9 +57,7 @@ describe('PartyService', () => {
 
       const response = await partyService.getPartyIdentifierBySearchText(searchText);
 
-      expect(response).toStrictEqual({
-        partyIdentifier: partyIdentifier,
-      });
+      expect(response).toStrictEqual({ partyIdentifier });
     });
 
     it('returns the party identifier of the first matching party if the query parameter searchText is exactly 3 characters and the request is successful', async () => {
@@ -69,9 +67,7 @@ describe('PartyService', () => {
 
       const response = await partyService.getPartyIdentifierBySearchText(searchText);
 
-      expect(response).toStrictEqual({
-        partyIdentifier: partyIdentifier,
-      });
+      expect(response).toStrictEqual({ partyIdentifier });
     });
 
     it('returns undefined if the request is successful and there are no matching parties', async () => {
@@ -85,7 +81,7 @@ describe('PartyService', () => {
     });
 
     it('throws a GetPartiesBySearchTextException if the required query parameter searchText is not specified', async () => {
-      const responsePromise = partyService.getPartyIdentifierBySearchText(null);
+      const responsePromise = partyService.getPartyIdentifierBySearchText(null!);
 
       await expect(responsePromise).rejects.toBeInstanceOf(GetPartiesBySearchTextException);
       await expect(responsePromise).rejects.toThrow('The required query parameter searchText was not specified.');

@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { EXAMPLES } from '@ukef/constants';
 import { IsBoolean, IsString } from 'class-validator';
+import { EXAMPLES } from '@ukef/constants';
 
 const {
   GIFT: { BUSINESS_CALENDARS_CONVENTION },
@@ -17,17 +17,17 @@ export class GiftBusinessCalendarsConventionResponseDto {
   @ApiProperty({
     example: BUSINESS_CALENDARS_CONVENTION.businessDayConvention,
   })
-  readonly businessDayConvention: string;
+  readonly businessDayConvention!: string;
 
   @IsBoolean()
   @ApiProperty({
     example: BUSINESS_CALENDARS_CONVENTION.dueOnLastWorkingDayEachMonth,
   })
-  readonly dueOnLastWorkingDayEachMonth: boolean;
+  readonly dueOnLastWorkingDayEachMonth!: boolean;
 
   @IsBoolean()
   @ApiProperty({
     example: BUSINESS_CALENDARS_CONVENTION.dateSnapBack,
   })
-  readonly dateSnapBack: boolean;
+  readonly dateSnapBack!: boolean;
 }

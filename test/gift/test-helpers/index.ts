@@ -1,5 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
-import AppConfig from '@ukef/config/app.config';
+import { AppConfig } from '@ukef/config/app.config';
 import { AMEND_FACILITY_TYPES_CONSUMER_ARRAY, GIFT } from '@ukef/constants';
 import { GIFT_EXAMPLES } from '@ukef/constants/examples/gift.examples.constant';
 import { MDM_EXAMPLES } from '@ukef/constants/examples/mdm.examples.constant';
@@ -142,9 +142,9 @@ export const businessCalendarsConvention = GIFT_EXAMPLES.BUSINESS_CALENDARS_CONV
 
 export const payloadAccrualSchedules = Object.keys(GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD.accrualSchedules);
 export const payloadCounterparties = Object.keys(GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD.counterparties);
-export const payloadFixedFees = Object.keys(GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD.fixedFees);
+export const payloadFixedFees = Object.keys(GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD.fixedFees!);
 export const payloadObligations = Object.keys(GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD.obligations);
-export const payloadRepaymentProfiles = Object.keys(GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD.repaymentProfiles);
+export const payloadRepaymentProfiles = Object.keys(GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD.repaymentProfiles!);
 
 /**
  * Generate expected validation errors

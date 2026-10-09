@@ -8,7 +8,7 @@ export class CreateLoanAmountAmendmentRequestItem {
   @ValidatedDateOnlyApiProperty({
     description: 'The date that this amendment is effective.',
   })
-  readonly effectiveDate: DateOnlyString;
+  readonly effectiveDate!: DateOnlyString;
 
   @ValidatedNumberApiProperty({
     description:
@@ -16,5 +16,5 @@ export class CreateLoanAmountAmendmentRequestItem {
     example: 1000000,
     forbidZero: true,
   })
-  readonly amountAmendment: number;
+  readonly amountAmendment!: number;
 }

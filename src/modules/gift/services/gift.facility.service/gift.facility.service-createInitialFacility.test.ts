@@ -1,8 +1,8 @@
+import { PinoLogger } from 'nestjs-pino';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { MdmService } from '@ukef/modules/mdm/mdm.service';
 import { mockGiftFacilityCreationErrorService } from '@ukef-test/gift/mock-services';
 import { mockResponse201, mockResponse500 } from '@ukef-test/http-response';
-import { PinoLogger } from 'nestjs-pino';
 
 import {
   GiftAccrualScheduleService,
@@ -19,7 +19,7 @@ import {
   GiftRepaymentProfileService,
   GiftRiskDetailsService,
   GiftStatusService,
-} from '../';
+} from '@ukef/modules/gift/services';
 import { GiftFacilityService } from './';
 
 const {
@@ -60,7 +60,7 @@ describe('GiftFacilityService.createInitialFacility', () => {
 
     httpService = giftHttpService;
 
-    const counterpartyService = new GiftCounterpartyService(giftHttpService, logger);
+    counterpartyService = new GiftCounterpartyService(giftHttpService, logger);
     const currencyService = new GiftCurrencyService(giftHttpService, logger);
     const feeTypeService = new GiftFeeTypeService(giftHttpService, logger);
     const mdmService = new MdmService(httpService, logger);

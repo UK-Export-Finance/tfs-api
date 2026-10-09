@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { GIFT } from '@ukef/constants';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
+import { GIFT } from '@ukef/constants';
 
-import { GiftRepaymentProfileRequestDto } from '../dto';
+import { GiftRepaymentProfileRequestDto } from '@ukef/modules/gift/dto';
 import { GiftHttpService } from './gift.http.service';
 
 const { EVENT_TYPES, PATH } = GIFT;
@@ -17,9 +17,7 @@ export class GiftRepaymentProfileService {
   constructor(
     private readonly giftHttpService: GiftHttpService,
     private readonly logger: PinoLogger,
-  ) {
-    this.giftHttpService = giftHttpService;
-  }
+  ) {}
 
   /**
    * Create a GIFT repayment profile
@@ -56,7 +54,7 @@ export class GiftRepaymentProfileService {
    * @returns {Promise<Array<AxiosResponse>>}
    * @throws {Error}
    */
-  async createMany(repaymentProfilesData: GiftRepaymentProfileRequestDto[], facilityId: string, workPackageId: number): Promise<Array<AxiosResponse>> {
+  async createMany(repaymentProfilesData: GiftRepaymentProfileRequestDto[], facilityId: string, workPackageId: number): Promise<AxiosResponse[]> {
     try {
       this.logger.info('Creating repayment profiles for facility %s', facilityId);
 
@@ -64,7 +62,7 @@ export class GiftRepaymentProfileService {
        * NOTE: We need to use a for loop instead of Promise.all, to ensure that the calls are sequential.
        * Promise.all is not sequential.
        */
-      const responses = [];
+      const responses: AxiosResponse[] = [];
 
       for (const repaymentProfile of repaymentProfilesData) {
         const response = await this.createOne(repaymentProfile, facilityId, workPackageId);

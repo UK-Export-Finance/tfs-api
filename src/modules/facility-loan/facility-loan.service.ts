@@ -12,8 +12,8 @@ import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { AccrualScheduleBuilder } from '@ukef/modules/facility-loan/accrual-schedule.builder';
 
-import { AcbsLoanService } from '../acbs/acbs-loan-service';
-import { AcbsUpdateLoanRequest } from '../acbs/dto/acbs-update-loan-request.dto';
+import { AcbsLoanService } from '@ukef/modules/acbs/acbs-loan-service';
+import { AcbsUpdateLoanRequest } from '@ukef/modules/acbs/dto/acbs-update-loan-request.dto';
 import { CreateFacilityLoanRequestItem } from './dto/create-facility-loan-request.dto';
 import { CreateFacilityLoanResponse } from './dto/create-facility-loan-response.dto';
 import { CreateLoanAmountAmendmentRequestItem } from './dto/create-loan-amount-amendment-request.dto';
@@ -39,24 +39,23 @@ export class FacilityLoanService {
     const { portfolioIdentifier } = PROPERTIES.GLOBAL;
     const idToken = await this.getIdToken();
     const loansInAcbs = await this.acbsFacilityLoanService.getLoansForFacility(portfolioIdentifier, facilityIdentifier, idToken);
-    return loansInAcbs.map((loan) => {
-      return {
-        portfolioIdentifier: loan.PortfolioIdentifier,
-        loanIdentifier: loan.LoanIdentifier,
-        facilityIdentifier: loan.ParentFacilityIdentifier,
-        borrowerPartyIdentifier: loan.PrimaryParty.PartyIdentifier,
-        productTypeId: loan.ProductType.ProductTypeCode,
-        productTypeGroup: loan.ProductGroup.ProductGroupCode,
-        currency: loan.Currency.CurrencyCode,
-        issueDate: this.dateStringTransformations.removeTime(loan.EffectiveDate),
-        expiryDate: this.dateStringTransformations.removeTime(loan.MaturityDate),
-        principalBalance: loan.PrincipalBalance,
-        interestBalance: loan.InterestBalance,
-        feeBalance: loan.FeeBalance,
-        otherBalance: loan.OtherBalance,
-        discountedPrincipal: loan.DiscountedPrincipal,
-      };
-    });
+
+    return loansInAcbs.map((loan) => ({
+      portfolioIdentifier: loan.PortfolioIdentifier,
+      loanIdentifier: loan.LoanIdentifier,
+      facilityIdentifier: loan.ParentFacilityIdentifier,
+      borrowerPartyIdentifier: loan.PrimaryParty.PartyIdentifier,
+      productTypeId: loan.ProductType.ProductTypeCode,
+      productTypeGroup: loan.ProductGroup.ProductGroupCode,
+      currency: loan.Currency.CurrencyCode,
+      issueDate: this.dateStringTransformations.removeTime(loan.EffectiveDate),
+      expiryDate: this.dateStringTransformations.removeTime(loan.MaturityDate),
+      principalBalance: loan.PrincipalBalance,
+      interestBalance: loan.InterestBalance,
+      feeBalance: loan.FeeBalance,
+      otherBalance: loan.OtherBalance,
+      discountedPrincipal: loan.DiscountedPrincipal,
+    }));
   }
 
   async createLoanForFacility(

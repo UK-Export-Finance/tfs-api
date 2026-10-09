@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { EXAMPLES } from '@ukef/constants';
 import { IsBoolean, IsNumber, IsString } from 'class-validator';
+import { EXAMPLES } from '@ukef/constants';
 
-import { GiftFacilityOverviewRequestDto } from '../request/facility-overview';
+import { GiftFacilityOverviewRequestDto } from '@ukef/modules/gift/dto/request/facility-overview';
 
 const {
   GIFT: { FACILITY_RESPONSE_DATA: EXAMPLE },
@@ -17,34 +17,34 @@ export class GiftFacilityResponseDto extends GiftFacilityOverviewRequestDto {
   @ApiProperty({
     example: EXAMPLE.configurationEvent.data.availableAmount,
   })
-  readonly availableAmount: number;
+  readonly availableAmount!: number;
 
   @ApiProperty({
     example: EXAMPLE.configurationEvent.data.createdDatetime,
   })
-  createdDatetime: string;
+  createdDatetime!: string;
 
   @IsNumber()
   @ApiProperty({
     example: EXAMPLE.configurationEvent.data.drawnAmount,
   })
-  readonly drawnAmount: number;
+  readonly drawnAmount!: number;
 
   @IsBoolean()
   @ApiProperty({
     example: EXAMPLE.configurationEvent.data.isDraft,
   })
-  readonly isDraft: boolean;
+  readonly isDraft!: boolean;
 
   @IsString()
   @ApiProperty({
     example: EXAMPLE.configurationEvent.data.streamId,
   })
-  readonly streamId: string;
+  readonly streamId!: string;
 
   @IsNumber()
   @ApiProperty({
     example: EXAMPLE.configurationEvent.data.streamVersion,
   })
-  readonly streamVersion: number;
+  readonly streamVersion!: number;
 }

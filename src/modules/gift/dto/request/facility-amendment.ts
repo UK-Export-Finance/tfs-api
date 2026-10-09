@@ -1,10 +1,10 @@
 import { ApiExtraModels, ApiProperty, getSchemaPath } from '@nestjs/swagger';
-import { AMEND_FACILITY_TYPES_CONSUMER_ARRAY, AmendFacilityTypeConsumer, GIFT } from '@ukef/constants';
 import { plainToInstance, Transform } from 'class-transformer';
 import { IsDefined, IsIn, IsObject, IsString, Length, ValidateNested } from 'class-validator';
+import { AMEND_FACILITY_TYPES_CONSUMER_ARRAY, AmendFacilityTypeConsumer, GIFT } from '@ukef/constants';
 
-import { getAmendmentDataDto } from '../../helpers';
-import { DecreaseAmountDto, IncreaseAmountDto, ReplaceExpiryDateDto } from './facility-amendment-shared';
+import { DecreaseAmountDto, IncreaseAmountDto, ReplaceExpiryDateDto } from '@ukef/modules/gift/dto/request/facility-amendment-shared';
+import { getAmendmentDataDto } from '@ukef/modules/gift/helpers/get-amendment-data-dto';
 
 const { VALIDATION } = GIFT;
 
@@ -25,7 +25,7 @@ export class CreateGiftFacilityAmendmentRequestDto {
     required: true,
     enum: AMEND_FACILITY_TYPES_CONSUMER_ARRAY,
   })
-  amendmentType: AmendFacilityTypeConsumer;
+  amendmentType!: AmendFacilityTypeConsumer;
 
   @IsObject()
   @IsDefined()
@@ -59,5 +59,5 @@ export class CreateGiftFacilityAmendmentRequestDto {
     required: true,
     oneOf: [{ $ref: getSchemaPath(DecreaseAmountDto) }, { $ref: getSchemaPath(IncreaseAmountDto) }, { $ref: getSchemaPath(ReplaceExpiryDateDto) }],
   })
-  amendmentData: DecreaseAmountDto | IncreaseAmountDto | ReplaceExpiryDateDto;
+  amendmentData!: DecreaseAmountDto | IncreaseAmountDto | ReplaceExpiryDateDto;
 }

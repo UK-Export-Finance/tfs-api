@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { MdmService } from '@ukef/modules/mdm/mdm.service';
 import { PinoLogger } from 'nestjs-pino';
+import { MdmService } from '@ukef/modules/mdm/mdm.service';
 
-import { GiftFacilityCreationRequestDto } from '../dto';
+import { GiftFacilityCreationRequestDto } from '@ukef/modules/gift/dto';
 import {
   generateArrayOfErrors,
   generateCounterpartySharePercentageErrors,
@@ -12,7 +12,7 @@ import {
   getObligationSubtypeCodes,
   mapEntitiesByField,
   stripPayload,
-} from '../helpers';
+} from '@ukef/modules/gift/helpers';
 import { GiftCounterpartyService } from './gift.counterparty.service';
 import { GiftCurrencyService } from './gift.currency.service';
 import { GiftFeeTypeService } from './gift.fee-type.service';
@@ -35,13 +35,7 @@ export class GiftFacilityAsyncValidationService {
     private readonly feeTypeService: GiftFeeTypeService,
     private readonly mdmService: MdmService,
     private readonly productTypeService: GiftProductTypeService,
-  ) {
-    this.counterpartyService = counterpartyService;
-    this.currencyService = currencyService;
-    this.feeTypeService = feeTypeService;
-    this.mdmService = mdmService;
-    this.productTypeService = productTypeService;
-  }
+  ) {}
 
   /**
    * Custom async validation for GIFT facility creation
@@ -91,7 +85,7 @@ export class GiftFacilityAsyncValidationService {
         providedCounterparties: payload.counterparties,
       });
 
-      let feeTypeCodeErrors = [];
+      let feeTypeCodeErrors: string[] = [];
 
       if (Array.isArray(payload.fixedFees) && payload.fixedFees.length) {
         const feeTypeCodes = await this.feeTypeService.getAllFeeTypeCodes();
@@ -104,7 +98,7 @@ export class GiftFacilityAsyncValidationService {
         });
       }
 
-      let obligationSubtypeCodeErrors = [];
+      let obligationSubtypeCodeErrors: string[] = [];
 
       const providedObligationSubtypeCodes = getObligationSubtypeCodes(payload.obligations);
 

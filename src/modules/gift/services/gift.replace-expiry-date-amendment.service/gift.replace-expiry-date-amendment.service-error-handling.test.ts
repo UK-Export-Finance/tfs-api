@@ -1,9 +1,9 @@
 import { HttpStatus } from '@nestjs/common';
+import { PinoLogger } from 'nestjs-pino';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { mockResponse500 } from '@ukef-test/http-response';
-import { PinoLogger } from 'nestjs-pino';
 
-import { GiftWorkPackageService } from '../gift.work-package.service';
+import { GiftWorkPackageService } from '@ukef/modules/gift/services/gift.work-package.service';
 import { GiftReplaceExpiryDateAmendmentService } from '.';
 
 const {

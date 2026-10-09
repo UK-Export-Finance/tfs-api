@@ -8,22 +8,17 @@ import { FacilityFeeAmountTransaction } from './facility-fee-amount-transaction.
 
 export type BundleAction = FacilityCodeValueTransaction | FacilityAmountTransaction | LoanAdvanceTransaction | NewLoanRequest | { $type: string };
 
-export const isFacilityCodeValueTransaction = (action: BundleAction): action is FacilityCodeValueTransaction => {
-  return action.$type === ENUMS.BUNDLE_INFORMATION_TYPES.FACILITY_CODE_VALUE_TRANSACTION;
-};
+export const isFacilityCodeValueTransaction = (action: BundleAction): action is FacilityCodeValueTransaction =>
+  action.$type === ENUMS.BUNDLE_INFORMATION_TYPES.FACILITY_CODE_VALUE_TRANSACTION;
 
-export const isFacilityAmountTransaction = (action: BundleAction): action is FacilityAmountTransaction => {
-  return action.$type === ENUMS.BUNDLE_INFORMATION_TYPES.FACILITY_AMOUNT_TRANSACTION;
-};
+export const isFacilityAmountTransaction = (action: BundleAction): action is FacilityAmountTransaction =>
+  action.$type === ENUMS.BUNDLE_INFORMATION_TYPES.FACILITY_AMOUNT_TRANSACTION;
 
-export const isLoanAdvanceTransaction = (action: BundleAction): action is LoanAdvanceTransaction => {
-  return action.$type === ENUMS.BUNDLE_INFORMATION_TYPES.LOAN_ADVANCE_TRANSACTION;
-};
+export const isLoanAdvanceTransaction = (action: BundleAction): action is LoanAdvanceTransaction =>
+  action.$type === ENUMS.BUNDLE_INFORMATION_TYPES.LOAN_ADVANCE_TRANSACTION;
 
-export const isNewLoanRequest = (bundleAction: BundleAction): bundleAction is NewLoanRequest => {
-  return bundleAction.$type === ENUMS.BUNDLE_INFORMATION_TYPES.NEW_LOAN_REQUEST;
-};
+export const isNewLoanRequest = (bundleAction: BundleAction): bundleAction is NewLoanRequest =>
+  bundleAction.$type === ENUMS.BUNDLE_INFORMATION_TYPES.NEW_LOAN_REQUEST;
 
-export const isFacilityFeeAmountTransaction = (bundleAction: BundleAction): bundleAction is FacilityFeeAmountTransaction => {
-  return bundleAction.$type === ENUMS.BUNDLE_INFORMATION_TYPES.FACILITY_FEE_AMOUNT_TRANSACTION;
-};
+export const isFacilityFeeAmountTransaction = (bundleAction: BundleAction): bundleAction is FacilityFeeAmountTransaction =>
+  bundleAction.$type === ENUMS.BUNDLE_INFORMATION_TYPES.FACILITY_FEE_AMOUNT_TRANSACTION;

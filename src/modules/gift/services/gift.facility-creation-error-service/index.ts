@@ -1,20 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
 
-import { GiftWorkPackageService } from '../gift.work-package.service';
+import { GiftWorkPackageService } from '@ukef/modules/gift/services/gift.work-package.service';
 
-interface FinallyHandlerParams {
+type FinallyHandlerParams = {
   workPackageId?: number;
   facilityId: string;
   creationCatchError?: unknown;
-}
+};
 
-interface HandleFinallyHandlerErrorParams {
+type HandleFinallyHandlerErrorParams = {
   facilityId: string;
   workPackageId?: number;
   creationCatchError: unknown;
   deletionError: unknown;
-}
+};
 
 /**
  * GIFT facility creation error service.
@@ -25,9 +25,7 @@ export class GiftFacilityCreationErrorService {
   constructor(
     private readonly giftWorkPackageService: GiftWorkPackageService,
     private readonly logger: PinoLogger,
-  ) {
-    this.giftWorkPackageService = giftWorkPackageService;
-  }
+  ) {}
 
   /**
    * "Finally function handler" for GIFT facility creation try/catch/finally pattern.

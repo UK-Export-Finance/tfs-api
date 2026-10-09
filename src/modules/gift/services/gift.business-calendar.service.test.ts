@@ -1,6 +1,6 @@
+import { PinoLogger } from 'nestjs-pino';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { mockResponse201, mockResponse500 } from '@ukef-test/http-response';
-import { PinoLogger } from 'nestjs-pino';
 
 import { GiftBusinessCalendarService } from './gift.business-calendar.service';
 
@@ -25,6 +25,7 @@ describe('GiftBusinessCalendarService', () => {
 
     mockCreateOneResponse = mockResponse201(BUSINESS_CALENDAR);
 
+    mockHttpServiceGet = jest.fn();
     mockHttpServicePost = jest.fn().mockResolvedValueOnce(mockCreateOneResponse);
 
     giftHttpService = {

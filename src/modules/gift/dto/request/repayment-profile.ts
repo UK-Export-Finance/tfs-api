@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { EXAMPLES, GIFT } from '@ukef/constants';
 import { Type } from 'class-transformer';
 import { ArrayNotEmpty, IsArray, IsDefined, IsString, Length, ValidateNested } from 'class-validator';
+import { EXAMPLES, GIFT } from '@ukef/constants';
 
-import { GiftRepaymentProfileAllocationRequestDto } from './repayment-profile-allocation';
+import { GiftRepaymentProfileAllocationRequestDto } from '@ukef/modules/gift/dto/request/repayment-profile-allocation';
 
 const {
   GIFT: { REPAYMENT_PROFILE, REPAYMENT_PROFILE_ALLOCATION },
@@ -25,7 +25,7 @@ export class GiftRepaymentProfileRequestDto {
     example: REPAYMENT_PROFILE().name,
     required: true,
   })
-  name: string;
+  name!: string;
 
   @IsArray()
   @ArrayNotEmpty()
@@ -38,5 +38,5 @@ export class GiftRepaymentProfileRequestDto {
     required: true,
     type: GiftRepaymentProfileAllocationRequestDto,
   })
-  allocations: GiftRepaymentProfileAllocationRequestDto[];
+  allocations!: GiftRepaymentProfileAllocationRequestDto[];
 }

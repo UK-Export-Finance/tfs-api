@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { GIFT } from '@ukef/constants';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
+import { GIFT } from '@ukef/constants';
 
 import { GiftHttpService } from './gift.http.service';
 
@@ -16,9 +16,7 @@ export class GiftCurrencyService {
   constructor(
     private readonly giftHttpService: GiftHttpService,
     private readonly logger: PinoLogger,
-  ) {
-    this.giftHttpService = giftHttpService;
-  }
+  ) {}
 
   /**
    * Get supported GIFT currencies

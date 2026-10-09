@@ -1,12 +1,12 @@
 import { HttpService } from '@nestjs/axios';
+import { AxiosError } from 'axios';
+import { when } from 'jest-when';
+import { of, throwError } from 'rxjs';
 import { ENUMS } from '@ukef/constants';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { CreateFacilityFixedFeeGenerator } from '@ukef-test/support/generator/create-facility-fixed-fee-generator';
 import { GetFacilityFixedFeeGenerator } from '@ukef-test/support/generator/get-facility-fixed-fee-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { AxiosError } from 'axios';
-import { when } from 'jest-when';
-import { of, throwError } from 'rxjs';
 
 import { AcbsFacilityFixedFeeService } from './acbs-facility-fixed-fee.service';
 import { AcbsException } from './exception/acbs.exception';
@@ -156,8 +156,8 @@ describe('AcbsFacilityFixedFeeService', () => {
         data: errorString,
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePost)
@@ -183,8 +183,8 @@ describe('AcbsFacilityFixedFeeService', () => {
         data: errorString,
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePost)
@@ -210,8 +210,8 @@ describe('AcbsFacilityFixedFeeService', () => {
         data: errorString,
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePost)
@@ -238,8 +238,8 @@ describe('AcbsFacilityFixedFeeService', () => {
         data: errorBody,
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePost)
@@ -266,8 +266,8 @@ describe('AcbsFacilityFixedFeeService', () => {
         data: errorBody,
         status: 401,
         statusText: 'Unauthorized',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePost)

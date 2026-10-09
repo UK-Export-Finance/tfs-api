@@ -1,7 +1,7 @@
+import { PinoLogger } from 'nestjs-pino';
 import { EXAMPLES } from '@ukef/constants';
 import { MdmService } from '@ukef/modules/mdm/mdm.service';
 import { mockResponse200, mockResponse500 } from '@ukef-test/http-response';
-import { PinoLogger } from 'nestjs-pino';
 
 import {
   generateArrayOfErrors,
@@ -12,7 +12,7 @@ import {
   getObligationSubtypeCodes,
   mapEntitiesByField,
   stripPayload,
-} from '../helpers';
+} from '@ukef/modules/gift/helpers';
 import { GiftCounterpartyService, GiftCurrencyService, GiftFeeTypeService, GiftProductTypeService } from '.';
 import { GiftFacilityAsyncValidationService } from './gift.facility-async-validation.service';
 
@@ -271,7 +271,7 @@ describe('GiftFacilityAsyncValidationService', () => {
         });
 
         const feeTypeCodeErrors = generateArrayOfErrors({
-          fieldValues: mapEntitiesByField(mockBasePayload.fixedFees, 'feeTypeCode'),
+          fieldValues: mapEntitiesByField(mockBasePayload.fixedFees ?? [], 'feeTypeCode'),
           supportedValues: [],
           fieldName: 'feeTypeCode',
           parentEntityName: 'fixedFees',

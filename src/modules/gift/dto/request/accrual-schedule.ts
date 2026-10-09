@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { EXAMPLES, GIFT } from '@ukef/constants';
 import { IsDateString, IsDefined, IsNumber, IsOptional, IsString, Length, Min } from 'class-validator';
+import { EXAMPLES, GIFT } from '@ukef/constants';
 
 const {
   GIFT: { ACCRUAL_SCHEDULE: EXAMPLE },
@@ -23,7 +23,7 @@ export class GiftAccrualScheduleRequestDto {
     description: 'The accrual day basis code',
     required: true,
   })
-  accrualDayBasisCode: string;
+  accrualDayBasisCode!: string;
 
   @IsOptional()
   @IsDateString()
@@ -42,7 +42,7 @@ export class GiftAccrualScheduleRequestDto {
     description: 'The accrual frequency code',
     required: true,
   })
-  accrualFrequencyCode: string;
+  accrualFrequencyCode!: string;
 
   @IsOptional()
   @IsDateString()
@@ -61,7 +61,7 @@ export class GiftAccrualScheduleRequestDto {
     description: 'The accrual schedule type code',
     required: true,
   })
-  accrualScheduleTypeCode: string;
+  accrualScheduleTypeCode!: string;
 
   @IsDefined()
   @IsNumber()
@@ -71,7 +71,7 @@ export class GiftAccrualScheduleRequestDto {
     description: 'The additional rate',
     required: true,
   })
-  additionalRate: number;
+  additionalRate!: number;
 
   @IsDefined()
   @IsNumber()
@@ -80,7 +80,7 @@ export class GiftAccrualScheduleRequestDto {
     description: 'The base rate',
     required: true,
   })
-  baseRate: number;
+  baseRate!: number;
 
   @IsOptional()
   @IsDateString()
@@ -109,5 +109,5 @@ export class GiftAccrualScheduleRequestDto {
     description: 'The spread rate',
     required: true,
   })
-  spreadRate: number;
+  spreadRate!: number;
 }

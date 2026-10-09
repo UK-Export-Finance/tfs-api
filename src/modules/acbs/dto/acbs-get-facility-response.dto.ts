@@ -1,6 +1,6 @@
 import { AcbsPartyId, DateString } from '@ukef/helpers';
 
-export interface AcbsGetFacilityResponseDto {
+export type AcbsGetFacilityResponseDto = {
   FacilityIdentifier: string;
   Description: string;
   Currency: {
@@ -58,4 +58,4 @@ export interface AcbsGetFacilityResponseDto {
   CompBalPctReserve: number | null;
   CompBalPctAmount: number | null;
   AdministrativeUserIdentifier: string;
-}
+};

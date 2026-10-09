@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { GIFT } from '@ukef/constants';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
+import { GIFT } from '@ukef/constants';
 
-import { GiftObligationRequestDto } from '../dto';
+import { GiftObligationRequestDto } from '@ukef/modules/gift/dto';
 import { GiftHttpService } from './gift.http.service';
 
 const { EVENT_TYPES, INTEGRATION_DEFAULTS, PATH } = GIFT;
@@ -17,9 +17,7 @@ export class GiftObligationService {
   constructor(
     private readonly giftHttpService: GiftHttpService,
     private readonly logger: PinoLogger,
-  ) {
-    this.giftHttpService = giftHttpService;
-  }
+  ) {}
 
   /**
    * Create a GIFT obligation
@@ -71,7 +69,7 @@ export class GiftObligationService {
    * @returns {Promise<Array<AxiosResponse>>}
    * @throws {Error}
    */
-  async createMany(obligationsData: GiftObligationRequestDto[], facilityId: string, workPackageId: number): Promise<Array<AxiosResponse>> {
+  async createMany(obligationsData: GiftObligationRequestDto[], facilityId: string, workPackageId: number): Promise<AxiosResponse[]> {
     try {
       this.logger.info('Creating obligations for facility %s', facilityId);
 
@@ -79,7 +77,7 @@ export class GiftObligationService {
        * NOTE: We need to use a for loop instead of Promise.all, to ensure that the calls are sequential.
        * Promise.all is not sequential.
        */
-      const responses = [];
+      const responses: AxiosResponse[] = [];
 
       for (const obligations of obligationsData) {
         const response = await this.createOne(obligations, facilityId, workPackageId);

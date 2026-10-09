@@ -79,7 +79,7 @@ export class CreateFacilityActivationTransactionGenerator extends AbstractGenera
       lenderTypeCode: value.lenderTypeCode,
     }));
 
-    const createBundleInformationResponseFromAcbs = { BundleIdentifier: bundleIdentifier, WarningErrors: undefined };
+    const createBundleInformationResponseFromAcbs = { BundleIdentifier: bundleIdentifier, WarningErrors: undefined! };
     const createFacilityActivationTransactionResponseFromService = { bundleIdentifier, warningErrors: undefined };
     const createFacilityActivationTransactionResponseFromEndpoint = { bundleIdentifier };
 

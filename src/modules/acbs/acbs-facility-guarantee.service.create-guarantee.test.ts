@@ -1,10 +1,10 @@
 import { HttpService } from '@nestjs/axios';
-import { PROPERTIES } from '@ukef/constants';
-import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { generateAcbsCreateFacilityGuaranteeDtoUsing } from '@ukef-test/support/requests/acbs-create-facility-guarantee-dto';
 import { AxiosError } from 'axios';
 import { when } from 'jest-when';
 import { of, throwError } from 'rxjs';
+import { PROPERTIES } from '@ukef/constants';
+import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
+import { generateAcbsCreateFacilityGuaranteeDtoUsing } from '@ukef-test/support/requests/acbs-create-facility-guarantee-dto';
 
 import { AcbsFacilityGuaranteeService } from './acbs-facility-guarantee.service';
 import { AcbsBadRequestException } from './exception/acbs-bad-request.exception';
@@ -73,8 +73,8 @@ describe('AcbsFacilityGuaranteeService', () => {
         data: errorString,
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePost)
@@ -95,8 +95,8 @@ describe('AcbsFacilityGuaranteeService', () => {
         data: errorString,
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePost)
@@ -118,8 +118,8 @@ describe('AcbsFacilityGuaranteeService', () => {
         data: errorBody,
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePost)
@@ -141,8 +141,8 @@ describe('AcbsFacilityGuaranteeService', () => {
         data: errorBody,
         status: 401,
         statusText: 'Unauthorized',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePost)

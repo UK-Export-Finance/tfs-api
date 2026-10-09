@@ -1,13 +1,13 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { AMEND_FACILITY_PREFIX_TYPES, FacilityCategoryCode, GIFT } from '@ukef/constants';
-import { GiftAmendmentBaseParams } from '@ukef/types';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
+import { AMEND_FACILITY_PREFIX_TYPES, FacilityCategoryCode, GIFT } from '@ukef/constants';
+import { GiftAmendmentBaseParams } from '@ukef/types';
 
-import { DecreaseAmountDto, GiftWorkPackageResponseDto, IncreaseAmountDto } from '../../dto';
-import { calculatePercentageAmount } from '../../helpers';
-import { GiftHttpService } from '../gift.http.service';
-import { GiftWorkPackageService } from '../gift.work-package.service';
+import { DecreaseAmountDto, GiftWorkPackageResponseDto, IncreaseAmountDto } from '@ukef/modules/gift/dto';
+import { calculatePercentageAmount } from '@ukef/modules/gift/helpers';
+import { GiftHttpService } from '@ukef/modules/gift/services/gift.http.service';
+import { GiftWorkPackageService } from '@ukef/modules/gift/services/gift.work-package.service';
 
 const {
   AMEND_OBLIGATION_AMOUNT: { PERCENTAGE_OF_FACILITY_AMOUNT },
@@ -35,11 +35,7 @@ export class GiftAmountAmendmentService {
     private readonly giftHttpService: GiftHttpService,
     private readonly giftWorkPackageService: GiftWorkPackageService,
     private readonly logger: PinoLogger,
-  ) {
-    this.giftHttpService = giftHttpService;
-    this.giftWorkPackageService = giftWorkPackageService;
-    this.logger = logger;
-  }
+  ) {}
 
   /**
    * Amend the facility amount for a given facility and work package.
@@ -98,7 +94,7 @@ export class GiftAmountAmendmentService {
        * Some facilities do not have facility category codes.
        * In this instance, the percentage should be 100%.
        */
-      const percentage = (facilityCategoryCode ? PERCENTAGE_OF_FACILITY_AMOUNT[`${facilityCategoryCode}`] : undefined) ?? PERCENTAGE_OF_FACILITY_AMOUNT.OTHER;
+      const percentage = (facilityCategoryCode ? PERCENTAGE_OF_FACILITY_AMOUNT[facilityCategoryCode] : undefined) ?? PERCENTAGE_OF_FACILITY_AMOUNT.OTHER;
 
       const newObligationAmount = calculatePercentageAmount(newFacilityAmount, percentage);
 
@@ -106,7 +102,7 @@ export class GiftAmountAmendmentService {
        * NOTE: We need to use a for loop instead of Promise.all, to ensure that the calls are sequential.
        * Promise.all is not sequential.
        */
-      const responses = [];
+      const responses: AxiosResponse<GiftWorkPackageResponseDto>[] = [];
 
       for (const obligation of obligations) {
         const payload = {

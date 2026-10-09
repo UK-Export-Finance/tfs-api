@@ -57,7 +57,7 @@ export class FacilityService {
       riskStatusCode: facilityInAcbs.CreditReviewRiskType.CreditReviewRiskTypeCode,
       effectiveDate: this.dateStringTransformations.removeTimeIfExists(facilityInAcbs.OriginalEffectiveDate),
       forecastPercentage: facilityInAcbs.CompBalPctAmount ?? PROPERTIES.FACILITY.DEFAULT.GET.compBalPctAmount,
-      issueDate: this.dateStringTransformations.removeTimeIfExists(facilityInAcbs.UserDefinedDate1),
+      issueDate: this.dateStringTransformations.removeTimeIfExists(facilityInAcbs.UserDefinedDate1!),
       description: facilityInAcbs.Description,
       agentBankIdentifier: facilityInAcbs.AgentBankPartyIdentifier,
       obligorPartyIdentifier: facilityInAcbs.BorrowerParty.PartyIdentifier,
@@ -104,7 +104,7 @@ export class FacilityService {
 
     const existingFacilityData = await this.acbsFacilityService.getFacilityByIdentifier(facilityIdentifier, idToken);
 
-    return this.buildAmendFacilityAmountBundleInformationRequestAndCreateBundleInformation(updateFacilityRequest, existingFacilityData, idToken);
+    return await this.buildAmendFacilityAmountBundleInformationRequestAndCreateBundleInformation(updateFacilityRequest, existingFacilityData, idToken);
   }
 
   private async buildRequestAndUpdateFacility(
@@ -128,9 +128,9 @@ export class FacilityService {
     const existingAcbsFacilityData = await this.acbsFacilityService.getFacilityByIdentifier(facilityIdentifier, idToken);
     // Remove AdministrativeUserIdentifier as its a depreciated field and
     // causes issue with old facilities which were manually created using old administrative profile.
-    delete existingAcbsFacilityData.AdministrativeUserIdentifier;
+    delete (existingAcbsFacilityData as Partial<typeof existingAcbsFacilityData>).AdministrativeUserIdentifier;
 
-    delete existingAcbsFacilityData.FacilityOverallStatus;
+    delete (existingAcbsFacilityData as Partial<typeof existingAcbsFacilityData>).FacilityOverallStatus;
 
     const acbsMergedUpdateFacilityRequest: AcbsUpdateFacilityRequest = {
       ...existingAcbsFacilityData,
@@ -383,7 +383,7 @@ export class FacilityService {
           $type: type,
           AccountOwnerIdentifier: accountOwnerIdentifier,
           EffectiveDate: effectiveDate,
-          FacilityIdentifier: facilityIdentifier as UkefId,
+          FacilityIdentifier: facilityIdentifier,
           FacilityTransactionType: {
             TypeCode: typeCode,
           },
@@ -404,7 +404,7 @@ export class FacilityService {
 
   private buildFacilityStageDerivedValuesToCreate(
     facilityStageCode: string,
-    issueDate: string,
+    issueDate: string | null | undefined,
   ): {
     compBalPctReserve: number;
     userDefinedDate1: DateString;
@@ -414,12 +414,12 @@ export class FacilityService {
     return this.isFacilityUnissued(facilityStageCode)
       ? {
           compBalPctReserve: defaultValues.compBalPctReserveUnissued,
-          userDefinedDate1: null,
+          userDefinedDate1: null!,
           isUserDefinedDate1Zero: true,
         }
       : {
           compBalPctReserve: defaultValues.compBalPctReserveIssued,
-          userDefinedDate1: issueDate ? this.dateStringTransformations.addTimeToDateOnlyString(issueDate) : null,
+          userDefinedDate1: issueDate ? this.dateStringTransformations.addTimeToDateOnlyString(issueDate) : null!,
           isUserDefinedDate1Zero: false,
         };
   }

@@ -1,6 +1,6 @@
 import { DateString } from '@ukef/helpers';
 
-export interface AcbsGetDealResponseDto {
+export type AcbsGetDealResponseDto = {
   DealIdentifier: string;
   PortfolioIdentifier: string;
   Currency: {
@@ -15,4 +15,4 @@ export interface AcbsGetDealResponseDto {
     PartyName1: string;
     PartyIdentifier: string;
   };
-}
+};

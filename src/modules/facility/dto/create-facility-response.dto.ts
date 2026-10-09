@@ -7,5 +7,5 @@ export class CreateFacilityResponse {
     readOnly: true,
     example: EXAMPLES.FACILITY_ID,
   })
-  readonly facilityIdentifier: string;
+  readonly facilityIdentifier!: string;
 }

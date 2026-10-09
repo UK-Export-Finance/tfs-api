@@ -1,6 +1,6 @@
 import { DateString } from '@ukef/helpers';
 
-export interface AcbsBaseLoan {
+export type AcbsBaseLoan = {
   PortfolioIdentifier: string;
   LoanIdentifier: string;
   ParentFacilityIdentifier: string;
@@ -27,4 +27,4 @@ export interface AcbsBaseLoan {
   IsRateMaturityDateZero: boolean;
   FinancialNextValuationDate?: DateString;
   CustomerUsageNextValuationDate?: DateString;
-}
+};

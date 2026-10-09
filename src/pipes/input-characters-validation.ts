@@ -29,14 +29,14 @@ export class InputCharacterValidationPipe implements PipeTransform {
     value: any,
     findCharactersRegex: RegExp,
     errorMessageGenerator: (key: string, invalidCharacters: string) => string | HttpExceptionOptions,
-    key: string = null,
+    key: string = null!,
   ) {
     if (typeof value === 'object' && value !== null) {
       Object.entries(value).forEach(([k, v]) => {
         this.recursiveCheck(v, findCharactersRegex, errorMessageGenerator, k);
       });
     } else if (Array.isArray(value)) {
-      value.forEach((value) => this.recursiveCheck(value, findCharactersRegex, errorMessageGenerator));
+      value.forEach((item) => this.recursiveCheck(item, findCharactersRegex, errorMessageGenerator));
     } else if (typeof value === 'string' && value.replace(findCharactersRegex, '') !== '') {
       const invalidCharacters = value.replace(findCharactersRegex, '');
       throw new BadRequestException('Bad request', errorMessageGenerator(key, invalidCharacters));

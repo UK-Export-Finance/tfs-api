@@ -1,17 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { GIFT } from '@ukef/constants';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
+import { GIFT } from '@ukef/constants';
 
-import { GiftBusinessCalendarsConventionResponseDto } from '../dto';
+import { GiftBusinessCalendarsConventionResponseDto } from '@ukef/modules/gift/dto';
 import { GiftHttpService } from './gift.http.service';
 
 const { INTEGRATION_DEFAULTS, EVENT_TYPES, PATH } = GIFT;
 
-interface CreateOneParams {
+type CreateOneParams = {
   facilityId: string;
   workPackageId: number;
-}
+};
 
 /**
  * GIFT "business calendars convention" service.
@@ -22,9 +22,7 @@ export class GiftBusinessCalendarsConventionService {
   constructor(
     private readonly giftHttpService: GiftHttpService,
     private readonly logger: PinoLogger,
-  ) {
-    this.giftHttpService = giftHttpService;
-  }
+  ) {}
 
   /**
    * Create a GIFT "business calendars convention".

@@ -1,3 +1,4 @@
+import { when } from 'jest-when';
 import { PROPERTIES } from '@ukef/constants';
 import { AcbsDealService } from '@ukef/modules/acbs/acbs-deal.service';
 import { AcbsGetDealResponseDto } from '@ukef/modules/acbs/dto/acbs-get-deal-response.dto';
@@ -6,7 +7,6 @@ import { DateStringTransformations } from '@ukef/modules/date/date-string.transf
 import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
 import { TEST_CURRENCIES } from '@ukef-test/support/constants/test-currency.constant';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { when } from 'jest-when';
 
 import { Deal } from './deal.interface';
 import { DealService } from './deal.service';
@@ -57,7 +57,7 @@ describe('DealService', () => {
   let acbsDealServiceGetDealByIdentifier: jest.Mock;
 
   beforeEach(() => {
-    const acbsDealService = new AcbsDealService(null, null);
+    const acbsDealService = new AcbsDealService(null!, null!);
     acbsDealServiceGetDealByIdentifier = jest.fn();
     acbsDealService.getDealByIdentifier = acbsDealServiceGetDealByIdentifier;
 
@@ -66,12 +66,10 @@ describe('DealService', () => {
     const acbsAuthenticationServiceGetIdToken = mockAcbsAuthenticationService.getIdToken;
     when(acbsAuthenticationServiceGetIdToken).calledWith().mockResolvedValueOnce(idToken);
 
-    service = new DealService(acbsAuthenticationService, acbsDealService, dateStringTransformations, new CurrentDateProvider(), null);
+    service = new DealService(acbsAuthenticationService, acbsDealService, dateStringTransformations, new CurrentDateProvider(), null!);
   });
 
   describe('getDealByIdentifier', () => {
-    const { portfolioIdentifier } = PROPERTIES.GLOBAL;
-
     it('returns a transformation of the deal from ACBS', async () => {
       when(acbsDealServiceGetDealByIdentifier).calledWith(portfolioIdentifier, dealIdentifier, idToken).mockResolvedValueOnce(dealInAcbs);
 
@@ -81,7 +79,7 @@ describe('DealService', () => {
     });
 
     it('returns a null guarantee commencement date if it is null in the ACBS response', async () => {
-      const dealInAcbsWithNullOriginalEffectiveDate: AcbsGetDealResponseDto = { ...dealInAcbs, OriginalEffectiveDate: null };
+      const dealInAcbsWithNullOriginalEffectiveDate: AcbsGetDealResponseDto = { ...dealInAcbs, OriginalEffectiveDate: null! };
       when(acbsDealServiceGetDealByIdentifier)
         .calledWith(portfolioIdentifier, dealIdentifier, idToken)
         .mockResolvedValueOnce(dealInAcbsWithNullOriginalEffectiveDate);
@@ -94,7 +92,7 @@ describe('DealService', () => {
     it('returns the obligor industry classification as an empty string if it is null in the ACBS response', async () => {
       const dealInAcbsWithNullIndustryClassificationCode: AcbsGetDealResponseDto = {
         ...dealInAcbs,
-        IndustryClassification: { IndustryClassificationCode: null },
+        IndustryClassification: { IndustryClassificationCode: null! },
       };
       when(acbsDealServiceGetDealByIdentifier)
         .calledWith(portfolioIdentifier, dealIdentifier, idToken)
@@ -106,7 +104,7 @@ describe('DealService', () => {
     });
 
     it('returns the obligor party name as an empty string if it is null in the ACBS response', async () => {
-      const dealInAcbsWithNullPartyName: AcbsGetDealResponseDto = { ...dealInAcbs, BorrowerParty: { ...dealInAcbs.BorrowerParty, PartyName1: null } };
+      const dealInAcbsWithNullPartyName: AcbsGetDealResponseDto = { ...dealInAcbs, BorrowerParty: { ...dealInAcbs.BorrowerParty, PartyName1: null! } };
       when(acbsDealServiceGetDealByIdentifier).calledWith(portfolioIdentifier, dealIdentifier, idToken).mockResolvedValueOnce(dealInAcbsWithNullPartyName);
 
       const deal = await service.getDealByIdentifier(dealIdentifier);
