@@ -92,6 +92,7 @@ export class GiftObligationRequestDto {
     example: EXAMPLE.subtypeCode,
     description: "Optional obligation subtype code. Required if the product's configuration (APIM MDM/DOM) 'obligationSubtypeCodes' field is populated",
     required: false,
+    nullable: true,
   })
   subtypeCode?: string | null;
 }
