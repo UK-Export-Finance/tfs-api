@@ -106,13 +106,13 @@ export class CreateFacilityCovenantGenerator extends AbstractGenerator<CreateFac
     };
   }
 }
-interface GenerateOptions {
+type GenerateOptions = {
   facilityIdentifier: UkefId;
   facilityTypeCode: string;
   limitKeyValue: string;
-}
+};
 
-interface GenerateResult {
+type GenerateResult = {
   acbsRequestBodyToCreateFacilityCovenant: AcbsCreateFacilityCovenantRequestDto;
   requestBodyToCreateFacilityCovenant: CreateFacilityCovenantRequestDto;
-}
+};

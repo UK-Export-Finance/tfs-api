@@ -1,3 +1,4 @@
+import nock from 'nock';
 import { HttpStatus } from '@nestjs/common';
 import { AppConfig } from '@ukef/config/app.config';
 import { GIFT } from '@ukef/constants';
@@ -5,7 +6,6 @@ import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/comm
 import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import nock from 'nock';
 
 const {
   giftVersioning: { prefixAndVersion },

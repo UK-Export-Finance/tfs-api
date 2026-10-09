@@ -1,3 +1,5 @@
+import nock from 'nock';
+import supertest from 'supertest';
 import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { LenderTypeCodeEnum } from '@ukef/constants/enums/lender-type-code';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
@@ -14,8 +16,6 @@ import { TEST_CURRENCIES } from '@ukef-test/support/constants/test-currency.cons
 import { TEST_DATES } from '@ukef-test/support/constants/test-date.constant';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import nock from 'nock';
-import supertest from 'supertest';
 
 describe('POST /facilities/{facilityIdentifier}/investors', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -69,6 +69,44 @@ describe('POST /facilities/{facilityIdentifier}/investors', () => {
   };
 
   let api: Api;
+  let idToken: string;
+
+  const post = ({ facilityId, body }: { facilityId: string; body: object }): supertest.Test => {
+    const url = `/api/v1/facilities/${facilityId}/investors`;
+    return api.post(url, body);
+  };
+
+  const postForFacilityIdentifier = (body: object): supertest.Test => post({ facilityId: facilityIdentifier, body });
+
+  const acbsSuccessResponseForFacilityId = (facilityId: string): [number, undefined, { location: string }] => [
+    201,
+    undefined,
+    {
+      location: `/Portfolio/${portfolioIdentifier}/Facility/${facilityId}/FacilityParty?accountOwnerIdentifier=00000000&lenderTypeCode=${lenderType}&sectionIdentifier=${sectionIdentifier}&limitTypeCode=${limitTypeCode}&limitKey=${limitKey}`,
+    },
+  ];
+
+  const requestToCreateFacilityPartyInAcbs = (
+    { facilityId, requestBody }: { facilityId: string; requestBody: nock.RequestBodyMatcher } = {
+      facilityId: facilityIdentifier,
+      requestBody: acbsRequestBodyToCreateFacilityParty,
+    },
+  ): nock.Interceptor =>
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .post(`/Portfolio/${portfolioIdentifier}/Facility/${facilityId}/FacilityParty`, requestBody)
+      .matchHeader('authorization', `Bearer ${idToken}`);
+
+  const givenRequestToCreateFacilityPartyInAcbsSucceeds = (): nock.Scope =>
+    requestToCreateFacilityPartyInAcbs().reply(...acbsSuccessResponseForFacilityId(facilityIdentifier));
+
+  const givenAnyRequestBodyToCreateFacilityInvestorInAcbsSucceeds = (): void => {
+    const requestBodyPlaceholder = '*';
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .filteringRequestBody(() => requestBodyPlaceholder)
+      .post(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/FacilityParty`, requestBodyPlaceholder)
+      .matchHeader('authorization', `Bearer ${idToken}`)
+      .reply(...acbsSuccessResponseForFacilityId(facilityIdentifier));
+  };
 
   beforeAll(async () => {
     api = await Api.create();
@@ -83,11 +121,12 @@ describe('POST /facilities/{facilityIdentifier}/investors', () => {
     nock.cleanAll();
   });
 
-  const { idToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
+  const { idToken: resolvedIdToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
     givenRequestWouldOtherwiseSucceed: () => givenRequestToCreateFacilityPartyInAcbsSucceeds(),
     makeRequest: () => postForFacilityIdentifier(requestBodyToCreateFacilityInvestor),
     successStatusCode: 201,
   });
+  idToken = resolvedIdToken;
 
   withClientAuthenticationTests({
     givenTheRequestWouldOtherwiseSucceed: () => {
@@ -112,7 +151,7 @@ describe('POST /facilities/{facilityIdentifier}/investors', () => {
   });
 
   it('creates a facility party in ACBS with a default lenderType if it is not specified in the request', async () => {
-    const { lenderType: _removed, ...requestWithoutLenderType } = requestItemToCreateFacilityInvestor;
+    const { lenderType: removed, ...requestWithoutLenderType } = requestItemToCreateFacilityInvestor;
     const requestBodyWithoutLenderType = [requestWithoutLenderType];
     const acbsRequestBodyWithDefaultLenderTypeCode = {
       ...acbsRequestBodyToCreateFacilityParty,
@@ -237,42 +276,4 @@ describe('POST /facilities/{facilityIdentifier}/investors', () => {
       givenAnyRequestBodyToCreateFacilityInvestorInAcbsSucceeds();
     },
   });
-
-  const postForFacilityIdentifier = (body: object): supertest.Test => post({ facilityId: facilityIdentifier, body });
-
-  const post = ({ facilityId, body }: { facilityId: string; body: object }): supertest.Test => {
-    const url = `/api/v1/facilities/${facilityId}/investors`;
-    return api.post(url, body);
-  };
-
-  const givenRequestToCreateFacilityPartyInAcbsSucceeds = (): nock.Scope =>
-    requestToCreateFacilityPartyInAcbs().reply(...acbsSuccessResponseForFacilityId(facilityIdentifier));
-
-  const requestToCreateFacilityPartyInAcbs = (
-    { facilityId, requestBody }: { facilityId: string; requestBody: nock.RequestBodyMatcher } = {
-      facilityId: facilityIdentifier,
-      requestBody: acbsRequestBodyToCreateFacilityParty,
-    },
-  ): nock.Interceptor => {
-    return nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .post(`/Portfolio/${portfolioIdentifier}/Facility/${facilityId}/FacilityParty`, requestBody)
-      .matchHeader('authorization', `Bearer ${idToken}`);
-  };
-
-  const givenAnyRequestBodyToCreateFacilityInvestorInAcbsSucceeds = (): void => {
-    const requestBodyPlaceholder = '*';
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .filteringRequestBody(() => requestBodyPlaceholder)
-      .post(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/FacilityParty`, requestBodyPlaceholder)
-      .matchHeader('authorization', `Bearer ${idToken}`)
-      .reply(...acbsSuccessResponseForFacilityId(facilityIdentifier));
-  };
-
-  const acbsSuccessResponseForFacilityId = (facilityId: string): [number, undefined, { location: string }] => [
-    201,
-    undefined,
-    {
-      location: `/Portfolio/${portfolioIdentifier}/Facility/${facilityId}/FacilityParty?accountOwnerIdentifier=00000000&lenderTypeCode=${lenderType}&sectionIdentifier=${sectionIdentifier}&limitTypeCode=${limitTypeCode}&limitKey=${limitKey}`,
-    },
-  ];
 });

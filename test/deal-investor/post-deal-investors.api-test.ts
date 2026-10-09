@@ -1,3 +1,4 @@
+import nock from 'nock';
 import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { LenderTypeCodeEnum } from '@ukef/constants/enums/lender-type-code';
 import { UkefId } from '@ukef/helpers';
@@ -13,7 +14,6 @@ import { TEST_DATES } from '@ukef-test/support/constants/test-date.constant';
 import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
 import { CreateDealInvestorGenerator } from '@ukef-test/support/generator/create-deal-investor-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import nock from 'nock';
 
 import { CurrentDateProvider } from '../../src/modules/date/current-date.provider';
 
@@ -33,11 +33,39 @@ describe('POST /deals/{dealIdentifier}/investors', () => {
     dateStringTransformations,
   ).generate({
     numberToGenerate: 2,
-    dealIdentifier: dealIdentifier,
+    dealIdentifier,
   });
   const [requestItemToCreateDealInvestor] = requestBodyToCreateDealInvestor;
 
   let api: Api;
+  let idToken: string;
+
+  const requestToCreateDealInvestorInAcbsWithBody = (requestBody: AcbsCreateDealInvestorRequest): nock.Interceptor =>
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .post(`/Portfolio/${portfolioIdentifier}/Deal/${dealIdentifier}/DealParty`, JSON.stringify(requestBody))
+      .matchHeader('authorization', `Bearer ${idToken}`)
+      .matchHeader('Content-Type', 'application/json');
+
+  const requestToCreateDealInvestor = (): nock.Interceptor => requestToCreateDealInvestorInAcbsWithBody(acbsRequestBodyToCreateDealInvestor);
+
+  const givenRequestToCreateDealInvestorInAcbsSucceeds = (): nock.Scope => requestToCreateDealInvestor().reply(201);
+
+  const { idToken: resolvedIdToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
+    givenRequestWouldOtherwiseSucceed: () => givenRequestToCreateDealInvestorInAcbsSucceeds(),
+    makeRequest: () => api.post(createDealInvestorUrl, requestBodyToCreateDealInvestor),
+    successStatusCode: 201,
+  });
+  idToken = resolvedIdToken;
+
+  const givenAnyRequestBodyToCreateDealInvestorInAcbsSucceeds = (): void => {
+    const requestBodyPlaceholder = '*';
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .filteringRequestBody(() => requestBodyPlaceholder)
+      .post(`/Portfolio/${portfolioIdentifier}/Deal/${dealIdentifier}/DealParty`, requestBodyPlaceholder)
+      .matchHeader('authorization', `Bearer ${idToken}`)
+      .matchHeader('Content-Type', 'application/json')
+      .reply(201);
+  };
 
   beforeAll(async () => {
     api = await Api.create();
@@ -50,12 +78,6 @@ describe('POST /deals/{dealIdentifier}/investors', () => {
   afterEach(() => {
     nock.abortPendingRequests();
     nock.cleanAll();
-  });
-
-  const { idToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
-    givenRequestWouldOtherwiseSucceed: () => givenRequestToCreateDealInvestorInAcbsSucceeds(),
-    makeRequest: () => api.post(createDealInvestorUrl, requestBodyToCreateDealInvestor),
-    successStatusCode: 201,
   });
 
   withClientAuthenticationTests({
@@ -81,7 +103,7 @@ describe('POST /deals/{dealIdentifier}/investors', () => {
   });
 
   it('sets the default lenderType if it is not specified in the request', async () => {
-    const { lenderType: _removed, ...newDealInvestorWithoutLenderType } = requestItemToCreateDealInvestor;
+    const { lenderType: removed, ...newDealInvestorWithoutLenderType } = requestItemToCreateDealInvestor;
     const requestBodyWithoutLenderType = [newDealInvestorWithoutLenderType];
     const acbsRequestBodyWithDefaultLenderType = {
       ...acbsRequestBodyToCreateDealInvestor,
@@ -100,7 +122,7 @@ describe('POST /deals/{dealIdentifier}/investors', () => {
   });
 
   it('sets the default expiryDate if it is not specified in the request', async () => {
-    const { expiryDate: _removed, ...newDealInvestorWithoutExpiryDate } = requestItemToCreateDealInvestor;
+    const { expiryDate: removed, ...newDealInvestorWithoutExpiryDate } = requestItemToCreateDealInvestor;
     const requestBodyWithoutExpiryDate = [newDealInvestorWithoutExpiryDate];
     const acbsRequestBodyWithDefaultExpirationDate = {
       ...acbsRequestBodyToCreateDealInvestor,
@@ -120,7 +142,7 @@ describe('POST /deals/{dealIdentifier}/investors', () => {
   });
 
   it('sets the default dealStatus if it is not specified in the request', async () => {
-    const { dealStatus: _removed, ...newDealInvestorWithoutDealStatus } = requestItemToCreateDealInvestor;
+    const { dealStatus: removed, ...newDealInvestorWithoutDealStatus } = requestItemToCreateDealInvestor;
     const requestBodyWithoutDealStatus = [newDealInvestorWithoutDealStatus];
     const acbsRequestBodyWithDefaultDealStatus = {
       ...acbsRequestBodyToCreateDealInvestor,
@@ -271,26 +293,4 @@ describe('POST /deals/{dealIdentifier}/investors', () => {
       message: 'Internal server error',
     });
   });
-
-  const givenRequestToCreateDealInvestorInAcbsSucceeds = (): nock.Scope => {
-    return requestToCreateDealInvestor().reply(201);
-  };
-
-  const requestToCreateDealInvestor = (): nock.Interceptor => requestToCreateDealInvestorInAcbsWithBody(acbsRequestBodyToCreateDealInvestor);
-
-  const requestToCreateDealInvestorInAcbsWithBody = (requestBody: AcbsCreateDealInvestorRequest): nock.Interceptor =>
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .post(`/Portfolio/${portfolioIdentifier}/Deal/${dealIdentifier}/DealParty`, JSON.stringify(requestBody))
-      .matchHeader('authorization', `Bearer ${idToken}`)
-      .matchHeader('Content-Type', 'application/json');
-
-  const givenAnyRequestBodyToCreateDealInvestorInAcbsSucceeds = (): void => {
-    const requestBodyPlaceholder = '*';
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .filteringRequestBody(() => requestBodyPlaceholder)
-      .post(`/Portfolio/${portfolioIdentifier}/Deal/${dealIdentifier}/DealParty`, requestBodyPlaceholder)
-      .matchHeader('authorization', `Bearer ${idToken}`)
-      .matchHeader('Content-Type', 'application/json')
-      .reply(201);
-  };
 });

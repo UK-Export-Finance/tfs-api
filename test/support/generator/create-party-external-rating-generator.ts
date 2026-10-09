@@ -18,7 +18,7 @@ export class CreatePartyExternalRatingGenerator extends AbstractGenerator<PartyE
 
   protected generateValues(): PartyExternalRatingValues {
     return {
-      assignedRatingCode: this.valueGenerator.enumValue(ENUMS.ASSIGNED_RATING_CODES) as AssignedRatingCodeEnum,
+      assignedRatingCode: this.valueGenerator.enumValue<AssignedRatingCodeEnum>(ENUMS.ASSIGNED_RATING_CODES),
       ratedDate: this.valueGenerator.dateOnlyString(),
     };
   }
@@ -59,18 +59,18 @@ export class CreatePartyExternalRatingGenerator extends AbstractGenerator<PartyE
   }
 }
 
-interface PartyExternalRatingValues {
+type PartyExternalRatingValues = {
   assignedRatingCode: AssignedRatingCodeEnum;
   ratedDate: DateString;
-}
+};
 
-interface GenerateOptions {
+type GenerateOptions = {
   partyIdentifier: string;
   assignedRatingCode?: AssignedRatingCodeEnum;
   ratedDate?: DateString;
-}
+};
 
-interface GenerateResult {
+type GenerateResult = {
   acbsExternalRatingToCreate: AcbsCreatePartyExternalRatingRequestDto;
   apiExternalRatingToCreate: CreatePartyExternalRating;
-}
+};

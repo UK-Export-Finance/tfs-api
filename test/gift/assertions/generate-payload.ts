@@ -14,8 +14,8 @@ export const generatePayload = ({ initialPayload, fieldName, parentFieldName = '
   if (parentFieldName) {
     return {
       ...initialPayload,
-      [`${parentFieldName}`]: {
-        ...initialPayload[`${parentFieldName}`],
+      [parentFieldName]: {
+        ...initialPayload[parentFieldName],
         [fieldName]: value,
       },
     };
@@ -45,14 +45,12 @@ export const generatePayloadArrayOfObjects = ({ initialPayload, fieldName, paren
   if (grandParentFieldName) {
     const payload = {
       ...initialPayload,
-      [`${grandParentFieldName}`]: initialPayload[`${grandParentFieldName}`].map((parentItem: object) => ({
+      [grandParentFieldName]: initialPayload[grandParentFieldName].map((parentItem: object) => ({
         ...parentItem,
-        [`${parentFieldName}`]: parentItem[`${parentFieldName}`].map((item: object) => {
-          return {
-            ...item,
-            [`${fieldName}`]: value,
-          };
-        }),
+        [parentFieldName]: parentItem[parentFieldName].map((item: object) => ({
+          ...item,
+          [fieldName]: value,
+        })),
       })),
     };
 
@@ -61,9 +59,9 @@ export const generatePayloadArrayOfObjects = ({ initialPayload, fieldName, paren
 
   return {
     ...initialPayload,
-    [`${parentFieldName}`]: initialPayload[`${parentFieldName}`].map((item: object) => ({
+    [parentFieldName]: initialPayload[parentFieldName].map((item: object) => ({
       ...item,
-      [`${fieldName}`]: value,
+      [fieldName]: value,
     })),
   };
 };

@@ -45,7 +45,7 @@ export class GetPartyExternalRatingGenerator extends AbstractGenerator<PartyExte
     }));
 
     const externalRatings: GetPartyExternalRating[] = values.map((v) => ({
-      partyIdentifier: partyIdentifier,
+      partyIdentifier,
       ratingEntity: {
         ratingEntityCode: v.ratingEntityCode,
       },
@@ -72,7 +72,7 @@ export class GetPartyExternalRatingGenerator extends AbstractGenerator<PartyExte
   }
 }
 
-interface PartyExternalRatingValues {
+type PartyExternalRatingValues = {
   ratingEntityCode: string;
   assignedRatingCode: string;
   ratedDate: DateString;
@@ -83,14 +83,14 @@ interface PartyExternalRatingValues {
   externalRatingNote2: string;
   externalRatingUserCode1: string;
   externalRatingUserCode2: string;
-}
+};
 
-interface GenerateOptions {
+type GenerateOptions = {
   partyIdentifier: string;
-}
+};
 
-interface GenerateResult {
+type GenerateResult = {
   acbsExternalRatings: AcbsGetPartyExternalRatingsResponseDto;
   externalRatings: GetPartyExternalRating[];
   apiExternalRatings: GetPartyExternalRatingsResponseDto;
-}
+};

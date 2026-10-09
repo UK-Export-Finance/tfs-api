@@ -127,7 +127,7 @@ export class CreatePartyGenerator extends AbstractGenerator<PartyValues, Generat
   }
 }
 
-interface PartyValues {
+type PartyValues = {
   alternateIdentifier: string;
   industryClassification: string;
   name1: string;
@@ -137,13 +137,13 @@ interface PartyValues {
   citizenshipClass: string;
   officerRiskDate: DateString;
   countryCode: string;
-}
+};
 
-interface GenerateResult {
+type GenerateResult = {
   acbsCreatePartyRequest: AcbsCreatePartyRequestDto;
   apiCreatePartyRequest: CreatePartyRequestDto;
-}
+};
 
-interface GenerateOptions {
+type GenerateOptions = {
   basePartyAlternateIdentifier?: string;
-}
+};

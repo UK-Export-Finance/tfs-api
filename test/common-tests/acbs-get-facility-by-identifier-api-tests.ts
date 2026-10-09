@@ -1,6 +1,6 @@
-import { TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
 import nock from 'nock/types';
 import supertest from 'supertest';
+import { TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
 
 export const withAcbsGetFacilityServiceCommonTests = ({
   givenTheRequestWouldOtherwiseSucceed,

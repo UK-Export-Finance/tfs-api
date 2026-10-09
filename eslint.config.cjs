@@ -22,7 +22,6 @@ module.exports = defineConfig([
       '**/dist/',
       '**/node_modules/',
       '**/package*.json',
-      '**/test/', // TODO: APIM-643
       '**/tfs-functions/', // TODO: APIM-655
     ],
   },

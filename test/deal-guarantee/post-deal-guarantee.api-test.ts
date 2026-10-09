@@ -1,3 +1,4 @@
+import nock from 'nock';
 import { PROPERTIES } from '@ukef/constants';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { CreateDealGuaranteeRequestItem } from '@ukef/modules/deal-guarantee/dto/create-deal-guarantee-request.dto';
@@ -10,7 +11,6 @@ import { Api } from '@ukef-test/support/api';
 import { TEST_DATES } from '@ukef-test/support/constants/test-date.constant';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import nock from 'nock';
 
 describe('POST /deals/{dealIdentifier}/guarantees', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -66,6 +66,37 @@ describe('POST /deals/{dealIdentifier}/guarantees', () => {
   const requestBodyToCreateDealGuarantee = [requestItemToCreateDealGuarantee];
 
   let api: Api;
+  let idToken: string;
+
+  const requestToCreateDealGuaranteeInAcbsWithBody = (requestBody: nock.RequestBodyMatcher): nock.Interceptor =>
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .post(`/Portfolio/${portfolioIdentifier}/Deal/${dealIdentifier}/DealGuarantee`, requestBody)
+      .matchHeader('authorization', `Bearer ${idToken}`);
+
+  const requestToCreateDealGuarantee = (): nock.Interceptor => requestToCreateDealGuaranteeInAcbsWithBody(acbsRequestBodyToCreateDealGuarantee);
+
+  const givenRequestToCreateDealGuaranteeInAcbsSucceeds = (): nock.Scope =>
+    requestToCreateDealGuarantee().reply(201, undefined, {
+      location: `/Portfolio/${portfolioIdentifier}/Deal/${dealIdentifier}/DealGuarantee?accountOwnerIdentifier=00000000&lenderTypeCode=${lenderTypeCode}&sectionIdentifier=${sectionIdentifier}&limitTypeCode=${limitTypeCode}&limitKey=${limitKey}&guarantorPartyIdentifier=${guarantorParty}`,
+    });
+
+  const { idToken: resolvedIdToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
+    givenRequestWouldOtherwiseSucceed: () => givenRequestToCreateDealGuaranteeInAcbsSucceeds(),
+    makeRequest: () => api.post(createDealGuaranteeUrl, requestBodyToCreateDealGuarantee),
+    successStatusCode: 201,
+  });
+  idToken = resolvedIdToken;
+
+  const givenAnyRequestBodyToCreateDealGuaranteeInAcbsSucceeds = (): void => {
+    const requestBodyPlaceholder = '*';
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .filteringRequestBody(() => requestBodyPlaceholder)
+      .post(`/Portfolio/${portfolioIdentifier}/Deal/${dealIdentifier}/DealGuarantee`, requestBodyPlaceholder)
+      .matchHeader('authorization', `Bearer ${idToken}`)
+      .reply(201, undefined, {
+        location: `/Portfolio/${portfolioIdentifier}/Deal/${dealIdentifier}/DealGuarantee?accountOwnerIdentifier=00000000&lenderTypeCode=${lenderTypeCode}&sectionIdentifier=${sectionIdentifier}&limitTypeCode=${limitTypeCode}&limitKey=${limitKey}&guarantorPartyIdentifier=${guarantorParty}`,
+      });
+  };
 
   beforeAll(async () => {
     api = await Api.create();
@@ -78,12 +109,6 @@ describe('POST /deals/{dealIdentifier}/guarantees', () => {
   afterEach(() => {
     nock.abortPendingRequests();
     nock.cleanAll();
-  });
-
-  const { idToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
-    givenRequestWouldOtherwiseSucceed: () => givenRequestToCreateDealGuaranteeInAcbsSucceeds(),
-    makeRequest: () => api.post(createDealGuaranteeUrl, requestBodyToCreateDealGuarantee),
-    successStatusCode: 201,
   });
 
   withClientAuthenticationTests({
@@ -109,7 +134,7 @@ describe('POST /deals/{dealIdentifier}/guarantees', () => {
   });
 
   it('sets the default guarantorParty if it is not specified in the request', async () => {
-    const { guarantorParty: _removed, ...newDealGuaranteeWithoutGuarantorParty } = requestItemToCreateDealGuarantee;
+    const { guarantorParty: removed, ...newDealGuaranteeWithoutGuarantorParty } = requestItemToCreateDealGuarantee;
     const requestBodyWithoutGuarantorParty = [newDealGuaranteeWithoutGuarantorParty];
     const acbsRequestBodyWithDefaultGuarantorParty = {
       ...acbsRequestBodyToCreateDealGuarantee,
@@ -157,7 +182,7 @@ describe('POST /deals/{dealIdentifier}/guarantees', () => {
     const requestBodyWithFutureEffectiveDate = [{ ...requestBodyToCreateDealGuarantee[0], effectiveDate: TEST_DATES.A_FUTURE_EFFECTIVE_DATE_ONLY }];
     const acbsRequestBodyWithTodayEffectiveDate = {
       ...acbsRequestBodyToCreateDealGuarantee,
-      EffectiveDate: new Date().toISOString().split('T')[0] + 'T00:00:00Z',
+      EffectiveDate: `${new Date().toISOString().split('T')[0]}T00:00:00Z`,
     };
     givenAuthenticationWithTheIdpSucceeds();
     const acbsRequestWithTodayEffectiveDate = requestToCreateDealGuaranteeInAcbsWithBody(acbsRequestBodyWithTodayEffectiveDate).reply(201, undefined, {
@@ -270,28 +295,4 @@ describe('POST /deals/{dealIdentifier}/guarantees', () => {
     expect(status).toBe(500);
     expect(body).toStrictEqual({ message: 'Internal server error', statusCode: 500 });
   });
-
-  const givenRequestToCreateDealGuaranteeInAcbsSucceeds = (): nock.Scope => {
-    return requestToCreateDealGuarantee().reply(201, undefined, {
-      location: `/Portfolio/${portfolioIdentifier}/Deal/${dealIdentifier}/DealGuarantee?accountOwnerIdentifier=00000000&lenderTypeCode=${lenderTypeCode}&sectionIdentifier=${sectionIdentifier}&limitTypeCode=${limitTypeCode}&limitKey=${limitKey}&guarantorPartyIdentifier=${guarantorParty}`,
-    });
-  };
-
-  const requestToCreateDealGuarantee = (): nock.Interceptor => requestToCreateDealGuaranteeInAcbsWithBody(acbsRequestBodyToCreateDealGuarantee);
-
-  const requestToCreateDealGuaranteeInAcbsWithBody = (requestBody: nock.RequestBodyMatcher): nock.Interceptor =>
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .post(`/Portfolio/${portfolioIdentifier}/Deal/${dealIdentifier}/DealGuarantee`, requestBody)
-      .matchHeader('authorization', `Bearer ${idToken}`);
-
-  const givenAnyRequestBodyToCreateDealGuaranteeInAcbsSucceeds = (): void => {
-    const requestBodyPlaceholder = '*';
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .filteringRequestBody(() => requestBodyPlaceholder)
-      .post(`/Portfolio/${portfolioIdentifier}/Deal/${dealIdentifier}/DealGuarantee`, requestBodyPlaceholder)
-      .matchHeader('authorization', `Bearer ${idToken}`)
-      .reply(201, undefined, {
-        location: `/Portfolio/${portfolioIdentifier}/Deal/${dealIdentifier}/DealGuarantee?accountOwnerIdentifier=00000000&lenderTypeCode=${lenderTypeCode}&sectionIdentifier=${sectionIdentifier}&limitTypeCode=${limitTypeCode}&limitKey=${limitKey}&guarantorPartyIdentifier=${guarantorParty}`,
-      });
-  };
 });

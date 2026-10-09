@@ -106,7 +106,7 @@ export class UpdateLoanGenerator extends AbstractGenerator<LoanValues, GenerateR
   }
 }
 
-interface LoanValues {
+type LoanValues = {
   PrimaryParty: {
     PartyIdentifier: string;
   };
@@ -135,16 +135,16 @@ interface LoanValues {
   acbsEffectiveDate: DateString;
   acbsMaturityDate: DateString;
   acbsRateMaturityDate: DateString;
-}
+};
 
-interface GenerateOptions {
+type GenerateOptions = {
   facilityIdentifier: UkefId;
   loanIdentifier: string;
   portfolioIdentifier: string;
-}
+};
 
-interface GenerateResult {
+type GenerateResult = {
   acbsUpdateLoanRequest: AcbsUpdateLoanRequest;
   acbsGetExistingLoanResponse: AcbsGetLoanByLoanIdentifierResponseDto;
   updateLoanExpiryDateRequest: UpdateLoanExpiryDateRequest;
-}
+};

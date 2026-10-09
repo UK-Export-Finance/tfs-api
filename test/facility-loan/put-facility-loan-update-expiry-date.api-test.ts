@@ -1,3 +1,4 @@
+import nock from 'nock';
 import { PROPERTIES } from '@ukef/constants';
 import { AcbsGetLoanByLoanIdentifierResponseDto } from '@ukef/modules/acbs/dto/acbs-get-loan-by-loan-identifier-response.dto';
 import { AcbsUpdateLoanRequest } from '@ukef/modules/acbs/dto/acbs-update-loan-request.dto';
@@ -11,7 +12,6 @@ import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { UpdateLoanGenerator } from '@ukef-test/support/generator/update-loan-generator';
-import nock from 'nock';
 
 describe('PATCH /facilities/{facilityIdentifier}/loans/{loanIdentifier}', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -30,9 +30,35 @@ describe('PATCH /facilities/{facilityIdentifier}/loans/{loanIdentifier}', () => 
     loanIdentifier,
   });
 
-  const getUpdateExpiryDateUrl = ({ facilityIdentifier, loanIdentifier }) => `/api/v1/facilities/${facilityIdentifier}/loans/${loanIdentifier}`;
+  const getUpdateExpiryDateUrl = ({ facilityId, loanId }: { facilityId: string; loanId: string }) => `/api/v1/facilities/${facilityId}/loans/${loanId}`;
 
   let api: Api;
+  let idToken: string;
+
+  const makeRequest = (requestBody: unknown) =>
+    api.patch(getUpdateExpiryDateUrl({ facilityId: facilityIdentifier, loanId: loanIdentifier }), JSON.parse(JSON.stringify(requestBody)));
+
+  const requestToGetLoanInAcbs = (loanId = loanIdentifier) =>
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL).get(`/Portfolio/${portfolioIdentifier}/Loan/${loanId}`).matchHeader('authorization', `Bearer ${idToken}`);
+
+  const givenRequestToGetLoanInAcbsSucceedsWithResponse = (getLoanResponse: AcbsGetLoanByLoanIdentifierResponseDto, loanId = loanIdentifier) => {
+    requestToGetLoanInAcbs(loanId).reply(200, getLoanResponse);
+  };
+
+  const givenRequestToGetLoanInAcbsSucceeds = (loanId = loanIdentifier) => {
+    givenRequestToGetLoanInAcbsSucceedsWithResponse(acbsGetExistingLoanResponse, loanId);
+  };
+
+  const requestToUpdateLoanInAcbs = () =>
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL).put(`/Portfolio/${portfolioIdentifier}/Loan/${loanIdentifier}`).matchHeader('authorization', `Bearer ${idToken}`);
+
+  const givenRequestToUpdateLoanInAcbsSucceedsWithResponse = (updateLoanRequest: AcbsUpdateLoanRequest) => {
+    requestToUpdateLoanInAcbs().reply(200, updateLoanRequest);
+  };
+
+  const givenRequestToUpdateLoanInAcbsSucceeds = () => {
+    givenRequestToUpdateLoanInAcbsSucceedsWithResponse(acbsUpdateLoanRequest);
+  };
 
   beforeAll(async () => {
     api = await Api.create();
@@ -47,7 +73,7 @@ describe('PATCH /facilities/{facilityIdentifier}/loans/{loanIdentifier}', () => 
     nock.cleanAll();
   });
 
-  const { idToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
+  const { idToken: resolvedIdToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
     givenRequestWouldOtherwiseSucceed: () => {
       givenRequestToGetLoanInAcbsSucceeds();
       givenRequestToUpdateLoanInAcbsSucceeds();
@@ -55,6 +81,7 @@ describe('PATCH /facilities/{facilityIdentifier}/loans/{loanIdentifier}', () => 
     makeRequest: () => makeRequest(updateLoanExpiryDateRequest),
     successStatusCode: 200,
   });
+  idToken = resolvedIdToken;
 
   withClientAuthenticationTests({
     givenTheRequestWouldOtherwiseSucceed: () => {
@@ -64,7 +91,7 @@ describe('PATCH /facilities/{facilityIdentifier}/loans/{loanIdentifier}', () => 
     },
     makeRequestWithoutAuth: (incorrectAuth?: IncorrectAuthArg) =>
       api.patchWithoutAuth(
-        getUpdateExpiryDateUrl({ facilityIdentifier, loanIdentifier }),
+        getUpdateExpiryDateUrl({ facilityId: facilityIdentifier, loanId: loanIdentifier }),
         updateLoanExpiryDateRequest,
         incorrectAuth?.headerName,
         incorrectAuth?.headerValue,
@@ -81,12 +108,10 @@ describe('PATCH /facilities/{facilityIdentifier}/loans/{loanIdentifier}', () => 
       requestToAcbsEndpoint: () => requestToGetLoanInAcbs(),
       makeRequest: () => makeRequest(updateLoanExpiryDateRequest),
       expectedStatusCodeForAcbs400Error: 500,
-      getExpectedErrorForAcbs400Error: () => {
-        return {
-          statusCode: 500,
-          message: 'Internal server error',
-        };
-      },
+      getExpectedErrorForAcbs400Error: () => ({
+        statusCode: 500,
+        message: 'Internal server error',
+      }),
     },
     {
       endpointTestType: 'ACBS update loan',
@@ -97,9 +122,7 @@ describe('PATCH /facilities/{facilityIdentifier}/loans/{loanIdentifier}', () => 
       requestToAcbsEndpoint: () => requestToUpdateLoanInAcbs(),
       makeRequest: () => makeRequest(updateLoanExpiryDateRequest),
       expectedStatusCodeForAcbs400Error: 400,
-      getExpectedErrorForAcbs400Error: (error) => {
-        return { message: 'Bad request', statusCode: 400, error };
-      },
+      getExpectedErrorForAcbs400Error: (error) => ({ message: 'Bad request', statusCode: 400, error }),
     },
   ])(
     '$endpointTestType',
@@ -107,7 +130,7 @@ describe('PATCH /facilities/{facilityIdentifier}/loans/{loanIdentifier}', () => 
       endpointTestType,
       givenTheRequestWouldOtherwiseSucceed,
       requestToAcbsEndpoint,
-      makeRequest,
+      makeRequest: makeTestRequest,
       expectedStatusCodeForAcbs400Error,
       getExpectedErrorForAcbs400Error,
     }) => {
@@ -116,7 +139,7 @@ describe('PATCH /facilities/{facilityIdentifier}/loans/{loanIdentifier}', () => 
         const acbsErrorMessage = 'ACBS error message';
         requestToAcbsEndpoint().reply(400, acbsErrorMessage);
 
-        const { status, body } = await makeRequest();
+        const { status, body } = await makeTestRequest();
 
         expect(status).toBe(expectedStatusCodeForAcbs400Error);
         expect(body).toStrictEqual(getExpectedErrorForAcbs400Error(acbsErrorMessage));
@@ -127,7 +150,7 @@ describe('PATCH /facilities/{facilityIdentifier}/loans/{loanIdentifier}', () => 
         const acbsErrorMessage = { Message: 'ACBS error message' };
         requestToAcbsEndpoint().reply(400, acbsErrorMessage);
 
-        const { status, body } = await makeRequest();
+        const { status, body } = await makeTestRequest();
 
         expect(status).toBe(expectedStatusCodeForAcbs400Error);
         expect(body).toStrictEqual(getExpectedErrorForAcbs400Error(JSON.stringify(acbsErrorMessage)));
@@ -137,7 +160,7 @@ describe('PATCH /facilities/{facilityIdentifier}/loans/{loanIdentifier}', () => 
         givenTheRequestWouldOtherwiseSucceed();
         requestToAcbsEndpoint().reply(400, 'Loan not found');
 
-        const { status, body } = await makeRequest();
+        const { status, body } = await makeTestRequest();
 
         expect(status).toBe(404);
         expect(body).toStrictEqual({ message: 'Not found', statusCode: 404 });
@@ -147,7 +170,7 @@ describe('PATCH /facilities/{facilityIdentifier}/loans/{loanIdentifier}', () => 
         givenTheRequestWouldOtherwiseSucceed();
         requestToAcbsEndpoint().reply(401, 'Unauthorized');
 
-        const { status, body } = await makeRequest();
+        const { status, body } = await makeTestRequest();
 
         expect(status).toBe(500);
         expect(body).toStrictEqual({ message: 'Internal server error', statusCode: 500 });
@@ -157,7 +180,7 @@ describe('PATCH /facilities/{facilityIdentifier}/loans/{loanIdentifier}', () => 
         givenTheRequestWouldOtherwiseSucceed();
         requestToAcbsEndpoint().delay(TIME_EXCEEDING_ACBS_TIMEOUT).reply(201);
 
-        const { status, body } = await makeRequest();
+        const { status, body } = await makeTestRequest();
 
         expect(status).toBe(500);
         expect(body).toStrictEqual({
@@ -183,8 +206,7 @@ describe('PATCH /facilities/{facilityIdentifier}/loans/{loanIdentifier}', () => 
 
   describe('URL parameter validation', () => {
     withFacilityIdentifierUrlValidationApiTests({
-      makeRequestWithFacilityId: (facilityIdentifier: string) =>
-        api.patch(getUpdateExpiryDateUrl({ facilityIdentifier, loanIdentifier }), updateLoanExpiryDateRequest),
+      makeRequestWithFacilityId: (facilityId: string) => api.patch(getUpdateExpiryDateUrl({ facilityId, loanId: loanIdentifier }), updateLoanExpiryDateRequest),
       givenRequestWouldOtherwiseSucceedForFacilityId: () => {
         givenAuthenticationWithTheIdpSucceeds();
         givenRequestToGetLoanInAcbsSucceeds();
@@ -194,37 +216,13 @@ describe('PATCH /facilities/{facilityIdentifier}/loans/{loanIdentifier}', () => 
     });
 
     withLoanIdentifierUrlValidationApiTests({
-      makeRequestWithLoanId: (loanIdentifier: string) => api.patch(getUpdateExpiryDateUrl({ facilityIdentifier, loanIdentifier }), updateLoanExpiryDateRequest),
-      givenRequestWouldOtherwiseSucceedForLoanId: (loanIdentifier: string) => {
+      makeRequestWithLoanId: (loanId: string) => api.patch(getUpdateExpiryDateUrl({ facilityId: facilityIdentifier, loanId }), updateLoanExpiryDateRequest),
+      givenRequestWouldOtherwiseSucceedForLoanId: (loanId: string) => {
         givenAuthenticationWithTheIdpSucceeds();
-        givenRequestToGetLoanInAcbsSucceeds(loanIdentifier);
+        givenRequestToGetLoanInAcbsSucceeds(loanId);
         givenRequestToUpdateLoanInAcbsSucceeds();
       },
       successStatusCode: 200,
     });
   });
-  const makeRequest = (updateLoanExpiryDateRequest: unknown) =>
-    api.patch(getUpdateExpiryDateUrl({ facilityIdentifier, loanIdentifier }), JSON.parse(JSON.stringify(updateLoanExpiryDateRequest)));
-
-  const requestToGetLoanInAcbs = (loanId = loanIdentifier) =>
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL).get(`/Portfolio/${portfolioIdentifier}/Loan/${loanId}`).matchHeader('authorization', `Bearer ${idToken}`);
-
-  const givenRequestToGetLoanInAcbsSucceedsWithResponse = (acbsGetExistingLoanResponse: AcbsGetLoanByLoanIdentifierResponseDto, loanId = loanIdentifier) => {
-    requestToGetLoanInAcbs(loanId).reply(200, acbsGetExistingLoanResponse);
-  };
-
-  const givenRequestToGetLoanInAcbsSucceeds = (loanId = loanIdentifier) => {
-    givenRequestToGetLoanInAcbsSucceedsWithResponse(acbsGetExistingLoanResponse, loanId);
-  };
-
-  const requestToUpdateLoanInAcbs = () =>
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL).put(`/Portfolio/${portfolioIdentifier}/Loan/${loanIdentifier}`).matchHeader('authorization', `Bearer ${idToken}`);
-
-  const givenRequestToUpdateLoanInAcbsSucceedsWithResponse = (acbsUpdateLoanRequest: AcbsUpdateLoanRequest) => {
-    requestToUpdateLoanInAcbs().reply(200, acbsUpdateLoanRequest);
-  };
-
-  const givenRequestToUpdateLoanInAcbsSucceeds = () => {
-    givenRequestToUpdateLoanInAcbsSucceedsWithResponse(acbsUpdateLoanRequest);
-  };
 });

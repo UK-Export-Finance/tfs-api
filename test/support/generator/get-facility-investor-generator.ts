@@ -14,7 +14,7 @@ export class GetFacilityInvestorGenerator extends AbstractGenerator<GetFacilityI
       facilityIdentifier: this.valueGenerator.ukefId(),
       portfolioIdentifier: this.valueGenerator.string(),
       guaranteeCommencementDate: effectiveDate,
-      effectiveDate: effectiveDate,
+      effectiveDate,
       currency: this.valueGenerator.string({ length: 3 }),
       guaranteeExpiryDate: this.valueGenerator.dateOnlyString(),
       maximumLiability: this.valueGenerator.nonnegativeFloat({ fixed: 2 }),
@@ -43,8 +43,8 @@ export class GetFacilityInvestorGenerator extends AbstractGenerator<GetFacilityI
     }));
 
     const facilityInvestorsFromService = values.map((v) => ({
-      portfolioIdentifier: portfolioIdentifier,
-      facilityIdentifier: facilityIdentifier,
+      portfolioIdentifier,
+      facilityIdentifier,
       guaranteeCommencementDate: v.guaranteeCommencementDate,
       effectiveDate: v.effectiveDate,
       currency: v.currency,
@@ -61,12 +61,12 @@ export class GetFacilityInvestorGenerator extends AbstractGenerator<GetFacilityI
   }
 }
 
-interface GenerateOptions {
+type GenerateOptions = {
   facilityIdentifier: UkefId;
   portfolioIdentifier: string;
-}
+};
 
-interface GenerateResult {
+type GenerateResult = {
   facilityInvestorsInAcbs: AcbsGetFacilityPartyResponseDto[];
   facilityInvestorsFromService: GetFacilityInvestorResponseItem[];
-}
+};

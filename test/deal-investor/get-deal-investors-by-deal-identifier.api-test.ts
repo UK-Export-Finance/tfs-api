@@ -1,3 +1,4 @@
+import nock from 'nock';
 import { PROPERTIES } from '@ukef/constants';
 import { UkefId } from '@ukef/helpers';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
@@ -5,7 +6,6 @@ import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
 import { GetDealInvestorGenerator } from '@ukef-test/support/generator/get-deal-investor-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import nock from 'nock';
 
 describe('GET /deals/{dealIdentifier}/investors', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -14,12 +14,24 @@ describe('GET /deals/{dealIdentifier}/investors', () => {
   const getDealInvestorsUrl = `/api/v1/deals/${dealIdentifier}/investors`;
 
   let api: Api;
+  let idToken: string;
 
   const { dealInvestorsInAcbs, dealInvestorsFromService } = new GetDealInvestorGenerator(valueGenerator).generate({
     numberToGenerate: 2,
     dealIdentifier,
     portfolioIdentifier,
   });
+
+  const requestToGetDealInvestors = () =>
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .get(`/Portfolio/${portfolioIdentifier}/Deal/${dealIdentifier}/DealParty`)
+      .matchHeader('authorization', `Bearer ${idToken}`);
+
+  const { idToken: resolvedIdToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
+    givenRequestWouldOtherwiseSucceed: () => requestToGetDealInvestors().reply(200, dealInvestorsInAcbs),
+    makeRequest: () => api.get(getDealInvestorsUrl),
+  });
+  idToken = resolvedIdToken;
 
   beforeAll(async () => {
     api = await Api.create();
@@ -32,11 +44,6 @@ describe('GET /deals/{dealIdentifier}/investors', () => {
   afterEach(() => {
     nock.abortPendingRequests();
     nock.cleanAll();
-  });
-
-  const { idToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
-    givenRequestWouldOtherwiseSucceed: () => requestToGetDealInvestors().reply(200, dealInvestorsInAcbs),
-    makeRequest: () => api.get(getDealInvestorsUrl),
   });
 
   it('returns a 200 response with the deal investors if it is returned by ACBS', async () => {
@@ -135,9 +142,4 @@ describe('GET /deals/{dealIdentifier}/investors', () => {
       message: 'Internal server error',
     });
   });
-
-  const requestToGetDealInvestors = () =>
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .get(`/Portfolio/${portfolioIdentifier}/Deal/${dealIdentifier}/DealParty`)
-      .matchHeader('authorization', `Bearer ${idToken}`);
 });

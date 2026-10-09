@@ -1,6 +1,6 @@
+import { PinoLogger } from 'nestjs-pino';
 import { GiftFacilityCreationErrorService } from '@ukef/modules/gift/services';
 import { mockResponse204 } from '@ukef-test/http-response';
-import { PinoLogger } from 'nestjs-pino';
 
 /**
  * Mock GiftFacilityCreationErrorService.

@@ -1,3 +1,5 @@
+/** eslint-disable */
+import nock from 'nock';
 import { PROPERTIES } from '@ukef/constants';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
@@ -10,7 +12,6 @@ import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
 import { CreateDealGenerator } from '@ukef-test/support/generator/create-deal-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import nock from 'nock';
 
 describe('POST /deals', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -37,6 +38,49 @@ describe('POST /deals', () => {
   const expectedDealIdentifierResponse = { dealIdentifier };
 
   let api: Api;
+  let idToken: string;
+
+  const requestToCreateDealInAcbsWithBody = (requestBody: nock.RequestBodyMatcher): nock.Interceptor =>
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL).post(`/Portfolio/${portfolioIdentifier}/Deal`, requestBody).matchHeader('authorization', `Bearer ${idToken}`);
+
+  const requestToCreateDealInAcbs = (): nock.Interceptor => requestToCreateDealInAcbsWithBody(JSON.stringify(acbsRequestBodyToCreateDeal));
+
+  const givenRequestToCreateDealInAcbsSucceeds = (): nock.Scope => requestToCreateDealInAcbs().reply(201, undefined, { location: `/Deal/${dealIdentifier}` });
+
+  const givenAnyRequestBodyToCreateDealInAcbsSucceeds = (): nock.Scope => {
+    const requestBodyPlaceholder = '*';
+    return nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .filteringRequestBody(() => requestBodyPlaceholder)
+      .post(`/Portfolio/${portfolioIdentifier}/Deal`, requestBodyPlaceholder)
+      .matchHeader('authorization', `Bearer ${idToken}`)
+      .reply(201, undefined, { location: `/Deal/${dealIdentifier}` });
+  };
+
+  const requestToUpdateDealBorrowingRestrictionInAcbsWithBody = (requestBody: nock.RequestBodyMatcher): nock.Interceptor =>
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .put(`/Portfolio/${portfolioIdentifier}/Deal/${dealIdentifier}/BorrowingRestriction`, requestBody)
+      .matchHeader('authorization', `Bearer ${idToken}`);
+
+  const requestToUpdateDealBorrowingRestrictionInAcbs = (): nock.Interceptor =>
+    requestToUpdateDealBorrowingRestrictionInAcbsWithBody(JSON.stringify(acbsRequestBodyToUpdateBorrowingRestriction));
+
+  const givenRequestToUpdateDealBorrowingRestrictionForDealInAcbsSucceeds = (): nock.Scope => requestToUpdateDealBorrowingRestrictionInAcbs().reply(200);
+
+  const givenRequestToUpdateAnyDealBorrowingRestrictionInAcbsSucceeds = (): nock.Scope =>
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .put(new RegExp(`/Portfolio/${portfolioIdentifier}/Deal/\\d{10}/BorrowingRestriction`), JSON.stringify(acbsRequestBodyToUpdateBorrowingRestriction))
+      .matchHeader('authorization', `Bearer ${idToken}`)
+      .reply(200);
+
+  const { idToken: resolvedIdToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
+    givenRequestWouldOtherwiseSucceed: () => {
+      givenRequestToCreateDealInAcbsSucceeds();
+      givenRequestToUpdateDealBorrowingRestrictionForDealInAcbsSucceeds();
+    },
+    makeRequest: () => api.post(createDealUrl, requestBodyToCreateDeal),
+    successStatusCode: 201,
+  });
+  idToken = resolvedIdToken;
 
   beforeAll(async () => {
     api = await Api.create();
@@ -49,15 +93,6 @@ describe('POST /deals', () => {
   afterEach(() => {
     nock.abortPendingRequests();
     nock.cleanAll();
-  });
-
-  const { idToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
-    givenRequestWouldOtherwiseSucceed: () => {
-      givenRequestToCreateDealInAcbsSucceeds();
-      givenRequestToUpdateDealBorrowingRestrictionForDealInAcbsSucceeds();
-    },
-    makeRequest: () => api.post(createDealUrl, requestBodyToCreateDeal),
-    successStatusCode: 201,
   });
 
   withClientAuthenticationTests({
@@ -366,36 +401,6 @@ describe('POST /deals', () => {
       givenRequestToUpdateDealBorrowingRestrictionForDealInAcbsSucceeds();
     },
   });
-
-  const givenRequestToCreateDealInAcbsSucceeds = (): nock.Scope => requestToCreateDealInAcbs().reply(201, undefined, { location: `/Deal/${dealIdentifier}` });
-
-  const requestToCreateDealInAcbs = (): nock.Interceptor => requestToCreateDealInAcbsWithBody(JSON.stringify(acbsRequestBodyToCreateDeal));
-
-  const requestToCreateDealInAcbsWithBody = (requestBody: nock.RequestBodyMatcher): nock.Interceptor =>
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL).post(`/Portfolio/${portfolioIdentifier}/Deal`, requestBody).matchHeader('authorization', `Bearer ${idToken}`);
-
-  const givenAnyRequestBodyToCreateDealInAcbsSucceeds = (): nock.Scope => {
-    const requestBodyPlaceholder = '*';
-    return nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .filteringRequestBody(() => requestBodyPlaceholder)
-      .post(`/Portfolio/${portfolioIdentifier}/Deal`, requestBodyPlaceholder)
-      .matchHeader('authorization', `Bearer ${idToken}`)
-      .reply(201, undefined, { location: `/Deal/${dealIdentifier}` });
-  };
-
-  const givenRequestToUpdateDealBorrowingRestrictionForDealInAcbsSucceeds = (): nock.Scope => requestToUpdateDealBorrowingRestrictionInAcbs().reply(200);
-
-  const requestToUpdateDealBorrowingRestrictionInAcbs = (): nock.Interceptor =>
-    requestToUpdateDealBorrowingRestrictionInAcbsWithBody(JSON.stringify(acbsRequestBodyToUpdateBorrowingRestriction));
-
-  const requestToUpdateDealBorrowingRestrictionInAcbsWithBody = (requestBody: nock.RequestBodyMatcher): nock.Interceptor =>
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .put(`/Portfolio/${portfolioIdentifier}/Deal/${dealIdentifier}/BorrowingRestriction`, requestBody)
-      .matchHeader('authorization', `Bearer ${idToken}`);
-
-  const givenRequestToUpdateAnyDealBorrowingRestrictionInAcbsSucceeds = (): nock.Scope =>
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .put(new RegExp(`/Portfolio/${portfolioIdentifier}/Deal/\\d{10}/BorrowingRestriction`), JSON.stringify(acbsRequestBodyToUpdateBorrowingRestriction))
-      .matchHeader('authorization', `Bearer ${idToken}`)
-      .reply(200);
 });
+
+/** eslint-enable */

@@ -1,3 +1,1 @@
-export const prepareModifiedRequest = (requestIsAnArray: boolean, modifiedRequest) => {
-  return requestIsAnArray ? [modifiedRequest] : modifiedRequest;
-};
+export const prepareModifiedRequest = (requestIsAnArray: boolean, modifiedRequest) => (requestIsAnArray ? [modifiedRequest] : modifiedRequest);
