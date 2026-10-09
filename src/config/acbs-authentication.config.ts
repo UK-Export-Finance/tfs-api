@@ -1,7 +1,7 @@
 import { registerAs } from '@nestjs/config';
 import { getIntConfig } from '@ukef/helpers/get-int-config';
 
-export type AcbsAuthenticationConfig = {
+export type AcbsAuthenticationConfigType = {
   apiKey: string;
   apiKeyHeaderName: string;
   baseUrl: string;
@@ -15,7 +15,7 @@ export type AcbsAuthenticationConfig = {
   timeout: number;
 };
 
-export const AcbsAuthenticationConfig = registerAs('acbsAuthentication', (): AcbsAuthenticationConfig => ({
+export const AcbsAuthenticationConfig = registerAs('acbsAuthentication', (): AcbsAuthenticationConfigType => ({
   apiKey: process.env.ACBS_AUTHENTICATION_API_KEY!,
   apiKeyHeaderName: process.env.ACBS_AUTHENTICATION_API_KEY_HEADER_NAME!,
   baseUrl: process.env.ACBS_AUTHENTICATION_BASE_URL!,
