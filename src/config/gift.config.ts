@@ -10,13 +10,10 @@ export type GiftConfigType = ExternalServiceConfig & {
   apiKeyHeaderValue: string;
 };
 
-export const GiftConfig = registerAs(
-  KEY,
-  (): GiftConfigType => ({
-    baseUrl: process.env.GIFT_API_URL!,
-    apiKeyHeaderName: HEADERS.X_API_KEY,
-    apiKeyHeaderValue: process.env.GIFT_API_KEY!,
-    maxRedirects: getIntConfig(process.env.GIFT_API_MAX_REDIRECTS, 5),
-    timeout: getIntConfig(process.env.GIFT_API_TIMEOUT, 30000),
-  }),
-);
+export const GiftConfig = registerAs(KEY, (): GiftConfigType => ({
+  baseUrl: process.env.GIFT_API_URL!,
+  apiKeyHeaderName: HEADERS.X_API_KEY,
+  apiKeyHeaderValue: process.env.GIFT_API_KEY!,
+  maxRedirects: getIntConfig(process.env.GIFT_API_MAX_REDIRECTS, 5),
+  timeout: getIntConfig(process.env.GIFT_API_TIMEOUT, 30000),
+}));
