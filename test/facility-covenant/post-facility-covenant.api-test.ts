@@ -1,3 +1,4 @@
+import nock from 'nock';
 import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { AcbsCreateFacilityCovenantRequestDto } from '@ukef/modules/acbs/dto/acbs-create-facility-covenant-request.dto';
 import { AcbsGetFacilityResponseDto } from '@ukef/modules/acbs/dto/acbs-get-facility-response.dto';
@@ -15,7 +16,6 @@ import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/s
 import { CreateFacilityCovenantGenerator } from '@ukef-test/support/generator/create-facility-covenant-generator';
 import { GetFacilityGenerator } from '@ukef-test/support/generator/get-facility-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import nock from 'nock';
 
 describe('POST /facilities/{facilityIdentifier}/covenants', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -51,6 +51,32 @@ describe('POST /facilities/{facilityIdentifier}/covenants', () => {
   });
 
   let api: Api;
+  let idToken: string;
+
+  const requestToGetFacilityWithId = (facilityId: string) =>
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL).get(`/Portfolio/${portfolioIdentifier}/Facility/${facilityId}`).matchHeader('authorization', `Bearer ${idToken}`);
+
+  const givenRequestToGetFacilitySucceeds = (): nock.Scope => requestToGetFacilityWithId(facilityIdentifier).reply(200, facilityInAcbs);
+
+  const requestToCreateCovenant = (facilityId: string, requestBody: AcbsCreateFacilityCovenantRequestDto): nock.Interceptor =>
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .post(`/Portfolio/${portfolioIdentifier}/Facility/${facilityId}/Covenant`, JSON.stringify(requestBody))
+      .matchHeader('authorization', `Bearer ${idToken}`)
+      .matchHeader('Content-Type', 'application/json');
+
+  const givenRequestToCreateCovenantSucceedsForFacilityWithId = (facilityId: string): nock.Scope =>
+    requestToCreateCovenant(facilityId, acbsRequestBodyToCreateFacilityCovenant).reply(201);
+
+  const givenRequestToCreateCovenantSucceeds = () => givenRequestToCreateCovenantSucceedsForFacilityWithId(facilityIdentifier);
+
+  const givenAnyRequestBodyToCreateCovenantSucceeds = (): void => {
+    const requestBodyPlaceholder = '*';
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .filteringRequestBody(() => requestBodyPlaceholder)
+      .post(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/Covenant`, requestBodyPlaceholder)
+      .matchHeader('authorization', `Bearer ${idToken}`)
+      .reply(201);
+  };
 
   beforeAll(async () => {
     api = await Api.create();
@@ -65,7 +91,7 @@ describe('POST /facilities/{facilityIdentifier}/covenants', () => {
     nock.cleanAll();
   });
 
-  const { idToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
+  const { idToken: resolvedIdToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
     givenRequestWouldOtherwiseSucceed: () => {
       givenRequestToGetFacilitySucceeds();
       givenRequestToCreateCovenantSucceeds();
@@ -73,6 +99,7 @@ describe('POST /facilities/{facilityIdentifier}/covenants', () => {
     makeRequest: () => api.post(createFacilityCovenantUrl, requestBodyToCreateFacilityCovenant),
     successStatusCode: 201,
   });
+  idToken = resolvedIdToken;
 
   withClientAuthenticationTests({
     givenTheRequestWouldOtherwiseSucceed: () => {
@@ -451,32 +478,4 @@ describe('POST /facilities/{facilityIdentifier}/covenants', () => {
       successStatusCode: 201,
     });
   });
-
-  const givenRequestToGetFacilitySucceeds = (): nock.Scope => {
-    return requestToGetFacilityWithId(facilityIdentifier).reply(200, facilityInAcbs);
-  };
-
-  const requestToGetFacilityWithId = (facilityId: string) =>
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL).get(`/Portfolio/${portfolioIdentifier}/Facility/${facilityId}`).matchHeader('authorization', `Bearer ${idToken}`);
-
-  const givenRequestToCreateCovenantSucceeds = () => givenRequestToCreateCovenantSucceedsForFacilityWithId(facilityIdentifier);
-
-  const givenRequestToCreateCovenantSucceedsForFacilityWithId = (facilityId: string): nock.Scope => {
-    return requestToCreateCovenant(facilityId, acbsRequestBodyToCreateFacilityCovenant).reply(201);
-  };
-
-  const requestToCreateCovenant = (facilityId: string, requestBody: AcbsCreateFacilityCovenantRequestDto): nock.Interceptor =>
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .post(`/Portfolio/${portfolioIdentifier}/Facility/${facilityId}/Covenant`, JSON.stringify(requestBody))
-      .matchHeader('authorization', `Bearer ${idToken}`)
-      .matchHeader('Content-Type', 'application/json');
-
-  const givenAnyRequestBodyToCreateCovenantSucceeds = (): void => {
-    const requestBodyPlaceholder = '*';
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .filteringRequestBody(() => requestBodyPlaceholder)
-      .post(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/Covenant`, requestBodyPlaceholder)
-      .matchHeader('authorization', `Bearer ${idToken}`)
-      .reply(201);
-  };
 });

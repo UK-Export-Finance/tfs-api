@@ -78,9 +78,9 @@ export class GetFacilityLoanGenerator extends AbstractGenerator<AcbsGetFacilityL
     }));
 
     const facilityLoansFromApi = facilityLoans.map((facilityLoan) => ({
-      portfolioIdentifier: portfolioIdentifier,
+      portfolioIdentifier,
       loanIdentifier: facilityLoan.LoanIdentifier,
-      facilityIdentifier: facilityIdentifier,
+      facilityIdentifier,
       borrowerPartyIdentifier: facilityLoan.PrimaryParty.PartyIdentifier,
       productTypeId: facilityLoan.ProductType.ProductTypeCode,
       productTypeGroup: facilityLoan.ProductGroup.ProductGroupCode,
@@ -101,12 +101,12 @@ export class GetFacilityLoanGenerator extends AbstractGenerator<AcbsGetFacilityL
   }
 }
 
-interface GenerateOptions {
+type GenerateOptions = {
   facilityIdentifier: UkefId;
   portfolioIdentifier: string;
-}
+};
 
-interface GenerateResult {
+type GenerateResult = {
   facilityLoansInAcbs: AcbsGetFacilityLoanResponseDto;
   facilityLoansFromApi: GetFacilityLoanResponseDto;
-}
+};

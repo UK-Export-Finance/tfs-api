@@ -241,7 +241,7 @@ export class CreateFacilityGenerator extends AbstractGenerator<FacilityValues, G
   }
 }
 
-interface FacilityValues {
+type FacilityValues = {
   currency: string;
   dealIdentifier: UkefId;
   premiumFrequencyCode: string;
@@ -261,13 +261,13 @@ interface FacilityValues {
   forecastPercentage: number;
   issueDate: DateOnlyString;
   capitalConversionFactorCode: string;
-}
+};
 
-interface GenerateResult {
+type GenerateResult = {
   acbsCreateFacilityRequest: AcbsCreateFacilityRequest;
   createFacilityRequestItem: CreateFacilityRequestItem;
-}
+};
 
-interface GenerateOptions {
+type GenerateOptions = {
   facilityIdentifier: UkefId;
-}
+};

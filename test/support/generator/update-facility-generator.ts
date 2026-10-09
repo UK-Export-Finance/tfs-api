@@ -311,7 +311,7 @@ export class UpdateFacilityGenerator extends AbstractGenerator<FacilityValues, G
   }
 }
 
-interface FacilityValues {
+type FacilityValues = {
   currency: string;
   dealIdentifier: UkefId;
   premiumFrequencyCode: string;
@@ -335,15 +335,15 @@ interface FacilityValues {
   description: string;
   facilityInitialStatusCode: string;
   administrativeUserIdentifier: string;
-}
+};
 
-interface GenerateResult {
+type GenerateResult = {
   acbsUpdateFacilityRequest: AcbsUpdateFacilityRequest;
   acbsGetExistingFacilityResponse: AcbsGetFacilityResponseDto;
   acbsBundleInformationRequest: AcbsCreateBundleInformationRequestDto<FacilityAmountTransaction>;
   updateFacilityRequest: UpdateFacilityRequest;
-}
+};
 
-interface GenerateOptions {
+type GenerateOptions = {
   facilityIdentifier: UkefId;
-}
+};

@@ -1,3 +1,4 @@
+import nock from 'nock';
 import { ENUMS, UKEFID } from '@ukef/constants';
 import { SOVEREIGN_ACCOUNT_TYPES } from '@ukef/constants/sovereign-account-types.constant';
 import { AcbsCreatePartyExternalRatingRequestDto } from '@ukef/modules/acbs/dto/acbs-create-party-external-rating-request.dto';
@@ -15,7 +16,6 @@ import { CreatePartyGenerator } from '@ukef-test/support/generator/create-party-
 import { GetPartyGenerator } from '@ukef-test/support/generator/get-party-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { MockMdmApi } from '@ukef-test/support/mdm-api.mock';
-import nock from 'nock';
 
 describe('POST /parties', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -52,6 +52,83 @@ describe('POST /parties', () => {
 
   let mdmApi: MockMdmApi;
   let api: Api;
+  let idToken: string;
+
+  const requestToGetPartiesBySearchText = (searchText: string): nock.Interceptor =>
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL).get(`/Party/Search/${searchText}`).matchHeader('authorization', `Bearer ${idToken}`);
+
+  const givenRequestToGetPartiesBySearchTextSucceeds = (): nock.Scope => requestToGetPartiesBySearchText(alternateIdentifier).reply(200, []);
+
+  const givenAnyRequestToGetPartiesBySearchTextSucceeds = (): nock.Scope =>
+    nock(`${ENVIRONMENT_VARIABLES.ACBS_BASE_URL}/Party/Search/`).get(/.*/).matchHeader('authorization', `Bearer ${idToken}`).reply(200, []);
+
+  const requestToCreateParty = (request: AcbsCreatePartyRequestDto): nock.Interceptor =>
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .post('/Party', JSON.stringify(request))
+      .matchHeader('authorization', `Bearer ${idToken}`)
+      .matchHeader('Content-Type', 'application/json');
+
+  const givenRequestToCreatePartySucceeds = (): nock.Scope =>
+    requestToCreateParty(acbsCreatePartyRequest).reply(201, undefined, { Location: `/Party/${partyIdentifier}` });
+
+  const givenAnyRequestBodyToCreatePartySucceeds = (): void => {
+    const requestBodyPlaceholder = '*';
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .filteringRequestBody(() => requestBodyPlaceholder)
+      .post('/Party', requestBodyPlaceholder)
+      .matchHeader('authorization', `Bearer ${idToken}`)
+      .reply(201, undefined, { Location: `/Party/${partyIdentifier}` });
+  };
+
+  const requestToGetPartyExternalRatings = (): nock.Interceptor =>
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL).get(`/Party/${partyIdentifier}/PartyExternalRating`).matchHeader('authorization', `Bearer ${idToken}`);
+
+  const givenRequestToGetPartyExternalRatingsSucceeds = (): nock.Scope => requestToGetPartyExternalRatings().reply(200, []);
+
+  const requestToCreatePartyExternalRating = (request: AcbsCreatePartyExternalRatingRequestDto): nock.Interceptor =>
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .post(`/Party/${partyIdentifier}/PartyExternalRating`, JSON.stringify(request))
+      .matchHeader('authorization', `Bearer ${idToken}`)
+      .matchHeader('Content-Type', 'application/json');
+
+  const givenRequestToCreatePartyExternalRatingSucceeds = (): nock.Scope => requestToCreatePartyExternalRating(acbsExternalRatingToCreate).reply(201);
+
+  const givenRequestToCreatePartyExternalRatingWithAssignedRatingCodeSucceeds = (assignedRatingCode: string): nock.Scope =>
+    requestToCreatePartyExternalRating({ ...acbsExternalRatingToCreate, AssignedRating: { AssignedRatingCode: assignedRatingCode } }).reply(201);
+
+  const givenAnyRequestBodyToCreatePartyExternalRatingSucceeds = (): void => {
+    const requestBodyPlaceholder = '*';
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .filteringRequestBody(() => requestBodyPlaceholder)
+      .post(`/Party/${partyIdentifier}/PartyExternalRating`, requestBodyPlaceholder)
+      .matchHeader('authorization', `Bearer ${idToken}`)
+      .reply(201);
+  };
+
+  const givenRequestToFindCustomersByPartyUrnSucceeds = (): void => {
+    mdmApi.requestToFindCustomersByPartyUrn(alternateIdentifier).respondsWith(200, customersWithCorporateType);
+  };
+
+  const givenRequestToGetFindCustomersByAnyPartyUrnSucceeds = (): void => {
+    mdmApi.requestToFindCustomersByAnyPartyUrn().respondsWith(200, customersWithCorporateType);
+  };
+
+  const givenAllRequestsSucceed = (): void => {
+    givenRequestToGetPartiesBySearchTextSucceeds();
+    givenRequestToCreatePartySucceeds();
+    givenRequestToGetPartyExternalRatingsSucceeds();
+    givenRequestToCreatePartyExternalRatingSucceeds();
+    givenRequestToFindCustomersByPartyUrnSucceeds();
+  };
+
+  const { idToken: resolvedIdToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
+    givenRequestWouldOtherwiseSucceed: () => {
+      givenAllRequestsSucceed();
+    },
+    makeRequest: () => api.post(createPartyUrl, apiCreatePartyRequest),
+    successStatusCode: 201,
+  });
+  idToken = resolvedIdToken;
 
   beforeAll(async () => {
     mdmApi = new MockMdmApi(nock);
@@ -65,14 +142,6 @@ describe('POST /parties', () => {
   afterEach(() => {
     nock.abortPendingRequests();
     nock.cleanAll();
-  });
-
-  const { idToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
-    givenRequestWouldOtherwiseSucceed: () => {
-      givenAllRequestsSucceed();
-    },
-    makeRequest: () => api.post(createPartyUrl, apiCreatePartyRequest),
-    successStatusCode: 201,
   });
 
   withClientAuthenticationTests({
@@ -527,79 +596,4 @@ describe('POST /parties', () => {
       givenAnyRequestBodyWouldSucceed,
     });
   });
-
-  const givenRequestToGetPartiesBySearchTextSucceeds = (): nock.Scope => {
-    return requestToGetPartiesBySearchText(alternateIdentifier).reply(200, []);
-  };
-
-  const requestToGetPartiesBySearchText = (searchText: string): nock.Interceptor =>
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL).get(`/Party/Search/${searchText}`).matchHeader('authorization', `Bearer ${idToken}`);
-
-  const givenAnyRequestToGetPartiesBySearchTextSucceeds = (): nock.Scope =>
-    nock(`${ENVIRONMENT_VARIABLES.ACBS_BASE_URL}/Party/Search/`).get(/.*/).matchHeader('authorization', `Bearer ${idToken}`).reply(200, []);
-
-  const givenRequestToCreatePartySucceeds = (): nock.Scope => {
-    return requestToCreateParty(acbsCreatePartyRequest).reply(201, undefined, { Location: `/Party/${partyIdentifier}` });
-  };
-
-  const requestToCreateParty = (request: AcbsCreatePartyRequestDto): nock.Interceptor =>
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .post('/Party', JSON.stringify(request))
-      .matchHeader('authorization', `Bearer ${idToken}`)
-      .matchHeader('Content-Type', 'application/json');
-
-  const givenAnyRequestBodyToCreatePartySucceeds = (): void => {
-    const requestBodyPlaceholder = '*';
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .filteringRequestBody(() => requestBodyPlaceholder)
-      .post('/Party', requestBodyPlaceholder)
-      .matchHeader('authorization', `Bearer ${idToken}`)
-      .reply(201, undefined, { Location: `/Party/${partyIdentifier}` });
-  };
-
-  const givenRequestToGetPartyExternalRatingsSucceeds = (): nock.Scope => {
-    return requestToGetPartyExternalRatings().reply(200, []);
-  };
-
-  const requestToGetPartyExternalRatings = (): nock.Interceptor =>
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL).get(`/Party/${partyIdentifier}/PartyExternalRating`).matchHeader('authorization', `Bearer ${idToken}`);
-
-  const givenRequestToCreatePartyExternalRatingSucceeds = (): nock.Scope => {
-    return requestToCreatePartyExternalRating(acbsExternalRatingToCreate).reply(201);
-  };
-
-  const givenRequestToCreatePartyExternalRatingWithAssignedRatingCodeSucceeds = (assignedRatingCode: string): nock.Scope => {
-    return requestToCreatePartyExternalRating({ ...acbsExternalRatingToCreate, AssignedRating: { AssignedRatingCode: assignedRatingCode } }).reply(201);
-  };
-
-  const requestToCreatePartyExternalRating = (request: AcbsCreatePartyExternalRatingRequestDto): nock.Interceptor =>
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .post(`/Party/${partyIdentifier}/PartyExternalRating`, JSON.stringify(request))
-      .matchHeader('authorization', `Bearer ${idToken}`)
-      .matchHeader('Content-Type', 'application/json');
-
-  const givenAnyRequestBodyToCreatePartyExternalRatingSucceeds = (): void => {
-    const requestBodyPlaceholder = '*';
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .filteringRequestBody(() => requestBodyPlaceholder)
-      .post(`/Party/${partyIdentifier}/PartyExternalRating`, requestBodyPlaceholder)
-      .matchHeader('authorization', `Bearer ${idToken}`)
-      .reply(201);
-  };
-
-  const givenRequestToFindCustomersByPartyUrnSucceeds = (): void => {
-    mdmApi.requestToFindCustomersByPartyUrn(alternateIdentifier).respondsWith(200, customersWithCorporateType);
-  };
-
-  const givenRequestToGetFindCustomersByAnyPartyUrnSucceeds = (): void => {
-    mdmApi.requestToFindCustomersByAnyPartyUrn().respondsWith(200, customersWithCorporateType);
-  };
-
-  const givenAllRequestsSucceed = (): void => {
-    givenRequestToGetPartiesBySearchTextSucceeds();
-    givenRequestToCreatePartySucceeds();
-    givenRequestToGetPartyExternalRatingsSucceeds();
-    givenRequestToCreatePartyExternalRatingSucceeds();
-    givenRequestToFindCustomersByPartyUrnSucceeds();
-  };
 });

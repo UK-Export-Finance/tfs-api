@@ -1,3 +1,6 @@
+/* eslint-disable */
+import nock from 'nock';
+import supertest from 'supertest';
 import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
@@ -13,12 +16,14 @@ import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { UpdateFacilityGenerator } from '@ukef-test/support/generator/update-facility-generator';
-import { PutFacilityAcbsRequests } from '@ukef-test/support/interfaces/put-facility-by-facility-identifier-acbs-endpoints.interface.';
-import nock from 'nock';
-import supertest from 'supertest';
+import { PutFacilityAcbsRequests } from '@ukef-test/support/interfaces/put-facility-by-facility-identifier-acbs-endpoints.interface';
 
 describe('PUT /facilities', () => {
   let api: Api;
+
+  const makeRequestWithUrlAndBody = (url: string, body: unknown): supertest.Test => api.put(url, JSON.parse(JSON.stringify(body)));
+
+  const makeRequestWithUrl = (url: string): supertest.Test => makeRequestWithUrlAndBody(url, updateFacilityRequest);
 
   beforeAll(async () => {
     api = await Api.create();
@@ -279,8 +284,5 @@ describe('PUT /facilities', () => {
       return { acbsGetRequest: givenAnyRequestToGetFacilityInAcbsSucceeds(), acbsUpdateRequest: givenAnyRequestBodyToUpdateInAcbsSucceeds() };
     };
   });
-
-  const makeRequestWithUrlAndBody = (url: string, body: unknown): supertest.Test => api.put(url, JSON.parse(JSON.stringify(body)));
-
-  const makeRequestWithUrl = (url: string): supertest.Test => makeRequestWithUrlAndBody(url, updateFacilityRequest);
 });
+/* eslint-enable */

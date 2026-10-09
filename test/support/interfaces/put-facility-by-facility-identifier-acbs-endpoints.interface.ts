@@ -1,6 +1,6 @@
 import nock from 'nock/types';
 
-export interface PutFacilityAcbsRequests {
+export type PutFacilityAcbsRequests = {
   acbsGetRequest: nock.Scope;
   acbsUpdateRequest: nock.Scope;
-}
+};

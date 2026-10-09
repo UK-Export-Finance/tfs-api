@@ -1,11 +1,11 @@
 import request from 'supertest';
 
-interface Options<RequestBodyItem, RequestBodyItemKey extends keyof RequestBodyItem> {
+type Options<RequestBodyItem, RequestBodyItemKey extends keyof RequestBodyItem> = {
   fieldName: RequestBodyItemKey;
   validRequestBody: RequestBodyItem[];
   makeRequest: ((body: unknown[]) => request.Test) | ((body: unknown) => request.Test);
   givenAnyRequestBodyWouldSucceed: () => void;
-}
+};
 
 export function withRequiredBooleanFieldValidationApiTests<RequestBodyItem, RequestBodyItemKey extends keyof RequestBodyItem>({
   fieldName: fieldNameSymbol,
@@ -21,7 +21,7 @@ export function withRequiredBooleanFieldValidationApiTests<RequestBodyItem, Requ
     });
 
     it(`returns a 400 response if ${fieldName} is not present`, async () => {
-      const [{ [fieldNameSymbol]: _removed, ...requestWithoutTheField }] = validRequestBody;
+      const [{ [fieldNameSymbol]: removed, ...requestWithoutTheField }] = validRequestBody;
 
       const { status, body } = await makeRequest([requestWithoutTheField]);
 

@@ -1,14 +1,15 @@
+import { Chance } from 'chance';
 import { ACBSID, UKEFID } from '@ukef/constants';
 import { AcbsBundleId, AcbsPartyId, DateOnlyString, DateString, UkefCovenantId, UkefId } from '@ukef/helpers';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
-import { Chance } from 'chance';
 
-interface Enum {
-  [key: number | string]: string | number;
-}
+type Enum = Record<number | string, string | number>;
+
 export class RandomValueGenerator {
   private static readonly seed = 0;
+
   private readonly chance: Chance.Chance;
+
   private readonly dateStringTransformations: DateStringTransformations;
 
   constructor() {
@@ -94,7 +95,7 @@ export class RandomValueGenerator {
   }
 
   ukefPartyId(): string {
-    return this.stringOfNumericCharacters({ length: 8 }) as UkefId;
+    return this.stringOfNumericCharacters({ length: 8 });
   }
 
   // UKEF Covenant id example 0000123456.

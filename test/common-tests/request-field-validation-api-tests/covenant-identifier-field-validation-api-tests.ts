@@ -5,12 +5,12 @@ import { StringFieldValidationApiTestOptions, withStringFieldValidationApiTests 
 
 type CovenantIdentifierFieldName = 'covenantIdentifier';
 
-interface CovenantIdentifierFieldValidationApiTestOptions<RequestBodyItem extends { covenantIdentifier: string }> extends Pick<
+type CovenantIdentifierFieldValidationApiTestOptions<RequestBodyItem extends { covenantIdentifier: string }> = Pick<
   StringFieldValidationApiTestOptions<RequestBodyItem, CovenantIdentifierFieldName>,
   'validRequestBody' | 'makeRequest' | 'givenAnyRequestBodyWouldSucceed'
-> {
+> & {
   valueGenerator: RandomValueGenerator;
-}
+};
 
 export const withCovenantIdentifierFieldValidationApiTests = <RequestBodyItem extends { covenantIdentifier: string }>({
   valueGenerator,

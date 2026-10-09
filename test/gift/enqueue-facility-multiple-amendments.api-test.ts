@@ -1,9 +1,9 @@
+import nock from 'nock';
 import { HttpStatus } from '@nestjs/common';
 import { GIFT_EXAMPLES } from '@ukef/constants/examples/gift.examples.constant';
 import { GiftQueueService } from '@ukef/modules/gift/services';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
 import { Api } from '@ukef-test/support/api';
-import nock from 'nock';
 
 import { apimFacilityMultipleAmendmentsUrl } from './test-helpers';
 
@@ -31,14 +31,13 @@ describe('POST /gift/facility/:facilityId/multiple-amendments', () => {
 
   withClientAuthenticationTests({
     givenTheRequestWouldOtherwiseSucceed: () => {},
-    makeRequestWithoutAuth: (incorrectAuth?: IncorrectAuthArg) => {
-      return api.postWithoutAuth(
+    makeRequestWithoutAuth: (incorrectAuth?: IncorrectAuthArg) =>
+      api.postWithoutAuth(
         apimFacilityMultipleAmendmentsUrl,
         GIFT_EXAMPLES.FACILITY_MULTIPLE_AMENDMENTS_REQUEST_PAYLOAD,
         incorrectAuth?.headerName,
         incorrectAuth?.headerValue,
-      );
-    },
+      ),
   });
 
   describe('when the payload is valid', () => {

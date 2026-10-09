@@ -46,7 +46,7 @@ export class CreateDealInvestorGenerator extends AbstractGenerator<CreateDealInv
       SectionIdentifier: PROPERTIES.DEAL_INVESTOR.DEFAULT.sectionIdentifier,
       EffectiveDate: effectiveDateString,
       ExpirationDate: expirationDateString,
-      IsExpirationDateMaximum: firstDealInvestor.expiryDate ? false : true,
+      IsExpirationDateMaximum: firstDealInvestor.expiryDate,
       LenderType: {
         LenderTypeCode: firstDealInvestor.lenderType ?? PROPERTIES.DEAL_INVESTOR.DEFAULT.lenderType.lenderTypeCode,
       },
@@ -79,11 +79,11 @@ export class CreateDealInvestorGenerator extends AbstractGenerator<CreateDealInv
     };
   }
 }
-interface GenerateOptions {
+type GenerateOptions = {
   dealIdentifier?: UkefId;
-}
+};
 
-interface GenerateResult {
+type GenerateResult = {
   acbsRequestBodyToCreateDealInvestor: AcbsCreateDealInvestorRequest;
   requestBodyToCreateDealInvestor: CreateDealInvestorRequest;
-}
+};

@@ -1,3 +1,5 @@
+import nock from 'nock';
+import supertest from 'supertest';
 import { PROPERTIES } from '@ukef/constants';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
@@ -8,8 +10,6 @@ import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
 import { CreateFacilityGenerator } from '@ukef-test/support/generator/create-facility-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import nock from 'nock';
-import supertest from 'supertest';
 
 describe('POST /facilities', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -27,6 +27,35 @@ describe('POST /facilities', () => {
   const requestBodyToCreateFacility = [createFacilityRequestItem];
 
   let api: Api;
+  let idToken: string;
+
+  const requestToCreateFacilityWithBody = (requestBody: nock.RequestBodyMatcher): nock.Interceptor =>
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL).post(`/Portfolio/${portfolioIdentifier}/Facility`, requestBody).matchHeader('authorization', `Bearer ${idToken}`);
+
+  const requestToCreateFacility = () => requestToCreateFacilityWithBody(JSON.parse(JSON.stringify(expectedAcbsCreateFacilityRequest)));
+
+  const givenRequestToCreateFacilityInAcbsSucceeds = () =>
+    requestToCreateFacility().reply(201, undefined, {
+      location: `/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}`,
+    });
+
+  const givenAnyRequestBodyToCreateFacilityInAcbsSucceeds = (): void => {
+    const requestBodyPlaceholder = '*';
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .filteringRequestBody(() => requestBodyPlaceholder)
+      .post(`/Portfolio/${portfolioIdentifier}/Facility`, requestBodyPlaceholder)
+      .matchHeader('authorization', `Bearer ${idToken}`)
+      .reply(201, undefined, {
+        location: `/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}`,
+      });
+  };
+
+  const { idToken: resolvedIdToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
+    givenRequestWouldOtherwiseSucceed: () => givenRequestToCreateFacilityInAcbsSucceeds(),
+    makeRequest: () => api.post(createFacilityUrl, requestBodyToCreateFacility),
+    successStatusCode: 201,
+  });
+  idToken = resolvedIdToken;
 
   beforeAll(async () => {
     api = await Api.create();
@@ -39,12 +68,6 @@ describe('POST /facilities', () => {
   afterEach(() => {
     nock.abortPendingRequests();
     nock.cleanAll();
-  });
-
-  const { idToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
-    givenRequestWouldOtherwiseSucceed: () => givenRequestToCreateFacilityInAcbsSucceeds(),
-    makeRequest: () => api.post(createFacilityUrl, requestBodyToCreateFacility),
-    successStatusCode: 201,
   });
 
   withClientAuthenticationTests({
@@ -118,25 +141,4 @@ describe('POST /facilities', () => {
     makeRequest,
     givenAnyRequestBodyWouldSucceed,
   });
-
-  const givenRequestToCreateFacilityInAcbsSucceeds = () =>
-    requestToCreateFacility().reply(201, undefined, {
-      location: `/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}`,
-    });
-
-  const requestToCreateFacility = () => requestToCreateFacilityWithBody(JSON.parse(JSON.stringify(expectedAcbsCreateFacilityRequest)));
-
-  const requestToCreateFacilityWithBody = (requestBody: nock.RequestBodyMatcher): nock.Interceptor =>
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL).post(`/Portfolio/${portfolioIdentifier}/Facility`, requestBody).matchHeader('authorization', `Bearer ${idToken}`);
-
-  const givenAnyRequestBodyToCreateFacilityInAcbsSucceeds = (): void => {
-    const requestBodyPlaceholder = '*';
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .filteringRequestBody(() => requestBodyPlaceholder)
-      .post(`/Portfolio/${portfolioIdentifier}/Facility`, requestBodyPlaceholder)
-      .matchHeader('authorization', `Bearer ${idToken}`)
-      .reply(201, undefined, {
-        location: `/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}`,
-      });
-  };
 });

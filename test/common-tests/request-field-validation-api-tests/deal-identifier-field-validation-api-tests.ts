@@ -5,12 +5,12 @@ import { StringFieldValidationApiTestOptions, withStringFieldValidationApiTests 
 
 type DealIdentifierFieldName = 'dealIdentifier';
 
-interface DealIdentifierFieldValidationApiTestOptions<RequestBodyItem extends { dealIdentifier: string }> extends Pick<
+type DealIdentifierFieldValidationApiTestOptions<RequestBodyItem extends { dealIdentifier: string }> = Pick<
   StringFieldValidationApiTestOptions<RequestBodyItem, DealIdentifierFieldName>,
   'validRequestBody' | 'makeRequest' | 'givenAnyRequestBodyWouldSucceed'
-> {
+> & {
   valueGenerator: RandomValueGenerator;
-}
+};
 
 export const withDealIdentifierFieldValidationApiTests = <RequestBodyItem extends { dealIdentifier: string }>({
   valueGenerator,

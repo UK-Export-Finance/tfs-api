@@ -1,3 +1,4 @@
+import nock from 'nock';
 import { PROPERTIES } from '@ukef/constants';
 import { AcbsGetFacilityGuaranteeDto } from '@ukef/modules/acbs/dto/acbs-get-facility-guarantees-response.dto';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
@@ -12,7 +13,6 @@ import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/s
 import { GetFacilityGuaranteeGenerator } from '@ukef-test/support/generator/get-facility-guarantee-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { NOCK_NULL_RESPONSE_BODY } from '@ukef-test/support/helpers/nock-null-response-body.helper';
-import nock from 'nock';
 
 describe('PATCH /facilities/{facilityIdentifier}/guarantees', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -53,6 +53,40 @@ describe('PATCH /facilities/{facilityIdentifier}/guarantees', () => {
   const updatedGuarantees = guaranteesWithBothExpirationDateAndGuaranteedLimitUpdated;
 
   let api: Api;
+  let idToken: string;
+
+  const requestToGetGuaranteesForFacilityWithId = (facilityId: string) =>
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .get(`/Portfolio/${portfolioIdentifier}/Facility/${facilityId}/FacilityGuarantee`)
+      .matchHeader('authorization', `Bearer ${idToken}`);
+
+  const givenRequestToGetGuaranteesSucceedsForFacilityWithId = (facilityId: string): nock.Scope =>
+    requestToGetGuaranteesForFacilityWithId(facilityId).reply(200, facilityGuaranteesInAcbs);
+
+  const givenRequestToGetGuaranteesSucceeds = () => givenRequestToGetGuaranteesSucceedsForFacilityWithId(facilityIdentifier);
+
+  const requestToReplaceGuarantee = (facilityId: string, requestBody: AcbsGetFacilityGuaranteeDto): nock.Interceptor =>
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .put(`/Portfolio/${portfolioIdentifier}/Facility/${facilityId}/FacilityGuarantee`, JSON.stringify(requestBody))
+      .matchHeader('authorization', `Bearer ${idToken}`)
+      .matchHeader('Content-Type', 'application/json');
+
+  const givenRequestToReplaceGuaranteeSucceeds = (facilityId: string, requestBody: AcbsGetFacilityGuaranteeDto): nock.Scope =>
+    requestToReplaceGuarantee(facilityId, requestBody).reply(200);
+
+  const givenAllRequestsToReplaceGuaranteesSucceedForFacilityWithId = (facilityId: string): nock.Scope[] =>
+    updatedGuarantees.map((updatedGuarantee) => givenRequestToReplaceGuaranteeSucceeds(facilityId, updatedGuarantee));
+
+  const givenAllRequestsToReplaceGuaranteesSucceed = () => givenAllRequestsToReplaceGuaranteesSucceedForFacilityWithId(facilityIdentifier);
+
+  const givenAnyRequestBodyToReplaceFacilityGuaranteeSucceeds = (): void => {
+    const requestBodyPlaceholder = '*';
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .filteringRequestBody(() => requestBodyPlaceholder)
+      .put(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/FacilityGuarantee`, requestBodyPlaceholder)
+      .matchHeader('authorization', `Bearer ${idToken}`)
+      .reply(200);
+  };
 
   beforeAll(async () => {
     api = await Api.create();
@@ -67,13 +101,14 @@ describe('PATCH /facilities/{facilityIdentifier}/guarantees', () => {
     nock.cleanAll();
   });
 
-  const { idToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
+  const { idToken: resolvedIdToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
     givenRequestWouldOtherwiseSucceed: () => {
       givenRequestToGetGuaranteesSucceeds();
       givenAllRequestsToReplaceGuaranteesSucceed();
     },
     makeRequest: () => api.patch(updateFacilityGuaranteesUrl, requestBodyToUpdateFacilityGuarantees),
   });
+  idToken = resolvedIdToken;
 
   withClientAuthenticationTests({
     givenTheRequestWouldOtherwiseSucceed: () => {
@@ -323,39 +358,4 @@ describe('PATCH /facilities/{facilityIdentifier}/guarantees', () => {
     },
     makeRequestWithFacilityId: (facilityId) => api.patch(getUpdateFacilityGuaranteeUrlForFacilityId(facilityId), requestBodyToUpdateFacilityGuarantees),
   });
-
-  const givenRequestToGetGuaranteesSucceeds = () => givenRequestToGetGuaranteesSucceedsForFacilityWithId(facilityIdentifier);
-
-  const givenRequestToGetGuaranteesSucceedsForFacilityWithId = (facilityId: string): nock.Scope => {
-    return requestToGetGuaranteesForFacilityWithId(facilityId).reply(200, facilityGuaranteesInAcbs);
-  };
-
-  const requestToGetGuaranteesForFacilityWithId = (facilityId: string) =>
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .get(`/Portfolio/${portfolioIdentifier}/Facility/${facilityId}/FacilityGuarantee`)
-      .matchHeader('authorization', `Bearer ${idToken}`);
-
-  const givenAllRequestsToReplaceGuaranteesSucceed = () => givenAllRequestsToReplaceGuaranteesSucceedForFacilityWithId(facilityIdentifier);
-
-  const givenAllRequestsToReplaceGuaranteesSucceedForFacilityWithId = (facilityId: string): nock.Scope[] =>
-    updatedGuarantees.map((updatedGuarantee) => givenRequestToReplaceGuaranteeSucceeds(facilityId, updatedGuarantee));
-
-  const givenRequestToReplaceGuaranteeSucceeds = (facilityId: string, requestBody: AcbsGetFacilityGuaranteeDto): nock.Scope => {
-    return requestToReplaceGuarantee(facilityId, requestBody).reply(200);
-  };
-
-  const requestToReplaceGuarantee = (facilityId: string, requestBody: AcbsGetFacilityGuaranteeDto): nock.Interceptor =>
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .put(`/Portfolio/${portfolioIdentifier}/Facility/${facilityId}/FacilityGuarantee`, JSON.stringify(requestBody))
-      .matchHeader('authorization', `Bearer ${idToken}`)
-      .matchHeader('Content-Type', 'application/json');
-
-  const givenAnyRequestBodyToReplaceFacilityGuaranteeSucceeds = (): void => {
-    const requestBodyPlaceholder = '*';
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .filteringRequestBody(() => requestBodyPlaceholder)
-      .put(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/FacilityGuarantee`, requestBodyPlaceholder)
-      .matchHeader('authorization', `Bearer ${idToken}`)
-      .reply(200);
-  };
 });

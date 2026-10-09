@@ -1,3 +1,4 @@
+import request from 'supertest';
 import { ENUMS } from '@ukef/constants';
 import { BaseFacilityRequestItem } from '@ukef/modules/facility/dto/base-facility-request.dto';
 import { withCurrencyFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/currency-field-validation-api-tests';
@@ -7,15 +8,14 @@ import { withNonNegativeNumberFieldValidationApiTests } from '@ukef-test/common-
 import { withPartyIdentifierFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/party-identifier-field-validation-api-tests';
 import { withStringFieldValidationApiTests } from '@ukef-test/common-tests/request-field-validation-api-tests/string-field-validation-api-tests';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import request from 'supertest';
 
-export interface withBaseFacilityFieldsValidationApiTestInterface {
+export type WithBaseFacilityFieldsValidationApiTestInterface = {
   valueGenerator: RandomValueGenerator;
   validRequestBody: BaseFacilityRequestItem[] | BaseFacilityRequestItem;
   makeRequest: ((body: unknown[]) => request.Test) | ((body: unknown) => request.Test);
   givenAnyRequestBodyWouldSucceed: () => void;
   includeIssueDate?: boolean;
-}
+};
 
 export function withBaseFacilityFieldsValidationApiTests({
   valueGenerator,
@@ -23,7 +23,7 @@ export function withBaseFacilityFieldsValidationApiTests({
   makeRequest,
   givenAnyRequestBodyWouldSucceed,
   includeIssueDate = true,
-}: withBaseFacilityFieldsValidationApiTestInterface) {
+}: WithBaseFacilityFieldsValidationApiTestInterface) {
   const gefProductTypeId = ENUMS.FACILITY_TYPE_IDS.GEF;
   const issuedFacilityStageCode = ENUMS.FACILITY_STAGES.ISSUED;
 
