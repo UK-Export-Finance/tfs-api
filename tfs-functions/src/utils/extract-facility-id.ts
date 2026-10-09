@@ -24,7 +24,9 @@ export const extractFacilityId = (item: unknown): string => {
   if (item === null || typeof item !== 'object') {
     return 'UNKNOWN_FACILITY_ID';
   }
+
   const message = item as GiftQueueMessage;
+
   switch (message.messageType) {
     case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_AMENDMENT:
       return extractAmendmentFacilityId(message);

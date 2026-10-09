@@ -3,8 +3,8 @@ import axios from 'axios';
 import { HttpStatus } from '../constants/http-status.constant';
 import { postToTfsApi } from '../utils/post-to-tfs-api';
 
-const apimTfsKey = process.env.APIM_TFS_KEY;
-const apimTfsValue = process.env.APIM_TFS_VALUE;
+const apimTfsKey = process.env.APIM_TFS_KEY as string;
+const apimTfsValue = process.env.APIM_TFS_VALUE as string;
 
 jest.mock('axios');
 

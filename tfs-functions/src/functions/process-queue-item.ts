@@ -13,6 +13,7 @@ import { processGiftQueueMessage } from '../utils/process-gift-queue-message';
  */
 export async function processQueueItem(queueItem: unknown, context: InvocationContext): Promise<void> {
   const facilityId = extractFacilityId(queueItem);
+
   context.log('GIFT requests queue function received item, facilityId:', facilityId);
   await processGiftQueueMessage(queueItem, context);
 }

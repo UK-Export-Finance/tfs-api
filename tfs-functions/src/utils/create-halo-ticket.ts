@@ -52,7 +52,7 @@ async function getHaloAccessToken(): Promise<string> {
  * @param messageType - The type of GIFT request that failed ('FACILITY_CREATION' or 'FACILITY_AMENDMENT').
  * @returns the request body to create a Halo ticket, formatted according to the Halo API requirements.
  */
-function buildTicketBody(facilityId: string, payload: unknown, errorMessage: string, messageType: GiftQueueMessageType | undefined) {
+function buildTicketBody(facilityId: string, payload: unknown, errorMessage: string, messageType: GiftQueueMessageType) {
   const operationType = GIFT_QUEUE_OPERATION_LABEL[messageType];
   return [
     {

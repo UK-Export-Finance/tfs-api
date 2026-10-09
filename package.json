@@ -26,7 +26,7 @@
     "start:debug": "nest start --debug --watch",
     "start:dev": "nest start --tsc --watch",
     "start:prod": "node dist/src/main",
-    "type-check": "tsc --noEmit --pretty",
+    "type-check": "tsc --noEmit --pretty && npm run type-check --workspace=tfs-functions",
     "unit-test:ff-false": "jest --selectProjects=Unit-FF=false",
     "unit-test:ff-true": "jest --selectProjects=Unit-FF=true",
     "unit-test-dev": "jest --verbose --config=jest.config.ts",

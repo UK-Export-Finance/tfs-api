@@ -70,11 +70,12 @@ export async function processGiftQueueMessage(queueItem: unknown, context: Invoc
         throwIfNotExhaustive(messageType);
     }
   } catch (error) {
-    if (context.triggerMetadata.dequeueCount === maxNumberOfRetries) {
+    if (context.triggerMetadata?.dequeueCount === maxNumberOfRetries) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
 
       await createHaloTicket(facilityId, queueItem, errorMessage, messageType, context);
     }
+
     throw error;
   }
 }
