@@ -1,5 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
-import AppConfig from '@ukef/config/app.config';
+import { AppConfig } from '@ukef/config/app.config';
 import { GIFT } from '@ukef/constants';
 import { GiftQueueService } from '@ukef/modules/gift/services';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';

@@ -1,15 +1,15 @@
+import { Chance } from 'chance';
 import { UkefId } from '@ukef/helpers';
-import {
+import type {
   GiftFacilityCounterpartyRequestDto,
   GiftFacilityCreationRequestDto,
   GiftFacilityPostResponseDto,
   GiftObligationRequestDto,
 } from '@ukef/modules/gift/dto';
-import { Chance } from 'chance';
 
-import { SUPPORTED_CURRENCIES } from '../currencies.constant';
-import { CONSUMER } from '../gift/consumer.constant';
-import { AMEND_FACILITY_TYPES_CONSUMER, GIFT } from '../gift/gift.constant';
+import { SUPPORTED_CURRENCIES } from '@ukef/constants/currencies.constant';
+import { CONSUMER } from '@ukef/constants/gift/consumer.constant';
+import { AMEND_FACILITY_TYPES_CONSUMER, GIFT } from '@ukef/constants/gift/gift.constant';
 import { MDM_EXAMPLES } from './mdm.examples.constant';
 
 const {
@@ -188,7 +188,7 @@ const PRODUCT_TYPE_RESPONSE_DATA = {
  * NOTE: The total of all amounts should not be greater than the facility amount.
  * NOTE: Each due date is unique.
  */
-const REPAYMENT_PROFILE_ALLOCATION = (index: number = 0) => {
+const REPAYMENT_PROFILE_ALLOCATION = (index = 0) => {
   const today = new Date();
 
   const day = '01';

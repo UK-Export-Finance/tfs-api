@@ -1,42 +1,42 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { UkefId } from '@ukef/helpers/ukef-id.type';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
+import { UkefId } from '@ukef/helpers/ukef-id.type';
 
-import { CreateGiftFacilityAmendmentRequestDto, CreateGiftFacilityMultipleAmendmentsRequestDto, GiftWorkPackageResponseDto } from '../../dto';
+import { CreateGiftFacilityAmendmentRequestDto, CreateGiftFacilityMultipleAmendmentsRequestDto, GiftWorkPackageResponseDto } from '@ukef/modules/gift/dto';
 import {
   hasObligationsWithMaturityDateNotFollowingFacility,
   isDecreaseAmountAmendment,
   isIncreaseAmountAmendment,
   isReplaceExpiryDateAmendment,
-} from '../../helpers';
-import { GiftAmountAmendmentService } from '../gift.amount-amendment.service';
-import { GiftFacilityService } from '../gift.facility.service';
-import { GiftReplaceExpiryDateAmendmentService } from '../gift.replace-expiry-date-amendment.service';
-import { GiftStatusService } from '../gift.status.service';
-import { GiftWorkPackageService } from '../gift.work-package.service';
+} from '@ukef/modules/gift/helpers';
+import { GiftAmountAmendmentService } from '@ukef/modules/gift/services/gift.amount-amendment.service';
+import { GiftFacilityService } from '@ukef/modules/gift/services/gift.facility.service';
+import { GiftReplaceExpiryDateAmendmentService } from '@ukef/modules/gift/services/gift.replace-expiry-date-amendment.service';
+import { GiftStatusService } from '@ukef/modules/gift/services/gift.status.service';
+import { GiftWorkPackageService } from '@ukef/modules/gift/services/gift.work-package.service';
 
-interface HandleCreateAmendmentsParams {
+type HandleCreateAmendmentsParams = {
   amendment: CreateGiftFacilityAmendmentRequestDto;
   facility: any;
   facilityId: UkefId;
   workPackageId: number;
-}
+};
 
-interface CreateGiftFacilityAmendmentResponseDataDto {
+type CreateGiftFacilityAmendmentResponseDataDto = {
   statusCode: number;
   message: string;
-}
+};
 
-interface CreateGiftFacilityAmendmentResponseDto {
+type CreateGiftFacilityAmendmentResponseDto = {
   status: AxiosResponse['status'];
   data: CreateGiftFacilityAmendmentResponseDataDto;
-}
+};
 
-interface CreateGiftFacilityAmendmentGiftResponseDto {
+type CreateGiftFacilityAmendmentGiftResponseDto = {
   status: AxiosResponse['status'];
   data: GiftWorkPackageResponseDto;
-}
+};
 
 /**
  * GIFT facility amendment service.
@@ -51,13 +51,7 @@ export class GiftFacilityAmendmentService {
     private readonly giftAmountAmendmentService: GiftAmountAmendmentService,
     private readonly giftReplaceExpiryDateAmendmentService: GiftReplaceExpiryDateAmendmentService,
     private readonly giftStatusService: GiftStatusService,
-  ) {
-    this.giftWorkPackageService = giftWorkPackageService;
-    this.giftFacilityService = giftFacilityService;
-    this.giftAmountAmendmentService = giftAmountAmendmentService;
-    this.giftReplaceExpiryDateAmendmentService = giftReplaceExpiryDateAmendmentService;
-    this.giftStatusService = giftStatusService;
-  }
+  ) {}
 
   /**
    * Check if a GIFT amendment was successful based on the response status.
@@ -78,7 +72,7 @@ export class GiftFacilityAmendmentService {
    * @returns {Promise<GiftWorkPackageResponseDto | { status: number; data: GiftWorkPackageResponseDto }>} The result of the amendment operation.
    */
   async handleCreateAmendments({ workPackageId, facility, facilityId, amendment }: HandleCreateAmendmentsParams) {
-    let createdAmendmentData: AxiosResponse<GiftWorkPackageResponseDto>;
+    let createdAmendmentData: AxiosResponse<GiftWorkPackageResponseDto> | undefined;
 
     const { amendmentType } = amendment;
 
@@ -235,7 +229,6 @@ export class GiftFacilityAmendmentService {
    * @throws {Error} If there is an error creating the amendment or the work package.
    * @returns {Promise<CreateGiftFacilityAmendmentResponseDto>}
    */
-  // eslint-disable-next-line max-len
   async create(
     facilityId: UkefId,
     amendment: CreateGiftFacilityAmendmentRequestDto,
@@ -310,7 +303,7 @@ export class GiftFacilityAmendmentService {
         this.logger.error('Error approving work package %s for facility %s amendment - deleting work package %o', workPackageId, facilityId, approvalError);
 
         // extract status from approvalError - might be nested in cause
-        let errorStatus: number;
+        let errorStatus: number | undefined;
 
         const errorWithStatus = approvalError as Error & { status?: number; data?: any; cause?: any };
 
@@ -358,7 +351,6 @@ export class GiftFacilityAmendmentService {
    * @throws {Error} If there is an error creating the amendments or the work package.
    * @returns {Promise<CreateGiftFacilityAmendmentResponseDto>}
    */
-  // eslint-disable-next-line max-len
   async createMultiple(
     facilityId: UkefId,
     payload: CreateGiftFacilityMultipleAmendmentsRequestDto,
@@ -447,19 +439,19 @@ export class GiftFacilityAmendmentService {
           deleteError = error;
 
           this.logger.error('Error deleting work package %s for facility %s in multiple amendments %o', workPackageId, facilityId, deleteError);
-        } finally {
-          if (hasDeleteError) {
-            return {
-              status: deleteError?.status,
-              data: deleteError?.data,
-            };
-          }
+        }
 
+        if (hasDeleteError) {
           return {
-            status: amendmentError ? amendmentResponse?.status : approvalResponse?.status,
-            data: amendmentError ? amendmentResponse?.data : approvalResponse?.data,
+            status: deleteError?.status,
+            data: deleteError?.data,
           };
         }
+
+        return {
+          status: amendmentError ? amendmentResponse?.status : approvalResponse?.status,
+          data: amendmentError ? amendmentResponse?.data : approvalResponse?.data,
+        };
       }
 
       /**

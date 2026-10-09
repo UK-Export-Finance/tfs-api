@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { EXAMPLES } from '@ukef/constants';
 import { Type } from 'class-transformer';
 import { IsObject } from 'class-validator';
+import { EXAMPLES } from '@ukef/constants';
 
-import { GiftFacilityResponseDto } from './facility-get-gift-response';
+import { GiftFacilityResponseDto } from '@ukef/modules/gift/dto/response/facility-get-gift-response';
 
 const {
   GIFT: { FACILITY_RESPONSE_DATA: EXAMPLE },
@@ -21,5 +21,5 @@ export class GiftFacilityConfigPostResponseDto {
     type: GiftFacilityResponseDto,
   })
   @Type(() => GiftFacilityResponseDto)
-  readonly data: GiftFacilityResponseDto;
+  readonly data!: GiftFacilityResponseDto;
 }

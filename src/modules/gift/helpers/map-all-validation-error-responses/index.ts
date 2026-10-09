@@ -1,12 +1,12 @@
+import { AxiosResponse } from 'axios';
 import { GIFT } from '@ukef/constants';
 import { ValidationErrorResponse } from '@ukef/types';
-import { AxiosResponse } from 'axios';
 
-import { mapValidationErrorResponses } from '../map-validation-error-responses';
+import { mapValidationErrorResponses } from '@ukef/modules/gift/helpers/map-validation-error-responses';
 
 const { ENTITY_NAMES } = GIFT;
 
-interface MapAllValidationErrorResponsesParams {
+type MapAllValidationErrorResponsesParams = {
   accrualSchedules: AxiosResponse[];
   businessCalendars: AxiosResponse[];
   businessCalendarsConvention: AxiosResponse[];
@@ -15,7 +15,7 @@ interface MapAllValidationErrorResponsesParams {
   obligations: AxiosResponse[];
   repaymentProfiles: AxiosResponse[];
   riskDetails: AxiosResponse[];
-}
+};
 
 /**
  * Map multiple responses with an invalid status.

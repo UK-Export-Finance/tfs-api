@@ -7,7 +7,7 @@ export type GetFacilityInvestorsResponse = GetFacilityInvestorResponseItem[];
 
 export class GetFacilityInvestorResponseItem {
   @ApiProperty({ example: PROPERTIES.GLOBAL.portfolioIdentifier, description: 'The identifier of the portfolio.' })
-  readonly portfolioIdentifier: string;
+  readonly portfolioIdentifier!: string;
 
   @ApiProperty({
     description: 'The identifier of the facility the investor belongs to.',
@@ -15,14 +15,14 @@ export class GetFacilityInvestorResponseItem {
     minLength: 10,
     maxLength: 10,
   })
-  readonly facilityIdentifier: UkefId;
+  readonly facilityIdentifier!: UkefId;
 
   @ApiProperty({
     description: `The date from which this limit is effective.`,
     type: Date,
     format: 'date',
   })
-  readonly effectiveDate: DateOnlyString;
+  readonly effectiveDate!: DateOnlyString;
 
   // TODO APIM-118: this is copy of effective date, we could remove it.
   @ApiProperty({
@@ -30,14 +30,14 @@ export class GetFacilityInvestorResponseItem {
     type: Date,
     format: 'date',
   })
-  readonly guaranteeCommencementDate: DateOnlyString;
+  readonly guaranteeCommencementDate!: DateOnlyString;
 
   @ApiProperty({
     description: `The date on which this limit will expire.`,
     type: Date,
     format: 'date',
   })
-  readonly guaranteeExpiryDate: DateOnlyString;
+  readonly guaranteeExpiryDate!: DateOnlyString;
 
   @ApiProperty({
     description: 'The code of the currency for this investor, Currency in the Currency Definition Table.',
@@ -45,14 +45,14 @@ export class GetFacilityInvestorResponseItem {
     minLength: 3,
     maxLength: 3,
   })
-  readonly currency: string;
+  readonly currency!: string;
 
   @ApiProperty({
     description: `The investor's share of the current limit amount.`,
     minimum: 0,
     example: EXAMPLES.DEAL_OR_FACILITY_VALUE,
   })
-  readonly maximumLiability: number;
+  readonly maximumLiability!: number;
 
   @ApiProperty({
     description: `Investor record type.`,
@@ -60,7 +60,7 @@ export class GetFacilityInvestorResponseItem {
     maxLength: 3,
     example: EXAMPLES.LENDER_TYPE_CODE,
   })
-  readonly lenderTypeCode: string;
+  readonly lenderTypeCode!: string;
 
   @ApiProperty({
     description: `ACBS id of involved party.`,
@@ -68,5 +68,5 @@ export class GetFacilityInvestorResponseItem {
     maxLength: 10,
     example: EXAMPLES.PARTY_ID,
   })
-  readonly involvedParty: string;
+  readonly involvedParty!: string;
 }

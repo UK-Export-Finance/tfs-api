@@ -1,8 +1,8 @@
-import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
-import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { Cache } from 'cache-manager';
 import { when } from 'jest-when';
 import { PinoLogger } from 'nestjs-pino';
+import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
+import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
 
 import { ACBS_ID_TOKEN_CACHE_KEY } from './acbs-id-token.cache-key';
 import { CachingAcbsAuthenticationService } from './caching-acbs-authentication.service';
@@ -40,11 +40,9 @@ describe('CachingAcbsAuthenticationService', () => {
       del: jest.fn(),
       reset: jest.fn(),
       wrap: jest.fn(),
-      store: null,
-      on: null,
-      removeListener: function (): void {
-        throw new Error('Function not implemented.');
-      },
+      store: null!,
+      on: null!,
+      removeListener: null!,
     };
 
     const logger = new PinoLogger({});

@@ -1,7 +1,7 @@
 import { ExecutionContext } from '@nestjs/common';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
-import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { lastValueFrom, of } from 'rxjs';
+import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 
 import { WarningErrorsHeaderInterceptor } from './warning-errors-header.interceptor';
 
@@ -28,6 +28,12 @@ describe('WarningErrorsInterceptor', () => {
   });
 
   describe('intercept', () => {
+    const dataAfterIntercepting = (dataToIntercept: unknown): Promise<unknown> => {
+      const next = { handle: () => of(dataToIntercept) };
+      const interceptObservable = interceptor.intercept(context, next);
+      return lastValueFrom(interceptObservable);
+    };
+
     describe('when the intercepted data contains neither responseBody nor warningErrors', () => {
       let dataWithoutResponseBodyOrWarningErrors: any;
 
@@ -138,10 +144,4 @@ describe('WarningErrorsInterceptor', () => {
       });
     });
   });
-
-  const dataAfterIntercepting = (dataToIntercept: unknown): Promise<unknown> => {
-    const next = { handle: () => of(dataToIntercept) };
-    const interceptObservable = interceptor.intercept(context, next);
-    return lastValueFrom(interceptObservable);
-  };
 });

@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { EXAMPLES, GIFT } from '@ukef/constants';
 import { IsDateString, IsDefined, IsNumber, IsOptional, IsString, Length, Max, Min } from 'class-validator';
+import { EXAMPLES, GIFT } from '@ukef/constants';
 
 const {
   GIFT: { OBLIGATION, REPAYMENT_PROFILE_ID, REPAYMENT_TYPE },
@@ -34,7 +34,7 @@ export class GiftObligationRequestDto {
     description: 'The amount of the obligation',
     required: true,
   })
-  amount: number;
+  amount!: number;
 
   @IsDefined()
   @IsString()
@@ -44,7 +44,7 @@ export class GiftObligationRequestDto {
     description: 'The currency of the obligation amount, in ISO 4217 format',
     required: true,
   })
-  currency: string;
+  currency!: string;
 
   @IsOptional()
   @IsDateString()
@@ -83,7 +83,7 @@ export class GiftObligationRequestDto {
     description: 'The repayment type of the obligation',
     required: true,
   })
-  repaymentType: string;
+  repaymentType!: string;
 
   @IsOptional()
   @IsString()
@@ -92,6 +92,7 @@ export class GiftObligationRequestDto {
     example: EXAMPLE.subtypeCode,
     description: "Optional obligation subtype code. Required if the product's configuration (APIM MDM/DOM) 'obligationSubtypeCodes' field is populated",
     required: false,
+    nullable: true,
   })
-  subtypeCode?: string;
+  subtypeCode?: string | null;
 }

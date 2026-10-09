@@ -1,6 +1,6 @@
 import { DateString } from '@ukef/helpers';
 
-export interface AcbsBaseFacilityGuarantee {
+export type AcbsBaseFacilityGuarantee = {
   GuarantorParty: {
     PartyIdentifier: string;
   };
@@ -19,4 +19,4 @@ export interface AcbsBaseFacilityGuarantee {
   ExpirationDate: DateString;
   GuaranteedLimit: number;
   GuaranteedPercentage: number;
-}
+};

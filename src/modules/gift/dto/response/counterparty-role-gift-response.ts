@@ -1,14 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { EXAMPLES } from '@ukef/constants';
 import { IsBoolean, IsString } from 'class-validator';
+import { EXAMPLES } from '@ukef/constants';
 
 const {
   GIFT: { COUNTERPARTY_ROLE },
 } = EXAMPLES;
 
-export interface GiftFacilityCounterpartyRolesResponse {
+export type GiftFacilityCounterpartyRolesResponse = {
   counterpartyRoles: GiftFacilityCounterpartyRoleResponseDto[];
-}
+};
 
 /**
  * GIFT facility "counterparty role" response DTO.
@@ -20,19 +20,19 @@ export class GiftFacilityCounterpartyRoleResponseDto {
     example: COUNTERPARTY_ROLE.EXPORTER.code,
     required: true,
   })
-  readonly code: string;
+  readonly code!: string;
 
   @IsString()
   @ApiProperty({
     example: COUNTERPARTY_ROLE.EXPORTER.name,
     required: true,
   })
-  readonly name: string;
+  readonly name!: string;
 
   @IsBoolean()
   @ApiProperty({
     example: COUNTERPARTY_ROLE.EXPORTER.hasSharePercentage,
     required: true,
   })
-  readonly hasSharePercentage: boolean;
+  readonly hasSharePercentage!: boolean;
 }

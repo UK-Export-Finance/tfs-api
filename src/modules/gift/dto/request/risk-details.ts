@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsDefined, IsNumberString, IsOptional, IsString, Length } from 'class-validator';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { ValidatedFacilityIdentifierApiProperty } from '@ukef/decorators/validated-facility-identifier-api-property';
 import { UkefId } from '@ukef/helpers';
-import { IsDefined, IsNumberString, IsOptional, IsString, Length } from 'class-validator';
 
 const {
   GIFT: { RISK_DETAILS: EXAMPLE },
@@ -26,7 +26,7 @@ export class GiftFacilityRiskDetailsRequestDto {
     description: 'The account number',
     required: true,
   })
-  account: string;
+  account!: string;
 
   @ValidatedFacilityIdentifierApiProperty({
     description: 'The deal ID',
@@ -37,7 +37,7 @@ export class GiftFacilityRiskDetailsRequestDto {
     maxLength: VALIDATION.DEAL_ID.MAX_LENGTH,
     required: true,
   })
-  dealId: UkefId;
+  dealId!: UkefId;
 
   @IsOptional()
   @IsString()
@@ -48,8 +48,9 @@ export class GiftFacilityRiskDetailsRequestDto {
     maxLength: VALIDATION.FACILITY_CATEGORY_CODE.MAX_LENGTH,
     description: "Optional facility category code. Required if the product's configuration (APIM MDM/DOM) 'facilityCategoryTypes' field is populated",
     required: false,
+    nullable: true,
   })
-  facilityCategoryCode?: string;
+  facilityCategoryCode?: string | null;
 
   @IsOptional()
   @IsString()
@@ -69,7 +70,7 @@ export class GiftFacilityRiskDetailsRequestDto {
     description: "The facility's risk status",
     required: true,
   })
-  riskStatus: string;
+  riskStatus!: string;
 
   @IsDefined()
   @IsNumberString()
@@ -79,5 +80,5 @@ export class GiftFacilityRiskDetailsRequestDto {
     description: 'The UKEF industry code',
     required: true,
   })
-  ukefIndustryCode: string;
+  ukefIndustryCode!: string;
 }

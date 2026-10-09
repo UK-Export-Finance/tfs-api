@@ -1,11 +1,11 @@
 import { HttpService } from '@nestjs/axios';
-import { CreatePartyGenerator } from '@ukef-test/support/generator/create-party-generator';
-import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { AxiosError } from 'axios';
 import { when } from 'jest-when';
 import { of, throwError } from 'rxjs';
+import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
+import { CreatePartyGenerator } from '@ukef-test/support/generator/create-party-generator';
 
-import { DateStringTransformations } from '../date/date-string.transformations';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { AcbsPartyService } from './acbs-party.service';
 import { AcbsBadRequestException } from './exception/acbs-bad-request.exception';
 import { AcbsUnexpectedException } from './exception/acbs-unexpected.exception';
@@ -95,8 +95,8 @@ describe('AcbsPartyService', () => {
         data: errorString,
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePost)
@@ -118,8 +118,8 @@ describe('AcbsPartyService', () => {
         data: errorBody,
         status: 401,
         statusText: 'Unauthorized',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePost)

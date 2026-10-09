@@ -1,6 +1,6 @@
 import { EXAMPLES, GIFT } from '@ukef/constants';
 
-import { GiftFacilityCounterpartyRoleResponseDto } from '../../../dto';
+import type { GiftFacilityCounterpartyRoleResponseDto } from '@ukef/modules/gift/dto';
 import { generateCounterpartySharePercentageErrors } from '.';
 
 const {

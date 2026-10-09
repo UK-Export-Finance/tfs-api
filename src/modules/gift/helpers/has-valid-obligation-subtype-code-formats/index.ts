@@ -1,6 +1,6 @@
 import { GIFT } from '@ukef/constants';
 
-import { GiftObligationRequestDto } from '../../dto';
+import type { GiftObligationRequestDto } from '@ukef/modules/gift/dto';
 
 const {
   VALIDATION: {
@@ -33,7 +33,7 @@ export const hasValidFormat = (obligation?: GiftObligationRequestDto) => {
  * @returns {boolean}
  */
 export const hasValidObligationSubtypeCodeFormats = (obligations?: GiftObligationRequestDto[]): boolean => {
-  const invalidFormats = [];
+  const invalidFormats: GiftObligationRequestDto[] = [];
 
   if (!Array.isArray(obligations) || !obligations.length) {
     return false;

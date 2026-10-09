@@ -1,6 +1,6 @@
 import { AcbsPartyId, DateString } from '@ukef/helpers';
 
-export interface AcbsGetDealGuaranteeResponseDto {
+export type AcbsGetDealGuaranteeResponseDto = {
   LimitKey: AcbsPartyId;
   GuarantorParty: {
     PartyIdentifier: AcbsPartyId;
@@ -11,4 +11,4 @@ export interface AcbsGetDealGuaranteeResponseDto {
   EffectiveDate: DateString;
   ExpirationDate: DateString;
   GuaranteedLimit: number;
-}
+};

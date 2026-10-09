@@ -1,15 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { EXAMPLES, GIFT } from '@ukef/constants';
 import { Type } from 'class-transformer';
 import { ArrayNotEmpty, IsArray, IsBoolean, IsDefined, IsNotEmptyObject, IsOptional, IsString, ValidateNested } from 'class-validator';
+import { EXAMPLES, GIFT } from '@ukef/constants';
 
-import { IsSupportedConsumer, UniqueRepaymentProfileAllocationDates, UniqueRepaymentProfileNames } from '../../custom-decorators';
-import { GiftAccrualScheduleRequestDto } from './accrual-schedule';
-import { GiftFacilityCounterpartyRequestDto } from './counterparty';
-import { GiftFacilityOverviewRequestDto } from './facility-overview';
-import { GiftFixedFeeRequestDto } from './fixed-fee';
-import { GiftObligationRequestDto } from './obligation';
-import { GiftRepaymentProfileRequestDto } from './repayment-profile';
+import { IsSupportedConsumer, UniqueRepaymentProfileAllocationDates, UniqueRepaymentProfileNames } from '@ukef/modules/gift/custom-decorators';
+import { GiftAccrualScheduleRequestDto } from '@ukef/modules/gift/dto/request/accrual-schedule';
+import { GiftFacilityCounterpartyRequestDto } from '@ukef/modules/gift/dto/request/counterparty';
+import { GiftFacilityOverviewRequestDto } from '@ukef/modules/gift/dto/request/facility-overview';
+import { GiftFixedFeeRequestDto } from '@ukef/modules/gift/dto/request/fixed-fee';
+import { GiftObligationRequestDto } from '@ukef/modules/gift/dto/request/obligation';
+import { GiftRepaymentProfileRequestDto } from '@ukef/modules/gift/dto/request/repayment-profile';
 
 const {
   GIFT: { ACCRUAL_SCHEDULE, COUNTERPARTY, FACILITY_OVERVIEW, FIXED_FEE, OBLIGATION, REPAYMENT_PROFILE },
@@ -27,7 +27,7 @@ export class GiftFacilityCreationGenericRequestDto {
     example: GIFT.CONSUMER.DTFS,
     required: true,
   })
-  consumer: string;
+  consumer!: string;
 
   @ApiProperty({
     example: FACILITY_OVERVIEW,
@@ -38,7 +38,7 @@ export class GiftFacilityCreationGenericRequestDto {
   @IsDefined()
   @Type(() => GiftFacilityOverviewRequestDto)
   @ValidateNested()
-  overview: GiftFacilityOverviewRequestDto;
+  overview!: GiftFacilityOverviewRequestDto;
 
   @ApiProperty({
     isArray: true,
@@ -51,7 +51,7 @@ export class GiftFacilityCreationGenericRequestDto {
   @IsDefined()
   @Type(() => GiftAccrualScheduleRequestDto)
   @ValidateNested()
-  accrualSchedules: GiftAccrualScheduleRequestDto[];
+  accrualSchedules!: GiftAccrualScheduleRequestDto[];
 
   @ApiProperty({
     isArray: true,
@@ -64,7 +64,7 @@ export class GiftFacilityCreationGenericRequestDto {
   @IsDefined()
   @Type(() => GiftFacilityCounterpartyRequestDto)
   @ValidateNested()
-  counterparties: GiftFacilityCounterpartyRequestDto[];
+  counterparties!: GiftFacilityCounterpartyRequestDto[];
 
   @ApiProperty({
     isArray: true,
@@ -89,7 +89,7 @@ export class GiftFacilityCreationGenericRequestDto {
   @IsDefined()
   @Type(() => GiftObligationRequestDto)
   @ValidateNested()
-  obligations: GiftObligationRequestDto[];
+  obligations!: GiftObligationRequestDto[];
 
   @ApiProperty({
     isArray: true,

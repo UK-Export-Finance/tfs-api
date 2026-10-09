@@ -11,9 +11,9 @@ import {
   ApiParam,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import AppConfig from '@ukef/config/app.config';
-import { EXAMPLES, GIFT } from '@ukef/constants';
 import { Response } from 'express';
+import { AppConfig } from '@ukef/config/app.config';
+import { EXAMPLES, GIFT } from '@ukef/constants';
 
 import {
   CreateGiftFacilityAmendmentRequestDto,
@@ -23,8 +23,8 @@ import {
   GiftFacilityCreationRequestDto,
   GiftFacilityCreationResponseDto,
   GiftFacilityOverviewRequestDto,
-} from '../dto';
-import { GiftFacilityAmendmentService, GiftFacilityService, GiftQueueService } from '../services';
+} from '@ukef/modules/gift/dto';
+import { GiftFacilityAmendmentService, GiftFacilityService, GiftQueueService } from '@ukef/modules/gift/services';
 
 const { PATH } = GIFT;
 
@@ -157,7 +157,7 @@ export class GiftFacilityController {
     await this.giftQueueService.enqueue({
       messageType: 'FACILITY_AMENDMENT',
       facilityId,
-      payload: amendmentData as unknown as CreateGiftFacilityAmendmentRequestDto,
+      payload: amendmentData as CreateGiftFacilityAmendmentRequestDto,
     });
 
     res.status(HttpStatus.ACCEPTED);
@@ -273,7 +273,7 @@ export class GiftFacilityController {
     await this.giftQueueService.enqueue({
       messageType: 'FACILITY_MULTIPLE_AMENDMENTS',
       facilityId,
-      payload: amendmentsData as unknown as CreateGiftFacilityMultipleAmendmentsRequestDto,
+      payload: amendmentsData as CreateGiftFacilityMultipleAmendmentsRequestDto,
     });
 
     res.status(HttpStatus.ACCEPTED);

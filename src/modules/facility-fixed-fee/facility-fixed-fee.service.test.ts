@@ -1,4 +1,5 @@
 import { BadRequestException } from '@nestjs/common';
+import { when } from 'jest-when';
 import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { AcbsFacilityFixedFeeService } from '@ukef/modules/acbs/acbs-facility-fixed-fee.service';
 import { AcbsCreateFacilityFixedFeeRequestDto } from '@ukef/modules/acbs/dto/acbs-create-facility-fixed-fee-request.dto';
@@ -10,12 +11,11 @@ import { CreateFacilityFixedFeeGenerator } from '@ukef-test/support/generator/cr
 import { CreateFacilityFixedFeesAmountAmendmentGenerator } from '@ukef-test/support/generator/create-facility-fixed-fees-amount-amendment.generator';
 import { GetFacilityFixedFeeGenerator } from '@ukef-test/support/generator/get-facility-fixed-fee-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { when } from 'jest-when';
 
-import { AcbsBundleInformationService } from '../acbs/acbs-bundle-information.service';
-import { AcbsCreateBundleInformationRequestDto } from '../acbs/dto/acbs-create-bundle-information-request.dto';
-import { AcbsCreateBundleInformationResponseHeadersDto } from '../acbs/dto/acbs-create-bundle-information-response.dto';
-import { FacilityFeeAmountTransaction } from '../acbs/dto/bundle-actions/facility-fee-amount-transaction.bundle-action';
+import { AcbsBundleInformationService } from '@ukef/modules/acbs/acbs-bundle-information.service';
+import { AcbsCreateBundleInformationRequestDto } from '@ukef/modules/acbs/dto/acbs-create-bundle-information-request.dto';
+import { AcbsCreateBundleInformationResponseHeadersDto } from '@ukef/modules/acbs/dto/acbs-create-bundle-information-response.dto';
+import { FacilityFeeAmountTransaction } from '@ukef/modules/acbs/dto/bundle-actions/facility-fee-amount-transaction.bundle-action';
 import { FacilityFixedFeeService } from './facility-fixed-fee.service';
 
 describe('FacilityFixedFeeService', () => {
@@ -44,12 +44,12 @@ describe('FacilityFixedFeeService', () => {
     const acbsAuthenticationServiceGetIdToken = mockAcbsAuthenticationService.getIdToken;
     when(acbsAuthenticationServiceGetIdToken).calledWith().mockResolvedValueOnce(idToken);
 
-    const acbsService = new AcbsFacilityFixedFeeService(null, null);
+    const acbsService = new AcbsFacilityFixedFeeService(null!, null!);
     getFacilityFixedFeesAcbsService = jest.fn();
     acbsService.getFixedFeesForFacility = getFacilityFixedFeesAcbsService;
     createFacilityFixedFeesAcbsService = jest.fn();
     acbsService.createFixedFeeForFacility = createFacilityFixedFeesAcbsService;
-    const acbsBundleInformationService = new AcbsBundleInformationService(null, null);
+    const acbsBundleInformationService = new AcbsBundleInformationService(null!, null!);
     createBundleInformation = jest.fn();
     acbsBundleInformationService.createBundleInformation = createBundleInformation;
 
@@ -94,6 +94,8 @@ describe('FacilityFixedFeeService', () => {
     });
 
     const [newFixedFeeWithAllFields] = requestBodyToCreateFacilityFixedFee;
+
+    const getFixedFeeAcbsPayload = (): AcbsCreateFacilityFixedFeeRequestDto => createFacilityFixedFeesAcbsService.mock.calls[0][2];
 
     it('creates a fixed fee in ACBS with a transformation of the requested new fixed fee', async () => {
       await service.createFixedFeeForFacility(
@@ -224,13 +226,15 @@ describe('FacilityFixedFeeService', () => {
   });
 
   describe('createAmountAmendmentForFixedFees', () => {
-    const facilityIdentifier = valueGenerator.facilityId();
     const createdBundleIdentifier = valueGenerator.acbsBundleId();
-    const acbsBundleCreatedResponse: AcbsCreateBundleInformationResponseHeadersDto = { BundleIdentifier: createdBundleIdentifier, WarningErrors: undefined };
+    const acbsBundleCreatedResponse: AcbsCreateBundleInformationResponseHeadersDto = { BundleIdentifier: createdBundleIdentifier, WarningErrors: undefined! };
     const { facilityFeeTransactionType } = PROPERTIES.FACILITY_FEE_AMOUNT_TRANSACTION.DEFAULT.bundleMessageList;
 
     const { increaseAmountRequest, decreaseAmountRequest, acbsFixedFeesAmendmentForIncrease, acbsFixedFeesAmendmentForDecrease } =
       new CreateFacilityFixedFeesAmountAmendmentGenerator(valueGenerator, dateStringTransformations).generate({ numberToGenerate: 3, facilityIdentifier });
+
+    const getBundleCreatedInAcbs = (): AcbsCreateBundleInformationRequestDto<FacilityFeeAmountTransaction> =>
+      createBundleInformation.mock.calls[0][0] as AcbsCreateBundleInformationRequestDto<FacilityFeeAmountTransaction>;
 
     describe('when creating a fixed fees amendment bundle in ACBS that increases the amount', () => {
       describe('with no header error', () => {
@@ -309,10 +313,5 @@ describe('FacilityFixedFeeService', () => {
         expect(response.warningErrors).toBe(errorString);
       });
     });
-
-    const getBundleCreatedInAcbs = (): AcbsCreateBundleInformationRequestDto<FacilityFeeAmountTransaction> =>
-      createBundleInformation.mock.calls[0][0] as AcbsCreateBundleInformationRequestDto<FacilityFeeAmountTransaction>;
   });
-
-  const getFixedFeeAcbsPayload = (): AcbsCreateFacilityFixedFeeRequestDto => createFacilityFixedFeesAcbsService.mock.calls[0][2];
 });

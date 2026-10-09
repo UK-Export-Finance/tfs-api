@@ -1,15 +1,16 @@
 import { INestApplication, ValidationPipe, VersioningType } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import compression from 'compression';
+import { Logger, LoggerErrorInterceptor } from 'nestjs-pino';
 import { TransformInterceptor } from '@ukef/helpers';
 import { ApiKeyAuthGuard } from '@ukef/modules/auth/guard/api-key.guard';
 import { SwaggerDocs } from '@ukef/swagger';
-import compression from 'compression';
-import { Logger, LoggerErrorInterceptor } from 'nestjs-pino';
 
 import { InputCharacterValidationPipe } from './pipes/input-characters-validation';
 
 export class App {
   private readonly configService: ConfigService;
+
   public readonly port: number;
 
   constructor(protected readonly app: INestApplication) {
@@ -64,7 +65,7 @@ export class App {
   }
 
   private getConfig<T = any>(key: string): T {
-    return this.configService.get<T>(key);
+    return this.configService.get<T>(key)!;
   }
 
   listen(): Promise<void> {

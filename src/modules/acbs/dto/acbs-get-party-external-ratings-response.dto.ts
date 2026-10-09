@@ -2,7 +2,7 @@ import { DateString } from '@ukef/helpers/date-string.type';
 
 export type AcbsGetPartyExternalRatingsResponseDto = AcbsGetPartyExternalRatingsResponseItem[];
 
-interface AcbsGetPartyExternalRatingsResponseItem {
+type AcbsGetPartyExternalRatingsResponseItem = {
   PartyIdentifier: string;
   RatingEntity: {
     RatingEntityCode: string;
@@ -22,4 +22,4 @@ interface AcbsGetPartyExternalRatingsResponseItem {
   ExternalRatingUserCode2: {
     UserCode2: string;
   };
-}
+};

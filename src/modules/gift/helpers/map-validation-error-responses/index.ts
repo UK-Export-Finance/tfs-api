@@ -1,14 +1,14 @@
 import { HttpStatus } from '@nestjs/common';
+import { AxiosResponse } from 'axios';
 import { GIFT } from '@ukef/constants';
 import { ValidationErrorResponse } from '@ukef/types';
-import { AxiosResponse } from 'axios';
 
 const { API_RESPONSE_TYPES } = GIFT;
 
-interface MapValidationErrorResponsesParams {
+type MapValidationErrorResponsesParams = {
   entityName: string;
   responses: AxiosResponse[];
-}
+};
 
 /**
  * Map responses with an invalid status.

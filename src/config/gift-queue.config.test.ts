@@ -1,8 +1,8 @@
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 
-import giftQueueConfig from './gift-queue.config';
+import { GiftQueueConfig } from './gift-queue.config';
 
-describe('giftQueueConfig', () => {
+describe('GiftQueueConfig', () => {
   const valueGenerator = new RandomValueGenerator();
 
   let originalProcessEnv: NodeJS.ProcessEnv;
@@ -23,7 +23,7 @@ describe('giftQueueConfig', () => {
         GIFT_QUEUE_STORAGE_CONNECTION_STRING: environmentVariableValue,
       };
 
-      const { connectionString } = giftQueueConfig();
+      const { connectionString } = GiftQueueConfig();
 
       expect(connectionString).toBe(environmentVariableValue);
     });
@@ -37,7 +37,7 @@ describe('giftQueueConfig', () => {
         AZURE_CLIENT_ID: environmentVariableValue,
       };
 
-      const { clientId } = giftQueueConfig();
+      const { clientId } = GiftQueueConfig();
 
       expect(clientId).toBe(environmentVariableValue);
     });
@@ -45,7 +45,7 @@ describe('giftQueueConfig', () => {
     it('is undefined if AZURE_CLIENT_ID is not specified', () => {
       process.env = {};
 
-      const { clientId } = giftQueueConfig();
+      const { clientId } = GiftQueueConfig();
 
       expect(clientId).toBeUndefined();
     });
@@ -59,7 +59,7 @@ describe('giftQueueConfig', () => {
         GIFT_QUEUE_NAME: environmentVariableValue,
       };
 
-      const { queueName } = giftQueueConfig();
+      const { queueName } = GiftQueueConfig();
 
       expect(queueName).toBe(environmentVariableValue);
     });
@@ -67,7 +67,7 @@ describe('giftQueueConfig', () => {
     it('is the default value gift-requests if GIFT_QUEUE_NAME is not specified', () => {
       process.env = {};
 
-      const { queueName } = giftQueueConfig();
+      const { queueName } = GiftQueueConfig();
 
       expect(queueName).toBe('gift-requests');
     });

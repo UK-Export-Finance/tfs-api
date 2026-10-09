@@ -63,10 +63,12 @@ export class PartyService {
 
   async getPartyIdentifierBySearchText(searchText: string): Promise<CreatePartyResponse> {
     const response = await this.getPartiesBySearchTextFromAcbs(searchText).then((partiesFromAcbs) => {
-      let party = undefined;
+      let party;
+
       if (partiesFromAcbs[0]) {
         party = partiesFromAcbs[0].PartyIdentifier ? { partyIdentifier: partiesFromAcbs[0].PartyIdentifier } : {};
       }
+
       return party;
     });
 
@@ -77,7 +79,7 @@ export class PartyService {
     const token = await this.getIdToken();
     const newPartyInAcbs: AcbsCreatePartyRequestDto = this.buildAcbsCreatePartyRequest(partyToCreate);
 
-    return this.acbsPartyService.createParty(newPartyInAcbs, token);
+    return await this.acbsPartyService.createParty(newPartyInAcbs, token);
   }
 
   async getPartyByIdentifier(partyIdentifier: string): Promise<Party> {

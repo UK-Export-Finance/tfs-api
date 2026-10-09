@@ -1,3 +1,4 @@
+import { Response } from 'express';
 import { Controller, Get, HttpStatus, Query, Res } from '@nestjs/common';
 import {
   ApiAcceptedResponse,
@@ -8,12 +9,11 @@ import {
   ApiQuery,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import AppConfig from '@ukef/config/app.config';
+import { AppConfig } from '@ukef/config/app.config';
 import { EXAMPLES, GIFT } from '@ukef/constants';
-import { Response } from 'express';
 
-import { FacilityIdsOperationParamsDto, GiftFacilityResponseDto } from '../dto';
-import { GiftFacilityService, GiftQueueService } from '../services';
+import { FacilityIdsOperationParamsDto, GiftFacilityResponseDto } from '@ukef/modules/gift/dto';
+import { GiftFacilityService, GiftQueueService } from '@ukef/modules/gift/services';
 
 const { PATH } = GIFT;
 
@@ -40,6 +40,9 @@ export class GiftFacilitiesController {
   })
   @ApiAcceptedResponse({
     description: 'The facilities get request has been accepted and added to the queue',
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'An internal server error has occurred',
   })
   @ApiBadRequestResponse({
     description: 'Bad request',

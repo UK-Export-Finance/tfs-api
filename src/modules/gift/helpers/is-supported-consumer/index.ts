@@ -7,4 +7,4 @@ const { CONSUMER } = GIFT;
  * @param {string} consumer: Consumer
  * @returns {boolean}
  */
-export const isSupportedConsumer = (consumer: string): boolean => Boolean(CONSUMER[`${consumer}`]);
+export const isSupportedConsumer = (consumer: string): boolean => Object.keys(CONSUMER).includes(consumer);

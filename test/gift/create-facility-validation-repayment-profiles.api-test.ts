@@ -21,7 +21,7 @@ const {
   VALIDATION: { REPAYMENT_PROFILE: REPAYMENT_PROFILE_VALIDATION },
 } = GIFT;
 
-const [firstRepaymentProfile, secondRepaymentProfile] = EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD.repaymentProfiles;
+const [firstRepaymentProfile, secondRepaymentProfile] = EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD.repaymentProfiles!;
 
 const [firstAllocation, secondAllocation] = firstRepaymentProfile.allocations;
 
@@ -170,7 +170,7 @@ describe('POST /gift/facility - validation - repayment profiles', () => {
         ...EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD,
         repaymentProfiles: [
           {
-            ...EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD.repaymentProfiles[0],
+            ...EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD.repaymentProfiles![0],
             allocations: [],
           },
         ],
@@ -199,7 +199,7 @@ describe('POST /gift/facility - validation - repayment profiles', () => {
         ...EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD,
         repaymentProfiles: [
           {
-            ...EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD.repaymentProfiles[0],
+            ...EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD.repaymentProfiles![0],
             allocations: [{}],
           },
         ],

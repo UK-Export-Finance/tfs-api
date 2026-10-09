@@ -1,6 +1,6 @@
 import { EXAMPLES } from '@ukef/constants';
 
-import { GiftRepaymentProfileRequestDto } from '../../dto';
+import { GiftRepaymentProfileRequestDto } from '@ukef/modules/gift/dto';
 import { getRepaymentProfileNames } from '.';
 
 const {

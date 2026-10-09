@@ -1,9 +1,9 @@
 import { HttpService } from '@nestjs/axios';
-import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { generateAcbsCreateDealDtoUsing } from '@ukef-test/support/requests/acbs-create-deal-dto';
 import { AxiosError } from 'axios';
 import { when } from 'jest-when';
 import { of, throwError } from 'rxjs';
+import { generateAcbsCreateDealDtoUsing } from '@ukef-test/support/requests/acbs-create-deal-dto';
+import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 
 import { AcbsDealService } from './acbs-deal.service';
 import { AcbsBadRequestException } from './exception/acbs-bad-request.exception';
@@ -68,8 +68,8 @@ describe('AcbsDealService', () => {
         data: errorString,
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePost)
@@ -91,8 +91,8 @@ describe('AcbsDealService', () => {
         data: errorBody,
         status: 401,
         statusText: 'Unauthorized',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePost)

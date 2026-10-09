@@ -1,9 +1,9 @@
 import { HttpStatus } from '@nestjs/common';
+import { PinoLogger } from 'nestjs-pino';
 import { EXAMPLES } from '@ukef/constants';
 import { MdmService } from '@ukef/modules/mdm/mdm.service';
 import { mockGiftFacilityCreationErrorService } from '@ukef-test/gift/mock-services';
 import { mockAxiosError, mockResponse200, mockResponse201, mockResponse500 } from '@ukef-test/http-response';
-import { PinoLogger } from 'nestjs-pino';
 
 import {
   GiftAccrualScheduleService,
@@ -20,7 +20,7 @@ import {
   GiftRepaymentProfileService,
   GiftRiskDetailsService,
   GiftStatusService,
-} from '../';
+} from '@ukef/modules/gift/services';
 import { GiftFacilityService } from './';
 
 const {

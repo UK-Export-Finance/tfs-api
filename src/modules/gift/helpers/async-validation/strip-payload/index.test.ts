@@ -34,8 +34,8 @@ describe('modules/gift/helpers/async-validation/strip-payload', () => {
 
       // Assert
       const expected = {
-        overview: mockPayload.overview[`${mockFieldName}`],
-        fixedFees: mapEntitiesByField(mockPayload.fixedFees, mockFieldName),
+        overview: mockPayload.overview[mockFieldName],
+        fixedFees: mapEntitiesByField(mockPayload.fixedFees ?? [], mockFieldName),
         obligations: mapEntitiesByField(mockPayload.obligations, mockFieldName),
       };
 
@@ -62,7 +62,7 @@ describe('modules/gift/helpers/async-validation/strip-payload', () => {
 
         // Assert
         const expected = {
-          overview: mockPayload.overview[`${mockFieldName}`],
+          overview: mockPayload.overview[mockFieldName],
           fixedFees: [],
           obligations: mapEntitiesByField(mockPayload.obligations, mockFieldName),
         };

@@ -1,12 +1,12 @@
+import { when } from 'jest-when';
 import { ENUMS } from '@ukef/constants';
 import { AcbsFacilityCovenantService } from '@ukef/modules/acbs/acbs-facility-covenant.service';
 import { AcbsCreateFacilityCovenantRequestDto } from '@ukef/modules/acbs/dto/acbs-create-facility-covenant-request.dto';
 import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
 import { CreateFacilityCovenantGenerator } from '@ukef-test/support/generator/create-facility-covenant-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { when } from 'jest-when';
 
-import { DateStringTransformations } from '../date/date-string.transformations';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { FacilityCovenantService } from './facility-covenant.service';
 
 jest.mock('@ukef/modules/date/current-date.provider');
@@ -26,7 +26,7 @@ describe('FacilityCovenantService', () => {
   let acbsFacilityCovenantServiceCreateCovenantForFacility: jest.Mock;
 
   beforeEach(() => {
-    const acbsFacilityCovenantService = new AcbsFacilityCovenantService(null, null);
+    const acbsFacilityCovenantService = new AcbsFacilityCovenantService(null!, null!);
     acbsFacilityCovenantServiceCreateCovenantForFacility = jest.fn();
     acbsFacilityCovenantService.createCovenantForFacility = acbsFacilityCovenantServiceCreateCovenantForFacility;
 
@@ -48,6 +48,8 @@ describe('FacilityCovenantService', () => {
       facilityTypeCode,
       limitKeyValue,
     });
+
+    const getCovenantCreatedInAcbs = (): AcbsCreateFacilityCovenantRequestDto => acbsFacilityCovenantServiceCreateCovenantForFacility.mock.calls[0][1];
 
     const [newCovenantWithAllFields] = requestBodyToCreateFacilityCovenant;
 
@@ -116,7 +118,5 @@ describe('FacilityCovenantService', () => {
 
       expect(covenantCreatedInAcbs.CovenantName).toBe('270');
     });
-
-    const getCovenantCreatedInAcbs = (): AcbsCreateFacilityCovenantRequestDto => acbsFacilityCovenantServiceCreateCovenantForFacility.mock.calls[0][1];
   });
 });

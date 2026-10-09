@@ -1,3 +1,4 @@
+import { when } from 'jest-when';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { FacilityService } from '@ukef/modules/facility/facility.service';
 import { FacilityActivationTransactionController } from '@ukef/modules/facility-activation-transaction/facility-activation-transaction.controller';
@@ -5,7 +6,6 @@ import { FacilityActivationTransactionService } from '@ukef/modules/facility-act
 import { CreateFacilityActivationTransactionGenerator } from '@ukef-test/support/generator/create-facility-activation-transaction-generator';
 import { GetFacilityActivationTransactionGenerator } from '@ukef-test/support/generator/get-facility-activation-transaction-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { when } from 'jest-when';
 
 describe('FacilityActivationTransactionController', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -26,11 +26,11 @@ describe('FacilityActivationTransactionController', () => {
   let facilityServiceGetFacilityByIdentifier: jest.Mock;
 
   beforeEach(() => {
-    facilityActivationTransactionService = new FacilityActivationTransactionService(null, null, null);
-    facilityService = new FacilityService(null, null, null, null, null);
+    facilityActivationTransactionService = new FacilityActivationTransactionService(null!, null!, null!);
+    facilityService = new FacilityService(null!, null!, null!, null!, null!);
 
     facilityActivationTransactionServiceCreateActivationTransactionForFacility = jest.fn(() => ({
-      bundleIdentifier: bundleIdentifier,
+      bundleIdentifier,
     }));
     facilityActivationTransactionServiceGetActivationTransactionByBundleIdentifier = jest.fn();
     facilityServiceGetFacilityByIdentifier = jest.fn();
@@ -59,7 +59,7 @@ describe('FacilityActivationTransactionController', () => {
       });
       when(facilityActivationTransactionServiceCreateActivationTransactionForFacility)
         .calledWith(facilityIdentifier, obligorPartyIdentifier, effectiveDate, requestBodyToCreateFacilityActivationTransaction[0])
-        .mockResolvedValueOnce({ bundleIdentifier: bundleIdentifier, warningErrors: undefined });
+        .mockResolvedValueOnce({ bundleIdentifier, warningErrors: undefined });
 
       const response = await controller.createActivationTransactionForFacility({ facilityIdentifier }, requestBodyToCreateFacilityActivationTransaction);
 
@@ -73,11 +73,11 @@ describe('FacilityActivationTransactionController', () => {
       });
       when(facilityActivationTransactionServiceCreateActivationTransactionForFacility)
         .calledWith(facilityIdentifier, obligorPartyIdentifier, effectiveDate, requestBodyToCreateFacilityActivationTransaction[0])
-        .mockResolvedValueOnce({ bundleIdentifier: bundleIdentifier, warningErrors: errorString });
+        .mockResolvedValueOnce({ bundleIdentifier, warningErrors: errorString });
 
       const response = await controller.createActivationTransactionForFacility({ facilityIdentifier }, requestBodyToCreateFacilityActivationTransaction);
 
-      expect(response).toStrictEqual({ bundleIdentifier: bundleIdentifier, warningErrors: errorString });
+      expect(response).toStrictEqual({ bundleIdentifier, warningErrors: errorString });
     });
   });
 

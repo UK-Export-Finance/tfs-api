@@ -1,14 +1,14 @@
 import { HttpStatus } from '@nestjs/common';
+import { PinoLogger } from 'nestjs-pino';
 import { EXAMPLES, GIFT } from '@ukef/constants';
 import { mockWorkPackageId } from '@ukef-test/gift/test-helpers';
 import { mockResponse200, mockResponse201, mockResponse404 } from '@ukef-test/http-response';
-import { PinoLogger } from 'nestjs-pino';
 
-import { GiftAmountAmendmentService } from '../gift.amount-amendment.service';
-import { GiftFacilityService } from '../gift.facility.service';
-import { GiftReplaceExpiryDateAmendmentService } from '../gift.replace-expiry-date-amendment.service';
-import { GiftStatusService } from '../gift.status.service';
-import { GiftWorkPackageService } from '../gift.work-package.service';
+import { GiftAmountAmendmentService } from '@ukef/modules/gift/services/gift.amount-amendment.service';
+import { GiftFacilityService } from '@ukef/modules/gift/services/gift.facility.service';
+import { GiftReplaceExpiryDateAmendmentService } from '@ukef/modules/gift/services/gift.replace-expiry-date-amendment.service';
+import { GiftStatusService } from '@ukef/modules/gift/services/gift.status.service';
+import { GiftWorkPackageService } from '@ukef/modules/gift/services/gift.work-package.service';
 import { GiftFacilityAmendmentService } from '.';
 
 const {

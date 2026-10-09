@@ -1,7 +1,7 @@
-import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
-import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { when } from 'jest-when';
 import { PinoLogger } from 'nestjs-pino';
+import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
+import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 
 import { AcbsAuthenticationService } from './acbs-authentication.service';
 import { RetryingAcbsAuthenticationService } from './retrying-acbs-authentication.service';
@@ -31,6 +31,39 @@ describe('RetryingAcbsAuthenticationService', () => {
     loggerWarn = jest.fn();
     logger.warn = loggerWarn;
   });
+
+  const givenAcbsAuthenticationServiceGetIdTokenErrors = ({ times }: { times: number } = { times: 1 }): { lastError: Error; allErrors: Error[] } => {
+    const arrayOfLengthTimes = new Array(times).fill(0);
+    const errors = arrayOfLengthTimes.map((_value, index) => new Error(`Error number ${index + 1}`));
+    errors.forEach((error) => {
+      when(acbsAuthenticationServiceGetIdToken).calledWith().mockRejectedValueOnce(error);
+    });
+    return { allErrors: errors, lastError: errors[times - 1] };
+  };
+
+  function withTestsThatItReturnsTheIdTokenIfItErrorsXTimesBeforeSuccess(cases: { numberOfErrorsBeforeSuccess: number }[]): void {
+    it.each(cases)(
+      'returns the id token from the AcbsAuthenticationService if it errors $numberOfErrorsBeforeSuccess times and then succeeds',
+      async ({ numberOfErrorsBeforeSuccess }) => {
+        givenAcbsAuthenticationServiceGetIdTokenErrors({ times: numberOfErrorsBeforeSuccess });
+        when(acbsAuthenticationServiceGetIdToken).calledWith().mockResolvedValueOnce(idTokenFromInnerService);
+
+        const idToken = await service.getIdToken();
+
+        expect(idToken).toBe(idTokenFromInnerService);
+      },
+    );
+  }
+
+  function withTestThatItErrorsWithTheLastErrorOfTheAcbsAuthenticationServiceIfItErrors({ times }: { times: number }) {
+    it(`errors with the last error of the AcbsAuthenticationService if it errors ${times} time(s)`, async () => {
+      const { lastError } = givenAcbsAuthenticationServiceGetIdTokenErrors({ times });
+
+      const getIdTokenPromise = service.getIdToken();
+
+      await expect(getIdTokenPromise).rejects.toBe(lastError);
+    });
+  }
 
   describe('getIdToken', () => {
     describe('when the max number of retries is 0', () => {
@@ -123,37 +156,4 @@ describe('RetryingAcbsAuthenticationService', () => {
       });
     });
   });
-
-  const givenAcbsAuthenticationServiceGetIdTokenErrors = ({ times }: { times: number } = { times: 1 }): { lastError: Error; allErrors: Error[] } => {
-    const arrayOfLengthTimes = new Array(times).fill(0);
-    const errors = arrayOfLengthTimes.map((_value, index) => new Error(`Error number ${index + 1}`));
-    errors.forEach((error) => {
-      when(acbsAuthenticationServiceGetIdToken).calledWith().mockRejectedValueOnce(error);
-    });
-    return { allErrors: errors, lastError: errors[times - 1] };
-  };
-
-  function withTestsThatItReturnsTheIdTokenIfItErrorsXTimesBeforeSuccess(cases: { numberOfErrorsBeforeSuccess: number }[]): void {
-    it.each(cases)(
-      'returns the id token from the AcbsAuthenticationService if it errors $numberOfErrorsBeforeSuccess times and then succeeds',
-      async ({ numberOfErrorsBeforeSuccess }) => {
-        givenAcbsAuthenticationServiceGetIdTokenErrors({ times: numberOfErrorsBeforeSuccess });
-        when(acbsAuthenticationServiceGetIdToken).calledWith().mockResolvedValueOnce(idTokenFromInnerService);
-
-        const idToken = await service.getIdToken();
-
-        expect(idToken).toBe(idTokenFromInnerService);
-      },
-    );
-  }
-
-  function withTestThatItErrorsWithTheLastErrorOfTheAcbsAuthenticationServiceIfItErrors({ times }: { times: number }) {
-    it(`errors with the last error of the AcbsAuthenticationService if it errors ${times} time(s)`, async () => {
-      const { lastError } = givenAcbsAuthenticationServiceGetIdTokenErrors({ times });
-
-      const getIdTokenPromise = service.getIdToken();
-
-      await expect(getIdTokenPromise).rejects.toBe(lastError);
-    });
-  }
 });

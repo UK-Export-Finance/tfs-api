@@ -9,55 +9,55 @@ export class GetFacilityGuaranteesResponseItem {
     description: 'The identifier of the facility.',
     example: EXAMPLES.FACILITY_ID,
   })
-  facilityIdentifier: string;
+  facilityIdentifier!: string;
 
   @ApiProperty({
     description: 'The identifier of the portfolio.',
     example: PROPERTIES.GLOBAL.portfolioIdentifier,
   })
-  portfolioIdentifier: string;
+  portfolioIdentifier!: string;
 
   @ApiProperty({
     description: 'The date that this guarantee will take effect.',
     type: Date,
     format: 'date',
   })
-  guaranteeCommencementDate: DateOnlyString;
+  guaranteeCommencementDate!: DateOnlyString;
 
   @ApiProperty({
     description: 'The date that this guarantee will take effect. This is always equal to the guaranteeCommencementDate.',
     type: Date,
     format: 'date',
   })
-  effectiveDate: DateOnlyString;
+  effectiveDate!: DateOnlyString;
 
   @ApiProperty({
     description: 'The ACBS party identifier of the guarantor, the customer who is making the guarantee/obligation.',
     example: EXAMPLES.PARTY_ID,
   })
-  guarantorParty: string;
+  guarantorParty!: string;
 
   @ApiProperty({
     description: 'An ACBS party identifier.',
     example: EXAMPLES.PARTY_ID,
   })
-  limitKey: string;
+  limitKey!: string;
 
   @ApiProperty({
     description: 'The date the guarantee for this customer will expire.',
     type: Date,
     format: 'date',
   })
-  guaranteeExpiryDate: DateOnlyString;
+  guaranteeExpiryDate!: DateOnlyString;
 
   @ApiProperty({
     description: 'The maximum amount the guarantor will guarantee.',
   })
-  maximumLiability: number;
+  maximumLiability!: number;
 
   @ApiProperty({
     description: 'The identifier for the type of the guarantee.',
     example: '315',
   })
-  guaranteeTypeCode: string;
+  guaranteeTypeCode!: string;
 }

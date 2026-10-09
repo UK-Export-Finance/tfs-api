@@ -1,10 +1,10 @@
+import { when } from 'jest-when';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { CreateFacilityLoanAmountAmendmentGenerator } from '@ukef-test/support/generator/create-facility-loan-amount-amendment.generator';
 import { CreateFacilityLoanGenerator } from '@ukef-test/support/generator/create-facility-loan-generator';
 import { GetFacilityLoanGenerator } from '@ukef-test/support/generator/get-facility-loan-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { UpdateLoanGenerator } from '@ukef-test/support/generator/update-loan-generator';
-import { when } from 'jest-when';
 
 import { FacilityLoanController } from './facility-loan.controller';
 import { FacilityLoanService } from './facility-loan.service';
@@ -26,12 +26,12 @@ describe('FacilityLoanController', () => {
   let controller: FacilityLoanController;
 
   beforeEach(() => {
-    const facilityLoanService = new FacilityLoanService(null, null, null, null, null, null, null, null);
+    const facilityLoanService = new FacilityLoanService(null!, null!, null!, null!, null!, null!, null!, null!);
     facilityLoanServiceGetLoansForFacility = jest.fn();
     facilityLoanService.getLoansForFacility = facilityLoanServiceGetLoansForFacility;
 
     facilityLoanServiceCreateLoanForFacility = jest.fn(() => ({
-      bundleIdentifier: bundleIdentifier,
+      bundleIdentifier,
     }));
     facilityLoanService.createLoanForFacility = facilityLoanServiceCreateLoanForFacility;
 
@@ -100,7 +100,6 @@ describe('FacilityLoanController', () => {
   });
 
   describe('createAmountAmendmentForLoan', () => {
-    const loanIdentifier = valueGenerator.loanId();
     const { increaseAmountRequest: loanAmountAmendmentRequest } = new CreateFacilityLoanAmountAmendmentGenerator(
       valueGenerator,
       new DateStringTransformations(),

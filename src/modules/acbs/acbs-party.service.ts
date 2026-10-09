@@ -1,6 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { Inject, Injectable } from '@nestjs/common';
-import AcbsConfig from '@ukef/config/acbs.config';
+import { AcbsConfig } from '@ukef/config/acbs.config';
 
 import { AcbsConfigBaseUrlAndUseReturnExceptionHeader } from './acbs-config-base-url.type';
 import { AcbsHttpService } from './acbs-http.service';
@@ -62,7 +62,7 @@ export class AcbsPartyService {
         const indexOfLastSlash = locationHeader.lastIndexOf('/');
         const partyIdentifier = locationHeader.substring(indexOfLastSlash + 1);
         return {
-          partyIdentifier: partyIdentifier,
+          partyIdentifier,
         };
       });
 

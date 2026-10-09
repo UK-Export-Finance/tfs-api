@@ -14,9 +14,12 @@ export class RepaymentScheduleBuilder {
   getRepaymentSchedules(facilityLoan: CreateFacilityLoanRequestItem): RepaymentSchedule[] {
     if (facilityLoan.productTypeGroup === ENUMS.PRODUCT_TYPE_GROUPS.EWCS) {
       return [this.getRepaymentInt(facilityLoan), this.getRepaymentPac(facilityLoan)];
-    } else if (facilityLoan.productTypeGroup === ENUMS.PRODUCT_TYPE_GROUPS.GEF) {
+    }
+
+    if (facilityLoan.productTypeGroup === ENUMS.PRODUCT_TYPE_GROUPS.GEF) {
       return [this.getRepaymentPac(facilityLoan)];
     }
+
     return [this.getRepaymentPacBss(facilityLoan)];
   }
 

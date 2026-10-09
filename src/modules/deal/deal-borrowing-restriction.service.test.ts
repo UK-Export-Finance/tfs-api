@@ -1,10 +1,10 @@
+import { when } from 'jest-when';
 import { PROPERTIES } from '@ukef/constants';
 import { AcbsDealBorrowingRestrictionService } from '@ukef/modules/acbs/acbs-deal-borrowing-restriction.service';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
 import { CreateDealGenerator } from '@ukef-test/support/generator/create-deal-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { when } from 'jest-when';
 
 import { DealBorrowingRestrictionService } from './deal-borrowing-restriction.service';
 
@@ -22,7 +22,7 @@ describe('DealBorrowingRestrictionService', () => {
   let updateBorrowingRestrictionForDealInAcbs: jest.Mock;
 
   beforeEach(() => {
-    const acbsDealBorrowingRestrictionService = new AcbsDealBorrowingRestrictionService(null, null);
+    const acbsDealBorrowingRestrictionService = new AcbsDealBorrowingRestrictionService(null!, null!);
     updateBorrowingRestrictionForDealInAcbs = jest.fn();
     acbsDealBorrowingRestrictionService.updateBorrowingRestrictionForDeal = updateBorrowingRestrictionForDealInAcbs;
 

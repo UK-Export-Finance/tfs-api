@@ -1,5 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
-import AppConfig from '@ukef/config/app.config';
+import { AppConfig } from '@ukef/config/app.config';
 import { GIFT } from '@ukef/constants';
 import { GIFT_EXAMPLES } from '@ukef/constants/examples/gift.examples.constant';
 import { Api } from '@ukef-test/support/api';

@@ -1,6 +1,6 @@
 import { GIFT_EXAMPLES } from '@ukef/constants/examples/gift.examples.constant';
 
-import { GiftFacilityCounterpartyRequestDto } from '../../dto';
+import { GiftFacilityCounterpartyRequestDto } from '@ukef/modules/gift/dto';
 import { mapCounterpartiesRequestData } from '.';
 
 const mockCounterParty = GIFT_EXAMPLES.COUNTERPARTY();

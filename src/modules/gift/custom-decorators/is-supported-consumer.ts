@@ -1,14 +1,14 @@
 import { registerDecorator, ValidationArguments, ValidationOptions } from 'class-validator';
 
-import { isSupportedConsumer } from '../helpers';
+import { isSupportedConsumer } from '@ukef/modules/gift/helpers';
 
-interface ObjectWithConsumer {
+type ObjectWithConsumer = {
   consumer: string;
-}
+};
 
-interface ConsumerValidationArguments extends ValidationArguments {
+type ConsumerValidationArguments = {
   object: ObjectWithConsumer;
-}
+} & ValidationArguments;
 
 /**
  * Custom decorator to check if a provided consumer is supported.
@@ -16,7 +16,7 @@ interface ConsumerValidationArguments extends ValidationArguments {
  * @returns {Boolean | string}
  */
 export function IsSupportedConsumer(options?: ValidationOptions) {
-  return function (object: object, propertyName: string) {
+  return function isSupportedConsumerValidator(object: object, propertyName: string) {
     registerDecorator({
       name: 'IsSupportedConsumer',
       target: object.constructor,

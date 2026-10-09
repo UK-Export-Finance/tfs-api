@@ -1,6 +1,6 @@
 import { DateString } from '@ukef/helpers';
 
-export interface AcbsCreatePartyExternalRatingRequestDto {
+export type AcbsCreatePartyExternalRatingRequestDto = {
   PartyIdentifier: string;
   RatingEntity: {
     RatingEntityCode: string;
@@ -14,4 +14,4 @@ export interface AcbsCreatePartyExternalRatingRequestDto {
   RiskWeighting: number;
   ExternalRatingNote1: string;
   ExternalRatingNote2: string;
-}
+};

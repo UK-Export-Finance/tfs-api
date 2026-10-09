@@ -1,12 +1,16 @@
 import { APPLICATION } from '@ukef/constants';
 import { withEnvironmentVariableParsingUnitTests } from '@ukef-test/common-tests/environment-variable-parsing-unit-tests';
 
-import appConfig, { AppConfig } from './app.config';
+import { AppConfig, AppConfigType } from './app.config';
 import { InvalidConfigException } from './invalid-config.exception';
 
 const { VERSION_PREFIX } = APPLICATION;
 
-describe('appConfig', () => {
+const replaceEnvironmentVariables = (newEnvVariables: Record<string, string>): void => {
+  process.env = newEnvVariables;
+};
+
+describe('AppConfig', () => {
   let originalProcessEnv: NodeJS.ProcessEnv;
 
   beforeEach(() => {
@@ -24,7 +28,7 @@ describe('appConfig', () => {
           LOG_LEVEL: 'not-a-real-log-level',
         });
 
-        const gettingTheAppConfig = () => appConfig();
+        const gettingTheAppConfig = () => AppConfig();
 
         expect(gettingTheAppConfig).toThrow(InvalidConfigException);
 
@@ -35,10 +39,10 @@ describe('appConfig', () => {
     describe('when LOG_LEVEL is not specified', () => {
       it('should return `logLevel` as `info`', () => {
         replaceEnvironmentVariables({
-          LOG_LEVEL: undefined,
+          LOG_LEVEL: undefined!,
         });
 
-        const config = appConfig();
+        const config = AppConfig();
 
         expect(config.logLevel).toBe('info');
       });
@@ -50,7 +54,7 @@ describe('appConfig', () => {
           LOG_LEVEL: '',
         });
 
-        const config = appConfig();
+        const config = AppConfig();
 
         expect(config.logLevel).toBe('info');
       });
@@ -83,7 +87,7 @@ describe('appConfig', () => {
         LOG_LEVEL,
       });
 
-      const config = appConfig();
+      const config = AppConfig();
 
       expect(config.logLevel).toBe(LOG_LEVEL);
     });
@@ -91,14 +95,14 @@ describe('appConfig', () => {
 
   describe('versioning', () => {
     it('should return an object with default properties', () => {
-      const mockHttpVersion = undefined;
+      const mockHttpVersion = undefined!;
 
       replaceEnvironmentVariables({
-        HTTP_VERSIONING_ENABLE: undefined,
+        HTTP_VERSIONING_ENABLE: undefined!,
         HTTP_VERSION: mockHttpVersion,
       });
 
-      const config = appConfig();
+      const config = AppConfig();
 
       const expected = {
         enable: false,
@@ -116,7 +120,7 @@ describe('appConfig', () => {
           HTTP_VERSIONING_ENABLE: 'true',
         });
 
-        const config = appConfig();
+        const config = AppConfig();
 
         expect(config.versioning.enable).toBe(true);
       });
@@ -130,7 +134,7 @@ describe('appConfig', () => {
           HTTP_VERSION: mockHttpVersion,
         });
 
-        const config = appConfig();
+        const config = AppConfig();
 
         expect(config.versioning.version).toBe(mockHttpVersion);
       });
@@ -140,7 +144,7 @@ describe('appConfig', () => {
           HTTP_VERSION: mockHttpVersion,
         });
 
-        const config = appConfig();
+        const config = AppConfig();
 
         const expected = `${VERSION_PREFIX}${mockHttpVersion}`;
 
@@ -157,9 +161,10 @@ describe('appConfig', () => {
         GIFT_HTTP_VERSION: mockHttpVersion,
       });
 
-      const config = appConfig();
+      const config = AppConfig();
 
       const expected = {
+        enable: false,
         prefix: VERSION_PREFIX,
         prefixAndVersion: `${VERSION_PREFIX}${mockHttpVersion}`,
         version: mockHttpVersion,
@@ -173,10 +178,10 @@ describe('appConfig', () => {
     describe('when FF_GIFT_ENABLED is not set or false', () => {
       it('should return giftFeatureEnabled as false', () => {
         replaceEnvironmentVariables({
-          FF_GIFT_ENABLED: undefined,
+          FF_GIFT_ENABLED: undefined!,
         });
 
-        const config = appConfig();
+        const config = AppConfig();
 
         expect(config.giftFeatureEnabled).toBe(false);
       });
@@ -188,7 +193,7 @@ describe('appConfig', () => {
           FF_GIFT_ENABLED: 'true',
         });
 
-        const config = appConfig();
+        const config = AppConfig();
 
         expect(config.giftFeatureEnabled).toBe(true);
       });
@@ -200,19 +205,15 @@ describe('appConfig', () => {
           FF_GIFT_ENABLED: 'false',
         });
 
-        const config = appConfig();
+        const config = AppConfig();
 
         expect(config.giftFeatureEnabled).toBe(false);
       });
     });
   });
 
-  const replaceEnvironmentVariables = (newEnvVariables: Record<string, string>): void => {
-    process.env = newEnvVariables;
-  };
-
   const configParsedAsIntFromEnvironmentVariablesWithDefault: {
-    configPropertyName: keyof AppConfig;
+    configPropertyName: keyof AppConfigType;
     environmentVariableName: string;
     defaultConfigValue: number;
   }[] = [
@@ -224,7 +225,7 @@ describe('appConfig', () => {
   ];
 
   const configParsedBooleanFromEnvironmentVariablesWithDefault: {
-    configPropertyName: keyof AppConfig;
+    configPropertyName: keyof AppConfigType;
     environmentVariableName: string;
     defaultConfigValue: boolean;
   }[] = [
@@ -236,6 +237,6 @@ describe('appConfig', () => {
   withEnvironmentVariableParsingUnitTests({
     configParsedBooleanFromEnvironmentVariablesWithDefault,
     configParsedAsIntFromEnvironmentVariablesWithDefault,
-    getConfig: () => appConfig(),
+    getConfig: () => AppConfig(),
   });
 });

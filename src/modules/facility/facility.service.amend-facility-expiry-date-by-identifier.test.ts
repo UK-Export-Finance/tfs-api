@@ -1,3 +1,4 @@
+import { when } from 'jest-when';
 import { PROPERTIES } from '@ukef/constants';
 import { AcbsBundleInformationService } from '@ukef/modules/acbs/acbs-bundle-information.service';
 import { AcbsFacilityService } from '@ukef/modules/acbs/acbs-facility.service';
@@ -12,7 +13,6 @@ import { UpdateFacilityServiceTestPartsArgs } from '@ukef/modules/facility/facil
 import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { UpdateFacilityGenerator } from '@ukef-test/support/generator/update-facility-generator';
-import { when } from 'jest-when';
 
 describe('FacilityService', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -21,22 +21,22 @@ describe('FacilityService', () => {
   const facilityIdentifier = valueGenerator.facilityId();
   const { portfolioIdentifier } = PROPERTIES.GLOBAL;
 
-  const amendExpiryDateByIdentifier = (updateFacilityRequest: UpdateFacilityRequest): Promise<void> =>
-    service.amendFacilityExpiryDateByIdentifier(facilityIdentifier, updateFacilityRequest);
-
   let acbsFacilityServiceUpdateFacilityByIdentifier: jest.Mock;
   let acbsFacilityServiceGetFacilityByIdentifier: jest.Mock;
   let service: FacilityService;
 
+  const amendExpiryDateByIdentifier = (updateFacilityRequest: UpdateFacilityRequest): Promise<void> =>
+    service.amendFacilityExpiryDateByIdentifier(facilityIdentifier, updateFacilityRequest);
+
   beforeEach(() => {
-    const acbsFacilityService = new AcbsFacilityService(null, null);
+    const acbsFacilityService = new AcbsFacilityService(null!, null!);
 
     const mockAcbsAuthenticationService = getMockAcbsAuthenticationService();
     const acbsAuthenticationService = mockAcbsAuthenticationService.service;
     const acbsAuthenticationServiceGetIdToken = mockAcbsAuthenticationService.getIdToken;
     when(acbsAuthenticationServiceGetIdToken).calledWith().mockResolvedValueOnce(idToken);
 
-    const acbsBundleInformationService = new AcbsBundleInformationService(null, null);
+    const acbsBundleInformationService = new AcbsBundleInformationService(null!, null!);
 
     acbsFacilityServiceUpdateFacilityByIdentifier = jest.fn();
     acbsFacilityService.updateFacilityByIdentifier = acbsFacilityServiceUpdateFacilityByIdentifier;
@@ -59,6 +59,20 @@ describe('FacilityService', () => {
   ).generate({ numberToGenerate: 1, facilityIdentifier });
 
   describe('amendExpiryDateByIdentifier', () => {
+    const getAcbsFacilityServiceGetFacilityByIdentifierMock = () => acbsFacilityServiceGetFacilityByIdentifier;
+    const getAcbsFacilityServiceUpdateFacilityByIdentifierMock = () => acbsFacilityServiceUpdateFacilityByIdentifier;
+
+    const getAcbsGetFacilityRequestCalledCorrectlyMock = () => when(acbsFacilityServiceGetFacilityByIdentifier).calledWith(facilityIdentifier, idToken);
+
+    const expectAcbsUpdateFacilityToBeCalledOnceWith = (actualAcbsUpdateFacilityRequest: AcbsUpdateFacilityRequest) => {
+      expect(acbsFacilityServiceUpdateFacilityByIdentifier).toHaveBeenCalledWith(portfolioIdentifier, actualAcbsUpdateFacilityRequest, idToken);
+      expect(acbsFacilityServiceUpdateFacilityByIdentifier).toHaveBeenCalledTimes(1);
+    };
+
+    const mockSuccessfulAcbsUpdateMethodMock = () => {
+      when(acbsFacilityServiceUpdateFacilityByIdentifier).calledWith(portfolioIdentifier, acbsUpdateFacilityRequest, idToken).mockReturnValueOnce(undefined);
+    };
+
     const testArgs: UpdateFacilityServiceTestPartsArgs<AcbsUpdateFacilityRequest> = {
       valueGenerator,
       updateFacilityRequest,
@@ -66,7 +80,8 @@ describe('FacilityService', () => {
       expectedAcbsUpdateMethodRequest: acbsUpdateFacilityRequest,
       expectedResult: undefined,
       updateFacility: amendExpiryDateByIdentifier,
-      expectAcbsUpdateMethodToBeCalledOnceWith: (acbsUpdateFacilityRequest) => expectAcbsUpdateFacilityToBeCalledOnceWith(acbsUpdateFacilityRequest),
+      expectAcbsUpdateMethodToBeCalledOnceWith: (actualAcbsUpdateFacilityRequest) =>
+        expectAcbsUpdateFacilityToBeCalledOnceWith(actualAcbsUpdateFacilityRequest),
       getAcbsGetFacilityRequestCalledCorrectlyMock: () => getAcbsGetFacilityRequestCalledCorrectlyMock(),
       getAcbsFacilityServiceGetFacilityByIdentifierMock: () => getAcbsFacilityServiceGetFacilityByIdentifierMock(),
       getAcbsUpdateMethodMock: () => getAcbsFacilityServiceUpdateFacilityByIdentifierMock(),
@@ -76,19 +91,5 @@ describe('FacilityService', () => {
     withUpdateFacilityServiceGeneralTests(testArgs);
 
     withAcbsUpdateFacilityRequestCreationTests(testArgs);
-
-    const getAcbsFacilityServiceGetFacilityByIdentifierMock = () => acbsFacilityServiceGetFacilityByIdentifier;
-    const getAcbsFacilityServiceUpdateFacilityByIdentifierMock = () => acbsFacilityServiceUpdateFacilityByIdentifier;
-
-    const getAcbsGetFacilityRequestCalledCorrectlyMock = () => when(acbsFacilityServiceGetFacilityByIdentifier).calledWith(facilityIdentifier, idToken);
-
-    const expectAcbsUpdateFacilityToBeCalledOnceWith = (acbsUpdateFacilityRequest: AcbsUpdateFacilityRequest) => {
-      expect(acbsFacilityServiceUpdateFacilityByIdentifier).toHaveBeenCalledWith(portfolioIdentifier, acbsUpdateFacilityRequest, idToken);
-      expect(acbsFacilityServiceUpdateFacilityByIdentifier).toHaveBeenCalledTimes(1);
-    };
-
-    const mockSuccessfulAcbsUpdateMethodMock = () => {
-      when(acbsFacilityServiceUpdateFacilityByIdentifier).calledWith(portfolioIdentifier, acbsUpdateFacilityRequest, idToken).mockReturnValueOnce(undefined);
-    };
   });
 });

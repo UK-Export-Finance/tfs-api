@@ -1,4 +1,7 @@
 import { HttpService } from '@nestjs/axios';
+import { AxiosError } from 'axios';
+import { when } from 'jest-when';
+import { of, throwError } from 'rxjs';
 import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { AcbsBundleInformationService } from '@ukef/modules/acbs/acbs-bundle-information.service';
 import { AcbsCreateBundleInformationRequestDto } from '@ukef/modules/acbs/dto/acbs-create-bundle-information-request.dto';
@@ -11,9 +14,6 @@ import { CreateFacilityActivationTransactionGenerator } from '@ukef-test/support
 import { CreateFacilityFixedFeesAmountAmendmentGenerator } from '@ukef-test/support/generator/create-facility-fixed-fees-amount-amendment.generator';
 import { CreateFacilityLoanGenerator } from '@ukef-test/support/generator/create-facility-loan-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { AxiosError } from 'axios';
-import { when } from 'jest-when';
-import { of, throwError } from 'rxjs';
 
 describe('AcbsBundleInformationService', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -130,8 +130,8 @@ describe('AcbsBundleInformationService', () => {
         data: errorString,
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePost)
@@ -153,8 +153,8 @@ describe('AcbsBundleInformationService', () => {
         data: errorBody,
         status: 401,
         statusText: 'Unauthorized',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePost)
@@ -175,8 +175,8 @@ describe('AcbsBundleInformationService', () => {
           data: `Facility does not exist or user does not have access to it: '${facilityIdentifier}'`,
           status: 400,
           statusText: 'Bad Request',
-          headers: undefined,
-          config: undefined,
+          headers: undefined!,
+          config: undefined!,
         };
 
         when(httpServicePost)
@@ -196,8 +196,8 @@ describe('AcbsBundleInformationService', () => {
           data: errorString,
           status: 400,
           statusText: 'Bad Request',
-          headers: undefined,
-          config: undefined,
+          headers: undefined!,
+          config: undefined!,
         };
 
         when(httpServicePost)
@@ -219,8 +219,8 @@ describe('AcbsBundleInformationService', () => {
           data: errorBody,
           status: 400,
           statusText: 'Bad Request',
-          headers: undefined,
-          config: undefined,
+          headers: undefined!,
+          config: undefined!,
         };
 
         when(httpServicePost)
@@ -260,8 +260,8 @@ describe('AcbsBundleInformationService', () => {
           data: `Loan does not exist or user does not have access to it: '${loanIdentifier}'`,
           status: 400,
           statusText: 'Bad Request',
-          headers: undefined,
-          config: undefined,
+          headers: undefined!,
+          config: undefined!,
         };
 
         when(httpServicePost)
@@ -281,8 +281,8 @@ describe('AcbsBundleInformationService', () => {
           data: errorString,
           status: 400,
           statusText: 'Bad Request',
-          headers: undefined,
-          config: undefined,
+          headers: undefined!,
+          config: undefined!,
         };
 
         when(httpServicePost)
@@ -304,8 +304,8 @@ describe('AcbsBundleInformationService', () => {
           data: errorBody,
           status: 400,
           statusText: 'Bad Request',
-          headers: undefined,
-          config: undefined,
+          headers: undefined!,
+          config: undefined!,
         };
 
         when(httpServicePost)
@@ -335,8 +335,8 @@ describe('AcbsBundleInformationService', () => {
           data: `Facility does not exist or user does not have access to it: '${facilityIdentifier}'`,
           status: 400,
           statusText: 'Bad Request',
-          headers: undefined,
-          config: undefined,
+          headers: undefined!,
+          config: undefined!,
         };
 
         when(httpServicePost)
@@ -356,8 +356,8 @@ describe('AcbsBundleInformationService', () => {
           data: errorString,
           status: 400,
           statusText: 'Bad Request',
-          headers: undefined,
-          config: undefined,
+          headers: undefined!,
+          config: undefined!,
         };
 
         when(httpServicePost)
@@ -379,8 +379,8 @@ describe('AcbsBundleInformationService', () => {
           data: errorBody,
           status: 400,
           statusText: 'Bad Request',
-          headers: undefined,
-          config: undefined,
+          headers: undefined!,
+          config: undefined!,
         };
 
         when(httpServicePost)
@@ -397,23 +397,23 @@ describe('AcbsBundleInformationService', () => {
     });
 
     describe('creating a FacilityFeeAmountTransaction', () => {
-      const facilityIdentifier = valueGenerator.facilityId();
+      const facilityFeeAmountTransactionFacilityIdentifier = valueGenerator.facilityId();
 
       const { acbsFixedFeesAmendmentForIncrease } = new CreateFacilityFixedFeesAmountAmendmentGenerator(
         valueGenerator,
         new DateStringTransformations(),
-      ).generate({ numberToGenerate: 1, facilityIdentifier });
+      ).generate({ numberToGenerate: 1, facilityIdentifier: facilityFeeAmountTransactionFacilityIdentifier });
 
       const expectedHttpServicePostArgsForFacilityFeeAmountTransaction = expectedHttpServicePostArgsWithBody(acbsFixedFeesAmendmentForIncrease);
 
       it('throws an AcbsResourceNotFoundException if ACBS responds with a 400 error that is a string containing "Facility does not exist"', async () => {
         const axiosError = new AxiosError();
         axiosError.response = {
-          data: `Facility does not exist or user does not have access to it: '${facilityIdentifier}'`,
+          data: `Facility does not exist or user does not have access to it: '${facilityFeeAmountTransactionFacilityIdentifier}'`,
           status: 400,
           statusText: 'Bad Request',
-          headers: undefined,
-          config: undefined,
+          headers: undefined!,
+          config: undefined!,
         };
 
         when(httpServicePost)
@@ -423,7 +423,9 @@ describe('AcbsBundleInformationService', () => {
         const createBundleInformationPromise = service.createBundleInformation(acbsFixedFeesAmendmentForIncrease, idToken);
 
         await expect(createBundleInformationPromise).rejects.toBeInstanceOf(AcbsResourceNotFoundException);
-        await expect(createBundleInformationPromise).rejects.toThrow(`Facility with identifier ${facilityIdentifier} was not found by ACBS.`);
+        await expect(createBundleInformationPromise).rejects.toThrow(
+          `Facility with identifier ${facilityFeeAmountTransactionFacilityIdentifier} was not found by ACBS.`,
+        );
         await expect(createBundleInformationPromise).rejects.toHaveProperty('innerError', axiosError);
       });
 
@@ -433,8 +435,8 @@ describe('AcbsBundleInformationService', () => {
           data: errorString,
           status: 400,
           statusText: 'Bad Request',
-          headers: undefined,
-          config: undefined,
+          headers: undefined!,
+          config: undefined!,
         };
 
         when(httpServicePost)
@@ -456,8 +458,8 @@ describe('AcbsBundleInformationService', () => {
           data: errorBody,
           status: 400,
           statusText: 'Bad Request',
-          headers: undefined,
-          config: undefined,
+          headers: undefined!,
+          config: undefined!,
         };
 
         when(httpServicePost)

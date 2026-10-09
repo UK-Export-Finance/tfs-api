@@ -1,8 +1,9 @@
 import { HttpStatus } from '@nestjs/common';
+import { PinoLogger } from 'nestjs-pino';
+import { Response } from 'express';
 import { EXAMPLES } from '@ukef/constants';
 import { MdmService } from '@ukef/modules/mdm/mdm.service';
 import { mockResponse200, mockResponse201 } from '@ukef-test/http-response';
-import { PinoLogger } from 'nestjs-pino';
 
 import {
   GiftAccrualScheduleService,
@@ -26,7 +27,7 @@ import {
   GiftRiskDetailsService,
   GiftStatusService,
   GiftWorkPackageService,
-} from '../services';
+} from '@ukef/modules/gift/services';
 import { GiftFacilityController } from './gift.facility.controller';
 
 const {
@@ -61,7 +62,7 @@ describe('GiftFacilityController', () => {
   let replaceExpiryDateAmendmentService: GiftReplaceExpiryDateAmendmentService;
   let controller: GiftFacilityController;
 
-  let mockRes;
+  let mockRes: Response;
   let mockResStatus;
   let mockResJson;
 
@@ -132,7 +133,7 @@ describe('GiftFacilityController', () => {
 
     mockRes = {
       json: mockResJson,
-    };
+    } as Response;
 
     mockResStatus = jest.fn(() => mockRes);
 

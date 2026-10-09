@@ -23,6 +23,7 @@ import { FacilityGuaranteeService } from './facility-guarantee.service';
 @Controller()
 export class FacilityGuaranteeController {
   constructor(private readonly facilityGuaranteeService: FacilityGuaranteeService) {}
+
   @Get('/facilities/:facilityIdentifier/guarantees')
   @ApiOperation({
     summary: 'Get all guarantees for a facility.',

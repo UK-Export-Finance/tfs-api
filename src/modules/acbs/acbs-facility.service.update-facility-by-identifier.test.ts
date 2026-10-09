@@ -1,11 +1,11 @@
 import { HttpService } from '@nestjs/axios';
-import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { UpdateFacilityGenerator } from '@ukef-test/support/generator/update-facility-generator';
 import { AxiosError } from 'axios';
 import { when } from 'jest-when';
 import { of, throwError } from 'rxjs';
+import { UpdateFacilityGenerator } from '@ukef-test/support/generator/update-facility-generator';
+import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 
-import { DateStringTransformations } from '../date/date-string.transformations';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { AcbsFacilityService } from './acbs-facility.service';
 import { AcbsBadRequestException } from './exception/acbs-bad-request.exception';
 import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
@@ -74,8 +74,8 @@ describe('AcbsFacilityService', () => {
         data: errorString,
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePut)
@@ -97,8 +97,8 @@ describe('AcbsFacilityService', () => {
         data: errorObject,
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePut)
@@ -120,8 +120,8 @@ describe('AcbsFacilityService', () => {
         data: errorString,
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePut)
@@ -142,8 +142,8 @@ describe('AcbsFacilityService', () => {
         data: errorBody,
         status: 401,
         statusText: 'Unauthorized',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePut)

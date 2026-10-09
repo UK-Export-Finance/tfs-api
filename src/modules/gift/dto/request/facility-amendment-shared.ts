@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsDateString, IsDefined, IsNumber, Max, Min } from 'class-validator';
 import { GIFT } from '@ukef/constants';
 import { GIFT_EXAMPLES } from '@ukef/constants/examples/gift.examples.constant';
-import { IsDateString, IsDefined, IsNumber, Max, Min } from 'class-validator';
 
 const { VALIDATION } = GIFT;
 
@@ -19,7 +19,7 @@ export class AmountDto {
     example: GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA.INCREASE_AMOUNT.amount,
     type: 'number',
   })
-  amount: number;
+  amount!: number;
 
   @IsDefined()
   @IsDateString()
@@ -27,7 +27,7 @@ export class AmountDto {
     required: true,
     example: GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA.INCREASE_AMOUNT.date,
   })
-  date: string;
+  date!: string;
 }
 
 /**
@@ -54,5 +54,5 @@ export class ReplaceExpiryDateDto {
     description: 'The new expiry date for the facility.',
     example: GIFT_EXAMPLES.FACILITY_AMENDMENT_REQUEST_PAYLOAD_DATA.REPLACE_EXPIRY_DATE.expiryDate,
   })
-  expiryDate: string;
+  expiryDate!: string;
 }

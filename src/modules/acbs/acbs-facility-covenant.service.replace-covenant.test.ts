@@ -1,12 +1,12 @@
 import { HttpService } from '@nestjs/axios';
-import { PROPERTIES } from '@ukef/constants';
-import { CreateFacilityCovenantGenerator } from '@ukef-test/support/generator/create-facility-covenant-generator';
-import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { AxiosError } from 'axios';
 import { when } from 'jest-when';
 import { of, throwError } from 'rxjs';
+import { PROPERTIES } from '@ukef/constants';
+import { CreateFacilityCovenantGenerator } from '@ukef-test/support/generator/create-facility-covenant-generator';
+import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 
-import { DateStringTransformations } from '../date/date-string.transformations';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { AcbsFacilityCovenantService } from './acbs-facility-covenant.service';
 import { AcbsBadRequestException } from './exception/acbs-bad-request.exception';
 import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
@@ -80,8 +80,8 @@ describe('AcbsFacilityCovenantService', () => {
         data: errorString,
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePut)
@@ -105,8 +105,8 @@ describe('AcbsFacilityCovenantService', () => {
         data: errorString,
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePut)
@@ -133,8 +133,8 @@ describe('AcbsFacilityCovenantService', () => {
         data: errorBody,
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePut)
@@ -161,8 +161,8 @@ describe('AcbsFacilityCovenantService', () => {
         data: errorBody,
         status: 401,
         statusText: 'Unauthorized',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePut)

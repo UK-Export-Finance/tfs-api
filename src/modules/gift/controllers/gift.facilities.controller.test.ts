@@ -1,9 +1,9 @@
 import { HttpStatus } from '@nestjs/common';
+import { PinoLogger } from 'nestjs-pino';
 import { EXAMPLES } from '@ukef/constants';
 import { UkefId } from '@ukef/helpers';
 import { MdmService } from '@ukef/modules/mdm/mdm.service';
 import { mockResponse200 } from '@ukef-test/http-response';
-import { PinoLogger } from 'nestjs-pino';
 
 import {
   GiftAccrualScheduleService,
@@ -24,7 +24,7 @@ import {
   GiftRiskDetailsService,
   GiftStatusService,
   GiftWorkPackageService,
-} from '../services';
+} from '@ukef/modules/gift/services';
 import { GiftFacilitiesController } from './gift.facilities.controller';
 
 const mockResponseGetMany = [

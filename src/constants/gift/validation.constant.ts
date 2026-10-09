@@ -1,4 +1,4 @@
-import { UKEFID } from '../ukef-id.constant';
+import { UKEFID } from '@ukef/constants/ukef-id.constant';
 
 const CURRENCY_VALIDATION = {
   MIN_LENGTH: 3,

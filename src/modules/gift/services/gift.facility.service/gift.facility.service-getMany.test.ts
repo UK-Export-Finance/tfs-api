@@ -1,8 +1,8 @@
 import { HttpStatus, NotFoundException } from '@nestjs/common';
+import { PinoLogger } from 'nestjs-pino';
 import { EXAMPLES } from '@ukef/constants';
 import { mockGiftFacilityCreationErrorService } from '@ukef-test/gift/mock-services';
 import { mockResponse200 } from '@ukef-test/http-response';
-import { PinoLogger } from 'nestjs-pino';
 
 import {
   GiftAccrualScheduleService,
@@ -19,7 +19,7 @@ import {
   GiftRepaymentProfileService,
   GiftRiskDetailsService,
   GiftStatusService,
-} from '../';
+} from '@ukef/modules/gift/services';
 import { GiftFacilityService } from './';
 
 const {
@@ -58,7 +58,7 @@ describe('GiftFacilityService.getMany', () => {
       get: mockGet,
     };
 
-    const counterpartyService = new GiftCounterpartyService(giftHttpService, logger);
+    counterpartyService = new GiftCounterpartyService(giftHttpService, logger);
     const currencyService = new GiftCurrencyService(giftHttpService, logger);
     const feeTypeService = new GiftFeeTypeService(giftHttpService, logger);
     const mdmService = {};

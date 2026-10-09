@@ -1,3 +1,4 @@
+import { when } from 'jest-when';
 import { AcbsPartyService } from '@ukef/modules/acbs/acbs-party.service';
 import { AcbsGetPartyResponseDto } from '@ukef/modules/acbs/dto/acbs-get-party-response.dto';
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
@@ -5,7 +6,6 @@ import { DateStringTransformations } from '@ukef/modules/date/date-string.transf
 import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
 import { GetPartyGenerator } from '@ukef-test/support/generator/get-party-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { when } from 'jest-when';
 
 import { Party } from './party.interface';
 import { PartyService } from './party.service';
@@ -25,7 +25,7 @@ describe('PartyService', () => {
   let acbsPartyServiceGetPartyByIdentifier: jest.Mock;
 
   beforeEach(() => {
-    acbsPartyService = new AcbsPartyService(null, null);
+    acbsPartyService = new AcbsPartyService(null!, null!);
 
     acbsPartyServiceGetPartyByIdentifier = jest.fn();
     acbsPartyService.getPartyByIdentifier = acbsPartyServiceGetPartyByIdentifier;
@@ -64,11 +64,11 @@ describe('PartyService', () => {
       const { acbsParties, parties } = new GetPartyGenerator(valueGenerator, dateStringTransformations).generate({ numberToGenerate: 1 });
       const acbsParty: AcbsGetPartyResponseDto = {
         ...acbsParties[0],
-        OfficerRiskDate: null,
+        OfficerRiskDate: null!,
       };
       const expectedParty: Party = {
         ...parties[0],
-        officerRiskDate: null,
+        officerRiskDate: null!,
       };
       when(acbsPartyServiceGetPartyByIdentifier).calledWith(partyIdentifier, idToken).mockResolvedValueOnce(acbsParty);
 

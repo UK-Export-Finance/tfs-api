@@ -1,11 +1,11 @@
 import { HttpService } from '@nestjs/axios';
-import { GetPartyGenerator } from '@ukef-test/support/generator/get-party-generator';
-import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { AxiosError } from 'axios';
 import { when } from 'jest-when';
 import { of, throwError } from 'rxjs';
+import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
+import { GetPartyGenerator } from '@ukef-test/support/generator/get-party-generator';
 
-import { DateStringTransformations } from '../date/date-string.transformations';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { AcbsPartyService } from './acbs-party.service';
 import { AcbsException } from './exception/acbs.exception';
 import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
@@ -80,8 +80,8 @@ describe('AcbsPartyService', () => {
         data: 'Party not found or user does not have access',
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServiceGet)
@@ -104,8 +104,8 @@ describe('AcbsPartyService', () => {
         data: 'some error string',
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServiceGet)
@@ -128,8 +128,8 @@ describe('AcbsPartyService', () => {
         data: { errorMessage: valueGenerator.string() },
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServiceGet)
