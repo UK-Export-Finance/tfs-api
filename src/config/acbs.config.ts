@@ -8,12 +8,9 @@ export type AcbsConfigType = ExternalServiceConfig & {
   useReturnExceptionHeader: boolean;
 };
 
-export const AcbsConfig = registerAs(
-  'acbs',
-  (): AcbsConfigType => ({
-    baseUrl: process.env.ACBS_BASE_URL!,
-    maxRedirects: getIntConfig(process.env.ACBS_MAX_REDIRECTS, 5),
-    timeout: getIntConfig(process.env.ACBS_TIMEOUT, 30000),
-    useReturnExceptionHeader: process.env.ACBS_USE_RETURN_EXCEPTION_HEADER === 'true',
-  }),
-);
+export const AcbsConfig = registerAs('acbs', (): AcbsConfigType => ({
+  baseUrl: process.env.ACBS_BASE_URL!,
+  maxRedirects: getIntConfig(process.env.ACBS_MAX_REDIRECTS, 5),
+  timeout: getIntConfig(process.env.ACBS_TIMEOUT, 30000),
+  useReturnExceptionHeader: process.env.ACBS_USE_RETURN_EXCEPTION_HEADER === 'true',
+}));

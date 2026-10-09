@@ -11,12 +11,9 @@ export type GiftQueueConfigType = {
   queueName: string;
 };
 
-export const GiftQueueConfig = registerAs(
-  KEY,
-  (): GiftQueueConfigType => ({
-    storageAccountName: process.env.GIFT_QUEUE_STORAGE_ACCOUNT_NAME,
-    connectionString: process.env.GIFT_QUEUE_STORAGE_CONNECTION_STRING,
-    clientId: process.env.AZURE_CLIENT_ID,
-    queueName: process.env.GIFT_QUEUE_NAME ?? 'gift-requests',
-  }),
-);
+export const GiftQueueConfig = registerAs(KEY, (): GiftQueueConfigType => ({
+  storageAccountName: process.env.GIFT_QUEUE_STORAGE_ACCOUNT_NAME,
+  connectionString: process.env.GIFT_QUEUE_STORAGE_CONNECTION_STRING,
+  clientId: process.env.AZURE_CLIENT_ID,
+  queueName: process.env.GIFT_QUEUE_NAME ?? 'gift-requests',
+}));

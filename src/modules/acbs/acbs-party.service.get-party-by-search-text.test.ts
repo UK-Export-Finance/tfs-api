@@ -5,7 +5,7 @@ import { of, throwError } from 'rxjs';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { GetPartyGenerator } from '@ukef-test/support/generator/get-party-generator';
 
-import { DateStringTransformations } from '../date/date-string.transformations';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { AcbsPartyService } from './acbs-party.service';
 import { AcbsException } from './exception/acbs.exception';
 
