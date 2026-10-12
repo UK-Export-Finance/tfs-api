@@ -6,7 +6,6 @@ import { processGiftQueueMessage } from '../utils/process-gift-queue-message';
 
 const { FACILITY_CREATION, FACILITY_AMENDMENT, FACILITY_MULTIPLE_AMENDMENTS, FACILITY_GET, FACILITY_GET_MANY } = GIFT_QUEUE_MESSAGE_TYPE;
 
-const apimTfsUrl = process.env.APIM_TFS_URL;
 const GIFT_MAX_NUMBER_OF_RETRIES = Number(process.env.GIFT_MAX_NUMBER_OF_RETRIES);
 const mockFacilityId = '00111111111';
 
@@ -47,7 +46,8 @@ describe('processGiftQueueMessage', () => {
       // Assert
       expect(postToTfsApi).toHaveBeenCalledTimes(1);
       expect(postToTfsApi).toHaveBeenCalledWith(
-        `${apimTfsUrl}/api/v2/gift/facility/without-queue`,
+        'facilityCreation',
+        '',
         queueItem.payload,
         `Failed to create GIFT facility ${mockFacilityId}`,
         context,
@@ -122,7 +122,8 @@ describe('processGiftQueueMessage', () => {
       // Assert
       expect(postToTfsApi).toHaveBeenCalledTimes(1);
       expect(postToTfsApi).toHaveBeenCalledWith(
-        `${apimTfsUrl}/api/v2/gift/facility/${mockFacilityId}/amendment/without-queue`,
+        'facilityAmendment',
+        mockFacilityId,
         queueItem.payload,
         `Failed to amend GIFT facility ${mockFacilityId}`,
         context,
@@ -207,7 +208,8 @@ describe('processGiftQueueMessage', () => {
       // Assert
       expect(postToTfsApi).toHaveBeenCalledTimes(1);
       expect(postToTfsApi).toHaveBeenCalledWith(
-        `${apimTfsUrl}/api/v2/gift/facility/${mockFacilityId}/multiple-amendments/without-queue`,
+        'facilityMultipleAmendments',
+        mockFacilityId,
         queueItem.payload,
         `Failed to amend GIFT facility (multiple amendments) ${mockFacilityId}`,
         context,
@@ -274,12 +276,7 @@ describe('processGiftQueueMessage', () => {
 
       // Assert
       expect(getFromTfsApi).toHaveBeenCalledTimes(1);
-      expect(getFromTfsApi).toHaveBeenCalledWith(
-        `/api/v2/gift/facility/${mockFacilityId}/without-queue`,
-        {},
-        `Failed to get GIFT facility ${mockFacilityId}`,
-        context,
-      );
+      expect(getFromTfsApi).toHaveBeenCalledWith('facility', mockFacilityId, {}, `Failed to get GIFT facility ${mockFacilityId}`, context);
       expect(context.log).toHaveBeenCalledWith('GIFT facility retrieval succeeded for facilityId:', mockFacilityId);
     });
 
@@ -327,7 +324,8 @@ describe('processGiftQueueMessage', () => {
       // Assert
       expect(getFromTfsApi).toHaveBeenCalledTimes(1);
       expect(getFromTfsApi).toHaveBeenCalledWith(
-        '/api/v2/gift/facilities/without-queue',
+        'facilities',
+        '',
         { ids: `${mockFacilityId},${mockFacilityId2}` },
         `Failed to get GIFT facilities ${mockFacilityId},${mockFacilityId2}`,
         context,

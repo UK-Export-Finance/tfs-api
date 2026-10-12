@@ -13,7 +13,8 @@ const context = {
   error: jest.fn(),
 };
 
-const path = '/api/v2/gift/facility/0011111111';
+const facilityId = '0011111111';
+const path = `/api/v2/gift/facility/${facilityId}/without-queue`;
 const params = {};
 const errorPrefix = 'Failed to do something';
 
@@ -27,7 +28,7 @@ describe('getFromTfsApi', () => {
     axios.get = jest.fn().mockResolvedValue({ status: 200, data: {} });
 
     // Act
-    await getFromTfsApi(path, params, errorPrefix, context as any);
+    await getFromTfsApi('facility', facilityId, params, errorPrefix, context as any);
 
     // Assert
     expect(axios.get).toHaveBeenCalledTimes(1);
@@ -47,10 +48,10 @@ describe('getFromTfsApi', () => {
     const idsParams = { ids: '0011111111,0022222222' };
 
     // Act
-    await getFromTfsApi('/api/v2/gift/facilities', idsParams, errorPrefix, context as any);
+    await getFromTfsApi('facilities', '', idsParams, errorPrefix, context as any);
 
     // Assert
-    expect(axios.get).toHaveBeenCalledWith(`${apimTfsUrl}/api/v2/gift/facilities`, {
+    expect(axios.get).toHaveBeenCalledWith(`${apimTfsUrl}/api/v2/gift/facilities/without-queue`, {
       params: idsParams,
       headers: {
         [apimTfsKey]: apimTfsValue,
@@ -66,7 +67,7 @@ describe('getFromTfsApi', () => {
     axios.get = jest.fn().mockResolvedValue({ status: 200, data: responseData });
 
     // Act
-    const result = await getFromTfsApi(path, params, errorPrefix, context as any);
+    const result = await getFromTfsApi('facility', facilityId, params, errorPrefix, context as any);
 
     // Assert
     expect(result).toStrictEqual(responseData);
@@ -78,7 +79,7 @@ describe('getFromTfsApi', () => {
     axios.get = jest.fn().mockResolvedValue({ status: 204, data: undefined });
 
     // Act
-    const result = await getFromTfsApi(path, params, errorPrefix, context as any);
+    const result = await getFromTfsApi('facility', facilityId, params, errorPrefix, context as any);
 
     // Assert
     expect(result).toBeUndefined();
@@ -96,7 +97,7 @@ describe('getFromTfsApi', () => {
     jest.mocked(axios.isAxiosError).mockReturnValue(true);
 
     // Act
-    const call = () => getFromTfsApi(path, params, errorPrefix, context as any);
+    const call = () => getFromTfsApi('facility', facilityId, params, errorPrefix, context as any);
 
     // Assert
     await expect(call()).rejects.toThrow(`${errorPrefix}, status: 500, error: Network Error, response: {"error":"Internal Server Error"}`);
@@ -108,7 +109,7 @@ describe('getFromTfsApi', () => {
     axios.get = jest.fn().mockRejectedValue(new Error('Network Error'));
 
     // Act
-    const call = () => getFromTfsApi(path, params, errorPrefix, context as any);
+    const call = () => getFromTfsApi('facility', facilityId, params, errorPrefix, context as any);
 
     // Assert
     await expect(call()).rejects.toThrow(`${errorPrefix}, error: Network Error`);
@@ -120,7 +121,7 @@ describe('getFromTfsApi', () => {
     axios.get = jest.fn().mockRejectedValue('unexpected string error');
 
     // Act
-    const call = () => getFromTfsApi(path, params, errorPrefix, context as any);
+    const call = () => getFromTfsApi('facility', facilityId, params, errorPrefix, context as any);
 
     // Assert
     await expect(call()).rejects.toThrow(`${errorPrefix}, unknown error`);
