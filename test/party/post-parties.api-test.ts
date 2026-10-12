@@ -549,10 +549,8 @@ describe('POST /parties', () => {
       .matchHeader('Content-Type', 'application/json');
 
   const givenAnyRequestBodyToCreatePartySucceeds = (): void => {
-    const requestBodyPlaceholder = '*';
     nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .filteringRequestBody(() => requestBodyPlaceholder)
-      .post('/Party', requestBodyPlaceholder)
+      .post('/Party')
       .matchHeader('authorization', `Bearer ${idToken}`)
       .reply(201, undefined, { Location: `/Party/${partyIdentifier}` });
   };
@@ -579,10 +577,8 @@ describe('POST /parties', () => {
       .matchHeader('Content-Type', 'application/json');
 
   const givenAnyRequestBodyToCreatePartyExternalRatingSucceeds = (): void => {
-    const requestBodyPlaceholder = '*';
     nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .filteringRequestBody(() => requestBodyPlaceholder)
-      .post(`/Party/${partyIdentifier}/PartyExternalRating`, requestBodyPlaceholder)
+      .post(`/Party/${partyIdentifier}/PartyExternalRating`)
       .matchHeader('authorization', `Bearer ${idToken}`)
       .reply(201);
   };

@@ -472,10 +472,8 @@ describe('POST /facilities/{facilityIdentifier}/covenants', () => {
       .matchHeader('Content-Type', 'application/json');
 
   const givenAnyRequestBodyToCreateCovenantSucceeds = (): void => {
-    const requestBodyPlaceholder = '*';
     nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .filteringRequestBody(() => requestBodyPlaceholder)
-      .post(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/Covenant`, requestBodyPlaceholder)
+      .post(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/Covenant`)
       .matchHeader('authorization', `Bearer ${idToken}`)
       .reply(201);
   };

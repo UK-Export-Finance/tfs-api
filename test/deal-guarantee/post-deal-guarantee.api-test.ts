@@ -285,10 +285,8 @@ describe('POST /deals/{dealIdentifier}/guarantees', () => {
       .matchHeader('authorization', `Bearer ${idToken}`);
 
   const givenAnyRequestBodyToCreateDealGuaranteeInAcbsSucceeds = (): void => {
-    const requestBodyPlaceholder = '*';
     nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .filteringRequestBody(() => requestBodyPlaceholder)
-      .post(`/Portfolio/${portfolioIdentifier}/Deal/${dealIdentifier}/DealGuarantee`, requestBodyPlaceholder)
+      .post(`/Portfolio/${portfolioIdentifier}/Deal/${dealIdentifier}/DealGuarantee`)
       .matchHeader('authorization', `Bearer ${idToken}`)
       .reply(201, undefined, {
         location: `/Portfolio/${portfolioIdentifier}/Deal/${dealIdentifier}/DealGuarantee?accountOwnerIdentifier=00000000&lenderTypeCode=${lenderTypeCode}&sectionIdentifier=${sectionIdentifier}&limitTypeCode=${limitTypeCode}&limitKey=${limitKey}&guarantorPartyIdentifier=${guarantorParty}`,

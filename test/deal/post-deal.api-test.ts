@@ -375,10 +375,8 @@ describe('POST /deals', () => {
     nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL).post(`/Portfolio/${portfolioIdentifier}/Deal`, requestBody).matchHeader('authorization', `Bearer ${idToken}`);
 
   const givenAnyRequestBodyToCreateDealInAcbsSucceeds = (): nock.Scope => {
-    const requestBodyPlaceholder = '*';
     return nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .filteringRequestBody(() => requestBodyPlaceholder)
-      .post(`/Portfolio/${portfolioIdentifier}/Deal`, requestBodyPlaceholder)
+      .post(`/Portfolio/${portfolioIdentifier}/Deal`)
       .matchHeader('authorization', `Bearer ${idToken}`)
       .reply(201, undefined, { location: `/Deal/${dealIdentifier}` });
   };

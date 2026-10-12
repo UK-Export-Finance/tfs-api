@@ -260,10 +260,8 @@ describe('POST /facilities/{facilityIdentifier}/investors', () => {
   };
 
   const givenAnyRequestBodyToCreateFacilityInvestorInAcbsSucceeds = (): void => {
-    const requestBodyPlaceholder = '*';
     nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .filteringRequestBody(() => requestBodyPlaceholder)
-      .post(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/FacilityParty`, requestBodyPlaceholder)
+      .post(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/FacilityParty`)
       .matchHeader('authorization', `Bearer ${idToken}`)
       .reply(...acbsSuccessResponseForFacilityId(facilityIdentifier));
   };

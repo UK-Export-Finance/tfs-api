@@ -1,11 +1,13 @@
 import { ExecutionContext } from '@nestjs/common';
-import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 import { PinoLogger } from 'nestjs-pino';
 import { lastValueFrom, of } from 'rxjs';
 import { AcbsBadRequestException } from '@ukef/modules/acbs/exception/acbs-bad-request.exception';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 
 import { LoggingInterceptor } from './logging-interceptor.helper';
+
+// @nestjs/common no longer re-exports HttpArgumentsHost directly, so derive it from ExecutionContext
+type HttpArgumentsHost = ReturnType<ExecutionContext['switchToHttp']>;
 
 describe('LoggingInterceptor', () => {
   const valueGenerator = new RandomValueGenerator();

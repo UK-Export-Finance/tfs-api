@@ -130,10 +130,8 @@ describe('POST /facilities', () => {
     nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL).post(`/Portfolio/${portfolioIdentifier}/Facility`, requestBody).matchHeader('authorization', `Bearer ${idToken}`);
 
   const givenAnyRequestBodyToCreateFacilityInAcbsSucceeds = (): void => {
-    const requestBodyPlaceholder = '*';
     nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .filteringRequestBody(() => requestBodyPlaceholder)
-      .post(`/Portfolio/${portfolioIdentifier}/Facility`, requestBodyPlaceholder)
+      .post(`/Portfolio/${portfolioIdentifier}/Facility`)
       .matchHeader('authorization', `Bearer ${idToken}`)
       .reply(201, undefined, {
         location: `/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}`,

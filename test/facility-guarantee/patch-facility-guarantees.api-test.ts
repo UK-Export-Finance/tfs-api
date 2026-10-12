@@ -351,10 +351,8 @@ describe('PATCH /facilities/{facilityIdentifier}/guarantees', () => {
       .matchHeader('Content-Type', 'application/json');
 
   const givenAnyRequestBodyToReplaceFacilityGuaranteeSucceeds = (): void => {
-    const requestBodyPlaceholder = '*';
     nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .filteringRequestBody(() => requestBodyPlaceholder)
-      .put(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/FacilityGuarantee`, requestBodyPlaceholder)
+      .put(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/FacilityGuarantee`)
       .matchHeader('authorization', `Bearer ${idToken}`)
       .reply(200);
   };

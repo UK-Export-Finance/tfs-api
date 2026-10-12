@@ -147,10 +147,8 @@ describe('POST /facilities/{facilityIdentifier}/loans/{loanIdentifier}/amendment
   const givenAnyRequestBodyToCreateLoanAmountAmendmentInAcbsSucceeds = (
     acbsSuccessfulResponse: [number, undefined, { BundleIdentifier: string }],
   ): nock.Scope => {
-    const requestBodyPlaceholder = '*';
     return nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .filteringRequestBody(() => requestBodyPlaceholder)
-      .post(`/BundleInformation?servicingQueueIdentifier=${servicingQueueIdentifier}`, requestBodyPlaceholder)
+      .post(`/BundleInformation?servicingQueueIdentifier=${servicingQueueIdentifier}`)
       .matchHeader('authorization', `Bearer ${idToken}`)
       .matchHeader('Content-Type', 'application/json')
       .reply(...acbsSuccessfulResponse);
