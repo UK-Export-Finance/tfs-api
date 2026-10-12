@@ -26,7 +26,7 @@ export const createWrapAcbsHttpGetErrorCallback =
 export const createWrapAcbsHttpPostOrPutErrorCallback =
   ({ messageForUnknownError, knownErrors }: { messageForUnknownError: string; knownErrors: KnownErrors }): AcbsHttpErrorCallback =>
   (error: Error) => {
-    if (!(error instanceof AxiosError) || (error?.response?.status !== 400)) {
+    if (!(error instanceof AxiosError) || error?.response?.status !== 400) {
       return throwError(() => new AcbsUnexpectedException(messageForUnknownError, error));
     }
 
