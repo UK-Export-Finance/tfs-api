@@ -1,7 +1,7 @@
 import { InvocationContext } from '@azure/functions';
 import axios from 'axios';
 
-import { GIFT_QUEUE_OPERATION_LABEL, GiftQueueMessageType } from '../types/queue-message.type';
+import { GIFT_QUEUE_MESSAGE_TYPE, GIFT_QUEUE_OPERATION_LABEL, GiftQueueMessageType } from '../types/queue-message.type';
 import { requireEnv, requireEnvInt } from './env';
 
 const baseUrl = requireEnv('HALO_BASE_URL');
@@ -44,19 +44,37 @@ async function getHaloAccessToken(): Promise<string> {
 }
 
 /**
+ * Builds the Halo ticket summary (title) for a failed GIFT operation.
+ * GET operations use their own wording, since no payload is "sent" to GIFT for those.
+ *
+ * @param facilityId - The facility ID(s) from the original DTFS payload (or 'UNKNOWN_FACILITY_ID' if not present).
+ * @param messageType - The type of GIFT operation that failed, see `GIFT_QUEUE_MESSAGE_TYPE`.
+ * @returns the ticket summary text.
+ */
+function buildSummary(facilityId: string, messageType: GiftQueueMessageType | undefined): string {
+  switch (messageType) {
+    case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_GET:
+      return `APIM TFS Error retrieving facility ${facilityId} in GIFT - preventing facility creation`;
+    case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_GET_MANY:
+      return `APIM TFS Error retrieving facilities ${facilityId} in GIFT - preventing facility creation`;
+    default:
+      return `APIM TFS Error sending facility ${facilityId} ${GIFT_QUEUE_OPERATION_LABEL[messageType]} to GIFT`;
+  }
+}
+
+/**
  * Builds the request body for creating a Halo ticket.
  *
  * @param facilityId - The facility ID from the original DTFS payload (or 'UNKNOWN_FACILITY_ID' if not present).
  * @param payload - The original payload sent by a consumer (e.g. DTFS).
  * @param errorMessage - The formatted error message from the failed GIFT request.
- * @param messageType - The type of GIFT request that failed ('FACILITY_CREATION' or 'FACILITY_AMENDMENT').
+ * @param messageType - The type of GIFT operation that failed, see `GIFT_QUEUE_MESSAGE_TYPE`.
  * @returns the request body to create a Halo ticket, formatted according to the Halo API requirements.
  */
 function buildTicketBody(facilityId: string, payload: unknown, errorMessage: string, messageType: GiftQueueMessageType | undefined) {
-  const operationType = GIFT_QUEUE_OPERATION_LABEL[messageType];
   return [
     {
-      summary: `APIM TFS Error sending facility ${facilityId} ${operationType} to GIFT`,
+      summary: buildSummary(facilityId, messageType),
       details: `Error: ${errorMessage}\n\nOriginal payload:\n${JSON.stringify(payload, null, 2)}`,
       tickettype_id: ticketTypeId,
       client_id: ticketClientId,
@@ -77,7 +95,7 @@ function buildTicketBody(facilityId: string, payload: unknown, errorMessage: str
  * @param facilityId - The facility ID from the original DTFS payload (or 'UNKNOWN_FACILITY_ID' if not present).
  * @param payload - The original payload sent by DTFS.
  * @param errorMessage - The formatted error message from the failed GIFT request.
- * @param messageType - The type of GIFT request that failed ('FACILITY_CREATION' or 'FACILITY_AMENDMENT').
+ * @param messageType - The type of GIFT operation that failed, see `GIFT_QUEUE_MESSAGE_TYPE`.
  * @param context - The Azure Functions invocation context for logging.
  */
 export async function createHaloTicket(
