@@ -6,7 +6,7 @@ import { PROPERTIES } from '@ukef/constants';
 import { GetFacilityGenerator } from '@ukef-test/support/generator/get-facility-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 
-import { DateStringTransformations } from '../date/date-string.transformations';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { AcbsFacilityService } from './acbs-facility.service';
 import { AcbsException } from './exception/acbs.exception';
 import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
