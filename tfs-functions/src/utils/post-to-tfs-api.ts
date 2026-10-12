@@ -4,6 +4,9 @@ import axios from 'axios';
 import { HttpStatus } from '../constants/http-status.constant';
 import { requireEnv } from './env';
 
+const baseUrl = requireEnv('APIM_TFS_URL');
+const baseOrigin = new URL(baseUrl).origin;
+
 const apimKeyHeaderName = requireEnv('APIM_TFS_KEY');
 const apimKeyHeaderValue = requireEnv('APIM_TFS_VALUE');
 
@@ -18,6 +21,17 @@ const apimKeyHeaderValue = requireEnv('APIM_TFS_VALUE');
  */
 export async function postToTfsApi(url: string, payload: unknown, errorPrefix: string, context: InvocationContext): Promise<void> {
   let response;
+
+  /**
+   * `url` is built from caller-supplied values (e.g. facilityId), so pin it to the configured
+   * TFS API origin before use - otherwise a tainted value could redirect the request (SSRF).
+   */
+  if (new URL(url).origin !== baseOrigin) {
+    const message = `${errorPrefix}, refused to request a URL outside the TFS API origin: ${url}`;
+
+    context.error(message);
+    throw new Error(message);
+  }
 
   try {
     response = await axios.post(url, payload, {

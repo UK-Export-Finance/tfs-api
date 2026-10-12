@@ -4,6 +4,7 @@ import axios from 'axios';
 import { requireEnv } from './env';
 
 const baseUrl = requireEnv('APIM_TFS_URL');
+const baseOrigin = new URL(baseUrl).origin;
 const apimKeyHeaderName = requireEnv('APIM_TFS_KEY');
 const apimKeyHeaderValue = requireEnv('APIM_TFS_VALUE');
 
@@ -24,10 +25,22 @@ export async function getFromTfsApi(path: string, params: Record<string, string>
    * NOTE: path is resolved against baseUrl (rather than concatenated), so that user-controlled
    * path segments cannot be used to escape the TFS API host/path.
    */
-  const url = new URL(path, baseUrl).toString();
+  const url = new URL(path, baseUrl);
+
+  /**
+   * `new URL(path, baseUrl)` resolves `path` as an absolute URL (ignoring baseUrl entirely) if it
+   * looks like one (e.g. starts with a scheme or `//`). Reject anything that would send the request
+   * to a different origin, so a tainted `path` can never be used for SSRF.
+   */
+  if (url.origin !== baseOrigin) {
+    const message = `${errorPrefix}, refused to request a URL outside the TFS API origin: ${url.origin}`;
+
+    context.error(message);
+    throw new Error(message);
+  }
 
   try {
-    response = await axios.get(url, {
+    response = await axios.get(url.toString(), {
       params,
       headers: {
         [apimKeyHeaderName]: apimKeyHeaderValue,
