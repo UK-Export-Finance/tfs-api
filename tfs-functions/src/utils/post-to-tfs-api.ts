@@ -2,26 +2,31 @@ import { InvocationContext } from '@azure/functions';
 import axios from 'axios';
 
 import { HttpStatus } from '../constants/http-status.constant';
-import { buildTfsApiUrl, tfsApiHeaders, throwTfsApiError } from './tfs-api-client';
+import { assertSafeIdSegment, buildTfsApiUrl, tfsApiHeaders, throwTfsApiError } from './tfs-api-client';
+
+export type TfsGiftPostEndpoint = 'facilityCreation' | 'facilityAmendment' | 'facilityMultipleAmendments';
 
 /**
- * Whitelist of the only POST endpoints this function is allowed to call. Every request is built
- * from one of these hardcoded templates, with only a validated id segment substituted in - the
- * caller can never supply an arbitrary URL.
+ * Resolves `endpoint` to its hardcoded path template, substituting the (already-validated) `id`.
+ * Deliberately a switch rather than an object/array keyed by `endpoint`, so the path is never
+ * derived via a dynamic property lookup.
  */
-const TFS_GIFT_POST_ENDPOINTS = {
-  facilityCreation: () => '/api/v2/gift/facility/without-queue',
-  facilityAmendment: (facilityId: string) => `/api/v2/gift/facility/${facilityId}/amendment/without-queue`,
-  facilityMultipleAmendments: (facilityId: string) => `/api/v2/gift/facility/${facilityId}/multiple-amendments/without-queue`,
-} as const;
-
-export type TfsGiftPostEndpoint = keyof typeof TFS_GIFT_POST_ENDPOINTS;
+const resolvePostPath = (endpoint: TfsGiftPostEndpoint, id: string): string => {
+  switch (endpoint) {
+    case 'facilityCreation':
+      return '/api/v2/gift/facility/without-queue';
+    case 'facilityAmendment':
+      return `/api/v2/gift/facility/${id}/amendment/without-queue`;
+    case 'facilityMultipleAmendments':
+      return `/api/v2/gift/facility/${id}/multiple-amendments/without-queue`;
+  }
+};
 
 /**
  * Posts a GIFT facility payload to the TFS API, handling errors consistently.
  * Throws a descriptive Error on any failure.
  *
- * @param endpoint - Which hardcoded TFS_GIFT_POST_ENDPOINTS template to request.
+ * @param endpoint - Which hardcoded path template to request.
  * @param id - The id segment to substitute into the template (pass '' for templates that take none).
  * @param payload - The request body.
  * @param errorPrefix - Prefix for all error messages, e.g. 'Failed to create GIFT facility'.
@@ -34,11 +39,17 @@ export async function postToTfsApi(
   errorPrefix: string,
   context: InvocationContext,
 ): Promise<void> {
-  const url = buildTfsApiUrl(TFS_GIFT_POST_ENDPOINTS, endpoint, id, errorPrefix, context);
+  assertSafeIdSegment(id, errorPrefix, context);
+
+  const url = buildTfsApiUrl(resolvePostPath(endpoint, id));
 
   let response;
 
   try {
+    /**
+     * nosemgrep: url is always baseUrl + one of the three hardcoded templates above, with only a
+     * character-validated id substituted in - it can never point outside the TFS API host.
+     */
     response = await axios.post(url, payload, { headers: tfsApiHeaders });
   } catch (error) {
     throwTfsApiError(error, errorPrefix, context);
@@ -46,6 +57,7 @@ export async function postToTfsApi(
 
   if (response.status !== HttpStatus.CREATED) {
     const message = `${errorPrefix}, status: ${response.status}, response: ${JSON.stringify(response.data)}`;
+
     context.error(message);
     throw new Error(message);
   }

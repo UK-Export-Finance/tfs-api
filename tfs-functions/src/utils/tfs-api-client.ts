@@ -18,39 +18,31 @@ export const tfsApiHeaders = {
 const ALLOWED_CHARACTERS = new Set('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789,');
 
 /**
- * Checks `id` contains only safe characters for substitution into a hardcoded endpoint template
- * (no `/`, `:`, `.`, so it can never add a path segment, scheme, or host).
- */
-const isSafeIdSegment = (id: string): boolean => [...id].every((character) => ALLOWED_CHARACTERS.has(character));
-
-/**
- * Builds the full URL for a hardcoded `endpoints` whitelist entry, after validating `id`.
- * Every request is built from one of the caller's hardcoded templates, with only a validated id
- * segment substituted in - the caller of getFromTfsApi/postToTfsApi can never supply an arbitrary
- * path or URL. Throws (and logs via `context`) if `id` contains anything unsafe.
+ * Throws (and logs via `context`) if `id` contains anything other than safe characters (no `/`,
+ * `:`, `.`, so it can never add a path segment, scheme, or host) before it is substituted into a
+ * hardcoded endpoint template.
  *
- * @param endpoints - Whitelist of hardcoded path templates, keyed by endpoint name.
- * @param endpoint - Which template in `endpoints` to request.
- * @param id - The id segment to substitute into the template (pass '' for templates that take none).
+ * @param id - The id segment about to be substituted into a path template.
  * @param errorPrefix - Prefix for all error messages, e.g. 'Failed to get GIFT facility'.
  * @param context - The Azure Functions invocation context for logging.
  */
-export function buildTfsApiUrl<Endpoint extends string>(
-  endpoints: Record<Endpoint, (id: string) => string>,
-  endpoint: Endpoint,
-  id: string,
-  errorPrefix: string,
-  context: InvocationContext,
-): string {
-  if (!isSafeIdSegment(id)) {
+export function assertSafeIdSegment(id: string, errorPrefix: string, context: InvocationContext): void {
+  const isSafe = [...id].every((character) => ALLOWED_CHARACTERS.has(character));
+
+  if (!isSafe) {
     const message = `${errorPrefix}, refused to request with an invalid id: ${id}`;
 
     context.error(message);
     throw new Error(message);
   }
-
-  return `${baseUrl}${endpoints[endpoint](id)}`;
 }
+
+/**
+ * Resolves an already-built, hardcoded `path` against the configured TFS API base URL.
+ *
+ * @param path - A path produced from a hardcoded template (see e.g. resolveGetPath in get-from-tfs-api.ts).
+ */
+export const buildTfsApiUrl = (path: string): string => `${baseUrl}${path}`;
 
 /**
  * Logs (via `context`) and throws a descriptive Error for any TFS API request failure, normalizing

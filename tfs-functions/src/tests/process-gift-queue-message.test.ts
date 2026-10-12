@@ -45,13 +45,7 @@ describe('processGiftQueueMessage', () => {
 
       // Assert
       expect(postToTfsApi).toHaveBeenCalledTimes(1);
-      expect(postToTfsApi).toHaveBeenCalledWith(
-        'facilityCreation',
-        '',
-        queueItem.payload,
-        `Failed to create GIFT facility ${mockFacilityId}`,
-        context,
-      );
+      expect(postToTfsApi).toHaveBeenCalledWith('facilityCreation', '', queueItem.payload, `Failed to create GIFT facility ${mockFacilityId}`, context);
       expect(context.log).toHaveBeenCalledWith('GIFT facility creation succeeded for facilityId:', mockFacilityId);
     });
 
