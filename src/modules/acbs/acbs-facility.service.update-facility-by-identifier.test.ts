@@ -5,11 +5,11 @@ import { of, throwError } from 'rxjs';
 import { UpdateFacilityGenerator } from '@ukef-test/support/generator/update-facility-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 
-import { DateStringTransformations } from '../date/date-string.transformations';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { AcbsFacilityService } from './acbs-facility.service';
 import { AcbsBadRequestException } from './exception/acbs-bad-request.exception';
 import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
-import { AcbsUnexpectedException } from './exception/acbs-unexpected.exception';
+import { AcbsException } from './exception/acbs.exception';
 
 describe('AcbsFacilityService', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -135,7 +135,7 @@ describe('AcbsFacilityService', () => {
       await expect(updateFacilityPromise).rejects.toHaveProperty('innerError', axiosError);
     });
 
-    it('throws an AcbsUnexpectedException if ACBS responds with an error code that is not 400', async () => {
+    it('throws an AcbsException if ACBS responds with an error code that is not 400', async () => {
       const axiosError = new AxiosError();
       const errorBody = { errorMessage: valueGenerator.string() };
       axiosError.response = {
@@ -152,7 +152,7 @@ describe('AcbsFacilityService', () => {
 
       const createDealPromise = service.updateFacilityByIdentifier(randomPortfolioIdentifier, updatedFacility, idToken);
 
-      await expect(createDealPromise).rejects.toBeInstanceOf(AcbsUnexpectedException);
+      await expect(createDealPromise).rejects.toBeInstanceOf(AcbsException);
       await expect(createDealPromise).rejects.toThrow(`Failed to update a facility with identifier ${facilityIdentifier} in ACBS.`);
       await expect(createDealPromise).rejects.toHaveProperty('innerError', axiosError);
     });

@@ -6,11 +6,11 @@ import { PROPERTIES } from '@ukef/constants';
 import { CreateFacilityCovenantGenerator } from '@ukef-test/support/generator/create-facility-covenant-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 
-import { DateStringTransformations } from '../date/date-string.transformations';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { AcbsFacilityCovenantService } from './acbs-facility-covenant.service';
 import { AcbsBadRequestException } from './exception/acbs-bad-request.exception';
 import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
-import { AcbsUnexpectedException } from './exception/acbs-unexpected.exception';
+import { AcbsException } from './exception/acbs.exception';
 
 describe('AcbsFacilityCovenantService', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -154,7 +154,7 @@ describe('AcbsFacilityCovenantService', () => {
       await expect(replaceCovenantForFacilityPromise).rejects.toHaveProperty('errorBody', JSON.stringify(errorBody));
     });
 
-    it('throws an AcbsUnexpectedException if ACBS responds with an error code that is not 400', async () => {
+    it('throws an AcbsException if ACBS responds with an error code that is not 400', async () => {
       const axiosError = new AxiosError();
       const errorBody = { errorMessage: valueGenerator.string() };
       axiosError.response = {
@@ -174,7 +174,7 @@ describe('AcbsFacilityCovenantService', () => {
 
       const replaceCovenantForFacilityPromise = service.replaceCovenantForFacility(portfolioIdentifier, facilityIdentifier, replacingCovenant, authToken);
 
-      await expect(replaceCovenantForFacilityPromise).rejects.toBeInstanceOf(AcbsUnexpectedException);
+      await expect(replaceCovenantForFacilityPromise).rejects.toBeInstanceOf(AcbsException);
       await expect(replaceCovenantForFacilityPromise).rejects.toThrow(
         `Failed to replace covenant ${replacingCovenant.CovenantIdentifier} for facility ${facilityIdentifier} in ACBS.`,
       );

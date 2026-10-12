@@ -5,10 +5,10 @@ import { of, throwError } from 'rxjs';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { CreatePartyGenerator } from '@ukef-test/support/generator/create-party-generator';
 
-import { DateStringTransformations } from '../date/date-string.transformations';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { AcbsPartyService } from './acbs-party.service';
 import { AcbsBadRequestException } from './exception/acbs-bad-request.exception';
-import { AcbsUnexpectedException } from './exception/acbs-unexpected.exception';
+import { AcbsException } from './exception/acbs.exception';
 
 describe('AcbsPartyService', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -111,7 +111,7 @@ describe('AcbsPartyService', () => {
       await expect(createPartyPromise).rejects.toHaveProperty('errorBody', errorString);
     });
 
-    it('throws an AcbsUnexpectedException if ACBS responds with an error code that is not 400', async () => {
+    it('throws an AcbsException if ACBS responds with an error code that is not 400', async () => {
       const axiosError = new AxiosError();
       const errorBody = { errorMessage: valueGenerator.string() };
       axiosError.response = {
@@ -128,7 +128,7 @@ describe('AcbsPartyService', () => {
 
       const createPartyPromise = service.createParty(newParty, idToken);
 
-      await expect(createPartyPromise).rejects.toBeInstanceOf(AcbsUnexpectedException);
+      await expect(createPartyPromise).rejects.toBeInstanceOf(AcbsException);
       await expect(createPartyPromise).rejects.toThrow(`Failed to create party in ACBS.`);
       await expect(createPartyPromise).rejects.toHaveProperty('innerError', axiosError);
     });
