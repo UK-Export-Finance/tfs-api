@@ -155,6 +155,7 @@ module.exports = defineConfig([
       '@typescript-eslint/no-misused-spread': 'off',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
       '@typescript-eslint/no-unsafe-enum-comparison': 'off',
+      'no-unused-vars': 'off', // superseded by the TS-aware rule below (base rule doesn't understand ignoreRestSiblings)
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', ignoreRestSiblings: true, caughtErrors: 'none' }],
       '@typescript-eslint/naming-convention': [
         'error',
