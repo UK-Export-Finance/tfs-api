@@ -2,18 +2,12 @@ import { InvocationContext } from '@azure/functions';
 
 import { GIFT_QUEUE_MESSAGE_TYPE, GiftQueueMessage } from '../types/queue-message.type';
 import { createHaloTicket } from './create-halo-ticket';
-import { requireEnv, requireEnvInt } from './env';
-import { extractFacilityId } from './extract-facility-id';
+import { requireEnvInt } from './env';
+import { extractFacilityIds } from './extract-facility-id';
+import { getFromTfsApi } from './get-from-tfs-api';
 import { postToTfsApi } from './post-to-tfs-api';
 
-const baseUrl = requireEnv('APIM_TFS_URL');
 const maxNumberOfRetries = requireEnvInt('GIFT_MAX_NUMBER_OF_RETRIES');
-
-const TFS_GIFT_INTERNAL_URLS = {
-  facilityCreation: `${baseUrl}/api/v2/gift/facility/without-queue`,
-  facilityAmendment: (facilityId: string) => `${baseUrl}/api/v2/gift/facility/${facilityId}/amendment/without-queue`,
-  facilityMultipleAmendments: (facilityId: string) => `${baseUrl}/api/v2/gift/facility/${facilityId}/multiple-amendments/without-queue`,
-} as const;
 
 /**
  * Exhaustiveness check for switch statements over discriminated unions.
@@ -37,12 +31,12 @@ const throwIfNotExhaustive = (value: never): never => {
 export async function processGiftQueueMessage(queueItem: unknown, context: InvocationContext): Promise<void> {
   const item = queueItem as GiftQueueMessage;
   const { messageType } = item;
-  const facilityId = extractFacilityId(item);
+  const facilityId = extractFacilityIds(item);
 
   try {
     switch (messageType) {
       case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION:
-        await postToTfsApi(TFS_GIFT_INTERNAL_URLS.facilityCreation, item.payload, `Failed to create GIFT facility ${facilityId}`, context);
+        await postToTfsApi('facilityCreation', '', item.payload, `Failed to create GIFT facility ${facilityId}`, context);
         context.log('GIFT facility creation succeeded for facilityId:', facilityId);
         break;
       case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_AMENDMENT:
@@ -50,7 +44,7 @@ export async function processGiftQueueMessage(queueItem: unknown, context: Invoc
           throw new Error('Failed to amend GIFT facility: facilityId is missing from queue message');
         }
 
-        await postToTfsApi(TFS_GIFT_INTERNAL_URLS.facilityAmendment(item.facilityId), item.payload, `Failed to amend GIFT facility ${facilityId}`, context);
+        await postToTfsApi('facilityAmendment', item.facilityId, item.payload, `Failed to amend GIFT facility ${facilityId}`, context);
         context.log('GIFT facility amendment succeeded for facilityId:', facilityId);
         break;
       case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_MULTIPLE_AMENDMENTS:
@@ -59,12 +53,29 @@ export async function processGiftQueueMessage(queueItem: unknown, context: Invoc
         }
 
         await postToTfsApi(
-          TFS_GIFT_INTERNAL_URLS.facilityMultipleAmendments(item.facilityId),
+          'facilityMultipleAmendments',
+          item.facilityId,
           item.payload,
           `Failed to amend GIFT facility (multiple amendments) ${facilityId}`,
           context,
         );
         context.log('GIFT facility amendment (multiple amendments) succeeded for facilityId:', facilityId);
+        break;
+      case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_GET:
+        if (!item.facilityId) {
+          throw new Error('Failed to get GIFT facility: facilityId is missing from queue message');
+        }
+
+        await getFromTfsApi('facility', item.facilityId, {}, `Failed to get GIFT facility ${facilityId}`, context);
+        context.log('GIFT facility retrieval succeeded for facilityId:', facilityId);
+        break;
+      case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_GET_MANY:
+        if (!item.ids?.length) {
+          throw new Error('Failed to get GIFT facilities: ids is missing from queue message');
+        }
+
+        await getFromTfsApi('facilities', '', { ids: item.ids.join(',') }, `Failed to get GIFT facilities ${facilityId}`, context);
+        context.log('GIFT facilities retrieval succeeded for ids:', facilityId);
         break;
       default:
         throwIfNotExhaustive(messageType);

@@ -50,6 +50,33 @@ export class GiftFacilityController {
     description: 'The facility ID',
     example: EXAMPLES.GIFT.FACILITY_ID,
   })
+  @ApiAcceptedResponse({
+    description: 'The facility get request has been accepted and added to the queue',
+  })
+  @ApiBadRequestResponse({
+    description: 'Bad request',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized',
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'An internal server error has occurred',
+  })
+  async getQueue(@Param() { facilityId }: FacilityIdOperationParamsDto, @Res({ passthrough: true }) res: Response) {
+    await this.giftQueueService.enqueue({ messageType: 'FACILITY_GET', facilityId });
+
+    res.status(HttpStatus.ACCEPTED);
+  }
+
+  @Get(':facilityId/without-queue')
+  @ApiOperation({ summary: 'Without queue: Get a GIFT facility by ID' })
+  @ApiParam({
+    name: 'facilityId',
+    required: true,
+    type: 'string',
+    description: 'The facility ID',
+    example: EXAMPLES.GIFT.FACILITY_ID,
+  })
   @ApiOkResponse({
     description: 'The facility',
     type: GiftFacilityOverviewRequestDto,
@@ -71,7 +98,7 @@ export class GiftFacilityController {
    * Therefore, we use passthrough: true to ensure that NestJS provides some additional response handling.
    * Further information: https://docs.nestjs.com/controllers#library-specific-approach
    */
-  async get(@Param() { facilityId }: FacilityIdOperationParamsDto, @Res({ passthrough: true }) res: Response) {
+  async getWithoutQueue(@Param() { facilityId }: FacilityIdOperationParamsDto, @Res({ passthrough: true }) res: Response) {
     const { status, data } = await this.giftFacilityService.get(facilityId);
 
     res.status(status).json(data);
