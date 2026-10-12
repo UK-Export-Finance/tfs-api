@@ -9,6 +9,13 @@ const apimKeyHeaderName = requireEnv('APIM_TFS_KEY');
 const apimKeyHeaderValue = requireEnv('APIM_TFS_VALUE');
 
 /**
+ * Matches a plain site-relative path (e.g. `/api/v2/gift/facility/0011111111`).
+ * Rejects anything containing a scheme/host component (`:`, a leading `//`) so a tainted
+ * `path` can never be resolved as an absolute URL to a different origin.
+ */
+const SAFE_RELATIVE_PATH_REGEX = /^\/(?!\/)[A-Za-z0-9/_,-]*$/;
+
+/**
  * Gets a resource from the TFS API, handling errors consistently.
  * Throws a descriptive Error on any failure.
  *
@@ -20,6 +27,13 @@ const apimKeyHeaderValue = requireEnv('APIM_TFS_VALUE');
  */
 export async function getFromTfsApi(path: string, params: Record<string, string>, errorPrefix: string, context: InvocationContext): Promise<unknown> {
   let response;
+
+  if (!SAFE_RELATIVE_PATH_REGEX.test(path)) {
+    const message = `${errorPrefix}, refused to request an invalid path: ${path}`;
+
+    context.error(message);
+    throw new Error(message);
+  }
 
   /**
    * NOTE: path is resolved against baseUrl (rather than concatenated), so that user-controlled
