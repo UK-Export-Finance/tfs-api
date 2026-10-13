@@ -1,10 +1,11 @@
+import { PinoLogger } from 'nestjs-pino';
 import { DefaultAzureCredential } from '@azure/identity';
 import { QueueClient, QueueServiceClient } from '@azure/storage-queue';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { PinoLogger } from 'nestjs-pino';
 import { GiftQueueConfigType, GIFT_QUEUE_CONFIG_KEY } from '@ukef/config/gift-queue.config';
 import { GIFT } from '@ukef/constants';
+import { UkefId } from '@ukef/helpers';
 
 import { CreateGiftFacilityAmendmentRequestDto, CreateGiftFacilityMultipleAmendmentsRequestDto, GiftFacilityCreationRequestDto } from '@ukef/modules/gift/dto';
 
@@ -14,6 +15,8 @@ const MESSAGE_TYPES = {
   FACILITY_CREATION: 'FACILITY_CREATION',
   FACILITY_AMENDMENT: 'FACILITY_AMENDMENT',
   FACILITY_MULTIPLE_AMENDMENTS: 'FACILITY_MULTIPLE_AMENDMENTS',
+  FACILITY_GET: 'FACILITY_GET',
+  FACILITY_GET_MANY: 'FACILITY_GET_MANY',
 } as const;
 
 type GiftFacilityCreationQueueMessage = {
@@ -33,7 +36,22 @@ type GiftFacilityMultipleAmendmentsQueueMessage = {
   payload: CreateGiftFacilityMultipleAmendmentsRequestDto;
 };
 
-type GiftQueueMessage = GiftFacilityCreationQueueMessage | GiftFacilityAmendmentQueueMessage | GiftFacilityMultipleAmendmentsQueueMessage;
+type GiftFacilityGetQueueMessage = {
+  messageType: typeof MESSAGE_TYPES.FACILITY_GET;
+  facilityId: string;
+};
+
+type GiftFacilityGetManyQueueMessage = {
+  messageType: typeof MESSAGE_TYPES.FACILITY_GET_MANY;
+  ids: UkefId[];
+};
+
+type GiftQueueMessage =
+  | GiftFacilityCreationQueueMessage
+  | GiftFacilityAmendmentQueueMessage
+  | GiftFacilityMultipleAmendmentsQueueMessage
+  | GiftFacilityGetQueueMessage
+  | GiftFacilityGetManyQueueMessage;
 
 /**
  * Service for interacting with the GIFT Azure Storage Queue.
@@ -41,6 +59,8 @@ type GiftQueueMessage = GiftFacilityCreationQueueMessage | GiftFacilityAmendment
  * - Create a GIFT facility
  * - Make an amendment to a GIFT facility
  * - Make multiple amendments to a GIFT facility
+ * - Get a GIFT facility
+ * - Get multiple GIFT facilities
  */
 @Injectable()
 export class GiftQueueService {
@@ -74,11 +94,9 @@ export class GiftQueueService {
 
     const message = Buffer.from(JSON.stringify(messageInput)).toString('base64');
 
-    const { messageType, payload } = messageInput;
-
     const options: { visibilityTimeout?: number } = {};
 
-    const isFacilityCreationWithDelay = messageType === MESSAGE_TYPES.FACILITY_CREATION && payload.delayCreation;
+    const isFacilityCreationWithDelay = messageInput.messageType === MESSAGE_TYPES.FACILITY_CREATION && messageInput.payload.delayCreation;
 
     if (isFacilityCreationWithDelay) {
       options.visibilityTimeout = QUEUE_DELAY;
