@@ -1,4 +1,3 @@
-/** eslint-disable */
 import nock from 'nock';
 import { PROPERTIES } from '@ukef/constants';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
@@ -402,5 +401,3 @@ describe('POST /deals', () => {
     },
   });
 });
-
-/** eslint-enable */

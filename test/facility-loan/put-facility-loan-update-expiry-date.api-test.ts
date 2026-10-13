@@ -36,7 +36,7 @@ describe('PATCH /facilities/{facilityIdentifier}/loans/{loanIdentifier}', () => 
   let idToken: string;
 
   const makeRequest = (requestBody: unknown) =>
-    api.patch(getUpdateExpiryDateUrl({ facilityId: facilityIdentifier, loanId: loanIdentifier }), JSON.parse(JSON.stringify(requestBody)));
+    api.patch(getUpdateExpiryDateUrl({ facilityId: facilityIdentifier, loanId: loanIdentifier }), structuredClone(requestBody) as string | object);
 
   const requestToGetLoanInAcbs = (loanId = loanIdentifier) =>
     nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL).get(`/Portfolio/${portfolioIdentifier}/Loan/${loanId}`).matchHeader('authorization', `Bearer ${idToken}`);

@@ -1,4 +1,3 @@
-/* eslint-disable */
 import nock from 'nock';
 import { PROPERTIES } from '@ukef/constants';
 import { UkefId } from '@ukef/helpers';
@@ -22,10 +21,12 @@ describe('GET /deals/{dealIdentifier}/guarantees', () => {
     portfolioIdentifier,
   });
 
+  /* eslint-disable @typescript-eslint/no-use-before-define */
   const { idToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
     givenRequestWouldOtherwiseSucceed: () => requestToGetDealGuarantees().reply(200, dealGuaranteesInAcbs),
     makeRequest: () => api.get(getDealGuaranteesUrl),
   });
+  /* eslint-enable @typescript-eslint/no-use-before-define */
 
   const requestToGetDealGuarantees = () =>
     nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
@@ -127,5 +128,3 @@ describe('GET /deals/{dealIdentifier}/guarantees', () => {
     });
   });
 });
-
-/* eslint-enable */

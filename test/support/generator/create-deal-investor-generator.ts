@@ -46,7 +46,7 @@ export class CreateDealInvestorGenerator extends AbstractGenerator<CreateDealInv
       SectionIdentifier: PROPERTIES.DEAL_INVESTOR.DEFAULT.sectionIdentifier,
       EffectiveDate: effectiveDateString,
       ExpirationDate: expirationDateString,
-      IsExpirationDateMaximum: firstDealInvestor.expiryDate,
+      IsExpirationDateMaximum: Boolean(firstDealInvestor.expiryDate),
       LenderType: {
         LenderTypeCode: firstDealInvestor.lenderType ?? PROPERTIES.DEAL_INVESTOR.DEFAULT.lenderType.lenderTypeCode,
       },
