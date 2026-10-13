@@ -14,6 +14,7 @@ describe('GET /deals/{dealIdentifier}/guarantees', () => {
   const getDealGuaranteesUrl = `/api/v1/deals/${dealIdentifier}/guarantees`;
 
   let api: Api;
+  let idToken: string;
 
   const { dealGuaranteesInAcbs, dealGuaranteesFromService } = new GetDealGuaranteeGenerator(valueGenerator).generate({
     numberToGenerate: 2,
@@ -21,17 +22,16 @@ describe('GET /deals/{dealIdentifier}/guarantees', () => {
     portfolioIdentifier,
   });
 
-  /* eslint-disable @typescript-eslint/no-use-before-define */
-  const { idToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
-    givenRequestWouldOtherwiseSucceed: () => requestToGetDealGuarantees().reply(200, dealGuaranteesInAcbs),
-    makeRequest: () => api.get(getDealGuaranteesUrl),
-  });
-  /* eslint-enable @typescript-eslint/no-use-before-define */
-
   const requestToGetDealGuarantees = () =>
     nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
       .get(`/Portfolio/${portfolioIdentifier}/Deal/${dealIdentifier}/DealGuarantee`)
       .matchHeader('authorization', `Bearer ${idToken}`);
+
+  const { idToken: resolvedIdToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
+    givenRequestWouldOtherwiseSucceed: () => requestToGetDealGuarantees().reply(200, dealGuaranteesInAcbs),
+    makeRequest: () => api.get(getDealGuaranteesUrl),
+  });
+  idToken = resolvedIdToken;
 
   beforeAll(async () => {
     api = await Api.create();
