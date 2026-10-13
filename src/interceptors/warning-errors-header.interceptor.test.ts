@@ -1,11 +1,9 @@
 import { ExecutionContext } from '@nestjs/common';
 import { lastValueFrom, of } from 'rxjs';
+import { HttpArgumentsHost } from '@ukef/types';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 
 import { WarningErrorsHeaderInterceptor } from './warning-errors-header.interceptor';
-
-// @nestjs/common no longer re-exports HttpArgumentsHost directly, so derive it from ExecutionContext
-type HttpArgumentsHost = ReturnType<ExecutionContext['switchToHttp']>;
 
 describe('WarningErrorsInterceptor', () => {
   const valueGenerator = new RandomValueGenerator();
