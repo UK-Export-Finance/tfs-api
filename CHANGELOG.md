@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.9.0](https://github.com/UK-Export-Finance/tfs-api/compare/v2.8.5...v2.9.0) (2026-10-12)
+
+
+### Features
+
+* **APIM-651:** get gift facilities - halo ticket creation ([#1450](https://github.com/UK-Export-Finance/tfs-api/issues/1450)) ([47e4ecc](https://github.com/UK-Export-Finance/tfs-api/commit/47e4ecce27c64ebe5e02d795605bf92b848b65d5))
+
 ## [2.8.5](https://github.com/UK-Export-Finance/tfs-api/compare/v2.8.4...v2.8.5) (2026-10-01)
 
 
