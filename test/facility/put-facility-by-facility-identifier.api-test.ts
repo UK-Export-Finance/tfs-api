@@ -131,7 +131,6 @@ describe('PUT /facilities', () => {
         const givenAnyRequestBodyToUpdateFacilityInAcbsSucceeds = (): nock.Scope => {
           const requestBodyPlaceholder = '*';
           return nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-            .filteringRequestBody()
             .put(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}`, requestBodyPlaceholder)
             .matchHeader('authorization', `Bearer ${idToken}`)
             .reply(200, undefined, {
@@ -142,7 +141,6 @@ describe('PUT /facilities', () => {
         const givenAnyRequestBodyToCreateFacilityActivationTransactionInAcbsSucceeds = (): nock.Scope => {
           const requestBodyPlaceholder = '*';
           return nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-            .filteringRequestBody()
             .post(`/BundleInformation?servicingQueueIdentifier=${servicingQueueIdentifier}`, requestBodyPlaceholder)
             .matchHeader('authorization', `Bearer ${idToken}`)
             .reply(201, undefined, { bundleIdentifier });
@@ -180,7 +178,6 @@ describe('PUT /facilities', () => {
       const givenAnyRequestToGetFacilityInAcbsSucceeds = (): nock.Scope => {
         const requestBodyPlaceholder = '*';
         return nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-          .filteringRequestBody()
           .get(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}`, requestBodyPlaceholder)
           .matchHeader('authorization', `Bearer ${idToken}`)
           .reply(200, acbsGetExistingFacilityResponse, { location: `/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}` });
