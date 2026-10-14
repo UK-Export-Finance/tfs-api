@@ -12,7 +12,6 @@ import { AcbsFacilityFixedFeeService } from './acbs-facility-fixed-fee.service';
 import { AcbsException } from './exception/acbs.exception';
 import { AcbsBadRequestException } from './exception/acbs-bad-request.exception';
 import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
-import { AcbsUnexpectedException } from './exception/acbs-unexpected.exception';
 
 describe('AcbsFacilityFixedFeeService', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -259,7 +258,7 @@ describe('AcbsFacilityFixedFeeService', () => {
       await expect(createFixedFeeForFacilityPromise).rejects.toHaveProperty('errorBody', JSON.stringify(errorBody));
     });
 
-    it('throws an AcbsUnexpectedException if ACBS responds with an error code that is not 400', async () => {
+    it('throws an AcbsException if ACBS responds with an error code that is not 400', async () => {
       const axiosError = new AxiosError();
       const errorBody = { errorMessage: valueGenerator.string() };
       axiosError.response = {
@@ -281,7 +280,7 @@ describe('AcbsFacilityFixedFeeService', () => {
         idToken,
       );
 
-      await expect(createFixedFeeForFacilityPromise).rejects.toBeInstanceOf(AcbsUnexpectedException);
+      await expect(createFixedFeeForFacilityPromise).rejects.toBeInstanceOf(AcbsException);
       await expect(createFixedFeeForFacilityPromise).rejects.toThrow(`Failed to create a fixed fee for facility ${facilityIdentifier} in ACBS.`);
       await expect(createFixedFeeForFacilityPromise).rejects.toHaveProperty('innerError', axiosError);
     });

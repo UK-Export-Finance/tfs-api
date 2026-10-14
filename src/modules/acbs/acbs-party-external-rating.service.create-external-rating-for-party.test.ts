@@ -9,7 +9,7 @@ import { DateStringTransformations } from '@ukef/modules/date/date-string.transf
 import { AcbsPartyExternalRatingService } from './acbs-party-external-rating.service';
 import { AcbsBadRequestException } from './exception/acbs-bad-request.exception';
 import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
-import { AcbsUnexpectedException } from './exception/acbs-unexpected.exception';
+import { AcbsException } from './exception/acbs.exception';
 
 describe('AcbsPartyExternalRatingService', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -136,7 +136,7 @@ describe('AcbsPartyExternalRatingService', () => {
       await expect(createExternalRatingPromise).rejects.toHaveProperty('errorBody', JSON.stringify(errorBody));
     });
 
-    it('throws an AcbsUnexpectedException if ACBS responds with an error code that is not 400', async () => {
+    it('throws an AcbsException if ACBS responds with an error code that is not 400', async () => {
       const axiosError = new AxiosError();
       const errorBody = { errorMessage: valueGenerator.string() };
       axiosError.response = {
@@ -153,7 +153,7 @@ describe('AcbsPartyExternalRatingService', () => {
 
       const createExternalRatingPromise = service.createExternalRatingForParty(acbsExternalRatingToCreate, idToken);
 
-      await expect(createExternalRatingPromise).rejects.toBeInstanceOf(AcbsUnexpectedException);
+      await expect(createExternalRatingPromise).rejects.toBeInstanceOf(AcbsException);
       await expect(createExternalRatingPromise).rejects.toThrow(`Failed to create party external rating in ACBS.`);
       await expect(createExternalRatingPromise).rejects.toHaveProperty('innerError', axiosError);
     });

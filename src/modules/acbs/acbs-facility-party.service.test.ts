@@ -9,7 +9,7 @@ import { generateAcbsCreateFacilityPartyDtoUsing } from '@ukef-test/support/requ
 import { AcbsFacilityPartyService } from './acbs-facility-party.service';
 import { AcbsBadRequestException } from './exception/acbs-bad-request.exception';
 import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
-import { AcbsUnexpectedException } from './exception/acbs-unexpected.exception';
+import { AcbsException } from './exception/acbs.exception';
 
 describe('AcbsFacilityPartyService', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -132,7 +132,7 @@ describe('AcbsFacilityPartyService', () => {
       await expect(createGuaranteeForDealPromise).rejects.toHaveProperty('errorBody', JSON.stringify(errorBody));
     });
 
-    it('throws an AcbsUnexpectedException if ACBS responds with an error code that is not 400', async () => {
+    it('throws an AcbsException if ACBS responds with an error code that is not 400', async () => {
       const axiosError = new AxiosError();
       const errorBody = { errorMessage: valueGenerator.string() };
       axiosError.response = {
@@ -149,7 +149,7 @@ describe('AcbsFacilityPartyService', () => {
 
       const createGuaranteeForDealPromise = service.createPartyForFacility(facilityIdentifier, newFacilityParty, idToken);
 
-      await expect(createGuaranteeForDealPromise).rejects.toBeInstanceOf(AcbsUnexpectedException);
+      await expect(createGuaranteeForDealPromise).rejects.toBeInstanceOf(AcbsException);
       await expect(createGuaranteeForDealPromise).rejects.toThrow(`Failed to create a party for facility ${facilityIdentifier} in ACBS.`);
       await expect(createGuaranteeForDealPromise).rejects.toHaveProperty('innerError', axiosError);
     });
