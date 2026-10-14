@@ -8,7 +8,7 @@ import { CreateFacilityGenerator } from '@ukef-test/support/generator/create-fac
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { AcbsFacilityService } from './acbs-facility.service';
 import { AcbsBadRequestException } from './exception/acbs-bad-request.exception';
-import { AcbsUnexpectedException } from './exception/acbs-unexpected.exception';
+import { AcbsException } from './exception/acbs.exception';
 
 describe('AcbsFacilityService', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -89,7 +89,7 @@ describe('AcbsFacilityService', () => {
       await expect(createFacilityPromise).rejects.toHaveProperty('errorBody', errorString);
     });
 
-    it('throws an AcbsUnexpectedException if ACBS responds with an error code that is not 400', async () => {
+    it('throws an AcbsException if ACBS responds with an error code that is not 400', async () => {
       const axiosError = new AxiosError();
       const errorBody = { errorMessage: valueGenerator.string() };
       axiosError.response = {
@@ -106,7 +106,7 @@ describe('AcbsFacilityService', () => {
 
       const createDealPromise = service.createFacility(randomPortfolioIdentifier, newFacility, idToken);
 
-      await expect(createDealPromise).rejects.toBeInstanceOf(AcbsUnexpectedException);
+      await expect(createDealPromise).rejects.toBeInstanceOf(AcbsException);
       await expect(createDealPromise).rejects.toThrow(`Failed to create a facility with identifier ${facilityIdentifier} in ACBS.`);
       await expect(createDealPromise).rejects.toHaveProperty('innerError', axiosError);
     });

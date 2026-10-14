@@ -3,7 +3,6 @@ import { ObservableInput, throwError } from 'rxjs';
 
 import { AcbsException } from './exception/acbs.exception';
 import { AcbsBadRequestException } from './exception/acbs-bad-request.exception';
-import { AcbsUnexpectedException } from './exception/acbs-unexpected.exception';
 import { KnownErrors } from './known-errors';
 
 type AcbsHttpErrorCallback = (error: Error) => ObservableInput<never>;
@@ -26,8 +25,8 @@ export const createWrapAcbsHttpGetErrorCallback =
 export const createWrapAcbsHttpPostOrPutErrorCallback =
   ({ messageForUnknownError, knownErrors }: { messageForUnknownError: string; knownErrors: KnownErrors }): AcbsHttpErrorCallback =>
   (error: Error) => {
-    if (!(error instanceof AxiosError) || error?.response?.status !== 400) {
-      return throwError(() => new AcbsUnexpectedException(messageForUnknownError, error));
+    if (!(error instanceof AxiosError) || !error.response || error.response.status !== 400) {
+      return throwError(() => new AcbsException(messageForUnknownError, error));
     }
 
     if (typeof error.response.data === 'string') {

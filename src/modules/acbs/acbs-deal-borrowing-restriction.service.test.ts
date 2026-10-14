@@ -8,7 +8,7 @@ import { AcbsDealBorrowingRestrictionService } from './acbs-deal-borrowing-restr
 import { AcbsUpdateDealBorrowingRestrictionRequest } from './dto/acbs-update-deal-borrowing-restriction-request.dto';
 import { AcbsBadRequestException } from './exception/acbs-bad-request.exception';
 import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
-import { AcbsUnexpectedException } from './exception/acbs-unexpected.exception';
+import { AcbsException } from './exception/acbs.exception';
 
 describe('AcbsDealBorrowingRestrictionService', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -153,7 +153,7 @@ describe('AcbsDealBorrowingRestrictionService', () => {
       await expect(updateBorrowingRestrictionForDealPromise).rejects.toHaveProperty('errorBody', JSON.stringify(errorBody));
     });
 
-    it('throws an AcbsUnexpectedException if ACBS responds with an error code that is not 400', async () => {
+    it('throws an AcbsException if ACBS responds with an error code that is not 400', async () => {
       const axiosError = new AxiosError();
       const errorBody = { errorMessage: valueGenerator.string() };
       axiosError.response = {
@@ -175,7 +175,7 @@ describe('AcbsDealBorrowingRestrictionService', () => {
         idToken,
       );
 
-      await expect(updateBorrowingRestrictionForDealPromise).rejects.toBeInstanceOf(AcbsUnexpectedException);
+      await expect(updateBorrowingRestrictionForDealPromise).rejects.toBeInstanceOf(AcbsException);
       await expect(updateBorrowingRestrictionForDealPromise).rejects.toThrow(`Failed to update a borrowing restriction for deal ${dealIdentifier} in ACBS.`);
       await expect(updateBorrowingRestrictionForDealPromise).rejects.toHaveProperty('innerError', axiosError);
     });

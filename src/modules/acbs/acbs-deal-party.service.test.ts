@@ -14,7 +14,6 @@ import { AcbsDealPartyService } from './acbs-deal-party.service';
 import { AcbsException } from './exception/acbs.exception';
 import { AcbsBadRequestException } from './exception/acbs-bad-request.exception';
 import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
-import { AcbsUnexpectedException } from './exception/acbs-unexpected.exception';
 
 describe('AcbsDealPartyService', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -241,7 +240,7 @@ describe('AcbsDealPartyService', () => {
       await expect(createInvestorForDealPromise).rejects.toHaveProperty('errorBody', JSON.stringify(errorBody));
     });
 
-    it('throws an AcbsUnexpectedException if ACBS responds with an error code that is not 400', async () => {
+    it('throws an AcbsException if ACBS responds with an error code that is not 400', async () => {
       const axiosError = new AxiosError();
       const errorBody = { errorMessage: valueGenerator.string() };
       axiosError.response = {
@@ -261,7 +260,7 @@ describe('AcbsDealPartyService', () => {
 
       const createInvestorForDealPromise = service.createInvestorForDeal(dealIdentifier, acbsRequestBodyToCreateDealInvestor, authToken);
 
-      await expect(createInvestorForDealPromise).rejects.toBeInstanceOf(AcbsUnexpectedException);
+      await expect(createInvestorForDealPromise).rejects.toBeInstanceOf(AcbsException);
       await expect(createInvestorForDealPromise).rejects.toThrow(`Failed to create an investor for deal ${dealIdentifier} in ACBS.`);
       await expect(createInvestorForDealPromise).rejects.toHaveProperty('innerError', axiosError);
     });

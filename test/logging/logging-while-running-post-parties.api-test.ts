@@ -294,7 +294,7 @@ describe('POST /parties log testing', () => {
       expect(logContent).toContain('Using the cached ACBS authentication id token');
 
       expect(logContent).toContain(`"requestBody":${JSON.stringify(apiCreatePartyRequest)},"msg":"Handling the following request from the client."`);
-      expect(logContent).toContain('AcbsUnexpectedException: Failed to create party in ACBS.');
+      expect(logContent).toContain('AcbsException: Failed to create party in ACBS.');
       expect(logContent).toContain('AxiosError: Request failed with status code 401');
     });
 
@@ -310,7 +310,7 @@ describe('POST /parties log testing', () => {
       });
 
       expect(logContent).toContain(`"stack":"AxiosError: timeout of ${ENVIRONMENT_VARIABLES.ACBS_TIMEOUT}ms exceeded`);
-      expect(logContent).toContain('"stack":"AcbsUnexpectedException: Failed to create party in ACBS');
+      expect(logContent).toContain('"stack":"AcbsException: Failed to create party in ACBS');
       expect(logContent).toContain(`"requestBody":${JSON.stringify(apiCreatePartyRequest)},"msg":"Handling the following request from the client."`);
     });
   });
@@ -512,7 +512,7 @@ describe('POST /parties log testing', () => {
       expect(body).toStrictEqual({ message: 'Internal server error', statusCode: 500 });
 
       expect(logContent).toContain(`"requestBody":${JSON.stringify(apiCreatePartyRequest)},"msg":"Handling the following request from the client."`);
-      expect(logContent).toContain('"stack":"AcbsUnexpectedException: Failed to create party external rating in ACBS.');
+      expect(logContent).toContain('"stack":"AcbsException: Failed to create party external rating in ACBS.');
       expect(logContent).toContain('"stack":"AxiosError: Request failed with status code 401');
     });
 
@@ -528,7 +528,7 @@ describe('POST /parties log testing', () => {
       });
 
       expect(logContent).toContain(`"stack":"AxiosError: timeout of ${ENVIRONMENT_VARIABLES.ACBS_TIMEOUT}ms exceeded`);
-      expect(logContent).toContain('"stack":"AcbsUnexpectedException: Failed to create party external rating in ACBS.');
+      expect(logContent).toContain('"stack":"AcbsException: Failed to create party external rating in ACBS.');
       expect(logContent).toContain('"msg":"A HTTP server failed to respond to our request.');
       expect(logContent).toContain('"message":"Failed to create party external rating in ACBS."');
     });
