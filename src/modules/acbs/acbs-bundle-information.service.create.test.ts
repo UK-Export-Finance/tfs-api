@@ -8,7 +8,7 @@ import { AcbsCreateBundleInformationRequestDto } from '@ukef/modules/acbs/dto/ac
 import { LoanAdvanceTransaction } from '@ukef/modules/acbs/dto/bundle-actions/loan-advance-transaction.bundle-action';
 import { AcbsBadRequestException } from '@ukef/modules/acbs/exception/acbs-bad-request.exception';
 import { AcbsResourceNotFoundException } from '@ukef/modules/acbs/exception/acbs-resource-not-found.exception';
-import { AcbsUnexpectedException } from '@ukef/modules/acbs/exception/acbs-unexpected.exception';
+import { AcbsException } from '@ukef/modules/acbs/exception/acbs.exception';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { CreateFacilityActivationTransactionGenerator } from '@ukef-test/support/generator/create-facility-activation-transaction-generator';
 import { CreateFacilityFixedFeesAmountAmendmentGenerator } from '@ukef-test/support/generator/create-facility-fixed-fees-amount-amendment.generator';
@@ -146,7 +146,7 @@ describe('AcbsBundleInformationService', () => {
       await expect(createBundleInformationPromise).rejects.toHaveProperty('errorBody', errorString);
     });
 
-    it('throws an AcbsUnexpectedException if ACBS responds with an error code that is not 400', async () => {
+    it('throws an AcbsException if ACBS responds with an error code that is not 400', async () => {
       const axiosError = new AxiosError();
       const errorBody = { errorMessage: errorString };
       axiosError.response = {
@@ -163,7 +163,7 @@ describe('AcbsBundleInformationService', () => {
 
       const createBundleInformationPromise = service.createBundleInformation(acbsRequestBodyToCreateFacilityActivationTransaction, idToken);
 
-      await expect(createBundleInformationPromise).rejects.toBeInstanceOf(AcbsUnexpectedException);
+      await expect(createBundleInformationPromise).rejects.toBeInstanceOf(AcbsException);
       await expect(createBundleInformationPromise).rejects.toThrow(`Failed to create a bundle information in ACBS.`);
       await expect(createBundleInformationPromise).rejects.toHaveProperty('innerError', axiosError);
     });

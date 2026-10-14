@@ -7,7 +7,7 @@ import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-
 
 import { AcbsDealService } from './acbs-deal.service';
 import { AcbsBadRequestException } from './exception/acbs-bad-request.exception';
-import { AcbsUnexpectedException } from './exception/acbs-unexpected.exception';
+import { AcbsException } from './exception/acbs.exception';
 
 describe('AcbsDealService', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -84,7 +84,7 @@ describe('AcbsDealService', () => {
       await expect(createDealPromise).rejects.toHaveProperty('errorBody', errorString);
     });
 
-    it('throws an AcbsUnexpectedException if ACBS responds with an error code that is not 400', async () => {
+    it('throws an AcbsException if ACBS responds with an error code that is not 400', async () => {
       const axiosError = new AxiosError();
       const errorBody = { errorMessage: valueGenerator.string() };
       axiosError.response = {
@@ -101,7 +101,7 @@ describe('AcbsDealService', () => {
 
       const createDealPromise = service.createDeal(randomPortfolioIdentifier, newDeal, idToken);
 
-      await expect(createDealPromise).rejects.toBeInstanceOf(AcbsUnexpectedException);
+      await expect(createDealPromise).rejects.toBeInstanceOf(AcbsException);
       await expect(createDealPromise).rejects.toThrow(`Failed to create a deal with identifier ${dealIdentifier} in ACBS.`);
       await expect(createDealPromise).rejects.toHaveProperty('innerError', axiosError);
     });
