@@ -1,6 +1,6 @@
 import { ExecutionContext } from '@nestjs/common';
-import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 import { lastValueFrom, of } from 'rxjs';
+import { HttpArgumentsHost } from '@ukef/types';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 
 import { WarningErrorsHeaderInterceptor } from './warning-errors-header.interceptor';
