@@ -272,10 +272,8 @@ describe('POST /facilities/{facilityIdentifier}/guarantees', () => {
       .matchHeader('authorization', `Bearer ${idToken}`);
 
   const givenAnyRequestBodyToCreateFacilityGuaranteeInAcbsSucceeds = (): void => {
-    const requestBodyPlaceholder = '*';
     nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .filteringRequestBody(() => requestBodyPlaceholder)
-      .post(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/FacilityGuarantee`, requestBodyPlaceholder)
+      .post(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/FacilityGuarantee`)
       .matchHeader('authorization', `Bearer ${idToken}`)
       .reply(201, undefined, {
         location: `/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/FacilityGuarantee?accountOwnerIdentifier=00000000&lenderTypeCode=${lenderTypeCode}&sectionIdentifier=${sectionIdentifier}&limitTypeCode=${limitTypeCode}&limitKey=${limitKey}&guarantorPartyIdentifier=${guarantorParty}`,

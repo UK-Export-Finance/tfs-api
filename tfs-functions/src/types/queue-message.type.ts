@@ -44,8 +44,4 @@ export type GiftFacilityGetManyMessage = {
 };
 
 export type GiftQueueMessage =
-  | GiftFacilityCreationMessage
-  | GiftFacilityAmendmentMessage
-  | GiftFacilityMultipleAmendmentsMessage
-  | GiftFacilityGetMessage
-  | GiftFacilityGetManyMessage;
+  GiftFacilityCreationMessage | GiftFacilityAmendmentMessage | GiftFacilityMultipleAmendmentsMessage | GiftFacilityGetMessage | GiftFacilityGetManyMessage;

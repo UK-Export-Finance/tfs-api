@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { AxiosError } from 'axios';
 import { ObservableInput, throwError } from 'rxjs';
 
@@ -43,5 +42,3 @@ export const createWrapAcbsHttpPostOrPutErrorCallback =
 
     return throwError(() => new AcbsBadRequestException(messageForUnknownError, error, typeof data === 'string' ? data : JSON.stringify(data)));
   };
-
-/* eslint-enable */

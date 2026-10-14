@@ -423,10 +423,8 @@ describe('POST /facilities/{facilityIdentifier}/fixed-fees', () => {
       .matchHeader('Content-Type', 'application/json');
 
   const givenAnyrequestBodyToCreateFacilityFixedFeeInAcbsSucceeds = (): void => {
-    const requestBodyPlaceholder = '*';
     nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .filteringRequestBody(() => requestBodyPlaceholder)
-      .post(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/Fee/FixedFee`, requestBodyPlaceholder)
+      .post(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/Fee/FixedFee`)
       .matchHeader('authorization', `Bearer ${idToken}`)
       .reply(201);
   };

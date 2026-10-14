@@ -1,7 +1,7 @@
 import { ENUMS } from '@ukef/constants';
 import { UkefId } from '@ukef/helpers';
 import { TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
-import nock from 'nock/types';
+import nock from 'nock';
 import supertest from 'supertest';
 
 export const withAcbsCreateBundleInformationTests = ({

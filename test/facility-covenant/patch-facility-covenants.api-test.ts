@@ -341,10 +341,8 @@ describe('PATCH /facilities/{facilityIdentifier}/covenants', () => {
       .matchHeader('Content-Type', 'application/json');
 
   const givenAnyRequestBodyToReplaceCovenantsSucceeds = (): void => {
-    const requestBodyPlaceholder = '*';
     nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .filteringRequestBody(() => requestBodyPlaceholder)
-      .put(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/Covenant`, requestBodyPlaceholder)
+      .put(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/Covenant`)
       .matchHeader('authorization', `Bearer ${idToken}`)
       .reply(200);
   };

@@ -1,18 +1,9 @@
 import { JestConfigWithTsJest } from 'ts-jest';
 
-const tsJestGlobals = {
-  'ts-jest': {
-    useESM: true,
-    tsconfig: { module: 'esnext', target: 'ES2022' },
-  },
-};
-
-const tsJestTransform = { '^.+\\.(ts|tsx)?$': ['ts-jest', { useESM: true }] };
+const tsJestTransform = { '^.+\\.(ts|tsx)?$': ['ts-jest', {}] };
 
 const defaultSettings = {
   rootDir: 'test',
-  extensionsToTreatAsEsm: ['.ts'],
-  preset: 'ts-jest/presets/default-esm',
   testEnvironment: 'node',
   moduleFileExtensions: ['ts', 'js', 'json', 'node'],
   moduleNameMapper: {
@@ -34,7 +25,6 @@ const config: JestConfigWithTsJest = {
       setupFilesAfterEnv: ['../test/setup/mock-nestjs-axios.ts'],
       testMatch: ['**/*.test.ts'],
       testPathIgnorePatterns: ['.*\\.gift-disabled\\.test\\.ts$'],
-      globals: tsJestGlobals,
       transform: tsJestTransform,
       ...defaultSettings,
       rootDir: 'src',
@@ -44,7 +34,6 @@ const config: JestConfigWithTsJest = {
       setupFiles: ['../test/setup/disable-gift-feature-flag.ts'],
       setupFilesAfterEnv: ['../test/setup/mock-nestjs-axios.ts'],
       testMatch: ['**/*.gift-disabled.test.ts'],
-      globals: tsJestGlobals,
       transform: tsJestTransform,
       ...defaultSettings,
       rootDir: 'src',
@@ -53,7 +42,6 @@ const config: JestConfigWithTsJest = {
       displayName: 'API-FF=true',
       setupFilesAfterEnv: ['./setup/override-environment-variables.ts', './setup/enable-gift-feature-flag.ts'],
       testMatch: ['**/*.api-test.ts', '!**/feature-flag-disabled/**/*.api-test.ts'],
-      globals: tsJestGlobals,
       transform: tsJestTransform,
       ...defaultSettings,
     },
@@ -61,7 +49,6 @@ const config: JestConfigWithTsJest = {
       displayName: 'API-FF=false',
       setupFilesAfterEnv: ['./setup/override-environment-variables.ts', './setup/disable-gift-feature-flag.ts'],
       testMatch: ['**/feature-flag-disabled/*.api-test.ts'],
-      globals: tsJestGlobals,
       transform: tsJestTransform,
       ...defaultSettings,
     },

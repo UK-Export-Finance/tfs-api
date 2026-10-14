@@ -226,10 +226,8 @@ describe('PUT /facilities', () => {
 
       const givenAnyRequestBodyToUpdateInAcbsSucceeds = () => {
         const givenAnyRequestBodyToUpdateFacilityInAcbsSucceeds = (): nock.Scope => {
-          const requestBodyPlaceholder = '*';
           return nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-            .filteringRequestBody(() => requestBodyPlaceholder)
-            .put(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}`, requestBodyPlaceholder)
+            .put(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}`)
             .matchHeader('authorization', `Bearer ${idToken}`)
             .reply(200, undefined, {
               location: `/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}`,
@@ -237,10 +235,8 @@ describe('PUT /facilities', () => {
         };
 
         const givenAnyRequestBodyToCreateFacilityActivationTransactionInAcbsSucceeds = (): nock.Scope => {
-          const requestBodyPlaceholder = '*';
           return nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-            .filteringRequestBody(() => requestBodyPlaceholder)
-            .post(`/BundleInformation?servicingQueueIdentifier=${servicingQueueIdentifier}`, requestBodyPlaceholder)
+            .post(`/BundleInformation?servicingQueueIdentifier=${servicingQueueIdentifier}`)
             .matchHeader('authorization', `Bearer ${idToken}`)
             .reply(201, undefined, { bundleIdentifier });
         };
@@ -266,10 +262,8 @@ describe('PUT /facilities', () => {
 
     const givenAnyRequestBodyWouldSucceed = (): PutFacilityAcbsRequests => {
       const givenAnyRequestToGetFacilityInAcbsSucceeds = (): nock.Scope => {
-        const requestBodyPlaceholder = '*';
         return nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-          .filteringRequestBody(() => requestBodyPlaceholder)
-          .get(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}`, requestBodyPlaceholder)
+          .get(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}`)
           .matchHeader('authorization', `Bearer ${idToken}`)
           .reply(200, acbsGetExistingFacilityResponse, { location: `/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}` });
       };

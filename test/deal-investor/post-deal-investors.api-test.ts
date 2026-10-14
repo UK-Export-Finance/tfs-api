@@ -285,10 +285,8 @@ describe('POST /deals/{dealIdentifier}/investors', () => {
       .matchHeader('Content-Type', 'application/json');
 
   const givenAnyRequestBodyToCreateDealInvestorInAcbsSucceeds = (): void => {
-    const requestBodyPlaceholder = '*';
     nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .filteringRequestBody(() => requestBodyPlaceholder)
-      .post(`/Portfolio/${portfolioIdentifier}/Deal/${dealIdentifier}/DealParty`, requestBodyPlaceholder)
+      .post(`/Portfolio/${portfolioIdentifier}/Deal/${dealIdentifier}/DealParty`)
       .matchHeader('authorization', `Bearer ${idToken}`)
       .matchHeader('Content-Type', 'application/json')
       .reply(201);

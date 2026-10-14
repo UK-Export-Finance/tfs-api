@@ -276,10 +276,8 @@ describe('POST /facilities/{facilityIdentifier}/loans', () => {
       .matchHeader('Content-Type', 'application/json');
 
   const givenAnyRequestBodyToCreateFacilityLoanInAcbsSucceeds = (): void => {
-    const requestBodyPlaceholder = '*';
     nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .filteringRequestBody(() => requestBodyPlaceholder)
-      .post(`/BundleInformation?servicingQueueIdentifier=${servicingQueueIdentifier}`, requestBodyPlaceholder)
+      .post(`/BundleInformation?servicingQueueIdentifier=${servicingQueueIdentifier}`)
       .matchHeader('authorization', `Bearer ${idToken}`)
       .reply(201, undefined, { bundleidentifier: bundleIdentifier });
   };
