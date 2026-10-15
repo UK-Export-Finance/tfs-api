@@ -52,7 +52,7 @@ export class DealInvestorService {
       SectionIdentifier: PROPERTIES.DEAL_INVESTOR.DEFAULT.sectionIdentifier,
       EffectiveDate: effectiveDateString,
       ExpirationDate: expirationDateString,
-      IsExpirationDateMaximum: Boolean(!newInvestor.expiryDate),
+      IsExpirationDateMaximum: Boolean(newInvestor.expiryDate),
       LenderType: {
         LenderTypeCode: newInvestor.lenderType ?? PROPERTIES.DEAL_INVESTOR.DEFAULT.lenderType.lenderTypeCode,
       },
