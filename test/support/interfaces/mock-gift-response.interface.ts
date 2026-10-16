@@ -1,5 +1,5 @@
-export interface MockGiftResponse {
+export type MockGiftResponse = {
   statusCode: number;
   message: string;
   validationErrors?: object[];
-}
+};

@@ -35,8 +35,8 @@ export class GetDealGuaranteeGenerator extends AbstractGenerator<GetDealGuarante
     }));
 
     const dealGuaranteesFromService = values.map((v) => ({
-      dealIdentifier: dealIdentifier,
-      portfolioIdentifier: portfolioIdentifier,
+      dealIdentifier,
+      portfolioIdentifier,
       effectiveDate: v.effectiveDate,
       guarantorParty: v.guarantorParty,
       limitKey: v.limitKey,
@@ -52,12 +52,12 @@ export class GetDealGuaranteeGenerator extends AbstractGenerator<GetDealGuarante
   }
 }
 
-interface GenerateOptions {
+type GenerateOptions = {
   dealIdentifier: string;
   portfolioIdentifier: string;
-}
+};
 
-interface GenerateResult {
+type GenerateResult = {
   dealGuaranteesInAcbs: AcbsGetDealGuaranteeResponseDto[];
   dealGuaranteesFromService: GetDealGuaranteeResponseItem[];
-}
+};

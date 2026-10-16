@@ -1,3 +1,4 @@
+import nock from 'nock';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
@@ -7,7 +8,6 @@ import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
 import { GetFacilityActivationTransactionGenerator } from '@ukef-test/support/generator/get-facility-activation-transaction-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import nock from 'nock';
 
 describe('GET /facilities/{facilityIdentifier}/activation-transactions/{bundleIdentifier}', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -30,6 +30,26 @@ describe('GET /facilities/{facilityIdentifier}/activation-transactions/{bundleId
   });
 
   let api: Api;
+  let idToken: string;
+
+  const requestToGetFacilityActivationTransactionWithBundleId = (bundleId: string): nock.Interceptor =>
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL).get(`/BundleInformation/${bundleId}?returnItems=true`).matchHeader('authorization', `Bearer ${idToken}`);
+
+  const givenRequestToGetFacilityActivationTransactionInAcbsSucceedsWithBundleId = (bundleId: string): nock.Scope =>
+    requestToGetFacilityActivationTransactionWithBundleId(bundleId).reply(200, acbsFacilityActivationTransaction);
+
+  const givenRequestToGetFacilityActivationTransactionInAcbsSucceeds = () =>
+    givenRequestToGetFacilityActivationTransactionInAcbsSucceedsWithBundleId(bundleIdentifier);
+
+  const requestToGetFacilityActivationTransaction = () => requestToGetFacilityActivationTransactionWithBundleId(bundleIdentifier);
+
+  const { idToken: resolvedIdToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
+    givenRequestWouldOtherwiseSucceed: () => {
+      givenRequestToGetFacilityActivationTransactionInAcbsSucceeds();
+    },
+    makeRequest: () => api.get(getFacilityActivationTransactionUrl),
+  });
+  idToken = resolvedIdToken;
 
   beforeAll(async () => {
     api = await Api.create();
@@ -42,13 +62,6 @@ describe('GET /facilities/{facilityIdentifier}/activation-transactions/{bundleId
   afterEach(() => {
     nock.abortPendingRequests();
     nock.cleanAll();
-  });
-
-  const { idToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
-    givenRequestWouldOtherwiseSucceed: () => {
-      givenRequestToGetFacilityActivationTransactionInAcbsSucceeds();
-    },
-    makeRequest: () => api.get(getFacilityActivationTransactionUrl),
   });
 
   withClientAuthenticationTests({
@@ -171,16 +184,4 @@ describe('GET /facilities/{facilityIdentifier}/activation-transactions/{bundleId
       makeRequestWithBundleId: (bundleId) => api.get(getGetFacilityActivationTransactionUrl(facilityIdentifier, bundleId)),
     });
   });
-
-  const givenRequestToGetFacilityActivationTransactionInAcbsSucceeds = () =>
-    givenRequestToGetFacilityActivationTransactionInAcbsSucceedsWithBundleId(bundleIdentifier);
-
-  const givenRequestToGetFacilityActivationTransactionInAcbsSucceedsWithBundleId = (bundleId: string): nock.Scope => {
-    return requestToGetFacilityActivationTransactionWithBundleId(bundleId).reply(200, acbsFacilityActivationTransaction);
-  };
-
-  const requestToGetFacilityActivationTransaction = () => requestToGetFacilityActivationTransactionWithBundleId(bundleIdentifier);
-
-  const requestToGetFacilityActivationTransactionWithBundleId = (bundleId: string): nock.Interceptor =>
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL).get(`/BundleInformation/${bundleId}?returnItems=true`).matchHeader('authorization', `Bearer ${idToken}`);
 });

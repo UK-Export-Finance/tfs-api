@@ -1,9 +1,9 @@
+import nock from 'nock';
 import { HttpStatus } from '@nestjs/common';
 import { GIFT } from '@ukef/constants';
 import { MDM_EXAMPLES } from '@ukef/constants/examples/mdm.examples.constant';
 import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
-import nock from 'nock';
 
 import { apimMdmObligationSubtypesUrl, mockResponses } from '../test-helpers';
 import { generatePayload } from './generate-payload';
@@ -39,7 +39,7 @@ export const productTypeCodeStringValidation = ({ initialPayload, parentFieldNam
   const mockPayload = generatePayload({ initialPayload, fieldName, parentFieldName });
 
   // set the fieldName to have an unsupported product type
-  mockPayload[`${parentFieldName}`][`${fieldName}`] = UNSUPPORTED_PRODUCT_TYPE_CODE;
+  mockPayload[parentFieldName][fieldName] = UNSUPPORTED_PRODUCT_TYPE_CODE;
 
   /**
    * Mock the obligation subtype response to return a 404, as the product type code in the payload is not supported.

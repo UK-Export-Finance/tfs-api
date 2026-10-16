@@ -4,12 +4,12 @@ import { StringFieldValidationApiTestOptions, withStringFieldValidationApiTests 
 
 type CurrencyFieldName = 'currency';
 
-interface CurrencyFieldValidationApiTestOptions<RequestBodyItem extends { currency: string }> extends Pick<
+type CurrencyFieldValidationApiTestOptions<RequestBodyItem extends { currency: string }> = Pick<
   StringFieldValidationApiTestOptions<RequestBodyItem, CurrencyFieldName>,
   'validRequestBody' | 'makeRequest' | 'givenAnyRequestBodyWouldSucceed'
-> {
+> & {
   valueGenerator: RandomValueGenerator;
-}
+};
 
 export const withCurrencyFieldValidationApiTests = <RequestBodyItem extends { currency: string }>({
   valueGenerator,

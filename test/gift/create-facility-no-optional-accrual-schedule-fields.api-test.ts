@@ -1,9 +1,9 @@
+import nock from 'nock';
 import { HttpStatus } from '@nestjs/common';
 import { GIFT } from '@ukef/constants';
 import { GIFT_EXAMPLES } from '@ukef/constants/examples/gift.examples.constant';
 import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
-import nock from 'nock';
 
 import {
   accrualScheduleIndexedRateUrl,

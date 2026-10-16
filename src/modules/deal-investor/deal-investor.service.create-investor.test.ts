@@ -59,7 +59,14 @@ describe('DealInvestorService', () => {
     it('creates an investor in ACBS with a transformation of the requested new investor', async () => {
       await service.createInvestorForDeal(dealIdentifier, requestItemToCreateDealInvestor);
 
-      expect(acbsDealPartyServiceCreateInvestorForDeal).toHaveBeenCalledWith(dealIdentifier, acbsRequestBodyToCreateDealInvestor, idToken);
+      expect(acbsDealPartyServiceCreateInvestorForDeal).toHaveBeenCalledWith(
+        dealIdentifier,
+        {
+          ...acbsRequestBodyToCreateDealInvestor,
+          IsExpirationDateMaximum: false,
+        },
+        idToken,
+      );
     });
 
     it('adds a default value for lenderType before creating the new investor if it is not specified', async () => {

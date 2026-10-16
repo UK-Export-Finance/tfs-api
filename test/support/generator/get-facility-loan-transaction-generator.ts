@@ -20,7 +20,7 @@ export class GetFacilityLoanTransactionGenerator extends AbstractGenerator<Facil
 
   protected generateValues(): FacilityLoanTransactionValues {
     // Numeric enums needs filter to get possible values.
-    const possibleInitialBundleStatusCodes = Object.values(ENUMS.INITIAL_BUNDLE_STATUS_CODES).filter((value) => !isNaN(Number(value)));
+    const possibleInitialBundleStatusCodes = Object.values(ENUMS.INITIAL_BUNDLE_STATUS_CODES).filter((value) => !Number.isNaN(Number(value)));
 
     return {
       bundleStatusCode: this.valueGenerator.stringOfNumericCharacters({ length: 2 }),
@@ -140,11 +140,11 @@ export class GetFacilityLoanTransactionGenerator extends AbstractGenerator<Facil
     };
 
     const apiFacilityLoanTransaction: GetFacilityLoanTransactionResponseDto = {
-      portfolioIdentifier: portfolioIdentifier,
+      portfolioIdentifier,
       bundleStatusCode: firstFacilityLoanTransaction.bundleStatusCode,
       bundleStatusDesc: firstFacilityLoanTransaction.bundleStatusShortDescription,
       postingDate: firstFacilityLoanTransaction.postingDate,
-      facilityIdentifier: facilityIdentifier,
+      facilityIdentifier,
       borrowerPartyIdentifier: firstFacilityLoanTransaction.borrowerPartyIdentifier,
       productTypeId: firstFacilityLoanTransaction.productTypeCode,
       productTypeGroup: firstFacilityLoanTransaction.productGroupCode,
@@ -169,7 +169,7 @@ export class GetFacilityLoanTransactionGenerator extends AbstractGenerator<Facil
   }
 }
 
-interface FacilityLoanTransactionValues {
+type FacilityLoanTransactionValues = {
   bundleStatusCode: string;
   bundleStatusShortDescription: string;
   postingDate: DateString;
@@ -190,13 +190,13 @@ interface FacilityLoanTransactionValues {
   loanBillingFrequencyTypeCode: string;
   initialBundleStatusCode: number;
   initiatingUserName: string;
-}
+};
 
-interface GenerateOptions {
+type GenerateOptions = {
   facilityIdentifier: UkefId;
-}
+};
 
-interface GenerateResult {
+type GenerateResult = {
   acbsFacilityLoanTransaction: AcbsGetBundleInformationResponseDto;
   apiFacilityLoanTransaction: GetFacilityLoanTransactionResponseDto;
-}
+};

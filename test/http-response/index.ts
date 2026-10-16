@@ -16,7 +16,7 @@ export const mockResponse200 = (data: object = {}) => ({
  * @param {Object | Array<any>} data
  * @returns {object}
  */
-export const mockResponse201 = (data: object | Array<any> = {}) => ({
+export const mockResponse201 = (data: object | any[] = {}) => ({
   status: HttpStatus.CREATED,
   data,
 });

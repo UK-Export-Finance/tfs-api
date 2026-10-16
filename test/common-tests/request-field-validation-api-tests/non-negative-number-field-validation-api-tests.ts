@@ -1,8 +1,8 @@
+import request from 'supertest';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { prepareModifiedRequest } from '@ukef-test/support/helpers/request-field-validation-helper';
-import request from 'supertest';
 
-interface RequiredNonNegativeFieldValidationApiTestOptions<RequestBodyItem> {
+type RequiredNonNegativeFieldValidationApiTestOptions<RequestBodyItem> = {
   fieldName: keyof RequestBodyItem;
   required?: boolean;
   enum?: any;
@@ -10,7 +10,7 @@ interface RequiredNonNegativeFieldValidationApiTestOptions<RequestBodyItem> {
   validRequestBody: RequestBodyItem[] | RequestBodyItem;
   makeRequest: ((body: unknown[]) => request.Test) | ((body: unknown) => request.Test);
   givenAnyRequestBodyWouldSucceed: () => void;
-}
+};
 
 export function withNonNegativeNumberFieldValidationApiTests<RequestBodyItem>({
   fieldName: fieldNameSymbol,
@@ -28,16 +28,16 @@ export function withNonNegativeNumberFieldValidationApiTests<RequestBodyItem>({
   const requestBodyItem = requestIsAnArray ? validRequestBody[0] : validRequestBody;
   const expectedNonEmptyFieldError = `${fieldName} should not be empty`;
 
-  required = required ?? true;
+  const isRequired = required ?? true;
 
   describe(`${fieldName} validation`, () => {
     beforeEach(() => {
       givenAnyRequestBodyWouldSucceed();
     });
 
-    if (required) {
+    if (isRequired) {
       it(`returns a 400 response if ${fieldName} is not present`, async () => {
-        const { [fieldNameSymbol]: _removed, ...requestWithoutField } = requestBodyItem;
+        const { [fieldNameSymbol]: removed, ...requestWithoutField } = requestBodyItem;
         const preparedRequestWithoutField = prepareModifiedRequest(requestIsAnArray, requestWithoutField);
 
         const { status, body } = await makeRequest(preparedRequestWithoutField);
@@ -51,7 +51,7 @@ export function withNonNegativeNumberFieldValidationApiTests<RequestBodyItem>({
       });
     } else {
       it(`returns a 2xx response if ${fieldName} is not present`, async () => {
-        const { [fieldNameSymbol]: _removed, ...requestWithoutField } = requestBodyItem;
+        const { [fieldNameSymbol]: removed, ...requestWithoutField } = requestBodyItem;
         const preparedRequestWithoutField = prepareModifiedRequest(requestIsAnArray, requestWithoutField);
 
         const { status } = await makeRequest(preparedRequestWithoutField);
@@ -91,7 +91,7 @@ export function withNonNegativeNumberFieldValidationApiTests<RequestBodyItem>({
 
     if (theEnum && generateFieldValueThatDoesNotMatchEnum) {
       // Numeric enums needs filter to get possible values.
-      const possibleValues = Object.values(theEnum).filter((value) => !isNaN(Number(value)));
+      const possibleValues = Object.values(theEnum).filter((value) => !Number.isNaN(Number(value)));
 
       it(`returns a 2xx response if ${fieldName} does match the enum`, async () => {
         const requestWithInvalidField = {

@@ -86,21 +86,21 @@ export class CreateFacilityFixedFeesAmountAmendmentGenerator extends AbstractGen
   }
 }
 
-interface GenerateValues {
+type GenerateValues = {
   partyIdentifier: AcbsPartyId;
   period: string;
   lenderTypeCode: LenderTypeCodeEnum;
   effectiveDate: DateOnlyString;
   amountAmendment: number;
-}
+};
 
-interface GenerateOptions {
+type GenerateOptions = {
   facilityIdentifier: UkefId;
-}
+};
 
-interface GenerateResult {
+type GenerateResult = {
   increaseAmountRequest: CreateFixedFeeAmountAmendmentRequest;
   decreaseAmountRequest: CreateFixedFeeAmountAmendmentRequest;
   acbsFixedFeesAmendmentForIncrease: AcbsCreateBundleInformationRequestDto<FacilityFeeAmountTransaction>;
   acbsFixedFeesAmendmentForDecrease: AcbsCreateBundleInformationRequestDto<FacilityFeeAmountTransaction>;
-}
+};

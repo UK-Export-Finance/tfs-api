@@ -1,3 +1,4 @@
+import nock from 'nock';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
@@ -6,7 +7,6 @@ import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
 import { GetPartyGenerator } from '@ukef-test/support/generator/get-party-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import nock from 'nock';
 
 describe('GET /parties/{partyIdentifier}', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -16,10 +16,20 @@ describe('GET /parties/{partyIdentifier}', () => {
   const getPartyUrl = generateGetPartyUrl(partyIdentifier);
 
   let api: Api;
+  let idToken: string;
 
   const { acbsParties, apiParties } = new GetPartyGenerator(valueGenerator, dateStringTransformations).generate({ numberToGenerate: 1 });
   const [acbsParty] = acbsParties;
   const [expectedParty] = apiParties;
+
+  const requestToGetParty = (partyId: string = partyIdentifier) =>
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL).get(`/Party/${partyId}`).matchHeader('authorization', `Bearer ${idToken}`);
+
+  const { idToken: resolvedIdToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
+    givenRequestWouldOtherwiseSucceed: () => requestToGetParty().reply(200, acbsParty),
+    makeRequest: () => api.get(getPartyUrl),
+  });
+  idToken = resolvedIdToken;
 
   beforeAll(async () => {
     api = await Api.create();
@@ -32,11 +42,6 @@ describe('GET /parties/{partyIdentifier}', () => {
   afterEach(() => {
     nock.abortPendingRequests();
     nock.cleanAll();
-  });
-
-  const { idToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
-    givenRequestWouldOtherwiseSucceed: () => requestToGetParty().reply(200, acbsParty),
-    makeRequest: () => api.get(getPartyUrl),
   });
 
   withClientAuthenticationTests({
@@ -116,7 +121,4 @@ describe('GET /parties/{partyIdentifier}', () => {
       requestToGetParty(partyId).reply(200, acbsParty);
     },
   });
-
-  const requestToGetParty = (partyId: string = partyIdentifier) =>
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL).get(`/Party/${partyId}`).matchHeader('authorization', `Bearer ${idToken}`);
 });

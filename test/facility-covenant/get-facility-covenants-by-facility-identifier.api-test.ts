@@ -1,3 +1,4 @@
+import nock from 'nock';
 import { PROPERTIES } from '@ukef/constants';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
@@ -7,7 +8,6 @@ import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
 import { GetFacilityCovenantGenerator } from '@ukef-test/support/generator/get-facility-covenant-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import nock from 'nock';
 
 describe('GET /facilities/{facilityIdentifier}/covenants', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -26,6 +26,14 @@ describe('GET /facilities/{facilityIdentifier}/covenants', () => {
   });
 
   let api: Api;
+  let idToken: string;
+
+  const requestToGetCovenantsForFacilityWithId = (facilityId: string) =>
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .get(`/Portfolio/${portfolioIdentifier}/Facility/${facilityId}/Covenant`)
+      .matchHeader('authorization', `Bearer ${idToken}`);
+
+  const requestToGetCovenantsForFacility = () => requestToGetCovenantsForFacilityWithId(facilityIdentifier);
 
   beforeAll(async () => {
     api = await Api.create();
@@ -40,10 +48,11 @@ describe('GET /facilities/{facilityIdentifier}/covenants', () => {
     nock.cleanAll();
   });
 
-  const { idToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
+  const { idToken: resolvedIdToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
     givenRequestWouldOtherwiseSucceed: () => requestToGetCovenantsForFacility().reply(200, facilityCovenantsInAcbs),
     makeRequest: () => api.get(getFacilityCovenantsUrl),
   });
+  idToken = resolvedIdToken;
 
   withClientAuthenticationTests({
     givenTheRequestWouldOtherwiseSucceed: () => {
@@ -107,11 +116,4 @@ describe('GET /facilities/{facilityIdentifier}/covenants', () => {
       message: 'Internal server error',
     });
   });
-
-  const requestToGetCovenantsForFacility = () => requestToGetCovenantsForFacilityWithId(facilityIdentifier);
-
-  const requestToGetCovenantsForFacilityWithId = (facilityId: string) =>
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .get(`/Portfolio/${portfolioIdentifier}/Facility/${facilityId}/Covenant`)
-      .matchHeader('authorization', `Bearer ${idToken}`);
 });

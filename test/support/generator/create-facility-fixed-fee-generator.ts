@@ -73,7 +73,7 @@ export class CreateFacilityFixedFeeGenerator extends AbstractGenerator<CreateFac
       BillingFrequencyType: {
         BillingFrequencyTypeCode: defaultValues.billingFrequencyTypeCode,
       },
-      Description: defaultValues.description[`${facilityTypeCode}`],
+      Description: defaultValues.description[facilityTypeCode],
       FeeStatus: {
         FeeStatusCode: defaultValues.feeStatusCode,
       },
@@ -115,12 +115,12 @@ export class CreateFacilityFixedFeeGenerator extends AbstractGenerator<CreateFac
     };
   }
 }
-interface GenerateOptions {
+type GenerateOptions = {
   facilityTypeCode: string;
   borrowerPartyIdentifier: AcbsPartyId;
-}
+};
 
-interface GenerateResult {
+type GenerateResult = {
   acbsRequestBodyToCreateFacilityFixedFee: AcbsCreateFacilityFixedFeeRequestDto;
   requestBodyToCreateFacilityFixedFee: CreateFacilityFixedFeeRequest;
-}
+};

@@ -95,7 +95,7 @@ export class GetFacilityCovenantGenerator extends AbstractGenerator<CovenantValu
   }
 }
 
-interface CovenantValues {
+type CovenantValues = {
   CovenantIdentifier: string;
   EffectiveDate: DateString;
   ExpirationDate: DateString;
@@ -108,14 +108,14 @@ interface CovenantValues {
   };
   CovenantName: string;
   LimitKeyValue: string;
-}
+};
 
-interface GenerateOptions {
+type GenerateOptions = {
   facilityIdentifier: string;
   portfolioIdentifier: string;
-}
+};
 
-interface GenerateResult {
+type GenerateResult = {
   facilityCovenantsInAcbs: AcbsGetFacilityCovenantsResponseDto[];
   facilityCovenantsFromApi: GetFacilityCovenantsResponseDto[];
-}
+};
