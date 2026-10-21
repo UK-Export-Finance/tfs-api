@@ -1,8 +1,13 @@
+import { ExecutionContext } from '@nestjs/common';
+
 export type ExternalServiceConfig = {
   baseUrl: string;
   maxRedirects: number;
   timeout: number;
 };
+
+// @nestjs/common no longer re-exports HttpArgumentsHost directly, so derive it from ExecutionContext
+export type HttpArgumentsHost = ReturnType<ExecutionContext['switchToHttp']>;
 
 export type GiftAmendmentBaseParams = {
   amendmentType: AmendFacilityTypeConsumer;

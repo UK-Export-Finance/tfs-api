@@ -91,18 +91,18 @@ export class CreateFacilityLoanAmountAmendmentGenerator extends AbstractGenerato
   };
 }
 
-interface GenerateValues {
+type GenerateValues = {
   positiveAmountAmendment: number;
   effectiveDate: DateOnlyString;
-}
+};
 
-interface GenerateOptions {
+type GenerateOptions = {
   loanIdentifier: string;
-}
+};
 
-interface GenerateResult {
+type GenerateResult = {
   increaseAmountRequest: CreateLoanAmountAmendmentRequest;
   decreaseAmountRequest: CreateLoanAmountAmendmentRequest;
   acbsLoanAmendmentForIncrease: AcbsCreateBundleInformationRequestDto<LoanAdvanceTransaction>;
   acbsLoanAmendmentForDecrease: AcbsCreateBundleInformationRequestDto<LoanAdvanceTransaction>;
-}
+};

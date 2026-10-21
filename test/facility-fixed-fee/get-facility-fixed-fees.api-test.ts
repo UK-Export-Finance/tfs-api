@@ -1,3 +1,4 @@
+import nock from 'nock';
 import { PROPERTIES } from '@ukef/constants';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
@@ -7,7 +8,6 @@ import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
 import { GetFacilityFixedFeeGenerator } from '@ukef-test/support/generator/get-facility-fixed-fee-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import nock from 'nock';
 
 describe('GET /facilities/{facilityIdentifier}/fixed-fees', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -24,6 +24,20 @@ describe('GET /facilities/{facilityIdentifier}/fixed-fees', () => {
   ).generate({ numberToGenerate: 2, facilityIdentifier, portfolioIdentifier });
 
   let api: Api;
+  let idToken: string;
+
+  const requestToGetFixedFeesForFacilityWithId = (facilityId: string): nock.Interceptor =>
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .get(`/Portfolio/${portfolioIdentifier}/Facility/${facilityId}/Fee`)
+      .matchHeader('authorization', `Bearer ${idToken}`);
+
+  const requestToGetFixedFeesForFacility = (): nock.Interceptor => requestToGetFixedFeesForFacilityWithId(facilityIdentifier);
+
+  const { idToken: resolvedIdToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
+    givenRequestWouldOtherwiseSucceed: () => requestToGetFixedFeesForFacility().reply(200, acbsFacilityFixedFees),
+    makeRequest: () => api.get(getFacilityFixedFeesUrl),
+  });
+  idToken = resolvedIdToken;
 
   beforeAll(async () => {
     api = await Api.create();
@@ -36,11 +50,6 @@ describe('GET /facilities/{facilityIdentifier}/fixed-fees', () => {
   afterEach(() => {
     nock.abortPendingRequests();
     nock.cleanAll();
-  });
-
-  const { idToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
-    givenRequestWouldOtherwiseSucceed: () => requestToGetFixedFeesForFacility().reply(200, acbsFacilityFixedFees),
-    makeRequest: () => api.get(getFacilityFixedFeesUrl),
   });
 
   withClientAuthenticationTests({
@@ -105,11 +114,4 @@ describe('GET /facilities/{facilityIdentifier}/fixed-fees', () => {
       message: 'Internal server error',
     });
   });
-
-  const requestToGetFixedFeesForFacilityWithId = (facilityId: string): nock.Interceptor =>
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .get(`/Portfolio/${portfolioIdentifier}/Facility/${facilityId}/Fee`)
-      .matchHeader('authorization', `Bearer ${idToken}`);
-
-  const requestToGetFixedFeesForFacility = (): nock.Interceptor => requestToGetFixedFeesForFacilityWithId(facilityIdentifier);
 });

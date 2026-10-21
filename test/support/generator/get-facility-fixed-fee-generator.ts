@@ -78,12 +78,12 @@ export class GetFacilityFixedFeeGenerator extends AbstractGenerator<FacilityFixe
 
     return {
       acbsFacilityFixedFees,
-      apiFacilityFixedFees: apiFacilityFixedFees,
+      apiFacilityFixedFees,
     };
   }
 }
 
-interface FacilityFixedFeeValues {
+type FacilityFixedFeeValues = {
   fixedFeeAmount: number;
   currentPayoffAmount: number;
   effectiveDateInAcbs: DateString;
@@ -101,14 +101,14 @@ interface FacilityFixedFeeValues {
   incomeClass: {
     incomeClassCode: string;
   };
-}
+};
 
-interface GenerateOptions {
+type GenerateOptions = {
   facilityIdentifier: string;
   portfolioIdentifier: string;
-}
+};
 
-interface GenerateResult {
+type GenerateResult = {
   acbsFacilityFixedFees: AcbsGetFacilityFixedFeeResponseDto;
   apiFacilityFixedFees: GetFacilityFixedFeeResponse;
-}
+};

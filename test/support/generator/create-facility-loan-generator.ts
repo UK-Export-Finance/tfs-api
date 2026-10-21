@@ -92,7 +92,7 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
 
     const requestBodyToCreateFacilityLoanGbp: CreateFacilityLoanRequest = values.map((value) => ({
       postingDate: value.postingDate,
-      facilityIdentifier: facilityIdentifier,
+      facilityIdentifier,
       borrowerPartyIdentifier: value.borrowerPartyIdentifier,
       productTypeId: value.productTypeId,
       productTypeGroup: value.productTypeGroup,
@@ -493,12 +493,12 @@ export class CreateFacilityLoanGenerator extends AbstractGenerator<CreateFacilit
   }
 }
 
-interface GenerateOptions {
+type GenerateOptions = {
   facilityIdentifier: UkefId;
   bundleIdentifier: AcbsBundleId;
-}
+};
 
-interface GenerateResult {
+type GenerateResult = {
   acbsRequestBodyToCreateFacilityLoanGbp: AcbsCreateBundleInformationRequestDto<NewLoanRequest>;
   acbsRequestBodyToCreateFacilityLoanNonGbp: AcbsCreateBundleInformationRequestDto<NewLoanRequest>;
   requestBodyToCreateFacilityLoanGbp: CreateFacilityLoanRequest;
@@ -512,4 +512,4 @@ interface GenerateResult {
   bondAndGefAccrualSchedulesGbp: AccrualScheduleExtended[];
   ewcsAccrualSchedulesUsd: AccrualScheduleExtended[];
   ewcsAccrualSchedulesGbp: AccrualScheduleExtended[];
-}
+};

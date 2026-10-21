@@ -13,6 +13,8 @@ type ArrayOfObjectsOptionalNumberValidationParams = {
   url: string;
 };
 
+const sortStrings = (a: string, b: string) => a.localeCompare(b);
+
 /**
  * Validation tests for an array of objects - optional number field with invalid values
  * @param {string} fieldName: The name of a field. E.g, amount
@@ -71,7 +73,7 @@ export const arrayOfObjectsOptionalNumberValidation = ({
         `${parentFieldName}.1.${fieldName} must be a number conforming to the specified constraints`,
       ];
 
-      expect([...body.message].sort()).toStrictEqual([...expected].sort());
+      expect([...body.message].sort(sortStrings)).toStrictEqual([...expected].sort(sortStrings));
     });
   });
 
@@ -104,7 +106,7 @@ export const arrayOfObjectsOptionalNumberValidation = ({
         `${parentFieldName}.1.${fieldName} must be a number conforming to the specified constraints`,
       ];
 
-      expect([...body.message].sort()).toStrictEqual([...expected].sort());
+      expect([...body.message].sort(sortStrings)).toStrictEqual([...expected].sort(sortStrings));
     });
   });
 
@@ -137,7 +139,7 @@ export const arrayOfObjectsOptionalNumberValidation = ({
         `${parentFieldName}.1.${fieldName} must be a number conforming to the specified constraints`,
       ];
 
-      expect([...body.message].sort()).toStrictEqual([...expected].sort());
+      expect([...body.message].sort(sortStrings)).toStrictEqual([...expected].sort(sortStrings));
     });
   });
 
@@ -170,7 +172,7 @@ export const arrayOfObjectsOptionalNumberValidation = ({
         `${parentFieldName}.1.${fieldName} must be a number conforming to the specified constraints`,
       ];
 
-      expect([...body.message].sort()).toStrictEqual([...expected].sort());
+      expect([...body.message].sort(sortStrings)).toStrictEqual([...expected].sort(sortStrings));
     });
   });
 
@@ -198,7 +200,7 @@ export const arrayOfObjectsOptionalNumberValidation = ({
         // Assert
         const expected = [`${parentFieldName}.0.${fieldName} must not be less than ${min}`, `${parentFieldName}.1.${fieldName} must not be less than ${min}`];
 
-        expect([...body.message].sort()).toStrictEqual([...expected].sort());
+        expect([...body.message].sort(sortStrings)).toStrictEqual([...expected].sort(sortStrings));
       });
     });
   }
@@ -230,7 +232,7 @@ export const arrayOfObjectsOptionalNumberValidation = ({
           `${parentFieldName}.1.${fieldName} must not be greater than ${max}`,
         ];
 
-        expect([...body.message].sort()).toStrictEqual([...expected].sort());
+        expect([...body.message].sort(sortStrings)).toStrictEqual([...expected].sort(sortStrings));
       });
     });
   }

@@ -1,3 +1,4 @@
+import nock from 'nock';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
@@ -5,7 +6,6 @@ import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import { GetPartyGenerator } from '@ukef-test/support/generator/get-party-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import nock from 'nock';
 
 describe('GET /parties?searchText={searchText}', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -16,6 +16,10 @@ describe('GET /parties?searchText={searchText}', () => {
   const { acbsParties, parties } = new GetPartyGenerator(valueGenerator, dateStringTransformations).generate({ numberToGenerate: 2 });
 
   let api: Api;
+  let idToken: string;
+
+  const requestToGetPartiesBySearchText = (search): nock.Interceptor =>
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL).get(`/Party/Search/${search}`).matchHeader('authorization', `Bearer ${idToken}`);
 
   beforeAll(async () => {
     api = await Api.create();
@@ -30,10 +34,11 @@ describe('GET /parties?searchText={searchText}', () => {
     nock.cleanAll();
   });
 
-  const { idToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
+  const { idToken: resolvedIdToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
     givenRequestWouldOtherwiseSucceed: () => requestToGetPartiesBySearchText(searchText).reply(200, acbsParties),
     makeRequest: () => api.get(getPartiesBySearchTextUrl),
   });
+  idToken = resolvedIdToken;
 
   withClientAuthenticationTests({
     givenTheRequestWouldOtherwiseSucceed: () => {
@@ -166,7 +171,4 @@ describe('GET /parties?searchText={searchText}', () => {
       message: ['searchText must match /\\S$/ regular expression'],
     });
   });
-
-  const requestToGetPartiesBySearchText = (search): nock.Interceptor =>
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL).get(`/Party/Search/${search}`).matchHeader('authorization', `Bearer ${idToken}`);
 });

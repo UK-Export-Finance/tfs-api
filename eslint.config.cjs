@@ -1,13 +1,12 @@
 const { defineConfig } = require('eslint/config');
 const tseslint = require('typescript-eslint');
+const globals = require('globals');
 
 const tsParser = require('@typescript-eslint/parser');
 const typescriptEslint = require('@typescript-eslint/eslint-plugin');
+const importX = require('eslint-plugin-import-x');
 const noRelativeImportPaths = require('eslint-plugin-no-relative-import-paths');
 const checkFile = require('eslint-plugin-check-file');
-const eslintConfigAirbnbExtended = require('eslint-config-airbnb-extended');
-
-const { configs, plugins, rules } = eslintConfigAirbnbExtended;
 const prettierConfig = require('eslint-config-prettier');
 const prettierPlugin = require('eslint-plugin-prettier');
 
@@ -31,15 +30,6 @@ module.exports = defineConfig([
     name: 'js/config',
     ...js.configs.recommended,
   },
-  plugins.stylistic,
-  plugins.importX,
-  ...configs.base.recommended,
-  rules.base.importsStrict,
-  plugins.node,
-  ...configs.node.recommended,
-  plugins.typescriptEslint,
-  ...configs.base.typescript,
-  rules.typescript.typescriptEslintStrict,
   {
     name: 'prettier/plugin/config',
     plugins: {
@@ -61,8 +51,12 @@ module.exports = defineConfig([
       parser: tsParser,
       parserOptions: {
         tsconfigRootDir: __dirname,
-        // projectService removed - type-checking done via 'npm run type-check' instead
+        projectService: true,
       },
+    },
+    rules: {
+      // tsc already catches undefined identifiers/types; no-undef has false positives on TS-only constructs
+      'no-undef': 'off',
     },
   },
 
@@ -91,6 +85,10 @@ module.exports = defineConfig([
       parser: tsParser,
       ecmaVersion: 2022,
       sourceType: 'module',
+      globals: {
+        ...globals.node,
+        ...globals.jest,
+      },
       parserOptions: {
         tsconfigRootDir: __dirname,
       },
@@ -98,6 +96,7 @@ module.exports = defineConfig([
 
     plugins: {
       '@typescript-eslint': typescriptEslint,
+      'import-x': importX,
       'no-relative-import-paths': noRelativeImportPaths,
       'check-file': checkFile,
     },
@@ -155,6 +154,7 @@ module.exports = defineConfig([
       '@typescript-eslint/no-misused-spread': 'off',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
       '@typescript-eslint/no-unsafe-enum-comparison': 'off',
+      'no-unused-vars': 'off', // superseded by the TS-aware rule below (base rule doesn't understand ignoreRestSiblings)
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', ignoreRestSiblings: true, caughtErrors: 'none' }],
       '@typescript-eslint/naming-convention': [
         'error',

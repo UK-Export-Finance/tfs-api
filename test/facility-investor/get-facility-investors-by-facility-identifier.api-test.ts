@@ -1,3 +1,4 @@
+import nock from 'nock';
 import { PROPERTIES } from '@ukef/constants';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
@@ -6,7 +7,6 @@ import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
 import { GetFacilityInvestorGenerator } from '@ukef-test/support/generator/get-facility-investor-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import nock from 'nock';
 
 describe('GET /facilities/{facilityIdentifier}/investors', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -18,12 +18,26 @@ describe('GET /facilities/{facilityIdentifier}/investors', () => {
   const getFacilityInvestorsUrl = getGetFacilityInvestorsUrlForFacilityId(facilityIdentifier);
 
   let api: Api;
+  let idToken: string;
 
   const { facilityInvestorsInAcbs, facilityInvestorsFromService } = new GetFacilityInvestorGenerator(valueGenerator).generate({
     numberToGenerate: 2,
     facilityIdentifier,
     portfolioIdentifier,
   });
+
+  const requestToGetFacilityInvestorsWithId = (facilityId: string): nock.Interceptor =>
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .get(`/Portfolio/${portfolioIdentifier}/Facility/${facilityId}/FacilityParty`)
+      .matchHeader('authorization', `Bearer ${idToken}`);
+
+  const requestToGetFacilityInvestors = (): nock.Interceptor => requestToGetFacilityInvestorsWithId(facilityIdentifier);
+
+  const { idToken: resolvedIdToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
+    givenRequestWouldOtherwiseSucceed: () => requestToGetFacilityInvestors().reply(200, facilityInvestorsInAcbs),
+    makeRequest: () => api.get(getFacilityInvestorsUrl),
+  });
+  idToken = resolvedIdToken;
 
   beforeAll(async () => {
     api = await Api.create();
@@ -36,11 +50,6 @@ describe('GET /facilities/{facilityIdentifier}/investors', () => {
   afterEach(() => {
     nock.abortPendingRequests();
     nock.cleanAll();
-  });
-
-  const { idToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
-    givenRequestWouldOtherwiseSucceed: () => requestToGetFacilityInvestors().reply(200, facilityInvestorsInAcbs),
-    makeRequest: () => api.get(getFacilityInvestorsUrl),
   });
 
   withClientAuthenticationTests({
@@ -121,11 +130,4 @@ describe('GET /facilities/{facilityIdentifier}/investors', () => {
       message: 'Internal server error',
     });
   });
-
-  const requestToGetFacilityInvestorsWithId = (facilityId: string): nock.Interceptor =>
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .get(`/Portfolio/${portfolioIdentifier}/Facility/${facilityId}/FacilityParty`)
-      .matchHeader('authorization', `Bearer ${idToken}`);
-
-  const requestToGetFacilityInvestors = (): nock.Interceptor => requestToGetFacilityInvestorsWithId(facilityIdentifier);
 });

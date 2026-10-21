@@ -3,8 +3,9 @@ import axios from 'axios';
 import { HttpStatus } from '../constants/http-status.constant';
 import { postToTfsApi } from '../utils/post-to-tfs-api';
 
-const apimTfsKey = process.env.APIM_TFS_KEY as string;
-const apimTfsValue = process.env.APIM_TFS_VALUE as string;
+const apimTfsUrl = process.env.APIM_TFS_URL;
+const apimTfsKey = process.env.APIM_TFS_KEY;
+const apimTfsValue = process.env.APIM_TFS_VALUE;
 
 jest.mock('axios');
 
@@ -13,7 +14,7 @@ const context = {
   error: jest.fn(),
 };
 
-const url = 'https://mock-tfs-api.com/api/v2/tfs/facility';
+const facilityId = '0011111111';
 const errorPrefix = 'Failed to do something';
 
 describe('postToTfsApi', () => {
@@ -28,11 +29,11 @@ describe('postToTfsApi', () => {
     axios.post = jest.fn().mockResolvedValue({ status: HttpStatus.CREATED, data: {} });
 
     // Act
-    await postToTfsApi(url, payload, errorPrefix, context as any);
+    await postToTfsApi('facilityAmendment', facilityId, payload, errorPrefix, context as any);
 
     // Assert
     expect(axios.post).toHaveBeenCalledTimes(1);
-    expect(axios.post).toHaveBeenCalledWith(url, payload, {
+    expect(axios.post).toHaveBeenCalledWith(`${apimTfsUrl}/api/v2/gift/facility/${facilityId}/amendment/without-queue`, payload, {
       headers: {
         [apimTfsKey]: apimTfsValue,
         accept: 'application/json',
@@ -45,7 +46,7 @@ describe('postToTfsApi', () => {
     axios.post = jest.fn().mockResolvedValue({ status: HttpStatus.CREATED, data: {} });
 
     // Act
-    await postToTfsApi(url, {}, errorPrefix, context as any);
+    await postToTfsApi('facilityAmendment', facilityId, {}, errorPrefix, context as any);
 
     // Assert
     expect(context.error).not.toHaveBeenCalled();
@@ -58,7 +59,7 @@ describe('postToTfsApi', () => {
     axios.post = jest.fn().mockResolvedValue({ status: HttpStatus.BAD_REQUEST, data: responseData });
 
     // Act
-    const call = () => postToTfsApi(url, {}, errorPrefix, context as any);
+    const call = () => postToTfsApi('facilityAmendment', facilityId, {}, errorPrefix, context as any);
 
     // Assert
     await expect(call()).rejects.toThrow(`${errorPrefix}, status: 400, response: {"error":"Bad Request"}`);
@@ -76,7 +77,7 @@ describe('postToTfsApi', () => {
     jest.mocked(axios.isAxiosError).mockReturnValue(true);
 
     // Act
-    const call = () => postToTfsApi(url, {}, errorPrefix, context as any);
+    const call = () => postToTfsApi('facilityAmendment', facilityId, {}, errorPrefix, context as any);
 
     // Assert
     await expect(call()).rejects.toThrow(`${errorPrefix}, status: 500, error: Network Error, response: {"error":"Internal Server Error"}`);
@@ -88,7 +89,7 @@ describe('postToTfsApi', () => {
     axios.post = jest.fn().mockRejectedValue(new Error('Network Error'));
 
     // Act
-    const call = () => postToTfsApi(url, {}, errorPrefix, context as any);
+    const call = () => postToTfsApi('facilityAmendment', facilityId, {}, errorPrefix, context as any);
 
     // Assert
     await expect(call()).rejects.toThrow(`${errorPrefix}, error: Network Error`);
@@ -100,7 +101,7 @@ describe('postToTfsApi', () => {
     axios.post = jest.fn().mockRejectedValue('unexpected string error');
 
     // Act
-    const call = () => postToTfsApi(url, {}, errorPrefix, context as any);
+    const call = () => postToTfsApi('facilityAmendment', facilityId, {}, errorPrefix, context as any);
 
     // Assert
     await expect(call()).rejects.toThrow(`${errorPrefix}, unknown error`);

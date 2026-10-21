@@ -200,6 +200,88 @@ describe('createHaloTicket', () => {
       });
     });
 
+    describe('when messageType is facility-get', () => {
+      it('posts a ticket with a summary referencing retrieval of a single facility', async () => {
+        // Arrange
+        const facilityId = 'abc-123';
+        const payload = { facilityId };
+        const errorMessage = 'Failed to get GIFT facility abc-123, status: 404, response: {"error":"Not Found"}';
+
+        axios.post = jest
+          .fn()
+          .mockResolvedValueOnce({ data: { access_token: mockAccessToken } })
+          .mockResolvedValueOnce({});
+
+        // Act
+        await createHaloTicket(facilityId, payload, errorMessage, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_GET, context as any);
+
+        // Assert
+        const expectedTicketBody = [
+          {
+            summary: `APIM TFS Error retrieving facility ${facilityId} in GIFT - preventing facility creation`,
+            details: `Error: ${errorMessage}\n\nOriginal payload:\n${JSON.stringify(payload, null, 2)}`,
+            tickettype_id: ticketTypeId,
+            client_id: ticketClientId,
+            site_id: siteId,
+            user_id: userId,
+            team_id: teamId,
+            itil_tickettype_id: -1,
+            dont_do_rules: true,
+            donotapplytemplateintheapi: true,
+            return_this: true,
+          },
+        ];
+
+        expect(axios.post).toHaveBeenNthCalledWith(2, `${HALO_BASE_URL}/api/Tickets`, expectedTicketBody, {
+          headers: {
+            Authorization: `Bearer ${mockAccessToken}`,
+            'Content-Type': 'application/json',
+          },
+        });
+      });
+    });
+
+    describe('when messageType is facility-get-many', () => {
+      it('posts a ticket with a summary referencing retrieval of multiple facilities', async () => {
+        // Arrange
+        const facilityIds = 'abc-123,def-456';
+        const payload = { ids: facilityIds };
+        const errorMessage = 'Failed to get GIFT facilities abc-123,def-456, status: 404, response: {"error":"Not Found"}';
+
+        axios.post = jest
+          .fn()
+          .mockResolvedValueOnce({ data: { access_token: mockAccessToken } })
+          .mockResolvedValueOnce({});
+
+        // Act
+        await createHaloTicket(facilityIds, payload, errorMessage, GIFT_QUEUE_MESSAGE_TYPE.FACILITY_GET_MANY, context as any);
+
+        // Assert
+        const expectedTicketBody = [
+          {
+            summary: `APIM TFS Error retrieving facilities ${facilityIds} in GIFT - preventing facility creation`,
+            details: `Error: ${errorMessage}\n\nOriginal payload:\n${JSON.stringify(payload, null, 2)}`,
+            tickettype_id: ticketTypeId,
+            client_id: ticketClientId,
+            site_id: siteId,
+            user_id: userId,
+            team_id: teamId,
+            itil_tickettype_id: -1,
+            dont_do_rules: true,
+            donotapplytemplateintheapi: true,
+            return_this: true,
+          },
+        ];
+
+        expect(axios.post).toHaveBeenNthCalledWith(2, `${HALO_BASE_URL}/api/Tickets`, expectedTicketBody, {
+          headers: {
+            Authorization: `Bearer ${mockAccessToken}`,
+            'Content-Type': 'application/json',
+          },
+        });
+      });
+    });
+
     describe('when ticket creation fails', () => {
       it('logs an error and resolves if ticket creation fails with an Error', async () => {
         // Arrange

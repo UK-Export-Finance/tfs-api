@@ -1,6 +1,6 @@
+import request from 'supertest';
 import { AUTH } from '@ukef/constants';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
-import request from 'supertest';
 
 import { App } from './app';
 
@@ -70,6 +70,7 @@ export class Api {
     if (strategy) {
       return query.set({ [strategy]: key });
     }
+
     return query;
   }
 }

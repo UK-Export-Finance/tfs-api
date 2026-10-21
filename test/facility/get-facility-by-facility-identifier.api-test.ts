@@ -1,3 +1,4 @@
+import nock from 'nock';
 import { PROPERTIES } from '@ukef/constants';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
@@ -7,7 +8,6 @@ import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import { GetFacilityGenerator } from '@ukef-test/support/generator/get-facility-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import nock from 'nock';
 
 describe('GET /facilities/{facilityIdentifier}', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -26,6 +26,21 @@ describe('GET /facilities/{facilityIdentifier}', () => {
   const [expectedFacility] = facilitiesFromApi;
 
   let api: Api;
+  let idToken: string;
+
+  const requestToGetFacilityInAcbs = () =>
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .get(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}`)
+      .matchHeader('authorization', `Bearer ${idToken}`);
+
+  const givenRequestToGetFacilityInAcbsSucceeds = () => requestToGetFacilityInAcbs().reply(200, facilityInAcbs);
+  const makeRequest = () => api.get(getFacilityUrl);
+
+  const { idToken: resolvedIdToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
+    givenRequestWouldOtherwiseSucceed: () => givenRequestToGetFacilityInAcbsSucceeds(),
+    makeRequest: () => makeRequest(),
+  });
+  idToken = resolvedIdToken;
 
   beforeAll(async () => {
     api = await Api.create();
@@ -38,11 +53,6 @@ describe('GET /facilities/{facilityIdentifier}', () => {
   afterEach(() => {
     nock.abortPendingRequests();
     nock.cleanAll();
-  });
-
-  const { idToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
-    givenRequestWouldOtherwiseSucceed: () => givenRequestToGetFacilityInAcbsSucceeds(),
-    makeRequest: () => makeRequest(),
   });
 
   withClientAuthenticationTests({
@@ -150,12 +160,4 @@ describe('GET /facilities/{facilityIdentifier}', () => {
     requestToGetFacilityInAcbs: () => requestToGetFacilityInAcbs(),
     makeRequest: () => makeRequest(),
   });
-
-  const requestToGetFacilityInAcbs = () =>
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .get(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}`)
-      .matchHeader('authorization', `Bearer ${idToken}`);
-
-  const givenRequestToGetFacilityInAcbsSucceeds = () => requestToGetFacilityInAcbs().reply(200, facilityInAcbs);
-  const makeRequest = () => api.get(getFacilityUrl);
 });

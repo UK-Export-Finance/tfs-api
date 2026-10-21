@@ -37,7 +37,7 @@ export const currencyStringValidation = ({ initialPayload, parentFieldName, url 
       mockPayload = generatePayload({ initialPayload, fieldName, parentFieldName });
 
       // Arrange
-      mockPayload[`${parentFieldName}`][`${fieldName}`] = UNSUPPORTED_CURRENCY;
+      mockPayload[parentFieldName][fieldName] = UNSUPPORTED_CURRENCY;
     });
 
     it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {

@@ -142,8 +142,8 @@ export class GetFacilityGenerator extends AbstractGenerator<AcbsGetFacilityRespo
 
     const facilitiesFromApi: GetFacilityByIdentifierResponseDto[] = values.map((v) => ({
       dealIdentifier: v.DealIdentifier,
-      facilityIdentifier: facilityIdentifier,
-      portfolioIdentifier: portfolioIdentifier,
+      facilityIdentifier,
+      portfolioIdentifier,
       dealBorrowerIdentifier: v.DealBorrowerPartyIdentifier,
       maximumLiability: v.LimitAmount,
       productTypeId: v.FacilityType.FacilityTypeCode,
@@ -181,12 +181,12 @@ export class GetFacilityGenerator extends AbstractGenerator<AcbsGetFacilityRespo
   }
 }
 
-interface GenerateOptions {
+type GenerateOptions = {
   facilityIdentifier: string;
   portfolioIdentifier: string;
-}
+};
 
-interface GenerateResult {
+type GenerateResult = {
   facilitiesInAcbs: AcbsGetFacilityResponseDto[];
   facilitiesFromApi: GetFacilityByIdentifierResponseDto[];
-}
+};

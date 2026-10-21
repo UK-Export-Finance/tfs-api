@@ -1,3 +1,4 @@
+import nock from 'nock';
 import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { ProductTypeGroupEnum } from '@ukef/constants/enums/product-type-group';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
@@ -14,7 +15,6 @@ import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import { CreateFacilityLoanGenerator } from '@ukef-test/support/generator/create-facility-loan-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import nock from 'nock';
 
 describe('POST /facilities/{facilityIdentifier}/loans', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -33,6 +33,31 @@ describe('POST /facilities/{facilityIdentifier}/loans', () => {
     });
 
   let api: Api;
+  let idToken: string;
+
+  const requestToCreateFacilityLoanInAcbsWithBody = (requestBody: nock.RequestBodyMatcher): nock.Interceptor =>
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .post(`/BundleInformation?servicingQueueIdentifier=${servicingQueueIdentifier}`, requestBody)
+      .matchHeader('authorization', `Bearer ${idToken}`)
+      .matchHeader('Content-Type', 'application/json');
+
+  const requestToCreateFacilityLoan = (): nock.Interceptor =>
+    requestToCreateFacilityLoanInAcbsWithBody(JSON.parse(JSON.stringify(acbsRequestBodyToCreateFacilityLoanGbp)));
+
+  const givenRequestToCreateFacilityLoanInAcbsSucceeds = (): nock.Scope =>
+    requestToCreateFacilityLoan().reply(201, undefined, { bundleidentifier: bundleIdentifier });
+
+  const givenRequestToCreateFacilityLoanInAcbsSucceedsWithWarningHeader = (): nock.Scope =>
+    requestToCreateFacilityLoan().reply(201, undefined, { bundleidentifier: bundleIdentifier, 'processing-warning': errorString });
+
+  const givenAnyRequestBodyToCreateFacilityLoanInAcbsSucceeds = (): void => {
+    const requestBodyPlaceholder = '*';
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .filteringRequestBody(() => requestBodyPlaceholder)
+      .post(`/BundleInformation?servicingQueueIdentifier=${servicingQueueIdentifier}`, requestBodyPlaceholder)
+      .matchHeader('authorization', `Bearer ${idToken}`)
+      .reply(201, undefined, { bundleidentifier: bundleIdentifier });
+  };
 
   beforeAll(async () => {
     api = await Api.create();
@@ -47,11 +72,12 @@ describe('POST /facilities/{facilityIdentifier}/loans', () => {
     nock.cleanAll();
   });
 
-  const { idToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
+  const { idToken: resolvedIdToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
     givenRequestWouldOtherwiseSucceed: () => givenRequestToCreateFacilityLoanInAcbsSucceeds(),
     makeRequest: () => api.post(postFacilityLoanUrl, requestBodyToCreateFacilityLoanGbp),
     successStatusCode: 201,
   });
+  idToken = resolvedIdToken;
 
   withClientAuthenticationTests({
     givenTheRequestWouldOtherwiseSucceed: () => {
@@ -257,30 +283,4 @@ describe('POST /facilities/{facilityIdentifier}/loans', () => {
       });
     });
   });
-
-  const givenRequestToCreateFacilityLoanInAcbsSucceeds = (): nock.Scope => {
-    return requestToCreateFacilityLoan().reply(201, undefined, { bundleidentifier: bundleIdentifier });
-  };
-
-  const givenRequestToCreateFacilityLoanInAcbsSucceedsWithWarningHeader = (): nock.Scope => {
-    return requestToCreateFacilityLoan().reply(201, undefined, { bundleidentifier: bundleIdentifier, 'processing-warning': errorString });
-  };
-
-  const requestToCreateFacilityLoan = (): nock.Interceptor =>
-    requestToCreateFacilityLoanInAcbsWithBody(JSON.parse(JSON.stringify(acbsRequestBodyToCreateFacilityLoanGbp)));
-
-  const requestToCreateFacilityLoanInAcbsWithBody = (requestBody: nock.RequestBodyMatcher): nock.Interceptor =>
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .post(`/BundleInformation?servicingQueueIdentifier=${servicingQueueIdentifier}`, requestBody)
-      .matchHeader('authorization', `Bearer ${idToken}`)
-      .matchHeader('Content-Type', 'application/json');
-
-  const givenAnyRequestBodyToCreateFacilityLoanInAcbsSucceeds = (): void => {
-    const requestBodyPlaceholder = '*';
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .filteringRequestBody(() => requestBodyPlaceholder)
-      .post(`/BundleInformation?servicingQueueIdentifier=${servicingQueueIdentifier}`, requestBodyPlaceholder)
-      .matchHeader('authorization', `Bearer ${idToken}`)
-      .reply(201, undefined, { bundleidentifier: bundleIdentifier });
-  };
 });

@@ -1,3 +1,4 @@
+import nock from 'nock';
 import { PROPERTIES } from '@ukef/constants';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
@@ -7,7 +8,6 @@ import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
 import { GetFacilityLoanGenerator } from '@ukef-test/support/generator/get-facility-loan-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import nock from 'nock';
 
 describe('GET /facilities/{facilityIdentifier}/loans', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -26,6 +26,14 @@ describe('GET /facilities/{facilityIdentifier}/loans', () => {
   });
 
   let api: Api;
+  let idToken: string;
+
+  const requestToGetLoansForFacilityWithId = (facilityId: string) =>
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .get(`/Portfolio/${portfolioIdentifier}/Facility/${facilityId}/Loan`)
+      .matchHeader('authorization', `Bearer ${idToken}`);
+
+  const requestToGetLoansForFacility = () => requestToGetLoansForFacilityWithId(facilityIdentifier);
 
   beforeAll(async () => {
     api = await Api.create();
@@ -40,10 +48,11 @@ describe('GET /facilities/{facilityIdentifier}/loans', () => {
     nock.cleanAll();
   });
 
-  const { idToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
+  const { idToken: resolvedIdToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
     givenRequestWouldOtherwiseSucceed: () => requestToGetLoansForFacility().reply(200, facilityLoansInAcbs),
     makeRequest: () => api.get(getFacilityLoansUrl),
   });
+  idToken = resolvedIdToken;
 
   withClientAuthenticationTests({
     givenTheRequestWouldOtherwiseSucceed: () => {
@@ -128,11 +137,4 @@ describe('GET /facilities/{facilityIdentifier}/loans', () => {
       message: 'Internal server error',
     });
   });
-
-  const requestToGetLoansForFacility = () => requestToGetLoansForFacilityWithId(facilityIdentifier);
-
-  const requestToGetLoansForFacilityWithId = (facilityId: string) =>
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .get(`/Portfolio/${portfolioIdentifier}/Facility/${facilityId}/Loan`)
-      .matchHeader('authorization', `Bearer ${idToken}`);
 });

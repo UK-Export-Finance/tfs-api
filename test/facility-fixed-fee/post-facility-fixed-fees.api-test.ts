@@ -1,3 +1,4 @@
+import nock from 'nock';
 import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { LenderTypeCodeEnum } from '@ukef/constants/enums/lender-type-code';
 import { AcbsPartyId } from '@ukef/helpers';
@@ -16,7 +17,6 @@ import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/s
 import { CreateFacilityFixedFeeGenerator } from '@ukef-test/support/generator/create-facility-fixed-fee-generator';
 import { GetFacilityGenerator } from '@ukef-test/support/generator/get-facility-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import nock from 'nock';
 
 describe('POST /facilities/{facilityIdentifier}/fixed-fees', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -51,6 +51,36 @@ describe('POST /facilities/{facilityIdentifier}/fixed-fees', () => {
   });
 
   let api: Api;
+  let idToken: string;
+
+  const requestToGetFacility = () =>
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .get(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}`)
+      .matchHeader('authorization', `Bearer ${idToken}`);
+
+  const givenRequestToGetFacilityFromAcbsSucceedsReturning = (acbsFacility: AcbsGetFacilityResponseDto): nock.Scope =>
+    requestToGetFacility().reply(200, acbsFacility);
+
+  const givenRequestToGetFacilityFromAcbsSucceeds = (): nock.Scope => givenRequestToGetFacilityFromAcbsSucceedsReturning(facilityInAcbs);
+
+  const requestToCreateFacilityFixedFeeInAcbsWithBody = (requestBody: AcbsCreateFacilityFixedFeeRequestDto): nock.Interceptor =>
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .post(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/Fee/FixedFee`, JSON.stringify(requestBody))
+      .matchHeader('authorization', `Bearer ${idToken}`)
+      .matchHeader('Content-Type', 'application/json');
+
+  const requestToCreateFacilityFixedFee = (): nock.Interceptor => requestToCreateFacilityFixedFeeInAcbsWithBody(acbsRequestBodyToCreateFacilityFixedFee);
+
+  const givenRequestToCreateFacilityFixedFeeInAcbsSucceeds = (): nock.Scope => requestToCreateFacilityFixedFee().reply(201);
+
+  const givenAnyrequestBodyToCreateFacilityFixedFeeInAcbsSucceeds = (): void => {
+    const requestBodyPlaceholder = '*';
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .filteringRequestBody(() => requestBodyPlaceholder)
+      .post(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/Fee/FixedFee`, requestBodyPlaceholder)
+      .matchHeader('authorization', `Bearer ${idToken}`)
+      .reply(201);
+  };
 
   beforeAll(async () => {
     api = await Api.create();
@@ -65,7 +95,7 @@ describe('POST /facilities/{facilityIdentifier}/fixed-fees', () => {
     nock.cleanAll();
   });
 
-  const { idToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
+  const { idToken: resolvedIdToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
     givenRequestWouldOtherwiseSucceed: () => {
       givenRequestToGetFacilityFromAcbsSucceeds();
       givenRequestToCreateFacilityFixedFeeInAcbsSucceeds();
@@ -73,6 +103,7 @@ describe('POST /facilities/{facilityIdentifier}/fixed-fees', () => {
     makeRequest: () => api.post(createFacilityFixedFeeUrl, requestBodyToCreateFacilityFixedFee),
     successStatusCode: 201,
   });
+  idToken = resolvedIdToken;
 
   withClientAuthenticationTests({
     givenTheRequestWouldOtherwiseSucceed: () => {
@@ -398,36 +429,4 @@ describe('POST /facilities/{facilityIdentifier}/fixed-fees', () => {
       givenAnyRequestBodyWouldSucceed,
     });
   });
-
-  const givenRequestToGetFacilityFromAcbsSucceeds = (): nock.Scope => givenRequestToGetFacilityFromAcbsSucceedsReturning(facilityInAcbs);
-
-  const givenRequestToGetFacilityFromAcbsSucceedsReturning = (acbsFacility: AcbsGetFacilityResponseDto): nock.Scope => {
-    return requestToGetFacility().reply(200, acbsFacility);
-  };
-
-  const requestToGetFacility = () =>
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .get(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}`)
-      .matchHeader('authorization', `Bearer ${idToken}`);
-
-  const givenRequestToCreateFacilityFixedFeeInAcbsSucceeds = (): nock.Scope => {
-    return requestToCreateFacilityFixedFee().reply(201);
-  };
-
-  const requestToCreateFacilityFixedFee = (): nock.Interceptor => requestToCreateFacilityFixedFeeInAcbsWithBody(acbsRequestBodyToCreateFacilityFixedFee);
-
-  const requestToCreateFacilityFixedFeeInAcbsWithBody = (requestBody: AcbsCreateFacilityFixedFeeRequestDto): nock.Interceptor =>
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .post(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/Fee/FixedFee`, JSON.stringify(requestBody))
-      .matchHeader('authorization', `Bearer ${idToken}`)
-      .matchHeader('Content-Type', 'application/json');
-
-  const givenAnyrequestBodyToCreateFacilityFixedFeeInAcbsSucceeds = (): void => {
-    const requestBodyPlaceholder = '*';
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .filteringRequestBody(() => requestBodyPlaceholder)
-      .post(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/Fee/FixedFee`, requestBodyPlaceholder)
-      .matchHeader('authorization', `Bearer ${idToken}`)
-      .reply(201);
-  };
 });

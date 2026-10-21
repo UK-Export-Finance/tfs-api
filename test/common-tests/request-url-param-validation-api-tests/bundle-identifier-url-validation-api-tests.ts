@@ -1,5 +1,5 @@
-import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import request from 'supertest';
+import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 
 const expectedBundleIdentifierMustMatchPatternErrorMessage = `bundleIdentifier must match /^0{4}\\d{6}$/ regular expression`;
 

@@ -1,7 +1,7 @@
-import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import request from 'supertest';
+import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 
-interface RequiredNumberFieldValidationApiTestOptions<RequestBodyItem> {
+type RequiredNumberFieldValidationApiTestOptions<RequestBodyItem> = {
   fieldName: keyof RequestBodyItem;
   required?: boolean;
   minimum?: number;
@@ -11,7 +11,7 @@ interface RequiredNumberFieldValidationApiTestOptions<RequestBodyItem> {
   makeRequest: ((body: unknown[]) => request.Test) | ((body: unknown) => request.Test);
   givenAnyRequestBodyWouldSucceed: () => void;
   forbidZero?: boolean;
-}
+};
 
 export function withNumberFieldValidationApiTests<RequestBodyItem>({
   fieldName: fieldNameSymbol,
@@ -26,7 +26,7 @@ export function withNumberFieldValidationApiTests<RequestBodyItem>({
 }: RequiredNumberFieldValidationApiTestOptions<RequestBodyItem>): void {
   const fieldName = fieldNameSymbol.toString();
   const valueGenerator = new RandomValueGenerator();
-  required = required ?? true;
+  const isRequired = required ?? true;
   const [validRequestItem] = validRequestBody;
   const expectedNonEmptyFieldError = `${fieldName} should not be empty`;
 
@@ -35,9 +35,9 @@ export function withNumberFieldValidationApiTests<RequestBodyItem>({
       givenAnyRequestBodyWouldSucceed();
     });
 
-    if (required) {
+    if (isRequired) {
       it(`returns a 400 response if ${fieldName} is not present`, async () => {
-        const { [fieldNameSymbol]: _removed, ...requestWithoutField } = validRequestItem;
+        const { [fieldNameSymbol]: removed, ...requestWithoutField } = validRequestItem;
 
         const { status, body } = await makeRequest([requestWithoutField]);
 
@@ -50,7 +50,7 @@ export function withNumberFieldValidationApiTests<RequestBodyItem>({
       });
     } else {
       it(`returns a 201 response if ${fieldName} is not present`, async () => {
-        const { [fieldNameSymbol]: _removed, ...requestWithoutField } = validRequestItem;
+        const { [fieldNameSymbol]: removed, ...requestWithoutField } = validRequestItem;
 
         const { status } = await makeRequest([requestWithoutField]);
 
@@ -116,7 +116,7 @@ export function withNumberFieldValidationApiTests<RequestBodyItem>({
 
     if (theEnum && generateFieldValueThatDoesNotMatchEnum) {
       // Numeric enums needs filter to get possible values.
-      const possibleValues = Object.values(theEnum).filter((value) => !isNaN(Number(value)));
+      const possibleValues = Object.values(theEnum).filter((value) => !Number.isNaN(Number(value)));
 
       it(`returns a 201 response if ${fieldName} does match the enum`, async () => {
         const requestWithInvalidField = [
@@ -140,24 +140,22 @@ export function withNumberFieldValidationApiTests<RequestBodyItem>({
           statusCode: 400,
         });
       });
-    } else {
-      if (minimum) {
-        it(`returns a 201 response if ${fieldName} is minimum`, async () => {
-          const requestWithZeroField = [{ ...validRequestItem, [fieldNameSymbol]: minimum }];
+    } else if (minimum) {
+      it(`returns a 201 response if ${fieldName} is minimum`, async () => {
+        const requestWithZeroField = [{ ...validRequestItem, [fieldNameSymbol]: minimum }];
 
-          const { status } = await makeRequest(requestWithZeroField);
+        const { status } = await makeRequest(requestWithZeroField);
 
-          expect(status).toBe(201);
-        });
+        expect(status).toBe(201);
+      });
 
-        it(`returns a 201 response if ${fieldName} is greater than minimum`, async () => {
-          const requestWithZeroField = [{ ...validRequestItem, [fieldNameSymbol]: minimum + 1 }];
+      it(`returns a 201 response if ${fieldName} is greater than minimum`, async () => {
+        const requestWithZeroField = [{ ...validRequestItem, [fieldNameSymbol]: minimum + 1 }];
 
-          const { status } = await makeRequest(requestWithZeroField);
+        const { status } = await makeRequest(requestWithZeroField);
 
-          expect(status).toBe(201);
-        });
-      }
+        expect(status).toBe(201);
+      });
     }
   });
 }

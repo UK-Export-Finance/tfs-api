@@ -1,3 +1,4 @@
+import nock from 'nock';
 import { ENUMS } from '@ukef/constants';
 import { AcbsCreatePartyExternalRatingRequestDto } from '@ukef/modules/acbs/dto/acbs-create-party-external-rating-request.dto';
 import { AcbsCreatePartyRequestDto } from '@ukef/modules/acbs/dto/acbs-create-party-request.dto';
@@ -10,7 +11,6 @@ import { CreatePartyGenerator } from '@ukef-test/support/generator/create-party-
 import { GetPartyGenerator } from '@ukef-test/support/generator/get-party-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { MockMdmApi } from '@ukef-test/support/mdm-api.mock';
-import nock from 'nock';
 
 describe('Test InputCharacterValidationPipe', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -25,14 +25,14 @@ describe('Test InputCharacterValidationPipe', () => {
   const safeSearchText = valueGenerator.stringOfNumericCharacters({ minLength: 3 });
 
   const getGetPartiesBySearchTextUrl = (searchText: string) => `/api/v1/parties?searchText=`.concat(encodeURIComponent(searchText));
-  const getGetPartyByIdUrl = (partyIdentifier: string) => `/api/v1/parties/`.concat(encodeURIComponent(partyIdentifier));
+  const getGetPartyByIdUrl = (url: string) => `/api/v1/parties/`.concat(encodeURIComponent(url));
   const createPartyUrl = `/api/v1/parties`;
 
   const { acbsParties, parties } = new GetPartyGenerator(valueGenerator, dateStringTransformations).generate({ numberToGenerate: 2 });
 
   const { acbsCreatePartyRequest, apiCreatePartyRequest } = new CreatePartyGenerator(valueGenerator, dateStringTransformations).generate({
     numberToGenerate: 2,
-    basePartyAlternateIdentifier: basePartyAlternateIdentifier,
+    basePartyAlternateIdentifier,
   });
 
   const [{ officerRiskDate: ratedDate }] = apiCreatePartyRequest;
@@ -46,6 +46,41 @@ describe('Test InputCharacterValidationPipe', () => {
 
   let mdmApi: MockMdmApi;
   let api: Api;
+  let idToken: string;
+
+  const requestToGetPartiesBySearchText = (search): nock.Interceptor =>
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL).get(`/Party/Search/${search}`).matchHeader('authorization', `Bearer ${idToken}`);
+
+  const requestToGetParty = () => nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL).get(`/Party/${partyIdentifier}`).matchHeader('authorization', `Bearer ${idToken}`);
+
+  const requestToCreateParties = (request: AcbsCreatePartyRequestDto): nock.Interceptor =>
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .post('/Party', JSON.stringify(request))
+      .matchHeader('authorization', `Bearer ${idToken}`)
+      .matchHeader('Content-Type', 'application/json');
+
+  const requestToCreatePartyExternalRating = (request: AcbsCreatePartyExternalRatingRequestDto): nock.Interceptor =>
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .post(`/Party/${partyIdentifier}/PartyExternalRating`, JSON.stringify(request))
+      .matchHeader('authorization', `Bearer ${idToken}`)
+      .matchHeader('Content-Type', 'application/json');
+
+  const requestToGetPartyExternalRatings = (): nock.Interceptor =>
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL).get(`/Party/${partyIdentifier}/PartyExternalRating`).matchHeader('authorization', `Bearer ${idToken}`);
+
+  const givenRequestToGetPartyExternalRatingsSucceeds = (): nock.Scope => requestToGetPartyExternalRatings().reply(200, []);
+
+  const givenRequestToCreatePartyExternalRatingSucceeds = (): nock.Scope => requestToCreatePartyExternalRating(acbsExternalRatingToCreate).reply(201);
+
+  const givenRequestToFindCustomersByPartyUrnSucceeds = (): void => {
+    mdmApi.requestToFindCustomersByPartyUrn(alternateIdentifier).respondsWith(200, [{ type: valueGenerator.string() }]);
+  };
+
+  const { idToken: resolvedIdToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
+    givenRequestWouldOtherwiseSucceed: () => requestToGetPartiesBySearchText(safeSearchText).reply(200, acbsParties),
+    makeRequest: () => api.get(getGetPartiesBySearchTextUrl(safeSearchText)),
+  });
+  idToken = resolvedIdToken;
 
   beforeAll(async () => {
     mdmApi = new MockMdmApi(nock);
@@ -59,11 +94,6 @@ describe('Test InputCharacterValidationPipe', () => {
   afterEach(() => {
     nock.abortPendingRequests();
     nock.cleanAll();
-  });
-
-  const { idToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
-    givenRequestWouldOtherwiseSucceed: () => requestToGetPartiesBySearchText(safeSearchText).reply(200, acbsParties),
-    makeRequest: () => api.get(getGetPartiesBySearchTextUrl(safeSearchText)),
   });
 
   const { givenAuthenticationWithTheIdpSucceeds: givenAuthenticationWithTheIdpSucceedsById } = withAcbsAuthenticationApiTests({
@@ -130,11 +160,11 @@ describe('Test InputCharacterValidationPipe', () => {
       const { status, body } = await api.post(createPartyUrl, apiCreatePartyRequest);
 
       expect(status).toBe(201);
-      expect(body).toStrictEqual({ partyIdentifier: partyIdentifier });
+      expect(body).toStrictEqual({ partyIdentifier });
     });
 
     it('returns a 201 response when using characters with ASCII code 32 to 126', async () => {
-      const chars32_126CreatePartyRequest = [
+      const charsAscii32To126CreatePartyRequest = [
         {
           ...apiCreatePartyRequest[0],
           name1: ' !"#$%&\'()*+,-./0123456789:;<=>?@A', // cspell:disable-line
@@ -142,24 +172,24 @@ describe('Test InputCharacterValidationPipe', () => {
           name3: 'fghijklmnopqrstuvwxyz{|}~', // cspell:disable-line
         },
       ];
-      const chars32_126AcbsCreatePartyRequest = {
+      const charsAscii32To126AcbsCreatePartyRequest = {
         ...acbsCreatePartyRequest,
-        PartyName1: chars32_126CreatePartyRequest[0].name1,
-        PartyName2: chars32_126CreatePartyRequest[0].name2,
-        PartyName3: chars32_126CreatePartyRequest[0].name3,
-        PartyShortName: chars32_126CreatePartyRequest[0].name1.substring(0, 15),
-        PartySortName: chars32_126CreatePartyRequest[0].name1.substring(0, 20),
+        PartyName1: charsAscii32To126CreatePartyRequest[0].name1,
+        PartyName2: charsAscii32To126CreatePartyRequest[0].name2,
+        PartyName3: charsAscii32To126CreatePartyRequest[0].name3,
+        PartyShortName: charsAscii32To126CreatePartyRequest[0].name1.substring(0, 15),
+        PartySortName: charsAscii32To126CreatePartyRequest[0].name1.substring(0, 20),
       };
-      requestToCreateParties(chars32_126AcbsCreatePartyRequest).reply(201, undefined, { Location: `/Party/${partyIdentifier}` });
+      requestToCreateParties(charsAscii32To126AcbsCreatePartyRequest).reply(201, undefined, { Location: `/Party/${partyIdentifier}` });
 
-      const { status, body } = await api.post(createPartyUrl, chars32_126CreatePartyRequest);
+      const { status, body } = await api.post(createPartyUrl, charsAscii32To126CreatePartyRequest);
 
       expect(status).toBe(201);
-      expect(body).toStrictEqual({ partyIdentifier: partyIdentifier });
+      expect(body).toStrictEqual({ partyIdentifier });
     });
 
     it('returns a 201 response when using characters with ASCII code 160 to 255, except 181 µ and 255 ÿ', async () => {
-      const chars160_254CreatePartyRequest = [
+      const charsAscii160To254CreatePartyRequest = [
         {
           ...apiCreatePartyRequest[0],
           name1: ' ¡¢£¤¥¦§¨©ª«¬­®¯°±²³´¶·¸¹º»¼½¾¿ÀÁÂÃ', // cspell:disable-line
@@ -167,20 +197,20 @@ describe('Test InputCharacterValidationPipe', () => {
           name3: 'çèéêëìíîïðñòóôõö÷øùúûüýþ', // cspell:disable-line
         },
       ];
-      const chars160_254AcbsCreatePartyRequest = {
+      const charsAscii160To254AcbsCreatePartyRequest = {
         ...acbsCreatePartyRequest,
-        PartyName1: chars160_254CreatePartyRequest[0].name1,
-        PartyName2: chars160_254CreatePartyRequest[0].name2,
-        PartyName3: chars160_254CreatePartyRequest[0].name3,
-        PartyShortName: chars160_254CreatePartyRequest[0].name1.substring(0, 15),
-        PartySortName: chars160_254CreatePartyRequest[0].name1.substring(0, 20),
+        PartyName1: charsAscii160To254CreatePartyRequest[0].name1,
+        PartyName2: charsAscii160To254CreatePartyRequest[0].name2,
+        PartyName3: charsAscii160To254CreatePartyRequest[0].name3,
+        PartyShortName: charsAscii160To254CreatePartyRequest[0].name1.substring(0, 15),
+        PartySortName: charsAscii160To254CreatePartyRequest[0].name1.substring(0, 20),
       };
-      requestToCreateParties(chars160_254AcbsCreatePartyRequest).reply(201, undefined, { Location: `/Party/${partyIdentifier}` });
+      requestToCreateParties(charsAscii160To254AcbsCreatePartyRequest).reply(201, undefined, { Location: `/Party/${partyIdentifier}` });
 
-      const { status, body } = await api.post(createPartyUrl, chars160_254CreatePartyRequest);
+      const { status, body } = await api.post(createPartyUrl, charsAscii160To254CreatePartyRequest);
 
       expect(status).toBe(201);
-      expect(body).toStrictEqual({ partyIdentifier: partyIdentifier });
+      expect(body).toStrictEqual({ partyIdentifier });
     });
 
     it('returns a 400 response if the request has unsupported characters', async () => {
@@ -196,36 +226,4 @@ describe('Test InputCharacterValidationPipe', () => {
       });
     });
   });
-
-  const requestToGetPartiesBySearchText = (search): nock.Interceptor =>
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL).get(`/Party/Search/${search}`).matchHeader('authorization', `Bearer ${idToken}`);
-
-  const requestToGetParty = () => nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL).get(`/Party/${partyIdentifier}`).matchHeader('authorization', `Bearer ${idToken}`);
-
-  const requestToCreateParties = (request: AcbsCreatePartyRequestDto): nock.Interceptor =>
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .post('/Party', JSON.stringify(request))
-      .matchHeader('authorization', `Bearer ${idToken}`)
-      .matchHeader('Content-Type', 'application/json');
-
-  const requestToCreatePartyExternalRating = (request: AcbsCreatePartyExternalRatingRequestDto): nock.Interceptor =>
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .post(`/Party/${partyIdentifier}/PartyExternalRating`, JSON.stringify(request))
-      .matchHeader('authorization', `Bearer ${idToken}`)
-      .matchHeader('Content-Type', 'application/json');
-
-  const givenRequestToGetPartyExternalRatingsSucceeds = (): nock.Scope => {
-    return requestToGetPartyExternalRatings().reply(200, []);
-  };
-
-  const requestToGetPartyExternalRatings = (): nock.Interceptor =>
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL).get(`/Party/${partyIdentifier}/PartyExternalRating`).matchHeader('authorization', `Bearer ${idToken}`);
-
-  const givenRequestToCreatePartyExternalRatingSucceeds = (): nock.Scope => {
-    return requestToCreatePartyExternalRating(acbsExternalRatingToCreate).reply(201);
-  };
-
-  const givenRequestToFindCustomersByPartyUrnSucceeds = (): void => {
-    mdmApi.requestToFindCustomersByPartyUrn(alternateIdentifier).respondsWith(200, [{ type: valueGenerator.string() }]);
-  };
 });

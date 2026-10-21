@@ -9,7 +9,7 @@ import { generateAcbsCreateFacilityGuaranteeDtoUsing } from '@ukef-test/support/
 import { AcbsFacilityGuaranteeService } from './acbs-facility-guarantee.service';
 import { AcbsBadRequestException } from './exception/acbs-bad-request.exception';
 import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
-import { AcbsUnexpectedException } from './exception/acbs-unexpected.exception';
+import { AcbsException } from './exception/acbs.exception';
 
 describe('AcbsFacilityGuaranteeService', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -134,7 +134,7 @@ describe('AcbsFacilityGuaranteeService', () => {
       await expect(createGuaranteeForFacilityPromise).rejects.toHaveProperty('errorBody', JSON.stringify(errorBody));
     });
 
-    it('throws an AcbsUnexpectedException if ACBS responds with an error code that is not 400', async () => {
+    it('throws an AcbsException if ACBS responds with an error code that is not 400', async () => {
       const axiosError = new AxiosError();
       const errorBody = { errorMessage: valueGenerator.string() };
       axiosError.response = {
@@ -151,7 +151,7 @@ describe('AcbsFacilityGuaranteeService', () => {
 
       const createGuaranteeForFacilityPromise = service.createGuaranteeForFacility(facilityIdentifier, newFacilityGuarantee, idToken);
 
-      await expect(createGuaranteeForFacilityPromise).rejects.toBeInstanceOf(AcbsUnexpectedException);
+      await expect(createGuaranteeForFacilityPromise).rejects.toBeInstanceOf(AcbsException);
       await expect(createGuaranteeForFacilityPromise).rejects.toThrow(`Failed to create a guarantee for facility ${facilityIdentifier} in ACBS.`);
       await expect(createGuaranteeForFacilityPromise).rejects.toHaveProperty('innerError', axiosError);
     });

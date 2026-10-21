@@ -1,10 +1,10 @@
+import nock from 'nock';
 import { HttpStatus } from '@nestjs/common';
 import { AMEND_FACILITY_PREFIX_TYPES, GIFT } from '@ukef/constants';
 import { GIFT_EXAMPLES } from '@ukef/constants/examples/gift.examples.constant';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
 import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
-import nock from 'nock';
 
 import {
   apimFacilityAmendmentWithoutQueueUrl,
@@ -51,7 +51,7 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
       ),
   });
 
-  describe(`${AMEND_FACILITY_INCREASE_AMOUNT}`, () => {
+  describe(AMEND_FACILITY_INCREASE_AMOUNT, () => {
     describe(`when the payload is valid and a ${HttpStatus.CREATED} response is returned by all GIFT endpoints`, () => {
       it(`should return a ${HttpStatus.CREATED} response with a facility and the created amendment`, async () => {
         // Arrange
@@ -254,7 +254,7 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
     });
   });
 
-  describe(`${AMEND_FACILITY_DECREASE_AMOUNT}`, () => {
+  describe(AMEND_FACILITY_DECREASE_AMOUNT, () => {
     describe(`when the payload is valid and a ${HttpStatus.CREATED} response is returned by all GIFT endpoints`, () => {
       it(`should return a ${HttpStatus.CREATED} response with a facility and the created amendment`, async () => {
         // Arrange
@@ -322,7 +322,7 @@ describe('POST /gift/facility/:facilityId/amendment', () => {
     });
   });
 
-  describe(`${AMEND_FACILITY_REPLACE_EXPIRY_DATE}`, () => {
+  describe(AMEND_FACILITY_REPLACE_EXPIRY_DATE, () => {
     describe(`when the payload is valid and a ${HttpStatus.CREATED} response is returned by all GIFT endpoints`, () => {
       it(`should return a ${HttpStatus.CREATED} response with a facility and the created amendment`, async () => {
         // Arrange

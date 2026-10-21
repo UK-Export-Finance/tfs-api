@@ -9,7 +9,7 @@ import { UpdateLoanGenerator } from '@ukef-test/support/generator/update-loan-ge
 import { AcbsLoanService } from './acbs-loan-service';
 import { AcbsBadRequestException } from './exception/acbs-bad-request.exception';
 import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
-import { AcbsUnexpectedException } from './exception/acbs-unexpected.exception';
+import { AcbsException } from './exception/acbs.exception';
 
 describe('AcbsLoanService', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -138,7 +138,7 @@ describe('AcbsLoanService', () => {
       await expect(updateLoanPromise).rejects.toHaveProperty('innerError', axiosError);
     });
 
-    it('throws an AcbsUnexpectedException if ACBS responds with an error code that is not 400', async () => {
+    it('throws an AcbsException if ACBS responds with an error code that is not 400', async () => {
       const axiosError = new AxiosError();
       const errorBody = { errorMessage: valueGenerator.string() };
       axiosError.response = {
@@ -155,7 +155,7 @@ describe('AcbsLoanService', () => {
 
       const createDealPromise = service.updateLoanByIdentifier(portfolioIdentifier, acbsUpdateLoanRequest, idToken);
 
-      await expect(createDealPromise).rejects.toBeInstanceOf(AcbsUnexpectedException);
+      await expect(createDealPromise).rejects.toBeInstanceOf(AcbsException);
       await expect(createDealPromise).rejects.toThrow(`Failed to update loan with identifier ${loanIdentifier} in ACBS.`);
       await expect(createDealPromise).rejects.toHaveProperty('innerError', axiosError);
     });

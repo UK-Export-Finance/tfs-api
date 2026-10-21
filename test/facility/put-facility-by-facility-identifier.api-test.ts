@@ -1,3 +1,5 @@
+import nock from 'nock';
+import supertest from 'supertest';
 import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
@@ -13,9 +15,7 @@ import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { UpdateFacilityGenerator } from '@ukef-test/support/generator/update-facility-generator';
-import { PutFacilityAcbsRequests } from '@ukef-test/support/interfaces/put-facility-by-facility-identifier-acbs-endpoints.interface.';
-import nock from 'nock';
-import supertest from 'supertest';
+import { PutFacilityAcbsRequests } from '@ukef-test/support/interfaces/put-facility-by-facility-identifier-acbs-endpoints.interface';
 
 describe('PUT /facilities', () => {
   let api: Api;
@@ -48,6 +48,10 @@ describe('PUT /facilities', () => {
     acbsBundleInformationRequest: expectedAcbsBundleInformationRequest,
   } = new UpdateFacilityGenerator(valueGenerator, dateStringTransformations).generate({ numberToGenerate: 1, facilityIdentifier });
 
+  const makeRequestWithUrlAndBody = (url: string, body: unknown): supertest.Test => api.put(url, JSON.parse(JSON.stringify(body)));
+
+  const makeRequestWithUrl = (url: string): supertest.Test => makeRequestWithUrlAndBody(url, updateFacilityRequest);
+
   withPutFacilityQueryParameterTests({
     makeRequestWithUrl: (url) => makeRequestWithUrl(url),
     updateFacilityBaseUrl,
@@ -58,7 +62,7 @@ describe('PUT /facilities', () => {
     { queryToTest: ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_EXPIRY_DATE },
     { queryToTest: ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_AMOUNT },
   ])('PUT /facilities?op=$queryToTest', ({ queryToTest }) => {
-    const updateFacilityUrl = updateFacilityBaseUrl + `?op=${queryToTest}`;
+    const updateFacilityUrl = `${updateFacilityBaseUrl}?op=${queryToTest}`;
 
     const bundleIdentifier = valueGenerator.acbsBundleId();
 
@@ -68,13 +72,121 @@ describe('PUT /facilities', () => {
     // We therefore run these checks seperately
     const includeIssueDateInFieldValidation = queryToTest !== ENUMS.FACILITY_UPDATE_OPERATIONS.ISSUE;
 
-    const { idToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
+    let idToken: string;
+
+    const makeRequestWithBody = (body: unknown): supertest.Test => makeRequestWithUrlAndBody(updateFacilityUrl, body);
+
+    const makeRequest = (): supertest.Test => makeRequestWithUrlAndBody(updateFacilityUrl, updateFacilityRequest);
+
+    const makeRequestWithoutAuth = (incorrectAuth?: IncorrectAuthArg) =>
+      api.putWithoutAuth(updateFacilityBaseUrl, updateFacilityRequest, incorrectAuth?.headerName, incorrectAuth?.headerValue);
+
+    const requestToGetFacilityInAcbs = () =>
+      nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+        .get(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}`)
+        .matchHeader('authorization', `Bearer ${idToken}`);
+
+    const givenRequestToGetFacilityInAcbsSucceeds = () => requestToGetFacilityInAcbs().reply(200, acbsGetExistingFacilityResponse);
+
+    const getRequestToAcbsConfig = () => {
+      const requestToUpdateFacilityInAcbs = () => {
+        const requestToUpdateFacilityInAcbsWithBody = (requestBody: nock.RequestBodyMatcher): nock.Interceptor =>
+          nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+            .put(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}`, requestBody)
+            .matchHeader('authorization', `Bearer ${idToken}`);
+
+        return requestToUpdateFacilityInAcbsWithBody(JSON.parse(JSON.stringify(expectedAcbsUpdateFacilityRequest)));
+      };
+
+      const requestToCreateBundleInfomationInAcbs = () => {
+        const requestToCreateBundleInfomationInAcbsWithBody = (requestBody: nock.RequestBodyMatcher): nock.Interceptor =>
+          nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+            .post(`/BundleInformation?servicingQueueIdentifier=${servicingQueueIdentifier}`, requestBody)
+            .matchHeader('authorization', `Bearer ${idToken}`)
+            .matchHeader('Content-Type', 'application/json');
+
+        return requestToCreateBundleInfomationInAcbsWithBody(JSON.parse(JSON.stringify(expectedAcbsBundleInformationRequest)));
+      };
+
+      const requestToUpdateInAcbs = () =>
+        queryToTest === ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_AMOUNT ? requestToCreateBundleInfomationInAcbs() : requestToUpdateFacilityInAcbs();
+
+      const givenRequestToUpdateInAcbsSucceeds = () => {
+        const givenRequestToUpdateFacilityInAcbsSucceeds = () =>
+          requestToUpdateFacilityInAcbs().reply(200, undefined, {
+            location: `/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}`,
+          });
+
+        const givenRequestToCreateBundleInfomationInAcbsSucceeds = () => requestToCreateBundleInfomationInAcbs().reply(201, undefined, { bundleIdentifier });
+
+        return queryToTest === ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_AMOUNT
+          ? givenRequestToCreateBundleInfomationInAcbsSucceeds()
+          : givenRequestToUpdateFacilityInAcbsSucceeds();
+      };
+
+      const givenRequestToCreateBundleInformationInAcbsSucceedsWithWarningHeader = () =>
+        requestToCreateBundleInfomationInAcbs().reply(201, undefined, { bundleIdentifier, 'processing-warning': errorString });
+
+      const givenAnyRequestBodyToUpdateInAcbsSucceeds = () => {
+        const givenAnyRequestBodyToUpdateFacilityInAcbsSucceeds = (): nock.Scope => {
+          const requestBodyPlaceholder = '*';
+          return nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+            .put(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}`, requestBodyPlaceholder)
+            .matchHeader('authorization', `Bearer ${idToken}`)
+            .reply(200, undefined, {
+              location: `/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}`,
+            });
+        };
+
+        const givenAnyRequestBodyToCreateFacilityActivationTransactionInAcbsSucceeds = (): nock.Scope => {
+          const requestBodyPlaceholder = '*';
+          return nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+            .post(`/BundleInformation?servicingQueueIdentifier=${servicingQueueIdentifier}`, requestBodyPlaceholder)
+            .matchHeader('authorization', `Bearer ${idToken}`)
+            .reply(201, undefined, { bundleIdentifier });
+        };
+        return queryToTest === ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_AMOUNT
+          ? givenAnyRequestBodyToCreateFacilityActivationTransactionInAcbsSucceeds()
+          : givenAnyRequestBodyToUpdateFacilityInAcbsSucceeds();
+      };
+
+      return {
+        requestToUpdateInAcbs,
+        givenRequestToUpdateInAcbsSucceeds,
+        givenAnyRequestBodyToUpdateInAcbsSucceeds,
+        givenRequestToCreateBundleInformationInAcbsSucceedsWithWarningHeader,
+      };
+    };
+
+    const {
+      requestToUpdateInAcbs,
+      givenRequestToUpdateInAcbsSucceeds,
+      givenAnyRequestBodyToUpdateInAcbsSucceeds,
+      givenRequestToCreateBundleInformationInAcbsSucceedsWithWarningHeader,
+    } = getRequestToAcbsConfig();
+
+    const { idToken: resolvedIdToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
       givenRequestWouldOtherwiseSucceed: () => {
         givenRequestToGetFacilityInAcbsSucceeds();
         givenRequestToUpdateInAcbsSucceeds();
       },
       makeRequest: () => makeRequest(),
     });
+    idToken = resolvedIdToken;
+
+    const givenAnyRequestBodyWouldSucceed = (): PutFacilityAcbsRequests => {
+      const givenAnyRequestToGetFacilityInAcbsSucceeds = (): nock.Scope => {
+        const requestBodyPlaceholder = '*';
+        return nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+          .get(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}`, requestBodyPlaceholder)
+          .matchHeader('authorization', `Bearer ${idToken}`)
+          .reply(200, acbsGetExistingFacilityResponse, { location: `/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}` });
+      };
+
+      givenAuthenticationWithTheIdpSucceeds();
+
+      return { acbsGetRequest: givenAnyRequestToGetFacilityInAcbsSucceeds(), acbsUpdateRequest: givenAnyRequestBodyToUpdateInAcbsSucceeds() };
+    };
 
     it('returns a 200 response with the expected response if the facility has been successfully updated in ACBS', async () => {
       givenAuthenticationWithTheIdpSucceeds();
@@ -169,118 +281,5 @@ describe('PUT /facilities', () => {
         errorString,
       });
     }
-
-    const makeRequestWithBody = (body: unknown): supertest.Test => makeRequestWithUrlAndBody(updateFacilityUrl, body);
-
-    const makeRequest = (): supertest.Test => makeRequestWithUrlAndBody(updateFacilityUrl, updateFacilityRequest);
-
-    const makeRequestWithoutAuth = (incorrectAuth?: IncorrectAuthArg) =>
-      api.putWithoutAuth(updateFacilityBaseUrl, updateFacilityRequest, incorrectAuth?.headerName, incorrectAuth?.headerValue);
-
-    const requestToGetFacilityInAcbs = () =>
-      nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-        .get(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}`)
-        .matchHeader('authorization', `Bearer ${idToken}`);
-
-    const givenRequestToGetFacilityInAcbsSucceeds = () => requestToGetFacilityInAcbs().reply(200, acbsGetExistingFacilityResponse);
-
-    const getRequestToAcbsConfig = () => {
-      const requestToUpdateFacilityInAcbs = () => {
-        const requestToUpdateFacilityInAcbsWithBody = (requestBody: nock.RequestBodyMatcher): nock.Interceptor =>
-          nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-            .put(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}`, requestBody)
-            .matchHeader('authorization', `Bearer ${idToken}`);
-
-        return requestToUpdateFacilityInAcbsWithBody(JSON.parse(JSON.stringify(expectedAcbsUpdateFacilityRequest)));
-      };
-
-      const requestToCreateBundleInfomationInAcbs = () => {
-        const requestToCreateBundleInfomationInAcbsWithBody = (requestBody: nock.RequestBodyMatcher): nock.Interceptor =>
-          nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-            .post(`/BundleInformation?servicingQueueIdentifier=${servicingQueueIdentifier}`, requestBody)
-            .matchHeader('authorization', `Bearer ${idToken}`)
-            .matchHeader('Content-Type', 'application/json');
-
-        return requestToCreateBundleInfomationInAcbsWithBody(JSON.parse(JSON.stringify(expectedAcbsBundleInformationRequest)));
-      };
-
-      const requestToUpdateInAcbs = () => {
-        return queryToTest === ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_AMOUNT ? requestToCreateBundleInfomationInAcbs() : requestToUpdateFacilityInAcbs();
-      };
-
-      const givenRequestToUpdateInAcbsSucceeds = () => {
-        const givenRequestToUpdateFacilityInAcbsSucceeds = () =>
-          requestToUpdateFacilityInAcbs().reply(200, undefined, {
-            location: `/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}`,
-          });
-
-        const givenRequestToCreateBundleInfomationInAcbsSucceeds = () => requestToCreateBundleInfomationInAcbs().reply(201, undefined, { bundleIdentifier });
-
-        return queryToTest === ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_AMOUNT
-          ? givenRequestToCreateBundleInfomationInAcbsSucceeds()
-          : givenRequestToUpdateFacilityInAcbsSucceeds();
-      };
-
-      const givenRequestToCreateBundleInformationInAcbsSucceedsWithWarningHeader = () =>
-        requestToCreateBundleInfomationInAcbs().reply(201, undefined, { bundleIdentifier, 'processing-warning': errorString });
-
-      const givenAnyRequestBodyToUpdateInAcbsSucceeds = () => {
-        const givenAnyRequestBodyToUpdateFacilityInAcbsSucceeds = (): nock.Scope => {
-          const requestBodyPlaceholder = '*';
-          return nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-            .filteringRequestBody(() => requestBodyPlaceholder)
-            .put(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}`, requestBodyPlaceholder)
-            .matchHeader('authorization', `Bearer ${idToken}`)
-            .reply(200, undefined, {
-              location: `/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}`,
-            });
-        };
-
-        const givenAnyRequestBodyToCreateFacilityActivationTransactionInAcbsSucceeds = (): nock.Scope => {
-          const requestBodyPlaceholder = '*';
-          return nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-            .filteringRequestBody(() => requestBodyPlaceholder)
-            .post(`/BundleInformation?servicingQueueIdentifier=${servicingQueueIdentifier}`, requestBodyPlaceholder)
-            .matchHeader('authorization', `Bearer ${idToken}`)
-            .reply(201, undefined, { bundleIdentifier });
-        };
-        return queryToTest === ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_AMOUNT
-          ? givenAnyRequestBodyToCreateFacilityActivationTransactionInAcbsSucceeds()
-          : givenAnyRequestBodyToUpdateFacilityInAcbsSucceeds();
-      };
-
-      return {
-        requestToUpdateInAcbs,
-        givenRequestToUpdateInAcbsSucceeds,
-        givenAnyRequestBodyToUpdateInAcbsSucceeds,
-        givenRequestToCreateBundleInformationInAcbsSucceedsWithWarningHeader,
-      };
-    };
-
-    const {
-      requestToUpdateInAcbs,
-      givenRequestToUpdateInAcbsSucceeds,
-      givenAnyRequestBodyToUpdateInAcbsSucceeds,
-      givenRequestToCreateBundleInformationInAcbsSucceedsWithWarningHeader,
-    } = getRequestToAcbsConfig();
-
-    const givenAnyRequestBodyWouldSucceed = (): PutFacilityAcbsRequests => {
-      const givenAnyRequestToGetFacilityInAcbsSucceeds = (): nock.Scope => {
-        const requestBodyPlaceholder = '*';
-        return nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-          .filteringRequestBody(() => requestBodyPlaceholder)
-          .get(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}`, requestBodyPlaceholder)
-          .matchHeader('authorization', `Bearer ${idToken}`)
-          .reply(200, acbsGetExistingFacilityResponse, { location: `/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}` });
-      };
-
-      givenAuthenticationWithTheIdpSucceeds();
-
-      return { acbsGetRequest: givenAnyRequestToGetFacilityInAcbsSucceeds(), acbsUpdateRequest: givenAnyRequestBodyToUpdateInAcbsSucceeds() };
-    };
   });
-
-  const makeRequestWithUrlAndBody = (url: string, body: unknown): supertest.Test => api.put(url, JSON.parse(JSON.stringify(body)));
-
-  const makeRequestWithUrl = (url: string): supertest.Test => makeRequestWithUrlAndBody(url, updateFacilityRequest);
 });

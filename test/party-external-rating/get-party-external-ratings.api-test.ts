@@ -1,10 +1,10 @@
+import nock from 'nock';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
 import { IncorrectAuthArg, withClientAuthenticationTests } from '@ukef-test/common-tests/client-authentication-api-tests';
 import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
 import { GetPartyExternalRatingGenerator } from '@ukef-test/support/generator/get-party-external-rating-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import nock from 'nock';
 
 describe('GET /parties/{partyIdentifier}/external-ratings', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -18,6 +18,16 @@ describe('GET /parties/{partyIdentifier}/external-ratings', () => {
   const getPartyExternalRatingsUrl = `/api/v1/parties/${partyIdentifier}/external-ratings`;
 
   let api: Api;
+  let idToken: string;
+
+  const requestToGetExternalRatingsForParty = (): nock.Interceptor =>
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL).get(`/Party/${partyIdentifier}/PartyExternalRating`).matchHeader('authorization', `Bearer ${idToken}`);
+
+  const { idToken: resolvedIdToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
+    givenRequestWouldOtherwiseSucceed: () => requestToGetExternalRatingsForParty().reply(200, acbsExternalRatings),
+    makeRequest: () => api.get(getPartyExternalRatingsUrl),
+  });
+  idToken = resolvedIdToken;
 
   beforeAll(async () => {
     api = await Api.create();
@@ -30,11 +40,6 @@ describe('GET /parties/{partyIdentifier}/external-ratings', () => {
   afterEach(() => {
     nock.abortPendingRequests();
     nock.cleanAll();
-  });
-
-  const { idToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
-    givenRequestWouldOtherwiseSucceed: () => requestToGetExternalRatingsForParty().reply(200, acbsExternalRatings),
-    makeRequest: () => api.get(getPartyExternalRatingsUrl),
   });
 
   withClientAuthenticationTests({
@@ -117,7 +122,4 @@ describe('GET /parties/{partyIdentifier}/external-ratings', () => {
       message: 'Internal server error',
     });
   });
-
-  const requestToGetExternalRatingsForParty = (): nock.Interceptor =>
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL).get(`/Party/${partyIdentifier}/PartyExternalRating`).matchHeader('authorization', `Bearer ${idToken}`);
 });

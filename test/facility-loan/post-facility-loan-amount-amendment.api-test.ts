@@ -1,3 +1,4 @@
+import nock from 'nock';
 import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
@@ -11,7 +12,6 @@ import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import { CreateFacilityLoanAmountAmendmentGenerator } from '@ukef-test/support/generator/create-facility-loan-amount-amendment.generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import nock from 'nock';
 
 describe('POST /facilities/{facilityIdentifier}/loans/{loanIdentifier}/amendments/amount', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -34,6 +34,29 @@ describe('POST /facilities/{facilityIdentifier}/loans/{loanIdentifier}/amendment
   ) => `/api/v1/facilities/${facilityId}/loans/${loanId}/amendments/amount`;
 
   let api: Api;
+  let idToken: string;
+
+  const requestToCreateLoanAdvanceTransactionInAcbsWithBody = (requestBody: nock.RequestBodyMatcher): nock.Interceptor =>
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .post(`/BundleInformation?servicingQueueIdentifier=${servicingQueueIdentifier}`, requestBody)
+      .matchHeader('authorization', `Bearer ${idToken}`)
+      .matchHeader('Content-Type', 'application/json');
+
+  const requestToCreateIncreaseLoanAdvanceTransactionInAcbs = (): nock.Interceptor =>
+    requestToCreateLoanAdvanceTransactionInAcbsWithBody(JSON.parse(JSON.stringify(acbsLoanAmendmentForIncrease)));
+
+  const requestToCreateDecreaseLoanAdvanceTransactionInAcbs = (): nock.Interceptor =>
+    requestToCreateLoanAdvanceTransactionInAcbsWithBody(JSON.parse(JSON.stringify(acbsLoanAmendmentForDecrease)));
+
+  const givenAnyRequestBodyToCreateLoanAmountAmendmentInAcbsSucceeds = (successResponse: [number, undefined, { BundleIdentifier: string }]): nock.Scope => {
+    const requestBodyPlaceholder = '*';
+    return nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .filteringRequestBody(() => requestBodyPlaceholder)
+      .post(`/BundleInformation?servicingQueueIdentifier=${servicingQueueIdentifier}`, requestBodyPlaceholder)
+      .matchHeader('authorization', `Bearer ${idToken}`)
+      .matchHeader('Content-Type', 'application/json')
+      .reply(...successResponse);
+  };
 
   beforeAll(async () => {
     api = await Api.create();
@@ -48,11 +71,12 @@ describe('POST /facilities/{facilityIdentifier}/loans/{loanIdentifier}/amendment
     nock.cleanAll();
   });
 
-  const { idToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
+  const { idToken: resolvedIdToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
     givenRequestWouldOtherwiseSucceed: () => requestToCreateIncreaseLoanAdvanceTransactionInAcbs().reply(...acbsSuccessfulResponse),
     makeRequest: () => api.post(createLoanAmountAmendmentUrl(), increaseAmountRequest),
     successStatusCode: 201,
   });
+  idToken = resolvedIdToken;
 
   withClientAuthenticationTests({
     givenTheRequestWouldOtherwiseSucceed: () => {
@@ -137,28 +161,4 @@ describe('POST /facilities/{facilityIdentifier}/loans/{loanIdentifier}/amendment
       successStatusCode: 201,
     });
   });
-
-  const requestToCreateIncreaseLoanAdvanceTransactionInAcbs = (): nock.Interceptor =>
-    requestToCreateLoanAdvanceTransactionInAcbsWithBody(JSON.parse(JSON.stringify(acbsLoanAmendmentForIncrease)));
-
-  const requestToCreateDecreaseLoanAdvanceTransactionInAcbs = (): nock.Interceptor =>
-    requestToCreateLoanAdvanceTransactionInAcbsWithBody(JSON.parse(JSON.stringify(acbsLoanAmendmentForDecrease)));
-
-  const givenAnyRequestBodyToCreateLoanAmountAmendmentInAcbsSucceeds = (
-    acbsSuccessfulResponse: [number, undefined, { BundleIdentifier: string }],
-  ): nock.Scope => {
-    const requestBodyPlaceholder = '*';
-    return nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .filteringRequestBody(() => requestBodyPlaceholder)
-      .post(`/BundleInformation?servicingQueueIdentifier=${servicingQueueIdentifier}`, requestBodyPlaceholder)
-      .matchHeader('authorization', `Bearer ${idToken}`)
-      .matchHeader('Content-Type', 'application/json')
-      .reply(...acbsSuccessfulResponse);
-  };
-
-  const requestToCreateLoanAdvanceTransactionInAcbsWithBody = (requestBody: nock.RequestBodyMatcher): nock.Interceptor =>
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .post(`/BundleInformation?servicingQueueIdentifier=${servicingQueueIdentifier}`, requestBody)
-      .matchHeader('authorization', `Bearer ${idToken}`)
-      .matchHeader('Content-Type', 'application/json');
 });
