@@ -282,6 +282,38 @@ describe('createHaloTicket', () => {
       });
     });
 
+    describe('when messageType is undefined', () => {
+      it('posts a ticket with a summary that omits the operation label', async () => {
+        // Arrange
+        const facilityId = 'abc-123';
+        const payload = { facilityId };
+        const errorMessage = 'Something went wrong';
+
+        axios.post = jest
+          .fn()
+          .mockResolvedValueOnce({ data: { access_token: mockAccessToken } })
+          .mockResolvedValueOnce({});
+
+        // Act
+        await createHaloTicket(facilityId, payload, errorMessage, undefined as any, context as any);
+
+        // Assert
+        const [expectedTicket] = buildExpectedTicketBody(facilityId, payload, errorMessage, '');
+
+        expect(axios.post).toHaveBeenNthCalledWith(
+          2,
+          `${HALO_BASE_URL}/api/Tickets`,
+          [{ ...expectedTicket, summary: `APIM TFS Error sending facility ${facilityId} to GIFT` }],
+          {
+            headers: {
+              Authorization: `Bearer ${mockAccessToken}`,
+              'Content-Type': 'application/json',
+            },
+          },
+        );
+      });
+    });
+
     describe('when ticket creation fails', () => {
       it('logs an error and resolves if ticket creation fails with an Error', async () => {
         // Arrange
