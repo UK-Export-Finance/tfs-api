@@ -1,10 +1,10 @@
 import axios from 'axios';
-
+import { requireEnv } from '../utils/env';
 import { getFromTfsApi } from '../utils/get-from-tfs-api';
 
-const apimTfsUrl = process.env.APIM_TFS_URL;
-const apimTfsKey = process.env.APIM_TFS_KEY;
-const apimTfsValue = process.env.APIM_TFS_VALUE;
+const apimTfsUrl = requireEnv('APIM_TFS_URL');
+const apimTfsKey = requireEnv('APIM_TFS_KEY');
+const apimTfsValue = requireEnv('APIM_TFS_VALUE');
 
 jest.mock('axios');
 
