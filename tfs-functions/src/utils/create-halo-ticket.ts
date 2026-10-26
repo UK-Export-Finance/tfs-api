@@ -59,7 +59,7 @@ function buildSummary(facilityId: string, messageType: GiftQueueMessageType | un
       return `APIM TFS Error retrieving facilities ${facilityId} in GIFT - preventing facility creation`;
     default: {
       if (messageType) {
-        return `APIM TFS Error sending facility ${facilityId} ${GIFT_QUEUE_OPERATION_LABEL[messageType]} to GIFT`;
+        return `APIM TFS Error sending facility ${facilityId} ${GIFT_QUEUE_OPERATION_LABEL[`${messageType}`]} to GIFT`;
       }
 
       return `APIM TFS Error sending facility ${facilityId} to GIFT`;
