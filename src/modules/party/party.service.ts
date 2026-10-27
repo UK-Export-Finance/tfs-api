@@ -167,7 +167,7 @@ export class PartyService {
         LanguageCode: PROPERTIES.PARTY.DEFAULT.languageCode,
       },
       WatchListReason: {
-        WatchListReasonCode: PROPERTIES.PARTY.DEFAULT.watchListReasonCode ?? '',
+        WatchListReasonCode: PROPERTIES.PARTY.DEFAULT.watchListReasonCode,
       },
     };
   }

@@ -82,6 +82,7 @@ export class FacilityGuaranteeService {
     const guaranteeFieldsToUpdate = this.getGuaranteeFieldsToUpdate(updateFacilityGuaranteesRequest);
     for (const guarantee of guaranteesToUpdate) {
       const updatedGuarantee = { ...guarantee, ...guaranteeFieldsToUpdate };
+
       await this.acbsFacilityGuaranteeService.replaceGuaranteeForFacility(portfolioIdentifier, facilityIdentifier, updatedGuarantee, idToken);
     }
   }
@@ -89,7 +90,9 @@ export class FacilityGuaranteeService {
   private getGuaranteeFieldsToUpdate({ expirationDate, guaranteedLimit }: UpdateFacilityGuaranteesRequestDto): Partial<AcbsUpdateFacilityGuaranteeRequest> {
     return {
       ...(expirationDate && { ExpirationDate: this.dateStringTransformations.addTimeToDateOnlyString(expirationDate) }),
-      ...((guaranteedLimit ?? guaranteedLimit === 0) && { GuaranteedLimit: guaranteedLimit }),
+      ...(guaranteedLimit !== undefined && {
+        GuaranteedLimit: guaranteedLimit,
+      }),
     };
   }
 }
