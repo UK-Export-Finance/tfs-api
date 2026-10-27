@@ -60,7 +60,7 @@ function buildSummary(facilityId: string, messageType: GiftQueueMessageType): st
     case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION:
     case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_AMENDMENT:
     case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_MULTIPLE_AMENDMENTS: {
-      const operationLabel = GIFT_QUEUE_OPERATION_LABEL[messageType];
+      const operationLabel = GIFT_QUEUE_OPERATION_LABEL[`${messageType}`];
 
       return `APIM TFS Error sending facility ${facilityId} ${operationLabel} to GIFT`;
     }
