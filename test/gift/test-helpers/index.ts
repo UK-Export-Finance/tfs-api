@@ -140,11 +140,11 @@ export const workPackageUrl = `${PATH.WORK_PACKAGE}/${mockWorkPackageId}`;
 export const businessCalendar = GIFT_EXAMPLES.BUSINESS_CALENDAR;
 export const businessCalendarsConvention = GIFT_EXAMPLES.BUSINESS_CALENDARS_CONVENTION;
 
-export const payloadAccrualSchedules = Object.keys(GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD.accrualSchedules);
-export const payloadCounterparties = Object.keys(GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD.counterparties);
-export const payloadFixedFees = Object.keys(GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD.fixedFees!);
-export const payloadObligations = Object.keys(GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD.obligations);
-export const payloadRepaymentProfiles = Object.keys(GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD.repaymentProfiles!);
+export const payloadAccrualSchedules = GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD.accrualSchedules;
+export const payloadCounterparties = GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD.counterparties;
+export const payloadFixedFees = GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD.fixedFees;
+export const payloadObligations = GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD.obligations;
+export const payloadRepaymentProfiles = GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD.repaymentProfiles;
 
 export type ExpectedResponse = {
   message: string;
@@ -154,13 +154,13 @@ export type ExpectedResponse = {
 
 /**
  * Generate expected validation errors
- * @param {object} payload: The payload that has been sent
+ * @param {object} payload: The payload that has been sent. Pass `undefined` for an optional payload field that was omitted.
  * @param {object} expectedResponse: The expected response message and status
  * @param {string} entityName: The name of the payload entity
  * @returns {Array[Object]} Validation errors
  */
-export const getExpectedValidationErrors = (payload: object[], expectedResponse: ExpectedResponse, entityName: string): object[] => {
-  const expected = payload.map((obj, index) => ({
+export const getExpectedValidationErrors = (payload: object[] | undefined, expectedResponse: ExpectedResponse, entityName: string): object[] => {
+  const expected = (payload ?? []).map((obj, index) => ({
     entityName,
     index,
     message: expectedResponse.message,
