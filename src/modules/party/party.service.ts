@@ -24,12 +24,12 @@ export class PartyService {
     const token = await this.getIdToken();
     const endsInWhitespace = /\s$/;
 
-    if (searchText === null) {
-      throw new GetPartiesBySearchTextException('The required query parameter searchText was not specified.');
-    }
-
     if (searchText === '') {
       throw new GetPartiesBySearchTextException('The query parameter searchText must be non-empty.');
+    }
+
+    if (!searchText) {
+      throw new GetPartiesBySearchTextException('The required query parameter searchText was not specified.');
     }
 
     if (typeof searchText === 'string' && searchText.length < 3) {
@@ -61,7 +61,7 @@ export class PartyService {
     return response;
   }
 
-  async getPartyIdentifierBySearchText(searchText: string): Promise<CreatePartyResponse> {
+  async getPartyIdentifierBySearchText(searchText: string): Promise<CreatePartyResponse | undefined> {
     const response = await this.getPartiesBySearchTextFromAcbs(searchText).then((partiesFromAcbs) => {
       let party;
 

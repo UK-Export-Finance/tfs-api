@@ -5,4 +5,4 @@ import { AxiosResponse } from 'axios';
  * @param {AxiosResponse} response
  * @returns {object}
  */
-export const mapResponseData = (response: AxiosResponse) => response.data?.data;
+export const mapResponseData = (response: AxiosResponse): object => response.data?.data;

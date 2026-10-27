@@ -14,6 +14,6 @@ const { INTEGRATION_DEFAULTS } = GIFT;
 export const mapCounterpartiesRequestData = (counterparties: GiftFacilityCounterpartyRequestDto[]) =>
   counterparties.map((counterparty) => ({
     ...counterparty,
-    sharePercentage: counterparty.sharePercentage || null,
+    sharePercentage: counterparty.sharePercentage ?? null,
     paymentCode: INTEGRATION_DEFAULTS.COUNTERPARTY_PAYMENT_CODE,
   }));

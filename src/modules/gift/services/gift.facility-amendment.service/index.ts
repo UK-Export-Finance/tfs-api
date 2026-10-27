@@ -59,7 +59,7 @@ export class GiftFacilityAmendmentService {
    * @returns {Boolean} true if the amendment was successful, false otherwise.
    */
   private wasAmendmentSuccessful(response: AxiosResponse<GiftWorkPackageResponseDto>): boolean {
-    return response?.status === HttpStatus.CREATED;
+    return response.status === HttpStatus.CREATED;
   }
 
   /**
@@ -104,8 +104,8 @@ export class GiftFacilityAmendmentService {
 
       if (!this.wasAmendmentSuccessful(facilityAmendmentResponse)) {
         return {
-          status: facilityAmendmentResponse?.status,
-          data: facilityAmendmentResponse?.data,
+          status: facilityAmendmentResponse.status,
+          data: facilityAmendmentResponse.data,
         };
       }
 
@@ -131,8 +131,8 @@ export class GiftFacilityAmendmentService {
 
       if (!this.wasAmendmentSuccessful(facilityAmendmentResponse)) {
         return {
-          status: facilityAmendmentResponse?.status,
-          data: facilityAmendmentResponse?.data,
+          status: facilityAmendmentResponse.status,
+          data: facilityAmendmentResponse.data,
         };
       }
 

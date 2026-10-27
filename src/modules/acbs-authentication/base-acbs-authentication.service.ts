@@ -67,7 +67,7 @@ export class BaseAcbsAuthenticationService extends AcbsAuthenticationService {
   }
 
   private extractSessionIdFromCreateSessionResponse(response: AxiosResponse): string {
-    const sessionIdCookie = response?.headers?.[SET_COOKIE_HEADER_NAME]?.find((cookie) => cookie.startsWith(ACBS.AUTHENTICATION.SESSION_ID_COOKIE_NAME));
+    const sessionIdCookie = response.headers[SET_COOKIE_HEADER_NAME]?.find((cookie) => cookie.startsWith(ACBS.AUTHENTICATION.SESSION_ID_COOKIE_NAME));
 
     if (!sessionIdCookie) {
       throw new AcbsAuthenticationFailedException('Session cookie was not returned by the IdP.');
@@ -102,7 +102,7 @@ export class BaseAcbsAuthenticationService extends AcbsAuthenticationService {
   }
 
   private extractIdTokenFromConnectResponse(response: AxiosResponse<IdpConnectResponse>): string {
-    const { [ID_TOKEN_RESPONSE_FIELD_NAME]: idToken } = response.data || {};
+    const { [ID_TOKEN_RESPONSE_FIELD_NAME]: idToken } = response.data;
 
     if (!idToken || typeof idToken !== 'string') {
       throw new AcbsAuthenticationFailedException('ID token was not returned by the IdP.');

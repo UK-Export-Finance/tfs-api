@@ -38,7 +38,7 @@ export type AppConfigType = {
 };
 
 export const AppConfig = registerAs('app', (): AppConfigType => {
-  const logLevel = process.env.LOG_LEVEL || 'info';
+  const logLevel = process.env.LOG_LEVEL ?? 'info';
 
   if (!validLogLevels.includes(logLevel)) {
     throw new InvalidConfigException(`LOG_LEVEL must be one of ${validLogLevels} or not specified.`);
@@ -47,7 +47,7 @@ export const AppConfig = registerAs('app', (): AppConfigType => {
   /**
    * APIM TFS versioning for ACBS endpoints
    */
-  const acbsVersion = process.env.HTTP_VERSION || '1';
+  const acbsVersion = process.env.HTTP_VERSION ?? '1';
 
   const acbsVersioning = {
     enable: process.env.HTTP_VERSIONING_ENABLE === 'true',
@@ -76,7 +76,7 @@ export const AppConfig = registerAs('app', (): AppConfigType => {
     giftFeatureEnabled: process.env.FF_GIFT_ENABLED === 'true',
     giftVersioning,
     globalPrefix: '/api',
-    logLevel: process.env.LOG_LEVEL || 'info',
+    logLevel: process.env.LOG_LEVEL ?? 'info',
     name: NAME,
     port: getIntConfig(process.env.HTTP_PORT, 3001),
     redactLogs: process.env.REDACT_LOGS !== 'false',

@@ -34,19 +34,19 @@ export class AcbsFacilityPartyService {
   }
 
   async getFacilityPartiesForFacility(portfolioIdentifier: string, facilityIdentifier: UkefId, idToken: string): Promise<AcbsGetFacilityPartyResponseDto[]> {
-    const { data: facilityPartiesInAcbs } = await this.acbsHttpService.get<AcbsGetFacilityPartyResponseDto[]>({
+    const { data: facilityPartiesInAcbs } = await this.acbsHttpService.get<AcbsGetFacilityPartyResponseDto[] | null>({
       path: `/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/FacilityParty`,
       idToken,
       onError: createWrapAcbsHttpPostOrPutErrorCallback({
-        messageForUnknownError: `Failed to get a party for facility ${facilityIdentifier} in ACBS.`,
+        messageForUnknownError: `Failed to get parties for facility ${facilityIdentifier} in ACBS.`,
         knownErrors: [],
       }),
     });
 
-    if (facilityPartiesInAcbs === null) {
-      throw new AcbsResourceNotFoundException(`Facility with identifier ${facilityIdentifier} was not found by ACBS.`);
+    if (facilityPartiesInAcbs) {
+      return facilityPartiesInAcbs;
     }
 
-    return facilityPartiesInAcbs;
+    throw new AcbsResourceNotFoundException(`Facility with identifier ${facilityIdentifier} was not found by ACBS.`);
   }
 }

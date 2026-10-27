@@ -148,21 +148,22 @@ export class FacilityController {
     @Param() params: UpdateFacilityByOperationParamsDto,
     @Body() updateFacilityDto: UpdateFacilityRequest,
   ): Promise<UpdateFacilityFacilityIdentifierResponse | WithWarningErrors<UpdateFacilityBundleIdentifierResponse>> {
-    if (query.op === ENUMS.FACILITY_UPDATE_OPERATIONS.ISSUE) {
-      await this.facilityService.issueFacilityByIdentifier(params.facilityIdentifier, updateFacilityDto);
+    switch (query.op) {
+      case ENUMS.FACILITY_UPDATE_OPERATIONS.ISSUE: {
+        await this.facilityService.issueFacilityByIdentifier(params.facilityIdentifier, updateFacilityDto);
 
-      return { facilityIdentifier: params.facilityIdentifier };
+        return { facilityIdentifier: params.facilityIdentifier };
+      }
+      case ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_EXPIRY_DATE: {
+        await this.facilityService.amendFacilityExpiryDateByIdentifier(params.facilityIdentifier, updateFacilityDto);
+
+        return { facilityIdentifier: params.facilityIdentifier };
+      }
+      case ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_AMOUNT: {
+        return await this.facilityService.amendFacilityAmountByIdentifier(params.facilityIdentifier, updateFacilityDto);
+      }
+      default:
+        throw new BadRequestException(`Unknown operation '${query.op}'.`);
     }
-
-    if (query.op === ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_EXPIRY_DATE) {
-      await this.facilityService.amendFacilityExpiryDateByIdentifier(params.facilityIdentifier, updateFacilityDto);
-      return { facilityIdentifier: params.facilityIdentifier };
-    }
-
-    if (query.op === ENUMS.FACILITY_UPDATE_OPERATIONS.AMEND_AMOUNT) {
-      return await this.facilityService.amendFacilityAmountByIdentifier(params.facilityIdentifier, updateFacilityDto);
-    }
-
-    throw new BadRequestException(`Unknown operation '${query.op}'.`);
   }
 }

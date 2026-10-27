@@ -17,7 +17,7 @@ const {
  */
 export const isValidProductTypeCodeFormat = (productTypeCode?: string): boolean => {
   if (productTypeCode && typeof productTypeCode === 'string') {
-    return productTypeCode?.length >= MIN_LENGTH && productTypeCode?.length <= MAX_LENGTH;
+    return productTypeCode.length >= MIN_LENGTH && productTypeCode.length <= MAX_LENGTH;
   }
 
   return false;

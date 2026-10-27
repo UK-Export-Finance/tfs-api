@@ -15,7 +15,7 @@ const {
  */
 export const isValidCounterpartyRoleIdFormat = (roleCode?: string): boolean => {
   if (roleCode && typeof roleCode === 'string') {
-    return roleCode?.length >= MIN_LENGTH && roleCode?.length <= MAX_LENGTH;
+    return roleCode.length >= MIN_LENGTH && roleCode.length <= MAX_LENGTH;
   }
 
   return false;

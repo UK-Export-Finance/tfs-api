@@ -8,7 +8,7 @@ import { mockResponse204 } from '@ukef-test/http-response';
  * This avoids repeating the same code in individual tests.
  * @returns {GiftFacilityCreationErrorService}
  */
-export const mockGiftFacilityCreationErrorService = () => {
+export const mockGiftFacilityCreationErrorService = (): GiftFacilityCreationErrorService => {
   let giftWorkPackageService;
   const logger = new PinoLogger({});
 

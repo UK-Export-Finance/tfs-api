@@ -118,7 +118,7 @@ export const counterpartyRolesUrl = PATH.COUNTERPARTY_ROLES;
 export const facilityCreationUrl = PATH.CREATE_FACILITY;
 export const feeTypeUrl = PATH.FEE_TYPE;
 export const apimMdmObligationSubtypesUrl = '/v2/ods/obligation-subtypes/with-product-type-codes';
-export const productTypeUrl = (productTypeCode: string = PRODUCT_TYPE_CODES.BSS) => `${PATH.PRODUCT_TYPE}/${productTypeCode}`;
+export const productTypeUrl = (productTypeCode: string = PRODUCT_TYPE_CODES.BSS): string => `${PATH.PRODUCT_TYPE}/${productTypeCode}`;
 export const accrualScheduleNonIndexedRateUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_ACCRUAL_SCHEDULE_NON_INDEXED_RATE}`;
 export const accrualScheduleIndexedRateUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_ACCRUAL_SCHEDULE_INDEXED_RATE}`;
 export const businessCalendarUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_BUSINESS_CALENDAR}`;
@@ -131,9 +131,9 @@ export const riskDetailsUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PAC
 export const approveStatusUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.APPROVE}`;
 export const facilityWorkPackageUrl = `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}`;
 export const facilityUrl = `${PATH.FACILITY}/${mockFacilityId}?projectionVersion=main`;
-export const facilityAmendmentUrl = (amendmentType: string = AMEND_FACILITY_TYPES_CONSUMER.AMEND_FACILITY_INCREASE_AMOUNT) =>
+export const facilityAmendmentUrl = (amendmentType: string = AMEND_FACILITY_TYPES_CONSUMER.AMEND_FACILITY_INCREASE_AMOUNT): string =>
   `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/AmendFacility_${amendmentType}`;
-export const obligationAmendmentUrl = (amendmentType: string = AMEND_FACILITY_TYPES_CONSUMER.AMEND_FACILITY_INCREASE_AMOUNT) =>
+export const obligationAmendmentUrl = (amendmentType: string = AMEND_FACILITY_TYPES_CONSUMER.AMEND_FACILITY_INCREASE_AMOUNT): string =>
   `${PATH.FACILITY}/${mockFacilityId}${PATH.WORK_PACKAGE}/${mockWorkPackageId}${PATH.CONFIGURATION_EVENT}/AmendObligation_${amendmentType}`;
 export const workPackageUrl = `${PATH.WORK_PACKAGE}/${mockWorkPackageId}`;
 
@@ -146,6 +146,12 @@ export const payloadFixedFees = Object.keys(GIFT_EXAMPLES.FACILITY_CREATION_PAYL
 export const payloadObligations = Object.keys(GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD.obligations);
 export const payloadRepaymentProfiles = Object.keys(GIFT_EXAMPLES.FACILITY_CREATION_PAYLOAD.repaymentProfiles!);
 
+export type ExpectedResponse = {
+  message: string;
+  statusCode: number;
+  validationErrors?: object;
+};
+
 /**
  * Generate expected validation errors
  * @param {object} payload: The payload that has been sent
@@ -153,7 +159,7 @@ export const payloadRepaymentProfiles = Object.keys(GIFT_EXAMPLES.FACILITY_CREAT
  * @param {string} entityName: The name of the payload entity
  * @returns {Array[Object]} Validation errors
  */
-export const getExpectedValidationErrors = (payload, expectedResponse, entityName) => {
+export const getExpectedValidationErrors = (payload: object[], expectedResponse: ExpectedResponse, entityName: string): object[] => {
   const expected = payload.map((obj, index) => ({
     entityName,
     index,

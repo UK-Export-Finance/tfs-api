@@ -89,7 +89,7 @@ export class FacilityGuaranteeService {
   private getGuaranteeFieldsToUpdate({ expirationDate, guaranteedLimit }: UpdateFacilityGuaranteesRequestDto): Partial<AcbsUpdateFacilityGuaranteeRequest> {
     return {
       ...(expirationDate && { ExpirationDate: this.dateStringTransformations.addTimeToDateOnlyString(expirationDate) }),
-      ...((guaranteedLimit || guaranteedLimit === 0) && { GuaranteedLimit: guaranteedLimit }),
+      ...((guaranteedLimit ?? guaranteedLimit === 0) && { GuaranteedLimit: guaranteedLimit }),
     };
   }
 }

@@ -7,4 +7,4 @@ import { mapResponseData } from '@ukef/modules/gift/helpers/map-response-data';
  * @param {AxiosResponse[]} responses
  * @returns {object[]}
  */
-export const mapResponsesData = (responses: AxiosResponse[]) => responses.map((response: AxiosResponse) => mapResponseData(response));
+export const mapResponsesData = (responses: AxiosResponse[]): object[] => responses.map((response: AxiosResponse) => mapResponseData(response));

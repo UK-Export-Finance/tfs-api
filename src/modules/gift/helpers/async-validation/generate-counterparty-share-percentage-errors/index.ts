@@ -55,7 +55,7 @@ export const generateCounterpartySharePercentageErrors = ({
     const sharePercentageRequired = giftRole?.hasSharePercentage;
     const sharePercentageLessThanMin = sharePercentage && sharePercentage < MIN;
     const sharePercentageGreaterThanMax = sharePercentage && sharePercentage > MAX;
-    const invalidSharePercentage = !sharePercentage || sharePercentageLessThanMin || sharePercentageGreaterThanMax;
+    const invalidSharePercentage = (!sharePercentage || sharePercentageLessThanMin) ?? sharePercentageGreaterThanMax;
 
     if (sharePercentageRequired && invalidSharePercentage) {
       validationErrors.push(`counterparties.${index}.sharePercentage must be a provided as a number, at least ${MIN} and not greater than ${MAX}`);
