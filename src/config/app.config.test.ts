@@ -22,6 +22,36 @@ describe('AppConfig', () => {
   });
 
   describe('logLevel', () => {
+    describe('when LOG_LEVEL is not specified', () => {
+      it('should return `logLevel` as `info`', () => {
+        // Arrange
+        replaceEnvironmentVariables({
+          LOG_LEVEL: undefined!,
+        });
+
+        // Act
+        const config = AppConfig();
+
+        // Assert
+        expect(config.logLevel).toBe('info');
+      });
+    });
+
+    describe('when LOG_LEVEL is empty', () => {
+      it('should return `logLevel` as `info`', () => {
+        // Arrange
+        replaceEnvironmentVariables({
+          LOG_LEVEL: '',
+        });
+
+        // Act
+        const config = AppConfig();
+
+        // Assert
+        expect(config.logLevel).toBe('info');
+      });
+    });
+
     describe('when LOG_LEVEL is specified, but is not a valid log level', () => {
       it('should throw an InvalidConfigException', () => {
         // Arrange

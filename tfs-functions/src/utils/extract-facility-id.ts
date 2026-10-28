@@ -3,6 +3,7 @@ import {
   GiftFacilityAmendmentMessage,
   GiftFacilityCreationMessage,
   GiftFacilityGetManyMessage,
+  GiftFacilityGetMessage,
   GiftFacilityMultipleAmendmentsMessage,
   GiftQueueMessage,
 } from '../types/queue-message.type';
@@ -28,7 +29,27 @@ const extractCreationFacilityId = (message: GiftFacilityCreationMessage): string
   return payload?.overview?.facilityId ?? 'UNKNOWN_FACILITY_ID';
 };
 
-const extractGetManyFacilityId = (message: GiftFacilityGetManyMessage): string => message.ids.join(',') || 'UNKNOWN_FACILITY_ID';
+/**
+ * Extracts the facility IDs from a GIFT facility get-many message.
+ * @param {GiftFacilityGetManyMessage} message - The GIFT facility get-many message.
+ * @returns {string} The facility IDs joined by commas, or `'UNKNOWN_FACILITY_ID'` if none are found.
+ */
+const extractGetManyFacilityId = (message: GiftFacilityGetManyMessage): string => {
+  const ids = (message as { ids?: string[] }).ids?.join(',');
+
+  if (ids === undefined || ids === '') {
+    return 'UNKNOWN_FACILITY_ID';
+  }
+
+  return ids;
+};
+
+/**
+ * Extracts the facility ID from a GIFT facility get message.
+ * @param {GiftFacilityGetMessage} message - The GIFT facility get message.
+ * @returns {string} The facility ID from the message, or `'UNKNOWN_FACILITY_ID'` if it cannot be determined.
+ */
+const extractGetFacilityId = (message: GiftFacilityGetMessage): string => (message as { facilityId?: string }).facilityId ?? 'UNKNOWN_FACILITY_ID';
 
 /**
  * Extracts the facility ID or IDs from a queue message.
@@ -54,7 +75,7 @@ export const extractFacilityIds = (item: unknown): string => {
     case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_MULTIPLE_AMENDMENTS:
       return extractAmendmentFacilityId(message);
     case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_GET:
-      return message.facilityId;
+      return extractGetFacilityId(message);
     case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_GET_MANY:
       return extractGetManyFacilityId(message);
     default:
