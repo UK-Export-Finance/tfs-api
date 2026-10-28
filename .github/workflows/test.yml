@@ -54,6 +54,7 @@ jobs:
       FF_GIFT_ENABLED: ${{ vars.FF_GIFT_ENABLED }}
       GIFT_QUEUE_STORAGE_ACCOUNT_NAME: ${{ vars.GIFT_QUEUE_STORAGE_ACCOUNT_NAME }}
       GIFT_QUEUE_STORAGE_CONNECTION_STRING: ${{ vars.GIFT_QUEUE_STORAGE_CONNECTION_STRING }}
+      LOG_LEVEL: ${{ vars.LOG_LEVEL }}
     environment:
       name: ${{ needs.setup.outputs.environment }}
     runs-on: ubuntu-latest
