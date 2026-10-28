@@ -52,7 +52,7 @@
     ]
   },
   "dependencies": {
-    "@azure/identity": "4.13.3",
+    "@azure/identity": "4.14.0",
     "@azure/storage-queue": "12.32.0",
     "@nestjs/axios": "12.0.1",
     "@nestjs/cache-manager": "12.0.0",
