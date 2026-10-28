@@ -53,9 +53,10 @@ export const generateCounterpartySharePercentageErrors = ({
      * return a validation error.
      */
     const sharePercentageRequired = giftRole?.hasSharePercentage;
-    const sharePercentageLessThanMin = sharePercentage && sharePercentage < MIN;
-    const sharePercentageGreaterThanMax = sharePercentage && sharePercentage > MAX;
-    const invalidSharePercentage = (!sharePercentage || sharePercentageLessThanMin) ?? sharePercentageGreaterThanMax;
+    const sharePercentageIsMissing = sharePercentage === null || sharePercentage === undefined;
+    const sharePercentageLessThanMin = !sharePercentageIsMissing && sharePercentage < MIN;
+    const sharePercentageGreaterThanMax = !sharePercentageIsMissing && sharePercentage > MAX;
+    const invalidSharePercentage = sharePercentageIsMissing || sharePercentageLessThanMin || sharePercentageGreaterThanMax;
 
     if (sharePercentageRequired && invalidSharePercentage) {
       validationErrors.push(`counterparties.${index}.sharePercentage must be a provided as a number, at least ${MIN} and not greater than ${MAX}`);
