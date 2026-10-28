@@ -7,8 +7,8 @@ type OptionalBooleanOrBooleanDependingOnCurrentObject = undefined | BooleanOrBoo
 type BooleanOrBooleanDependingOnCurrentObject = boolean | BooleanDependingOnCurrentObject;
 type BooleanDependingOnCurrentObject = (currentObject: Record<string, unknown>) => boolean;
 
-const asBooleanDependingOnCurrentObject = (x: BooleanOrBooleanDependingOnCurrentObject): BooleanDependingOnCurrentObject =>
-  typeof x === 'function' ? x : () => x;
+const asBooleanDependingOnCurrentObject = (property: BooleanOrBooleanDependingOnCurrentObject): BooleanDependingOnCurrentObject =>
+  typeof property === 'function' ? property : () => property;
 
 const getAllowedNullishValuesForProperty = (
   currentObject: Record<string, unknown>,
