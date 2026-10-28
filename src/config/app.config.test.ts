@@ -144,6 +144,36 @@ describe('AppConfig', () => {
       });
     });
 
+    describe('when HTTP_VERSION is an empty string', () => {
+      it('should return `version` as the default `1`', () => {
+        // Arrange
+        replaceEnvironmentVariables({
+          HTTP_VERSION: '',
+        });
+
+        // Act
+        const config = AppConfig();
+
+        // Assert
+        expect(config.versioning.version).toBe('1');
+      });
+
+      it('should return `prefixAndVersion` using the default version `1`', () => {
+        // Arrange
+        replaceEnvironmentVariables({
+          HTTP_VERSION: '',
+        });
+
+        // Act
+        const config = AppConfig();
+
+        // Assert
+        const expected = `${VERSION_PREFIX}1`;
+
+        expect(config.versioning.prefixAndVersion).toBe(expected);
+      });
+    });
+
     describe('when HTTP_VERSION is specified', () => {
       const mockHttpVersion = '100200';
 

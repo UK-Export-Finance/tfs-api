@@ -47,7 +47,7 @@ export const AppConfig = registerAs('app', (): AppConfigType => {
   /**
    * APIM TFS versioning for ACBS endpoints
    */
-  const acbsVersion = process.env.HTTP_VERSION ?? '1';
+  const acbsVersion = process.env.HTTP_VERSION === undefined || process.env.HTTP_VERSION === '' ? '1' : process.env.HTTP_VERSION;
 
   const acbsVersioning = {
     enable: process.env.HTTP_VERSIONING_ENABLE === 'true',
