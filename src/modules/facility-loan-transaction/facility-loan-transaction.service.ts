@@ -59,7 +59,8 @@ export class FacilityLoanTransactionService {
       productTypeGroup: loan.ProductGroup.ProductGroupCode,
       currency: loan.Currency.CurrencyCode,
       dealCustomerUsageRate: loan.DealCustomerUsageRate ?? null,
-      dealCustomerUsageOperationType: loan.DealCustomerUsageOperationType?.OperationTypeCode ?? null,
+      dealCustomerUsageOperationType:
+        loan.DealCustomerUsageOperationType?.OperationTypeCode === '' ? null : (loan.DealCustomerUsageOperationType?.OperationTypeCode ?? null),
       amount: loan.LoanAmount,
       issueDate: this.dateStringTransformations.removeTime(loan.EffectiveDate),
       expiryDate: this.dateStringTransformations.removeTime(loan.MaturityDate),

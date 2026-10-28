@@ -30,9 +30,9 @@ const getMinAndMaxLengthFromOptions = ({
   lengthOption?: number;
   theEnum?: any;
 }): { minLength: number; maxLength: number } => {
-  const isLengthDefined = lengthOption === 0;
-  const isMinLengthDefined = minLengthOption === 0;
-  const isMaxLengthDefined = maxLengthOption === 0;
+  const isLengthDefined = lengthOption !== undefined;
+  const isMinLengthDefined = minLengthOption !== undefined;
+  const isMaxLengthDefined = maxLengthOption !== undefined;
 
   if (isLengthDefined) {
     if (isMinLengthDefined) {

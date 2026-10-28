@@ -76,7 +76,7 @@ export const AppConfig = registerAs('app', (): AppConfigType => {
     giftFeatureEnabled: process.env.FF_GIFT_ENABLED === 'true',
     giftVersioning,
     globalPrefix: '/api',
-    logLevel: process.env.LOG_LEVEL ?? 'info',
+    logLevel: String(process.env.LOG_LEVEL),
     name: NAME,
     port: getIntConfig(process.env.HTTP_PORT, 3001),
     redactLogs: process.env.REDACT_LOGS !== 'false',

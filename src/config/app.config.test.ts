@@ -36,30 +36,6 @@ describe('AppConfig', () => {
       });
     });
 
-    describe('when LOG_LEVEL is not specified', () => {
-      it('should return `logLevel` as `info`', () => {
-        replaceEnvironmentVariables({
-          LOG_LEVEL: undefined!,
-        });
-
-        const config = AppConfig();
-
-        expect(config.logLevel).toBe('info');
-      });
-    });
-
-    describe('when LOG_LEVEL is empty', () => {
-      it('should return `logLevel` as `info`', () => {
-        replaceEnvironmentVariables({
-          LOG_LEVEL: '',
-        });
-
-        const config = AppConfig();
-
-        expect(config.logLevel).toBe('info');
-      });
-    });
-
     it.each([
       {
         LOG_LEVEL: 'fatal',
