@@ -38,7 +38,7 @@ export type AppConfigType = {
 };
 
 export const AppConfig = registerAs('app', (): AppConfigType => {
-  const logLevel = process.env.LOG_LEVEL ?? 'info';
+  const logLevel = String(process.env.LOG_LEVEL);
 
   if (!validLogLevels.includes(logLevel)) {
     throw new InvalidConfigException(`LOG_LEVEL must be one of ${validLogLevels} or not specified.`);
@@ -76,7 +76,7 @@ export const AppConfig = registerAs('app', (): AppConfigType => {
     giftFeatureEnabled: process.env.FF_GIFT_ENABLED === 'true',
     giftVersioning,
     globalPrefix: '/api',
-    logLevel: String(process.env.LOG_LEVEL),
+    logLevel,
     name: NAME,
     port: getIntConfig(process.env.HTTP_PORT, 3001),
     redactLogs: process.env.REDACT_LOGS !== 'false',
