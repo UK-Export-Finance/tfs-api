@@ -7,13 +7,28 @@ import {
   GiftQueueMessage,
 } from '../types/queue-message.type';
 
+/**
+ * Extracts the facility ID from a GIFT facility amendment or multiple amendments message.
+ * @param {GiftFacilityAmendmentMessage | GiftFacilityMultipleAmendmentsMessage} message - The GIFT facility amendment message.
+ * @returns {string} The facility ID from the amendment message, or `'UNKNOWN_FACILITY_ID'` if it cannot be determined.
+ */
 const extractAmendmentFacilityId = (message: GiftFacilityAmendmentMessage | GiftFacilityMultipleAmendmentsMessage): string =>
-  message.facilityId ?? 'UNKNOWN_FACILITY_ID';
+  (message as { facilityId?: string }).facilityId ?? 'UNKNOWN_FACILITY_ID';
 
-const extractCreationFacilityId = (message: GiftFacilityCreationMessage): string =>
-  (message.payload as Record<string, Record<string, string>>)?.overview?.facilityId ?? 'UNKNOWN_FACILITY_ID';
+type GiftFacilityCreationPayload = { overview?: { facilityId?: string } };
 
-const extractGetManyFacilityId = (message: GiftFacilityGetManyMessage): string => message.ids?.join(',') || 'UNKNOWN_FACILITY_ID';
+/**
+ * Extracts the facility ID from a GIFT facility creation message.
+ * @param {GiftFacilityCreationMessage} message - The GIFT facility creation message.
+ * @returns {string} The facility ID from the creation message, or `'UNKNOWN_FACILITY_ID'` if it cannot be determined.
+ */
+const extractCreationFacilityId = (message: GiftFacilityCreationMessage): string => {
+  const payload = message.payload as GiftFacilityCreationPayload | undefined;
+
+  return payload?.overview?.facilityId ?? 'UNKNOWN_FACILITY_ID';
+};
+
+const extractGetManyFacilityId = (message: GiftFacilityGetManyMessage): string => message.ids.join(',') || 'UNKNOWN_FACILITY_ID';
 
 /**
  * Extracts the facility ID or IDs from a queue message.
@@ -39,7 +54,7 @@ export const extractFacilityIds = (item: unknown): string => {
     case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_MULTIPLE_AMENDMENTS:
       return extractAmendmentFacilityId(message);
     case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_GET:
-      return message.facilityId ?? 'UNKNOWN_FACILITY_ID';
+      return message.facilityId;
     case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_GET_MANY:
       return extractGetManyFacilityId(message);
     default:
