@@ -20,7 +20,7 @@ module.exports = defineConfig([
       '**/dist/',
       '**/node_modules/',
       '**/package*.json',
-      '**/tfs-functions/', // TODO: APIM-655
+      '**/test/', // TODO: APIM-643
     ],
   },
 
@@ -234,6 +234,15 @@ module.exports = defineConfig([
 
     rules: {
       '@typescript-eslint/return-await': 'off',
+    },
+  },
+
+  // tfs-functions is a separate deployable package with its own tsconfig/deps and no `@ukef/*` path alias
+  {
+    files: ['tfs-functions/**/*.ts'],
+
+    rules: {
+      'no-relative-import-paths/no-relative-import-paths': 'off',
     },
   },
 

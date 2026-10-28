@@ -51,14 +51,27 @@ async function getHaloAccessToken(): Promise<string> {
  * @param messageType - The type of GIFT operation that failed, see `GIFT_QUEUE_MESSAGE_TYPE`.
  * @returns the ticket summary text.
  */
-function buildSummary(facilityId: string, messageType: GiftQueueMessageType | undefined): string {
+function buildSummary(facilityId: string, messageType: GiftQueueMessageType): string {
   switch (messageType) {
     case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_GET:
       return `APIM TFS Error retrieving facility ${facilityId} in GIFT - preventing facility creation`;
     case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_GET_MANY:
       return `APIM TFS Error retrieving facilities ${facilityId} in GIFT - preventing facility creation`;
+    case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_CREATION:
+    case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_AMENDMENT:
+    case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_MULTIPLE_AMENDMENTS: {
+      const operationLabel = GIFT_QUEUE_OPERATION_LABEL[`${messageType}`];
+
+      return `APIM TFS Error sending facility ${facilityId} ${operationLabel} to GIFT`;
+    }
+
     default:
-      return `APIM TFS Error sending facility ${facilityId} ${GIFT_QUEUE_OPERATION_LABEL[messageType]} to GIFT`;
+      /**
+       * This block handles any message types that are not explicitly mapped above.
+       * It ensures that the ticket summary still contains meaningful information
+       * even if the message type is unexpected or malformed.
+       */
+      return `APIM TFS Error processing facility ${facilityId} in GIFT - unrecognised operation type '${String(messageType)}'`;
   }
 }
 
@@ -71,7 +84,7 @@ function buildSummary(facilityId: string, messageType: GiftQueueMessageType | un
  * @param messageType - The type of GIFT operation that failed, see `GIFT_QUEUE_MESSAGE_TYPE`.
  * @returns the request body to create a Halo ticket, formatted according to the Halo API requirements.
  */
-function buildTicketBody(facilityId: string, payload: unknown, errorMessage: string, messageType: GiftQueueMessageType | undefined) {
+function buildTicketBody(facilityId: string, payload: unknown, errorMessage: string, messageType: GiftQueueMessageType) {
   return [
     {
       summary: buildSummary(facilityId, messageType),
