@@ -14,6 +14,7 @@
     "prettier:fix": "prettier --write \"**/*.{ts,js}\" --ignore-path ../../.prettierignore",
     "prestart": "npm run clean && npm run build",
     "start": "func start",
+    "type-check": "tsc --noEmit --pretty",
     "unit-test": "jest --coverage --verbose --config=jest.config.cjs",
     "unit-test:dev": "jest --verbose --config=jest.config.cjs",
     "watch": "tsc -w"

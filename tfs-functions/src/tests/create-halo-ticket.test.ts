@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { GIFT_QUEUE_MESSAGE_TYPE } from '../types/queue-message.type';
+import { GIFT_QUEUE_MESSAGE_TYPE, GiftQueueMessageType } from '../types/queue-message.type';
 import { createHaloTicket } from '../utils/create-halo-ticket';
 
 const { HALO_BASE_URL, HALO_TENANT_NAME, HALO_AUTH_CLIENT_ID, HALO_CLIENT_SECRET } = process.env;
@@ -260,6 +260,48 @@ describe('createHaloTicket', () => {
         const expectedTicketBody = [
           {
             summary: `APIM TFS Error retrieving facilities ${facilityIds} in GIFT - preventing facility creation`,
+            details: `Error: ${errorMessage}\n\nOriginal payload:\n${JSON.stringify(payload, null, 2)}`,
+            tickettype_id: ticketTypeId,
+            client_id: ticketClientId,
+            site_id: siteId,
+            user_id: userId,
+            team_id: teamId,
+            itil_tickettype_id: -1,
+            dont_do_rules: true,
+            donotapplytemplateintheapi: true,
+            return_this: true,
+          },
+        ];
+
+        expect(axios.post).toHaveBeenNthCalledWith(2, `${HALO_BASE_URL}/api/Tickets`, expectedTicketBody, {
+          headers: {
+            Authorization: `Bearer ${mockAccessToken}`,
+            'Content-Type': 'application/json',
+          },
+        });
+      });
+    });
+
+    describe('when messageType is unrecognised', () => {
+      it('posts a ticket with a fallback summary instead of an undefined operation label', async () => {
+        // Arrange
+        const facilityId = 'abc-123';
+        const payload = { facilityId };
+        const errorMessage = 'Something went wrong';
+        const unrecognisedMessageType = 'FACILITY_UNKNOWN' as unknown as GiftQueueMessageType;
+
+        axios.post = jest
+          .fn()
+          .mockResolvedValueOnce({ data: { access_token: mockAccessToken } })
+          .mockResolvedValueOnce({});
+
+        // Act
+        await createHaloTicket(facilityId, payload, errorMessage, unrecognisedMessageType, context as any);
+
+        // Assert
+        const expectedTicketBody = [
+          {
+            summary: `APIM TFS Error processing facility ${facilityId} in GIFT - unrecognised operation type 'FACILITY_UNKNOWN'`,
             details: `Error: ${errorMessage}\n\nOriginal payload:\n${JSON.stringify(payload, null, 2)}`,
             tickettype_id: ticketTypeId,
             client_id: ticketClientId,
