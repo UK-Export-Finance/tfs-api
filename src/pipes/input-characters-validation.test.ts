@@ -192,8 +192,8 @@ describe('InputCharacterValidationPipe', () => {
     describe('Validate that known ASCII characters pass', () => {
       const printableAsciiCodes = Array.from({ length: 126 - 32 + 1 }, (_value, index) => 32 + index);
 
-      it.each(printableAsciiCodes)('no error for ascii %i', (i) => {
-        const bodyToTest = { ...bodyDto, field1: String.fromCharCode(i) };
+      it.each(printableAsciiCodes)('no error for ascii %i', (charCode) => {
+        const bodyToTest = { ...bodyDto, field1: String.fromCharCode(charCode) };
         const functionToTest = () => {
           pipe.transform(bodyToTest, bodyMeta);
         };
@@ -202,10 +202,11 @@ describe('InputCharacterValidationPipe', () => {
       });
 
       // ACBS doesn't support characters 181 µ and 255 ÿ
-      const extendedAsciiCodesExcludingMu = Array.from({ length: 254 - 160 + 1 }, (_value, index) => 160 + index).filter((i) => i !== 181);
+      const extendedAsciiCodesExcludingMu = Array.from({ length: 254 - 160 + 1 }, (_value, index) => 160 + index).filter((index) => index !== 181);
 
-      it.each(extendedAsciiCodesExcludingMu)('no error for ascii %i', (i) => {
-        const bodyToTest = { ...bodyDto, field1: String.fromCharCode(i) };
+      it.each(extendedAsciiCodesExcludingMu)('no error for ascii %i', (index) => {
+        const bodyToTest = { ...bodyDto, field1: String.fromCharCode(index) };
+
         const functionToTest = () => {
           pipe.transform(bodyToTest, bodyMeta);
         };

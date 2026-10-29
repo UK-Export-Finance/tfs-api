@@ -32,8 +32,8 @@ export class InputCharacterValidationPipe implements PipeTransform {
     key: string = null!,
   ) {
     if (typeof value === 'object' && value !== null) {
-      Object.entries(value).forEach(([k, v]) => {
-        this.recursiveCheck(v, findCharactersRegex, errorMessageGenerator, k);
+      Object.entries(value).forEach(([key, value]) => {
+        this.recursiveCheck(value, findCharactersRegex, errorMessageGenerator, key);
       });
     } else if (Array.isArray(value)) {
       value.forEach((item) => this.recursiveCheck(item, findCharactersRegex, errorMessageGenerator));
