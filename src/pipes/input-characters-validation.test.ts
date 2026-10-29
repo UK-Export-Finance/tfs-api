@@ -192,8 +192,8 @@ describe('InputCharacterValidationPipe', () => {
     describe('Validate that known ASCII characters pass', () => {
       const printableAsciiCodes = Array.from({ length: 126 - 32 + 1 }, (_value, index) => 32 + index);
 
-      it.each(printableAsciiCodes)('no error for ascii %i', (charcCode) => {
-        const bodyToTest = { ...bodyDto, field1: String.fromCharCode(charcCode) };
+      it.each(printableAsciiCodes)('no error for ascii %i', (charCode) => {
+        const bodyToTest = { ...bodyDto, field1: String.fromCharCode(charCode) };
         const functionToTest = () => {
           pipe.transform(bodyToTest, bodyMeta);
         };
@@ -206,6 +206,7 @@ describe('InputCharacterValidationPipe', () => {
 
       it.each(extendedAsciiCodesExcludingMu)('no error for ascii %i', (index) => {
         const bodyToTest = { ...bodyDto, field1: String.fromCharCode(index) };
+
         const functionToTest = () => {
           pipe.transform(bodyToTest, bodyMeta);
         };
