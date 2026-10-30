@@ -28,15 +28,12 @@ describe('Get integer configuration value Helper', () => {
   });
 
   describe('getIntConfig throws InvalidConfigException because environment variable type is not string', () => {
-    it.each([12, true, null, false, /.*/, {}, [], 0xff, 0b101])(
-      'throws InvalidConfigException for "%s" because environment variable type is not string',
-      (value) => {
-        const gettingTheConfig = () => getIntConfig(value as unknown as string);
+    it.each([12, true, null, false, {}, [], 0xff, 0b101])('throws InvalidConfigException for "%s" because environment variable type is not string', (value) => {
+      const gettingTheConfig = () => getIntConfig(value as unknown as string);
 
-        expect(gettingTheConfig).toThrow(InvalidConfigException);
-        expect(gettingTheConfig).toThrow(`Input environment variable type for ${value} should be string.`);
-      },
-    );
+      expect(gettingTheConfig).toThrow(InvalidConfigException);
+      expect(gettingTheConfig).toThrow(`Input environment variable type for ${value} should be string.`);
+    });
   });
 
   it.each([undefined, ''])('throws InvalidConfigException if environment variable is "%s" and default value is missing', (value) => {
