@@ -85,7 +85,7 @@ describe('HttpModule', () => {
     it('specifies only module, imports, and exports', () => {
       const module = registerAsync();
 
-      const sortedModuleKeys = Object.keys(module).sort((a, b) => a.localeCompare(b));
+      const sortedModuleKeys = Object.keys(module).sort((prev, next) => prev.localeCompare(next));
 
       expect(sortedModuleKeys).toStrictEqual(['exports', 'imports', 'module']);
     });
