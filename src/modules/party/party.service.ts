@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PROPERTIES } from '@ukef/constants';
+import { PROPERTIES, REGEX } from '@ukef/constants';
 import { AcbsPartyService } from '@ukef/modules/acbs/acbs-party.service';
 import { AcbsCreatePartyRequestDto } from '@ukef/modules/acbs/dto/acbs-create-party-request.dto';
 import { AcbsGetPartiesBySearchTextResponseDto } from '@ukef/modules/acbs/dto/acbs-get-parties-by-search-text-response.dto';
@@ -22,7 +22,6 @@ export class PartyService {
 
   async getPartiesBySearchTextFromAcbs(searchText: string): Promise<AcbsGetPartiesBySearchTextResponseDto> {
     const token = await this.getIdToken();
-    const endsInWhitespace = /\s$/;
 
     if (searchText === null) {
       throw new GetPartiesBySearchTextException('The required query parameter searchText was not specified.');
@@ -36,7 +35,7 @@ export class PartyService {
       throw new GetPartiesBySearchTextException('The query parameter searchText must be at least 3 characters.');
     }
 
-    if (endsInWhitespace.test(searchText)) {
+    if (REGEX.ENDS_IN_WHITESPACE.test(searchText)) {
       throw new GetPartiesBySearchTextException('The query parameter searchText cannot end with whitespace.');
     }
 

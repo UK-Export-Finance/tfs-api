@@ -13,6 +13,7 @@
  * 9. ACBSID
  * 10. GIFT
  * 11. HEADERS
+ * 12. REGEX
  */
 
 export * from './acbs.constant';
@@ -26,4 +27,5 @@ export * from './examples/examples.constant';
 export * from './gift/gift.constant';
 export * from './headers.constant';
 export * from './properties.constant';
+export * from './regex/index';
 export * from './ukef-id.constant';
