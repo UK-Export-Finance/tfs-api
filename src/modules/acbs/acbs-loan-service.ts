@@ -30,8 +30,9 @@ export class AcbsLoanService {
     return loan;
   }
 
-  async updateLoanByIdentifier(portfolioIdentifier: string, acbsUpdateLoanRequest: AcbsUpdateLoanRequest, idToken: string) {
+  async updateLoanByIdentifier(portfolioIdentifier: string, acbsUpdateLoanRequest: AcbsUpdateLoanRequest, idToken: string): Promise<void> {
     const { LoanIdentifier: loanIdentifier } = acbsUpdateLoanRequest;
+
     await this.acbsHttpService.put<AcbsUpdateLoanRequest, null>({
       path: `/Portfolio/${portfolioIdentifier}/Loan/${loanIdentifier}`,
       requestBody: acbsUpdateLoanRequest,

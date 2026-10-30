@@ -121,7 +121,9 @@ export class FacilityCovenantService {
       ...(expirationDate && {
         ExpirationDate: this.dateStringTransformations.addTimeToDateOnlyString(expirationDate),
       }),
-      ...((targetAmount || targetAmount === 0) && { TargetAmount: targetAmount }),
+      ...(targetAmount !== undefined && {
+        TargetAmount: targetAmount,
+      }),
     };
   }
 }

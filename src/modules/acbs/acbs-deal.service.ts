@@ -34,7 +34,7 @@ export class AcbsDealService {
   }
 
   async getDealByIdentifier(portfolioIdentifier: string, dealIdentifier: string, idToken: string): Promise<AcbsGetDealResponseDto> {
-    const { data: deal } = await this.acbsHttpService.get<AcbsGetDealResponseDto>({
+    const { data: deal } = await this.acbsHttpService.get<AcbsGetDealResponseDto | null>({
       path: `${this.getAcbsDealPath(portfolioIdentifier)}/${dealIdentifier}`,
       idToken,
       onError: createWrapAcbsHttpGetErrorCallback({
@@ -43,11 +43,11 @@ export class AcbsDealService {
       }),
     });
 
-    if (deal === null) {
-      throw new AcbsResourceNotFoundException(`Deal with identifier ${dealIdentifier} was not found by ACBS.`);
+    if (deal) {
+      return deal;
     }
 
-    return deal;
+    throw new AcbsResourceNotFoundException(`Deal with identifier ${dealIdentifier} was not found by ACBS.`);
   }
 
   private getAcbsDealPath(portfolioIdentifier: string): string {

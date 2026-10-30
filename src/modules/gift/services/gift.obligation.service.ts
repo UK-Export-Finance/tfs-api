@@ -39,11 +39,11 @@ export class GiftObligationService {
       const payload = {
         ...obligationData,
         acbsObligationId: INTEGRATION_DEFAULTS.ACBS_OBLIGATION_ID,
-        effectiveDate: obligationData.effectiveDate || INTEGRATION_DEFAULTS.OBLIGATION_EFFECTIVE_DATE,
+        effectiveDate: obligationData.effectiveDate ?? INTEGRATION_DEFAULTS.OBLIGATION_EFFECTIVE_DATE,
         linkedRepaymentProfileId: INTEGRATION_DEFAULTS.LINKED_REPAYMENT_PROFILE_ID,
-        maturityDate: obligationData.maturityDate || INTEGRATION_DEFAULTS.OBLIGATION_MATURITY_DATE,
+        maturityDate: obligationData.maturityDate ?? INTEGRATION_DEFAULTS.OBLIGATION_MATURITY_DATE,
         originalObligationId: INTEGRATION_DEFAULTS.ORIGINAL_OBLIGATION_ID,
-        subtypeCode: obligationData.subtypeCode || INTEGRATION_DEFAULTS.OBLIGATION_SUBTYPE_CODE,
+        subtypeCode: obligationData.subtypeCode ?? INTEGRATION_DEFAULTS.OBLIGATION_SUBTYPE_CODE,
       };
 
       const path = `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_OBLIGATION}`;

@@ -38,8 +38,8 @@ export class GiftRiskDetailsService {
         projectFinance: INTEGRATION_DEFAULTS.PROJECT_FINANCE,
         linkedFacilityId: INTEGRATION_DEFAULTS.LINKED_FACILITY_ID,
         originalFacilityEffectiveDate: INTEGRATION_DEFAULTS.ORIGINAL_FACILITY_EFFECTIVE_DATE,
-        facilityCategoryCode: riskDetailsData.facilityCategoryCode || INTEGRATION_DEFAULTS.FACILITY_CATEGORY_CODE,
-        facilityCreditRating: riskDetailsData.facilityCreditRating || INTEGRATION_DEFAULTS.FACILITY_CREDIT_RATING,
+        facilityCategoryCode: riskDetailsData.facilityCategoryCode ?? INTEGRATION_DEFAULTS.FACILITY_CATEGORY_CODE,
+        facilityCreditRating: riskDetailsData.facilityCreditRating ?? INTEGRATION_DEFAULTS.FACILITY_CREDIT_RATING,
       };
 
       const path = `${PATH.FACILITY}/${facilityId}${PATH.WORK_PACKAGE}/${workPackageId}${PATH.CONFIGURATION_EVENT}/${EVENT_TYPES.ADD_RISK_DETAILS}`;

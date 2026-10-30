@@ -4,7 +4,10 @@ import type {
   GiftFacilityCounterpartyRequestDto,
   GiftFacilityCreationRequestDto,
   GiftFacilityPostResponseDto,
+  GiftFixedFeeRequestDto,
   GiftObligationRequestDto,
+  GiftRepaymentProfileAllocationRequestDto,
+  GiftRepaymentProfileRequestDto,
 } from '@ukef/modules/gift/dto';
 
 import { SUPPORTED_CURRENCIES } from '@ukef/constants/currencies.constant';
@@ -157,7 +160,7 @@ const FEE_TYPES_RESPONSE_DATA = {
   feeTypes: [FEE_TYPES.BEX, FEE_TYPES.PLA],
 };
 
-const FIXED_FEE = () => ({
+const FIXED_FEE = (): GiftFixedFeeRequestDto => ({
   feeTypeCode: FEE_TYPE_CODES.PLA,
   effectiveDate: '2025-01-15',
   currency: SUPPORTED_CURRENCIES.USD,
@@ -188,7 +191,7 @@ const PRODUCT_TYPE_RESPONSE_DATA = {
  * NOTE: The total of all amounts should not be greater than the facility amount.
  * NOTE: Each due date is unique.
  */
-const REPAYMENT_PROFILE_ALLOCATION = (index = 0) => {
+const REPAYMENT_PROFILE_ALLOCATION = (index = 0): GiftRepaymentProfileAllocationRequestDto => {
   const today = new Date();
 
   const day = '01';
@@ -203,7 +206,7 @@ const REPAYMENT_PROFILE_ALLOCATION = (index = 0) => {
   };
 };
 
-const REPAYMENT_PROFILE = () => ({
+const REPAYMENT_PROFILE = (): GiftRepaymentProfileRequestDto => ({
   name: chance.string(),
   allocations: [REPAYMENT_PROFILE_ALLOCATION(0), REPAYMENT_PROFILE_ALLOCATION(1)],
 });

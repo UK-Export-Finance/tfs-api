@@ -21,7 +21,7 @@ export class AcbsFacilityGuaranteeService {
   }
 
   async getGuaranteesForFacility(portfolioIdentifier: string, facilityIdentifier: string, idToken: string): Promise<AcbsGetFacilityGuaranteesResponseDto> {
-    const { data: guarantees } = await this.acbsHttpService.get<AcbsGetFacilityGuaranteesResponseDto>({
+    const { data: guarantees } = await this.acbsHttpService.get<AcbsGetFacilityGuaranteesResponseDto | null>({
       path: this.facilityGuaranteePath({ portfolioIdentifier, facilityIdentifier }),
       idToken,
       onError: createWrapAcbsHttpGetErrorCallback({
@@ -30,14 +30,16 @@ export class AcbsFacilityGuaranteeService {
       }),
     });
 
-    if (guarantees === null) {
-      // The ACBS endpoint has surprising behaviour where a `200 OK` response with response body `null` is returned if the
-      // facility does not exist, but it can also be returned in cases where the facility does exist. That means we do not
-      // know if the facility exists or not at this point.
-      throw new AcbsResourceNotFoundException(`Guarantees for facility with identifier ${facilityIdentifier} were not found by ACBS.`);
+    if (guarantees) {
+      return guarantees;
     }
 
-    return guarantees;
+    /**
+     * The ACBS endpoint has surprising behaviour where a `200 OK` response with response body `null` is returned if the
+     * facility does not exist, but it can also be returned in cases where the facility does exist. That means we do not
+     * know if the facility exists or not at this point.
+     */
+    throw new AcbsResourceNotFoundException(`Guarantees for facility with identifier ${facilityIdentifier} were not found by ACBS.`);
   }
 
   async createGuaranteeForFacility(facilityIdentifier: string, newFacilityGuarantee: AcbsCreateFacilityGuaranteeDto, idToken: string): Promise<void> {

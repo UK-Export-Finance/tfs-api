@@ -292,7 +292,7 @@ describe('BaseAcbsAuthenticationService', () => {
 
     it('throws an AcbsAuthenticationFailedException if the IdP returns null data', async () => {
       mockSuccessfulCreateSessionRequest();
-      mockSuccessfulGetTokenForSessionRequestReturning({});
+      mockSuccessfulGetTokenForSessionRequestReturning(null);
 
       const getTokenPromise = service.getIdToken();
 

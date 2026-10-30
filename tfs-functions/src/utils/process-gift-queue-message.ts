@@ -70,11 +70,12 @@ export async function processGiftQueueMessage(queueItem: unknown, context: Invoc
         context.log('GIFT facility retrieval succeeded for facilityId:', facilityId);
         break;
       case GIFT_QUEUE_MESSAGE_TYPE.FACILITY_GET_MANY:
-        if (!item.ids?.length) {
+        if (!(item as { ids?: string[] }).ids?.length) {
           throw new Error('Failed to get GIFT facilities: ids is missing from queue message');
         }
 
         await getFromTfsApi('facilities', '', { ids: item.ids.join(',') }, `Failed to get GIFT facilities ${facilityId}`, context);
+
         context.log('GIFT facilities retrieval succeeded for ids:', facilityId);
         break;
       default:

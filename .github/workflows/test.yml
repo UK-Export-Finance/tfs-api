@@ -54,6 +54,7 @@ jobs:
       FF_GIFT_ENABLED: ${{ vars.FF_GIFT_ENABLED }}
       GIFT_QUEUE_STORAGE_ACCOUNT_NAME: ${{ vars.GIFT_QUEUE_STORAGE_ACCOUNT_NAME }}
       GIFT_QUEUE_STORAGE_CONNECTION_STRING: ${{ vars.GIFT_QUEUE_STORAGE_CONNECTION_STRING }}
+      LOG_LEVEL: ${{ vars.LOG_LEVEL }}
     environment:
       name: ${{ needs.setup.outputs.environment }}
     runs-on: ubuntu-latest
@@ -90,6 +91,7 @@ jobs:
     needs: setup
     env:
       FF_GIFT_ENABLED: 'true'
+      LOG_LEVEL: ${{ vars.LOG_LEVEL }}
     environment:
       name: ${{ needs.setup.outputs.environment }}
     runs-on: ubuntu-latest
@@ -121,6 +123,7 @@ jobs:
     needs: setup
     env:
       FF_GIFT_ENABLED: 'false'
+      LOG_LEVEL: ${{ vars.LOG_LEVEL }}
     environment:
       name: ${{ needs.setup.outputs.environment }}
     runs-on: ubuntu-latest
@@ -150,6 +153,8 @@ jobs:
   functions-unit-tests:
     name: Functions Unit 👷
     needs: [setup, build-and-start-check]
+    env:
+      LOG_LEVEL: ${{ vars.LOG_LEVEL }}
     environment:
       name: ${{ needs.setup.outputs.environment }}
     runs-on: ubuntu-latest
@@ -179,6 +184,8 @@ jobs:
   api-tests:
     name: API (ACBS) 👷
     needs: [setup, build-and-start-check]
+    env:
+      LOG_LEVEL: ${{ vars.LOG_LEVEL }}
     environment:
       name: ${{ needs.setup.outputs.environment }}
     runs-on: ubuntu-latest
@@ -210,6 +217,7 @@ jobs:
     needs: [setup, build-and-start-check]
     env:
       FF_GIFT_ENABLED: 'true'
+      LOG_LEVEL: ${{ vars.LOG_LEVEL }}
     environment:
       name: ${{ needs.setup.outputs.environment }}
     strategy:
@@ -253,6 +261,8 @@ jobs:
   api-tests-ff-disabled:
     name: API (Feature flag disabled) 👷
     needs: [setup, build-and-start-check]
+    env:
+      LOG_LEVEL: ${{ vars.LOG_LEVEL }}
     environment:
       name: ${{ needs.setup.outputs.environment }}
     runs-on: ubuntu-latest

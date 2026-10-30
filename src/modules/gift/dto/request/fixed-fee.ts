@@ -10,6 +10,13 @@ const {
   VALIDATION: { FIXED_FEE: VALIDATION },
 } = GIFT;
 
+const EXAMPLE = FIXED_FEE() as {
+  amount: number;
+  currency: string;
+  effectiveDate: string;
+  feeTypeCode: string;
+};
+
 /**
  * GIFT "fixed fee" request DTO.
  * These fields are required for APIM to create a "fixed fee" in GIFT.
@@ -22,7 +29,7 @@ export class GiftFixedFeeRequestDto {
   @ApiProperty({
     required: true,
     description: 'The amount of the fixed fee',
-    example: FIXED_FEE().amount,
+    example: EXAMPLE.amount,
   })
   amount!: number;
 
@@ -32,7 +39,7 @@ export class GiftFixedFeeRequestDto {
   @ApiProperty({
     required: true,
     description: 'The currency of the fixed fee amount, in ISO 4217 format',
-    example: FIXED_FEE().currency,
+    example: EXAMPLE.currency,
   })
   currency!: string;
 
@@ -41,7 +48,7 @@ export class GiftFixedFeeRequestDto {
   @ApiProperty({
     required: true,
     description: 'The effective date',
-    example: FIXED_FEE().effectiveDate,
+    example: EXAMPLE.effectiveDate,
   })
   effectiveDate!: string;
 
@@ -51,7 +58,7 @@ export class GiftFixedFeeRequestDto {
   @ApiProperty({
     required: true,
     description: 'The fee type code',
-    example: FIXED_FEE().feeTypeCode,
+    example: EXAMPLE.feeTypeCode,
   })
   feeTypeCode!: string;
 }

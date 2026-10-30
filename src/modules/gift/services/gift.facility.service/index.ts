@@ -286,7 +286,7 @@ export class GiftFacilityService {
         this.logger.error('Creating a GIFT facility - approved status update failed %s %o', facilityId, approvedStatusResponse);
 
         const cause = {
-          status: approvedStatusResponse?.status,
+          status: approvedStatusResponse.status,
         };
 
         throw new Error(`Error creating a GIFT facility - approved status update failed ${facilityId}`, { cause });
