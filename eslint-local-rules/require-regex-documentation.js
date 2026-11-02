@@ -53,6 +53,7 @@ module.exports = {
         if (initNode.body.type === 'Literal' && initNode.body.regex) {
           return true;
         }
+
         if (isRegExpConstructor(initNode.body)) {
           return true;
         }
@@ -77,6 +78,17 @@ module.exports = {
       // RegExp constructor: new RegExp(...) or RegExp(...)
       if (isRegExpConstructor(valueNode)) {
         return true;
+      }
+
+      // Arrow function returning RegExp: () => /pattern/ or () => new RegExp(...) or () => RegExp(...)
+      if (valueNode.type === 'ArrowFunctionExpression' && valueNode.body) {
+        if (valueNode.body.type === 'Literal' && valueNode.body.regex) {
+          return true;
+        }
+
+        if (isRegExpConstructor(valueNode.body)) {
+          return true;
+        }
       }
 
       return false;

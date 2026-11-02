@@ -73,7 +73,7 @@ module.exports = defineConfig([
         sourceType: 'module',
         tsconfigRootDir: __dirname,
         projectService: {
-          allowDefaultProject: ['*.js', '*.cjs', 'tfs-functions/jest.config.cjs'],
+          allowDefaultProject: ['*.js', '*.cjs', 'tfs-functions/jest.config.cjs', 'eslint-local-rules/*.js'],
           defaultProject: 'tsconfig.json',
         },
       },
