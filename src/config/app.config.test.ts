@@ -22,41 +22,51 @@ describe('AppConfig', () => {
   });
 
   describe('logLevel', () => {
-    describe('when LOG_LEVEL is specified, but is not a valid log level', () => {
-      it('should throw an InvalidConfigException', () => {
-        replaceEnvironmentVariables({
-          LOG_LEVEL: 'not-a-real-log-level',
-        });
-
-        const gettingTheAppConfig = () => AppConfig();
-
-        expect(gettingTheAppConfig).toThrow(InvalidConfigException);
-
-        expect(gettingTheAppConfig).toThrow(`LOG_LEVEL must be one of fatal,error,warn,info,debug,trace,silent or not specified.`);
-      });
-    });
-
     describe('when LOG_LEVEL is not specified', () => {
       it('should return `logLevel` as `info`', () => {
+        // Arrange
         replaceEnvironmentVariables({
           LOG_LEVEL: undefined!,
         });
 
+        // Act
         const config = AppConfig();
 
+        // Assert
         expect(config.logLevel).toBe('info');
       });
     });
 
     describe('when LOG_LEVEL is empty', () => {
       it('should return `logLevel` as `info`', () => {
+        // Arrange
         replaceEnvironmentVariables({
           LOG_LEVEL: '',
         });
 
+        // Act
         const config = AppConfig();
 
+        // Assert
         expect(config.logLevel).toBe('info');
+      });
+    });
+
+    describe('when LOG_LEVEL is specified, but is not a valid log level', () => {
+      it('should throw an InvalidConfigException', () => {
+        // Arrange
+        const mockLogLevel = 'not-a-real-log-level';
+
+        replaceEnvironmentVariables({
+          LOG_LEVEL: mockLogLevel,
+        });
+
+        const gettingTheAppConfig = () => AppConfig();
+
+        // Act & Assert
+        expect(gettingTheAppConfig).toThrow(InvalidConfigException);
+
+        expect(gettingTheAppConfig).toThrow(`LOG_LEVEL must be one of fatal,error,warn,info,debug,trace,silent or not specified. Received ${mockLogLevel}`);
       });
     });
 
@@ -83,18 +93,21 @@ describe('AppConfig', () => {
         LOG_LEVEL: 'silent',
       },
     ])('uses LOG_LEVEL as the logLevel if LOG_LEVEL is valid ($LOG_LEVEL)', ({ LOG_LEVEL }) => {
+      // Arrange
       replaceEnvironmentVariables({
         LOG_LEVEL,
       });
 
       const config = AppConfig();
 
+      // Act & Assert
       expect(config.logLevel).toBe(LOG_LEVEL);
     });
   });
 
   describe('versioning', () => {
     it('should return an object with default properties', () => {
+      // Arrange
       const mockHttpVersion = undefined!;
 
       replaceEnvironmentVariables({
@@ -102,8 +115,10 @@ describe('AppConfig', () => {
         HTTP_VERSION: mockHttpVersion,
       });
 
+      // Act
       const config = AppConfig();
 
+      // Assert
       const expected = {
         enable: false,
         prefix: VERSION_PREFIX,
@@ -116,13 +131,46 @@ describe('AppConfig', () => {
 
     describe('when HTTP_VERSIONING_ENABLE is specified', () => {
       it('should return `enable` as true', () => {
+        // Arrange
         replaceEnvironmentVariables({
           HTTP_VERSIONING_ENABLE: 'true',
         });
 
+        // Act
         const config = AppConfig();
 
+        // Assert
         expect(config.versioning.enable).toBe(true);
+      });
+    });
+
+    describe('when HTTP_VERSION is an empty string', () => {
+      it('should return `version` as the default `1`', () => {
+        // Arrange
+        replaceEnvironmentVariables({
+          HTTP_VERSION: '',
+        });
+
+        // Act
+        const config = AppConfig();
+
+        // Assert
+        expect(config.versioning.version).toBe('1');
+      });
+
+      it('should return `prefixAndVersion` using the default version `1`', () => {
+        // Arrange
+        replaceEnvironmentVariables({
+          HTTP_VERSION: '',
+        });
+
+        // Act
+        const config = AppConfig();
+
+        // Assert
+        const expected = `${VERSION_PREFIX}1`;
+
+        expect(config.versioning.prefixAndVersion).toBe(expected);
       });
     });
 
@@ -130,22 +178,28 @@ describe('AppConfig', () => {
       const mockHttpVersion = '100200';
 
       it('should return `version` with the provided HTTP_VERSION', () => {
+        // Arrange
         replaceEnvironmentVariables({
           HTTP_VERSION: mockHttpVersion,
         });
 
+        // Act
         const config = AppConfig();
 
+        // Assert
         expect(config.versioning.version).toBe(mockHttpVersion);
       });
 
       it('should return `prefixAndVersion` with the provided HTTP_VERSION', () => {
+        // Arrange
         replaceEnvironmentVariables({
           HTTP_VERSION: mockHttpVersion,
         });
 
+        // Act
         const config = AppConfig();
 
+        // Assert
         const expected = `${VERSION_PREFIX}${mockHttpVersion}`;
 
         expect(config.versioning.prefixAndVersion).toBe(expected);
@@ -155,14 +209,17 @@ describe('AppConfig', () => {
 
   describe('giftVersioning', () => {
     it('should return an object', () => {
+      // Arrange
       const mockHttpVersion = '100200';
 
       replaceEnvironmentVariables({
         GIFT_HTTP_VERSION: mockHttpVersion,
       });
 
+      // Act
       const config = AppConfig();
 
+      // Assert
       const expected = {
         enable: false,
         prefix: VERSION_PREFIX,
@@ -177,36 +234,45 @@ describe('AppConfig', () => {
   describe('giftFeatureEnabled', () => {
     describe('when FF_GIFT_ENABLED is not set or false', () => {
       it('should return giftFeatureEnabled as false', () => {
+        // Arrange
         replaceEnvironmentVariables({
           FF_GIFT_ENABLED: undefined!,
         });
 
+        // Act
         const config = AppConfig();
 
+        // Assert
         expect(config.giftFeatureEnabled).toBe(false);
       });
     });
 
     describe('when FF_GIFT_ENABLED is set to true', () => {
       it('should return giftFeatureEnabled as true', () => {
+        // Arrange
         replaceEnvironmentVariables({
           FF_GIFT_ENABLED: 'true',
         });
 
+        // Act
         const config = AppConfig();
 
+        // Assert
         expect(config.giftFeatureEnabled).toBe(true);
       });
     });
 
     describe('when FF_GIFT_ENABLED is set to any value other than "true"', () => {
       it('should return giftFeatureEnabled as false', () => {
+        // Arrange
         replaceEnvironmentVariables({
           FF_GIFT_ENABLED: 'false',
         });
 
+        // Act
         const config = AppConfig();
 
+        // Assert
         expect(config.giftFeatureEnabled).toBe(false);
       });
     });

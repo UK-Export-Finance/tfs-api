@@ -13,6 +13,10 @@ const {
   VALIDATION: { REPAYMENT_PROFILE: VALIDATION },
 } = GIFT;
 
+const EXAMPLE = REPAYMENT_PROFILE() as {
+  name: string;
+};
+
 /**
  * GIFT "repayment profile" request DTO.
  * These fields are required for APIM to create a "repayment profile" in GIFT.
@@ -22,7 +26,7 @@ export class GiftRepaymentProfileRequestDto {
   @IsString()
   @Length(VALIDATION.NAME.MIN_LENGTH, VALIDATION.NAME.MAX_LENGTH)
   @ApiProperty({
-    example: REPAYMENT_PROFILE().name,
+    example: EXAMPLE.name,
     required: true,
   })
   name!: string;

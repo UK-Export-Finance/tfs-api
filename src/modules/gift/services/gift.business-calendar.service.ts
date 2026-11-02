@@ -40,8 +40,8 @@ export class GiftBusinessCalendarService {
 
       const payload = {
         centreCode: BUSINESS_CALENDAR.LONDON.CODE,
-        exitDate: exitDate || INTEGRATION_DEFAULTS.BUSINESS_CALENDAR_EXIT_DATE,
-        startDate: startDate || INTEGRATION_DEFAULTS.BUSINESS_CALENDAR_START_DATE,
+        exitDate: exitDate ?? INTEGRATION_DEFAULTS.BUSINESS_CALENDAR_EXIT_DATE,
+        startDate: startDate ?? INTEGRATION_DEFAULTS.BUSINESS_CALENDAR_START_DATE,
       };
 
       const response = await this.giftHttpService.post<GiftBusinessCalendarResponseDto>({

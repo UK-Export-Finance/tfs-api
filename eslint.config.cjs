@@ -1,5 +1,4 @@
 const { defineConfig } = require('eslint/config');
-const tseslint = require('typescript-eslint');
 const globals = require('globals');
 
 const tsParser = require('@typescript-eslint/parser');
@@ -61,15 +60,22 @@ module.exports = defineConfig([
     },
   },
 
-  // JavaScript files: disable type-checking entirely
+  /**
+   * JavaScript files: type-aware linting via a default (single-file) project, since config files
+   * like eslint.config.cjs aren't part of the main tsconfig's `include`.
+   */
   {
     files: ['**/*.js', '**/*.cjs'],
-    extends: [tseslint.configs.disableTypeChecked],
     languageOptions: {
       parser: tsParser,
       parserOptions: {
         ecmaVersion: 2022,
         sourceType: 'module',
+        tsconfigRootDir: __dirname,
+        projectService: {
+          allowDefaultProject: ['*.js', '*.cjs', 'tfs-functions/jest.config.cjs'],
+          defaultProject: 'tsconfig.json',
+        },
       },
     },
     rules: {
@@ -111,7 +117,7 @@ module.exports = defineConfig([
       // disallow param names with 1 digit, excluding object property names
       'id-length': ['error', { min: 2, properties: 'never' }],
 
-      'no-relative-import-paths/no-relative-import-paths': ['warn', { allowSameFolder: true, rootDir: 'src', prefix: '@ukef' }],
+      'no-relative-import-paths/no-relative-import-paths': ['error', { allowSameFolder: true, rootDir: 'src', prefix: '@ukef' }],
 
       'no-case-declarations': 'off',
 
@@ -180,10 +186,10 @@ module.exports = defineConfig([
       '@typescript-eslint/no-floating-promises': 'off',
       '@typescript-eslint/no-misused-promises': 'off',
       '@typescript-eslint/await-thenable': 'off',
-      '@typescript-eslint/no-unnecessary-condition': 'off',
+      '@typescript-eslint/no-unnecessary-condition': 'error',
       '@typescript-eslint/strict-boolean-expressions': 'off',
       '@typescript-eslint/no-unnecessary-boolean-literal-compare': 'off',
-      '@typescript-eslint/prefer-nullish-coalescing': 'off',
+      '@typescript-eslint/prefer-nullish-coalescing': 'error',
       '@typescript-eslint/return-await': ['error', 'always'],
 
       'import-x/no-namespace': 'off',

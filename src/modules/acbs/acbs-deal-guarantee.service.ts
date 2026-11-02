@@ -25,6 +25,7 @@ export class AcbsDealGuaranteeService {
 
   async createGuaranteeForDeal(dealIdentifier: string, newDealGuarantee: AcbsCreateDealGuaranteeDto, idToken: string): Promise<void> {
     const { portfolioIdentifier } = PROPERTIES.GLOBAL;
+
     await this.acbsHttpService.post<AcbsCreateDealGuaranteeDto>({
       path: `/Portfolio/${portfolioIdentifier}/Deal/${dealIdentifier}/DealGuarantee`,
       requestBody: newDealGuarantee,
@@ -37,7 +38,7 @@ export class AcbsDealGuaranteeService {
   }
 
   async getGuaranteesForDeal(portfolio: string, dealIdentifier: string, idToken: string): Promise<AcbsGetDealGuaranteeResponseDto[]> {
-    const { data: dealGuarantees } = await this.acbsHttpService.get<AcbsGetDealGuaranteeResponseDto[]>({
+    const { data: dealGuarantees } = await this.acbsHttpService.get<AcbsGetDealGuaranteeResponseDto[] | null>({
       path: `/Portfolio/${portfolio}/Deal/${dealIdentifier}/DealGuarantee`,
       idToken,
       onError: createWrapAcbsHttpGetErrorCallback({
@@ -46,10 +47,10 @@ export class AcbsDealGuaranteeService {
       }),
     });
 
-    if (dealGuarantees === null) {
-      throw new AcbsResourceNotFoundException(`Deal ${dealIdentifier} were not found by ACBS while fetching Deal Guarantees.`);
+    if (dealGuarantees) {
+      return dealGuarantees;
     }
 
-    return dealGuarantees;
+    throw new AcbsResourceNotFoundException(`Deal ${dealIdentifier} were not found by ACBS while fetching Deal Guarantees.`);
   }
 }

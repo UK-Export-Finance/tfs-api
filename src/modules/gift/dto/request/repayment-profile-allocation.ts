@@ -12,6 +12,11 @@ const {
   },
 } = GIFT;
 
+const EXAMPLE = REPAYMENT_PROFILE_ALLOCATION() as {
+  amount: number;
+  dueDate: string;
+};
+
 /**
  * GIFT "repayment profile allocation" request DTO.
  * These fields are required for APIM to create a "repayment profile allocation" in GIFT.
@@ -22,7 +27,7 @@ export class GiftRepaymentProfileAllocationRequestDto {
   @Min(VALIDATION.AMOUNT.MIN)
   @Max(VALIDATION.AMOUNT.MAX)
   @ApiProperty({
-    example: REPAYMENT_PROFILE_ALLOCATION().amount,
+    example: EXAMPLE.amount,
     required: true,
   })
   amount!: number;
@@ -30,7 +35,7 @@ export class GiftRepaymentProfileAllocationRequestDto {
   @IsDefined()
   @IsDateString()
   @ApiProperty({
-    example: REPAYMENT_PROFILE_ALLOCATION().dueDate,
+    example: EXAMPLE.dueDate,
     required: true,
   })
   dueDate!: string;

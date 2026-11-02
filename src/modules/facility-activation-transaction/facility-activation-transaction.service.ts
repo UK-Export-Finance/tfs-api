@@ -97,11 +97,11 @@ export class FacilityActivationTransactionService {
       initiatingUserName: activationTransaction.InitiatingUserName,
       accountOwnerIdentifier: codeValueTransaction.AccountOwnerIdentifier,
       effectiveDate: effectiveDateOnly,
-      facilityTransactionCodeValueCode: codeValueTransaction.FacilityTransactionCodeValue?.FacilityTransactionCodeValueCode,
-      facilityTransactionTypeCode: Number(codeValueTransaction.FacilityTransactionType?.TypeCode),
+      facilityTransactionCodeValueCode: codeValueTransaction.FacilityTransactionCodeValue.FacilityTransactionCodeValueCode,
+      facilityTransactionTypeCode: Number(codeValueTransaction.FacilityTransactionType.TypeCode),
       isDraftIndicator: codeValueTransaction.IsDraftIndicator,
       limitKeyValue: codeValueTransaction.LimitKeyValue,
-      limitTypeCode: codeValueTransaction.LimitType?.LimitTypeCode,
+      limitTypeCode: codeValueTransaction.LimitType.LimitTypeCode,
       sectionIdentifier: codeValueTransaction.SectionIdentifier,
     };
   }

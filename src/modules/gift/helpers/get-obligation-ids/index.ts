@@ -5,4 +5,4 @@ import { AxiosResponse } from 'axios';
  * @param {AxiosResponse[]} obligationsResponse: An array of Axios responses containing obligation data
  * @returns {number[]} An array of obligation IDs
  */
-export const getObligationIds = (obligationsResponse: AxiosResponse[]) => obligationsResponse.map((obligation) => obligation?.data?.id);
+export const getObligationIds = (obligationsResponse: AxiosResponse[]) => obligationsResponse.map((obligation) => obligation.data?.id);

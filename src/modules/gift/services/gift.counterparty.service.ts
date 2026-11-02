@@ -36,8 +36,8 @@ export class GiftCounterpartyService {
 
       const payload = {
         ...counterpartyData,
-        exitDate: counterpartyData.exitDate || INTEGRATION_DEFAULTS.COUNTERPARTY_EXIT_DATE,
-        startDate: counterpartyData.startDate || INTEGRATION_DEFAULTS.COUNTERPARTY_START_DATE,
+        exitDate: counterpartyData.exitDate ?? INTEGRATION_DEFAULTS.COUNTERPARTY_EXIT_DATE,
+        startDate: counterpartyData.startDate ?? INTEGRATION_DEFAULTS.COUNTERPARTY_START_DATE,
       };
 
       const response = await this.giftHttpService.post<GiftFacilityCounterpartyRequestDto>({

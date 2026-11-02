@@ -73,7 +73,7 @@ describe('AcbsFacilityPartyService', () => {
       const getPromise = service.getFacilityPartiesForFacility(portfolioIdentifier, facilityIdentifier, idToken);
 
       await expect(getPromise).rejects.toBeInstanceOf(AcbsException);
-      await expect(getPromise).rejects.toThrow(`Failed to get a party for facility ${facilityIdentifier} in ACBS.`);
+      await expect(getPromise).rejects.toThrow(`Failed to get parties for facility ${facilityIdentifier} in ACBS.`);
       await expect(getPromise).rejects.toHaveProperty('innerError', getFacilityPartyByFacilityIdentifierError);
     });
 
