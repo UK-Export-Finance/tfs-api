@@ -15,6 +15,22 @@ module.exports = {
     const sourceCode = context.sourceCode;
 
     /**
+     * Check if a node is a RegExp constructor call (new or direct)
+     */
+    function isRegExpConstructor(node) {
+      if (!node) {
+        return false;
+      }
+
+      // new RegExp(...) or RegExp(...)
+      if (node.callee && node.callee.type === 'Identifier' && node.callee.name === 'RegExp') {
+        return node.type === 'NewExpression' || node.type === 'CallExpression';
+      }
+
+      return false;
+    }
+
+    /**
      * Check if a node is a regex pattern assignment
      */
     function isRegexAssignment(initNode) {
@@ -27,19 +43,19 @@ module.exports = {
         return true;
       }
 
-      // RegExp constructor: new RegExp(...)
-      if (initNode.type === 'NewExpression' && initNode.callee.type === 'Identifier' && initNode.callee.name === 'RegExp') {
+      // RegExp constructor: new RegExp(...) or RegExp(...)
+      if (isRegExpConstructor(initNode)) {
         return true;
       }
 
-      // Arrow function returning RegExp: () => new RegExp(...)
-      if (
-        initNode.type === 'ArrowFunctionExpression' &&
-        initNode.body &&
-        ((initNode.body.type === 'NewExpression' && initNode.body.callee.type === 'Identifier' && initNode.body.callee.name === 'RegExp') ||
-          (initNode.body.type === 'Literal' && initNode.body.regex))
-      ) {
-        return true;
+      // Arrow function returning RegExp: () => /pattern/ or () => new RegExp(...) or () => RegExp(...)
+      if (initNode.type === 'ArrowFunctionExpression' && initNode.body) {
+        if (initNode.body.type === 'Literal' && initNode.body.regex) {
+          return true;
+        }
+        if (isRegExpConstructor(initNode.body)) {
+          return true;
+        }
       }
 
       return false;
@@ -58,8 +74,8 @@ module.exports = {
         return true;
       }
 
-      // RegExp constructor: new RegExp(...)
-      if (valueNode.type === 'NewExpression' && valueNode.callee.type === 'Identifier' && valueNode.callee.name === 'RegExp') {
+      // RegExp constructor: new RegExp(...) or RegExp(...)
+      if (isRegExpConstructor(valueNode)) {
         return true;
       }
 
