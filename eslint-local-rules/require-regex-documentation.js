@@ -46,6 +46,27 @@ module.exports = {
     }
 
     /**
+     * Check if a value node is a regex pattern
+     */
+    function isRegexValue(valueNode) {
+      if (!valueNode) {
+        return false;
+      }
+
+      // Direct regex literal: /pattern/
+      if (valueNode.type === 'Literal' && valueNode.regex) {
+        return true;
+      }
+
+      // RegExp constructor: new RegExp(...)
+      if (valueNode.type === 'NewExpression' && valueNode.callee.type === 'Identifier' && valueNode.callee.name === 'RegExp') {
+        return true;
+      }
+
+      return false;
+    }
+
+    /**
      * Get the declaration node for comment retrieval
      */
     function getCommentParent(varNode) {
@@ -72,6 +93,14 @@ module.exports = {
       return comments.some((comment) => comment.type === 'Block' && comment.value.startsWith('*'));
     }
 
+    /**
+     * Check if a property has JSDoc comment (checks comments before the property)
+     */
+    function hasPropertyJsDoc(propertyNode) {
+      const comments = sourceCode.getCommentsBefore(propertyNode);
+      return comments.some((comment) => comment.type === 'Block' && comment.value.startsWith('*'));
+    }
+
     return {
       VariableDeclarator(node) {
         // Check if this is a regex assignment
@@ -84,6 +113,21 @@ module.exports = {
 
         // Report if no JSDoc found
         if (!hasJsDoc(commentParent)) {
+          context.report({
+            node,
+            messageId: 'missingRegexDoc',
+          });
+        }
+      },
+
+      Property(node) {
+        // Only check properties with regex values
+        if (!isRegexValue(node.value)) {
+          return;
+        }
+
+        // Check if the property has JSDoc documentation
+        if (!hasPropertyJsDoc(node)) {
           context.report({
             node,
             messageId: 'missingRegexDoc',

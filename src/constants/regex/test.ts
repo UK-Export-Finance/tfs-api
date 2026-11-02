@@ -25,7 +25,7 @@ const TEST_STRING = /test/;
  * - `testtest` (no forward slash)
  * - `test\\test` (backslash instead of forward slash)
  */
-const TEST_WITH_ESCAPED_SLASH = /test\/test/;
+const WORD_WITH_FORWARD_SLASH = /test\/test/;
 
 /**
  * Complex validation regex with negative lookahead and lookbehind assertions.
@@ -42,7 +42,7 @@ const TEST_WITH_ESCAPED_SLASH = /test\/test/;
  * - `trailing space ` (ends with space)
  * - `ends with period.` (ends with period)
  */
-const COMPLEX_WITH_ASSERTIONS = /^(?!\s)[\w\-.()\s]+(?<![\s.])$/;
+const WORD_CHARACTERS_WITHOUT_SURROUNDING_WHITESPACE = /^(?!\s)[\w\-.()\s]+(?<![\s.])$/;
 
 /**
  * Test regex with backslashes and forward slashes.
@@ -57,11 +57,11 @@ const COMPLEX_WITH_ASSERTIONS = /^(?!\s)[\w\-.()\s]+(?<![\s.])$/;
  * Does not match:
  * - `test@value` (@ is not allowed)
  */
-const WITH_BACKSLASHES_AND_SLASHES = /^[\w\-:/\\()\s]+$/;
+const WORD_CHARACTERS_WITH_SLASHES = /^[\w\-:/\\()\s]+$/;
 
 export const TEST = {
   TEST_STRING,
-  TEST_WITH_ESCAPED_SLASH,
-  COMPLEX_WITH_ASSERTIONS,
-  WITH_BACKSLASHES_AND_SLASHES,
+  WORD_WITH_FORWARD_SLASH,
+  WORD_CHARACTERS_WITHOUT_SURROUNDING_WHITESPACE,
+  WORD_CHARACTERS_WITH_SLASHES,
 };

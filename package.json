@@ -6,6 +6,7 @@
   "license": "MIT",
   "author": "UKEF",
   "workspaces": [
+    "eslint-local-rules",
     "tfs-functions"
   ],
   "scripts": {
@@ -131,6 +132,5 @@
   "engines": {
     "node": ">=24.17.0",
     "npm": ">=11.3.0"
-  },
-  "workspaces": ["eslint-local-rules"]
+  }
 }
