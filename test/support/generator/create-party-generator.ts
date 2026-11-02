@@ -96,7 +96,7 @@ export class CreatePartyGenerator extends AbstractGenerator<PartyValues, Generat
         LanguageCode: PROPERTIES.PARTY.DEFAULT.languageCode,
       },
       WatchListReason: {
-        WatchListReasonCode: PROPERTIES.PARTY.DEFAULT.watchListReasonCode ?? '',
+        WatchListReasonCode: PROPERTIES.PARTY.DEFAULT.watchListReasonCode ? PROPERTIES.PARTY.DEFAULT.watchListReasonCode : '',
       },
     };
 

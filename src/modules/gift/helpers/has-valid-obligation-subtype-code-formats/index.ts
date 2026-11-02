@@ -19,7 +19,7 @@ export const hasValidFormat = (obligation?: GiftObligationRequestDto) => {
   if (obligation?.subtypeCode && typeof obligation.subtypeCode === 'string') {
     const { subtypeCode } = obligation;
 
-    if (subtypeCode?.length >= MIN_LENGTH && subtypeCode?.length <= MAX_LENGTH) {
+    if (subtypeCode.length >= MIN_LENGTH && subtypeCode.length <= MAX_LENGTH) {
       return true;
     }
   }

@@ -59,7 +59,7 @@ export class GiftFacilityAmendmentService {
    * @returns {Boolean} true if the amendment was successful, false otherwise.
    */
   private wasAmendmentSuccessful(response: AxiosResponse<GiftWorkPackageResponseDto>): boolean {
-    return response?.status === HttpStatus.CREATED;
+    return response.status === HttpStatus.CREATED;
   }
 
   /**
@@ -104,8 +104,8 @@ export class GiftFacilityAmendmentService {
 
       if (!this.wasAmendmentSuccessful(facilityAmendmentResponse)) {
         return {
-          status: facilityAmendmentResponse?.status,
-          data: facilityAmendmentResponse?.data,
+          status: facilityAmendmentResponse.status,
+          data: facilityAmendmentResponse.data,
         };
       }
 
@@ -131,8 +131,8 @@ export class GiftFacilityAmendmentService {
 
       if (!this.wasAmendmentSuccessful(facilityAmendmentResponse)) {
         return {
-          status: facilityAmendmentResponse?.status,
-          data: facilityAmendmentResponse?.data,
+          status: facilityAmendmentResponse.status,
+          data: facilityAmendmentResponse.data,
         };
       }
 
@@ -394,7 +394,7 @@ export class GiftFacilityAmendmentService {
         for (const amendment of payload.amendments) {
           const response = await this.handleCreateAmendments({ workPackageId, facility, facilityId, amendment });
 
-          if (response?.status !== HttpStatus.CREATED) {
+          if (response.status !== HttpStatus.CREATED) {
             amendmentError = true;
 
             amendmentResponse = response;
@@ -430,7 +430,7 @@ export class GiftFacilityAmendmentService {
         try {
           const response = await this.giftWorkPackageService.delete(workPackageId, facilityId);
 
-          if (response?.status !== HttpStatus.NO_CONTENT) {
+          if (response.status !== HttpStatus.NO_CONTENT) {
             hasDeleteError = true;
             deleteError = response;
           }

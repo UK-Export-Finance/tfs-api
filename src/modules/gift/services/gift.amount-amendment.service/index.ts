@@ -81,7 +81,15 @@ export class GiftAmountAmendmentService {
    * @returns {Promise<void>}
    * @throws {Error}
    */
-  async obligations({ amendmentType, newFacilityAmount, date, facilityId, obligations, facilityCategoryCode, workPackageId }: AmendObligationsParams) {
+  async obligations({
+    amendmentType,
+    newFacilityAmount,
+    date,
+    facilityId,
+    obligations,
+    facilityCategoryCode,
+    workPackageId,
+  }: AmendObligationsParams): Promise<AxiosResponse<GiftWorkPackageResponseDto>[]> {
     try {
       this.logger.info('Amending facility obligation amounts %s for facility %s work package %s', amendmentType, facilityId, workPackageId);
 

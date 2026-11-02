@@ -9,10 +9,10 @@ export type AcbsGetDealResponseDto = {
   OriginalEffectiveDate: DateString;
   MemoLimitAmount: number;
   IndustryClassification: {
-    IndustryClassificationCode: string;
+    IndustryClassificationCode: string | null;
   };
   BorrowerParty: {
-    PartyName1: string;
+    PartyName1: string | null;
     PartyIdentifier: string;
   };
 };
