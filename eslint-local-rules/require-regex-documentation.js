@@ -129,6 +129,82 @@ module.exports = {
       return comments.some((comment) => comment.type === 'Block' && comment.value.startsWith('*'));
     }
 
+    /**
+     * Find the top-level variable declaration or property node that owns a regex node
+     */
+    function findOwningDeclaration(node) {
+      let current = node;
+
+      while (current) {
+        const parent = current.parent;
+
+        // Stop at VariableDeclarator
+        if (parent && parent.type === 'VariableDeclarator') {
+          return parent;
+        }
+
+        // Stop at Property
+        if (parent && parent.type === 'Property') {
+          return parent;
+        }
+
+        // Stop at ExportNamedDeclaration or ExportDefaultDeclaration
+        if (parent && (parent.type === 'ExportNamedDeclaration' || parent.type === 'ExportDefaultDeclaration')) {
+          return parent;
+        }
+
+        // Skip through ArrayExpression, ArrowFunctionExpression body, and BlockStatement
+        if (
+          parent &&
+          (parent.type === 'ArrayExpression' ||
+            (parent.type === 'ArrowFunctionExpression' && parent.body) ||
+            parent.type === 'BlockStatement' ||
+            parent.type === 'ReturnStatement')
+        ) {
+          current = parent;
+        } else {
+          break;
+        }
+      }
+
+      return null;
+    }
+
+    /**
+     * Check if a regex node (literal or constructor) has documentation
+     */
+    function reportUndocumentedRegex(node) {
+      const owningDecl = findOwningDeclaration(node);
+
+      if (!owningDecl) {
+        return;
+      }
+
+      // For VariableDeclarator, check the comment parent
+      if (owningDecl.type === 'VariableDeclarator') {
+        const commentParent = getCommentParent(owningDecl);
+
+        if (!hasJsDoc(commentParent)) {
+          context.report({
+            node,
+            messageId: 'missingRegexDoc',
+          });
+        }
+
+        return;
+      }
+
+      // For Property, check directly
+      if (owningDecl.type === 'Property') {
+        if (!hasPropertyJsDoc(owningDecl)) {
+          context.report({
+            node,
+            messageId: 'missingRegexDoc',
+          });
+        }
+      }
+    }
+
     return {
       VariableDeclarator(node) {
         // Check if this is a regex assignment
@@ -160,6 +236,27 @@ module.exports = {
             node,
             messageId: 'missingRegexDoc',
           });
+        }
+      },
+
+      Literal(node) {
+        // Check for regex literals: /pattern/
+        if (node.regex) {
+          reportUndocumentedRegex(node);
+        }
+      },
+
+      CallExpression(node) {
+        // Check for RegExp(...) constructor calls
+        if (isRegExpConstructor(node)) {
+          reportUndocumentedRegex(node);
+        }
+      },
+
+      NewExpression(node) {
+        // Check for new RegExp(...) constructor calls
+        if (isRegExpConstructor(node)) {
+          reportUndocumentedRegex(node);
         }
       },
     };
