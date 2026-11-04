@@ -49,6 +49,13 @@ export const postFixedFeeExistsKnownAcbsError = (): KnownError => ({
   },
 });
 
+export const postDealExistsKnownAcbsError = (dealIdentifier: string): KnownError => ({
+  caseInsensitiveSubstringToFind: 'Deal exists',
+  throwError: (error) => {
+    throw new AcbsBadRequestException('Bad request', error, `Deal with identifier ${dealIdentifier} already exists in ACBS.`);
+  },
+});
+
 export const postInvalidPortfolioAndFacilityIdCombinationKnownAcbsError = (facilityIdentifier: string): KnownError => ({
   caseInsensitiveSubstringToFind: 'Invalid PortfolioId and FacilityId combination.',
   throwError: (error) => {
