@@ -76,6 +76,7 @@ export class AcbsDealService {
       if (error instanceof AcbsResourceNotFoundException) {
         throw error;
       }
+
       this.logger.error(
         '[ACBS] Deal fetch failed - ID: %s, Error: %s, Type: %s',
         dealIdentifier,
