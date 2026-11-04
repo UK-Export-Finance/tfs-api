@@ -47,7 +47,7 @@ export class CachingAcbsAuthenticationService extends AcbsAuthenticationService 
       const cachedIdToken = await this.cacheManager.get<string>(ACBS_ID_TOKEN_CACHE_KEY);
 
       if (cachedIdToken) {
-        this.logger.debug('Using the cached ACBS authentication id token.');
+        this.logger.info('Using the cached ACBS authentication id token.');
 
         return cachedIdToken;
       }
@@ -59,7 +59,7 @@ export class CachingAcbsAuthenticationService extends AcbsAuthenticationService 
   }
 
   private getNewIdToken(): Promise<string> {
-    this.logger.debug('Requesting a new ACBS authentication id token.');
+    this.logger.info('Requesting a new ACBS authentication id token.');
     return this.acbsAuthenticationService.getIdToken();
   }
 
