@@ -49,6 +49,18 @@ export const postFixedFeeExistsKnownAcbsError = (): KnownError => ({
   },
 });
 
+/**
+ * Create a KnownError object for the scenario where a deal already exists in ACBS.
+ * @param {string} dealIdentifier The identifier of the deal that already exists in ACBS.
+ * @returns {KnownError} A KnownError object that represents the ACBS error for an existing deal.
+ */
+export const postDealExistsKnownAcbsError = (dealIdentifier: string): KnownError => ({
+  caseInsensitiveSubstringToFind: 'Deal exists',
+  throwError: (error) => {
+    throw new AcbsBadRequestException('Bad request', error, `Deal with identifier ${dealIdentifier} already exists in ACBS.`);
+  },
+});
+
 export const postInvalidPortfolioAndFacilityIdCombinationKnownAcbsError = (facilityIdentifier: string): KnownError => ({
   caseInsensitiveSubstringToFind: 'Invalid PortfolioId and FacilityId combination.',
   throwError: (error) => {

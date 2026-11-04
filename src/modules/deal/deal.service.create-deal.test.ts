@@ -1,5 +1,6 @@
 import { InternalServerErrorException } from '@nestjs/common';
 import { when } from 'jest-when';
+import { PinoLogger } from 'nestjs-pino';
 import { PROPERTIES } from '@ukef/constants';
 import { AcbsDealService } from '@ukef/modules/acbs/acbs-deal.service';
 import { AcbsCreateDealDto } from '@ukef/modules/acbs/dto/acbs-create-deal.dto';
@@ -23,7 +24,7 @@ describe('DealService', () => {
   let updateDealBorrowingRestriction: jest.Mock;
 
   beforeEach(() => {
-    const acbsDealService = new AcbsDealService(null!, null!);
+    const acbsDealService = new AcbsDealService(null!, null!, null!);
     acbsDealServiceCreateDeal = jest.fn();
     acbsDealService.createDeal = acbsDealServiceCreateDeal;
 
@@ -40,7 +41,18 @@ describe('DealService', () => {
     const dealBorrowingRestrictionService = new DealBorrowingRestrictionService(null!, null!);
     dealBorrowingRestrictionService.updateBorrowingRestrictionForDeal = updateDealBorrowingRestriction;
 
-    service = new DealService(acbsAuthenticationService, acbsDealService, dateStringTransformations, currentDateProvider, dealBorrowingRestrictionService);
+    const logger = new PinoLogger({});
+    logger.info = jest.fn();
+    logger.error = jest.fn();
+
+    service = new DealService(
+      acbsAuthenticationService,
+      acbsDealService,
+      dateStringTransformations,
+      currentDateProvider,
+      dealBorrowingRestrictionService,
+      logger,
+    );
   });
 
   describe('createDeal', () => {

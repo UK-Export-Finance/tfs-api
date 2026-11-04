@@ -1,6 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { AxiosError } from 'axios';
 import { when } from 'jest-when';
+import { PinoLogger } from 'nestjs-pino';
 import { of, throwError } from 'rxjs';
 import { generateAcbsCreateDealDtoUsing } from '@ukef-test/support/requests/acbs-create-deal-dto';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
@@ -38,7 +39,11 @@ describe('AcbsDealService', () => {
     httpServicePost = jest.fn();
     httpService.post = httpServicePost;
 
-    service = new AcbsDealService({ baseUrl, useReturnExceptionHeader }, httpService);
+    const logger = new PinoLogger({});
+    logger.info = jest.fn();
+    logger.error = jest.fn();
+
+    service = new AcbsDealService({ baseUrl, useReturnExceptionHeader }, httpService, logger);
   });
 
   describe('createDeal', () => {
@@ -82,6 +87,28 @@ describe('AcbsDealService', () => {
       await expect(createDealPromise).rejects.toThrow(`Failed to create a deal with identifier ${dealIdentifier} in ACBS.`);
       await expect(createDealPromise).rejects.toHaveProperty('innerError', axiosError);
       await expect(createDealPromise).rejects.toHaveProperty('errorBody', errorString);
+    });
+
+    it('throws an AcbsBadRequestException with a known error message if ACBS responds with a 400 error for a deal that already exists', async () => {
+      const axiosError = new AxiosError();
+      axiosError.response = {
+        data: 'Deal exists',
+        status: 400,
+        statusText: 'Bad Request',
+        headers: undefined!,
+        config: undefined!,
+      };
+
+      when(httpServicePost)
+        .calledWith(...expectedHttpServicePostArgs)
+        .mockReturnValueOnce(throwError(() => axiosError));
+
+      const createDealPromise = service.createDeal(randomPortfolioIdentifier, newDeal, idToken);
+
+      await expect(createDealPromise).rejects.toBeInstanceOf(AcbsBadRequestException);
+      await expect(createDealPromise).rejects.toThrow('Bad request');
+      await expect(createDealPromise).rejects.toHaveProperty('innerError', axiosError);
+      await expect(createDealPromise).rejects.toHaveProperty('errorBody', `Deal with identifier ${dealIdentifier} already exists in ACBS.`);
     });
 
     it('throws an AcbsException if ACBS responds with an error code that is not 400', async () => {

@@ -1,4 +1,5 @@
 import { when } from 'jest-when';
+import { PinoLogger } from 'nestjs-pino';
 import { PROPERTIES } from '@ukef/constants';
 import { AcbsDealService } from '@ukef/modules/acbs/acbs-deal.service';
 import { AcbsGetDealResponseDto } from '@ukef/modules/acbs/dto/acbs-get-deal-response.dto';
@@ -57,7 +58,7 @@ describe('DealService', () => {
   let acbsDealServiceGetDealByIdentifier: jest.Mock;
 
   beforeEach(() => {
-    const acbsDealService = new AcbsDealService(null!, null!);
+    const acbsDealService = new AcbsDealService(null!, null!, null!);
     acbsDealServiceGetDealByIdentifier = jest.fn();
     acbsDealService.getDealByIdentifier = acbsDealServiceGetDealByIdentifier;
 
@@ -66,7 +67,11 @@ describe('DealService', () => {
     const acbsAuthenticationServiceGetIdToken = mockAcbsAuthenticationService.getIdToken;
     when(acbsAuthenticationServiceGetIdToken).calledWith().mockResolvedValueOnce(idToken);
 
-    service = new DealService(acbsAuthenticationService, acbsDealService, dateStringTransformations, new CurrentDateProvider(), null!);
+    const logger = new PinoLogger({});
+    logger.info = jest.fn();
+    logger.error = jest.fn();
+
+    service = new DealService(acbsAuthenticationService, acbsDealService, dateStringTransformations, new CurrentDateProvider(), null!, logger);
   });
 
   describe('getDealByIdentifier', () => {
