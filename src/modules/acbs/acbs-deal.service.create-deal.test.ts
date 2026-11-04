@@ -1,6 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { AxiosError } from 'axios';
 import { when } from 'jest-when';
+import { PinoLogger } from 'nestjs-pino';
 import { of, throwError } from 'rxjs';
 import { generateAcbsCreateDealDtoUsing } from '@ukef-test/support/requests/acbs-create-deal-dto';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
@@ -38,7 +39,11 @@ describe('AcbsDealService', () => {
     httpServicePost = jest.fn();
     httpService.post = httpServicePost;
 
-    service = new AcbsDealService({ baseUrl, useReturnExceptionHeader }, httpService);
+    const logger = new PinoLogger({});
+    logger.info = jest.fn();
+    logger.error = jest.fn();
+
+    service = new AcbsDealService({ baseUrl, useReturnExceptionHeader }, httpService, logger);
   });
 
   describe('createDeal', () => {
