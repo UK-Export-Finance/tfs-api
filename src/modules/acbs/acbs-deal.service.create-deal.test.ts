@@ -111,6 +111,30 @@ describe('AcbsDealService', () => {
       await expect(createDealPromise).rejects.toHaveProperty('errorBody', `Deal with identifier ${dealIdentifier} already exists in ACBS.`);
     });
 
+    it('throws an AcbsBadRequestException with a known error message if ACBS responds with a duck-typed axios-like error that is not an instance of AxiosError (e.g. constructed by a different copy of the axios module, such as the ESM build used internally by @nestjs/axios)', async () => {
+      const duckTypedAxiosError = {
+        isAxiosError: true,
+        response: {
+          data: 'Deal exists',
+          status: 400,
+          statusText: 'Bad Request',
+          headers: undefined,
+          config: undefined,
+        },
+      };
+
+      when(httpServicePost)
+        .calledWith(...expectedHttpServicePostArgs)
+        .mockReturnValueOnce(throwError(() => duckTypedAxiosError));
+
+      const createDealPromise = service.createDeal(randomPortfolioIdentifier, newDeal, idToken);
+
+      await expect(createDealPromise).rejects.toBeInstanceOf(AcbsBadRequestException);
+      await expect(createDealPromise).rejects.toThrow('Bad request');
+      await expect(createDealPromise).rejects.toHaveProperty('innerError', duckTypedAxiosError);
+      await expect(createDealPromise).rejects.toHaveProperty('errorBody', `Deal with identifier ${dealIdentifier} already exists in ACBS.`);
+    });
+
     it('throws an AcbsException if ACBS responds with an error code that is not 400', async () => {
       const axiosError = new AxiosError();
       const errorBody = { errorMessage: valueGenerator.string() };

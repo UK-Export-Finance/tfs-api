@@ -71,6 +71,22 @@ describe('MdmService', () => {
       await expect(findCustomersPromise).rejects.toHaveProperty('innerError', axios404Error);
     });
 
+    it('throws an MdmResourceNotFoundException if the request fails with a duck-typed axios-like 404 error that is not an instance of AxiosError (e.g. constructed by a different copy of the axios module, such as the ESM build used internally by @nestjs/axios)', async () => {
+      const duckTypedAxios404Error = {
+        isAxiosError: true,
+        response: { data: valueGenerator.string(), status: 404, statusText: 'Not Found', headers: undefined, config: undefined },
+      };
+      httpServiceGet.mockReturnValueOnce(throwError(() => duckTypedAxios404Error));
+
+      const findCustomersPromise = service.findCustomersByPartyUrn(partyUrnToSearch);
+
+      await expect(findCustomersPromise).rejects.toBeInstanceOf(MdmResourceNotFoundException);
+      await expect(findCustomersPromise).rejects.toThrow(
+        `Failed to find customers with partyUrn ${partyUrnToSearch} in APIM MDM. The response status was 404 Not Found.`,
+      );
+      await expect(findCustomersPromise).rejects.toHaveProperty('innerError', duckTypedAxios404Error);
+    });
+
     it('throws an MdmException that is not an MdmResourceNotFoundException if the request to APIM MDM fails with a 500 response', async () => {
       const axios500Error = new AxiosError();
       axios500Error.response = { data: valueGenerator.string(), status: 500, statusText: 'Internal Server Error', headers: undefined!, config: undefined! };

@@ -1,6 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
-import { AxiosError } from 'axios';
+import { isAxiosError } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 import { throwError } from 'rxjs';
 import { HttpClient } from '@ukef/modules/http/http.client';
@@ -35,7 +35,7 @@ export class MdmService {
         throwError(() => {
           const baseErrorMessage = `Failed to find customers with partyUrn ${partyUrnToSearch} in APIM MDM.`;
 
-          if (error instanceof AxiosError && error.response?.status === 404) {
+          if (isAxiosError(error) && error.response?.status === 404) {
             return new MdmResourceNotFoundException(`${baseErrorMessage} The response status was 404 Not Found.`, error);
           }
 
