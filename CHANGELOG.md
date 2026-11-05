@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.9.1](https://github.com/UK-Export-Finance/tfs-api/compare/v2.9.0...v2.9.1) (2026-11-05)
+
+
+### Bug Fixes
+
+* **APIM-720:** acbs integration - deal exists - return 400 ([#1477](https://github.com/UK-Export-Finance/tfs-api/issues/1477)) ([dbfacf4](https://github.com/UK-Export-Finance/tfs-api/commit/dbfacf43403d0198adf162a8be8f234bc5c97aee))
+* **APIM-720:** acbs, mdm error handling ([#1479](https://github.com/UK-Export-Finance/tfs-api/issues/1479)) ([7bb9b9f](https://github.com/UK-Export-Finance/tfs-api/commit/7bb9b9f98d1511e653b50ac5bf86431effe36a97))
+
 ## [2.9.0](https://github.com/UK-Export-Finance/tfs-api/compare/v2.8.5...v2.9.0) (2026-10-12)
 
 
