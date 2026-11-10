@@ -1,4 +1,4 @@
-import { registerDecorator, ValidationOptions } from 'class-validator';
+import { length as isLength, registerDecorator, ValidationOptions } from 'class-validator';
 import { GIFT } from '@ukef/constants';
 
 import type { GiftRepaymentProfileRequestDto } from '@ukef/modules/gift/dto';
@@ -41,10 +41,13 @@ export function UniqueRepaymentProfileNames(validationOptions?: ValidationOption
            * Only check for uniqueness amongst names that are otherwise valid (a string of an acceptable length).
            * Otherwise, invalid names (e.g, null, a number, an out of range length) would incorrectly be flagged
            * as "duplicates" of one another, even though they are already flagged by other field validators.
+           *
+           * NOTE: We must use class-validator's `isLength` (not the native `string.length`), since `isLength`
+           * accounts for surrogate pairs (e.g, some emoji). `string.length` counts UTF-16 code units, so e.g, a
+           * single emoji can count as 2 - this could cause a name that's valid as per the DTO's `@Length` decorator,
+           * to incorrectly be treated as invalid here, and therefore excluded from the uniqueness check.
            */
-          const validProfileNames = profileNames.filter(
-            (name: unknown): name is string => typeof name === 'string' && name.length >= MIN_LENGTH && name.length <= MAX_LENGTH,
-          );
+          const validProfileNames = profileNames.filter((name: unknown): name is string => typeof name === 'string' && isLength(name, MIN_LENGTH, MAX_LENGTH));
 
           if (validProfileNames.length < 2) {
             return true;
