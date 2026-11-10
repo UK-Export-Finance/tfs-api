@@ -9,13 +9,13 @@ import { TEST } from './test';
  * ACBS Party ID - Matches a party ID that starts with "00" followed by exactly 6 digits.
  *
  * Examples:
- * - `001234` ✓
- * - `009999` ✓
+ * - `00123456` ✓
+ * - `00999999` ✓
  *
  * Does not match:
- * - `01234` (missing leading zero)
- * - `0001234` (too many digits)
- * - `00123` (not enough digits)
+ * - `01234567` (missing leading zero)
+ * - `001234567` (too many digits)
+ * - `0012345` (not enough digits)
  */
 const ACBS_PARTY_ID = /^00\d{6}$/;
 
@@ -23,13 +23,13 @@ const ACBS_PARTY_ID = /^00\d{6}$/;
  * ACBS Bundle ID - Matches a bundle ID that starts with exactly 4 zeros followed by 6 digits.
  *
  * Examples:
- * - `00001234` ✓
- * - `00009999` ✓
+ * - `0000123456` ✓
+ * - `0000999999` ✓
  *
  * Does not match:
- * - `00011234` (first digit not zero)
- * - `0001234` (not enough leading zeros)
- * - `000012345` (too many digits)
+ * - `0001123456` (first digit not zero)
+ * - `000123456` (not enough leading zeros)
+ * - `00001234567` (too many digits)
  */
 const ACBS_BUNDLE_ID = /^0{4}\d{6}$/;
 
@@ -81,13 +81,13 @@ const UKEF_MAIN_ID_MULTIPLE_TEN_DIGIT = String.raw`^00\d{8}(,00\d{8})*$`;
  * UKEF Covenant ID - Matches a covenant ID that starts with exactly 4 zeros followed by 6 digits.
  *
  * Examples:
- * - `00001234` ✓
- * - `00009999` ✓
+ * - `0000123456` ✓
+ * - `0000999999` ✓
  *
  * Does not match:
- * - `00011234` (first digit not zero)
- * - `0001234` (not enough leading zeros)
- * - `000012345` (too many digits)
+ * - `0001123456` (first digit not zero)
+ * - `000123456` (not enough leading zeros)
+ * - `00001234567` (too many digits)
  */
 const UKEF_COVENANT_ID = /^0{4}\d{6}$/;
 
@@ -95,13 +95,13 @@ const UKEF_COVENANT_ID = /^0{4}\d{6}$/;
  * UKEF Bundle ID - Matches a bundle ID that starts with exactly 4 zeros followed by 6 digits.
  *
  * Examples:
- * - `00001234` ✓
- * - `00009999` ✓
+ * - `0000123456` ✓
+ * - `0000999999` ✓
  *
  * Does not match:
- * - `00011234` (first digit not zero)
- * - `0001234` (not enough leading zeros)
- * - `000012345` (too many digits)
+ * - `0001123456` (first digit not zero)
+ * - `000123456` (not enough leading zeros)
+ * - `00001234567` (too many digits)
  */
 const UKEF_BUNDLE_ID = /^0{4}\d{6}$/;
 
@@ -145,7 +145,7 @@ const UKEF_FACILITY_ID = /^00\d{8}$/;
  * Does not match:
  * - `2021-1-15` (single-digit month)
  * - `01/15/2021` (different date format)
- * - `2021-13-01` (invalid month, but regex doesn't validate)
+ * - `2021-01-150` (three-digit day)
  */
 const DATE_ONLY_STRING = /^\d{4}-\d{2}-\d{2}$/;
 
