@@ -52,6 +52,8 @@ describe('POST /gift/facility - validation - counterparties', () => {
 
   afterEach(() => {
     jest.resetAllMocks();
+    nock.abortPendingRequests();
+    nock.cleanAll();
   });
 
   const baseParams = {

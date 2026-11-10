@@ -61,6 +61,8 @@ describe('POST /gift/facility - validation', () => {
 
   afterEach(() => {
     jest.resetAllMocks();
+    nock.abortPendingRequests();
+    nock.cleanAll();
   });
 
   describe('when an empty object is provided', () => {
