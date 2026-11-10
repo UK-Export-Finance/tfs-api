@@ -17,7 +17,6 @@ import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/s
 import { CreateFacilityFixedFeeGenerator } from '@ukef-test/support/generator/create-facility-fixed-fee-generator';
 import { GetFacilityGenerator } from '@ukef-test/support/generator/get-facility-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { filterRequestBody } from '@ukef-test/support/helpers/nock-filtering-request-body.helper';
 
 describe('POST /facilities/{facilityIdentifier}/fixed-fees', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -76,7 +75,8 @@ describe('POST /facilities/{facilityIdentifier}/fixed-fees', () => {
 
   const givenAnyrequestBodyToCreateFacilityFixedFeeInAcbsSucceeds = (): void => {
     const requestBodyPlaceholder = '*';
-    filterRequestBody(nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL), () => requestBodyPlaceholder)
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .filteringRequestBody(() => requestBodyPlaceholder)
       .post(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/Fee/FixedFee`, requestBodyPlaceholder)
       .matchHeader('authorization', `Bearer ${idToken}`)
       .reply(201);

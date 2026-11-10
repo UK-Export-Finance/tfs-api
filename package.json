@@ -51,6 +51,20 @@
       "cspell lint --gitignore --no-must-find-files --unique --no-progress --show-suggestions --color"
     ]
   },
+  "overrides": {
+    "@eslint/config-array": {
+      "minimatch": "^3.1.2"
+    },
+    "@eslint/eslintrc": {
+      "minimatch": "^3.1.2"
+    },
+    "eslint": {
+      "minimatch": "^3.1.2"
+    },
+    "glob": "^14.0.4",
+    "katex": "^0.19.0",
+    "minimatch": "^11.0.0"
+  },
   "dependencies": {
     "@azure/identity": "4.14.1",
     "@azure/storage-queue": "12.32.0",
@@ -117,7 +131,7 @@
     "jest": "30.5.2",
     "lint-staged": "17.6.0",
     "markdownlint-cli": "0.50.0",
-    "nock": "15.0.6",
+    "nock": "13.5.6",
     "pino-pretty": "13.2.0",
     "prettier": "3.9.10",
     "sort-package-json": "4.1.0",
@@ -130,19 +144,5 @@
   "engines": {
     "node": ">=24.22.1",
     "npm": ">=11.3.0"
-  },
-  "overrides": {
-    "glob": "^14.0.4",
-    "katex": "^0.19.0",
-    "minimatch": "^11.0.0",
-    "eslint": {
-      "minimatch": "^3.1.2"
-    },
-    "@eslint/eslintrc": {
-      "minimatch": "^3.1.2"
-    },
-    "@eslint/config-array": {
-      "minimatch": "^3.1.2"
-    }
   }
 }

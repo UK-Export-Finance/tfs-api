@@ -15,7 +15,6 @@ import { CreatePartyExternalRatingGenerator } from '@ukef-test/support/generator
 import { CreatePartyGenerator } from '@ukef-test/support/generator/create-party-generator';
 import { GetPartyGenerator } from '@ukef-test/support/generator/get-party-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { filterRequestBody } from '@ukef-test/support/helpers/nock-filtering-request-body.helper';
 import { MockMdmApi } from '@ukef-test/support/mdm-api.mock';
 
 describe('POST /parties', () => {
@@ -74,7 +73,8 @@ describe('POST /parties', () => {
 
   const givenAnyRequestBodyToCreatePartySucceeds = (): void => {
     const requestBodyPlaceholder = '*';
-    filterRequestBody(nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL), () => requestBodyPlaceholder)
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .filteringRequestBody(() => requestBodyPlaceholder)
       .post('/Party', requestBodyPlaceholder)
       .matchHeader('authorization', `Bearer ${idToken}`)
       .reply(201, undefined, { Location: `/Party/${partyIdentifier}` });
@@ -98,7 +98,8 @@ describe('POST /parties', () => {
 
   const givenAnyRequestBodyToCreatePartyExternalRatingSucceeds = (): void => {
     const requestBodyPlaceholder = '*';
-    filterRequestBody(nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL), () => requestBodyPlaceholder)
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .filteringRequestBody(() => requestBodyPlaceholder)
       .post(`/Party/${partyIdentifier}/PartyExternalRating`, requestBodyPlaceholder)
       .matchHeader('authorization', `Bearer ${idToken}`)
       .reply(201);

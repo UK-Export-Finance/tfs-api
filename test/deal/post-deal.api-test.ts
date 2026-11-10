@@ -11,7 +11,6 @@ import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
 import { CreateDealGenerator } from '@ukef-test/support/generator/create-deal-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { filterRequestBody } from '@ukef-test/support/helpers/nock-filtering-request-body.helper';
 
 describe('POST /deals', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -49,7 +48,8 @@ describe('POST /deals', () => {
 
   const givenAnyRequestBodyToCreateDealInAcbsSucceeds = (): nock.Scope => {
     const requestBodyPlaceholder = '*';
-    return filterRequestBody(nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL), () => requestBodyPlaceholder)
+    return nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .filteringRequestBody(() => requestBodyPlaceholder)
       .post(`/Portfolio/${portfolioIdentifier}/Deal`, requestBodyPlaceholder)
       .matchHeader('authorization', `Bearer ${idToken}`)
       .reply(201, undefined, { location: `/Deal/${dealIdentifier}` });
