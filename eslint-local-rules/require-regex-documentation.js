@@ -23,7 +23,7 @@ module.exports = {
       }
 
       // new RegExp(...) or RegExp(...)
-      if (node.callee && node.callee.type === 'Identifier' && node.callee.name === 'RegExp') {
+      if (node.callee?.type === 'Identifier' && node.callee.name === 'RegExp') {
         return node.type === 'NewExpression' || node.type === 'CallExpression';
       }
 
@@ -75,31 +75,30 @@ module.exports = {
         const parent = current.parent;
 
         // Stop at VariableDeclarator
-        if (parent && parent.type === 'VariableDeclarator') {
+        if (parent?.type === 'VariableDeclarator') {
           return parent;
         }
 
         // Stop at Property
-        if (parent && parent.type === 'Property') {
+        if (parent?.type === 'Property') {
           return parent;
         }
 
         // Stop at ExportNamedDeclaration or ExportDefaultDeclaration
-        if (parent && (parent.type === 'ExportNamedDeclaration' || parent.type === 'ExportDefaultDeclaration')) {
+        if (parent?.type === 'ExportNamedDeclaration' || parent?.type === 'ExportDefaultDeclaration') {
           return parent;
         }
 
         // Skip through ArrayExpression, ArrowFunctionExpression body, and BlockStatement
         if (
-          parent &&
-          (parent.type === 'ArrayExpression' ||
-            parent.type === 'TSAsExpression' ||
-            parent.type === 'TSTypeAssertion' ||
-            parent.type === 'TSSatisfiesExpression' ||
-            parent.type === 'TSNonNullExpression' ||
-            (parent.type === 'ArrowFunctionExpression' && parent.body) ||
-            parent.type === 'BlockStatement' ||
-            parent.type === 'ReturnStatement')
+          parent?.type === 'ArrayExpression' ||
+          parent?.type === 'TSAsExpression' ||
+          parent?.type === 'TSTypeAssertion' ||
+          parent?.type === 'TSSatisfiesExpression' ||
+          parent?.type === 'TSNonNullExpression' ||
+          (parent?.type === 'ArrowFunctionExpression' && parent.body) ||
+          parent?.type === 'BlockStatement' ||
+          parent?.type === 'ReturnStatement'
         ) {
           current = parent;
         } else {
