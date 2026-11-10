@@ -5,6 +5,9 @@ FROM node:22-alpine AS builder
 
 WORKDIR /build
 
+# ESLint local rules must be copied before npm ci, since it's a private workspace dependency
+COPY eslint-local-rules ./eslint-local-rules
+
 COPY package.json package-lock.json tsconfig.json ./
 COPY tfs-functions/package.json ./tfs-functions/
 RUN npm ci

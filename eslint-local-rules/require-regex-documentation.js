@@ -92,6 +92,7 @@ module.exports = {
         // Skip through ArrayExpression, ArrowFunctionExpression body, and BlockStatement
         if (
           parent?.type === 'ArrayExpression' ||
+          parent.type === 'CallExpression' ||
           parent?.type === 'TSAsExpression' ||
           parent?.type === 'TSTypeAssertion' ||
           parent?.type === 'TSSatisfiesExpression' ||
