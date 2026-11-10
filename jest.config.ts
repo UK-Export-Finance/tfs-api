@@ -40,14 +40,22 @@ const config: JestConfigWithTsJest = {
     },
     {
       displayName: 'API-FF=true',
-      setupFilesAfterEnv: ['./setup/override-environment-variables.ts', './setup/enable-gift-feature-flag.ts'],
+      setupFilesAfterEnv: [
+        './setup/increase-event-emitter-max-listeners.ts',
+        './setup/override-environment-variables.ts',
+        './setup/enable-gift-feature-flag.ts',
+      ],
       testMatch: ['**/*.api-test.ts', '!**/feature-flag-disabled/**/*.api-test.ts'],
       transform: tsJestTransform,
       ...defaultSettings,
     },
     {
       displayName: 'API-FF=false',
-      setupFilesAfterEnv: ['./setup/override-environment-variables.ts', './setup/disable-gift-feature-flag.ts'],
+      setupFilesAfterEnv: [
+        './setup/increase-event-emitter-max-listeners.ts',
+        './setup/override-environment-variables.ts',
+        './setup/disable-gift-feature-flag.ts',
+      ],
       testMatch: ['**/feature-flag-disabled/*.api-test.ts'],
       transform: tsJestTransform,
       ...defaultSettings,
