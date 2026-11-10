@@ -1,4 +1,4 @@
-import { AxiosError } from 'axios';
+import { isAxiosError } from 'axios';
 import { ObservableInput, throwError } from 'rxjs';
 
 import { AcbsException } from './exception/acbs.exception';
@@ -7,10 +7,21 @@ import { KnownErrors } from './known-errors';
 
 type AcbsHttpErrorCallback = (error: Error) => ObservableInput<never>;
 
+/**
+ * NOTE: axios ships separate CJS and ESM builds (its package.json "exports" map
+ * resolves `require` and `import` to different files), so an `AxiosError` thrown
+ * by @nestjs/axios's ESM-based HttpService is not an `instanceof` the `AxiosError`
+ * class resolved via this file's (CJS-compiled) import. `isAxiosError` is a duck-typing
+ * check (`error.isAxiosError === true`) that works regardless of which build constructed the error.
+ * @param {Object} params
+ * @param {string} params.messageForUnknownError
+ * @param {KnownErrors} params.knownErrors
+ * @returns {AcbsHttpErrorCallback} The error callback function for handling ACBS HTTP errors.
+ */
 export const createWrapAcbsHttpGetErrorCallback =
   ({ messageForUnknownError, knownErrors }: { messageForUnknownError: string; knownErrors: KnownErrors }): AcbsHttpErrorCallback =>
   (error: Error) => {
-    if (error instanceof AxiosError && error.response && typeof error.response.data === 'string') {
+    if (isAxiosError<string>(error) && error.response && typeof error.response.data === 'string') {
       const errorMessageInLowerCase = error.response.data.toLowerCase();
       knownErrors.forEach(({ caseInsensitiveSubstringToFind, throwError }) => {
         if (errorMessageInLowerCase.includes(caseInsensitiveSubstringToFind.toLowerCase())) {
@@ -25,7 +36,7 @@ export const createWrapAcbsHttpGetErrorCallback =
 export const createWrapAcbsHttpPostOrPutErrorCallback =
   ({ messageForUnknownError, knownErrors }: { messageForUnknownError: string; knownErrors: KnownErrors }): AcbsHttpErrorCallback =>
   (error: Error) => {
-    if (!(error instanceof AxiosError) || !error.response || error.response.status !== 400) {
+    if (!isAxiosError<string>(error) || !error.response || error.response.status !== 400) {
       return throwError(() => new AcbsException(messageForUnknownError, error));
     }
 

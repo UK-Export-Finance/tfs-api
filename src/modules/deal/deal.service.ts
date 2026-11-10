@@ -1,4 +1,5 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { PinoLogger } from 'nestjs-pino';
 import { PROPERTIES } from '@ukef/constants/properties.constant';
 import { DateString } from '@ukef/helpers';
 import { roundTo2DecimalPlaces } from '@ukef/helpers/round-to-2-decimal-places.helper';
@@ -20,33 +21,69 @@ export class DealService {
     private readonly dateStringTransformations: DateStringTransformations,
     private readonly currentDateProvider: CurrentDateProvider,
     private readonly dealBorrowingRestrictionService: DealBorrowingRestrictionService,
+    private readonly logger: PinoLogger,
   ) {}
 
   async getDealByIdentifier(dealIdentifier: string): Promise<Deal> {
     const { portfolioIdentifier } = PROPERTIES.GLOBAL;
-    const idToken = await this.getIdToken();
-    const dealInAcbs = await this.acbsDealService.getDealByIdentifier(portfolioIdentifier, dealIdentifier, idToken);
 
-    return {
-      dealIdentifier: dealInAcbs.DealIdentifier,
-      portfolioIdentifier: dealInAcbs.PortfolioIdentifier,
-      currency: dealInAcbs.Currency.CurrencyCode,
-      dealValue: dealInAcbs.MemoLimitAmount,
-      guaranteeCommencementDate: this.dateStringTransformations.removeTimeIfExists(dealInAcbs.OriginalEffectiveDate),
-      obligorPartyIdentifier: dealInAcbs.BorrowerParty.PartyIdentifier,
-      obligorName: dealInAcbs.BorrowerParty.PartyName1 ?? '',
-      obligorIndustryClassification: dealInAcbs.IndustryClassification.IndustryClassificationCode ?? '',
-    };
+    this.logger.info('(DealService) Getting deal - ID: %s', dealIdentifier);
+
+    try {
+      const idToken = await this.getIdToken();
+      const dealInAcbs = await this.acbsDealService.getDealByIdentifier(portfolioIdentifier, dealIdentifier, idToken);
+
+      this.logger.info('(DealService) Deal retrieved - ID: %s', dealIdentifier);
+
+      return {
+        dealIdentifier: dealInAcbs.DealIdentifier,
+        portfolioIdentifier: dealInAcbs.PortfolioIdentifier,
+        currency: dealInAcbs.Currency.CurrencyCode,
+        dealValue: dealInAcbs.MemoLimitAmount,
+        guaranteeCommencementDate: this.dateStringTransformations.removeTimeIfExists(dealInAcbs.OriginalEffectiveDate),
+        obligorPartyIdentifier: dealInAcbs.BorrowerParty.PartyIdentifier,
+        obligorName: dealInAcbs.BorrowerParty.PartyName1 ?? '',
+        obligorIndustryClassification: dealInAcbs.IndustryClassification.IndustryClassificationCode ?? '',
+      };
+    } catch (error) {
+      this.logger.error(
+        '(DealService) Get deal failed - ID: %s, Error: %s, Type: %s',
+        dealIdentifier,
+        error instanceof Error ? error.message : String(error),
+        error?.constructor?.name,
+      );
+      throw error;
+    }
   }
 
   async createDeal(dealToCreate: CreateDealRequestItem): Promise<void> {
     const { portfolioIdentifier } = PROPERTIES.GLOBAL;
-    const idToken = await this.getIdToken();
-    const requestBody: AcbsCreateDealDto = this.buildAcbsRequestBodyToCreateDeal(dealToCreate, portfolioIdentifier);
+    const dealIdentifier = dealToCreate.dealIdentifier;
 
-    await this.acbsDealService.createDeal(portfolioIdentifier, requestBody, idToken);
+    this.logger.info('(DealService) Starting deal creation - ID: %s', dealIdentifier);
 
-    return void (await this.updateBorrowingRestrictionForNewDeal(dealToCreate.dealIdentifier));
+    try {
+      const idToken = await this.getIdToken();
+      const requestBody: AcbsCreateDealDto = this.buildAcbsRequestBodyToCreateDeal(dealToCreate, portfolioIdentifier);
+
+      this.logger.info('(DealService) Sending deal creation request to ACBS - ID: %s', dealIdentifier);
+
+      await this.acbsDealService.createDeal(portfolioIdentifier, requestBody, idToken);
+
+      this.logger.info('(DealService) Deal created in ACBS, updating borrowing restrictions - ID: %s', dealIdentifier);
+
+      await this.updateBorrowingRestrictionForNewDeal(dealIdentifier);
+
+      this.logger.info('(DealService) Deal creation completed - ID: %s', dealIdentifier);
+    } catch (error) {
+      this.logger.error(
+        '(DealService) Create deal failed - ID: %s, Error: %s, Type: %s',
+        dealIdentifier,
+        error instanceof Error ? error.message : String(error),
+        error?.constructor?.name,
+      );
+      throw error;
+    }
   }
 
   private getIdToken(): Promise<string> {
