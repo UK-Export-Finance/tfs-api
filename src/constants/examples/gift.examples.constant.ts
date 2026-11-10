@@ -187,16 +187,25 @@ const PRODUCT_TYPE_RESPONSE_DATA = {
 };
 
 /**
+ * Counter used by REPAYMENT_PROFILE_ALLOCATION to guarantee every generated allocation has a
+ * unique due date, regardless of how many times (or where) it's called.
+ */
+let repaymentProfileAllocationCount = 0;
+
+/**
  * Repayment profile allocation example.
  * NOTE: The total of all amounts should not be greater than the facility amount.
- * NOTE: Each due date is unique.
+ * NOTE: Each due date is unique - generated via an internal counter, so callers do not need to
+ * track/pass an index themselves.
  */
-const REPAYMENT_PROFILE_ALLOCATION = (index = 0): GiftRepaymentProfileAllocationRequestDto => {
+const REPAYMENT_PROFILE_ALLOCATION = (): GiftRepaymentProfileAllocationRequestDto => {
   const today = new Date();
 
   const day = '01';
   const month = '02';
-  const year = today.getFullYear() + index;
+  const year = today.getFullYear() + repaymentProfileAllocationCount;
+
+  repaymentProfileAllocationCount += 1;
 
   const dueDate = `${year}-${month}-${day}`;
 
@@ -208,7 +217,7 @@ const REPAYMENT_PROFILE_ALLOCATION = (index = 0): GiftRepaymentProfileAllocation
 
 const REPAYMENT_PROFILE = (): GiftRepaymentProfileRequestDto => ({
   name: chance.string(),
-  allocations: [REPAYMENT_PROFILE_ALLOCATION(0), REPAYMENT_PROFILE_ALLOCATION(1)],
+  allocations: [REPAYMENT_PROFILE_ALLOCATION(), REPAYMENT_PROFILE_ALLOCATION()],
 });
 
 const RISK_DETAILS = {
@@ -244,8 +253,8 @@ const FACILITY_CREATION_PAYLOAD_NO_FIXED_FEES: GiftFacilityCreationRequestDto = 
   counterparties: [COUNTERPARTY(), COUNTERPARTY()],
   obligations: [OBLIGATION(), OBLIGATION()],
   repaymentProfiles: [
-    { ...REPAYMENT_PROFILE(), allocations: [REPAYMENT_PROFILE_ALLOCATION(0), REPAYMENT_PROFILE_ALLOCATION(1)] },
-    { ...REPAYMENT_PROFILE(), allocations: [REPAYMENT_PROFILE_ALLOCATION(2), REPAYMENT_PROFILE_ALLOCATION(3)] },
+    { ...REPAYMENT_PROFILE(), allocations: [REPAYMENT_PROFILE_ALLOCATION(), REPAYMENT_PROFILE_ALLOCATION()] },
+    { ...REPAYMENT_PROFILE(), allocations: [REPAYMENT_PROFILE_ALLOCATION(), REPAYMENT_PROFILE_ALLOCATION()] },
   ],
   riskDetails: RISK_DETAILS,
 };
@@ -271,8 +280,8 @@ const FACILITY_CREATION_PAYLOAD_NO_REPAYMENT_PROFILES: GiftFacilityCreationReque
 const FACILITY_CREATION_PAYLOAD: GiftFacilityCreationRequestDto = {
   ...FACILITY_CREATION_PAYLOAD_NO_REPAYMENT_PROFILES,
   repaymentProfiles: [
-    { ...REPAYMENT_PROFILE(), allocations: [REPAYMENT_PROFILE_ALLOCATION(0), REPAYMENT_PROFILE_ALLOCATION(1)] },
-    { ...REPAYMENT_PROFILE(), allocations: [REPAYMENT_PROFILE_ALLOCATION(2), REPAYMENT_PROFILE_ALLOCATION(3)] },
+    { ...REPAYMENT_PROFILE(), allocations: [REPAYMENT_PROFILE_ALLOCATION(), REPAYMENT_PROFILE_ALLOCATION()] },
+    { ...REPAYMENT_PROFILE(), allocations: [REPAYMENT_PROFILE_ALLOCATION(), REPAYMENT_PROFILE_ALLOCATION()] },
   ],
 };
 
@@ -288,8 +297,8 @@ const FACILITY_CREATION_PAYLOAD_WITH_FIXED_RATE_ACCRUAL_SCHEDULES: GiftFacilityC
   fixedFees: [FIXED_FEE(), FIXED_FEE()],
   obligations: [OBLIGATION(), OBLIGATION()],
   repaymentProfiles: [
-    { ...REPAYMENT_PROFILE(), allocations: [REPAYMENT_PROFILE_ALLOCATION(0), REPAYMENT_PROFILE_ALLOCATION(1)] },
-    { ...REPAYMENT_PROFILE(), allocations: [REPAYMENT_PROFILE_ALLOCATION(2), REPAYMENT_PROFILE_ALLOCATION(3)] },
+    { ...REPAYMENT_PROFILE(), allocations: [REPAYMENT_PROFILE_ALLOCATION(), REPAYMENT_PROFILE_ALLOCATION()] },
+    { ...REPAYMENT_PROFILE(), allocations: [REPAYMENT_PROFILE_ALLOCATION(), REPAYMENT_PROFILE_ALLOCATION()] },
   ],
   riskDetails: RISK_DETAILS,
 };
