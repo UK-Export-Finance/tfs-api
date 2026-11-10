@@ -50,6 +50,8 @@ describe('POST /gift/facility - validation - risk details', () => {
 
   afterEach(() => {
     jest.resetAllMocks();
+    nock.abortPendingRequests();
+    nock.cleanAll();
   });
 
   const baseParams = {
