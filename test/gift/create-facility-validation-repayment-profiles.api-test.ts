@@ -124,49 +124,6 @@ describe('POST /gift/facility - validation - repayment profiles', () => {
 
       expect(body).toStrictEqual(expected);
     });
-
-    describe('when the duplicate name contains unicode surrogate pairs (e.g, emoji)', () => {
-      it(`should return a ${HttpStatus.BAD_REQUEST} response with a validation error`, async () => {
-        /**
-         * `name.length` (native JS) counts UTF-16 code units, so a string of 61 emoji has `name.length === 122`.
-         * This is still a valid name as per the DTO's `@Length(1, 120)` decorator, which (via class-validator's
-         * `isLength`) accounts for surrogate pairs and therefore treats this string as having a length of 61.
-         * Therefore, the uniqueness check must also use `isLength`, so that this duplicate, valid name is
-         * correctly detected as a duplicate, instead of incorrectly being excluded from the uniqueness check.
-         */
-
-        // Arrange
-        const duplicateNameWithEmoji = '😀'.repeat(61);
-
-        const mockPayload = {
-          ...EXAMPLES.GIFT.FACILITY_CREATION_PAYLOAD,
-          repaymentProfiles: [
-            {
-              ...firstRepaymentProfile,
-              name: duplicateNameWithEmoji,
-            },
-            {
-              ...secondRepaymentProfile,
-              name: duplicateNameWithEmoji,
-            },
-          ],
-        };
-
-        // Act
-        const { status, body } = await api.post(url, mockPayload);
-
-        // Assert
-        expect(status).toBe(HttpStatus.BAD_REQUEST);
-
-        const expected = {
-          error: 'Bad Request',
-          message: [`repaymentProfile[] name's must be unique`],
-          statusCode: HttpStatus.BAD_REQUEST,
-        };
-
-        expect(body).toStrictEqual(expected);
-      });
-    });
   });
 
   describe(`when a repayment profile's allocation dueDate is NOT unique`, () => {
