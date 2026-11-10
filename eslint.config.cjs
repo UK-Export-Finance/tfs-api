@@ -114,6 +114,9 @@ module.exports = defineConfig([
       'no-underscore-dangle': 'off',
       'class-methods-use-this': 'off',
 
+      // prefer === over ==
+      eqeqeq: 'error',
+
       // disallow param names with 1 digit, excluding object property names
       'id-length': ['error', { min: 2, properties: 'never' }],
 

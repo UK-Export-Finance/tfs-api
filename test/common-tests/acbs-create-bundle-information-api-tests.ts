@@ -1,4 +1,4 @@
-import nock from 'nock/types';
+import nock from 'nock';
 import supertest from 'supertest';
 import { ENUMS } from '@ukef/constants';
 import { UkefId } from '@ukef/helpers';

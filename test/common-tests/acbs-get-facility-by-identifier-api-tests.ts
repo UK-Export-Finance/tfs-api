@@ -1,4 +1,4 @@
-import nock from 'nock/types';
+import nock from 'nock';
 import supertest from 'supertest';
 import { TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
 

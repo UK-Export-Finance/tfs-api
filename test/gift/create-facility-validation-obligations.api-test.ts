@@ -62,6 +62,8 @@ describe('POST /gift/facility - validation - obligations', () => {
 
   afterEach(() => {
     jest.resetAllMocks();
+    nock.abortPendingRequests();
+    nock.cleanAll();
   });
 
   const parentFieldName = 'obligations';

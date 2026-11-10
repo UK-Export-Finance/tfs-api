@@ -11,6 +11,8 @@ export * from './get-obligation-subtype-codes';
 export * from './get-repayment-profile-allocation-dates';
 export * from './get-repayment-profile-names';
 export * from './has-obligations-with-maturity-date-not-following-facility';
+export * from './has-unique-repayment-profile-allocation-dates';
+export * from './has-unique-repayment-profile-names';
 export * from './has-valid-obligation-subtype-code-formats';
 export * from './is-decrease-amount-amendment';
 export * from './is-increase-amount-amendment';
