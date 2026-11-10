@@ -133,7 +133,7 @@ describe('modules/gift/helpers/has-unique-repayment-profile-names', () => {
       // Arrange
       const duplicateNameWithEmoji = '😀'.repeat(61);
 
-      expect(duplicateNameWithEmoji.length).toBe(122);
+      expect(duplicateNameWithEmoji).toHaveLength(122);
       expect(duplicateNameWithEmoji.length).toBeGreaterThan(MAX_LENGTH);
 
       const mockRepaymentProfiles: GiftRepaymentProfileRequestDto[] = [
