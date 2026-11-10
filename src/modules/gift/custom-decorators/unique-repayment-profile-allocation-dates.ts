@@ -1,7 +1,7 @@
 import { registerDecorator, ValidationOptions } from 'class-validator';
 
 import type { GiftRepaymentProfileRequestDto } from '@ukef/modules/gift/dto';
-import { arrayHasUniqueStrings, getRepaymentProfileAllocationDates } from '@ukef/modules/gift/helpers';
+import { hasUniqueRepaymentProfileAllocationDates } from '@ukef/modules/gift/helpers';
 
 /**
  * Custom decorator to check if a provided repayment profile's allocation date is unique.
@@ -17,18 +17,7 @@ export function UniqueRepaymentProfileAllocationDates(validationOptions?: Valida
       options: validationOptions,
       validator: {
         validate(repaymentProfiles: GiftRepaymentProfileRequestDto[]) {
-          /**
-           * If repayment profiles are not provided, the validation of unique allocation dates will be skipped.
-           * This is because repayment profiles are optional in the facility creation payload.
-           * Therefore we only need to validate, if repayment profiles are provided.
-           */
-          if (!Array.isArray(repaymentProfiles) || !repaymentProfiles.length) {
-            return true;
-          }
-
-          const allocationDates = getRepaymentProfileAllocationDates(repaymentProfiles);
-
-          return arrayHasUniqueStrings(allocationDates);
+          return hasUniqueRepaymentProfileAllocationDates(repaymentProfiles);
         },
         defaultMessage() {
           return `repaymentProfile[].allocation[] dueDate's must be unique`;

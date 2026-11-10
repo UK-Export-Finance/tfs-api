@@ -1,9 +1,12 @@
 # Stage 1 — install and build
 # lockfile lives at the root so we need to use the root workspace
 # this is due to the workspaces structure
-FROM node:22-alpine AS builder
+FROM node:24.22.1-alpine3.24 AS builder
 
 WORKDIR /build
+
+# ESLint local rules must be copied before npm ci, since it's a private workspace dependency
+COPY eslint-local-rules ./eslint-local-rules
 
 COPY package.json package-lock.json tsconfig.json ./
 COPY tfs-functions/package.json ./tfs-functions/

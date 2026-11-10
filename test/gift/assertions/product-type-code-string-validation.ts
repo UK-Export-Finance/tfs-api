@@ -5,7 +5,7 @@ import { MDM_EXAMPLES } from '@ukef/constants/examples/mdm.examples.constant';
 import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 
-import { apimMdmObligationSubtypesUrl, mockResponses } from '../test-helpers';
+import { apimMdmObligationSubtypesUrl, counterpartyRolesUrl, currencyUrl, feeTypeUrl, mockResponses } from '../test-helpers';
 import { generatePayload } from './generate-payload';
 import { assert400Response } from './response-assertion';
 import { stringValidation } from './string-validation';
@@ -54,9 +54,25 @@ export const productTypeCodeStringValidation = ({ initialPayload, parentFieldNam
   ];
 
   describe('when the provided product type code is not supported', () => {
-    beforeAll(() => {
-      // Arrange
+    beforeEach(() => {
+      /**
+       * NOTE: The parent test file's outer beforeEach registers default, persisted nock mocks before every test
+       * (including the ones in this describe), and its afterEach calls nock.cleanAll() after every test.
+       * Since nock gives matching priority to whichever persisted interceptor was registered first, and this
+       * describe's own beforeEach runs AFTER the parent's, we need to clear the default mocks and re-register
+       * a complete set (including these product type/obligation subtype overrides) before every test here -
+       * otherwise, the default (unsupported-scenario-irrelevant) mocks would always win, or these tests would
+       * fall back to unmocked requests after the first test in this describe.
+       */
+      nock.cleanAll();
+
       nock(GIFT_API_URL).persist().get(`${PATH.PRODUCT_TYPE}/${UNSUPPORTED_PRODUCT_TYPE_CODE}`).reply(HttpStatus.NOT_FOUND, mockResponses.productType);
+
+      nock(GIFT_API_URL).persist().get(currencyUrl).reply(HttpStatus.OK, mockResponses.currencies);
+
+      nock(GIFT_API_URL).persist().get(feeTypeUrl).reply(HttpStatus.OK, mockResponses.feeTypes);
+
+      nock(GIFT_API_URL).persist().get(counterpartyRolesUrl).reply(HttpStatus.OK, mockResponses.counterpartyRoles);
 
       nock(APIM_MDM_URL)
         .persist()

@@ -57,6 +57,8 @@ describe('POST /gift/facility - validation - accrual schedules', () => {
 
   afterEach(() => {
     jest.resetAllMocks();
+    nock.abortPendingRequests();
+    nock.cleanAll();
   });
 
   const baseParams = {
