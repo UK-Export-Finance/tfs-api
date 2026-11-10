@@ -93,6 +93,10 @@ module.exports = {
         if (
           parent &&
           (parent.type === 'ArrayExpression' ||
+             parent.type === 'TSAsExpression' ||
+             parent.type === 'TSTypeAssertion' ||
+             parent.type === 'TSSatisfiesExpression' ||
+             parent.type === 'TSNonNullExpression' ||
             (parent.type === 'ArrowFunctionExpression' && parent.body) ||
             parent.type === 'BlockStatement' ||
             parent.type === 'ReturnStatement')
