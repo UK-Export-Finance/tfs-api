@@ -14,6 +14,7 @@ import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables'
 import { CreateFacilityActivationTransactionGenerator } from '@ukef-test/support/generator/create-facility-activation-transaction-generator';
 import { GetFacilityGenerator } from '@ukef-test/support/generator/get-facility-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
+import { filterRequestBody } from '@ukef-test/support/helpers/nock-filtering-request-body.helper';
 
 describe('POST /facilities/{facilityIdentifier}/activation-transactions', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -77,8 +78,7 @@ describe('POST /facilities/{facilityIdentifier}/activation-transactions', () => 
 
   const givenAnyRequestBodyToCreateFacilityActivationTransactionInAcbsSucceeds = (): void => {
     const requestBodyPlaceholder = '*';
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .filteringRequestBody(() => requestBodyPlaceholder)
+    filterRequestBody(nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL), () => requestBodyPlaceholder)
       .post(`/BundleInformation?servicingQueueIdentifier=${servicingQueueIdentifier}`, requestBodyPlaceholder)
       .matchHeader('authorization', `Bearer ${idToken}`)
       .reply(201, undefined, { bundleIdentifier });

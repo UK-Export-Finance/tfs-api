@@ -12,6 +12,7 @@ import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
 import { GetFacilityCovenantGenerator } from '@ukef-test/support/generator/get-facility-covenant-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
+import { filterRequestBody } from '@ukef-test/support/helpers/nock-filtering-request-body.helper';
 
 describe('PATCH /facilities/{facilityIdentifier}/covenants', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -81,8 +82,7 @@ describe('PATCH /facilities/{facilityIdentifier}/covenants', () => {
 
   const givenAnyRequestBodyToReplaceCovenantsSucceeds = (): void => {
     const requestBodyPlaceholder = '*';
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .filteringRequestBody(() => requestBodyPlaceholder)
+    filterRequestBody(nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL), () => requestBodyPlaceholder)
       .put(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/Covenant`, requestBodyPlaceholder)
       .matchHeader('authorization', `Bearer ${idToken}`)
       .reply(200);

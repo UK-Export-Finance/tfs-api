@@ -16,6 +16,7 @@ import { TEST_CURRENCIES } from '@ukef-test/support/constants/test-currency.cons
 import { TEST_DATES } from '@ukef-test/support/constants/test-date.constant';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
+import { filterRequestBody } from '@ukef-test/support/helpers/nock-filtering-request-body.helper';
 
 describe('POST /facilities/{facilityIdentifier}/investors', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -101,8 +102,7 @@ describe('POST /facilities/{facilityIdentifier}/investors', () => {
 
   const givenAnyRequestBodyToCreateFacilityInvestorInAcbsSucceeds = (): void => {
     const requestBodyPlaceholder = '*';
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .filteringRequestBody(() => requestBodyPlaceholder)
+    filterRequestBody(nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL), () => requestBodyPlaceholder)
       .post(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/FacilityParty`, requestBodyPlaceholder)
       .matchHeader('authorization', `Bearer ${idToken}`)
       .reply(...acbsSuccessResponseForFacilityId(facilityIdentifier));

@@ -12,6 +12,7 @@ import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
 import { GetFacilityGuaranteeGenerator } from '@ukef-test/support/generator/get-facility-guarantee-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
+import { filterRequestBody } from '@ukef-test/support/helpers/nock-filtering-request-body.helper';
 import { NOCK_NULL_RESPONSE_BODY } from '@ukef-test/support/helpers/nock-null-response-body.helper';
 
 describe('PATCH /facilities/{facilityIdentifier}/guarantees', () => {
@@ -81,8 +82,7 @@ describe('PATCH /facilities/{facilityIdentifier}/guarantees', () => {
 
   const givenAnyRequestBodyToReplaceFacilityGuaranteeSucceeds = (): void => {
     const requestBodyPlaceholder = '*';
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .filteringRequestBody(() => requestBodyPlaceholder)
+    filterRequestBody(nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL), () => requestBodyPlaceholder)
       .put(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/FacilityGuarantee`, requestBodyPlaceholder)
       .matchHeader('authorization', `Bearer ${idToken}`)
       .reply(200);

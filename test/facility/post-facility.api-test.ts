@@ -10,6 +10,7 @@ import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
 import { CreateFacilityGenerator } from '@ukef-test/support/generator/create-facility-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
+import { filterRequestBody } from '@ukef-test/support/helpers/nock-filtering-request-body.helper';
 
 describe('POST /facilities', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -41,8 +42,7 @@ describe('POST /facilities', () => {
 
   const givenAnyRequestBodyToCreateFacilityInAcbsSucceeds = (): void => {
     const requestBodyPlaceholder = '*';
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .filteringRequestBody(() => requestBodyPlaceholder)
+    filterRequestBody(nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL), () => requestBodyPlaceholder)
       .post(`/Portfolio/${portfolioIdentifier}/Facility`, requestBodyPlaceholder)
       .matchHeader('authorization', `Bearer ${idToken}`)
       .reply(201, undefined, {

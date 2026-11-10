@@ -15,6 +15,7 @@ import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import { CreateFacilityFixedFeesAmountAmendmentGenerator } from '@ukef-test/support/generator/create-facility-fixed-fees-amount-amendment.generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
+import { filterRequestBody } from '@ukef-test/support/helpers/nock-filtering-request-body.helper';
 
 describe('POST /facilities/{facilityIdentifier}/fixed-fees/amendments/amount', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -53,8 +54,7 @@ describe('POST /facilities/{facilityIdentifier}/fixed-fees/amendments/amount', (
     successResponse: [number, undefined, { BundleIdentifier: string }],
   ): nock.Scope => {
     const requestBodyPlaceholder = '*';
-    return nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .filteringRequestBody(() => requestBodyPlaceholder)
+    return filterRequestBody(nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL), () => requestBodyPlaceholder)
       .post(`/BundleInformation?servicingQueueIdentifier=${servicingQueueIdentifier}`, requestBodyPlaceholder)
       .matchHeader('authorization', `Bearer ${idToken}`)
       .matchHeader('Content-Type', 'application/json')

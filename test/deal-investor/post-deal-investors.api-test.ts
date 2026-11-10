@@ -14,6 +14,7 @@ import { TEST_DATES } from '@ukef-test/support/constants/test-date.constant';
 import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
 import { CreateDealInvestorGenerator } from '@ukef-test/support/generator/create-deal-investor-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
+import { filterRequestBody } from '@ukef-test/support/helpers/nock-filtering-request-body.helper';
 
 import { CurrentDateProvider } from '../../src/modules/date/current-date.provider';
 
@@ -59,8 +60,7 @@ describe('POST /deals/{dealIdentifier}/investors', () => {
 
   const givenAnyRequestBodyToCreateDealInvestorInAcbsSucceeds = (): void => {
     const requestBodyPlaceholder = '*';
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .filteringRequestBody(() => requestBodyPlaceholder)
+    filterRequestBody(nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL), () => requestBodyPlaceholder)
       .post(`/Portfolio/${portfolioIdentifier}/Deal/${dealIdentifier}/DealParty`, requestBodyPlaceholder)
       .matchHeader('authorization', `Bearer ${idToken}`)
       .matchHeader('Content-Type', 'application/json')
