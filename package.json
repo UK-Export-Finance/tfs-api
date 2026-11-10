@@ -90,7 +90,7 @@
     "@commitlint/cli": "21.2.4",
     "@commitlint/config-conventional": "21.2.4",
     "@eslint/js": "9.39.4",
-    "@nestjs/cli": "11.0.24",
+    "@nestjs/cli": "12.0.12",
     "@nestjs/schematics": "12.0.13",
     "@nestjs/testing": "12.4.2",
     "@tsconfig/node21": "21.0.9",
@@ -130,5 +130,10 @@
   "engines": {
     "node": ">=24.17.0",
     "npm": ">=11.3.0"
+  },
+  "overrides": {
+    "glob": "^14.0.4",
+    "katex": "^0.19.0",
+    "minimatch": "^11.0.0"
   }
 }
