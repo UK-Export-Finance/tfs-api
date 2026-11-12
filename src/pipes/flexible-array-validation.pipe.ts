@@ -1,6 +1,7 @@
 import { Injectable, ValidationPipe, BadRequestException } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
+import { getMetadataArgsStorage } from 'class-validator';
 
 type Options = {
   items: any;
@@ -28,6 +29,14 @@ export class FlexibleArrayValidationPipe extends ValidationPipe {
     });
   }
 
+  private getValidDTOKeys(itemType: any): Set<string> {
+    // Get all property names that have validation decorators on the DTO
+    const metadata = getMetadataArgsStorage();
+    const constraintMetadata = metadata.getTargetValidationMetadatas(itemType, undefined, false);
+
+    return new Set(constraintMetadata.map((meta) => meta.propertyName));
+  }
+
   async transform(value: any, metadata: any) {
     // Only validate body parameters - skip other metadata types
     if (metadata?.type !== 'body') {
@@ -42,9 +51,10 @@ export class FlexibleArrayValidationPipe extends ValidationPipe {
     const { items: itemType } = this.options;
     const transformedItems: any[] = [];
     const allErrors: string[] = [];
+    const validDTOKeys = this.getValidDTOKeys(itemType);
 
     for (let index = 0; index < value.length; index++) {
-      const item = value[index];
+      const item = value[`${index}`];
 
       // Validate that each item is a non-null, non-array object
       if (item === null || item === undefined) {
@@ -63,16 +73,13 @@ export class FlexibleArrayValidationPipe extends ValidationPipe {
       }
 
       try {
-        // Create instance from the DTO class, stripping extra properties
-        // First pass: with excludeExtraneousValues to strip extra properties
-        const strippedInstance = plainToInstance(itemType, item, {
-          excludeExtraneousValues: true,
-        });
+        // Create instance from the DTO class (keep all properties initially)
+        const instance = plainToInstance(itemType, item);
 
-        // Validate the stripped instance
-        const errors = await validate(strippedInstance, {
+        // Validate the instance
+        const errors = await validate(instance, {
           skipMissingProperties: false,
-          forbidUnknownValues: false, // Key: don't forbid unknown values
+          forbidUnknownValues: false, // Allow unknown values during validation
         });
 
         if (errors.length > 0) {
@@ -81,6 +88,14 @@ export class FlexibleArrayValidationPipe extends ValidationPipe {
             allErrors.push(...messages);
           });
         }
+
+        // Strip extra properties: keep only those defined in the DTO
+        const strippedInstance: any = {};
+        validDTOKeys.forEach((key) => {
+          if (key in instance) {
+            strippedInstance[key] = instance[key];
+          }
+        });
 
         transformedItems.push(strippedInstance);
       } catch (error) {
