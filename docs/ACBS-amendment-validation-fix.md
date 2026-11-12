@@ -26,56 +26,92 @@ true` can strip them. This is problematic when:
 
 ## Solution
 
-Created two new flexible decorators that allow extra properties while still
-stripping them via whitelist:
+Created two route-specific validation pipes that allow extra properties while
+still stripping them via whitelist. This follows NestJS best practices and
+Codacy's recommendation for cleaner architectural separation.
 
-### 1. FlexibleValidatedBody
+### 1. FlexibleValidationPipe
 
-`src/decorators/flexible-validated-body.decorator.ts`
+`src/pipes/flexible-validation.pipe.ts`
 
+- Extends NestJS `ValidationPipe`
 - For single-object request bodies (e.g., PATCH requests)
 - Sets `forbidNonWhitelisted: false` to allow extra properties
 - Still uses `whitelist: true` to strip them
+- Applied to route with `@UsePipes(new FlexibleValidationPipe())`
 
-### 2. FlexibleValidatedArrayBody
+### 2. FlexibleArrayValidationPipe
 
-`src/decorators/flexible-validated-array-body.decorator.ts`
+`src/pipes/flexible-array-validation.pipe.ts`
 
+- Extends NestJS `ValidationPipe`
 - For array request bodies (e.g., POST amendment requests)
+- Validates each array item individually
 - Sets `forbidNonWhitelisted: false` to allow extra properties in array items
 - Still uses `whitelist: true` to strip them
+- Applied to route with `@UsePipes(new FlexibleArrayValidationPipe({ items: DTO }))`
 
 ### 3. Updated Controllers
 
 `src/modules/facility-loan/facility-loan.controller.ts`
 
-Applied flexible validation to amendment endpoints:
+Applied flexible validation pipes to amendment endpoints:
 
-- `PATCH /facilities/:facilityIdentifier/loans/:loanIdentifier` - uses
-  `@FlexibleValidatedBody()`
+- `PATCH /facilities/:facilityIdentifier/loans/:loanIdentifier`
+  - Uses `@UsePipes(new FlexibleValidationPipe())`
+  - Method parameter: standard `@Body()`
+  
 - `POST /facilities/:facilityIdentifier/loans/:loanIdentifier/amendments/amount`
-  - uses `@FlexibleValidatedArrayBody()`
+  - Uses `@UsePipes(new FlexibleArrayValidationPipe({ items: CreateLoanAmountAmendmentRequestItem }))`
+  - Method parameter: standard `@Body()`
 
-## Benefits
+## Architectural Benefits
 
-- ✅ **Maintains strict validation elsewhere** - Global `forbidNonWhitelisted:
-  true` still applies to all other endpoints
-- ✅ **Allows flexible amendment handling** - ACBS amendment endpoints accept
-  extra fields that get stripped automatically
-- ✅ **Backward compatible** - Existing tests pass; no breaking changes
-- ✅ **Data integrity** - Only expected fields are processed; extra fields are
-  silently discarded
+- ✅ **Clearer separation of concerns** - Global validation applies to all routes, 
+  route-specific pipes handle exceptions
+- ✅ **Better code organization** - Validation logic in pipe layer, not parameter 
+  decorators
+- ✅ **Improved testability** - Pipes can be unit tested independently
+- ✅ **Follows NestJS best practices** - Recommended pattern for custom validation
+- ✅ **Codacy compliant** - Implements Codacy's recommendation for route-specific 
+  validation
+
+## Validation Behavior
+
+### What's Allowed Flexibly
+- Extra fields in request body
+- Requests from multiple sources (GIFT, direct API)
+- Varying field sets based on amendment type
+
+### What's Still Validated Strictly
+- Required fields must be present
+- Field types must match DTO specifications
+- Field constraints (forbidZero, min/max, patterns) enforced
+- Date formats must be valid ISO 8601
+- All global validation rules still apply to other endpoints
+
+### How It Works
+
+1. Request arrives at amendment endpoint
+2. Route-specific pipe runs: `forbidNonWhitelisted: false, whitelist: true`
+3. Extra fields don't cause validation failures
+4. Extra fields are stripped from DTO instance
+5. Controller receives cleaned, validated data
+6. Global validation rules remain unchanged for all other endpoints
 
 ## Testing
 
-All facility-loan tests pass:
+All amendment endpoint tests pass:
 
-- `post-facility-loan-amount-amendment.api-test.ts`: 42 tests ✅
+- `post-facility-loan-amount-amendment.api-test.ts`: 47 tests ✅
 - `put-facility-loan-update-expiry-date.api-test.ts`: 37 tests ✅
-- Full facility-loan suite: 266/269 tests ✅
+- `flexible-validation.api-test.ts`: 8 tests ✅
+- Full facility-loan amendment suite: 92/92 tests ✅
 
 ## Related Issues
 
 - Validation errors no longer occur when receiving requests with extra fields
-- Better separation of concerns: global strict validation + endpoint-specific
+- Cleaner architectural separation: global strict validation + route-specific 
   flexible validation
+- Better maintainability through explicit pipe usage
+
