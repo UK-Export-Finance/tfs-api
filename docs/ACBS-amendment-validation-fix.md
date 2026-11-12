@@ -116,4 +116,3 @@ All amendment endpoint tests pass:
 - Cleaner architectural separation: global strict validation + route-specific
   flexible validation
 - Better maintainability through explicit pipe usage
-
