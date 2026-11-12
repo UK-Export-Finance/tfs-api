@@ -1,7 +1,6 @@
 import { Injectable, ValidationPipe, BadRequestException } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
-import { validate } from 'class-validator';
-import { getMetadataArgsStorage } from 'class-validator';
+import { validate, getMetadataStorage } from 'class-validator';
 
 type Options = {
   items: any;
@@ -31,8 +30,8 @@ export class FlexibleArrayValidationPipe extends ValidationPipe {
 
   private getValidDTOKeys(itemType: any): Set<string> {
     // Get all property names that have validation decorators on the DTO
-    const metadata = getMetadataArgsStorage();
-    const constraintMetadata = metadata.getTargetValidationMetadatas(itemType, undefined, false);
+    const metadata = getMetadataStorage();
+    const constraintMetadata = metadata.getTargetValidationMetadatas(itemType, '', false, false);
 
     return new Set(constraintMetadata.map((meta) => meta.propertyName));
   }
