@@ -29,8 +29,14 @@ export class FlexibleArrayValidationPipe extends ValidationPipe {
   }
 
   async transform(value: any, metadata: any) {
+    // Only validate body parameters - skip other metadata types
+    if (metadata?.type !== 'body') {
+      return value;
+    }
+
+    // Reject non-array bodies - this endpoint expects an array
     if (!Array.isArray(value)) {
-      return await super.transform(value, metadata);
+      throw new BadRequestException('Validation failed (parsable array expected)');
     }
 
     const { items: itemType } = this.options;
@@ -40,12 +46,31 @@ export class FlexibleArrayValidationPipe extends ValidationPipe {
     for (let index = 0; index < value.length; index++) {
       const item = value[index];
 
-      try {
-        // Create instance from the DTO class
-        const instance = plainToInstance(itemType, item);
+      // Validate that each item is a non-null, non-array object
+      if (item === null || item === undefined) {
+        allErrors.push(`Item at index ${index} is null or undefined`);
+        continue;
+      }
 
-        // Validate the instance
-        const errors = await validate(instance, {
+      if (Array.isArray(item)) {
+        allErrors.push(`Item at index ${index} must be an object, not an array`);
+        continue;
+      }
+
+      if (typeof item !== 'object') {
+        allErrors.push(`Item at index ${index} must be an object, received ${typeof item}`);
+        continue;
+      }
+
+      try {
+        // Create instance from the DTO class, stripping extra properties
+        // First pass: with excludeExtraneousValues to strip extra properties
+        const strippedInstance = plainToInstance(itemType, item, {
+          excludeExtraneousValues: true,
+        });
+
+        // Validate the stripped instance
+        const errors = await validate(strippedInstance, {
           skipMissingProperties: false,
           forbidUnknownValues: false, // Key: don't forbid unknown values
         });
@@ -57,7 +82,7 @@ export class FlexibleArrayValidationPipe extends ValidationPipe {
           });
         }
 
-        transformedItems.push(instance);
+        transformedItems.push(strippedInstance);
       } catch (error) {
         throw new BadRequestException('Invalid array item');
       }
