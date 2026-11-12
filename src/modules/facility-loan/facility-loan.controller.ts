@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, UsePipes, UseInterceptors } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -11,10 +11,10 @@ import {
 } from '@nestjs/swagger';
 import { EXAMPLES } from '@ukef/constants';
 import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decorator';
-import { FlexibleValidatedArrayBody } from '@ukef/decorators/flexible-validated-array-body.decorator';
-import { FlexibleValidatedBody } from '@ukef/decorators/flexible-validated-body.decorator';
 import { WithWarningErrors } from '@ukef/helpers';
 import { WarningErrorsHeaderInterceptor } from '@ukef/interceptors/warning-errors-header.interceptor';
+import { FlexibleValidationPipe } from '@ukef/pipes/flexible-validation.pipe';
+import { FlexibleArrayValidationPipe } from '@ukef/pipes/flexible-array-validation.pipe';
 
 import { CreateFacilityLoanRequest, CreateFacilityLoanRequestItem } from './dto/create-facility-loan-request.dto';
 import { CreateFacilityLoanResponse } from './dto/create-facility-loan-response.dto';
@@ -87,6 +87,7 @@ export class FacilityLoanController {
   }
 
   @Patch('facilities/:facilityIdentifier/loans/:loanIdentifier')
+  @UsePipes(new FlexibleValidationPipe())
   @ApiOperation({
     summary: "Update an existing loan's expiry date.",
   })
@@ -108,7 +109,7 @@ export class FacilityLoanController {
   })
   async updateLoanExpiryDate(
     @Param() params: UpdateLoanExpiryDateParamsDto,
-    @FlexibleValidatedBody() updateLoanExpiryDateRequest: UpdateLoanExpiryDateRequest,
+    @Body() updateLoanExpiryDateRequest: UpdateLoanExpiryDateRequest,
   ): Promise<UpdateLoanExpiryDateResponse> {
     const { loanIdentifier } = params;
     await this.facilityLoanService.updateLoanExpiryDate(loanIdentifier, updateLoanExpiryDateRequest);
@@ -116,6 +117,7 @@ export class FacilityLoanController {
   }
 
   @Post('/facilities/:facilityIdentifier/loans/:loanIdentifier/amendments/amount')
+  @UsePipes(new FlexibleArrayValidationPipe({ items: CreateLoanAmountAmendmentRequestItem }))
   @UseInterceptors(WarningErrorsHeaderInterceptor)
   @ApiOperation({
     summary: 'Create a loan amount amendment bundle.',
@@ -153,7 +155,7 @@ export class FacilityLoanController {
   })
   createAmountAmendmentForLoan(
     @Param() params: CreateLoanAmountAmendmentParams,
-    @FlexibleValidatedArrayBody({ items: CreateLoanAmountAmendmentRequestItem }) newLoanAmountAmendmentRequest: CreateLoanAmountAmendmentRequest,
+    @Body() newLoanAmountAmendmentRequest: CreateLoanAmountAmendmentRequest,
   ): Promise<WithWarningErrors<CreateLoanAmountAmendmentResponse>> {
     const [newLoanAmountAmendment] = newLoanAmountAmendmentRequest;
     return this.facilityLoanService.createAmountAmendmentForLoan(params.loanIdentifier, newLoanAmountAmendment);

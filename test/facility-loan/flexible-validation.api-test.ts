@@ -161,7 +161,7 @@ describe('Flexible Validation on ACBS Amendment Endpoints', () => {
   });
 
   describe('Validation strictness maintained', () => {
-    it('amendment endpoints should NOT error on extra fields (forbidNonWhitelisted should be false)', async () => {
+    it('should NOT error on extra fields (forbidNonWhitelisted should be false)', async () => {
       // Arrange
       // This is the KEY test: verify extra fields don't cause "should not exist" errors
       const requestWithManyExtraFields = [
