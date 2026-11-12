@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.9.2](https://github.com/UK-Export-Finance/tfs-api/compare/v2.9.1...v2.9.2) (2026-11-12)
+
+
+### Bug Fixes
+
+* **APIM-725:** acbs amendments - custom body decorator ([#1482](https://github.com/UK-Export-Finance/tfs-api/issues/1482)) ([0975ae0](https://github.com/UK-Export-Finance/tfs-api/commit/0975ae04309e13c3ba88dd00c171337a4ae94d91))
+
 ## [2.9.1](https://github.com/UK-Export-Finance/tfs-api/compare/v2.9.0...v2.9.1) (2026-11-05)
 
 
