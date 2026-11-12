@@ -92,7 +92,7 @@ export class FlexibleArrayValidationPipe extends ValidationPipe {
         const strippedInstance: any = {};
         validDTOKeys.forEach((key) => {
           if (key in instance) {
-            strippedInstance[key] = instance[key];
+            strippedInstance[`${key}`] = instance[`${key}`];
           }
         });
 
