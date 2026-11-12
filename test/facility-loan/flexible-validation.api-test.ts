@@ -10,14 +10,13 @@ describe('Flexible Validation on ACBS Amendment Endpoints', () => {
   const facilityIdentifier = valueGenerator.facilityId();
   const loanIdentifier = valueGenerator.loanId();
 
-  const { increaseAmountRequest } = new CreateFacilityLoanAmountAmendmentGenerator(
-    valueGenerator,
-    new DateStringTransformations(),
-  ).generate({ loanIdentifier, numberToGenerate: 1 });
+  const { increaseAmountRequest } = new CreateFacilityLoanAmountAmendmentGenerator(valueGenerator, new DateStringTransformations()).generate({
+    loanIdentifier,
+    numberToGenerate: 1,
+  });
 
   const updateExpiryDateUrl = `/api/v1/facilities/${facilityIdentifier}/loans/${loanIdentifier}`;
   const amountAmendmentUrl = `/api/v1/facilities/${facilityIdentifier}/loans/${loanIdentifier}/amendments/amount`;
-
 
   let api: Api;
 
@@ -54,14 +53,10 @@ describe('Flexible Validation on ACBS Amendment Endpoints', () => {
         const response = await api.post(amountAmendmentUrl, requestWithExtraFields);
 
         // Assert
-        // The critical assertion: if it fails with 400, it should NOT be "property...should not exist"
+        // The critical assertion: it should NOT be "property...should not exist"
         // which would indicate forbidNonWhitelisted is true (it should be false)
-        if (response.status === 400) {
-          const message = Array.isArray(response.body.message)
-            ? response.body.message.join(', ')
-            : response.body.message;
-          expect(message).not.toContain('should not exist');
-        }
+        const message = Array.isArray(response.body.message) ? response.body.message.join(', ') : response.body.message;
+        expect(message).not.toContain('should not exist');
       });
 
       it(`should still validate required fields are present (${HttpStatus.BAD_REQUEST})`, async () => {
@@ -78,7 +73,7 @@ describe('Flexible Validation on ACBS Amendment Endpoints', () => {
         const response = await api.post(amountAmendmentUrl, requestWithoutRequired);
 
         // Assert: Should fail validation for missing required field
-        expect(response.status).toBe(400);
+        expect(response.status).toBe(HttpStatus.BAD_REQUEST);
         expect(Array.isArray(response.body.message) || typeof response.body.message === 'string').toBe(true);
       });
 
@@ -96,7 +91,7 @@ describe('Flexible Validation on ACBS Amendment Endpoints', () => {
         const response = await api.post(amountAmendmentUrl, requestWithInvalidType);
 
         // Assert: Should fail type validation
-        expect(response.status).toBe(400);
+        expect(response.status).toBe(HttpStatus.BAD_REQUEST);
       });
 
       it(`should validate amountAmendment cannot be zero (${HttpStatus.BAD_REQUEST})`, async () => {
@@ -113,7 +108,7 @@ describe('Flexible Validation on ACBS Amendment Endpoints', () => {
         const response = await api.post(amountAmendmentUrl, requestWithZeroAmount);
 
         // Assert: Should fail validation
-        expect(response.status).toBe(400);
+        expect(response.status).toBe(HttpStatus.BAD_REQUEST);
       });
     });
   });
@@ -131,7 +126,7 @@ describe('Flexible Validation on ACBS Amendment Endpoints', () => {
         const response = await api.patch(updateExpiryDateUrl, requestWithoutRequired);
 
         // Assert: Should fail validation for missing required field
-        expect(response.status).toBe(400);
+        expect(response.status).toBe(HttpStatus.BAD_REQUEST);
         expect(Array.isArray(response.body.message) || typeof response.body.message === 'string').toBe(true);
       });
 
@@ -146,7 +141,7 @@ describe('Flexible Validation on ACBS Amendment Endpoints', () => {
         const response = await api.patch(updateExpiryDateUrl, requestWithInvalidDate);
 
         // Assert: Should fail format validation
-        expect(response.status).toBe(400);
+        expect(response.status).toBe(HttpStatus.BAD_REQUEST);
       });
 
       it(`should validate expiryDate ISO 8601 format with extra fields (${HttpStatus.BAD_REQUEST})`, async () => {
@@ -160,7 +155,7 @@ describe('Flexible Validation on ACBS Amendment Endpoints', () => {
         const response = await api.patch(updateExpiryDateUrl, requestWithWrongFormat);
 
         // Assert: Should fail format validation
-        expect(response.status).toBe(400);
+        expect(response.status).toBe(HttpStatus.BAD_REQUEST);
       });
     });
   });
@@ -184,9 +179,7 @@ describe('Flexible Validation on ACBS Amendment Endpoints', () => {
       // Assert
       // The critical check: response should succeed or not contain "should not exist"
       // because forbidNonWhitelisted should be false (flexible validation)
-      const messageText = Array.isArray(response.body.message)
-        ? response.body.message.join(' ')
-        : response.body.message;
+      const messageText = Array.isArray(response.body.message) ? response.body.message.join(' ') : response.body.message;
 
       expect(messageText).not.toContain('should not exist');
     });
