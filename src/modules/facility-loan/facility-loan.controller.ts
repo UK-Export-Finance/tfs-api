@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -11,6 +11,8 @@ import {
 } from '@nestjs/swagger';
 import { EXAMPLES } from '@ukef/constants';
 import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decorator';
+import { FlexibleValidatedArrayBody } from '@ukef/decorators/flexible-validated-array-body.decorator';
+import { FlexibleValidatedBody } from '@ukef/decorators/flexible-validated-body.decorator';
 import { WithWarningErrors } from '@ukef/helpers';
 import { WarningErrorsHeaderInterceptor } from '@ukef/interceptors/warning-errors-header.interceptor';
 
@@ -106,7 +108,7 @@ export class FacilityLoanController {
   })
   async updateLoanExpiryDate(
     @Param() params: UpdateLoanExpiryDateParamsDto,
-    @Body() updateLoanExpiryDateRequest: UpdateLoanExpiryDateRequest,
+    @FlexibleValidatedBody() updateLoanExpiryDateRequest: UpdateLoanExpiryDateRequest,
   ): Promise<UpdateLoanExpiryDateResponse> {
     const { loanIdentifier } = params;
     await this.facilityLoanService.updateLoanExpiryDate(loanIdentifier, updateLoanExpiryDateRequest);
@@ -151,7 +153,7 @@ export class FacilityLoanController {
   })
   createAmountAmendmentForLoan(
     @Param() params: CreateLoanAmountAmendmentParams,
-    @ValidatedArrayBody({ items: CreateLoanAmountAmendmentRequestItem }) newLoanAmountAmendmentRequest: CreateLoanAmountAmendmentRequest,
+    @FlexibleValidatedArrayBody({ items: CreateLoanAmountAmendmentRequestItem }) newLoanAmountAmendmentRequest: CreateLoanAmountAmendmentRequest,
   ): Promise<WithWarningErrors<CreateLoanAmountAmendmentResponse>> {
     const [newLoanAmountAmendment] = newLoanAmountAmendmentRequest;
     return this.facilityLoanService.createAmountAmendmentForLoan(params.loanIdentifier, newLoanAmountAmendment);
