@@ -67,23 +67,25 @@ Applied flexible validation pipes to amendment endpoints:
 
 ## Architectural Benefits
 
-- ✅ **Clearer separation of concerns** - Global validation applies to all routes, 
+- ✅ **Clearer separation of concerns** - Global validation applies to all routes,
   route-specific pipes handle exceptions
-- ✅ **Better code organization** - Validation logic in pipe layer, not parameter 
+- ✅ **Better code organization** - Validation logic in pipe layer, not parameter
   decorators
 - ✅ **Improved testability** - Pipes can be unit tested independently
 - ✅ **Follows NestJS best practices** - Recommended pattern for custom validation
-- ✅ **Codacy compliant** - Implements Codacy's recommendation for route-specific 
+- ✅ **Codacy compliant** - Implements Codacy's recommendation for route-specific
   validation
 
 ## Validation Behavior
 
 ### What's Allowed Flexibly
+
 - Extra fields in request body
 - Requests from multiple sources (GIFT, direct API)
 - Varying field sets based on amendment type
 
 ### What's Still Validated Strictly
+
 - Required fields must be present
 - Field types must match DTO specifications
 - Field constraints (forbidZero, min/max, patterns) enforced
@@ -111,7 +113,7 @@ All amendment endpoint tests pass:
 ## Related Issues
 
 - Validation errors no longer occur when receiving requests with extra fields
-- Cleaner architectural separation: global strict validation + route-specific 
+- Cleaner architectural separation: global strict validation + route-specific
   flexible validation
 - Better maintainability through explicit pipe usage
 
