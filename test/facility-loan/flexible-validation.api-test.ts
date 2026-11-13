@@ -124,6 +124,41 @@ describe('Flexible Validation on ACBS Amendment Endpoints', () => {
         expect(response.status).toBe(HttpStatus.BAD_REQUEST);
       });
 
+      it(`should reject a null amountAmendment instead of silently treating it as zero (${HttpStatus.BAD_REQUEST})`, async () => {
+        // Arrange: amountAmendment is explicitly null. If skipMissingProperties were true,
+        // this would bypass validation (including forbidZero) and the service would build
+        // a zero-value amendment via Math.abs(null) === 0.
+        const requestWithNullAmount = [
+          {
+            effectiveDate: '2026-11-12',
+            amountAmendment: null,
+          },
+        ];
+
+        // Act
+        const response = await api.post(amountAmendmentUrl, requestWithNullAmount);
+
+        // Assert: Should fail validation for the null required field
+        expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+      });
+
+      it(`should reject a null effectiveDate (${HttpStatus.BAD_REQUEST})`, async () => {
+        // Arrange: effectiveDate is explicitly null, which must still be rejected
+        // even though forbidNonWhitelisted is relaxed for this route.
+        const requestWithNullDate = [
+          {
+            effectiveDate: null,
+            amountAmendment: 1000000,
+          },
+        ];
+
+        // Act
+        const response = await api.post(amountAmendmentUrl, requestWithNullDate);
+
+        // Assert: Should fail validation for the null required field
+        expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+      });
+
       it(`should validate amountAmendment cannot be zero (${HttpStatus.BAD_REQUEST})`, async () => {
         // Send request with zero amountAmendment (forbidden by forbidZero constraint)
         const requestWithZeroAmount = [

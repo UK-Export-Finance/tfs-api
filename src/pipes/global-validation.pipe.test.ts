@@ -50,6 +50,35 @@ describe('GlobalValidationPipe', () => {
     });
   });
 
+  describe('when the body is an array (e.g. amendment bundle endpoints)', () => {
+    it('should skip global validation and return the value unchanged, even with extra, non-whitelisted properties on the items', async () => {
+      /**
+       * Arrange: TypeScript's reflected metadata for an array-typed @Body() parameter is
+       * always the generic `Array` constructor, never the item DTO class, so this pipe
+       * cannot look up a @FlexibleValidation marker on the item type. It must explicitly
+       * defer to the route-specific pipe (e.g. FlexibleArrayValidationPipe) instead.
+       */
+      const value = [{ requiredField: 'some-value', extraField: 'should not be stripped or rejected here' }];
+
+      // Act
+      const result = await pipe.transform(value, bodyMetadataFor(Array));
+
+      // Assert
+      expect(result).toBe(value);
+    });
+
+    it('should not throw even if required fields are missing on the items (route-specific pipe is responsible for that)', async () => {
+      // Arrange
+      const value = [{ extraField: 'only extra fields' }];
+
+      // Act
+      const result = await pipe.transform(value, bodyMetadataFor(Array));
+
+      // Assert
+      expect(result).toBe(value);
+    });
+  });
+
   describe('when the body DTO is NOT marked with @FlexibleValidation', () => {
     it('strips unknown properties and rejects non-whitelisted properties (forbidNonWhitelisted)', async () => {
       // Arrange
