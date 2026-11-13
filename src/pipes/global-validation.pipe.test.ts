@@ -27,52 +27,68 @@ describe('GlobalValidationPipe', () => {
   const bodyMetadataFor = (metatype: any): ArgumentMetadata => ({ type: 'body', metatype });
 
   describe('when the body DTO is marked with @FlexibleValidation', () => {
-    it('skips global validation and returns the value unchanged, even with extra, non-whitelisted properties', async () => {
+    it('should skip global validation and returns the value unchanged, even with extra, non-whitelisted properties', async () => {
+      // Arrange
       const value = { requiredField: 'some-value', extraField: 'should not be stripped or rejected here' };
 
+      // Act
       const result = await pipe.transform(value, bodyMetadataFor(FlexibleTestDto));
 
+      // Assert
       expect(result).toBe(value);
     });
 
-    it('does not throw even if required fields are missing (route-specific pipe is responsible for that)', async () => {
+    it('should not throw even if required fields are missing (route-specific pipe is responsible for that)', async () => {
+      // Arrange
       const value = { extraField: 'only extra fields' };
 
+      // Act
       const result = await pipe.transform(value, bodyMetadataFor(FlexibleTestDto));
 
+      // Assert
       expect(result).toBe(value);
     });
   });
 
   describe('when the body DTO is NOT marked with @FlexibleValidation', () => {
     it('strips unknown properties and rejects non-whitelisted properties (forbidNonWhitelisted)', async () => {
+      // Arrange
       const value = { requiredField: 'some-value', extraField: 'should be forbidden' };
 
+      // Act & Assert
       await expect(pipe.transform(value, bodyMetadataFor(StrictTestDto))).rejects.toBeInstanceOf(BadRequestException);
     });
 
-    it('still validates required fields', async () => {
+    it('should still validate required fields', async () => {
+      // Arrange
       const value = {};
 
+      // Act & Assert
       await expect(pipe.transform(value, bodyMetadataFor(StrictTestDto))).rejects.toBeInstanceOf(BadRequestException);
     });
 
-    it('transforms and returns a valid payload', async () => {
+    it('should transform and return a valid payload', async () => {
+      // Arrange
       const value = { requiredField: 'some-value' };
 
+      // Act
       const result = await pipe.transform(value, bodyMetadataFor(StrictTestDto));
 
+      // Assert
       expect(result).toBeInstanceOf(StrictTestDto);
       expect(result).toEqual({ requiredField: 'some-value' });
     });
   });
 
   describe('when there is no metatype on the metadata', () => {
-    it('does not throw and falls back to the underlying ValidationPipe behaviour', async () => {
+    it('should not throw and falls back to the underlying ValidationPipe behaviour', async () => {
+      // Arrange
       const value = 'a-plain-string';
 
+      // Act
       const result = await pipe.transform(value, { type: 'param' });
 
+      // Assert
       expect(result).toBe(value);
     });
   });
