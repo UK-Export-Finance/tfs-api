@@ -1,19 +1,49 @@
 import { HttpStatus } from '@nestjs/common';
 import nock from 'nock';
+import { PROPERTIES } from '@ukef/constants';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
+import { givenAuthenticationWithTheIdpSucceedsWith } from '@ukef-test/common-tests/acbs-authentication-api-tests';
 import { Api } from '@ukef-test/support/api';
 import { CreateFacilityLoanAmountAmendmentGenerator } from '@ukef-test/support/generator/create-facility-loan-amount-amendment.generator';
+import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
+import { UpdateLoanGenerator } from '@ukef-test/support/generator/update-loan-generator';
 
 describe('Flexible Validation on ACBS Amendment Endpoints', () => {
   const valueGenerator = new RandomValueGenerator();
+  const dateStringTransformations = new DateStringTransformations();
+  const { portfolioIdentifier } = PROPERTIES.GLOBAL;
   const facilityIdentifier = valueGenerator.facilityId();
   const loanIdentifier = valueGenerator.loanId();
+  const idToken = valueGenerator.string();
+  const sessionId = valueGenerator.string();
 
   const { increaseAmountRequest } = new CreateFacilityLoanAmountAmendmentGenerator(valueGenerator, new DateStringTransformations()).generate({
     loanIdentifier,
     numberToGenerate: 1,
   });
+
+  const { updateLoanExpiryDateRequest, acbsGetExistingLoanResponse, acbsUpdateLoanRequest } = new UpdateLoanGenerator(
+    valueGenerator,
+    dateStringTransformations,
+  ).generate({
+    numberToGenerate: 1,
+    facilityIdentifier,
+    portfolioIdentifier,
+    loanIdentifier,
+  });
+
+  const givenRequestToGetAndUpdateLoanInAcbsSucceeds = () => {
+    givenAuthenticationWithTheIdpSucceedsWith({ sessionId, idToken });
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .get(`/Portfolio/${portfolioIdentifier}/Loan/${loanIdentifier}`)
+      .matchHeader('authorization', `Bearer ${idToken}`)
+      .reply(200, acbsGetExistingLoanResponse);
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .put(`/Portfolio/${portfolioIdentifier}/Loan/${loanIdentifier}`)
+      .matchHeader('authorization', `Bearer ${idToken}`)
+      .reply(200, acbsUpdateLoanRequest);
+  };
 
   const updateExpiryDateUrl = `/api/v1/facilities/${facilityIdentifier}/loans/${loanIdentifier}`;
   const amountAmendmentUrl = `/api/v1/facilities/${facilityIdentifier}/loans/${loanIdentifier}/amendments/amount`;
@@ -94,6 +124,41 @@ describe('Flexible Validation on ACBS Amendment Endpoints', () => {
         expect(response.status).toBe(HttpStatus.BAD_REQUEST);
       });
 
+      it(`should reject a null amountAmendment instead of silently treating it as zero (${HttpStatus.BAD_REQUEST})`, async () => {
+        // Arrange: amountAmendment is explicitly null. If skipMissingProperties were true,
+        // this would bypass validation (including forbidZero) and the service would build
+        // a zero-value amendment via Math.abs(null) === 0.
+        const requestWithNullAmount = [
+          {
+            effectiveDate: '2026-11-12',
+            amountAmendment: null,
+          },
+        ];
+
+        // Act
+        const response = await api.post(amountAmendmentUrl, requestWithNullAmount);
+
+        // Assert: Should fail validation for the null required field
+        expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+      });
+
+      it(`should reject a null effectiveDate (${HttpStatus.BAD_REQUEST})`, async () => {
+        // Arrange: effectiveDate is explicitly null, which must still be rejected
+        // even though forbidNonWhitelisted is relaxed for this route.
+        const requestWithNullDate = [
+          {
+            effectiveDate: null,
+            amountAmendment: 1000000,
+          },
+        ];
+
+        // Act
+        const response = await api.post(amountAmendmentUrl, requestWithNullDate);
+
+        // Assert: Should fail validation for the null required field
+        expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+      });
+
       it(`should validate amountAmendment cannot be zero (${HttpStatus.BAD_REQUEST})`, async () => {
         // Send request with zero amountAmendment (forbidden by forbidZero constraint)
         const requestWithZeroAmount = [
@@ -115,6 +180,25 @@ describe('Flexible Validation on ACBS Amendment Endpoints', () => {
 
   describe('PATCH /facilities/{facilityIdentifier}/loans/{loanIdentifier}', () => {
     describe('Extra fields handling', () => {
+      it(`should NOT fail validation (${HttpStatus.OK}) when extra fields are present`, async () => {
+        // Arrange: a valid request with extra fields that should be stripped, not rejected,
+        // by the global forbidNonWhitelisted validation.
+        givenRequestToGetAndUpdateLoanInAcbsSucceeds();
+        const requestWithExtraFields = {
+          ...updateLoanExpiryDateRequest,
+          extraField1: 'should be stripped',
+          extraField2: 12345,
+        };
+
+        // Act
+        const response = await api.patch(updateExpiryDateUrl, requestWithExtraFields);
+
+        // Assert: the critical check is that extra fields do not trigger the global
+        // forbidNonWhitelisted validation error (which would produce a 400 containing
+        // "should not exist" and never reach the controller/ACBS).
+        expect(response.status).toBe(HttpStatus.OK);
+      });
+
       it(`should validate that required expiryDate is still enforced (${HttpStatus.BAD_REQUEST})`, async () => {
         // Arrange: Send request missing required expiryDate field
         const requestWithoutRequired = {

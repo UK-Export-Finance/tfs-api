@@ -1,4 +1,4 @@
-import { INestApplication, ValidationPipe, VersioningType } from '@nestjs/common';
+import { INestApplication, VersioningType } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import compression from 'compression';
 import { Logger, LoggerErrorInterceptor } from 'nestjs-pino';
@@ -7,6 +7,7 @@ import { ApiKeyAuthGuard } from '@ukef/modules/auth/guard/api-key.guard';
 import { SwaggerDocs } from '@ukef/swagger';
 
 import { InputCharacterValidationPipe } from './pipes/input-characters-validation';
+import { GlobalValidationPipe } from './pipes/global-validation.pipe';
 
 export class App {
   private readonly configService: ConfigService;
@@ -34,14 +35,7 @@ export class App {
 
     app.setGlobalPrefix(globalPrefix);
 
-    app.useGlobalPipes(
-      new InputCharacterValidationPipe(),
-      new ValidationPipe({
-        whitelist: true, // strips properties that do not have any decorators
-        forbidNonWhitelisted: true, // if non-whitelisted properties are present, validation will fail
-        transform: true, // automatically transform payloads to be objects typed according to their DTO classes
-      }),
-    );
+    app.useGlobalPipes(new InputCharacterValidationPipe(), new GlobalValidationPipe());
 
     SwaggerDocs(app);
 

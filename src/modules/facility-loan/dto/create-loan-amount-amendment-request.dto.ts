@@ -1,9 +1,11 @@
+import { FlexibleValidation } from '@ukef/decorators/flexible-validation.decorator';
 import { ValidatedDateOnlyApiProperty } from '@ukef/decorators/validated-date-only-api-property.decorator';
 import { ValidatedNumberApiProperty } from '@ukef/decorators/validated-number-api-property.decorator';
 import { DateOnlyString } from '@ukef/helpers';
 
 export type CreateLoanAmountAmendmentRequest = CreateLoanAmountAmendmentRequestItem[];
 
+@FlexibleValidation()
 export class CreateLoanAmountAmendmentRequestItem {
   @ValidatedDateOnlyApiProperty({
     description: 'The date that this amendment is effective.',
