@@ -77,7 +77,7 @@ export class FlexibleArrayValidationPipe extends ValidationPipe {
 
         // Validate the instance
         const errors = await validate(instance, {
-          skipMissingProperties: false,
+          skipMissingProperties: true, // Allow partial updates
           forbidUnknownValues: false, // Allow unknown values during validation
         });
 
