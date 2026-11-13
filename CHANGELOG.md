@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.9.3](https://github.com/UK-Export-Finance/tfs-api/compare/v2.9.2...v2.9.3) (2026-11-13)
+
+
+### Bug Fixes
+
+* **APIM-725:** acbs amendments - global validation ([#1484](https://github.com/UK-Export-Finance/tfs-api/issues/1484)) ([2add728](https://github.com/UK-Export-Finance/tfs-api/commit/2add72805b62633c4df3e23cae3be97836c097bf))
+
 ## [2.9.2](https://github.com/UK-Export-Finance/tfs-api/compare/v2.9.1...v2.9.2) (2026-11-12)
 
 
