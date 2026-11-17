@@ -3,7 +3,7 @@
 This TFS micro-service provides endpoints for internal trade finance manager systems that are responsible for reading
 and writing to following financial product tracking systems:
 
-- ACBS (Advanced Commerciall Banking System)
+- ACBS (Advanced Commercial Banking System)
 - GIFT (Guarantee, Insurance, & Financing Tracker). Replaces ACBS
 
 **Status** 🚦
@@ -97,7 +97,7 @@ Note: `PORT` will default to `3001` if it's not assigned a value in the `.env` f
 
 ## ACBS Integration 📍
 
-The Trade Finance Services API supports integration with ACBS (Advanced Commerciall Banking System).
+The Trade Finance Services API supports integration with ACBS (Advanced Commercial Banking System).
 
 Extensive documentation can be found on [SharePoint](https://ukef.sharepoint.com/sites/pmo-PRO211/Shared%20Documents/Forms/AllItems.aspx?id=%2Fsites%2Fpmo%2DPRO211%2FShared%20Documents%2F1%2E%20TO%20USE%20New%20file%20plan%2FAPIM%20TFS%2C%20ACBS%20integration&viewid=c6186b2e%2D090e%2D45fe%2Dad32%2D4311e04fa0a1&as=json)
 
