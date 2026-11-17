@@ -23,6 +23,8 @@ on:
       - "tsconfig*"
       - "jest.config.ts"
       - "nest.cli.json"
+      - "README.md"
+      - "docs/**/*.md"
 
 permissions:
   contents: read
