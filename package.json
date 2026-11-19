@@ -118,7 +118,7 @@
     "@types/node": "26.6.6",
     "@types/supertest": "2.0.16",
     "@typescript-eslint/eslint-plugin": "8.59.2",
-    "@typescript-eslint/parser": "8.59.2",
+    "@typescript-eslint/parser": "8.72.2",
     "@ukef/eslint-local-rules": "1.0.0",
     "cross-env": "10.1.0",
     "cspell": "10.4.1",
