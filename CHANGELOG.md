@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.9.4](https://github.com/UK-Export-Finance/tfs-api/compare/v2.9.3...v2.9.4) (2026-11-19)
+
+
+### Bug Fixes
+
+* **DTFS2-8785:** revert correct transaction codes ([#1493](https://github.com/UK-Export-Finance/tfs-api/issues/1493)) ([b4d59fb](https://github.com/UK-Export-Finance/tfs-api/commit/b4d59fbbfde7fa7904aa422da41517e8fac3466d))
+
 ## [2.9.3](https://github.com/UK-Export-Finance/tfs-api/compare/v2.9.2...v2.9.3) (2026-11-13)
 
 
