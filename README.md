@@ -1,10 +1,11 @@
 # Trade Finance Services 🚀
 
-This TFS micro-service provides endpoints for internal trade finance manager systems that are responsible for reading
-and writing to following financial product tracking systems:
+This TFS micro-service is a centralised API for internal UKEF services.
 
-- ACBS (Advanced Commercial Banking System)
-- GIFT (Guarantee, Insurance, & Financing Tracker). Replaces ACBS
+This API provides integrations and endpoints for reading and writing to the following services:
+
+- **ACBS** (Advanced Commercial Banking System)
+- **GIFT** (Guarantee, Insurance, & Financing Tracker). Replaces ACBS
 
 **Status** 🚦
 
