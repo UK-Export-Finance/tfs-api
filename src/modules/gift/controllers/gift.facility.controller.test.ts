@@ -65,6 +65,8 @@ describe('GiftFacilityController', () => {
   let mockRes: Response;
   let mockResStatus;
   let mockResJson;
+  let mockResType;
+  let mockResSend;
 
   let mockServiceGetFacility;
   let mockServiceCreateFacility;
@@ -130,10 +132,17 @@ describe('GiftFacilityController', () => {
     );
 
     mockResJson = jest.fn();
+    mockResType = jest.fn();
+    mockResSend = jest.fn();
+
+    mockResType.mockReturnValue({
+      send: mockResSend,
+    });
 
     mockRes = {
       json: mockResJson,
-    } as Response;
+      type: mockResType,
+    } as unknown as Response;
 
     mockResStatus = jest.fn(() => mockRes);
 
@@ -203,14 +212,15 @@ describe('GiftFacilityController', () => {
       expect(mockResStatus).toHaveBeenCalledWith(mockResponseGet.status);
     });
 
-    it('should call res.status.json with data obtained from the service call', async () => {
+    it('should call res.status.type.send with data obtained from the service call', async () => {
       // Act
       await controller.getWithoutQueue(mockParams, mockRes);
 
       // Assert
-      expect(mockResJson).toHaveBeenCalledTimes(1);
-
-      expect(mockResJson).toHaveBeenCalledWith(mockResponseGet.data);
+      expect(mockResType).toHaveBeenCalledTimes(1);
+      expect(mockResType).toHaveBeenCalledWith('application/json');
+      expect(mockResSend).toHaveBeenCalledTimes(1);
+      expect(mockResSend).toHaveBeenCalledWith(mockResponseGet.data);
     });
   });
 
@@ -237,14 +247,15 @@ describe('GiftFacilityController', () => {
       expect(mockResStatus).toHaveBeenCalledWith(mockResponsePost.status);
     });
 
-    it('should call res.status.json with data obtained from the service call', async () => {
+    it('should call res.status.type.send with data obtained from the service call', async () => {
       // Act
       await controller.post(mockBody, mockRes);
 
       // Assert
-      expect(mockResJson).toHaveBeenCalledTimes(1);
-
-      expect(mockResJson).toHaveBeenCalledWith(mockResponsePost.data);
+      expect(mockResType).toHaveBeenCalledTimes(1);
+      expect(mockResType).toHaveBeenCalledWith('application/json');
+      expect(mockResSend).toHaveBeenCalledTimes(1);
+      expect(mockResSend).toHaveBeenCalledWith(mockResponsePost.data);
     });
   });
 
@@ -272,14 +283,15 @@ describe('GiftFacilityController', () => {
       expect(mockResStatus).toHaveBeenCalledWith(mockResponseAmendmentPost.status);
     });
 
-    it('should call res.status.json with data obtained from the service call', async () => {
+    it('should call res.status.type.send with data obtained from the service call', async () => {
       // Act
       await controller.postAmendment(mockParams, mockBody, mockRes);
 
       // Assert
-      expect(mockResJson).toHaveBeenCalledTimes(1);
-
-      expect(mockResJson).toHaveBeenCalledWith(mockResponseAmendmentPost.data);
+      expect(mockResType).toHaveBeenCalledTimes(1);
+      expect(mockResType).toHaveBeenCalledWith('application/json');
+      expect(mockResSend).toHaveBeenCalledTimes(1);
+      expect(mockResSend).toHaveBeenCalledWith(mockResponseAmendmentPost.data);
     });
   });
 
@@ -373,7 +385,7 @@ describe('GiftFacilityController', () => {
       expect(giftFacilityAmendmentService.createMultiple).toHaveBeenCalledWith(mockFacilityId, mockBody);
     });
 
-    it('should call res.status and res.json with the response from giftFacilityAmendmentService', async () => {
+    it('should call res.status.type.send with the response from giftFacilityAmendmentService', async () => {
       // Arrange
       const mockResponseData = { id: 1, isApproved: true };
       giftFacilityAmendmentService.createMultiple = jest.fn().mockResolvedValue({ status: HttpStatus.CREATED, data: mockResponseData });
@@ -384,8 +396,10 @@ describe('GiftFacilityController', () => {
       // Assert
       expect(mockResStatus).toHaveBeenCalledTimes(1);
       expect(mockResStatus).toHaveBeenCalledWith(HttpStatus.CREATED);
-      expect(mockResJson).toHaveBeenCalledTimes(1);
-      expect(mockResJson).toHaveBeenCalledWith(mockResponseData);
+      expect(mockResType).toHaveBeenCalledTimes(1);
+      expect(mockResType).toHaveBeenCalledWith('application/json');
+      expect(mockResSend).toHaveBeenCalledTimes(1);
+      expect(mockResSend).toHaveBeenCalledWith(mockResponseData);
     });
   });
 });
