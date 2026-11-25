@@ -116,7 +116,7 @@
     "@types/jest-when": "3.5.5",
     "@types/luxon": "3.7.6",
     "@types/node": "26.6.10",
-    "@types/supertest": "2.0.16",
+    "@types/supertest": "7.2.1",
     "@typescript-eslint/eslint-plugin": "8.74.0",
     "@typescript-eslint/parser": "8.74.0",
     "@ukef/eslint-local-rules": "1.0.0",
