@@ -20,7 +20,7 @@
     "watch": "tsc -w"
   },
   "dependencies": {
-    "@azure/functions": "^4.17.0",
+    "@azure/functions": "^4.17.1",
     "axios": "1.21.1"
   },
   "devDependencies": {
