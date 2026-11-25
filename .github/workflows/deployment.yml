@@ -101,6 +101,16 @@ jobs:
           echo ACR=$(az acr show -n $(az resource list --resource-type 'Microsoft.ContainerRegistry/registries' --query '[0].name' -o tsv) --query loginServer -o tsv) >> $GITHUB_ENV
           echo ACR_USER=$(az acr show -n $(az resource list --resource-type 'Microsoft.ContainerRegistry/registries' --query '[0].name' -o tsv) --query name -o tsv) >> $GITHUB_ENV
           echo CA_NAME=$(az resource list --resource-type 'Microsoft.App/containerApps' --query '[?contains(name, `${{ env.NAME }}`)].name' -o tsv) >> $GITHUB_ENV
+
+          CA_ID=$(az resource list --resource-type 'Microsoft.App/containerApps' --query '[?contains(name, `${{ env.NAME }}`)].id' -o tsv)
+          if [[ -z "$CA_ID" || "$CA_ID" == *$'\n'* ]]; then
+            echo "::error::Expected exactly one container app matching ${{ env.NAME }} in the current subscription; found zero or multiple matches."
+            exit 1
+          fi
+          echo "Container app: $CA_ID"
+          echo "CA_ID=$CA_ID" >> "$GITHUB_ENV"
+          echo "CA_NAME=${CA_ID##*/}" >> "$GITHUB_ENV"
+
           echo APIM=$(az resource list --resource-type 'Microsoft.ApiManagement/service' --query '[0].name' -o tsv) >> $GITHUB_ENV
           echo API_ID=$(az apim api list --service-name $(az resource list --resource-type 'Microsoft.ApiManagement/service' --query '[0].name' -o tsv) --query '[?contains(displayName, `${{ env.NAME_UPPERCASE }}`)].name' -o tsv) >> $GITHUB_ENV
           echo TFS_CLIENT_ID=$(az identity show --name id-${{ env.PRODUCT }}-tfs-${{ env.ENVIRONMENT }}-${{ vars.VERSION }} --query clientId -o tsv) >> $GITHUB_ENV
@@ -125,7 +135,7 @@ jobs:
         with:
           inlineScript: |
             az containerapp update \
-            --name ${{ env.CA_NAME }} \
+            --ids "${{ env.CA_ID }}" \
             --resource-group rg-${{ env.PRODUCT }}-${{ env.ENVIRONMENT }}-${{ vars.VERSION }} \
             --container-name ${{ env.CA_NAME }} \
             --image ${{ env.ACR }}/${{ env.NAME }}:${{ env.FROM }} \
