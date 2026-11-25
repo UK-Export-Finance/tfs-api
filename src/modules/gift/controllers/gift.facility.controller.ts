@@ -133,8 +133,6 @@ export class GiftFacilityController {
     description: 'An internal server error has occurred',
   })
   async postQueue(@Body() facilityData: unknown, @Res({ passthrough: true }) res: Response) {
-    // Input is accepted as unknown type because validation is deferred to the queue processor (tfs-functions).
-    // The GlobalValidationPipe does not validate unknown types - validation occurs at the queue consumer layer.
     await this.giftQueueService.enqueue({ messageType: 'FACILITY_CREATION', payload: facilityData as GiftFacilityCreationRequestDto });
 
     res.status(HttpStatus.ACCEPTED);
@@ -166,8 +164,6 @@ export class GiftFacilityController {
     description: 'An internal server error has occurred',
   })
   async postAmendmentQueue(@Param() { facilityId }: FacilityIdOperationParamsDto, @Body() amendmentData: unknown, @Res({ passthrough: true }) res: Response) {
-    // Input is accepted as unknown type because validation is deferred to the queue processor (tfs-functions).
-    // The GlobalValidationPipe does not validate unknown types - validation occurs at the queue consumer layer.
     await this.giftQueueService.enqueue({
       messageType: 'FACILITY_AMENDMENT',
       facilityId,
@@ -284,8 +280,6 @@ export class GiftFacilityController {
     @Body() amendmentsData: unknown,
     @Res({ passthrough: true }) res: Response,
   ) {
-    // Input is accepted as unknown type because validation is deferred to the queue processor (tfs-functions).
-    // The GlobalValidationPipe does not validate unknown types - validation occurs at the queue consumer layer.
     await this.giftQueueService.enqueue({
       messageType: 'FACILITY_MULTIPLE_AMENDMENTS',
       facilityId,
