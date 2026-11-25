@@ -28,6 +28,15 @@ import { UpdateLoanExpiryDateRequest } from './dto/update-loan-expiry-date-reque
 import { UpdateLoanExpiryDateResponse } from './dto/update-loan-expiry-date-response.dto';
 import { FacilityLoanService } from './facility-loan.service';
 
+/**
+ * Facility Loan Controller
+ *
+ * NOTE: Input validation for @Param() and @Body() decorated parameters is performed
+ * globally by GlobalValidationPipe (see src/app.ts line 38) before any controller methods are
+ * executed. All DTOs used as parameter types include class-validator decorators that specify
+ * validation rules. This provides input validation for all endpoints without requiring explicit
+ * ValidationPipe on individual route handlers.
+ */
 @Controller()
 export class FacilityLoanController {
   constructor(private readonly facilityLoanService: FacilityLoanService) {}
