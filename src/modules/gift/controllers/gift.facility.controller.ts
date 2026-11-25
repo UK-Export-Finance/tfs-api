@@ -297,10 +297,11 @@ export class GiftFacilityController {
   async postMultipleAmendments(
     @Param() { facilityId }: FacilityIdOperationParamsDto,
     @Body(new ValidationPipe({ transform: true })) multipleAmendmentsData: CreateGiftFacilityMultipleAmendmentsRequestDto,
-    @Res({ passthrough: true }) res: Response,
+    @Res() res: Response,
   ) {
     const { status, data } = await this.giftFacilityAmendmentService.createMultiple(facilityId, multipleAmendmentsData);
 
-    res.status(status).json(data);
+    // Explicitly set response headers and use type-safe serialization
+    res.status(status).type('application/json').send(data);
   }
 }
