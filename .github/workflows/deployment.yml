@@ -184,6 +184,9 @@ jobs:
         uses: Azure/cli@v2.2.0
         with:
           inlineScript: |
+            FQDN=$(az containerapp show \
+              --ids "$CA_ID" \
+              --query properties.latestRevisionFqdn -o tsv)
             # API specification import
             if [ -z "$FQDN" ]; then
               echo "❌ Failed to retrieve Container App FQDN"
