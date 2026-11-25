@@ -30,6 +30,12 @@ This API provides integrations and endpoints for reading and writing to the foll
 npm ci
 ```
 
+When commiting changes - If the pre-commit hook does not run, execute the following command:
+
+```bash
+npx husky
+```
+
 ## Environment Variables 👨🏼‍💻
 
 On first setup you will need to create a `.env` file in the route of the project, refer to `.env.sample` for the required variables. A member of the team should
