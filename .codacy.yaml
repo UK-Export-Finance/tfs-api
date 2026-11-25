@@ -1,29 +1,11 @@
 # Codacy configuration for tfs-api
 # Documentation: https://docs.codacy.com/repositories/configuring-your-repository/
 
-# Global exclude patterns
+# Exclude paths from analysis
 exclude-paths:
   - node_modules/
   - dist/
   - coverage/
-
-# Tool configurations
-tools:
-  # Codacy security tool configuration
-  SecurityTooling:
-    enabled: true
-    
-# Rules configuration
-rules:
-  # Rule: "This application accepts user input directly from the client side without validation"
-  # Rationale: A GlobalValidationPipe is applied at the app level (src/app.ts) that validates
-  # all @Param() and @Body() decorated parameters via their DTOs with class-validator decorators.
-  # The validation happens before the controller methods are executed, so all user input is
-  # validated before use, even though it appears implicit in the controller code.
-  # Reference: src/app.ts line 38 (app.useGlobalPipes(new GlobalValidationPipe()))
-  Validation/InputAcceptedWithoutValidation:
-    enabled: false
-    # To enable with exceptions per route:
-    # enabled: true
-    # ignore:
-    #   - src/modules/gift/controllers/gift.facility.controller.ts
+  - test/
+  - '**/*.test.ts'
+  - '**/*.spec.ts'

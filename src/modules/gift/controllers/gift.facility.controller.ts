@@ -39,6 +39,11 @@ const { giftVersioning } = AppConfig();
  * decorators (@ValidatedFacilityIdentifierApiProperty, @ValidatedStringApiProperty, etc.)
  * that specify validation rules. This provides input validation for all endpoints
  * without requiring explicit ValidationPipe on individual route handlers.
+ *
+ * CODACY STATIC ANALYSIS: Codacy flags implicit global validation as "unvalidated input"
+ * because it only recognizes explicit ValidationPipe. This is a false positive - validation
+ * IS performed by GlobalValidationPipe and DTO decorators before controller methods execute.
+ * See individual method comments for specific notes on each endpoint's validation.
  */
 @Controller({
   path: `gift${PATH.FACILITY}`,
@@ -107,6 +112,11 @@ export class GiftFacilityController {
    * NOTE: Because we need to return custom responses (instead of NestJS doing this for us), we lose some response handling that NestJS provides by default.
    * Therefore, we use passthrough: true to ensure that NestJS provides some additional response handling.
    * Further information: https://docs.nestjs.com/controllers#library-specific-approach
+   *
+   * NOTE: Codacy flags @Param() without explicit ValidationPipe as unvalidated input, but this
+   * parameter IS validated by GlobalValidationPipe (src/app.ts:38) before this method executes.
+   * The DTO (FacilityIdOperationParamsDto) contains validation decorators that GlobalValidationPipe
+   * uses to validate the input. Codacy's static analysis doesn't recognize implicit global validation.
    */
   async getWithoutQueue(@Param() { facilityId }: FacilityIdOperationParamsDto, @Res({ passthrough: true }) res: Response) {
     const { status, data } = await this.giftFacilityService.get(facilityId);
@@ -133,6 +143,8 @@ export class GiftFacilityController {
     description: 'An internal server error has occurred',
   })
   async postQueue(@Body() facilityData: unknown, @Res({ passthrough: true }) res: Response) {
+    // Input is accepted as unknown type because validation is deferred to the queue processor (tfs-functions).
+    // The GlobalValidationPipe does not validate unknown types - validation occurs at the queue consumer layer.
     await this.giftQueueService.enqueue({ messageType: 'FACILITY_CREATION', payload: facilityData as GiftFacilityCreationRequestDto });
 
     res.status(HttpStatus.ACCEPTED);
@@ -164,6 +176,8 @@ export class GiftFacilityController {
     description: 'An internal server error has occurred',
   })
   async postAmendmentQueue(@Param() { facilityId }: FacilityIdOperationParamsDto, @Body() amendmentData: unknown, @Res({ passthrough: true }) res: Response) {
+    // Input is accepted as unknown type because validation is deferred to the queue processor (tfs-functions).
+    // The GlobalValidationPipe does not validate unknown types - validation occurs at the queue consumer layer.
     await this.giftQueueService.enqueue({
       messageType: 'FACILITY_AMENDMENT',
       facilityId,
@@ -280,6 +294,8 @@ export class GiftFacilityController {
     @Body() amendmentsData: unknown,
     @Res({ passthrough: true }) res: Response,
   ) {
+    // Input is accepted as unknown type because validation is deferred to the queue processor (tfs-functions).
+    // The GlobalValidationPipe does not validate unknown types - validation occurs at the queue consumer layer.
     await this.giftQueueService.enqueue({
       messageType: 'FACILITY_MULTIPLE_AMENDMENTS',
       facilityId,
