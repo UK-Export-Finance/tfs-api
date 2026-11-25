@@ -101,7 +101,7 @@ export class GiftFacilityController {
   async getWithoutQueue(@Param() { facilityId }: FacilityIdOperationParamsDto, @Res({ passthrough: true }) res: Response) {
     const { status, data } = await this.giftFacilityService.get(facilityId);
 
-    res.status(status).json(data);
+    res.status(status).type('application/json').send(data);
   }
 
   @Post()
@@ -194,7 +194,7 @@ export class GiftFacilityController {
 
     const { status, data } = await this.giftFacilityService.create(facilityData, facilityId);
 
-    res.status(status).json(data);
+    res.status(status).type('application/json').send(data);
   }
 
   @Post(':facilityId/amendment/without-queue')
@@ -235,7 +235,7 @@ export class GiftFacilityController {
   ) {
     const { status, data } = await this.giftFacilityAmendmentService.create(facilityId, amendmentData);
 
-    res.status(status).json(data);
+    res.status(status).type('application/json').send(data);
   }
 
   @Post(':facilityId/multiple-amendments')
@@ -297,11 +297,10 @@ export class GiftFacilityController {
   async postMultipleAmendments(
     @Param() { facilityId }: FacilityIdOperationParamsDto,
     @Body(new ValidationPipe({ transform: true })) multipleAmendmentsData: CreateGiftFacilityMultipleAmendmentsRequestDto,
-    @Res() res: Response,
+    @Res({ passthrough: true }) res: Response,
   ) {
     const { status, data } = await this.giftFacilityAmendmentService.createMultiple(facilityId, multipleAmendmentsData);
 
-    // Explicitly set response headers and use type-safe serialization
     res.status(status).type('application/json').send(data);
   }
 }
