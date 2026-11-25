@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { PROPERTIES } from '@ukef/constants';
 
-import { AcbsDealBorrowingRestrictionService } from '../acbs/acbs-deal-borrowing-restriction.service';
-import { AcbsUpdateDealBorrowingRestrictionRequest } from '../acbs/dto/acbs-update-deal-borrowing-restriction-request.dto';
-import { AcbsAuthenticationService } from '../acbs-authentication/acbs-authentication.service';
+import { AcbsDealBorrowingRestrictionService } from '@ukef/modules/acbs/acbs-deal-borrowing-restriction.service';
+import { AcbsUpdateDealBorrowingRestrictionRequest } from '@ukef/modules/acbs/dto/acbs-update-deal-borrowing-restriction-request.dto';
+import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
 
 @Injectable()
 export class DealBorrowingRestrictionService {
@@ -17,12 +17,12 @@ export class DealBorrowingRestrictionService {
     const borrowingRestrictionToUpdateInAcbs = this.buildBorrowingRestrictionToUpdateInAcbs();
     const idToken = await this.acbsAuthenticationService.getIdToken();
 
-    return this.acbsDealBorrowingRestrictionService.updateBorrowingRestrictionForDeal(
+    return void (await this.acbsDealBorrowingRestrictionService.updateBorrowingRestrictionForDeal(
       portfolioIdentifier,
       dealIdentifier,
       borrowingRestrictionToUpdateInAcbs,
       idToken,
-    );
+    ));
   }
 
   private buildBorrowingRestrictionToUpdateInAcbs(): AcbsUpdateDealBorrowingRestrictionRequest {

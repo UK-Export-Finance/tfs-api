@@ -15,7 +15,7 @@ describe('DateStringTransformations', () => {
     it.each([['abc'], ['19870423'], ['87-04-23'], ['1987-04-23T12:34:56Z'], [null], [undefined]])(
       'throws a TypeError if the DateOnlyString is not in YYYY-MM-DD format (%s)',
       (invalidInput) => {
-        const convertingTheInvalidInput = () => dateStringTransformations.addTimeToDateOnlyString(invalidInput);
+        const convertingTheInvalidInput = () => dateStringTransformations.addTimeToDateOnlyString(invalidInput!);
 
         expect(convertingTheInvalidInput).toThrow(TypeError);
         expect(convertingTheInvalidInput).toThrow(`${invalidInput} is not a valid DateOnlyString as it is not in YYYY-MM-DD format.`);
@@ -33,7 +33,7 @@ describe('DateStringTransformations', () => {
       { description: 'undefined', input: undefined },
       { description: 'empty', input: '' },
     ])('throws a TypeError if the string is $description', ({ input }) => {
-      const convertingTheInvalidInput = () => dateStringTransformations.removeTime(input);
+      const convertingTheInvalidInput = () => dateStringTransformations.removeTime(input!);
 
       expect(convertingTheInvalidInput).toThrow(TypeError);
       expect(convertingTheInvalidInput).toThrow(`Cannot remove the time from ${input}.`);
@@ -50,7 +50,7 @@ describe('DateStringTransformations', () => {
       { description: 'undefined', input: undefined },
       { description: 'empty', input: '' },
     ])('returns the original string if the string is $description', ({ input }) => {
-      expect(dateStringTransformations.removeTimeIfExists(input)).toBe(input);
+      expect(dateStringTransformations.removeTimeIfExists(input!)).toBe(input);
     });
   });
 

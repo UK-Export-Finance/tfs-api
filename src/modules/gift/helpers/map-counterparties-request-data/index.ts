@@ -1,0 +1,23 @@
+import { GIFT } from '@ukef/constants';
+
+import type { GiftFacilityCounterpartyRequestDto } from '@ukef/modules/gift/dto';
+
+const { INTEGRATION_DEFAULTS } = GIFT;
+
+/**
+ * Map counterparties request data into a structure required to be sent to GIFT.
+ * sharePercentage is a conditional field.
+ * However, GIFT validation dictates that if sharePercentage is NOT required, it should be sent as null.
+ * @param {GiftFacilityCounterpartyRequestDto[]} counterparties: Counterparties data
+ * @returns {GiftFacilityCounterpartyRequestDto[]}
+ */
+export const mapCounterpartiesRequestData = (counterparties: GiftFacilityCounterpartyRequestDto[]) =>
+  counterparties.map((counterparty) => ({
+    ...counterparty,
+    /**
+     * If sharePercentage is 0, set it to null as per GIFT validation rules.
+     * Otherwise, use the provided value or null if undefined.
+     */
+    sharePercentage: counterparty.sharePercentage === 0 ? null : (counterparty.sharePercentage ?? null),
+    paymentCode: INTEGRATION_DEFAULTS.COUNTERPARTY_PAYMENT_CODE,
+  }));

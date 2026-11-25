@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AcbsModule } from '@ukef/modules/acbs/acbs.module';
 
-import { DateModule } from '../date/date.module';
+import { DateModule } from '@ukef/modules/date/date.module';
 import { PartyExternalRatingController } from './party-external-rating.controller';
 import { PartyExternalRatingService } from './party-external-rating.service';
 

@@ -8,7 +8,7 @@ import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acb
 import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 
-import { AcbsCreateBundleInformationRequestDto } from '../acbs/dto/acbs-create-bundle-information-request.dto';
+import { AcbsCreateBundleInformationRequestDto } from '@ukef/modules/acbs/dto/acbs-create-bundle-information-request.dto';
 import { CreateFixedFeeAmountAmendmentRequest } from './dto/create-facility-fixed-fee-amount-amendment-request.dto';
 import { CreateFixedFeeAmountAmendmentResponse } from './dto/create-facility-fixed-fee-amount-amendment-response.dto';
 import { CreateFacilityFixedFeeRequestItem } from './dto/create-facility-fixed-fee-request.dto';

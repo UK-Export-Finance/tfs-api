@@ -1,11 +1,11 @@
 import { HttpService } from '@nestjs/axios';
+import { when } from 'jest-when';
 import { AcbsPartyService } from '@ukef/modules/acbs/acbs-party.service';
 import { AcbsGetPartiesBySearchTextResponseDto } from '@ukef/modules/acbs/dto/acbs-get-parties-by-search-text-response.dto';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
 import { GetPartyGenerator } from '@ukef-test/support/generator/get-party-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { when } from 'jest-when';
 
 import { GetPartiesBySearchTextException } from './exception/get-parties-by-search-text.exception';
 import { PartyService } from './party.service';
@@ -30,7 +30,7 @@ describe('PartyService', () => {
     httpServiceGet = jest.fn();
     httpService.get = httpServiceGet;
 
-    const acbsPartyService = new AcbsPartyService(null, null);
+    const acbsPartyService = new AcbsPartyService(null!, null!);
     acbsPartyServiceGetPartyBySearchText = jest.fn();
     acbsPartyService.getPartyBySearchText = acbsPartyServiceGetPartyBySearchText;
 
@@ -106,7 +106,7 @@ describe('PartyService', () => {
     });
 
     it('throws a GetPartiesBySearchTextException if the required query parameter searchText is not specified', async () => {
-      const responsePromise = partyService.getPartiesBySearchText(null);
+      const responsePromise = partyService.getPartiesBySearchText(null!);
 
       await expect(responsePromise).rejects.toBeInstanceOf(GetPartiesBySearchTextException);
       await expect(responsePromise).rejects.toThrow('The required query parameter searchText was not specified.');

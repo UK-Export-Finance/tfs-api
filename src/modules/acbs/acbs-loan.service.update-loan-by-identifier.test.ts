@@ -1,15 +1,15 @@
 import { HttpService } from '@nestjs/axios';
-import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
-import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { UpdateLoanGenerator } from '@ukef-test/support/generator/update-loan-generator';
 import { AxiosError } from 'axios';
 import { when } from 'jest-when';
 import { of, throwError } from 'rxjs';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
+import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
+import { UpdateLoanGenerator } from '@ukef-test/support/generator/update-loan-generator';
 
 import { AcbsLoanService } from './acbs-loan-service';
 import { AcbsBadRequestException } from './exception/acbs-bad-request.exception';
 import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
-import { AcbsUnexpectedException } from './exception/acbs-unexpected.exception';
+import { AcbsException } from './exception/acbs.exception';
 
 describe('AcbsLoanService', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -77,8 +77,8 @@ describe('AcbsLoanService', () => {
         data: errorString,
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePut)
@@ -100,8 +100,8 @@ describe('AcbsLoanService', () => {
         data: errorObject,
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePut)
@@ -123,8 +123,8 @@ describe('AcbsLoanService', () => {
         data: errorString,
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePut)
@@ -138,15 +138,15 @@ describe('AcbsLoanService', () => {
       await expect(updateLoanPromise).rejects.toHaveProperty('innerError', axiosError);
     });
 
-    it('throws an AcbsUnexpectedException if ACBS responds with an error code that is not 400', async () => {
+    it('throws an AcbsException if ACBS responds with an error code that is not 400', async () => {
       const axiosError = new AxiosError();
       const errorBody = { errorMessage: valueGenerator.string() };
       axiosError.response = {
         data: errorBody,
         status: 401,
         statusText: 'Unauthorized',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePut)
@@ -155,7 +155,7 @@ describe('AcbsLoanService', () => {
 
       const createDealPromise = service.updateLoanByIdentifier(portfolioIdentifier, acbsUpdateLoanRequest, idToken);
 
-      await expect(createDealPromise).rejects.toBeInstanceOf(AcbsUnexpectedException);
+      await expect(createDealPromise).rejects.toBeInstanceOf(AcbsException);
       await expect(createDealPromise).rejects.toThrow(`Failed to update loan with identifier ${loanIdentifier} in ACBS.`);
       await expect(createDealPromise).rejects.toHaveProperty('innerError', axiosError);
     });

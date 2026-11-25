@@ -1,18 +1,18 @@
 import { applyDecorators } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsISO8601, Matches } from 'class-validator';
 import { DATE_FORMATS } from '@ukef/constants';
 import { DateOnlyString } from '@ukef/helpers';
-import { IsISO8601, Matches } from 'class-validator';
 
 import { NullableOption, parseRequiredAndNullable, RequiredOption } from './parse-required-and-nullable-validation.helper';
 
-interface Options {
+type Options = {
   description: string;
   example?: DateOnlyString;
   required?: RequiredOption;
   default?: DateOnlyString | null;
   nullable?: NullableOption;
-}
+};
 
 export const ValidatedDateOnlyApiProperty = ({ description, example, required, default: theDefault, nullable }: Options) => {
   const { shouldPropertyBeDocumentedAsRequired, shouldPropertyBeDocumentedAsNullable, validationDecoratorsToApply } = parseRequiredAndNullable({

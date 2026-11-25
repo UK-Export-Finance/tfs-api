@@ -1,0 +1,37 @@
+services:
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite:3.35.0
+    # skip api version check to avoid failure due to unsupported API version
+    # this is only for local development since Azurite only currently supports up to 2025-07-05
+    command: azurite --blobHost 0.0.0.0 --queueHost 0.0.0.0 --skipApiVersionCheck
+    ports:
+      - '10000:10000'
+      - '10001:10001'
+      - '10002:10002'
+
+  functions:
+    build:
+      context: ..
+      dockerfile: tfs-functions/Dockerfile
+    image: tfs-functions-local
+    depends_on:
+      - azurite
+    environment:
+      AzureWebJobsStorage: DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://azurite:10000/devstoreaccount1;QueueEndpoint=http://azurite:10001/devstoreaccount1;TableEndpoint=http://azurite:10002/devstoreaccount1;
+      FUNCTIONS_WORKER_RUNTIME: node
+      APPLICATIONINSIGHTS_CONNECTION_STRING: ${APPLICATIONINSIGHTS_CONNECTION_STRING}
+      APIM_TFS_URL: ${APIM_TFS_URL}
+      APIM_TFS_KEY: ${APIM_TFS_KEY}
+      APIM_TFS_VALUE: ${APIM_TFS_VALUE}
+      HALO_BASE_URL: ${HALO_BASE_URL}
+      HALO_TENANT_NAME: ${HALO_TENANT_NAME}
+      HALO_AUTH_CLIENT_ID: ${HALO_AUTH_CLIENT_ID}
+      HALO_CLIENT_SECRET: ${HALO_CLIENT_SECRET}
+      HALO_TICKET_CLIENT_ID: ${HALO_TICKET_CLIENT_ID}
+      HALO_TICKET_TYPE_ID: ${HALO_TICKET_TYPE_ID}
+      HALO_SITE_ID: ${HALO_SITE_ID}
+      HALO_USER_ID: ${HALO_USER_ID}
+      HALO_TEAM_ID: ${HALO_TEAM_ID}
+      GIFT_MAX_NUMBER_OF_RETRIES: ${GIFT_MAX_NUMBER_OF_RETRIES}
+    ports:
+      - '7071:80'

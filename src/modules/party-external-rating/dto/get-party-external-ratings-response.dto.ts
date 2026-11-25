@@ -5,47 +5,47 @@ export type GetPartyExternalRatingsResponseDto = GetPartyExternalRatingsResponse
 
 class GetPartyExternalRatingResponseRatingEntity {
   @ApiResponseProperty()
-  ratingEntityCode: string;
+  ratingEntityCode!: string;
 }
 
 class GetPartyExternalRatingResponseAssignedRating {
   @ApiResponseProperty()
-  assignedRatingCode: string;
+  assignedRatingCode!: string;
 }
 
 export class GetPartyExternalRatingsResponseItem {
   @ApiResponseProperty()
-  partyIdentifier: string;
+  partyIdentifier!: string;
 
   @ApiResponseProperty()
-  ratingEntity: GetPartyExternalRatingResponseRatingEntity;
+  ratingEntity!: GetPartyExternalRatingResponseRatingEntity;
 
   @ApiResponseProperty()
-  assignedRating: GetPartyExternalRatingResponseAssignedRating;
+  assignedRating!: GetPartyExternalRatingResponseAssignedRating;
 
   @ApiResponseProperty({
     type: Date,
   })
-  ratedDate: DateString;
+  ratedDate!: DateString;
 
   @ApiResponseProperty()
-  probabilityofDefault: number;
+  probabilityofDefault!: number;
 
   @ApiResponseProperty()
-  lossGivenDefault: number;
+  lossGivenDefault!: number;
 
   @ApiResponseProperty()
-  riskWeighting: number;
+  riskWeighting!: number;
 
   @ApiResponseProperty()
-  externalRatingNote1: string;
+  externalRatingNote1!: string;
 
   @ApiResponseProperty()
-  externalRatingNote2: string;
+  externalRatingNote2!: string;
 
   @ApiResponseProperty()
-  externalRatingUserCode1: string;
+  externalRatingUserCode1!: string;
 
   @ApiResponseProperty()
-  externalRatingUserCode2: string;
+  externalRatingUserCode2!: string;
 }

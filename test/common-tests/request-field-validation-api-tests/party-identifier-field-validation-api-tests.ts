@@ -3,15 +3,15 @@ import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-
 
 import { StringFieldValidationApiTestOptions, withStringFieldValidationApiTests } from './string-field-validation-api-tests';
 
-interface PartyIdentifierFieldValidationApiTestOptions<
+type PartyIdentifierFieldValidationApiTestOptions<
   RequestBodyItem extends Record<PartyIdentifierFieldName, string>,
   PartyIdentifierFieldName extends keyof any,
-> extends Pick<
+> = Pick<
   StringFieldValidationApiTestOptions<RequestBodyItem, PartyIdentifierFieldName>,
   'fieldName' | 'validRequestBody' | 'makeRequest' | 'givenAnyRequestBodyWouldSucceed'
-> {
+> & {
   valueGenerator: RandomValueGenerator;
-}
+};
 
 export const withPartyIdentifierFieldValidationApiTests = <
   RequestBodyItem extends Record<PartyIdentifierFieldName, string>,

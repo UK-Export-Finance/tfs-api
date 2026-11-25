@@ -2,9 +2,9 @@ import { applyDecorators } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsNotEmpty } from 'class-validator';
 
-interface Options {
+type Options = {
   description: string;
-}
+};
 
 export const ValidatedRequiredBooleanApiProperty = ({ description }: Options) => {
   const decoratorsToApply = [

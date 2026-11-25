@@ -29,6 +29,7 @@ export class FacilityFixedFeeController {
     private readonly facilityFixedFeeService: FacilityFixedFeeService,
     private readonly facilityService: FacilityService,
   ) {}
+
   @Get('/facilities/:facilityIdentifier/fixed-fees')
   @ApiOperation({
     summary: 'Get all fixed fees for a facility.',

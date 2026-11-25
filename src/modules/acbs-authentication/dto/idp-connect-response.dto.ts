@@ -1,3 +1,3 @@
 export class IdpConnectResponse {
-  public id_token: string;
+  public id_token!: string;
 }

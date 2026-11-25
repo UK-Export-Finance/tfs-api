@@ -1,3 +1,4 @@
+import nock from 'nock';
 import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { LenderTypeCodeEnum } from '@ukef/constants/enums/lender-type-code';
 import { AcbsPartyId } from '@ukef/helpers';
@@ -14,7 +15,6 @@ import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import { CreateFacilityFixedFeesAmountAmendmentGenerator } from '@ukef-test/support/generator/create-facility-fixed-fees-amount-amendment.generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import nock from 'nock';
 
 describe('POST /facilities/{facilityIdentifier}/fixed-fees/amendments/amount', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -35,6 +35,31 @@ describe('POST /facilities/{facilityIdentifier}/fixed-fees/amendments/amount', (
     `/api/v1/facilities/${facilityId}/fixed-fees/amendments/amount`;
 
   let api: Api;
+  let idToken: string;
+
+  const requestToCreateFixedFeesAdvanceTransactionInAcbsWithBody = (requestBody: nock.RequestBodyMatcher): nock.Interceptor =>
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .post(`/BundleInformation?servicingQueueIdentifier=${servicingQueueIdentifier}`, requestBody)
+      .matchHeader('authorization', `Bearer ${idToken}`)
+      .matchHeader('Content-Type', 'application/json');
+
+  const requestToCreateIncreaseFixedFeesAdvanceTransactionInAcbs = (): nock.Interceptor =>
+    requestToCreateFixedFeesAdvanceTransactionInAcbsWithBody(JSON.parse(JSON.stringify(acbsFixedFeesAmendmentForIncrease)));
+
+  const requestToCreateDecreaseFixedFeesAdvanceTransactionInAcbs = (): nock.Interceptor =>
+    requestToCreateFixedFeesAdvanceTransactionInAcbsWithBody(JSON.parse(JSON.stringify(acbsFixedFeesAmendmentForDecrease)));
+
+  const givenAnyRequestBodyToCreateFixedFeesAmountAmendmentInAcbsSucceeds = (
+    successResponse: [number, undefined, { BundleIdentifier: string }],
+  ): nock.Scope => {
+    const requestBodyPlaceholder = '*';
+    return nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .filteringRequestBody(() => requestBodyPlaceholder)
+      .post(`/BundleInformation?servicingQueueIdentifier=${servicingQueueIdentifier}`, requestBodyPlaceholder)
+      .matchHeader('authorization', `Bearer ${idToken}`)
+      .matchHeader('Content-Type', 'application/json')
+      .reply(...successResponse);
+  };
 
   beforeAll(async () => {
     api = await Api.create();
@@ -49,11 +74,12 @@ describe('POST /facilities/{facilityIdentifier}/fixed-fees/amendments/amount', (
     nock.cleanAll();
   });
 
-  const { idToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
+  const { idToken: resolvedIdToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
     givenRequestWouldOtherwiseSucceed: () => requestToCreateIncreaseFixedFeesAdvanceTransactionInAcbs().reply(...acbsSuccessfulResponse),
     makeRequest: () => api.post(createFixedFeesAmountAmendmentUrl(), increaseAmountRequest),
     successStatusCode: 201,
   });
+  idToken = resolvedIdToken;
 
   withClientAuthenticationTests({
     givenTheRequestWouldOtherwiseSucceed: () => {
@@ -166,28 +192,4 @@ describe('POST /facilities/{facilityIdentifier}/fixed-fees/amendments/amount', (
       successStatusCode: 201,
     });
   });
-
-  const requestToCreateIncreaseFixedFeesAdvanceTransactionInAcbs = (): nock.Interceptor =>
-    requestToCreateFixedFeesAdvanceTransactionInAcbsWithBody(JSON.parse(JSON.stringify(acbsFixedFeesAmendmentForIncrease)));
-
-  const requestToCreateDecreaseFixedFeesAdvanceTransactionInAcbs = (): nock.Interceptor =>
-    requestToCreateFixedFeesAdvanceTransactionInAcbsWithBody(JSON.parse(JSON.stringify(acbsFixedFeesAmendmentForDecrease)));
-
-  const givenAnyRequestBodyToCreateFixedFeesAmountAmendmentInAcbsSucceeds = (
-    acbsSuccessfulResponse: [number, undefined, { BundleIdentifier: string }],
-  ): nock.Scope => {
-    const requestBodyPlaceholder = '*';
-    return nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .filteringRequestBody(() => requestBodyPlaceholder)
-      .post(`/BundleInformation?servicingQueueIdentifier=${servicingQueueIdentifier}`, requestBodyPlaceholder)
-      .matchHeader('authorization', `Bearer ${idToken}`)
-      .matchHeader('Content-Type', 'application/json')
-      .reply(...acbsSuccessfulResponse);
-  };
-
-  const requestToCreateFixedFeesAdvanceTransactionInAcbsWithBody = (requestBody: nock.RequestBodyMatcher): nock.Interceptor =>
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .post(`/BundleInformation?servicingQueueIdentifier=${servicingQueueIdentifier}`, requestBody)
-      .matchHeader('authorization', `Bearer ${idToken}`)
-      .matchHeader('Content-Type', 'application/json');
 });

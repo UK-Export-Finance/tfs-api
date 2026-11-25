@@ -2,7 +2,7 @@
 # 1. BUILD
 ###################
 
-FROM node:21.4.0-alpine3.17 AS build
+FROM node:24.22.1-alpine3.24 AS build
 
 # Alpine Linux install packages
 RUN apk add bash curl
@@ -10,10 +10,13 @@ RUN rm -rf /var/cache/apk/*
 
 WORKDIR /app
 
+# ESLint local rules must be copied before npm ci
+COPY --chown=node:node eslint-local-rules ./eslint-local-rules
+
 # NPM
 COPY --chown=node:node package.json .
 COPY --chown=node:node package-lock.json .
-RUN npm ci --legacy-peer-deps
+RUN npm ci
 
 COPY --chown=node:node src src
 COPY --chown=node:node nest-cli.json .
@@ -26,7 +29,7 @@ RUN npm run build
 # Lean NPM - Only install `dependencies`
 # `devDependencies` will still be resolved inside `package-lock.json`,
 # however they will not be installed inside `node_modules` directory.
-RUN npm ci --legacy-peer-deps --omit=dev --ignore-scripts
+RUN npm ci --omit=dev --ignore-scripts
 
 # Non-root user
 USER node
@@ -35,7 +38,7 @@ USER node
 # 2. PRODUCTION
 ###################
 
-FROM node:21.4.0-alpine3.17 AS production
+FROM node:24.22.1-alpine3.24 AS production
 
 WORKDIR /app
 

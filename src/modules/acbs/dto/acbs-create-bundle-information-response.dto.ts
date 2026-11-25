@@ -1,6 +1,6 @@
 import { AcbsBundleId } from '@ukef/helpers';
 
-export interface AcbsCreateBundleInformationResponseHeadersDto {
+export type AcbsCreateBundleInformationResponseHeadersDto = {
   BundleIdentifier: AcbsBundleId;
   WarningErrors: string;
-}
+};

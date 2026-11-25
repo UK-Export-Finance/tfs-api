@@ -1,4 +1,7 @@
 import { HttpService } from '@nestjs/axios';
+import { AxiosError } from 'axios';
+import { when } from 'jest-when';
+import { of, throwError } from 'rxjs';
 import { PROPERTIES } from '@ukef/constants';
 import { UkefId } from '@ukef/helpers';
 import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
@@ -6,15 +9,11 @@ import { DateStringTransformations } from '@ukef/modules/date/date-string.transf
 import { CreateDealInvestorGenerator } from '@ukef-test/support/generator/create-deal-investor-generator';
 import { GetDealInvestorGenerator } from '@ukef-test/support/generator/get-deal-investor-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { AxiosError } from 'axios';
-import { when } from 'jest-when';
-import { of, throwError } from 'rxjs';
 
 import { AcbsDealPartyService } from './acbs-deal-party.service';
 import { AcbsException } from './exception/acbs.exception';
 import { AcbsBadRequestException } from './exception/acbs-bad-request.exception';
 import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
-import { AcbsUnexpectedException } from './exception/acbs-unexpected.exception';
 
 describe('AcbsDealPartyService', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -136,7 +135,7 @@ describe('AcbsDealPartyService', () => {
 
     const { acbsRequestBodyToCreateDealInvestor } = new CreateDealInvestorGenerator(valueGenerator, currentDateProvider, dateStringTransformations).generate({
       numberToGenerate: 1,
-      dealIdentifier: dealIdentifier,
+      dealIdentifier,
     });
 
     it('sends a POST to ACBS with the specified parameters', async () => {
@@ -171,8 +170,8 @@ describe('AcbsDealPartyService', () => {
         data: errorString,
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePost)
@@ -196,8 +195,8 @@ describe('AcbsDealPartyService', () => {
         data: errorString,
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePost)
@@ -222,8 +221,8 @@ describe('AcbsDealPartyService', () => {
         data: errorBody,
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePost)
@@ -241,15 +240,15 @@ describe('AcbsDealPartyService', () => {
       await expect(createInvestorForDealPromise).rejects.toHaveProperty('errorBody', JSON.stringify(errorBody));
     });
 
-    it('throws an AcbsUnexpectedException if ACBS responds with an error code that is not 400', async () => {
+    it('throws an AcbsException if ACBS responds with an error code that is not 400', async () => {
       const axiosError = new AxiosError();
       const errorBody = { errorMessage: valueGenerator.string() };
       axiosError.response = {
         data: errorBody,
         status: 401,
         statusText: 'Unauthorized',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePost)
@@ -261,7 +260,7 @@ describe('AcbsDealPartyService', () => {
 
       const createInvestorForDealPromise = service.createInvestorForDeal(dealIdentifier, acbsRequestBodyToCreateDealInvestor, authToken);
 
-      await expect(createInvestorForDealPromise).rejects.toBeInstanceOf(AcbsUnexpectedException);
+      await expect(createInvestorForDealPromise).rejects.toBeInstanceOf(AcbsException);
       await expect(createInvestorForDealPromise).rejects.toThrow(`Failed to create an investor for deal ${dealIdentifier} in ACBS.`);
       await expect(createInvestorForDealPromise).rejects.toHaveProperty('innerError', axiosError);
     });

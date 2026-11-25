@@ -1,3 +1,4 @@
+import { when } from 'jest-when';
 import { PROPERTIES } from '@ukef/constants';
 import { AcbsBundleInformationService } from '@ukef/modules/acbs/acbs-bundle-information.service';
 import { AcbsFacilityLoanService } from '@ukef/modules/acbs/acbs-facility-loan.service';
@@ -10,7 +11,6 @@ import { DateStringTransformations } from '@ukef/modules/date/date-string.transf
 import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
 import { CreateFacilityLoanAmountAmendmentGenerator } from '@ukef-test/support/generator/create-facility-loan-amount-amendment.generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { when } from 'jest-when';
 
 import { FacilityLoanService } from './facility-loan.service';
 
@@ -32,11 +32,11 @@ describe('FacilityLoanService', () => {
     const acbsAuthenticationServiceGetIdToken = mockAcbsAuthenticationService.getIdToken;
     when(acbsAuthenticationServiceGetIdToken).calledWith().mockResolvedValueOnce(idToken);
 
-    const acbsFacilityLoanService = new AcbsFacilityLoanService(null, null);
+    const acbsFacilityLoanService = new AcbsFacilityLoanService(null!, null!);
     getFacilityLoansAcbsService = jest.fn();
     acbsFacilityLoanService.getLoansForFacility = getFacilityLoansAcbsService;
 
-    const acbsBundleService = new AcbsBundleInformationService(null, null);
+    const acbsBundleService = new AcbsBundleInformationService(null!, null!);
     createBundleInformation = jest.fn();
     acbsBundleService.createBundleInformation = createBundleInformation;
 
@@ -46,21 +46,24 @@ describe('FacilityLoanService', () => {
       acbsBundleService,
       new DateStringTransformations(),
       new CurrentDateProvider(),
-      null,
-      null,
-      null,
+      null!,
+      null!,
+      null!,
     );
   });
 
   describe('createAmountAmendmentForLoan', () => {
     const loanIdentifier = valueGenerator.loanId();
     const createdBundleIdentifier = valueGenerator.acbsBundleId();
-    const acbsBundleCreatedResponse: AcbsCreateBundleInformationResponseHeadersDto = { BundleIdentifier: createdBundleIdentifier, WarningErrors: undefined };
+    const acbsBundleCreatedResponse: AcbsCreateBundleInformationResponseHeadersDto = { BundleIdentifier: createdBundleIdentifier, WarningErrors: undefined! };
 
     const { increaseAmountRequest, decreaseAmountRequest, acbsLoanAmendmentForIncrease, acbsLoanAmendmentForDecrease } =
       new CreateFacilityLoanAmountAmendmentGenerator(valueGenerator, dateStringTransformations).generate({ numberToGenerate: 1, loanIdentifier });
     const [increaseAmendment] = increaseAmountRequest;
     const [decreaseAmendment] = decreaseAmountRequest;
+
+    const getBundleCreatedInAcbs = (): AcbsCreateBundleInformationRequestDto<LoanAdvanceTransaction> =>
+      createBundleInformation.mock.calls[0][0] as AcbsCreateBundleInformationRequestDto<LoanAdvanceTransaction>;
 
     describe('when creating a loan amendment bundle in ACBS that increases the amount', () => {
       const { transactionTypeCode } = PROPERTIES.LOAN_AMOUNT_AMENDMENT.DEFAULT.bundleMessageList;
@@ -143,8 +146,5 @@ describe('FacilityLoanService', () => {
         expect(bundleIdentifier).toEqual({ responseBody: { bundleIdentifier: createdBundleIdentifier }, warningErrors: errorString });
       });
     });
-
-    const getBundleCreatedInAcbs = (): AcbsCreateBundleInformationRequestDto<LoanAdvanceTransaction> =>
-      createBundleInformation.mock.calls[0][0] as AcbsCreateBundleInformationRequestDto<LoanAdvanceTransaction>;
   });
 });

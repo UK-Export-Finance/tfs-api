@@ -1,7 +1,7 @@
 import { BundleInformationType } from '@ukef/constants/enums/bundle-information-type';
 import { DateString } from '@ukef/helpers';
 
-export interface FacilityAmountTransaction {
+export type FacilityAmountTransaction = {
   $type: BundleInformationType.FACILITY_AMOUNT_TRANSACTION;
   AccountOwnerIdentifier: string;
   EffectiveDate: DateString;
@@ -19,4 +19,4 @@ export interface FacilityAmountTransaction {
   };
   SectionIdentifier: string;
   TransactionAmount: number;
-}
+};

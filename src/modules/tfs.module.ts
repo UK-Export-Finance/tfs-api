@@ -14,27 +14,35 @@ import { FacilityGuaranteeModule } from '@ukef/modules/facility-guarantee/facili
 import { FacilityInvestorModule } from '@ukef/modules/facility-investor/facility-investor.module';
 import { FacilityLoanModule } from '@ukef/modules/facility-loan/facility-loan.module';
 import { FacilityLoanTransactionModule } from '@ukef/modules/facility-loan-transaction/facility-loan-transaction.module';
+import { GiftModule } from '@ukef/modules/gift/gift.module';
 import { PartyModule } from '@ukef/modules/party/party.module';
 import { PartyExternalRatingModule } from '@ukef/modules/party-external-rating/party-external-rating.module';
 
+const modules = [
+  AuthModule,
+  AcbsModule,
+  DealModule,
+  DealGuaranteeModule,
+  DealInvestorModule,
+  FacilityActivationTransactionModule,
+  FacilityModule,
+  FacilityCovenantModule,
+  FacilityFixedFeeModule,
+  FacilityGuaranteeModule,
+  FacilityInvestorModule,
+  FacilityLoanModule,
+  FacilityLoanTransactionModule,
+  PartyModule,
+  PartyExternalRatingModule,
+];
+
+// Conditionally add GIFT module based on feature flag
+if (process.env.FF_GIFT_ENABLED === 'true') {
+  modules.push(GiftModule);
+}
+
 @Module({
-  imports: [
-    AuthModule,
-    AcbsModule,
-    DealModule,
-    DealGuaranteeModule,
-    DealInvestorModule,
-    FacilityActivationTransactionModule,
-    FacilityModule,
-    FacilityCovenantModule,
-    FacilityFixedFeeModule,
-    FacilityGuaranteeModule,
-    FacilityInvestorModule,
-    FacilityLoanModule,
-    PartyExternalRatingModule,
-    PartyModule,
-    FacilityLoanTransactionModule,
-  ],
+  imports: modules,
   providers: [
     {
       provide: APP_INTERCEPTOR,

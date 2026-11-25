@@ -18,7 +18,7 @@ export class GetFacilityActivationTransactionGenerator extends AbstractGenerator
 
   protected generateValues(): FacilityActivationTransactionValues {
     // Numeric enums needs filter to get possible values.
-    const possibleInitialBundleStatusCodes = Object.values(ENUMS.INITIAL_BUNDLE_STATUS_CODES).filter((value) => !isNaN(Number(value)));
+    const possibleInitialBundleStatusCodes = Object.values(ENUMS.INITIAL_BUNDLE_STATUS_CODES).filter((value) => !Number.isNaN(Number(value)));
 
     return {
       initialBundleStatusCode: possibleInitialBundleStatusCodes[
@@ -108,7 +108,7 @@ export class GetFacilityActivationTransactionGenerator extends AbstractGenerator
   }
 }
 
-interface FacilityActivationTransactionValues {
+type FacilityActivationTransactionValues = {
   initialBundleStatusCode: InitialBundleStatusCodeEnum;
   bundleStatusCode: string;
   bundleStatusDesc: string;
@@ -123,13 +123,13 @@ interface FacilityActivationTransactionValues {
   limitTypeCode: string;
   sectionIdentifier: string;
   postingDate: DateOnlyString;
-}
+};
 
-interface GenerateOptions {
+type GenerateOptions = {
   facilityIdentifier: UkefId;
-}
+};
 
-interface GenerateResult {
+type GenerateResult = {
   acbsFacilityActivationTransaction: AcbsGetBundleInformationResponseDto;
   apiFacilityActivationTransaction: GetFacilityActivationTransactionResponseDto;
-}
+};

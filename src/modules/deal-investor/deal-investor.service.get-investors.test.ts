@@ -1,3 +1,4 @@
+import { when } from 'jest-when';
 import { PROPERTIES } from '@ukef/constants';
 import { AcbsDealPartyService } from '@ukef/modules/acbs/acbs-deal-party.service';
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
@@ -5,9 +6,8 @@ import { DateStringTransformations } from '@ukef/modules/date/date-string.transf
 import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
 import { GetDealInvestorGenerator } from '@ukef-test/support/generator/get-deal-investor-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { when } from 'jest-when';
 
-import { CurrentDateProvider } from '../date/current-date.provider';
+import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
 import { DealInvestorService } from './deal-investor.service';
 
 jest.mock('@ukef/modules/acbs/acbs-deal-party.service');
@@ -25,7 +25,7 @@ describe('DealInvestorService', () => {
   let acbsDealPartyServiceGetDealPartyForDeal: jest.Mock;
 
   beforeEach(() => {
-    acbsDealPartyService = new AcbsDealPartyService(null, null);
+    acbsDealPartyService = new AcbsDealPartyService(null!, null!);
 
     acbsDealPartyServiceGetDealPartyForDeal = jest.fn();
     acbsDealPartyService.getDealPartiesForDeal = acbsDealPartyServiceGetDealPartyForDeal;

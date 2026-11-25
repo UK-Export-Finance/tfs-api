@@ -1,3 +1,4 @@
+import { when } from 'jest-when';
 import { PROPERTIES } from '@ukef/constants';
 import { AcbsDealGuaranteeService } from '@ukef/modules/acbs/acbs-deal-guarantee.service';
 import { AcbsCreateDealGuaranteeDto } from '@ukef/modules/acbs/dto/acbs-create-deal-guarantee.dto';
@@ -5,9 +6,8 @@ import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
 import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
 import { TEST_DATES } from '@ukef-test/support/constants/test-date.constant';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { when } from 'jest-when';
 
-import { DateStringTransformations } from '../date/date-string.transformations';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { DealGuaranteeService } from './deal-guarantee.service';
 import { CreateDealGuaranteeRequestItem } from './dto/create-deal-guarantee-request.dto';
 
@@ -25,7 +25,7 @@ describe('DealGuaranteeService', () => {
   let acbsDealGuaranteeServiceCreateGuaranteeForDeal: jest.Mock;
 
   beforeEach(() => {
-    const acbsDealGuaranteeService = new AcbsDealGuaranteeService(null, null);
+    const acbsDealGuaranteeService = new AcbsDealGuaranteeService(null!, null!);
     acbsDealGuaranteeServiceCreateGuaranteeForDeal = jest.fn();
     acbsDealGuaranteeService.createGuaranteeForDeal = acbsDealGuaranteeServiceCreateGuaranteeForDeal;
 
@@ -55,6 +55,15 @@ describe('DealGuaranteeService', () => {
       maximumLiability: maximumLiabilityWithOneDecimalPlace,
     };
 
+    const newGuaranteeWithoutGuarantorParty: CreateDealGuaranteeRequestItem = {
+      effectiveDate,
+      limitKey,
+      guaranteeExpiryDate: expirationDate,
+      maximumLiability: maximumLiabilityWithOneDecimalPlace,
+    };
+
+    const getGuaranteeCreatedInAcbs = (): AcbsCreateDealGuaranteeDto => acbsDealGuaranteeServiceCreateGuaranteeForDeal.mock.calls[0][1];
+
     it('creates a guarantee in ACBS with a transformation of the requested new guarantee', async () => {
       const expectedNewGuaranteeToCreate: AcbsCreateDealGuaranteeDto = {
         LenderType: {
@@ -83,8 +92,6 @@ describe('DealGuaranteeService', () => {
     });
 
     it('adds a default value for guarantorParty before creating the new guarantee if it is not specified', async () => {
-      const { guarantorParty: _removed, ...newGuaranteeWithoutGuarantorParty } = newGuaranteeWithAllFields;
-
       await service.createGuaranteeForDeal(dealIdentifier, newGuaranteeWithoutGuarantorParty);
 
       const guaranteeCreatedInAcbs = getGuaranteeCreatedInAcbs();
@@ -124,7 +131,5 @@ describe('DealGuaranteeService', () => {
 
       expect(guaranteeCreatedInAcbs.GuaranteedLimit).toBeCloseTo(maximumLiabilityRoundedToTwoDecimalPlaces, 8);
     });
-
-    const getGuaranteeCreatedInAcbs = (): AcbsCreateDealGuaranteeDto => acbsDealGuaranteeServiceCreateGuaranteeForDeal.mock.calls[0][1];
   });
 });

@@ -1,43 +1,18 @@
 import { applyDecorators } from '@nestjs/common';
 import { ApiProperty, ApiPropertyOptions } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsNumber, Min, NotEquals, ValidateIf } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsNumber, Min, NotEquals } from 'class-validator';
 
-interface Options {
+import { NullableOption, parseRequiredAndNullable, RequiredOption } from './parse-required-and-nullable-validation.helper';
+
+type Options = {
   description: string;
   minimum?: number;
-  enum?: any;
-  required?: boolean;
+  enum?: Record<string, string | number> | (string | number)[];
+  required?: RequiredOption;
+  nullable?: NullableOption;
   example?: number;
   default?: number;
   forbidZero?: boolean;
-}
-
-export const ValidatedNumberApiProperty = (options: Options) => {
-  const decoratorsToApply = [ApiProperty(buildSwaggerPropertyOptions(options)), IsNumber()];
-
-  const { minimum, enum: theEnum, required, forbidZero } = options;
-
-  if (minimum || minimum === 0) {
-    decoratorsToApply.push(Min(minimum));
-  }
-
-  const isRequiredProperty = required ?? true;
-
-  decoratorsToApply.push(IsNotEmpty());
-
-  if (!isRequiredProperty) {
-    decoratorsToApply.push(ValidateIf((_object, value) => value !== undefined));
-  }
-
-  if (theEnum) {
-    decoratorsToApply.push(IsEnum(theEnum));
-  }
-
-  if (forbidZero) {
-    decoratorsToApply.push(NotEquals(0));
-  }
-
-  return applyDecorators(...decoratorsToApply);
 };
 
 const buildSwaggerPropertyOptions = ({
@@ -45,6 +20,7 @@ const buildSwaggerPropertyOptions = ({
   minimum,
   enum: theEnum,
   required,
+  nullable,
   example,
   default: theDefault,
   forbidZero,
@@ -56,9 +32,51 @@ const buildSwaggerPropertyOptions = ({
     example,
     enum: theEnum,
     required,
-    nullable: false,
+    nullable,
     default: theDefault,
   };
 
-  return forbidZero ? { ...baseOptions, not: { enum: [0] } } : baseOptions;
+  return (forbidZero ? { ...baseOptions, not: { enum: [0] } } : baseOptions) as ApiPropertyOptions;
+};
+
+export const ValidatedNumberApiProperty = (options: Options) => {
+  const { description, minimum, enum: theEnum, required, nullable, example, default: theDefault, forbidZero } = options;
+
+  const { shouldPropertyBeDocumentedAsRequired, shouldPropertyBeDocumentedAsNullable, validationDecoratorsToApply } = parseRequiredAndNullable({
+    required,
+    nullable,
+  });
+
+  const decoratorsToApply = [
+    ApiProperty(
+      buildSwaggerPropertyOptions({
+        description,
+        minimum,
+        enum: theEnum,
+        required: shouldPropertyBeDocumentedAsRequired,
+        nullable: shouldPropertyBeDocumentedAsNullable,
+        example,
+        default: theDefault,
+        forbidZero,
+      }),
+    ),
+    IsNumber(),
+  ];
+
+  if (minimum || minimum === 0) {
+    decoratorsToApply.push(Min(minimum));
+  }
+
+  decoratorsToApply.push(IsNotEmpty());
+  decoratorsToApply.push(...validationDecoratorsToApply);
+
+  if (theEnum) {
+    decoratorsToApply.push(IsEnum(theEnum));
+  }
+
+  if (forbidZero) {
+    decoratorsToApply.push(NotEquals(0));
+  }
+
+  return applyDecorators(...decoratorsToApply);
 };

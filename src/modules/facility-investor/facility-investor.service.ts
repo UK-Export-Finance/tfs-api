@@ -46,18 +46,16 @@ export class FacilityInvestorService {
     const { portfolioIdentifier } = PROPERTIES.GLOBAL;
     const investorsInAcbs = await this.acbsFacilityPartyService.getFacilityPartiesForFacility(portfolioIdentifier, facilityIdentifier, idToken);
 
-    return investorsInAcbs.map(
-      (investorInAcbs): GetFacilityInvestorResponseItem => ({
-        facilityIdentifier,
-        portfolioIdentifier,
-        guaranteeCommencementDate: this.dateStringTransformations.removeTime(investorInAcbs.EffectiveDate),
-        effectiveDate: this.dateStringTransformations.removeTime(investorInAcbs.EffectiveDate),
-        currency: investorInAcbs.Currency.CurrencyCode,
-        guaranteeExpiryDate: this.dateStringTransformations.removeTime(investorInAcbs.ExpirationDate),
-        maximumLiability: investorInAcbs.LimitAmount,
-        lenderTypeCode: investorInAcbs.LenderType.LenderTypeCode,
-        involvedParty: investorInAcbs.InvolvedParty.PartyIdentifier,
-      }),
-    );
+    return investorsInAcbs.map((investorInAcbs): GetFacilityInvestorResponseItem => ({
+      facilityIdentifier,
+      portfolioIdentifier,
+      guaranteeCommencementDate: this.dateStringTransformations.removeTime(investorInAcbs.EffectiveDate),
+      effectiveDate: this.dateStringTransformations.removeTime(investorInAcbs.EffectiveDate),
+      currency: investorInAcbs.Currency.CurrencyCode,
+      guaranteeExpiryDate: this.dateStringTransformations.removeTime(investorInAcbs.ExpirationDate),
+      maximumLiability: investorInAcbs.LimitAmount,
+      lenderTypeCode: investorInAcbs.LenderType.LenderTypeCode,
+      involvedParty: investorInAcbs.InvolvedParty.PartyIdentifier,
+    }));
   }
 }

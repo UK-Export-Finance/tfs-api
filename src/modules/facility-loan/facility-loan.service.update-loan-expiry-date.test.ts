@@ -1,3 +1,4 @@
+import { when } from 'jest-when';
 import { PROPERTIES } from '@ukef/constants';
 import { AcbsBundleInformationService } from '@ukef/modules/acbs/acbs-bundle-information.service';
 import { AcbsFacilityLoanService } from '@ukef/modules/acbs/acbs-facility-loan.service';
@@ -7,11 +8,10 @@ import { DateStringTransformations } from '@ukef/modules/date/date-string.transf
 import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { UpdateLoanGenerator } from '@ukef-test/support/generator/update-loan-generator';
-import { when } from 'jest-when';
 
-import { AcbsLoanService } from '../acbs/acbs-loan-service';
-import { AcbsGetLoanByLoanIdentifierResponseDto } from '../acbs/dto/acbs-get-loan-by-loan-identifier-response.dto';
-import { AcbsException } from '../acbs/exception/acbs.exception';
+import { AcbsLoanService } from '@ukef/modules/acbs/acbs-loan-service';
+import { AcbsGetLoanByLoanIdentifierResponseDto } from '@ukef/modules/acbs/dto/acbs-get-loan-by-loan-identifier-response.dto';
+import { AcbsException } from '@ukef/modules/acbs/exception/acbs.exception';
 import { UpdateLoanExpiryDateRequest } from './dto/update-loan-expiry-date-request.dto';
 import { FacilityLoanService } from './facility-loan.service';
 
@@ -49,12 +49,14 @@ describe('FacilityLoanService', () => {
     const acbsAuthenticationServiceGetIdToken = mockAcbsAuthenticationService.getIdToken;
     when(acbsAuthenticationServiceGetIdToken).calledWith().mockResolvedValueOnce(idToken);
 
-    acbsFacilityLoanService = new AcbsFacilityLoanService(null, null);
+    acbsFacilityLoanService = new AcbsFacilityLoanService(null!, null!);
 
     acbsFacilityLoanServiceGetLoansForFacility = jest.fn();
     acbsFacilityLoanService.getLoansForFacility = acbsFacilityLoanServiceGetLoansForFacility;
 
-    acbsLoanService = new AcbsLoanService(null, null);
+    acbsBundleInformationService = null!;
+
+    acbsLoanService = new AcbsLoanService(null!, null!);
 
     acbsLoanServiceUpdateLoanByIdentifier = jest.fn();
     acbsLoanService.updateLoanByIdentifier = acbsLoanServiceUpdateLoanByIdentifier;
@@ -68,9 +70,9 @@ describe('FacilityLoanService', () => {
       acbsBundleInformationService,
       new DateStringTransformations(),
       new CurrentDateProvider(),
-      null,
+      null!,
       acbsLoanService,
-      null,
+      null!,
     );
   });
 
@@ -84,8 +86,8 @@ describe('FacilityLoanService', () => {
         .mockRejectedValue(new AcbsException(`Failed to update loan with identifier ${loanIdentifier} in ACBS.`));
     };
 
-    const makeUpdateLoanExpiryDateRequestWithRequest = async (updateLoanExpiryDateRequest: UpdateLoanExpiryDateRequest) => {
-      await service.updateLoanExpiryDate(loanIdentifier, updateLoanExpiryDateRequest);
+    const makeUpdateLoanExpiryDateRequestWithRequest = async (expiryDateRequest: UpdateLoanExpiryDateRequest) => {
+      await service.updateLoanExpiryDate(loanIdentifier, expiryDateRequest);
     };
 
     const getRequestsAndResponsesWithKnownDateParameters = ({
@@ -158,7 +160,7 @@ describe('FacilityLoanService', () => {
         }),
       },
     ])('updates a loan in ACBS with the expected request', ({ description, requestsAndResponses }) => {
-      it(`${description}`, async () => {
+      it(description, async () => {
         const { modifiedUpdateLoanExpiryDateRequest, modifiedAcbsGetExistingLoanResponse, modifiedAcbsUpdateLoanRequest } = requestsAndResponses;
         mockSuccessfulAcbsGetLoanRequestWithResponse(modifiedAcbsGetExistingLoanResponse);
 

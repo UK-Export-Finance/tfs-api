@@ -228,7 +228,7 @@ export class CreateDealGenerator extends AbstractGenerator<DealValues, GenerateR
   }
 }
 
-interface DealValues {
+type DealValues = {
   dealIdentifier: string;
   currency: string;
   dealValue: number;
@@ -240,15 +240,15 @@ interface DealValues {
   obligorPartyIdentifier: string;
   obligorName: string;
   obligorIndustryClassification: string;
-}
+};
 
-interface GenerateResult {
+type GenerateResult = {
   acbsCreateDealRequest: AcbsCreateDealDto;
   acbsUpdateDealBorrowingRestrictionRequest: AcbsUpdateDealBorrowingRestrictionRequest;
   createDealRequestItem: CreateDealRequestItem;
   guaranteeCommencementDateAsDate: Date;
   guaranteeCommencementDateString: string;
   guaranteeCommencementDateForDescription: string;
-}
+};
 
 type GenerateOptions = unknown;

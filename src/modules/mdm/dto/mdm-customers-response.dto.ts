@@ -1,5 +1,5 @@
 export type MdmCustomersResponse = MdmCustomersResponseItem[];
 
-interface MdmCustomersResponseItem {
+type MdmCustomersResponseItem = {
   type: string | null;
-}
+};

@@ -1,6 +1,5 @@
 import { PROPERTIES } from '@ukef/constants';
 
-import { CreateFacilityRequestItem } from '../dto/create-facility-request.dto';
 import { CreateFacilityTestPartsArgs } from './create-facility-test-parts-args.interface';
 
 export const withCreateFacilityCapitalConversionFactorCodeTests = ({
@@ -25,12 +24,12 @@ export const withCreateFacilityCapitalConversionFactorCodeTests = ({
     });
 
     it(`sets CapitalConversionFactor.CapitalConversionFactorCode to default PROPERTIES value for productTypeId '250' if it is not specified in the request and the productTypeId is '250'`, async () => {
-      const { capitalConversionFactorCode: _removed, ...facilityToCreateWithoutCapitalConversionFactorCode } = {
+      const { capitalConversionFactorCode: removed, ...facilityToCreateWithoutCapitalConversionFactorCode } = {
         ...facilityToCreate,
         productTypeId: '250',
       };
 
-      await createFacility(facilityToCreateWithoutCapitalConversionFactorCode as CreateFacilityRequestItem);
+      await createFacility(facilityToCreateWithoutCapitalConversionFactorCode);
 
       const facilityCreatedInAcbs = getFacilityCreatedInAcbs();
 
@@ -40,12 +39,12 @@ export const withCreateFacilityCapitalConversionFactorCodeTests = ({
     });
 
     it(`sets CapitalConversionFactor.CapitalConversionFactorCode to default PROPERTIES value for productTypeId '260' if it is not specified in the request and the productTypeId is '260'`, async () => {
-      const { capitalConversionFactorCode: _removed, ...facilityToCreateWithoutCapitalConversionFactorCode } = {
+      const { capitalConversionFactorCode: removed, ...facilityToCreateWithoutCapitalConversionFactorCode } = {
         ...facilityToCreate,
         productTypeId: '260',
       };
 
-      await createFacility(facilityToCreateWithoutCapitalConversionFactorCode as CreateFacilityRequestItem);
+      await createFacility(facilityToCreateWithoutCapitalConversionFactorCode);
 
       const facilityCreatedInAcbs = getFacilityCreatedInAcbs();
 
@@ -55,9 +54,9 @@ export const withCreateFacilityCapitalConversionFactorCodeTests = ({
     });
 
     it(`sets CapitalConversionFactor.CapitalConversionFactorCode to fallback values from PROPERTIES if it is not specified in the request and the productTypeId is not '250' or '260'`, async () => {
-      const { capitalConversionFactorCode: _removed, ...facilityToCreateWithoutCapitalConversionFactorCode } = facilityToCreate;
+      const { capitalConversionFactorCode: removed, ...facilityToCreateWithoutCapitalConversionFactorCode } = facilityToCreate;
 
-      await createFacility(facilityToCreateWithoutCapitalConversionFactorCode as CreateFacilityRequestItem);
+      await createFacility(facilityToCreateWithoutCapitalConversionFactorCode);
 
       const facilityCreatedInAcbs = getFacilityCreatedInAcbs();
 

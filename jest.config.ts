@@ -1,9 +1,9 @@
 import { JestConfigWithTsJest } from 'ts-jest';
 
+const tsJestTransform = { '^.+\\.(ts|tsx)?$': ['ts-jest', {}] };
+
 const defaultSettings = {
   rootDir: 'test',
-  extensionsToTreatAsEsm: ['.ts'],
-  preset: 'ts-jest/presets/default-esm',
   testEnvironment: 'node',
   moduleFileExtensions: ['ts', 'js', 'json', 'node'],
   moduleNameMapper: {
@@ -20,25 +20,36 @@ const defaultSettings = {
 const config: JestConfigWithTsJest = {
   projects: [
     {
-      displayName: 'Unit',
+      displayName: 'Unit-FF=true',
+      setupFiles: ['../test/setup/enable-gift-feature-flag.ts'],
       setupFilesAfterEnv: ['../test/setup/mock-nestjs-axios.ts'],
       testMatch: ['**/*.test.ts'],
-      transform: { '^.+\\.(ts|tsx)?$': ['ts-jest', { useESM: true }] },
+      testPathIgnorePatterns: ['.*\\.gift-disabled\\.test\\.ts$'],
+      transform: tsJestTransform,
       ...defaultSettings,
       rootDir: 'src',
     },
     {
-      displayName: 'API',
-      setupFilesAfterEnv: ['./setup/override-environment-variables.ts'],
-      testMatch: ['**/*.api-test.ts'],
-      transform: { '^.+\\.(ts|tsx)?$': ['ts-jest', { useESM: true }] },
+      displayName: 'Unit-FF=false',
+      setupFiles: ['../test/setup/disable-gift-feature-flag.ts'],
+      setupFilesAfterEnv: ['../test/setup/mock-nestjs-axios.ts'],
+      testMatch: ['**/*.gift-disabled.test.ts'],
+      transform: tsJestTransform,
+      ...defaultSettings,
+      rootDir: 'src',
+    },
+    {
+      displayName: 'API-FF=true',
+      setupFilesAfterEnv: ['./setup/override-environment-variables.ts', './setup/enable-gift-feature-flag.ts'],
+      testMatch: ['**/*.api-test.ts', '!**/feature-flag-disabled/**/*.api-test.ts'],
+      transform: tsJestTransform,
       ...defaultSettings,
     },
     {
-      displayName: 'E2E',
-      setupFilesAfterEnv: ['./setup/override-environment-variables.ts'],
-      testMatch: ['**/*.e2e-test.ts'],
-      transform: { '^.+\\.(ts|tsx)?$': ['ts-jest', { useESM: true }] },
+      displayName: 'API-FF=false',
+      setupFilesAfterEnv: ['./setup/override-environment-variables.ts', './setup/disable-gift-feature-flag.ts'],
+      testMatch: ['**/feature-flag-disabled/*.api-test.ts'],
+      transform: tsJestTransform,
       ...defaultSettings,
     },
   ],

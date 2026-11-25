@@ -3,29 +3,29 @@ import { DateString } from '@ukef/helpers/date-string.type';
 
 export class GetPartyByIdentifierResponseDto {
   @ApiResponseProperty()
-  alternateIdentifier: string;
+  alternateIdentifier!: string;
 
   @ApiResponseProperty()
-  industryClassification: string;
+  industryClassification!: string;
 
   @ApiResponseProperty()
-  name1: string;
+  name1!: string;
 
   @ApiResponseProperty()
-  name2: string;
+  name2!: string;
 
   @ApiResponseProperty()
-  name3: string;
+  name3!: string;
 
   @ApiResponseProperty()
-  smeType: string;
+  smeType!: string;
 
   @ApiResponseProperty()
-  citizenshipClass: string;
+  citizenshipClass!: string;
 
   @ApiProperty({ readOnly: true, type: Date, nullable: true })
-  officerRiskDate: DateString | null;
+  officerRiskDate!: DateString | null;
 
   @ApiResponseProperty()
-  countryCode: string;
+  countryCode!: string;
 }

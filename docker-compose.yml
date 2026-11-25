@@ -41,6 +41,15 @@ services:
       APIM_MDM_VALUE:
       APIM_MDM_MAX_REDIRECTS:
       APIM_MDM_TIMEOUT:
+      FF_GIFT_ENABLED:
+      GIFT_API_URL:
+      GIFT_API_KEY:
+      GIFT_API_MAX_REDIRECTS:
+      GIFT_API_TIMEOUT:
+      GIFT_HTTP_VERSION:
+      GIFT_QUEUE_NAME:
+      GIFT_QUEUE_STORAGE_CONNECTION_STRING:
+
 
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:${PORT}']

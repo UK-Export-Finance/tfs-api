@@ -57,8 +57,10 @@ export class FacilityInvestorController {
   ): Promise<CreateFacilityInvestorResponse> {
     const [newFacilityInvestor] = newFacilityInvestorRequest;
     const { facilityIdentifier } = params;
+
     await this.facilityInvestorService.createInvestorForFacility(facilityIdentifier, newFacilityInvestor);
-    return Promise.resolve(new CreateFacilityInvestorResponse(facilityIdentifier));
+
+    return new CreateFacilityInvestorResponse(facilityIdentifier);
   }
 
   @Get('facilities/:facilityIdentifier/investors')

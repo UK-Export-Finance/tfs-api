@@ -1,11 +1,11 @@
 import { HttpService } from '@nestjs/axios';
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
-import AcbsAuthenticationConfig from '@ukef/config/acbs-authentication.config';
-import { ACBS } from '@ukef/constants';
 import { AxiosResponse } from 'axios';
 import { PinoLogger } from 'nestjs-pino';
 import { catchError, lastValueFrom } from 'rxjs';
+import { ACBS } from '@ukef/constants';
+import { AcbsAuthenticationConfig } from '@ukef/config/acbs-authentication.config';
 
 import {
   ID_TOKEN_RESPONSE_FIELD_NAME,
@@ -22,7 +22,9 @@ type RequiredConfigKeys = 'apiKey' | 'apiKeyHeaderName' | 'baseUrl' | 'clientId'
 @Injectable()
 export class BaseAcbsAuthenticationService extends AcbsAuthenticationService {
   private static readonly sessionsPath = '/sessions';
+
   private static readonly connectPath = '/idptoken/openid-connect';
+
   private static readonly sessionIdCookieSeparator = ';';
 
   constructor(
@@ -36,7 +38,8 @@ export class BaseAcbsAuthenticationService extends AcbsAuthenticationService {
 
   async getIdToken(): Promise<string> {
     const sessionId = await this.createSession();
-    return this.getIdTokenForSession(sessionId);
+
+    return await this.getIdTokenForSession(sessionId);
   }
 
   private async createSession(): Promise<string> {
@@ -64,7 +67,7 @@ export class BaseAcbsAuthenticationService extends AcbsAuthenticationService {
   }
 
   private extractSessionIdFromCreateSessionResponse(response: AxiosResponse): string {
-    const sessionIdCookie = response.headers[SET_COOKIE_HEADER_NAME].find((cookie) => cookie.startsWith(ACBS.AUTHENTICATION.SESSION_ID_COOKIE_NAME));
+    const sessionIdCookie = response.headers[SET_COOKIE_HEADER_NAME]?.find((cookie) => cookie.startsWith(ACBS.AUTHENTICATION.SESSION_ID_COOKIE_NAME));
 
     if (!sessionIdCookie) {
       throw new AcbsAuthenticationFailedException('Session cookie was not returned by the IdP.');
@@ -78,7 +81,7 @@ export class BaseAcbsAuthenticationService extends AcbsAuthenticationService {
   private async getIdTokenForSession(sessionId: string): Promise<string> {
     const connectResponse = await lastValueFrom(
       this.httpService
-        .get<IdpConnectResponse>(BaseAcbsAuthenticationService.connectPath, {
+        .get<IdpConnectResponse | null>(BaseAcbsAuthenticationService.connectPath, {
           baseURL: this.config.baseUrl,
           params: { client_id: this.config.clientId },
           headers: {
@@ -98,12 +101,13 @@ export class BaseAcbsAuthenticationService extends AcbsAuthenticationService {
     return this.extractIdTokenFromConnectResponse(connectResponse);
   }
 
-  private extractIdTokenFromConnectResponse(response: AxiosResponse<IdpConnectResponse>): string {
-    const { [ID_TOKEN_RESPONSE_FIELD_NAME]: idToken } = response.data || {};
+  private extractIdTokenFromConnectResponse(response: AxiosResponse<IdpConnectResponse | null>): string {
+    const idToken = response.data?.[`${ID_TOKEN_RESPONSE_FIELD_NAME}`];
 
     if (!idToken || typeof idToken !== 'string') {
       throw new AcbsAuthenticationFailedException('ID token was not returned by the IdP.');
     }
+
     return idToken;
   }
 }

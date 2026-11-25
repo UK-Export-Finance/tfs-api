@@ -3,8 +3,8 @@ import { ValidatedFacilityIdentifierApiProperty } from '@ukef/decorators/validat
 
 export class GetFacilityActivationTransactionParamsDto {
   @ValidatedFacilityIdentifierApiProperty({ description: 'The UKEF identifier for the facility.' })
-  readonly facilityIdentifier: string;
+  readonly facilityIdentifier!: string;
 
   @ValidatedBundleIdentifierApiProperty({ description: 'The bundle identifier for the loan transaction.' })
-  readonly bundleIdentifier: string;
+  readonly bundleIdentifier!: string;
 }

@@ -1,4 +1,5 @@
 import { BadRequestException } from '@nestjs/common';
+import { when } from 'jest-when';
 import { PROPERTIES } from '@ukef/constants';
 import { AcbsBundleInformationService } from '@ukef/modules/acbs/acbs-bundle-information.service';
 import { AcbsAuthenticationService } from '@ukef/modules/acbs-authentication/acbs-authentication.service';
@@ -6,7 +7,6 @@ import { DateStringTransformations } from '@ukef/modules/date/date-string.transf
 import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
 import { GetFacilityLoanTransactionGenerator } from '@ukef-test/support/generator/get-facility-loan-transaction-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { when } from 'jest-when';
 
 import { GetFacilityLoanTransactionResponseDto } from './dto/get-facility-loan-transaction-response.dto';
 import { FacilityLoanTransactionService } from './facility-loan-transaction.service';
@@ -33,7 +33,7 @@ describe('FacilityLoanTransactionService', () => {
     const acbsAuthenticationServiceGetIdToken = mockAcbsAuthenticationService.getIdToken;
     when(acbsAuthenticationServiceGetIdToken).calledWith().mockResolvedValueOnce(idToken);
 
-    const acbsService = new AcbsBundleInformationService(null, null);
+    const acbsService = new AcbsBundleInformationService(null!, null!);
     getBundleInformationAcbsService = jest.fn();
     acbsService.getBundleInformationByIdentifier = getBundleInformationAcbsService;
 

@@ -1,0 +1,392 @@
+import { GIFT_QUEUE_MESSAGE_TYPE } from '../types/queue-message.type';
+import { createHaloTicket } from '../utils/create-halo-ticket';
+import { getFromTfsApi } from '../utils/get-from-tfs-api';
+import { postToTfsApi } from '../utils/post-to-tfs-api';
+import { processGiftQueueMessage } from '../utils/process-gift-queue-message';
+
+const { FACILITY_CREATION, FACILITY_AMENDMENT, FACILITY_MULTIPLE_AMENDMENTS, FACILITY_GET, FACILITY_GET_MANY } = GIFT_QUEUE_MESSAGE_TYPE;
+
+const GIFT_MAX_NUMBER_OF_RETRIES = Number(process.env.GIFT_MAX_NUMBER_OF_RETRIES);
+const mockFacilityId = '00111111111';
+
+jest.mock('../utils/post-to-tfs-api');
+jest.mock('../utils/get-from-tfs-api');
+jest.mock('../utils/create-halo-ticket');
+
+const context = {
+  log: jest.fn(),
+  error: jest.fn(),
+  triggerMetadata: {
+    dequeueCount: GIFT_MAX_NUMBER_OF_RETRIES,
+  },
+};
+
+describe('processGiftQueueMessage', () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
+
+  describe(`when messageType is ${FACILITY_CREATION}`, () => {
+    const queueItem = {
+      messageType: FACILITY_CREATION,
+      payload: {
+        overview: {
+          facilityId: mockFacilityId,
+        },
+      },
+    };
+
+    it('should call postToTfsApi with the creation URL, payload, and context', async () => {
+      // Arrange
+      (postToTfsApi as jest.Mock).mockResolvedValue(undefined);
+
+      // Act
+      await processGiftQueueMessage(queueItem, context as any);
+
+      // Assert
+      expect(postToTfsApi).toHaveBeenCalledTimes(1);
+      expect(postToTfsApi).toHaveBeenCalledWith('facilityCreation', '', queueItem.payload, `Failed to create GIFT facility ${mockFacilityId}`, context);
+      expect(context.log).toHaveBeenCalledWith('GIFT facility creation succeeded for facilityId:', mockFacilityId);
+    });
+
+    it('should not call createHaloTicket when postToTfsApi succeeds', async () => {
+      // Arrange
+      (postToTfsApi as jest.Mock).mockResolvedValue(undefined);
+
+      // Act
+      await processGiftQueueMessage(queueItem, context as any);
+
+      // Assert
+      expect(createHaloTicket).not.toHaveBeenCalled();
+    });
+
+    describe('when postToTfsApi throws', () => {
+      it(`calls createHaloTicket and rethrows when dequeueCount is ${GIFT_MAX_NUMBER_OF_RETRIES}`, async () => {
+        // Arrange
+        const error = new Error('Failed to create GIFT facility, status: 400, response: {"error":"Bad Request"}');
+
+        (postToTfsApi as jest.Mock).mockRejectedValue(error);
+        (createHaloTicket as jest.Mock).mockResolvedValue(undefined);
+
+        // Act & Assert
+        await expect(processGiftQueueMessage(queueItem, context as any)).rejects.toThrow(error);
+        expect(createHaloTicket).toHaveBeenCalledTimes(1);
+        expect(createHaloTicket).toHaveBeenCalledWith(mockFacilityId, queueItem, error.message, FACILITY_CREATION, context);
+      });
+
+      it(`should not call createHaloTicket and rethrows when dequeueCount is less than ${GIFT_MAX_NUMBER_OF_RETRIES}`, async () => {
+        // Arrange
+        const error = new Error('Failed to create GIFT facility');
+        const contextWithLowDequeueCount = {
+          ...context,
+          triggerMetadata: {
+            dequeueCount: GIFT_MAX_NUMBER_OF_RETRIES - 1,
+          },
+        };
+
+        (postToTfsApi as jest.Mock).mockRejectedValue(error);
+
+        // Act & Assert
+        await expect(processGiftQueueMessage(queueItem, contextWithLowDequeueCount as any)).rejects.toThrow(error);
+        expect(createHaloTicket).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe(`when messageType is ${FACILITY_AMENDMENT}`, () => {
+    const queueItem = {
+      messageType: FACILITY_AMENDMENT,
+      facilityId: mockFacilityId,
+      payload: {
+        amendmentType: 'INCREASE_AMOUNT',
+        amendmentData: {
+          amount: 5000,
+          date: '2025-06-01',
+        },
+      },
+    };
+
+    it('should call postToTfsApi with the amendment URL, payload, and context', async () => {
+      // Arrange
+      (postToTfsApi as jest.Mock).mockResolvedValue(undefined);
+
+      // Act
+      await processGiftQueueMessage(queueItem, context as any);
+
+      // Assert
+      expect(postToTfsApi).toHaveBeenCalledTimes(1);
+      expect(postToTfsApi).toHaveBeenCalledWith(
+        'facilityAmendment',
+        mockFacilityId,
+        queueItem.payload,
+        `Failed to amend GIFT facility ${mockFacilityId}`,
+        context,
+      );
+      expect(context.log).toHaveBeenCalledWith('GIFT facility amendment succeeded for facilityId:', mockFacilityId);
+    });
+
+    it('should not call createHaloTicket when postToTfsApi succeeds', async () => {
+      // Arrange
+      (postToTfsApi as jest.Mock).mockResolvedValue(undefined);
+
+      // Act
+      await processGiftQueueMessage(queueItem, context as any);
+
+      // Assert
+      expect(createHaloTicket).not.toHaveBeenCalled();
+    });
+
+    describe('when postToTfsApi throws', () => {
+      it(`calls createHaloTicket and rethrows when dequeueCount is ${GIFT_MAX_NUMBER_OF_RETRIES}`, async () => {
+        // Arrange
+        const error = new Error('Failed to amend GIFT facility, status: 400, response: {"error":"Bad Request"}');
+
+        (postToTfsApi as jest.Mock).mockRejectedValue(error);
+        (createHaloTicket as jest.Mock).mockResolvedValue(undefined);
+
+        // Act & Assert
+        await expect(processGiftQueueMessage(queueItem, context as any)).rejects.toThrow(error);
+        expect(createHaloTicket).toHaveBeenCalledTimes(1);
+        expect(createHaloTicket).toHaveBeenCalledWith(mockFacilityId, queueItem, error.message, FACILITY_AMENDMENT, context);
+      });
+
+      it(`should not call createHaloTicket and rethrows when dequeueCount is less than ${GIFT_MAX_NUMBER_OF_RETRIES}`, async () => {
+        // Arrange
+        const error = new Error('Failed to amend GIFT facility');
+        const contextWithLowDequeueCount = {
+          ...context,
+          triggerMetadata: {
+            dequeueCount: GIFT_MAX_NUMBER_OF_RETRIES - 1,
+          },
+        };
+
+        (postToTfsApi as jest.Mock).mockRejectedValue(error);
+
+        // Act & Assert
+        await expect(processGiftQueueMessage(queueItem, contextWithLowDequeueCount as any)).rejects.toThrow(error);
+        expect(createHaloTicket).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe(`when messageType is ${FACILITY_MULTIPLE_AMENDMENTS}`, () => {
+    const queueItem = {
+      messageType: FACILITY_MULTIPLE_AMENDMENTS,
+      facilityId: mockFacilityId,
+      payload: {
+        amendments: [
+          {
+            amendmentType: 'IncreaseAmount',
+            amendmentData: {
+              amount: 5000,
+              date: '2025-06-01',
+            },
+          },
+          {
+            amendmentType: 'ReplaceExpiryDate',
+            amendmentData: {
+              expiryDate: '2025-06-01',
+            },
+          },
+        ],
+      },
+    };
+
+    it('should call postToTfsApi with the amendment URL, payload, and context', async () => {
+      // Arrange
+      (postToTfsApi as jest.Mock).mockResolvedValue(undefined);
+
+      // Act
+      await processGiftQueueMessage(queueItem, context as any);
+
+      // Assert
+      expect(postToTfsApi).toHaveBeenCalledTimes(1);
+      expect(postToTfsApi).toHaveBeenCalledWith(
+        'facilityMultipleAmendments',
+        mockFacilityId,
+        queueItem.payload,
+        `Failed to amend GIFT facility (multiple amendments) ${mockFacilityId}`,
+        context,
+      );
+      expect(context.log).toHaveBeenCalledWith('GIFT facility amendment (multiple amendments) succeeded for facilityId:', mockFacilityId);
+    });
+
+    it('should not call createHaloTicket when postToTfsApi succeeds', async () => {
+      // Arrange
+      (postToTfsApi as jest.Mock).mockResolvedValue(undefined);
+
+      // Act
+      await processGiftQueueMessage(queueItem, context as any);
+
+      // Assert
+      expect(createHaloTicket).not.toHaveBeenCalled();
+    });
+
+    describe('when postToTfsApi throws', () => {
+      it(`calls createHaloTicket and rethrows when dequeueCount is ${GIFT_MAX_NUMBER_OF_RETRIES}`, async () => {
+        // Arrange
+        const error = new Error('Failed to amend GIFT facility, status: 400, response: {"error":"Bad Request"}');
+
+        (postToTfsApi as jest.Mock).mockRejectedValue(error);
+        (createHaloTicket as jest.Mock).mockResolvedValue(undefined);
+
+        // Act & Assert
+        await expect(processGiftQueueMessage(queueItem, context as any)).rejects.toThrow(error);
+        expect(createHaloTicket).toHaveBeenCalledTimes(1);
+        expect(createHaloTicket).toHaveBeenCalledWith(mockFacilityId, queueItem, error.message, FACILITY_MULTIPLE_AMENDMENTS, context);
+      });
+
+      it(`should not call createHaloTicket and rethrows when dequeueCount is less than ${GIFT_MAX_NUMBER_OF_RETRIES}`, async () => {
+        // Arrange
+        const error = new Error('Failed to amend GIFT facility');
+        const contextWithLowDequeueCount = {
+          ...context,
+          triggerMetadata: {
+            dequeueCount: GIFT_MAX_NUMBER_OF_RETRIES - 1,
+          },
+        };
+
+        (postToTfsApi as jest.Mock).mockRejectedValue(error);
+
+        // Act & Assert
+        await expect(processGiftQueueMessage(queueItem, contextWithLowDequeueCount as any)).rejects.toThrow(error);
+        expect(createHaloTicket).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe(`when messageType is ${FACILITY_GET}`, () => {
+    const queueItem = {
+      messageType: FACILITY_GET,
+      facilityId: mockFacilityId,
+    };
+
+    it('should call getFromTfsApi with the facility path and context', async () => {
+      // Arrange
+      (getFromTfsApi as jest.Mock).mockResolvedValue(undefined);
+
+      // Act
+      await processGiftQueueMessage(queueItem, context as any);
+
+      // Assert
+      expect(getFromTfsApi).toHaveBeenCalledTimes(1);
+      expect(getFromTfsApi).toHaveBeenCalledWith('facility', mockFacilityId, {}, `Failed to get GIFT facility ${mockFacilityId}`, context);
+      expect(context.log).toHaveBeenCalledWith('GIFT facility retrieval succeeded for facilityId:', mockFacilityId);
+    });
+
+    it('should not call createHaloTicket when getFromTfsApi succeeds', async () => {
+      // Arrange
+      (getFromTfsApi as jest.Mock).mockResolvedValue(undefined);
+
+      // Act
+      await processGiftQueueMessage(queueItem, context as any);
+
+      // Assert
+      expect(createHaloTicket).not.toHaveBeenCalled();
+    });
+
+    describe('when getFromTfsApi throws', () => {
+      it(`calls createHaloTicket and rethrows when dequeueCount is ${GIFT_MAX_NUMBER_OF_RETRIES}`, async () => {
+        // Arrange
+        const error = new Error('Failed to get GIFT facility, status: 404, response: {"error":"Not Found"}');
+
+        (getFromTfsApi as jest.Mock).mockRejectedValue(error);
+        (createHaloTicket as jest.Mock).mockResolvedValue(undefined);
+
+        // Act & Assert
+        await expect(processGiftQueueMessage(queueItem, context as any)).rejects.toThrow(error);
+        expect(createHaloTicket).toHaveBeenCalledTimes(1);
+        expect(createHaloTicket).toHaveBeenCalledWith(mockFacilityId, queueItem, error.message, FACILITY_GET, context);
+      });
+    });
+  });
+
+  describe(`when messageType is ${FACILITY_GET_MANY}`, () => {
+    const mockFacilityId2 = '00222222222';
+    const queueItem = {
+      messageType: FACILITY_GET_MANY,
+      ids: [mockFacilityId, mockFacilityId2],
+    };
+
+    it('should call getFromTfsApi with the facilities path, ids param, and context', async () => {
+      // Arrange
+      (getFromTfsApi as jest.Mock).mockResolvedValue(undefined);
+
+      // Act
+      await processGiftQueueMessage(queueItem, context as any);
+
+      // Assert
+      expect(getFromTfsApi).toHaveBeenCalledTimes(1);
+      expect(getFromTfsApi).toHaveBeenCalledWith(
+        'facilities',
+        '',
+        { ids: `${mockFacilityId},${mockFacilityId2}` },
+        `Failed to get GIFT facilities ${mockFacilityId},${mockFacilityId2}`,
+        context,
+      );
+      expect(context.log).toHaveBeenCalledWith('GIFT facilities retrieval succeeded for ids:', `${mockFacilityId},${mockFacilityId2}`);
+    });
+
+    it('should not call createHaloTicket when getFromTfsApi succeeds', async () => {
+      // Arrange
+      (getFromTfsApi as jest.Mock).mockResolvedValue(undefined);
+
+      // Act
+      await processGiftQueueMessage(queueItem, context as any);
+
+      // Assert
+      expect(createHaloTicket).not.toHaveBeenCalled();
+    });
+
+    describe('when getFromTfsApi throws', () => {
+      it(`calls createHaloTicket and rethrows when dequeueCount is ${GIFT_MAX_NUMBER_OF_RETRIES}`, async () => {
+        // Arrange
+        const error = new Error('Failed to get GIFT facilities, status: 404, response: {"error":"Not Found"}');
+
+        (getFromTfsApi as jest.Mock).mockRejectedValue(error);
+        (createHaloTicket as jest.Mock).mockResolvedValue(undefined);
+
+        // Act & Assert
+        await expect(processGiftQueueMessage(queueItem, context as any)).rejects.toThrow(error);
+        expect(createHaloTicket).toHaveBeenCalledTimes(1);
+        expect(createHaloTicket).toHaveBeenCalledWith(`${mockFacilityId},${mockFacilityId2}`, queueItem, error.message, FACILITY_GET_MANY, context);
+      });
+    });
+  });
+
+  describe('when messageType is not supported', () => {
+    const queueItem = {
+      messageType: 'Not supported',
+    };
+
+    it('should throw an error indicating the message type is unhandled', async () => {
+      // Act & Assert
+      const expected = 'APIM TFS - Unhandled message type: Not supported';
+
+      await expect(processGiftQueueMessage(queueItem, context as any)).rejects.toThrow(expected);
+    });
+  });
+
+  describe('edge cases', () => {
+    it('uses "Unknown error" as the error message when the thrown value is not an Error', async () => {
+      // Arrange
+      const queueItem = {
+        messageType: FACILITY_CREATION,
+        payload: {
+          overview: {
+            facilityId: mockFacilityId,
+          },
+        },
+      };
+
+      (postToTfsApi as jest.Mock).mockRejectedValue('unexpected string error');
+      (createHaloTicket as jest.Mock).mockResolvedValue(undefined);
+
+      // Act
+      await processGiftQueueMessage(queueItem, context as any).catch(() => {});
+
+      // Assert
+      expect(createHaloTicket).toHaveBeenCalledWith(mockFacilityId, queueItem, 'Unknown error', FACILITY_CREATION, context);
+    });
+  });
+});

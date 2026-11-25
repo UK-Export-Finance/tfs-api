@@ -5,5 +5,5 @@ export class FacilityGuaranteesParamsDto {
   @ValidatedFacilityIdentifierApiProperty({
     description: 'The identifier of the facility in ACBS.',
   })
-  facilityIdentifier: UkefId;
+  facilityIdentifier!: UkefId;
 }

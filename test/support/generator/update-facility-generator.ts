@@ -26,7 +26,7 @@ export class UpdateFacilityGenerator extends AbstractGenerator<FacilityValues, G
       dealIdentifier: this.valueGenerator.dealId(),
       premiumFrequencyCode: this.valueGenerator.string({ maxLength: 1 }),
       riskCountryCode: this.valueGenerator.string({ maxLength: 3 }),
-      obligorIndustryClassification: this.valueGenerator.string(),
+      obligorIndustryClassification: this.valueGenerator.string({ maxLength: 10 }),
       agentBankIdentifier: this.valueGenerator.acbsPartyId(),
       maximumLiability: this.valueGenerator.nonnegativeFloat(),
       exposurePeriod: this.valueGenerator.string({ maxLength: 12 }),
@@ -311,7 +311,7 @@ export class UpdateFacilityGenerator extends AbstractGenerator<FacilityValues, G
   }
 }
 
-interface FacilityValues {
+type FacilityValues = {
   currency: string;
   dealIdentifier: UkefId;
   premiumFrequencyCode: string;
@@ -335,15 +335,15 @@ interface FacilityValues {
   description: string;
   facilityInitialStatusCode: string;
   administrativeUserIdentifier: string;
-}
+};
 
-interface GenerateResult {
+type GenerateResult = {
   acbsUpdateFacilityRequest: AcbsUpdateFacilityRequest;
   acbsGetExistingFacilityResponse: AcbsGetFacilityResponseDto;
   acbsBundleInformationRequest: AcbsCreateBundleInformationRequestDto<FacilityAmountTransaction>;
   updateFacilityRequest: UpdateFacilityRequest;
-}
+};
 
-interface GenerateOptions {
+type GenerateOptions = {
   facilityIdentifier: UkefId;
-}
+};

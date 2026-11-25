@@ -1,6 +1,6 @@
 import { DateString } from '@ukef/helpers';
 
-export interface AcbsGetDealResponseDto {
+export type AcbsGetDealResponseDto = {
   DealIdentifier: string;
   PortfolioIdentifier: string;
   Currency: {
@@ -9,10 +9,10 @@ export interface AcbsGetDealResponseDto {
   OriginalEffectiveDate: DateString;
   MemoLimitAmount: number;
   IndustryClassification: {
-    IndustryClassificationCode: string;
+    IndustryClassificationCode: string | null;
   };
   BorrowerParty: {
-    PartyName1: string;
+    PartyName1: string | null;
     PartyIdentifier: string;
   };
-}
+};

@@ -1,14 +1,14 @@
 import { HttpService } from '@nestjs/axios';
-import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { AxiosError } from 'axios';
 import { when } from 'jest-when';
 import { of, throwError } from 'rxjs';
+import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 
 import { AcbsDealBorrowingRestrictionService } from './acbs-deal-borrowing-restriction.service';
 import { AcbsUpdateDealBorrowingRestrictionRequest } from './dto/acbs-update-deal-borrowing-restriction-request.dto';
 import { AcbsBadRequestException } from './exception/acbs-bad-request.exception';
 import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
-import { AcbsUnexpectedException } from './exception/acbs-unexpected.exception';
+import { AcbsException } from './exception/acbs.exception';
 
 describe('AcbsDealBorrowingRestrictionService', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -77,8 +77,8 @@ describe('AcbsDealBorrowingRestrictionService', () => {
         data: errorString,
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePut)
@@ -104,8 +104,8 @@ describe('AcbsDealBorrowingRestrictionService', () => {
         data: errorString,
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePut)
@@ -132,8 +132,8 @@ describe('AcbsDealBorrowingRestrictionService', () => {
         data: errorBody,
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePut)
@@ -153,15 +153,15 @@ describe('AcbsDealBorrowingRestrictionService', () => {
       await expect(updateBorrowingRestrictionForDealPromise).rejects.toHaveProperty('errorBody', JSON.stringify(errorBody));
     });
 
-    it('throws an AcbsUnexpectedException if ACBS responds with an error code that is not 400', async () => {
+    it('throws an AcbsException if ACBS responds with an error code that is not 400', async () => {
       const axiosError = new AxiosError();
       const errorBody = { errorMessage: valueGenerator.string() };
       axiosError.response = {
         data: errorBody,
         status: 401,
         statusText: 'Unauthorized',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePut)
@@ -175,7 +175,7 @@ describe('AcbsDealBorrowingRestrictionService', () => {
         idToken,
       );
 
-      await expect(updateBorrowingRestrictionForDealPromise).rejects.toBeInstanceOf(AcbsUnexpectedException);
+      await expect(updateBorrowingRestrictionForDealPromise).rejects.toBeInstanceOf(AcbsException);
       await expect(updateBorrowingRestrictionForDealPromise).rejects.toThrow(`Failed to update a borrowing restriction for deal ${dealIdentifier} in ACBS.`);
       await expect(updateBorrowingRestrictionForDealPromise).rejects.toHaveProperty('innerError', axiosError);
     });

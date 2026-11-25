@@ -13,7 +13,7 @@ import { EXAMPLES } from '@ukef/constants';
 import { ValidatedArrayBody } from '@ukef/decorators/validated-array-body.decorator';
 import { NonEmptyObjectRequestBodyValidationPipe } from '@ukef/helpers/non-empty-object-request-body-validation-pipe';
 
-import { FacilityService } from '../facility/facility.service';
+import { FacilityService } from '@ukef/modules/facility/facility.service';
 import { CreateFacilityCovenantRequestDto, CreateFacilityCovenantRequestItem } from './dto/create-facility-covenant-request.dto';
 import { CreateOrUpdateFacilityCovenantsResponseDto } from './dto/create-or-update-covenants-response.dto';
 import { FacilityCovenantsParamsDto } from './dto/facility-covenants-params.dto';

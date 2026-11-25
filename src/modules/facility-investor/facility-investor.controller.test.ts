@@ -17,7 +17,7 @@ describe('FacilityInvestorController', () => {
   let facilityInvestorServiceCreateInvestorForFacility: jest.Mock;
 
   beforeEach(() => {
-    const facilityInvestorService = new FacilityInvestorService(null, null, null);
+    const facilityInvestorService = new FacilityInvestorService(null!, null!, null!);
 
     facilityInvestorServiceCreateInvestorForFacility = jest.fn();
     facilityInvestorService.createInvestorForFacility = facilityInvestorServiceCreateInvestorForFacility;

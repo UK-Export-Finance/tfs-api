@@ -1,11 +1,11 @@
 import { HttpService } from '@nestjs/axios';
-import { GetPartyGenerator } from '@ukef-test/support/generator/get-party-generator';
-import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { AxiosError } from 'axios';
 import { when } from 'jest-when';
 import { of, throwError } from 'rxjs';
+import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
+import { GetPartyGenerator } from '@ukef-test/support/generator/get-party-generator';
 
-import { DateStringTransformations } from '../date/date-string.transformations';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { AcbsPartyService } from './acbs-party.service';
 import { AcbsException } from './exception/acbs.exception';
 import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
@@ -80,8 +80,8 @@ describe('AcbsPartyService', () => {
         data: 'Party not found or user does not have access',
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServiceGet)
@@ -98,14 +98,40 @@ describe('AcbsPartyService', () => {
       await expect(getExternalRatingsPromise).rejects.toHaveProperty('innerError', axiosError);
     });
 
+    it('throws an AcbsResourceNotFoundException if ACBS responds with a duck-typed axios-like error that is not an instance of AxiosError (e.g. constructed by a different copy of the axios module, such as the ESM build used internally by @nestjs/axios) and is a string containing "Party not found"', async () => {
+      const duckTypedAxiosError = {
+        isAxiosError: true,
+        response: {
+          data: 'Party not found or user does not have access',
+          status: 400,
+          statusText: 'Bad Request',
+          headers: undefined,
+          config: undefined,
+        },
+      };
+
+      when(httpServiceGet)
+        .calledWith(`/Party/${partyIdentifier}`, {
+          baseURL: baseUrl,
+          headers: { Authorization: `Bearer ${idToken}` },
+        })
+        .mockReturnValueOnce(throwError(() => duckTypedAxiosError));
+
+      const getExternalRatingsPromise = service.getPartyByIdentifier(partyIdentifier, idToken);
+
+      await expect(getExternalRatingsPromise).rejects.toBeInstanceOf(AcbsResourceNotFoundException);
+      await expect(getExternalRatingsPromise).rejects.toThrow(`Party with identifier ${partyIdentifier} was not found by ACBS.`);
+      await expect(getExternalRatingsPromise).rejects.toHaveProperty('innerError', duckTypedAxiosError);
+    });
+
     it('throws an AcbsException if ACBS responds with a 400 response that is a string that does NOT contain "Party not found"', async () => {
       const axiosError = new AxiosError();
       axiosError.response = {
         data: 'some error string',
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServiceGet)
@@ -128,8 +154,8 @@ describe('AcbsPartyService', () => {
         data: { errorMessage: valueGenerator.string() },
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServiceGet)

@@ -21,7 +21,7 @@ export class CreateDealInvestorRequestItem {
     description: "The effective date on the deal investor record. If the date provided is in the future, it will be replaced by today's date.",
     example: '2023-03-24',
   })
-  readonly effectiveDate: DateString;
+  readonly effectiveDate!: DateString;
 
   @ValidatedDateOnlyApiProperty({
     description: 'The expiry date on the deal investor record. If the value is not provided or is null then the maximum expiry date will be set.',
@@ -45,5 +45,5 @@ export class CreateDealInvestorRequestItem {
   @ValidatedCurrencyApiProperty({
     description: 'The deal currency code.',
   })
-  readonly currency: string;
+  readonly currency!: string;
 }

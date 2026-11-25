@@ -1,7 +1,7 @@
+import { when } from 'jest-when';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { GetFacilityLoanTransactionGenerator } from '@ukef-test/support/generator/get-facility-loan-transaction-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { when } from 'jest-when';
 
 import { FacilityLoanTransactionController } from './facility-loan-transaction.controller';
 import { FacilityLoanTransactionService } from './facility-loan-transaction.service';
@@ -20,7 +20,7 @@ describe('FacilityLoanTransactionController', () => {
   let facilityLoanTransactionServiceGetLoanTransactionByBundleIdentifier: jest.Mock;
 
   beforeEach(() => {
-    facilityLoanTransactionService = new FacilityLoanTransactionService(null, null, null);
+    facilityLoanTransactionService = new FacilityLoanTransactionService(null!, null!, null!);
 
     facilityLoanTransactionServiceGetLoanTransactionByBundleIdentifier = jest.fn();
     facilityLoanTransactionService.getLoanTransactionsByBundleIdentifier = facilityLoanTransactionServiceGetLoanTransactionByBundleIdentifier;

@@ -1,7 +1,11 @@
 # Trade Finance Services 🚀
 
-TFS micro-service provides endpoints for internal trade finance manager systems responsible for reading and writing to external centralised banking system namely
-ACBS (Advanced Commerical Banking System).
+This TFS micro-service is a centralised API for internal UKEF services.
+
+This API provides integrations and endpoints for reading and writing to the following services:
+
+- **ACBS** (Advanced Commercial Banking System)
+- **GIFT** (Guarantee, Insurance, & Financing Tracker). Replaces ACBS
 
 **Status** 🚦
 
@@ -23,13 +27,7 @@ ACBS (Advanced Commerical Banking System).
 ## Install 💻
 
 ```bash
-npm install
-```
-
-When commiting changes - If the pre-commit hook does not run, execute the following:
-
-```bash
-npx husky
+npm ci
 ```
 
 ## Environment Variables 👨🏼‍💻
@@ -39,10 +37,10 @@ send an encrypted copy of the `.env` file.
 
 Environment variable tips:
 
-* USE_PINO_PRETTY_LOG_FORMATER - Pino pretty should be enabled just in Dev laptop, as pino-pretty is development
-* ACBS_USE_RETURN_EXCEPTION_HEADER - When true an additional request header 'ReturnException' is sent to ACBS. The 'ApiResult' and 'ErrorResult' response headers
+- USE_PINO_PRETTY_LOG_FORMATER - Pino pretty should be enabled just in Dev laptop, as pino-pretty is development
+- ACBS_USE_RETURN_EXCEPTION_HEADER - When true an additional request header 'ReturnException' is sent to ACBS. The 'ApiResult' and 'ErrorResult' response headers
 can be used for debugging.
-* ACBS_AUTHENTICATION_ID_TOKEN_CACHE_TTL_IN_MILLISECONDS - A value of 0 will cache the first id token PERMANENTLY but ACBS accepts tokens just for 30 minutes.
+- ACBS_AUTHENTICATION_ID_TOKEN_CACHE_TTL_IN_MILLISECONDS - A value of 0 will cache the first id token PERMANENTLY but ACBS accepts tokens just for 30 minutes.
 
 ## Compilation / Build ⚙️
 
@@ -60,7 +58,7 @@ The `extends` property specifies the path to the base configuration file which i
 
 The `compilerOptions` property specifies the compiler options.
 
-* `types` specifies the types that should be included in the compilation, `node` in this case.
+- `types` specifies the types that should be included in the compilation, `node` in this case.
 
 ## Include 📂
 
@@ -70,12 +68,12 @@ The `include` property specifies the files that should be included in the compil
 
 The `exclude` property specifies the files that should be excluded from the compilation.
 
-* `node_modules` excludes the `node_modules` directory.
-* `test` excludes the `test` directory and all files that end with `.test.ts`.
-* `dist` excludes the `dist` directory.
-* `docker-compose*.yml` excludes all files that start with `docker-compose` and end with `.yml`.
-* `Dockerfile` excludes the `Dockerfile` file.
-* `logs` excludes the `logs` directory.
+- `node_modules` excludes the `node_modules` directory.
+- `test` excludes the `test` directory and all files that end with `.test.ts`.
+- `dist` excludes the `dist` directory.
+- `docker-compose*.yml` excludes all files that start with `docker-compose` and end with `.yml`.
+- `Dockerfile` excludes the `Dockerfile` file.
+- `logs` excludes the `logs` directory.
 
 ## Run 💡
 
@@ -98,18 +96,81 @@ To view the API documentation in YAML format visit [localhost:{PORT}/openapi/yam
 
 Note: `PORT` will default to `3001` if it's not assigned a value in the `.env` file.
 
+## ACBS Integration 📍
+
+The Trade Finance Services API supports integration with ACBS (Advanced Commercial Banking System).
+
+Extensive documentation can be found on [SharePoint](https://ukef.sharepoint.com/sites/pmo-PRO211/Shared%20Documents/Forms/AllItems.aspx?id=%2Fsites%2Fpmo%2DPRO211%2FShared%20Documents%2F1%2E%20TO%20USE%20New%20file%20plan%2FAPIM%20TFS%2C%20ACBS%20integration&viewid=c6186b2e%2D090e%2D45fe%2Dad32%2D4311e04fa0a1&as=json)
+
+## GIFT Integration 🎁
+
+The Trade Finance Services API supports integration with GIFT (Guarantee, Insurance, & Financing Tracker) for certain operations.
+
+Extensive documentation can be found on [SharePoint](https://ukef.sharepoint.com/sites/pmo-PRO211/Shared%20Documents/Forms/AllItems.aspx?id=%2Fsites%2Fpmo%2DPRO211%2FShared%20Documents%2F1%2E%20TO%20USE%20New%20file%20plan%2FDTFS%2C%20APIM%2C%20GIFT%20integration&viewid=c6186b2e%2D090e%2D45fe%2Dad32%2D4311e04fa0a1&as=json):
+
+### Feature Flag
+
+GIFT integration is controlled via the `FF_GIFT_ENABLED` environment variable:
+
+- `FF_GIFT_ENABLED=true` - Enables GIFT module and endpoints
+- `FF_GIFT_ENABLED=false` - Disables GIFT module (default)
+
+### Environment Variables
+
+To enable GIFT integration, configure the following environment variables in your `.env` file:
+
+```bash
+# GIFT Feature Flag
+FF_GIFT_ENABLED=true
+
+# GIFT API Configuration
+GIFT_API_URL=https://gift-api-endpoint.example.com
+GIFT_API_KEY=your-api-key-here
+GIFT_API_MAX_REDIRECTS=5
+GIFT_API_TIMEOUT=30000
+GIFT_HTTP_VERSION=2
+
+# GIFT Queue Storage (Azure Queue Storage)
+GIFT_QUEUE_STORAGE_ACCOUNT_NAME=your-storage-account
+GIFT_QUEUE_STORAGE_CONNECTION_STRING=DefaultEndpointsProtocol=https;AccountName=...
+```
+
+### GIFT Endpoints
+
+When GIFT is enabled (`FF_GIFT_ENABLED=true`), the following endpoints are available:
+
+- **Facilities**: Create, retrieve, and amend GIFT facilities
+- **Currencies**: Retrieve supported currencies
+- **Fee Types**: Retrieve available fee types
+
+Full documentation is available via the Swagger API docs at [localhost:{PORT}/docs](http://localhost:3001/docs) when GIFT is enabled.
+
+### Testing GIFT Endpoints
+
+```bash
+# Run all GIFT API tests
+npm run api-test:gift
+
+# Run specific GIFT test file
+npx jest --testPathPatterns="gift"
+```
+
+### API Key Authentication
+
+GIFT endpoints require an API key header for authentication. Include the following in your requests:
+
+```http
+X-API-KEY: your-api-key-value
+```
+
+The API key is configured via the `GIFT_API_KEY` environment variable.
+
 ## Test 💹
 
 We are running several test suites as part of our CI/CD pipeline.
 
-* Unit test :   These tests are written using Jest and ends with `*.test.ts` extension.
-* API test  :   These tests are written using Jest and ends with `*.api-test.ts` extension.
-* E2E test  :   These tests are written using Jest and ends with `*.e2e-test.ts` extension.
-
-### NOTE ⚠️
-
-Currently there are **no** E2E tests and none are executed during CI/CD. Once tests have been added please remove `--passWithNoTests` flag from `e2e-tests`
-scripts, current flags allows Jest to exit with status instead of an error.
+- Unit test :   These tests are written using Jest and ends with `*.test.ts` extension.
+- API test  :   These tests are written using Jest and ends with `*.api-test.ts` extension.
 
 ```bash
 # unit tests
@@ -159,28 +220,83 @@ The first section defines the version of the Compose file syntax being used (ver
 
 Under the api **service**, the following options are specified:
 
-* `build`: specifies the build context for the Docker image. In this case, it is set to the current directory (.), which means that Docker will look for a
+- `build`: specifies the build context for the Docker image. In this case, it is set to the current directory (.), which means that Docker will look for a
 Dockerfile in the current directory to build the image.
-* `image`: specifies the name of the Docker image that will be built.
-* `container_name`: specifies the name of the Docker container that will be created from the image.
-* `restart`: specifies that the container should always be restarted if it stops running.
-* `command`: specifies the command that should be run when the container starts. In this case, it is set to `npm run start:prod`.
-* `ports`: specifies the ports that should be exposed by the container. In this case, it is set to ${PORT}:${PORT}, which means that the value of the PORT
+- `image`: specifies the name of the Docker image that will be built.
+- `container_name`: specifies the name of the Docker container that will be created from the image.
+- `restart`: specifies that the container should always be restarted if it stops running.
+- `command`: specifies the command that should be run when the container starts. In this case, it is set to `npm run start:prod`.
+- `ports`: specifies the ports that should be exposed by the container. In this case, it is set to ${PORT}:${PORT}, which means that the value of the PORT
 environment variable will be used for both the host and container ports.
-* `volumes`: specifies any directories or files that should be mounted as volumes inside the container. In this case, it is set to `./:/app/src:rw`, which means
+- `volumes`: specifies any directories or files that should be mounted as volumes inside the container. In this case, it is set to `./:/app/src:rw`, which means
 that the current directory on the host machine will be mounted as a **read-write** volume at `/app/src` inside the container.
-* `environment`: specifies any environment variables that should be set inside the container. In this case, a list of environment variables is provided, but
+- `environment`: specifies any environment variables that should be set inside the container. In this case, a list of environment variables is provided, but
 their values are not specified in the file since they will be referred from local `.env` file. (Please refer to `.env.sample` for getting started).
 
 The next section defines a **healthcheck** for the container, which will periodically check if the container is running correctly. The options specified are:
 
-* `test`: specifies the command that should be run to test the health of the container. In this case, it is set to
+- `test`: specifies the command that should be run to test the health of the container. In this case, it is set to
   `['CMD', 'curl', '-f', 'http://localhost:${PORT}']`, which means that the healthcheck will run the curl command to make a
   request to the container's web server and check if it receives a response.
-* `retries`: specifies the number of times that the healthcheck should be retried before considering the container as unhealthy.
-* `interval`: specifies the interval at which the healthcheck should be run.
-* `timeout`: specifies the maximum amount of time that the healthcheck command can run before being considered as failed.
-* `start_period`: specifies the amount of time to wait before running the first healthcheck after the container has started.
+- `retries`: specifies the number of times that the healthcheck should be retried before considering the container as unhealthy.
+- `interval`: specifies the interval at which the healthcheck should be run.
+- `timeout`: specifies the maximum amount of time that the healthcheck command can run before being considered as failed.
+- `start_period`: specifies the amount of time to wait before running the first healthcheck after the container has started.
+
+## Deployment & Branching Strategy 🌿
+
+### Branch Structure
+
+The TFS API follows a multi-environment branching strategy:
+
+- **`main`** - Integration branch for PR merges and development
+- **`dev`** - Development environment deployment branch
+- **`staging`** - Staging environment deployment branch  
+- **`production`** - Production environment deployment branch (may be ahead with hotfixes)
+
+### Deployment Process
+
+Deployments are executed using the deployment script:
+
+```bash
+./deploy.sh
+```
+
+Automatic deployments are triggered when commits are pushed to any of the deployment branches (`dev`, `staging`, `production`).
+These are handled by the GitHub Actions CI/CD pipeline (`.github/workflows/deployment.yml`).
+
+### Environment-Specific Deployments
+
+- **Dev** - Auto-deploys on push to `dev` branch
+- **Staging** - Auto-deploys on push to `staging` branch
+- **Production** - Auto-deploys on push to `production` branch or manual dispatch
+
+### Handling Branch Divergence
+
+⚠️ **Important**: The production branch may be ahead of dev/staging due to hotfixes. When preparing a production deployment:
+
+1. **Check branch status** - Verify that production is ahead and understand what changes are only in production:
+
+   ```bash
+   git log dev..production --oneline
+   git log staging..production --oneline
+   ```
+
+2. **Hotfix/branch sync - dev branch** - After a production hotfix is complete - create a PR
+
+   ```bash
+   # Back-merge production changes to dev branch
+   
+   git checkout dev
+   git pull origin dev
+   git checkout -b chore/merge
+   git merge production
+   git push origin chore/merge
+   ```
+
+3. **Post-hotfix sync - dev deployment** - After the dev merge PR is merged - trigger a deployment to dev environment
+
+4. **Post-hotfix sync - staging** - After the dev deployment is complete - trigger a deployment to staging environment. This will update the staging branch.
 
 ## Code ⌨️
 
@@ -198,9 +314,8 @@ nest g resource users
 # error
 this.logger.error({ id: 'your message here' }, 'context-name');
 
-# log
-this.logger.log({ id: 'your message here' }, 'context-name');
-
+# info
+this.logger.info({ id: 'your message here' }, 'context-name');
 ```
 
 ### Authentication

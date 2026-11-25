@@ -7,7 +7,7 @@
     "exclude": [
       // NPM
       "node_modules",
-      // Unit, API and E2E tests
+      // Unit, API tests
       "test",
       "**/*.test.ts",
       "**/*.test-parts",

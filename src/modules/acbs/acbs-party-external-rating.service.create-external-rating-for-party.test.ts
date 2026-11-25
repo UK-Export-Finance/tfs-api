@@ -1,15 +1,15 @@
 import { HttpService } from '@nestjs/axios';
-import { CreatePartyExternalRatingGenerator } from '@ukef-test/support/generator/create-party-external-rating-generator';
-import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { AxiosError } from 'axios';
 import { when } from 'jest-when';
 import { of, throwError } from 'rxjs';
+import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
+import { CreatePartyExternalRatingGenerator } from '@ukef-test/support/generator/create-party-external-rating-generator';
 
-import { DateStringTransformations } from '../date/date-string.transformations';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { AcbsPartyExternalRatingService } from './acbs-party-external-rating.service';
 import { AcbsBadRequestException } from './exception/acbs-bad-request.exception';
 import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
-import { AcbsUnexpectedException } from './exception/acbs-unexpected.exception';
+import { AcbsException } from './exception/acbs.exception';
 
 describe('AcbsPartyExternalRatingService', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -75,8 +75,8 @@ describe('AcbsPartyExternalRatingService', () => {
         data: errorString,
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePost)
@@ -97,8 +97,8 @@ describe('AcbsPartyExternalRatingService', () => {
         data: errorString,
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePost)
@@ -120,8 +120,8 @@ describe('AcbsPartyExternalRatingService', () => {
         data: errorBody,
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePost)
@@ -136,15 +136,15 @@ describe('AcbsPartyExternalRatingService', () => {
       await expect(createExternalRatingPromise).rejects.toHaveProperty('errorBody', JSON.stringify(errorBody));
     });
 
-    it('throws an AcbsUnexpectedException if ACBS responds with an error code that is not 400', async () => {
+    it('throws an AcbsException if ACBS responds with an error code that is not 400', async () => {
       const axiosError = new AxiosError();
       const errorBody = { errorMessage: valueGenerator.string() };
       axiosError.response = {
         data: errorBody,
         status: 401,
         statusText: 'Unauthorized',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePost)
@@ -153,7 +153,7 @@ describe('AcbsPartyExternalRatingService', () => {
 
       const createExternalRatingPromise = service.createExternalRatingForParty(acbsExternalRatingToCreate, idToken);
 
-      await expect(createExternalRatingPromise).rejects.toBeInstanceOf(AcbsUnexpectedException);
+      await expect(createExternalRatingPromise).rejects.toBeInstanceOf(AcbsException);
       await expect(createExternalRatingPromise).rejects.toThrow(`Failed to create party external rating in ACBS.`);
       await expect(createExternalRatingPromise).rejects.toHaveProperty('innerError', axiosError);
     });

@@ -25,6 +25,7 @@ export class FacilityLoanTransactionService {
     if (!isNewLoanRequest(loan)) {
       throw new BadRequestException('Bad request', 'The provided bundleIdentifier does not correspond to a loan transaction.');
     }
+
     return this.mapLoanTransaction(loanTransaction, loan);
   }
 
@@ -34,12 +35,18 @@ export class FacilityLoanTransactionService {
       PROPERTIES.FACILITY_LOAN.DEFAULT.accrualScheduleList.accrualCategory.accrualCategoryCode.pac,
       accrualScheduleList,
     );
+
     const ctlAccrual = this.findFirstAccrualMatchingCategoryCode(
       PROPERTIES.FACILITY_LOAN.DEFAULT.accrualScheduleList.accrualCategory.accrualCategoryCode.ctl,
       accrualScheduleList,
     );
-    const [firstAccrual] = accrualScheduleList;
-    const [firstRepayment] = loan.RepaymentScheduleList;
+
+    /**
+     * `.at(0)` (rather than array destructuring) is used here so TypeScript types these as possibly
+     * `undefined`, since the ACBS response can genuinely contain an empty list.
+     */
+    const firstAccrual = accrualScheduleList.at(0);
+    const firstRepayment = loan.RepaymentScheduleList.at(0);
 
     return {
       portfolioIdentifier: loanTransaction.PortfolioIdentifier,
@@ -52,20 +59,21 @@ export class FacilityLoanTransactionService {
       productTypeGroup: loan.ProductGroup.ProductGroupCode,
       currency: loan.Currency.CurrencyCode,
       dealCustomerUsageRate: loan.DealCustomerUsageRate ?? null,
-      dealCustomerUsageOperationType: loan.DealCustomerUsageOperationType?.OperationTypeCode ? loan.DealCustomerUsageOperationType.OperationTypeCode : null,
+      dealCustomerUsageOperationType:
+        loan.DealCustomerUsageOperationType?.OperationTypeCode === '' ? null : (loan.DealCustomerUsageOperationType?.OperationTypeCode ?? null),
       amount: loan.LoanAmount,
       issueDate: this.dateStringTransformations.removeTime(loan.EffectiveDate),
       expiryDate: this.dateStringTransformations.removeTime(loan.MaturityDate),
       spreadRate: pacAccrual?.SpreadRate ?? null,
       spreadRateCTL: ctlAccrual?.SpreadRate ?? null,
-      yearBasis: firstAccrual?.YearBasis?.YearBasisCode ?? null,
-      nextDueDate: this.dateStringTransformations.removeTimeIfExists(firstRepayment?.NextDueDate) ?? null,
+      yearBasis: firstAccrual?.YearBasis.YearBasisCode ?? null,
+      nextDueDate: firstRepayment ? this.dateStringTransformations.removeTimeIfExists(firstRepayment.NextDueDate) : null,
       indexRateChangeFrequency: ctlAccrual?.IndexRateChangeFrequency?.IndexRateChangeFrequencyCode ?? null,
-      loanBillingFrequencyType: firstRepayment?.LoanBillingFrequencyType?.LoanBillingFrequencyTypeCode ?? null,
+      loanBillingFrequencyType: firstRepayment?.LoanBillingFrequencyType.LoanBillingFrequencyTypeCode ?? null,
     };
   }
 
-  private findFirstAccrualMatchingCategoryCode(categoryCode: string, accrualScheduleList: AccrualSchedule[]): AccrualSchedule {
+  private findFirstAccrualMatchingCategoryCode(categoryCode: string, accrualScheduleList: AccrualSchedule[]): AccrualSchedule | undefined {
     return accrualScheduleList.find((accrual) => accrual.AccrualCategory.AccrualCategoryCode === categoryCode);
   }
 }

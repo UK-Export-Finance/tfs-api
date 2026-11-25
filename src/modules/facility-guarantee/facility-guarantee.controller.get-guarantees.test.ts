@@ -1,7 +1,7 @@
+import { when } from 'jest-when';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { GetFacilityGuaranteeGenerator } from '@ukef-test/support/generator/get-facility-guarantee-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { when } from 'jest-when';
 
 import { FacilityGuaranteeController } from './facility-guarantee.controller';
 import { FacilityGuaranteeService } from './facility-guarantee.service';
@@ -21,7 +21,7 @@ describe('FacilityGuaranteeController', () => {
   let controller: FacilityGuaranteeController;
 
   beforeEach(() => {
-    const facilityGuaranteeService = new FacilityGuaranteeService(null, null, null, null);
+    const facilityGuaranteeService = new FacilityGuaranteeService(null!, null!, null!, null!);
     getFacilityGuaranteesService = jest.fn();
     facilityGuaranteeService.getGuaranteesForFacility = getFacilityGuaranteesService;
 

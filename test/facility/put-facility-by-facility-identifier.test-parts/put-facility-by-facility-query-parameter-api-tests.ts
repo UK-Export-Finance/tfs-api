@@ -19,7 +19,7 @@ export const withPutFacilityQueryParameterTests = ({
     });
 
     it('returns a 400 response if the request has an empty query value for op', async () => {
-      const { status, body } = await makeRequestWithUrl(updateFacilityBaseUrl + '?op=');
+      const { status, body } = await makeRequestWithUrl(`${updateFacilityBaseUrl}?op=`);
       expect(status).toBe(400);
       expect(body).toMatchObject({
         error: 'Bad Request',
@@ -29,7 +29,7 @@ export const withPutFacilityQueryParameterTests = ({
     });
 
     it('returns a 400 response if the op query parameter is not supported', async () => {
-      const InvalidUpdateFacilityUrl = updateFacilityBaseUrl + `?op=invalidEnum`;
+      const InvalidUpdateFacilityUrl = `${updateFacilityBaseUrl}?op=invalidEnum`;
 
       const { status, body } = await makeRequestWithUrl(InvalidUpdateFacilityUrl);
 

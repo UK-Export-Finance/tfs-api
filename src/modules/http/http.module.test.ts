@@ -25,7 +25,7 @@ describe('HttpModule', () => {
     const createNewHttpModule = () => new HttpModule(httpService, logger);
 
     beforeEach(() => {
-      httpService = httpService = {
+      httpService = {
         axiosRef: {
           interceptors: {
             request: { use: jest.fn() },
@@ -33,7 +33,9 @@ describe('HttpModule', () => {
           },
         },
       } as unknown as HttpService;
+
       logger = new PinoLogger({});
+
       when(logAxiosRequestWith).calledWith(logger).mockReturnValueOnce(axiosRequestInterceptor);
       when(logAxiosResponseSuccessWith).calledWith(logger).mockReturnValueOnce(axiosResponseSuccessInterceptor);
       when(logAxiosResponseErrorWith).calledWith(logger).mockReturnValueOnce(axiosResponseErrorInterceptor);
@@ -83,7 +85,7 @@ describe('HttpModule', () => {
     it('specifies only module, imports, and exports', () => {
       const module = registerAsync();
 
-      const sortedModuleKeys = Object.keys(module).sort((a, b) => a.localeCompare(b));
+      const sortedModuleKeys = Object.keys(module).sort((prev, next) => prev.localeCompare(next));
 
       expect(sortedModuleKeys).toStrictEqual(['exports', 'imports', 'module']);
     });

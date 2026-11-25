@@ -1,3 +1,4 @@
+import { when } from 'jest-when';
 import { ENUMS } from '@ukef/constants';
 import { WithWarningErrors } from '@ukef/helpers';
 import { AcbsBundleInformationService } from '@ukef/modules/acbs/acbs-bundle-information.service';
@@ -13,7 +14,6 @@ import { UpdateFacilityServiceTestPartsArgs } from '@ukef/modules/facility/facil
 import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { UpdateFacilityGenerator } from '@ukef-test/support/generator/update-facility-generator';
-import { when } from 'jest-when';
 
 import { UpdateFacilityBundleIdentifierResponse } from './dto/update-facility-response.dto';
 
@@ -27,21 +27,21 @@ describe('FacilityService', () => {
 
   const expectedResult = { responseBody: { bundleIdentifier }, warningErrors: errorString };
 
-  const amendAmountByIdentifier = (updateFacilityRequest: UpdateFacilityRequest): Promise<WithWarningErrors<UpdateFacilityBundleIdentifierResponse>> =>
-    service.amendFacilityAmountByIdentifier(facilityIdentifier, updateFacilityRequest);
-
   let acbsBundleInformationServiceCreateBundleInformation: jest.Mock;
   let acbsFacilityServiceUpdateFacilityByIdentifier: jest.Mock;
   let acbsFacilityServiceGetFacilityByIdentifier: jest.Mock;
   let service: FacilityService;
 
+  const amendAmountByIdentifier = (updateFacilityRequest: UpdateFacilityRequest): Promise<WithWarningErrors<UpdateFacilityBundleIdentifierResponse>> =>
+    service.amendFacilityAmountByIdentifier(facilityIdentifier, updateFacilityRequest);
+
   beforeEach(() => {
     acbsFacilityServiceUpdateFacilityByIdentifier = jest.fn();
-    const acbsFacilityService = new AcbsFacilityService(null, null);
+    const acbsFacilityService = new AcbsFacilityService(null!, null!);
     acbsFacilityService.updateFacilityByIdentifier = acbsFacilityServiceUpdateFacilityByIdentifier;
 
     acbsBundleInformationServiceCreateBundleInformation = jest.fn();
-    const acbsBundleInformationService = new AcbsBundleInformationService(null, null);
+    const acbsBundleInformationService = new AcbsBundleInformationService(null!, null!);
     acbsBundleInformationService.createBundleInformation = acbsBundleInformationServiceCreateBundleInformation;
 
     const mockAcbsAuthenticationService = getMockAcbsAuthenticationService();
@@ -67,6 +67,25 @@ describe('FacilityService', () => {
   ).generate({ numberToGenerate: 1, facilityIdentifier });
 
   describe('amendFacilityAmountByIdentifier', () => {
+    const getAcbsFacilityServiceGetFacilityByIdentifierMock = () => acbsFacilityServiceGetFacilityByIdentifier;
+    const getAcbsBundleInformationServiceCreateBundleInformationMock = () => acbsBundleInformationServiceCreateBundleInformation;
+
+    const getAcbsGetFacilityRequestCalledCorrectlyMock = () => when(acbsFacilityServiceGetFacilityByIdentifier).calledWith(facilityIdentifier, idToken);
+
+    const mockSuccessfulAcbsCreateBundleInformation = (
+      bundleInformationRequestToCreateInAcbs: AcbsCreateBundleInformationRequestDto<FacilityAmountTransaction>,
+    ) =>
+      when(acbsBundleInformationServiceCreateBundleInformation)
+        .calledWith(bundleInformationRequestToCreateInAcbs, idToken)
+        .mockReturnValueOnce({ BundleIdentifier: bundleIdentifier, WarningErrors: errorString });
+
+    const expectAcbsCreateBundleInformationToBeCalledOnceWith = (
+      bundleInformationToCreateInAcbs: AcbsCreateBundleInformationRequestDto<FacilityAmountTransaction>,
+    ) => {
+      expect(acbsBundleInformationServiceCreateBundleInformation).toHaveBeenCalledWith(bundleInformationToCreateInAcbs, idToken);
+      expect(acbsBundleInformationServiceCreateBundleInformation).toHaveBeenCalledTimes(1);
+    };
+
     it.each([
       { newTransactionValue: 100, oldTransactionValue: 200, expectedTypeCode: ENUMS.FACILITY_TRANSACTION_TYPE_CODES.MINUS, description: 'less than' },
       { newTransactionValue: 200, oldTransactionValue: 100, expectedTypeCode: ENUMS.FACILITY_TRANSACTION_TYPE_CODES.PLUS, description: 'more than' },
@@ -128,22 +147,5 @@ describe('FacilityService', () => {
     };
 
     withUpdateFacilityServiceGeneralTests(testArgs);
-
-    const getAcbsFacilityServiceGetFacilityByIdentifierMock = () => acbsFacilityServiceGetFacilityByIdentifier;
-    const getAcbsBundleInformationServiceCreateBundleInformationMock = () => acbsBundleInformationServiceCreateBundleInformation;
-
-    const getAcbsGetFacilityRequestCalledCorrectlyMock = () => when(acbsFacilityServiceGetFacilityByIdentifier).calledWith(facilityIdentifier, idToken);
-
-    const mockSuccessfulAcbsCreateBundleInformation = (acbsBundleInformationRequest: AcbsCreateBundleInformationRequestDto<FacilityAmountTransaction>) =>
-      when(acbsBundleInformationServiceCreateBundleInformation)
-        .calledWith(acbsBundleInformationRequest, idToken)
-        .mockReturnValueOnce({ BundleIdentifier: bundleIdentifier, WarningErrors: errorString });
-
-    const expectAcbsCreateBundleInformationToBeCalledOnceWith = (
-      bundleInformationToCreateInAcbs: AcbsCreateBundleInformationRequestDto<FacilityAmountTransaction>,
-    ) => {
-      expect(acbsBundleInformationServiceCreateBundleInformation).toHaveBeenCalledWith(bundleInformationToCreateInAcbs, idToken);
-      expect(acbsBundleInformationServiceCreateBundleInformation).toHaveBeenCalledTimes(1);
-    };
   });
 });

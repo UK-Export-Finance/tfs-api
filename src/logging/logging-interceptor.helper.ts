@@ -9,11 +9,11 @@ export class LoggingInterceptor implements NestInterceptor {
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const requestBody = context.switchToHttp().getRequest().body;
-    this.logger.debug({ requestBody }, 'Handling the following request from the client.');
+    this.logger.info({ requestBody }, 'Handling the following request from the client.');
 
     return next.handle().pipe(
       tap((responseBody) => {
-        this.logger.debug({ responseBody }, 'Returning the following response to the client.');
+        this.logger.info({ responseBody }, 'Returning the following response to the client.');
       }),
     );
   }

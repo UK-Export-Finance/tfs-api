@@ -7,17 +7,17 @@ export type GetDealGuaranteeResponse = GetDealGuaranteeResponseItem[];
 
 export class GetDealGuaranteeResponseItem {
   @ApiProperty({ example: PROPERTIES.GLOBAL.portfolioIdentifier })
-  portfolioIdentifier: string;
+  portfolioIdentifier!: string;
 
   @ApiProperty({ example: EXAMPLES.DEAL_ID })
-  dealIdentifier: string;
+  dealIdentifier!: string;
 
   @ApiProperty({
     description: `The date that this guarantee will take effect.`,
     type: Date,
     format: 'date',
   })
-  readonly effectiveDate: DateOnlyString;
+  readonly effectiveDate!: DateOnlyString;
 
   @ApiProperty({
     description: 'The customer identifier of the Guarantor; the Customer who is making the guarantee/obligation. This field cannot be updated',
@@ -33,21 +33,21 @@ export class GetDealGuaranteeResponseItem {
     maxLength: 8,
     example: EXAMPLES.PARTY_ID,
   })
-  readonly limitKey: AcbsPartyId;
+  readonly limitKey!: AcbsPartyId;
 
   @ApiProperty({
     description: 'The date that this guarantee will expire on.',
     type: Date,
     format: 'date',
   })
-  readonly guaranteeExpiryDate: DateOnlyString;
+  readonly guaranteeExpiryDate!: DateOnlyString;
 
   @ApiProperty({
     description: 'The maximum amount the guarantor will guarantee.',
     minimum: 0,
     example: EXAMPLES.DEAL_OR_FACILITY_VALUE,
   })
-  readonly maximumLiability: number;
+  readonly maximumLiability!: number;
 
   @ApiProperty({
     description: 'Identifies the type of guarantee provided. The value passed for this parameter is validated against the key values in T1080.',

@@ -1,3 +1,4 @@
+import nock from 'nock';
 import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { LenderTypeCodeEnum } from '@ukef/constants/enums/lender-type-code';
 import { AcbsGetFacilityResponseDto } from '@ukef/modules/acbs/dto/acbs-get-facility-response.dto';
@@ -13,7 +14,6 @@ import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables'
 import { CreateFacilityActivationTransactionGenerator } from '@ukef-test/support/generator/create-facility-activation-transaction-generator';
 import { GetFacilityGenerator } from '@ukef-test/support/generator/get-facility-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import nock from 'nock';
 
 describe('POST /facilities/{facilityIdentifier}/activation-transactions', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -48,6 +48,41 @@ describe('POST /facilities/{facilityIdentifier}/activation-transactions', () => 
   });
 
   let api: Api;
+  let idToken: string;
+
+  const requestToGetFacilityInAcbs = () =>
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .get(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}`)
+      .matchHeader('authorization', `Bearer ${idToken}`);
+
+  const givenRequestToGetFacilityInAcbsSucceedsReturning = (acbsFacility: AcbsGetFacilityResponseDto): nock.Scope =>
+    requestToGetFacilityInAcbs().reply(200, acbsFacility);
+
+  const givenRequestToGetFacilityInAcbsSucceeds = (): nock.Scope => givenRequestToGetFacilityInAcbsSucceedsReturning(facilityInAcbs);
+
+  const requestToCreateFacilityActivationTransactionInAcbsWithBody = (requestBody: nock.RequestBodyMatcher): nock.Interceptor =>
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .post(`/BundleInformation?servicingQueueIdentifier=${servicingQueueIdentifier}`, requestBody)
+      .matchHeader('authorization', `Bearer ${idToken}`)
+      .matchHeader('Content-Type', 'application/json');
+
+  const requestToCreateFacilityActivationTransactionInAcbs = (): nock.Interceptor =>
+    requestToCreateFacilityActivationTransactionInAcbsWithBody(JSON.parse(JSON.stringify(acbsRequestBodyToCreateFacilityActivationTransaction)));
+
+  const givenRequestToCreateFacilityActivationTransactionInAcbsSucceeds = (): nock.Scope =>
+    requestToCreateFacilityActivationTransactionInAcbs().reply(201, undefined, { bundleIdentifier });
+
+  const givenRequestToCreateFacilityActivationTransactionInAcbsSucceedsWithWarningHeader = (): nock.Scope =>
+    requestToCreateFacilityActivationTransactionInAcbs().reply(201, undefined, { bundleIdentifier, 'processing-warning': errorString });
+
+  const givenAnyRequestBodyToCreateFacilityActivationTransactionInAcbsSucceeds = (): void => {
+    const requestBodyPlaceholder = '*';
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .filteringRequestBody(() => requestBodyPlaceholder)
+      .post(`/BundleInformation?servicingQueueIdentifier=${servicingQueueIdentifier}`, requestBodyPlaceholder)
+      .matchHeader('authorization', `Bearer ${idToken}`)
+      .reply(201, undefined, { bundleIdentifier });
+  };
 
   beforeAll(async () => {
     api = await Api.create();
@@ -62,7 +97,7 @@ describe('POST /facilities/{facilityIdentifier}/activation-transactions', () => 
     nock.cleanAll();
   });
 
-  const { idToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
+  const authenticationTestHooks = withAcbsAuthenticationApiTests({
     givenRequestWouldOtherwiseSucceed: () => {
       givenRequestToGetFacilityInAcbsSucceeds();
       givenRequestToCreateFacilityActivationTransactionInAcbsSucceeds();
@@ -70,6 +105,8 @@ describe('POST /facilities/{facilityIdentifier}/activation-transactions', () => 
     makeRequest: () => api.post(createFacilityActivationTransactionUrl, requestBodyToCreateFacilityActivationTransaction),
     successStatusCode: 201,
   });
+  idToken = authenticationTestHooks.idToken;
+  const { givenAuthenticationWithTheIdpSucceeds } = authenticationTestHooks;
 
   withClientAuthenticationTests({
     givenTheRequestWouldOtherwiseSucceed: () => {
@@ -139,41 +176,4 @@ describe('POST /facilities/{facilityIdentifier}/activation-transactions', () => 
       givenAnyRequestBodyWouldSucceed,
     });
   });
-
-  const givenRequestToGetFacilityInAcbsSucceeds = (): nock.Scope => givenRequestToGetFacilityInAcbsSucceedsReturning(facilityInAcbs);
-
-  const givenRequestToGetFacilityInAcbsSucceedsReturning = (acbsFacility: AcbsGetFacilityResponseDto): nock.Scope => {
-    return requestToGetFacilityInAcbs().reply(200, acbsFacility);
-  };
-
-  const requestToGetFacilityInAcbs = () =>
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .get(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}`)
-      .matchHeader('authorization', `Bearer ${idToken}`);
-
-  const givenRequestToCreateFacilityActivationTransactionInAcbsSucceeds = (): nock.Scope => {
-    return requestToCreateFacilityActivationTransactionInAcbs().reply(201, undefined, { bundleIdentifier });
-  };
-
-  const givenRequestToCreateFacilityActivationTransactionInAcbsSucceedsWithWarningHeader = (): nock.Scope => {
-    return requestToCreateFacilityActivationTransactionInAcbs().reply(201, undefined, { bundleIdentifier, 'processing-warning': errorString });
-  };
-
-  const requestToCreateFacilityActivationTransactionInAcbs = (): nock.Interceptor =>
-    requestToCreateFacilityActivationTransactionInAcbsWithBody(JSON.parse(JSON.stringify(acbsRequestBodyToCreateFacilityActivationTransaction)));
-
-  const requestToCreateFacilityActivationTransactionInAcbsWithBody = (requestBody: nock.RequestBodyMatcher): nock.Interceptor =>
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .post(`/BundleInformation?servicingQueueIdentifier=${servicingQueueIdentifier}`, requestBody)
-      .matchHeader('authorization', `Bearer ${idToken}`)
-      .matchHeader('Content-Type', 'application/json');
-
-  const givenAnyRequestBodyToCreateFacilityActivationTransactionInAcbsSucceeds = (): void => {
-    const requestBodyPlaceholder = '*';
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .filteringRequestBody(() => requestBodyPlaceholder)
-      .post(`/BundleInformation?servicingQueueIdentifier=${servicingQueueIdentifier}`, requestBodyPlaceholder)
-      .matchHeader('authorization', `Bearer ${idToken}`)
-      .reply(201, undefined, { bundleidentifier: bundleIdentifier });
-  };
 });

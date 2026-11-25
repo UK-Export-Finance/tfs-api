@@ -1,6 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { Inject, Injectable } from '@nestjs/common';
-import AcbsConfig from '@ukef/config/acbs.config';
+import { AcbsConfig } from '@ukef/config/acbs.config';
 import { PROPERTIES } from '@ukef/constants';
 
 import { AcbsConfigBaseUrlAndUseReturnExceptionHeader } from './acbs-config-base-url.type';
@@ -23,7 +23,7 @@ export class AcbsDealPartyService {
   }
 
   async getDealPartiesForDeal(portfolio: string, dealIdentifier: string, idToken: string): Promise<AcbsGetDealPartyResponseDto[]> {
-    const { data: dealPartiesInAcbs } = await this.acbsHttpService.get<AcbsGetDealPartyResponseDto[]>({
+    const { data: dealPartiesInAcbs } = await this.acbsHttpService.get<AcbsGetDealPartyResponseDto[] | null>({
       path: `/Portfolio/${portfolio}/Deal/${dealIdentifier}/DealParty`,
       idToken,
       onError: createWrapAcbsHttpGetErrorCallback({
@@ -32,11 +32,11 @@ export class AcbsDealPartyService {
       }),
     });
 
-    if (dealPartiesInAcbs === null) {
-      throw new AcbsResourceNotFoundException(`Deal Investors for Deal ${dealIdentifier} were not found by ACBS.`);
+    if (dealPartiesInAcbs) {
+      return dealPartiesInAcbs;
     }
 
-    return dealPartiesInAcbs;
+    throw new AcbsResourceNotFoundException(`Deal Investors for Deal ${dealIdentifier} were not found by ACBS.`);
   }
 
   async createInvestorForDeal(dealIdentifier: string, newDealInvestor: AcbsCreateDealInvestorRequest, idToken: string): Promise<void> {

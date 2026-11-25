@@ -1,0 +1,110 @@
+import axios from 'axios';
+import { requireEnv } from '../utils/env';
+import { HttpStatus } from '../constants/http-status.constant';
+import { postToTfsApi } from '../utils/post-to-tfs-api';
+
+const apimTfsUrl = requireEnv('APIM_TFS_URL');
+const apimTfsKey = requireEnv('APIM_TFS_KEY');
+const apimTfsValue = requireEnv('APIM_TFS_VALUE');
+
+jest.mock('axios');
+
+const context = {
+  log: jest.fn(),
+  error: jest.fn(),
+};
+
+const facilityId = '0011111111';
+const errorPrefix = 'Failed to do something';
+
+describe('postToTfsApi', () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
+
+  it('posts the payload to the given URL with the correct headers', async () => {
+    // Arrange
+    const payload = { some: 'data' };
+
+    axios.post = jest.fn().mockResolvedValue({ status: HttpStatus.CREATED, data: {} });
+
+    // Act
+    await postToTfsApi('facilityAmendment', facilityId, payload, errorPrefix, context as any);
+
+    // Assert
+    expect(axios.post).toHaveBeenCalledTimes(1);
+    expect(axios.post).toHaveBeenCalledWith(`${apimTfsUrl}/api/v2/gift/facility/${facilityId}/amendment/without-queue`, payload, {
+      headers: {
+        [apimTfsKey]: apimTfsValue,
+        accept: 'application/json',
+      },
+    });
+  });
+
+  it(`does not throw or log an error when the API responds with status ${HttpStatus.CREATED}`, async () => {
+    // Arrange
+    axios.post = jest.fn().mockResolvedValue({ status: HttpStatus.CREATED, data: {} });
+
+    // Act
+    await postToTfsApi('facilityAmendment', facilityId, {}, errorPrefix, context as any);
+
+    // Assert
+    expect(context.error).not.toHaveBeenCalled();
+  });
+
+  it(`logs an error and throws if the API responds with a non-${HttpStatus.CREATED} status`, async () => {
+    // Arrange
+    const responseData = { error: 'Bad Request' };
+
+    axios.post = jest.fn().mockResolvedValue({ status: HttpStatus.BAD_REQUEST, data: responseData });
+
+    // Act
+    const call = () => postToTfsApi('facilityAmendment', facilityId, {}, errorPrefix, context as any);
+
+    // Assert
+    await expect(call()).rejects.toThrow(`${errorPrefix}, status: 400, response: {"error":"Bad Request"}`);
+    expect(context.error).toHaveBeenCalledWith(`${errorPrefix}, status: 400, response: {"error":"Bad Request"}`);
+  });
+
+  it('logs an error and throws if axios throws an AxiosError', async () => {
+    // Arrange
+    const axiosError = Object.assign(new Error('Network Error'), {
+      isAxiosError: true,
+      response: { status: 500, data: { error: 'Internal Server Error' } },
+    });
+
+    axios.post = jest.fn().mockRejectedValue(axiosError);
+    jest.mocked(axios.isAxiosError).mockReturnValue(true);
+
+    // Act
+    const call = () => postToTfsApi('facilityAmendment', facilityId, {}, errorPrefix, context as any);
+
+    // Assert
+    await expect(call()).rejects.toThrow(`${errorPrefix}, status: 500, error: Network Error, response: {"error":"Internal Server Error"}`);
+    expect(context.error).toHaveBeenCalledWith(`${errorPrefix}, status: 500, error: Network Error, response: {"error":"Internal Server Error"}`);
+  });
+
+  it('logs an error and throws if axios throws a plain Error', async () => {
+    // Arrange
+    axios.post = jest.fn().mockRejectedValue(new Error('Network Error'));
+
+    // Act
+    const call = () => postToTfsApi('facilityAmendment', facilityId, {}, errorPrefix, context as any);
+
+    // Assert
+    await expect(call()).rejects.toThrow(`${errorPrefix}, error: Network Error`);
+    expect(context.error).toHaveBeenCalledWith(`${errorPrefix}, error: Network Error`);
+  });
+
+  it('logs an error and throws if axios throws a non-Error', async () => {
+    // Arrange
+    axios.post = jest.fn().mockRejectedValue('unexpected string error');
+
+    // Act
+    const call = () => postToTfsApi('facilityAmendment', facilityId, {}, errorPrefix, context as any);
+
+    // Assert
+    await expect(call()).rejects.toThrow(`${errorPrefix}, unknown error`);
+    expect(context.error).toHaveBeenCalledWith(`${errorPrefix}, unknown error`);
+  });
+});

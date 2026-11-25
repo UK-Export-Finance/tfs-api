@@ -1,5 +1,5 @@
-import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import request from 'supertest';
+import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 
 const expectedLoanIdentifierMustMatchPatternErrorMessage = `loanIdentifier must match /^\\d{9}$/ regular expression`;
 

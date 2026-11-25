@@ -28,7 +28,7 @@ export class CreateFacilityActivationTransactionGenerator extends AbstractGenera
 
   protected generateValues(): CreateFacilityActivationTransactionRequestItem {
     // Numeric enums needs filter to get possible values.
-    const possibleInitialBundleStatusCodes = Object.values(ENUMS.INITIAL_BUNDLE_STATUS_CODES).filter((value) => !isNaN(Number(value)));
+    const possibleInitialBundleStatusCodes = Object.values(ENUMS.INITIAL_BUNDLE_STATUS_CODES).filter((value) => !Number.isNaN(Number(value)));
     return {
       initialBundleStatusCode: possibleInitialBundleStatusCodes[
         this.valueGenerator.integer({ min: 0, max: possibleInitialBundleStatusCodes.length - 1 })
@@ -79,7 +79,7 @@ export class CreateFacilityActivationTransactionGenerator extends AbstractGenera
       lenderTypeCode: value.lenderTypeCode,
     }));
 
-    const createBundleInformationResponseFromAcbs = { BundleIdentifier: bundleIdentifier, WarningErrors: undefined };
+    const createBundleInformationResponseFromAcbs = { BundleIdentifier: bundleIdentifier, WarningErrors: undefined! };
     const createFacilityActivationTransactionResponseFromService = { bundleIdentifier, warningErrors: undefined };
     const createFacilityActivationTransactionResponseFromEndpoint = { bundleIdentifier };
 
@@ -93,17 +93,17 @@ export class CreateFacilityActivationTransactionGenerator extends AbstractGenera
   }
 }
 
-interface GenerateOptions {
+type GenerateOptions = {
   facilityIdentifier: UkefId;
   bundleIdentifier: AcbsBundleId;
   borrowerPartyIdentifier: AcbsPartyId;
   effectiveDate: DateOnlyString;
-}
+};
 
-interface GenerateResult {
+type GenerateResult = {
   acbsRequestBodyToCreateFacilityActivationTransaction: AcbsCreateBundleInformationRequestDto<FacilityCodeValueTransaction>;
   requestBodyToCreateFacilityActivationTransaction: CreateFacilityActivationTransactionRequest;
   createBundleInformationResponseFromAcbs: AcbsCreateBundleInformationResponseHeadersDto;
   createFacilityActivationTransactionResponseFromService: CreateFacilityActivationTransactionResponse;
   createFacilityActivationTransactionResponseFromEndpoint: { bundleIdentifier: AcbsBundleId };
-}
+};

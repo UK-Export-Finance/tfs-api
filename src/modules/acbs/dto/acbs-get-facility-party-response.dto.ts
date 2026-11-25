@@ -1,6 +1,6 @@
 import { DateString } from '@ukef/helpers';
 
-export interface AcbsGetFacilityPartyResponseDto {
+export type AcbsGetFacilityPartyResponseDto = {
   EffectiveDate: DateString;
   Currency: {
     CurrencyCode: string;
@@ -13,4 +13,4 @@ export interface AcbsGetFacilityPartyResponseDto {
   InvolvedParty: {
     PartyIdentifier: string;
   };
-}
+};

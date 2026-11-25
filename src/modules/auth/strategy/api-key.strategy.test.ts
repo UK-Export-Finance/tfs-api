@@ -1,14 +1,22 @@
 import { UnauthorizedException } from '@nestjs/common';
-import { AUTH } from '@ukef/constants';
-import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { Request } from 'express';
 import { when } from 'jest-when';
 import { BadRequestError } from 'passport-headerapikey';
+import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
+import { AUTH } from '@ukef/constants';
 
-import { AuthService } from '../auth.service';
+import { AuthService } from '@ukef/modules/auth/auth.service';
 import { ApiKeyStrategy } from './api-key.strategy';
 
 jest.mock('../auth.service');
+
+type StrategyWithAugmentedCallbacks = ApiKeyStrategy & {
+  error: jest.Mock;
+  fail: jest.Mock;
+  pass: jest.Mock;
+  redirect: jest.Mock;
+  success: jest.Mock;
+};
 
 describe('ApiKeyStrategy', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -25,17 +33,17 @@ describe('ApiKeyStrategy', () => {
 
   let authService: AuthService;
 
-  let strategy: ApiKeyStrategy;
+  let strategy: StrategyWithAugmentedCallbacks;
 
   beforeEach(() => {
-    authService = new AuthService(null);
+    authService = new AuthService(null!);
     const authServiceValidateApiKey = jest.fn();
     authService.validateApiKey = authServiceValidateApiKey;
 
     when(authServiceValidateApiKey).mockReturnValue(false);
     when(authServiceValidateApiKey).calledWith(validApiKey).mockReturnValue(true);
 
-    strategy = new ApiKeyStrategy(authService);
+    strategy = new ApiKeyStrategy(authService) as StrategyWithAugmentedCallbacks;
 
     // When Passport uses the strategy to authenticate the request, it will
     // augment the strategy with the below callbacks. The strategy should
@@ -43,12 +51,19 @@ describe('ApiKeyStrategy', () => {
     // authentication.
     // See https://github.com/jaredhanson/passport-strategy#augmented-methods
     // for more details.
-    error = strategy['error'] = jest.fn();
-    fail = strategy['fail'] = jest.fn();
-    pass = strategy['pass'] = jest.fn();
-    redirect = strategy['redirect'] = jest.fn();
-    success = strategy['success'] = jest.fn();
+    error = jest.fn();
+    strategy.error = error;
+    fail = jest.fn();
+    strategy.fail = fail;
+    pass = jest.fn();
+    strategy.pass = pass;
+    redirect = jest.fn();
+    strategy.redirect = redirect;
+    success = jest.fn();
+    strategy.success = success;
   });
+
+  const createRequestWithHeaders = (headers: Record<string, string>): Request => ({ headers }) as unknown as Request;
 
   describe('authenticate', () => {
     describe('when the api key header is not present', () => {
@@ -142,6 +157,4 @@ describe('ApiKeyStrategy', () => {
       });
     });
   });
-
-  const createRequestWithHeaders = (headers: Record<string, string>): Request => ({ headers }) as unknown as Request;
 });

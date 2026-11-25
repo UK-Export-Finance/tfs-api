@@ -2,9 +2,9 @@ import { ACBSID, EXAMPLES } from '@ukef/constants';
 
 import { ValidatedStringApiProperty } from './validated-string-api-property.decorator';
 
-interface Options {
+type Options = {
   description: string;
-}
+};
 
 export const ValidatedLoanIdentifierApiProperty = ({ description }: Options) =>
   ValidatedStringApiProperty({

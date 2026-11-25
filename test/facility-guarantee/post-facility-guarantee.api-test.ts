@@ -1,3 +1,5 @@
+import nock from 'nock';
+import supertest from 'supertest';
 import { ENUMS, PROPERTIES } from '@ukef/constants';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { CreateFacilityGuaranteeRequest } from '@ukef/modules/facility-guarantee/dto/create-facility-guarantee-request.dto';
@@ -10,8 +12,6 @@ import { Api } from '@ukef-test/support/api';
 import { TEST_DATES } from '@ukef-test/support/constants/test-date.constant';
 import { ENVIRONMENT_VARIABLES } from '@ukef-test/support/environment-variables';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import nock from 'nock';
-import supertest from 'supertest';
 
 describe('POST /facilities/{facilityIdentifier}/guarantees', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -69,6 +69,30 @@ describe('POST /facilities/{facilityIdentifier}/guarantees', () => {
   ];
 
   let api: Api;
+  let idToken: string;
+
+  const requestToCreateFacilityGuaranteeInAcbsWithBody = (requestBody: nock.RequestBodyMatcher): nock.Interceptor =>
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .post(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/FacilityGuarantee`, requestBody)
+      .matchHeader('authorization', `Bearer ${idToken}`);
+
+  const requestToCreateFacilityGuarantee = (): nock.Interceptor => requestToCreateFacilityGuaranteeInAcbsWithBody(acbsRequestBodyToCreateFacilityGuarantee);
+
+  const givenRequestToCreateFacilityGuaranteeInAcbsSucceeds = (): nock.Scope =>
+    requestToCreateFacilityGuarantee().reply(201, undefined, {
+      location: `/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/FacilityGuarantee?accountOwnerIdentifier=00000000&lenderTypeCode=${lenderTypeCode}&sectionIdentifier=${sectionIdentifier}&limitTypeCode=${limitTypeCode}&limitKey=${limitKey}&guarantorPartyIdentifier=${guarantorParty}`,
+    });
+
+  const givenAnyRequestBodyToCreateFacilityGuaranteeInAcbsSucceeds = (): void => {
+    const requestBodyPlaceholder = '*';
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .filteringRequestBody(() => requestBodyPlaceholder)
+      .post(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/FacilityGuarantee`, requestBodyPlaceholder)
+      .matchHeader('authorization', `Bearer ${idToken}`)
+      .reply(201, undefined, {
+        location: `/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/FacilityGuarantee?accountOwnerIdentifier=00000000&lenderTypeCode=${lenderTypeCode}&sectionIdentifier=${sectionIdentifier}&limitTypeCode=${limitTypeCode}&limitKey=${limitKey}&guarantorPartyIdentifier=${guarantorParty}`,
+      });
+  };
 
   beforeAll(async () => {
     api = await Api.create();
@@ -83,11 +107,12 @@ describe('POST /facilities/{facilityIdentifier}/guarantees', () => {
     nock.cleanAll();
   });
 
-  const { idToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
+  const { idToken: resolvedIdToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
     givenRequestWouldOtherwiseSucceed: () => givenRequestToCreateFacilityGuaranteeInAcbsSucceeds(),
     makeRequest: () => api.post(createFacilityGuaranteeUrl, requestBodyToCreateFacilityGuarantee),
     successStatusCode: 201,
   });
+  idToken = resolvedIdToken;
 
   withClientAuthenticationTests({
     givenTheRequestWouldOtherwiseSucceed: () => {
@@ -140,7 +165,7 @@ describe('POST /facilities/{facilityIdentifier}/guarantees', () => {
     const requestBodyWithFutureEffectiveDate = [{ ...requestBodyToCreateFacilityGuarantee[0], effectiveDate: TEST_DATES.A_FUTURE_EXPIRY_DATE_ONLY }];
     const acbsRequestBodyWithTodayEffectiveDate = {
       ...acbsRequestBodyToCreateFacilityGuarantee,
-      EffectiveDate: new Date().toISOString().split('T')[0] + 'T00:00:00Z',
+      EffectiveDate: `${new Date().toISOString().split('T')[0]}T00:00:00Z`,
     };
     givenAuthenticationWithTheIdpSucceeds();
     const acbsRequestWithTodayEffectiveDate = requestToCreateFacilityGuaranteeInAcbsWithBody(acbsRequestBodyWithTodayEffectiveDate).reply(201, undefined, {
@@ -257,28 +282,4 @@ describe('POST /facilities/{facilityIdentifier}/guarantees', () => {
     expect(status).toBe(500);
     expect(body).toStrictEqual({ message: 'Internal server error', statusCode: 500 });
   });
-
-  const givenRequestToCreateFacilityGuaranteeInAcbsSucceeds = (): nock.Scope => {
-    return requestToCreateFacilityGuarantee().reply(201, undefined, {
-      location: `/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/FacilityGuarantee?accountOwnerIdentifier=00000000&lenderTypeCode=${lenderTypeCode}&sectionIdentifier=${sectionIdentifier}&limitTypeCode=${limitTypeCode}&limitKey=${limitKey}&guarantorPartyIdentifier=${guarantorParty}`,
-    });
-  };
-
-  const requestToCreateFacilityGuarantee = (): nock.Interceptor => requestToCreateFacilityGuaranteeInAcbsWithBody(acbsRequestBodyToCreateFacilityGuarantee);
-
-  const requestToCreateFacilityGuaranteeInAcbsWithBody = (requestBody: nock.RequestBodyMatcher): nock.Interceptor =>
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .post(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/FacilityGuarantee`, requestBody)
-      .matchHeader('authorization', `Bearer ${idToken}`);
-
-  const givenAnyRequestBodyToCreateFacilityGuaranteeInAcbsSucceeds = (): void => {
-    const requestBodyPlaceholder = '*';
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .filteringRequestBody(() => requestBodyPlaceholder)
-      .post(`/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/FacilityGuarantee`, requestBodyPlaceholder)
-      .matchHeader('authorization', `Bearer ${idToken}`)
-      .reply(201, undefined, {
-        location: `/Portfolio/${portfolioIdentifier}/Facility/${facilityIdentifier}/FacilityGuarantee?accountOwnerIdentifier=00000000&lenderTypeCode=${lenderTypeCode}&sectionIdentifier=${sectionIdentifier}&limitTypeCode=${limitTypeCode}&limitKey=${limitKey}&guarantorPartyIdentifier=${guarantorParty}`,
-      });
-  };
 });

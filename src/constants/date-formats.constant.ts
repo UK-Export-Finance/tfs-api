@@ -1,6 +1,8 @@
+import { REGEX } from './regex/index';
+
 export const DATE_FORMATS = {
   DATE_ONLY_STRING: {
-    regex: /^\d{4}-\d{2}-\d{2}$/,
+    regex: REGEX.DATE_ONLY_STRING,
     description: 'YYYY-MM-DD',
   },
 };

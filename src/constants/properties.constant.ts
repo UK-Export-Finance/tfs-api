@@ -1,5 +1,7 @@
 import { BundleInformationType } from '@ukef/constants/enums/bundle-information-type';
 
+import { COUNTRIES } from './countries.constant';
+
 export const PROPERTIES = {
   GLOBAL: {
     portfolioIdentifier: 'E1',
@@ -62,7 +64,7 @@ export const PROPERTIES = {
       servicingUnitIdentifier: 'ACBS',
       servicingUnitSectionIdentifier: 'ACBS',
       agentBankPartyIdentifier: '00000000',
-      riskCountryCode: 'GBR',
+      riskCountryCode: COUNTRIES.GBR,
       purposeTypeCode: '   ',
       capitalClassCode: 'A',
       capitalConversionFactorCode: ' ',
@@ -142,7 +144,7 @@ export const PROPERTIES = {
         addressIdentifier: 'PRM',
         addressName1: 'PRV',
         addressTypeCode: '01',
-        countryCode: 'GBR',
+        countryCode: COUNTRIES.GBR,
       },
       generalLedgerUnitIdentifier: 'ECGD',
       riskRatingCode: '14',
@@ -220,8 +222,8 @@ export const PROPERTIES = {
         purposeTypeCode: '   ',
         capitalClassCode: 'A',
         capitalConversionFactorCode: {
-          '250': '1',
-          '260': '5',
+          250: '1',
+          260: '5',
         },
         capitalConversionFactorCodeFallback: '1',
         financialFXRate: 1,
@@ -320,9 +322,9 @@ export const PROPERTIES = {
         fixedFeeChargeTypeCode: '1',
       },
       description: {
-        '250': 'Bond Support Premium',
-        '260': 'EWCS Premium',
-        '280': 'Financial Guarantee Fee',
+        250: 'Bond Support Premium',
+        260: 'EWCS Premium',
+        280: 'Financial Guarantee Fee',
       },
       fixedFeeEarningMethod: {
         fixedFeeEarningMethodCode: 'A',
@@ -461,8 +463,8 @@ export const PROPERTIES = {
         cashOffsetTypeCode: '02',
         isDraftIndicator: false,
         transactionTypeCode: {
-          increase: '9040',
-          decrease: '9050',
+          increase: '9020',
+          decrease: '9030',
         },
       },
     },

@@ -1,15 +1,15 @@
 import { HttpService } from '@nestjs/axios';
-import { PROPERTIES } from '@ukef/constants';
-import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { generateAcbsCreateFacilityPartyDtoUsing } from '@ukef-test/support/requests/acbs-create-facility-party-dto';
 import { AxiosError } from 'axios';
 import { when } from 'jest-when';
 import { of, throwError } from 'rxjs';
+import { PROPERTIES } from '@ukef/constants';
+import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
+import { generateAcbsCreateFacilityPartyDtoUsing } from '@ukef-test/support/requests/acbs-create-facility-party-dto';
 
 import { AcbsFacilityPartyService } from './acbs-facility-party.service';
 import { AcbsBadRequestException } from './exception/acbs-bad-request.exception';
 import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
-import { AcbsUnexpectedException } from './exception/acbs-unexpected.exception';
+import { AcbsException } from './exception/acbs.exception';
 
 describe('AcbsFacilityPartyService', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -71,8 +71,8 @@ describe('AcbsFacilityPartyService', () => {
         data: errorString,
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePost)
@@ -93,8 +93,8 @@ describe('AcbsFacilityPartyService', () => {
         data: errorString,
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePost)
@@ -116,8 +116,8 @@ describe('AcbsFacilityPartyService', () => {
         data: errorBody,
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePost)
@@ -132,15 +132,15 @@ describe('AcbsFacilityPartyService', () => {
       await expect(createGuaranteeForDealPromise).rejects.toHaveProperty('errorBody', JSON.stringify(errorBody));
     });
 
-    it('throws an AcbsUnexpectedException if ACBS responds with an error code that is not 400', async () => {
+    it('throws an AcbsException if ACBS responds with an error code that is not 400', async () => {
       const axiosError = new AxiosError();
       const errorBody = { errorMessage: valueGenerator.string() };
       axiosError.response = {
         data: errorBody,
         status: 401,
         statusText: 'Unauthorized',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePost)
@@ -149,7 +149,7 @@ describe('AcbsFacilityPartyService', () => {
 
       const createGuaranteeForDealPromise = service.createPartyForFacility(facilityIdentifier, newFacilityParty, idToken);
 
-      await expect(createGuaranteeForDealPromise).rejects.toBeInstanceOf(AcbsUnexpectedException);
+      await expect(createGuaranteeForDealPromise).rejects.toBeInstanceOf(AcbsException);
       await expect(createGuaranteeForDealPromise).rejects.toThrow(`Failed to create a party for facility ${facilityIdentifier} in ACBS.`);
       await expect(createGuaranteeForDealPromise).rejects.toHaveProperty('innerError', axiosError);
     });

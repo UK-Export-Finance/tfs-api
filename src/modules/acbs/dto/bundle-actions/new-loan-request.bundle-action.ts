@@ -3,7 +3,7 @@ import { DateString } from '@ukef/helpers';
 import { AccrualSchedule } from '@ukef/modules/acbs/dto/bundle-actions/accrual-schedule.interface';
 import { RepaymentSchedule } from '@ukef/modules/acbs/dto/bundle-actions/repayment-schedule.interface';
 
-export interface NewLoanRequest {
+export type NewLoanRequest = {
   $type: BundleInformationType.NEW_LOAN_REQUEST;
   FacilityIdentifier: string;
   BorrowerPartyIdentifier: string;
@@ -92,9 +92,9 @@ export interface NewLoanRequest {
   CustomerUsageLockMTMRateIndicator?: boolean;
   AccrualScheduleList: AccrualSchedule[];
   RepaymentScheduleList: Pick<RepaymentSchedule, 'NextDueDate' | 'LoanBillingFrequencyType'>[];
-}
+};
 
-interface NewLoanRequestCashEvent {
+type NewLoanRequestCashEvent = {
   PaymentInstructionCode: string;
   CashOffsetTypeCode: string;
   Currency: {
@@ -103,4 +103,4 @@ interface NewLoanRequestCashEvent {
   DDAAccount: string;
   CashDetailAmount: number;
   CashReferenceIdentifier: string;
-}
+};

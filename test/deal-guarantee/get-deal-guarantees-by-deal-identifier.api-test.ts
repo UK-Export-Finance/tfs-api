@@ -1,3 +1,4 @@
+import nock from 'nock';
 import { PROPERTIES } from '@ukef/constants';
 import { UkefId } from '@ukef/helpers';
 import { withAcbsAuthenticationApiTests } from '@ukef-test/common-tests/acbs-authentication-api-tests';
@@ -5,7 +6,6 @@ import { Api } from '@ukef-test/support/api';
 import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
 import { GetDealGuaranteeGenerator } from '@ukef-test/support/generator/get-deal-guarantee-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import nock from 'nock';
 
 describe('GET /deals/{dealIdentifier}/guarantees', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -14,12 +14,24 @@ describe('GET /deals/{dealIdentifier}/guarantees', () => {
   const getDealGuaranteesUrl = `/api/v1/deals/${dealIdentifier}/guarantees`;
 
   let api: Api;
+  let idToken: string;
 
   const { dealGuaranteesInAcbs, dealGuaranteesFromService } = new GetDealGuaranteeGenerator(valueGenerator).generate({
     numberToGenerate: 2,
     dealIdentifier,
     portfolioIdentifier,
   });
+
+  const requestToGetDealGuarantees = () =>
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
+      .get(`/Portfolio/${portfolioIdentifier}/Deal/${dealIdentifier}/DealGuarantee`)
+      .matchHeader('authorization', `Bearer ${idToken}`);
+
+  const { idToken: resolvedIdToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
+    givenRequestWouldOtherwiseSucceed: () => requestToGetDealGuarantees().reply(200, dealGuaranteesInAcbs),
+    makeRequest: () => api.get(getDealGuaranteesUrl),
+  });
+  idToken = resolvedIdToken;
 
   beforeAll(async () => {
     api = await Api.create();
@@ -32,11 +44,6 @@ describe('GET /deals/{dealIdentifier}/guarantees', () => {
   afterEach(() => {
     nock.abortPendingRequests();
     nock.cleanAll();
-  });
-
-  const { idToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
-    givenRequestWouldOtherwiseSucceed: () => requestToGetDealGuarantees().reply(200, dealGuaranteesInAcbs),
-    makeRequest: () => api.get(getDealGuaranteesUrl),
   });
 
   it('returns a 200 response with the deal guarantees if it is returned by ACBS', async () => {
@@ -120,9 +127,4 @@ describe('GET /deals/{dealIdentifier}/guarantees', () => {
       error: 'Bad Request',
     });
   });
-
-  const requestToGetDealGuarantees = () =>
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL)
-      .get(`/Portfolio/${portfolioIdentifier}/Deal/${dealIdentifier}/DealGuarantee`)
-      .matchHeader('authorization', `Bearer ${idToken}`);
 });

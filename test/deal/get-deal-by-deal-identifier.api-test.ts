@@ -1,3 +1,4 @@
+import nock from 'nock';
 import { PROPERTIES } from '@ukef/constants';
 import { AcbsGetDealResponseDto } from '@ukef/modules/acbs/dto/acbs-get-deal-response.dto';
 import { GetDealByIdentifierResponse } from '@ukef/modules/deal/dto/get-deal-by-identifier-response.dto';
@@ -7,7 +8,7 @@ import { Api } from '@ukef-test/support/api';
 import { TEST_CURRENCIES } from '@ukef-test/support/constants/test-currency.constant';
 import { ENVIRONMENT_VARIABLES, TIME_EXCEEDING_ACBS_TIMEOUT } from '@ukef-test/support/environment-variables';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import nock from 'nock';
+import { NOCK_NULL_RESPONSE_BODY } from '@ukef-test/support/helpers/nock-null-response-body.helper';
 
 describe('GET /deals/{dealIdentifier}', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -25,6 +26,7 @@ describe('GET /deals/{dealIdentifier}', () => {
   const getDealUrl = `/api/v1/deals/${dealIdentifier}`;
 
   let api: Api;
+  let idToken: string;
 
   const dealInAcbs: AcbsGetDealResponseDto = {
     DealIdentifier: dealIdentifier,
@@ -54,6 +56,15 @@ describe('GET /deals/{dealIdentifier}', () => {
     obligorIndustryClassification,
   };
 
+  const requestToGetDeal = () =>
+    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL).get(`/Portfolio/${portfolioIdentifier}/Deal/${dealIdentifier}`).matchHeader('authorization', `Bearer ${idToken}`);
+
+  const { idToken: resolvedIdToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
+    givenRequestWouldOtherwiseSucceed: () => requestToGetDeal().reply(200, dealInAcbs),
+    makeRequest: () => api.get(getDealUrl),
+  });
+  idToken = resolvedIdToken;
+
   beforeAll(async () => {
     api = await Api.create();
   });
@@ -65,11 +76,6 @@ describe('GET /deals/{dealIdentifier}', () => {
   afterEach(() => {
     nock.abortPendingRequests();
     nock.cleanAll();
-  });
-
-  const { idToken, givenAuthenticationWithTheIdpSucceeds } = withAcbsAuthenticationApiTests({
-    givenRequestWouldOtherwiseSucceed: () => requestToGetDeal().reply(200, dealInAcbs),
-    makeRequest: () => api.get(getDealUrl),
   });
 
   withClientAuthenticationTests({
@@ -94,7 +100,7 @@ describe('GET /deals/{dealIdentifier}', () => {
     givenAuthenticationWithTheIdpSucceeds();
     const dealInAcbsWithNullPartyName: AcbsGetDealResponseDto = {
       ...dealInAcbs,
-      BorrowerParty: { ...dealInAcbs.BorrowerParty, PartyName1: null },
+      BorrowerParty: { ...dealInAcbs.BorrowerParty, PartyName1: null! },
     };
     requestToGetDeal().reply(200, dealInAcbsWithNullPartyName);
 
@@ -108,7 +114,7 @@ describe('GET /deals/{dealIdentifier}', () => {
     givenAuthenticationWithTheIdpSucceeds();
     const dealInAcbsWithNullIndustryClassification: AcbsGetDealResponseDto = {
       ...dealInAcbs,
-      IndustryClassification: { IndustryClassificationCode: null },
+      IndustryClassification: { IndustryClassificationCode: null! },
     };
     requestToGetDeal().reply(200, dealInAcbsWithNullIndustryClassification);
 
@@ -122,7 +128,7 @@ describe('GET /deals/{dealIdentifier}', () => {
     givenAuthenticationWithTheIdpSucceeds();
     const dealInAcbsWithNullCommencementDate: AcbsGetDealResponseDto = {
       ...dealInAcbs,
-      OriginalEffectiveDate: null,
+      OriginalEffectiveDate: null!,
     };
     requestToGetDeal().reply(200, dealInAcbsWithNullCommencementDate);
 
@@ -134,7 +140,7 @@ describe('GET /deals/{dealIdentifier}', () => {
 
   it('returns a 404 response if ACBS returns a 200 response with null as the response body', async () => {
     givenAuthenticationWithTheIdpSucceeds();
-    requestToGetDeal().reply(200, null);
+    requestToGetDeal().reply(200, NOCK_NULL_RESPONSE_BODY);
 
     const { status, body } = await api.get(getDealUrl);
 
@@ -170,7 +176,4 @@ describe('GET /deals/{dealIdentifier}', () => {
       message: 'Internal server error',
     });
   });
-
-  const requestToGetDeal = () =>
-    nock(ENVIRONMENT_VARIABLES.ACBS_BASE_URL).get(`/Portfolio/${portfolioIdentifier}/Deal/${dealIdentifier}`).matchHeader('authorization', `Bearer ${idToken}`);
 });

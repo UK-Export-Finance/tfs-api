@@ -1,3 +1,4 @@
+import { when } from 'jest-when';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { FacilityService } from '@ukef/modules/facility/facility.service';
 import { CreateOrUpdateFacilityCovenantsResponseDto } from '@ukef/modules/facility-covenant/dto/create-or-update-covenants-response.dto';
@@ -6,7 +7,6 @@ import { FacilityCovenantService } from '@ukef/modules/facility-covenant/facilit
 import { CreateFacilityCovenantGenerator } from '@ukef-test/support/generator/create-facility-covenant-generator';
 import { GetFacilityCovenantGenerator } from '@ukef-test/support/generator/get-facility-covenant-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { when } from 'jest-when';
 
 describe('FacilityCovenantController', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -23,8 +23,8 @@ describe('FacilityCovenantController', () => {
   let facilityServiceGetFacilityByIdentifier: jest.Mock;
 
   beforeEach(() => {
-    facilityCovenantService = new FacilityCovenantService(null, null, null);
-    facilityService = new FacilityService(null, null, null, null, null);
+    facilityCovenantService = new FacilityCovenantService(null!, null!, null!);
+    facilityService = new FacilityService(null!, null!, null!, null!, null!);
 
     facilityCovenantServiceCreateCovenantForFacility = jest.fn();
     facilityCovenantServiceGetCovenantsForFacility = jest.fn();

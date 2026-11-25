@@ -1,6 +1,6 @@
 import { DateString } from '@ukef/helpers/date-string.type';
 
-export interface AcbsCreateDealDto {
+export type AcbsCreateDealDto = {
   DealIdentifier: string;
   DealOrigination: {
     DealOriginationCode: string;
@@ -142,4 +142,4 @@ export interface AcbsCreateDealDto {
   RiskMitigation: {
     RiskMitigationCode: string;
   };
-}
+};

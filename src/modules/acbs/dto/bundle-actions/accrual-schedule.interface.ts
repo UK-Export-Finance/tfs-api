@@ -1,6 +1,6 @@
 import { DateString } from '@ukef/helpers';
 
-export interface AccrualSchedule {
+export type AccrualSchedule = {
   AccrualCategory: {
     AccrualCategoryCode: string;
   };
@@ -11,9 +11,9 @@ export interface AccrualSchedule {
   IndexRateChangeFrequency?: {
     IndexRateChangeFrequencyCode: string;
   };
-}
+};
 
-export interface AccrualScheduleExtended extends AccrualSchedule {
+export type AccrualScheduleExtended = AccrualSchedule & {
   InvolvedParty: {
     PartyIdentifier: string;
   };
@@ -78,4 +78,4 @@ export interface AccrualScheduleExtended extends AccrualSchedule {
     };
     FrequencyPeriod: number;
   };
-}
+};

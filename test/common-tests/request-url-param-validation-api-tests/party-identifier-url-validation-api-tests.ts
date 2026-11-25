@@ -1,5 +1,5 @@
-import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import request from 'supertest';
+import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 
 const expectedPartyIdentifierMustMatchPatternErrorMessage = `partyIdentifier must match /^\\d{8}$/ regular expression`;
 

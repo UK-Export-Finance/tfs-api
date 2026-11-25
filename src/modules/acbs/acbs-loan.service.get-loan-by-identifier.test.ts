@@ -1,10 +1,10 @@
 import { HttpService } from '@nestjs/axios';
-import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
-import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { UpdateLoanGenerator } from '@ukef-test/support/generator/update-loan-generator';
 import { AxiosError } from 'axios';
 import { when } from 'jest-when';
 import { of, throwError } from 'rxjs';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
+import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
+import { UpdateLoanGenerator } from '@ukef-test/support/generator/update-loan-generator';
 
 import { AcbsLoanService } from './acbs-loan-service';
 import { AcbsException } from './exception/acbs.exception';
@@ -60,8 +60,8 @@ describe('AcbsLoanService', () => {
     const badRequestAcbsResponseWithoutDataField = {
       status: 400,
       statusText: 'Bad Request',
-      headers: undefined,
-      config: undefined,
+      headers: undefined!,
+      config: undefined!,
     };
 
     it('returns the loan by loan identifier from ACBS if ACBS responds with the loan', async () => {

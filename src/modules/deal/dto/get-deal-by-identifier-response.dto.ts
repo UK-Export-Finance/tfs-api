@@ -4,29 +4,29 @@ import { DateOnlyString } from '@ukef/helpers';
 
 export class GetDealByIdentifierResponse {
   @ApiResponseProperty({ example: EXAMPLES.DEAL_ID })
-  dealIdentifier: string;
+  dealIdentifier!: string;
 
   @ApiResponseProperty({ example: PROPERTIES.GLOBAL.portfolioIdentifier })
-  portfolioIdentifier: string;
+  portfolioIdentifier!: string;
 
   @ApiResponseProperty({ example: EXAMPLES.CURRENCY })
-  currency: string;
+  currency!: string;
 
   @ApiResponseProperty()
-  dealValue: number;
+  dealValue!: number;
 
   @ApiResponseProperty({
     type: Date,
     format: 'date',
   })
-  guaranteeCommencementDate: DateOnlyString;
+  guaranteeCommencementDate!: DateOnlyString;
 
   @ApiResponseProperty({ example: EXAMPLES.PARTY_ID })
-  obligorPartyIdentifier: string;
+  obligorPartyIdentifier!: string;
 
   @ApiResponseProperty()
-  obligorName: string;
+  obligorName!: string;
 
   @ApiResponseProperty()
-  obligorIndustryClassification: string;
+  obligorIndustryClassification!: string;
 }

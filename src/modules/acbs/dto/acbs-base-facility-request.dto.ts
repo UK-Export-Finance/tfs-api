@@ -1,6 +1,6 @@
 import { DateString } from '@ukef/helpers';
 
-export interface AcbsBaseFacilityRequest {
+export type AcbsBaseFacilityRequest = {
   FacilityIdentifier: string;
   Description: string;
   Currency: {
@@ -144,4 +144,4 @@ export interface AcbsBaseFacilityRequest {
   RiskMitigation: {
     RiskMitigationCode: string;
   };
-}
+};

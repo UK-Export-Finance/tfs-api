@@ -1,9 +1,9 @@
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
-import AcbsAuthenticationConfig from '@ukef/config/acbs-authentication.config';
 import { Cache } from 'cache-manager';
 import { PinoLogger } from 'nestjs-pino';
+import { AcbsAuthenticationConfig } from '@ukef/config/acbs-authentication.config';
 
 import { AcbsAuthenticationService } from './acbs-authentication.service';
 import { ACBS_ID_TOKEN_CACHE_KEY } from './acbs-id-token.cache-key';
@@ -46,8 +46,9 @@ export class CachingAcbsAuthenticationService extends AcbsAuthenticationService 
     try {
       const cachedIdToken = await this.cacheManager.get<string>(ACBS_ID_TOKEN_CACHE_KEY);
 
-      if (cachedIdToken !== null && cachedIdToken !== undefined) {
-        this.logger.debug('Using the cached ACBS authentication id token.');
+      if (cachedIdToken) {
+        this.logger.info('Using the cached ACBS authentication id token.');
+
         return cachedIdToken;
       }
     } catch (error) {
@@ -58,7 +59,7 @@ export class CachingAcbsAuthenticationService extends AcbsAuthenticationService 
   }
 
   private getNewIdToken(): Promise<string> {
-    this.logger.debug('Requesting a new ACBS authentication id token.');
+    this.logger.info('Requesting a new ACBS authentication id token.');
     return this.acbsAuthenticationService.getIdToken();
   }
 

@@ -1,6 +1,6 @@
 import { DateString } from '@ukef/helpers';
 
-export interface AcbsGetFacilityCovenantsResponseDto {
+export type AcbsGetFacilityCovenantsResponseDto = {
   FacilityIdentifier: string;
   PortfolioIdentifier: string;
   AccountOwnerIdentifier: string;
@@ -36,4 +36,4 @@ export interface AcbsGetFacilityCovenantsResponseDto {
   InComplianceIndicator: boolean;
   WaivedIndicator: boolean;
   NextReviewDate: DateString;
-}
+};

@@ -1,14 +1,14 @@
 import { HttpService } from '@nestjs/axios';
-import { CreateFacilityGenerator } from '@ukef-test/support/generator/create-facility-generator';
-import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { AxiosError } from 'axios';
 import { when } from 'jest-when';
 import { of, throwError } from 'rxjs';
+import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
+import { CreateFacilityGenerator } from '@ukef-test/support/generator/create-facility-generator';
 
-import { DateStringTransformations } from '../date/date-string.transformations';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { AcbsFacilityService } from './acbs-facility.service';
 import { AcbsBadRequestException } from './exception/acbs-bad-request.exception';
-import { AcbsUnexpectedException } from './exception/acbs-unexpected.exception';
+import { AcbsException } from './exception/acbs.exception';
 
 describe('AcbsFacilityService', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -73,8 +73,8 @@ describe('AcbsFacilityService', () => {
         data: errorString,
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePost)
@@ -89,15 +89,15 @@ describe('AcbsFacilityService', () => {
       await expect(createFacilityPromise).rejects.toHaveProperty('errorBody', errorString);
     });
 
-    it('throws an AcbsUnexpectedException if ACBS responds with an error code that is not 400', async () => {
+    it('throws an AcbsException if ACBS responds with an error code that is not 400', async () => {
       const axiosError = new AxiosError();
       const errorBody = { errorMessage: valueGenerator.string() };
       axiosError.response = {
         data: errorBody,
         status: 401,
         statusText: 'Unauthorized',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePost)
@@ -106,7 +106,7 @@ describe('AcbsFacilityService', () => {
 
       const createDealPromise = service.createFacility(randomPortfolioIdentifier, newFacility, idToken);
 
-      await expect(createDealPromise).rejects.toBeInstanceOf(AcbsUnexpectedException);
+      await expect(createDealPromise).rejects.toBeInstanceOf(AcbsException);
       await expect(createDealPromise).rejects.toThrow(`Failed to create a facility with identifier ${facilityIdentifier} in ACBS.`);
       await expect(createDealPromise).rejects.toHaveProperty('innerError', axiosError);
     });

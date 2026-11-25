@@ -1,8 +1,8 @@
-import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
-import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
 import { Cache } from 'cache-manager';
 import { when } from 'jest-when';
 import { PinoLogger } from 'nestjs-pino';
+import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
+import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
 
 import { ACBS_ID_TOKEN_CACHE_KEY } from './acbs-id-token.cache-key';
 import { CachingAcbsAuthenticationService } from './caching-acbs-authentication.service';
@@ -22,7 +22,7 @@ describe('CachingAcbsAuthenticationService', () => {
   let acbsAuthenticationServiceGetIdToken: jest.Mock;
   let cacheManagerGet: jest.Mock;
   let cacheManagerSet: jest.Mock;
-  let loggerDebug: jest.Mock;
+  let loggerInfo: jest.Mock;
   let loggerWarn: jest.Mock;
   let service: CachingAcbsAuthenticationService;
 
@@ -36,20 +36,24 @@ describe('CachingAcbsAuthenticationService', () => {
     cacheManagerSet = jest.fn();
     const cacheManager: Cache = {
       get: cacheManagerGet,
+      mget: jest.fn(),
+      ttl: jest.fn(),
       set: cacheManagerSet,
+      mset: jest.fn(),
       del: jest.fn(),
-      reset: jest.fn(),
+      mdel: jest.fn(),
+      clear: jest.fn(),
+      on: jest.fn(),
+      off: jest.fn(),
+      disconnect: jest.fn(),
+      cacheId: jest.fn(),
+      stores: [],
       wrap: jest.fn(),
-      store: null,
-      on: null,
-      removeListener: function (): void {
-        throw new Error('Function not implemented.');
-      },
     };
 
     const logger = new PinoLogger({});
-    loggerDebug = jest.fn();
-    logger.debug = loggerDebug;
+    loggerInfo = jest.fn();
+    logger.info = loggerInfo;
     loggerWarn = jest.fn();
     logger.warn = loggerWarn;
 
@@ -99,7 +103,7 @@ describe('CachingAcbsAuthenticationService', () => {
       it('does NOT log that an id token was retrieved from the cache at DEBUG level', async () => {
         await service.getIdToken();
 
-        expect(loggerDebug).not.toHaveBeenCalledWith(usingIdCachedTokenLogMessage);
+        expect(loggerInfo).not.toHaveBeenCalledWith(usingIdCachedTokenLogMessage);
       });
 
       it('stores a new id token from the AcbsAuthenticationService in the cache with the specified TTL', async () => {
@@ -111,7 +115,7 @@ describe('CachingAcbsAuthenticationService', () => {
       it('logs that an id token is being stored in the cache at DEBUG level', async () => {
         await service.getIdToken();
 
-        expect(loggerDebug).toHaveBeenCalledWith(requestingNewIdTokenLogMessage);
+        expect(loggerInfo).toHaveBeenCalledWith(requestingNewIdTokenLogMessage);
       });
 
       it('throws the same error as the AcbsAuthenticationService if it errors', async () => {
@@ -170,7 +174,7 @@ describe('CachingAcbsAuthenticationService', () => {
       it('logs that an id token was retrieved from the cache at DEBUG level', async () => {
         await service.getIdToken();
 
-        expect(loggerDebug).toHaveBeenCalledWith(usingIdCachedTokenLogMessage);
+        expect(loggerInfo).toHaveBeenCalledWith(usingIdCachedTokenLogMessage);
       });
 
       it('does NOT update the id token in the cache', async () => {
@@ -182,7 +186,7 @@ describe('CachingAcbsAuthenticationService', () => {
       it('does NOT log that an id token is being stored in the cache at DEBUG level', async () => {
         await service.getIdToken();
 
-        expect(loggerDebug).not.toHaveBeenCalledWith(requestingNewIdTokenLogMessage);
+        expect(loggerInfo).not.toHaveBeenCalledWith(requestingNewIdTokenLogMessage);
       });
     });
   });

@@ -1,4 +1,4 @@
-import { CreateFacilityRequestItem } from '../dto/create-facility-request.dto';
+import { CreateFacilityRequestItem } from '@ukef/modules/facility/dto/create-facility-request.dto';
 import { CreateFacilityTestPartsArgs } from './create-facility-test-parts-args.interface';
 
 export const withCreateFacilityDescriptionTests = ({
@@ -74,7 +74,7 @@ export const withCreateFacilityDescriptionTests = ({
 
     it('throws if the productTypeName is not defined', async () => {
       const exposurePeriod = valueGenerator.string();
-      const { productTypeName: _removed, ...facilityToCreateWithoutProductTypeName } = {
+      const { productTypeName: removed, ...facilityToCreateWithoutProductTypeName } = {
         ...facilityToCreate,
         exposurePeriod,
       };
@@ -92,7 +92,7 @@ export const withCreateFacilityDescriptionTests = ({
         exposurePeriod,
       };
 
-      const createFacilityPromise = createFacility(facilityToCreateWithNullProductTypeName as CreateFacilityRequestItem);
+      const createFacilityPromise = createFacility(facilityToCreateWithNullProductTypeName as unknown as CreateFacilityRequestItem);
 
       await expect(createFacilityPromise).rejects.toBeInstanceOf(TypeError);
     });

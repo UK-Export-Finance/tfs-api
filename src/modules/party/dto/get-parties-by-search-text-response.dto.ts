@@ -4,29 +4,29 @@ export type GetPartiesBySearchTextResponse = GetPartiesBySearchTextResponseItem[
 
 export class GetPartiesBySearchTextResponseItem {
   @ApiResponseProperty()
-  alternateIdentifier: string;
+  alternateIdentifier!: string;
 
   @ApiResponseProperty()
-  industryClassification: string;
+  industryClassification!: string;
 
   @ApiResponseProperty()
-  name1: string;
+  name1!: string;
 
   @ApiResponseProperty()
-  name2: string;
+  name2!: string;
 
   @ApiResponseProperty()
-  name3: string;
+  name3!: string;
 
   @ApiResponseProperty()
-  smeType: string;
+  smeType!: string;
 
   @ApiResponseProperty()
-  citizenshipClass: string;
+  citizenshipClass!: string;
 
   @ApiResponseProperty()
-  officerRiskDate: string;
+  officerRiskDate!: string;
 
   @ApiResponseProperty()
-  countryCode: string;
+  countryCode!: string;
 }

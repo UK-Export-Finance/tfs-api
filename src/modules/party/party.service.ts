@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PROPERTIES } from '@ukef/constants';
+import { PROPERTIES, REGEX } from '@ukef/constants';
 import { AcbsPartyService } from '@ukef/modules/acbs/acbs-party.service';
 import { AcbsCreatePartyRequestDto } from '@ukef/modules/acbs/dto/acbs-create-party-request.dto';
 import { AcbsGetPartiesBySearchTextResponseDto } from '@ukef/modules/acbs/dto/acbs-get-parties-by-search-text-response.dto';
@@ -22,21 +22,20 @@ export class PartyService {
 
   async getPartiesBySearchTextFromAcbs(searchText: string): Promise<AcbsGetPartiesBySearchTextResponseDto> {
     const token = await this.getIdToken();
-    const endsInWhitespace = /\s$/;
-
-    if (searchText === null) {
-      throw new GetPartiesBySearchTextException('The required query parameter searchText was not specified.');
-    }
 
     if (searchText === '') {
       throw new GetPartiesBySearchTextException('The query parameter searchText must be non-empty.');
+    }
+
+    if (!searchText) {
+      throw new GetPartiesBySearchTextException('The required query parameter searchText was not specified.');
     }
 
     if (typeof searchText === 'string' && searchText.length < 3) {
       throw new GetPartiesBySearchTextException('The query parameter searchText must be at least 3 characters.');
     }
 
-    if (endsInWhitespace.test(searchText)) {
+    if (REGEX.ENDS_IN_WHITESPACE.test(searchText)) {
       throw new GetPartiesBySearchTextException('The query parameter searchText cannot end with whitespace.');
     }
 
@@ -61,12 +60,14 @@ export class PartyService {
     return response;
   }
 
-  async getPartyIdentifierBySearchText(searchText: string): Promise<CreatePartyResponse> {
+  async getPartyIdentifierBySearchText(searchText: string): Promise<CreatePartyResponse | undefined> {
     const response = await this.getPartiesBySearchTextFromAcbs(searchText).then((partiesFromAcbs) => {
-      let party = undefined;
+      let party;
+
       if (partiesFromAcbs[0]) {
         party = partiesFromAcbs[0].PartyIdentifier ? { partyIdentifier: partiesFromAcbs[0].PartyIdentifier } : {};
       }
+
       return party;
     });
 
@@ -77,7 +78,7 @@ export class PartyService {
     const token = await this.getIdToken();
     const newPartyInAcbs: AcbsCreatePartyRequestDto = this.buildAcbsCreatePartyRequest(partyToCreate);
 
-    return this.acbsPartyService.createParty(newPartyInAcbs, token);
+    return await this.acbsPartyService.createParty(newPartyInAcbs, token);
   }
 
   async getPartyByIdentifier(partyIdentifier: string): Promise<Party> {
@@ -165,7 +166,7 @@ export class PartyService {
         LanguageCode: PROPERTIES.PARTY.DEFAULT.languageCode,
       },
       WatchListReason: {
-        WatchListReasonCode: PROPERTIES.PARTY.DEFAULT.watchListReasonCode ?? '',
+        WatchListReasonCode: PROPERTIES.PARTY.DEFAULT.watchListReasonCode,
       },
     };
   }

@@ -1,6 +1,6 @@
 import { DateString } from '@ukef/helpers';
 
-export interface AcbsCreateDealInvestorRequest {
+export type AcbsCreateDealInvestorRequest = {
   SectionIdentifier: string;
   EffectiveDate: DateString;
   ExpirationDate: DateString | null;
@@ -21,4 +21,4 @@ export interface AcbsCreateDealInvestorRequest {
   UserDefinedCode1: string;
   ContractPercentage: number;
   LimitRevolvingIndicator: boolean;
-}
+};

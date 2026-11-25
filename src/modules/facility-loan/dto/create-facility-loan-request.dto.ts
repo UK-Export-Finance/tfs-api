@@ -17,31 +17,31 @@ export class CreateFacilityLoanRequestItem {
   @ValidatedDateOnlyApiProperty({
     description: 'The date of the action.',
   })
-  readonly postingDate: DateOnlyString;
+  readonly postingDate!: DateOnlyString;
 
   @ValidatedPartyIdentifierApiProperty({
     description: 'The customer identifier representing the borrower for the loan.',
   })
-  readonly borrowerPartyIdentifier: string;
+  readonly borrowerPartyIdentifier!: string;
 
   @ValidatedStringApiProperty({
     description: `The product type identifier for the loan: 250 for BSS, 260 for EWCS, 280 for GEF-Cash, 281 for GEF-Contingent. It is called the product type code in ACBS.`,
     example: ENUMS.PRODUCT_TYPE_IDS.BSS,
     enum: ENUMS.PRODUCT_TYPE_IDS,
   })
-  readonly productTypeId: ProductTypeIdEnum;
+  readonly productTypeId!: ProductTypeIdEnum;
 
   @ValidatedStringApiProperty({
     description: `The product type group identifier for the loan: EW for EWCS, BS for Bond, GM for GEF. It is called the product group code in ACBS.`,
     example: ENUMS.PRODUCT_TYPE_GROUPS.BOND,
     enum: ENUMS.PRODUCT_TYPE_GROUPS,
   })
-  readonly productTypeGroup: ProductTypeGroupEnum;
+  readonly productTypeGroup!: ProductTypeGroupEnum;
 
   @ValidatedCurrencyApiProperty({
     description: 'The currency code of the primary currency of the loan, from the Currency Definition Table.',
   })
-  readonly currency: string;
+  readonly currency!: string;
 
   @ValidatedNumberApiProperty({
     description: 'The exchange rate between the loan currency and the deal currency. Required when loan currency differs from deal currency.',
@@ -61,49 +61,49 @@ export class CreateFacilityLoanRequestItem {
     description: 'The amount of the loan.',
     minimum: 0,
   })
-  readonly amount: number;
+  readonly amount!: number;
 
   @ValidatedDateOnlyApiProperty({
     description: 'The facility issue date.',
   })
-  readonly issueDate: DateOnlyString;
+  readonly issueDate!: DateOnlyString;
 
   @ValidatedDateOnlyApiProperty({
     description: 'The facility expiry date.',
   })
-  readonly expiryDate: DateOnlyString;
+  readonly expiryDate!: DateOnlyString;
 
   @ValidatedDateOnlyApiProperty({
     description: 'The next payment due date of the repayment schedule & date the next rate will be set for accrual schedules.',
   })
-  readonly nextDueDate: DateOnlyString;
+  readonly nextDueDate!: DateOnlyString;
 
   @ValidatedStringApiProperty({
     description: 'The frequency at which loan bills should be generated.',
     enum: ENUMS.FEE_FREQUENCY_TYPES,
     example: ENUMS.FEE_FREQUENCY_TYPES.WEEKLY,
   })
-  readonly loanBillingFrequencyType: FeeFrequencyTypeEnum;
+  readonly loanBillingFrequencyType!: FeeFrequencyTypeEnum;
 
   @ValidatedNumberApiProperty({
     description: 'The guarantee fee percentage.',
     minimum: 0,
   })
-  readonly spreadRate: number;
+  readonly spreadRate!: number;
 
   @ValidatedNumberApiProperty({
     description: 'The corresponding fee rate. If it is null then the interest rate will be used.',
     minimum: 0,
     required: false,
   })
-  readonly spreadRateCtl: number;
+  readonly spreadRateCtl!: number;
 
   @ValidatedStringApiProperty({
     description: 'The year basis for the accrual schedule.',
     enum: ENUMS.YEAR_BASIS_CODES,
     example: ENUMS.YEAR_BASIS_CODES.DAY_COUNT_365,
   })
-  readonly yearBasis: YearBasisCodeEnum;
+  readonly yearBasis!: YearBasisCodeEnum;
 
   @ValidatedStringApiProperty({
     description: `The frequency with which the rate will change. This is required if productTypeGroup is ${ProductTypeGroupEnum.EWCS}.`,
@@ -111,5 +111,5 @@ export class CreateFacilityLoanRequestItem {
     enum: ENUMS.FEE_FREQUENCY_TYPES,
     example: ENUMS.FEE_FREQUENCY_TYPES.WEEKLY,
   })
-  readonly indexRateChangeFrequency: FeeFrequencyTypeEnum;
+  readonly indexRateChangeFrequency!: FeeFrequencyTypeEnum;
 }

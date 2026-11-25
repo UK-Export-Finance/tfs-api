@@ -1,3 +1,4 @@
+import { when } from 'jest-when';
 import { ENUMS } from '@ukef/constants';
 import { AcbsBundleInformationService } from '@ukef/modules/acbs/acbs-bundle-information.service';
 import { AcbsFacilityLoanService } from '@ukef/modules/acbs/acbs-facility-loan.service';
@@ -8,7 +9,6 @@ import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authen
 import { TEST_DATES } from '@ukef-test/support/constants/test-date.constant';
 import { CreateFacilityLoanGenerator } from '@ukef-test/support/generator/create-facility-loan-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { when } from 'jest-when';
 
 import { AccrualScheduleBuilder } from './accrual-schedule.builder';
 import { FacilityLoanService } from './facility-loan.service';
@@ -40,18 +40,20 @@ describe('FacilityLoanService', () => {
     const acbsAuthenticationServiceGetIdToken = mockAcbsAuthenticationService.getIdToken;
     when(acbsAuthenticationServiceGetIdToken).calledWith().mockResolvedValueOnce(idToken);
 
-    acbsBundleInformationService = new AcbsBundleInformationService(null, null);
+    acbsFacilityLoanService = null!;
+
+    acbsBundleInformationService = new AcbsBundleInformationService(null!, null!);
     acbsBundleInformationServiceCreateBundleInformation = jest.fn(() => ({
       BundleIdentifier: bundleIdentifier,
       WarningErrors: errorString,
     }));
     acbsBundleInformationService.createBundleInformation = acbsBundleInformationServiceCreateBundleInformation;
 
-    repaymentScheduleBuilder = new RepaymentScheduleBuilder(null);
+    repaymentScheduleBuilder = new RepaymentScheduleBuilder(null!);
     repaymentScheduleBuilderGetRepaymentSchedules = jest.fn();
     repaymentScheduleBuilder.getRepaymentSchedules = repaymentScheduleBuilderGetRepaymentSchedules;
 
-    accrualScheduleBuilder = new AccrualScheduleBuilder(null, currentDateProvider);
+    accrualScheduleBuilder = new AccrualScheduleBuilder(null!, currentDateProvider);
     accrualScheduleBuilderGetAccrualSchedules = jest.fn();
     accrualScheduleBuilder.getAccrualSchedules = accrualScheduleBuilderGetAccrualSchedules;
 
@@ -62,7 +64,7 @@ describe('FacilityLoanService', () => {
       dateStringTransformations,
       currentDateProvider,
       repaymentScheduleBuilder,
-      null,
+      null!,
       accrualScheduleBuilder,
     );
   });
@@ -248,7 +250,7 @@ describe('FacilityLoanService', () => {
 
       const response = await service.createLoanForFacility(facilityIdentifier, newLoanGbp);
 
-      expect(response).toEqual({ responseBody: { bundleIdentifier: bundleIdentifier }, warningErrors: errorString });
+      expect(response).toEqual({ responseBody: { bundleIdentifier }, warningErrors: errorString });
     });
   });
 });

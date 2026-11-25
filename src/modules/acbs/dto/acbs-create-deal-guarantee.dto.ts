@@ -1,6 +1,6 @@
 import { DateString } from '@ukef/helpers/date-string.type';
 
-export interface AcbsCreateDealGuaranteeDto {
+export type AcbsCreateDealGuaranteeDto = {
   LenderType: {
     LenderTypeCode: string;
   };
@@ -19,4 +19,4 @@ export interface AcbsCreateDealGuaranteeDto {
   ExpirationDate: DateString;
   GuaranteedLimit: number;
   GuaranteedPercentage: number;
-}
+};

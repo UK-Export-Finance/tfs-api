@@ -1,0 +1,225 @@
+import { HttpStatus } from '@nestjs/common';
+import { Api } from '@ukef-test/support/api';
+
+import { generatePayloadArrayOfObjects } from './generate-payload';
+import { assert400Response } from './response-assertion';
+
+/**
+ * Validation tests for an nested array of nested - number field with invalid values
+ * @param {string} fieldName: The name of a field. E.g, amount
+ * @param {string} parentFieldName: The name of a parent field. E.g parentObject
+ * @param {string} grandParentFieldName: The name of a parent field. E.g grandParentObject
+ * @param {object} initialPayload: The payload to use before adding a field value
+ * @param {number} min: The minimum
+ * @param {number} max: The maximum
+ * @param {string} url: The URL the tests will call.
+ */
+export const arrayOfNestedObjectsNumberValidation = ({ fieldName, grandParentFieldName, parentFieldName, initialPayload, min, max, url }) => {
+  let api: Api;
+
+  const payloadParams = { initialPayload, fieldName, grandParentFieldName, parentFieldName };
+
+  beforeAll(async () => {
+    api = await Api.create();
+  });
+
+  afterAll(async () => {
+    await api.destroy();
+  });
+
+  describe(`when ${fieldName} is null`, () => {
+    let mockPayload;
+
+    beforeAll(() => {
+      // Arrange
+      mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value: null });
+    });
+
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
+      // Act
+      const response = await api.post(url, mockPayload);
+
+      // Assert
+      assert400Response(response);
+    });
+
+    it('should return the correct error messages', async () => {
+      // Act
+      const { body } = await api.post(url, mockPayload);
+
+      // Assert
+      const expected = [
+        `${grandParentFieldName}.0.${parentFieldName}.0.${fieldName} should not be null or undefined`,
+        `${grandParentFieldName}.0.${parentFieldName}.0.${fieldName} must not be greater than ${max}`,
+        `${grandParentFieldName}.0.${parentFieldName}.0.${fieldName} must not be less than ${min}`,
+        `${grandParentFieldName}.0.${parentFieldName}.0.${fieldName} must be a number conforming to the specified constraints`,
+        `${grandParentFieldName}.0.${parentFieldName}.1.${fieldName} should not be null or undefined`,
+        `${grandParentFieldName}.0.${parentFieldName}.1.${fieldName} must not be greater than ${max}`,
+        `${grandParentFieldName}.0.${parentFieldName}.1.${fieldName} must not be less than ${min}`,
+        `${grandParentFieldName}.0.${parentFieldName}.1.${fieldName} must be a number conforming to the specified constraints`,
+        `${grandParentFieldName}.1.${parentFieldName}.0.${fieldName} should not be null or undefined`,
+        `${grandParentFieldName}.1.${parentFieldName}.0.${fieldName} must not be greater than ${max}`,
+        `${grandParentFieldName}.1.${parentFieldName}.0.${fieldName} must not be less than ${min}`,
+        `${grandParentFieldName}.1.${parentFieldName}.0.${fieldName} must be a number conforming to the specified constraints`,
+        `${grandParentFieldName}.1.${parentFieldName}.1.${fieldName} should not be null or undefined`,
+        `${grandParentFieldName}.1.${parentFieldName}.1.${fieldName} must not be greater than ${max}`,
+        `${grandParentFieldName}.1.${parentFieldName}.1.${fieldName} must not be less than ${min}`,
+        `${grandParentFieldName}.1.${parentFieldName}.1.${fieldName} must be a number conforming to the specified constraints`,
+      ];
+
+      expect(body.message).toStrictEqual(expected);
+    });
+  });
+
+  describe(`when ${fieldName} is undefined`, () => {
+    let mockPayload;
+
+    beforeAll(() => {
+      // Arrange
+      mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value: undefined });
+    });
+
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
+      // Act
+      const response = await api.post(url, mockPayload);
+
+      // Assert
+      assert400Response(response);
+    });
+
+    it('should return the correct error messages', async () => {
+      // Act
+      const { body } = await api.post(url, mockPayload);
+
+      // Assert
+      const expected = [
+        `${grandParentFieldName}.0.${parentFieldName}.0.${fieldName} should not be null or undefined`,
+        `${grandParentFieldName}.0.${parentFieldName}.0.${fieldName} must not be greater than ${max}`,
+        `${grandParentFieldName}.0.${parentFieldName}.0.${fieldName} must not be less than ${min}`,
+        `${grandParentFieldName}.0.${parentFieldName}.0.${fieldName} must be a number conforming to the specified constraints`,
+        `${grandParentFieldName}.0.${parentFieldName}.1.${fieldName} should not be null or undefined`,
+        `${grandParentFieldName}.0.${parentFieldName}.1.${fieldName} must not be greater than ${max}`,
+        `${grandParentFieldName}.0.${parentFieldName}.1.${fieldName} must not be less than ${min}`,
+        `${grandParentFieldName}.0.${parentFieldName}.1.${fieldName} must be a number conforming to the specified constraints`,
+        `${grandParentFieldName}.1.${parentFieldName}.0.${fieldName} should not be null or undefined`,
+        `${grandParentFieldName}.1.${parentFieldName}.0.${fieldName} must not be greater than ${max}`,
+        `${grandParentFieldName}.1.${parentFieldName}.0.${fieldName} must not be less than ${min}`,
+        `${grandParentFieldName}.1.${parentFieldName}.0.${fieldName} must be a number conforming to the specified constraints`,
+        `${grandParentFieldName}.1.${parentFieldName}.1.${fieldName} should not be null or undefined`,
+        `${grandParentFieldName}.1.${parentFieldName}.1.${fieldName} must not be greater than ${max}`,
+        `${grandParentFieldName}.1.${parentFieldName}.1.${fieldName} must not be less than ${min}`,
+        `${grandParentFieldName}.1.${parentFieldName}.1.${fieldName} must be a number conforming to the specified constraints`,
+      ];
+
+      expect(body.message).toStrictEqual(expected);
+    });
+  });
+
+  describe(`when ${fieldName} is a string`, () => {
+    let mockPayload;
+
+    beforeAll(() => {
+      // Arrange
+      mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value: '' });
+    });
+
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
+      // Act
+      const response = await api.post(url, mockPayload);
+
+      // Assert
+      assert400Response(response);
+    });
+
+    it('should return the correct error messages', async () => {
+      // Act
+      const { body } = await api.post(url, mockPayload);
+
+      // Assert
+      const expected = [
+        `${grandParentFieldName}.0.${parentFieldName}.0.${fieldName} must not be greater than ${max}`,
+        `${grandParentFieldName}.0.${parentFieldName}.0.${fieldName} must not be less than ${min}`,
+        `${grandParentFieldName}.0.${parentFieldName}.0.${fieldName} must be a number conforming to the specified constraints`,
+        `${grandParentFieldName}.0.${parentFieldName}.1.${fieldName} must not be greater than ${max}`,
+        `${grandParentFieldName}.0.${parentFieldName}.1.${fieldName} must not be less than ${min}`,
+        `${grandParentFieldName}.0.${parentFieldName}.1.${fieldName} must be a number conforming to the specified constraints`,
+        `${grandParentFieldName}.1.${parentFieldName}.0.${fieldName} must not be greater than ${max}`,
+        `${grandParentFieldName}.1.${parentFieldName}.0.${fieldName} must not be less than ${min}`,
+        `${grandParentFieldName}.1.${parentFieldName}.0.${fieldName} must be a number conforming to the specified constraints`,
+        `${grandParentFieldName}.1.${parentFieldName}.1.${fieldName} must not be greater than ${max}`,
+        `${grandParentFieldName}.1.${parentFieldName}.1.${fieldName} must not be less than ${min}`,
+        `${grandParentFieldName}.1.${parentFieldName}.1.${fieldName} must be a number conforming to the specified constraints`,
+      ];
+
+      expect(body.message).toStrictEqual(expected);
+    });
+  });
+
+  describe(`when ${fieldName} is below the minimum`, () => {
+    let mockPayload;
+
+    const value = min - 1;
+
+    beforeAll(() => {
+      // Arrange
+      mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value });
+    });
+
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
+      // Act
+      const response = await api.post(url, mockPayload);
+
+      // Assert
+      assert400Response(response);
+    });
+
+    it('should return the correct error messages', async () => {
+      // Act
+      const { body } = await api.post(url, mockPayload);
+
+      // Assert
+      const expected = [
+        `${grandParentFieldName}.0.${parentFieldName}.0.${fieldName} must not be less than ${min}`,
+        `${grandParentFieldName}.0.${parentFieldName}.1.${fieldName} must not be less than ${min}`,
+        `${grandParentFieldName}.1.${parentFieldName}.0.${fieldName} must not be less than ${min}`,
+        `${grandParentFieldName}.1.${parentFieldName}.1.${fieldName} must not be less than ${min}`,
+      ];
+
+      expect(body.message).toStrictEqual(expected);
+    });
+  });
+
+  describe(`when ${fieldName} is above the maximum`, () => {
+    let mockPayload;
+
+    beforeAll(() => {
+      // Arrange
+      const value = max + 1;
+
+      mockPayload = generatePayloadArrayOfObjects({ ...payloadParams, value });
+    });
+
+    it(`should return a ${HttpStatus.BAD_REQUEST} response`, async () => {
+      // Act
+      const response = await api.post(url, mockPayload);
+
+      // Assert
+      assert400Response(response);
+    });
+
+    it('should return the correct error messages', async () => {
+      // Act
+      const { body } = await api.post(url, mockPayload);
+
+      // Assert
+      const expected = [
+        `${grandParentFieldName}.0.${parentFieldName}.0.${fieldName} must not be greater than ${max}`,
+        `${grandParentFieldName}.0.${parentFieldName}.1.${fieldName} must not be greater than ${max}`,
+        `${grandParentFieldName}.1.${parentFieldName}.0.${fieldName} must not be greater than ${max}`,
+        `${grandParentFieldName}.1.${parentFieldName}.1.${fieldName} must not be greater than ${max}`,
+      ];
+
+      expect(body.message).toStrictEqual(expected);
+    });
+  });
+};

@@ -9,7 +9,7 @@ export class GetFacilityLoanTransactionResponseDto {
     maxLength: 2,
     example: PROPERTIES.GLOBAL.portfolioIdentifier,
   })
-  readonly portfolioIdentifier: string;
+  readonly portfolioIdentifier!: string;
 
   @ApiProperty({
     description: 'A numeric code denoting the status of the bundle.',
@@ -17,7 +17,7 @@ export class GetFacilityLoanTransactionResponseDto {
     maxLength: 2,
     example: EXAMPLES.BUNDLE_STATUS_CODE,
   })
-  readonly bundleStatusCode: string;
+  readonly bundleStatusCode!: string;
 
   @ApiProperty({
     description: 'A description of the status of the bundle corresponding to the bundle status code.',
@@ -25,14 +25,14 @@ export class GetFacilityLoanTransactionResponseDto {
     maxLength: 20,
     example: EXAMPLES.BUNDLE_STATUS_DESC,
   })
-  readonly bundleStatusDesc: string;
+  readonly bundleStatusDesc!: string;
 
   @ApiProperty({
     description: 'The date when the bundle will be posted. It cannot be before the current processing date.',
     type: Date,
     format: 'date',
   })
-  readonly postingDate: DateOnlyString;
+  readonly postingDate!: DateOnlyString;
 
   @ApiProperty({
     description: 'The identifier of the facility in ACBS.',
@@ -40,7 +40,7 @@ export class GetFacilityLoanTransactionResponseDto {
     maxLength: 10,
     example: EXAMPLES.FACILITY_ID,
   })
-  readonly facilityIdentifier: string;
+  readonly facilityIdentifier!: string;
 
   @ApiProperty({
     description: 'The identifier of the loan borrower in ACBS.',
@@ -48,30 +48,30 @@ export class GetFacilityLoanTransactionResponseDto {
     maxLength: 8,
     example: EXAMPLES.PARTY_ID,
   })
-  readonly borrowerPartyIdentifier: string;
+  readonly borrowerPartyIdentifier!: string;
 
   @ApiProperty({
     description:
       'The product type identifier for the loan: 250 for BSS, 260 for EWCS, 280 for GEF-Cash, 281 for GEF-Contingent. It is called the product type code in ACBS.',
     example: EXAMPLES.PRODUCT_TYPE_ID,
   })
-  readonly productTypeId: string;
+  readonly productTypeId!: string;
 
   @ApiProperty({
     description: 'The product type group identifier for the loan: EW for EWCS, BS for Bond, GM for GEF. It is called the product group code in ACBS.',
     example: EXAMPLES.PRODUCT_TYPE_GROUP,
   })
-  readonly productTypeGroup: string;
+  readonly productTypeGroup!: string;
 
   @ApiProperty({ description: 'The currency code for the loan.', minLength: 3, maxLength: 3, example: EXAMPLES.CURRENCY })
-  readonly currency: string;
+  readonly currency!: string;
 
   @ApiProperty({
     description:
       'The exchange rate between the loan currency and the deal currency. It is only applicable when the loan currency differs from the facility currency.',
     example: EXAMPLES.DEAL_CUSTOMER_USAGE_RATE,
   })
-  readonly dealCustomerUsageRate: number | null;
+  readonly dealCustomerUsageRate!: number | null;
 
   @ApiProperty({
     description:
@@ -80,41 +80,41 @@ export class GetFacilityLoanTransactionResponseDto {
     maxLength: 1,
     example: EXAMPLES.DEAL_CUSTOMER_USAGE_RATE,
   })
-  readonly dealCustomerUsageOperationType: string | null;
+  readonly dealCustomerUsageOperationType!: string | null;
 
   @ApiProperty({
     description: 'The amount of the loan. It is called loan amount in ACBS.',
     example: EXAMPLES.LOAN_AMOUNT,
   })
-  readonly amount: number;
+  readonly amount!: number;
 
   @ApiProperty({
     description: 'The issue date for the loan. It is called the effective date in ACBS.',
     type: Date,
     format: 'date',
   })
-  readonly issueDate: DateOnlyString;
+  readonly issueDate!: DateOnlyString;
 
   @ApiProperty({
     description: 'The expiry date for the loan. It is called the maturity date in ACBS.',
     type: Date,
     format: 'date',
   })
-  readonly expiryDate: DateOnlyString;
+  readonly expiryDate!: DateOnlyString;
 
   @ApiProperty({
     description:
       'The spread rate of the PAC accrual schedule to factor into the all-in rate if a rate calculation method is selected that includes the spread rate in the calculation.',
     example: EXAMPLES.SPREAD_RATE,
   })
-  readonly spreadRate: number | null;
+  readonly spreadRate!: number | null;
 
   @ApiProperty({
     description:
       'The spread rate of the CTL accrual schedule to factor into the all-in rate if a rate calculation method is selected that includes the spread rate in the calculation.',
     example: EXAMPLES.SPREAD_RATE,
   })
-  readonly spreadRateCTL: number | null;
+  readonly spreadRateCTL!: number | null;
 
   @ApiProperty({
     description: 'A code denoting the year basis for the accrual schedule.',
@@ -122,21 +122,21 @@ export class GetFacilityLoanTransactionResponseDto {
     maxLength: 1,
     example: EXAMPLES.YEAR_BASIS,
   })
-  readonly yearBasis: string | null;
+  readonly yearBasis!: string | null;
 
   @ApiProperty({
     description: 'The date the next payment will be due for the loan repayment schedule.',
     type: Date,
     format: 'date',
   })
-  readonly nextDueDate: DateOnlyString | null;
+  readonly nextDueDate!: DateOnlyString | null;
 
   @ApiProperty({
     description: `A code denoting the index rate change frequency, which is used by ACBS to determine the frequency at which the rate should change when the change timing is set to 'On Anniversary'.`,
     minLength: 0,
     maxLength: 1,
   })
-  readonly indexRateChangeFrequency: string | null;
+  readonly indexRateChangeFrequency!: string | null;
 
   @ApiProperty({
     description: `A code denoting the loan billing frequency type, which is used by ACBS to determine the frequency at which the bills should be generated.`,
@@ -144,5 +144,5 @@ export class GetFacilityLoanTransactionResponseDto {
     maxLength: 1,
     example: EXAMPLES.LOAN_BILLING_FREQUENCY_TYPE,
   })
-  readonly loanBillingFrequencyType: string | null;
+  readonly loanBillingFrequencyType!: string | null;
 }

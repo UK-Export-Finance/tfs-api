@@ -10,14 +10,14 @@ export class GetFacilityFixedFeeResponseItem {
   @ValidatedFacilityIdentifierApiProperty({
     description: 'The identifier of the facility.',
   })
-  readonly facilityIdentifier: string;
+  readonly facilityIdentifier!: string;
 
   @ApiProperty({
     description: 'The identifier of the portfolio.',
     example: ENUMS.PORTFOLIO.E1,
     enum: PortfolioEnum,
   })
-  readonly portfolioIdentifier: string;
+  readonly portfolioIdentifier!: string;
 
   @ApiProperty({
     description: 'The fixed amount to be billed to the client. If a flat amount is charged, this field is required.',
@@ -25,7 +25,7 @@ export class GetFacilityFixedFeeResponseItem {
     minimum: 0,
     maximum: 1e17,
   })
-  readonly amount: number;
+  readonly amount!: number;
 
   @ApiProperty({
     description:
@@ -34,7 +34,7 @@ export class GetFacilityFixedFeeResponseItem {
     minimum: 0,
     maximum: 99999999999.99,
   })
-  readonly currentPayoffAmount: number;
+  readonly currentPayoffAmount!: number;
 
   @ApiProperty({
     description: 'The effective date of this accruing/fixed fee schedule.',
@@ -42,7 +42,7 @@ export class GetFacilityFixedFeeResponseItem {
     format: 'date',
     example: '2023-03-24',
   })
-  readonly effectiveDate: DateOnlyString;
+  readonly effectiveDate!: DateOnlyString;
 
   @ApiProperty({
     description: 'The expiration date of this accruing/fixed fee schedule.',
@@ -50,7 +50,7 @@ export class GetFacilityFixedFeeResponseItem {
     format: 'date',
     example: '2023-03-24',
   })
-  readonly expirationDate: DateOnlyString;
+  readonly expirationDate!: DateOnlyString;
 
   @ApiProperty({
     description: 'Date the next fee bill is due for this fee schedule.',
@@ -58,7 +58,7 @@ export class GetFacilityFixedFeeResponseItem {
     format: 'date',
     example: '2023-03-24',
   })
-  readonly nextDueDate: DateOnlyString;
+  readonly nextDueDate!: DateOnlyString;
 
   @ApiProperty({
     description: 'End date for the current accrual period. This date can be different than the Next Due Date.',
@@ -66,20 +66,20 @@ export class GetFacilityFixedFeeResponseItem {
     format: 'date',
     example: '2023-03-24',
   })
-  readonly nextAccrueToDate: DateOnlyString;
+  readonly nextAccrueToDate!: DateOnlyString;
 
   @ValidatedStringApiProperty({
     description: 'Segment identifier from income exposure table. 2 alphanumeric characters.',
     length: 2,
   })
-  readonly period: string;
+  readonly period!: string;
 
   @ApiProperty({
     description: 'Description of accruing/Fixed fee which is be entered by user.',
     minLength: 0,
     maxLength: 35,
   })
-  readonly description: string;
+  readonly description!: string;
 
   @ApiProperty({
     description:
@@ -88,7 +88,7 @@ export class GetFacilityFixedFeeResponseItem {
     minLength: 0,
     maxLength: 3,
   })
-  readonly currency: string;
+  readonly currency!: string;
 
   @ApiProperty({
     description: 'Defines the code for the role of the party in the Facility for which the fee is created.',
@@ -96,7 +96,7 @@ export class GetFacilityFixedFeeResponseItem {
     minLength: 0,
     maxLength: 3,
   })
-  readonly lenderTypeCode: string;
+  readonly lenderTypeCode!: string;
 
   @ApiProperty({
     description: 'Defines the code for the fee type of this schedule for reporting and GL purposes.',
@@ -104,5 +104,5 @@ export class GetFacilityFixedFeeResponseItem {
     minLength: 0,
     maxLength: 3,
   })
-  readonly incomeClassCode: string;
+  readonly incomeClassCode!: string;
 }

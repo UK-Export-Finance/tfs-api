@@ -1,6 +1,6 @@
 import { AcbsPartyId, DateString } from '@ukef/helpers';
 
-export interface AcbsCreateFacilityFixedFeeRequestDto {
+export type AcbsCreateFacilityFixedFeeRequestDto = {
   FixedFeeAmount: number;
   FixedFeeChargeType: {
     FixedFeeChargeTypeCode: string;
@@ -59,4 +59,4 @@ export interface AcbsCreateFacilityFixedFeeRequestDto {
   FinancialCurrentFXRate: number;
   FinancialCurrentFXRateOperand: string;
   SpreadToInvestorsIndicator?: boolean;
-}
+};

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { MdmService } from '@ukef/modules/mdm/mdm.service';
 import { PinoLogger } from 'nestjs-pino';
+import { MdmService } from '@ukef/modules/mdm/mdm.service';
 
-import { MdmResourceNotFoundException } from '../mdm/exception/mdm-resource-not-found.exception';
+import { MdmResourceNotFoundException } from '@ukef/modules/mdm/exception/mdm-resource-not-found.exception';
 
 type CustomerType = string | null;
 
@@ -35,6 +35,7 @@ export class PartyCustomerTypeService {
         this.logThatNoCustomersWereFound({ alternateIdentifier, fallbackIfNotFound });
         return fallbackIfNotFound;
       }
+
       throw error;
     }
   }

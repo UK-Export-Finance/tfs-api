@@ -1,51 +1,87 @@
 import './load-dotenv';
 
 import { registerAs } from '@nestjs/config';
+import { APPLICATION } from '@ukef/constants';
 import { getIntConfig } from '@ukef/helpers/get-int-config';
 
 import { InvalidConfigException } from './invalid-config.exception';
 
+const { NODE_ENV } = process.env;
+
+const { NAME, VERSION_PREFIX } = APPLICATION;
+
 const validLogLevels = ['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent'];
 
-export interface AppConfig {
-  name: string;
+export type AppConfigType = {
+  apiKey: string;
   env: string;
+  giftFeatureEnabled: boolean;
+  giftVersioning: {
+    enable: boolean;
+    prefix: string;
+    version: string;
+    prefixAndVersion: string;
+  };
+  globalPrefix: string;
+  logLevel: string;
+  name: string;
+  port: number;
+  redactLogs: boolean;
+  singleLineLogFormat: boolean;
+  usePinoPrettyLogFormatter: boolean;
   versioning: {
     enable: boolean;
     prefix: string;
     version: string;
+    prefixAndVersion: string;
   };
-  globalPrefix: string;
-  port: number;
-  apiKey: string;
-  logLevel: string;
-  singleLineLogFormat: boolean;
-  usePinoPrettyLogFormatter: boolean;
-  redactLogs: boolean;
-}
+};
 
-export default registerAs('app', (): Record<string, any> => {
-  const logLevel = process.env.LOG_LEVEL || 'info';
+export const AppConfig = registerAs('app', (): AppConfigType => {
+  const logLevel = process.env.LOG_LEVEL === undefined || process.env.LOG_LEVEL === '' ? 'info' : process.env.LOG_LEVEL;
+
   if (!validLogLevels.includes(logLevel)) {
-    throw new InvalidConfigException(`LOG_LEVEL must be one of ${validLogLevels} or not specified.`);
+    throw new InvalidConfigException(`LOG_LEVEL must be one of ${validLogLevels} or not specified. Received ${logLevel}`);
   }
 
+  /**
+   * APIM TFS versioning for ACBS endpoints
+   */
+  const acbsVersion = process.env.HTTP_VERSION === undefined || process.env.HTTP_VERSION === '' ? '1' : process.env.HTTP_VERSION;
+
+  const acbsVersioning = {
+    enable: process.env.HTTP_VERSIONING_ENABLE === 'true',
+    prefix: VERSION_PREFIX,
+    prefixAndVersion: `${VERSION_PREFIX}${acbsVersion}`,
+    version: acbsVersion,
+  };
+
+  /**
+   * APIM TFS versioning for GIFT endpoints
+   * NOTE: This is versioning for our APIM TFS GIFT endpoints,
+   * as opposed to the external GIFT API endpoints.
+   */
+  const giftVersion = process.env.GIFT_HTTP_VERSION!;
+
+  const giftVersioning = {
+    enable: process.env.GIFT_HTTP_VERSIONING_ENABLE === 'true',
+    prefix: VERSION_PREFIX,
+    prefixAndVersion: `${VERSION_PREFIX}${giftVersion}`,
+    version: giftVersion,
+  };
+
   return {
-    name: process.env.APP_NAME || 'tfs',
-    env: process.env.NODE_ENV || 'development',
-
-    versioning: {
-      enable: process.env.HTTP_VERSIONING_ENABLE === 'true',
-      prefix: 'v',
-      version: process.env.HTTP_VERSION || '1',
-    },
-
+    apiKey: process.env.API_KEY!,
+    env: NODE_ENV!,
+    giftFeatureEnabled: process.env.FF_GIFT_ENABLED === 'true',
+    giftVersioning,
     globalPrefix: '/api',
+    logLevel,
+    name: NAME,
     port: getIntConfig(process.env.HTTP_PORT, 3001),
-    apiKey: process.env.API_KEY,
-    logLevel: process.env.LOG_LEVEL || 'info',
-    usePinoPrettyLogFormatter: process.env.USE_PINO_PRETTY_LOG_FORMATER === 'true',
     redactLogs: process.env.REDACT_LOGS !== 'false',
     singleLineLogFormat: process.env.SINGLE_LINE_LOG_FORMAT !== 'false',
+    usePinoPrettyLogFormatter: process.env.USE_PINO_PRETTY_LOG_FORMATER === 'true',
+    versioning: acbsVersioning,
   };
 });

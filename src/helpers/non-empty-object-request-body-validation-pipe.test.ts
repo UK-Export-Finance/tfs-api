@@ -6,7 +6,7 @@ describe('nonEmptyObjectRequestBodyValidationPipe', () => {
   const nonEmptyObjectRequestBodyValidationPipe = new NonEmptyObjectRequestBodyValidationPipe();
 
   it('throws a BadRequestException if it is called with an array', () => {
-    const validatingEmptyArray = () => nonEmptyObjectRequestBodyValidationPipe.transform([{ x: 1 }]);
+    const validatingEmptyArray = () => nonEmptyObjectRequestBodyValidationPipe.transform([]);
 
     expect(validatingEmptyArray).toThrow(BadRequestException);
     expect(validatingEmptyArray).toThrow('The request body cannot be an array.');

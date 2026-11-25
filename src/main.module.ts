@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_INTERCEPTOR } from '@nestjs/core';
-import config from '@ukef/config';
+import { LoggerModule } from 'nestjs-pino';
+import { AcbsAuthenticationConfig, AcbsConfig, AppConfig, DocConfig, GiftConfig, GiftQueueConfig, MdmConfig } from '@ukef/config';
 import { BODY_LOG_KEY, HEADERS_LOG_KEY, INCOMING_RESPONSE_LOG_KEY, OUTGOING_REQUEST_LOG_KEY } from '@ukef/modules/http/http.constants';
 import { TfsModule } from '@ukef/modules/tfs.module';
-import { LoggerModule } from 'nestjs-pino';
 
 import { logKeysToRedact } from './logging/log-keys-to-redact';
 import { LoggingInterceptor } from './logging/logging-interceptor.helper';
@@ -14,11 +14,13 @@ import {
   SENSITIVE_RESPONSE_HEADER_NAMES,
 } from './modules/acbs-authentication/acbs-authentication.constants';
 
+const CONFIGS = [AcbsAuthenticationConfig, AcbsConfig, AppConfig, DocConfig, GiftConfig, GiftQueueConfig, MdmConfig];
+
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [...config],
+      load: CONFIGS,
     }),
     LoggerModule.forRootAsync({
       imports: [ConfigModule],
@@ -40,7 +42,7 @@ import {
           // Allow changing destination stream for testing, pino-pretty transport also needs to be disabled.
           ...(config.get<boolean>('app.usePinoPrettyLogFormatter') === false && global.logTestStream && { stream: global.logTestStream }),
           redact: logKeysToRedact({
-            redactLogs: config.get<boolean>('app.redactLogs'),
+            redactLogs: config.get<boolean>('app.redactLogs')!,
             clientRequest: {
               logKey: 'req',
               headersLogKey: 'headers',

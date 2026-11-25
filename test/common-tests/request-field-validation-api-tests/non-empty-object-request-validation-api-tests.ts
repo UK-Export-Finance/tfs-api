@@ -44,7 +44,7 @@ export const withNonEmptyObjectRequestValidationApiTests = ({
   it('returns a 400 response if the request body is null', async () => {
     givenAnyRequestBodyWouldSucceed();
 
-    const { status } = await makeRequest(null);
+    const { status } = await makeRequest(null!);
 
     expect(status).toBe(400);
   });

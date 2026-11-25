@@ -1,18 +1,17 @@
 import { HttpService } from '@nestjs/axios';
+import { AxiosError } from 'axios';
+import { when } from 'jest-when';
+import { of, throwError } from 'rxjs';
 import { ENUMS } from '@ukef/constants';
 import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { CreateFacilityFixedFeeGenerator } from '@ukef-test/support/generator/create-facility-fixed-fee-generator';
 import { GetFacilityFixedFeeGenerator } from '@ukef-test/support/generator/get-facility-fixed-fee-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { AxiosError } from 'axios';
-import { when } from 'jest-when';
-import { of, throwError } from 'rxjs';
 
 import { AcbsFacilityFixedFeeService } from './acbs-facility-fixed-fee.service';
 import { AcbsException } from './exception/acbs.exception';
 import { AcbsBadRequestException } from './exception/acbs-bad-request.exception';
 import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
-import { AcbsUnexpectedException } from './exception/acbs-unexpected.exception';
 
 describe('AcbsFacilityFixedFeeService', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -156,8 +155,8 @@ describe('AcbsFacilityFixedFeeService', () => {
         data: errorString,
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePost)
@@ -183,8 +182,8 @@ describe('AcbsFacilityFixedFeeService', () => {
         data: errorString,
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePost)
@@ -210,8 +209,8 @@ describe('AcbsFacilityFixedFeeService', () => {
         data: errorString,
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePost)
@@ -238,8 +237,8 @@ describe('AcbsFacilityFixedFeeService', () => {
         data: errorBody,
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePost)
@@ -259,15 +258,15 @@ describe('AcbsFacilityFixedFeeService', () => {
       await expect(createFixedFeeForFacilityPromise).rejects.toHaveProperty('errorBody', JSON.stringify(errorBody));
     });
 
-    it('throws an AcbsUnexpectedException if ACBS responds with an error code that is not 400', async () => {
+    it('throws an AcbsException if ACBS responds with an error code that is not 400', async () => {
       const axiosError = new AxiosError();
       const errorBody = { errorMessage: valueGenerator.string() };
       axiosError.response = {
         data: errorBody,
         status: 401,
         statusText: 'Unauthorized',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePost)
@@ -281,7 +280,7 @@ describe('AcbsFacilityFixedFeeService', () => {
         idToken,
       );
 
-      await expect(createFixedFeeForFacilityPromise).rejects.toBeInstanceOf(AcbsUnexpectedException);
+      await expect(createFixedFeeForFacilityPromise).rejects.toBeInstanceOf(AcbsException);
       await expect(createFixedFeeForFacilityPromise).rejects.toThrow(`Failed to create a fixed fee for facility ${facilityIdentifier} in ACBS.`);
       await expect(createFixedFeeForFacilityPromise).rejects.toHaveProperty('innerError', axiosError);
     });

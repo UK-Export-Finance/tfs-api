@@ -1,15 +1,15 @@
 import { HttpService } from '@nestjs/axios';
-import { PROPERTIES } from '@ukef/constants';
-import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { generateAcbsCreateFacilityGuaranteeDtoUsing } from '@ukef-test/support/requests/acbs-create-facility-guarantee-dto';
 import { AxiosError } from 'axios';
 import { when } from 'jest-when';
 import { of, throwError } from 'rxjs';
+import { PROPERTIES } from '@ukef/constants';
+import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
+import { generateAcbsCreateFacilityGuaranteeDtoUsing } from '@ukef-test/support/requests/acbs-create-facility-guarantee-dto';
 
 import { AcbsFacilityGuaranteeService } from './acbs-facility-guarantee.service';
 import { AcbsBadRequestException } from './exception/acbs-bad-request.exception';
 import { AcbsResourceNotFoundException } from './exception/acbs-resource-not-found.exception';
-import { AcbsUnexpectedException } from './exception/acbs-unexpected.exception';
+import { AcbsException } from './exception/acbs.exception';
 
 describe('AcbsFacilityGuaranteeService', () => {
   const valueGenerator = new RandomValueGenerator();
@@ -73,8 +73,8 @@ describe('AcbsFacilityGuaranteeService', () => {
         data: errorString,
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePost)
@@ -95,8 +95,8 @@ describe('AcbsFacilityGuaranteeService', () => {
         data: errorString,
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePost)
@@ -118,8 +118,8 @@ describe('AcbsFacilityGuaranteeService', () => {
         data: errorBody,
         status: 400,
         statusText: 'Bad Request',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePost)
@@ -134,15 +134,15 @@ describe('AcbsFacilityGuaranteeService', () => {
       await expect(createGuaranteeForFacilityPromise).rejects.toHaveProperty('errorBody', JSON.stringify(errorBody));
     });
 
-    it('throws an AcbsUnexpectedException if ACBS responds with an error code that is not 400', async () => {
+    it('throws an AcbsException if ACBS responds with an error code that is not 400', async () => {
       const axiosError = new AxiosError();
       const errorBody = { errorMessage: valueGenerator.string() };
       axiosError.response = {
         data: errorBody,
         status: 401,
         statusText: 'Unauthorized',
-        headers: undefined,
-        config: undefined,
+        headers: undefined!,
+        config: undefined!,
       };
 
       when(httpServicePost)
@@ -151,7 +151,7 @@ describe('AcbsFacilityGuaranteeService', () => {
 
       const createGuaranteeForFacilityPromise = service.createGuaranteeForFacility(facilityIdentifier, newFacilityGuarantee, idToken);
 
-      await expect(createGuaranteeForFacilityPromise).rejects.toBeInstanceOf(AcbsUnexpectedException);
+      await expect(createGuaranteeForFacilityPromise).rejects.toBeInstanceOf(AcbsException);
       await expect(createGuaranteeForFacilityPromise).rejects.toThrow(`Failed to create a guarantee for facility ${facilityIdentifier} in ACBS.`);
       await expect(createGuaranteeForFacilityPromise).rejects.toHaveProperty('innerError', axiosError);
     });

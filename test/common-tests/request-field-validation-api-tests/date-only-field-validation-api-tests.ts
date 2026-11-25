@@ -1,14 +1,14 @@
-import { prepareModifiedRequest } from '@ukef-test/support/helpers/request-field-validation-helper';
 import request from 'supertest';
+import { prepareModifiedRequest } from '@ukef-test/support/helpers/request-field-validation-helper';
 
-interface DateOnlyFieldValidationApiTestOptions<RequestBodyItem> {
+type DateOnlyFieldValidationApiTestOptions<RequestBodyItem> = {
   fieldName: keyof RequestBodyItem;
   required?: boolean;
   nullable?: boolean;
   validRequestBody: RequestBodyItem[] | RequestBodyItem;
   makeRequest: ((body: unknown[]) => request.Test) | ((body: unknown) => request.Test);
   givenAnyRequestBodyWouldSucceed: () => void;
-}
+};
 
 export function withDateOnlyFieldValidationApiTests<RequestBodyItem>({
   fieldName: fieldNameSymbol,
@@ -23,16 +23,16 @@ export function withDateOnlyFieldValidationApiTests<RequestBodyItem>({
   const requestIsAnArray = Array.isArray(validRequestBody);
   const requestBodyItem = requestIsAnArray ? validRequestBody[0] : validRequestBody;
 
-  required = required ?? true;
+  const isRequired = required ?? true;
 
   describe(`${fieldName} validation`, () => {
     beforeEach(() => {
       givenAnyRequestBodyWouldSucceed();
     });
 
-    if (required) {
+    if (isRequired) {
       it(`returns a 400 response if ${fieldName} is not present`, async () => {
-        const { [fieldNameSymbol]: _removed, ...requestWithoutTheField } = requestBodyItem;
+        const { [fieldNameSymbol]: removed, ...requestWithoutTheField } = requestBodyItem;
         const preparedRequestWithoutTheField = prepareModifiedRequest(requestIsAnArray, requestWithoutTheField);
 
         const { status, body } = await makeRequest(preparedRequestWithoutTheField);
@@ -46,7 +46,7 @@ export function withDateOnlyFieldValidationApiTests<RequestBodyItem>({
       });
     } else {
       it(`returns a 2xx response if ${fieldName} is not present`, async () => {
-        const { [fieldNameSymbol]: _removed, ...requestWithField } = requestBodyItem;
+        const { [fieldNameSymbol]: removed, ...requestWithField } = requestBodyItem;
         const preparedRequestWithField = prepareModifiedRequest(requestIsAnArray, requestWithField);
 
         const { status } = await makeRequest(preparedRequestWithField);

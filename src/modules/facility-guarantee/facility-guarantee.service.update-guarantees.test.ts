@@ -1,12 +1,12 @@
+import { when } from 'jest-when';
 import { PROPERTIES } from '@ukef/constants';
 import { getMockAcbsAuthenticationService } from '@ukef-test/support/abcs-authentication.service.mock';
 import { GetFacilityGuaranteeGenerator } from '@ukef-test/support/generator/get-facility-guarantee-generator';
 import { RandomValueGenerator } from '@ukef-test/support/generator/random-value-generator';
-import { when } from 'jest-when';
 
-import { AcbsFacilityGuaranteeService } from '../acbs/acbs-facility-guarantee.service';
-import { CurrentDateProvider } from '../date/current-date.provider';
-import { DateStringTransformations } from '../date/date-string.transformations';
+import { AcbsFacilityGuaranteeService } from '@ukef/modules/acbs/acbs-facility-guarantee.service';
+import { CurrentDateProvider } from '@ukef/modules/date/current-date.provider';
+import { DateStringTransformations } from '@ukef/modules/date/date-string.transformations';
 import { FacilityGuaranteeService } from './facility-guarantee.service';
 
 describe('FacilityGuaranteeService', () => {
@@ -23,7 +23,7 @@ describe('FacilityGuaranteeService', () => {
   let replaceGuaranteeForFacilityInAcbs: jest.Mock;
 
   beforeEach(() => {
-    const acbsFacilityGuaranteeService = new AcbsFacilityGuaranteeService(null, null);
+    const acbsFacilityGuaranteeService = new AcbsFacilityGuaranteeService(null!, null!);
     getGuaranteesForFacilityFromAcbs = jest.fn();
     acbsFacilityGuaranteeService.getGuaranteesForFacility = getGuaranteesForFacilityFromAcbs;
     replaceGuaranteeForFacilityInAcbs = jest.fn();

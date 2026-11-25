@@ -1,6 +1,6 @@
 import { AcbsPartyId, DateString, UkefId } from '@ukef/helpers';
 
-export interface FacilityFeeAmountTransaction {
+export type FacilityFeeAmountTransaction = {
   $type: 'FacilityFeeAmountTransaction';
   AccountOwnerIdentifier: string;
   EffectiveDate: DateString;
@@ -19,4 +19,4 @@ export interface FacilityFeeAmountTransaction {
   SectionIdentifier: string;
   SegmentIdentifier: string;
   TransactionAmount: number;
-}
+};

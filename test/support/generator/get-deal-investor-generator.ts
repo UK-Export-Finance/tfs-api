@@ -32,8 +32,8 @@ export class GetDealInvestorGenerator extends AbstractGenerator<GetDealInvestorR
     }));
 
     const dealInvestorsFromService = values.map((v) => ({
-      dealIdentifier: dealIdentifier,
-      portfolioIdentifier: portfolioIdentifier,
+      dealIdentifier,
+      portfolioIdentifier,
       lenderType: { LenderTypeCode: v.lenderType.LenderTypeCode },
       effectiveDate: v.effectiveDate,
       expiryDate: v.expiryDate,
@@ -47,12 +47,12 @@ export class GetDealInvestorGenerator extends AbstractGenerator<GetDealInvestorR
     };
   }
 }
-interface GenerateOptions {
+type GenerateOptions = {
   dealIdentifier: string;
   portfolioIdentifier: string;
-}
+};
 
-interface GenerateResult {
+type GenerateResult = {
   dealInvestorsInAcbs: AcbsGetDealPartyResponseDto[];
   dealInvestorsFromService: GetDealInvestorResponseDto[];
-}
+};

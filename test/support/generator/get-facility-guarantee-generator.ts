@@ -72,7 +72,7 @@ export class GetFacilityGuaranteeGenerator extends AbstractGenerator<FacilityGua
   }
 }
 
-interface FacilityGuaranteeValues {
+type FacilityGuaranteeValues = {
   effectiveDateInAcbs: DateString;
   guarantorPartyIdentifier: AcbsPartyId;
   limitKey: AcbsPartyId;
@@ -83,15 +83,15 @@ interface FacilityGuaranteeValues {
   guaranteedPercentage: number;
   limitTypeCode: string;
   lenderTypeCode: string;
-}
+};
 
-interface GenerateOptions {
+type GenerateOptions = {
   facilityIdentifier: string;
   portfolioIdentifier: string;
-}
+};
 
-interface GenerateResult {
+type GenerateResult = {
   facilityGuaranteesInAcbs: AcbsGetFacilityGuaranteesResponseDto;
   facilityGuarantees: GetFacilityGuaranteesResponse;
   facilityGuaranteesFromApi: GetFacilityGuaranteesResponse;
-}
+};
