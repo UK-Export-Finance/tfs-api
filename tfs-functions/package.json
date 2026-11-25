@@ -20,18 +20,18 @@
     "watch": "tsc -w"
   },
   "dependencies": {
-    "@azure/functions": "^4.17.1",
+    "@azure/functions": "4.17.1",
     "axios": "1.21.1"
   },
   "devDependencies": {
-    "@types/jest": "^30.0.0",
-    "@types/node": "^26.6.4",
-    "azure-functions-core-tools": "^4.17.0",
-    "eslint-import-resolver-typescript": "^4.4.4",
-    "jest": "^30.4.2",
-    "rimraf": "^6.1.4",
-    "ts-jest": "^29.4.9",
-    "typescript": "^6.0.3"
+    "@types/jest": "30.0.0",
+    "@types/node": "26.6.4",
+    "azure-functions-core-tools": "4.17.0",
+    "eslint-import-resolver-typescript": "4.4.4",
+    "jest": "30.4.2",
+    "rimraf": "6.1.4",
+    "ts-jest": "29.4.9",
+    "typescript": "6.0.3"
   },
   "engines": {
     "node": ">=24.22.1"

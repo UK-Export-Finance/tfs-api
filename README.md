@@ -30,7 +30,7 @@ This API provides integrations and endpoints for reading and writing to the foll
 npm ci
 ```
 
-When commiting changes - If the pre-commit hook does not run, execute the following command:
+When committing changes - If the pre-commit hook does not run, execute the following command:
 
 ```bash
 npx husky
