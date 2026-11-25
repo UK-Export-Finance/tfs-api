@@ -30,6 +30,16 @@ const { PATH } = GIFT;
 
 const { giftVersioning } = AppConfig();
 
+/**
+ * GIFT Facility Controller
+ *
+ * NOTE: Input validation for @Param() and @Body() decorated parameters is performed
+ * globally by GlobalValidationPipe (see src/app.ts line 38) before any controller
+ * methods are executed. All DTOs used as parameter types include class-validator
+ * decorators (@ValidatedFacilityIdentifierApiProperty, @ValidatedStringApiProperty, etc.)
+ * that specify validation rules. This provides input validation for all endpoints
+ * without requiring explicit ValidationPipe on individual route handlers.
+ */
 @Controller({
   path: `gift${PATH.FACILITY}`,
   version: giftVersioning.version,
