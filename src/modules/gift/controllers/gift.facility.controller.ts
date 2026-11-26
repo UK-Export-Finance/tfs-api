@@ -30,21 +30,6 @@ const { PATH } = GIFT;
 
 const { giftVersioning } = AppConfig();
 
-/**
- * GIFT Facility Controller
- *
- * NOTE: Input validation for @Param() and @Body() decorated parameters is performed
- * globally by GlobalValidationPipe (see src/app.ts line 38) before any controller
- * methods are executed. All DTOs used as parameter types include class-validator
- * decorators (@ValidatedFacilityIdentifierApiProperty, @ValidatedStringApiProperty, etc.)
- * that specify validation rules. This provides input validation for all endpoints
- * without requiring explicit ValidationPipe on individual route handlers.
- *
- * CODACY STATIC ANALYSIS: Codacy flags implicit global validation as "unvalidated input"
- * because it only recognizes explicit ValidationPipe. This is a false positive - validation
- * IS performed by GlobalValidationPipe and DTO decorators before controller methods execute.
- * See individual method comments for specific notes on each endpoint's validation.
- */
 @Controller({
   path: `gift${PATH.FACILITY}`,
   version: giftVersioning.version,
@@ -77,11 +62,6 @@ export class GiftFacilityController {
   @ApiInternalServerErrorResponse({
     description: 'An internal server error has occurred',
   })
-  /**
-   * NOTE: This queue-based endpoint's parameter is validated by GlobalValidationPipe (src/app.ts:38) using the DTO's
-   * validation decorators (FacilityIdOperationParamsDto). The request is then queued for async processing. This prevents
-   * Codacy warnings from blocking queue-based endpoints that intentionally defer full validation.
-   */
   async getQueue(@Param() { facilityId }: FacilityIdOperationParamsDto, @Res({ passthrough: true }) res: Response) {
     await this.giftQueueService.enqueue({ messageType: 'FACILITY_GET', facilityId });
 
@@ -142,7 +122,7 @@ export class GiftFacilityController {
   @ApiInternalServerErrorResponse({
     description: 'An internal server error has occurred',
   })
-  async postQueue(@Body() facilityData: any, @Res({ passthrough: true }) res: Response) {
+  async postQueue(@Body() facilityData: unknown, @Res({ passthrough: true }) res: Response) {
     await this.giftQueueService.enqueue({ messageType: 'FACILITY_CREATION', payload: facilityData as GiftFacilityCreationRequestDto });
 
     res.status(HttpStatus.ACCEPTED);
@@ -173,7 +153,7 @@ export class GiftFacilityController {
   @ApiInternalServerErrorResponse({
     description: 'An internal server error has occurred',
   })
-  async postAmendmentQueue(@Param() { facilityId }: FacilityIdOperationParamsDto, @Body() amendmentData: any, @Res({ passthrough: true }) res: Response) {
+  async postAmendmentQueue(@Param() { facilityId }: FacilityIdOperationParamsDto, @Body() amendmentData: unknown, @Res({ passthrough: true }) res: Response) {
     await this.giftQueueService.enqueue({
       messageType: 'FACILITY_AMENDMENT',
       facilityId,
@@ -287,7 +267,7 @@ export class GiftFacilityController {
   })
   async postMultipleAmendmentsQueue(
     @Param() { facilityId }: FacilityIdOperationParamsDto,
-    @Body() amendmentsData: any,
+    @Body() amendmentsData: unknown,
     @Res({ passthrough: true }) res: Response,
   ) {
     await this.giftQueueService.enqueue({

@@ -25,15 +25,6 @@ import { UpdateFacilityRequest } from '@ukef/modules/facility/dto/update-facilit
 import { UpdateFacilityBundleIdentifierResponse, UpdateFacilityFacilityIdentifierResponse } from '@ukef/modules/facility/dto/update-facility-response.dto';
 import { FacilityService } from '@ukef/modules/facility/facility.service';
 
-/**
- * Facility Controller
- *
- * NOTE: Input validation for @Param(), @Body(), and @Query() decorated parameters is performed
- * globally by GlobalValidationPipe (see src/app.ts line 38) before any controller methods are
- * executed. All DTOs used as parameter types include class-validator decorators that specify
- * validation rules. This provides input validation for all endpoints without requiring explicit
- * ValidationPipe on individual route handlers.
- */
 @Controller('facilities')
 export class FacilityController {
   constructor(private readonly facilityService: FacilityService) {}
