@@ -117,16 +117,11 @@ export class GiftFacilityController {
    * NOTE: Because we need to return custom responses (instead of NestJS doing this for us), we lose some response handling that NestJS provides by default.
    * Therefore, we use passthrough: true to ensure that NestJS provides some additional response handling.
    * Further information: https://docs.nestjs.com/controllers#library-specific-approach
-   *
-   * NOTE: Codacy flags @Param() without explicit ValidationPipe as unvalidated input, but this
-   * parameter IS validated by GlobalValidationPipe (src/app.ts:38) before this method executes.
-   * The DTO (FacilityIdOperationParamsDto) contains validation decorators that GlobalValidationPipe
-   * uses to validate the input. Codacy's static analysis doesn't recognize implicit global validation.
    */
   async getWithoutQueue(@Param() { facilityId }: FacilityIdOperationParamsDto, @Res({ passthrough: true }) res: Response) {
     const { status, data } = await this.giftFacilityService.get(facilityId);
 
-    res.status(status).type('application/json').send(data);
+    res.status(status).json(data);
   }
 
   @Post()
@@ -147,12 +142,6 @@ export class GiftFacilityController {
   @ApiInternalServerErrorResponse({
     description: 'An internal server error has occurred',
   })
-  /**
-   * NOTE: This queue-based endpoint accepts unvalidated input by design. Validation occurs in the queue message processor
-   * (gift.queue.message.processor.ts), not at the controller level. The input is not reflected to the client—it is stored
-   * in a message queue for async processing. This prevents Codacy/CodeQL warnings from blocking queue-based endpoints that
-   * intentionally defer validation.
-   */
   async postQueue(@Body() facilityData: any, @Res({ passthrough: true }) res: Response) {
     await this.giftQueueService.enqueue({ messageType: 'FACILITY_CREATION', payload: facilityData as GiftFacilityCreationRequestDto });
 
@@ -184,12 +173,6 @@ export class GiftFacilityController {
   @ApiInternalServerErrorResponse({
     description: 'An internal server error has occurred',
   })
-  /**
-   * NOTE: This queue-based endpoint accepts unvalidated input by design. Validation occurs in the queue message processor
-   * (gift.queue.message.processor.ts), not at the controller level. The input is not reflected to the client—it is stored
-   * in a message queue for async processing. This prevents Codacy/CodeQL warnings from blocking queue-based endpoints that
-   * intentionally defer validation.
-   */
   async postAmendmentQueue(@Param() { facilityId }: FacilityIdOperationParamsDto, @Body() amendmentData: any, @Res({ passthrough: true }) res: Response) {
     await this.giftQueueService.enqueue({
       messageType: 'FACILITY_AMENDMENT',
@@ -231,7 +214,7 @@ export class GiftFacilityController {
 
     const { status, data } = await this.giftFacilityService.create(facilityData, facilityId);
 
-    res.status(status).type('application/json').send(data);
+    res.status(status).json(data);
   }
 
   @Post(':facilityId/amendment/without-queue')
@@ -272,7 +255,7 @@ export class GiftFacilityController {
   ) {
     const { status, data } = await this.giftFacilityAmendmentService.create(facilityId, amendmentData);
 
-    res.status(status).type('application/json').send(data);
+    res.status(status).json(data);
   }
 
   @Post(':facilityId/multiple-amendments')
@@ -302,19 +285,11 @@ export class GiftFacilityController {
   @ApiInternalServerErrorResponse({
     description: 'An internal server error has occurred',
   })
-  /**
-   * NOTE: This queue-based endpoint accepts unvalidated input by design. Validation occurs in the queue message processor
-   * (gift.queue.message.processor.ts), not at the controller level. The input is not reflected to the client—it is stored
-   * in a message queue for async processing. This prevents Codacy/CodeQL warnings from blocking queue-based endpoints that
-   * intentionally defer validation.
-   */
   async postMultipleAmendmentsQueue(
     @Param() { facilityId }: FacilityIdOperationParamsDto,
     @Body() amendmentsData: any,
     @Res({ passthrough: true }) res: Response,
   ) {
-    // Input is accepted as unknown type because validation is deferred to the queue processor (tfs-functions).
-    // The GlobalValidationPipe does not validate unknown types - validation occurs at the queue consumer layer.
     await this.giftQueueService.enqueue({
       messageType: 'FACILITY_MULTIPLE_AMENDMENTS',
       facilityId,
@@ -346,6 +321,6 @@ export class GiftFacilityController {
   ) {
     const { status, data } = await this.giftFacilityAmendmentService.createMultiple(facilityId, multipleAmendmentsData);
 
-    res.status(status).type('application/json').send(data);
+    res.status(status).json(data);
   }
 }
