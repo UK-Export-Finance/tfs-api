@@ -65,6 +65,8 @@ describe('GiftFacilityController', () => {
   let mockRes: Response;
   let mockResStatus;
   let mockResJson;
+  let mockResType;
+  let mockResSend;
 
   let mockServiceGetFacility;
   let mockServiceCreateFacility;
@@ -130,12 +132,19 @@ describe('GiftFacilityController', () => {
     );
 
     mockResJson = jest.fn();
+    mockResType = jest.fn();
+    mockResSend = jest.fn();
+
+    mockResType.mockReturnValue({
+      send: mockResSend,
+    });
 
     mockRes = {
       json: mockResJson,
-    } as Response;
+      type: mockResType,
+    } as unknown as Response;
 
-    mockResStatus = jest.fn(() => mockRes);
+    mockResStatus = jest.fn(() => ({ json: mockResJson }));
 
     mockRes.status = mockResStatus;
 
@@ -209,7 +218,6 @@ describe('GiftFacilityController', () => {
 
       // Assert
       expect(mockResJson).toHaveBeenCalledTimes(1);
-
       expect(mockResJson).toHaveBeenCalledWith(mockResponseGet.data);
     });
   });
@@ -243,7 +251,6 @@ describe('GiftFacilityController', () => {
 
       // Assert
       expect(mockResJson).toHaveBeenCalledTimes(1);
-
       expect(mockResJson).toHaveBeenCalledWith(mockResponsePost.data);
     });
   });
@@ -278,7 +285,6 @@ describe('GiftFacilityController', () => {
 
       // Assert
       expect(mockResJson).toHaveBeenCalledTimes(1);
-
       expect(mockResJson).toHaveBeenCalledWith(mockResponseAmendmentPost.data);
     });
   });
@@ -373,7 +379,7 @@ describe('GiftFacilityController', () => {
       expect(giftFacilityAmendmentService.createMultiple).toHaveBeenCalledWith(mockFacilityId, mockBody);
     });
 
-    it('should call res.status and res.json with the response from giftFacilityAmendmentService', async () => {
+    it('should call res.status.json with the response from giftFacilityAmendmentService', async () => {
       // Arrange
       const mockResponseData = { id: 1, isApproved: true };
       giftFacilityAmendmentService.createMultiple = jest.fn().mockResolvedValue({ status: HttpStatus.CREATED, data: mockResponseData });

@@ -1,15 +1,16 @@
-import { applyDecorators } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { ArrayNotEmpty, IsArray, IsString, Length, Matches } from 'class-validator';
 import { EXAMPLES, UKEFID } from '@ukef/constants';
 
+import { applyDecoratorsProperty } from './apply-decorators-property.helper';
+
 type Options = {
   description: string;
 };
 
-export const ValidatedFacilitiesIdentifiersApiProperty = ({ description }: Options) =>
-  applyDecorators(
+export const ValidatedFacilitiesIdentifiersApiProperty = ({ description }: Options): PropertyDecorator =>
+  applyDecoratorsProperty(
     ApiProperty({
       type: 'string',
       description,

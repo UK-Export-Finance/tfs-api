@@ -1,8 +1,8 @@
-import { applyDecorators } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsString, Length, Matches } from 'class-validator';
 import { regexToString } from '@ukef/helpers';
 
+import { applyDecoratorsProperty } from './apply-decorators-property.helper';
 import { NullableOption, parseRequiredAndNullable, RequiredOption } from './parse-required-and-nullable-validation.helper';
 
 type Options = {
@@ -29,7 +29,7 @@ export const ValidatedStringApiProperty = ({
   enum: theEnum,
   example,
   default: theDefault,
-}: Options) => {
+}: Options): PropertyDecorator => {
   const minLength = length ?? minLengthOption ?? 0;
   const maxLength = length ?? maxLengthOption;
 
@@ -64,5 +64,5 @@ export const ValidatedStringApiProperty = ({
     decoratorsToApply.push(IsEnum(theEnum));
   }
 
-  return applyDecorators(...decoratorsToApply);
+  return applyDecoratorsProperty(...decoratorsToApply);
 };

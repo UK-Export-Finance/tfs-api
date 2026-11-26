@@ -1,0 +1,11 @@
+# Codacy configuration for tfs-api
+# Documentation: https://docs.codacy.com/repositories/configuring-your-repository/
+
+# Exclude paths from analysis
+exclude-paths:
+  - node_modules/
+  - dist/
+  - coverage/
+  - test/
+  - '**/*.test.ts'
+  - '**/*.spec.ts'
