@@ -1,12 +1,13 @@
-import { applyDecorators } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsNotEmpty } from 'class-validator';
+
+import { applyDecoratorsProperty } from './apply-decorators-property.helper';
 
 type Options = {
   description: string;
 };
 
-export const ValidatedRequiredBooleanApiProperty = ({ description }: Options) => {
+export const ValidatedRequiredBooleanApiProperty = ({ description }: Options): PropertyDecorator => {
   const decoratorsToApply = [
     ApiProperty({
       type: 'boolean',
@@ -17,5 +18,5 @@ export const ValidatedRequiredBooleanApiProperty = ({ description }: Options) =>
     IsBoolean(),
     IsNotEmpty(),
   ];
-  return applyDecorators(...decoratorsToApply);
+  return applyDecoratorsProperty(...decoratorsToApply);
 };

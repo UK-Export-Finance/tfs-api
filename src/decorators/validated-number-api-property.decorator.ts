@@ -1,7 +1,7 @@
-import { applyDecorators } from '@nestjs/common';
 import { ApiProperty, ApiPropertyOptions } from '@nestjs/swagger';
 import { IsEnum, IsNotEmpty, IsNumber, Min, NotEquals } from 'class-validator';
 
+import { applyDecoratorsProperty } from './apply-decorators-property.helper';
 import { NullableOption, parseRequiredAndNullable, RequiredOption } from './parse-required-and-nullable-validation.helper';
 
 type Options = {
@@ -39,7 +39,7 @@ const buildSwaggerPropertyOptions = ({
   return (forbidZero ? { ...baseOptions, not: { enum: [0] } } : baseOptions) as ApiPropertyOptions;
 };
 
-export const ValidatedNumberApiProperty = (options: Options) => {
+export const ValidatedNumberApiProperty = (options: Options): PropertyDecorator => {
   const { description, minimum, enum: theEnum, required, nullable, example, default: theDefault, forbidZero } = options;
 
   const { shouldPropertyBeDocumentedAsRequired, shouldPropertyBeDocumentedAsNullable, validationDecoratorsToApply } = parseRequiredAndNullable({
@@ -78,5 +78,5 @@ export const ValidatedNumberApiProperty = (options: Options) => {
     decoratorsToApply.push(NotEquals(0));
   }
 
-  return applyDecorators(...decoratorsToApply);
+  return applyDecoratorsProperty(...decoratorsToApply);
 };
