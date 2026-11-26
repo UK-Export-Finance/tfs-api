@@ -16,7 +16,7 @@
 # *********
 # GHA can be invoked in either of the following ways:
 # 1. Manual dispatch with an `environment` input of `dev`, `staging`, or `production`.
-# 2. Push to the `dev`, `staging` and `production` branches when at least one of the `paths` targets is modified.
+# 2. Push to the `dev`, `dev1`, `staging` and `production` branches when at least one of the `paths` targets is modified.
 
 name: Deployment 🚀
 run-name: APIM deployment for ${{ github.repository }}
