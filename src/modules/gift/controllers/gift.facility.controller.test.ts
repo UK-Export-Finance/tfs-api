@@ -144,7 +144,7 @@ describe('GiftFacilityController', () => {
       type: mockResType,
     } as unknown as Response;
 
-    mockResStatus = jest.fn(() => mockRes);
+    mockResStatus = jest.fn(() => ({ json: mockResJson }));
 
     mockRes.status = mockResStatus;
 
@@ -212,15 +212,13 @@ describe('GiftFacilityController', () => {
       expect(mockResStatus).toHaveBeenCalledWith(mockResponseGet.status);
     });
 
-    it('should call res.status.type.send with data obtained from the service call', async () => {
+    it('should call res.status.json with data obtained from the service call', async () => {
       // Act
       await controller.getWithoutQueue(mockParams, mockRes);
 
       // Assert
-      expect(mockResType).toHaveBeenCalledTimes(1);
-      expect(mockResType).toHaveBeenCalledWith('application/json');
-      expect(mockResSend).toHaveBeenCalledTimes(1);
-      expect(mockResSend).toHaveBeenCalledWith(mockResponseGet.data);
+      expect(mockResJson).toHaveBeenCalledTimes(1);
+      expect(mockResJson).toHaveBeenCalledWith(mockResponseGet.data);
     });
   });
 
@@ -247,15 +245,13 @@ describe('GiftFacilityController', () => {
       expect(mockResStatus).toHaveBeenCalledWith(mockResponsePost.status);
     });
 
-    it('should call res.status.type.send with data obtained from the service call', async () => {
+    it('should call res.status.json with data obtained from the service call', async () => {
       // Act
       await controller.post(mockBody, mockRes);
 
       // Assert
-      expect(mockResType).toHaveBeenCalledTimes(1);
-      expect(mockResType).toHaveBeenCalledWith('application/json');
-      expect(mockResSend).toHaveBeenCalledTimes(1);
-      expect(mockResSend).toHaveBeenCalledWith(mockResponsePost.data);
+      expect(mockResJson).toHaveBeenCalledTimes(1);
+      expect(mockResJson).toHaveBeenCalledWith(mockResponsePost.data);
     });
   });
 
@@ -283,15 +279,13 @@ describe('GiftFacilityController', () => {
       expect(mockResStatus).toHaveBeenCalledWith(mockResponseAmendmentPost.status);
     });
 
-    it('should call res.status.type.send with data obtained from the service call', async () => {
+    it('should call res.status.json with data obtained from the service call', async () => {
       // Act
       await controller.postAmendment(mockParams, mockBody, mockRes);
 
       // Assert
-      expect(mockResType).toHaveBeenCalledTimes(1);
-      expect(mockResType).toHaveBeenCalledWith('application/json');
-      expect(mockResSend).toHaveBeenCalledTimes(1);
-      expect(mockResSend).toHaveBeenCalledWith(mockResponseAmendmentPost.data);
+      expect(mockResJson).toHaveBeenCalledTimes(1);
+      expect(mockResJson).toHaveBeenCalledWith(mockResponseAmendmentPost.data);
     });
   });
 
@@ -396,10 +390,8 @@ describe('GiftFacilityController', () => {
       // Assert
       expect(mockResStatus).toHaveBeenCalledTimes(1);
       expect(mockResStatus).toHaveBeenCalledWith(HttpStatus.CREATED);
-      expect(mockResType).toHaveBeenCalledTimes(1);
-      expect(mockResType).toHaveBeenCalledWith('application/json');
-      expect(mockResSend).toHaveBeenCalledTimes(1);
-      expect(mockResSend).toHaveBeenCalledWith(mockResponseData);
+      expect(mockResJson).toHaveBeenCalledTimes(1);
+      expect(mockResJson).toHaveBeenCalledWith(mockResponseData);
     });
   });
 });
